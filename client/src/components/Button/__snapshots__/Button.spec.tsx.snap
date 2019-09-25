@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render Button without crashing 1`] = `
+<div>
+  <div
+    class="btn label"
+  >
+    Button
+  </div>
+</div>
+`;
