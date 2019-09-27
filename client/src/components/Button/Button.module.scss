@@ -7,6 +7,8 @@
   height: 40px;
   text-align: center;
   padding: 0 42px;
+  cursor: pointer;
+  transition: color ease 0.4s;
 
   &:hover {
     color: $font-color-white;

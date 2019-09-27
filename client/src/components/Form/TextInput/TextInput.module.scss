@@ -1,6 +1,19 @@
 @import '../../../styles/mixins';
 @import '../../../styles/colors';
 
+.container {
+  position: relative;
+
+  &.white,
+  &.white .input {
+    color: white;
+  }
+
+  &.hasClearButton .input {
+    padding-right: 30px;
+  }
+}
+
 .input {
   @include font-body;
 
@@ -50,5 +63,18 @@
 
   &.show {
     color: $color-red;
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: 15px;
+  top: 34px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    font-weight: 700;
   }
 }

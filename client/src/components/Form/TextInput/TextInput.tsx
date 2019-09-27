@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
 
@@ -16,6 +17,8 @@ type Props = {
     maxHeight?: number;
   };
   error?: string;
+  showClearButton?: boolean;
+  whiteColor?: boolean;
 };
 
 function TextInput({
@@ -27,6 +30,8 @@ function TextInput({
   height = 40,
   limits = {},
   error = '',
+  showClearButton = false,
+  whiteColor = false,
 }: Props = {}) {
   const [value, setValue] = useState('');
 
@@ -38,7 +43,7 @@ function TextInput({
   }
 
   function onKeyPress(e: any) {
-    if (e.which === 13 && !textArea) {
+    if (e.which === 13 && !textArea) {  // Enter key
       onSummit(value);
     }
   }
@@ -54,20 +59,61 @@ function TextInput({
     style: { ...limits, height },
   };
   const inputElement = textArea ? (
-    <textarea {...inputProps} />
+    <textarea {...inputProps} data-testid="email-input" />
   ) : (
-    <input {...inputProps} type="text" />
+    <input {...inputProps} type="text" data-testid="email-input" />
   );
+  const cleanButton = showClearButton && value !== '' ?
+    <div
+      className={ styles.clearButton }
+      onClick={ () => setValue('') }
+      data-testid="clear-button"
+    >x</div>
+    : '';
 
   return (
-    <div>
-      <label className={styles.label}>{label.toUpperCase()}</label>
+    <div className={ cx(styles.container, {
+      [styles.white]: whiteColor,
+      [styles.hasClearButton]: showClearButton
+    })}>
+      <label className={styles.label} data-testid="email-label">
+        {label.toUpperCase()}
+      </label>
       {inputElement}
-      <div className={cx(styles.errorMessage, { [styles.show]: error !== '' })}>
+      {cleanButton}
+      <div
+        className={cx(styles.errorMessage, { [styles.show]: error !== '' })}
+        data-testid="error-message"
+      >
         {error}
       </div>
     </div>
   );
 }
+
+TextInput.propTypes = {
+  /** Additional logic to execute after summiting */
+  onSummit: PropTypes.func,
+  /** Additional logic to execute after updating the input value */
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  /** Label showed at the top of the input */
+  label: PropTypes.string,
+  /** If true, text input will accept multiline input */
+  textArea: PropTypes.bool,
+  height: PropTypes.number,
+  /** limits the size textarea can grow to */
+  limits: PropTypes.shape({
+    minWidth: PropTypes.number,
+    maxWidth: PropTypes.number,
+    minHeight: PropTypes.number,
+    maxHeight: PropTypes.number,
+  }),
+  error: PropTypes.string,
+  /** Adds an 'x' button to clear the input */
+  showClearButton: PropTypes.bool,
+  /** font color will be brighter */
+  whiteColor: PropTypes.bool,
+};
 
 export default TextInput;

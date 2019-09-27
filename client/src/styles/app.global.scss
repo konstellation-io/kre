@@ -51,9 +51,10 @@
  h1 {
    color: #66e2ff;
    font-size: $font-size-headline;
-   font-weight: $font-weight;
+   font-weight: 400;
    line-height: 34px;
    text-align: center;
+   margin: 0;
  }
  
  .subtitle {

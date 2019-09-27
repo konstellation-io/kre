@@ -8,6 +8,10 @@ export function isFieldNotAnString(value: any) {
     : 'Invalid type, field is not a text';
 }
 
-export function isFieldAlreadyToken(value: string, values: string[]) {
-  return values.includes(value) ? 'This value is already token' : false;
+export function isEmailNotValid(email: string) {
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  
+  return re.test(String(email).toLowerCase())
+    ? false
+    : 'Invalid email address';
 }
