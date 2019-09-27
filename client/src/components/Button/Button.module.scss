@@ -1,0 +1,52 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.btn {
+  @include font-button;
+  line-height: 40px;
+  height: 40px;
+  text-align: center;
+  padding: 0 42px;
+  cursor: pointer;
+  transition: color ease 0.4s;
+
+  &:hover {
+    color: $font-color-white;
+  }
+
+  &:active {
+    color: $font-color;
+  }
+}
+
+.primary {
+  color: #1a1b1f;
+  background-color: $color-button-blue;
+
+  &:active {
+    box-shadow: 0 0 20px 0 $color-button-blue;
+  }
+}
+
+.dark {
+  color: $font-color;
+  background-color: black;
+
+  &:hover {
+    color: $font-color-white;
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+}
+
+.label {
+  color: $font-color;
+}
+
+.disabled {
+  color: $font-color;
+  pointer-events: none;
+  background-color: $color-grey;
+}

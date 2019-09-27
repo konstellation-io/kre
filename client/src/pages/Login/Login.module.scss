@@ -1,0 +1,39 @@
+@import '../../styles/variables';
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.bg {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(56px, 1fr));
+  grid-gap: 24px;
+  width: 100%;
+  height: 100%;
+  max-width: $container-max-width-login;
+  margin: 0 auto;
+}
+
+.container {
+  grid-area: 1 / 3 / 2 / 11;
+  height: 100%;
+  padding: $form-padding-height 0;
+  background-color: $bg-color;
+}
+
+.content {
+  padding: 0 $form-padding-width;
+  margin-top: 95px;
+}
+
+.buttons {
+  margin-top: 32px;
+
+  div:last-child {
+    margin-top: 8px;
+  }
+}
