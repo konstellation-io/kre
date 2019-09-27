@@ -18,9 +18,9 @@ it('Render Login without crashing', () => {
 it('Shows correct texts', () => {
   const { getByText } = render(<Login />);
 
-  expect(getByText('write your login credentials')).toBeInTheDocument();
+  expect(getByText('enter your email address')).toBeInTheDocument();
   expect(getByText('EMAIL')).toBeInTheDocument();
-  expect(getByText('SAVE')).toBeInTheDocument();
+  expect(getByText('Send me a login link')).toBeInTheDocument();
 });
 
 it('shows an error on summiting an invalid adress', () => {
@@ -32,7 +32,7 @@ it('shows an error on summiting an invalid adress', () => {
 
   expect(input.value).toBe(invalidEmail);
 
-  fireEvent.click(getByText('SAVE'));
+  fireEvent.click(getByText('Send me a login link'));
 
   const error = getError(container);
 
@@ -48,7 +48,7 @@ it('shows performs a login request', () => {
 
   expect(input.value).toBe(validEmail);
 
-  fireEvent.click(getByText('SAVE'));
+  fireEvent.click(getByText('Send me a login link'));
 
   const error = getError(container);
   expect(error.textContent).toBe('');

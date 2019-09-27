@@ -15,13 +15,8 @@ exports[`Render Login without crashing 1`] = `
           Please
         </h1>
         <h1>
-          write your login credentials
+          enter your email address
         </h1>
-        <p
-          class="subtitle"
-        >
-          To connect to the cluster
-        </p>
         <div
           class="content"
         >
@@ -54,12 +49,7 @@ exports[`Render Login without crashing 1`] = `
             <div
               class="btn primary"
             >
-              SAVE
-            </div>
-            <div
-              class="btn label"
-            >
-              FORGOT YOUR PASSWORD?
+              Send me a login link
             </div>
           </div>
         </div>

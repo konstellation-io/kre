@@ -84,7 +84,7 @@ it('text input Handle events', () => {
   const updateMock = jest.fn(() => true);
 
   const { container } = render(
-    <TextInput onSummit={ summitMock } onChange={ updateMock } showClearButton />
+    <TextInput onSubmit={ summitMock } onChange={ updateMock } showClearButton />
   );
 
   const handlers = [
@@ -106,7 +106,7 @@ test('text area Handle events', () => {
   const updateMock = jest.fn(() => true);
 
   const { container } = render(
-    <TextInput onSummit={ summitMock } onChange={ updateMock } textArea />
+    <TextInput onSubmit={ summitMock } onChange={ updateMock } textArea />
   );
 
   const handlers = [

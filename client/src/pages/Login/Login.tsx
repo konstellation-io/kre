@@ -19,7 +19,7 @@ function Login() {
   // Resets error warnings after introducing text in an input field
   useEffect(() => setInvalidEmailText(''), [emailField]);
 
-  function onSummit() {
+  function onSubmit() {
     const emailIsInvalid = isEmailInvalid(emailField);
 
     setInvalidEmailText(emailIsInvalid || '');
@@ -43,8 +43,7 @@ function Login() {
       <div className={ styles.grid }>
         <div className={ styles.container }>
           <h1>Please</h1>
-          <h1>write your login credentials</h1>
-          <p className={ styles.subtitle }>To connect to the cluster</p>
+          <h1>enter your email address</h1>
           <div className={ styles.content }>
             <TextInput
               showClearButton
@@ -52,11 +51,14 @@ function Login() {
               label="email"
               error={invalidEmailText}
               onChange={(newValue: string) => setEmailField(newValue)}
-              onSummit={onSummit}
+              onSubmit={onSubmit}
             />
             <div className={ styles.buttons }>
-              <Button label="SAVE" onClick={onSummit} primary />
-              <Button label="FORGOT YOUR PASSWORD?" onClick={onSummit} />
+              <Button
+                label="Send me a login link"
+                onClick={onSubmit}
+                primary
+              />
             </div>
           </div>
         </div>

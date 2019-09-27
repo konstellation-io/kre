@@ -4,7 +4,7 @@ import cx from 'classnames';
 import styles from './TextInput.module.scss';
 
 type Props = {
-  onSummit?: Function;
+  onSubmit?: Function;
   onChange?: Function;
   placeholder?: string;
   label?: string;
@@ -22,7 +22,7 @@ type Props = {
 };
 
 function TextInput({
-  onSummit = function() {},
+  onSubmit = function() {},
   onChange = function() {},
   placeholder = '',
   label = '',
@@ -44,7 +44,7 @@ function TextInput({
 
   function onKeyPress(e: any) {
     if (e.which === 13 && !textArea) {  // Enter key
-      onSummit(value);
+      onSubmit(value);
     }
   }
 
@@ -93,7 +93,7 @@ function TextInput({
 
 TextInput.propTypes = {
   /** Additional logic to execute after summiting */
-  onSummit: PropTypes.func,
+  onSubmit: PropTypes.func,
   /** Additional logic to execute after updating the input value */
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
