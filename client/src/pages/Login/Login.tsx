@@ -22,6 +22,7 @@ function Login() {
     onChange,
     error
   } = useInput('', isEmailInvalid);
+  
   const [response, makeRequest] = useEndpoint({
     endpoint: ENDPOINT.SUBMIT_MAGIC_LINK,
     method: 'POST'
@@ -29,18 +30,20 @@ function Login() {
 
   function onSubmit() {
     if(isValid()) {
-      // TODO: Create login request
-      const loginOk = true;
-
-      if (loginOk) {
-        console.log('Login successfully');
-        makeRequest({ email: value });
-        console.log('response', response)
-        //history.push(PAGES.SHOW_PR  OJECTS);
-      } else {
-        console.log('Cannot make login');
-      }
+      console.log('Request sent');
+      makeRequest({ email: value });
     }
+  }
+
+  if (response.pending) {
+    // TODO: Show loader
+    // history.push(PAGES.SHOW_PR  OJECTS);
+  }
+  if (response.error) {
+    // TODO: Show error message
+  }
+  if (response.complete && !response.error) {
+    // TODO: Request success
   }
 
   return (

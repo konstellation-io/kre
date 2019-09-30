@@ -1,8 +1,15 @@
 import {useState, useCallback} from 'react';
 import axios from 'axios';
 
+type Response = {
+  data: any;
+  complete: boolean;
+  pending: boolean;
+  error: boolean | string;
+};
+
 const apiURL = process.env.REACT_APP_API_URL;
-const defaultResponseState = {
+const defaultResponseState:Response = {
   data: null,
   complete: false,
   pending: false,
@@ -16,7 +23,7 @@ type Params = {
 export default function useEndpoint({
   endpoint = '',
   method = 'GET'
-}: Params = {}): [Object, Function] {
+}: Params = {}): [Response, Function] {
   const [response, setResponse] = useState(defaultResponseState);
 
   const sendRequest = useCallback(async (data:Object = {}) => {
