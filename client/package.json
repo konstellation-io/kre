@@ -10,14 +10,19 @@
     "@types/node": "^12.7.7",
     "@types/react": "^16.9.3",
     "@types/react-dom": "^16.9.1",
+    "@types/react-redux": "^7.1.4",
     "@types/react-router-dom": "^5.1.0",
+    "axios": "^0.19.0",
     "classnames": "^2.2.6",
     "node-sass": "^4.12.0",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.0",
     "react-scripts": "3.1.2",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
     "typeface-montserrat": "^0.0.75",
     "typeface-roboto-mono": "^0.0.75",
     "typescript": "^3.6.3"
@@ -42,5 +47,22 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/src/store.ts",
+      "!<rootDir>/src/index.tsx",
+      "!<rootDir>/src/react-app-env.d.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    }
   }
 }
