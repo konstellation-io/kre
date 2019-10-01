@@ -4,5 +4,5 @@ export const COLORS = {
 };
 
 export const ENDPOINT = {
-  SUBMIT_MAGIC_LINK: 'sumbit_magic_link',
+  SUBMIT_MAGIC_LINK: 'submit_magic_link',
 };
