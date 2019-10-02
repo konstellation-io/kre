@@ -1,9 +1,11 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import useInput from '../../hooks/useInput';
 import useEndpoint from '../../hooks/useEndpoint';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
+import * as PAGES from '../../constants/routes';
 import { ENDPOINT } from '../../constants/application';
 import styles from './Login.module.scss';
 
@@ -15,7 +17,11 @@ function isEmailInvalid(value: string) {
   );
 }
 
-function Login() {
+type Props = {
+  history: any;
+};
+
+function Login({ history }: Props) {
   const {
     value,
     isValid,
@@ -44,6 +50,10 @@ function Login() {
   }
   if (response.complete && !response.error) {
     // TODO: Request success
+    console.log('RESPONSE', response);
+    if(response.data === 'OK') {
+      history.push(PAGES.VERIFY_EMAIL);
+    }
   }
 
   return (
@@ -63,9 +73,10 @@ function Login() {
             />
             <div className={ styles.buttons }>
               <Button
+                primary
                 label="Send me a login link"
                 onClick={onSubmit}
-                primary
+                loading={ response.pending }
               />
             </div>
           </div>
@@ -75,4 +86,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default withRouter(Login);

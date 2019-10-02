@@ -1,6 +1,5 @@
 @import '../../styles/variables';
 @import '../../styles/colors';
-@import '../../styles/mixins';
 
 .bg {
   width: 100%;
@@ -25,11 +24,7 @@
   background-color: $bg-color;
 }
 
-.content {
-  padding: 0 $form-padding-width;
-  margin-top: 95px;
-}
-
-.buttons {
-  margin-top: 32px;
+.subtitle {
+  text-align: center;
+  margin-top: 50px;
 }

@@ -17,7 +17,9 @@ function Button({
   onClick = function() {},
   primary = false,
   disabled = false,
+  loading = false,
 } = {}) {
+  const spinner = <div className={ styles.spinner } />;
   const btn = (
     <div
       className={cx(styles.btn, {
@@ -28,7 +30,7 @@ function Button({
       })}
       onClick={onClick}
     >
-      {label}
+      { loading ? spinner : label}
     </div>
   );
 
