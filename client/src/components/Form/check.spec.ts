@@ -45,3 +45,18 @@ test('if isEmailNotValid makes correct validations', () => {
   expect(validEmail1).toBeFalsy();
   expect(validEmail2).toBeFalsy();
 });
+
+test('if isMagicLinkTokenInvalid makes correct validations', () => {
+  const validToken = CHECK.isMagicLinkTokenInvalid('123456');
+  const invalidToken1 = CHECK.isMagicLinkTokenInvalid('');
+  const invalidToken2 = CHECK.isMagicLinkTokenInvalid('12345');
+  const invalidToken3 = CHECK.isMagicLinkTokenInvalid('1234567');
+  const invalidToken4 = CHECK.isMagicLinkTokenInvalid('adlshfjgdsc');
+  
+  expect(invalidToken1).toBeTruthy();
+  expect(invalidToken2).toBeTruthy();
+  expect(invalidToken3).toBeTruthy();
+  expect(invalidToken4).toBeTruthy();
+
+  expect(validToken).toBeFalsy();
+});

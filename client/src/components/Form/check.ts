@@ -15,3 +15,9 @@ export function isEmailNotValid(email: string) {
     ? false
     : 'Invalid email address';
 }
+
+export function isMagicLinkTokenInvalid(token: string) {
+  return token.length !== 6
+    ? 'Authentication link is not valid'
+    : false;
+}

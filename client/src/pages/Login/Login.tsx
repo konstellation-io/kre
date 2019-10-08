@@ -1,5 +1,4 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import useInput from '../../hooks/useInput';
 import useEndpoint from '../../hooks/useEndpoint';
 import TextInput from '../../components/Form/TextInput/TextInput';
@@ -26,9 +25,9 @@ function Login({ history }: Props) {
     value,
     isValid,
     onChange,
-    error
+    error,
+    setError
   } = useInput('', isEmailInvalid);
-  
   const [response, makeRequest] = useEndpoint({
     endpoint: ENDPOINT.SUBMIT_MAGIC_LINK,
     method: 'POST'
@@ -36,25 +35,19 @@ function Login({ history }: Props) {
 
   function onSubmit() {
     if(isValid()) {
-      console.log('Request sent');
       makeRequest({ email: value });
     }
   }
 
-  if (response.pending) {
-    // TODO: Show loader
-    // history.push(PAGES.SHOW_PR  OJECTS);
-  }
-  if (response.error) {
-    // TODO: Show error message
-  }
-  if (response.complete && !response.error) {
-    // TODO: Request success
-    console.log('RESPONSE', response);
-    if(response.data === 'OK') {
-      history.push(PAGES.VERIFY_EMAIL);
+  useEffect(function() {
+    if (response.complete) {
+      if (response.data === 'OK') {
+        history.push(PAGES.VERIFY_EMAIL);
+      } else {
+        setError('Unexpected error. Contact support for more information');
+      }
     }
-  }
+  }, [response, history, setError]);
 
   return (
     <div className={ styles.bg }>
@@ -86,4 +79,4 @@ function Login({ history }: Props) {
   );
 }
 
-export default withRouter(Login);
+export default Login;

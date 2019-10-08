@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render MagicLink without crashing 1`] = `
+<div>
+  <div
+    class="bg"
+  >
+    <div
+      class="grid"
+    >
+      <div
+        class="container"
+      >
+        <p
+          class="error"
+        >
+          This field cannot be empty
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

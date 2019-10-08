@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
+import Spinner from '../../components/Spinner/Spinner';
 import styles from './Button.module.scss';
 
 export const BUTTON_TYPES = {
@@ -19,7 +20,6 @@ function Button({
   disabled = false,
   loading = false,
 } = {}) {
-  const spinner = <div className={ styles.spinner } />;
   const btn = (
     <div
       className={cx(styles.btn, {
@@ -30,11 +30,15 @@ function Button({
       })}
       onClick={onClick}
     >
-      { loading ? spinner : label}
+      { 
+        loading
+          ? <Spinner size={ 30 } color='#0d0e11' />
+          : label
+      }
     </div>
   );
 
-  return !disabled && to !== '' ? <Link to={to}>{btn}</Link> : btn;
+  return !disabled && to !== '' ? <Link to={to} data-testid='buttonLink'>{btn}</Link> : btn;
 }
 
 Button.propTypes = {
