@@ -1,0 +1,94 @@
+@import '../../../styles/colors';
+
+.container {
+  overflow: visible;
+  pointer-events: none;
+}
+
+.container,
+.hexContent,
+.info {
+  display: flex;
+  flex-direction: column;
+}
+.container,
+.hexContent {
+  position: relative;
+  justify-content: space-between;
+  text-align: center;
+  padding: 20px 0 13px 0;
+  font-weight: 500;
+}
+
+.hexContent {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: all;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  cursor: pointer;
+}
+
+.bg {
+  position: absolute;
+  top: -60px;
+  left: -43px;
+  pointer-events: none;
+}
+
+.container span,
+.title {
+  z-index: 1;
+}
+
+.id,
+.info span {
+  font-size: 11px;
+}
+
+.status {
+  margin-bottom: 8px;
+}
+
+.title {
+  width: 170px;
+  align-self: center;
+  font-size: 13px;
+}
+
+.id {
+  margin-top: 8px;
+  margin-bottom: 30px;
+  opacity: 0.5;
+}
+
+.info {
+  margin-top: auto;
+}
+
+.info_type {
+  opacity: 0.5;
+}
+
+.container.active {
+  color: $color-bright-blue-2;
+
+  .info_type {
+    color: $color-bright-blue-2;
+    opacity: 0.35;
+  }
+}
+
+.container.hovered {
+  z-index: 3;
+
+  .hexContent {
+    @extend .container.active;
+    z-index: 2;
+  }
+}
+
+.container.disabled > .hexContent {
+  pointer-events: none;
+}

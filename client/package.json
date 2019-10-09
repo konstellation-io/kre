@@ -17,7 +17,9 @@
     "axios": "^0.19.0",
     "classnames": "^2.2.6",
     "enzyme": "^3.10.0",
+    "jest-canvas-mock": "^2.1.1",
     "js-cookie": "^2.2.1",
+    "lottie-web": "^5.5.9",
     "node-sass": "^4.12.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.3",
@@ -36,6 +38,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:cov": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -59,7 +62,8 @@
       "!<rootDir>/node_modules/",
       "!<rootDir>/src/store.ts",
       "!<rootDir>/src/index.tsx",
-      "!<rootDir>/src/react-app-env.d.ts"
+      "!<rootDir>/src/react-app-env.d.ts",
+      "!<rootDir>/src/constants/mock.ts"
     ],
     "coverageThreshold": {
       "global": {

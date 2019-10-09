@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders VerifyEmail without crashing 1`] = `
+<div>
+  <div
+    class="bg"
+  >
+    <div
+      class="grid"
+    >
+      <div
+        class="container"
+      >
+        <h1>
+          Login link sent
+        </h1>
+        <p
+          class="subtitle"
+        >
+          An email with an access link has been sent to your email address.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

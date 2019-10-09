@@ -8,3 +8,16 @@ export const ENDPOINT = {
   SUBMIT_MAGIC_LINK: 'submit_magic_link',
   VALIDATE_MAGIC_LINK: 'validate_magic_link'
 };
+
+export const STATES = {
+  INITIALIZING: 'INITIALIZING',
+  LOADING: 'LOADING',
+  DISABLED: 'DISABLED',
+  ERROR: 'ERROR',
+  ALERT: 'ALERT',
+  SUCCESS: 'SUCCESS',
+  DEFAULT: 'DEFAULT',
+  HOVER: 'HOVER',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+};
