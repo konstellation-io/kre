@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "konstellation.fullname" . }}-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        {{ include "konstellation.labels" . | nindent 8 }}
+        app: {{ .Chart.Name }}-api
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-api
+          image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.api.service.port }}
+              protocol: TCP
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets  }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+
