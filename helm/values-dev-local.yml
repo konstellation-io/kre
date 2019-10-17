@@ -6,6 +6,7 @@ api:
     tag: latest
     pullPolicy: Always
   service:
-    host: api-kre.local
     port: 3000
-
+  tls:
+    enabled: true
+    host: api-kre.local

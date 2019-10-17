@@ -1,13 +1,13 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "konstellation.fullname" . }}-api
+  name: {{ template "kre.fullname" . }}-api
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        {{ include "konstellation.labels" . | nindent 8 }}
+        {{ include "kre.labels" . | nindent 8 }}
         app: {{ .Chart.Name }}-api
     spec:
       containers:

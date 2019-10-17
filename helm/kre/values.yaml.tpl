@@ -1,10 +1,12 @@
-# Default values for konstellation.
+# Default values for konstellation Runtime Environment.
 
 api:
   image:
-    repository: konstellation/api
+    repository: konstellation/kre-api
     tag: ${API_IMAGE_TAG}
     pullPolicy: Always
   service:
-    host: api-konstellation.local
-    port: 32501
+    port: 3000
+  tls:
+    enabled: false
+    host: api-kre.local

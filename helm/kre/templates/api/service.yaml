@@ -3,15 +3,14 @@ kind: Service
 metadata:
   name: api
   labels:
-    {{ include "konstellation.labels" . | nindent 4 }}
+    {{ include "kre.labels" . | nindent 4 }}
     app: {{ .Chart.Name }}-api
 spec:
+  clusterIP: None
   ports:
-    - nodePort:  {{ .Values.api.service.port }}
-      port: 3000
+    - port: 3000
       protocol: TCP
       targetPort: 3000
-  type: NodePort
   selector:
-    {{ include "konstellation.labels" . | nindent 4 }}
+    {{ include "kre.labels" . | nindent 4 }}
     app: {{ .Chart.Name }}-api
