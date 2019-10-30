@@ -10,6 +10,7 @@ type Props = {
 function Header({ location = '' }: Props = {}) {
   return (
     <header className={styles.container}>
+      <img className={styles.konstellationsIcon} src={'img/brand/konstellation.svg'}/>
       <Settings label={ 'mariano@intelygenz.com' } />
     </header>
   );
