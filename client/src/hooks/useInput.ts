@@ -15,7 +15,7 @@ export default function useInput(initialValue:any, validator:Function) {
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState('');
 
-  return <InputHookElement>{
+  return {
     value,
     setValue,
     error,
@@ -34,5 +34,5 @@ export default function useInput(initialValue:any, validator:Function) {
       setValue(newValue);
       setError('');
     }
-  };
+  } as InputHookElement;
 };

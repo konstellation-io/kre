@@ -8,12 +8,12 @@ import * as PAGES from '../../constants/routes';
 import { ENDPOINT } from '../../constants/application';
 import styles from './Login.module.scss';
 
-function isEmailInvalid(value: string) {
-  return (
-    CHECK.isFieldEmpty(value) ||
-    CHECK.isFieldNotAnString(value) ||
-    CHECK.isEmailNotValid(value)
-  );
+function verifyEmail(value: string) {
+  return CHECK.getValidationError([
+    CHECK.isFieldNotEmpty(value),
+    CHECK.isFieldAnString(value),
+    CHECK.isEmailValid(value)
+  ]);
 }
 
 type Props = {
@@ -27,7 +27,7 @@ function Login({ history }: Props) {
     onChange,
     error,
     setError
-  } = useInput('', isEmailInvalid);
+  } = useInput('', verifyEmail);
   const [response, makeRequest] = useEndpoint({
     endpoint: ENDPOINT.SUBMIT_MAGIC_LINK,
     method: 'POST'
@@ -57,7 +57,6 @@ function Login({ history }: Props) {
           <h1>enter your email address</h1>
           <div className={ styles.content }>
             <TextInput
-              showClearButton
               whiteColor
               label="email"
               error={error}

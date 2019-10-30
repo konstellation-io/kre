@@ -10,7 +10,7 @@ type Runtime = {
 };
 
 export function formatRuntime(runtime:any) {
-  return <Runtime>{
+  return {
     id: runtime.id,
     status: runtime.status,
     title: runtime.name,
@@ -18,5 +18,5 @@ export function formatRuntime(runtime:any) {
       type: 'active',
       date: runtime.creationDate
     }]
-  };
+  } as Runtime;
 }

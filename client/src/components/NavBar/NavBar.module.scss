@@ -1,0 +1,8 @@
+.container {
+  border: solid 0px black;
+  border-width: 1px 0;
+}
+.container div:not(:last-child) {
+  border: solid 0px black;
+  border-bottom-width: 1px;
+}

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import {isFieldAnInteger} from '../../Form/check'; 
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
 
@@ -19,6 +20,8 @@ type Props = {
   error?: string;
   showClearButton?: boolean;
   whiteColor?: boolean;
+  onlyNumbers?: boolean;
+  defaultValue?: any;
 };
 
 function TextInput({
@@ -32,14 +35,26 @@ function TextInput({
   error = '',
   showClearButton = false,
   whiteColor = false,
+  onlyNumbers = false,
+  defaultValue = '',
 }: Props = {}) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue, setValue]);
+
+  function updateValue(newValue:any) {
+    if (!onlyNumbers || (onlyNumbers && isFieldAnInteger(newValue).valid)) {
+      setValue(newValue);
+      onChange(newValue);
+    }
+  }
 
   function onType(e: any) {
     const value = e.target.value;
 
-    setValue(value);
-    onChange(value);
+    updateValue(value);
   }
 
   function onKeyPress(e: any) {
@@ -66,7 +81,7 @@ function TextInput({
   const cleanButton = showClearButton && value !== '' ?
     <div
       className={ styles.clearButton }
-      onClick={ () => setValue('') }
+      onClick={ () => updateValue('')}
       data-testid="clear-button"
     >x</div>
     : '';
@@ -114,6 +129,8 @@ TextInput.propTypes = {
   showClearButton: PropTypes.bool,
   /** font color will be brighter */
   whiteColor: PropTypes.bool,
+  /** input only accept numbers */
+  onlyNumbers: PropTypes.bool,
 };
 
 export default TextInput;

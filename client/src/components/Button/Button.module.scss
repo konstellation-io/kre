@@ -1,15 +1,27 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
+@import '../../styles/variables';
 
 .btn {
   @include font-button;
   position: relative;
-  line-height: 40px;
-  height: 40px;
   text-align: center;
   padding: 0 42px;
   cursor: pointer;
-  transition: color ease 0.4s;
+  transition: color ease 0.4s, background-color ease 0.4s;
+
+  svg {
+    margin-right: 20%;
+  }
+
+  &.left {
+    text-align: left;
+    padding: 0 20px;
+  }
+  &.right {
+    text-align: right;
+    padding: 0 20px;
+  }
 
   &:hover {
     color: $font-color-white;
@@ -17,6 +29,10 @@
 
   &:active {
     color: $font-color;
+  }
+
+  &.border {
+    border: solid 1px $color-blue;
   }
 }
 
@@ -39,6 +55,37 @@
 
   &:active {
     box-shadow: none;
+  }
+}
+
+.grey {
+  color: $font-color;
+  background-color: $color-grey-darker;
+
+  &:hover {
+    color: $font-color-white;
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+}
+
+.transparent {
+  color: $font-color;
+  background-color: transparent;
+
+  &:hover {
+    color: $font-color-white;
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+
+  &.primary {
+    background-color: rgba(191,207,255,0.15);
+    color: white;
   }
 }
 

@@ -41,7 +41,7 @@ it('shows an error on summiting an invalid adress', () => {
 
   const error = getError(container);
 
-  expect(error.textContent).toBe(CHECK.isEmailNotValid(invalidEmail));
+  expect(error.textContent).toBe(CHECK.isEmailValid(invalidEmail).message);
 });
 
 

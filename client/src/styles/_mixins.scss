@@ -27,6 +27,7 @@
 
 @mixin font-subheader {
   @include font-by-size(16px, 19px);
+  font-weight: 500;
 }
 
 @mixin font-body {

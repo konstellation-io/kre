@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useEndpoint from '../../hooks/useEndpoint';
 import Spinner from '../../components/Spinner/Spinner';
 import { parse } from 'query-string';
-import { isMagicLinkTokenInvalid, isFieldEmpty } from '../../components/Form/check';
+import * as CHECK from '../../components/Form/check';
 import { ENDPOINT } from '../../constants/application';
 import * as PAGES from '../../constants/routes';
 import styles from './MagicLink.module.scss';
@@ -18,10 +18,10 @@ export function getToken(location:Location) {
 }
 
 function checkToken(token:string) {
-  return (
-    isFieldEmpty(token) ||
-    isMagicLinkTokenInvalid(token)
-  );
+  return CHECK.getValidationError([
+    CHECK.isFieldNotEmpty(token),
+    CHECK.isMagicLinkTokenValid(token)
+  ]);
 }
 
 function MagicLink({ location, history }: Props) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
 import Hexagon from '../../components/Shape/Hexagon/Hexagon';
 import Spinner from '../../components/Spinner/Spinner';
@@ -33,8 +34,11 @@ function Dashboard() {
 
   return (
     <div className={styles.container} data-testid="dashboardContainer">
-      <div className={styles.hexagons}>
-        <HexagonPanel>{runtimes}</HexagonPanel>
+      <NavigationBar />
+      <div className={styles.content}>
+        <div className={styles.hexagons}>
+          <HexagonPanel>{runtimes}</HexagonPanel>
+        </div>
       </div>
     </div>
   );

@@ -1,62 +1,64 @@
 import * as CHECK from './check';
 
-test('if isFieldEmpty makes correct validations', () => {
-  const empty = CHECK.isFieldEmpty('');
-  const oneCharacter = CHECK.isFieldEmpty('a');
+test('if isFieldNotEmpty makes correct validations', () => {
+  const empty = CHECK.isFieldNotEmpty('');
+  const oneCharacter = CHECK.isFieldNotEmpty('a');
   // @ts-ignore
-  const numberZero = CHECK.isFieldEmpty(0);
+  const numberZero = CHECK.isFieldNotEmpty(0);
   // @ts-ignore
-  const nullContent = CHECK.isFieldEmpty(null);
+  const nullContent = CHECK.isFieldNotEmpty(null);
   // @ts-ignore
-  const undefinedContent = CHECK.isFieldEmpty(null);
+  const undefinedContent = CHECK.isFieldNotEmpty(null);
   
-  expect(empty).toBeTruthy();
+  expect(empty.valid).toBeFalsy();
 
-  expect(oneCharacter).toBeFalsy();
-  expect(nullContent).toBeFalsy();
-  expect(undefinedContent).toBeFalsy();
-  expect(numberZero).toBeFalsy();
+  expect(oneCharacter.valid).toBeTruthy();
+  expect(nullContent.valid).toBeTruthy();
+  expect(undefinedContent.valid).toBeTruthy();
+  expect(numberZero.valid).toBeTruthy();
 });
 
-test('if isFieldNotAnString makes correct validations', () => {
-  const numberInput = CHECK.isFieldNotAnString(1);
-  const stringInput = CHECK.isFieldNotAnString('a');
-  const functionInput = CHECK.isFieldNotAnString(function() {});
-  const booleanInput = CHECK.isFieldNotAnString(false);
+test('if isFieldAnString makes correct validations', () => {
+  const numberInput = CHECK.isFieldAnString(1);
+  const stringInput = CHECK.isFieldAnString('a');
+  const functionInput = CHECK.isFieldAnString(function() {});
+  const booleanInput = CHECK.isFieldAnString(false);
   
-  expect(functionInput).toBeTruthy();
-  expect(booleanInput).toBeTruthy();
-  expect(numberInput).toBeTruthy();
+  expect(functionInput.valid).toBeFalsy();
+  expect(booleanInput.valid).toBeFalsy();
+  expect(numberInput.valid).toBeFalsy();
 
-  expect(stringInput).toBeFalsy();
+  expect(stringInput.valid).toBeTruthy();
 });
 
-test('if isEmailNotValid makes correct validations', () => {
-  const validEmail1 = CHECK.isEmailNotValid('mariano@intelygenz.com');
-  const validEmail2 = CHECK.isEmailNotValid('a__something-2@google.de');
-  const invalidEmail1 = CHECK.isEmailNotValid('mariano@intelygenz');
-  const invalidEmail2 = CHECK.isEmailNotValid('mariano@.com');
-  const invalidEmail3 = CHECK.isEmailNotValid('@intelygenz.com');
+test('if isEmailValid makes correct validations', () => {
+  const validEmail1 = CHECK.isEmailValid('mariano@intelygenz.com');
+  const validEmail2 = CHECK.isEmailValid('a__something-2@google.de');
+  const invalidEmail1 = CHECK.isEmailValid('mariano@intelygenz');
+  const invalidEmail2 = CHECK.isEmailValid('mariano@.com');
+  const invalidEmail3 = CHECK.isEmailValid('@intelygenz.com');
   
-  expect(invalidEmail1).toBeTruthy();
-  expect(invalidEmail2).toBeTruthy();
-  expect(invalidEmail3).toBeTruthy();
+  
+  expect(invalidEmail1.valid).toBeFalsy();
+  expect(invalidEmail2.valid).toBeFalsy();
+  expect(invalidEmail3.valid).toBeFalsy();
 
-  expect(validEmail1).toBeFalsy();
-  expect(validEmail2).toBeFalsy();
+  expect(validEmail1.valid).toBeTruthy();
+  expect(validEmail2.valid).toBeTruthy();
+
 });
 
-test('if isMagicLinkTokenInvalid makes correct validations', () => {
-  const validToken = CHECK.isMagicLinkTokenInvalid('123456');
-  const invalidToken1 = CHECK.isMagicLinkTokenInvalid('');
-  const invalidToken2 = CHECK.isMagicLinkTokenInvalid('12345');
-  const invalidToken3 = CHECK.isMagicLinkTokenInvalid('1234567');
-  const invalidToken4 = CHECK.isMagicLinkTokenInvalid('adlshfjgdsc');
+test('if isMagicLinkTokenValid makes correct validations', () => {
+  const validToken = CHECK.isMagicLinkTokenValid('123456');
+  const invalidToken1 = CHECK.isMagicLinkTokenValid('');
+  const invalidToken2 = CHECK.isMagicLinkTokenValid('12345');
+  const invalidToken3 = CHECK.isMagicLinkTokenValid('1234567');
+  const invalidToken4 = CHECK.isMagicLinkTokenValid('adlshfjgdsc');
   
-  expect(invalidToken1).toBeTruthy();
-  expect(invalidToken2).toBeTruthy();
-  expect(invalidToken3).toBeTruthy();
-  expect(invalidToken4).toBeTruthy();
+  expect(invalidToken1.valid).toBeFalsy();
+  expect(invalidToken2.valid).toBeFalsy();
+  expect(invalidToken3.valid).toBeFalsy();
+  expect(invalidToken4.valid).toBeFalsy();
 
-  expect(validToken).toBeFalsy();
+  expect(validToken.valid).toBeTruthy();
 });
