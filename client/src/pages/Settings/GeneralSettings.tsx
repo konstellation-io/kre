@@ -14,8 +14,10 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 export const GET_EXPIRATION_TIME = gql`
-  query GetExpirationTime {
-    getCookieExpirationTime
+  query GetSettings {
+    settings {
+      cookieExpirationTime
+    }
   }
 `;
 
@@ -43,7 +45,7 @@ function GeneralSettings() {
 
   useEffect(() => {
     if (data) {
-      setValue(data.getCookieExpirationTime);
+      setValue(data.settings.cookieExpirationTime);
     }
   }, [data, setValue]);
 
@@ -78,7 +80,7 @@ function GeneralSettings() {
               error={error}
               onChange={onChange}
               onSubmit={onSubmit}
-              defaultValue={data.getCookieExpirationTime}
+              defaultValue={data.settings.cookieExpirationTime}
             />
           </div>
         </div>

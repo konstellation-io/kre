@@ -22,7 +22,9 @@ const mocks = [
     },
     result: {
       data: {
-        getCookieExpirationTime: 45,
+        settings: {
+          cookieExpirationTime: 45,
+        }
       }
     },
   },
@@ -32,11 +34,13 @@ const mocks = [
     },
     result: {
       data: {
-        domains: [
-          {name: 'domain.1'},
-          {name: 'domain.2'},
-          {name: 'domain.3.sample'},
-        ],
+        settings: {
+          authAllowedDomains: [
+            'domain.1',
+            'domain.2',
+            'domain.3.sample',
+          ],
+        }
       },
     },
   },

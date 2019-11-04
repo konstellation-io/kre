@@ -1,6 +1,5 @@
 import React from 'react';
 import Spinner from '../Spinner/Spinner';
-import {formatDomain} from './dataModels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {ICON} from '../../icons';
 import styles from './DomainList.module.scss';
@@ -10,8 +9,8 @@ import gql from 'graphql-tag';
 
 export const GET_DOMAINS = gql`
   query GetDomains {
-    domains {
-      name
+    settings {
+      authAllowedDomains
     }
   }
 `;
@@ -23,14 +22,13 @@ function DomainList({
   if (loading) return <Spinner />;
   if (error) return <p>ERROR</p>;
 
-  const domainsFormatted = data.domains.map((domain:any) => formatDomain(domain));
-  const domains = domainsFormatted.map((domain:any, idx:number) => (
+  const domains = data.settings.authAllowedDomains.map((domain:any, idx:number) => (
     <div className={styles.row} key={`domainListElement${idx}`}>
       <p className={styles.domainPosition}>{idx + 1}</p>
-      <p className={styles.domainName} data-testid={`domainListName${idx}`}>{domain.name}</p>
+      <p className={styles.domainName} data-testid={`domainListName${idx}`}>{domain}</p>
       <div
         className={styles.removeButton}
-        onClick={() => onRemoveDomain(domain.name)}
+        onClick={() => onRemoveDomain(domain)}
         data-testid={`domainListRemove${idx}`}
       >
         <FontAwesomeIcon icon={ICON.DELETE} />
