@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render UserActivityList without crashing 1`] = `
+<div>
+  <div
+    class="contentBox"
+    data-testid="spinner"
+  >
+    <div
+      class="container"
+      style="width: 40px; height: 40px;"
+    >
+      <div
+        class="sun"
+        style="background-color: white;"
+      />
+      <div
+        class="orbit p1"
+        style="border-color: white;"
+      />
+      <div
+        class="planet_container p1"
+      >
+        <div
+          class="planet p1"
+          style="background-color: white;"
+        >
+          <div
+            class="planet_container p4"
+            data-testid="spinner-planet"
+          >
+            <div
+              class="planet p4"
+              style="background-color: white;"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="orbit p2"
+        style="border-color: white;"
+      />
+      <div
+        class="planet_container p2"
+      >
+        <div
+          class="planet p2"
+          style="background-color: white;"
+        />
+      </div>
+      <div
+        class="planet_container p3"
+      >
+        <div
+          class="planet p3"
+          style="background-color: white;"
+        />
+      </div>
+      <div
+        class="orbit p5"
+        style="border-color: white;"
+      />
+      <div
+        class="planet_container p5"
+      >
+        <div
+          class="planet p5"
+          style="background-color: white;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

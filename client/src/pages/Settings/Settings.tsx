@@ -1,48 +1,51 @@
-import React, {useState} from 'react';
+import React from 'react';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import GeneralSettings from './GeneralSettings';
 import SecuritySettings from './SecuritySettings';
 import AuditSettings from './AuditSettings';
+import { Route } from 'react-router';
+import * as ROUTE from '../../constants/routes';
 import { ICON } from '../.././icons';
+import { History, Location } from 'history';
 import styles from './Settings.module.scss';
 
 type Props = {
-  history?: any;
+  history: History;
+  location: Location;
 };
-function Settings({ history }:Props = {}) {
-  const [activeSetting, setActiveSetting] = useState(0);
-
-  const settings = [
+function Settings({ history, location }:Props) {
+  const tabs = [
     {
       label: 'GENERAL',
       icon: ICON.BRANCH,
-      content: <GeneralSettings />
+      route: ROUTE.SETTINGS_GENERAL
     },
     {
       label: 'SECURITY',
       icon: ICON.CHART,
-      content: <SecuritySettings />
+      route: ROUTE.SETTINGS_SECURITY
     },
     {
       label: 'AUDIT',
       icon: ICON.USER,
-      content: <AuditSettings />
+      route: ROUTE.SETTINGS_AUDIT
     },
   ];
-  const tabs = settings.map(setting => ({label: setting.label, icon: setting.icon}));
 
   return (
     <div className={styles.container} data-testid="settingsContainer">
       <NavigationBar />
       <Sidebar
         title='Settings'
-        onChange={(idx:number) => setActiveSetting(idx)}
         tabs={tabs}
         history={history}
+        location={location}
       />
       <div className={styles.content}>
-        { settings[activeSetting].content }
+        <Route exact path={ROUTE.SETTINGS_GENERAL} component={GeneralSettings} />
+        <Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
+        <Route exact path={ROUTE.SETTINGS_AUDIT} component={AuditSettings} />
       </div>
     </div>
   );

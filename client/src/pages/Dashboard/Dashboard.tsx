@@ -9,7 +9,7 @@ import styles from './Dashboard.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-const GET_RUNTIMES = gql`
+export const GET_RUNTIMES = gql`
   query GetRuntimes {
     runtimes {
       id
@@ -22,22 +22,27 @@ const GET_RUNTIMES = gql`
 
 function Dashboard() {
   const { data, loading, error } = useQuery(GET_RUNTIMES);
-  if (loading) return <Spinner />;
-  if (error) return <p>ERROR</p>;
 
-  const runtimes = data.runtimes.map((runtime:any, idx:number) => (
-    <Hexagon
-      key={`runtimeHexagon-${idx}`}
-      {...formatRuntime(runtime)}
-    />
-  ));
+  function getContent() {
+    if (error) return <p>ERROR</p>;
+    if (loading) return <Spinner />;
+
+    const runtimes = data.runtimes.map((runtime:any, idx:number) => (
+      <Hexagon
+        key={`runtimeHexagon-${idx}`}
+        {...formatRuntime(runtime)}
+      />
+    ));
+
+    return <HexagonPanel>{runtimes}</HexagonPanel>;
+  }
 
   return (
     <div className={styles.container} data-testid="dashboardContainer">
       <NavigationBar />
       <div className={styles.content}>
         <div className={styles.hexagons}>
-          <HexagonPanel>{runtimes}</HexagonPanel>
+          { getContent() }
         </div>
       </div>
     </div>

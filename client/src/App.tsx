@@ -12,24 +12,45 @@ import './icons';
 import * as PAGES from './constants/routes';
 
 function ProtectedRoute({ component: Component, ...params }: any) {
+  function getComponentWithHeader(props:any) {
+    return (
+      <>
+        <Header />
+        <Component {...props} />
+      </>
+    );
+  }
+  
   return <Route
     {...params}
     render={
       props => isUserAuthenticated()
-        ? <Component {...props} />
+        ? getComponentWithHeader(props)
         : <Redirect to={ PAGES.LOGIN } />
     }
   />;
 }
 
+function Redirection({from, to}: any) {
+  return (
+    <Route exact path={ from }>
+      <Redirect to={ to } />
+    </Route>
+  );
+}
+
 export function Routes() {
   return (
     <>
-      <ProtectedRoute exact path={PAGES.HOME} component={Dashboard} />
+      <Redirection from={PAGES.HOME} to={PAGES.DASHBOARD} />
+      <Redirection from={PAGES.SETTINGS} to={PAGES.SETTINGS_GENERAL} />
+
       <Route exact path={PAGES.LOGIN} component={Login} />
       <Route exact path={PAGES.VERIFY_EMAIL} component={VerifyEmail} />
       <Route exact path={PAGES.MAGIC_LINK} component={MagicLink} />
-      <ProtectedRoute exact path={PAGES.SETTINGS} component={Settings} />
+      
+      <ProtectedRoute exact path={PAGES.DASHBOARD} component={Dashboard} />
+      <ProtectedRoute path={PAGES.SETTINGS} component={Settings} />
     </>
   );
 }
@@ -38,7 +59,6 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <Header />
         <Routes />
       </Router>
     </div>

@@ -13,7 +13,7 @@ import styles from './Settings.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-const GET_EXPIRATION_TIME = gql`
+export const GET_EXPIRATION_TIME = gql`
   query GetExpirationTime {
     getCookieExpirationTime
   }
@@ -38,8 +38,14 @@ function GeneralSettings() {
     isValid,
     onChange,
     error,
-    setError,
+    setValue,
   } = useInput('', isExpirationInvalid);
+
+  useEffect(() => {
+    if (data) {
+      setValue(data.getCookieExpirationTime);
+    }
+  }, [data, setValue]);
 
   if (loading) return <Spinner />;
   if (requestError) return <p>ERROR</p>;
@@ -47,6 +53,7 @@ function GeneralSettings() {
   function onSubmit() {
     if(isValid()) {
       //makeRequest({ expDays: value });
+      console.log(`Cookie expiration time changed to ${value} days`);
     }
   }
 

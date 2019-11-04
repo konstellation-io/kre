@@ -38,6 +38,7 @@ function Settings({
       className={styles.container}
       onMouseEnter={ () => setOpened(true) }
       onMouseLeave={ () => setOpened(false) }
+      data-testid='settingsContainer'
     >
       <div className={styles.label}>
         { label }
@@ -46,6 +47,7 @@ function Settings({
       <div
         className={styles.options}
         style={{ maxHeight: opened ? optionsHeight : 0 }}
+        data-testid='settingsContent'
       >
         { buttons }
       </div>

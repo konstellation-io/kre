@@ -23,7 +23,6 @@ function SecuritySettings() {
     isValid,
     onChange,
     error,
-    setError
   } = useInput('', isDomainInvalid);
 
   function onSubmit() {

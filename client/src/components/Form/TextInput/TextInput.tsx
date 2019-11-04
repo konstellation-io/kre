@@ -74,9 +74,9 @@ function TextInput({
     style: { ...limits, height },
   };
   const inputElement = textArea ? (
-    <textarea {...inputProps} data-testid="email-input" />
+    <textarea {...inputProps} data-testid="input" />
   ) : (
-    <input {...inputProps} type="text" data-testid="email-input" />
+    <input {...inputProps} type="text" data-testid="input" />
   );
   const cleanButton = showClearButton && value !== '' ?
     <div
@@ -91,7 +91,7 @@ function TextInput({
       [styles.white]: whiteColor,
       [styles.hasClearButton]: showClearButton
     })}>
-      <label className={styles.label} data-testid="email-label">
+      <label className={styles.label} data-testid="label">
         {label.toUpperCase()}
       </label>
       {inputElement}

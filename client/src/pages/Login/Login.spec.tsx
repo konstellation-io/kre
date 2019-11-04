@@ -12,7 +12,7 @@ jest.mock('axios');
 
 afterEach(cleanup);
 
-const getInput = (c:HTMLElement) => getByTestId(c, 'email-input') as HTMLInputElement;
+const getInput = (c:HTMLElement) => getByTestId(c, 'input') as HTMLInputElement;
 const getError = (c:HTMLElement) => getByTestId(c, 'error-message');
 
 it('Render Login without crashing', () => {

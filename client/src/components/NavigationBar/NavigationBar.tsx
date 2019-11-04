@@ -5,10 +5,10 @@ import * as ROUTE from '../../constants/routes';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
 import SquaredButton from '../SquaredButton/SquaredButton';
 
-const navigationButtons = [
+export const navigationButtons = [
   {
     id: 'dashboardRoute',
-    path: ROUTE.HOME,
+    path: ROUTE.DASHBOARD,
     icon: ICON.SQUARE
   },
   {
@@ -27,7 +27,7 @@ function NavigationBar ({ history, location }:Props = {}) {
     <SquaredButton
       {...button}
       key={`navigationButton_${button.id}`}
-      active={location.pathname === button.path}
+      active={location.pathname.startsWith(button.path)}
       onButtonClick={() => history.push(button.path)}
     />
   ));

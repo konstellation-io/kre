@@ -6,7 +6,6 @@ import styles from './SquaredButton.module.scss';
 
 type Props = {
   id?: string;
-  name?: string;
   label?: string;
   active?: boolean;
   onButtonClick?: Function;
@@ -15,7 +14,6 @@ type Props = {
 
 function SquaredButton({
   id = 'defaultID',
-  name = 'Default',
   label = 'DF',
   icon = undefined,
   active = false,

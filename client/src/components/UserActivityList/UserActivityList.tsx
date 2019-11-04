@@ -8,7 +8,7 @@ import styles from './UserActivityList.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-const GET_USERS_ACTIVITY = gql`
+export const GET_USERS_ACTIVITY = gql`
   query GetUsersActivity {
     usersActivity {
       user
@@ -25,7 +25,7 @@ const formatOptions = {
   hour: '2-digit',
   minute: '2-digit'
 };
-function toDateTimeString(date:Date) {
+export function toDateTimeString(date:Date) {
   return date.toLocaleString('en-us', formatOptions);
 }
 
@@ -47,7 +47,11 @@ function UserActivityList({
   const usersActivity = dataToShow.map((userActivity:any, idx:number) => {
     const userActivityFormatted = formatUserActivity(userActivity);
     return (
-      <div className={styles.row} key={`userActivityListElement${idx}`}>
+      <div
+        className={styles.row}
+        key={`userActivityListElement${idx}`}
+        data-testid={`userActivityListElement${idx}`}
+      >
         <div className={styles.userAndMessage}>
           <span className={styles.userWithIcon}>
             <FontAwesomeIcon icon={ICON.MAIL}/>

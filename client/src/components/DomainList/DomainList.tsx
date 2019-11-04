@@ -8,7 +8,7 @@ import styles from './DomainList.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-const GET_DOMAINS = gql`
+export const GET_DOMAINS = gql`
   query GetDomains {
     domains {
       name
@@ -27,10 +27,11 @@ function DomainList({
   const domains = domainsFormatted.map((domain:any, idx:number) => (
     <div className={styles.row} key={`domainListElement${idx}`}>
       <p className={styles.domainPosition}>{idx + 1}</p>
-      <p className={styles.domainName}>{domain.name}</p>
+      <p className={styles.domainName} data-testid={`domainListName${idx}`}>{domain.name}</p>
       <div
         className={styles.removeButton}
         onClick={() => onRemoveDomain(domain.name)}
+        data-testid={`domainListRemove${idx}`}
       >
         <FontAwesomeIcon icon={ICON.DELETE} />
       </div>

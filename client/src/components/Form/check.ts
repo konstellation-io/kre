@@ -40,13 +40,19 @@ export function isFieldAnString(value: any) {
 
 export function isFieldAnInteger(value: any | number, positive:boolean = false) {
   const integerValue = parseInt(value);
-  return !isNaN(value) && (positive ? integerValue >= 0 : true)
+  const isValid = (
+    typeof value !== 'boolean' &&
+    !isNaN(value) &&
+    (positive ? integerValue >= 0 : true)
+  );
+
+  return isValid
     ? VALID
     : setInvalid(`Invalid type, field is not ${positive ? 'a positive' : 'an'} integer`);
 }
 
 export function isIntegerWithinRange(value: any, range: number[]) {
-  const [minValue, maxValue] = range;
+  const [minValue, maxValue] = range.sort((a, b) => a - b);
   return value >= minValue && value <= maxValue
     ? VALID
     :  setInvalid(`Invalid value, must be within the range ${minValue}-${maxValue}`);
@@ -61,7 +67,7 @@ export function isEmailValid(email: string) {
 }
 
 export function isDomainValid(value:string) {
-  const re = /([a-z])([a-z0-9]+\.)*[a-z0-9]+\.[a-z.]+/;
+  const re = /([a-z0-9]+\.)*[a-z0-9]+\.[a-z.]+/;
 
   return re.test(String(value).toLowerCase())
     ? VALID

@@ -8,7 +8,7 @@ import Button from './Button';
 
 afterEach(cleanup);
 
-it('Render Button without crashing', () => {
+it('Renders Button without crashing', () => {
   const { container } = render(<Button />);
   expect(container).toMatchSnapshot();
 });

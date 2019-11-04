@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import styles from './NavBar.module.scss';
 
-type Tab = {
+export type Tab = {
   label: string,
-  icon: IconProp
+  icon?: IconProp,
+  route?: string,
 }
 type Props = {
   tabs?: Tab[];
@@ -20,6 +21,10 @@ function NavBar({
 }: Props = {}) {
   const [activeTab, setActiveTab] = useState(defaultActive);
 
+  useEffect(() => {
+    setActiveTab(defaultActive);
+  }, [defaultActive]);
+
   const tabElements = tabs.map((tab, idx) => (
     <Button
       key={`tabButton${idx}`}
@@ -33,6 +38,7 @@ function NavBar({
         onChange(idx);
       }}
       align={BUTTON_ALIGN.LEFT}
+      to={tab.route}
     />
   ));
 

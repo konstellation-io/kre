@@ -4,32 +4,34 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {ICON} from '../../icons';
 import styles from './Sidebar.module.scss';
-import { History } from 'history';
+import { History, Location } from 'history';
 
-type Tab = {
+export type Tab = {
   label: string,
-  icon: IconProp
+  icon?: IconProp,
+  route: string
 }
 type Props = {
   title?: string,
   tabs?: Tab[];
   onChange?: Function;
-  history?: History;
+  history: History;
+  location: Location;
 };
 
 function Sidebar({
   title = 'Sidebar',
   onChange = function(idx:number) {},
   tabs = [],
-  history
-}:Props = {}) {
+  history,
+  location
+}:Props) {
   function onBackButton() {
-    if (history) {
-      history.goBack();
-    } else {
-      console.error('Cannot access route history');
-    }
+    history.goBack();
   }
+
+  const actualRoute = location.pathname;
+  const activeTab = tabs.map(tab => tab.route).indexOf(actualRoute);
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -45,6 +47,7 @@ function Sidebar({
         <NavBar
           tabs={tabs}
           onChange={onChange}
+          defaultActive={activeTab}
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Render Login without crashing 1`] = `
+exports[`Renders Settings without crashing 1`] = `
 <div>
   <div
     class="bg"

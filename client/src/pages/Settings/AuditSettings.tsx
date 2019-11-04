@@ -18,10 +18,8 @@ function AuditSettings() {
   const [usersFilter, setUsersFilter] = useState('');
   const {
     value,
-    isValid,
     onChange,
     error,
-    setError
   } = useInput('', isInputInvalid);
 
   function onApplySearch() {
