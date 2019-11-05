@@ -3,71 +3,108 @@
 exports[`Render DomainList without crashing 1`] = `
 <div>
   <div
-    class="contentBox"
-    data-testid="spinner"
+    class="row"
   >
-    <div
-      class="container"
-      style="width: 40px; height: 40px;"
+    <p
+      class="domainPosition"
     >
-      <div
-        class="sun"
-        style="background-color: white;"
-      />
-      <div
-        class="orbit p1"
-        style="border-color: white;"
-      />
-      <div
-        class="planet_container p1"
+      1
+    </p>
+    <p
+      class="domainName"
+      data-testid="domainListName0"
+    >
+      domain.1
+    </p>
+    <div
+      class="removeButton"
+      data-testid="domainListRemove0"
+    >
+      <svg
+        aria-hidden="true"
+        class="svg-inline--fa fa-trash fa-w-14 "
+        data-icon="trash"
+        data-prefix="fas"
+        focusable="false"
+        role="img"
+        viewBox="0 0 448 512"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div
-          class="planet p1"
-          style="background-color: white;"
-        >
-          <div
-            class="planet_container p4"
-            data-testid="spinner-planet"
-          >
-            <div
-              class="planet p4"
-              style="background-color: white;"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="orbit p2"
-        style="border-color: white;"
-      />
-      <div
-        class="planet_container p2"
-      >
-        <div
-          class="planet p2"
-          style="background-color: white;"
+        <path
+          d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+          fill="currentColor"
         />
-      </div>
-      <div
-        class="planet_container p3"
+      </svg>
+    </div>
+  </div>
+  <div
+    class="row"
+  >
+    <p
+      class="domainPosition"
+    >
+      2
+    </p>
+    <p
+      class="domainName"
+      data-testid="domainListName1"
+    >
+      domain.2
+    </p>
+    <div
+      class="removeButton"
+      data-testid="domainListRemove1"
+    >
+      <svg
+        aria-hidden="true"
+        class="svg-inline--fa fa-trash fa-w-14 "
+        data-icon="trash"
+        data-prefix="fas"
+        focusable="false"
+        role="img"
+        viewBox="0 0 448 512"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div
-          class="planet p3"
-          style="background-color: white;"
+        <path
+          d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+          fill="currentColor"
         />
-      </div>
-      <div
-        class="orbit p5"
-        style="border-color: white;"
-      />
-      <div
-        class="planet_container p5"
+      </svg>
+    </div>
+  </div>
+  <div
+    class="row"
+  >
+    <p
+      class="domainPosition"
+    >
+      3
+    </p>
+    <p
+      class="domainName"
+      data-testid="domainListName2"
+    >
+      domain.3.sample
+    </p>
+    <div
+      class="removeButton"
+      data-testid="domainListRemove2"
+    >
+      <svg
+        aria-hidden="true"
+        class="svg-inline--fa fa-trash fa-w-14 "
+        data-icon="trash"
+        data-prefix="fas"
+        focusable="false"
+        role="img"
+        viewBox="0 0 448 512"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div
-          class="planet p5"
-          style="background-color: white;"
+        <path
+          d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+          fill="currentColor"
         />
-      </div>
+      </svg>
     </div>
   </div>
 </div>

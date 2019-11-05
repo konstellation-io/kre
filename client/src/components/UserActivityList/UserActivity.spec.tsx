@@ -1,5 +1,5 @@
 import React from 'react';
-import UserActivityList, {GET_USERS_ACTIVITY, toDateTimeString} from './UserActivityList';
+import UserActivityList, {toDateTimeString} from './UserActivityList';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -7,23 +7,10 @@ import { MockedProvider } from '@apollo/react-testing';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 
+import { usersActivityMock } from '../../mocks/settings';
 
-const mocks = [
-  {
-    request: {
-      query: GET_USERS_ACTIVITY,
-    },
-    result: {
-      data: {
-        usersActivity: [
-          {user: 'user1@domain.com', message: 'some message 1', date: '2019-01-01'},
-          {user: 'user2@domain.com', message: 'some message 2', date: '2019-01-02'},
-          {user: 'user3@domain.com', message: 'some message 3', date: '2019-01-03'},
-        ],
-      },
-    },
-  },
-];
+
+const mocks = [usersActivityMock];
 
 const Component = (
   <MockedProvider mocks={mocks} addTypename={false}>

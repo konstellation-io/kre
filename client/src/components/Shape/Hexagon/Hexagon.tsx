@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import cx from 'classnames';
+
 import Lottie from '../../Lottie/Lottie';
 import { STATES } from '../../../constants/application';
 import animationData from './Hexagon.json';
+
 import styles from './Hexagon.module.scss';
+import cx from 'classnames';
 
 const ANIM_SEGMENTS: { [key: string]: number[] } = {
   [STATES.DEFAULT]: [0, 178],
@@ -43,7 +45,7 @@ function Hexagon({
   info = [],
   disabled = false,
   size = 340,
-}: Props = {}) {
+}: Props) {
   const defaultAnimation = disabled
     ? ANIM_SEGMENTS.INACTIVE
     : ANIM_SEGMENTS.DEFAULT;

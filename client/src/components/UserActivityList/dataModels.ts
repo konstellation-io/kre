@@ -1,3 +1,15 @@
+import gql from 'graphql-tag';
+
+export const GET_USERS_ACTIVITY = gql`
+  query GetUsersActivity {
+    usersActivity {
+      user
+      message
+      date
+    }
+  }
+`;
+
 export type UserActivity = {
   user: string;
   message: string;

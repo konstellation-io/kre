@@ -2,10 +2,15 @@ import React from 'react';
 import styles from './Spinner.module.scss';
 
 
+type Props = {
+  size?: number;
+  color?: string;
+};
+
 function Spinner({
   size = 40,
   color = 'white'
-} = {}) {
+}: Props) {
   return (
     <div className={ styles.contentBox } data-testid="spinner">
     <div className={ styles.container } style={{ width: size, height: size }}>

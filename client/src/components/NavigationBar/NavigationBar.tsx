@@ -1,9 +1,13 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import { History, Location} from 'history';
+
 import {ICON} from '../../icons';
+
 import * as ROUTE from '../../constants/routes';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
 import SquaredButton from '../SquaredButton/SquaredButton';
+
 
 export const navigationButtons = [
   {
@@ -19,10 +23,10 @@ export const navigationButtons = [
 ];
 
 type Props = {
-  history?: any;
-  location?: any;
+  history: History;
+  location: Location;
 };
-function NavigationBar ({ history, location }:Props = {}) {
+function NavigationBar ({ history, location }: Props) {
   const buttons = navigationButtons.map(button => (
     <SquaredButton
       {...button}

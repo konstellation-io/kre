@@ -9,7 +9,6 @@ exports[`Renders Settings without crashing 1`] = `
     <div
       class="label"
     >
-      Button
       <div
         class="arrow"
       />

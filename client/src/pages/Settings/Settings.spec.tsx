@@ -6,58 +6,22 @@ import { Router } from 'react-router-dom'
 import * as ROUTE from '../../constants/routes';
 import {Routes} from '../../App';
 import { createMemoryHistory, History } from 'history'
-import {GET_EXPIRATION_TIME} from './GeneralSettings';
-import {GET_DOMAINS} from '../../components/DomainList/DomainList';
-import {GET_USERS_ACTIVITY} from '../../components/UserActivityList/UserActivityList';
 import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 
+import * as MOCK from '../../mocks/settings';
+
+
 const mocks = [
-  {
-    request: {
-      query: GET_EXPIRATION_TIME,
-    },
-    result: {
-      data: {
-        settings: {
-          cookieExpirationTime: 45,
-        }
-      }
-    },
-  },
-  {
-    request: {
-      query: GET_DOMAINS,
-    },
-    result: {
-      data: {
-        settings: {
-          authAllowedDomains: [
-            'domain.1',
-            'domain.2',
-            'domain.3.sample',
-          ],
-        }
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_USERS_ACTIVITY,
-    },
-    result: {
-      data: {
-        usersActivity: [
-          {user: 'user1@domain.com', message: 'some message 1', date: '2019-01-01'},
-          {user: 'user2@domain.com', message: 'some message 2', date: '2019-01-02'},
-          {user: 'user3@domain.com', message: 'some message 3', date: '2019-01-03'},
-        ],
-      },
-    },
-  },
+  MOCK.expirationTimeMock,
+  MOCK.domainMock,
+  MOCK.usersActivityMock,
+  MOCK.addAllowedDomainMock,
+  MOCK.removeAllowedDomainMock,
+  MOCK.updateExpirationTime
 ];
 
 Cookies.get = jest.fn().mockImplementationOnce(() => '');
@@ -132,6 +96,10 @@ test('General settings handles input changes', async () => {
   fireEvent.change(getByTestId('input'), { target: { value: '10' } });
   fireEvent.click(getByText('SAVE CHANGES'));
 
+  await act(async () => {
+    await wait(0);
+  });
+
   expect(getByTestId('error-message').textContent).toBe('');
 });
 
@@ -154,6 +122,13 @@ test('Security settings works properly', async () => {
 
   fireEvent.change(getByTestId('input'), { target: { value: 'intelygenz.com' } });
   fireEvent.click(getByText('ADD DOMAIN'));
+
+  await act(async () => {
+    await wait(0);
+  });
+
+  expect(getByTestId('error-message').textContent).toBe('');
+  expect(getByText('intelygenz.com')).toBeInTheDocument();
 });
 
 test('Audit settings works properly', async () => {
@@ -170,6 +145,10 @@ test('Audit settings works properly', async () => {
 
   fireEvent.change(getByTestId('input'), { target: { value: 'user1' } });
   fireEvent.click(getByText('SEARCH'));
+
+  await act(async () => {
+    await wait(0);
+  });
 
   expect(getByTestId('error-message').textContent).toBe('');
   expect(queryByTestId('user2@domain.com')).toBeNull();

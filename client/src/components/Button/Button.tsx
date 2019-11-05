@@ -1,12 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import cx from 'classnames';
 import { Link } from 'react-router-dom';
-import * as ROUTES from '../../constants/routes';
+
 import Spinner from '../../components/Spinner/Spinner';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+
+import cx from 'classnames';
 import styles from './Button.module.scss';
+
 
 export const BUTTON_TYPES = {
   DEFAULT: 'default',
@@ -21,9 +23,9 @@ export const BUTTON_ALIGN = {
 };
 
 type Props = {
+  label?: string;
   type?: string;
   border?: boolean;
-  label?: string;
   icon?: IconProp;
   to?: string;
   onClick?: any;
@@ -48,7 +50,7 @@ function Button({
   height = 40,
   align = BUTTON_ALIGN.MIDDLE,
   style = {}
-}:Props = {}) {
+}: Props) {
   const content = loading
     ? <Spinner size={ 30 } color='#0d0e11' />
     : <>
@@ -73,21 +75,5 @@ function Button({
 
   return !disabled && to !== '' ? <Link to={to} data-testid='buttonLink'>{btn}</Link> : btn;
 }
-
-Button.propTypes = {
-  /** Button type, each one has some specific design styles */
-  type: PropTypes.oneOf(Object.values(BUTTON_TYPES)),
-  /** If true, the button shows a border */
-  border: PropTypes.bool,
-  label: PropTypes.string,
-  /** route to redirect to */
-  to: PropTypes.oneOf(Object.values(ROUTES)),
-  onClick: PropTypes.func,
-  /** Adds an enhancement style to the button */
-  primary: PropTypes.bool,
-  /** Adds a disabled style to the button */
-  disabled: PropTypes.bool,
-  height: PropTypes.number,
-};
 
 export default Button;

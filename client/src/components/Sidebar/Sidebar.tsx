@@ -1,30 +1,34 @@
 import React from 'react';
+import { History, Location } from 'history';
+
 import NavBar from '../NavBar/NavBar';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {ICON} from '../../icons';
+
 import styles from './Sidebar.module.scss';
-import { History, Location } from 'history';
+
 
 export type Tab = {
   label: string,
-  icon?: IconProp,
   route: string
+  icon?: IconProp,
 }
 type Props = {
-  title?: string,
-  tabs?: Tab[];
-  onChange?: Function;
+  title: string,
+  tabs: Tab[];
   history: History;
   location: Location;
+  onChange?: Function;
 };
 
 function Sidebar({
-  title = 'Sidebar',
-  onChange = function(idx:number) {},
-  tabs = [],
+  title,
+  tabs,
   history,
-  location
+  location,
+  onChange = function(idx:number) {},
 }:Props) {
   function onBackButton() {
     history.goBack();

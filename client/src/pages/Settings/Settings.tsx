@@ -1,38 +1,41 @@
 import React from 'react';
-import NavigationBar from '../../components/NavigationBar/NavigationBar';
-import Sidebar from '../../components/Sidebar/Sidebar';
+import { Route } from 'react-router';
+import { History, Location } from 'history';
+import { ICON } from '../.././icons';
+import * as ROUTE from '../../constants/routes';
+
 import GeneralSettings from './GeneralSettings';
 import SecuritySettings from './SecuritySettings';
 import AuditSettings from './AuditSettings';
-import { Route } from 'react-router';
-import * as ROUTE from '../../constants/routes';
-import { ICON } from '../.././icons';
-import { History, Location } from 'history';
+import NavigationBar from '../../components/NavigationBar/NavigationBar';
+import Sidebar from '../../components/Sidebar/Sidebar';
+
 import styles from './Settings.module.scss';
+
+
+const tabs = [
+  {
+    label: 'GENERAL',
+    icon: ICON.BRANCH,
+    route: ROUTE.SETTINGS_GENERAL
+  },
+  {
+    label: 'SECURITY',
+    icon: ICON.CHART,
+    route: ROUTE.SETTINGS_SECURITY
+  },
+  {
+    label: 'AUDIT',
+    icon: ICON.USER,
+    route: ROUTE.SETTINGS_AUDIT
+  },
+];
 
 type Props = {
   history: History;
   location: Location;
 };
-function Settings({ history, location }:Props) {
-  const tabs = [
-    {
-      label: 'GENERAL',
-      icon: ICON.BRANCH,
-      route: ROUTE.SETTINGS_GENERAL
-    },
-    {
-      label: 'SECURITY',
-      icon: ICON.CHART,
-      route: ROUTE.SETTINGS_SECURITY
-    },
-    {
-      label: 'AUDIT',
-      icon: ICON.USER,
-      route: ROUTE.SETTINGS_AUDIT
-    },
-  ];
-
+function Settings({ history, location }: Props) {
   return (
     <div className={styles.container} data-testid="settingsContainer">
       <NavigationBar />

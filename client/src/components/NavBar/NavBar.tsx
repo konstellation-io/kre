@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react';
+
 import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+
 import styles from './NavBar.module.scss';
+
 
 export type Tab = {
   label: string,
@@ -9,16 +12,16 @@ export type Tab = {
   route?: string,
 }
 type Props = {
-  tabs?: Tab[];
+  tabs: Tab[];
   defaultActive?: number;
   onChange?: Function;
 };
 
 function NavBar({
-  tabs = [],
+  tabs,
   defaultActive = 0,
   onChange = function(idx:number) {}
-}: Props = {}) {
+}: Props) {
   const [activeTab, setActiveTab] = useState(defaultActive);
 
   useEffect(() => {

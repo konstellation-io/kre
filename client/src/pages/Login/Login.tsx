@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import useInput from '../../hooks/useInput';
 import useEndpoint from '../../hooks/useEndpoint';
+
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
 import * as PAGES from '../../constants/routes';
 import { ENDPOINT } from '../../constants/application';
+
 import styles from './Login.module.scss';
+
 
 function verifyEmail(value: string) {
   return CHECK.getValidationError([

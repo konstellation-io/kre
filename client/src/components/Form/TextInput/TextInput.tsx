@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+
 import {isFieldAnInteger} from '../../Form/check'; 
+
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
+
 
 type Props = {
   onSubmit?: Function;
@@ -37,7 +39,7 @@ function TextInput({
   whiteColor = false,
   onlyNumbers = false,
   defaultValue = '',
-}: Props = {}) {
+}: Props) {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
@@ -105,32 +107,5 @@ function TextInput({
     </div>
   );
 }
-
-TextInput.propTypes = {
-  /** Additional logic to execute after summiting */
-  onSubmit: PropTypes.func,
-  /** Additional logic to execute after updating the input value */
-  onChange: PropTypes.func,
-  placeholder: PropTypes.string,
-  /** Label showed at the top of the input */
-  label: PropTypes.string,
-  /** If true, text input will accept multiline input */
-  textArea: PropTypes.bool,
-  height: PropTypes.number,
-  /** limits the size textarea can grow to */
-  limits: PropTypes.shape({
-    minWidth: PropTypes.number,
-    maxWidth: PropTypes.number,
-    minHeight: PropTypes.number,
-    maxHeight: PropTypes.number,
-  }),
-  error: PropTypes.string,
-  /** Adds an 'x' button to clear the input */
-  showClearButton: PropTypes.bool,
-  /** font color will be brighter */
-  whiteColor: PropTypes.bool,
-  /** input only accept numbers */
-  onlyNumbers: PropTypes.bool,
-};
 
 export default TextInput;

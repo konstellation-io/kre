@@ -1,22 +1,15 @@
 import React from 'react';
+
 import Spinner from '../Spinner/Spinner';
-import {formatUserActivity, UserActivity} from './dataModels';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {ICON} from '../../icons';
+
 import styles from './UserActivityList.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import {GET_USERS_ACTIVITY, formatUserActivity, UserActivity} from './dataModels';
 
-export const GET_USERS_ACTIVITY = gql`
-  query GetUsersActivity {
-    usersActivity {
-      user
-      message
-      date
-    }
-  }
-`;
 
 const formatOptions = {
   day: 'numeric',
@@ -29,9 +22,13 @@ export function toDateTimeString(date:Date) {
   return date.toLocaleString('en-us', formatOptions);
 }
 
+type Props = {
+  filter?: string;
+};
+
 function UserActivityList({
   filter = ''
-} = {}) {
+}: Props) {
   const { data, loading, error } = useQuery(GET_USERS_ACTIVITY);
   if (loading) return <Spinner />;
   if (error) return <p>ERROR</p>;

@@ -1,13 +1,16 @@
 import React from 'react';
+import { formatRuntime } from './dataModel';
+
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
 import Hexagon from '../../components/Shape/Hexagon/Hexagon';
 import Spinner from '../../components/Spinner/Spinner';
-import { formatRuntime } from './dataModel';
+
 import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+
 
 export const GET_RUNTIMES = gql`
   query GetRuntimes {

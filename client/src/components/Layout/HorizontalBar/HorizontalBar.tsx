@@ -1,7 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import styles from './HorizontalBar.module.scss';
 
-type Props = {};
+type Props = {
+  children: any;
+};
 
 const HorizontalBar: FunctionComponent<Props> = ({ children }) => (
   <div className={styles.container}>{children}</div>

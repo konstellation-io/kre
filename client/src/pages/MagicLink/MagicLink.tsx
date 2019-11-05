@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import useEndpoint from '../../hooks/useEndpoint';
-import Spinner from '../../components/Spinner/Spinner';
 import { parse } from 'query-string';
+
+import Spinner from '../../components/Spinner/Spinner';
 import * as CHECK from '../../components/Form/check';
 import { ENDPOINT } from '../../constants/application';
 import * as PAGES from '../../constants/routes';
+
 import styles from './MagicLink.module.scss';
+
 
 type Props = {
   location: any;

@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import PropTypes from 'prop-types';
+
 import Button, {BUTTON_TYPES, BUTTON_ALIGN} from '../Button/Button';
 import { ICON } from '../.././icons';
+
 import styles from './Settings.module.scss';
 
-const BUTTON_HEIGHT = 40;
 
+const BUTTON_HEIGHT = 40;
 const buttonStyle = {
   paddingLeft: '20%'
 };
@@ -14,9 +15,11 @@ function doLogout() {
   console.log('LOGGED OUT');
 }
 
-function Settings({
-  label = 'Button',
-} = {}) {
+type Props = {
+  label: string;
+};
+
+function Settings({ label }: Props) {
   const [opened, setOpened] = useState(false);
 
   const buttons = [
@@ -54,9 +57,5 @@ function Settings({
     </div>
   );
 }
-
-Settings.propTypes = {
-  label: PropTypes.string,
-};
 
 export default Settings;

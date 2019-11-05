@@ -12,7 +12,7 @@ const tabs = [
 afterEach(cleanup);
 
 it('Renders NavBar without crashing', () => {
-  const { container } = render(<NavBar />);
+  const { container } = render(<NavBar tabs={tabs} />);
   expect(container).toMatchSnapshot();
 });
 
