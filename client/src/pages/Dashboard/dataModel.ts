@@ -1,3 +1,17 @@
+import gql from 'graphql-tag';
+
+
+export const GET_RUNTIMES = gql`
+  query GetRuntimes {
+    runtimes {
+      id
+      name
+      status
+      creationDate
+    }
+  }
+`;
+
 type Runtime = {
   id: string;
   status: string;

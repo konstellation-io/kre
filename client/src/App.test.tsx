@@ -7,22 +7,10 @@ import App, { Routes } from './App';
 import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
-import { GET_RUNTIMES } from './pages/Dashboard/Dashboard';
+import { runtimeMock } from './mocks/runtime';
 
 const mocks = [
-  {
-    request: {
-      query: GET_RUNTIMES,
-    },
-    result: {
-      data: {
-        runtimes: [
-          {id: '00001', status: 'ACTIVE', name: 'Some Name', creationDate: '2018-01-02'},
-          {id: '00002', status: 'ACTIVE', name: 'Some Other Name', creationDate: '2018-02-03'},
-        ],
-      },
-    },
-  },
+  runtimeMock
 ];
 
 Cookies.get = jest.fn().mockImplementationOnce(() => '');

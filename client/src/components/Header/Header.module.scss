@@ -13,3 +13,11 @@
 .konstellationsIcon {
   height: 18px;
 }
+
+.customHeaderElements {
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-grow: 1;
+  align-items: center;
+}

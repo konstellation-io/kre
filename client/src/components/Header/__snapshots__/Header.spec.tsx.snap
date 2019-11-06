@@ -11,6 +11,9 @@ exports[`Render Header without crashing 1`] = `
       src="img/brand/konstellation.svg"
     />
     <div
+      class="customHeaderElements"
+    />
+    <div
       class="container"
       data-testid="settingsContainer"
     >

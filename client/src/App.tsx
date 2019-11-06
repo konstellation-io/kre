@@ -1,31 +1,24 @@
 import React from 'react';
 import { isUserAuthenticated } from './utils/auth';
 import { HashRouter as Router } from 'react-router-dom';
+import { Route, Redirect } from 'react-router';
+import './icons';
+import * as PAGES from './constants/routes';
+
 import Login from './pages/Login/Login';
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
 import MagicLink from './pages/MagicLink/MagicLink';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Settings from './pages/Settings/Settings';
-import Header from './components/Header/Header';
-import { Route, Redirect } from 'react-router';
-import './icons';
-import * as PAGES from './constants/routes';
+import AddRuntime from './pages/AddRuntime/AddRuntime';
+
 
 function ProtectedRoute({ component: Component, ...params }: any) {
-  function getComponentWithHeader(props:any) {
-    return (
-      <>
-        <Header />
-        <Component {...props} />
-      </>
-    );
-  }
-  
   return <Route
     {...params}
     render={
       props => isUserAuthenticated()
-        ? getComponentWithHeader(props)
+        ? <Component {...props} />
         : <Redirect to={ PAGES.LOGIN } />
     }
   />;
@@ -51,6 +44,7 @@ export function Routes() {
       
       <ProtectedRoute exact path={PAGES.DASHBOARD} component={Dashboard} />
       <ProtectedRoute path={PAGES.SETTINGS} component={Settings} />
+      <ProtectedRoute path={PAGES.NEW_RUNTIME} component={AddRuntime} />
     </>
   );
 }
