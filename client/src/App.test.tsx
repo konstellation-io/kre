@@ -30,7 +30,7 @@ it('it shows login page on home URL', () => {
     <MemoryRouter><Routes /></MemoryRouter>
   );
 
-  expect(getByText('Send me a login link')).toBeInTheDocument();
+  expect(getByText('SEND ME A LOGIN LINK')).toBeInTheDocument();
 });
 
 // @ts-ignore

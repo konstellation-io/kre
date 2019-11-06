@@ -65,11 +65,12 @@ function Login({ history }: Props) {
               error={error}
               onChange={onChange}
               onSubmit={onSubmit}
+              showClearButton
             />
             <div className={ styles.buttons }>
               <Button
                 primary
-                label="Send me a login link"
+                label="SEND ME A LOGIN LINK"
                 onClick={onSubmit}
                 loading={ response.pending }
               />

@@ -21,7 +21,7 @@ exports[`Render Login without crashing 1`] = `
           class="content"
         >
           <div
-            class="container white"
+            class="container white hasClearButton"
           >
             <label
               class="label"
@@ -51,7 +51,7 @@ exports[`Render Login without crashing 1`] = `
               style="height: 40px; line-height: 40px;"
             >
               <span>
-                Send me a login link
+                SEND ME A LOGIN LINK
               </span>
             </div>
           </div>

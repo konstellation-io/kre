@@ -22,9 +22,14 @@
   height: 100%;
   padding: $form-padding-height 0;
   background-color: $bg-color;
+
+  h1 {
+    margin-bottom: 30px;
+  }
 }
 
 .subtitle {
   text-align: center;
-  margin-top: 50px;
+  margin: 50px $form-padding-width;
+  color: white;
 }

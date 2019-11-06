@@ -20,14 +20,16 @@
 .container {
   grid-area: 1 / 3 / 2 / 11;
   height: 100%;
-  padding: $form-padding-height 0;
+  padding: $form-padding-height $form-padding-width;
   background-color: $bg-color;
+  text-align: center;
 }
 
-.error {
-  position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: $color-red;
+.subtitle {
+  height: 42px;
+  margin: 15px 0 50px 0;
+}
+
+.errorText {
+  margin-top: 50px;
 }

@@ -25,7 +25,7 @@ it('Shows correct texts', () => {
 
   expect(getByText('enter your email address')).toBeInTheDocument();
   expect(getByText('EMAIL')).toBeInTheDocument();
-  expect(getByText('Send me a login link')).toBeInTheDocument();
+  expect(getByText('SEND ME A LOGIN LINK')).toBeInTheDocument();
 });
 
 it('shows an error on summiting an invalid adress', () => {
@@ -37,7 +37,7 @@ it('shows an error on summiting an invalid adress', () => {
 
   expect(input.value).toBe(invalidEmail);
 
-  fireEvent.click(getByText('Send me a login link'));
+  fireEvent.click(getByText('SEND ME A LOGIN LINK'));
 
   const error = getError(container);
 
@@ -63,7 +63,7 @@ it('performs a login request', async () => {
   
   // Success response
   await act(async () => {
-    await fireEvent.click(getByText('Send me a login link'));
+    await fireEvent.click(getByText('SEND ME A LOGIN LINK'));
   });
   
   let error = getError(container);
@@ -74,7 +74,7 @@ it('performs a login request', async () => {
 
   // Failure response
   await act(async () => {
-    await fireEvent.click(getByText('Send me a login link'));
+    await fireEvent.click(getByText('SEND ME A LOGIN LINK'));
   });
   
   error = getError(container);

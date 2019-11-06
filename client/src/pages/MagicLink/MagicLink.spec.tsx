@@ -11,14 +11,20 @@ jest.mock('axios');
 afterEach(cleanup);
 
 
-it('Render MagicLink without crashing', () => {
+function renderComponent(locationPath:string) {
   const history = createMemoryHistory();
-  const location = createLocation('/magic_link');
-  const { container } = render(
+  const location = createLocation(locationPath);
+
+  return render(
     <Router history={history}>
       <MagicLink history={history} location={ location } />
     </Router>
   );
+}
+
+it('Render MagicLink without crashing', () => {
+  const {container} = renderComponent('/magic_link');
+
   expect(container).toMatchSnapshot();
 });
 
@@ -32,33 +38,24 @@ it('obtains token from location', () => {
 it('handles success response', async () => {
   // @ts-ignore
   axios.mockResolvedValue({ data: 'OK' });
+  const {getByText} = renderComponent('/magic_link?token=123456');
 
-  const history = createMemoryHistory();
-  const location = createLocation('/magic_link?token=123456');
-
+  // Wait for loading animation to finish
   await act(async () => {
-    await render(
-      <Router history={history}>
-        <MagicLink history={history} location={ location } />
-      </Router>
-    );
+    await new Promise((r) => setTimeout(r, 3000));
   });
+
+  expect(getByText('You are connected!')).toBeInTheDocument();
 });
 
 it('handles error response', async () => {
   // @ts-ignore
   axios.mockRejectedValue({ data: 'ERROR' });
+  const {getByText} = renderComponent('/magic_link?token=123456');
 
-  let getByText = function(selector:string) {};
-  const history = createMemoryHistory();
-  const location = createLocation('/magic_link?token=123456');
-
+  // Wait for loading animation to finish
   await act(async () => {
-    ({ getByText } = await render(
-      <Router history={history}>
-        <MagicLink history={history} location={ location } />
-      </Router>
-    ));
+    await new Promise((r) => setTimeout(r, 3000));
   });
 
   expect(getByText('Unexpected error. Contact support for more information')).toBeInTheDocument();

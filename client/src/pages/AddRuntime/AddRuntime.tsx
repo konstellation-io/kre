@@ -40,7 +40,7 @@ function AddRuntime({ history }: Props) {
     if(mutationError) {
       setError(mutationError.toString());
     }
-  }, [mutationError]);
+  }, [mutationError, setError]);
 
   function onCompleteAddRuntime(updatedData:any) {
     // TODO: CHECK FOR API ERRORS
