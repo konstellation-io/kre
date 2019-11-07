@@ -8,7 +8,7 @@ exports[`Render Header without crashing 1`] = `
     <img
       alt="konstellation logo"
       class="konstellationsIcon"
-      src="img/brand/konstellation.svg"
+      src="/img/brand/konstellation.svg"
     />
     <div
       class="customHeaderElements"

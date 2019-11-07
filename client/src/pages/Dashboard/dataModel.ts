@@ -12,6 +12,26 @@ export const GET_RUNTIMES = gql`
   }
 `;
 
+export const GET_DASHBOARD = gql`
+  query GetDashboard {
+    dashboard {
+      runtimes {
+        id
+        name
+        status
+        creationDate
+      }
+      alerts {
+        type
+        message
+        runtime {
+          id
+        }
+      }
+    }
+  }
+`;
+
 type Runtime = {
   id: string;
   status: string;
@@ -21,6 +41,11 @@ type Runtime = {
     date: string;
   }[];
   disbled?: boolean;
+};
+type Alert = {
+  type: string;
+  message: string;
+  runtimeId: string;
 };
 
 export function formatRuntime(runtime:any) {
@@ -33,4 +58,12 @@ export function formatRuntime(runtime:any) {
       date: runtime.creationDate
     }]
   } as Runtime;
+}
+
+export function formatAlert(alert:any) {
+  return {
+    type: alert.type,
+    message: alert.message,
+    runtimeId: alert.runtime.id
+  } as Alert;
 }

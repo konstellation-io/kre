@@ -1,6 +1,6 @@
 import React from 'react';
 import { isUserAuthenticated } from './utils/auth';
-import { HashRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Redirect } from 'react-router';
 import './icons';
 import * as PAGES from './constants/routes';

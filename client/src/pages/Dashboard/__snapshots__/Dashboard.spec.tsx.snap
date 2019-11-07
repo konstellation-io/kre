@@ -1,0 +1,208 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render Dashboard without crashing 1`] = `
+<div>
+  <header
+    class="container"
+  >
+    <img
+      alt="konstellation logo"
+      class="konstellationsIcon"
+      src="/img/brand/konstellation.svg"
+    />
+    <div
+      class="customHeaderElements"
+    >
+      <a
+        data-testid="buttonLink"
+        href="/new-runtime"
+      >
+        <div
+          class="btn default middle label"
+          style="height: 40px; line-height: 40px;"
+        >
+          <span>
+            ADD RUNTIME
+          </span>
+        </div>
+      </a>
+      <div>
+        0 runtimes shown
+      </div>
+    </div>
+    <div
+      class="container"
+      data-testid="settingsContainer"
+    >
+      <div
+        class="label"
+      >
+        mariano@intelygenz.com
+        <div
+          class="arrow"
+        />
+      </div>
+      <div
+        class="options"
+        data-testid="settingsContent"
+        style="max-height: 0;"
+      >
+        <div
+          class="btn grey left label"
+          style="padding-left: 20%; height: 40px; line-height: 40px;"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-sign-out-alt fa-w-16 "
+            data-icon="sign-out-alt"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 512 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"
+              fill="currentColor"
+            />
+          </svg>
+          <span>
+            LOGOUT
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div
+    class="container"
+    data-testid="dashboardContainer"
+  >
+    <div
+      class="container"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-square fa-w-14 "
+            data-icon="square"
+            data-prefix="far"
+            focusable="false"
+            role="img"
+            viewBox="0 0 448 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-6 400H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h340c3.3 0 6 2.7 6 6v340c0 3.3-2.7 6-6 6z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </div>
+      <div
+        class="container"
+      >
+        <div
+          class="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-sliders-h fa-w-16 "
+            data-icon="sliders-h"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 512 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div
+      class="content"
+    >
+      <div
+        class="hexagons"
+      >
+        <div
+          class="contentBox"
+          data-testid="spinner"
+        >
+          <div
+            class="container"
+            style="width: 40px; height: 40px;"
+          >
+            <div
+              class="sun"
+              style="background-color: white;"
+            />
+            <div
+              class="orbit p1"
+              style="border-color: white;"
+            />
+            <div
+              class="planet_container p1"
+            >
+              <div
+                class="planet p1"
+                style="background-color: white;"
+              >
+                <div
+                  class="planet_container p4"
+                  data-testid="spinner-planet"
+                >
+                  <div
+                    class="planet p4"
+                    style="background-color: white;"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="orbit p2"
+              style="border-color: white;"
+            />
+            <div
+              class="planet_container p2"
+            >
+              <div
+                class="planet p2"
+                style="background-color: white;"
+              />
+            </div>
+            <div
+              class="planet_container p3"
+            >
+              <div
+                class="planet p3"
+                style="background-color: white;"
+              />
+            </div>
+            <div
+              class="orbit p5"
+              style="border-color: white;"
+            />
+            <div
+              class="planet_container p5"
+            >
+              <div
+                class="planet p5"
+                style="background-color: white;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

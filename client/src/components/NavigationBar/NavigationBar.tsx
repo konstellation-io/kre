@@ -32,7 +32,7 @@ function NavigationBar ({ history, location }: Props) {
       {...button}
       key={`navigationButton_${button.id}`}
       active={location.pathname.startsWith(button.path)}
-      onButtonClick={() => history.push(button.path)}
+      onButtonClick={() => history.push(button.path, { prevLocation: location.pathname })}
     />
   ));
   return (

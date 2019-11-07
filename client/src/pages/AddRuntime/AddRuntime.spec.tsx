@@ -12,12 +12,12 @@ import { MockedProvider } from '@apollo/react-testing';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 
-import {addRuntimeMock, runtimeMock} from '../../mocks/runtime';
+import {addRuntimeMock, dashboardMock} from '../../mocks/runtime';
 
 
 const mocks = [
   addRuntimeMock,
-  runtimeMock
+  dashboardMock
 ];
 
 Cookies.get = jest.fn().mockImplementationOnce(() => '');

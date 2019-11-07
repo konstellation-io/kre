@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { History, Location } from 'history';
 
 import NavBar from '../NavBar/NavBar';
@@ -30,8 +30,10 @@ function Sidebar({
   location,
   onChange = function(idx:number) {},
 }:Props) {
+  const backLocation = useRef(location.state && location.state.prevLocation);
+
   function onBackButton() {
-    history.goBack();
+    history.push(backLocation.current);
   }
 
   const actualRoute = location.pathname;

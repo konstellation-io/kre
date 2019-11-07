@@ -12,6 +12,7 @@
   transition: color ease 0.4s;
   color: $font-color;
   background-color: black;
+  z-index: 1;
 
   &:hover {
     color: $font-color-white;

@@ -10,7 +10,7 @@ const Header: FunctionComponent<Props> = ({ children }) => (
   <header className={styles.container}>
       <img
         className={styles.konstellationsIcon}
-        src={'img/brand/konstellation.svg'}
+        src={'/img/brand/konstellation.svg'}
         alt='konstellation logo'
       />
       <div className={styles.customHeaderElements}>

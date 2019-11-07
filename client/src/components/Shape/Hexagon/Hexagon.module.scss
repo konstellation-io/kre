@@ -1,4 +1,5 @@
 @import '../../../styles/colors';
+@import '../../../styles/mixins';
 
 .container {
   overflow: visible;
@@ -16,7 +17,7 @@
   position: relative;
   justify-content: space-between;
   text-align: center;
-  padding: 20px 0 13px 0;
+  padding: 20px 0 8px 0;
   font-weight: 500;
 }
 
@@ -25,9 +26,11 @@
   top: 0;
   width: 100%;
   height: 100%;
+  margin-left: 5px;
   pointer-events: all;
   clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
   cursor: pointer;
+  align-items: center;
 }
 
 .bg {
@@ -35,6 +38,42 @@
   top: -60px;
   left: -43px;
   pointer-events: none;
+}
+
+.bgOverlap {
+  position: absolute;
+  width: 69%;
+  top: 43%;
+  left: 50%;
+  height: 7%;
+  background: black;
+  transform: translateX(-50%) perspective(47px) rotateX(13deg);
+  z-index: 9;
+
+  &.active {
+    background-color: $color-green;
+  }
+  &.created {
+    background-color: $color-blue;
+  }
+  &.warning {
+    background-color: $color-orange;
+  }
+  &.error {
+    background-color: $color-red;
+  }
+}
+.bgOverlapText {
+  position: absolute;
+  width: 100%;
+  top: 43%;
+  color: #000;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.55px;
+  text-align: center;
+  line-height: 24px;
+  z-index: 9;
 }
 
 .container span,
@@ -52,13 +91,16 @@
 }
 
 .title {
-  width: 170px;
-  align-self: center;
-  font-size: 13px;
+  @include font-body;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+
+  width: 130px;
 }
 
 .id {
-  margin-top: 8px;
+  font-weight: 600;
+  margin-top: 5px;
   margin-bottom: 30px;
   opacity: 0.5;
 }
@@ -68,7 +110,11 @@
 }
 
 .info_type {
+  @include font-small;
+  font-weight: 600;
+
   opacity: 0.5;
+  margin-bottom: 2px;
 }
 
 .container.active {

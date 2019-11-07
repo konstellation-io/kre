@@ -30,7 +30,7 @@ const tabs:Tab[] = [
 function generateComponent() {
   const history = createMemoryHistory();
   history.push(ROUTE.HOME);
-  history.push(ROUTE.SETTINGS);
+  history.push(ROUTE.SETTINGS, { prevLocation: ROUTE.HOME });
 
   const wrapper = render(
     <MemoryRouter>

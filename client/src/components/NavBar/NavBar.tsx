@@ -52,7 +52,4 @@ function NavBar({
   );
 }
 
-NavBar.propTypes = {
-};
-
 export default NavBar;

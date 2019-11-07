@@ -44,7 +44,7 @@ function Hexagon({
   title = 'Default title',
   info = [],
   disabled = false,
-  size = 340,
+  size = 360,
 }: Props) {
   const defaultAnimation = disabled
     ? ANIM_SEGMENTS.INACTIVE
@@ -75,13 +75,12 @@ function Hexagon({
   // Created and Updated dates. Can show none, one or both.
   const hexInfo = info.map((infoEl, idx) => (
     <div className={styles.info} key={`hexInfo-${idx}`}>
-      <span className={styles.info_type}>{infoEl.type}</span>
+      <span className={styles.info_type}>
+        {infoEl.type && infoEl.type.toUpperCase()}
+      </span>
       <span>{formatDate(infoEl.date)}</span>
     </div>
   ));
-
-  const hexStatus =
-    status !== '' ? <span className={styles.status}>{`(${status})`}</span> : '';
 
   return (
     <div
@@ -91,7 +90,7 @@ function Hexagon({
         [styles.hovered]: hovered,
       })}
     >
-      <div className={styles.bg}>
+      <div className={styles.bg} style={{ height: size, width: size}}>
         <Lottie
           options={{ animationData }}
           width={size}
@@ -99,6 +98,10 @@ function Hexagon({
           segments={segments}
           forceSegments
         />
+        <div className={cx(styles.bgOverlap, styles[status])} />
+        <div className={styles.bgOverlapText}>
+          { status.toUpperCase() }
+        </div>
       </div>
       <div
         className={styles.hexContent}
@@ -106,7 +109,6 @@ function Hexagon({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        {hexStatus}
         <div className={styles.title}>{title}</div>
         <span className={styles.id}>{id}</span>
         {hexInfo}

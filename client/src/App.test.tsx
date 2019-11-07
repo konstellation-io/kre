@@ -7,10 +7,10 @@ import App, { Routes } from './App';
 import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
-import { runtimeMock } from './mocks/runtime';
+import { dashboardMock } from './mocks/runtime';
 
 const mocks = [
-  runtimeMock
+  dashboardMock
 ];
 
 Cookies.get = jest.fn().mockImplementationOnce(() => '');
