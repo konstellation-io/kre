@@ -12,3 +12,4 @@ variables:
 
 include:
   - local: api/.gitlab-ci.yml
+  - local: helm/.gitlab-ci.yml
