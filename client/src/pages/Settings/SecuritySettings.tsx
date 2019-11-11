@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import useInput from '../../hooks/useInput';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {ICON} from '../../icons';
+import DomainIcon from '@material-ui/icons/Language';
 
 import SettingsHeader from './components/SettingsHeader';
 import TextInput from '../../components/Form/TextInput/TextInput';
@@ -26,7 +25,7 @@ type FormFieldProps = {
 function FormField({error, onChange, onSubmit}: FormFieldProps) {
   return (
     <div className={styles.formField}>
-      <FontAwesomeIcon icon={ICON.SECURITY} />
+      <DomainIcon style={{ fontSize: '1rem' }} />
       <p className={styles.label}>Domain white list</p>
       <div className={styles.input}>
         <TextInput

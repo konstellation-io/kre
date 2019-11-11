@@ -22,17 +22,14 @@ exports[`Render DomainList without crashing 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-trash fa-w-14 "
-        data-icon="trash"
-        data-prefix="fas"
+        class="MuiSvgIcon-root"
         focusable="false"
-        role="img"
-        viewBox="0 0 448 512"
-        xmlns="http://www.w3.org/2000/svg"
+        role="presentation"
+        style="font-size: 1rem;"
+        viewBox="0 0 24 24"
       >
         <path
-          d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
-          fill="currentColor"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
         />
       </svg>
     </div>
@@ -57,17 +54,14 @@ exports[`Render DomainList without crashing 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-trash fa-w-14 "
-        data-icon="trash"
-        data-prefix="fas"
+        class="MuiSvgIcon-root"
         focusable="false"
-        role="img"
-        viewBox="0 0 448 512"
-        xmlns="http://www.w3.org/2000/svg"
+        role="presentation"
+        style="font-size: 1rem;"
+        viewBox="0 0 24 24"
       >
         <path
-          d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
-          fill="currentColor"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
         />
       </svg>
     </div>
@@ -92,17 +86,14 @@ exports[`Render DomainList without crashing 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-trash fa-w-14 "
-        data-icon="trash"
-        data-prefix="fas"
+        class="MuiSvgIcon-root"
         focusable="false"
-        role="img"
-        viewBox="0 0 448 512"
-        xmlns="http://www.w3.org/2000/svg"
+        role="presentation"
+        style="font-size: 1rem;"
+        viewBox="0 0 24 24"
       >
         <path
-          d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
-          fill="currentColor"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
         />
       </svg>
     </div>

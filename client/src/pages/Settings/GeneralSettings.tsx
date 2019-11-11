@@ -1,9 +1,6 @@
 import React, {useEffect} from 'react';
 import useInput from '../../hooks/useInput';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {ICON} from '../../icons';
-
 import SettingsHeader from './components/SettingsHeader';
 import Spinner from '../../components/Spinner/Spinner';
 import TextInput from '../../components/Form/TextInput/TextInput';
@@ -30,7 +27,6 @@ type FormFieldProps = {
 function FormField({ error, onChange, onSubmit, defaultValue }: FormFieldProps) {
   return (
     <div className={styles.formField}>
-      <FontAwesomeIcon icon={ICON.COOKIE} />
       <p className={styles.label}>Session Cookie expiration time</p>
       <div className={styles.input}>
         <TextInput

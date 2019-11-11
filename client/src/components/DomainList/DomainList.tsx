@@ -1,8 +1,5 @@
 import React from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {ICON} from '../../icons';
-
+import RemoveIcon from '@material-ui/icons/RemoveCircle';
 import styles from './DomainList.module.scss';
 
 
@@ -23,7 +20,7 @@ function DomainList({
         onClick={() => onRemoveDomain(domain)}
         data-testid={`domainListRemove${idx}`}
       >
-        <FontAwesomeIcon icon={ICON.DELETE} />
+        <RemoveIcon style={{ fontSize: '1rem' }} />
       </div>
     </div>
   ));

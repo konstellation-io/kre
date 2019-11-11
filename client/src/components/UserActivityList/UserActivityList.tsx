@@ -2,8 +2,8 @@ import React from 'react';
 
 import Spinner from '../Spinner/Spinner';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {ICON} from '../../icons';
+import EmailIcon from '@material-ui/icons/Email';
+import TimeIcon from '@material-ui/icons/AccessTime';
 
 import styles from './UserActivityList.module.scss';
 
@@ -51,7 +51,7 @@ function UserActivityList({
       >
         <div className={styles.userAndMessage}>
           <span className={styles.userWithIcon}>
-            <FontAwesomeIcon icon={ICON.MAIL}/>
+            <EmailIcon style={{ fontSize: '1rem' }} />
             <p className={styles.user}>
               {userActivityFormatted.user}
             </p>
@@ -59,8 +59,8 @@ function UserActivityList({
           <p className={styles.message}>{userActivityFormatted.message}</p>
         </div>
         <div className={styles.date}>
-          <FontAwesomeIcon icon={ICON.CLOCK}/>
-          <p>{toDateTimeString(new Date(userActivityFormatted.date))}</p>
+        <TimeIcon style={{ fontSize: '1rem' }} />
+        <p>{toDateTimeString(new Date(userActivityFormatted.date))}</p>
         </div>
       </div>
     )

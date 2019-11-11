@@ -10,13 +10,12 @@
 }
 
 .button {
+  @include font-button;
+
   width: 40px;
   height: 40px;
   background-color: $color-grey;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.55px;
-  line-height: 40px;
+  line-height: 47px;
   text-align: center;
   cursor: pointer;
   user-select: none;

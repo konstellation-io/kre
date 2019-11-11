@@ -14,7 +14,6 @@
 
 .back {
   @include font-subheader;
-  font-weight: 500;
   color: $font-color-white;
 
   padding: 17px 26px 20px 17px;
@@ -37,7 +36,6 @@
 
 .description {
   @include font-body;
-  font-weight: 500;
 
   padding:0 26px 30px 17px;
 }

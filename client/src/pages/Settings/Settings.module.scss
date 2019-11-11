@@ -24,7 +24,7 @@
 }
 .generalSettings {
   .label {
-    margin-left: 20px !important;
+    margin-left: 40px !important;
   }
 }
 .securitySettings {
@@ -59,7 +59,6 @@
 
 .formDescription {
   @include font-body;
-  font-weight: 500;
 
   margin-top: 10px;
 }
@@ -76,7 +75,6 @@
   .label {
     @include font-body;
     color: $font-color-white;
-    font-weight: 500;
 
     margin: 0 40px 0 30px;
   }

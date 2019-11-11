@@ -10,6 +10,10 @@
   cursor: pointer;
   transition: color ease 0.4s, background-color ease 0.4s;
 
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   svg {
     margin-right: 20%;
   }

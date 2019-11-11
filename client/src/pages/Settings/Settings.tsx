@@ -1,8 +1,11 @@
 import React from 'react';
 import { Route } from 'react-router';
 import { History, Location } from 'history';
-import { ICON } from '../.././icons';
 import * as ROUTE from '../../constants/routes';
+
+import GeneralIcon from '@material-ui/icons/DeviceHub';
+import SecurityIcon from '@material-ui/icons/Security';
+import UsersIcon from '@material-ui/icons/SupervisorAccount';
 
 import GeneralSettings from './GeneralSettings';
 import SecuritySettings from './SecuritySettings';
@@ -17,18 +20,18 @@ import styles from './Settings.module.scss';
 const tabs = [
   {
     label: 'GENERAL',
-    icon: ICON.BRANCH,
-    route: ROUTE.SETTINGS_GENERAL
+    route: ROUTE.SETTINGS_GENERAL,
+    Icon: GeneralIcon,
   },
   {
     label: 'SECURITY',
-    icon: ICON.CHART,
-    route: ROUTE.SETTINGS_SECURITY
+    route: ROUTE.SETTINGS_SECURITY,
+    Icon: SecurityIcon,
   },
   {
     label: 'AUDIT',
-    icon: ICON.USER,
-    route: ROUTE.SETTINGS_AUDIT
+    route: ROUTE.SETTINGS_AUDIT,
+    Icon: UsersIcon,
   },
 ];
 

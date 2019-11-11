@@ -1,15 +1,12 @@
 import React, {useState, useEffect} from 'react';
-
 import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-
 import styles from './NavBar.module.scss';
 
 
 export type Tab = {
   label: string,
-  icon?: IconProp,
   route?: string,
+  Icon?: any,
 }
 type Props = {
   tabs: Tab[];
@@ -32,7 +29,7 @@ function NavBar({
     <Button
       key={`tabButton${idx}`}
       label={tab.label}
-      icon={tab.icon}
+      Icon={tab.Icon}
       primary={activeTab === idx}
       type={ BUTTON_TYPES.TRANSPARENT }
       height={56}

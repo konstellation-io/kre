@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import Button, {BUTTON_TYPES, BUTTON_ALIGN} from '../Button/Button';
-import { ICON } from '../.././icons';
+import LogoutIcon from '@material-ui/icons/ExitToApp';
 
 import styles from './Settings.module.scss';
 
@@ -27,7 +27,7 @@ function Settings({ label }: Props) {
       label={'LOGOUT'}
       type={BUTTON_TYPES.GREY}
       onClick={doLogout}
-      icon={ICON.LOGOUT}
+      Icon={LogoutIcon}
       align={BUTTON_ALIGN.LEFT}
       style={buttonStyle}
       key={'buttonLogout'}

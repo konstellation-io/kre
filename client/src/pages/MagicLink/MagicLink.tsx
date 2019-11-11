@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import useEndpoint from '../../hooks/useEndpoint';
-import { parse } from 'query-string';
+import { useParams } from 'react-router-dom';
 
-import * as CHECK from '../../components/Form/check';
 import { ENDPOINT } from '../../constants/application';
 import * as PAGES from '../../constants/routes';
+import * as CHECK from '../../components/Form/check';
 import StateCircle from '../../components/Shape/StateCircle/StateCircle';
 import { STATES } from '../../constants/application';
 
@@ -30,14 +30,8 @@ const getCircleText = {
 };
 
 type Props = {
-  location: any;
   history: any;
 };
-
-export function getToken(location:Location) {
-  // @ts-ignore
-  return parse(location.search, { ignoreQueryPrefix: true }).token || '';
-}
 
 function checkToken(token:string) {
   return CHECK.getValidationError([
@@ -54,7 +48,7 @@ function checkToken(token:string) {
  *  - The SUCCESS animation must be shown for another period of time before leaving
  *    the view.
  */
-function MagicLink({ location, history }: Props) {
+function MagicLink({ history }: Props) {
   const [error, setError] = useState('');
   const [animationPending, setAnimationPending] = useState(true);
   const [status, setStatus] = useState(STATES.INITIALIZING);
@@ -63,11 +57,11 @@ function MagicLink({ location, history }: Props) {
     method: 'POST'
   });
   const timeout = useRef();
-
-  const token = getToken(location);
+  const {token} = useParams();
 
   // Checks for token errors and send login request
   useEffect(function() {
+    // @ts-ignore
     const error = checkToken(token);
     
     if (!error) {

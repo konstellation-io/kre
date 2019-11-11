@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom';
 
 import Spinner from '../../components/Spinner/Spinner';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-
 import cx from 'classnames';
 import styles from './Button.module.scss';
 
@@ -26,7 +23,7 @@ type Props = {
   label?: string;
   type?: string;
   border?: boolean;
-  icon?: IconProp;
+  Icon?: any;
   to?: string;
   onClick?: any;
   primary?: boolean;
@@ -41,7 +38,7 @@ function Button({
   type = BUTTON_TYPES.DEFAULT,
   border = false,
   label = 'Button',
-  icon = undefined,
+  Icon = undefined,
   to = '',
   onClick = function() {},
   primary = false,
@@ -49,12 +46,12 @@ function Button({
   loading = false,
   height = 40,
   align = BUTTON_ALIGN.MIDDLE,
-  style = {}
+  style = {},
 }: Props) {
   const content = loading
     ? <Spinner size={ 30 } color='#0d0e11' />
     : <>
-      { icon && <FontAwesomeIcon icon={icon} />}
+      { Icon && <Icon style={{ fontSize: '1rem' }} /> }
       <span>{label}</span>
     </>;
 

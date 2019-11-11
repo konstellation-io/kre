@@ -36,6 +36,7 @@ type Props = {
   info?: RuntimeInfo[];
   disabled?: boolean;
   size?: number;
+  onClick?: any;
 };
 
 function Hexagon({
@@ -45,6 +46,7 @@ function Hexagon({
   info = [],
   disabled = false,
   size = 360,
+  onClick = function() {},
 }: Props) {
   const defaultAnimation = disabled
     ? ANIM_SEGMENTS.INACTIVE
@@ -108,11 +110,12 @@ function Hexagon({
         onMouseDown={onMouseDown}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onClick={onClick}
       >
         <div className={styles.title}>{title}</div>
         <span className={styles.id}>{id}</span>
         {hexInfo}
-      </div>
+      </div>;
     </div>
   );
 }

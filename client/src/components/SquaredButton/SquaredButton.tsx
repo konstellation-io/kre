@@ -1,8 +1,5 @@
 import React from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-
 import cx from 'classnames';
 import styles from './SquaredButton.module.scss';
 
@@ -12,14 +9,14 @@ type Props = {
   id?: string;
   label?: string;
   active?: boolean;
-  icon?: IconProp;
+  Icon?: any;
 };
 
 function SquaredButton({
   onButtonClick,
   id = 'defaultID',
   label = 'DF',
-  icon = undefined,
+  Icon = undefined,
   active = false,
 }: Props) {
   return (
@@ -28,7 +25,7 @@ function SquaredButton({
         className={cx(styles.button, { [styles.active]: active })}
         onClick={() => onButtonClick(id)}
       >
-        { icon ? <FontAwesomeIcon icon={icon} /> : label }
+        { Icon ? <Icon style={{ fontSize: '1rem' }} /> : label }
       </div>
     </div>
   );

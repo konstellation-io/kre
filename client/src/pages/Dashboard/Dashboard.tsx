@@ -1,4 +1,5 @@
 import React from 'react';
+import { History, Location } from 'history';
 import * as PAGES from '../../constants/routes';
 
 import Header from '../../components/Header/Header';
@@ -16,7 +17,11 @@ import { formatRuntime, formatAlert } from './dataModel';
 import {GET_DASHBOARD} from './dataModel';
 
 
-function Dashboard() {
+type Props = {
+  history: History;
+  location: Location;
+};
+function Dashboard({ history, location }: Props) {
   const { data, loading, error } = useQuery(GET_DASHBOARD);
 
   function getContent() {
@@ -26,6 +31,10 @@ function Dashboard() {
     const runtimes = data.dashboard.runtimes.map((runtime:any, idx:number) => (
       <Hexagon
         key={`runtimeHexagon-${idx}`}
+        onClick={() => {
+          const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
+          history.push(runtimePath);
+        }}
         {...formatRuntime(runtime)}
       />
     ));

@@ -2,7 +2,8 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import { History, Location} from 'history';
 
-import {ICON} from '../../icons';
+import DashboardIcon from '@material-ui/icons/ChangeHistory';
+import SecurityIcon from '@material-ui/icons/VerifiedUser';
 
 import * as ROUTE from '../../constants/routes';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
@@ -13,12 +14,12 @@ export const navigationButtons = [
   {
     id: 'dashboardRoute',
     path: ROUTE.DASHBOARD,
-    icon: ICON.SQUARE
+    Icon: DashboardIcon
   },
   {
     id: 'settingsRoute',
     path: ROUTE.SETTINGS,
-    icon: ICON.SETTINGS
+    Icon: SecurityIcon
   },
 ];
 

@@ -2,13 +2,13 @@ import React from 'react';
 import { isUserAuthenticated } from './utils/auth';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Redirect } from 'react-router';
-import './icons';
 import * as PAGES from './constants/routes';
 
 import Login from './pages/Login/Login';
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
 import MagicLink from './pages/MagicLink/MagicLink';
 import Dashboard from './pages/Dashboard/Dashboard';
+import Runtime from './pages/Runtime/Runtime';
 import Settings from './pages/Settings/Settings';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
 
@@ -43,6 +43,7 @@ export function Routes() {
       <Route exact path={PAGES.MAGIC_LINK} component={MagicLink} />
       
       <ProtectedRoute exact path={PAGES.DASHBOARD} component={Dashboard} />
+      <ProtectedRoute path={PAGES.RUNTIME} component={Runtime} />
       <ProtectedRoute path={PAGES.SETTINGS} component={Settings} />
       <ProtectedRoute path={PAGES.NEW_RUNTIME} component={AddRuntime} />
     </>

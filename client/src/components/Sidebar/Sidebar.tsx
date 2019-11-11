@@ -2,10 +2,7 @@ import React, {useRef} from 'react';
 import { History, Location } from 'history';
 
 import NavBar from '../NavBar/NavBar';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import {ICON} from '../../icons';
+import LeftArrowIcon from '@material-ui/icons/KeyboardBackspace';
 
 import styles from './Sidebar.module.scss';
 
@@ -13,7 +10,7 @@ import styles from './Sidebar.module.scss';
 export type Tab = {
   label: string,
   route: string
-  icon?: IconProp,
+  Icon?: any,
 }
 type Props = {
   title: string,
@@ -42,7 +39,7 @@ function Sidebar({
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.back} onClick={onBackButton}>
-         <FontAwesomeIcon icon={ICON.LEFT} size='xs' />
+         <LeftArrowIcon style={{ fontSize: '1rem' }} />
           { title }
         </div>
         <div className={styles.description}>
