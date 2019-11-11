@@ -1,0 +1,54 @@
+release-helm-chart:
+  stage: semantic-release
+  image: node:10
+  before_script:
+    - npm install --prefix helm
+  script:
+    - cd helm && npx semantic-release -e semantic-release-monorepo
+  only:
+    refs:
+      - master
+    changes:
+      - helm/**/*
+      - .gitlab-ci.yml
+
+generate-helm-chart:
+  stage: build
+  image: docker:18-git
+  services:
+    - docker:18-dind
+  variables:
+    HELM_VERSION: v2.14.3
+  before_script:
+    - apk add --update bash gettext coreutils
+    - wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
+    - chmod +x /usr/local/bin/helm
+    - helm plugin install https://github.com/chartmuseum/helm-push
+    - helm repo add konstellation-ce https://${HELM_USER}:${HELM_PASSWD}@charts.konstellation.io
+    - helm init --client-only --wait
+    - export API_IMAGE_TAG=$(./scripts/git_latest_tag.sh "api")
+    - ./scripts/replace_env_path.sh
+  script:
+    - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}
+    - helm package helm/kre --version $CHART_VERSION
+    - helm push kre konstellation-ce
+  artifacts:
+    expire_in: 3 hours
+    when: on_success
+    paths:
+      - konstellation-*.tgz
+  only:
+    refs:
+      - /^helm-chart-v\d*.\d*.\d*$/
+
+create-release:
+  image: inetprocess/gitlab-release
+  stage: publish-gitlab-release
+  script:
+    - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}
+    - gitlab-release --message 'Konstellation chart release' konstellation-${CHART_VERSION}.tgz
+  dependencies:
+    - generate-helm-chart
+  only:
+    refs:
+      - /^helm-chart-v\d*.\d*.\d*$/

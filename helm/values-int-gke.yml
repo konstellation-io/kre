@@ -1,0 +1,6 @@
+# Default values for konstellation.
+
+api:
+  tls:
+    enabled: true
+    host: api-kre-int.konstellation.io

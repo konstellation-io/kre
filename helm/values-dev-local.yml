@@ -1,0 +1,12 @@
+# Default values for konstellation.
+
+api:
+  image:
+    repository: konstellation/kre-api
+    tag: latest
+    pullPolicy: Always
+  service:
+    port: 3000
+  tls:
+    enabled: true
+    host: api-kre.local
