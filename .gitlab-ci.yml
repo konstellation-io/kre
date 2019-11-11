@@ -1,0 +1,14 @@
+stages:
+  - semantic-release
+  - build
+  - publish-image
+  - publish-gitlab-release
+
+variables:
+  # semantic-release uses GITLAB_TOKEN
+  # gitlab-release uses GITLAB_ACCESS_TOKEN
+  GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
+  GITLAB_ACCESS_TOKEN: $GITLAB_ACCESS_TOKEN
+
+include:
+  - local: api/.gitlab-ci.yml

@@ -1,0 +1,7 @@
+server:
+  address: ":3000"
+  frontend_base_url: "http://konstellation.io/app"
+smtp:
+  enabled: false
+auth:
+  token_duration_in_hours: 1
