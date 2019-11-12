@@ -47,6 +47,7 @@ function Settings({ history, location }: Props) {
         <NavigationBar />
         <Sidebar
           title='Settings'
+          subtitle='Fusce vehicula dolor arcu, sit amet.'
           tabs={tabs}
           history={history}
           location={location}

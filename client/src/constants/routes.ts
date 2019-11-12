@@ -1,7 +1,7 @@
 export const HOME = '/';
 export const LOGIN = '/login';
 export const VERIFY_EMAIL = '/verify_email';
-export const MAGIC_LINK = '/magic_link/:token';
+export const MAGIC_LINK = '/signin/:token';
 export const DASHBOARD = '/dashboard';
 
 export const RUNTIME = `${DASHBOARD}/runtime/:runtimeId`;

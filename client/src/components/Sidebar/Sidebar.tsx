@@ -14,10 +14,12 @@ export type Tab = {
 }
 type Props = {
   title: string,
+  subtitle?: string,
   tabs: Tab[];
   history: History;
   location: Location;
   onChange?: Function;
+  subheader?: any;
 };
 
 function Sidebar({
@@ -25,7 +27,9 @@ function Sidebar({
   tabs,
   history,
   location,
+  subtitle = '',
   onChange = function(idx:number) {},
+  subheader = undefined
 }:Props) {
   const backLocation = useRef(location.state && location.state.prevLocation);
 
@@ -40,13 +44,16 @@ function Sidebar({
       <div className={styles.header}>
         <div className={styles.back} onClick={onBackButton}>
          <LeftArrowIcon style={{ fontSize: '1rem' }} />
+         <span className={styles.title}>
           { title }
+         </span>
         </div>
         <div className={styles.description}>
-          Fusce vehicula dolor arcu, sit amet.
+          {subtitle}
         </div>
       </div>
-      <div>
+      { subheader }
+      <div className={styles.navButtons}>
         <NavBar
           tabs={tabs}
           onChange={onChange}

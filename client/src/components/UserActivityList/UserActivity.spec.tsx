@@ -1,5 +1,6 @@
 import React from 'react';
-import UserActivityList, {toDateTimeString} from './UserActivityList';
+import UserActivityList from './UserActivityList';
+import { formatDate } from '../../utils/format';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -38,7 +39,7 @@ it('Shows right texts', async () => {
   const userActivityNode1 = queryByTestId('userActivityListElement1');
   expect(userActivityNode0).not.toBeNull();
 
-  const dateFormatted = toDateTimeString(new Date('2019-01-02'));
+  const dateFormatted = formatDate(new Date('2019-01-02'), true);
   const user0 = userActivityNode0 && userActivityNode0.querySelector('.user');
   const message0 = userActivityNode0 && userActivityNode0.querySelector('.message');
   const date1 = userActivityNode1 && userActivityNode1.querySelector('.date p');

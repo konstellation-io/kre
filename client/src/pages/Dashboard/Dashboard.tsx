@@ -1,5 +1,5 @@
 import React from 'react';
-import { History, Location } from 'history';
+import { History } from 'history';
 import * as PAGES from '../../constants/routes';
 
 import Header from '../../components/Header/Header';
@@ -13,15 +13,13 @@ import Button from '../../components/Button/Button';
 import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
-import { formatRuntime, formatAlert } from './dataModel';
-import {GET_DASHBOARD} from './dataModel';
+import { formatRuntime, formatAlert, GET_DASHBOARD } from './dataModel';
 
 
 type Props = {
   history: History;
-  location: Location;
 };
-function Dashboard({ history, location }: Props) {
+function Dashboard({ history }: Props) {
   const { data, loading, error } = useQuery(GET_DASHBOARD);
 
   function getContent() {
@@ -33,7 +31,7 @@ function Dashboard({ history, location }: Props) {
         key={`runtimeHexagon-${idx}`}
         onClick={() => {
           const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
-          history.push(runtimePath);
+          history.push(runtimePath, { prevLocation: PAGES.DASHBOARD });
         }}
         {...formatRuntime(runtime)}
       />
@@ -41,14 +39,13 @@ function Dashboard({ history, location }: Props) {
     const alerts = data.dashboard.alerts.map((alert:any, idx:number) => (
       <Alert
         key={`runtimeAlert-${idx}`}
+        history={history}
         {...formatAlert(alert)}
       />
     ));
 
     return <>
-      <div>
-        { alerts }
-      </div>
+      <div>{ alerts }</div>
       <HexagonPanel>{runtimes}</HexagonPanel>
     </>;
   }

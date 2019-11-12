@@ -18,6 +18,8 @@
 
   padding: 17px 26px 20px 17px;
   cursor: pointer;
+  display: flex;
+  flex-direction: row;
   
   svg {
     margin-right: 18px;
@@ -37,5 +39,9 @@
 .description {
   @include font-body;
 
-  padding:0 26px 30px 17px;
+  padding:0 26px 0 17px;
+}
+
+.navButtons {
+  margin-top: 30px;
 }

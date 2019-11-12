@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
-import { createMemoryHistory, createLocation, Location } from 'history';
+import { createMemoryHistory } from 'history';
 import { render, cleanup, act } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
 import MagicLink from './MagicLink';
@@ -10,6 +10,8 @@ import axios from 'axios';
 jest.mock('axios');
 
 afterEach(cleanup);
+
+const magicLinkWithTokenPath = PAGES.MAGIC_LINK.replace(':token', '123456');
 
 function renderComponent(locationPath:string) {
   const history = createMemoryHistory();
@@ -27,7 +29,7 @@ function renderComponent(locationPath:string) {
 it('Render MagicLink without crashing', async () => {
   // @ts-ignore
   axios.mockResolvedValue({ data: 'OK' });
-  const {container} = renderComponent('/magic_link/123456');
+  const {container} = renderComponent(magicLinkWithTokenPath);
 
   expect(container).toMatchSnapshot();
 
@@ -37,7 +39,7 @@ it('Render MagicLink without crashing', async () => {
 it('handles success response', async () => {
   // @ts-ignore
   axios.mockResolvedValue({ data: 'OK' });
-  const {getByText} = renderComponent('/magic_link/123456');
+  const {getByText} = renderComponent(magicLinkWithTokenPath);
 
   // Wait for loading animation to finish
   await act(async () => {
@@ -50,7 +52,7 @@ it('handles success response', async () => {
 it('handles error response', async () => {
   // @ts-ignore
   axios.mockRejectedValue({ data: 'ERROR' });
-  const {getByText} = renderComponent('/magic_link/123456');
+  const {getByText} = renderComponent(magicLinkWithTokenPath);
 
   // Wait for loading animation to finish
   await act(async () => {

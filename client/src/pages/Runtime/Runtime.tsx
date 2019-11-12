@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { History, Location } from 'history';
 import * as ROUTE from '../../constants/routes';
 
@@ -9,11 +10,17 @@ import TimeIcon from '@material-ui/icons/AccessTime';
 import ConfigIcon from '@material-ui/icons/Settings';
 
 import Header from '../../components/Header/Header';
+import Spinner from '../../components/Spinner/Spinner';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import SidebarTitle from './components/SidebarTitle/SidebarTitle';
+
+import { useQuery } from '@apollo/react-hooks';
+import { GET_RUNTIME, formatSidebarData } from './dataModels';
 
 import styles from './Runtime.module.scss';
+
 
 const tabs = [
   {
@@ -48,6 +55,14 @@ type Props = {
   location: Location;
 };
 function Runtime({ history, location }: Props) {
+  const {runtimeId} = useParams();
+  const { data, loading, error } = useQuery(GET_RUNTIME, { variables: { runtimeId }});
+
+  if (error) return <p>ERROR</p>;
+  if (loading) return <Spinner />;
+
+  const sidebarData = formatSidebarData(data.runtime);
+
   return (
     <>
       <Header>
@@ -60,6 +75,7 @@ function Runtime({ history, location }: Props) {
         <NavigationBar />
         <Sidebar
           title='Runtime'
+          subheader={<SidebarTitle {...sidebarData} />}
           tabs={tabs}
           history={history}
           location={location}

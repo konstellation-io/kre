@@ -65,7 +65,7 @@ function MagicLink({ history }: Props) {
     const error = checkToken(token);
     
     if (!error) {
-      makeRequest({ token });
+      makeRequest({ otp: token });
     } else {
       setError(error);
     }
@@ -84,10 +84,10 @@ function MagicLink({ history }: Props) {
   useEffect(function() {
     if(!animationPending) {
       timeout.current = undefined;
-      if(error || (response && response.data !== 'OK')) {
+      if(error) {
         setStatus(STATES.ERROR);
         setError(error || DEFAULT_ERROR);
-      } else if (response.complete && response.data === 'OK') {
+      } else if (response.complete) {
         setStatus(STATES.SUCCESS);
         timeout.current = setTimeout(() => {
           history.push(PAGES.DASHBOARD);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDate } from '../../utils/format';
 
 import Spinner from '../Spinner/Spinner';
 
@@ -10,17 +11,6 @@ import styles from './UserActivityList.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 import {GET_USERS_ACTIVITY, formatUserActivity, UserActivity} from './dataModels';
 
-
-const formatOptions = {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit'
-};
-export function toDateTimeString(date:Date) {
-  return date.toLocaleString('en-us', formatOptions);
-}
 
 type Props = {
   filter?: string;
@@ -60,7 +50,7 @@ function UserActivityList({
         </div>
         <div className={styles.date}>
         <TimeIcon style={{ fontSize: '1rem' }} />
-        <p>{toDateTimeString(new Date(userActivityFormatted.date))}</p>
+        <p>{formatDate(new Date(userActivityFormatted.date), true)}</p>
         </div>
       </div>
     )
@@ -72,6 +62,5 @@ function UserActivityList({
     </>
   );
 }
-
 
 export default UserActivityList;

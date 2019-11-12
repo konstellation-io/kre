@@ -33,7 +33,7 @@
 }
 
 @mixin font-caption {
-  @include font-by-size(11px, 13px, bold);
+  @include font-by-size(11px, 14px, bold);
 }
 
 @mixin font-small {

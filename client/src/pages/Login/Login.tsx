@@ -44,7 +44,7 @@ function Login({ history }: Props) {
 
   useEffect(function() {
     if (response.complete) {
-      if (response.data === 'OK') {
+      if (!response.error) {
         history.push(PAGES.VERIFY_EMAIL);
       } else {
         setError('Unexpected error. Contact support for more information');

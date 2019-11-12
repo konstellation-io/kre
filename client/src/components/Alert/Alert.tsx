@@ -4,15 +4,17 @@ import * as PAGES from '../../constants/routes';
 
 import cx from 'classnames';
 import styles from './Alert.module.scss';
+import { History } from 'history';
 
 
 type Props = {
   type: string;
   message: string;
   runtimeId: string;
+  history: History;
 };
 
-function Alert({type, message, runtimeId}: Props) {
+function Alert({type, message, runtimeId, history}: Props) {
   return (
     <div className={styles.container}>
       <div className={cx(styles.label, styles[type])}>
@@ -21,7 +23,10 @@ function Alert({type, message, runtimeId}: Props) {
       <div className={styles.message} title={message}>{message}</div>
       <Button
         label='GO TO RUNTIME'
-        to={ PAGES.RUNTIME.replace(':runtimeId', runtimeId) }
+        onClick={() => history.push(
+          PAGES.RUNTIME.replace(':runtimeId', runtimeId),
+          { prevLocation: PAGES.DASHBOARD }
+        )}
       />
     </div>
   );
