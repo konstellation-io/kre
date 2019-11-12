@@ -28,7 +28,7 @@ function renderComponent(locationPath:string) {
 
 it('Render MagicLink without crashing', async () => {
   // @ts-ignore
-  axios.mockResolvedValue({ data: 'OK' });
+  axios.mockResolvedValue({ data: {message: "Email sent to the user"}, status: 200});
   const {container} = renderComponent(magicLinkWithTokenPath);
 
   expect(container).toMatchSnapshot();
@@ -38,7 +38,7 @@ it('Render MagicLink without crashing', async () => {
 
 it('handles success response', async () => {
   // @ts-ignore
-  axios.mockResolvedValue({ data: 'OK' });
+  axios.mockResolvedValue({ data: {message: "Email sent to the user"}, status: 200});
   const {getByText} = renderComponent(magicLinkWithTokenPath);
 
   // Wait for loading animation to finish
@@ -51,7 +51,7 @@ it('handles success response', async () => {
 
 it('handles error response', async () => {
   // @ts-ignore
-  axios.mockRejectedValue({ data: 'ERROR' });
+  axios.mockRejectedValue({response: { data: {code: "error"}, status: 400}});
   const {getByText} = renderComponent(magicLinkWithTokenPath);
 
   // Wait for loading animation to finish

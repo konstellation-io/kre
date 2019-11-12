@@ -88,7 +88,7 @@ describe('useEndpoint tests', () => {
   
   it('handles success request correctly', async () => {
     // @ts-ignore
-    axios.mockResolvedValue({ data: 'OK' });
+    axios.mockResolvedValue({ data: 'OK', status: 200});
       
     expect(response.complete).toBeFalsy();
 
@@ -107,7 +107,7 @@ describe('useEndpoint tests', () => {
   
   it('handles failure request correctly', async () => {
     // @ts-ignore
-    axios.mockRejectedValue();
+    axios.mockRejectedValue({response: { data: {code: "error"}, status: 400}});
       
     expect(response.complete).toBeFalsy();
 
@@ -119,7 +119,7 @@ describe('useEndpoint tests', () => {
       
     expect(response.complete).toBeTruthy();
     expect(response.pending).toBeFalsy();
-    expect(response.data).toBe(null);
+    expect(response.data.code).toBe('error');
     expect(response.error).toBeTruthy();
   });
 });

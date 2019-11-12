@@ -88,10 +88,16 @@ function MagicLink({ history }: Props) {
         setStatus(STATES.ERROR);
         setError(error || DEFAULT_ERROR);
       } else if (response.complete) {
-        setStatus(STATES.SUCCESS);
-        timeout.current = setTimeout(() => {
-          history.push(PAGES.DASHBOARD);
-        }, 2500) as any;
+        if (response.status === 200) {
+          setStatus(STATES.SUCCESS);
+          timeout.current = setTimeout(() => {
+            history.push(PAGES.DASHBOARD);
+          }, 2500) as any;
+        } else if (response.error && response.data.code === 'bad_otp_token') {
+          setError('Invalid OTP token');
+        } else {
+          setError('Unexpected error. Contact support for more information');
+        }        
       }
     }
   }, [response, history, animationPending, status, error]);

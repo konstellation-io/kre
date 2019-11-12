@@ -47,7 +47,7 @@ it('shows an error on summiting an invalid adress', () => {
 
 it('performs a login request', async () => {
   // @ts-ignore
-  axios.mockResolvedValue({ data: 'OK' });
+  axios.mockResolvedValue({ data: {message: "Email sent to the user"}, status: 200});
 
   const history = createMemoryHistory();
   const { getByText, container } = render(
@@ -70,7 +70,7 @@ it('performs a login request', async () => {
   expect(error.textContent).toBe('');
 
   // @ts-ignore
-  axios.mockRejectedValue('not-allowed');
+  axios.mockRejectedValue({response: { data: {code: "error"}, status: 400}});
 
   // Failure response
   await act(async () => {
