@@ -44,8 +44,10 @@ function Login({ history }: Props) {
 
   useEffect(function() {
     if (response.complete) {
-      if (!response.error) {
+      if (response && response.status === 200) {
         history.push(PAGES.VERIFY_EMAIL);
+      } else if (response.error && response.data.code === 'bad_email') {
+        setError('Invalid email');
       } else {
         setError('Unexpected error. Contact support for more information');
       }

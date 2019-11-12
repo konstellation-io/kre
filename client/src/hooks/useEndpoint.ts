@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export type Response = {
   data: any;
+  status?: number;
   complete: boolean;
   pending: boolean;
   error: boolean | string;
@@ -11,6 +12,7 @@ export type Response = {
 const apiURL = process.env.REACT_APP_API_URL;
 const defaultResponseState:Response = {
   data: null,
+  status: undefined,
   complete: false,
   pending: false,
   error: false
@@ -43,13 +45,16 @@ export default function useEndpoint({
         setResponse({
           ...defaultResponseState,
           data: response.data,
+          status: response.status,
           complete: true,
         });
       })
-      .catch(() => {
+      .catch(error => {
         setResponse({
           ...defaultResponseState,
           complete: true,
+          status: error.response.status,
+          data: error.response.data,
           error: true
         });
       });
