@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders SquaredButton without crashing 1`] = `
+<div>
+  <div
+    class="container"
+  >
+    <div
+      class="button"
+    >
+      DF
+    </div>
+  </div>
+</div>
+`;

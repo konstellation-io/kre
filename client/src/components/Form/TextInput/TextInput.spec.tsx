@@ -10,8 +10,8 @@ interface Handler {
 
 afterEach(cleanup);
 
-const getInput = (c:HTMLElement) => getByTestId(c, 'email-input') as HTMLInputElement;
-const getLabel = (c:HTMLElement) => getByTestId(c, 'email-label') as HTMLLabelElement;
+const getInput = (c:HTMLElement) => getByTestId(c, 'input') as HTMLInputElement;
+const getLabel = (c:HTMLElement) => getByTestId(c, 'label') as HTMLLabelElement;
 const getClear = (c:HTMLElement) => getByTestId(c, 'clear-button');
 
 function checkTexts(

@@ -1,0 +1,44 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+@import '../../styles/variables';
+
+.container {
+  position: relative;
+  width: 100%;
+  margin: 12px auto;
+  padding-left: 15px;
+}
+
+.button {
+  @include font-button;
+
+  width: 40px;
+  height: 40px;
+  background-color: $color-grey;
+  line-height: 47px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color linear 0.2s, box-shadow linear 0.2s;
+
+  &:hover {
+    background-color: #38a7c1;
+    color: $font-color-dark;
+    box-shadow: -26px -2px 29px -2px rgba($color-bright-blue, 0.3);
+  }
+
+  &.active {
+    background-color: $color-bright-blue;
+    color: $font-color-dark;
+    box-shadow: -26px -2px 29px -2px rgba($color-bright-blue, 0.4);
+  }
+
+  &.active:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 4px;
+    height: 40px;
+    background-color: $color-bright-blue;
+  }
+}

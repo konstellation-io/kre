@@ -1,0 +1,40 @@
+@import '../../styles/mixins';
+
+.row {
+  @include font-body;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 35px;
+  border-bottom: solid 2px #15161a;
+}
+
+.userWithIcon,
+.date {
+  display: flex;
+  flex-direction: row;
+  line-height: 14px;
+  
+  svg {
+    line-height: 20px;
+  }
+}
+.user {
+  color: white;
+  margin: 0 0 0 10px;
+}
+
+.message {
+  margin: 5px 0 0 25px;
+  padding-right: 45px;
+}
+
+.date {
+  white-space: nowrap;
+
+  p {
+    margin: 0 0 0 10px;
+  }
+}

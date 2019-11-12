@@ -25,13 +25,13 @@ exports[`Render Login without crashing 1`] = `
           >
             <label
               class="label"
-              data-testid="email-label"
+              data-testid="label"
             >
               EMAIL
             </label>
             <input
               class="input"
-              data-testid="email-input"
+              data-testid="input"
               placeholder=""
               style="height: 40px;"
               type="text"
@@ -47,9 +47,12 @@ exports[`Render Login without crashing 1`] = `
             class="buttons"
           >
             <div
-              class="btn primary"
+              class="btn default middle primary"
+              style="height: 40px; line-height: 40px;"
             >
-              Send me a login link
+              <span>
+                SEND ME A LOGIN LINK
+              </span>
             </div>
           </div>
         </div>

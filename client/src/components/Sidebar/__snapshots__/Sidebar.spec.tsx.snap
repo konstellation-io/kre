@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders Sidebar without crashing 1`] = `
+<div>
+  <div
+    class="container"
+  >
+    <div
+      class="header"
+    >
+      <div
+        class="back"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          role="presentation"
+          style="font-size: 1rem;"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"
+          />
+        </svg>
+        <span
+          class="title"
+        >
+          SIDEBAR
+        </span>
+      </div>
+      <div
+        class="description"
+      />
+    </div>
+    <div
+      class="navButtons"
+    >
+      <div
+        class="container"
+      >
+        <a
+          data-testid="buttonLink"
+          href="/settings/general"
+        >
+          <div
+            class="btn transparent left label"
+            style="height: 56px; line-height: 56px;"
+          >
+            <span>
+              GENERAL
+            </span>
+          </div>
+        </a>
+        <a
+          data-testid="buttonLink"
+          href="/settings/security"
+        >
+          <div
+            class="btn transparent left label"
+            style="height: 56px; line-height: 56px;"
+          >
+            <span>
+              SECURITY
+            </span>
+          </div>
+        </a>
+        <a
+          data-testid="buttonLink"
+          href="/settings/audit"
+        >
+          <div
+            class="btn transparent left label"
+            style="height: 56px; line-height: 56px;"
+          >
+            <span>
+              AUDIT
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;

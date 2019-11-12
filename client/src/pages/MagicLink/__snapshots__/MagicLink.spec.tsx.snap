@@ -1,0 +1,867 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render MagicLink without crashing 1`] = `
+<div>
+  <div
+    class="bg"
+  >
+    <div
+      class="grid"
+    >
+      <div
+        class="container"
+      >
+        <h1>
+          Connecting to KRE
+        </h1>
+        <p
+          class="subtitle"
+        >
+          It will take a moment
+        </p>
+        <div
+          class="loaderContainer"
+          style="width: 250px; height: 250px;"
+        >
+          <div
+            style="width: 250px; height: 250px; overflow: hidden; margin: 0px auto; outline: none;"
+          >
+            <svg
+              height="240"
+              preserveAspectRatio="xMidYMid meet"
+              style="width: 100%; height: 100%; transform: translate3d(0,0,0);"
+              viewBox="0 0 240 240"
+              width="240"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <clippath
+                  id="__lottie_element_2"
+                >
+                  <rect
+                    height="240"
+                    width="240"
+                    x="0"
+                    y="0"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_4"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_9"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_19"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_29"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_39"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_49"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_59"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_69"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_79"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_89"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <radialgradient
+                  cx="0"
+                  cy="0"
+                  fx="0"
+                  fy="0"
+                  gradientUnits="userSpaceOnUse"
+                  id="__lottie_element_122"
+                  r="87"
+                  spreadMethod="pad"
+                >
+                  <stop
+                    offset="0%"
+                    stop-color="rgb(0,207,255)"
+                    stop-opacity="1"
+                  />
+                  <stop
+                    offset="50%"
+                    stop-color="rgb(0,207,255)"
+                    stop-opacity="0.5"
+                  />
+                  <stop
+                    offset="100%"
+                    stop-color="rgb(0,207,255)"
+                    stop-opacity="0"
+                  />
+                </radialgradient>
+                <clippath
+                  id="__lottie_element_124"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_135"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_145"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+                <clippath
+                  id="__lottie_element_170"
+                >
+                  <path
+                    d="M0,0 L240,0 L240,240 L0,240z"
+                  />
+                </clippath>
+              </defs>
+              <g
+                clip-path="url(#__lottie_element_2)"
+              >
+                <g
+                  clip-path="url(#__lottie_element_170)"
+                  style="display: none;"
+                >
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                      <path />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                      <path />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                </g>
+                <g
+                  clip-path="url(#__lottie_element_145)"
+                  style="display: none;"
+                >
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                </g>
+                <g
+                  clip-path="url(#__lottie_element_135)"
+                  style="display: none;"
+                >
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                </g>
+                <g
+                  clip-path="url(#__lottie_element_124)"
+                  style="display: none;"
+                >
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path />
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                </g>
+                <g
+                  clip-path="url(#__lottie_element_4)"
+                  opacity="1"
+                  style="display: block;"
+                  transform="matrix(1,0,0,1,0,0)"
+                >
+                  <g
+                    opacity="1"
+                    style="display: block;"
+                    transform="matrix(0.05000000074505806,0,0,0.05000000074505806,120,120)"
+                  >
+                    <path
+                      d=" M0,-89.43 C49.36,-89.43 89.43,-49.36 89.43,0 C89.43,49.36 49.36,89.43 0,89.43 C-49.36,89.43 -89.43,49.36 -89.43,0 C-89.43,-49.36 -49.36,-89.43 0,-89.43z"
+                      fill="url(#__lottie_element_122)"
+                      fill-opacity="1"
+                    />
+                    <g
+                      opacity="1"
+                      transform="matrix(0.5961899757385254,0,0,0.5961899757385254,0,0)"
+                    >
+                      <path
+                        d="M0 0"
+                        fill-opacity="0"
+                        stroke="rgb(255,255,255)"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                        stroke-opacity="1"
+                        stroke-width="1"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    opacity="1"
+                    style="display: block;"
+                    transform="matrix(0.05000000074505806,0,0,0.05000000074505806,120,120)"
+                  >
+                    <g
+                      opacity="1"
+                      transform="matrix(1,0,0,1,0,0)"
+                    >
+                      <path
+                        d=" M0,-65 C35.87350082397461,-65 65,-35.87350082397461 65,0 C65,35.87350082397461 35.87350082397461,65 0,65 C-35.87350082397461,65 -65,35.87350082397461 -65,0 C-65,-35.87350082397461 -35.87350082397461,-65 0,-65z"
+                        fill="rgb(0,0,0)"
+                        fill-opacity="1"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    style="display: none;"
+                  >
+                    <g>
+                      <path
+                        fill-opacity="0"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="4"
+                      />
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_89)"
+                    opacity="1"
+                    style="display: block;"
+                    transform="matrix(1,0,0,1,0,0)"
+                  >
+                    <g
+                      opacity="0.2"
+                      style="display: block;"
+                      transform="matrix(0,0,0,0,120,120)"
+                    >
+                      <g
+                        opacity="1"
+                        transform="matrix(1,0,0,1,0,0)"
+                      >
+                        <path
+                          d=" M0,-120 C66.22799682617188,-120 120,-66.22799682617188 120,0 C120,66.22799682617188 66.22799682617188,120 0,120 C-66.22799682617188,120 -120,66.22799682617188 -120,0 C-120,-66.22799682617188 -66.22799682617188,-120 0,-120z"
+                          fill="rgb(0,207,255)"
+                          fill-opacity="1"
+                        />
+                        <path
+                          d="M0 0"
+                          fill-opacity="0"
+                          stroke="rgb(255,255,255)"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                          stroke-opacity="1"
+                          stroke-width="1"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_79)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_69)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_59)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_49)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_39)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_29)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_19)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    clip-path="url(#__lottie_element_9)"
+                    style="display: none;"
+                  >
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                    <g
+                      style="display: none;"
+                    >
+                      <g>
+                        <path />
+                        <path
+                          fill-opacity="0"
+                          stroke-linecap="butt"
+                          stroke-linejoin="miter"
+                          stroke-miterlimit="4"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <div
+            class="innerContainer initializing"
+          >
+            LOADING
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

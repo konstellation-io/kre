@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders NavigationBar without crashing 1`] = `
+<div>
+  <div
+    class="container"
+  >
+    <div
+      class="container"
+    >
+      <div
+        class="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          role="presentation"
+          style="font-size: 1rem;"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 7.77L18.39 18H5.61L12 7.77M12 4L2 20h20L12 4z"
+          />
+        </svg>
+      </div>
+    </div>
+    <div
+      class="container"
+    >
+      <div
+        class="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          role="presentation"
+          style="font-size: 1rem;"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;

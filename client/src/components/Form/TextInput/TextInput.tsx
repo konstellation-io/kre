@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+
+import {isFieldAnInteger} from '../../Form/check'; 
+
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
+
 
 type Props = {
   onSubmit?: Function;
@@ -19,6 +22,8 @@ type Props = {
   error?: string;
   showClearButton?: boolean;
   whiteColor?: boolean;
+  onlyNumbers?: boolean;
+  defaultValue?: any;
 };
 
 function TextInput({
@@ -32,14 +37,26 @@ function TextInput({
   error = '',
   showClearButton = false,
   whiteColor = false,
-}: Props = {}) {
-  const [value, setValue] = useState('');
+  onlyNumbers = false,
+  defaultValue = '',
+}: Props) {
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue, setValue]);
+
+  function updateValue(newValue:any) {
+    if (!onlyNumbers || (onlyNumbers && isFieldAnInteger(newValue).valid)) {
+      setValue(newValue);
+      onChange(newValue);
+    }
+  }
 
   function onType(e: any) {
     const value = e.target.value;
 
-    setValue(value);
-    onChange(value);
+    updateValue(value);
   }
 
   function onKeyPress(e: any) {
@@ -59,14 +76,14 @@ function TextInput({
     style: { ...limits, height },
   };
   const inputElement = textArea ? (
-    <textarea {...inputProps} data-testid="email-input" />
+    <textarea {...inputProps} data-testid="input" />
   ) : (
-    <input {...inputProps} type="text" data-testid="email-input" />
+    <input {...inputProps} type="text" data-testid="input" />
   );
   const cleanButton = showClearButton && value !== '' ?
     <div
       className={ styles.clearButton }
-      onClick={ () => setValue('') }
+      onClick={ () => updateValue('')}
       data-testid="clear-button"
     >x</div>
     : '';
@@ -76,7 +93,7 @@ function TextInput({
       [styles.white]: whiteColor,
       [styles.hasClearButton]: showClearButton
     })}>
-      <label className={styles.label} data-testid="email-label">
+      <label className={styles.label} data-testid="label">
         {label.toUpperCase()}
       </label>
       {inputElement}
@@ -90,30 +107,5 @@ function TextInput({
     </div>
   );
 }
-
-TextInput.propTypes = {
-  /** Additional logic to execute after summiting */
-  onSubmit: PropTypes.func,
-  /** Additional logic to execute after updating the input value */
-  onChange: PropTypes.func,
-  placeholder: PropTypes.string,
-  /** Label showed at the top of the input */
-  label: PropTypes.string,
-  /** If true, text input will accept multiline input */
-  textArea: PropTypes.bool,
-  height: PropTypes.number,
-  /** limits the size textarea can grow to */
-  limits: PropTypes.shape({
-    minWidth: PropTypes.number,
-    maxWidth: PropTypes.number,
-    minHeight: PropTypes.number,
-    maxHeight: PropTypes.number,
-  }),
-  error: PropTypes.string,
-  /** Adds an 'x' button to clear the input */
-  showClearButton: PropTypes.bool,
-  /** font color will be brighter */
-  whiteColor: PropTypes.bool,
-};
 
 export default TextInput;

@@ -7,11 +7,11 @@ exports[`render TextInput without crashing 1`] = `
   >
     <label
       class="label"
-      data-testid="email-label"
+      data-testid="label"
     />
     <input
       class="input"
-      data-testid="email-input"
+      data-testid="input"
       placeholder=""
       style="height: 40px;"
       type="text"

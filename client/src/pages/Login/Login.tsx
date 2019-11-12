@@ -1,42 +1,58 @@
-import React, {useState, useEffect} from 'react';
+import React, { useEffect } from 'react';
+import useInput from '../../hooks/useInput';
+import useEndpoint from '../../hooks/useEndpoint';
+
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
+import * as PAGES from '../../constants/routes';
+import { ENDPOINT } from '../../constants/application';
+
 import styles from './Login.module.scss';
 
-function isEmailInvalid(value: string) {
-  return (
-    CHECK.isFieldEmpty(value) ||
-    CHECK.isFieldNotAnString(value) ||
-    CHECK.isEmailNotValid(value)
-  );
+
+function verifyEmail(value: string) {
+  return CHECK.getValidationError([
+    CHECK.isFieldNotEmpty(value),
+    CHECK.isFieldAnString(value),
+    CHECK.isEmailValid(value)
+  ]);
 }
 
-function Login() {
-  const [emailField, setEmailField] = useState('');
-  const [invalidEmailText, setInvalidEmailText] = useState('');
+type Props = {
+  history: any;
+};
 
-  // Resets error warnings after introducing text in an input field
-  useEffect(() => setInvalidEmailText(''), [emailField]);
+function Login({ history }: Props) {
+  const {
+    value,
+    isValid,
+    onChange,
+    error,
+    setError
+  } = useInput('', verifyEmail);
+  const [response, makeRequest] = useEndpoint({
+    endpoint: ENDPOINT.SUBMIT_MAGIC_LINK,
+    method: 'POST'
+  });
 
   function onSubmit() {
-    const emailIsInvalid = isEmailInvalid(emailField);
-
-    setInvalidEmailText(emailIsInvalid || '');
-
-    // If email is valid, make the request
-    if (!emailIsInvalid) {
-      // TODO: Create login request
-      const loginOk = true;
-
-      if (loginOk) {
-        console.log('Login successfully');
-        //history.push(PAGES.SHOW_PROJECTS);
-      } else {
-        console.log('Cannot make login');
-      }
+    if(isValid()) {
+      makeRequest({ email: value });
     }
   }
+
+  useEffect(function() {
+    if (response.complete) {
+      if (response && response.status === 200) {
+        history.push(PAGES.VERIFY_EMAIL);
+      } else if (response.error && response.data.code === 'bad_email') {
+        setError('Invalid email');
+      } else {
+        setError('Unexpected error. Contact support for more information');
+      }
+    }
+  }, [response, history, setError]);
 
   return (
     <div className={ styles.bg }>
@@ -46,18 +62,19 @@ function Login() {
           <h1>enter your email address</h1>
           <div className={ styles.content }>
             <TextInput
-              showClearButton
               whiteColor
               label="email"
-              error={invalidEmailText}
-              onChange={(newValue: string) => setEmailField(newValue)}
+              error={error}
+              onChange={onChange}
               onSubmit={onSubmit}
+              showClearButton
             />
             <div className={ styles.buttons }>
               <Button
-                label="Send me a login link"
-                onClick={onSubmit}
                 primary
+                label="SEND ME A LOGIN LINK"
+                onClick={onSubmit}
+                loading={ response.pending }
               />
             </div>
           </div>

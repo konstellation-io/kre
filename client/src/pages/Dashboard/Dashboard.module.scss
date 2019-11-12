@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.content {
+  height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.hexagons {
+  overflow: auto;
+  height: 100%;
+}
