@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import HorizontalBar from '../Layout/HorizontalBar/HorizontalBar';
 import Button from '../Button/Button';
 
+import cx from 'classnames';
 import styles from './Modal.module.scss';
 
 
@@ -11,15 +12,29 @@ type Props = {
   message: String;
 };
 
-function Modal({}: Props) {
+function Modal({title, message}: Props) {
   const [isVisible, setIsVisible] = useState(true);
 
-  function onCalcelClick() {
+  function onCancelClick() {
     setIsVisible(false);
   }
 
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, {
+      [styles.visible]: isVisible
+    })}>
+      <div className={styles.title}>{title}</div>
+      <div className={styles.message}>{message}</div>
+      <HorizontalBar>
+        <Button
+          label={'NEW VERSION'}
+          to='/'
+        />
+        <Button
+          label={'CANCEL'}
+          onClick={onCancelClick}
+        />
+      </HorizontalBar>
     </div>
   );
 }

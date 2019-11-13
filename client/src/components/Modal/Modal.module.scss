@@ -3,4 +3,17 @@
 
 
 .container {
+  display: none;
+
+  &.visible {
+    display: inherit;
+  }
+}
+
+.title {
+  @include font-caption;
+  color: white;
+}
+
+.message {
 }
