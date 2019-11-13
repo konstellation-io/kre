@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render DomainList without crashing 1`] = `
+<div>
+  <div
+    class="row"
+  >
+    <p
+      class="domainPosition"
+    >
+      1
+    </p>
+    <p
+      class="domainName"
+      data-testid="domainListName0"
+    >
+      domain.1
+    </p>
+    <div
+      class="removeButton"
+      data-testid="domainListRemove0"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root"
+        focusable="false"
+        role="presentation"
+        style="font-size: 1rem;"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+        />
+      </svg>
+    </div>
+  </div>
+  <div
+    class="row"
+  >
+    <p
+      class="domainPosition"
+    >
+      2
+    </p>
+    <p
+      class="domainName"
+      data-testid="domainListName1"
+    >
+      domain.2
+    </p>
+    <div
+      class="removeButton"
+      data-testid="domainListRemove1"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root"
+        focusable="false"
+        role="presentation"
+        style="font-size: 1rem;"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+        />
+      </svg>
+    </div>
+  </div>
+  <div
+    class="row"
+  >
+    <p
+      class="domainPosition"
+    >
+      3
+    </p>
+    <p
+      class="domainName"
+      data-testid="domainListName2"
+    >
+      domain.3.sample
+    </p>
+    <div
+      class="removeButton"
+      data-testid="domainListRemove2"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root"
+        focusable="false"
+        role="presentation"
+        style="font-size: 1rem;"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>
+`;

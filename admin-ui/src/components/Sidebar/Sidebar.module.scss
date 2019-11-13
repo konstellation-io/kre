@@ -1,0 +1,47 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.container {
+  width: 204px;
+  height: 100%;
+  flex-shrink: 0;
+  background-color: $color-sidebar;
+}
+
+.header {
+  width: 100%;
+}
+
+.back {
+  @include font-subheader;
+  color: $font-color-white;
+
+  padding: 17px 26px 20px 17px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+
+  svg {
+    margin-right: 18px;
+    color: $font-color;
+    transition: color ease 0.4s;
+  }
+
+  &:hover {
+    font-weight: bold;
+
+    svg {
+      color: white;
+    }
+  }
+}
+
+.description {
+  @include font-body;
+
+  padding: 0 26px 0 17px;
+}
+
+.navButtons {
+  margin-top: 30px;
+}

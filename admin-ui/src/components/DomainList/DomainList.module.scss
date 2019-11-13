@@ -1,0 +1,33 @@
+@import '../../styles/mixins';
+
+.row {
+  @include font-body;
+  font-weight: 600;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 11px 20px 11px 60px;
+  border-bottom: solid 2px #15161a;
+}
+
+.domainPosition {
+  margin-right: 15px;
+}
+
+.domainName {
+  flex-grow: 1;
+}
+
+.removeButton {
+  cursor: pointer;
+  transition: color ease 0.4s;
+  width: 46px;
+  height: 46px;
+  line-height: 46px;
+  text-align: center;
+
+  &:hover {
+    color: white;
+  }
+}

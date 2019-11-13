@@ -1,0 +1,89 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin: 40px 40px 0 85px;
+  min-width: 540px;
+}
+.generalSettings {
+  .label {
+    margin-left: 40px !important;
+  }
+}
+.securitySettings {
+  margin: 40px 40px 75px 85px;
+
+  .formField {
+    justify-content: space-between;
+  }
+
+  .label {
+    margin: 0 9vw 0 20px !important;
+  }
+  .input {
+    width: auto;
+    flex-grow: 1;
+  }
+  .button {
+    margin-left: 2vw;
+  }
+
+  .domains {
+    flex-grow: 1;
+    flex-basis: 0;
+    overflow: auto;
+  }
+}
+
+.formTitle {
+  @include font-subheader;
+  color: $font-color-white;
+}
+
+.formDescription {
+  @include font-body;
+
+  margin-top: 10px;
+}
+
+.formField {
+  height: 140px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 30px;
+  border: solid 2px $bg-color-lighter;
+  border-width: 2px 0;
+
+  .label {
+    @include font-body;
+    color: $font-color-white;
+
+    margin: 0 40px 0 30px;
+  }
+
+  svg {
+    margin-left: 20px;
+  }
+
+  .input {
+    width: 140px;
+  }
+}

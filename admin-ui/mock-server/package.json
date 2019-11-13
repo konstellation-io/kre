@@ -1,0 +1,31 @@
+{
+  "name": "konstellation_runtime_apollo_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "nodemon src/index.js",
+    "start:ci": "node src/index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.9.8",
+    "apollo-server-express": "^2.9.7",
+    "casual": "^1.6.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "graphql": "^14.2.1",
+    "nodemon": "^1.18.4"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__utils"
+    ]
+  }
+}

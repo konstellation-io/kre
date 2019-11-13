@@ -1,0 +1,49 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.container {
+  @include font-button;
+  position: relative;
+  line-height: 40px;
+  height: 40px;
+  text-align: center;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: color ease 0.4s;
+  color: $font-color;
+  background-color: black;
+  z-index: 1;
+
+  &:hover {
+    color: $font-color-white;
+
+    .arrow {
+      border-color: white;
+    }
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+}
+
+.label {
+  display: flex;
+  flex-direction: row;
+  padding: 0 20px;
+}
+
+.arrow {
+  margin: 16px 0 0 10px;
+  height: 6px;
+  width: 6px;
+  border-right: 1px solid $font-color;
+  border-bottom: 1px solid $font-color;
+  transform: rotateZ(45deg);
+}
+
+.options {
+  transition: max-height ease 0.3s;
+  overflow: hidden;
+  box-shadow: black 0px 4px 7px;
+}
