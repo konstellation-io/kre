@@ -8,11 +8,13 @@ import styles from './Modal.module.scss';
 
 
 type Props = {
-  title: String;
-  message: String;
+  title: string;
+  message: string;
+  actionButtonLabel: string;
+  to?: string;
 };
 
-function Modal({title, message}: Props) {
+function Modal({title, message, actionButtonLabel, to = '/'}: Props) {
   const [isVisible, setIsVisible] = useState(true);
 
   function onCancelClick() {
@@ -27,12 +29,17 @@ function Modal({title, message}: Props) {
       <div className={styles.message}>{message}</div>
       <HorizontalBar>
         <Button
-          label={'NEW VERSION'}
-          to='/'
+          primary
+          label={actionButtonLabel}
+          to={to}
+          height={30}
+          style={{ width: '122px', padding: '0 0' }}
         />
         <Button
           label={'CANCEL'}
           onClick={onCancelClick}
+          height={30}
+          style={{ width: '122px', padding: '0 0' }}
         />
       </HorizontalBar>
     </div>

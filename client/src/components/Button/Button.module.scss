@@ -7,12 +7,17 @@
   position: relative;
   text-align: center;
   padding: 0 42px;
+  white-space: nowrap;
   cursor: pointer;
   transition: color ease 0.4s, background-color ease 0.4s;
 
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  span {
+    width: 100%;
+  }
 
   svg {
     margin-right: 14%;

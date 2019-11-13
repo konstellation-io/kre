@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Route, useParams } from 'react-router-dom';
 import { History, Location } from 'history';
 import * as ROUTE from '../../constants/routes';
 
@@ -9,6 +9,7 @@ import DocumentationIcon from '@material-ui/icons/Toc';
 import TimeIcon from '@material-ui/icons/AccessTime';
 import ConfigIcon from '@material-ui/icons/Settings';
 
+import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
 import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
@@ -25,7 +26,7 @@ import styles from './Runtime.module.scss';
 const tabs = [
   {
     label: 'STATUS',
-    route: ROUTE.HOME,
+    route: ROUTE.RUNTIME_STATUS,
     Icon: StatusIcon
   },
   {
@@ -81,8 +82,8 @@ function Runtime({ history, location }: Props) {
           location={location}
         />
         <div className={styles.content}>
-          {/* <Route exact path={ROUTE.SETTINGS_GENERAL} component={GeneralSettings} />
-          <Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
+          <Route exact path={ROUTE.RUNTIME_STATUS} component={RuntimeStatus} />
+          {/*<Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
           <Route exact path={ROUTE.SETTINGS_AUDIT} component={AuditSettings} /> */}
         </div>
       </div>

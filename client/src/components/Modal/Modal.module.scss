@@ -4,6 +4,14 @@
 
 .container {
   display: none;
+  padding: 14px 0 0 21px;
+  background-color: black;
+  max-width: 278px;
+
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -25%);
 
   &.visible {
     display: inherit;
@@ -16,4 +24,8 @@
 }
 
 .message {
+  @include font-body;
+  font-weight: 500;
+
+  margin: 20px 21px 65px 0;
 }
