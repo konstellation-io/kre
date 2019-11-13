@@ -9,31 +9,18 @@
     "start:ci": "node src/index.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "apollo-datasource": "^0.1.3",
-    "apollo-server": "2.6.1",
+    "apollo-server": "^2.9.8",
     "apollo-server-express": "^2.9.7",
-    "apollo-server-testing": "2.6.1",
     "casual": "^1.6.2",
     "cors": "^2.8.5",
-    "dotenv": "^6.1.0",
     "express": "^4.17.1",
     "graphql": "^14.2.1",
-    "nodemon": "^1.18.4",
-    "pg": "^7.12.1",
-    "pg-hstore": "^2.3.3",
-    "sequelize": "^4.39.0",
-    "sequelize-cli": "^5.5.1"
+    "nodemon": "^1.18.4"
   },
   "devDependencies": {
-    "apollo": "^2.1.8",
-    "apollo-link": "^1.2.3",
-    "apollo-link-http": "^1.5.5",
-    "jest": "^23.6.0",
-    "nock": "^10.0.2",
-    "node-fetch": "^2.2.1",
-    "now": "^12.1.3"
+    "jest": "^23.6.0"
   },
   "jest": {
     "testPathIgnorePatterns": [
