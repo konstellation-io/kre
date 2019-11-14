@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import useInput from '../../hooks/useInput';
+import useForm from '../../hooks/useForm';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Select from '../../components/Form/Select/Select';
@@ -19,15 +19,31 @@ function verifyRuntimeName(value: string) {
   ]);
 }
 
+const inputs = [
+  {
+    defaultValue: '',
+    verifier: verifyRuntimeName,
+    id: 'name'
+  },
+  {
+    defaultValue: '',
+    verifier: verifyRuntimeName,
+    id: 'type'
+  }
+];
+const versionTypes = [
+  'Fix some issues',
+  'Compatible changes',
+  'Breaking changes'
+];
+
 type Props = {
   history: any;
 };
 
 function AddVersion({ history }: Props) {
-  const { value, isValid, onChange, error, setError } = useInput(
-    '',
-    verifyRuntimeName
-  );
+  const form = useForm(inputs);
+
   const [
     addVersion,
     { loading, error: mutationError }
@@ -35,19 +51,19 @@ function AddVersion({ history }: Props) {
 
   useEffect(() => {
     if (mutationError) {
-      setError(mutationError.toString());
+      form.name.setError(mutationError.toString());
     }
-  }, [mutationError, setError]);
+  }, [mutationError, form]);
 
   function onCompleteAddVersion(updatedData: any) {
     // TODO: CHECK FOR API ERRORS
-    console.log(`${value} version created`);
+    console.log(`${form.name.value} version created`);
     history.push(PAGES.RUNTIME_VERSIONS);
   }
 
   function onSubmit() {
-    if (isValid()) {
-      addVersion({ variables: { name: value } });
+    if (form.name.isValid()) {
+      addVersion({ variables: { name: form.name.value } });
     }
   }
 
@@ -64,11 +80,16 @@ function AddVersion({ history }: Props) {
             <TextInput
               whiteColor
               label="version name"
-              error={error}
-              onChange={onChange}
+              error={form.name.error}
+              onChange={form.name.onChange}
               onSubmit={onSubmit}
             />
-            <Select label="version type" options={['A', 'B', 'C']} />
+            <Select
+              label="version type"
+              options={versionTypes}
+              error={form.type.error}
+              onChange={form.type.onChange}
+            />
             <div className={styles.buttons}>
               <Button
                 primary

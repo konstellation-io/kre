@@ -33,57 +33,55 @@ function Select({
     setSelectedOption(options[defaultOptionPosition]);
   }, [options, defaultOptionPosition, setSelectedOption]);
 
-  function handleClose() {
-    document.removeEventListener('contextmenu', handleClose);
-    if (containerEl.current) {
-      // @ts-ignore
-      containerEl.current.removeEventListener('scroll', handleClose);
-    }
+  /*
+   * Adds or removes event listeners and updates options visibility
+   */
+  function changeOptionsState(show: boolean = false) {
+    const listenerAction = show ? 'addEventListener' : 'removeEventListener';
 
-    setOptionsOpened(false);
+    document[listenerAction]('contextmenu', handleClickOutside);
+    document[listenerAction]('click', handleClose);
+    // @ts-ignore
+    containerEl.current[listenerAction]('scroll', handleClose);
+
+    setOptionsOpened(show);
+  }
+
+  function openOptions() {
+    if (!optionsOpened) changeOptionsState(true);
+  }
+
+  function handleClose() {
+    changeOptionsState(false);
   }
 
   function handleClickOutside(e: any) {
-    document.removeEventListener('contextmenu', handleClickOutside);
-
     // Has the user clicked outside the selector options?
     // @ts-ignore
     if (inputEl.current && !inputEl.current.contains(e.target)) {
+      document.removeEventListener('contextmenu', handleClickOutside);
       setOptionsOpened(false);
     }
   }
 
   function handleOnOptionCLick(value: string) {
-    //onClick(value);
-
     document.removeEventListener('contextmenu', handleClickOutside);
+
     setOptionsOpened(false);
+    updateValue(value);
   }
-
-  function openOptions() {
-    document.addEventListener('contextmenu', handleClickOutside);
-    document.addEventListener('mousedown', handleClose);
-    // @ts-ignore
-    containerEl.current.addEventListener('scroll', handleClose);
-
-    setOptionsOpened(true);
-  }
-
-  //onClick: () => this.handleOnOptionCLick(option.text)
 
   function updateValue(newValue: any) {
     setSelectedOption(newValue);
     onChange(newValue);
   }
 
-  function onValueChange(e: any) {
-    const value = e.target.value;
-
-    updateValue(value);
-  }
-
   const optionList = options.map((option: string, idx: number) => (
-    <div key={`selectOption_${idx}`} className={styles.optionElement}>
+    <div
+      key={`selectOption_${idx}`}
+      className={styles.optionElement}
+      onClick={() => handleOnOptionCLick(option)}
+    >
       {option}
     </div>
   ));
@@ -101,7 +99,10 @@ function Select({
       </label>
       <div className={styles.inputContainer}>
         <div
-          className={cx(styles.input, { [styles.error]: error !== '' })}
+          className={cx(styles.input, {
+            [styles.error]: error !== '',
+            [styles.opened]: optionsOpened
+          })}
           style={{ height }}
           onClick={openOptions}
           ref={inputEl}
