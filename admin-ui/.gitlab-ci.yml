@@ -1,0 +1,51 @@
+test-admin-ui:
+  stage: test
+  image: node:10
+  before_script:
+    - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+    - apt update && apt install yarn -y
+    - cd admin-ui
+    - yarn install
+  script:
+    - yarn run test:cov:ci
+  coverage: '/Statements   : \d+\.\d+/'
+  only:
+    refs:
+      - branches
+    changes:
+      - admin-ui/**/*
+
+release-admin-ui:
+  stage: semantic-release
+  image: node:10
+  before_script:
+    - npm install --prefix admin-ui
+  script:
+    - cd admin-ui && npx semantic-release -e semantic-release-monorepo
+  only:
+    refs:
+      - master
+    changes:
+      - admin-ui/**/*
+
+publish-admin-ui-image:
+  stage: publish-image
+  image: docker:18-git
+  services:
+    - docker:18-dind
+  variables:
+    IMAGE_PROJECT_NAME: "konstellation/kre-admin-ui"
+    DOCKER_USER: $DOCKER_USER
+    DOCKER_PASS: $DOCKER_PASS
+  before_script:
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  script:
+    - TAG=${CI_COMMIT_TAG#admin-ui-v}
+    - docker build -t $IMAGE_PROJECT_NAME:$TAG admin-ui
+    - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
+    - docker push $IMAGE_PROJECT_NAME:$TAG
+    - docker push $IMAGE_PROJECT_NAME:latest
+
+  only:
+    refs:
+      - /^admin-ui-v\d*.\d*.\d*$/

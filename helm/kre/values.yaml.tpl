@@ -3,7 +3,7 @@
 api:
   image:
     repository: konstellation/kre-api
-    tag: ${API_IMAGE_TAG}
+    tag: ${ADMIN_API_IMAGE_TAG}
     pullPolicy: Always
   service:
     port: 3000

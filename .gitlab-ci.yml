@@ -1,4 +1,5 @@
 stages:
+  - test
   - semantic-release
   - build
   - publish-image
@@ -12,4 +13,5 @@ variables:
 
 include:
   - local: admin-api/.gitlab-ci.yml
+  - local: admin-ui/.gitlab-ci.yml
   - local: helm/.gitlab-ci.yml
