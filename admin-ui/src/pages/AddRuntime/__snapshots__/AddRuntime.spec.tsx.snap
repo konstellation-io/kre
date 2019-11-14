@@ -12,22 +12,24 @@ exports[`Renders AddRuntime without crashing 1`] = `
         class="container"
       >
         <h1>
-          Please
+          Add Runtime
         </h1>
-        <h1>
-          enter your email address
-        </h1>
+        <p
+          class="subtitle"
+        >
+          Cras quis nulla commodo, aliquam lectus sed, blandit augue. Cras ullamcorper bibendum bibendum.
+        </p>
         <div
           class="content"
         >
           <div
-            class="container white hasClearButton"
+            class="container white"
           >
             <label
               class="label"
               data-testid="label"
             >
-              EMAIL
+              RUNTIME NAME
             </label>
             <input
               class="input"
@@ -51,9 +53,22 @@ exports[`Renders AddRuntime without crashing 1`] = `
               style="height: 40px; line-height: 40px;"
             >
               <span>
-                SEND ME A LOGIN LINK
+                SAVE
               </span>
             </div>
+            <a
+              data-testid="buttonLink"
+              href="/dashboard"
+            >
+              <div
+                class="btn default middle label"
+                style="height: 40px; line-height: 40px;"
+              >
+                <span>
+                  CANCEL
+                </span>
+              </div>
+            </a>
           </div>
         </div>
       </div>
