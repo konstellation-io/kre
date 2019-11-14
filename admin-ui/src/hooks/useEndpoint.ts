@@ -9,7 +9,7 @@ export type Response = {
   error: boolean | string;
 };
 
-const apiURL = process.env.REACT_APP_API_URL;
+const apiURL = `${process.env.REACT_APP_API_BASE}${process.env.REACT_APP_AUTH_PATH}`;
 const defaultResponseState: Response = {
   data: null,
   status: undefined,
@@ -40,7 +40,8 @@ export default function useEndpoint({
       axios({
         data,
         method,
-        url: `${apiURL}/${endpoint}`
+        url: `${apiURL}/${endpoint}`,
+        withCredentials: true
       })
         .then((response: any) => {
           setResponse({
@@ -54,8 +55,8 @@ export default function useEndpoint({
           setResponse({
             ...defaultResponseState,
             complete: true,
-            status: error.response.status,
-            data: error.response.data,
+            status: error.response && error.response.status,
+            data: error.response && error.response.data,
             error: true
           });
         });

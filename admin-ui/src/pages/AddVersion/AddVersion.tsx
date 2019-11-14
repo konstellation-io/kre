@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import useInput from '../../hooks/useInput';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
+import Select from '../../components/Form/Select/Select';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
 import * as PAGES from '../../constants/routes';
@@ -67,6 +68,7 @@ function AddVersion({ history }: Props) {
               onChange={onChange}
               onSubmit={onSubmit}
             />
+            <Select label="version type" options={['A', 'B', 'C']} />
             <div className={styles.buttons}>
               <Button
                 primary
