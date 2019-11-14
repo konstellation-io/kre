@@ -6,8 +6,8 @@ export NAMESPACE=kre
 export DEPLOY_NAME=kre-local
 
 if [[ "$SKIP_BUILD" -ne "1" ]]; then
-    docker build -t localhost:32000/konstellation/kre-api:latest api
-    docker push localhost:32000/konstellation/kre-api:latest
+    docker build -t localhost:32000/konstellation/kre-admin-api:latest admin-api
+    docker push localhost:32000/konstellation/kre-admin-api:latest
 fi
 
 helm dep update helm/kre
@@ -18,4 +18,3 @@ helm upgrade \
   --values helm/values-dev-local.yml helm/kre
 
 echo "Done."
-

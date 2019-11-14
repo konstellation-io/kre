@@ -1,4 +1,4 @@
-module gitlab.com/konstellation/konstellation-ce/kst-runtime/api
+module gitlab.com/konstellation/konstellation-ce/kre/admin-api
 
 go 1.13
 

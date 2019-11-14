@@ -2,10 +2,10 @@ package http
 
 import (
 	"github.com/labstack/echo"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/delivery/http/controller"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase/logging"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/controller"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
 
 // App is the top-level struct.

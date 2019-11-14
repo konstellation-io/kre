@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase/logging"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"net/http"
 
 	"github.com/labstack/echo"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 )
 
 type signInInput struct {

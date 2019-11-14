@@ -5,7 +5,7 @@ ENV CGO_ENABLED=0
 
 WORKDIR /app
 COPY . .
-RUN go build -o api .
+RUN go build -o admin-api .
 
 
 FROM alpine:3.9.2
@@ -13,7 +13,7 @@ FROM alpine:3.9.2
 RUN mkdir -p /var/log/app
 
 WORKDIR /app
-COPY --from=builder /app/api .
+COPY --from=builder /app/admin-api .
 COPY config.yml .
 
-CMD ["sh","-c","/app/api 2>&1 | tee -a /var/log/app/app.log"]
+CMD ["sh","-c","/app/admin-api 2>&1 | tee -a /var/log/app/app.log"]

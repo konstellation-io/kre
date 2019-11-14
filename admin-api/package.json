@@ -1,5 +1,5 @@
 {
-    "name": "api",
+    "name": "admin-api",
     "version": "0.0.1",
     "dependencies": {
         "semantic-release": "15.9.12",
