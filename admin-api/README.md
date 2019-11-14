@@ -1,4 +1,4 @@
-# KST Runtime API
+# KST Runtime Admin-API
 
 ## Architecture
 

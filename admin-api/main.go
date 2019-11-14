@@ -1,12 +1,12 @@
 package main
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/adapter/auth"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/adapter/logging"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/adapter/repository"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/delivery/http"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/auth"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/logging"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 )
 
 func main() {

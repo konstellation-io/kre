@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase/logging"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"sync"
 )
 

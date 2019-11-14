@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/entity"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 )
 
 type UserRepo interface {

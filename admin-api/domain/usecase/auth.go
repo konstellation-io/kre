@@ -3,9 +3,9 @@ package usecase
 import (
 	"errors"
 	"fmt"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/repository"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase/auth"
-	"gitlab.com/konstellation/konstellation-ce/kst-runtime/api/domain/usecase/logging"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/auth"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"time"
 )
 
