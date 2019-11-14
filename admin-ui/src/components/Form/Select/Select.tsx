@@ -23,6 +23,7 @@ function Select({
   defaultOptionPosition = 0
 }: Props) {
   const inputEl = useRef(null);
+  const containerEl = useRef(null);
   const [selectedOption, setSelectedOption] = useState(
     options[defaultOptionPosition]
   );
@@ -34,9 +35,10 @@ function Select({
 
   function handleClose() {
     document.removeEventListener('contextmenu', handleClose);
-    document
-      .getElementsByClassName(styles.inputContainer)[0]
-      .removeEventListener('scroll', handleClose);
+    if (containerEl.current) {
+      // @ts-ignore
+      containerEl.current.removeEventListener('scroll', handleClose);
+    }
 
     setOptionsOpened(false);
   }
@@ -61,9 +63,8 @@ function Select({
   function openOptions() {
     document.addEventListener('contextmenu', handleClickOutside);
     document.addEventListener('mousedown', handleClose);
-    document
-      .getElementsByClassName(styles.inputContainer)[0]
-      .addEventListener('scroll', handleClose);
+    // @ts-ignore
+    containerEl.current.addEventListener('scroll', handleClose);
 
     setOptionsOpened(true);
   }
@@ -81,11 +82,19 @@ function Select({
     updateValue(value);
   }
 
+  const optionList = options.map((option: string, idx: number) => (
+    <div key={`selectOption_${idx}`} className={styles.optionElement}>
+      {option}
+    </div>
+  ));
+  const optionsHeight = options.length * 40;
+
   return (
     <div
       className={cx(styles.container, {
         [styles.white]: whiteColor
       })}
+      ref={containerEl}
     >
       <label className={styles.label} data-testid="label">
         {label.toUpperCase()}
@@ -103,8 +112,9 @@ function Select({
           className={cx(styles.optionsContainer, {
             [styles.opened]: optionsOpened
           })}
+          style={{ maxHeight: optionsOpened ? optionsHeight : 0 }}
         >
-          {options}
+          {optionList}
         </div>
       </div>
       <div

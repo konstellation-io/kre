@@ -65,15 +65,16 @@
   }
 }
 
-.clearButton {
+.optionsContainer {
   position: absolute;
-  right: 15px;
-  top: 34px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
+  background-color: $bg-color-lighter;
+  width: 100%;
+  z-index: 1;
+  transition: max-height ease 0.3s;
+  overflow: hidden;
+}
 
-  &:hover {
-    font-weight: 700;
-  }
+.optionElement {
+  height: 40px;
+  padding: 11px 16px;
 }
