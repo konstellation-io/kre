@@ -12,7 +12,7 @@ import { HttpLink } from 'apollo-link-http';
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
-  uri: `${process.env.REACT_APP_API_BASE}${process.env.REACT_APP_APOLLO_PATH}`
+  uri: `${process.env.REACT_APP_API_BASE}/graphql`
 });
 
 const client = new ApolloClient({

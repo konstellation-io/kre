@@ -9,7 +9,7 @@ export type Response = {
   error: boolean | string;
 };
 
-const apiURL = `${process.env.REACT_APP_API_BASE}${process.env.REACT_APP_AUTH_PATH}`;
+const apiURL = `${process.env.REACT_APP_API_BASE}/api/v1/auth`;
 const defaultResponseState: Response = {
   data: null,
   status: undefined,
