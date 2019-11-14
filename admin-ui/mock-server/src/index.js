@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -11,7 +13,7 @@ const server = new ApolloServer({
 });
 const app = express();
 
-app.use(bodyParser.json(), cors());
+app.use(bodyParser.json(), cors({origin: process.env.REACT_APP_FRONT_URL, credentials: true}));
 
 app.post('/api/v1/auth/signin', (req, res) => {
   if (!req.body.email) {
@@ -27,8 +29,8 @@ app.post('/api/v1/auth/validate-otp', (req, res) => {
     return res.status(400)
       .send({"code": "bad_otp_token", "message": "Invalid OTP token"});
   }
-  
-  res.set('set-cookie', 'LOCAL_JWT_TOKEN');
+
+  res.cookie('LOCAL_JWT_TOKEN', 'LOCAL_JWT_TOKEN_VALUE');
   res.json({"message": "Login success"});
 });
 
