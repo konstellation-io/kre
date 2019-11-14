@@ -40,9 +40,9 @@ function Select({
     const listenerAction = show ? 'addEventListener' : 'removeEventListener';
 
     document[listenerAction]('contextmenu', handleClickOutside);
-    document[listenerAction]('click', handleClose);
+    document[listenerAction]('click', closeOptions);
     // @ts-ignore
-    containerEl.current[listenerAction]('scroll', handleClose);
+    containerEl.current[listenerAction]('scroll', closeOptions);
 
     setOptionsOpened(show);
   }
@@ -51,7 +51,7 @@ function Select({
     if (!optionsOpened) changeOptionsState(true);
   }
 
-  function handleClose() {
+  function closeOptions() {
     changeOptionsState(false);
   }
 
@@ -59,21 +59,14 @@ function Select({
     // Has the user clicked outside the selector options?
     // @ts-ignore
     if (inputEl.current && !inputEl.current.contains(e.target)) {
-      document.removeEventListener('contextmenu', handleClickOutside);
-      setOptionsOpened(false);
+      closeOptions();
     }
   }
 
   function handleOnOptionCLick(value: string) {
-    document.removeEventListener('contextmenu', handleClickOutside);
-
-    setOptionsOpened(false);
-    updateValue(value);
-  }
-
-  function updateValue(newValue: any) {
-    setSelectedOption(newValue);
-    onChange(newValue);
+    closeOptions();
+    setSelectedOption(value);
+    onChange(value);
   }
 
   const optionList = options.map((option: string, idx: number) => (
