@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -13,7 +11,7 @@ const server = new ApolloServer({
 });
 const app = express();
 
-app.use(bodyParser.json(), cors({origin: process.env.REACT_APP_FRONT_URL, credentials: true}));
+app.use(bodyParser.json(), cors({origin: 'http://localhost:3000', credentials: true}));
 
 app.post('/api/v1/auth/signin', (req, res) => {
   if (!req.body.email) {
