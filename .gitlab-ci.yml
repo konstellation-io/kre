@@ -16,3 +16,4 @@ include:
   - local: admin-api/.gitlab-ci.yml
   - local: admin-ui/.gitlab-ci.yml
   - local: helm/.gitlab-ci.yml
+  - local: operator/.gitlab-ci.yml
