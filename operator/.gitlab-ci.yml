@@ -12,7 +12,7 @@ release-operator:
       - operator/**/*
       - .gitlab-ci.yml
 
-build-operator:
+publish-operator-image:
   stage: publish-image
   image: docker:18-git
   services:
@@ -24,10 +24,10 @@ build-operator:
     DOCKER_PASS: $DOCKER_PASS
   before_script:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
+    - cd operator
     - ./scripts/install_operator_sdk.sh
   script:
     - TAG=${CI_COMMIT_TAG#operator-v}
-    - cd operator
     - operator-sdk build $IMAGE_PROJECT_NAME:$TAG
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
