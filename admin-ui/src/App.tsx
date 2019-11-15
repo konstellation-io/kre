@@ -1,6 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { Route, Redirect } from 'react-router';
+import history from './history';
 import * as PAGES from './constants/routes';
 
 import Login from './pages/Login/Login';
@@ -40,7 +41,7 @@ export function Routes() {
 function App() {
   return (
     <div className="app">
-      <Router>
+      <Router history={history}>
         <Routes />
       </Router>
     </div>

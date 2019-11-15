@@ -1,17 +1,18 @@
 import React from 'react';
-import Cookies from 'js-cookie';
 import { render, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import ReactDOM from 'react-dom';
 import App, { Routes } from './App';
+import { act } from 'react-dom/test-utils';
 import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
+import wait from 'waait';
 import { dashboardMock } from './mocks/runtime';
+import { usernameMock, unauthorizedUsernameMock } from './mocks/auth';
 
-const mocks = [dashboardMock];
-
-Cookies.get = jest.fn().mockImplementationOnce(() => '');
+const mocks = [dashboardMock, usernameMock];
+const mocksUnauthorizedUser = [dashboardMock, unauthorizedUsernameMock];
 
 afterEach(cleanup);
 
@@ -28,21 +29,24 @@ it('renders without crashing', () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-/* TODO: change users session verification process
-// @ts-ignore
-Cookies.get.mockImplementationOnce(() => '');
-it('it shows login page on home URL', () => {
-  const { getByText } = render(
-    <MemoryRouter>
-      <Routes />
-    </MemoryRouter>
+// I cannot test login redirection, redirection logic is located inside Apollo client config,
+// But I can check for apollo errors when making a request
+it('it shows spash screen when user is not logged in', async () => {
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocksUnauthorizedUser} addTypename={false}>
+      <MemoryRouter>
+        <Routes />
+      </MemoryRouter>
+    </MockedProvider>
   );
 
-  expect(getByText('SEND ME A LOGIN LINK')).toBeInTheDocument();
+  await act(async () => {
+    await wait(0);
+  });
+
+  expect(getByTestId('splashscreen')).toBeInTheDocument();
 });
 
-// @ts-ignore
-Cookies.get.mockImplementationOnce(() => '123456');
 it('it shows dashboard page on home URL when logged', () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
@@ -54,4 +58,3 @@ it('it shows dashboard page on home URL when logged', () => {
 
   expect(getByTestId('dashboardContainer')).toBeInTheDocument();
 });
-*/

@@ -2,7 +2,6 @@ import {
   GET_DOMAINS,
   GET_EXPIRATION_TIME,
   ADD_ALLOWED_DOMAIN,
-  REMOVE_ALLOWED_DOMAIN,
   UPDATE_EXPIRATION_TIME
 } from '../pages/Settings/dataModels';
 import { GET_USERS_ACTIVITY } from '../components/UserActivityList/dataModels';

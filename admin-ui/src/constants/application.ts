@@ -4,9 +4,8 @@ export const COLORS = {
 };
 
 export const ENDPOINT = {
-  IS_USER_LOGGED: 'get_session_status',
   SUBMIT_MAGIC_LINK: 'signin',
-  VALIDATE_MAGIC_LINK: 'validate-otp'
+  VALIDATE_MAGIC_LINK: 'signin/verify'
 };
 
 export const STATES = {

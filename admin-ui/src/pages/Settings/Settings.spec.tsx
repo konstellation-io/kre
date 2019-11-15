@@ -1,5 +1,4 @@
 import React from 'react';
-import Cookies from 'js-cookie';
 import {
   render,
   fireEvent,
@@ -18,6 +17,7 @@ import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 
 import * as MOCK from '../../mocks/settings';
+import { usernameMock } from '../../mocks/auth';
 
 const mocks = [
   MOCK.expirationTimeMock,
@@ -25,12 +25,9 @@ const mocks = [
   MOCK.usersActivityMock,
   MOCK.addAllowedDomainMock,
   MOCK.removeAllowedDomainMock,
-  MOCK.updateExpirationTime
+  MOCK.updateExpirationTime,
+  usernameMock
 ];
-
-Cookies.get = jest.fn().mockImplementationOnce(() => '');
-// @ts-ignore
-Cookies.get.mockImplementation(() => '123456');
 
 afterEach(cleanup);
 
