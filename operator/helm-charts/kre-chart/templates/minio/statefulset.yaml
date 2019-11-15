@@ -1,0 +1,52 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: kre-minio
+  labels:
+    {{ include "runtime.labels" . | nindent 4 }}
+    app: kre-minio
+spec:
+  replicas: 1
+  serviceName: kre-minio
+  template:
+    metadata:
+      labels:
+        {{ include "runtime.labels" . | nindent 8 }}
+        app: kre-minio
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio:RELEASE.2019-10-02T21-19-38Z
+          args:
+            - server
+            - /data
+          envFrom:
+            - secretRef:
+                name: kre-minio-secret
+          volumeMounts:
+            - name: kre-minio-pvc
+              mountPath: "/data"
+          ports:
+            - containerPort: 9000
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: 9000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: 9000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+  volumeClaimTemplates:
+    - metadata:
+        name: kre-minio-pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.minio.storage.className }}
+        resources:
+          requests:
+            storage: {{ .Values.minio.storage.size }}

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kre-nats
+  labels:
+    app: kre-nats
+spec:
+  replicas: {{ .Values.nats_streaming.replicas }}
+  serviceName:  kre-nats
+  selector:
+    matchLabels:
+      app: kre-nats
+  template:
+    metadata:
+      labels:
+        app: kre-nats
+    spec:
+      containers:
+        - name: kre-nats-streaming
+          image: nats-streaming:0.16.2
+          imagePullPolicy: IfNotPresent
+          args:
+            - --http_port=8222
+            - --ft_group=nats
+            - --store=FILE
+            - --dir=/nats-datastore
+            - --cluster=nats://0.0.0.0:6222/
+            - --routes=nats://kre-nats:6222
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - mountPath: /nats-datastore
+              name: kre-nats-pvc
+
+  volumeClaimTemplates:
+    - metadata:
+        name: kre-nats-pvc
+      spec:
+        accessModes:
+          - ReadWriteMany
+        storageClassName: {{ .Values.nats_streaming.storage.className }}
+        resources:
+          requests:
+            storage: {{ .Values.nats_streaming.storage.size }}
+
+

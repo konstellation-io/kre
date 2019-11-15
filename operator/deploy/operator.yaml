@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kre-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kre-operator
+  template:
+    metadata:
+      labels:
+        name: kre-operator
+    spec:
+      serviceAccountName: kre-operator
+      containers:
+        - name: kre-operator
+          # Replace this with the built image name
+          image: kre-operator:v0.0.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "kre-operator"
