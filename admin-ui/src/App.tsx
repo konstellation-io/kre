@@ -1,7 +1,7 @@
 import React from 'react';
-import { isUserAuthenticated } from './utils/auth';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { Route, Redirect, Switch } from 'react-router';
+import history from './history';
 import * as PAGES from './constants/routes';
 
 import Login from './pages/Login/Login';
@@ -12,21 +12,6 @@ import Runtime from './pages/Runtime/Runtime';
 import Settings from './pages/Settings/Settings';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
 import AddVersion from './pages/AddVersion/AddVersion';
-
-function ProtectedRoute({ component: Component, ...params }: any) {
-  return (
-    <Route
-      {...params}
-      render={(props: any) =>
-        true ? ( // TODO: isUserAuthenticated() ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={PAGES.LOGIN} />
-        )
-      }
-    />
-  );
-}
 
 function Redirection({ from, to }: any) {
   return (
@@ -48,12 +33,12 @@ export function Routes() {
         <Route exact path={PAGES.VERIFY_EMAIL} component={VerifyEmail} />
         <Route exact path={PAGES.MAGIC_LINK} component={MagicLink} />
 
-        <ProtectedRoute path={PAGES.NEW_RUNTIME} component={AddRuntime} />
-        <ProtectedRoute path={PAGES.NEW_VERSION} component={AddVersion} />
+        <Route path={PAGES.NEW_RUNTIME} component={AddRuntime} />
+        <Route path={PAGES.NEW_VERSION} component={AddVersion} />
 
-        <ProtectedRoute exact path={PAGES.DASHBOARD} component={Dashboard} />
-        <ProtectedRoute path={PAGES.RUNTIME} component={Runtime} />
-        <ProtectedRoute path={PAGES.SETTINGS} component={Settings} />
+        <Route exact path={PAGES.DASHBOARD} component={Dashboard} />
+        <Route path={PAGES.RUNTIME} component={Runtime} />
+        <Route path={PAGES.SETTINGS} component={Settings} />
       </Switch>
     </>
   );
@@ -62,7 +47,7 @@ export function Routes() {
 function App() {
   return (
     <div className="app">
-      <Router>
+      <Router history={history}>
         <Routes />
       </Router>
     </div>

@@ -9,8 +9,9 @@ import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 
 import { dashboardMock } from '../../mocks/runtime';
+import { usernameMock } from '../../mocks/auth';
 
-const mocks = [dashboardMock];
+const mocks = [dashboardMock, usernameMock];
 
 const Component = (
   <MockedProvider mocks={mocks} addTypename={false}>

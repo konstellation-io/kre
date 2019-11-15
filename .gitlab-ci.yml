@@ -1,7 +1,9 @@
 stages:
+  - test
   - semantic-release
   - build
   - publish-image
+  - semantic-release-helm
   - publish-gitlab-release
 
 variables:
@@ -11,5 +13,7 @@ variables:
   GITLAB_ACCESS_TOKEN: $GITLAB_ACCESS_TOKEN
 
 include:
-  - local: api/.gitlab-ci.yml
+  - local: admin-api/.gitlab-ci.yml
+  - local: admin-ui/.gitlab-ci.yml
   - local: helm/.gitlab-ci.yml
+  - local: operator/.gitlab-ci.yml

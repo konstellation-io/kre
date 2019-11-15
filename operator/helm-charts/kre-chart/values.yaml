@@ -1,0 +1,23 @@
+
+nats_streaming:
+  replicas: 2
+  storage:
+    className: standard
+    size: 2Gi
+
+mongo:
+  replicas: 1
+  credentials:
+    username: admin
+    password: "123456"
+  storage:
+    className: standard
+    size: 5Gi
+
+minio:
+  credentials:
+    accessKey: admin
+    secretKey: "12345678"
+  storage:
+    className: standard
+    size: 10Gi
