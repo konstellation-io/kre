@@ -10,7 +10,18 @@ release-helm-chart:
       - master
     changes:
       - helm/**/*
-      - .gitlab-ci.yml
+
+release-helm-after-image:
+  stage: semantic-release-helm
+  image: node:10
+  before_script:
+    - npm install --prefix helm
+  script:
+    - cd helm && npx semantic-release -e semantic-release-monorepo
+  only:
+    - tags
+  except:
+    - /^helm-chart-v\d*.\d*.\d*$/
 
 generate-helm-chart:
   stage: build
