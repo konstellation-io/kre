@@ -13,6 +13,12 @@ const app = express();
 
 app.use(bodyParser.json(), cors({origin: 'http://localhost:3000', credentials: true}));
 
+// # This endpoint is used to test unauthorized response
+// app.post('/graphql', (req, res) => {
+//   return res.status(401)
+//     .send({"code": "unauthorized", "message": "Unauthorized user"});
+// });
+
 app.post('/api/v1/auth/signin', (req, res) => {
   if (!req.body.email) {
     return res.status(400)
@@ -22,17 +28,17 @@ app.post('/api/v1/auth/signin', (req, res) => {
   res.json({"message": "Email sent to the user"});
 });
 
-app.post('/api/v1/auth/validate-otp', (req, res) => {
+app.post('/api/v1/auth/signin/verify', (req, res) => {
   if (!req.body.otp) {
     return res.status(400)
-      .send({"code": "bad_otp_token", "message": "Invalid OTP token"});
+      .send({"code": "invalid_verification_code", "message": "The verification code is invalid."});
   }
 
   res.cookie('LOCAL_JWT_TOKEN', 'LOCAL_JWT_TOKEN_VALUE');
   res.json({"message": "Login success"});
 });
 
-server.applyMiddleware({ app, path: '/graphql' });
+server.applyMiddleware({ app, path: '/graphql', cors: false });
   const appServer = app.listen(4000, () => {
   const address = appServer.address();
   console.log(`🚀 Server ready at ${address.address}${address.port}`);

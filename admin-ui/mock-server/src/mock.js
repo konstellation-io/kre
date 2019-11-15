@@ -7,6 +7,10 @@ module.exports = {
     domains: () => new MockList([2, 6]),
     usersActivity: () => new MockList([20, 40]),
   }),
+  User: () => ({
+    id: casual.id,
+    email: casual.email
+  }),
   Dashboard: () => ({
     runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 5])

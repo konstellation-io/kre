@@ -1,5 +1,4 @@
 import React from 'react';
-import Cookies from 'js-cookie';
 import {
   render,
   fireEvent,
@@ -14,16 +13,12 @@ import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
+import { usernameMock } from '../../mocks/auth';
+import { addRuntimeMock, dashboardMock } from '../../mocks/runtime';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 
-import { addRuntimeMock, dashboardMock } from '../../mocks/runtime';
-
-const mocks = [addRuntimeMock, dashboardMock];
-
-Cookies.get = jest.fn().mockImplementationOnce(() => '');
-// @ts-ignore
-Cookies.get.mockImplementation(() => '123456');
+const mocks = [addRuntimeMock, dashboardMock, usernameMock];
 
 afterEach(cleanup);
 

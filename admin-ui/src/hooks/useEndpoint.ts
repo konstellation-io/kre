@@ -1,3 +1,5 @@
+import { envVariables } from '../config';
+
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
@@ -9,7 +11,6 @@ export type Response = {
   error: boolean | string;
 };
 
-const apiURL = `${process.env.REACT_APP_API_BASE}/api/v1/auth`;
 const defaultResponseState: Response = {
   data: null,
   status: undefined,
@@ -27,6 +28,7 @@ export default function useEndpoint({
   method = 'GET'
 }: Params = {}): [Response, Function] {
   const [response, setResponse] = useState(defaultResponseState);
+  const apiURL = `${envVariables.API_BASE_URL}/api/v1/auth`;
 
   const sendRequest = useCallback(
     async (data: Object = {}) => {
@@ -61,7 +63,7 @@ export default function useEndpoint({
           });
         });
     },
-    [method, response.pending, endpoint]
+    [method, response.pending, endpoint, apiURL]
   );
 
   return [response, sendRequest];

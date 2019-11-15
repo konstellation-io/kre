@@ -2,6 +2,7 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
   type Query {
+    me: User
     runtimes: [Runtime]!
     domains: [Domain]!
     usersActivity: [UserActivity]!
@@ -16,6 +17,12 @@ const typeDefs = gql`
     setSettings(input: SettingsInput): Settings
     addAllowedDomain(domainName: String!): Settings
     removeAllowedDomain(domainName: String!): Settings
+  }
+
+  type User {
+    id: ID!
+    email: String!
+    disabled: Boolean
   }
 
   type Settings {
