@@ -15,31 +15,6 @@
   }
 }
 
-.label {
-  @include font-caption;
-
-  display: block;
-  letter-spacing: 0.4px;
-  color: $font-color-dark;
-  margin-bottom: 11px;
-  min-height: 13px;
-}
-
-.errorMessage {
-  @include font-small;
-
-  height: 16px;
-  margin-top: 8px;
-  letter-spacing: 0.1px;
-  text-align: end;
-  color: transparent;
-  transition: color ease 0.5s;
-
-  &.show {
-    color: $color-red;
-  }
-}
-
 .input {
   @include font-body;
   color: $font-color-white;

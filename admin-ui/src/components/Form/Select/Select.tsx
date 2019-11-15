@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+import InputLabel from '../InputLabel/InputLabel';
+import InputError from '../InputError/InputError';
+
 import cx from 'classnames';
 import styles from './Select.module.scss';
 
@@ -87,9 +90,7 @@ function Select({
       })}
       ref={containerEl}
     >
-      <label className={styles.label} data-testid="label">
-        {label.toUpperCase()}
-      </label>
+      <InputLabel text={label} />
       <div className={styles.inputContainer}>
         <div
           className={cx(styles.input, {
@@ -111,12 +112,7 @@ function Select({
           {optionList}
         </div>
       </div>
-      <div
-        className={cx(styles.errorMessage, { [styles.show]: error !== '' })}
-        data-testid="error-message"
-      >
-        {error}
-      </div>
+      <InputError message={error} />
     </div>
   );
 }
