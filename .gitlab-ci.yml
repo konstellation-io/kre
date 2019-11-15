@@ -3,6 +3,7 @@ stages:
   - semantic-release
   - build
   - publish-image
+  - semantic-release-helm
   - publish-gitlab-release
 
 variables:
