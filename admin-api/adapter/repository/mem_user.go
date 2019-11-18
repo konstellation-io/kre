@@ -23,12 +23,17 @@ func NewMemUserRepo(cfg *config.Config, logger logging.Logger) *MemUserRepo {
 	}
 }
 
-func (r *MemUserRepo) Save(user *entity.User) error {
+func (r *MemUserRepo) Create(email string) (*entity.User, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
+	user := &entity.User{
+		ID:    email,
+		Email: email,
+	}
+
 	r.users[user.ID] = user
-	return nil
+	return user, nil
 }
 
 func (r *MemUserRepo) GetByEmail(email string) (*entity.User, error) {
