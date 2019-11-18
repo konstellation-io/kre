@@ -32,7 +32,10 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 	e.Validator = newCustomValidator()
 
 	if cfg.Admin.CORSEnabled {
-		e.Use(middleware.CORS())
+		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins:     []string{cfg.Admin.FrontEndBaseURL},
+			AllowCredentials: true,
+		}))
 	}
 
 	authController := controller.NewAuthController(cfg, logger, authInteractor)
