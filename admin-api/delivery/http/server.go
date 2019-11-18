@@ -31,6 +31,10 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 	e := echo.New()
 	e.Validator = newCustomValidator()
 
+	if cfg.Admin.CORSEnabled {
+		e.Use(middleware.CORS())
+	}
+
 	authController := controller.NewAuthController(cfg, logger, authInteractor)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
@@ -54,5 +58,5 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 
 // Start runs the HTTP server.
 func (a *App) Start() {
-	a.server.Logger.Fatal(a.server.Start(a.cfg.Server.Address))
+	a.server.Logger.Fatal(a.server.Start(a.cfg.Admin.APIAddress))
 }

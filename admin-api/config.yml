@@ -1,6 +1,7 @@
-server:
-  address: ":4000"
+admin:
+  api_address: ":4000"
   frontend_base_url: "http://localhost:3000"
+  cors_enabled: true
 smtp:
   enabled: false
 auth:

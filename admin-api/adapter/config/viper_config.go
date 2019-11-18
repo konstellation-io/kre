@@ -10,15 +10,16 @@ import (
 
 // Config holds the configuration values for the application.
 type Config struct {
-	Server  serverConfig  `mapstructure:"server"`
+	Admin   adminConfig   `mapstructure:"admin"`
 	SMTP    smtpConfig    `mapstructure:"smtp"`
 	Auth    authConfig    `mapstructure:"auth"`
 	MongoDB mongodbConfig `mapstructure:"mongodb"`
 }
 
-type serverConfig struct {
-	Address         string `mapstructure:"address"`
+type adminConfig struct {
+	APIAddress      string `mapstructure:"api_address"`
 	FrontEndBaseURL string `mapstructure:"frontend_base_url"`
+	CORSEnabled     bool   `mapstructure:"cors_enabled"`
 }
 
 type smtpConfig struct {
