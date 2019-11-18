@@ -13,16 +13,13 @@ import history from './history';
 
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createHttpLink } from 'apollo-link-http';
+import { ApolloLink } from 'apollo-link';
 import { onError } from 'apollo-link-error';
+import { createUploadLink } from 'apollo-upload-client';
 
 config
   .then(envVariables => {
     const cache = new InMemoryCache();
-    const httpLink = createHttpLink({
-      uri: `${envVariables.API_BASE_URL}/graphql`,
-      credentials: 'include'
-    });
     const errorLink = onError(({ networkError }) => {
       // @ts-ignore
       if (networkError.statusCode === 401) {
@@ -30,7 +27,12 @@ config
         client.resetStore();
       }
     });
-    const link = errorLink.concat(httpLink);
+    const uploadLink = createUploadLink({
+      uri: `${envVariables.API_BASE_URL}/graphql`,
+      credentials: 'include'
+    });
+
+    const link = ApolloLink.from([errorLink, uploadLink]);
 
     const client = new ApolloClient({
       cache,

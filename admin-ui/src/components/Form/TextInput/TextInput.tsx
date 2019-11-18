@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import InputLabel from '../InputLabel/InputLabel';
+import InputError from '../InputError/InputError';
 import { isFieldAnInteger } from '../../Form/check';
 
 import cx from 'classnames';
@@ -100,17 +102,10 @@ function TextInput({
         [styles.hasClearButton]: showClearButton
       })}
     >
-      <label className={styles.label} data-testid="label">
-        {label.toUpperCase()}
-      </label>
+      <InputLabel text={label} />
       {inputElement}
       {cleanButton}
-      <div
-        className={cx(styles.errorMessage, { [styles.show]: error !== '' })}
-        data-testid="error-message"
-      >
-        {error}
-      </div>
+      <InputError message={error} />
     </div>
   );
 }

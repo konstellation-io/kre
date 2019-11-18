@@ -25,6 +25,12 @@ export function getValidationError(validations: Check[]) {
   return errorMessage;
 }
 
+export function isDefined(value: any) {
+  return [null, undefined].includes(value)
+    ? setInvalid('This field is mandatory')
+    : VALID;
+}
+
 export function isFieldNotEmpty(value: string) {
   return value !== '' ? VALID : setInvalid('This field cannot be empty');
 }
@@ -81,4 +87,10 @@ export function isMagicLinkTokenValid(token: string) {
   return token.length === 6
     ? VALID
     : setInvalid('Authentication link is not valid');
+}
+
+export function isFieldInList(value: string, list: string[]) {
+  return list.includes(value)
+    ? VALID
+    : setInvalid(`Value must be in list: ${list}`);
 }
