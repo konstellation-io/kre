@@ -1,21 +1,21 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "kre.fullname" . }}-api
+  name: {{ template "kre.fullname" . }}-admin-api
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         {{ include "kre.labels" . | nindent 8 }}
-        app: {{ .Chart.Name }}-api
+        app: {{ .Chart.Name }}-admin-api
     spec:
       containers:
-        - name: {{ .Chart.Name }}-api
-          image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+        - name: {{ .Chart.Name }}-admin-api
+          image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
+          imagePullPolicy: {{ .Values.adminApi.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.api.service.port }}
+            - containerPort: {{ .Values.adminApi.service.port }}
               protocol: TCP
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

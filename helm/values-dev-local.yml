@@ -1,12 +1,12 @@
 # Default values for konstellation.
 
-api:
+adminApi:
   image:
-    repository: konstellation/kre-api
+    repository: konstellation/kre-admin-api
     tag: latest
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   service:
     port: 3000
   tls:
-    enabled: true
-    host: api-kre.local
+    enabled: false
+    host: admin-api-kre.local

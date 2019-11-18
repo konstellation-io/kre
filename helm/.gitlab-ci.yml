@@ -34,9 +34,9 @@ generate-helm-chart:
     - apk add --update bash gettext coreutils
     - wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
     - chmod +x /usr/local/bin/helm
+    - helm init --client-only --wait
     - helm plugin install https://github.com/chartmuseum/helm-push
     - helm repo add konstellation-ce https://${HELM_USER}:${HELM_PASSWD}@charts.konstellation.io
-    - helm init --client-only --wait
     - export ADMIN_API_IMAGE_TAG=$(./scripts/git_latest_tag.sh "admin-api")
     - ./scripts/replace_env_path.sh
   script:
