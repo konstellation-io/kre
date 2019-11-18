@@ -3,6 +3,8 @@ import useForm from '../../hooks/useForm';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Select from '../../components/Form/Select/Select';
+import FileUpload from '../../components/Form/FileUpload/FileUpload';
+import UploadProgress from '../../components/Form/UploadProgress/UploadProgress';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
 import * as PAGES from '../../constants/routes';
@@ -12,29 +14,41 @@ import styles from './AddVersion.module.scss';
 import { useMutation } from '@apollo/react-hooks';
 import { ADD_VERSION } from './dataModels';
 
-function verifyRuntimeName(value: string) {
+function verifyVersionName(value: string) {
   return CHECK.getValidationError([
     CHECK.isFieldNotEmpty(value),
     CHECK.isFieldAnString(value)
   ]);
 }
+function verifyVersionType(value: string) {
+  return CHECK.getValidationError([CHECK.isFieldInList(value, versionTypes)]);
+}
+function verifyVersionFile(value: string) {
+  return CHECK.getValidationError([CHECK.isDefined(value)]);
+}
 
-const inputs = [
-  {
-    defaultValue: '',
-    verifier: verifyRuntimeName,
-    id: 'name'
-  },
-  {
-    defaultValue: '',
-    verifier: verifyRuntimeName,
-    id: 'type'
-  }
-];
 const versionTypes = [
   'Fix some issues',
   'Compatible changes',
   'Breaking changes'
+];
+
+const inputs = [
+  {
+    defaultValue: '',
+    verifier: verifyVersionName,
+    id: 'name'
+  },
+  {
+    defaultValue: versionTypes[0],
+    verifier: verifyVersionType,
+    id: 'type'
+  },
+  {
+    defaultValue: null,
+    verifier: verifyVersionFile,
+    id: 'file'
+  }
 ];
 
 type Props = {
@@ -42,7 +56,7 @@ type Props = {
 };
 
 function AddVersion({ history }: Props) {
-  const form = useForm(inputs);
+  const form = useForm(inputs, ADD_VERSION);
 
   const [
     addVersion,
@@ -51,19 +65,20 @@ function AddVersion({ history }: Props) {
 
   useEffect(() => {
     if (mutationError) {
-      form.name.setError(mutationError.toString());
+      form.input.name.setError(mutationError.toString());
     }
   }, [mutationError, form]);
 
   function onCompleteAddVersion(updatedData: any) {
     // TODO: CHECK FOR API ERRORS
-    console.log(`${form.name.value} version created`);
+    console.log(`${form.input.name.value} version created`);
     history.push(PAGES.RUNTIME_VERSIONS);
   }
 
   function onSubmit() {
-    if (form.name.isValid()) {
-      addVersion({ variables: { name: form.name.value } });
+    console.log(form.input);
+    if (form.isValid()) {
+      addVersion({ variables: { name: form.input.name.value } });
     }
   }
 
@@ -80,16 +95,23 @@ function AddVersion({ history }: Props) {
             <TextInput
               whiteColor
               label="version name"
-              error={form.name.error}
-              onChange={form.name.onChange}
+              error={form.input.name.error}
+              onChange={form.input.name.onChange}
               onSubmit={onSubmit}
             />
             <Select
               label="version type"
               options={versionTypes}
-              error={form.type.error}
-              onChange={form.type.onChange}
+              error={form.input.type.error}
+              onChange={form.input.type.onChange}
             />
+            <FileUpload
+              label="upload version file (karrete)"
+              placeholder=".krt"
+              error={form.input.file.error}
+              onChange={form.input.file.onChange}
+            />
+            <UploadProgress fileName="" progress={73} />
             <div className={styles.buttons}>
               <Button
                 primary

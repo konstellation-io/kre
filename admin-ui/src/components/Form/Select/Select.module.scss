@@ -16,30 +16,10 @@
 }
 
 .input {
-  @include font-body;
+  @include form-input;
+
   color: $font-color-white;
   font-weight: 600;
-  line-height: 16px;
-
-  position: relative;
-  width: 100%;
-  height: 40px;
-  padding: 11px 16px;
-  border: solid 1px transparent;
-  border-radius: 6px;
-  background-color: $bg-color-lighter;
-  outline: none;
-  -webkit-appearance: none;
-  transition: border ease 0.5s;
-
-  &::-webkit-input-placeholder {
-    color: $font-color;
-  }
-
-  &.error {
-    border: solid 1px $color-red;
-    color: $color-red;
-  }
 
   &:after {
     position: absolute;
