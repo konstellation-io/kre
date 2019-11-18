@@ -2,17 +2,13 @@ import React from 'react';
 
 import Spinner from '../../../../components/Spinner/Spinner';
 
-import { GET_VERSIONS } from './dataModels';
+import { GET_VERSIONS, RuntimeVersionsData } from './dataModels';
 import { useQuery } from '@apollo/react-hooks';
 
 import styles from './RuntimeVersions.module.scss';
 
-type Props = {
-  history: History;
-  location: Location;
-};
-function RuntimeVersions({ history, location }: Props) {
-  const { data, loading, error } = useQuery(GET_VERSIONS);
+function RuntimeVersions() {
+  const { data, loading, error } = useQuery<RuntimeVersionsData>(GET_VERSIONS);
 
   if (loading) return <Spinner />;
   if (error) return <div>'ERROR'</div>;

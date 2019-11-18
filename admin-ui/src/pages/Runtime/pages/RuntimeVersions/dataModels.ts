@@ -1,10 +1,14 @@
 import gql from 'graphql-tag';
 
-interface Version {
+interface RuntimeVersion {
   id: number;
   model: string;
   year: number;
   stock: number;
+}
+
+export interface RuntimeVersionsData {
+  runtimeVersion: RuntimeVersion[];
 }
 
 export const GET_VERSIONS = gql`
