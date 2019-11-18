@@ -12,7 +12,7 @@ import (
 )
 
 type signInInput struct {
-	Email string `json:"email" validate:"email"`
+	Email string `json:"email" validate:"required,email"`
 }
 
 type signinVerifyInput struct {
@@ -36,7 +36,7 @@ func NewAuthController(cfg *config.Config, logger logging.Logger, authInteractor
 func (a *AuthController) SignIn(c echo.Context) error {
 	input := new(signInInput)
 	if err := c.Bind(input); err != nil {
-		return InvalidJSONError
+		return HTTPErrInvalidJSON
 	}
 
 	if err := c.Validate(input); err != nil {
@@ -46,10 +46,8 @@ func (a *AuthController) SignIn(c echo.Context) error {
 	verificationCodeDurationInMinutes := a.cfg.Auth.VerificationCodeDurationInMinutes
 	if err := a.authInteractor.SignIn(input.Email, verificationCodeDurationInMinutes); err != nil {
 		switch err {
-		case usecase.ErrUserNotFound:
-			return echo.NewHTTPError(http.StatusUnauthorized, "The email is not registered.")
 		default:
-			return UnexpectedError
+			return HTTPErrUnexpected
 		}
 	}
 
@@ -59,7 +57,7 @@ func (a *AuthController) SignIn(c echo.Context) error {
 func (a *AuthController) SignInVerify(c echo.Context) error {
 	input := new(signinVerifyInput)
 	if err := c.Bind(input); err != nil {
-		return InvalidJSONError
+		return HTTPErrInvalidJSON
 	}
 
 	if err := c.Validate(input); err != nil {
@@ -71,9 +69,9 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 		switch err {
 		case usecase.ErrExpiredVerificationCode:
 		case usecase.ErrVerificationCodeNotFound:
-			return echo.NewHTTPError(http.StatusBadRequest, "The verification code is not valid.")
+			return HTTPErrVerificationCodeNotFound
 		default:
-			return UnexpectedError
+			return HTTPErrUnexpected
 		}
 	}
 

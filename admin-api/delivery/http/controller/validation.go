@@ -14,6 +14,7 @@ func init() {
 }
 
 type responseValidationError struct {
+	Code             string            `json:"code"`
 	Message          string            `json:"message"`
 	ValidationErrors []validationError `json:"errors"`
 }
@@ -26,6 +27,7 @@ type validationError struct {
 
 func newResponseValidationError(err error) *responseValidationError {
 	res := &responseValidationError{}
+	res.Code = "validation_error"
 	res.Message = "Invalid data"
 
 	validationErrors := err.(validator.ValidationErrors)
