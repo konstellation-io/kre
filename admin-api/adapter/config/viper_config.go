@@ -10,9 +10,10 @@ import (
 
 // Config holds the configuration values for the application.
 type Config struct {
-	Server serverConfig `mapstructure:"server"`
-	SMTP   smtpConfig   `mapstructure:"smtp"`
-	Auth   authConfig   `mapstructure:"auth"`
+	Server  serverConfig  `mapstructure:"server"`
+	SMTP    smtpConfig    `mapstructure:"smtp"`
+	Auth    authConfig    `mapstructure:"auth"`
+	MongoDB mongodbConfig `mapstructure:"mongodb"`
 }
 
 type serverConfig struct {
@@ -31,7 +32,15 @@ type smtpConfig struct {
 }
 
 type authConfig struct {
-	TokenDurationInHours int `mapstructure:"token_duration_in_hours"`
+	VerificationCodeDurationInMinutes int    `mapstructure:"verification_code_duration_in_minutes"`
+	SessionDurationInHours            int    `mapstructure:"session_duration_in_hours"`
+	JWTSignSecret                     string `mapstructure:"jwt_sign_secret"`
+	SecureCookie                      bool   `mapstructure:"secure_cookie"`
+}
+
+type mongodbConfig struct {
+	Address string `mapstructure:"address"`
+	DBName  string `mapstructure:"db_name"`
 }
 
 var once sync.Once
@@ -49,7 +58,7 @@ func NewConfig() *Config {
 			panic(fmt.Errorf("fatal error config file: %s", err))
 		}
 		viper.AutomaticEnv()
-		viper.SetEnvPrefix("KRT")
+		viper.SetEnvPrefix("KRE")
 		viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 		cfg = &Config{}
