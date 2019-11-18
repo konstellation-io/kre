@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useForm from '../../hooks/useForm';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
@@ -11,7 +11,6 @@ import * as PAGES from '../../constants/routes';
 
 import styles from './AddVersion.module.scss';
 
-import { useMutation } from '@apollo/react-hooks';
 import { ADD_VERSION } from './dataModels';
 
 function verifyVersionName(value: string) {
@@ -56,29 +55,28 @@ type Props = {
 };
 
 function AddVersion({ history }: Props) {
-  const form = useForm(inputs, ADD_VERSION);
-
-  const [
-    addVersion,
-    { loading, error: mutationError }
-  ] = useMutation(ADD_VERSION, { onCompleted: onCompleteAddVersion });
+  const form = useForm(inputs, ADD_VERSION, onCompleted);
+  const [versionUploaded, setVersionUploaded] = useState(false);
 
   useEffect(() => {
-    if (mutationError) {
-      form.input.name.setError(mutationError.toString());
+    if (form.error) {
+      console.error('FORM ERROR', form.error);
     }
-  }, [mutationError, form]);
+  }, [form]);
 
-  function onCompleteAddVersion(updatedData: any) {
+  function onCompleted(updatedData: any) {
     // TODO: CHECK FOR API ERRORS
-    console.log(`${form.input.name.value} version created`);
-    history.push(PAGES.RUNTIME_VERSIONS);
+    console.log(`${form.input.name.value} version created`, updatedData);
+    setVersionUploaded(true);
+  }
+
+  function onDeploy() {
+    history.push(PAGES.RUNTIME_STATUS);
   }
 
   function onSubmit() {
-    console.log(form.input);
     if (form.isValid()) {
-      addVersion({ variables: { name: form.input.name.value } });
+      form.submit();
     }
   }
 
@@ -111,13 +109,14 @@ function AddVersion({ history }: Props) {
               error={form.input.file.error}
               onChange={form.input.file.onChange}
             />
-            <UploadProgress fileName="" progress={73} />
+            <UploadProgress fileName="" progress={100} />
             <div className={styles.buttons}>
               <Button
                 primary
-                label="SAVE"
-                onClick={onSubmit}
-                loading={loading}
+                disabled={form.error !== undefined}
+                label={versionUploaded ? 'DEPLOY' : 'SAVE'}
+                onClick={versionUploaded ? onDeploy : onSubmit}
+                loading={form.loading}
               />
               <Button label="CANCEL" to={PAGES.DASHBOARD} />
             </div>

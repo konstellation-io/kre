@@ -27,7 +27,9 @@ function FileUpload({
 
   function onFileUpload() {
     // @ts-ignore
-    setSelectedFile(fileButton.current.files[0]);
+    const file = fileButton.current.files[0];
+    setSelectedFile(file);
+    onChange(file);
   }
 
   const inputText = (selectedFile && selectedFile.name) || placeholder;

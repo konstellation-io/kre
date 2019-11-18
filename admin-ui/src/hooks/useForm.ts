@@ -11,20 +11,21 @@ type InputElement = {
 
 export default function useForm(
   inputElements: InputElement[],
-  query: DocumentNode
+  query: DocumentNode,
+  onCompleted: (data: any) => void
 ) {
   const [makeMutation, { loading, error }] = useMutation(query, {
     onCompleted
   });
 
-  function onCompleted() {
-    console.log('MUTATION COMPLETED');
-  }
-
   function isValid() {
+    let isFormValid = true;
+
     Object.keys(form.input).forEach(input => {
-      form.input[input].isValid();
+      isFormValid = isFormValid && form.input[input].isValid();
     });
+
+    return isFormValid;
   }
   function submit() {
     const mutationVariables: { [key: string]: any } = {};
