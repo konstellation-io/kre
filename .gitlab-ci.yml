@@ -5,6 +5,7 @@ stages:
   - publish-image
   - semantic-release-helm
   - publish-gitlab-release
+  - deploy
 
 variables:
   # semantic-release uses GITLAB_TOKEN

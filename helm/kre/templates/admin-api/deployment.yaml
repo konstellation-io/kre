@@ -7,13 +7,16 @@ spec:
   template:
     metadata:
       labels:
-        {{ include "kre.labels" . | nindent 8 }}
+        {{- include "kre.labels" . | nindent 8 }}
         app: {{ .Chart.Name }}-admin-api
     spec:
       containers:
         - name: {{ .Chart.Name }}-admin-api
           image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
           imagePullPolicy: {{ .Values.adminApi.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-configmap
           ports:
             - containerPort: {{ .Values.adminApi.service.port }}
               protocol: TCP
