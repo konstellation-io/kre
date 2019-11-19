@@ -80,6 +80,10 @@ function AddVersion({ history }: Props) {
     }
   }
 
+  function onCancelClick() {
+    history.goBack();
+  }
+
   return (
     <div className={styles.bg}>
       <div className={styles.grid}>
@@ -118,7 +122,7 @@ function AddVersion({ history }: Props) {
                 onClick={versionUploaded ? onDeploy : onSubmit}
                 loading={form.loading}
               />
-              <Button label="CANCEL" to={PAGES.DASHBOARD} />
+              <Button label="CANCEL" onClick={onCancelClick} />
             </div>
           </div>
         </div>

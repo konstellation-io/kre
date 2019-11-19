@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { History, Location } from 'history';
 
 import NavBar from '../NavBar/NavBar';

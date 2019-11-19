@@ -23,7 +23,6 @@ function VersionInfo({ version, focussed = false }: Props) {
   return (
     <div
       className={cx(styles.container, {
-        [styles.active]: isVersionActive,
         [styles.focussed]: focussed
       })}
       id={`versionInfoElement_${version.description.replace(' ', '')}`}

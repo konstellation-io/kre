@@ -50,7 +50,7 @@
   @include font-caption;
   font-weight: 700;
 
-  margin: 0 25px;
+  margin: 5px 25px;
 }
 
 .versionStatus {
@@ -80,6 +80,7 @@
 }
 
 .versionList {
+  display: relative;
   padding: 0 0 30px 0;
   overflow: overlay;
 }

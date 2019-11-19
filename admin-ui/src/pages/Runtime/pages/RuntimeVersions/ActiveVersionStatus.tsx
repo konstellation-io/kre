@@ -38,7 +38,9 @@ function ActiveVersionStatus({ activeVersion, onClick }: Props) {
           <div className={styles.secondRow}>
             <div className={styles.versionStatus}>
               <div className={styles.greenCircle} />
-              <span className={styles.versionName}>{'Version name'}</span>
+              <span className={styles.versionName}>
+                {activeVersion.description}
+              </span>
             </div>
             <Button label="LOCATE THIS VERSION" onClick={onClick} border />
           </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Route, useParams } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { History, Location } from 'history';
 import * as ROUTE from '../../constants/routes';
 
@@ -69,7 +70,7 @@ function Runtime({ history, location }: Props) {
   return (
     <>
       <Header>
-        <Button label="ADD VERSION" height={40} />
+        <Button label="ADD VERSION" height={40} to={ROUTE.NEW_VERSION} />
       </Header>
       <div className={styles.container} data-testid="runtimeContainer">
         <NavigationBar />

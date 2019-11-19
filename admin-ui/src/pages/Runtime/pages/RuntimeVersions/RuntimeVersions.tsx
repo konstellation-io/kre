@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams } from 'react-router';
+import React, { useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import * as ROUTE from '../../../../constants/routes';
 
 import Modal from '../../../../components/Modal/Modal';
@@ -17,6 +17,8 @@ import { useQuery } from '@apollo/react-hooks';
 import styles from './RuntimeVersions.module.scss';
 
 function RuntimeVersions() {
+  const versionListRef = useRef(null);
+  const [activeVersionFocussed, setActiveVersionFocussed] = useState(false);
   const { runtimeId } = useParams();
   const { data, loading, error } = useQuery<RuntimeVersionsData>(GET_VERSIONS, {
     variables: { runtimeId }
@@ -34,7 +36,23 @@ function RuntimeVersions() {
   }
 
   function onLocateActiveVersionClick() {
-    // `versionInfoElement_${version.description.replace(' ', '')}`
+    const activeVersionInfoElement = document.getElementById(
+      `versionInfoElement_${activeVersion.description.replace(' ', '')}`
+    );
+
+    let scrollAmount = 0;
+
+    // @ts-ignore
+    scrollAmount =
+      activeVersionInfoElement.offsetTop - versionListRef.current.offsetTop;
+
+    // @ts-ignore
+    versionListRef.current.scrollTo({
+      top: scrollAmount,
+      behavior: 'smooth'
+    });
+
+    setActiveVersionFocussed(true);
   }
 
   function getContent() {
@@ -55,7 +73,7 @@ function RuntimeVersions() {
         <VersionInfo
           key={`version_${idx}`}
           version={version}
-          focussed={version.status === 'active'}
+          focussed={activeVersionFocussed && version.status === 'active'}
         />
       ));
 
@@ -65,7 +83,9 @@ function RuntimeVersions() {
           activeVersion={activeVersion}
           onClick={onLocateActiveVersionClick}
         />
-        <div className={styles.versionList}>{versions}</div>
+        <div className={styles.versionList} ref={versionListRef}>
+          {versions}
+        </div>
       </>
     );
   }

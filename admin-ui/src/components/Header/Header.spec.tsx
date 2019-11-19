@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router';
 import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import Header from './Header';
@@ -11,7 +12,9 @@ import { usernameMock } from '../../mocks/auth';
 function renderComponent() {
   return render(
     <MockedProvider mocks={[usernameMock]} addTypename={false}>
-      <Header />
+      <MemoryRouter>
+        <Header />
+      </MemoryRouter>
     </MockedProvider>
   );
 }
