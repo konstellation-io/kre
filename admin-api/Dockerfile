@@ -14,6 +14,7 @@ RUN mkdir -p /var/log/app
 
 WORKDIR /app
 COPY --from=builder /app/admin-api .
+COPY --from=builder /app/templates ./templates
 COPY config.yml .
 
 CMD ["sh","-c","/app/admin-api 2>&1 | tee -a /var/log/app/app.log"]
