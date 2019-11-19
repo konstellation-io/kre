@@ -23,7 +23,7 @@ func NewLogger() *LogrusLogger {
 	log.SetLevel(log.InfoLevel)
 
 	return &LogrusLogger{
-		log.WithField("app_name", "krt"),
+		log.WithField("app_name", "admin-api"),
 	}
 }
 
