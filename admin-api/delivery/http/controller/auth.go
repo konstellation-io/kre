@@ -47,6 +47,7 @@ func (a *AuthController) SignIn(c echo.Context) error {
 	if err := a.authInteractor.SignIn(input.Email, verificationCodeDurationInMinutes); err != nil {
 		switch err {
 		default:
+			a.logger.Error(err.Error())
 			return HTTPErrUnexpected
 		}
 	}
@@ -64,6 +65,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, newResponseValidationError(err))
 	}
 
+	a.logger.Info("Verifying authorization code.")
 	userId, err := a.authInteractor.VerifyCode(input.VerificationCode)
 	if err != nil {
 		switch err {
@@ -71,11 +73,12 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 		case usecase.ErrVerificationCodeNotFound:
 			return HTTPErrVerificationCodeNotFound
 		default:
+			a.logger.Error(err.Error())
 			return HTTPErrUnexpected
 		}
 	}
 
-	// Generate JWT token
+	a.logger.Info("Generating JWT token.")
 	ttl := time.Duration(a.cfg.Auth.SessionDurationInHours) * time.Hour
 	expirationTime := time.Now().Add(ttl)
 
@@ -91,7 +94,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 		return err
 	}
 
-	// Set cookie containing the generated JWT token
+	a.logger.Info("Set cookie containing the generated JWT token.")
 	cookie := new(http.Cookie)
 	cookie.Name = "token"
 	cookie.Value = jwtToken

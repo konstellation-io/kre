@@ -40,9 +40,9 @@ var (
 func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes int) error {
 	var user *entity.User
 	user, err := a.userRepo.GetByEmail(email)
-	// SignUp
+
 	if err == ErrUserNotFound {
-		a.logger.Info(fmt.Sprintf("SignUp %s", email))
+		a.logger.Info(fmt.Sprintf("The user %s doesn't exist, creating in the database...", email))
 		user, err = a.userRepo.Create(email)
 		if err != nil {
 			return err
@@ -51,7 +51,7 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 		return err
 	}
 
-	// Create a new verification code
+	a.logger.Info("Creating a new verification code...")
 	ttl := time.Duration(verificationCodeDurationInMinutes) * time.Minute
 	verificationCode := a.verificationCodeGenerator.Generate()
 
@@ -60,7 +60,7 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 		return err
 	}
 
-	// Send login link
+	a.logger.Info("Sending login link...")
 	return a.loginLinkTransport.Send(user.Email, verificationCode)
 }
 
