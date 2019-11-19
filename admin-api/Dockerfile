@@ -10,6 +10,7 @@ RUN go build -o admin-api .
 
 FROM alpine:3.9.2
 
+RUN apk add -U --no-cache ca-certificates
 RUN mkdir -p /var/log/app
 
 WORKDIR /app
