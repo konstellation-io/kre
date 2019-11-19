@@ -6,6 +6,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"os"
 	"time"
 )
@@ -37,6 +38,17 @@ func (m *MongoDB) Connect() *mongo.Client {
 	defer cancel()
 
 	err = client.Connect(ctx)
+	if err != nil {
+		m.logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	// Call Ping to verify that the deployment is up and the Client was configured successfully.
+	ctx, cancel = context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	m.logger.Info("MongoDB ping...")
+	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		m.logger.Error(err.Error())
 		os.Exit(1)
