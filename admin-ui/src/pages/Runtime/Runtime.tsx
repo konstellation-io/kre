@@ -41,7 +41,7 @@ const tabs = [
   },
   {
     label: 'VERSION',
-    route: ROUTE.HOME,
+    route: ROUTE.RUNTIME_VERSIONS,
     Icon: TimeIcon
   },
   {

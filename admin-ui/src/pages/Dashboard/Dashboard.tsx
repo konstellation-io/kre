@@ -31,7 +31,10 @@ function Dashboard({ history }: Props) {
           key={`runtimeHexagon-${idx}`}
           onClick={() => {
             const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
-            history.push(runtimePath, { prevLocation: PAGES.DASHBOARD });
+            history.push(runtimePath, {
+              prevLocation: PAGES.DASHBOARD,
+              runtimeId: runtime.id
+            });
           }}
           {...formatRuntime(runtime)}
         />

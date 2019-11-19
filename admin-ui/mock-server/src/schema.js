@@ -4,6 +4,7 @@ const typeDefs = gql`
   type Query {
     me: User
     runtimes: [Runtime]!
+    versions(runtimeId: ID!): [Version]!
     domains: [Domain]!
     usersActivity: [UserActivity]!
     runtime(id: ID!): Runtime

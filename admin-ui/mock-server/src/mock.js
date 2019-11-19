@@ -4,6 +4,7 @@ const casual = require('casual');
 module.exports = {
   Query: () =>({
     runtimes: () => new MockList([4, 8]),
+    versions: () => new MockList([8, 12]),
     domains: () => new MockList([2, 6]),
     usersActivity: () => new MockList([20, 40]),
   }),
@@ -26,7 +27,7 @@ module.exports = {
     id: parseInt(casual.array_of_digits(8).join('')),
     versionNumber: `v${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}`,
     description: casual.sentence,
-    status: 'active',//casual.random_element(['active', 'created', 'running', 'stopped']),
+    status: casual.random_element(['active', 'created', 'running', 'stopped']),
     creationDate: casual.date('YYYY-MM-DD'),
     creatorName: casual.email,
     activationDate: casual.date('YYYY-MM-DD'),

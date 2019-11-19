@@ -1,3 +1,6 @@
+@import '../../../../styles/mixins';
+@import '../../../../styles/colors';
+
 .container {
   height: 100%;
   display: flex;
@@ -5,4 +8,78 @@
 }
 
 .content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 46px 0 46px;
+}
+
+.subtitle {
+  @include font-body;
+
+  margin-bottom: 60px;
+}
+
+.activeVersion {
+  margin-bottom: 35px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: solid 2px $color-grey;
+
+  svg {
+    color: $color-red;
+    margin: 0 15px;
+  }
+
+  &.active svg {
+    color: $color-green;
+  }
+}
+
+.versionTitle,
+.versionName {
+  @include font-body;
+  font-weight: 700;
+  color: $font-color-white;
+}
+
+.versionCreation {
+  @include font-caption;
+  font-weight: 700;
+
+  margin: 0 25px;
+}
+
+.versionStatus {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 25px auto 25px 29px;
+}
+.versionName {
+  margin-right: 25px;
+}
+
+.greenCircle {
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: $color-green;
+  flex-shrink: 0;
+}
+
+.secondRow {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.versionList {
+  padding-left: 40px;
+  overflow: overlay;
 }

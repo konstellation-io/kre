@@ -7,6 +7,7 @@
 @import '~typeface-roboto-mono/index.css';
 
 @import './variables';
+@import './mixins';
 @import './colors';
 
 html,
@@ -55,6 +56,12 @@ h1 {
   line-height: 34px;
   text-align: center;
   margin: 0;
+}
+
+h2 {
+  @include font-subheader;
+  color: $font-color-white;
+  font-weight: 400;
 }
 
 .subtitle {
