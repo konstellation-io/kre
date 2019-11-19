@@ -8,9 +8,9 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: 3000
+    - port: {{.Values.adminApi.service.port}}
       protocol: TCP
-      targetPort: 3000
+      targetPort: 80
   selector:
-    {{- include "kre.labels" . | nindent 4 -}}
+    {{- include "kre.labels" . | nindent 4 }}
     app: {{ .Chart.Name }}-admin-api

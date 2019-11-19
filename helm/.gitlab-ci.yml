@@ -85,8 +85,10 @@ deploy-helm-int:
     - helm upgrade \
       --wait --recreate-pods \
       --install konstellation-ce/kre --namespace kre \
-      --values helm/values-int-gke.yml helm/kre
-      --version $CHART_VERSION
+      --values helm/values-int-gke.yml \
+      --values $SMTP_CONFIG \
+      --version $CHART_VERSION \
+      helm/kre
   only:
     refs:
       - /^helm-chart-v\d*.\d*.\d*$/

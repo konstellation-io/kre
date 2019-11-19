@@ -1,7 +1,13 @@
 # Default values for konstellation Runtime Environment.
+mongodb:
+  service:
+    name: "mongodb"
+  mongodbDatabase: "localKRE"
+  mongodbUsername: "admin"
+
 config:
   admin:
-    apiAddress: ":4000"
+    apiAddress: ":80"
     frontendBaseURL: "http://localhost:3000"
     corsEnabled: true
   smtp:
@@ -21,7 +27,7 @@ adminApi:
     tag: ${ADMIN_API_IMAGE_TAG}
     pullPolicy: Always
   service:
-    port: 3000
+    port: 4000
   tls:
     enabled: false
     host: admin-api-kre.local

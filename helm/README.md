@@ -13,7 +13,7 @@ Shared configuration for all components
 
 | Parameter                                       | Description                                | Default                   |
 | ----------------------------------------------- | ------------------------------------------ | ------------------------- |
-| `config.admin.apiAddress`                       | Base internal URL for Api Server           | `:4000`                   |
+| `config.admin.apiAddress`                       | Base internal URL for Api Server           | `:3000`                   |
 | `config.admin.frontendBaseURL`                  | Base URL to connect from frontent          | `http://localhost:3000`   |
 | `config.admin.corsEnabled`                      | Activate CORS in Admin API                 | `true`                    |
 | `config.smtp.enabled`                           | Activate SMTP                              | `false`                   |
