@@ -13,8 +13,9 @@ import styles from './RuntimeVersions.module.scss';
 
 type Props = {
   activeVersion: RuntimeVersion;
+  onClick: Function;
 };
-function ActiveVersionStatus({ activeVersion }: Props) {
+function ActiveVersionStatus({ activeVersion, onClick }: Props) {
   const isVersionActive = activeVersion !== undefined;
   const title = isVersionActive
     ? 'Version active'
@@ -39,7 +40,7 @@ function ActiveVersionStatus({ activeVersion }: Props) {
               <div className={styles.greenCircle} />
               <span className={styles.versionName}>{'Version name'}</span>
             </div>
-            <Button label="LOCATE THIS VERSION" border />
+            <Button label="LOCATE THIS VERSION" onClick={onClick} border />
           </div>
         </>
       )}

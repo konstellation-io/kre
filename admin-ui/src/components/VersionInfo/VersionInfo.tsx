@@ -26,6 +26,7 @@ function VersionInfo({ version, focussed = false }: Props) {
         [styles.active]: isVersionActive,
         [styles.focussed]: focussed
       })}
+      id={`versionInfoElement_${version.description.replace(' ', '')}`}
     >
       <div className={styles.col1}>
         <div className={styles.creation}>

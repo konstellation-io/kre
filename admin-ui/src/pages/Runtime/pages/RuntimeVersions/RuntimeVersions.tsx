@@ -33,6 +33,10 @@ function RuntimeVersions() {
     console.log('ACTIVE VERSION', activeVersion);
   }
 
+  function onLocateActiveVersionClick() {
+    // `versionInfoElement_${version.description.replace(' ', '')}`
+  }
+
   function getContent() {
     if (data && data.versions.length === 0) {
       return (
@@ -48,12 +52,19 @@ function RuntimeVersions() {
     const versions =
       data &&
       data.versions.map((version: RuntimeVersion, idx: number) => (
-        <VersionInfo key={`version_${idx}`} version={version} />
+        <VersionInfo
+          key={`version_${idx}`}
+          version={version}
+          focussed={version.status === 'active'}
+        />
       ));
 
     return (
       <>
-        <ActiveVersionStatus activeVersion={activeVersion} />
+        <ActiveVersionStatus
+          activeVersion={activeVersion}
+          onClick={onLocateActiveVersionClick}
+        />
         <div className={styles.versionList}>{versions}</div>
       </>
     );

@@ -4,14 +4,30 @@
 .container {
   display: flex;
   flex-direction: row;
-  padding: 10px 0 20px 0;
-  margin: 10px 0 20px 0;
+  padding: 20px 20px 40px 40px;
   border-bottom: solid 1px $color-grey;
 
   &.active {
   }
 
   &.focussed {
+    background-color: black;
+
+    .creationDate,
+    .name,
+    .version,
+    .description {
+      color: $font-color-white;
+    }
+
+    .statusLine {
+      border-bottom-color: $color-green;
+      border-top-color: $color-green;
+    }
+
+    .statusCircle {
+      background-color: $color-green;
+    }
   }
 
   p {
@@ -24,7 +40,7 @@
   flex-grow: 1;
   max-width: 270px;
   min-width: 160px;
-  width: 25%;
+  width: calc(25% - 80px);
 
   .creation {
     @include font-caption;
@@ -85,7 +101,7 @@
 }
 
 .col3 {
-  width: 75%;
+  width: calc(75% - 80px);
 
   .name {
     @include font-body;
@@ -134,5 +150,7 @@
   .activatedDate {
     @include font-caption;
     line-height: 17px;
+
+    margin: 0 8px 0 8px;
   }
 }
