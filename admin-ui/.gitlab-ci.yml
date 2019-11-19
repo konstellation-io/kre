@@ -11,7 +11,7 @@ test-admin-ui:
   coverage: '/Statements   : \d+\.\d+/'
   only:
     refs:
-      - branches
+      - merge_requests
     changes:
       - admin-ui/**/*
 
