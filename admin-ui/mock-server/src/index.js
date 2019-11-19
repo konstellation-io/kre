@@ -29,7 +29,7 @@ app.post('/api/v1/auth/signin', (req, res) => {
 });
 
 app.post('/api/v1/auth/signin/verify', (req, res) => {
-  if (!req.body.otp) {
+  if (!req.body.verificationCode) {
     return res.status(400)
       .send({"code": "invalid_verification_code", "message": "The verification code is invalid."});
   }

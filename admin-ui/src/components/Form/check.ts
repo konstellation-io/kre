@@ -76,9 +76,3 @@ export function isDomainValid(value: string) {
     ? VALID
     : setInvalid('Invalid domain format');
 }
-
-export function isMagicLinkTokenValid(token: string) {
-  return token.length === 6
-    ? VALID
-    : setInvalid('Authentication link is not valid');
-}

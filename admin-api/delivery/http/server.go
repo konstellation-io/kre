@@ -29,7 +29,13 @@ func restricted(c echo.Context) error {
 // NewApp creates a new App instance.
 func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor) *App {
 	e := echo.New()
+	e.HideBanner = true
 	e.Validator = newCustomValidator()
+
+	e.Use(
+		middleware.RequestID(),
+		middleware.Logger(),
+	)
 
 	if cfg.Admin.CORSEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

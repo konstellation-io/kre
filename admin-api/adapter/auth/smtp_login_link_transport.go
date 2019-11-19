@@ -24,7 +24,7 @@ func NewSMTPLoginLinkTransport(cfg *config.Config, logger logging.Logger) *Verif
 
 func (s VerificationCodeSMTPTransport) Send(recipient, verificationCode string) error {
 	frontEndBaseURL := s.cfg.Admin.FrontEndBaseURL
-	loginLink := fmt.Sprintf("%s/login/%s", frontEndBaseURL, verificationCode)
+	loginLink := fmt.Sprintf("%s/signin/%s", frontEndBaseURL, verificationCode)
 	subject := "KRE Admin SigIn"
 	messageText := fmt.Sprintf("Your login link:\n%s", loginLink)
 
