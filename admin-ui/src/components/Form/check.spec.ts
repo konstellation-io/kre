@@ -107,21 +107,6 @@ test('if isDomainValid makes correct validations', () => {
   expect(validDomain2.valid).toBeTruthy();
 });
 
-test('if isMagicLinkTokenValid makes correct validations', () => {
-  const validToken = CHECK.isMagicLinkTokenValid('123456');
-  const invalidToken1 = CHECK.isMagicLinkTokenValid('');
-  const invalidToken2 = CHECK.isMagicLinkTokenValid('12345');
-  const invalidToken3 = CHECK.isMagicLinkTokenValid('1234567');
-  const invalidToken4 = CHECK.isMagicLinkTokenValid('adlshfjgdsc');
-
-  expect(invalidToken1.valid).toBeFalsy();
-  expect(invalidToken2.valid).toBeFalsy();
-  expect(invalidToken3.valid).toBeFalsy();
-  expect(invalidToken4.valid).toBeFalsy();
-
-  expect(validToken.valid).toBeTruthy();
-});
-
 test('if getValidationError returns errors', () => {
   const isFieldNotEmptyError = CHECK.getValidationError([
     CHECK.isFieldNotEmpty('')

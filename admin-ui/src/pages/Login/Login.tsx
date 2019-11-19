@@ -43,7 +43,10 @@ function Login({ history }: Props) {
       if (response.complete) {
         if (response && response.status === 200) {
           history.push(PAGES.VERIFY_EMAIL);
-        } else if (response.error && response.data.code === 'bad_email') {
+        } else if (
+          response.error &&
+          response.data.code === 'validation_error'
+        ) {
           setError('Invalid email');
         } else {
           setError('Unexpected error. Contact support for more information');

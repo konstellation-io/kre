@@ -34,4 +34,3 @@ Repositories implementation are responsible for converting "database objects" in
 
 - Testify for testing.
 - Echo for Delivery layer.
-- Viper for environment configurations.

@@ -29,7 +29,20 @@ func restricted(c echo.Context) error {
 // NewApp creates a new App instance.
 func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor) *App {
 	e := echo.New()
+	e.HideBanner = true
 	e.Validator = newCustomValidator()
+
+	e.Use(
+		middleware.RequestID(),
+		middleware.Logger(),
+	)
+
+	if cfg.Admin.CORSEnabled {
+		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins:     []string{cfg.Admin.FrontEndBaseURL},
+			AllowCredentials: true,
+		}))
+	}
 
 	authController := controller.NewAuthController(cfg, logger, authInteractor)
 
@@ -54,5 +67,5 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 
 // Start runs the HTTP server.
 func (a *App) Start() {
-	a.server.Logger.Fatal(a.server.Start(a.cfg.Server.Address))
+	a.server.Logger.Fatal(a.server.Start(a.cfg.Admin.APIAddress))
 }

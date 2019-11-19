@@ -1,13 +1,14 @@
-server:
-  address: ":4000"
-  frontend_base_url: "http://localhost:3000"
+admin:
+  apiAddress: ":4000"
+  frontendBaseURL: "http://localhost:3000"
+  corsEnabled: true
 smtp:
   enabled: false
 auth:
-  verification_code_duration_in_minutes: 1
-  session_duration_in_hours: 1
-  jwt_sign_secret: jwt_secret
-  secure_cookie: false
+  verificationCodeDurationInMinutes: 1
+  sessionDurationInHours: 1
+  jwtSignSecret: "jwt_secret"
+  secureCookie: false
 mongodb:
   address: "mongodb://localhost:27017"
-  db_name: "localKRE"
+  dbName: "localKRE"
