@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kre.fullname" . }}-k8s-resource-manager
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        {{- include "kre.labels" . | nindent 8 }}
+        app: {{ .Chart.Name }}-k8s-resource-manager
+    spec:
+      serviceAccountName: k8s-resource-manager
+      containers:
+        - name: {{ .Chart.Name }}-k8s-resource-manager
+          image: {{ .Values.k8sResourceManager.image.repository }}:{{ .Values.k8sResourceManager.image.tag }}
+          imagePullPolicy: {{ .Values.k8sResourceManager.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-configmap
+          - secretRef:
+              name: {{ .Release.Name }}-secrets
+
+          ports:
+            - containerPort: {{ .Values.k8sResourceManager.service.port }}
+              protocol: TCP
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets  }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}

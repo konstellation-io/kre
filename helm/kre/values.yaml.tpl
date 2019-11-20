@@ -40,3 +40,11 @@ adminUI:
   tls:
     enabled: false
   host: admin-kre.local
+
+k8sResourceManager:
+  image:
+    repository: konstellation/kre-k8s-resource-manager
+    tag: ${K8S_RESOURCE_MANAGER_IMAGE_TAG}
+    pullPolicy: Always
+  service:
+    port: 50051
