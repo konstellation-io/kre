@@ -1,4 +1,4 @@
-# Default values for konstellation.
+# Extra int values for Konstellation KRE.
 
 mongodb:
   mongodbDatabase: "intKRE"
@@ -10,6 +10,15 @@ config:
     secureCookie: true
 
 adminApi:
+  image:
+    pullPolicy: Always
   tls:
     enabled: true
     host: api.kre-int.konstellation.io
+
+adminUI:
+  image:
+    pullPolicy: Always
+  tls:
+    enabled: true
+    host: admin.kre-int.konstellation.io

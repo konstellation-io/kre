@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-admin-ui-configmap
+  labels:
+    {{- include "kre.labels" . | nindent 4 }}
+    app: {{ .Chart.Name }}-admin-ui
+data:
+  config.json: |
+    {
+      "API_BASE_URL": "{{ .Values.config.admin.frontendBaseURL }}"
+    }

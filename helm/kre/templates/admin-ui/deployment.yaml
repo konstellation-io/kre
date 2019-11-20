@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kre.fullname" . }}-admin-ui
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        {{- include "kre.labels" . | nindent 8 }}
+        app: {{ .Chart.Name }}-admin-ui
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-admin-ui
+          image: {{ .Values.adminUI.image.repository }}:{{ .Values.adminUI.image.tag }}
+          imagePullPolicy: {{ .Values.adminUI.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/config/config.json
+              subPath: config.json
+          ports:
+            - containerPort: {{ .Values.adminUI.service.port }}
+              protocol: TCP
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-admin-ui-configmap
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets  }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+

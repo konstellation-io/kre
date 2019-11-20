@@ -9,7 +9,7 @@ mongodb:
 config:
   admin:
     apiAddress: ":80"
-    frontendBaseURL: "http://localhost:3000"
+    frontendBaseURL: "http://api-kre.local"
     corsEnabled: true
   smtp:
     enabled: false
@@ -23,9 +23,20 @@ adminApi:
   image:
     repository: konstellation/kre-admin-api
     tag: ${ADMIN_API_IMAGE_TAG}
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   service:
     port: 4000
   tls:
     enabled: false
-    host: admin-api-kre.local
+    host: api-kre.local
+
+adminUI:
+  image:
+    repository: konstellation/kre-admin-ui
+    tag: ${ADMIN_UI_IMAGE_TAG}
+    pullPolicy: IfNotPresent
+  service:
+    port: 5000
+  tls:
+    enabled: false
+    host: admin-kre.local
