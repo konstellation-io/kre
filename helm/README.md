@@ -11,27 +11,34 @@ helm upgrade --install --namespace kre --values ./values-dev-local.yml kre ./kre
 ### Config 
 Shared configuration for all components
 
-| Parameter                                       | Description                                | Default                   |
-| ----------------------------------------------- | ------------------------------------------ | ------------------------- |
-| `config.admin.apiAddress`                       | Base internal URL for Api Server           | `:3000`                   |
-| `config.admin.frontendBaseURL`                  | Base URL to connect from frontent          | `http://localhost:3000`   |
-| `config.admin.corsEnabled`                      | Activate CORS in Admin API                 | `true`                    |
-| `config.smtp.enabled`                           | Activate SMTP                              | `false`                   |
-| `config.smtp.sender`                            | SMTP Sender Email                          | <not_defined>             |
-| `config.smtp.senderName`                        | SMTP Sender Name                           | <not_defined>             |
-| `config.smtp.user`                              | SMTP User to connect                       | <not_defined>             |
-| `config.smtp.pass`                              | SMTP Password to connect                   | <not_defined>             |
-| `config.smtp.host`                              | SMTP Host to connect                       | <not_defined>             |
-| `config.smtp.port`                              | SMTP Port to connect                       | <not_defined>             |
-| `config.auth.verificationCodeDurationInMinutes` | User Verification Code Duration In Minutes | `1`                       |
-| `config.auth.sessionDurationInHours`            | User Session Duration in Hours             | `1`                       |
-| `config.auth.jwtSignSecret`                     | JWT Sign Secret Key                        | `jwt_secret`              |
-| `config.auth.secureCookie`                      | Activate secure cookie                     | `false`                   |
-| `config.mongodb.address`                        | MongoDB Connection Address                 | `mongodb://mongodb:27017` |
-| `config.mongodb.dbName`                         | MongoDB Database Name                      | `localKRE`                |
+| Parameter                                       | Description                                | Default                 |
+| ----------------------------------------------- | ------------------------------------------ | ----------------------- |
+| `config.admin.apiAddress`                       | Base internal URL for Api Server           | `:3000`                 |
+| `config.admin.frontendBaseURL`                  | Base URL to connect from frontent          | `http://localhost:3000` |
+| `config.admin.corsEnabled`                      | Activate CORS in Admin API                 | `true`                  |
+| `config.smtp.enabled`                           | Activate SMTP                              | `false`                 |
+| `config.smtp.sender`                            | SMTP Sender Email                          | <not_defined>           |
+| `config.smtp.senderName`                        | SMTP Sender Name                           | <not_defined>           |
+| `config.smtp.user`                              | SMTP User to connect                       | <not_defined>           |
+| `config.smtp.pass`                              | SMTP Password to connect                   | <not_defined>           |
+| `config.smtp.host`                              | SMTP Host to connect                       | <not_defined>           |
+| `config.smtp.port`                              | SMTP Port to connect                       | <not_defined>           |
+| `config.auth.verificationCodeDurationInMinutes` | User Verification Code Duration In Minutes | `1`                     |
+| `config.auth.sessionDurationInHours`            | User Session Duration in Hours             | `1`                     |
+| `config.auth.jwtSignSecret`                     | JWT Sign Secret Key                        | `jwt_secret`            |
+| `config.auth.secureCookie`                      | Activate secure cookie                     | `false`                 |
 
 
+### Subcharts values
 
+Subchart info configuration
+- [mongoDB stable chart](https://github.com/helm/charts/tree/master/stable/mongodb#parameters)
+
+| Parameter                 | Description                                                 | Default    |
+| ------------------------- | ----------------------------------------------------------- | ---------- |
+| `mongodb.mongodbDatabase` | Database to create                                          | `localKRE` |
+| `mongodb.mongodbUsername` | MongoDB custom user (mandatory if `mongodbDatabase` is set) | `admin`    |
+| `mongodb.mongodbPassword` | MongoDB custom user password                                | `123456`   |
 
 ### Admin API
 Specific configuration for Admin API

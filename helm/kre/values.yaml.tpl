@@ -4,6 +4,7 @@ mongodb:
     name: "mongodb"
   mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
+  mongodbPassword: "123456"
 
 config:
   admin:
@@ -17,9 +18,6 @@ config:
     sessionDurationInHours: 1
     jwtSignSecret: jwt_secret
     secureCookie: false
-  mongodb:
-    address: "mongodb://mongodb:27017"
-    dbName: "localKRE"
 
 adminApi:
   image:

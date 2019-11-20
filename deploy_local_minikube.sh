@@ -9,8 +9,8 @@ export DEPLOY_NAME=kre-local
 minikube start
 minikube addons enable ingress 
 minikube addons enable storage-provisioner
-# Enable local registry to download images from local
 
+# Enable local registry to download images from local
 eval $(minikube docker-env -u)   
 if [[ "$SKIP_BUILD" -ne "1" ]]; then
     docker build -t konstellation/kre-admin-api:latest admin-api
