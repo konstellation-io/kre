@@ -15,16 +15,12 @@ data:
   {{- if .Values.config.smtp.enabled}}
   KRE_SMTP_SENDER: "{{.Values.config.smtp.sender}}"
   KRE_SMTP_SENDER_NAME: "{{.Values.config.smtp.senderName}}"
-  KRE_SMTP_USER: "{{.Values.config.smtp.user}}"
-  KRE_SMTP_PASS: "{{.Values.config.smtp.pass}}"
   KRE_SMTP_HOST: "{{.Values.config.smtp.host}}"
   KRE_SMTP_PORT: "{{.Values.config.smtp.port}}"
   {{- end }}
   # Auth
   KRE_AUTH_VERIFICATION_CODE_DURATION_IN_MINUTES: "{{.Values.config.auth.verificationCodeDurationInMinutes}}"
   KRE_AUTH_SESSION_DURATION_IN_HOURS: "{{.Values.config.auth.sessionDurationInHours}}"
-  KRE_AUTH_JWT_SIGN_SECRET: "{{.Values.config.auth.jwtSignSecret}}"
   KRE_AUTH_SECURE_COOKIE: "{{.Values.config.auth.secureCookie}}"
   # MongoDB
-  KRE_MONGODB_ADDRESS: "mongodb://{{.Values.mongodb.mongodbUsername}}:{{.Values.mongodb.mongodbPassword}}@mongodb:27017/{{.Values.mongodb.mongodbDatabase}}"
   KRE_MONGODB_DB_NAME: "{{.Values.mongodb.mongodbDatabase}}"

@@ -2,3 +2,4 @@
 .vscode
 
 config.dev.yml
+helm/kre/values.yaml

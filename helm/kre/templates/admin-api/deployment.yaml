@@ -17,6 +17,9 @@ spec:
           envFrom:
           - configMapRef:
               name: {{ .Release.Name }}-configmap
+          - secretRef:
+              name: {{ .Release.Name }}-secrets
+
           ports:
             - containerPort: {{ .Values.adminApi.service.port }}
               protocol: TCP

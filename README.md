@@ -4,11 +4,7 @@ Konstellation runtime.
 
 
 # Deploy local
-## Minikube
-```
-    ./deploy_local_minikube.sh
-```
-## Microk8s
+Deploy KRE with Helm in Minikube environment
 ```
     ./deploy_local.sh
 ```
