@@ -83,15 +83,15 @@ deploy-helm-int:
     - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}
     - helm init --client-only --wait
     - helm repo add konstellation-ce https://charts.konstellation.io
-    - helm upgrade \
-      --wait --recreate-pods \
-      --install konstellation-ce/kre \
-      --namespace kre \
-      --values helm/values-int-gke.yml \
-      --values $SMTP_CONFIG \
-      --version $CHART_VERSION \
-      helm/kre \
-      kre
+    - helm upgrade
+      --wait
+      --recreate-pods
+      --install kre
+      --namespace kre
+      --values helm/values-int-gke.yml
+      --values $SMTP_CONFIG
+      --version $CHART_VERSION
+      konstellation-ce/kre
   only:
     refs:
       - /^helm-chart-v\d*.\d*.\d*$/
