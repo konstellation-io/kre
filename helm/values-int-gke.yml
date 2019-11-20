@@ -1,6 +1,15 @@
 # Default values for konstellation.
 
-api:
+mongodb:
+  mongodbDatabase: "intKRE"
+
+config:
+  auth:
+    verificationCodeDurationInMinutes: 5
+    jwtSignSecret: int_jwt_secret
+    secureCookie: true
+
+adminApi:
   tls:
     enabled: true
-    host: api-kre-int.konstellation.io
+    host: api.kre-int.konstellation.io

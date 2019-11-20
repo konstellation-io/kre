@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-api
+  labels:
+    {{- include "kre.labels" . | nindent 4 }}
+    app: {{ .Chart.Name }}-admin-api
+spec:
+  clusterIP: None
+  ports:
+    - port: {{.Values.adminApi.service.port}}
+      protocol: TCP
+      targetPort: 80
+  selector:
+    {{- include "kre.labels" . | nindent 4 }}
+    app: {{ .Chart.Name }}-admin-api

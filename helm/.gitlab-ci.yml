@@ -34,9 +34,9 @@ generate-helm-chart:
     - apk add --update bash gettext coreutils
     - wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
     - chmod +x /usr/local/bin/helm
+    - helm init --client-only --wait
     - helm plugin install https://github.com/chartmuseum/helm-push
     - helm repo add konstellation-ce https://${HELM_USER}:${HELM_PASSWD}@charts.konstellation.io
-    - helm init --client-only --wait
     - export ADMIN_API_IMAGE_TAG=$(./scripts/git_latest_tag.sh "admin-api")
     - ./scripts/replace_env_path.sh
   script:
@@ -60,6 +60,35 @@ create-release:
     - gitlab-release --message 'Konstellation chart release' konstellation-${CHART_VERSION}.tgz
   dependencies:
     - generate-helm-chart
+  only:
+    refs:
+      - /^helm-chart-v\d*.\d*.\d*$/
+
+deploy-helm-int:
+  stage: deploy
+  environment:
+    name: int
+  image: google/cloud-sdk:266.0.0
+  before_script:
+    - echo "$GCP_SERVICE_ACCOUNT" | base64 -d > service-account.json
+    - gcloud auth activate-service-account terraform@konstellation.iam.gserviceaccount.com --key-file=./service-account.json --project=konstellation
+    - gcloud container clusters get-credentials konstellation-int --zone=europe-west1-b --user-output-enabled
+    - curl -O https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz
+    - tar zxvf helm-v2.14.3-linux-amd64.tar.gz
+    - cp linux-amd64/helm /usr/local/bin/helm
+    - apt-get update
+    - apt-get install -y gettext
+  script:
+    - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}
+    - helm init --client-only --wait
+    - helm repo add konstellation-ce https://charts.konstellation.io
+    - helm upgrade \
+      --wait --recreate-pods \
+      --install konstellation-ce/kre --namespace kre \
+      --values helm/values-int-gke.yml \
+      --values $SMTP_CONFIG \
+      --version $CHART_VERSION \
+      helm/kre
   only:
     refs:
       - /^helm-chart-v\d*.\d*.\d*$/
