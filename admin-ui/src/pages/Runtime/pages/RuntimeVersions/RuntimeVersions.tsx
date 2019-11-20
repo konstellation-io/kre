@@ -31,8 +31,6 @@ function RuntimeVersions() {
   if (data && data.versions.length !== 0) {
     // @ts-ignore
     activeVersion = data.versions.find(version => version.status === 'active');
-    console.log('VERSIONS', data.versions);
-    console.log('ACTIVE VERSION', activeVersion);
   }
 
   function onLocateActiveVersionClick() {
@@ -42,9 +40,16 @@ function RuntimeVersions() {
 
     let scrollAmount = 0;
 
-    // @ts-ignore
-    scrollAmount =
-      activeVersionInfoElement.offsetTop - versionListRef.current.offsetTop;
+    const targetTop = activeVersionInfoElement
+      ? activeVersionInfoElement.offsetTop
+      : 0;
+
+    let listTop = 0;
+    if (versionListRef.current !== null) {
+      // @ts-ignore
+      listTop = versionListRef.current.offsetTop;
+    }
+    scrollAmount = targetTop - listTop;
 
     // @ts-ignore
     versionListRef.current.scrollTo({
