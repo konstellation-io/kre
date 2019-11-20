@@ -13,7 +13,6 @@
   },
   "release": {
     "monorepo": {
-      "branch": "master",
       "analyzeCommits": {
         "format": "angular",
         "preset": "angular",
@@ -45,7 +44,6 @@
         "changelogFile": "CHANGELOG.md"
       }
     },
-    "branch": "master",
     "verifyConditions": [
       {
         "path": "@semantic-release/gitlab",
