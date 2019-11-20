@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { History, Location } from 'history';
 
 import NavBar from '../NavBar/NavBar';
@@ -30,14 +31,30 @@ function Sidebar({
   onChange = function(idx: number) {},
   subheader = undefined
 }: Props) {
+  const paramEntries = Object.entries(useParams());
   const backLocation = useRef(location.state && location.state.prevLocation);
 
   function onBackButton() {
     history.push(backLocation.current);
   }
 
-  const actualRoute = location.pathname;
-  const activeTab = tabs.map(tab => tab.route).indexOf(actualRoute);
+  // Get actual route (ignoring parameter values)
+  let actualRoute = location.pathname;
+  paramEntries.forEach(([param, value]) => {
+    actualRoute = actualRoute.replace(`/${value}/`, '/');
+  });
+
+  // Get tab routes (ignoring parameter names)
+  let tabRoutes = tabs.map(tab => {
+    let route = tab.route;
+    paramEntries.forEach(([param, value]) => {
+      route = route.replace(`/:${param}/`, '/');
+    });
+    return route;
+  });
+
+  const activeTab = tabRoutes.indexOf(actualRoute);
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>

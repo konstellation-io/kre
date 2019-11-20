@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import { Route, Redirect } from 'react-router';
+import { Route, Redirect, Switch } from 'react-router';
 import history from './history';
 import * as PAGES from './constants/routes';
 
@@ -11,29 +11,27 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Runtime from './pages/Runtime/Runtime';
 import Settings from './pages/Settings/Settings';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
-
-function Redirection({ from, to }: any) {
-  return (
-    <Route exact path={from}>
-      <Redirect to={to} />
-    </Route>
-  );
-}
+import AddVersion from './pages/AddVersion/AddVersion';
 
 export function Routes() {
   return (
     <>
-      <Redirection from={PAGES.HOME} to={PAGES.DASHBOARD} />
-      <Redirection from={PAGES.SETTINGS} to={PAGES.SETTINGS_GENERAL} />
+      <Switch>
+        <Redirect exact from={PAGES.HOME} to={PAGES.DASHBOARD} />
+        <Redirect exact from={PAGES.SETTINGS} to={PAGES.SETTINGS_GENERAL} />
+        <Redirect exact from={PAGES.RUNTIME} to={PAGES.RUNTIME_STATUS} />
 
-      <Route exact path={PAGES.LOGIN} component={Login} />
-      <Route exact path={PAGES.VERIFY_EMAIL} component={VerifyEmail} />
-      <Route exact path={PAGES.MAGIC_LINK} component={MagicLink} />
+        <Route exact path={PAGES.LOGIN} component={Login} />
+        <Route exact path={PAGES.VERIFY_EMAIL} component={VerifyEmail} />
+        <Route exact path={PAGES.MAGIC_LINK} component={MagicLink} />
 
-      <Route exact path={PAGES.DASHBOARD} component={Dashboard} />
-      <Route path={PAGES.RUNTIME} component={Runtime} />
-      <Route path={PAGES.SETTINGS} component={Settings} />
-      <Route path={PAGES.NEW_RUNTIME} component={AddRuntime} />
+        <Route path={PAGES.NEW_RUNTIME} component={AddRuntime} />
+        <Route path={PAGES.NEW_VERSION} component={AddVersion} />
+
+        <Route exact path={PAGES.DASHBOARD} component={Dashboard} />
+        <Route path={PAGES.RUNTIME} component={Runtime} />
+        <Route path={PAGES.SETTINGS} component={Settings} />
+      </Switch>
     </>
   );
 }

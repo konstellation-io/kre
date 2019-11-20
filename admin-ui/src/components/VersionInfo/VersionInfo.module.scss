@@ -1,0 +1,154 @@
+@import '../../styles/mixins';
+@import '../../styles/colors';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 20px 40px 40px;
+  border-bottom: solid 1px $color-grey;
+  transition: background-color ease 0.3s;
+
+  &.focussed {
+    background-color: black;
+
+    .creationDate,
+    .name,
+    .version,
+    .description {
+      color: $font-color-white;
+    }
+
+    .statusLine {
+      border-bottom-color: $color-green;
+      border-top-color: $color-green;
+    }
+
+    .statusCircle {
+      background-color: $color-green;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.col1 {
+  padding-right: 16px;
+  flex-grow: 1;
+  max-width: 270px;
+  min-width: 160px;
+  width: calc(25% - 80px);
+
+  .creation {
+    @include font-caption;
+    font-weight: 700;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    white-space: nowrap;
+    margin-bottom: 20px;
+  }
+
+  .creationDate {
+    margin-left: 5px;
+  }
+
+  .createdPanel {
+    @include font-small;
+    color: $color-green;
+
+    display: flex;
+    flex-direction: row;
+  }
+
+  .actionButton {
+    width: 114px;
+    margin: 0 7px 0 auto;
+  }
+
+  .versionActive {
+    margin: auto 0 4px 11px;
+  }
+}
+
+.col2 {
+  position: relative;
+  flex: 0 0 40px;
+
+  .statusLine {
+    position: absolute;
+    top: 8px;
+    width: 18px;
+    height: 1px;
+    border: dotted 1px transparent;
+    border-bottom-color: $font-color-dark;
+    border-top-color: $font-color-dark;
+  }
+
+  .statusCircle {
+    position: absolute;
+    top: 5px;
+    left: 18px;
+    width: 8px;
+    height: 8px;
+    border: solid 1px $font-color;
+    border-radius: 50%;
+  }
+}
+
+.col3 {
+  width: calc(75% - 80px);
+
+  .name {
+    @include font-body;
+    font-weight: 600;
+    line-height: 17px;
+
+    margin-bottom: 6px;
+  }
+
+  .version {
+    @include font-caption;
+
+    margin-bottom: 15px;
+  }
+
+  .descriptionTitle,
+  .activatedTitle {
+    @include font-caption;
+    color: $font-color-dark;
+
+    margin-bottom: 8px;
+  }
+
+  .activatedTitle {
+    margin-top: 15px;
+  }
+
+  .col3CreatorName,
+  .col3CreationDate {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .description {
+    @include font-small;
+  }
+
+  .activatedContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .activatedAuthor,
+  .activatedDate {
+    @include font-caption;
+    line-height: 17px;
+
+    margin: 0 8px 0 8px;
+  }
+}

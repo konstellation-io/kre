@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { History, Location } from 'history';
 import * as ROUTE from '../../constants/routes';
@@ -9,6 +10,8 @@ import DocumentationIcon from '@material-ui/icons/Toc';
 import TimeIcon from '@material-ui/icons/AccessTime';
 import ConfigIcon from '@material-ui/icons/Settings';
 
+import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
+import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
@@ -24,7 +27,7 @@ import styles from './Runtime.module.scss';
 const tabs = [
   {
     label: 'STATUS',
-    route: ROUTE.HOME,
+    route: ROUTE.RUNTIME_STATUS,
     Icon: StatusIcon
   },
   {
@@ -39,7 +42,7 @@ const tabs = [
   },
   {
     label: 'VERSION',
-    route: ROUTE.HOME,
+    route: ROUTE.RUNTIME_VERSIONS,
     Icon: TimeIcon
   },
   {
@@ -67,7 +70,7 @@ function Runtime({ history, location }: Props) {
   return (
     <>
       <Header>
-        <Button label="ADD VERSION" height={40} />
+        <Button label="ADD VERSION" height={40} to={ROUTE.NEW_VERSION} />
       </Header>
       <div className={styles.container} data-testid="runtimeContainer">
         <NavigationBar />
@@ -79,8 +82,13 @@ function Runtime({ history, location }: Props) {
           location={location}
         />
         <div className={styles.content}>
-          {/* <Route exact path={ROUTE.SETTINGS_GENERAL} component={GeneralSettings} />
-          <Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
+          <Route exact path={ROUTE.RUNTIME_STATUS} component={RuntimeStatus} />
+          <Route
+            exact
+            path={ROUTE.RUNTIME_VERSIONS}
+            component={RuntimeVersions}
+          />
+          {/*<Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
           <Route exact path={ROUTE.SETTINGS_AUDIT} component={AuditSettings} /> */}
         </div>
       </div>

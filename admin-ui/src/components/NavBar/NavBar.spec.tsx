@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import NavBar, { Tab } from './NavBar';
 import '@testing-library/jest-dom/extend-expect';
@@ -11,13 +12,21 @@ const tabs = [
 
 afterEach(cleanup);
 
+function renderComponent(params: any = {}) {
+  return render(
+    <MemoryRouter>
+      <NavBar tabs={tabs} {...params} />
+    </MemoryRouter>
+  );
+}
+
 it('Renders NavBar without crashing', () => {
-  const { container } = render(<NavBar tabs={tabs} />);
+  const { container } = renderComponent();
   expect(container).toMatchSnapshot();
 });
 
 it('Shows different options', () => {
-  const { getByText } = render(<NavBar tabs={tabs} />);
+  const { getByText } = renderComponent();
 
   expect(getByText('TAB 1')).toBeInTheDocument();
   expect(getByText('TAB 2')).toBeInTheDocument();
@@ -25,7 +34,7 @@ it('Shows different options', () => {
 });
 
 it('Highlights selected option', () => {
-  const { container } = render(<NavBar tabs={tabs} defaultActive={1} />);
+  const { container } = renderComponent({ defaultActive: 1 });
 
   const primary = container.querySelector('.primary');
   expect(primary && primary.textContent).toBe('TAB 2');
@@ -34,9 +43,10 @@ it('Highlights selected option', () => {
 it('Handles click events', () => {
   const clickMock = jest.fn(() => true);
 
-  const { container, getByText } = render(
-    <NavBar tabs={tabs} defaultActive={0} onChange={clickMock} />
-  );
+  const { container, getByText } = renderComponent({
+    defaultActive: 0,
+    onChange: clickMock
+  });
 
   let primary = container.querySelector('.primary');
   expect(primary && primary.textContent).toBe('TAB 1');
@@ -49,14 +59,16 @@ it('Handles click events', () => {
 });
 
 it('Updates active tab', () => {
-  const { container, rerender } = render(
-    <NavBar tabs={tabs} defaultActive={0} />
-  );
+  const { container, rerender } = renderComponent({ defaultActive: 0 });
 
   let primary = container.querySelector('.primary');
   expect(primary && primary.textContent).toBe('TAB 1');
 
-  rerender(<NavBar tabs={tabs} defaultActive={1} />);
+  rerender(
+    <MemoryRouter>
+      <NavBar tabs={tabs} defaultActive={1} />
+    </MemoryRouter>
+  );
 
   primary = container.querySelector('.primary');
   expect(primary && primary.textContent).toBe('TAB 2');

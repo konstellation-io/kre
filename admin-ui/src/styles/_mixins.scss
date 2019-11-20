@@ -53,3 +53,26 @@
   @include font-by-size(13px, 22px);
   font-family: 'Roboto Mono';
 }
+
+@mixin form-input {
+  @include font-body;
+  line-height: 16px;
+
+  position: relative;
+  width: 100%;
+  height: 40px;
+  min-height: 40px;
+  max-height: 560px;
+  padding: 11px 16px;
+  border: solid 1px transparent;
+  border-radius: 6px;
+  background-color: $bg-color-lighter;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border ease 0.5s;
+
+  &.error {
+    border: solid 1px $color-red;
+    color: $color-red;
+  }
+}

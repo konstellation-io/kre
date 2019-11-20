@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { render, fireEvent, cleanup, act } from '@testing-library/react';
@@ -16,13 +17,21 @@ const getInput = (c: HTMLElement) =>
   getByTestId(c, 'input') as HTMLInputElement;
 const getError = (c: HTMLElement) => getByTestId(c, 'error-message');
 
+function renderComponent() {
+  return render(
+    <MemoryRouter>
+      <Login history />
+    </MemoryRouter>
+  );
+}
+
 it('Render Login without crashing', () => {
-  const { container } = render(<Login history />);
+  const { container } = renderComponent();
   expect(container).toMatchSnapshot();
 });
 
 it('Shows correct texts', () => {
-  const { getByText } = render(<Login history />);
+  const { getByText } = renderComponent();
 
   expect(getByText('enter your email address')).toBeInTheDocument();
   expect(getByText('EMAIL')).toBeInTheDocument();
@@ -30,7 +39,7 @@ it('Shows correct texts', () => {
 });
 
 it('shows an error on summiting an invalid adress', () => {
-  const { getByText, container } = render(<Login history />);
+  const { getByText, container } = renderComponent();
   const invalidEmail = 'invalid@email';
   const input = getInput(container);
 
@@ -54,9 +63,11 @@ it('performs a login request', async () => {
 
   const history = createMemoryHistory();
   const { getByText, container } = render(
-    <Router history={history}>
-      <Login history={history} />
-    </Router>
+    <MemoryRouter>
+      <Router history={history}>
+        <Login history={history} />
+      </Router>
+    </MemoryRouter>
   );
   const validEmail = 'valid@email.es';
   const input = getInput(container);

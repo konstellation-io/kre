@@ -35,9 +35,7 @@ type Props = {
 };
 
 function checkToken(token: string) {
-  return CHECK.getValidationError([
-    CHECK.isFieldNotEmpty(token)
-  ]);
+  return CHECK.getValidationError([CHECK.isFieldNotEmpty(token)]);
 }
 
 /**
@@ -94,7 +92,10 @@ function MagicLink({ history }: Props) {
             timeout.current = setTimeout(() => {
               history.push(PAGES.DASHBOARD);
             }, 2500) as any;
-          } else if (response.error && response.data.code === 'invalid_verification_code') {
+          } else if (
+            response.error &&
+            response.data.code === 'invalid_verification_code'
+          ) {
             setError('Invalid verification code');
           } else {
             setError('Unexpected error. Contact support for more information');

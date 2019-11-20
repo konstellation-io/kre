@@ -1,0 +1,44 @@
+@import '../../../styles/mixins';
+@import '../../../styles/colors';
+
+.header {
+  @include font-caption;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.uploaded {
+  opacity: 0;
+  color: $color-bright-blue-2;
+
+  &.show {
+    opacity: 1;
+  }
+}
+
+.progressContainer {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  margin: 12px 0 16px 0;
+
+  background-color: $font-color;
+}
+.progress {
+  height: 100%;
+  background-color: $color-bright-blue-2;
+}
+
+.ack {
+  @include font-small;
+  font-weight: 400;
+  color: $color-green;
+
+  opacity: 0;
+
+  &.show {
+    opacity: 1;
+  }
+}

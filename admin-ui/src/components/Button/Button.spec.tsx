@@ -1,12 +1,19 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { getByTestId } from '@testing-library/dom';
-import Button from './Button';
+import ButtonWithoutMemoryRouter from './Button';
 
 afterEach(cleanup);
+
+const Button = (params: any = {}) => (
+  <MemoryRouter>
+    <ButtonWithoutMemoryRouter {...params} />
+  </MemoryRouter>
+);
 
 it('Renders Button without crashing', () => {
   const { container } = render(<Button />);

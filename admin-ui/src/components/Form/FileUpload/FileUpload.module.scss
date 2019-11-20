@@ -14,25 +14,22 @@
   }
 }
 
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+}
+
 .input {
   @include form-input;
 
-  color: $font-color;
+  color: $font-color-white;
+  font-weight: 600;
 
-  &::-webkit-input-placeholder {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.placeholder {
     color: $font-color;
-  }
-}
-
-.clearButton {
-  position: absolute;
-  right: 15px;
-  top: 34px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-
-  &:hover {
-    font-weight: 700;
   }
 }
