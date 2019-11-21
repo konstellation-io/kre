@@ -18,6 +18,8 @@ branch-ahead-of-master:
   variables:
     BRANCH_NAME: $CI_COMMIT_REF_NAME
   image: igzgustavomarin/branch-ahead-of-master
+  script:
+    - /app/branch-ahead-of-master
   only:
     refs:
       - branches
