@@ -1,15 +1,26 @@
-# Default values for konstellation.
+# Extra int values for Konstellation KRE.
 
 mongodb:
   mongodbDatabase: "intKRE"
 
 config:
+  admin:
+    frontendBaseURL: "https://admin.kre-int.konstellation.io"
   auth:
     verificationCodeDurationInMinutes: 5
     jwtSignSecret: int_jwt_secret
     secureCookie: true
 
 adminApi:
+  image:
+    pullPolicy: Always
   tls:
     enabled: true
-    host: api.kre-int.konstellation.io
+  host: api.kre-int.konstellation.io
+
+adminUI:
+  image:
+    pullPolicy: Always
+  tls:
+    enabled: true
+  host: admin.kre-int.konstellation.io

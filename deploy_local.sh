@@ -6,7 +6,7 @@ export NAMESPACE=kre
 export DEPLOY_NAME=kre-local
 
 # Init minikube with required addons
-minikube start
+minikube start --kubernetes-version=1.15.2
 minikube addons enable ingress 
 minikube addons enable storage-provisioner
 
@@ -14,9 +14,11 @@ minikube addons enable storage-provisioner
 eval $(minikube docker-env -u)   
 if [[ "$SKIP_BUILD" -ne "1" ]]; then
     docker build -t konstellation/kre-admin-api:latest admin-api
+    docker build -t konstellation/kre-admin-ui:latest admin-ui
 fi
 
 export ADMIN_API_IMAGE_TAG="latest"
+export ADMIN_UI_IMAGE_TAG="latest"
 ./scripts/replace_env_path.sh
 
 helm dep update helm/kre
