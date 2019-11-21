@@ -19,7 +19,9 @@ branch-ahead-of-master:
   variables:
     BRANCH_NAME: $CI_COMMIT_REF_NAME
   script:
-    - echo "Running branch"
+    - echo "Running branch check"
+    - echo $PWD
+    - find .
     - branch-ahead-of-master
   only:
     refs:
