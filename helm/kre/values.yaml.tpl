@@ -41,10 +41,10 @@ adminUI:
     enabled: false
   host: admin-kre.local
 
-k8sResourceManager:
+k8sManager:
   image:
-    repository: konstellation/kre-k8s-resource-manager
-    tag: ${K8S_RESOURCE_MANAGER_IMAGE_TAG}
+    repository: konstellation/kre-k8s-manager
+    tag: ${K8S_MANAGER_IMAGE_TAG}
     pullPolicy: Always
   service:
     port: 50051

@@ -1,6 +1,6 @@
-# K8s resource manager 
+# K8s manager 
 
-- [K8s resource manager](#k8s-resource-manager)
+- [K8s manager](#k8s-manager)
     - [Description](#description)
     - [gRPC](#grpc)
     - [Kubernetes](#kubernetes)

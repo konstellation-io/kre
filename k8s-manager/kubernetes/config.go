@@ -7,7 +7,7 @@ import (
 
 	"k8s.io/client-go/rest"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-resource-manager/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
 	"k8s.io/client-go/tools/clientcmd"
 )
 

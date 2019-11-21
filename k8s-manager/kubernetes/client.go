@@ -1,10 +1,11 @@
 package kubernetes
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-resource-manager/config"
+	"log"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
-	"log"
 )
 
 func newClientset(
