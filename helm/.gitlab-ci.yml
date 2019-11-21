@@ -1,15 +1,26 @@
 release-helm-chart:
+  extends: .release-helm
   stage: semantic-release
-  image: node:10
-  before_script:
-    - npm install --prefix helm
-  script:
-    - cd helm && npx semantic-release -e semantic-release-monorepo
   only:
     refs:
       - master
     changes:
       - helm/**/*
+
+release-helm-after-image:
+  extends: .release-helm
+  stage: semantic-release-helm
+  only:
+    - tags
+  except:
+    - /^helm-chart-v\d*.\d*.\d*$/
+
+.release-helm:
+  image: node:10
+  before_script:
+    - npm install -g semantic-release semantic-release/gitlab
+  script:
+    - semantic-release -t helm-chart-v\${version}
 
 generate-helm-chart:
   stage: build
