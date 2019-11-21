@@ -8,7 +8,7 @@ mongodb:
 
 config:
   admin:
-    k8sManagerAddress: "k8s-manager"
+    k8sManagerAddress: "k8s-manager:80"
     apiAddress: ":80"
     frontendBaseURL: "http://api-kre.local"
     corsEnabled: true
