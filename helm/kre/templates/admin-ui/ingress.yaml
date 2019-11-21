@@ -14,11 +14,11 @@ spec:
   {{- if .Values.adminUI.tls.enabled }}
   tls:
   - hosts: 
-    - {{ .Values.adminUI.tls.host }}
-    secretName: {{ .Values.adminUI.tls.host }}-tls
+    - {{ .Values.adminUI.host }}
+    secretName: {{ .Values.adminUI.host }}-tls
   {{- end }}
   rules:
-    - host: {{ .Values.adminUI.tls.host }}
+    - host: {{ .Values.adminUI.host }}
       http:
         paths:
           - path: /

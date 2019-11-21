@@ -1,0 +1,5 @@
+mock-server
+Dockerfile
+README.md
+.gitlab-ci.yml
+.gitignore

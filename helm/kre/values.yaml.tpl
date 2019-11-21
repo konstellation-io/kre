@@ -28,7 +28,7 @@ adminApi:
     port: 4000
   tls:
     enabled: false
-    host: api-kre.local
+  host: api-kre.local
 
 adminUI:
   image:
@@ -39,4 +39,4 @@ adminUI:
     port: 5000
   tls:
     enabled: false
-    host: admin-kre.local
+  host: admin-kre.local

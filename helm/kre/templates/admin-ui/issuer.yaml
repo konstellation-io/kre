@@ -1,0 +1,13 @@
+{{- if .Values.adminApi.tls.enabled }}
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: {{ template "kre.fullname" . }}-admin-ui
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: terminus7@intelygenz.com
+    privateKeySecretRef:
+      name: {{ template "kre.fullname" . }}-admin-ui
+    http01: {}
+{{- end }}

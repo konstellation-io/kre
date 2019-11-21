@@ -47,7 +47,20 @@ Specific configuration for Admin API
 | ---------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------- |
 | `admin-api.image.repository` | Docker registry to download the admin-api image                                                           | `konstellation/kre-admin-api` |
 | `admin-api.image.tag`        | Version of the admin-api Docker image to deploy                                                           | `latest`                      |
-| `admin-api.image.pullPolicy` | Define when Kubernetes has to pull a Docker image                                                         | `Always`                      |
-| `admin-api.service.port`     | TCP port where is going to listen the internal service                                                    | `3000`                        |
+| `admin-api.image.pullPolicy` | Define when Kubernetes has to pull a Docker image                                                         | `IfNotPresent`                |
+| `admin-api.service.port`     | TCP port where is going to listen the internal service                                                    | `4000`                        |
 | `admin-api.tls.enabled`      | If we want to enable HTTPS access to the API. For this Cert Manager is required in the Kuberentes cluster | `false`                       |
-| `admin-api.tls.host`         | Public hostname to generate SSL certificate with Cert Manager                                             | `false`                       |
+| `admin-api.host`             | Public hostname to generate SSL certificate with Cert Manager                                             | `false`                       |
+
+
+### Admin UI
+Specific configuration for Admin UI
+
+| Parameter                   | Description                                                                                              | Default                      |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `admin-ui.image.repository` | Docker registry to download the admin-ui image                                                           | `konstellation/kre-admin-ui` |
+| `admin-ui.image.tag`        | Version of the admin-ui Docker image to deploy                                                           | `latest`                     |
+| `admin-ui.image.pullPolicy` | Define when Kubernetes has to pull a Docker image                                                        | `IfNotPresent`               |
+| `admin-ui.service.port`     | TCP port where is going to listen the internal service                                                   | `5000`                       |
+| `admin-ui.tls.enabled`      | If we want to enable HTTPS access to the UI. For this Cert Manager is required in the Kuberentes cluster | `false`                      |
+| `admin-ui.host`             | Public hostname to generate SSL certificate with Cert Manager                                            | `false`                      |

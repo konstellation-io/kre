@@ -1,3 +1,5 @@
+{{- $protocol := ternary  "https" "http" .Values.adminUI.tls.enabled -}}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,5 +10,5 @@ metadata:
 data:
   config.json: |
     {
-      "API_BASE_URL": "{{ .Values.config.admin.frontendBaseURL }}"
+      "API_BASE_URL": "{{ $protocol }}://{{ .Values.adminApi.host }}"
     }
