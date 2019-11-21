@@ -15,13 +15,11 @@ variables:
 
 branch-ahead-of-master:
   stage: test
-  image: igzgustavomarin/branch-ahead-of-master:0.0.7
+  image: igzgustavomarin/branch-ahead-of-master:latest
   variables:
     BRANCH_NAME: $CI_COMMIT_REF_NAME
   script:
-    - echo "Running branch check"
-    - echo $PWD
-    - echo "Checking $BRANCH_NAME"
+    - echo "Checking if $BRANCH_NAME is ahead of master"
     - branch-ahead-of-master
   only:
     refs:
