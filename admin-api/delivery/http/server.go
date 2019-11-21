@@ -11,14 +11,13 @@ import (
 
 // App is the top-level struct.
 type App struct {
-	server         *echo.Echo
-	cfg            *config.Config
-	logger         logging.Logger
-	authInteractor *usecase.AuthInteractor
+	server *echo.Echo
+	cfg    *config.Config
+	logger logging.Logger
 }
 
 // NewApp creates a new App instance.
-func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor) *App {
+func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor, runtimeInteractor *usecase.RuntimeInteractor, userInteractor *usecase.UserInteractor) *App {
 	e := echo.New()
 	e.HideBanner = true
 	e.Validator = newCustomValidator()
@@ -36,7 +35,7 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 	}
 
 	authController := controller.NewAuthController(cfg, logger, authInteractor)
-	graphQLController := controller.NewGraphQLController(cfg, logger)
+	graphQLController := controller.NewGraphQLController(cfg, logger, runtimeInteractor, userInteractor)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
@@ -53,7 +52,6 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 		e,
 		cfg,
 		logger,
-		authInteractor,
 	}
 }
 

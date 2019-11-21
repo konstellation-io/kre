@@ -33,6 +33,9 @@ type Config struct {
 		Address string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
 		DBName  string `yaml:"dbName" envconfig:"KRE_MONGODB_DB_NAME"`
 	} `yaml:"mongodb"`
+	Services struct {
+		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
+	} `yaml:"services"`
 }
 
 var once sync.Once
