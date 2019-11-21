@@ -3,9 +3,10 @@ kind: ClusterRoleBinding
 metadata:
   name: k8s-manager
 subjects:
-- kind: User
+- kind: ServiceAccount
   name: k8s-manager
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: ""
+  namespace: kre
 roleRef:
   kind: ClusterRole
   name: admin
