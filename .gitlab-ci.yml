@@ -15,13 +15,13 @@ variables:
 
 branch-ahead-of-master:
   stage: test
-  image: igzgustavomarin/branch-ahead-of-master:0.0.6
+  image: igzgustavomarin/branch-ahead-of-master:0.0.7
   variables:
     BRANCH_NAME: $CI_COMMIT_REF_NAME
   script:
     - echo "Running branch check"
     - echo $PWD
-    - find .
+    - echo "Checking $BRANCH_NAME"
     - branch-ahead-of-master
   only:
     refs:
