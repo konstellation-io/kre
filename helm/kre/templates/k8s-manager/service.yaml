@@ -4,7 +4,7 @@ metadata:
   name: k8s-manager
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Chart.Name }}-k8s-manager
+    app: {{ template "kre.fullname" . }}-k8s-manager
 spec:
   clusterIP: None
   ports:
@@ -13,4 +13,4 @@ spec:
       targetPort: 80
   selector:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Chart.Name }}-k8s-manager
+    app: {{ template "kre.fullname" . }}-k8s-manager

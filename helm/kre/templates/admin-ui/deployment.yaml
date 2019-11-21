@@ -4,14 +4,18 @@ metadata:
   name: {{ template "kre.fullname" . }}-admin-ui
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      {{- include "kre.labels" . | nindent 6 }}
+      app: {{ template "kre.fullname" . }}-admin-ui
   template:
     metadata:
       labels:
         {{- include "kre.labels" . | nindent 8 }}
-        app: {{ .Chart.Name }}-admin-ui
+        app: {{ template "kre.fullname" . }}-admin-ui
     spec:
       containers:
-        - name: {{ .Chart.Name }}-admin-ui
+        - name: {{ template "kre.fullname" . }}-admin-ui
           image: {{ .Values.adminUI.image.repository }}:{{ .Values.adminUI.image.tag }}
           imagePullPolicy: {{ .Values.adminUI.image.pullPolicy }}
           volumeMounts:
@@ -25,10 +29,3 @@ spec:
         - name: config-volume
           configMap:
             name: {{ .Release.Name }}-admin-ui-configmap
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.imagePullSecrets  }}
-        - name: {{ . }}
-        {{- end }}
-      {{- end }}
-
