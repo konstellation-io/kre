@@ -13,7 +13,7 @@ variables:
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
   GITLAB_ACCESS_TOKEN: $GITLAB_ACCESS_TOKEN
 
-branch-rebased:
+.branch-rebased:
   stage: test
   image: igzgustavomarin/branch-ahead-of-master:latest
   variables:
