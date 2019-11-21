@@ -20,9 +20,14 @@ import { createUploadLink } from 'apollo-upload-client';
 config
   .then(envVariables => {
     const cache = new InMemoryCache();
-    const errorLink = onError(({ networkError }) => {
-      // @ts-ignore
-      if (networkError.statusCode === 401) {
+    const errorLink = onError(({ networkError }: any) => {
+      if (
+        networkError &&
+        networkError.statusCode === 400 &&
+        networkError &&
+          networkError.result &&
+          networkError.result.message === 'missing or malformed jwt'
+      ) {
         history.push(ROUTE.LOGIN);
         client.resetStore();
       }
