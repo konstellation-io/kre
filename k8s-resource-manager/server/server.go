@@ -25,7 +25,7 @@ func NewGrpcServer(
 	}
 }
 
-func (s *GrpcServer) NewRuntime(ctx context.Context, req *runtimepb.NewRuntimeRequest) (*runtimepb.NewRuntimeResponse, error) {
+func (s *GrpcServer) CreateRuntime(ctx context.Context, req *runtimepb.CreateRuntimeRequest) (*runtimepb.CreateRuntimeResponse, error) {
 	runtimeName := strcase.ToKebab(req.GetRuntime().GetName())
 	result := fmt.Sprintf("Runtime %s created", runtimeName)
 
@@ -39,7 +39,7 @@ func (s *GrpcServer) NewRuntime(ctx context.Context, req *runtimepb.NewRuntimeRe
 	}
 
 	// Send response
-	res := &runtimepb.NewRuntimeResponse{
+	res := &runtimepb.CreateRuntimeResponse{
 		Result: result,
 	}
 
