@@ -28,7 +28,6 @@ variables:
     refs:
       - master
 
-
 include:
   - local: admin-api/.gitlab-ci.yml
   - local: admin-ui/.gitlab-ci.yml
