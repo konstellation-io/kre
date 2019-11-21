@@ -28,6 +28,17 @@ variables:
     refs:
       - master
 
+release-helm-after-image:
+  stage: semantic-release-helm
+  image: node:10
+  before_script:
+    - npm install -g semantic-release semantic-release/gitlab
+  script:
+    - semantic-release -t helm-chart-v\${version}
+  only:
+    - tags
+  except:
+    - /^helm-chart-v\d*.\d*.\d*$/
 
 include:
   - local: admin-api/.gitlab-ci.yml

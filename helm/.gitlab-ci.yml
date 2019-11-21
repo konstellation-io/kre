@@ -4,24 +4,12 @@ release-helm-chart:
   before_script:
     - npm install --prefix helm
   script:
-    - cd helm && npx semantic-release -e semantic-release-monorepo -b master
+    - cd helm && npx semantic-release -e semantic-release-monorepo
   only:
     refs:
       - master
     changes:
       - helm/**/*
-
-release-helm-after-image:
-  stage: semantic-release-helm
-  image: node:10
-  before_script:
-    - npm install --prefix helm
-  script:
-    - cd helm && npx semantic-release -e semantic-release-monorepo -b $CI_COMMIT_TAG
-  only:
-    - tags
-  except:
-    - /^helm-chart-v\d*.\d*.\d*$/
 
 generate-helm-chart:
   stage: build
