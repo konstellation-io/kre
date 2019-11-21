@@ -13,7 +13,7 @@ variables:
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
   GITLAB_ACCESS_TOKEN: $GITLAB_ACCESS_TOKEN
 
-branch-ahead-of-master:
+branch-rebased:
   stage: test
   image: igzgustavomarin/branch-ahead-of-master:latest
   variables:
@@ -24,6 +24,9 @@ branch-ahead-of-master:
   only:
     refs:
       - branches
+  except:
+    refs:
+      - master
 
 
 include:
