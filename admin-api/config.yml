@@ -12,3 +12,5 @@ auth:
 mongodb:
   address: "mongodb://localhost:27017"
   dbName: "localKRE"
+services:
+  k8sManager: "localhost:50051"

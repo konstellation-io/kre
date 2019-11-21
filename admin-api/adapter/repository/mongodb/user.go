@@ -51,3 +51,15 @@ func (r *UserRepoMongoDB) GetByEmail(email string) (*entity.User, error) {
 
 	return user, err
 }
+
+func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {
+	user := &entity.User{}
+	filter := bson.D{{"_id", userID}}
+
+	err := r.collection.FindOne(context.Background(), filter).Decode(user)
+	if err == mongo.ErrNoDocuments {
+		return user, usecase.ErrUserNotFound
+	}
+
+	return user, err
+}

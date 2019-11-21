@@ -10,4 +10,6 @@ type UserRepo interface {
 
 	// Create persists a new User into the database.
 	Create(email string) (*entity.User, error)
+
+	GetByID(userID string) (*entity.User, error)
 }
