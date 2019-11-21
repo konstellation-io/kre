@@ -14,7 +14,7 @@
 
 This folder contains code to generate the KRE Operator that follows the [kubernetes operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) 
 
-The KRE Operator will be deployed within the namespace of each Runtime. This is created by the `K8s Resource Manager` service, that is running in the **Engine**.
+The KRE Operator will be deployed within the namespace of each Runtime. This is created by the `K8s Manager` service, that is running in the **Engine**.
 
 
 ## Custom Resources

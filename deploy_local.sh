@@ -19,7 +19,7 @@ fi
 
 export ADMIN_API_IMAGE_TAG="latest"
 export ADMIN_UI_IMAGE_TAG="latest"
-export K8S_RESOURCE_MANAGER_IMAGE_TAG="latest"
+export K8S_MANAGER_IMAGE_TAG="latest"
 
 ./scripts/replace_env_path.sh
 

@@ -2,10 +2,11 @@ package kubernetes
 
 import (
 	"errors"
-	"k8s.io/client-go/dynamic"
 	"log"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-resource-manager/config"
+	"k8s.io/client-go/dynamic"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
 	"k8s.io/client-go/kubernetes"
 )
 

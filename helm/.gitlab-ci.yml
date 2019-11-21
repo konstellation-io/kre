@@ -39,7 +39,7 @@ generate-helm-chart:
     - helm repo add konstellation-ce https://${HELM_USER}:${HELM_PASSWD}@charts.konstellation.io
     - export ADMIN_API_IMAGE_TAG=$(./scripts/git_latest_tag.sh "admin-api")
     - export ADMIN_UI_IMAGE_TAG=$(./scripts/git_latest_tag.sh "admin-ui")
-    - export K8S_RESOURCE_MANAGER_IMAGE_TAG=$(./scripts/git_latest_tag.sh "k8s-resource-manager")
+    - export K8S_MANAGER_IMAGE_TAG=$(./scripts/git_latest_tag.sh "k8s-manager")
     - ./scripts/replace_env_path.sh
   script:
     - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}

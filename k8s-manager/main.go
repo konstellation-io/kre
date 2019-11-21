@@ -1,11 +1,11 @@
 package main
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-resource-manager/kubernetes"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-resource-manager/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-resource-manager/runtimepb"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-resource-manager/server"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/runtimepb"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/server"
 
 	"log"
 	"net"
