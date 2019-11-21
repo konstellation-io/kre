@@ -6,7 +6,7 @@ metadata:
   name: {{ .Release.Name }}-admin-ui-configmap
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Chart.Name }}-admin-ui
+    app: {{ template "kre.fullname" . }}-admin-ui
 data:
   config.json: |
     {

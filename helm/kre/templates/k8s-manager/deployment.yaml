@@ -4,15 +4,19 @@ metadata:
   name: {{ template "kre.fullname" . }}-k8s-manager
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      {{- include "kre.labels" . | nindent 6 }}
+      app: {{ template "kre.fullname" . }}-k8s-manager
   template:
     metadata:
       labels:
         {{- include "kre.labels" . | nindent 8 }}
-        app: {{ .Chart.Name }}-k8s-manager
+        app: {{ template "kre.fullname" . }}-k8s-manager
     spec:
       serviceAccountName: k8s-manager
       containers:
-        - name: {{ .Chart.Name }}-k8s-manager
+        - name: {{ template "kre.fullname" . }}-k8s-manager
           image: {{ .Values.k8sManager.image.repository }}:{{ .Values.k8sManager.image.tag }}
           imagePullPolicy: {{ .Values.k8sManager.image.pullPolicy }}
           envFrom:
@@ -24,9 +28,3 @@ spec:
           ports:
             - containerPort: {{ .Values.k8sManager.service.port }}
               protocol: TCP
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.imagePullSecrets  }}
-        - name: {{ . }}
-        {{- end }}
-      {{- end }}
