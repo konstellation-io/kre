@@ -8,9 +8,9 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: {{.Values.k8sManager.service.port}}
+    - port: 80
       protocol: TCP
-      targetPort: 80
+      targetPort: {{.Values.k8sManager.service.port}}
   selector:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "kre.fullname" . }}-k8s-manager
