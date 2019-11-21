@@ -24,7 +24,8 @@ message CreateRuntimeRequest {
 }
 
 message CreateRuntimeResponse {
-    string result = 1;
+    bool success = 1;
+    string message = 2;
 }
 
 service RuntimeService{
