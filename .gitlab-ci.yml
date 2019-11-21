@@ -13,6 +13,16 @@ variables:
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
   GITLAB_ACCESS_TOKEN: $GITLAB_ACCESS_TOKEN
 
+branch-ahead-of-master:
+  stage: test
+  variables:
+    BRANCH_NAME: $CI_COMMIT_REF_NAME
+  image: igzgustavomarin/branch-ahead-of-master
+  only:
+    refs:
+      - branches
+
+
 include:
   - local: admin-api/.gitlab-ci.yml
   - local: admin-ui/.gitlab-ci.yml
