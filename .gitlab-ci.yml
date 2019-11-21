@@ -34,3 +34,4 @@ include:
   - local: admin-ui/.gitlab-ci.yml
   - local: helm/.gitlab-ci.yml
   - local: operator/.gitlab-ci.yml
+  - local: k8s-resource-manager/.gitlab-ci.yml
