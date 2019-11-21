@@ -27,20 +27,23 @@ func NewGrpcServer(
 
 func (s *GrpcServer) CreateRuntime(ctx context.Context, req *runtimepb.CreateRuntimeRequest) (*runtimepb.CreateRuntimeResponse, error) {
 	runtimeName := strcase.ToKebab(req.GetRuntime().GetName())
-	result := fmt.Sprintf("Runtime %s created", runtimeName)
+	message := fmt.Sprintf("Runtime %s created", runtimeName)
+	success := true
 
 	err := s.resources.CreateRuntime(runtimeName)
 	if err != nil {
+		success = false
 		if err == kubernetes.ErrRuntimeResourceCreation {
-			result = err.Error()
+			message = err.Error()
 		} else {
-			result = kubernetes.ErrUnexpected.Error()
+			message = kubernetes.ErrUnexpected.Error()
 		}
 	}
 
 	// Send response
 	res := &runtimepb.CreateRuntimeResponse{
-		Result: result,
+		Success: success,
+		Message: message,
 	}
 
 	return res, nil
