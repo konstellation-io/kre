@@ -1,14 +1,12 @@
 package http
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/controller"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"net/http"
 )
 
 // App is the top-level struct.
@@ -17,13 +15,6 @@ type App struct {
 	cfg            *config.Config
 	logger         logging.Logger
 	authInteractor *usecase.AuthInteractor
-}
-
-func restricted(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	name := claims["sub"].(string)
-	return c.String(http.StatusOK, "Welcome "+name+"!")
 }
 
 // NewApp creates a new App instance.
@@ -45,6 +36,7 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 	}
 
 	authController := controller.NewAuthController(cfg, logger, authInteractor)
+	graphQLController := controller.NewGraphQLController(cfg, logger)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
@@ -55,7 +47,7 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 		SigningKey:  []byte(cfg.Auth.JWTSignSecret),
 		TokenLookup: "cookie:token",
 	}))
-	r.GET("", restricted)
+	r.GET("", graphQLController.GraphQLHandler)
 
 	return &App{
 		e,
