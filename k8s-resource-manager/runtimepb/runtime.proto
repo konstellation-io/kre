@@ -19,14 +19,14 @@ message Runtime {
     MongoConf mongo = 3;
 }
 
-message NewRuntimeRequest {
+message CreateRuntimeRequest {
     Runtime runtime = 1;
 }
 
-message NewRuntimeResponse {
+message CreateRuntimeResponse {
     string result = 1;
 }
 
 service RuntimeService{
-    rpc NewRuntime(NewRuntimeRequest) returns (NewRuntimeResponse) {};
+    rpc CreateRuntime(CreateRuntimeRequest) returns (CreateRuntimeResponse) {};
 };
