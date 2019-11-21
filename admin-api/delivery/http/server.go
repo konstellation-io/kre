@@ -46,7 +46,7 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 		SigningKey:  []byte(cfg.Auth.JWTSignSecret),
 		TokenLookup: "cookie:token",
 	}))
-	r.GET("", graphQLController.GraphQLHandler)
+	r.POST("", graphQLController.GraphQLHandler)
 
 	return &App{
 		e,
