@@ -48,7 +48,7 @@ export const addRuntimeMock = {
   },
   result: {
     data: {
-      addRuntime: {
+      createRuntime: {
         success: true,
         message: 'some message'
       }

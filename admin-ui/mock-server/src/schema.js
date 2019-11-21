@@ -13,7 +13,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addRuntime(name: String!): RuntimeUpdateResponse!
+    createRuntime(name: String!): RuntimeUpdateResponse!
     removeRuntime(id: ID!): RuntimeUpdateResponse!
     setSettings(input: SettingsInput): Settings
     addAllowedDomain(domainName: String!): Settings
