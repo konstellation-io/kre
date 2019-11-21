@@ -15,10 +15,12 @@ variables:
 
 branch-ahead-of-master:
   stage: test
-  image: igzgustavomarin/branch-ahead-of-master
+  image: igzgustavomarin/branch-ahead-of-master:0.0.5
   variables:
     BRANCH_NAME: $CI_COMMIT_REF_NAME
-  script: branch-ahead-of-master
+  script:
+    - echo "Running branch"
+    - branch-ahead-of-master
   only:
     refs:
       - branches
