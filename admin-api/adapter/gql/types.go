@@ -32,3 +32,15 @@ type RuntimeUpdateResponse struct {
 	Message *string
 	Runtime *Runtime
 }
+
+type Dashboard struct {
+	Runtimes *[]*Runtime
+	Alerts   *[]*Alert
+}
+
+type Alert struct {
+	Id      graphql.ID
+	Type    string
+	Message string
+	Runtime Runtime
+}

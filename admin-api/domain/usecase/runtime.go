@@ -38,3 +38,7 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (*entity.R
 
 	return createdRuntime, err
 }
+
+func (i *RuntimeInteractor) FindAll() ([]entity.Runtime, error) {
+	return i.runtimeRepo.FindAll()
+}

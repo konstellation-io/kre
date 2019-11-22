@@ -5,6 +5,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
@@ -39,4 +40,25 @@ func (r *RuntimeRepoMongoDB) Create(name string, userID string) (*entity.Runtime
 
 	runtime.ID = res.InsertedID.(string)
 	return runtime, nil
+}
+
+func (r *RuntimeRepoMongoDB) FindAll() ([]entity.Runtime, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	var runtimes []entity.Runtime
+	cur, err := r.collection.Find(ctx, bson.D{})
+	if err != nil {
+		return runtimes, err
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var runtime entity.Runtime
+		err = cur.Decode(&runtime)
+		if err != nil {
+			return runtimes, err
+		}
+		runtimes = append(runtimes, runtime)
+	}
+
+	return runtimes, nil
 }

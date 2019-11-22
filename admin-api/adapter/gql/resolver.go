@@ -64,9 +64,59 @@ func (r *GraphQLResolver) CreateRuntime(ctx context.Context, args struct{ Name s
 		Runtime: &Runtime{
 			Id:           graphql.ID(runtime.ID),
 			Name:         runtime.Name,
-			Status:       "CREATED", // TODO define runtime status
+			Status:       "created",
 			CreationDate: runtime.CreationDate.Format(time.RFC3339),
 			Versions:     &[]*Version{},
 		},
+	}
+}
+
+func (r *GraphQLResolver) Runtimes(ctx context.Context) []*Runtime {
+	var gqlRuntimes []*Runtime
+	runtimes, err := r.runtimeInteractor.FindAll()
+
+	if err != nil {
+		return gqlRuntimes // TODO manage errors
+	}
+
+	for _, runtime := range runtimes {
+		gqlRuntime := &Runtime{
+			Id:           graphql.ID(runtime.ID),
+			Name:         runtime.Name,
+			Status:       "created",
+			CreationDate: runtime.CreationDate.Format("2006-01-02"),
+			Versions:     nil,
+		}
+		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
+	}
+
+	return gqlRuntimes
+}
+
+func (r *GraphQLResolver) Dashboard(ctx context.Context) Dashboard {
+	var gqlRuntimes []*Runtime
+	runtimes, err := r.runtimeInteractor.FindAll()
+
+	if err != nil {
+		return Dashboard{
+			Runtimes: &gqlRuntimes,
+			Alerts:   &[]*Alert{},
+		} // TODO manage errors
+	}
+
+	for _, runtime := range runtimes {
+		gqlRuntime := &Runtime{
+			Id:           graphql.ID(runtime.ID),
+			Name:         runtime.Name,
+			Status:       "created",
+			CreationDate: runtime.CreationDate.Format("2006-01-02"),
+			Versions:     nil,
+		}
+		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
+	}
+
+	return Dashboard{
+		Runtimes: &gqlRuntimes,
+		Alerts:   &[]*Alert{},
 	}
 }

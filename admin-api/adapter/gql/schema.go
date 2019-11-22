@@ -3,6 +3,8 @@ package gql
 const GraphQLSchema = `
 type Query {
   me: User
+  runtimes: [Runtime]!
+  dashboard: Dashboard!
 }
 
 type Mutation {
@@ -38,5 +40,17 @@ type RuntimeUpdateResponse {
  success: Boolean!
  message: String
  runtime: Runtime!
+}
+
+type Dashboard {
+  runtimes: [Runtime]
+  alerts: [Alert]
+}
+
+type Alert {
+  id: ID!
+  type: String!
+  message: String!
+  runtime: Runtime!
 }
 `
