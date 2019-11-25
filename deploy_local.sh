@@ -46,4 +46,6 @@ helm upgrade \
   --install ${DEPLOY_NAME} --namespace ${NAMESPACE} \
   helm/kre
 
+./scripts/show_minikube_etc_hosts.sh $MINIKUBE_PROFILE
+
 echo "Done."
