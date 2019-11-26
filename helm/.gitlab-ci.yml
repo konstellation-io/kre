@@ -73,15 +73,18 @@ deploy-helm-int:
     name: int
   image: google/cloud-sdk:266.0.0
   before_script:
+    - apt-get update
+    - apt-get install -y gettext
+    # Use Google Cloud Credentials to get a kubeconfig file
     - echo "$GCP_SERVICE_ACCOUNT" | base64 -d > service-account.json
     - gcloud auth activate-service-account terraform@konstellation.iam.gserviceaccount.com --key-file=./service-account.json --project=konstellation
     - gcloud container clusters get-credentials konstellation-int --zone=europe-west1-b --user-output-enabled
+    # Install Helm
     - curl -O https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz
     - tar zxvf helm-v2.14.3-linux-amd64.tar.gz
     - cp linux-amd64/helm /usr/local/bin/helm
-    - apt-get update
-    - apt-get install -y gettext
   script:
+    - kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
     - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}
     - helm init --client-only --wait
     - helm repo add konstellation-ce https://charts.konstellation.io

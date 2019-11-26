@@ -1,11 +1,4 @@
 # Default values for konstellation Runtime Environment.
-mongodb:
-  service:
-    name: "mongodb"
-  mongodbDatabase: "localKRE"
-  mongodbUsername: "admin"
-  mongodbPassword: "123456"
-
 config:
   admin:
     k8sManagerAddress: "k8s-manager:50051"
@@ -49,3 +42,17 @@ k8sManager:
     pullPolicy: Always
   service:
     port: 50051
+
+
+mongodb:
+  service:
+    name: "mongodb"
+  mongodbDatabase: "localKRE"
+  mongodbUsername: "admin"
+  mongodbPassword: "123456"
+
+certManager:
+  enabled: false
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: user@email.com

@@ -39,7 +39,12 @@ export K8S_MANAGER_IMAGE_TAG="latest"
 
 ./scripts/replace_env_path.sh
 
+echo "Create Namespace if not exist...\n"
+kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
+
+echo "Init helm tiller...\n"
 helm init --upgrade --wait
+
 helm dep update helm/kre
 helm upgrade \
   --wait --recreate-pods \
