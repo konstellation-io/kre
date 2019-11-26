@@ -28,18 +28,6 @@ Shared configuration for all components
 | `config.auth.jwtSignSecret`                     | JWT Sign Secret Key                        | `jwt_secret`            |
 | `config.auth.secureCookie`                      | Activate secure cookie                     | `false`                 |
 
-
-### Subcharts values
-
-Subchart info configuration
-- [mongoDB stable chart](https://github.com/helm/charts/tree/master/stable/mongodb#parameters)
-
-| Parameter                 | Description                                                 | Default    |
-| ------------------------- | ----------------------------------------------------------- | ---------- |
-| `mongodb.mongodbDatabase` | Database to create                                          | `localKRE` |
-| `mongodb.mongodbUsername` | MongoDB custom user (mandatory if `mongodbDatabase` is set) | `admin`    |
-| `mongodb.mongodbPassword` | MongoDB custom user password                                | `123456`   |
-
 ### Admin API
 Specific configuration for Admin API
 
@@ -64,3 +52,56 @@ Specific configuration for Admin UI
 | `admin-ui.service.port`     | TCP port where is going to listen the internal service                                                   | `5000`                       |
 | `admin-ui.tls.enabled`      | If we want to enable HTTPS access to the UI. For this Cert Manager is required in the Kuberentes cluster | `false`                      |
 | `admin-ui.host`             | Public hostname to generate SSL certificate with Cert Manager                                            | `false`                      |
+
+
+### Subcharts values
+
+Subchart info configuration
+- [mongoDB stable chart](https://github.com/helm/charts/tree/master/stable/mongodb#parameters)
+
+| Parameter                 | Description                                                 | Default    |
+| ------------------------- | ----------------------------------------------------------- | ---------- |
+| `mongodb.mongodbDatabase` | Database to create                                          | `localKRE` |
+| `mongodb.mongodbUsername` | MongoDB custom user (mandatory if `mongodbDatabase` is set) | `admin`    |
+| `mongodb.mongodbPassword` | MongoDB custom user password                                | `123456`   |
+
+
+
+### Cert Manager
+| Parameter                 | Description                                                                            | Default                                  |
+| ------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `certManager.enabled`     | Enable Cert Manager to validate certificates                                           | `false`                                  |
+| `certManager.acme.server` | Default certificate authority server to validate certificates, more instructions below | `acme-v02.api.letsencrypt.org/directory` |
+| `certManager.acme.email`  | Default email for the certificate owner                                                | `user@email.com`                         |
+
+You can fill in the field `certManager.acme.server` with one of the following values depend of your environment:
+
+**Production environment**
+```
+  certManager:
+    acme:
+        server: https://acme-v02.api.letsencrypt.org/directory
+```
+Rate limit of 50 per day on certificates request with a week block if the limit is passed.[+ info](https://letsencrypt.org/docs/rate-limits/)
+
+No web-browser action required.
+
+**Staging environment** 
+```
+  certManager:
+    acme:
+        server: https://acme-staging-v02.api.letsencrypt.org/directory
+```
+Rate limit of 1500 each three hours on certificates request.[+ Info](https://letsencrypt.org/docs/staging-environment/)
+
+
+
+This option needs the following action from user to set-up the staging certification authority.
+
+#### How add the fake certificate on chrome
+- Download the certificate [Fake Certificate](https://letsencrypt.org/certs/fakeleintermediatex1.pem)
+- Go to settings -> Search Certificates -> Manage Certificates -> Issuers Entities
+- Import the previous certificate.
+- Enable the first option.
+- Reload the https://admin.<your-domain> page
+- You have a certificate for any kre domain.
