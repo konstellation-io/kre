@@ -47,6 +47,7 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 		TokenLookup: "cookie:token",
 	}))
 	r.POST("", graphQLController.GraphQLHandler)
+	r.GET("/playground", graphQLController.PlaygroundHandler)
 
 	return &App{
 		e,

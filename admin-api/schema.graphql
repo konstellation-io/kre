@@ -1,0 +1,127 @@
+scalar Upload
+
+type Query {
+  me: User
+  runtimes: [Runtime!]
+  alerts: [Alert!]
+  settings: Settings!
+  usersActivity: [UserActivity!]
+  runtime(id: ID!): Runtime!
+}
+
+type Mutation {
+  createRuntime(input: CreateRuntimeInput!): CreateRuntimeResponse!
+  createVersion(input: CreateVersionInput!): CreateVersionResponse! 
+  updateSettings(input: SettingsInput!): UpdateSettingsResponse
+}
+
+input CreateRuntimeInput {
+  name: String!
+}
+
+type CreateRuntimeResponse {
+  errors: [Error!]
+  runtime: Runtime
+}
+
+input CreateVersionInput {
+  file: Upload!
+  runtimeId: String!
+}
+
+type CreateVersionResponse {
+  errors: [Error!]
+  version: Version!
+}
+
+input SettingsInput {
+  authAllowedDomains: [String]
+  cookieExpirationTime: Int
+}
+
+type UpdateSettingsResponse {
+  errors: [Error!]
+  settings: Settings
+}
+
+type Error {
+  code: ErrorCode!
+  message: String!
+}
+
+enum ErrorCode {
+  UNEXPECTED_ERROR
+  VALIDATION_ERROR
+  BAD_REQUEST
+  INTERNAL_SERVER_ERROR
+}
+
+
+type User {
+  id: ID!
+  email: String!
+}
+
+type Alert {
+  id: ID!
+  type: AlertLevel!
+  message: String!
+  runtime: Runtime!
+}
+
+enum AlertLevel {
+  ERROR
+  WARNING
+}
+
+type Runtime {
+  id: ID!
+  name: String!
+  status: RuntimeStatus!
+  creationDate: String!
+  creationAuthor: User!
+  versions: [Version!]!
+}
+
+enum RuntimeStatus {
+  CREATING
+  RUNNING
+  ERROR
+}
+
+type Version {
+  id: ID!
+  versionNumber: String!
+  description: String!
+  status: VersionStatus!
+  creationDate: String!
+  creationAuthor: User!
+  activationDate: String!
+  activationAuthor: User!
+}
+
+enum VersionStatus {
+  CREATED
+  ACTIVE
+  RUNNING
+  STOPPED
+}
+
+type Settings {
+  authAllowedDomains: [String!]!
+  cookieExpirationTime: Int!
+}
+
+type UserActivity {
+  id: ID!
+  user: User!
+  message: String!
+  date: String!
+  type: UserActivityType!
+}
+
+enum UserActivityType {
+  LOGIN
+  LOGOUT
+  RUNTIME_CREATION
+}
