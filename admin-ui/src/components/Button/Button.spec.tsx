@@ -1,33 +1,28 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router';
-import { Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import { render, fireEvent, cleanup } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import { renderWithRouter } from '../../utils/testUtils';
+import { fireEvent, cleanup } from '@testing-library/react';
 import { getByTestId } from '@testing-library/dom';
-import ButtonWithoutMemoryRouter from './Button';
+import Button from './Button';
 
 afterEach(cleanup);
 
-const Button = (params: any = {}) => (
-  <MemoryRouter>
-    <ButtonWithoutMemoryRouter {...params} />
-  </MemoryRouter>
-);
-
 it('Renders Button without crashing', () => {
-  const { container } = render(<Button />);
+  const {
+    element: { container }
+  } = renderWithRouter(<Button />);
   expect(container).toMatchSnapshot();
 });
 
 it('Shows right texts', () => {
-  const { rerender, container } = render(<Button />);
+  const {
+    element: { customRerender, container }
+  } = renderWithRouter(<Button />);
   expect(container.textContent).toBe('Button');
 
-  rerender(<Button label="New Text" />);
+  customRerender(<Button label="New Text" />);
   expect(container.textContent).toBe('New Text');
 
-  rerender(
+  customRerender(
     <Button
       label="Other Text"
       type="dark"
@@ -42,25 +37,26 @@ it('Shows right texts', () => {
 it('Handles click events', () => {
   const clickMock = jest.fn(() => true);
 
-  const { getByText } = render(<Button onClick={clickMock} />);
-  fireEvent.click(getByText('Button'));
+  const {
+    element: { getByText }
+  } = renderWithRouter(<Button onClick={clickMock} />);
 
+  fireEvent.click(getByText('Button'));
   expect(clickMock).toHaveBeenCalledTimes(1);
 });
 
 it('shows loader when loading', () => {
-  const { container } = render(<Button loading />);
+  const {
+    element: { container }
+  } = renderWithRouter(<Button loading />);
 
   expect(getByTestId(container, 'spinner')).toBeInTheDocument();
 });
 
 it('is a route button when a path is given', () => {
-  const history = createMemoryHistory();
-  const { container } = render(
-    <Router history={history}>
-      <Button to="/login" />
-    </Router>
-  );
+  const {
+    element: { container }
+  } = renderWithRouter(<Button to="/login/:someParam" />);
 
   expect(getByTestId(container, 'buttonLink')).toBeInTheDocument();
 });

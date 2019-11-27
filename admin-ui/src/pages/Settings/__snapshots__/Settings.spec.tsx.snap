@@ -21,10 +21,9 @@ exports[`Renders Settings without crashing 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root"
+            class="MuiSvgIcon-root icon-regular"
             focusable="false"
             role="presentation"
-            style="font-size: 1rem;"
             viewBox="0 0 24 24"
           >
             <path
@@ -41,10 +40,9 @@ exports[`Renders Settings without crashing 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root"
+            class="MuiSvgIcon-root icon-regular"
             focusable="false"
             role="presentation"
-            style="font-size: 1rem;"
             viewBox="0 0 24 24"
           >
             <path
@@ -65,10 +63,9 @@ exports[`Renders Settings without crashing 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root"
+            class="MuiSvgIcon-root icon-regular"
             focusable="false"
             role="presentation"
-            style="font-size: 1rem;"
             viewBox="0 0 24 24"
           >
             <path
@@ -94,19 +91,18 @@ exports[`Renders Settings without crashing 1`] = `
           class="container"
         >
           <a
-            data-testid="buttonLink"
+            aria-current="page"
+            class="active"
             href="/settings/general"
           >
             <div
-              class="btn transparent left primary"
-              style="height: 56px; line-height: 56px;"
+              class="item"
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root"
+                class="MuiSvgIcon-root icon-regular"
                 focusable="false"
                 role="presentation"
-                style="font-size: 1rem;"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -119,19 +115,16 @@ exports[`Renders Settings without crashing 1`] = `
             </div>
           </a>
           <a
-            data-testid="buttonLink"
             href="/settings/security"
           >
             <div
-              class="btn transparent left label"
-              style="height: 56px; line-height: 56px;"
+              class="item"
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root"
+                class="MuiSvgIcon-root icon-regular"
                 focusable="false"
                 role="presentation"
-                style="font-size: 1rem;"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -144,19 +137,16 @@ exports[`Renders Settings without crashing 1`] = `
             </div>
           </a>
           <a
-            data-testid="buttonLink"
             href="/settings/audit"
           >
             <div
-              class="btn transparent left label"
-              style="height: 56px; line-height: 56px;"
+              class="item"
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root"
+                class="MuiSvgIcon-root icon-regular"
                 focusable="false"
                 role="presentation"
-                style="font-size: 1rem;"
                 viewBox="0 0 24 24"
               >
                 <path

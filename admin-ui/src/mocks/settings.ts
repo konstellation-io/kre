@@ -3,8 +3,8 @@ import {
   GET_EXPIRATION_TIME,
   ADD_ALLOWED_DOMAIN,
   UPDATE_EXPIRATION_TIME
-} from '../pages/Settings/dataModels';
-import { GET_USERS_ACTIVITY } from '../components/UserActivityList/dataModels';
+} from '../pages/Settings/Settings.graphql';
+import { GET_USERS_ACTIVITY } from '../components/UserActivityList/UserActivityList.graphql';
 
 export const domainMock = {
   request: {

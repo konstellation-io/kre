@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  render,
-  fireEvent,
-  cleanup,
-  RenderResult
-} from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { fireEvent, cleanup, RenderResult } from '@testing-library/react';
+import { renderWithReduxAndRouter } from '../../utils/testUtils';
 import { Router } from 'react-router-dom';
 import * as ROUTE from '../../constants/routes';
 import NavigationBar, { navigationButtons } from './NavigationBar';
 import { createMemoryHistory, History } from 'history';
-import '@testing-library/jest-dom/extend-expect';
 
 afterEach(cleanup);
 
@@ -18,15 +12,13 @@ function generateComponent() {
   const history = createMemoryHistory();
   history.push(ROUTE.HOME);
 
-  const wrapper = render(
-    <MemoryRouter>
-      <Router history={history}>
-        <NavigationBar />
-      </Router>
-    </MemoryRouter>
+  const wrapper = renderWithReduxAndRouter(
+    <Router history={history}>
+      <NavigationBar />
+    </Router>
   );
 
-  return [wrapper, history];
+  return [wrapper.element, history];
 }
 
 it('Renders NavigationBar without crashing', () => {

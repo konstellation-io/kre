@@ -6,13 +6,13 @@ import { formatDate } from '../../../../utils/format';
 import Check from '@material-ui/icons/Check';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
 
-import { RuntimeVersion } from './dataModels';
+import { Version } from '../../../../graphql/models';
 
 import cx from 'classnames';
 import styles from './RuntimeVersions.module.scss';
 
 type Props = {
-  activeVersion: RuntimeVersion;
+  activeVersion?: Version;
   onClick: Function;
 };
 function ActiveVersionStatus({ activeVersion, onClick }: Props) {
@@ -28,9 +28,9 @@ function ActiveVersionStatus({ activeVersion, onClick }: Props) {
         [styles['active']]: isVersionActive
       })}
     >
-      <Icon style={{ fontSize: '1rem' }} />
+      <Icon className="icon-regular" />
       <span className={styles.versionTitle}>{title}</span>
-      {isVersionActive && (
+      {isVersionActive && activeVersion && (
         <>
           <span className={styles.versionCreation}>
             {`CREATED: ${formatDate(new Date(activeVersion.creationDate))}`}

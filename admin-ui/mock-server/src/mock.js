@@ -31,7 +31,7 @@ module.exports = {
     creationDate: casual.date('YYYY-MM-DD'),
     creatorName: casual.email,
     activationDate: casual.date('YYYY-MM-DD'),
-    activatorName: casual.email,
+    activationAuthor: casual.email,
   }),
   Alert: () => ({
     id: casual.id,

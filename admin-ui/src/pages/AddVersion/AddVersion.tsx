@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useForm from '../../hooks/useForm';
+import { useHistory, useParams } from 'react-router';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Select from '../../components/Form/Select/Select';
@@ -11,7 +12,7 @@ import * as PAGES from '../../constants/routes';
 
 import styles from './AddVersion.module.scss';
 
-import { ADD_VERSION } from './dataModels';
+import { ADD_VERSION } from './AddVersion.graphql';
 
 function verifyVersionName(value: string) {
   return CHECK.getValidationError([
@@ -50,11 +51,9 @@ const inputs = [
   }
 ];
 
-type Props = {
-  history: any;
-};
-
-function AddVersion({ history }: Props) {
+function AddVersion() {
+  const history = useHistory();
+  const { runtimeId } = useParams();
   const form = useForm(inputs, ADD_VERSION, onCompleted);
   const [versionUploaded, setVersionUploaded] = useState(false);
 
@@ -71,7 +70,7 @@ function AddVersion({ history }: Props) {
   }
 
   function onDeploy() {
-    history.push(PAGES.RUNTIME_STATUS);
+    history.push(PAGES.RUNTIME_STATUS.replace(':runtimeId', runtimeId || ''));
   }
 
   function onSubmit() {
@@ -108,7 +107,7 @@ function AddVersion({ history }: Props) {
               onChange={form.input.type.onChange}
             />
             <FileUpload
-              label="upload version file (karrete)"
+              label="upload version file (KRT file)"
               placeholder=".krt"
               error={form.input.file.error}
               onChange={form.input.file.onChange}
@@ -118,7 +117,7 @@ function AddVersion({ history }: Props) {
               <Button
                 primary
                 disabled={form.error !== undefined}
-                label={versionUploaded ? 'DEPLOY' : 'SAVE'}
+                label={versionUploaded ? 'ACCEPT' : 'CREATE'}
                 onClick={versionUploaded ? onDeploy : onSubmit}
                 loading={form.loading}
               />

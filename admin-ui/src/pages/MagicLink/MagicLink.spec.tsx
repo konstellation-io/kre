@@ -2,10 +2,10 @@ import React from 'react';
 import { Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { render, cleanup, act } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import MagicLink from './MagicLink';
 import * as PAGES from '../../constants/routes';
 import axios from 'axios';
+import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('axios');
 

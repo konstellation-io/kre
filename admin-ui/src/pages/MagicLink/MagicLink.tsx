@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import useEndpoint from '../../hooks/useEndpoint';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { ENDPOINT } from '../../constants/application';
 import * as PAGES from '../../constants/routes';
@@ -30,10 +30,6 @@ const getCircleText = {
   [STATES.ERROR]: 'ERROR'
 };
 
-type Props = {
-  history: any;
-};
-
 function checkToken(token: string) {
   return CHECK.getValidationError([CHECK.isFieldNotEmpty(token)]);
 }
@@ -46,7 +42,8 @@ function checkToken(token: string) {
  *  - The SUCCESS animation must be shown for another period of time before leaving
  *    the view.
  */
-function MagicLink({ history }: Props) {
+function MagicLink() {
+  const history = useHistory();
   const [error, setError] = useState('');
   const [animationPending, setAnimationPending] = useState(true);
   const [status, setStatus] = useState(STATES.INITIALIZING);

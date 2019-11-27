@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router';
 import useInput from '../../hooks/useInput';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
@@ -9,7 +10,11 @@ import * as PAGES from '../../constants/routes';
 import styles from './AddRuntime.module.scss';
 
 import { useMutation } from '@apollo/react-hooks';
-import { ADD_RUNTIME } from './dataModels';
+import {
+  ADD_RUNTIME,
+  AddRuntimeData,
+  AddRuntimeVars
+} from './AddRuntime.graphql';
 
 function verifyRuntimeName(value: string) {
   return CHECK.getValidationError([
@@ -18,19 +23,18 @@ function verifyRuntimeName(value: string) {
   ]);
 }
 
-type Props = {
-  history: any;
-};
-
-function AddRuntime({ history }: Props) {
+function AddRuntime() {
+  const history = useHistory();
   const { value, isValid, onChange, error, setError } = useInput(
     '',
     verifyRuntimeName
   );
-  const [
-    addRuntime,
-    { loading, error: mutationError }
-  ] = useMutation(ADD_RUNTIME, { onCompleted: onCompleteAddRuntime });
+  const [addRuntime, { loading, error: mutationError }] = useMutation<
+    { addRuntime: AddRuntimeData },
+    AddRuntimeVars
+  >(ADD_RUNTIME, {
+    onCompleted: onCompleteAddRuntime
+  });
 
   useEffect(() => {
     if (mutationError) {

@@ -2,17 +2,21 @@ import React, { useEffect } from 'react';
 import useInput from '../../hooks/useInput';
 
 import SettingsHeader from './components/SettingsHeader';
-import Spinner from '../../components/Spinner/Spinner';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
 import HorizontalBar from '../../components/Layout/HorizontalBar/HorizontalBar';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import Spinner from '../../components/Spinner/Spinner';
 import * as CHECK from '../../components/Form/check';
 
 import cx from 'classnames';
 import styles from './Settings.module.scss';
 
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import { GET_EXPIRATION_TIME, UPDATE_EXPIRATION_TIME } from './dataModels';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import {
+  GET_EXPIRATION_TIME,
+  UPDATE_EXPIRATION_TIME
+} from './Settings.graphql';
 
 const MIN_EXPIRATION_DAYS = 1;
 const MAX_EXPIRATION_DAYS = 60;
@@ -77,7 +81,7 @@ function GeneralSettings() {
   }, [data, setValue]);
 
   if (loading) return <Spinner />;
-  if (queryError) return <p>ERROR</p>;
+  if (queryError) return <ErrorMessage />;
 
   function onSubmit() {
     if (isValid()) {

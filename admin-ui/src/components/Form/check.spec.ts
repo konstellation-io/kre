@@ -124,3 +124,29 @@ test('if getValidationError returns errors', () => {
   expect(isFieldAnStringError).toBe('Invalid type, field is not a text');
   expect(isFieldValid).toBe('');
 });
+
+test('if isDefined makes correct validations', () => {
+  const definedValue1 = CHECK.isDefined('someValue');
+  const definedValue2 = CHECK.isDefined(false);
+  const undefinedValue1 = CHECK.isDefined(null);
+  const undefinedValue2 = CHECK.isDefined(undefined);
+
+  expect(undefinedValue1.valid).toBeFalsy();
+  expect(undefinedValue2.valid).toBeFalsy();
+
+  expect(definedValue1.valid).toBeTruthy();
+  expect(definedValue2.valid).toBeTruthy();
+});
+
+test('if isFieldInList makes correct validations', () => {
+  const fieldInList1 = CHECK.isFieldInList('a', ['a', 'b', 'c']);
+  const fieldInList2 = CHECK.isFieldInList('', ['a', 'b', 'c', '']);
+  const fieldNotInList1 = CHECK.isFieldInList('d', ['a', 'b', 'c']);
+  const fieldNotInList2 = CHECK.isFieldInList('a', []);
+
+  expect(fieldNotInList1.valid).toBeFalsy();
+  expect(fieldNotInList2.valid).toBeFalsy();
+
+  expect(fieldInList1.valid).toBeTruthy();
+  expect(fieldInList2.valid).toBeTruthy();
+});

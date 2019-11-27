@@ -1,8 +1,8 @@
-import { GET_USERNAME } from '../components/Header/dataModels';
+import { GET_USER_EMAIL } from '../components/Header/Header.graphql';
 
 export const usernameMock = {
   request: {
-    query: GET_USERNAME
+    query: GET_USER_EMAIL
   },
   result: {
     data: {
@@ -15,7 +15,7 @@ export const usernameMock = {
 
 export const unauthorizedUsernameMock = {
   request: {
-    query: GET_USERNAME
+    query: GET_USER_EMAIL
   },
   result: {
     data: {

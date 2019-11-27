@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  render,
-  fireEvent,
-  cleanup,
-  RenderResult
-} from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { renderWithReduxAndRouter } from '../../utils/testUtils';
+import { fireEvent, cleanup, RenderResult } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import * as ROUTE from '../../constants/routes';
 import { Routes } from '../../App';
 import { createMemoryHistory, History } from 'history';
-import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
 import wait from 'waait';
@@ -35,17 +29,15 @@ function generateComponent() {
   const history = createMemoryHistory();
   history.push(ROUTE.SETTINGS);
 
-  const wrapper = render(
+  const wrapper = renderWithReduxAndRouter(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <Router history={history}>
-          <Routes />
-        </Router>
-      </MemoryRouter>
+      <Router history={history}>
+        <Routes />
+      </Router>
     </MockedProvider>
   );
 
-  return [wrapper, history];
+  return [wrapper.element, history];
 }
 
 it('Renders Settings without crashing', () => {

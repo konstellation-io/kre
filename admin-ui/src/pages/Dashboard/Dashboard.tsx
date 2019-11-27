@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router';
 import { History } from 'history';
 import * as PAGES from '../../constants/routes';
 
@@ -6,56 +7,69 @@ import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
 import Hexagon from '../../components/Shape/Hexagon/Hexagon';
-import Alert from '../../components/Alert/Alert';
+import AlertMessage from '../../components/Alert/Alert';
 import Spinner from '../../components/Spinner/Spinner';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Button from '../../components/Button/Button';
 
 import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
-import { formatRuntime, formatAlert, GET_DASHBOARD } from './dataModel';
+import { GET_DASHBOARD, GetDashboardResponse } from './Dashboard.graphql';
+import { Alert, Runtime } from '../../graphql/models';
+import { ApolloError } from 'apollo-client';
 
 type Props = {
+  data: GetDashboardResponse;
+  error?: ApolloError;
+  loading: boolean;
   history: History;
 };
-function Dashboard({ history }: Props) {
-  const { data, loading, error } = useQuery(GET_DASHBOARD);
 
-  function getContent() {
-    if (error) return <p>ERROR</p>;
-    if (loading) return <Spinner />;
+function getDashboardContent({ data, error, loading, history }: Props) {
+  if (error) return <ErrorMessage />;
+  if (loading) return <Spinner />;
 
-    const runtimes = data.dashboard.runtimes.map(
-      (runtime: any, idx: number) => (
-        <Hexagon
-          key={`runtimeHexagon-${idx}`}
-          onClick={() => {
-            const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
-            history.push(runtimePath, {
-              prevLocation: PAGES.DASHBOARD,
-              runtimeId: runtime.id
-            });
-          }}
-          {...formatRuntime(runtime)}
-        />
-      )
-    );
-    const alerts = data.dashboard.alerts.map((alert: any, idx: number) => (
-      <Alert
-        key={`runtimeAlert-${idx}`}
-        history={history}
-        {...formatAlert(alert)}
+  const runtimes = data.dashboard.runtimes.map(
+    (runtime: Runtime, idx: number) => (
+      <Hexagon
+        key={`runtimeHexagon-${idx}`}
+        onClick={() => {
+          const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
+          history.push(runtimePath);
+        }}
+        id={runtime.id}
+        status={runtime.status}
+        title={runtime.name}
+        info={[
+          {
+            type: 'active',
+            date: runtime.creationDate
+          }
+        ]}
       />
-    ));
+    )
+  );
+  const alerts = data.dashboard.alerts.map((alert: Alert, idx: number) => (
+    <AlertMessage
+      key={`runtimeAlert-${idx}`}
+      type={alert.type}
+      message={alert.message}
+      runtimeId={alert.runtime.id}
+    />
+  ));
 
-    return (
-      <>
-        <div>{alerts}</div>
-        <HexagonPanel>{runtimes}</HexagonPanel>
-      </>
-    );
-  }
+  return (
+    <>
+      <div>{alerts}</div>
+      <HexagonPanel>{runtimes}</HexagonPanel>
+    </>
+  );
+}
 
+function Dashboard() {
+  const history = useHistory();
+  const { data, loading, error } = useQuery(GET_DASHBOARD);
   const nRuntimes = data && data.dashboard ? data.dashboard.runtimes.length : 0;
 
   return (
@@ -67,7 +81,9 @@ function Dashboard({ history }: Props) {
       <div className={styles.container} data-testid="dashboardContainer">
         <NavigationBar />
         <div className={styles.content}>
-          <div className={styles.hexagons}>{getContent()}</div>
+          <div className={styles.hexagons}>
+            {getDashboardContent({ data, error, loading, history })}
+          </div>
         </div>
       </div>
     </>

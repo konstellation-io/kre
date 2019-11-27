@@ -8,13 +8,13 @@ import EmailIcon from '@material-ui/icons/Email';
 import TimeIcon from '@material-ui/icons/AccessTime';
 import CalendarIcon from '@material-ui/icons/Today';
 
-import { RuntimeVersion } from '../../pages/Runtime/pages/RuntimeVersions/dataModels';
+import { Version } from '../../graphql/models';
 
 import cx from 'classnames';
 import styles from './VersionInfo.module.scss';
 
 type Props = {
-  version: RuntimeVersion;
+  version: Version;
   focussed?: boolean;
 };
 function VersionInfo({ version, focussed = false }: Props) {
@@ -29,14 +29,14 @@ function VersionInfo({ version, focussed = false }: Props) {
     >
       <div className={styles.col1}>
         <div className={styles.creation}>
-          <CalendarIcon style={{ fontSize: '0.8rem' }} />
+          <CalendarIcon className="icon-small" />
           <p className={styles.creationDate}>
             {`CREATED: ${formatDate(new Date(version.creationDate))}`}
           </p>
         </div>
         {isVersionActive ? (
           <div className={styles.createdPanel}>
-            <Check style={{ fontSize: '2rem' }} />
+            <Check className="icon-big" />
             <p className={styles.versionActive}>Version active</p>
           </div>
         ) : (
@@ -44,7 +44,6 @@ function VersionInfo({ version, focussed = false }: Props) {
             <Button label="PREVIEW" border />
           </div>
         )}
-        <div></div>
       </div>
       <div className={styles.col2}>
         <div className={styles.statusLine} />
@@ -60,13 +59,13 @@ function VersionInfo({ version, focussed = false }: Props) {
             <p className={styles.activatedTitle}>ACTIVATED BY</p>
             <div className={styles.activatedContainer}>
               <div className={styles.col3CreatorName}>
-                <EmailIcon style={{ fontSize: '0.8rem' }} />
+                <EmailIcon className="icon-small" />
                 <span className={styles.activatedAuthor}>
-                  {version.activatorName}
+                  {version.activationAuthor}
                 </span>
               </div>
               <div className={styles.col3CreationDate}>
-                <TimeIcon style={{ fontSize: '0.8rem' }} />
+                <TimeIcon className="icon-small" />
                 <span className={styles.activatedDate}>
                   {version.activationDate}
                 </span>

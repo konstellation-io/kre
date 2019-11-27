@@ -1,6 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router';
-import { History, Location } from 'history';
+import { useLocation, useHistory } from 'react-router';
 
 import DashboardIcon from '@material-ui/icons/ChangeHistory';
 import SecurityIcon from '@material-ui/icons/VerifiedUser';
@@ -22,22 +21,21 @@ export const navigationButtons = [
   }
 ];
 
-type Props = {
-  history: History;
-  location: Location;
-};
-function NavigationBar({ history, location }: Props) {
+function NavigationBar() {
+  const history = useHistory();
+  const location = useLocation();
+
   const buttons = navigationButtons.map(button => (
     <SquaredButton
       {...button}
       key={`navigationButton_${button.id}`}
       active={location.pathname.startsWith(button.path)}
-      onButtonClick={() =>
-        history.push(button.path, { prevLocation: location.pathname })
-      }
+      onButtonClick={() => {
+        history.push(button.path);
+      }}
     />
   ));
   return <VerticalBar>{buttons}</VerticalBar>;
 }
 
-export default withRouter(NavigationBar);
+export default NavigationBar;

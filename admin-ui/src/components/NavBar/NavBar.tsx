@@ -1,45 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import styles from './NavBar.module.scss';
 
 export type Tab = {
   label: string;
-  route?: string;
+  route: string;
   Icon?: any;
 };
 type Props = {
   tabs: Tab[];
   defaultActive?: number;
-  onChange?: Function;
 };
 
-function NavBar({
-  tabs,
-  defaultActive = 0,
-  onChange = function(idx: number) {}
-}: Props) {
-  const [activeTab, setActiveTab] = useState(defaultActive);
-
-  useEffect(() => {
-    setActiveTab(defaultActive);
-  }, [defaultActive]);
-
-  const tabElements = tabs.map((tab, idx) => (
-    <Button
-      key={`tabButton${idx}`}
-      label={tab.label}
-      Icon={tab.Icon}
-      primary={activeTab === idx}
-      type={BUTTON_TYPES.TRANSPARENT}
-      height={56}
-      onClick={() => {
-        setActiveTab(idx);
-        onChange(idx);
-      }}
-      align={BUTTON_ALIGN.LEFT}
-      to={tab.route}
-    />
-  ));
+function NavBar({ tabs }: Props) {
+  const tabElements = tabs.map((tab, idx) => {
+    return (
+      <NavLink
+        key={`NavBarItem_${idx}`}
+        to={tab.route}
+        activeClassName={styles.active}
+        replace
+        exact
+      >
+        <div className={styles.item}>
+          <tab.Icon className="icon-regular" />
+          <span>{tab.label}</span>
+        </div>
+      </NavLink>
+    );
+  });
 
   return <div className={styles.container}>{tabElements}</div>;
 }

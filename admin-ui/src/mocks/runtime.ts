@@ -1,5 +1,5 @@
-import { GET_DASHBOARD } from '../pages/Dashboard/dataModel';
-import { ADD_RUNTIME } from '../pages/AddRuntime/dataModels';
+import { GET_DASHBOARD } from '../pages/Dashboard/Dashboard.graphql';
+import { ADD_RUNTIME } from '../pages/AddRuntime/AddRuntime.graphql';
 
 export const dashboardMock = {
   request: {

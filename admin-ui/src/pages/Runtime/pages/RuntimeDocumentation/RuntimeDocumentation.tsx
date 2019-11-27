@@ -1,11 +1,7 @@
 import React from 'react';
-import styles from './RuntimeDocumentation.module.scss';
+// import styles from './RuntimeDocumentation.module.scss';
 
-type Props = {
-  history: History;
-  location: Location;
-};
-function RuntimeDocumentation({ history, location }: Props) {
+function RuntimeDocumentation() {
   return <>Runtime Documentation</>;
 }
 

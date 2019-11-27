@@ -1,15 +1,27 @@
 import React from 'react';
+
+import Spinner from '../Spinner/Spinner';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import RemoveIcon from '@material-ui/icons/RemoveCircle';
+
 import styles from './DomainList.module.scss';
+import { ApolloError } from 'apollo-client';
 
 type Props = {
   onRemoveDomain: Function;
   data: string[];
+  loading?: boolean;
+  error?: ApolloError;
 };
 function DomainList({
   onRemoveDomain = function(domain: string) {},
-  data
+  data,
+  loading,
+  error
 }: Props) {
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage />;
+
   const domains = data.map((domain: any, idx: number) => (
     <div className={styles.row} key={`domainListElement${idx}`}>
       <p className={styles.domainPosition}>{idx + 1}</p>
@@ -21,7 +33,7 @@ function DomainList({
         onClick={() => onRemoveDomain(domain)}
         data-testid={`domainListRemove${idx}`}
       >
-        <RemoveIcon style={{ fontSize: '1rem' }} />
+        <RemoveIcon className="icon-regular" />
       </div>
     </div>
   ));

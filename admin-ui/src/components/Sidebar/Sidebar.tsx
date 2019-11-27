@@ -1,6 +1,5 @@
-import React, { useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { History, Location } from 'history';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import NavBar from '../NavBar/NavBar';
 import LeftArrowIcon from '@material-ui/icons/KeyboardBackspace';
@@ -16,62 +15,31 @@ type Props = {
   title: string;
   subtitle?: string;
   tabs: Tab[];
-  history: History;
-  location: Location;
-  onChange?: Function;
   subheader?: any;
 };
 
-function Sidebar({
-  title,
-  tabs,
-  history,
-  location,
-  subtitle = '',
-  onChange = function(idx: number) {},
-  subheader = undefined
-}: Props) {
-  const paramEntries = Object.entries(useParams());
-  const backLocation = useRef(location.state && location.state.prevLocation);
+function Sidebar({ title, tabs, subtitle = '', subheader = undefined }: Props) {
+  const history = useHistory();
 
   function onBackButton() {
-    history.push(backLocation.current);
+    history.goBack();
   }
-
-  // Get actual route (ignoring parameter values)
-  let actualRoute = location.pathname;
-  paramEntries.forEach(([param, value]) => {
-    actualRoute = actualRoute.replace(`/${value}/`, '/');
-  });
-
-  // Get tab routes (ignoring parameter names)
-  let tabRoutes = tabs.map(tab => {
-    let route = tab.route;
-    paramEntries.forEach(([param, value]) => {
-      route = route.replace(`/:${param}/`, '/');
-    });
-    return route;
-  });
-
-  const activeTab = tabRoutes.indexOf(actualRoute);
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.back} onClick={onBackButton}>
-          <LeftArrowIcon style={{ fontSize: '1rem' }} />
+          <LeftArrowIcon className="icon-regular" />
           <span className={styles.title}>{title}</span>
         </div>
         <div className={styles.description}>{subtitle}</div>
       </div>
       {subheader}
       <div className={styles.navButtons}>
-        <NavBar tabs={tabs} onChange={onChange} defaultActive={activeTab} />
+        <NavBar tabs={tabs} />
       </div>
     </div>
   );
 }
-
-Sidebar.propTypes = {};
 
 export default Sidebar;

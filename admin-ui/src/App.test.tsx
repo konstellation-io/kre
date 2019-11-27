@@ -1,10 +1,11 @@
 import React from 'react';
+import { renderWithReduxAndRouter } from './utils/testUtils';
 import { render, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import ReactDOM from 'react-dom';
+import { HOME } from './constants/routes';
 import App, { Routes } from './App';
 import { act } from 'react-dom/test-utils';
-import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
 import wait from 'waait';
@@ -17,43 +18,24 @@ const mocksUnauthorizedUser = [dashboardMock, unauthorizedUsernameMock];
 afterEach(cleanup);
 
 it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(
+  const {
+    element: { container }
+  } = renderWithReduxAndRouter(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </MockedProvider>,
-    div
-  );
-  ReactDOM.unmountComponentAtNode(div);
-});
-
-// I cannot test login redirection, redirection logic is located inside Apollo client config,
-// But I can check for apollo errors when making a request
-it('it shows spash screen when user is not logged in', async () => {
-  const { getByTestId } = render(
-    <MockedProvider mocks={mocksUnauthorizedUser} addTypename={false}>
-      <MemoryRouter>
-        <Routes />
-      </MemoryRouter>
+      <App />
     </MockedProvider>
   );
-
-  await act(async () => {
-    await wait(0);
-  });
-
-  expect(getByTestId('splashscreen')).toBeInTheDocument();
+  expect(container).toMatchSnapshot();
 });
 
 it('it shows dashboard page on home URL when logged', () => {
-  const { getByTestId } = render(
+  const {
+    element: { getByTestId }
+  } = renderWithReduxAndRouter(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <Routes />
-      </MemoryRouter>
-    </MockedProvider>
+      <Routes />
+    </MockedProvider>,
+    HOME
   );
 
   expect(getByTestId('dashboardContainer')).toBeInTheDocument();

@@ -2,13 +2,13 @@ import React from 'react';
 import UserActivityList from './UserActivityList';
 import { formatDate } from '../../utils/format';
 import { render, cleanup } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
 
 import { usersActivityMock } from '../../mocks/settings';
+import '@testing-library/jest-dom/extend-expect';
 
 const mocks = [usersActivityMock];
 
@@ -79,5 +79,5 @@ it('Handles errors', async () => {
     await wait(0);
   });
 
-  expect(getByText('ERROR')).toBeInTheDocument();
+  expect(getByText('Something went wrong, you can try to')).toBeInTheDocument();
 });

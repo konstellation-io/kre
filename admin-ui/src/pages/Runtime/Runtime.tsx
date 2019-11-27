@@ -1,7 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
-import { History, Location } from 'history';
+import { Route, useParams } from 'react-router-dom';
 import * as ROUTE from '../../constants/routes';
 
 import StatusIcon from '@material-ui/icons/DeviceHub';
@@ -12,74 +10,89 @@ import ConfigIcon from '@material-ui/icons/Settings';
 
 import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
-import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import SidebarTitle from './components/SidebarTitle/SidebarTitle';
 
 import { useQuery } from '@apollo/react-hooks';
-import { GET_RUNTIME, formatSidebarData } from './dataModels';
+import { GET_RUNTIME, GetRuntimeResponse } from './Runtime.graphql';
 
 import styles from './Runtime.module.scss';
 
-const tabs = [
-  {
-    label: 'STATUS',
-    route: ROUTE.RUNTIME_STATUS,
-    Icon: StatusIcon
-  },
-  {
-    label: 'METRICS',
-    route: ROUTE.HOME,
-    Icon: MetricsIcon
-  },
-  {
-    label: 'DOCUMENTATION',
-    route: ROUTE.HOME,
-    Icon: DocumentationIcon
-  },
-  {
-    label: 'VERSION',
-    route: ROUTE.RUNTIME_VERSIONS,
-    Icon: TimeIcon
-  },
-  {
-    label: 'CONFIGURATION',
-    route: ROUTE.HOME,
-    Icon: ConfigIcon
-  }
-];
+function createNavTabs(runtimeId: string) {
+  const navTabs = [
+    {
+      label: 'STATUS',
+      route: ROUTE.RUNTIME_STATUS,
+      Icon: StatusIcon
+    },
+    {
+      label: 'METRICS',
+      route: ROUTE.HOME,
+      Icon: MetricsIcon
+    },
+    {
+      label: 'DOCUMENTATION',
+      route: ROUTE.HOME,
+      Icon: DocumentationIcon
+    },
+    {
+      label: 'VERSION',
+      route: ROUTE.RUNTIME_VERSIONS,
+      Icon: TimeIcon
+    },
+    {
+      label: 'CONFIGURATION',
+      route: ROUTE.HOME,
+      Icon: ConfigIcon
+    }
+  ];
 
-type Props = {
-  history: History;
-  location: Location;
-};
-function Runtime({ history, location }: Props) {
+  navTabs.forEach(n => {
+    n.route = n.route.replace(':runtimeId', runtimeId);
+  });
+
+  return navTabs;
+}
+
+function Runtime() {
   const { runtimeId } = useParams();
-  const { data, loading, error } = useQuery(GET_RUNTIME, {
+  const { data, loading, error } = useQuery<GetRuntimeResponse>(GET_RUNTIME, {
     variables: { runtimeId }
   });
 
-  if (error) return <p>ERROR</p>;
+  if (error) return <ErrorMessage />;
   if (loading) return <Spinner />;
 
-  const sidebarData = formatSidebarData(data.runtime);
+  const activeVersion = data && {
+    versionNumber: data.runtime.versions[0].versionNumber,
+    created: data.runtime.versions[0].creationDate,
+    activated: data.runtime.versions[0].activationDate,
+    status: 'active',
+    title: data.runtime.name
+  };
+
+  const navTabs = createNavTabs(runtimeId || '');
+  const newVersionRoute = ROUTE.NEW_VERSION.replace(
+    ':runtimeId',
+    runtimeId || ''
+  );
 
   return (
     <>
       <Header>
-        <Button label="ADD VERSION" height={40} to={ROUTE.NEW_VERSION} />
+        <Button label="ADD VERSION" height={40} to={newVersionRoute} />
       </Header>
       <div className={styles.container} data-testid="runtimeContainer">
         <NavigationBar />
         <Sidebar
           title="Runtime"
-          subheader={<SidebarTitle {...sidebarData} />}
-          tabs={tabs}
-          history={history}
-          location={location}
+          subheader={<SidebarTitle version={activeVersion} />}
+          tabs={navTabs}
         />
         <div className={styles.content}>
           <Route exact path={ROUTE.RUNTIME_STATUS} component={RuntimeStatus} />

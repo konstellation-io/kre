@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 import { envVariables } from '../config';
 
 import { useState, useCallback } from 'react';
@@ -57,8 +59,8 @@ export default function useEndpoint({
           setResponse({
             ...defaultResponseState,
             complete: true,
-            status: error.response && error.response.status,
-            data: error.response && error.response.data,
+            status: get(error, 'response.status'),
+            data: get(error, 'response.data'),
             error: true
           });
         });

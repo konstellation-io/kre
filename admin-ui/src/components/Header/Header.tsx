@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import Settings from '../../components/Settings/Settings';
 
 import { useQuery } from '@apollo/react-hooks';
-import { GET_USERNAME } from './dataModels';
+import { GET_USER_EMAIL, GetUserEmailResponse } from './Header.graphql';
 
 import styles from './Header.module.scss';
 
@@ -11,18 +11,20 @@ type Props = {
   children?: any;
 };
 const Header: FunctionComponent<Props> = ({ children }) => {
-  const { data, error, loading } = useQuery(GET_USERNAME);
+  const { data, error, loading } = useQuery<GetUserEmailResponse>(
+    GET_USER_EMAIL
+  );
 
-  if (loading || error)
+  if (loading)
     return <div className={styles.splash} data-testid={'splashscreen'} />;
 
-  const username = data.me.email;
+  const username = data && !error ? data.me.email : 'unknown';
 
   return (
     <header className={styles.container}>
       <img
         className={styles.konstellationsIcon}
-        src={'/img/brand/konstellation.svg'}
+        src={'/img/brand/konstellation.png'}
         alt="konstellation logo"
       />
       <div className={styles.customHeaderElements}>{children}</div>

@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 import React, { useState, useRef } from 'react';
 
 import InputLabel from '../InputLabel/InputLabel';
@@ -32,7 +34,7 @@ function FileUpload({
     onChange(file);
   }
 
-  const inputText = (selectedFile && selectedFile.name) || placeholder;
+  const inputText = get(selectedFile, 'name', placeholder);
 
   return (
     <div className={styles.container}>

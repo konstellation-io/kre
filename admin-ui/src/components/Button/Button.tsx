@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Spinner from '../../components/Spinner/Spinner';
 
@@ -47,13 +47,11 @@ function Button({
   align = BUTTON_ALIGN.MIDDLE,
   style = {}
 }: Props) {
-  const params = useParams();
-
   const content = loading ? (
     <Spinner size={30} color="#0d0e11" />
   ) : (
     <>
-      {Icon && <Icon style={{ fontSize: '1rem' }} />}
+      {Icon && <Icon className="icon-regular" />}
       <span>{label}</span>
     </>
   );
@@ -73,20 +71,11 @@ function Button({
     </div>
   );
 
-  let linkButton = null;
-  if (to) {
-    let redirectionRoute = to;
-    Object.entries(params).map(([param, value]) => {
-      // @ts-ignore
-      redirectionRoute = redirectionRoute.replace(`:${param}`, value);
-    });
-
-    linkButton = (
-      <Link to={redirectionRoute} data-testid="buttonLink">
-        {btn}
-      </Link>
-    );
-  }
+  let linkButton = to ? (
+    <Link to={to} data-testid="buttonLink">
+      {btn}
+    </Link>
+  ) : null;
 
   return !disabled && to !== '' ? linkButton : btn;
 }
