@@ -1,0 +1,13 @@
+# Refer to https://gqlgen.com/config/
+# for detailed gqlgen.yml documentation.
+
+schema:
+- schema.graphql
+exec:
+  filename: adapter/gql/generated.go
+model:
+  filename: adapter/gql/models.go
+resolver:
+  filename: adapter/gql/resolver.go
+  type: Resolver
+autobind: []

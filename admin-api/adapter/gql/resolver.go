@@ -2,7 +2,6 @@ package gql
 
 import (
 	"context"
-	"github.com/graph-gophers/graphql-go"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"time"
@@ -26,97 +25,89 @@ func NewGraphQLResolver(
 	}
 }
 
-func (r *GraphQLResolver) Me(ctx context.Context) *User {
+func (r *GraphQLResolver) Mutation() MutationResolver {
+	return &mutationResolver{r}
+}
+func (r *GraphQLResolver) Query() QueryResolver {
+	return &queryResolver{r}
+}
+
+type mutationResolver struct{ *GraphQLResolver }
+
+func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*CreateRuntimeResponse, error) {
+	userID := ctx.Value("userID").(string)
+
+	runtime, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
+	if err != nil {
+		r.logger.Error("Error creating runtime: " + err.Error())
+		return nil, err
+	}
+
+	return &CreateRuntimeResponse{
+		Errors: nil,
+		Runtime: &Runtime{
+			ID:             runtime.ID,
+			Name:           runtime.Name,
+			Status:         RuntimeStatusCreating,
+			CreationDate:   runtime.CreationDate.Format(time.RFC3339),
+			CreationAuthor: nil,
+			Versions:       []*Version{},
+		},
+	}, nil
+}
+func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error) {
+	panic("not implemented")
+}
+func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
+	panic("not implemented")
+}
+
+type queryResolver struct{ *GraphQLResolver }
+
+func (r *queryResolver) Me(ctx context.Context) (*User, error) {
 	userID := ctx.Value("userID").(string)
 	user, err := r.userInteractor.GetByID(userID)
 	if err != nil {
 		r.logger.Error("Error getting user " + userID + ": " + err.Error())
-		return nil
+		return nil, err
 	}
 
-	disabled := new(bool)
-	*disabled = false
 	return &User{
-		Id:       graphql.ID(userID),
-		Email:    user.Email,
-		Disabled: disabled,
-	}
+		ID:    userID,
+		Email: user.Email,
+	}, nil
 }
-func (r *GraphQLResolver) CreateRuntime(ctx context.Context, args struct{ Name string }) *RuntimeUpdateResponse {
-	userID := ctx.Value("userID").(string)
-
-	runtime, err := r.runtimeInteractor.CreateRuntime(args.Name, userID)
-	if err != nil {
-		msg := new(string)
-		*msg = "Error creating runtime: " + err.Error()
-		return &RuntimeUpdateResponse{
-			Success: false,
-			Message: msg,
-		}
-	}
-
-	msg := new(string)
-	*msg = "Runtime created"
-
-	return &RuntimeUpdateResponse{
-		Success: true,
-		Message: msg,
-		Runtime: &Runtime{
-			Id:           graphql.ID(runtime.ID),
-			Name:         runtime.Name,
-			Status:       "created",
-			CreationDate: runtime.CreationDate.Format(time.RFC3339),
-			Versions:     &[]*Version{},
-		},
-	}
-}
-
-func (r *GraphQLResolver) Runtimes(ctx context.Context) []*Runtime {
+func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 	var gqlRuntimes []*Runtime
 	runtimes, err := r.runtimeInteractor.FindAll()
 
 	if err != nil {
-		return gqlRuntimes // TODO manage errors
+		r.logger.Error("Error getting runtimes: " + err.Error())
+		return gqlRuntimes, err
 	}
 
 	for _, runtime := range runtimes {
 		gqlRuntime := &Runtime{
-			Id:           graphql.ID(runtime.ID),
+			ID:           runtime.ID,
 			Name:         runtime.Name,
-			Status:       "created",
+			Status:       RuntimeStatusCreating,
 			CreationDate: runtime.CreationDate.Format("2006-01-02"),
-			Versions:     nil,
+			Versions:     []*Version{},
 		}
 		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
 	}
 
-	return gqlRuntimes
+	return gqlRuntimes, nil
 }
-
-func (r *GraphQLResolver) Dashboard(ctx context.Context) Dashboard {
-	var gqlRuntimes []*Runtime
-	runtimes, err := r.runtimeInteractor.FindAll()
-
-	if err != nil {
-		return Dashboard{
-			Runtimes: &gqlRuntimes,
-			Alerts:   &[]*Alert{},
-		} // TODO manage errors
-	}
-
-	for _, runtime := range runtimes {
-		gqlRuntime := &Runtime{
-			Id:           graphql.ID(runtime.ID),
-			Name:         runtime.Name,
-			Status:       "created",
-			CreationDate: runtime.CreationDate.Format("2006-01-02"),
-			Versions:     nil,
-		}
-		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
-	}
-
-	return Dashboard{
-		Runtimes: &gqlRuntimes,
-		Alerts:   &[]*Alert{},
-	}
+func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
+	panic("not implemented")
+}
+func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
+	panic("not implemented")
+}
+func (r *queryResolver) UsersActivity(ctx context.Context) ([]*UserActivity, error) {
+	panic("not implemented")
+}
+func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
+	panic("not implemented")
 }

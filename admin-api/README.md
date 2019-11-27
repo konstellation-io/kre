@@ -32,5 +32,10 @@ Repositories implementation are responsible for converting "database objects" in
 
 ## Frameworks and libraries
 
-- Testify for testing.
-- Echo for Delivery layer.
+- [Echo](https://echo.labstack.com/) as HTTP delivery mechanic.
+- [gqlgen](https://github.com/99designs/gqlgen) as library for building GraphQL servers
+
+**Important** If the GraphQL schema (`../admin-ui/schema.graphql`) changes, use the following command to regenerate the code:
+```sh
+go run github.com/99designs/gqlgen -v
+```
