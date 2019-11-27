@@ -1,18 +1,13 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router';
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { renderWithReduxAndRouter } from '../../utils/testUtils';
+import { fireEvent, cleanup } from '@testing-library/react';
 import Settings from './Settings';
 import { getByTestId } from '@testing-library/dom';
-import '@testing-library/jest-dom/extend-expect';
 
 afterEach(cleanup);
 
 function renderComponent() {
-  return render(
-    <MemoryRouter>
-      <Settings />
-    </MemoryRouter>
-  );
+  return renderWithReduxAndRouter(<Settings />).element;
 }
 
 it('Renders Settings without crashing', () => {

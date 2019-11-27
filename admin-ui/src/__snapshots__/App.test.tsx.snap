@@ -1,0 +1,137 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders without crashing 1`] = `
+<div>
+  <div
+    class="app"
+  >
+    <div
+      class="splash"
+      data-testid="splashscreen"
+    />
+    <div
+      class="container"
+      data-testid="dashboardContainer"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="container"
+        >
+          <div
+            class="button active"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root icon-regular"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 7.77L18.39 18H5.61L12 7.77M12 4L2 20h20L12 4z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div
+          class="container"
+        >
+          <div
+            class="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root icon-regular"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div
+        class="content"
+      >
+        <div
+          class="hexagons"
+        >
+          <div
+            class="contentBox"
+            data-testid="spinner"
+          >
+            <div
+              class="container"
+              style="width: 40px; height: 40px;"
+            >
+              <div
+                class="sun"
+                style="background-color: white;"
+              />
+              <div
+                class="orbit p1"
+                style="border-color: white;"
+              />
+              <div
+                class="planet_container p1"
+              >
+                <div
+                  class="planet p1"
+                  style="background-color: white;"
+                >
+                  <div
+                    class="planet_container p4"
+                    data-testid="spinner-planet"
+                  >
+                    <div
+                      class="planet p4"
+                      style="background-color: white;"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="orbit p2"
+                style="border-color: white;"
+              />
+              <div
+                class="planet_container p2"
+              >
+                <div
+                  class="planet p2"
+                  style="background-color: white;"
+                />
+              </div>
+              <div
+                class="planet_container p3"
+              >
+                <div
+                  class="planet p3"
+                  style="background-color: white;"
+                />
+              </div>
+              <div
+                class="orbit p5"
+                style="border-color: white;"
+              />
+              <div
+                class="planet_container p5"
+              >
+                <div
+                  class="planet p5"
+                  style="background-color: white;"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

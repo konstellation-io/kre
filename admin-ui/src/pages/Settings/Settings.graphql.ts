@@ -1,5 +1,8 @@
 import gql from 'graphql-tag';
-
+import { Settings } from '../../graphql/models';
+export interface SettingsResponse {
+  settings: Settings;
+}
 export const GET_DOMAINS = gql`
   query GetDomains {
     settings {

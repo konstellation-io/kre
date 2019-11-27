@@ -4,10 +4,10 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { render, fireEvent, cleanup, act } from '@testing-library/react';
 import { getByTestId } from '@testing-library/dom';
-import '@testing-library/jest-dom/extend-expect';
 import Login from './Login';
 import * as CHECK from '../../components/Form/check';
 import axios from 'axios';
+import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('axios');
 

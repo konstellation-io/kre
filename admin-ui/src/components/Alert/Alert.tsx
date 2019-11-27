@@ -1,19 +1,19 @@
 import React from 'react';
+import { useHistory } from 'react-router';
 import Button from '../Button/Button';
 import * as PAGES from '../../constants/routes';
 
 import cx from 'classnames';
 import styles from './Alert.module.scss';
-import { History } from 'history';
 
-type Props = {
+export type Props = {
   type: string;
   message: string;
   runtimeId: string;
-  history: History;
 };
 
-function Alert({ type, message, runtimeId, history }: Props) {
+function Alert({ type, message, runtimeId }: Props) {
+  const history = useHistory();
   return (
     <div className={styles.container}>
       <div className={cx(styles.label, styles[type])}>{type.toUpperCase()}</div>
@@ -23,9 +23,7 @@ function Alert({ type, message, runtimeId, history }: Props) {
       <Button
         label="GO TO RUNTIME"
         onClick={() =>
-          history.push(PAGES.RUNTIME.replace(':runtimeId', runtimeId), {
-            prevLocation: PAGES.DASHBOARD
-          })
+          history.push(PAGES.RUNTIME.replace(':runtimeId', runtimeId))
         }
       />
     </div>

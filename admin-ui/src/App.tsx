@@ -1,6 +1,6 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
-import { Route, Redirect, Switch } from 'react-router';
+import { Router, Route } from 'react-router-dom';
+import { Redirect, Switch } from 'react-router';
 import history from './history';
 import * as PAGES from './constants/routes';
 
@@ -12,6 +12,7 @@ import Runtime from './pages/Runtime/Runtime';
 import Settings from './pages/Settings/Settings';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
 import AddVersion from './pages/AddVersion/AddVersion';
+import NotFound from './pages/NotFound/NotFound';
 
 export function Routes() {
   return (
@@ -31,6 +32,7 @@ export function Routes() {
         <Route exact path={PAGES.DASHBOARD} component={Dashboard} />
         <Route path={PAGES.RUNTIME} component={Runtime} />
         <Route path={PAGES.SETTINGS} component={Settings} />
+        <Route component={NotFound} />
       </Switch>
     </>
   );

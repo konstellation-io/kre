@@ -24,7 +24,7 @@ function SquaredButton({
         className={cx(styles.button, { [styles.active]: active })}
         onClick={() => onButtonClick(id)}
       >
-        {Icon ? <Icon style={{ fontSize: '1rem' }} /> : label}
+        {Icon ? <Icon className="icon-regular" /> : label}
       </div>
     </div>
   );

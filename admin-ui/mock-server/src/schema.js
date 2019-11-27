@@ -18,7 +18,7 @@ const typeDefs = gql`
     setSettings(input: SettingsInput): Settings
     addAllowedDomain(domainName: String!): Settings
     removeAllowedDomain(domainName: String!): Settings
-    uploadVersion(name: String, type: String!, file: Upload!): KrtFile!
+    uploadVersion(name: String, type: String!, file: Upload!): VersionUpdateResponse!
   }
 
   type User {
@@ -57,13 +57,7 @@ const typeDefs = gql`
     creationDate: String!
     creatorName: String!
     activationDate: String!
-    activatorName: String!
-  }
-
-  type KrtFile {
-    filename: String!
-    mimetype: String!
-    encoding: String!
+    activationAuthor: String!
   }
 
   type Alert {
@@ -89,6 +83,12 @@ const typeDefs = gql`
     success: Boolean!
     message: String
     runtime: Runtime!
+  }
+  
+  type VersionUpdateResponse {
+    success: Boolean!
+    message: String
+    version: Runtime!
   }
 
   enum RuntimeStatus {

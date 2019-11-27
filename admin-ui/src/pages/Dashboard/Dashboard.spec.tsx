@@ -1,8 +1,7 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router';
-import { render, cleanup } from '@testing-library/react';
+import { renderWithReduxAndRouter } from '../../utils/testUtils';
+import { cleanup } from '@testing-library/react';
 import Dashboard from './Dashboard';
-import '@testing-library/jest-dom/extend-expect';
 
 import { MockedProvider } from '@apollo/react-testing';
 import wait from 'waait';
@@ -15,22 +14,24 @@ const mocks = [dashboardMock, usernameMock];
 
 const Component = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <MemoryRouter>
-      <Dashboard />
-    </MemoryRouter>
+    <Dashboard />
   </MockedProvider>
 );
 
 afterEach(cleanup);
 
 it('Render Dashboard without crashing', () => {
-  const { container } = render(Component);
+  const {
+    element: { container }
+  } = renderWithReduxAndRouter(Component);
 
   expect(container).toMatchSnapshot();
 });
 
 it('Shows right texts', async () => {
-  const { getByText, getAllByText } = render(Component);
+  const {
+    element: { getByText, getAllByText }
+  } = renderWithReduxAndRouter(Component);
 
   await act(async () => {
     await wait(0);

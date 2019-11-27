@@ -1,41 +1,47 @@
+import { get } from 'lodash';
+
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import * as ROUTE from '../../../../constants/routes';
 
 import Modal from '../../../../components/Modal/Modal';
 import Spinner from '../../../../components/Spinner/Spinner';
+import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import ActiveVersionStatus from './ActiveVersionStatus';
 import VersionInfo from '../../../../components/VersionInfo/VersionInfo';
 
+import { useQuery } from '@apollo/react-hooks';
 import {
   GET_VERSIONS,
-  RuntimeVersionsData,
-  RuntimeVersion
-} from './dataModels';
-import { useQuery } from '@apollo/react-hooks';
+  RuntimeVersionsResponse
+} from './RuntimeVersions.graphql';
+import { Version } from '../../../../graphql/models';
 
 import styles from './RuntimeVersions.module.scss';
 
 function RuntimeVersions() {
   const versionListRef = useRef(null);
-  const [activeVersionFocussed, setActiveVersionFocussed] = useState(false);
   const { runtimeId } = useParams();
-  const { data, loading, error } = useQuery<RuntimeVersionsData>(GET_VERSIONS, {
-    variables: { runtimeId }
-  });
+  const [activeVersionFocussed, setActiveVersionFocussed] = useState(false);
+  const { data, loading, error } = useQuery<RuntimeVersionsResponse>(
+    GET_VERSIONS,
+    {
+      variables: { runtimeId }
+    }
+  );
 
   if (loading) return <Spinner />;
-  if (error) return <div>'ERROR'</div>;
+  if (error) return <ErrorMessage />;
 
-  let activeVersion: RuntimeVersion;
+  let activeVersion: Version | undefined;
   if (data && data.versions.length !== 0) {
-    // @ts-ignore
     activeVersion = data.versions.find(version => version.status === 'active');
   }
 
   function onLocateActiveVersionClick() {
     const activeVersionInfoElement = document.getElementById(
-      `versionInfoElement_${activeVersion.description.replace(' ', '')}`
+      `versionInfoElement_${activeVersion &&
+        activeVersion.description.replace(' ', '')}`
     );
 
     let scrollAmount = 0;
@@ -44,11 +50,7 @@ function RuntimeVersions() {
       ? activeVersionInfoElement.offsetTop
       : 0;
 
-    let listTop = 0;
-    if (versionListRef.current !== null) {
-      // @ts-ignore
-      listTop = versionListRef.current.offsetTop;
-    }
+    const listTop: number = get(versionListRef, 'current.offsetTop') || 0;
     scrollAmount = targetTop - listTop;
 
     // @ts-ignore
@@ -74,7 +76,7 @@ function RuntimeVersions() {
 
     const versions =
       data &&
-      data.versions.map((version: RuntimeVersion, idx: number) => (
+      data.versions.map((version: Version, idx: number) => (
         <VersionInfo
           key={`version_${idx}`}
           version={version}

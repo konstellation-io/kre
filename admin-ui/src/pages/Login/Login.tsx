@@ -1,4 +1,7 @@
+import { get } from 'lodash';
+
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router';
 import useInput from '../../hooks/useInput';
 import useEndpoint from '../../hooks/useEndpoint';
 
@@ -18,11 +21,8 @@ function verifyEmail(value: string) {
   ]);
 }
 
-type Props = {
-  history: any;
-};
-
-function Login({ history }: Props) {
+function Login() {
+  const history = useHistory();
   const { value, isValid, onChange, error, setError } = useInput(
     '',
     verifyEmail
@@ -41,7 +41,7 @@ function Login({ history }: Props) {
   useEffect(
     function() {
       if (response.complete) {
-        if (response && response.status === 200) {
+        if (get(response, 'status') === 200) {
           history.push(PAGES.VERIFY_EMAIL);
         } else if (
           response.error &&

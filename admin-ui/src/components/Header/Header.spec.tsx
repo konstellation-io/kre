@@ -3,11 +3,11 @@ import { MemoryRouter } from 'react-router';
 import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import Header from './Header';
-import '@testing-library/jest-dom/extend-expect';
 
 import wait from 'waait';
 import { MockedProvider } from '@apollo/react-testing';
 import { usernameMock } from '../../mocks/auth';
+import '@testing-library/jest-dom/extend-expect';
 
 function renderComponent() {
   return render(

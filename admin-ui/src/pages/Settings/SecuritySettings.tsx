@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 import React, { useState, useEffect } from 'react';
 import useInput from '../../hooks/useInput';
 
@@ -6,19 +8,19 @@ import DomainIcon from '@material-ui/icons/Language';
 import SettingsHeader from './components/SettingsHeader';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
-import Spinner from '../../components/Spinner/Spinner';
 import DomainList from '../../components/DomainList/DomainList';
 import * as CHECK from '../../components/Form/check';
 
 import cx from 'classnames';
 import styles from './Settings.module.scss';
 
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import {
   GET_DOMAINS,
   ADD_ALLOWED_DOMAIN,
-  REMOVE_ALLOWED_DOMAIN
-} from './dataModels';
+  REMOVE_ALLOWED_DOMAIN,
+  SettingsResponse
+} from './Settings.graphql';
 
 type FormFieldProps = {
   error: string;
@@ -28,7 +30,7 @@ type FormFieldProps = {
 function FormField({ error, onChange, onSubmit }: FormFieldProps) {
   return (
     <div className={styles.formField}>
-      <DomainIcon style={{ fontSize: '1rem' }} />
+      <DomainIcon className="icon-regular" />
       <p className={styles.label}>Domain white list</p>
       <div className={styles.input}>
         <TextInput
@@ -60,7 +62,9 @@ function SecuritySettings() {
     '',
     isDomainInvalid
   );
-  const { data: queryData, loading, error: queryError } = useQuery(GET_DOMAINS);
+  const { data: queryData, loading, error: queryError } = useQuery<
+    SettingsResponse
+  >(GET_DOMAINS);
   const [addAllowedDomain] = useMutation(ADD_ALLOWED_DOMAIN, {
     onCompleted: onCompleteAddDomain
   });
@@ -70,8 +74,8 @@ function SecuritySettings() {
 
   // Set domains data after retrieving it from API
   useEffect(() => {
-    if (queryData) {
-      setAllowedDomains(queryData.settings.authAllowedDomains);
+    if (get(queryData, 'settings')) {
+      setAllowedDomains(get(queryData, 'settings.authAllowedDomains'));
     }
   }, [queryData]);
   // Set domains data after making a mutation
@@ -95,10 +99,14 @@ function SecuritySettings() {
   }
 
   function getContent() {
-    if (queryError) return <p>ERROR</p>;
-    if (loading) return <Spinner />;
-
-    return <DomainList onRemoveDomain={onRemoveDomain} data={allowedDomains} />;
+    return (
+      <DomainList
+        onRemoveDomain={onRemoveDomain}
+        error={queryError}
+        loading={loading}
+        data={allowedDomains}
+      />
+    );
   }
 
   return (

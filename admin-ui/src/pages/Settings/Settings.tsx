@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route } from 'react-router';
-import { History, Location } from 'history';
 import * as ROUTE from '../../constants/routes';
 
 import GeneralIcon from '@material-ui/icons/DeviceHub';
@@ -34,11 +33,7 @@ const tabs = [
   }
 ];
 
-type Props = {
-  history: History;
-  location: Location;
-};
-function Settings({ history, location }: Props) {
+function Settings() {
   return (
     <>
       <Header />
@@ -48,8 +43,6 @@ function Settings({ history, location }: Props) {
           title="Settings"
           subtitle="Fusce vehicula dolor arcu, sit amet."
           tabs={tabs}
-          history={history}
-          location={location}
         />
         <div className={styles.content}>
           <Route

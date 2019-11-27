@@ -13,10 +13,9 @@ exports[`Renders NavigationBar without crashing 1`] = `
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root"
+          class="MuiSvgIcon-root icon-regular"
           focusable="false"
           role="presentation"
-          style="font-size: 1rem;"
           viewBox="0 0 24 24"
         >
           <path
@@ -33,10 +32,9 @@ exports[`Renders NavigationBar without crashing 1`] = `
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root"
+          class="MuiSvgIcon-root icon-regular"
           focusable="false"
           role="presentation"
-          style="font-size: 1rem;"
           viewBox="0 0 24 24"
         >
           <path

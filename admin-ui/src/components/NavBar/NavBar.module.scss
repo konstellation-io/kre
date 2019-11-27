@@ -1,3 +1,7 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+@import '../../styles/variables';
+
 .container {
   border: solid 0px black;
   border-width: 1px 0;
@@ -5,4 +9,30 @@
 .container a:not(:last-child) div {
   border: solid 0px black;
   border-bottom-width: 1px;
+}
+
+.item {
+  @include font-button;
+  text-align: center;
+  color: $font-color;
+
+  height: 56px;
+  position: relative;
+  padding: 0 28px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color ease 0.4s, background-color ease 0.4s;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  span {
+    margin-left: 15px;
+  }
+}
+
+.active .item {
+  background-color: rgba(191, 207, 255, 0.15);
+  color: white;
 }
