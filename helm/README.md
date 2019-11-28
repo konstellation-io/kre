@@ -24,7 +24,6 @@ Shared configuration for all components
 | `config.smtp.host`                              | SMTP Host to connect                       | <not_defined>           |
 | `config.smtp.port`                              | SMTP Port to connect                       | <not_defined>           |
 | `config.auth.verificationCodeDurationInMinutes` | User Verification Code Duration In Minutes | `1`                     |
-| `config.auth.sessionDurationInHours`            | User Session Duration in Hours             | `1`                     |
 | `config.auth.jwtSignSecret`                     | JWT Sign Secret Key                        | `jwt_secret`            |
 | `config.auth.secureCookie`                      | Activate secure cookie                     | `false`                 |
 

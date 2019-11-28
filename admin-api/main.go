@@ -20,6 +20,7 @@ func main() {
 	verificationCodeRepo := mongodb.NewVerificationCodeRepoMongoDB(cfg, logger, mongodbClient)
 	userRepo := mongodb.NewUserRepoMongoDB(cfg, logger, mongodbClient)
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
+	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
 
 	k8sManagerService := service.NewK8sManagerServiceGRPC(cfg, logger)
 
@@ -31,6 +32,12 @@ func main() {
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
+	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo)
+
+	err := settingInteractor.CreateDefaults()
+	if err != nil {
+		panic(err)
+	}
 
 	app := http.NewApp(
 		cfg,
@@ -38,6 +45,7 @@ func main() {
 		authInteractor,
 		runtimeInteractor,
 		userInteractor,
+		settingInteractor,
 	)
 	app.Start()
 }

@@ -11,17 +11,20 @@ type GraphQLResolver struct {
 	logger            logging.Logger
 	runtimeInteractor *usecase.RuntimeInteractor
 	userInteractor    *usecase.UserInteractor
+	settingInteractor *usecase.SettingInteractor
 }
 
 func NewGraphQLResolver(
 	logger logging.Logger,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
+	settingInteractor *usecase.SettingInteractor,
 ) *GraphQLResolver {
 	return &GraphQLResolver{
 		logger,
 		runtimeInteractor,
 		userInteractor,
+		settingInteractor,
 	}
 }
 
@@ -59,7 +62,31 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 	panic("not implemented")
 }
 func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
-	panic("not implemented")
+	settings, err := r.settingInteractor.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	hasChanges := false
+	if input.SessionLifetimeInDays != nil && settings.SessionLifetimeInDays != *input.SessionLifetimeInDays {
+		hasChanges = true
+		settings.SessionLifetimeInDays = *input.SessionLifetimeInDays
+	}
+
+	if hasChanges {
+		err = r.settingInteractor.Update(settings)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &UpdateSettingsResponse{
+		Errors: nil,
+		Settings: &Settings{
+			AuthAllowedDomains:    nil,
+			SessionLifetimeInDays: settings.SessionLifetimeInDays,
+		},
+	}, nil
 }
 
 type queryResolver struct{ *GraphQLResolver }
@@ -99,11 +126,22 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 
 	return gqlRuntimes, nil
 }
+func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Version, error) {
+	panic("not implemented")
+}
 func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
 	panic("not implemented")
 }
 func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
-	panic("not implemented")
+	settings, err := r.settingInteractor.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	return &Settings{
+		AuthAllowedDomains:    nil,
+		SessionLifetimeInDays: settings.SessionLifetimeInDays,
+	}, nil
 }
 func (r *queryResolver) UsersActivity(ctx context.Context) ([]*UserActivity, error) {
 	panic("not implemented")

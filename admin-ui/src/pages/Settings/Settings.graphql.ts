@@ -19,12 +19,12 @@ export const GET_DOMAINS = gql`
 export const GET_EXPIRATION_TIME = gql`
   query GetSettings {
     settings {
-      cookieExpirationTime
+      sessionLifetimeInDays
     }
   }
 `;
 
-export const UPDATE_COOKIE_EXP_TIME = gql`
+export const UPDATE_SESSION_LIFETIME = gql`
   mutation UpdateSettings($input: SettingsInput!) {
     updateSettings(input: $input) {
       errors {
@@ -32,7 +32,7 @@ export const UPDATE_COOKIE_EXP_TIME = gql`
         message
       }
       settings {
-        cookieExpirationTime
+        sessionLifetimeInDays
       }
     }
   }

@@ -25,7 +25,6 @@ type Config struct {
 	} `yaml:"smtp"`
 	Auth struct {
 		VerificationCodeDurationInMinutes int    `yaml:"verificationCodeDurationInMinutes" envconfig:"KRE_AUTH_VERIFICATION_CODE_DURATION_IN_MINUTES"`
-		SessionDurationInHours            int    `yaml:"sessionDurationInHours" envconfig:"KRE_AUTH_SESSION_DURATION_IN_HOURS"`
 		JWTSignSecret                     string `yaml:"jwtSignSecret" envconfig:"KRE_AUTH_JWT_SIGN_SECRET"`
 		SecureCookie                      bool   `yaml:"secureCookie" envconfig:"KRE_AUTH_SECURE_COOKIE"`
 	} `yaml:"auth"`

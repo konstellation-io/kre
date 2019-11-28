@@ -37,7 +37,7 @@ type CreateVersionResponse {
 
 input SettingsInput {
   authAllowedDomains: [String]
-  cookieExpirationTime: Int
+  sessionLifetimeInDays: Int
 }
 
 type UpdateSettingsResponse {
@@ -110,7 +110,7 @@ enum VersionStatus {
 
 type Settings {
   authAllowedDomains: [String!]!
-  cookieExpirationTime: Int!
+  sessionLifetimeInDays: Int!
 }
 
 type UserActivity {

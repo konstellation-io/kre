@@ -17,6 +17,7 @@ type GraphQLController struct {
 	logger            logging.Logger
 	runtimeInteractor *usecase.RuntimeInteractor
 	userInteractor    *usecase.UserInteractor
+	settingInteractor *usecase.SettingInteractor
 }
 
 func NewGraphQLController(
@@ -24,12 +25,14 @@ func NewGraphQLController(
 	logger logging.Logger,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
+	settingInteractor *usecase.SettingInteractor,
 ) *GraphQLController {
 	return &GraphQLController{
 		cfg,
 		logger,
 		runtimeInteractor,
 		userInteractor,
+		settingInteractor,
 	}
 }
 
@@ -40,7 +43,7 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 
 	g.logger.Info("Request from user " + userID)
 
-	h := gql.NewHttpHandler(g.logger, g.runtimeInteractor, g.userInteractor)
+	h := gql.NewHttpHandler(g.logger, g.runtimeInteractor, g.userInteractor, g.settingInteractor)
 
 	r := c.Request()
 	ctx := context.WithValue(r.Context(), "userID", userID)

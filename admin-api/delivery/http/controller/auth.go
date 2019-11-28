@@ -20,16 +20,23 @@ type signinVerifyInput struct {
 }
 
 type AuthController struct {
-	cfg            *config.Config
-	logger         logging.Logger
-	authInteractor *usecase.AuthInteractor
+	cfg               *config.Config
+	logger            logging.Logger
+	authInteractor    *usecase.AuthInteractor
+	settingInteractor *usecase.SettingInteractor
 }
 
-func NewAuthController(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor) *AuthController {
+func NewAuthController(
+	cfg *config.Config,
+	logger logging.Logger,
+	authInteractor *usecase.AuthInteractor,
+	settingInteractor *usecase.SettingInteractor,
+) *AuthController {
 	return &AuthController{
 		cfg,
 		logger,
 		authInteractor,
+		settingInteractor,
 	}
 }
 
@@ -79,7 +86,12 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	}
 
 	a.logger.Info("Generating JWT token.")
-	ttl := time.Duration(a.cfg.Auth.SessionDurationInHours) * time.Hour
+	setting, err := a.settingInteractor.Get()
+	if err != nil {
+		return err
+	}
+
+	ttl := time.Duration(setting.SessionLifetimeInDays) * 24 * time.Hour
 	expirationTime := time.Now().Add(ttl)
 
 	claims := jwt.StandardClaims{

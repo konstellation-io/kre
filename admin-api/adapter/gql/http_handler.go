@@ -11,8 +11,9 @@ func NewHttpHandler(
 	logger logging.Logger,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
+	settingInteractor *usecase.SettingInteractor,
 ) http.Handler {
-	graphQLResolver := NewGraphQLResolver(logger, runtimeInteractor, userInteractor)
+	graphQLResolver := NewGraphQLResolver(logger, runtimeInteractor, userInteractor, settingInteractor)
 
 	h := handler.GraphQL(NewExecutableSchema(Config{Resolvers: graphQLResolver}))
 	return h
