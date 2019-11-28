@@ -8,7 +8,7 @@ exports[`Renders Alert without crashing 1`] = `
     <div
       class="label error"
     >
-      ERROR
+      error
     </div>
     <div
       class="message"

@@ -30,7 +30,7 @@ it('shows right texts', () => {
     element: { getByText }
   } = renderComponent();
 
-  expect(getByText('ERROR')).toBeInTheDocument();
+  expect(getByText('error')).toBeInTheDocument();
   expect(getByText('GO TO RUNTIME')).toBeInTheDocument();
   expect(getByText('Sample message')).toBeInTheDocument();
 });

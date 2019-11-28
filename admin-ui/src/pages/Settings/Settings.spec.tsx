@@ -18,7 +18,6 @@ const mocks = [
   MOCK.domainMock,
   MOCK.usersActivityMock,
   MOCK.addAllowedDomainMock,
-  MOCK.removeAllowedDomainMock,
   MOCK.updateExpirationTime,
   usernameMock
 ];

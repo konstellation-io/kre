@@ -49,10 +49,10 @@
   transform: translateX(-50%) perspective(47px) rotateX(13deg);
   z-index: 9;
 
-  &.active {
+  &.running {
     background-color: $color-green;
   }
-  &.created {
+  &.creating {
     background-color: $color-blue;
   }
   &.warning {

@@ -11,9 +11,9 @@ import styles from './UserActivityList.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 import {
   GET_USERS_ACTIVITY,
-  UserActivity,
   UserActivityResponse
 } from './UserActivityList.graphql';
+import { UserActivity } from '../../graphql/models';
 
 type Props = {
   filter?: string;
@@ -30,7 +30,7 @@ function UserActivityList({ filter }: Props) {
   const dataToShow = filter
     ? data &&
       data.usersActivity.filter((element: UserActivity) => {
-        return element.user.toLowerCase().includes(filter.toLowerCase());
+        return element.user.email.toLowerCase().includes(filter.toLowerCase());
       })
     : data && data.usersActivity;
 
@@ -46,7 +46,7 @@ function UserActivityList({ filter }: Props) {
           <div className={styles.userAndMessage}>
             <span className={styles.userWithIcon}>
               <EmailIcon className="icon-regular" />
-              <p className={styles.user}>{userActivity.user}</p>
+              <p className={styles.user}>{userActivity.user.email}</p>
             </span>
             <p className={styles.message}>{userActivity.message}</p>
           </div>

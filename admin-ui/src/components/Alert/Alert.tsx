@@ -16,7 +16,7 @@ function Alert({ type, message, runtimeId }: Props) {
   const history = useHistory();
   return (
     <div className={styles.container}>
-      <div className={cx(styles.label, styles[type])}>{type.toUpperCase()}</div>
+      <div className={cx(styles.label, styles[type.toLowerCase()])}>{type}</div>
       <div className={styles.message} title={message}>
         {message}
       </div>

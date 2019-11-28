@@ -5,6 +5,10 @@ export interface RuntimeVersionsResponse {
   versions: Version[];
 }
 
+export interface RuntimeVersionsVars {
+  runtimeId?: string;
+}
+
 export const GET_VERSIONS = gql`
   query GetVersions($runtimeId: ID!) {
     versions(runtimeId: $runtimeId) {
@@ -12,9 +16,13 @@ export const GET_VERSIONS = gql`
       description
       status
       creationDate
-      creatorName
+      creationAuthor {
+        email
+      }
       activationDate
-      activationAuthor
+      activationAuthor {
+        email
+      }
     }
   }
 `;

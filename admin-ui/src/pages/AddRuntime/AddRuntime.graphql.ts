@@ -1,23 +1,29 @@
 import gql from 'graphql-tag';
+import { Runtime } from '../../graphql/models';
 
-interface RuntimeResponse {
-  success: boolean;
-  message: string;
-}
-
-export interface AddRuntimeData {
-  addRuntime: RuntimeResponse;
+export interface AddRuntimeResponse {
+  addRuntime: {
+    errors?: string[];
+    runtime: Runtime;
+  };
 }
 
 export interface AddRuntimeVars {
-  name: string;
+  input: {
+    name: string;
+  };
 }
 
 export const ADD_RUNTIME = gql`
-  mutation AddRuntime($name: String!) {
-    createRuntime(name: $name) {
-      success
-      message
+  mutation CreateRuntime($input: CreateRuntimeInput!) {
+    createRuntime(input: $input) {
+      errors {
+        code
+        message
+      }
+      runtime {
+        name
+      }
     }
   }
 `;

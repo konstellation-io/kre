@@ -19,7 +19,11 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import SidebarTitle from './components/SidebarTitle/SidebarTitle';
 
 import { useQuery } from '@apollo/react-hooks';
-import { GET_RUNTIME, GetRuntimeResponse } from './Runtime.graphql';
+import {
+  GET_RUNTIME,
+  GetRuntimeResponse,
+  GetRuntimeVars
+} from './Runtime.graphql';
 
 import styles from './Runtime.module.scss';
 
@@ -61,9 +65,12 @@ function createNavTabs(runtimeId: string) {
 
 function Runtime() {
   const { runtimeId } = useParams();
-  const { data, loading, error } = useQuery<GetRuntimeResponse>(GET_RUNTIME, {
-    variables: { runtimeId }
-  });
+  const { data, loading, error } = useQuery<GetRuntimeResponse, GetRuntimeVars>(
+    GET_RUNTIME,
+    {
+      variables: { runtimeId }
+    }
+  );
 
   if (error) return <ErrorMessage />;
   if (loading) return <Spinner />;
