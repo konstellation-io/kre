@@ -17,11 +17,10 @@ import {
   SettingsResponse,
   SettingsVars,
   GET_EXPIRATION_TIME,
-  UPDATE_COOKIE_EXP_TIME
+  UPDATE_SESSION_LIFETIME
 } from './Settings.graphql';
 
 const MIN_EXPIRATION_DAYS = 1;
-const MAX_EXPIRATION_DAYS = 60;
 
 type FormFieldProps = {
   error: string;
@@ -37,7 +36,7 @@ function FormField({
 }: FormFieldProps) {
   return (
     <div className={styles.formField}>
-      <p className={styles.label}>Session Cookie expiration time</p>
+      <p className={styles.label}>Session lifetime in days time</p>
       <div className={styles.input}>
         <TextInput
           whiteColor
@@ -60,10 +59,7 @@ function isExpirationInvalid(value: string) {
   return CHECK.getValidationError([
     CHECK.isFieldNotEmpty(value),
     CHECK.isFieldAnInteger(value, true),
-    CHECK.isIntegerWithinRange(value, [
-      MIN_EXPIRATION_DAYS,
-      MAX_EXPIRATION_DAYS
-    ])
+    CHECK.isGreaterThan(value, MIN_EXPIRATION_DAYS)
   ]);
 }
 
@@ -72,7 +68,7 @@ function GeneralSettings() {
     GET_EXPIRATION_TIME
   );
   const [updateExpirationTime] = useMutation<SettingsResponse, SettingsVars>(
-    UPDATE_COOKIE_EXP_TIME
+    UPDATE_SESSION_LIFETIME
   );
   const { value, isValid, onChange, setValue, error: inputError } = useInput(
     '',
@@ -82,7 +78,7 @@ function GeneralSettings() {
   // Sets domains data after receiving API response
   useEffect(() => {
     if (data) {
-      setValue(data.settings.cookieExpirationTime);
+      setValue(data.settings.sessionLifetimeInDays);
     }
   }, [data, setValue]);
 
@@ -92,7 +88,7 @@ function GeneralSettings() {
   function onSubmit() {
     if (isValid()) {
       const input = {
-        cookieExpirationTime: parseInt(value)
+        sessionLifetimeInDays: parseInt(value)
       };
       updateExpirationTime({ variables: { input } });
     }
@@ -112,7 +108,7 @@ function GeneralSettings() {
           error={inputError}
           onChange={onChange}
           onSubmit={onSubmit}
-          defaultValue={data && data.settings.cookieExpirationTime}
+          defaultValue={data && data.settings.sessionLifetimeInDays}
         />
       </div>
       <HorizontalBar>

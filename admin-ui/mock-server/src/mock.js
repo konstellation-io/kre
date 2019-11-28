@@ -56,6 +56,6 @@ module.exports = {
   }),
   Settings: () => ({
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
-    cookieExpirationTime: () => casual.integer(from = 1, to = 99)
+    sessionLifetimeInDays: () => casual.integer(from = 1, to = 99)
   })
 }

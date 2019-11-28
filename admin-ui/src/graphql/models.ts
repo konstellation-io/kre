@@ -34,5 +34,5 @@ export interface Alert {
 
 export type Settings = {
   authAllowedDomains?: string[];
-  cookieExpirationTime?: number;
+  sessionLifetimeInDays?: number;
 };

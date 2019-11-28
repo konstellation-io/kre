@@ -77,6 +77,7 @@ type ComplexityRoot struct {
 		Runtimes      func(childComplexity int) int
 		Settings      func(childComplexity int) int
 		UsersActivity func(childComplexity int) int
+		Versions      func(childComplexity int, runtimeID string) int
 	}
 
 	Runtime struct {
@@ -85,12 +86,12 @@ type ComplexityRoot struct {
 		ID             func(childComplexity int) int
 		Name           func(childComplexity int) int
 		Status         func(childComplexity int) int
-		Versions       func(childComplexity int) int
+		Versions       func(childComplexity int, status VersionStatus) int
 	}
 
 	Settings struct {
-		AuthAllowedDomains   func(childComplexity int) int
-		CookieExpirationTime func(childComplexity int) int
+		AuthAllowedDomains    func(childComplexity int) int
+		SessionLifetimeInDays func(childComplexity int) int
 	}
 
 	UpdateSettingsResponse struct {
@@ -131,6 +132,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Me(ctx context.Context) (*User, error)
 	Runtimes(ctx context.Context) ([]*Runtime, error)
+	Versions(ctx context.Context, runtimeID string) ([]*Version, error)
 	Alerts(ctx context.Context) ([]*Alert, error)
 	Settings(ctx context.Context) (*Settings, error)
 	UsersActivity(ctx context.Context) ([]*UserActivity, error)
@@ -305,6 +307,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UsersActivity(childComplexity), true
 
+	case "Query.versions":
+		if e.complexity.Query.Versions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_versions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Versions(childComplexity, args["runtimeId"].(string)), true
+
 	case "Runtime.creationAuthor":
 		if e.complexity.Runtime.CreationAuthor == nil {
 			break
@@ -345,7 +359,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Runtime.Versions(childComplexity), true
+		args, err := ec.field_Runtime_versions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Runtime.Versions(childComplexity, args["status"].(VersionStatus)), true
 
 	case "Settings.authAllowedDomains":
 		if e.complexity.Settings.AuthAllowedDomains == nil {
@@ -354,12 +373,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Settings.AuthAllowedDomains(childComplexity), true
 
-	case "Settings.cookieExpirationTime":
-		if e.complexity.Settings.CookieExpirationTime == nil {
+	case "Settings.sessionLifetimeInDays":
+		if e.complexity.Settings.SessionLifetimeInDays == nil {
 			break
 		}
 
-		return e.complexity.Settings.CookieExpirationTime(childComplexity), true
+		return e.complexity.Settings.SessionLifetimeInDays(childComplexity), true
 
 	case "UpdateSettingsResponse.errors":
 		if e.complexity.UpdateSettingsResponse.Errors == nil {
@@ -547,6 +566,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 type Query {
   me: User
   runtimes: [Runtime!]
+  versions(runtimeId: ID!): [Version!]
   alerts: [Alert!]
   settings: Settings!
   usersActivity: [UserActivity!]
@@ -580,7 +600,7 @@ type CreateVersionResponse {
 
 input SettingsInput {
   authAllowedDomains: [String]
-  cookieExpirationTime: Int
+  sessionLifetimeInDays: Int
 }
 
 type UpdateSettingsResponse {
@@ -624,7 +644,7 @@ type Runtime {
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!
-  versions: [Version!]!
+  versions(status: VersionStatus!): [Version!]!
 }
 
 enum RuntimeStatus {
@@ -653,7 +673,7 @@ enum VersionStatus {
 
 type Settings {
   authAllowedDomains: [String!]!
-  cookieExpirationTime: Int!
+  sessionLifetimeInDays: Int!
 }
 
 type UserActivity {
@@ -743,6 +763,34 @@ func (ec *executionContext) field_Query_runtime_args(ctx context.Context, rawArg
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_versions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["runtimeId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["runtimeId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Runtime_versions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 VersionStatus
+	if tmp, ok := rawArgs["status"]; ok {
+		arg0, err = ec.unmarshalNVersionStatus2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersionStatus(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg0
 	return args, nil
 }
 
@@ -1340,6 +1388,47 @@ func (ec *executionContext) _Query_runtimes(ctx context.Context, field graphql.C
 	return ec.marshalORuntime2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐRuntime(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_versions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_versions_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Versions(rctx, args["runtimeId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*Version)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOVersion2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersion(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_alerts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1765,6 +1854,13 @@ func (ec *executionContext) _Runtime_versions(ctx context.Context, field graphql
 		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Runtime_versions_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
@@ -1823,7 +1919,7 @@ func (ec *executionContext) _Settings_authAllowedDomains(ctx context.Context, fi
 	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Settings_cookieExpirationTime(ctx context.Context, field graphql.CollectedField, obj *Settings) (ret graphql.Marshaler) {
+func (ec *executionContext) _Settings_sessionLifetimeInDays(ctx context.Context, field graphql.CollectedField, obj *Settings) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1842,7 +1938,7 @@ func (ec *executionContext) _Settings_cookieExpirationTime(ctx context.Context, 
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CookieExpirationTime, nil
+		return obj.SessionLifetimeInDays, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3688,9 +3784,9 @@ func (ec *executionContext) unmarshalInputSettingsInput(ctx context.Context, obj
 			if err != nil {
 				return it, err
 			}
-		case "cookieExpirationTime":
+		case "sessionLifetimeInDays":
 			var err error
-			it.CookieExpirationTime, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.SessionLifetimeInDays, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3912,6 +4008,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_runtimes(ctx, field)
 				return res
 			})
+		case "versions":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_versions(ctx, field)
+				return res
+			})
 		case "alerts":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -4045,8 +4152,8 @@ func (ec *executionContext) _Settings(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "cookieExpirationTime":
-			out.Values[i] = ec._Settings_cookieExpirationTime(ctx, field, obj)
+		case "sessionLifetimeInDays":
+			out.Values[i] = ec._Settings_sessionLifetimeInDays(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -5311,6 +5418,46 @@ func (ec *executionContext) marshalOUserActivity2ᚕᚖgitlabᚗcomᚋkonstellat
 				defer wg.Done()
 			}
 			ret[i] = ec.marshalNUserActivity2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOVersion2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersion(ctx context.Context, sel ast.SelectionSet, v []*Version) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNVersion2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersion(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)

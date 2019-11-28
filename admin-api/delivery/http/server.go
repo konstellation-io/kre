@@ -17,7 +17,14 @@ type App struct {
 }
 
 // NewApp creates a new App instance.
-func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor, runtimeInteractor *usecase.RuntimeInteractor, userInteractor *usecase.UserInteractor) *App {
+func NewApp(
+	cfg *config.Config,
+	logger logging.Logger,
+	authInteractor *usecase.AuthInteractor,
+	runtimeInteractor *usecase.RuntimeInteractor,
+	userInteractor *usecase.UserInteractor,
+	settingInteractor *usecase.SettingInteractor,
+) *App {
 	e := echo.New()
 	e.HideBanner = true
 	e.Validator = newCustomValidator()
@@ -34,8 +41,14 @@ func NewApp(cfg *config.Config, logger logging.Logger, authInteractor *usecase.A
 		}))
 	}
 
-	authController := controller.NewAuthController(cfg, logger, authInteractor)
-	graphQLController := controller.NewGraphQLController(cfg, logger, runtimeInteractor, userInteractor)
+	authController := controller.NewAuthController(cfg, logger, authInteractor, settingInteractor)
+	graphQLController := controller.NewGraphQLController(
+		cfg,
+		logger,
+		runtimeInteractor,
+		userInteractor,
+		settingInteractor,
+	)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)

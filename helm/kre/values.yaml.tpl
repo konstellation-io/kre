@@ -9,7 +9,6 @@ config:
     enabled: false
   auth:
     verificationCodeDurationInMinutes: 1
-    sessionDurationInHours: 1
     jwtSignSecret: jwt_secret
     secureCookie: false
 

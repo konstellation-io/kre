@@ -51,13 +51,13 @@ type Runtime struct {
 }
 
 type Settings struct {
-	AuthAllowedDomains   []string `json:"authAllowedDomains"`
-	CookieExpirationTime int      `json:"cookieExpirationTime"`
+	AuthAllowedDomains    []string `json:"authAllowedDomains"`
+	SessionLifetimeInDays int      `json:"sessionLifetimeInDays"`
 }
 
 type SettingsInput struct {
-	AuthAllowedDomains   []*string `json:"authAllowedDomains"`
-	CookieExpirationTime *int      `json:"cookieExpirationTime"`
+	AuthAllowedDomains    []*string `json:"authAllowedDomains"`
+	SessionLifetimeInDays *int      `json:"sessionLifetimeInDays"`
 }
 
 type UpdateSettingsResponse struct {

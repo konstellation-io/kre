@@ -1,7 +1,7 @@
 import {
   GET_DOMAINS,
   GET_EXPIRATION_TIME,
-  UPDATE_COOKIE_EXP_TIME,
+  UPDATE_SESSION_LIFETIME,
   UPDATE_DOMAINS
 } from '../pages/Settings/Settings.graphql';
 import { GET_USERS_ACTIVITY } from '../components/UserActivityList/UserActivityList.graphql';
@@ -53,7 +53,7 @@ export const expirationTimeMock = {
   result: {
     data: {
       settings: {
-        cookieExpirationTime: 45
+        sessionLifetimeInDays: 45
       }
     }
   }
@@ -91,14 +91,14 @@ export const addAllowedDomainMock = {
 
 export const updateExpirationTime = {
   request: {
-    query: UPDATE_COOKIE_EXP_TIME,
-    variables: { input: { cookieExpirationTime: 10 } }
+    query: UPDATE_SESSION_LIFETIME,
+    variables: { input: { sessionLifetimeInDays: 10 } }
   },
   result: {
     data: {
       setSettings: {
         settings: {
-          cookieExpirationTime: 12
+          sessionLifetimeInDays: 12
         }
       }
     }
