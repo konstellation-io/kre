@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import useForm from '../../hooks/useForm';
 import { useHistory, useParams } from 'react-router';
 
-import TextInput from '../../components/Form/TextInput/TextInput';
-import Select from '../../components/Form/Select/Select';
 import FileUpload from '../../components/Form/FileUpload/FileUpload';
 import UploadProgress from '../../components/Form/UploadProgress/UploadProgress';
 import Button from '../../components/Button/Button';
@@ -14,36 +12,11 @@ import styles from './AddVersion.module.scss';
 
 import { ADD_VERSION } from './AddVersion.graphql';
 
-function verifyVersionName(value: string) {
-  return CHECK.getValidationError([
-    CHECK.isFieldNotEmpty(value),
-    CHECK.isFieldAnString(value)
-  ]);
-}
-function verifyVersionType(value: string) {
-  return CHECK.getValidationError([CHECK.isFieldInList(value, versionTypes)]);
-}
 function verifyVersionFile(value: string) {
   return CHECK.getValidationError([CHECK.isDefined(value)]);
 }
 
-const versionTypes = [
-  'Fix some issues',
-  'Compatible changes',
-  'Breaking changes'
-];
-
 const inputs = [
-  {
-    defaultValue: '',
-    verifier: verifyVersionName,
-    id: 'name'
-  },
-  {
-    defaultValue: versionTypes[0],
-    verifier: verifyVersionType,
-    id: 'type'
-  },
   {
     defaultValue: null,
     verifier: verifyVersionFile,
@@ -54,7 +27,7 @@ const inputs = [
 function AddVersion() {
   const history = useHistory();
   const { runtimeId } = useParams();
-  const form = useForm(inputs, ADD_VERSION, onCompleted);
+  const form = useForm(inputs, ADD_VERSION, onCompleted, { runtimeId });
   const [versionUploaded, setVersionUploaded] = useState(false);
 
   useEffect(() => {
@@ -65,7 +38,7 @@ function AddVersion() {
 
   function onCompleted(updatedData: any) {
     // TODO: CHECK FOR API ERRORS
-    console.log(`${form.input.name.value} version created`, updatedData);
+    console.log(`${updatedData.createVersion.version.id} version created`);
     setVersionUploaded(true);
   }
 
@@ -93,19 +66,6 @@ function AddVersion() {
             ullamcorper bibendum bibendum.
           </p>
           <div className={styles.content}>
-            <TextInput
-              whiteColor
-              label="version name"
-              error={form.input.name.error}
-              onChange={form.input.name.onChange}
-              onSubmit={onSubmit}
-            />
-            <Select
-              label="version type"
-              options={versionTypes}
-              error={form.input.type.error}
-              onChange={form.input.type.onChange}
-            />
             <FileUpload
               label="upload version file (KRT file)"
               placeholder=".krt"

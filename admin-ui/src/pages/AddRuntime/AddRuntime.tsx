@@ -12,7 +12,7 @@ import styles from './AddRuntime.module.scss';
 import { useMutation } from '@apollo/react-hooks';
 import {
   ADD_RUNTIME,
-  AddRuntimeData,
+  AddRuntimeResponse,
   AddRuntimeVars
 } from './AddRuntime.graphql';
 
@@ -30,7 +30,7 @@ function AddRuntime() {
     verifyRuntimeName
   );
   const [addRuntime, { loading, error: mutationError }] = useMutation<
-    { addRuntime: AddRuntimeData },
+    AddRuntimeResponse,
     AddRuntimeVars
   >(ADD_RUNTIME, {
     onCompleted: onCompleteAddRuntime
@@ -50,7 +50,8 @@ function AddRuntime() {
 
   function onSubmit() {
     if (isValid()) {
-      addRuntime({ variables: { name: value } });
+      const input = { name: value };
+      addRuntime({ variables: { input } });
     }
   }
 

@@ -3,23 +3,14 @@ import { Settings } from '../../graphql/models';
 export interface SettingsResponse {
   settings: Settings;
 }
+
+export interface SettingsVars {
+  input: Settings;
+}
+
 export const GET_DOMAINS = gql`
   query GetDomains {
     settings {
-      authAllowedDomains
-    }
-  }
-`;
-export const ADD_ALLOWED_DOMAIN = gql`
-  mutation AddAllowedDomain($domainName: String!) {
-    addAllowedDomain(domainName: $domainName) {
-      authAllowedDomains
-    }
-  }
-`;
-export const REMOVE_ALLOWED_DOMAIN = gql`
-  mutation RemoveAllowedDomain($domainName: String!) {
-    removeAllowedDomain(domainName: $domainName) {
       authAllowedDomains
     }
   }
@@ -32,10 +23,31 @@ export const GET_EXPIRATION_TIME = gql`
     }
   }
 `;
-export const UPDATE_EXPIRATION_TIME = gql`
-  mutation UpdateExpirationTime($input: SettingsInput) {
-    setSettings(input: $input) {
-      cookieExpirationTime
+
+export const UPDATE_COOKIE_EXP_TIME = gql`
+  mutation UpdateSettings($input: SettingsInput!) {
+    updateSettings(input: $input) {
+      errors {
+        code
+        message
+      }
+      settings {
+        cookieExpirationTime
+      }
+    }
+  }
+`;
+
+export const UPDATE_DOMAINS = gql`
+  mutation UpdateDomains($input: SettingsInput!) {
+    updateSettings(input: $input) {
+      errors {
+        code
+        message
+      }
+      settings {
+        authAllowedDomains
+      }
     }
   }
 `;

@@ -5,16 +5,24 @@ export interface GetRuntimeResponse {
   runtime: Runtime;
 }
 
+export interface GetRuntimeVars {
+  runtimeId?: string;
+}
+
 export const GET_RUNTIME = gql`
   query GetRuntime($runtimeId: ID!) {
     runtime(id: $runtimeId) {
       name
-      versions(status: "active") {
+      versions(status: ACTIVE) {
         versionNumber
         creationDate
-        creatorName
+        creationAuthor {
+          email
+        }
         activationDate
-        activationAuthor
+        activationAuthor {
+          email
+        }
       }
     }
   }

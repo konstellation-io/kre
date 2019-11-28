@@ -2,13 +2,19 @@ export interface User {
   email: string;
 }
 
+export interface UserActivity {
+  user: User;
+  message: string;
+  date: string;
+}
+
 export interface Version {
   description: string;
   versionNumber: string;
   creationDate: string;
-  creatorName: string;
+  creationAuthor: User;
   activationDate: string;
-  activationAuthor: string;
+  activationAuthor: User;
   status: string;
 }
 
@@ -24,11 +30,6 @@ export interface Alert {
   type: string;
   message: string;
   runtime: Runtime;
-}
-
-export interface Dashboard {
-  runtimes: Runtime[];
-  alerts: Alert[];
 }
 
 export type Settings = {

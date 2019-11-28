@@ -17,9 +17,9 @@ import styles from './Settings.module.scss';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import {
   GET_DOMAINS,
-  ADD_ALLOWED_DOMAIN,
-  REMOVE_ALLOWED_DOMAIN,
-  SettingsResponse
+  UPDATE_DOMAINS,
+  SettingsResponse,
+  SettingsVars
 } from './Settings.graphql';
 
 type FormFieldProps = {
@@ -65,12 +65,12 @@ function SecuritySettings() {
   const { data: queryData, loading, error: queryError } = useQuery<
     SettingsResponse
   >(GET_DOMAINS);
-  const [addAllowedDomain] = useMutation(ADD_ALLOWED_DOMAIN, {
-    onCompleted: onCompleteAddDomain
-  });
-  const [removeAllowedDomain] = useMutation(REMOVE_ALLOWED_DOMAIN, {
-    onCompleted: onCompleteRemoveDomain
-  });
+  const [updateAllowedDomain] = useMutation<SettingsResponse, SettingsVars>(
+    UPDATE_DOMAINS,
+    {
+      onCompleted: onCompleteUpdateDomain
+    }
+  );
 
   // Set domains data after retrieving it from API
   useEffect(() => {
@@ -79,23 +79,33 @@ function SecuritySettings() {
     }
   }, [queryData]);
   // Set domains data after making a mutation
-  function onCompleteAddDomain(updatedData: any) {
-    setAllowedDomains(updatedData.addAllowedDomain.authAllowedDomains);
+  function onCompleteUpdateDomain(updatedData: any) {
+    setAllowedDomains(updatedData.updateSettings.settings.authAllowedDomains);
   }
-  function onCompleteRemoveDomain(updatedData: any) {
-    setAllowedDomains(updatedData.removeAllowedDomain.authAllowedDomains);
+
+  function updateDomains(newDomains: any) {
+    const input = { authAllowedDomains: newDomains };
+    updateAllowedDomain({ variables: { input } });
+
+    setAllowedDomains(newDomains);
   }
 
   function onSubmit() {
     if (isValid()) {
       console.log(`Domain ${value} added`);
-      addAllowedDomain({ variables: { domainName: value } });
+
+      const newDomains = allowedDomains.concat(value);
+      updateDomains(newDomains);
     }
   }
 
   function onRemoveDomain(domain: string) {
     console.log(`Domain ${domain} removed`);
-    removeAllowedDomain({ variables: { domainName: value } });
+
+    const newDomains = [...allowedDomains];
+    // @ts-ignore
+    newDomains.pop(newDomains.indexOf(domain));
+    updateDomains(newDomains);
   }
 
   function getContent() {

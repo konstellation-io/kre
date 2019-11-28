@@ -1,40 +1,24 @@
 import gql from 'graphql-tag';
-import { Dashboard, Runtime } from '../../graphql/models';
+import { Alert, Runtime } from '../../graphql/models';
 
-export interface GetRuntimesResponse {
+export interface GetDashboardResponse {
   runtimes: Runtime[];
+  alerts: Alert[];
 }
 
-export const GET_RUNTIMES = gql`
-  query GetRuntimes {
+export const GET_DASHBOARD = gql`
+  query GetDashboard {
     runtimes {
       id
       name
       status
       creationDate
     }
-  }
-`;
-
-export interface GetDashboardResponse {
-  dashboard: Dashboard;
-}
-
-export const GET_DASHBOARD = gql`
-  query GetDashboard {
-    dashboard {
-      runtimes {
+    alerts {
+      type
+      message
+      runtime {
         id
-        name
-        status
-        creationDate
-      }
-      alerts {
-        type
-        message
-        runtime {
-          id
-        }
       }
     }
   }

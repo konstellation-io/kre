@@ -13,7 +13,8 @@ import VersionInfo from '../../../../components/VersionInfo/VersionInfo';
 import { useQuery } from '@apollo/react-hooks';
 import {
   GET_VERSIONS,
-  RuntimeVersionsResponse
+  RuntimeVersionsResponse,
+  RuntimeVersionsVars
 } from './RuntimeVersions.graphql';
 import { Version } from '../../../../graphql/models';
 
@@ -23,19 +24,19 @@ function RuntimeVersions() {
   const versionListRef = useRef(null);
   const { runtimeId } = useParams();
   const [activeVersionFocussed, setActiveVersionFocussed] = useState(false);
-  const { data, loading, error } = useQuery<RuntimeVersionsResponse>(
-    GET_VERSIONS,
-    {
-      variables: { runtimeId }
-    }
-  );
+  const { data, loading, error } = useQuery<
+    RuntimeVersionsResponse,
+    RuntimeVersionsVars
+  >(GET_VERSIONS, {
+    variables: { runtimeId }
+  });
 
   if (loading) return <Spinner />;
   if (error) return <ErrorMessage />;
 
   let activeVersion: Version | undefined;
   if (data && data.versions.length !== 0) {
-    activeVersion = data.versions.find(version => version.status === 'active');
+    activeVersion = data.versions.find(version => version.status === 'ACTIVE');
   }
 
   function onLocateActiveVersionClick() {
@@ -80,7 +81,7 @@ function RuntimeVersions() {
         <VersionInfo
           key={`version_${idx}`}
           version={version}
-          focussed={activeVersionFocussed && version.status === 'active'}
+          focussed={activeVersionFocussed && version.status === 'ACTIVE'}
         />
       ));
 

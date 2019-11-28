@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 import React from 'react';
 import { useHistory } from 'react-router';
 import { History } from 'history';
@@ -30,27 +32,25 @@ function getDashboardContent({ data, error, loading, history }: Props) {
   if (error) return <ErrorMessage />;
   if (loading) return <Spinner />;
 
-  const runtimes = data.dashboard.runtimes.map(
-    (runtime: Runtime, idx: number) => (
-      <Hexagon
-        key={`runtimeHexagon-${idx}`}
-        onClick={() => {
-          const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
-          history.push(runtimePath);
-        }}
-        id={runtime.id}
-        status={runtime.status}
-        title={runtime.name}
-        info={[
-          {
-            type: 'active',
-            date: runtime.creationDate
-          }
-        ]}
-      />
-    )
-  );
-  const alerts = data.dashboard.alerts.map((alert: Alert, idx: number) => (
+  const runtimes = data.runtimes.map((runtime: Runtime, idx: number) => (
+    <Hexagon
+      key={`runtimeHexagon-${idx}`}
+      onClick={() => {
+        const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
+        history.push(runtimePath);
+      }}
+      id={runtime.id}
+      status={runtime.status.toLowerCase()}
+      title={runtime.name}
+      info={[
+        {
+          type: 'active',
+          date: runtime.creationDate
+        }
+      ]}
+    />
+  ));
+  const alerts = data.alerts.map((alert: Alert, idx: number) => (
     <AlertMessage
       key={`runtimeAlert-${idx}`}
       type={alert.type}
@@ -70,7 +70,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
 function Dashboard() {
   const history = useHistory();
   const { data, loading, error } = useQuery(GET_DASHBOARD);
-  const nRuntimes = data && data.dashboard ? data.dashboard.runtimes.length : 0;
+  const nRuntimes = get(data, 'runtimes', []).length;
 
   return (
     <>

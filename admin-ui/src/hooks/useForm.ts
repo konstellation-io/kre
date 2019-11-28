@@ -12,7 +12,8 @@ type InputElement = {
 export default function useForm(
   inputElements: InputElement[],
   query: DocumentNode,
-  onCompleted: (data: any) => void
+  onCompleted: (data: any) => void,
+  additionalInputProps?: object
 ) {
   const [makeMutation, { loading, error }] = useMutation(query, {
     onCompleted
@@ -33,7 +34,14 @@ export default function useForm(
       mutationVariables[input] = form.input[input].value;
     });
 
-    makeMutation({ variables: mutationVariables });
+    makeMutation({
+      variables: {
+        input: {
+          ...mutationVariables,
+          ...additionalInputProps
+        }
+      }
+    });
   }
 
   const form: {

@@ -38,7 +38,7 @@ it('Shows right texts', async () => {
   const userActivityNode1 = queryByTestId('userActivityListElement1');
   expect(userActivityNode0).not.toBeNull();
 
-  const dateFormatted = formatDate(new Date('2019-01-02'), true);
+  const dateFormatted = formatDate(new Date('2019-11-27T15:28:01+00:00'), true);
   const user0 = userActivityNode0 && userActivityNode0.querySelector('.user');
   const message0 =
     userActivityNode0 && userActivityNode0.querySelector('.message');

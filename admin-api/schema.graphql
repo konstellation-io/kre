@@ -3,6 +3,7 @@ scalar Upload
 type Query {
   me: User
   runtimes: [Runtime!]
+  versions(runtimeId: ID!): [Version!]
   alerts: [Alert!]
   settings: Settings!
   usersActivity: [UserActivity!]
@@ -80,7 +81,7 @@ type Runtime {
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!
-  versions: [Version!]!
+  versions(status: VersionStatus!): [Version!]!
 }
 
 enum RuntimeStatus {

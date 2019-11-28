@@ -18,7 +18,7 @@ type Props = {
   focussed?: boolean;
 };
 function VersionInfo({ version, focussed = false }: Props) {
-  const isVersionActive = version.status === 'active';
+  const isVersionActive = version.status === 'ACTIVE';
 
   return (
     <div
@@ -61,7 +61,7 @@ function VersionInfo({ version, focussed = false }: Props) {
               <div className={styles.col3CreatorName}>
                 <EmailIcon className="icon-small" />
                 <span className={styles.activatedAuthor}>
-                  {version.activationAuthor}
+                  {version.activationAuthor.email}
                 </span>
               </div>
               <div className={styles.col3CreationDate}>

@@ -14,8 +14,10 @@ import styles from './Settings.module.scss';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import {
+  SettingsResponse,
+  SettingsVars,
   GET_EXPIRATION_TIME,
-  UPDATE_EXPIRATION_TIME
+  UPDATE_COOKIE_EXP_TIME
 } from './Settings.graphql';
 
 const MIN_EXPIRATION_DAYS = 1;
@@ -66,8 +68,12 @@ function isExpirationInvalid(value: string) {
 }
 
 function GeneralSettings() {
-  const { data, loading, error: queryError } = useQuery(GET_EXPIRATION_TIME);
-  const [updateExpirationTime] = useMutation(UPDATE_EXPIRATION_TIME);
+  const { data, loading, error: queryError } = useQuery<SettingsResponse>(
+    GET_EXPIRATION_TIME
+  );
+  const [updateExpirationTime] = useMutation<SettingsResponse, SettingsVars>(
+    UPDATE_COOKIE_EXP_TIME
+  );
   const { value, isValid, onChange, setValue, error: inputError } = useInput(
     '',
     isExpirationInvalid
@@ -106,7 +112,7 @@ function GeneralSettings() {
           error={inputError}
           onChange={onChange}
           onSubmit={onSubmit}
-          defaultValue={data.settings.cookieExpirationTime}
+          defaultValue={data && data.settings.cookieExpirationTime}
         />
       </div>
       <HorizontalBar>
