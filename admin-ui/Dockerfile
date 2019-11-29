@@ -4,7 +4,8 @@ ARG VERSION
 WORKDIR /app
 COPY . .
 RUN npm version $VERSION
-RUN npm ci && npm audit fix && npm run build
+RUN apk add yarn --update
+RUN yarn install && yarn run build
 FROM nginx:alpine
 
 COPY --from=front-builder /app/build /usr/share/nginx/html
