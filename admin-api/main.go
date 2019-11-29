@@ -28,7 +28,7 @@ func main() {
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
 
 	authInteractor := usecase.NewAuthInteractor(
-		logger, loginLinkTransport, verificationCodeGenerator, verificationCodeRepo, userRepo)
+		logger, loginLinkTransport, verificationCodeGenerator, verificationCodeRepo, userRepo, settingRepo)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)

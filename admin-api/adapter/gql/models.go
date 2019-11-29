@@ -56,8 +56,8 @@ type Settings struct {
 }
 
 type SettingsInput struct {
-	AuthAllowedDomains    []*string `json:"authAllowedDomains"`
-	SessionLifetimeInDays *int      `json:"sessionLifetimeInDays"`
+	AuthAllowedDomains    []string `json:"authAllowedDomains"`
+	SessionLifetimeInDays *int     `json:"sessionLifetimeInDays"`
 }
 
 type UpdateSettingsResponse struct {

@@ -44,10 +44,14 @@ function Login() {
         if (get(response, 'status') === 200) {
           history.push(PAGES.VERIFY_EMAIL);
         } else if (
-          response.error &&
-          response.data.code === 'validation_error'
+          get(response, 'error') &&
+          get(response, 'data.code') === 'validation_error'
         ) {
           setError('Invalid email');
+        } else if (
+          get(response, 'data.code') === 'domain_not_allowed'
+        ) {
+          setError('Domain not allowed');
         } else {
           setError('Unexpected error. Contact support for more information');
         }

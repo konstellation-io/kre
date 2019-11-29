@@ -84,9 +84,9 @@ export function isEmailValid(email: string) {
 }
 
 export function isDomainValid(value: string) {
-  const re = /([a-z0-9]+\.)*[a-z0-9]+\.[a-z.]+/;
+  const re = new RegExp(/^((?:(?:(?:\w[.\-+]?)*)\w)+)((?:(?:(?:\w[.\-+]?){0,62})\w)+)\.(\w{2,6})$/); 
 
-  return re.test(String(value).toLowerCase())
+  return re.test(value)
     ? VALID
     : setInvalid('Invalid domain format');
 }

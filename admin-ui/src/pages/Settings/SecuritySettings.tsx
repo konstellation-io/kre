@@ -23,11 +23,12 @@ import {
 } from './Settings.graphql';
 
 type FormFieldProps = {
+  value?: string;
   error: string;
   onChange: Function;
   onSubmit: Function;
 };
-function FormField({ error, onChange, onSubmit }: FormFieldProps) {
+function FormField({ value, error, onChange, onSubmit }: FormFieldProps) {
   return (
     <div className={styles.formField}>
       <DomainIcon className="icon-regular" />
@@ -39,6 +40,7 @@ function FormField({ error, onChange, onSubmit }: FormFieldProps) {
           error={error}
           onChange={onChange}
           onSubmit={onSubmit}
+          defaultValue={value}
         />
       </div>
       <div className={styles.button}>
@@ -48,28 +50,48 @@ function FormField({ error, onChange, onSubmit }: FormFieldProps) {
   );
 }
 
-function isDomainInvalid(value: string) {
+function validateForm(value: string, domains:string[]) {
   return CHECK.getValidationError([
     CHECK.isFieldNotEmpty(value),
     CHECK.isFieldAnString(value),
-    CHECK.isDomainValid(value)
+    CHECK.isDomainValid(value),
+    domainDuplicated(value, domains)
   ]);
+}
+
+function domainDuplicated(newDomain:string, domains:string[]) {
+  const valid = !domains.includes(newDomain);
+  const msg = valid ? '': 'Duplicated domain';
+  return {valid, message: msg}
 }
 
 function SecuritySettings() {
   const [allowedDomains, setAllowedDomains] = useState([]);
-  const { value, isValid, onChange, error: inputError } = useInput(
-    '',
-    isDomainInvalid
-  );
   const { data: queryData, loading, error: queryError } = useQuery<
     SettingsResponse
   >(GET_DOMAINS);
   const [updateAllowedDomain] = useMutation<SettingsResponse, SettingsVars>(
     UPDATE_DOMAINS,
     {
-      onCompleted: onCompleteUpdateDomain
+      onCompleted: onCompleteUpdateDomain,
+      // FIXME: ts ignore and better way to update apollo cache
+      // @ts-ignore
+      update(cache, {data:{updateSettings:{settings:{authAllowedDomains:newDomains}}}}) {
+        cache.writeQuery({
+          query: GET_DOMAINS,
+          data: {
+            settings: {
+                __typename: "Settings",
+                authAllowedDomains: newDomains
+            }
+          }
+        });
+      }
     }
+  );
+  const { value, isValid, onChange, error: inputError, clear, clearError } = useInput(
+    '',
+    (value:string) => validateForm(value, allowedDomains)
   );
 
   // Set domains data after retrieving it from API
@@ -86,26 +108,26 @@ function SecuritySettings() {
   function updateDomains(newDomains: any) {
     const input = { authAllowedDomains: newDomains };
     updateAllowedDomain({ variables: { input } });
-
     setAllowedDomains(newDomains);
   }
 
   function onSubmit() {
     if (isValid()) {
-      console.log(`Domain ${value} added`);
+      const domain = value.toLowerCase()
+      console.log(`Domain ${domain} added`);
 
-      const newDomains = allowedDomains.concat(value);
+      const newDomains = allowedDomains.concat(domain);
       updateDomains(newDomains);
+      clear();
+      clearError();
     }
   }
 
   function onRemoveDomain(domain: string) {
-    console.log(`Domain ${domain} removed`);
-
-    const newDomains = [...allowedDomains];
-    // @ts-ignore
-    newDomains.pop(newDomains.indexOf(domain));
+    console.log(`Domain ${domain} removed`,allowedDomains, domain);
+    const newDomains = allowedDomains.filter(d => d !== domain)
     updateDomains(newDomains);
+    clearError();
   }
 
   function getContent() {
@@ -129,7 +151,11 @@ function SecuritySettings() {
             Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur
             fermentum suscipit est, tincidunt."
         />
-        <FormField error={inputError} onChange={onChange} onSubmit={onSubmit} />
+        <FormField
+          error={inputError}
+          onChange={onChange}
+          onSubmit={onSubmit}
+          value={value} />
         <div className={styles.domains}>{getContent()}</div>
       </div>
     </>

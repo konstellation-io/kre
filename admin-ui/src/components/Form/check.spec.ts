@@ -93,8 +93,8 @@ test('if isEmailValid makes correct validations', () => {
 });
 
 test('if isDomainValid makes correct validations', () => {
-  const validDomain1 = CHECK.isDomainValid('mariano.intelygenz');
-  const validDomain2 = CHECK.isDomainValid('i.n.t.e.l.y.g.e.n.z');
+  const validDomain1 = CHECK.isDomainValid('mariano.intelygenz.com');
+  const validDomain2 = CHECK.isDomainValid('igz.es');
   const invalidDomain1 = CHECK.isDomainValid('intelygenz');
   const invalidDomain2 = CHECK.isDomainValid('intelygenz.');
   const invalidDomain3 = CHECK.isDomainValid('domain@intelygenz');
