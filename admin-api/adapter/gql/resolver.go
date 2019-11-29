@@ -73,6 +73,11 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 		settings.SessionLifetimeInDays = *input.SessionLifetimeInDays
 	}
 
+	if input.AuthAllowedDomains != nil {
+		hasChanges = true
+		settings.AuthAllowedDomains = input.AuthAllowedDomains
+	}
+
 	if hasChanges {
 		err = r.settingInteractor.Update(settings)
 		if err != nil {
@@ -83,7 +88,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 	return &UpdateSettingsResponse{
 		Errors: nil,
 		Settings: &Settings{
-			AuthAllowedDomains:    nil,
+			AuthAllowedDomains:    settings.AuthAllowedDomains,
 			SessionLifetimeInDays: settings.SessionLifetimeInDays,
 		},
 	}, nil
@@ -139,7 +144,7 @@ func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
 	}
 
 	return &Settings{
-		AuthAllowedDomains:    nil,
+		AuthAllowedDomains:    settings.AuthAllowedDomains,
 		SessionLifetimeInDays: settings.SessionLifetimeInDays,
 	}, nil
 }

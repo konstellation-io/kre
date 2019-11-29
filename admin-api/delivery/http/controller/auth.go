@@ -53,6 +53,8 @@ func (a *AuthController) SignIn(c echo.Context) error {
 	verificationCodeDurationInMinutes := a.cfg.Auth.VerificationCodeDurationInMinutes
 	if err := a.authInteractor.SignIn(input.Email, verificationCodeDurationInMinutes); err != nil {
 		switch err {
+		case usecase.ErrDomainNotAllowed:
+			return HTTPErrDomainNotAllowed
 		default:
 			a.logger.Error(err.Error())
 			return HTTPErrUnexpected
