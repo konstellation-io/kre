@@ -73,7 +73,20 @@ function SecuritySettings() {
   const [updateAllowedDomain] = useMutation<SettingsResponse, SettingsVars>(
     UPDATE_DOMAINS,
     {
-      onCompleted: onCompleteUpdateDomain
+      onCompleted: onCompleteUpdateDomain,
+      // FIXME: ts ignore and better way to update apollo cache
+      // @ts-ignore
+      update(cache, {data:{updateSettings:{settings:{authAllowedDomains:newDomains}}}}) {
+        cache.writeQuery({
+          query: GET_DOMAINS,
+          data: {
+            settings: {
+                __typename: "Settings",
+                authAllowedDomains: newDomains
+            }
+          }
+        });
+      }
     }
   );
   const { value, isValid, onChange, error: inputError, clear, clearError } = useInput(

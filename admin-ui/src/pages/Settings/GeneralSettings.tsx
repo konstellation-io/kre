@@ -68,7 +68,22 @@ function GeneralSettings() {
     GET_EXPIRATION_TIME
   );
   const [updateExpirationTime] = useMutation<SettingsResponse, SettingsVars>(
-    UPDATE_SESSION_LIFETIME
+    UPDATE_SESSION_LIFETIME,
+    {
+      // FIXME: ts ignore and better way to update apollo cache
+      // @ts-ignore
+      update(cache, {data:{updateSettings:{settings:{sessionLifetimeInDays:newLifetime}}}}) {
+        cache.writeQuery({
+          query: GET_EXPIRATION_TIME,
+          data: {
+            settings: {
+                __typename: "Settings",
+                sessionLifetimeInDays: newLifetime
+            }
+          }
+        });
+      }
+    }
   );
   const { value, isValid, onChange, setValue, error: inputError } = useInput(
     '',
