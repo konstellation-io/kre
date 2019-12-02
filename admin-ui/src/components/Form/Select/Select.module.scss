@@ -21,6 +21,10 @@
   color: $font-color-white;
   font-weight: 600;
 
+  &.placeholder {
+    color: $font-color;
+  }
+
   &:after {
     position: absolute;
     width: 7px;
@@ -44,10 +48,11 @@
 .optionsContainer {
   position: absolute;
   background-color: $bg-color-lighter;
-  width: 100%;
   z-index: 1;
   transition: max-height ease 0.3s;
   overflow: hidden;
+  width: fit-content;
+  min-width: 100%;
 }
 
 .optionElement {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useForm from '../../hooks/useForm';
+import { useMutation } from '@apollo/react-hooks';
 import { useHistory, useParams } from 'react-router';
 
 import FileUpload from '../../components/Form/FileUpload/FileUpload';
@@ -27,14 +28,21 @@ const inputs = [
 function AddVersion() {
   const history = useHistory();
   const { runtimeId } = useParams();
-  const form = useForm(inputs, ADD_VERSION, onCompleted, { runtimeId });
+  const [addVersion, { loading, error }] = useMutation(ADD_VERSION, {
+    onCompleted
+  });
+  const form = useForm({
+    inputElements: inputs,
+    fetchFunction: addVersion,
+    additionalInputProps: { runtimeId }
+  });
   const [versionUploaded, setVersionUploaded] = useState(false);
 
   useEffect(() => {
-    if (form.error) {
-      console.error('FORM ERROR', form.error);
+    if (error) {
+      console.error('FORM ERROR', error);
     }
-  }, [form]);
+  }, [error]);
 
   function onCompleted(updatedData: any) {
     // TODO: CHECK FOR API ERRORS
@@ -44,12 +52,6 @@ function AddVersion() {
 
   function onDeploy() {
     history.push(PAGES.RUNTIME_STATUS.replace(':runtimeId', runtimeId || ''));
-  }
-
-  function onSubmit() {
-    if (form.isValid()) {
-      form.submit();
-    }
   }
 
   function onCancelClick() {
@@ -76,10 +78,10 @@ function AddVersion() {
             <div className={styles.buttons}>
               <Button
                 primary
-                disabled={form.error !== undefined}
+                disabled={error !== undefined}
                 label={versionUploaded ? 'ACCEPT' : 'CREATE'}
-                onClick={versionUploaded ? onDeploy : onSubmit}
-                loading={form.loading}
+                onClick={versionUploaded ? onDeploy : () => form.submit()}
+                loading={loading}
               />
               <Button label="CANCEL" onClick={onCancelClick} />
             </div>

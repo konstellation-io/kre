@@ -12,6 +12,7 @@ type Query {
     fromDate: String,
     toDate: String
   ): [UserActivity!]!
+
   runtime(id: ID!): Runtime!
 }
 
@@ -129,5 +130,5 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
-  RUNTIME_CREATION
+  CREATE_RUNTIME
 }

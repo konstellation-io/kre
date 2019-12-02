@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { UserActivity } from '../../graphql/models';
+import { UserActivity } from '../../../../graphql/models';
 
 export interface UserActivityResponse {
   usersActivity: UserActivity[];

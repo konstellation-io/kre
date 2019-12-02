@@ -4,7 +4,7 @@ import {
   UPDATE_SESSION_LIFETIME,
   UPDATE_DOMAINS
 } from '../pages/Settings/Settings.graphql';
-import { GET_USERS_ACTIVITY } from '../components/UserActivityList/UserActivityList.graphql';
+import { GET_USERS_ACTIVITY } from '../pages/UsersActivity/components/UserActivityList/UserActivityList.graphql';
 
 export const domainMock = {
   request: {
@@ -29,16 +29,19 @@ export const usersActivityMock = {
         {
           user: { email: 'user1@domain.com' },
           message: 'some message 1',
+          type: 'LOGIN',
           date: '2019-11-28T15:28:01+00:00'
         },
         {
           user: { email: 'user2@domain.com' },
           message: 'some message 2',
+          type: 'LOGIN',
           date: '2019-11-27T15:28:01+00:00'
         },
         {
           user: { email: 'user3@domain.com' },
           message: 'some message 3',
+          type: 'LOGIN',
           date: '2019-11-26T15:28:01+00:00'
         }
       ]
