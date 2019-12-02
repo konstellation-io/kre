@@ -50,15 +50,17 @@ func NewApp(
 		settingInteractor,
 	)
 
-	e.POST("/api/v1/auth/signin", authController.SignIn)
-	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
-
-	// Restricted group
-	r := e.Group("/graphql")
-	r.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey:  []byte(cfg.Auth.JWTSignSecret),
 		TokenLookup: "cookie:token",
-	}))
+	})
+
+	e.POST("/api/v1/auth/signin", authController.SignIn)
+	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
+	e.POST("/api/v1/auth/logout", jwtMiddleware(authController.Logout))
+
+	r := e.Group("/graphql")
+	r.Use(jwtMiddleware)
 	r.POST("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 
