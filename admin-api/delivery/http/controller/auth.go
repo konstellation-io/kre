@@ -120,3 +120,23 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login success"})
 }
+
+func (a *AuthController) Logout(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userID := claims["sub"].(string)
+
+	a.logger.Info("Logout for user " + userID)
+
+	expirationTime := time.Now()
+	cookie := new(http.Cookie)
+	cookie.Name = "token"
+	cookie.Value = "deleted"
+	cookie.Expires = expirationTime
+	cookie.Path = "/"
+	cookie.Secure = a.cfg.Auth.SecureCookie
+	cookie.HttpOnly = true
+	c.SetCookie(cookie)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Logout success"})
+}

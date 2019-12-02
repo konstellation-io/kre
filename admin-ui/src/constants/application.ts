@@ -5,7 +5,8 @@ export const COLORS = {
 
 export const ENDPOINT = {
   SUBMIT_MAGIC_LINK: 'signin',
-  VALIDATE_MAGIC_LINK: 'signin/verify'
+  VALIDATE_MAGIC_LINK: 'signin/verify',
+  LOGOUT: 'logout'
 };
 
 export const STATES = {

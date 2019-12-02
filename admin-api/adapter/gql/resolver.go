@@ -135,7 +135,7 @@ func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Vers
 	panic("not implemented")
 }
 func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
-	panic("not implemented")
+	return []*Alert{}, nil
 }
 func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
 	settings, err := r.settingInteractor.Get()
