@@ -13,11 +13,12 @@ import (
 )
 
 type GraphQLController struct {
-	cfg               *config.Config
-	logger            logging.Logger
-	runtimeInteractor *usecase.RuntimeInteractor
-	userInteractor    *usecase.UserInteractor
-	settingInteractor *usecase.SettingInteractor
+	cfg                    *config.Config
+	logger                 logging.Logger
+	runtimeInteractor      *usecase.RuntimeInteractor
+	userInteractor         *usecase.UserInteractor
+	settingInteractor      *usecase.SettingInteractor
+	userActivityInteractor *usecase.UserActivityInteractor
 }
 
 func NewGraphQLController(
@@ -26,6 +27,7 @@ func NewGraphQLController(
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
 	settingInteractor *usecase.SettingInteractor,
+	userActivityInteractor *usecase.UserActivityInteractor,
 ) *GraphQLController {
 	return &GraphQLController{
 		cfg,
@@ -33,6 +35,7 @@ func NewGraphQLController(
 		runtimeInteractor,
 		userInteractor,
 		settingInteractor,
+		userActivityInteractor,
 	}
 }
 
@@ -43,7 +46,13 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 
 	g.logger.Info("Request from user " + userID)
 
-	h := gql.NewHttpHandler(g.logger, g.runtimeInteractor, g.userInteractor, g.settingInteractor)
+	h := gql.NewHttpHandler(
+		g.logger,
+		g.runtimeInteractor,
+		g.userInteractor,
+		g.settingInteractor,
+		g.userActivityInteractor,
+	)
 
 	r := c.Request()
 	ctx := context.WithValue(r.Context(), "userID", userID)

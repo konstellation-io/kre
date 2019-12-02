@@ -21,16 +21,18 @@ func main() {
 	userRepo := mongodb.NewUserRepoMongoDB(cfg, logger, mongodbClient)
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
+	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 
 	k8sManagerService := service.NewK8sManagerServiceGRPC(cfg, logger)
 
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
 
+	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo)
 	authInteractor := usecase.NewAuthInteractor(
-		logger, loginLinkTransport, verificationCodeGenerator, verificationCodeRepo, userRepo, settingRepo)
+		logger, loginLinkTransport, verificationCodeGenerator, verificationCodeRepo, userRepo, settingRepo, userActivityInteractor)
 
-	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService)
+	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService, userActivityInteractor)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo)
 
@@ -46,6 +48,7 @@ func main() {
 		runtimeInteractor,
 		userInteractor,
 		settingInteractor,
+		userActivityInteractor,
 	)
 	app.Start()
 }

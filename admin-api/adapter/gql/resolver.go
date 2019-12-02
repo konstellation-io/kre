@@ -8,10 +8,11 @@ import (
 )
 
 type GraphQLResolver struct {
-	logger            logging.Logger
-	runtimeInteractor *usecase.RuntimeInteractor
-	userInteractor    *usecase.UserInteractor
-	settingInteractor *usecase.SettingInteractor
+	logger                 logging.Logger
+	runtimeInteractor      *usecase.RuntimeInteractor
+	userInteractor         *usecase.UserInteractor
+	settingInteractor      *usecase.SettingInteractor
+	userActivityInteractor *usecase.UserActivityInteractor
 }
 
 func NewGraphQLResolver(
@@ -19,12 +20,14 @@ func NewGraphQLResolver(
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
 	settingInteractor *usecase.SettingInteractor,
+	userActivityInteractor *usecase.UserActivityInteractor,
 ) *GraphQLResolver {
 	return &GraphQLResolver{
 		logger,
 		runtimeInteractor,
 		userInteractor,
 		settingInteractor,
+		userActivityInteractor,
 	}
 }
 
@@ -148,8 +151,34 @@ func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
 		SessionLifetimeInDays: settings.SessionLifetimeInDays,
 	}, nil
 }
-func (r *queryResolver) UsersActivity(ctx context.Context) ([]*UserActivity, error) {
-	panic("not implemented")
+func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, typeArg *UserActivityType, fromDate *string, toDate *string) ([]*UserActivity, error) {
+	activityType := new(string)
+	if typeArg != nil {
+		*activityType = typeArg.String()
+	} else {
+		activityType = nil
+	}
+
+	activities, err := r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*UserActivity
+	for _, a := range activities {
+		result = append(result, &UserActivity{
+			ID: a.ID,
+			User: &User{
+				ID:    a.User.ID,
+				Email: a.User.Email,
+			},
+			Message: a.Message,
+			Date:    a.Date.Format(time.RFC3339),
+			Type:    UserActivityType(a.Type),
+		})
+	}
+
+	return result, nil
 }
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
 	panic("not implemented")

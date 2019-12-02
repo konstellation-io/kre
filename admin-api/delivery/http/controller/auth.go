@@ -127,6 +127,7 @@ func (a *AuthController) Logout(c echo.Context) error {
 	userID := claims["sub"].(string)
 
 	a.logger.Info("Logout for user " + userID)
+	a.authInteractor.Logout(userID)
 
 	expirationTime := time.Now()
 	cookie := new(http.Cookie)
