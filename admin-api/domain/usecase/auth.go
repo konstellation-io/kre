@@ -19,6 +19,7 @@ type AuthInteractor struct {
 	verificationCodeRepo      repository.VerificationCodeRepo
 	userRepo                  repository.UserRepo
 	settingRepo               repository.SettingRepo
+	userActivityInteractor    *UserActivityInteractor
 }
 
 // NewAuthInteractor creates a new AuthInteractor.
@@ -29,6 +30,7 @@ func NewAuthInteractor(
 	verificationCodeRepo repository.VerificationCodeRepo,
 	userRepo repository.UserRepo,
 	settingRepo repository.SettingRepo,
+	userActivityInteractor *UserActivityInteractor,
 ) *AuthInteractor {
 	return &AuthInteractor{
 		logger,
@@ -37,6 +39,7 @@ func NewAuthInteractor(
 		verificationCodeRepo,
 		userRepo,
 		settingRepo,
+		userActivityInteractor,
 	}
 }
 
@@ -138,5 +141,14 @@ func (a *AuthInteractor) VerifyCode(code string) (string, error) {
 	}
 
 	a.logger.Info("The verification code is valid")
+	err = a.userActivityInteractor.Create(verificationCode.UID, UserActivityTypeLogin)
+	if err != nil {
+		return "", err
+	}
+
 	return verificationCode.UID, nil
+}
+
+func (a *AuthInteractor) Logout(userID string) error {
+	return a.userActivityInteractor.Create(userID, UserActivityTypeLogout)
 }

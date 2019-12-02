@@ -71,13 +71,13 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Alerts        func(childComplexity int) int
-		Me            func(childComplexity int) int
-		Runtime       func(childComplexity int, id string) int
-		Runtimes      func(childComplexity int) int
-		Settings      func(childComplexity int) int
-		UsersActivity func(childComplexity int) int
-		Versions      func(childComplexity int, runtimeID string) int
+		Alerts           func(childComplexity int) int
+		Me               func(childComplexity int) int
+		Runtime          func(childComplexity int, id string) int
+		Runtimes         func(childComplexity int) int
+		Settings         func(childComplexity int) int
+		UserActivityList func(childComplexity int, userEmail *string, typeArg *UserActivityType, fromDate *string, toDate *string) int
+		Versions         func(childComplexity int, runtimeID string) int
 	}
 
 	Runtime struct {
@@ -135,7 +135,7 @@ type QueryResolver interface {
 	Versions(ctx context.Context, runtimeID string) ([]*Version, error)
 	Alerts(ctx context.Context) ([]*Alert, error)
 	Settings(ctx context.Context) (*Settings, error)
-	UsersActivity(ctx context.Context) ([]*UserActivity, error)
+	UserActivityList(ctx context.Context, userEmail *string, typeArg *UserActivityType, fromDate *string, toDate *string) ([]*UserActivity, error)
 	Runtime(ctx context.Context, id string) (*Runtime, error)
 }
 
@@ -300,12 +300,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Settings(childComplexity), true
 
-	case "Query.usersActivity":
-		if e.complexity.Query.UsersActivity == nil {
+	case "Query.userActivityList":
+		if e.complexity.Query.UserActivityList == nil {
 			break
 		}
 
-		return e.complexity.Query.UsersActivity(childComplexity), true
+		args, err := ec.field_Query_userActivityList_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserActivityList(childComplexity, args["userEmail"].(*string), args["type"].(*UserActivityType), args["fromDate"].(*string), args["toDate"].(*string)), true
 
 	case "Query.versions":
 		if e.complexity.Query.Versions == nil {
@@ -569,7 +574,12 @@ type Query {
   versions(runtimeId: ID!): [Version!]
   alerts: [Alert!]
   settings: Settings!
-  usersActivity: [UserActivity!]
+  userActivityList(
+    userEmail: String,
+    type: UserActivityType,
+    fromDate: String,
+    toDate: String
+  ): [UserActivity!]!
   runtime(id: ID!): Runtime!
 }
 
@@ -687,7 +697,7 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
-  RUNTIME_CREATION
+  CREATE_RUNTIME
 }
 `},
 )
@@ -763,6 +773,44 @@ func (ec *executionContext) field_Query_runtime_args(ctx context.Context, rawArg
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_userActivityList_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["userEmail"]; ok {
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userEmail"] = arg0
+	var arg1 *UserActivityType
+	if tmp, ok := rawArgs["type"]; ok {
+		arg1, err = ec.unmarshalOUserActivityType2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivityType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["type"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["fromDate"]; ok {
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["fromDate"] = arg2
+	var arg3 *string
+	if tmp, ok := rawArgs["toDate"]; ok {
+		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["toDate"] = arg3
 	return args, nil
 }
 
@@ -1500,7 +1548,7 @@ func (ec *executionContext) _Query_settings(ctx context.Context, field graphql.C
 	return ec.marshalNSettings2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐSettings(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_usersActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_userActivityList(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1516,22 +1564,32 @@ func (ec *executionContext) _Query_usersActivity(ctx context.Context, field grap
 		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_userActivityList_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().UsersActivity(rctx)
+		return ec.resolvers.Query().UserActivityList(rctx, args["userEmail"].(*string), args["type"].(*UserActivityType), args["fromDate"].(*string), args["toDate"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]*UserActivity)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOUserActivity2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx, field.Selections, res)
+	return ec.marshalNUserActivity2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_runtime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4044,7 +4102,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
-		case "usersActivity":
+		case "userActivityList":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -4052,7 +4110,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_usersActivity(ctx, field)
+				res = ec._Query_userActivityList(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "runtime":
@@ -4820,6 +4881,43 @@ func (ec *executionContext) marshalNUserActivity2gitlabᚗcomᚋkonstellationᚋ
 	return ec._UserActivity(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalNUserActivity2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx context.Context, sel ast.SelectionSet, v []*UserActivity) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNUserActivity2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) marshalNUserActivity2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx context.Context, sel ast.SelectionSet, v *UserActivity) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
@@ -5390,44 +5488,28 @@ func (ec *executionContext) marshalOUser2ᚖgitlabᚗcomᚋkonstellationᚋkonst
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOUserActivity2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx context.Context, sel ast.SelectionSet, v []*UserActivity) graphql.Marshaler {
+func (ec *executionContext) unmarshalOUserActivityType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivityType(ctx context.Context, v interface{}) (UserActivityType, error) {
+	var res UserActivityType
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalOUserActivityType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivityType(ctx context.Context, sel ast.SelectionSet, v UserActivityType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOUserActivityType2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivityType(ctx context.Context, v interface{}) (*UserActivityType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOUserActivityType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivityType(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOUserActivityType2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivityType(ctx context.Context, sel ast.SelectionSet, v *UserActivityType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		rctx := &graphql.ResolverContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNUserActivity2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUserActivity(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
+	return v
 }
 
 func (ec *executionContext) marshalOVersion2ᚕᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersion(ctx context.Context, sel ast.SelectionSet, v []*Version) graphql.Marshaler {

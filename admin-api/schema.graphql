@@ -6,8 +6,8 @@ type Query {
   versions(runtimeId: ID!): [Version!]
   alerts: [Alert!]
   settings: Settings!
-  usersActivity(
-    userMail: String,
+  userActivityList(
+    userEmail: String,
     type: UserActivityType,
     fromDate: String,
     toDate: String

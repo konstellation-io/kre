@@ -221,20 +221,20 @@ func (e RuntimeStatus) MarshalGQL(w io.Writer) {
 type UserActivityType string
 
 const (
-	UserActivityTypeLogin           UserActivityType = "LOGIN"
-	UserActivityTypeLogout          UserActivityType = "LOGOUT"
-	UserActivityTypeRuntimeCreation UserActivityType = "RUNTIME_CREATION"
+	UserActivityTypeLogin         UserActivityType = "LOGIN"
+	UserActivityTypeLogout        UserActivityType = "LOGOUT"
+	UserActivityTypeCreateRuntime UserActivityType = "CREATE_RUNTIME"
 )
 
 var AllUserActivityType = []UserActivityType{
 	UserActivityTypeLogin,
 	UserActivityTypeLogout,
-	UserActivityTypeRuntimeCreation,
+	UserActivityTypeCreateRuntime,
 }
 
 func (e UserActivityType) IsValid() bool {
 	switch e {
-	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeRuntimeCreation:
+	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime:
 		return true
 	}
 	return false
