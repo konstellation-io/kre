@@ -32,7 +32,10 @@ function getDashboardContent({ data, error, loading, history }: Props) {
   if (error) return <ErrorMessage />;
   if (loading) return <Spinner />;
 
-  const runtimes = data.runtimes.map((runtime: Runtime, idx: number) => (
+  // FIXME: remove when runtime response fixed
+  const dataRuntimes = data.runtimes === null ? [] : data.runtimes;
+
+  const runtimes = dataRuntimes.map((runtime: Runtime, idx: number) => (
     <Hexagon
       key={`runtimeHexagon-${idx}`}
       onClick={() => {
@@ -70,7 +73,8 @@ function getDashboardContent({ data, error, loading, history }: Props) {
 function Dashboard() {
   const history = useHistory();
   const { data, loading, error } = useQuery(GET_DASHBOARD);
-  const nRuntimes = get(data, 'runtimes', []).length;
+  const runtimes = get(data, 'runtimes', []);
+  const nRuntimes = runtimes === null ? 0 : runtimes.length;
 
   return (
     <>

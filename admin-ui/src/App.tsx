@@ -1,3 +1,7 @@
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+import './styles/react-calendar.scss';
+
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
 import { Redirect, Switch } from 'react-router';
@@ -10,6 +14,7 @@ import MagicLink from './pages/MagicLink/MagicLink';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Runtime from './pages/Runtime/Runtime';
 import Settings from './pages/Settings/Settings';
+import UsersActivity from './pages/UsersActivity/UsersActivity';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
 import AddVersion from './pages/AddVersion/AddVersion';
 import NotFound from './pages/NotFound/NotFound';
@@ -32,6 +37,7 @@ export function Routes() {
         <Route exact path={PAGES.DASHBOARD} component={Dashboard} />
         <Route path={PAGES.RUNTIME} component={Runtime} />
         <Route path={PAGES.SETTINGS} component={Settings} />
+        <Route path={PAGES.AUDIT} component={UsersActivity} />
         <Route component={NotFound} />
       </Switch>
     </>

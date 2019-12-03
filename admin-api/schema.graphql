@@ -12,6 +12,7 @@ type Query {
     fromDate: String,
     toDate: String
   ): [UserActivity!]!
+
   runtime(id: ID!): Runtime!
 }
 

@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-const dateFormat = "2006-01-02"
-
 type UserActivityRepoMongoDB struct {
 	cfg        *config.Config
 	logger     logging.Logger
@@ -44,7 +42,7 @@ func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, f
 		filterDate := bson.M{}
 
 		if fromDate != nil {
-			from, err := time.Parse(dateFormat, *fromDate)
+			from, err := time.Parse(time.RFC3339, *fromDate)
 			if err != nil {
 				return nil, err
 			}
@@ -52,7 +50,7 @@ func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, f
 		}
 
 		if toDate != nil {
-			to, err := time.Parse(dateFormat, *toDate)
+			to, err := time.Parse(time.RFC3339, *toDate)
 			if err != nil {
 				return nil, err
 			}

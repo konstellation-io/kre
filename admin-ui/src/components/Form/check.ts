@@ -1,3 +1,5 @@
+import { Moment, isMoment } from 'moment';
+
 type Check = {
   valid: boolean;
   message: string;
@@ -61,9 +63,7 @@ export function isFieldAnInteger(
 export function isGreaterThan(value: any, minValue: number) {
   return value >= minValue
     ? VALID
-    : setInvalid(
-        `Invalid value, ${value} must be greater than ${minValue}`
-      );
+    : setInvalid(`Invalid value, ${value} must be greater than ${minValue}`);
 }
 
 export function isIntegerWithinRange(value: any, range: number[]) {
@@ -84,15 +84,25 @@ export function isEmailValid(email: string) {
 }
 
 export function isDomainValid(value: string) {
-  const re = new RegExp(/^((?:(?:(?:\w[.\-+]?)*)\w)+)((?:(?:(?:\w[.\-+]?){0,62})\w)+)\.(\w{2,6})$/); 
+  const re = new RegExp(
+    /^((?:(?:(?:\w[.\-+]?)*)\w)+)((?:(?:(?:\w[.\-+]?){0,62})\w)+)\.(\w{2,6})$/
+  );
 
-  return re.test(value)
-    ? VALID
-    : setInvalid('Invalid domain format');
+  return re.test(value) ? VALID : setInvalid('Invalid domain format');
 }
 
-export function isFieldInList(value: string, list: string[]) {
-  return list.includes(value)
+export function isFieldInList(
+  value: string,
+  list: string[],
+  optional: boolean = false
+) {
+  return list.includes(value) || (optional && value === null)
     ? VALID
     : setInvalid(`Value must be in list: ${list}`);
+}
+
+export function isFieldAMomentDate(value: Moment, optional: boolean = false) {
+  return isMoment(value) || (optional && value === null)
+    ? VALID
+    : setInvalid(`Value is not a Date`);
 }

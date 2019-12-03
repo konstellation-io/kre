@@ -6,6 +6,7 @@ export interface UserActivity {
   user: User;
   message: string;
   date: string;
+  type: string;
 }
 
 export interface Version {

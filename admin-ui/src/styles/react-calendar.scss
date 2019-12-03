@@ -1,0 +1,99 @@
+@import './mixins';
+@import './colors';
+
+.DateInput {
+  width: calc(50% - 15px);
+}
+
+.DateInput_1 {
+  background-color: transparent;
+}
+.DateInput_input {
+  @include form-input;
+  font-weight: 600;
+
+  padding: 7px 9px;
+  background-color: $bg-color-lighter;
+  color: $font-color;
+}
+.DateInput_input__focused {
+  border-bottom: solid 1px $color-blue;
+}
+.CalendarDay__blocked_out_of_range {
+  opacity: 0.2;
+}
+
+.DateRangePickerInput_arrow svg {
+  margin: 0 8px !important;
+  color: $font-color-white;
+}
+
+.DateRangePickerInput {
+  background-color: transparent;
+  border: 0px;
+}
+
+.CalendarMonth_caption > strong {
+  @include font-title;
+  color: $font-color;
+}
+
+.DateInput_fang {
+  display: none;
+}
+
+.DayPickerNavigation_leftButton__horizontalDefault,
+.DayPickerNavigation_rightButton__horizontalDefault {
+  background: #0000;
+  border: 0;
+  color: #fff;
+  border: solid 1px transparent;
+
+  &:hover {
+    border: solid 1px $color-blue;
+  }
+
+  &:active {
+    background-color: $color-blue;
+    color: $font-color-dark;
+  }
+}
+
+.DateRangePicker_picker,
+.DayPicker {
+  background-color: transparent;
+}
+
+.CalendarMonth,
+.DayPicker_transitionContainer,
+.CalendarMonthGrid {
+  background-color: $bg-color-lighter;
+  color: $font-color;
+}
+
+.CalendarDay {
+  @include font-body;
+  color: $font-color-white;
+
+  background-color: transparent;
+  border: 0;
+  outline: none;
+
+  &:hover {
+    border: solid 1px $color-blue;
+    background-color: inherit;
+    color: $font-color-white;
+  }
+}
+.CalendarDay__selected {
+  background-color: $color-blue;
+  color: $font-color-dark;
+}
+.CalendarDay__selected_span {
+  background-color: $color-blue-dark;
+}
+
+.DayPicker_weekHeader_ul {
+  @include font-small;
+  font-weight: 700;
+}

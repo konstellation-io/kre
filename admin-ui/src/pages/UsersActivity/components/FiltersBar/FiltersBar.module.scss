@@ -1,0 +1,35 @@
+@import '../../../../styles/mixins';
+@import '../../../../styles/colors';
+
+.formField {
+  min-height: 140px;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 30px;
+  border: solid 2px $bg-color-lighter;
+  border-width: 2px 0;
+
+  .label {
+    @include font-body;
+    color: $font-color-white;
+
+    margin: 0 40px 0 30px;
+  }
+
+  > div:not(:last-child) {
+    flex: 1 1 0px;
+    min-width: 210px;
+  }
+
+  > div:not(:last-child) {
+    margin-right: 2vw;
+  }
+
+  svg {
+    margin-left: 20px;
+  }
+}

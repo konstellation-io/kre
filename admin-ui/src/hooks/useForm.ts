@@ -1,7 +1,14 @@
 import useInput, { InputHookElement } from './useInput';
-import { useMutation } from '@apollo/react-hooks';
-import { DocumentNode } from 'graphql';
 import { ApolloError } from 'apollo-client';
+
+export type Form = {
+  input: { [key: string]: InputHookElement };
+  submit: Function;
+  uploadProgress: number;
+  isValid: Function;
+  loading?: boolean;
+  error?: ApolloError | undefined;
+};
 
 type InputElement = {
   defaultValue: any;
@@ -9,16 +16,30 @@ type InputElement = {
   id: string;
 };
 
-export default function useForm(
-  inputElements: InputElement[],
-  query: DocumentNode,
-  onCompleted: (data: any) => void,
-  additionalInputProps?: object
-) {
-  const [makeMutation, { loading, error }] = useMutation(query, {
-    onCompleted
-  });
+type Params = {
+  inputElements: InputElement[];
+  fetchFunction: Function;
+  additionalInputProps?: object;
+  isQuery?: boolean;
+  clearOnSubmit?: boolean;
+};
 
+const form: any = {};
+
+function initializeForm(submit: Function, isValid: Function) {
+  form.input = {};
+  form.uploadProgress = 0;
+  form.submit = submit;
+  form.isValid = isValid;
+}
+
+export default function useForm({
+  inputElements,
+  fetchFunction,
+  additionalInputProps = {},
+  isQuery = false,
+  clearOnSubmit = true
+}: Params) {
   function isValid() {
     let isFormValid = true;
 
@@ -29,36 +50,28 @@ export default function useForm(
     return isFormValid;
   }
   function submit() {
-    const mutationVariables: { [key: string]: any } = {};
-    Object.keys(form.input).forEach(input => {
-      mutationVariables[input] = form.input[input].value;
-    });
+    if (form.isValid()) {
+      const mutationVariables: { [key: string]: any } = {};
+      Object.keys(form.input).forEach(input => {
+        mutationVariables[input] = form.input[input].value;
 
-    makeMutation({
-      variables: {
-        input: {
-          ...mutationVariables,
-          ...additionalInputProps
+        if (clearOnSubmit) {
+          form.input[input].clear();
+          form.input[input].clearError();
         }
-      }
-    });
+      });
+
+      const input = {
+        ...mutationVariables,
+        ...additionalInputProps
+      };
+      const variables = isQuery ? input : { variables: input };
+
+      fetchFunction(variables);
+    }
   }
 
-  const form: {
-    input: { [key: string]: InputHookElement };
-    submit: Function;
-    uploadProgress: number;
-    isValid: Function;
-    loading?: boolean;
-    error?: ApolloError | undefined;
-  } = {
-    input: {},
-    uploadProgress: 0,
-    submit,
-    loading,
-    error,
-    isValid
-  };
+  initializeForm(submit, isValid);
 
   inputElements.forEach(inputElement => {
     // eslint-disable-next-line
@@ -67,5 +80,5 @@ export default function useForm(
     form.input[inputElement.id] = input;
   });
 
-  return form;
+  return form as Form;
 }

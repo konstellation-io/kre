@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import React, { useState, useEffect, useRef } from 'react';
 
 import InputLabel from '../InputLabel/InputLabel';
@@ -12,8 +13,11 @@ type Props = {
   height?: number;
   error?: string;
   whiteColor?: boolean;
-  defaultOptionPosition?: number;
+  placeholder?: string;
+  defaultOption?: string;
   options: string[];
+  formSelectedOption?: string;
+  valuesMapper?: { [key: string]: string };
 };
 
 function Select({
@@ -23,18 +27,27 @@ function Select({
   height = 40,
   error = '',
   whiteColor = false,
-  defaultOptionPosition = 0
+  defaultOption,
+  placeholder = '',
+  formSelectedOption,
+  valuesMapper = {}
 }: Props) {
   const inputEl = useRef(null);
   const containerEl = useRef(null);
-  const [selectedOption, setSelectedOption] = useState(
-    options[defaultOptionPosition]
+  const [selectedOption, setSelectedOption] = useState<string | undefined>(
+    placeholder || defaultOption
   );
   const [optionsOpened, setOptionsOpened] = useState(false);
 
   useEffect(() => {
-    setSelectedOption(options[defaultOptionPosition]);
-  }, [options, defaultOptionPosition, setSelectedOption]);
+    setSelectedOption(formSelectedOption || placeholder || defaultOption);
+  }, [
+    options,
+    defaultOption,
+    setSelectedOption,
+    formSelectedOption,
+    placeholder
+  ]);
 
   /*
    * Adds or removes event listeners and updates options visibility
@@ -72,13 +85,13 @@ function Select({
     onChange(value);
   }
 
-  const optionList = options.map((option: string, idx: number) => (
+  const optionList = options.sort().map((option: string, idx: number) => (
     <div
       key={`selectOption_${idx}`}
       className={styles.optionElement}
       onClick={() => handleOnOptionCLick(option)}
     >
-      {option}
+      {get(valuesMapper, option, option)}
     </div>
   ));
   const optionsHeight = options.length * 40;
@@ -95,13 +108,14 @@ function Select({
         <div
           className={cx(styles.input, {
             [styles.error]: error !== '',
-            [styles.opened]: optionsOpened
+            [styles.opened]: optionsOpened,
+            [styles.placeholder]: placeholder === selectedOption
           })}
           style={{ height }}
           onClick={openOptions}
           ref={inputEl}
         >
-          {selectedOption}
+          {get(valuesMapper, selectedOption || '', selectedOption)}
         </div>
         <div
           className={cx(styles.optionsContainer, {

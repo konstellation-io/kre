@@ -69,8 +69,8 @@ it('can move to other settings', () => {
   fireEvent.click(container, getByText('SECURITY'));
   expect(getByText('SECURITY')).toBeInTheDocument();
 
-  fireEvent.click(container, getByText('AUDIT'));
-  expect(getByText('AUDIT')).toBeInTheDocument();
+  fireEvent.click(container, getByText('GENERAL'));
+  expect(getByText('GENERAL')).toBeInTheDocument();
 });
 
 test('General settings handles input changes', async () => {
@@ -126,30 +126,4 @@ test('Security settings works properly', async () => {
 
   expect(getByTestId('error-message').textContent).toBe('');
   expect(getByText('intelygenz.com')).toBeInTheDocument();
-});
-
-test('Audit settings works properly', async () => {
-  const [
-    { getByText, getByTestId, queryByTestId },
-    history
-  ] = generateComponent() as [RenderResult, History];
-
-  history.push(ROUTE.SETTINGS_AUDIT);
-
-  await act(async () => {
-    await wait(0);
-  });
-
-  expect(getByText('Audit. User History.')).toBeInTheDocument();
-  expect(getByText('user1@domain.com')).toBeInTheDocument();
-
-  fireEvent.change(getByTestId('input'), { target: { value: 'user1' } });
-  fireEvent.click(getByText('SEARCH'));
-
-  await act(async () => {
-    await wait(0);
-  });
-
-  expect(getByTestId('error-message').textContent).toBe('');
-  expect(queryByTestId('user2@domain.com')).toBeNull();
 });
