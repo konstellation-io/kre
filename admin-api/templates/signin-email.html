@@ -3,15 +3,25 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KRE Admin Sign In</title>
+    <title>KRE Login Link</title>
 </head>
 <body>
-    <h1>KRE Admin</h1>
-    <p>
-        Click <a href="{{ .LoginLink }}" target="_blank" rel="noopener">here</a> to login.
-    </p>
-    <p>
-        <em>This link expires in {{ .VerificationCodeDurationInMinutes }} minutes and can only be used once.</em>
-    </p>
+    <div style="background:#f9f9f9;color:#373737;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:17px;line-height:24px;max-width:100%;width:100%!important;margin:0 auto;padding:0">
+        <h2 style="color: cornflowerblue;">Login Link</h2>
+        <p>
+            Click and confirm that you want to log in <b>Konstellation Runtime</b>.<br />This link will expire in {{ .VerificationCodeDurationInMinutes }} minutes and can only be used once.
+        </p>
+        <p style="padding: 20px;">
+            <a href="{{ .LoginLink }}">
+                <button style="background-color: cornflowerblue; color: cornsilk; padding: 10px; border: none; border-radius: 5px;">LOG IN</button>
+            </a>
+        </p>
+        <p>
+            Or copy and paste this link:<br/>
+        </p>
+        <p style="padding: 20px;">
+            {{ .LoginLink }}
+        </p>
+    </div>
 </body>
 </html>

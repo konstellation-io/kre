@@ -25,7 +25,7 @@ func NewSMTPLoginLinkTransport(cfg *config.Config, logger logging.Logger) *Verif
 func (s VerificationCodeSMTPTransport) Send(recipient, verificationCode string) error {
 	frontEndBaseURL := s.cfg.Admin.FrontEndBaseURL
 	loginLink := fmt.Sprintf("%s/signin/%s", frontEndBaseURL, verificationCode)
-	subject := "KRE Admin SigIn"
+	subject := "Konstellation Login Link"
 	messageText := fmt.Sprintf("Your login link:\n%s", loginLink)
 
 	var signInTmpl = template.Must(template.ParseFiles("templates/signin-email.html"))
