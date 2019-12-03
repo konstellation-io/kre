@@ -27,3 +27,6 @@ adminUI:
   tls:
     enabled: true
   host: admin.kre-int.konstellation.io
+
+certManager:
+  enabled: true
