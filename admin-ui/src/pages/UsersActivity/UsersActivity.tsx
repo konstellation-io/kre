@@ -35,7 +35,7 @@ function getInputs(actionTypeValidator: Function, userValidator: Function) {
     {
       defaultValue: null,
       verifier: userValidator,
-      id: 'email'
+      id: 'userEmail'
     },
     {
       defaultValue: null,
@@ -81,13 +81,14 @@ function UsersActivity() {
   const form = useForm({
     inputElements: inputs,
     fetchFunction: getUsersActivity,
-    isQuery: true
+    isQuery: true,
+    clearOnSubmit: false
   });
 
   // As soon as we get new data, we update users activity
   useEffect(() => {
     if (data) {
-      setUsersActivityData(data.usersActivity);
+      setUsersActivityData(data.userActivityList);
     }
   }, [data, setUsersActivityData]);
 

@@ -25,7 +25,7 @@ export const usersActivityMock = {
   },
   result: {
     data: {
-      usersActivity: [
+      userActivityList: [
         {
           user: { email: 'user1@domain.com' },
           message: 'some message 1',

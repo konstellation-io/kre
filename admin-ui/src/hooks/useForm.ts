@@ -21,6 +21,7 @@ type Params = {
   fetchFunction: Function;
   additionalInputProps?: object;
   isQuery?: boolean;
+  clearOnSubmit?: boolean;
 };
 
 const form: any = {};
@@ -36,7 +37,8 @@ export default function useForm({
   inputElements,
   fetchFunction,
   additionalInputProps = {},
-  isQuery = false
+  isQuery = false,
+  clearOnSubmit = true
 }: Params) {
   function isValid() {
     let isFormValid = true;
@@ -53,8 +55,10 @@ export default function useForm({
       Object.keys(form.input).forEach(input => {
         mutationVariables[input] = form.input[input].value;
 
-        form.input[input].clear();
-        form.input[input].clearError();
+        if (clearOnSubmit) {
+          form.input[input].clear();
+          form.input[input].clearError();
+        }
       });
 
       const input = {

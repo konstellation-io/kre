@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
+import { isInclusivelyBeforeDay } from 'react-dates';
 
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
@@ -37,7 +38,7 @@ function Calendar({
   }, [formToDate]);
 
   return (
-    <>
+    <div>
       <InputLabel text={label} />
       <DateRangePicker
         startDate={fromDate}
@@ -69,9 +70,11 @@ function Calendar({
             />
           </div>
         }
+        isOutsideRange={day => !isInclusivelyBeforeDay(day, moment())}
+        minimumNights={0}
       />
       <InputError message={error} />
-    </>
+    </div>
   );
 }
 

@@ -7,7 +7,7 @@ module.exports = {
     alerts: () => new MockList([1, 4]),
     versions: () => new MockList([8, 12]),
     domains: () => new MockList([2, 6]),
-    usersActivity: () => new MockList([20, 40]),
+    userActivityList: () => new MockList([20, 40]),
   }),
   Mutation: () => ({
     createRuntime: () => ({

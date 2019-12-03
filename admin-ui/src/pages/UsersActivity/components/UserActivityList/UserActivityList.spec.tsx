@@ -10,7 +10,7 @@ import { act } from 'react-dom/test-utils';
 import { usersActivityMock } from '../../../../mocks/settings';
 import '@testing-library/jest-dom/extend-expect';
 
-const mockData = usersActivityMock.result.data.usersActivity;
+const mockData = usersActivityMock.result.data.userActivityList;
 
 const Component = <UserActivityList data={mockData} />;
 

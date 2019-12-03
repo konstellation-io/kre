@@ -34,9 +34,9 @@ function FiltersBar({ error, form, onSubmit, types, users }: FormFieldProps) {
       />
       <Select
         options={users}
-        onChange={form.input.email.onChange}
-        error={form.input.email.error}
-        formSelectedOption={form.input.email.value}
+        onChange={form.input.userEmail.onChange}
+        error={form.input.userEmail.error}
+        formSelectedOption={form.input.userEmail.value}
         placeholder="User email"
       />
       <Calendar

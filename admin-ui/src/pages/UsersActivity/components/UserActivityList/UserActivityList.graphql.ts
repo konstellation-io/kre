@@ -2,12 +2,12 @@ import gql from 'graphql-tag';
 import { UserActivity } from '../../../../graphql/models';
 
 export interface UserActivityResponse {
-  usersActivity: UserActivity[];
+  userActivityList: UserActivity[];
 }
 
 export const GET_USERS_ACTIVITY = gql`
   query GetUsersActivity {
-    usersActivity {
+    userActivityList {
       user {
         email
       }

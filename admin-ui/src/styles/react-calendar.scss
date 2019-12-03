@@ -19,6 +19,9 @@
 .DateInput_input__focused {
   border-bottom: solid 1px $color-blue;
 }
+.CalendarDay__blocked_out_of_range {
+  opacity: 0.2;
+}
 
 .DateRangePickerInput_arrow svg {
   margin: 0 8px !important;
