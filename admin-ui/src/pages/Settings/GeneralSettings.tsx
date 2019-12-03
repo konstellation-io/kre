@@ -25,13 +25,13 @@ const MIN_EXPIRATION_DAYS = 1;
 type FormFieldProps = {
   error: string;
   onChange: Function;
-  onSubmit: Function;
+  onBlur: Function;
   defaultValue: any;
 };
 function FormField({
   error,
   onChange,
-  onSubmit,
+  onBlur,
   defaultValue
 }: FormFieldProps) {
   return (
@@ -41,10 +41,11 @@ function FormField({
         <TextInput
           whiteColor
           onlyNumbers
+          positive
           label="nº days"
           error={error}
           onChange={onChange}
-          onSubmit={onSubmit}
+          onBlur={onBlur}
           defaultValue={defaultValue}
         />
       </div>
@@ -122,13 +123,13 @@ function GeneralSettings() {
         <FormField
           error={inputError}
           onChange={onChange}
-          onSubmit={onSubmit}
+          onBlur={onSubmit}
           defaultValue={data && data.settings.sessionLifetimeInDays}
         />
       </div>
-      <HorizontalBar>
+      {/* <HorizontalBar>
         <Button label={'SAVE CHANGES'} primary onClick={onSubmit} />
-      </HorizontalBar>
+      </HorizontalBar> */}
     </>
   );
 }

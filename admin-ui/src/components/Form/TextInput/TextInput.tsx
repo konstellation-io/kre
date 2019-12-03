@@ -10,6 +10,7 @@ import styles from './TextInput.module.scss';
 type Props = {
   onSubmit?: Function;
   onChange?: Function;
+  onBlur?: Function;
   placeholder?: string;
   label?: string;
   textArea?: boolean;
@@ -24,12 +25,14 @@ type Props = {
   showClearButton?: boolean;
   whiteColor?: boolean;
   onlyNumbers?: boolean;
+  positive?: boolean;
   defaultValue?: any;
 };
 
 function TextInput({
   onSubmit = function() {},
   onChange = function() {},
+  onBlur = function() {},
   placeholder = '',
   label = '',
   textArea = false,
@@ -39,6 +42,7 @@ function TextInput({
   showClearButton = false,
   whiteColor = false,
   onlyNumbers = false,
+  positive = false,
   defaultValue = ''
 }: Props) {
   const [value, setValue] = useState(defaultValue);
@@ -48,7 +52,7 @@ function TextInput({
   }, [defaultValue, setValue]);
 
   function updateValue(newValue: any) {
-    if (!onlyNumbers || (onlyNumbers && isFieldAnInteger(newValue).valid)) {
+    if (!onlyNumbers || (onlyNumbers && isFieldAnInteger(newValue, positive).valid)) {
       setValue(newValue);
       onChange(newValue);
     }
@@ -67,6 +71,10 @@ function TextInput({
     }
   }
 
+  function onInputBlur(e: any) {
+    onBlur();
+  }
+
   const inputProps = {
     className: cx(styles.input, {
       [styles.error]: error !== ''
@@ -75,6 +83,7 @@ function TextInput({
     placeholder: placeholder,
     onChange: onType,
     onKeyPress: onKeyPress,
+    onBlur: onInputBlur,
     style: { ...limits, height }
   };
   const inputElement = textArea ? (
