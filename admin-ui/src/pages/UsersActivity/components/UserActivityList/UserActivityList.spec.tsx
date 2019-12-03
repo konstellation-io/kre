@@ -1,11 +1,9 @@
 import React from 'react';
+import moment from 'moment-timezone'
+
 import UserActivityList from './UserActivityList';
 import { formatDate } from '../../../../utils/format';
 import { render, cleanup } from '@testing-library/react';
-
-import { MockedProvider } from '@apollo/react-testing';
-import wait from 'waait';
-import { act } from 'react-dom/test-utils';
 
 import { usersActivityMock } from '../../../../mocks/settings';
 import '@testing-library/jest-dom/extend-expect';
@@ -13,6 +11,8 @@ import '@testing-library/jest-dom/extend-expect';
 const mockData = usersActivityMock.result.data.userActivityList;
 
 const Component = <UserActivityList data={mockData} />;
+
+moment.tz.setDefault('UTC');
 
 afterEach(cleanup);
 
@@ -29,7 +29,7 @@ it('Shows right texts', async () => {
   const userActivityNode1 = queryByTestId('userActivityListElement1');
   expect(userActivityNode0).not.toBeNull();
 
-  const dateFormatted = formatDate(new Date('Nov 27, 2019, 4:28 PM'), true);
+  const dateFormatted = formatDate(new Date('2019-11-27T15:28:01+00:00'), true);
   const user0 = userActivityNode0 && userActivityNode0.querySelector('.user');
   const message0 =
     userActivityNode0 && userActivityNode0.querySelector('.message');

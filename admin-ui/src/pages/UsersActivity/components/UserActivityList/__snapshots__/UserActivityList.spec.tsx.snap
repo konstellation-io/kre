@@ -53,7 +53,7 @@ exports[`Render UserActivityList without crashing 1`] = `
         />
       </svg>
       <p>
-        Nov 28, 2019, 4:28 PM
+        November 28, 2019 3:28 PM
       </p>
     </div>
   </div>
@@ -108,7 +108,7 @@ exports[`Render UserActivityList without crashing 1`] = `
         />
       </svg>
       <p>
-        Nov 27, 2019, 4:28 PM
+        November 27, 2019 3:28 PM
       </p>
     </div>
   </div>
@@ -163,7 +163,7 @@ exports[`Render UserActivityList without crashing 1`] = `
         />
       </svg>
       <p>
-        Nov 26, 2019, 4:28 PM
+        November 26, 2019 3:28 PM
       </p>
     </div>
   </div>
