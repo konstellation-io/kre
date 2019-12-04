@@ -21,7 +21,7 @@ type FormFieldProps = {
   types: string[];
   users: string[];
 };
-function FiltersBar({ error, form, onSubmit, types, users }: FormFieldProps) {
+function FiltersBar({ form, onSubmit, types, users }: FormFieldProps) {
   return (
     <div className={styles.formField}>
       <Select
@@ -29,6 +29,7 @@ function FiltersBar({ error, form, onSubmit, types, users }: FormFieldProps) {
         onChange={form.input.type.onChange}
         error={form.input.type.error}
         formSelectedOption={form.input.type.value}
+        label="Activity type"
         placeholder="Activity type"
         valuesMapper={typeToText}
       />
@@ -37,6 +38,7 @@ function FiltersBar({ error, form, onSubmit, types, users }: FormFieldProps) {
         onChange={form.input.userEmail.onChange}
         error={form.input.userEmail.error}
         formSelectedOption={form.input.userEmail.value}
+        label="User email"
         placeholder="User email"
       />
       <Calendar
@@ -46,11 +48,18 @@ function FiltersBar({ error, form, onSubmit, types, users }: FormFieldProps) {
         formToDate={form.input.toDate.value}
         error={form.input.fromDate.error || form.input.toDate.error}
       />
-      <div className={styles.button}>
+      <div className={styles.buttons}>
         <Button
           label={'SEARCH'}
           onClick={onSubmit}
           border
+          style={{ margin: '24px 0' }}
+        />
+        <Button
+          label={'CLEAR'}
+          onClick={() => {
+            form.clearInputs(true);
+          }}
           style={{ margin: '24px 0' }}
         />
       </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Spinner from '../Spinner/Spinner';
+import SpinnerCircular from '../LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
-import RemoveIcon from '@material-ui/icons/RemoveCircle';
+import RemoveIcon from '@material-ui/icons/Delete';
 
 import styles from './DomainList.module.scss';
 import { ApolloError } from 'apollo-client';
@@ -19,7 +19,7 @@ function DomainList({
   loading,
   error
 }: Props) {
-  if (loading) return <Spinner />;
+  if (loading) return <SpinnerCircular />;
   if (error) return <ErrorMessage />;
 
   const domains = data.map((domain: any, idx: number) => (

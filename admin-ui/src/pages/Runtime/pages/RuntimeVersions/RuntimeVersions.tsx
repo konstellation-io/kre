@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import * as ROUTE from '../../../../constants/routes';
 
 import Modal from '../../../../components/Modal/Modal';
-import Spinner from '../../../../components/Spinner/Spinner';
+import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import ActiveVersionStatus from './ActiveVersionStatus';
 import VersionInfo from '../../../../components/VersionInfo/VersionInfo';
@@ -28,10 +28,11 @@ function RuntimeVersions() {
     RuntimeVersionsResponse,
     RuntimeVersionsVars
   >(GET_VERSIONS, {
-    variables: { runtimeId }
+    variables: { runtimeId },
+    fetchPolicy: 'no-cache'
   });
 
-  if (loading) return <Spinner />;
+  if (loading) return <SpinnerCircular />;
   if (error) return <ErrorMessage />;
 
   let activeVersion: Version | undefined;

@@ -18,8 +18,9 @@ import { UserActivity } from '../../graphql/models';
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
 import { Moment } from 'moment';
-import Spinner from '../../components/Spinner/Spinner';
+import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import InfoMessage from '../../components/InfoMessage/InfoMessage';
 
 function verifyDate(value: Moment) {
   return CHECK.getValidationError([CHECK.isFieldAMomentDate(value, true)]);
@@ -106,8 +107,11 @@ function UsersActivity() {
   }
 
   let content = <UserActivityList data={usersActivityData} />;
-  if (loading) content = <Spinner />;
+  if (loading) content = <SpinnerCircular />;
   if (error) content = <ErrorMessage />;
+  if (usersActivityData.length === 0) {
+    content = <InfoMessage message="No activity with the specified filters" />;
+  }
 
   return (
     <>

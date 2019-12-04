@@ -3,10 +3,8 @@ import useInput from '../../hooks/useInput';
 
 import SettingsHeader from './components/SettingsHeader';
 import TextInput from '../../components/Form/TextInput/TextInput';
-import Button from '../../components/Button/Button';
-import HorizontalBar from '../../components/Layout/HorizontalBar/HorizontalBar';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
-import Spinner from '../../components/Spinner/Spinner';
+import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import * as CHECK from '../../components/Form/check';
 
 import cx from 'classnames';
@@ -61,35 +59,11 @@ function isExpirationInvalid(value: string) {
 
 function GeneralSettings() {
   const { data, loading, error: queryError } = useQuery<SettingsResponse>(
-    GET_EXPIRATION_TIME
+    GET_EXPIRATION_TIME,
+    { fetchPolicy: 'no-cache' }
   );
   const [updateExpirationTime] = useMutation<SettingsResponse, SettingsVars>(
-    UPDATE_SESSION_LIFETIME,
-    {
-      // FIXME: ts ignore and better way to update apollo cache
-      // @ts-ignore
-      update(
-        cache,
-        {
-          data: {
-            // @ts-ignore
-            updateSettings: {
-              settings: { sessionLifetimeInDays: newLifetime }
-            }
-          }
-        }
-      ) {
-        cache.writeQuery({
-          query: GET_EXPIRATION_TIME,
-          data: {
-            settings: {
-              __typename: 'Settings',
-              sessionLifetimeInDays: newLifetime
-            }
-          }
-        });
-      }
-    }
+    UPDATE_SESSION_LIFETIME
   );
   const { value, isValid, onChange, setValue, error: inputError } = useInput(
     '',
@@ -103,7 +77,7 @@ function GeneralSettings() {
     }
   }, [data, setValue]);
 
-  if (loading) return <Spinner />;
+  if (loading) return <SpinnerCircular />;
   if (queryError) return <ErrorMessage />;
 
   function onSubmit() {
