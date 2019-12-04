@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -32,6 +33,7 @@ func (r *RuntimeRepoMongoDB) Create(name string, userID string) (*entity.Runtime
 		Name:         name,
 		CreationDate: time.Now().UTC(),
 		Owner:        userID,
+		Status:       string(usecase.RuntimeStatusCreating),
 	}
 	res, err := r.collection.InsertOne(context.Background(), runtime)
 	if err != nil {
@@ -61,4 +63,13 @@ func (r *RuntimeRepoMongoDB) FindAll() ([]entity.Runtime, error) {
 	}
 
 	return runtimes, nil
+}
+
+func (r *RuntimeRepoMongoDB) Update(runtime *entity.Runtime) error {
+	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": runtime.ID}, runtime)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

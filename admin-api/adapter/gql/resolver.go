@@ -54,7 +54,7 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 		Runtime: &Runtime{
 			ID:             runtime.ID,
 			Name:           runtime.Name,
-			Status:         RuntimeStatusCreating,
+			Status:         RuntimeStatus(runtime.Status),
 			CreationDate:   runtime.CreationDate.Format(time.RFC3339),
 			CreationAuthor: nil,
 			Versions:       []*Version{},
@@ -125,7 +125,7 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 		gqlRuntime := &Runtime{
 			ID:           runtime.ID,
 			Name:         runtime.Name,
-			Status:       RuntimeStatusCreating,
+			Status:       RuntimeStatus(runtime.Status),
 			CreationDate: runtime.CreationDate.Format("2006-01-02"),
 			Versions:     []*Version{},
 		}

@@ -7,6 +7,14 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
 
+type RuntimeStatus string
+
+var (
+	RuntimeStatusCreating RuntimeStatus = "CREATING"
+	RuntimeStatusRunning  RuntimeStatus = "RUNNING"
+	RuntimeStatusError    RuntimeStatus = "ERROR"
+)
+
 type RuntimeInteractor struct {
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
@@ -44,6 +52,25 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (*entity.R
 	if err != nil {
 		return nil, err
 	}
+
+	go func() {
+		created, err := i.k8sManagerService.CheckRuntimeIsCreated(name)
+
+		if created {
+			createdRuntime.Status = string(RuntimeStatusRunning)
+		}
+
+		if err != nil {
+			createdRuntime.Status = string(RuntimeStatusError)
+			i.logger.Error(err.Error())
+		}
+
+		i.logger.Info("Setting runtime status to " + createdRuntime.Status)
+		err = i.runtimeRepo.Update(createdRuntime)
+		if err != nil {
+			i.logger.Error(err.Error())
+		}
+	}()
 
 	return createdRuntime, err
 }

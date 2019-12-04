@@ -28,6 +28,16 @@ message CreateRuntimeResponse {
     string message = 2;
 }
 
+message CheckRuntimeIsCreatedRequest {
+    string name = 1;
+}
+
+message CheckRuntimeIsCreatedResponse {
+    bool success = 1;
+    string message = 2;
+}
+
 service RuntimeService{
     rpc CreateRuntime(CreateRuntimeRequest) returns (CreateRuntimeResponse) {};
+    rpc CheckRuntimeIsCreated(CheckRuntimeIsCreatedRequest) returns (CheckRuntimeIsCreatedResponse) {};
 };

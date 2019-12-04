@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/iancoleman/strcase"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
@@ -48,4 +49,23 @@ func (s *GrpcServer) CreateRuntime(ctx context.Context, req *runtimepb.CreateRun
 	}
 
 	return res, nil
+}
+
+func (s *GrpcServer) CheckRuntimeIsCreated(ctx context.Context, req *runtimepb.CheckRuntimeIsCreatedRequest) (*runtimepb.CheckRuntimeIsCreatedResponse, error) {
+	runtimeName := req.GetName()
+	runtimeNamespace := strcase.ToKebab(runtimeName)
+	log.Printf("Checking if runtime \"%s\" pods are created in namespace \"%s\"...\n", runtimeName, runtimeNamespace)
+
+	err := s.resources.WaitForPods(runtimeNamespace)
+	if err != nil {
+		return &runtimepb.CheckRuntimeIsCreatedResponse{
+			Success: false,
+			Message: err.Error(),
+		}, nil
+	}
+
+	return &runtimepb.CheckRuntimeIsCreatedResponse{
+		Success: true,
+		Message: "Runtime created correctly.",
+	}, nil
 }
