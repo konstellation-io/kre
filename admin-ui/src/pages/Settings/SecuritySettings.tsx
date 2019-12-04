@@ -41,7 +41,7 @@ function FormField({ value, error, onChange, onSubmit }: FormFieldProps) {
           error={error}
           onChange={onChange}
           onSubmit={onSubmit}
-          defaultValue={value}
+          formValue={value}
         />
       </div>
       <div className={styles.button}>
