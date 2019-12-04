@@ -26,7 +26,7 @@ type Props = {
   whiteColor?: boolean;
   onlyNumbers?: boolean;
   positive?: boolean;
-  defaultValue?: any;
+  formValue?: any;
 };
 
 function TextInput({
@@ -43,16 +43,19 @@ function TextInput({
   whiteColor = false,
   onlyNumbers = false,
   positive = false,
-  defaultValue = ''
+  formValue = ''
 }: Props) {
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState(formValue);
 
   useEffect(() => {
-    setValue(defaultValue);
-  }, [defaultValue, setValue]);
+    setValue(formValue);
+  }, [formValue, setValue]);
 
   function updateValue(newValue: any) {
-    if (!onlyNumbers || (onlyNumbers && isFieldAnInteger(newValue, positive).valid)) {
+    if (
+      !onlyNumbers ||
+      (onlyNumbers && isFieldAnInteger(newValue, positive).valid)
+    ) {
       setValue(newValue);
       onChange(newValue);
     }
