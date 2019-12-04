@@ -24,9 +24,9 @@ type FormFieldProps = {
   error: string;
   onChange: Function;
   onBlur: Function;
-  defaultValue: any;
+  formValue: any;
 };
-function FormField({ error, onChange, onBlur, defaultValue }: FormFieldProps) {
+function FormField({ error, onChange, onBlur, formValue }: FormFieldProps) {
   return (
     <div className={styles.formField}>
       <p className={styles.label}>Session lifetime in days time</p>
@@ -39,7 +39,7 @@ function FormField({ error, onChange, onBlur, defaultValue }: FormFieldProps) {
           error={error}
           onChange={onChange}
           onBlur={onBlur}
-          defaultValue={defaultValue}
+          formValue={formValue}
         />
       </div>
     </div>
@@ -103,7 +103,7 @@ function GeneralSettings() {
           error={inputError}
           onChange={onChange}
           onBlur={onSubmit}
-          defaultValue={data && data.settings.sessionLifetimeInDays}
+          formValue={data && data.settings.sessionLifetimeInDays}
         />
       </div>
       {/* <HorizontalBar>
