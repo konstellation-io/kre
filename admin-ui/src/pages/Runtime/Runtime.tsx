@@ -68,7 +68,8 @@ function Runtime() {
   const { data, loading, error } = useQuery<GetRuntimeResponse, GetRuntimeVars>(
     GET_RUNTIME,
     {
-      variables: { runtimeId }
+      variables: { runtimeId },
+      fetchPolicy: 'no-cache'
     }
   );
 

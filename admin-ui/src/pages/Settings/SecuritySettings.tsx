@@ -71,34 +71,10 @@ function SecuritySettings() {
 
   const { data: queryData, loading, error: queryError } = useQuery<
     SettingsResponse
-  >(GET_DOMAINS);
+  >(GET_DOMAINS, { fetchPolicy: 'no-cache' });
   const [updateAllowedDomain] = useMutation<SettingsResponse, SettingsVars>(
     UPDATE_DOMAINS,
-    {
-      onCompleted: onCompleteUpdateDomain,
-      // FIXME: ts ignore and better way to update apollo cache
-      update(
-        cache,
-        {
-          data: {
-            // @ts-ignore
-            updateSettings: {
-              settings: { authAllowedDomains: newDomains }
-            }
-          }
-        }
-      ) {
-        cache.writeQuery({
-          query: GET_DOMAINS,
-          data: {
-            settings: {
-              __typename: 'Settings',
-              authAllowedDomains: newDomains
-            }
-          }
-        });
-      }
-    }
+    { onCompleted: onCompleteUpdateDomain }
   );
   const {
     value,

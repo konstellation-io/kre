@@ -28,7 +28,8 @@ function RuntimeVersions() {
     RuntimeVersionsResponse,
     RuntimeVersionsVars
   >(GET_VERSIONS, {
-    variables: { runtimeId }
+    variables: { runtimeId },
+    fetchPolicy: 'no-cache'
   });
 
   if (loading) return <SpinnerCircular />;
