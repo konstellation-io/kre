@@ -34,9 +34,9 @@ function Select({
 }: Props) {
   const inputEl = useRef(null);
   const containerEl = useRef(null);
-  const [selectedOption, setSelectedOption] = useState<string | undefined>(
-    placeholder || defaultOption
-  );
+  const [selectedOption, setSelectedOption] = useState<
+    string | undefined | null
+  >(placeholder || defaultOption);
   const [optionsOpened, setOptionsOpened] = useState(false);
 
   useEffect(() => {
@@ -44,6 +44,7 @@ function Select({
   }, [
     options,
     defaultOption,
+    selectedOption,
     setSelectedOption,
     formSelectedOption,
     placeholder
@@ -79,7 +80,7 @@ function Select({
     }
   }
 
-  function handleOnOptionCLick(value: string) {
+  function handleOnOptionCLick(value: string | null) {
     closeOptions();
     setSelectedOption(value);
     onChange(value);
@@ -99,7 +100,7 @@ function Select({
       <div
         key={`selectOption_empty`}
         className={styles.optionElement}
-        onClick={() => handleOnOptionCLick('')}
+        onClick={() => handleOnOptionCLick(null)}
       >
         All
       </div>

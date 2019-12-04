@@ -58,8 +58,7 @@ function FiltersBar({ form, onSubmit, types, users }: FormFieldProps) {
         <Button
           label={'CLEAR'}
           onClick={() => {
-            form.clearInputs();
-            form.submit();
+            form.clearInputs(true);
           }}
           style={{ margin: '24px 0' }}
         />

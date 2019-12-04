@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useInput, { InputHookElement } from './useInput';
 import { ApolloError } from 'apollo-client';
 
@@ -46,6 +47,10 @@ export default function useForm({
   isQuery = false,
   clearOnSubmit = true
 }: Params) {
+  const [previousVariables, setPreviousVariables] = useState(
+    getQueryVariables(getDefaultVariables())
+  );
+
   function isValid() {
     let isFormValid = true;
 
@@ -55,6 +60,37 @@ export default function useForm({
 
     return isFormValid;
   }
+
+  function getDefaultVariables() {
+    const defaultVariables: { [key: string]: any } = {};
+    inputElements.forEach((input: InputElement) => {
+      defaultVariables[input.id] = input.defaultValue;
+    });
+
+    return defaultVariables;
+  }
+
+  function getQueryVariables(inputVariables: object) {
+    const input = {
+      ...inputVariables,
+      ...additionalInputProps
+    };
+    const variables = isQuery ? input : { variables: input };
+
+    return variables;
+  }
+
+  function variablesAreDifferent(queryVariables: object) {
+    return JSON.stringify(previousVariables) !== JSON.stringify(queryVariables);
+  }
+
+  function makeQuery(queryVariables: object) {
+    if (variablesAreDifferent(queryVariables)) {
+      fetchFunction(queryVariables);
+      setPreviousVariables(queryVariables);
+    }
+  }
+
   function submit() {
     if (form.isValid()) {
       const mutationVariables: { [key: string]: any } = {};
@@ -66,20 +102,23 @@ export default function useForm({
         }
       });
 
-      const input = {
-        ...mutationVariables,
-        ...additionalInputProps
-      };
-      const variables = isQuery ? input : { variables: input };
-
-      fetchFunction(variables);
+      const queryVariables = getQueryVariables(mutationVariables);
+      makeQuery(queryVariables);
     }
   }
-  function clearInputs() {
+
+  function clearInputs(submitOnClear = false) {
     Object.keys(form.input).forEach(input => {
       form.input[input].clear();
       form.input[input].clearError();
     });
+
+    if (submitOnClear) {
+      const defaultVariables = getDefaultVariables();
+      const variables = getQueryVariables(defaultVariables);
+
+      makeQuery(variables);
+    }
   }
 
   initializeForm(submit, isValid, clearInputs);
