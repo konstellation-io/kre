@@ -10,7 +10,7 @@ import (
 )
 
 func (k *ResourceManager) WaitForPods(ns string) error {
-	timeout := 10 * time.Minute
+	timeout := 5 * time.Minute
 
 	minioChan, err := k.waitForPodRunning(ns, []string{"app=kre-minio"}, timeout)
 	if err != nil {
@@ -22,17 +22,17 @@ func (k *ResourceManager) WaitForPods(ns string) error {
 		return err
 	}
 
-	natsChan, err := k.waitForPodRunning(ns, []string{"app=kre-nats"}, timeout)
-	if err != nil {
-		return err
-	}
+	//natsChan, err := k.waitForPodRunning(ns, []string{"app=kre-nats"}, timeout)
+	//if err != nil {
+	//	return err
+	//}
 
 	kreOperatorChan, err := k.waitForPodRunning(ns, []string{"name=kre-operator"}, timeout)
 	if err != nil {
 		return err
 	}
 
-	minioRunning, mongoRunning, natsRunning, kreOperatorRunning := <-minioChan, <-mongoChan, <-natsChan, <-kreOperatorChan
+	minioRunning, mongoRunning, kreOperatorRunning := <-minioChan, <-mongoChan, <-kreOperatorChan
 
 	var failedPods []string
 	if !minioRunning {
@@ -43,9 +43,9 @@ func (k *ResourceManager) WaitForPods(ns string) error {
 		failedPods = append(failedPods, "MongoDB")
 	}
 
-	if !natsRunning {
-		failedPods = append(failedPods, "NATS")
-	}
+	//if !natsRunning {
+	//	failedPods = append(failedPods, "NATS")
+	//}
 
 	if !kreOperatorRunning {
 		failedPods = append(failedPods, "KREOperator")
