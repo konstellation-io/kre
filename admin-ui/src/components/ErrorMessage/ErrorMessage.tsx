@@ -1,10 +1,10 @@
 import React from 'react';
+import styles from './ErrorMessage.module.scss';
 
-export default function ErrorMessage({ refetch }: any) {
+export default function ErrorMessage() {
   return (
-    <span>
-      Something went wrong, you can try to
-      <button onClick={refetch}>refetch</button>
-    </span>
+    <div className={styles.container}>
+      Something went wrong, refresh the page or try again later.
+    </div>
   );
 }

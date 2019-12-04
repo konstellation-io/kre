@@ -1,6 +1,11 @@
 @import './mixins';
 @import './colors';
 
+.DateRangePicker,
+.DateRangePickerInput {
+  width: 100%;
+}
+
 .DateInput {
   width: calc(50% - 15px);
 }

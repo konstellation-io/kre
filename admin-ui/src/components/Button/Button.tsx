@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import Spinner from '../../components/Spinner/Spinner';
+import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 
 import cx from 'classnames';
 import styles from './Button.module.scss';
@@ -48,7 +48,7 @@ function Button({
   style = {}
 }: Props) {
   const content = loading ? (
-    <Spinner size={30} color="#0d0e11" />
+    <SpinnerLinear size={30} />
   ) : (
     <>
       {Icon && <Icon className="icon-regular" />}

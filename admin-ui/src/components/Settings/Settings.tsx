@@ -32,17 +32,16 @@ function Settings({ label }: Props) {
       if (get(logoutResponse, 'status') === 200) {
         history.push(PAGES.LOGIN);
       } else {
-        console.error(logoutResponse.error)
+        console.error(`Error sending logout request.`);
       }
     }
-  },
-  [logoutResponse, history]);
+  }, [logoutResponse, history]);
 
   const buttons = [
     <Button
       label={'LOGOUT'}
       type={BUTTON_TYPES.GREY}
-      onClick={logout}
+      onClick={() => logout()}
       Icon={LogoutIcon}
       align={BUTTON_ALIGN.LEFT}
       style={buttonStyle}

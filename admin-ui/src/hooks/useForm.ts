@@ -8,6 +8,7 @@ export type Form = {
   isValid: Function;
   loading?: boolean;
   error?: ApolloError | undefined;
+  clearInputs: Function;
 };
 
 type InputElement = {
@@ -26,11 +27,16 @@ type Params = {
 
 const form: any = {};
 
-function initializeForm(submit: Function, isValid: Function) {
+function initializeForm(
+  submit: Function,
+  isValid: Function,
+  clearInputs: Function
+) {
   form.input = {};
   form.uploadProgress = 0;
   form.submit = submit;
   form.isValid = isValid;
+  form.clearInputs = clearInputs;
 }
 
 export default function useForm({
@@ -56,8 +62,7 @@ export default function useForm({
         mutationVariables[input] = form.input[input].value;
 
         if (clearOnSubmit) {
-          form.input[input].clear();
-          form.input[input].clearError();
+          clearInputs();
         }
       });
 
@@ -70,8 +75,14 @@ export default function useForm({
       fetchFunction(variables);
     }
   }
+  function clearInputs() {
+    Object.keys(form.input).forEach(input => {
+      form.input[input].clear();
+      form.input[input].clearError();
+    });
+  }
 
-  initializeForm(submit, isValid);
+  initializeForm(submit, isValid, clearInputs);
 
   inputElements.forEach(inputElement => {
     // eslint-disable-next-line

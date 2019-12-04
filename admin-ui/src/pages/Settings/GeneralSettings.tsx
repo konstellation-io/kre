@@ -3,10 +3,8 @@ import useInput from '../../hooks/useInput';
 
 import SettingsHeader from './components/SettingsHeader';
 import TextInput from '../../components/Form/TextInput/TextInput';
-import Button from '../../components/Button/Button';
-import HorizontalBar from '../../components/Layout/HorizontalBar/HorizontalBar';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
-import Spinner from '../../components/Spinner/Spinner';
+import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import * as CHECK from '../../components/Form/check';
 
 import cx from 'classnames';
@@ -28,12 +26,7 @@ type FormFieldProps = {
   onBlur: Function;
   defaultValue: any;
 };
-function FormField({
-  error,
-  onChange,
-  onBlur,
-  defaultValue
-}: FormFieldProps) {
+function FormField({ error, onChange, onBlur, defaultValue }: FormFieldProps) {
   return (
     <div className={styles.formField}>
       <p className={styles.label}>Session lifetime in days time</p>
@@ -73,13 +66,22 @@ function GeneralSettings() {
     {
       // FIXME: ts ignore and better way to update apollo cache
       // @ts-ignore
-      update(cache, {data:{updateSettings:{settings:{sessionLifetimeInDays:newLifetime}}}}) {
+      update(
+        cache,
+        {
+          data: {
+            updateSettings: {
+              settings: { sessionLifetimeInDays: newLifetime }
+            }
+          }
+        }
+      ) {
         cache.writeQuery({
           query: GET_EXPIRATION_TIME,
           data: {
             settings: {
-                __typename: "Settings",
-                sessionLifetimeInDays: newLifetime
+              __typename: 'Settings',
+              sessionLifetimeInDays: newLifetime
             }
           }
         });
@@ -98,7 +100,7 @@ function GeneralSettings() {
     }
   }, [data, setValue]);
 
-  if (loading) return <Spinner />;
+  if (loading) return <SpinnerCircular />;
   if (queryError) return <ErrorMessage />;
 
   function onSubmit() {

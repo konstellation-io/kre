@@ -1,0 +1,15 @@
+@import '../../styles/mixins';
+@import '../../styles/colors';
+
+.container {
+  @include font-body;
+  font-weight: 600;
+  color: $font-color;
+
+  width: 100%;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}

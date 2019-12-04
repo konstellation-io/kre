@@ -9,4 +9,10 @@
   color: $font-color-dark;
   margin-bottom: 11px;
   min-height: 13px;
+
+  transition: color ease 0.3s;
+
+  &.hidden {
+    color: transparent;
+  }
 }

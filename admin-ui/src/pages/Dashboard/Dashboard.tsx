@@ -10,9 +10,10 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
 import Hexagon from '../../components/Shape/Hexagon/Hexagon';
 import AlertMessage from '../../components/Alert/Alert';
-import Spinner from '../../components/Spinner/Spinner';
+import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Button from '../../components/Button/Button';
+import Modal from '../../components/Modal/Modal';
 
 import styles from './Dashboard.module.scss';
 
@@ -30,7 +31,7 @@ type Props = {
 
 function getDashboardContent({ data, error, loading, history }: Props) {
   if (error) return <ErrorMessage />;
-  if (loading) return <Spinner />;
+  if (loading) return <SpinnerCircular />;
 
   // FIXME: remove when runtime response fixed
   const dataRuntimes = data.runtimes === null ? [] : data.runtimes;
@@ -62,17 +63,31 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     />
   ));
 
+  let runtimesPanel: any = <HexagonPanel>{runtimes}</HexagonPanel>;
+  if (runtimes.length === 0) {
+    runtimesPanel = (
+      <Modal
+        title="THERE ARE NO RUNTIMES"
+        message="Please, create a new runtime to start working on this dashboard"
+        actionButtonLabel="NEW RUNTIME"
+        to={PAGES.NEW_RUNTIME}
+      />
+    );
+  }
+
   return (
     <>
       <div>{alerts}</div>
-      <HexagonPanel>{runtimes}</HexagonPanel>
+      {runtimesPanel}
     </>
   );
 }
 
 function Dashboard() {
   const history = useHistory();
-  const { data, loading, error } = useQuery(GET_DASHBOARD);
+  const { data, loading, error } = useQuery(GET_DASHBOARD, {
+    // pollInterval: 100
+  });
   const runtimes = get(data, 'runtimes', []);
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
 

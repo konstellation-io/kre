@@ -10,7 +10,7 @@ import ConfigIcon from '@material-ui/icons/Settings';
 
 import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
-import Spinner from '../../components/Spinner/Spinner';
+import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
@@ -73,7 +73,7 @@ function Runtime() {
   );
 
   if (error) return <ErrorMessage />;
-  if (loading) return <Spinner />;
+  if (loading) return <SpinnerCircular />;
 
   const activeVersion = data && {
     versionNumber: data.runtime.versions[0].versionNumber,

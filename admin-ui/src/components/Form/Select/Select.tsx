@@ -94,6 +94,17 @@ function Select({
       {get(valuesMapper, option, option)}
     </div>
   ));
+  if (placeholder) {
+    optionList.unshift(
+      <div
+        key={`selectOption_empty`}
+        className={styles.optionElement}
+        onClick={() => handleOnOptionCLick('')}
+      >
+        All
+      </div>
+    );
+  }
   const optionsHeight = options.length * 40;
 
   return (
@@ -103,7 +114,7 @@ function Select({
       })}
       ref={containerEl}
     >
-      <InputLabel text={label} />
+      <InputLabel text={label} hidden={selectedOption === placeholder} />
       <div className={styles.inputContainer}>
         <div
           className={cx(styles.input, {
