@@ -106,7 +106,7 @@ function Select({
       </div>
     );
   }
-  const optionsHeight = options.length * 40;
+  const optionsHeight = optionList.length * 40;
 
   return (
     <div
