@@ -101,7 +101,9 @@ function Hexagon({
           forceSegments
         />
         <div className={cx(styles.bgOverlap, styles[status])} />
+        <div className={cx(styles.bgVersionOverlap, styles.inactive)} />
         <div className={styles.bgOverlapText}>{status.toUpperCase()}</div>
+        <div className={styles.bgOverlapVersionText}>VERSION: INACTIVE</div>
       </div>
       <div
         className={styles.hexContent}

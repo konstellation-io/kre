@@ -39,15 +39,20 @@
   pointer-events: none;
 }
 
-.bgOverlap {
+.statusLabel {
   position: absolute;
   width: 69%;
-  top: 43%;
   left: 50%;
   height: 7%;
-  background: black;
-  transform: translateX(-50%) perspective(47px) rotateX(13deg);
+  background-color: #0000;
   z-index: 9;
+}
+
+.bgOverlap {
+  @extend .statusLabel;
+
+  top: 43%;
+  transform: translateX(-50%) perspective(47px) rotateX(13deg);
 
   &.running {
     background-color: $color-green;
@@ -62,17 +67,38 @@
     background-color: $color-red;
   }
 }
-.bgOverlapText {
+.bgVersionOverlap {
+  @extend .statusLabel;
+
+  top: 50.5%;
+  transform: translateX(-50%) perspective(47px) rotateX(-13deg);
+
+  &.inactive {
+    background-color: $font-color;
+  }
+}
+
+.statusText {
   position: absolute;
   width: 100%;
-  top: 43%;
-  color: #000;
+  color: $color-grey;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.55px;
   text-align: center;
   line-height: 24px;
   z-index: 9;
+}
+
+.bgOverlapText {
+  @extend .statusText;
+
+  top: 42.7%;
+}
+.bgOverlapVersionText {
+  @extend .statusText;
+
+  top: 50.4%;
 }
 
 .container span,
@@ -135,4 +161,33 @@
 
 .container.disabled > .hexContent {
   pointer-events: none;
+}
+
+.empty {
+  svg path {
+    fill: transparent;
+    stroke: $font-color;
+    stroke-dasharray: 5 5;
+    stroke-width: 1px;
+    transition: stroke ease 0.3s;
+  }
+
+  .hexagonBorderText {
+    @include font-button;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: color ease 0.3s;
+  }
+
+  &.hovered {
+    svg path {
+      stroke: $font-color-white;
+    }
+    .hexagonBorderText {
+      color: $font-color-white;
+    }
+  }
 }
