@@ -9,6 +9,7 @@ import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
 import Hexagon from '../../components/Shape/Hexagon/Hexagon';
+import HexagonBorder from '../../components/Shape/Hexagon/HexagonBorder';
 import AlertMessage from '../../components/Alert/Alert';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -54,6 +55,14 @@ function getDashboardContent({ data, error, loading, history }: Props) {
       ]}
     />
   ));
+  runtimes.push(
+    <HexagonBorder
+      text="+ ADD RUINTIME"
+      key="add_runtime"
+      onClick={() => history.push(PAGES.NEW_RUNTIME)}
+    />
+  );
+
   const alerts = data.alerts.map((alert: Alert, idx: number) => (
     <AlertMessage
       key={`runtimeAlert-${idx}`}
