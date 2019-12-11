@@ -18,7 +18,7 @@ spec:
       password: "123456"
     storage:
       className: standard
-      size: 5Gi
+      size: 2Gi
 
   minio:
     credentials:
@@ -26,4 +26,4 @@ spec:
       secretKey: "12345678"
     storage:
       className: standard
-      size: 5Gi
+      size: 2Gi

@@ -2,4 +2,4 @@ server:
   port: "50051"
 kubernetes:
   operator:
-    version: 1.0.3
+    version: latest

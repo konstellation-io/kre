@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package runtime;
+option go_package="runtimepb";
+
+message RuntimeVersion {
+  string name = 1;
+}
+
+message CreateRuntimeVersionRequest {
+    RuntimeVersion runtimeVersion = 1;
+}
+
+message CreateRuntimeVersionResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+service RuntimeVersionService{
+  rpc CreateRuntimeVersion(CreateRuntimeVersionRequest) returns (CreateRuntimeVersionResponse) {};
+};

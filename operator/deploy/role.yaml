@@ -64,3 +64,9 @@ rules:
       - "*"
     verbs:
       - "*"
+  - apiGroups:
+      - extensions
+    resources:
+      - deployments
+    verbs:
+      - delete
