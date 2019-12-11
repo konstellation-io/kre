@@ -57,7 +57,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
   ));
   runtimes.push(
     <HexagonBorder
-      text="+ ADD RUINTIME"
+      text="+ ADD RUNTIME"
       key="add_runtime"
       onClick={() => history.push(PAGES.NEW_RUNTIME)}
     />
