@@ -3,7 +3,7 @@ module gitlab.com/konstellation/konstellation-ce/kre/admin-api
 go 1.13
 
 require (
-	github.com/99designs/gqlgen v0.10.1
+	github.com/99designs/gqlgen v0.10.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
@@ -12,6 +12,7 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.1.1
+	github.com/gorilla/websocket v1.2.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect

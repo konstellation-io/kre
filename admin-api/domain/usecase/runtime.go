@@ -5,6 +5,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"time"
 )
 
 type RuntimeStatus string
@@ -36,7 +37,7 @@ func NewRuntimeInteractor(
 	}
 }
 
-func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (*entity.Runtime, error) {
+func (i *RuntimeInteractor) CreateRuntime(name string, userID string, onCreated func(*entity.Runtime, error)) (*entity.Runtime, error) {
 	result, err := i.k8sManagerService.CreateRuntime(name)
 	if err != nil {
 		return nil, err
@@ -54,22 +55,23 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (*entity.R
 	}
 
 	go func() {
-		created, err := i.k8sManagerService.CheckRuntimeIsCreated(name)
-
-		if created {
-			createdRuntime.Status = string(RuntimeStatusRunning)
-		}
-
+		err := i.k8sManagerService.CheckRuntimeIsCreated(name)
 		if err != nil {
 			createdRuntime.Status = string(RuntimeStatusError)
 			i.logger.Error(err.Error())
+		} else {
+			createdRuntime.Status = string(RuntimeStatusRunning)
 		}
 
-		i.logger.Info("Setting runtime status to " + createdRuntime.Status)
+		time.Sleep(15 * time.Second)
+
+		i.logger.Info("Set runtime status to " + createdRuntime.Status)
 		err = i.runtimeRepo.Update(createdRuntime)
 		if err != nil {
 			i.logger.Error(err.Error())
 		}
+
+		onCreated(createdRuntime, err)
 	}()
 
 	return createdRuntime, err
