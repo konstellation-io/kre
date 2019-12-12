@@ -6,6 +6,7 @@ export const DASHBOARD = '/dashboard';
 
 export const RUNTIME = `${DASHBOARD}/runtime/:runtimeId`;
 export const RUNTIME_STATUS = `${DASHBOARD}/runtime/:runtimeId/status`;
+export const RUNTIME_STATUS_PREVIEW = `${DASHBOARD}/runtime/:runtimeId/status/:versionId`;
 export const RUNTIME_VERSIONS = `${DASHBOARD}/runtime/:runtimeId/versions`;
 
 export const SETTINGS = '/settings';

@@ -1,4 +1,6 @@
 import React from 'react';
+import * as ROUTE from '../../../../constants/routes';
+import { useParams } from 'react-router';
 
 import Button from '../../../../components/Button/Button';
 import { formatDate } from '../../../../utils/format';
@@ -16,11 +18,17 @@ type Props = {
   onClick: Function;
 };
 function ActiveVersionStatus({ activeVersion, onClick }: Props) {
+  const { runtimeId } = useParams();
   const isVersionActive = activeVersion !== undefined;
   const title = isVersionActive
     ? 'Version active'
     : 'There is no active version';
   const Icon = isVersionActive ? Check : ErrorOutline;
+
+  const newVersionRoute = ROUTE.NEW_VERSION.replace(
+    ':runtimeId',
+    runtimeId || ''
+  );
 
   return (
     <div
@@ -42,7 +50,8 @@ function ActiveVersionStatus({ activeVersion, onClick }: Props) {
                 {activeVersion.description}
               </span>
             </div>
-            <Button label="LOCATE THIS VERSION" onClick={onClick} border />
+            <Button label="LOCATE THIS VERSION" onClick={onClick} />
+            <Button label="ADD NEW VERSION" to={newVersionRoute} border />
           </div>
         </>
       )}

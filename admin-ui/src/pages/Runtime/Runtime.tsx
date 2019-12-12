@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, useParams } from 'react-router-dom';
+import { Route, Switch, useParams } from 'react-router-dom';
 import * as ROUTE from '../../constants/routes';
 
 import StatusIcon from '@material-ui/icons/DeviceHub';
@@ -9,6 +9,7 @@ import TimeIcon from '@material-ui/icons/AccessTime';
 import ConfigIcon from '@material-ui/icons/Settings';
 
 import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
+import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -45,7 +46,7 @@ function createNavTabs(runtimeId: string) {
       Icon: DocumentationIcon
     },
     {
-      label: 'VERSION',
+      label: 'VERSIONS',
       route: ROUTE.RUNTIME_VERSIONS,
       Icon: TimeIcon
     },
@@ -103,12 +104,23 @@ function Runtime() {
           tabs={navTabs}
         />
         <div className={styles.content}>
-          <Route exact path={ROUTE.RUNTIME_STATUS} component={RuntimeStatus} />
-          <Route
-            exact
-            path={ROUTE.RUNTIME_VERSIONS}
-            component={RuntimeVersions}
-          />
+          <Switch>
+            <Route
+              exact
+              path={ROUTE.RUNTIME_STATUS_PREVIEW}
+              component={RuntimeStatusPreview}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_STATUS}
+              component={RuntimeStatus}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_VERSIONS}
+              component={RuntimeVersions}
+            />
+          </Switch>
           {/*<Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
           <Route exact path={ROUTE.SETTINGS_AUDIT} component={AuditSettings} /> */}
         </div>

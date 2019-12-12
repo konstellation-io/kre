@@ -4,12 +4,21 @@
 .container {
   display: flex;
   flex-direction: row;
-  padding: 20px 20px 40px 40px;
   border-bottom: solid 1px $color-grey;
   transition: background-color ease 0.3s;
 
-  &.focussed {
+  .creationDate,
+  .name,
+  .version,
+  .statusLine,
+  .statusCircle,
+  .description {
+    transition: color ease 0.3s, border ease 0.3s, background-color ease 0.3s;
+  }
+
+  &:hover {
     background-color: black;
+    cursor: pointer;
 
     .creationDate,
     .name,
@@ -34,11 +43,43 @@
 }
 
 .col1 {
-  padding-right: 16px;
+  padding: 20px 16px 40px 40px;
   flex-grow: 1;
-  max-width: 270px;
-  min-width: 160px;
-  width: calc(25% - 80px);
+  max-width: 400px;
+  min-width: 340px;
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+
+  .labelContainer {
+    .label {
+      @include font-button;
+      color: $bg-color;
+      text-align: center;
+      line-height: 24px;
+
+      width: 96px;
+      height: 24px;
+      margin-right: 24px;
+
+      &.STOPPED {
+        background-color: $color-red;
+      }
+      &.ACTIVE {
+        background-color: $color-green;
+      }
+      &.RUNNING {
+        background-color: $color-blue;
+      }
+      &.CREATED {
+        background-color: $font-color;
+      }
+    }
+  }
+
+  .actionsContainer {
+    width: -webkit-fill-available;
+  }
 
   .creation {
     @include font-caption;
@@ -48,6 +89,8 @@
     flex-direction: row;
     align-items: center;
     white-space: nowrap;
+    margin-left: auto;
+    width: fit-content;
     margin-bottom: 20px;
   }
 
@@ -55,51 +98,23 @@
     margin-left: 5px;
   }
 
-  .createdPanel {
-    @include font-small;
-    color: $color-green;
-
+  .actionButtons {
+    width: fit-content;
+    margin-left: auto;
     display: flex;
     flex-direction: row;
-  }
+    flex-wrap: wrap;
 
-  .actionButton {
-    width: 114px;
-    margin: 0 7px 0 auto;
-  }
-
-  .versionActive {
-    margin: auto 0 4px 11px;
+    > div {
+      margin-left: auto;
+    }
   }
 }
 
 .col2 {
-  position: relative;
-  flex: 0 0 40px;
-
-  .statusLine {
-    position: absolute;
-    top: 8px;
-    width: 18px;
-    height: 1px;
-    border: dotted 1px transparent;
-    border-bottom-color: $font-color-dark;
-    border-top-color: $font-color-dark;
-  }
-
-  .statusCircle {
-    position: absolute;
-    top: 5px;
-    left: 18px;
-    width: 8px;
-    height: 8px;
-    border: solid 1px $font-color;
-    border-radius: 50%;
-  }
-}
-
-.col3 {
-  width: calc(75% - 80px);
+  width: 50%;
+  padding: 20px 20px 40px 30px;
+  border-left: solid 1px $color-grey;
 
   .name {
     @include font-body;
@@ -127,8 +142,8 @@
     margin-top: 15px;
   }
 
-  .col3CreatorName,
-  .col3CreationDate {
+  .col2CreatorName,
+  .col2CreationDate {
     display: flex;
     flex-direction: row;
     align-items: center;
