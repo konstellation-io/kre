@@ -8,7 +8,7 @@ import { RUNTIME_CREATED_SUBSCRIPTION } from './RuntimeCreated.graphql';
 import { useSubscription } from '@apollo/react-hooks';
 import { Runtime } from '../../../../graphql/models';
 
-// const NOTIFICATION_TIMEOUT = 15 * 1000;
+const NOTIFICATION_TIMEOUT = 15 * 1000;
 
 type Notification = {
   id: string;
@@ -38,10 +38,10 @@ function RuntimeCreated() {
   function addNotification(runtime: Runtime) {
     const newNotification = createNotificationObject(runtime);
 
-    // FIXME: Close notification after NOTIFICATION_TIMEOUT seconds
-    // setTimeout(() => {
-    //   closeNotification(newNotification.id);
-    // }, NOTIFICATION_TIMEOUT);
+    // Close notification after NOTIFICATION_TIMEOUT seconds
+    setTimeout(() => {
+      closeNotification(newNotification.id);
+    }, NOTIFICATION_TIMEOUT);
 
     // Refresh dashboard
     if (location.pathname === PAGES.DASHBOARD) {
@@ -49,15 +49,15 @@ function RuntimeCreated() {
       history.replace(PAGES.DASHBOARD);
     }
 
-    setNotifications(notifications.concat([newNotification]));
+    setNotifications((notifs: Notification[]) =>
+      notifs.concat([newNotification])
+    );
   }
 
   function closeNotification(id: string) {
-    const finalNotifications = notifications.filter(
-      (notification: Notification) => notification.id !== id
+    setNotifications((notifs: Notification[]) =>
+      notifs.filter((notification: Notification) => notification.id !== id)
     );
-
-    setNotifications(finalNotifications);
   }
 
   const notificationComponents = notifications.map(
