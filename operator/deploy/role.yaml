@@ -69,12 +69,10 @@ rules:
     resources:
       - deployments
     verbs:
-      - delete
+      - "*"
   - apiGroups:
       - networking.k8s.io
     resources:
       - ingresses
     verbs:
-      - delete
-      - create
-      - get
+      - "*"
