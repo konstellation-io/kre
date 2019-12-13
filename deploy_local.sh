@@ -1,7 +1,7 @@
 #!/bin/sh
 
 . ./config.sh
-. ./start_minikube.sh
+. ./minikube_start.sh
 
 set -e
 
