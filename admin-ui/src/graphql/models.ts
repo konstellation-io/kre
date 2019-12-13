@@ -3,6 +3,7 @@ export interface User {
 }
 
 export interface UserActivity {
+  id: string;
   user: User;
   message: string;
   date: string;

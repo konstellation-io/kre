@@ -2,6 +2,7 @@ scalar Upload
 
 type Query {
   me: User
+  users: [User!]!
   runtimes: [Runtime!]
   versions(runtimeId: ID!): [Version!]
   alerts: [Alert!]
@@ -10,7 +11,8 @@ type Query {
     userEmail: String,
     type: UserActivityType,
     fromDate: String,
-    toDate: String
+    toDate: String,
+    lastId: Int
   ): [UserActivity!]!
 
   runtime(id: ID!): Runtime!

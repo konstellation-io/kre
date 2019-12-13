@@ -10,6 +10,7 @@ export type Form = {
   loading?: boolean;
   error?: ApolloError | undefined;
   clearInputs: Function;
+  getInputVariables: Function;
 };
 
 type InputElement = {
@@ -31,13 +32,15 @@ const form: any = {};
 function initializeForm(
   submit: Function,
   isValid: Function,
-  clearInputs: Function
+  clearInputs: Function,
+  getInputVariables: Function
 ) {
   form.input = {};
   form.uploadProgress = 0;
   form.submit = submit;
   form.isValid = isValid;
   form.clearInputs = clearInputs;
+  form.getInputVariables = getInputVariables;
 }
 
 export default function useForm({
@@ -91,16 +94,22 @@ export default function useForm({
     }
   }
 
+  function getInputVariables() {
+    const mutationVariables: { [key: string]: any } = {};
+    Object.keys(form.input).forEach(input => {
+      mutationVariables[input] = form.input[input].value;
+
+      if (clearOnSubmit) {
+        clearInputs();
+      }
+    });
+
+    return mutationVariables;
+  }
+
   function submit() {
     if (form.isValid()) {
-      const mutationVariables: { [key: string]: any } = {};
-      Object.keys(form.input).forEach(input => {
-        mutationVariables[input] = form.input[input].value;
-
-        if (clearOnSubmit) {
-          clearInputs();
-        }
-      });
+      const mutationVariables = getInputVariables();
 
       const queryVariables = getQueryVariables(mutationVariables);
       makeQuery(queryVariables);
@@ -121,7 +130,7 @@ export default function useForm({
     }
   }
 
-  initializeForm(submit, isValid, clearInputs);
+  initializeForm(submit, isValid, clearInputs, getInputVariables);
 
   inputElements.forEach(inputElement => {
     // eslint-disable-next-line
