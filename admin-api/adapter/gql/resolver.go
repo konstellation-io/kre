@@ -3,7 +3,6 @@ package gql
 import (
 	"context"
 	"github.com/google/uuid"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"time"
@@ -54,38 +53,29 @@ type mutationResolver struct{ *GraphQLResolver }
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*CreateRuntimeResponse, error) {
 	userID := ctx.Value("userID").(string)
 
-	runtime, err := r.runtimeInteractor.CreateRuntime(input.Name, userID, func(createdRuntime *entity.Runtime, err error) {
-		if err != nil {
-			r.logger.Error(err.Error())
-			return
-		}
+	owner, err := r.userInteractor.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	runtime, onRuntimeRunningChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
+
+	go func() {
+		runtime := <-onRuntimeRunningChannel
 
 		for _, observer := range runtimeCreatedChannels {
-			observer <- &Runtime{
-				ID:             createdRuntime.ID,
-				Name:           createdRuntime.Name,
-				Status:         RuntimeStatus(createdRuntime.Status),
-				CreationDate:   createdRuntime.CreationDate.Format(time.RFC3339),
-				CreationAuthor: nil,
-				Versions:       []*Version{},
-			}
+			observer <- toGQLRuntime(runtime, owner)
 		}
-	})
+	}()
+
 	if err != nil {
 		r.logger.Error("Error creating runtime: " + err.Error())
 		return nil, err
 	}
 
 	return &CreateRuntimeResponse{
-		Errors: nil,
-		Runtime: &Runtime{
-			ID:             runtime.ID,
-			Name:           runtime.Name,
-			Status:         RuntimeStatus(runtime.Status),
-			CreationDate:   runtime.CreationDate.Format(time.RFC3339),
-			CreationAuthor: nil,
-			Versions:       []*Version{},
-		},
+		Errors:  nil,
+		Runtime: toGQLRuntime(runtime, owner),
 	}, nil
 }
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error) {
