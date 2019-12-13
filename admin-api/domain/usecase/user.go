@@ -21,3 +21,7 @@ func NewUserInteractor(logger logging.Logger, userRepo repository.UserRepo) *Use
 func (i *UserInteractor) GetByID(userID string) (*entity.User, error) {
 	return i.userRepo.GetByID(userID)
 }
+
+func (i *UserInteractor) GetAllUsers() ([]entity.User, error) {
+	return i.userRepo.GetAll()
+}

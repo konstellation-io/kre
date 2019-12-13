@@ -24,12 +24,14 @@ export const GET_USERS_ACTIVITY = gql`
     $fromDate: String
     $toDate: String
     $type: UserActivityType
+    $lastId: String
   ) {
     userActivityList(
       userEmail: $userEmail
       fromDate: $fromDate
       toDate: $toDate
       type: $type
+      lastId: $lastId
     ) {
       id
       user {
