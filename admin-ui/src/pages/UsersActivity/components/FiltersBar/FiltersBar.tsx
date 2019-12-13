@@ -8,7 +8,7 @@ import { Form } from '../../../../hooks/useForm';
 import styles from './FiltersBar.module.scss';
 import { ApolloError } from 'apollo-client';
 
-const typeToText = {
+export const typeToText = {
   LOGIN: 'Login',
   LOGOUT: 'Logout',
   CREATE_RUNTIME: 'Runtime Creation'

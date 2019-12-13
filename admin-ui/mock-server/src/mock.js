@@ -3,11 +3,12 @@ const casual = require('casual');
 
 module.exports = {
   Query: () =>({
+    users: () => new MockList([4, 6]),
     runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 4]),
     versions: () => new MockList([8, 12]),
     domains: () => new MockList([2, 6]),
-    userActivityList: () => new MockList([20, 40]),
+    userActivityList: () => new MockList([30, 30]),
   }),
   Mutation: () => ({
     createRuntime: () => ({

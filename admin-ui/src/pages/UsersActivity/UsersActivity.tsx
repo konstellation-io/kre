@@ -4,16 +4,18 @@ import useForm from '../../hooks/useForm';
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import SettingsHeader from '../Settings/components/SettingsHeader';
-import FiltersBar from './components/FiltersBar/FiltersBar';
+import FiltersBar, { typeToText } from './components/FiltersBar/FiltersBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
 import * as CHECK from '../../components/Form/check';
 
 import { useQuery } from '@apollo/react-hooks';
 import {
   GET_USERS_ACTIVITY,
-  UserActivityResponse
+  GET_USERS,
+  UserActivityResponse,
+  GetUsersResponse
 } from './UsersActivity.graphql';
-import { UserActivity } from '../../graphql/models';
+import { UserActivity, User } from '../../graphql/models';
 
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
@@ -22,8 +24,20 @@ import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import InfoMessage from '../../components/InfoMessage/InfoMessage';
 
+const N_LIST_ITEMS_STEP = 30;
+const ITEM_HEIGHT = 63;
+const LIST_STEP_HEIGHT = N_LIST_ITEMS_STEP * ITEM_HEIGHT;
+const SCROLL_THRESHOLD = LIST_STEP_HEIGHT * 0.8;
+export const ACTION_TYPES = Object.keys(typeToText);
+
 function verifyDate(value: Moment) {
   return CHECK.getValidationError([CHECK.isFieldAMomentDate(value, true)]);
+}
+
+function verifyActionType(value: string) {
+  return CHECK.getValidationError([
+    CHECK.isFieldInList(value, ACTION_TYPES, true)
+  ]);
 }
 
 function getInputs(actionTypeValidator: Function, userValidator: Function) {
@@ -51,28 +65,19 @@ function getInputs(actionTypeValidator: Function, userValidator: Function) {
   ];
 }
 
-/**
- * Given users activity data, extracts unique types and users.
- */
-function getTypesAndUsers(usersActivityData: any) {
-  const types = new Set(),
-    users = new Set();
-
-  usersActivityData.forEach((activityData: UserActivity) => {
-    types.add(activityData.type);
-    users.add(activityData.user.email);
-  });
-
-  const typesList = Array.from(types) as string[];
-  const usersList = Array.from(users) as string[];
-
-  return [typesList, usersList];
-}
-
 function UsersActivity() {
-  const { loading, data, error, refetch: getUsersActivity } = useQuery<
-    UserActivityResponse
-  >(GET_USERS_ACTIVITY);
+  const [nPages, setNPages] = useState(0);
+
+  const { data: usersData, error: usersError } = useQuery<GetUsersResponse>(
+    GET_USERS
+  );
+  const {
+    loading,
+    data,
+    error,
+    refetch: getUsersActivity,
+    fetchMore
+  } = useQuery<UserActivityResponse>(GET_USERS_ACTIVITY);
 
   const [usersActivityData, setUsersActivityData] = useState<UserActivity[]>(
     []
@@ -93,22 +98,47 @@ function UsersActivity() {
     }
   }, [data, setUsersActivityData]);
 
-  const [typesList, usersList] = getTypesAndUsers(usersActivityData);
+  function handleOnScroll({ currentTarget }: any) {
+    const actualScroll = currentTarget.scrollTop + currentTarget.clientHeight;
+    const scrollLimit = SCROLL_THRESHOLD + nPages * LIST_STEP_HEIGHT;
 
-  function verifyActionType(value: string) {
-    return CHECK.getValidationError([
-      CHECK.isFieldInList(value, typesList, true)
-    ]);
+    if (actualScroll >= scrollLimit) {
+      setNPages(nPages + 1);
+
+      const lastId = usersActivityData && usersActivityData.slice(-1)[0].id;
+
+      fetchMore({
+        query: GET_USERS_ACTIVITY,
+        variables: { ...form.getInputVariables(), lastId },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          const prevData = previousResult.userActivityList;
+          const newData = fetchMoreResult && fetchMoreResult.userActivityList;
+
+          return {
+            userActivityList: [...prevData, ...(newData || [])]
+          };
+        }
+      });
+    }
   }
+
+  function onSubmit() {
+    form.submit();
+    setNPages(0);
+  }
+
+  const usersList =
+    usersData && usersData.users.map((user: User) => user.email);
+
   function verifyUser(value: string) {
     return CHECK.getValidationError([
-      CHECK.isFieldInList(value, usersList, true)
+      CHECK.isFieldInList(value, usersList || [], true)
     ]);
   }
 
   let content = <UserActivityList data={usersActivityData} />;
   if (loading) content = <SpinnerCircular />;
-  if (error) content = <ErrorMessage />;
+  if (error || usersError) content = <ErrorMessage />;
   if (usersActivityData.length === 0) {
     content = <InfoMessage message="No activity with the specified filters" />;
   }
@@ -129,11 +159,13 @@ function UsersActivity() {
           <FiltersBar
             error={error}
             form={form}
-            onSubmit={() => form.submit()}
-            types={typesList}
-            users={usersList}
+            onSubmit={onSubmit}
+            types={ACTION_TYPES}
+            users={usersList || []}
           />
-          <div className={styles.elements}>{content}</div>
+          <div className={styles.elements} onScroll={handleOnScroll}>
+            {content}
+          </div>
         </div>
       </div>
     </>
