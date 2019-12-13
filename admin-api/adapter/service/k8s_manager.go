@@ -58,10 +58,10 @@ func (k *K8sManagerServiceGRPC) CreateRuntime(name string) (string, error) {
 	return res.GetMessage(), nil
 }
 
-func (k *K8sManagerServiceGRPC) CheckRuntimeIsCreated(name string) (bool, error) {
+func (k *K8sManagerServiceGRPC) CheckRuntimeIsCreated(name string) error {
 	cc, err := grpc.Dial(k.cfg.Services.K8sManager, grpc.WithInsecure())
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	defer func() {
@@ -82,12 +82,12 @@ func (k *K8sManagerServiceGRPC) CheckRuntimeIsCreated(name string) (bool, error)
 
 	res, err := c.CheckRuntimeIsCreated(ctx, &req)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	if !res.GetSuccess() {
-		return false, errors.New(res.GetMessage())
+		return errors.New(res.GetMessage())
 	}
 
-	return res.GetSuccess(), nil
+	return nil
 }

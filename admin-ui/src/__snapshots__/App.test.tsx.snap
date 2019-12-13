@@ -6,6 +6,9 @@ exports[`renders without crashing 1`] = `
     class="app"
   >
     <div
+      class="notificationsContainer"
+    />
+    <div
       class="splash"
       data-testid="splashscreen"
     />

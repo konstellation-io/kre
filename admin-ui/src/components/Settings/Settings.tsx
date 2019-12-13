@@ -8,6 +8,9 @@ import useEndpoint from '../../hooks/useEndpoint';
 import * as PAGES from '../../constants/routes';
 import { ENDPOINT } from '../../constants/application';
 
+import { connect } from 'react-redux';
+import { logout } from '../../actions/appActions';
+
 import styles from './Settings.module.scss';
 
 const BUTTON_HEIGHT = 40;
@@ -17,9 +20,10 @@ const buttonStyle = {
 
 type Props = {
   label: string;
+  reduxLogout: Function;
 };
 
-function Settings({ label }: Props) {
+function Settings({ label, reduxLogout }: Props) {
   const history = useHistory();
   const [opened, setOpened] = useState(false);
   const [logoutResponse, logout] = useEndpoint({
@@ -30,12 +34,13 @@ function Settings({ label }: Props) {
   useEffect(() => {
     if (logoutResponse.complete) {
       if (get(logoutResponse, 'status') === 200) {
+        reduxLogout();
         history.push(PAGES.LOGIN);
       } else {
         console.error(`Error sending logout request.`);
       }
     }
-  }, [logoutResponse, history]);
+  }, [logoutResponse, history, reduxLogout]);
 
   const buttons = [
     <Button
@@ -73,4 +78,8 @@ function Settings({ label }: Props) {
   );
 }
 
-export default Settings;
+const mapDispatchToProps = {
+  reduxLogout: logout
+};
+
+export default connect(null, mapDispatchToProps)(Settings);
