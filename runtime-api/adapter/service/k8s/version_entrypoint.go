@@ -8,14 +8,14 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func (k *ResourceManagerService) createEntrypoint(name string) error {
+func (k *ResourceManagerService) createEntrypoint(id, name string) error {
 	k.logger.Info("Creating Entrypoint deployment...")
-	_, err := k.createEntrypointDeployment(name)
+	_, err := k.createEntrypointDeployment(id, name)
 	if err != nil {
 		return err
 	}
 
-	_, err = k.createEntrypointService(name)
+	_, err = k.createEntrypointService(id, name)
 	if err != nil {
 		return err
 	}
@@ -25,9 +25,9 @@ func (k *ResourceManagerService) createEntrypoint(name string) error {
 	return nil
 }
 
-func (k *ResourceManagerService) createEntrypointDeployment(name string) (*appsv1.Deployment, error) {
+func (k *ResourceManagerService) createEntrypointDeployment(id, name string) (*appsv1.Deployment, error) {
 	namespace := k.cfg.Kubernetes.Namespace
-	entrypointName := name + "-version-entrypoint"
+	entrypointName := fmt.Sprintf("%s-%s-version-entrypoint", name, id)
 	entrypointImage := "quay.io/mhausenblas/yages:0.1.0" // TODO: Change to our own entrypoint image
 
 	return k.clientset.AppsV1().Deployments(name).Create(&appsv1.Deployment{
@@ -42,7 +42,9 @@ func (k *ResourceManagerService) createEntrypointDeployment(name string) (*appsv
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": entrypointName,
+						"app":          entrypointName,
+						"version-name": name,
+						"version-id":   id,
 					},
 				},
 				Spec: apiv1.PodSpec{
@@ -65,15 +67,17 @@ func (k *ResourceManagerService) createEntrypointDeployment(name string) (*appsv
 	})
 }
 
-func (k *ResourceManagerService) createEntrypointService(name string) (*apiv1.Service, error) {
+func (k *ResourceManagerService) createEntrypointService(id, name string) (*apiv1.Service, error) {
 	namespace := k.cfg.Kubernetes.Namespace
-	entrypointName := name + "-version-entrypoint"
+	entrypointName := fmt.Sprintf("%s-%s-version-entrypoint", name, id)
 
 	return k.clientset.CoreV1().Services(namespace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: entrypointName,
 			Labels: map[string]string{
-				"app": entrypointName,
+				"app":          entrypointName,
+				"version-name": name,
+				"version-id":   id,
 			},
 		},
 		Spec: apiv1.ServiceSpec{
@@ -87,7 +91,9 @@ func (k *ResourceManagerService) createEntrypointService(name string) (*apiv1.Se
 				},
 			},
 			Selector: map[string]string{
-				"app": entrypointName,
+				"app":          entrypointName,
+				"version-name": name,
+				"version-id":   id,
 			},
 		},
 	})

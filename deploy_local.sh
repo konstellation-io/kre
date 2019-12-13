@@ -24,6 +24,7 @@ echo_warning() {
 # Setup environment to build images inside minikube
 eval `minikube docker-env -p $MINIKUBE_PROFILE`
 
+export KRE_BASE_DOMAIN_NAME="local"
 export ADMIN_API_IMAGE_TAG="latest"
 export ADMIN_UI_IMAGE_TAG="latest"
 export K8S_MANAGER_IMAGE_TAG="latest"

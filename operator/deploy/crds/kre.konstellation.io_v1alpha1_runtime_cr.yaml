@@ -5,6 +5,9 @@ metadata:
 spec:
   # Default values copied from <project_dir>/helm-charts/kre-chart/values.yaml
 
+  entrypoint:
+    host: runtime.local
+
   nats_streaming:
     replicas: 2
     storage:

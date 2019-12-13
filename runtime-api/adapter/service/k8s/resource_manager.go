@@ -1,7 +1,6 @@
 package k8s
 
 import (
-	"fmt"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 	"k8s.io/client-go/kubernetes"
@@ -14,7 +13,6 @@ type ResourceManagerService struct {
 }
 
 func NewResourceManagerService(cfg *config.Config, logger logging.Logger) *ResourceManagerService {
-
 	clientset := newClientset(cfg)
 
 	return &ResourceManagerService{
@@ -24,12 +22,22 @@ func NewResourceManagerService(cfg *config.Config, logger logging.Logger) *Resou
 	}
 }
 
-func (k *ResourceManagerService) CreateRuntimeVersion(name string) (string, error) {
+func (k *ResourceManagerService) CreateRuntimeVersion(id, name string) error {
 	// TODO: Call Kubernetes here
 
-	err := k.createEntrypoint(name)
+	// Create Entrypoint
+	k.logger.Info(">>>>>>>>>>>>>>>> CREATING RUNTIME VERSION <<<<<<<<<<<<<<<<<<<<<<")
+	err := k.createEntrypoint(id, name)
 
-	fmt.Print(err)
+	// Create all nodes defined on krt.yml
 
-	return "", nil
+	return err
+}
+
+func (k *ResourceManagerService) CheckRuntimeVersionIsCreated(id, name string) error {
+	// TODO: Check Kubernetes here
+
+	k.logger.Info(">>>>>>>>>>>>>>>> CHECKING RUNTIME VERSION <<<<<<<<<<<<<<<<<<<<<<")
+
+	return nil
 }

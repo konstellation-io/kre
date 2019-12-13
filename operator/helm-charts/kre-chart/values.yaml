@@ -1,3 +1,5 @@
+entrypoint:
+  host: "local"
 
 nats_streaming:
   replicas: 2

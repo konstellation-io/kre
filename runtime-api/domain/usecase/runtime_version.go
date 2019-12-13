@@ -14,6 +14,12 @@ var (
 	RuntimeVersionStatusError    RuntimeVersionStatus = "ERROR"
 )
 
+var AllRuntimeVersionStatus = []RuntimeVersionStatus{
+	RuntimeVersionStatusCreating,
+	RuntimeVersionStatusRunning,
+	RuntimeVersionStatusError,
+}
+
 type RuntimeVersionInteractor struct {
 	logger          logging.Logger
 	resourceManager service.ResourceManagerService
@@ -29,20 +35,20 @@ func NewRuntimeVersionInteractor(
 	}
 }
 
-func (i *RuntimeVersionInteractor) CreateRuntimeVersion(name string) (*entity.RuntimeVersion, error) {
-	result, err := i.resourceManager.CreateRuntimeVersion(name)
+func (i *RuntimeVersionInteractor) CreateRuntimeVersion(id, name string) (*entity.RuntimeVersion, error) {
+	err := i.resourceManager.CreateRuntimeVersion(id, name)
 	if err != nil {
 		return nil, err
 	}
 
-	i.logger.Info("K8sManagerService create result: " + result)
-
-	// TODO: Wait until resources are created
-
 	createdRuntimeVersion := &entity.RuntimeVersion{
-		Name:   result,
-		Status: "",
+		Name:   name,
+		Status: string(RuntimeVersionStatusCreating),
 	}
 
 	return createdRuntimeVersion, err
+}
+
+func (i *RuntimeVersionInteractor) CheckRuntimeVersionIsCreated(id, name string) error {
+	return i.resourceManager.CheckRuntimeVersionIsCreated(id, name)
 }

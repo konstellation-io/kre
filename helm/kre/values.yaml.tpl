@@ -1,5 +1,6 @@
 # Default values for konstellation Runtime Environment.
 config:
+  baseDomainName: ${KRE_BASE_DOMAIN_NAME}
   admin:
     k8sManagerAddress: "k8s-manager:50051"
     apiAddress: ":80"

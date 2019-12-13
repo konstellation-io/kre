@@ -1,5 +1,6 @@
 package service
 
 type ResourceManagerService interface {
-	CreateRuntimeVersion(name string) (string, error)
+	CreateRuntimeVersion(id, name string) error
+	CheckRuntimeVersionIsCreated(id, name string) error
 }

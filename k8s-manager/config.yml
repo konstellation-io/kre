@@ -1,3 +1,4 @@
+baseDomainName: "local"
 server:
   port: "50051"
 kubernetes:

@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"fmt"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -15,8 +16,10 @@ var (
 	}
 )
 
-func (k *ResourceManager) createRuntimeObject(runtimeName string) error {
+func (k *ResourceManager) createRuntimeObject(runtimeName, domain string) error {
 	runtimeClient := k.dynClient.Resource(runtimeGVR)
+
+	entrypointURL := fmt.Sprintf("entrypoint.%s.%s", runtimeName, domain)
 
 	runtimeDefinition := &unstructured.Unstructured{
 		Object: map[string]interface{}{
@@ -24,6 +27,11 @@ func (k *ResourceManager) createRuntimeObject(runtimeName string) error {
 			"apiVersion": runtimeGVR.Group + "/v1alpha1",
 			"metadata": map[string]interface{}{
 				"name": runtimeName,
+			},
+			"spec": map[string]interface{}{
+				"entrypoint": map[string]interface{}{
+					"host": entrypointURL,
+				},
 			},
 		},
 	}

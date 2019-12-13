@@ -4,7 +4,8 @@ package runtime;
 option go_package="runtimepb";
 
 message RuntimeVersion {
-  string name = 1;
+  string id = 1;
+  string name = 2;
 }
 
 message CreateRuntimeVersionRequest {
@@ -16,6 +17,17 @@ message CreateRuntimeVersionResponse {
     string message = 2;
 }
 
+message CheckRuntimeVersionIsCreatedRequest {
+  string id = 1;
+  string name = 2;
+}
+
+message CheckRuntimeVersionIsCreatedResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 service RuntimeVersionService{
   rpc CreateRuntimeVersion(CreateRuntimeVersionRequest) returns (CreateRuntimeVersionResponse) {};
+  rpc CheckRuntimeVersionIsCreated(CheckRuntimeVersionIsCreatedRequest) returns (CheckRuntimeVersionIsCreatedResponse) {};
 };
