@@ -12,4 +12,6 @@ type UserRepo interface {
 	Create(email string) (*entity.User, error)
 
 	GetByID(userID string) (*entity.User, error)
+
+	GetAll() ([]entity.User, error)
 }

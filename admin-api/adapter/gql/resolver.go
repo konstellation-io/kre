@@ -112,6 +112,22 @@ func (r *queryResolver) Me(ctx context.Context) (*User, error) {
 		Email: user.Email,
 	}, nil
 }
+func (r *queryResolver) Users(ctx context.Context) ([]*User, error) {
+	users, err := r.userInteractor.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*User
+	for _, user := range users {
+		result = append(result, &User{
+			ID:    user.ID,
+			Email: user.Email,
+		})
+	}
+
+	return result, nil
+}
 func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 	var gqlRuntimes []*Runtime
 	runtimes, err := r.runtimeInteractor.FindAll()
@@ -121,6 +137,7 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 		return gqlRuntimes, err
 	}
 
+	// TODO Use https://gqlgen.com/reference/dataloaders/ to get the users data
 	for _, runtime := range runtimes {
 		gqlRuntime := &Runtime{
 			ID:           runtime.ID,
@@ -151,7 +168,7 @@ func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
 		SessionLifetimeInDays: settings.SessionLifetimeInDays,
 	}, nil
 }
-func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, typeArg *UserActivityType, fromDate *string, toDate *string) ([]*UserActivity, error) {
+func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*UserActivity, error) {
 	activityType := new(string)
 	if typeArg != nil {
 		*activityType = typeArg.String()
@@ -159,7 +176,7 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 		activityType = nil
 	}
 
-	activities, err := r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate)
+	activities, err := r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate, lastID)
 	if err != nil {
 		return nil, err
 	}

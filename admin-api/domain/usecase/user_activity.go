@@ -34,13 +34,8 @@ func NewUserActivityInteractor(
 	}
 }
 
-func (i *UserActivityInteractor) Get(
-	userEmail *string,
-	activityType *string,
-	fromDate *string,
-	toDate *string,
-) ([]entity.UserActivity, error) {
-	return i.userActivityRepo.Get(userEmail, activityType, fromDate, toDate)
+func (i *UserActivityInteractor) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]entity.UserActivity, error) {
+	return i.userActivityRepo.Get(userEmail, activityType, fromDate, toDate, lastID)
 }
 
 func (i *UserActivityInteractor) Create(
