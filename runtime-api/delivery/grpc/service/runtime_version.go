@@ -32,12 +32,11 @@ func NewRuntimeVersionService(
 func (s *RuntimeVersionService) CreateRuntimeVersion(ctx context.Context, req *runtimepb.CreateRuntimeVersionRequest) (*runtimepb.CreateRuntimeVersionResponse, error) {
 	s.logger.Info("CreateRuntimeVersionRequest received")
 	runtimeName := req.GetRuntimeVersion().GetName()
-	runtimeID := req.GetRuntimeVersion().GetId()
 
 	message := fmt.Sprintf("Runtime %s created", runtimeName)
 	success := true
 
-	_, err := s.interactor.CreateRuntimeVersion(runtimeID, runtimeName)
+	_, err := s.interactor.CreateRuntimeVersion(runtimeName)
 	if err != nil {
 		success = false
 		message = err.Error()
@@ -53,12 +52,11 @@ func (s *RuntimeVersionService) CreateRuntimeVersion(ctx context.Context, req *r
 }
 
 func (s *RuntimeVersionService) CheckRuntimeVersionIsCreated(ctx context.Context, req *runtimepb.CheckRuntimeVersionIsCreatedRequest) (*runtimepb.CheckRuntimeVersionIsCreatedResponse, error) {
-	runtimeID := req.GetId()
 	runtimeName := req.GetName()
 	namespace := s.cfg.Kubernetes.Namespace
 	s.logger.Info(fmt.Sprintf("Checking if runtime-version \"%s\" pods are created in namespace \"%s\"...\n", runtimeName, namespace))
 
-	err := s.interactor.CheckRuntimeVersionIsCreated(runtimeID, runtimeName)
+	err := s.interactor.CheckRuntimeVersionIsCreated(runtimeName)
 	if err != nil {
 		return &runtimepb.CheckRuntimeVersionIsCreatedResponse{
 			Success: false,

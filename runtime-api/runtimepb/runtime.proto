@@ -4,8 +4,7 @@ package runtime;
 option go_package="runtimepb";
 
 message RuntimeVersion {
-  string id = 1;
-  string name = 2;
+  string name = 1;
 }
 
 message CreateRuntimeVersionRequest {
@@ -18,8 +17,7 @@ message CreateRuntimeVersionResponse {
 }
 
 message CheckRuntimeVersionIsCreatedRequest {
-  string id = 1;
-  string name = 2;
+  string name = 1;
 }
 
 message CheckRuntimeVersionIsCreatedResponse {

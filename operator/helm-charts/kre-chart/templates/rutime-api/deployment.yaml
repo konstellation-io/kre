@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "runtime.fullname" . }}-runtime-api
+  name: runtime-api
 spec:
   replicas: 1
   selector:
@@ -14,6 +14,7 @@ spec:
         {{- include "runtime.labels" . | nindent 8 }}
         app: runtime-api
     spec:
+      serviceAccountName: kre-operator
       containers:
         - name: runtime-api
           image: konstellation/kre-runtime-api:latest

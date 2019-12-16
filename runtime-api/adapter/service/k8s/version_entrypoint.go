@@ -8,15 +8,18 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func (k *ResourceManagerService) createEntrypoint(id, name string) error {
+func (k *ResourceManagerService) createEntrypoint(name string) error {
+	resourceName := fmt.Sprintf("%s-version-entrypoint", name)
+	namespace := k.cfg.Kubernetes.Namespace
+
 	k.logger.Info("Creating Entrypoint deployment...")
-	_, err := k.createEntrypointDeployment(id, name)
+	_, err := k.createEntrypointDeployment(resourceName, namespace, name)
 	if err != nil {
 		return err
 	}
 
 	// TODO: Delete current service with name active entrypoint
-	_, err = k.createEntrypointService(id, name)
+	_, err = k.createEntrypointService(resourceName, namespace, name)
 	if err != nil {
 		return err
 	}
@@ -26,39 +29,38 @@ func (k *ResourceManagerService) createEntrypoint(id, name string) error {
 	return nil
 }
 
-func (k *ResourceManagerService) createEntrypointDeployment(id, name string) (*appsv1.Deployment, error) {
-	namespace := k.cfg.Kubernetes.Namespace
-	entrypointName := fmt.Sprintf("%s-%s-version-entrypoint", name, id)
-
+func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, versionLabel string) (*appsv1.Deployment, error) {
 	// TODO: Change to specific version
 	entrypointImage := "konstellation/kre-runtime-entrypoint:latest"
 
-	return k.clientset.AppsV1().Deployments(name).Create(&appsv1.Deployment{
+	k.logger.Info(fmt.Sprintf("Creating deployment in %s named %s from image %s", namespace, name, entrypointImage))
+
+	return k.clientset.AppsV1().Deployments(namespace).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      entrypointName,
+			Name:      name,
 			Namespace: namespace,
 			Labels: map[string]string{
-				"app": entrypointName,
+				"app":          name,
+				"version-name": versionLabel,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app":          entrypointName,
-						"version-name": name,
-						"version-id":   id,
+						"app":          name,
+						"version-name": versionLabel,
 					},
 				},
 				Spec: apiv1.PodSpec{
 					Containers: []apiv1.Container{
 						{
-							Name:            entrypointName,
+							Name:            name,
 							Image:           entrypointImage,
 							ImagePullPolicy: apiv1.PullIfNotPresent,
 							Ports: []apiv1.ContainerPort{
 								{
-									ContainerPort: 9000,
+									ContainerPort: 50051,
 									Protocol:      "TCP",
 								},
 							},
@@ -70,17 +72,15 @@ func (k *ResourceManagerService) createEntrypointDeployment(id, name string) (*a
 	})
 }
 
-func (k *ResourceManagerService) createEntrypointService(id, name string) (*apiv1.Service, error) {
-	namespace := k.cfg.Kubernetes.Namespace
-	entrypointName := fmt.Sprintf("%s-%s-version-entrypoint", name, id)
+func (k *ResourceManagerService) createEntrypointService(name, namespace, versionLabel string) (*apiv1.Service, error) {
+	k.logger.Info(fmt.Sprintf("Creating service in %s named %s", namespace, name))
 
 	return k.clientset.CoreV1().Services(namespace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "active-entrypoint",
 			Labels: map[string]string{
-				"app":          entrypointName,
-				"version-name": name,
-				"version-id":   id,
+				"app":          name,
+				"version-name": versionLabel,
 			},
 		},
 		Spec: apiv1.ServiceSpec{
@@ -94,9 +94,8 @@ func (k *ResourceManagerService) createEntrypointService(id, name string) (*apiv
 				},
 			},
 			Selector: map[string]string{
-				"app":          entrypointName,
-				"version-name": name,
-				"version-id":   id,
+				"app":          name,
+				"version-name": versionLabel,
 			},
 		},
 	})

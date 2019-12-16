@@ -35,8 +35,8 @@ func NewRuntimeVersionInteractor(
 	}
 }
 
-func (i *RuntimeVersionInteractor) CreateRuntimeVersion(id, name string) (*entity.RuntimeVersion, error) {
-	err := i.resourceManager.CreateRuntimeVersion(id, name)
+func (i *RuntimeVersionInteractor) CreateRuntimeVersion(name string) (*entity.RuntimeVersion, error) {
+	err := i.resourceManager.CreateRuntimeVersion(name)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +49,6 @@ func (i *RuntimeVersionInteractor) CreateRuntimeVersion(id, name string) (*entit
 	return createdRuntimeVersion, err
 }
 
-func (i *RuntimeVersionInteractor) CheckRuntimeVersionIsCreated(id, name string) error {
-	return i.resourceManager.CheckRuntimeVersionIsCreated(id, name)
+func (i *RuntimeVersionInteractor) CheckRuntimeVersionIsCreated(name string) error {
+	return i.resourceManager.CheckRuntimeVersionIsCreated(name)
 }

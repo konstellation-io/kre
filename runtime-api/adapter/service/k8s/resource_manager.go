@@ -22,19 +22,19 @@ func NewResourceManagerService(cfg *config.Config, logger logging.Logger) *Resou
 	}
 }
 
-func (k *ResourceManagerService) CreateRuntimeVersion(id, name string) error {
+func (k *ResourceManagerService) CreateRuntimeVersion(name string) error {
 	// TODO: Call Kubernetes here
 
 	// Create Entrypoint
 	k.logger.Info(">>>>>>>>>>>>>>>> CREATING RUNTIME VERSION <<<<<<<<<<<<<<<<<<<<<<")
-	err := k.createEntrypoint(id, name)
+	err := k.createEntrypoint(name)
 
 	// Create all nodes defined on krt.yml
 
 	return err
 }
 
-func (k *ResourceManagerService) CheckRuntimeVersionIsCreated(id, name string) error {
+func (k *ResourceManagerService) CheckRuntimeVersionIsCreated(name string) error {
 	// TODO: Check Kubernetes here
 
 	k.logger.Info(">>>>>>>>>>>>>>>> CHECKING RUNTIME VERSION <<<<<<<<<<<<<<<<<<<<<<")
