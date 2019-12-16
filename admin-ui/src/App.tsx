@@ -8,6 +8,7 @@ import { Redirect, Switch } from 'react-router';
 import history from './history';
 import * as PAGES from './constants/routes';
 
+import NotificationService from './components/NotificationService/NotificationService';
 import Login from './pages/Login/Login';
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
 import MagicLink from './pages/MagicLink/MagicLink';
@@ -48,6 +49,7 @@ function App() {
   return (
     <div className="app">
       <Router history={history}>
+        <NotificationService />
         <Routes />
       </Router>
     </div>

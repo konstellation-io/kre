@@ -2,10 +2,17 @@ package gql
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"time"
 )
+
+var runtimeCreatedChannels map[string]chan *Runtime
+
+func init() {
+	runtimeCreatedChannels = map[string]chan *Runtime{}
+}
 
 type GraphQLResolver struct {
 	logger                 logging.Logger
@@ -23,11 +30,11 @@ func NewGraphQLResolver(
 	userActivityInteractor *usecase.UserActivityInteractor,
 ) *GraphQLResolver {
 	return &GraphQLResolver{
-		logger,
-		runtimeInteractor,
-		userInteractor,
-		settingInteractor,
-		userActivityInteractor,
+		logger:                 logger,
+		runtimeInteractor:      runtimeInteractor,
+		userInteractor:         userInteractor,
+		settingInteractor:      settingInteractor,
+		userActivityInteractor: userActivityInteractor,
 	}
 }
 
@@ -37,28 +44,38 @@ func (r *GraphQLResolver) Mutation() MutationResolver {
 func (r *GraphQLResolver) Query() QueryResolver {
 	return &queryResolver{r}
 }
+func (r *GraphQLResolver) Subscription() SubscriptionResolver {
+	return &subscriptionResolver{r}
+}
 
 type mutationResolver struct{ *GraphQLResolver }
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*CreateRuntimeResponse, error) {
 	userID := ctx.Value("userID").(string)
 
-	runtime, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
+	owner, err := r.userInteractor.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	runtime, onRuntimeRunningChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
+
+	go func() {
+		runtime := <-onRuntimeRunningChannel
+
+		for _, observer := range runtimeCreatedChannels {
+			observer <- toGQLRuntime(runtime, owner)
+		}
+	}()
+
 	if err != nil {
 		r.logger.Error("Error creating runtime: " + err.Error())
 		return nil, err
 	}
 
 	return &CreateRuntimeResponse{
-		Errors: nil,
-		Runtime: &Runtime{
-			ID:             runtime.ID,
-			Name:           runtime.Name,
-			Status:         RuntimeStatus(runtime.Status),
-			CreationDate:   runtime.CreationDate.Format(time.RFC3339),
-			CreationAuthor: nil,
-			Versions:       []*Version{},
-		},
+		Errors:  nil,
+		Runtime: toGQLRuntime(runtime, owner),
 	}, nil
 }
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error) {
@@ -182,4 +199,20 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 }
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
 	panic("not implemented")
+}
+
+type subscriptionResolver struct{ *GraphQLResolver }
+
+func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *Runtime, error) {
+	id := uuid.New().String()
+
+	runtimeCreatedChan := make(chan *Runtime, 1)
+	go func() {
+		<-ctx.Done()
+		delete(runtimeCreatedChannels, id)
+	}()
+
+	runtimeCreatedChannels[id] = runtimeCreatedChan
+
+	return runtimeCreatedChan, nil
 }

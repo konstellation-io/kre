@@ -22,6 +22,10 @@ type Mutation {
   updateSettings(input: SettingsInput!): UpdateSettingsResponse
 }
 
+type Subscription {
+  runtimeCreated: Runtime!
+}
+
 input CreateRuntimeInput {
   name: String!
 }

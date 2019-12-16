@@ -1,6 +1,6 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router';
-import { render } from '@testing-library/react';
+import { renderWithRedux } from '../../utils/testUtils';
 import { act } from 'react-dom/test-utils';
 import Header from './Header';
 
@@ -10,7 +10,7 @@ import { usernameMock } from '../../mocks/auth';
 import '@testing-library/jest-dom/extend-expect';
 
 function renderComponent() {
-  return render(
+  return renderWithRedux(
     <MockedProvider mocks={[usernameMock]} addTypename={false}>
       <MemoryRouter>
         <Header />
