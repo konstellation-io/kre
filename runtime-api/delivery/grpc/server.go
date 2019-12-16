@@ -8,6 +8,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/runtimepb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	"net"
 )
@@ -27,7 +28,7 @@ func NewApp(
 ) *App {
 
 	server := grpc.NewServer()
-
+	reflection.Register(server)
 	runtimeService := service.NewRuntimeVersionService(cfg, logger, runtimeVersionInteractor)
 
 	runtimepb.RegisterRuntimeVersionServiceServer(server, runtimeService)

@@ -8,28 +8,18 @@ rules:
       - ""
     resources:
       - namespaces
-    verbs:
-      - get
-  - apiGroups:
-      - ""
-    resources:
       - configmaps
       - secrets
-    verbs:
-      - "*"
-  - apiGroups:
-      - ""
-    resources:
       - secrets
       - services
     verbs:
       - "*"
   - apiGroups:
-      - apps
+      - ""
     resources:
-      - statefulsets
+      - pods
     verbs:
-      - "*"
+      - get
   - apiGroups:
       - monitoring.coreos.com
     resources:
@@ -46,18 +36,13 @@ rules:
     verbs:
       - update
   - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - get
-  - apiGroups:
       - apps
     resources:
+      - statefulsets
       - replicasets
       - deployments
     verbs:
-      - get
+      - "*"
   - apiGroups:
       - kre.konstellation.io
     resources:
