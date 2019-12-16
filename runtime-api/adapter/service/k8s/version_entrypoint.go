@@ -4,6 +4,7 @@ import (
 	"fmt"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -18,8 +19,7 @@ func (k *ResourceManagerService) createEntrypoint(name string) error {
 		return err
 	}
 
-	// TODO: Delete current service with name active entrypoint
-	_, err = k.createEntrypointService(resourceName, namespace, name)
+	_, err = k.updateEntrypointService(resourceName, namespace, name)
 	if err != nil {
 		return err
 	}
@@ -71,6 +71,20 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, ver
 								},
 							},
 						},
+						{
+							Name:            fmt.Sprintf("%s-web", name),
+							Image:           "nginx:alpine",
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							Ports: []apiv1.ContainerPort{
+								{
+									ContainerPort: 80,
+									Protocol:      "TCP",
+								},
+							},
+							// TODO:
+							//  - Mount nginx.conf as configmap
+							//  - Mount proto files from minio
+						},
 					},
 				},
 			},
@@ -78,31 +92,47 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, ver
 	})
 }
 
-func (k *ResourceManagerService) createEntrypointService(name, namespace, versionLabel string) (*apiv1.Service, error) {
-	k.logger.Info(fmt.Sprintf("Creating service in %s named %s", namespace, name))
+func (k *ResourceManagerService) updateEntrypointService(name, namespace, versionLabel string) (*apiv1.Service, error) {
+	k.logger.Info(fmt.Sprintf("Updating service in %s named %s", namespace, name))
 
-	return k.clientset.CoreV1().Services(namespace).Create(&apiv1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: "active-entrypoint",
-			Labels: map[string]string{
-				"app":          name,
-				"version-name": versionLabel,
+	serviceLabels := map[string]string{
+		"app":          name,
+		"version-name": versionLabel,
+	}
+
+	existingService, err := k.clientset.CoreV1().Services(namespace).Get("active-entrypoint", metav1.GetOptions{})
+	if errors.IsNotFound(err) {
+		return k.clientset.CoreV1().Services(namespace).Create(&apiv1.Service{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:   "active-entrypoint",
+				Labels: serviceLabels,
 			},
-		},
-		Spec: apiv1.ServiceSpec{
-			Type: apiv1.ServiceTypeClusterIP,
-			Ports: []apiv1.ServicePort{
-				{
-					Name:       "grpc",
-					Protocol:   "TCP",
-					TargetPort: intstr.IntOrString{IntVal: 9000},
-					Port:       9000,
+			Spec: apiv1.ServiceSpec{
+				Type: apiv1.ServiceTypeClusterIP,
+				Ports: []apiv1.ServicePort{
+					{
+						Name:       "grpc",
+						Protocol:   "TCP",
+						TargetPort: intstr.IntOrString{IntVal: 9000},
+						Port:       9000,
+					},
+					{
+						Name:       "web",
+						Protocol:   "TCP",
+						TargetPort: intstr.IntOrString{IntVal: 80},
+						Port:       80,
+					},
 				},
+				Selector: serviceLabels,
 			},
-			Selector: map[string]string{
-				"app":          name,
-				"version-name": versionLabel,
-			},
-		},
-	})
+		})
+	} else if err != nil {
+		return nil, err
+	} else {
+		existingService.ObjectMeta.Labels = serviceLabels
+		existingService.Spec.Selector = serviceLabels
+
+		return k.clientset.CoreV1().Services(namespace).Update(existingService)
+	}
+
 }
