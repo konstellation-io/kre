@@ -15,6 +15,7 @@ func (k *ResourceManagerService) createEntrypoint(id, name string) error {
 		return err
 	}
 
+	// TODO: Delete current service with name active entrypoint
 	_, err = k.createEntrypointService(id, name)
 	if err != nil {
 		return err
@@ -28,7 +29,9 @@ func (k *ResourceManagerService) createEntrypoint(id, name string) error {
 func (k *ResourceManagerService) createEntrypointDeployment(id, name string) (*appsv1.Deployment, error) {
 	namespace := k.cfg.Kubernetes.Namespace
 	entrypointName := fmt.Sprintf("%s-%s-version-entrypoint", name, id)
-	entrypointImage := "quay.io/mhausenblas/yages:0.1.0" // TODO: Change to our own entrypoint image
+
+	// TODO: Change to specific version
+	entrypointImage := "konstellation/kre-runtime-entrypoint:latest"
 
 	return k.clientset.AppsV1().Deployments(name).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -73,7 +76,7 @@ func (k *ResourceManagerService) createEntrypointService(id, name string) (*apiv
 
 	return k.clientset.CoreV1().Services(namespace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: entrypointName,
+			Name: "active-entrypoint",
 			Labels: map[string]string{
 				"app":          entrypointName,
 				"version-name": name,

@@ -38,6 +38,7 @@ if [ "$SKIP_BUILD" != "1" ]; then
     docker build -t konstellation/kre-admin-ui:latest admin-ui
     docker build -t konstellation/kre-k8s-manager:latest k8s-manager
     docker build -t konstellation/kre-runtime-api:latest runtime-api
+    docker build -t konstellation/kre-runtime-entrypoint runtime-entrypoint
 
     if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
       cd operator && operator-sdk build konstellation/kre-operator:latest && cd ..
