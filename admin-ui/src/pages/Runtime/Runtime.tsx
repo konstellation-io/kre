@@ -33,7 +33,8 @@ function createNavTabs(runtimeId: string) {
     {
       label: 'STATUS',
       route: ROUTE.RUNTIME_STATUS,
-      Icon: StatusIcon
+      Icon: StatusIcon,
+      exact: false
     },
     {
       label: 'METRICS',

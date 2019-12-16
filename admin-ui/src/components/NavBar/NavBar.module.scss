@@ -30,6 +30,11 @@
   span {
     margin-left: 15px;
   }
+
+  &:hover {
+    background-color: rgba(191, 207, 255, 0.04);
+    color: $font-color-white;
+  }
 }
 
 .active .item {
