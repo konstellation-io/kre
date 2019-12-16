@@ -198,7 +198,17 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 	return result, nil
 }
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
-	panic("not implemented")
+	runtime, err := r.runtimeInteractor.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	owner, err := r.userInteractor.GetByID(runtime.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLRuntime(runtime, owner), nil
 }
 
 type subscriptionResolver struct{ *GraphQLResolver }

@@ -6,4 +6,5 @@ type RuntimeRepo interface {
 	Create(name string, userID string) (*entity.Runtime, error)
 	Update(*entity.Runtime) error
 	FindAll() ([]entity.Runtime, error)
+	GetByID(runtimeID string) (*entity.Runtime, error)
 }
