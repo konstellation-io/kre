@@ -45,6 +45,12 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, ver
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"app":          name,
+					"version-name": versionLabel,
+				},
+			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
