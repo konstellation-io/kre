@@ -45,10 +45,3 @@ func (k *ResourceManagerService) ActivateVersion(name string) error {
 
 	return err
 }
-
-func (k *ResourceManagerService) CheckVersionIsCreated(name string) error {
-	// TODO: Check Kubernetes here
-	k.logger.Info("CHECKING VERSION IS CREATED")
-
-	return nil
-}

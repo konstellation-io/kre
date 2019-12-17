@@ -71,23 +71,3 @@ func (s *VersionService) ActivateVersion(ctx context.Context, req *runtimepb.Act
 		Message: "Version activated correctly.",
 	}, nil
 }
-
-func (s *VersionService) CheckVersionIsCreated(ctx context.Context, req *runtimepb.CheckVersionIsCreatedRequest) (*runtimepb.CheckVersionIsCreatedResponse, error) {
-	versionName := req.GetVersion().GetName()
-	namespace := s.cfg.Kubernetes.Namespace
-	s.logger.Info(fmt.Sprintf("Checking if version \"%s\" pods are created in namespace \"%s\"...\n", versionName, namespace))
-
-	err := s.interactor.CheckVersionIsCreated(versionName)
-	if err != nil {
-		s.logger.Error(err.Error())
-		return &runtimepb.CheckVersionIsCreatedResponse{
-			Success: false,
-			Message: err.Error(),
-		}, nil
-	}
-
-	return &runtimepb.CheckVersionIsCreatedResponse{
-		Success: true,
-		Message: "Version created correctly.",
-	}, nil
-}

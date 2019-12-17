@@ -25,17 +25,7 @@ message ActivateVersionResponse {
   string message = 2;
 }
 
-message CheckVersionIsCreatedRequest {
-  Version version = 1;
-}
-
-message CheckVersionIsCreatedResponse {
-  bool success = 1;
-  string message = 2;
-}
-
 service VersionService{
   rpc DeployVersion(DeployVersionRequest) returns (DeployVersionResponse) {};
   rpc ActivateVersion(ActivateVersionRequest) returns (ActivateVersionResponse) {};
-  rpc CheckVersionIsCreated(CheckVersionIsCreatedRequest) returns (CheckVersionIsCreatedResponse) {};
 };

@@ -64,7 +64,3 @@ func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error
 
 	return activeVersion, err
 }
-
-func (i *VersionInteractor) CheckVersionIsCreated(name string) error {
-	return i.resourceManager.CheckVersionIsCreated(name)
-}
