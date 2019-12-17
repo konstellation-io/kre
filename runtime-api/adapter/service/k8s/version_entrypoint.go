@@ -19,17 +19,12 @@ func (k *ResourceManagerService) createEntrypoint(name string) error {
 		return err
 	}
 
-	_, err = k.updateEntrypointService(resourceName, namespace, name)
-	if err != nil {
-		return err
-	}
-
 	k.logger.Info(fmt.Sprintf("Entrypoint %s created.", name))
 
 	return nil
 }
 
-func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, versionLabel string) (*appsv1.Deployment, error) {
+func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, label string) (*appsv1.Deployment, error) {
 	// TODO: Change to specific version
 	entrypointImage := "konstellation/kre-runtime-entrypoint:latest"
 
@@ -41,21 +36,21 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, ver
 			Namespace: namespace,
 			Labels: map[string]string{
 				"app":          name,
-				"version-name": versionLabel,
+				"version-name": label,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					"app":          name,
-					"version-name": versionLabel,
+					"version-name": label,
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
 						"app":          name,
-						"version-name": versionLabel,
+						"version-name": label,
 					},
 				},
 				Spec: apiv1.PodSpec{
@@ -92,12 +87,12 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, ver
 	})
 }
 
-func (k *ResourceManagerService) updateEntrypointService(name, namespace, versionLabel string) (*apiv1.Service, error) {
+func (k *ResourceManagerService) activateEntrypointService(name, namespace, label string) (*apiv1.Service, error) {
 	k.logger.Info(fmt.Sprintf("Updating service in %s named %s", namespace, name))
 
 	serviceLabels := map[string]string{
 		"app":          name,
-		"version-name": versionLabel,
+		"version-name": label,
 	}
 
 	existingService, err := k.clientset.CoreV1().Services(namespace).Get("active-entrypoint", metav1.GetOptions{})
@@ -134,5 +129,4 @@ func (k *ResourceManagerService) updateEntrypointService(name, namespace, versio
 
 		return k.clientset.CoreV1().Services(namespace).Update(existingService)
 	}
-
 }

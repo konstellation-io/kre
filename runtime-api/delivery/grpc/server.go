@@ -24,14 +24,14 @@ type App struct {
 func NewApp(
 	cfg *config.Config,
 	logger logging.Logger,
-	runtimeVersionInteractor *usecase.RuntimeVersionInteractor,
+	versionInteractor *usecase.VersionInteractor,
 ) *App {
 
 	server := grpc.NewServer()
 	reflection.Register(server)
-	runtimeService := service.NewRuntimeVersionService(cfg, logger, runtimeVersionInteractor)
+	runtimeService := service.NewVersionService(cfg, logger, versionInteractor)
 
-	runtimepb.RegisterRuntimeVersionServiceServer(server, runtimeService)
+	runtimepb.RegisterVersionServiceServer(server, runtimeService)
 
 	return &App{
 		server: server,

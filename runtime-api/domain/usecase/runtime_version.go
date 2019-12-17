@@ -6,49 +6,70 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 )
 
-type RuntimeVersionStatus string
+type VersionStatus string
 
 var (
-	RuntimeVersionStatusCreating RuntimeVersionStatus = "CREATING"
-	RuntimeVersionStatusRunning  RuntimeVersionStatus = "RUNNING"
-	RuntimeVersionStatusError    RuntimeVersionStatus = "ERROR"
+	VersionStatusCreating VersionStatus = "CREATING"
+	VersionStatusRunning  VersionStatus = "RUNNING"
+	VersionStatusError    VersionStatus = "ERROR"
 )
 
-var AllRuntimeVersionStatus = []RuntimeVersionStatus{
-	RuntimeVersionStatusCreating,
-	RuntimeVersionStatusRunning,
-	RuntimeVersionStatusError,
+var AllVersionStatus = []VersionStatus{
+	VersionStatusCreating,
+	VersionStatusRunning,
+	VersionStatusError,
 }
 
-type RuntimeVersionInteractor struct {
+type VersionInteractor struct {
 	logger          logging.Logger
 	resourceManager service.ResourceManagerService
 }
 
-func NewRuntimeVersionInteractor(
+func NewVersionInteractor(
 	logger logging.Logger,
 	resourceManager service.ResourceManagerService,
-) *RuntimeVersionInteractor {
-	return &RuntimeVersionInteractor{
+) *VersionInteractor {
+	return &VersionInteractor{
 		logger,
 		resourceManager,
 	}
 }
 
-func (i *RuntimeVersionInteractor) CreateRuntimeVersion(name string) (*entity.RuntimeVersion, error) {
-	err := i.resourceManager.CreateRuntimeVersion(name)
+func (i *VersionInteractor) DeployVersion(name string) (*entity.Version, error) {
+	err := i.resourceManager.DeployVersion(name)
 	if err != nil {
 		return nil, err
 	}
 
-	createdRuntimeVersion := &entity.RuntimeVersion{
-		Name:   name,
-		Status: string(RuntimeVersionStatusCreating),
+	// TODO: Create all nodes defined on krt.yml
+
+	err = i.resourceManager.ActivateVersion(name)
+	if err != nil {
+		return nil, err
 	}
 
-	return createdRuntimeVersion, err
+	createdVersion := &entity.Version{
+		Name:   name,
+		Status: string(VersionStatusCreating),
+	}
+
+	return createdVersion, err
 }
 
-func (i *RuntimeVersionInteractor) CheckRuntimeVersionIsCreated(name string) error {
-	return i.resourceManager.CheckRuntimeVersionIsCreated(name)
+func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error) {
+	err := i.resourceManager.ActivateVersion(name)
+	if err != nil {
+		return nil, err
+	}
+
+	activeVersion := &entity.Version{
+		Name:   name,
+		Status: string(VersionStatusRunning),
+	}
+
+	return activeVersion, err
+}
+
+func (i *VersionInteractor) CheckVersionIsCreated(name string) error {
+	return i.resourceManager.CheckVersionIsCreated(name)
 }

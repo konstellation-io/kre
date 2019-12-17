@@ -9,41 +9,42 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/runtimepb"
 )
 
-// RuntimeVersionService basic server
-type RuntimeVersionService struct {
+// VersionService basic server
+type VersionService struct {
 	cfg        *config.Config
 	logger     logging.Logger
-	interactor *usecase.RuntimeVersionInteractor
+	interactor *usecase.VersionInteractor
 }
 
-func NewRuntimeVersionService(
+func NewVersionService(
 	cfg *config.Config,
 	logger logging.Logger,
-	interactor *usecase.RuntimeVersionInteractor,
+	interactor *usecase.VersionInteractor,
 
-) *RuntimeVersionService {
-	return &RuntimeVersionService{
+) *VersionService {
+	return &VersionService{
 		cfg:        cfg,
 		logger:     logger,
 		interactor: interactor,
 	}
 }
 
-func (s *RuntimeVersionService) CreateRuntimeVersion(ctx context.Context, req *runtimepb.CreateRuntimeVersionRequest) (*runtimepb.CreateRuntimeVersionResponse, error) {
-	s.logger.Info("CreateRuntimeVersionRequest received")
-	runtimeName := req.GetRuntimeVersion().GetName()
+func (s *VersionService) DeployVersion(ctx context.Context, req *runtimepb.DeployVersionRequest) (*runtimepb.DeployVersionResponse, error) {
+	s.logger.Info("DeployVersionRequest received")
+	runtimeName := req.GetVersion().GetName()
 
 	message := fmt.Sprintf("Runtime %s created", runtimeName)
 	success := true
 
-	_, err := s.interactor.CreateRuntimeVersion(runtimeName)
+	_, err := s.interactor.DeployVersion(runtimeName)
 	if err != nil {
 		success = false
 		message = err.Error()
+		s.logger.Error(message)
 	}
 
 	// Send response
-	res := &runtimepb.CreateRuntimeVersionResponse{
+	res := &runtimepb.DeployVersionResponse{
 		Success: success,
 		Message: message,
 	}
@@ -51,21 +52,42 @@ func (s *RuntimeVersionService) CreateRuntimeVersion(ctx context.Context, req *r
 	return res, nil
 }
 
-func (s *RuntimeVersionService) CheckRuntimeVersionIsCreated(ctx context.Context, req *runtimepb.CheckRuntimeVersionIsCreatedRequest) (*runtimepb.CheckRuntimeVersionIsCreatedResponse, error) {
-	runtimeName := req.GetName()
+func (s *VersionService) ActivateVersion(ctx context.Context, req *runtimepb.ActivateVersionRequest) (*runtimepb.ActivateVersionResponse, error) {
+	versionName := req.GetVersion().GetName()
 	namespace := s.cfg.Kubernetes.Namespace
-	s.logger.Info(fmt.Sprintf("Checking if runtime-version \"%s\" pods are created in namespace \"%s\"...\n", runtimeName, namespace))
+	s.logger.Info(fmt.Sprintf("Activating version \"%s\" in namespace \"%s\"...\n", versionName, namespace))
 
-	err := s.interactor.CheckRuntimeVersionIsCreated(runtimeName)
+	_, err := s.interactor.ActivateVersion(versionName)
 	if err != nil {
-		return &runtimepb.CheckRuntimeVersionIsCreatedResponse{
+		s.logger.Error(err.Error())
+		return &runtimepb.ActivateVersionResponse{
 			Success: false,
 			Message: err.Error(),
 		}, nil
 	}
 
-	return &runtimepb.CheckRuntimeVersionIsCreatedResponse{
+	return &runtimepb.ActivateVersionResponse{
 		Success: true,
-		Message: "Runtime Version created correctly.",
+		Message: "Version activated correctly.",
+	}, nil
+}
+
+func (s *VersionService) CheckVersionIsCreated(ctx context.Context, req *runtimepb.CheckVersionIsCreatedRequest) (*runtimepb.CheckVersionIsCreatedResponse, error) {
+	versionName := req.GetVersion().GetName()
+	namespace := s.cfg.Kubernetes.Namespace
+	s.logger.Info(fmt.Sprintf("Checking if version \"%s\" pods are created in namespace \"%s\"...\n", versionName, namespace))
+
+	err := s.interactor.CheckVersionIsCreated(versionName)
+	if err != nil {
+		s.logger.Error(err.Error())
+		return &runtimepb.CheckVersionIsCreatedResponse{
+			Success: false,
+			Message: err.Error(),
+		}, nil
+	}
+
+	return &runtimepb.CheckVersionIsCreatedResponse{
+		Success: true,
+		Message: "Version created correctly.",
 	}, nil
 }

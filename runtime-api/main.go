@@ -14,12 +14,12 @@ func main() {
 
 	resourceManager := k8s.NewResourceManagerService(cfg, logger)
 
-	runtimeVersionInteractor := usecase.NewRuntimeVersionInteractor(logger, resourceManager)
+	versionInteractor := usecase.NewVersionInteractor(logger, resourceManager)
 
 	app := grpc.NewApp(
 		cfg,
 		logger,
-		runtimeVersionInteractor,
+		versionInteractor,
 	)
 	app.Start()
 }

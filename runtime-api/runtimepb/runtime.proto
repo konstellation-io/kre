@@ -3,29 +3,39 @@ syntax = "proto3";
 package runtime;
 option go_package="runtimepb";
 
-message RuntimeVersion {
+message Version {
   string name = 1;
 }
 
-message CreateRuntimeVersionRequest {
-    RuntimeVersion runtimeVersion = 1;
+message DeployVersionRequest {
+    Version version = 1;
 }
 
-message CreateRuntimeVersionResponse {
+message DeployVersionResponse {
     bool success = 1;
     string message = 2;
 }
 
-message CheckRuntimeVersionIsCreatedRequest {
-  string name = 1;
+message ActivateVersionRequest {
+  Version version = 1;
 }
 
-message CheckRuntimeVersionIsCreatedResponse {
+message ActivateVersionResponse {
   bool success = 1;
   string message = 2;
 }
 
-service RuntimeVersionService{
-  rpc CreateRuntimeVersion(CreateRuntimeVersionRequest) returns (CreateRuntimeVersionResponse) {};
-  rpc CheckRuntimeVersionIsCreated(CheckRuntimeVersionIsCreatedRequest) returns (CheckRuntimeVersionIsCreatedResponse) {};
+message CheckVersionIsCreatedRequest {
+  Version version = 1;
+}
+
+message CheckVersionIsCreatedResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+service VersionService{
+  rpc DeployVersion(DeployVersionRequest) returns (DeployVersionResponse) {};
+  rpc ActivateVersion(ActivateVersionRequest) returns (ActivateVersionResponse) {};
+  rpc CheckVersionIsCreated(CheckVersionIsCreatedRequest) returns (CheckVersionIsCreatedResponse) {};
 };

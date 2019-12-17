@@ -1,6 +1,7 @@
 package k8s
 
 import (
+	"fmt"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 	"k8s.io/client-go/kubernetes"
@@ -22,22 +23,29 @@ func NewResourceManagerService(cfg *config.Config, logger logging.Logger) *Resou
 	}
 }
 
-func (k *ResourceManagerService) CreateRuntimeVersion(name string) error {
-	// TODO: Call Kubernetes here
+func (k *ResourceManagerService) DeployVersion(name string) error {
+	label := fmt.Sprintf("%s-entrypoint", name)
+	namespace := k.cfg.Kubernetes.Namespace
 
-	// Create Entrypoint
-	k.logger.Info(">>>>>>>>>>>>>>>> CREATING RUNTIME VERSION <<<<<<<<<<<<<<<<<<<<<<")
-	err := k.createEntrypoint(name)
-
-	// Create all nodes defined on krt.yml
+	k.logger.Info("Creating entrypoint deployment")
+	_, err := k.createEntrypointDeployment(name, namespace, label)
 
 	return err
 }
 
-func (k *ResourceManagerService) CheckRuntimeVersionIsCreated(name string) error {
-	// TODO: Check Kubernetes here
+func (k *ResourceManagerService) ActivateVersion(name string) error {
+	label := fmt.Sprintf("%s-entrypoint", name)
+	namespace := k.cfg.Kubernetes.Namespace
 
-	k.logger.Info(">>>>>>>>>>>>>>>> CHECKING RUNTIME VERSION <<<<<<<<<<<<<<<<<<<<<<")
+	k.logger.Info(fmt.Sprintf("Activating version %s", name))
+	_, err := k.activateEntrypointService(name, namespace, label)
+
+	return err
+}
+
+func (k *ResourceManagerService) CheckVersionIsCreated(name string) error {
+	// TODO: Check Kubernetes here
+	k.logger.Info("CHECKING VERSION IS CREATED")
 
 	return nil
 }

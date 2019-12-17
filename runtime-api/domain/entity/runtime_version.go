@@ -1,6 +1,6 @@
 package entity
 
-type RuntimeVersion struct {
+type Version struct {
 	Name   string
 	Status string
 }
