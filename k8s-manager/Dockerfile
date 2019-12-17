@@ -4,7 +4,7 @@ FROM grpc/go as protobuf
 WORKDIR /app
 
 COPY scripts scripts
-COPY runtimepb runtimepb
+COPY k8smanagerpb k8smanagerpb
 
 RUN ./scripts/generate_proto.sh
 
@@ -16,8 +16,8 @@ ENV CGO_ENABLED=0
 
 WORKDIR /app
 COPY . .
-RUN rm -rf /app/runtimepb
-COPY --from=protobuf /app/runtimepb/*.go /app/runtimepb/
+RUN rm -rf /app/k8smanagerpb
+COPY --from=protobuf /app/k8smanagerpb/*.go /app/k8smanagerpb/
 
 RUN go build -o k8s-manager .
 
