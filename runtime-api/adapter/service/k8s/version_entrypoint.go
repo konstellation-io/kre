@@ -9,19 +9,55 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func (k *ResourceManagerService) createEntrypoint(name string) error {
-	resourceName := fmt.Sprintf("%s-version-entrypoint", name)
-	namespace := k.cfg.Kubernetes.Namespace
+func (k *ResourceManagerService) createEntrypointConfigmap(namespace string) (*apiv1.ConfigMap, error) {
+	_, err := k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "entrypoint-nginx",
+		},
+		Data: map[string]string{
+			"nginx.conf": `server {
+        listen       80;
+        server_name  localhost;
 
-	k.logger.Info("Creating Entrypoint deployment...")
-	_, err := k.createEntrypointDeployment(resourceName, namespace, name)
+        location / {
+            root   /proto;
+            autoindex on;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    }
+`,
+		},
+	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	k.logger.Info(fmt.Sprintf("Entrypoint %s created.", name))
+	// TODO: Read proto files from Minio
+	return k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "entrypoint-protofiles",
+		},
+		Data: map[string]string{
+			"entrypoint.proto": `syntax = "proto3";
 
-	return nil
+    package entrypoint;
+
+    service EchoService {
+        rpc Ping (PingRequest) returns (PingResponse) {}
+    }
+
+    message PingRequest {}
+
+    message PingResponse{
+        bool success = 1;
+    }
+`,
+		},
+	})
 }
 
 func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, label string) (*appsv1.Deployment, error) {
@@ -76,9 +112,40 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, lab
 									Protocol:      "TCP",
 								},
 							},
-							// TODO:
-							//  - Mount nginx.conf as configmap
-							//  - Mount proto files from minio
+							VolumeMounts: []apiv1.VolumeMount{
+								{
+									Name:      "nginx-conf",
+									ReadOnly:  true,
+									MountPath: "/etc/nginx/conf.d/",
+								},
+								{
+									Name:      "proto-files",
+									ReadOnly:  true,
+									MountPath: "/proto",
+								},
+							},
+						},
+					},
+					Volumes: []apiv1.Volume{
+						{
+							Name: "nginx-conf",
+							VolumeSource: apiv1.VolumeSource{
+								ConfigMap: &apiv1.ConfigMapVolumeSource{
+									LocalObjectReference: apiv1.LocalObjectReference{
+										Name: "entrypoint-nginx",
+									},
+								},
+							},
+						},
+						{
+							Name: "proto-files",
+							VolumeSource: apiv1.VolumeSource{
+								ConfigMap: &apiv1.ConfigMapVolumeSource{
+									LocalObjectReference: apiv1.LocalObjectReference{
+										Name: "entrypoint-protofiles",
+									},
+								},
+							},
 						},
 					},
 				},

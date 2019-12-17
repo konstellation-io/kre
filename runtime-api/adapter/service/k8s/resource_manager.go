@@ -27,8 +27,11 @@ func (k *ResourceManagerService) DeployVersion(name string) error {
 	label := fmt.Sprintf("%s-entrypoint", name)
 	namespace := k.cfg.Kubernetes.Namespace
 
+	k.logger.Info("Creating configmap")
+	_, err := k.createEntrypointConfigmap(namespace)
+
 	k.logger.Info("Creating entrypoint deployment")
-	_, err := k.createEntrypointDeployment(name, namespace, label)
+	_, err = k.createEntrypointDeployment(name, namespace, label)
 
 	return err
 }
