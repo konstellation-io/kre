@@ -43,11 +43,6 @@ func (i *VersionInteractor) DeployVersion(name string) (*entity.Version, error) 
 
 	// TODO: Create all nodes defined on krt.yml
 
-	err = i.resourceManager.ActivateVersion(name)
-	if err != nil {
-		return nil, err
-	}
-
 	createdVersion := &entity.Version{
 		Name:   name,
 		Status: string(VersionStatusCreating),
