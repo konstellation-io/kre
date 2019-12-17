@@ -97,7 +97,7 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, lab
 							ImagePullPolicy: apiv1.PullIfNotPresent,
 							Ports: []apiv1.ContainerPort{
 								{
-									ContainerPort: 50051,
+									ContainerPort: 9000,
 									Protocol:      "TCP",
 								},
 							},
