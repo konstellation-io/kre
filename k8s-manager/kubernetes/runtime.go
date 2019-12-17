@@ -19,7 +19,7 @@ var (
 func (k *ResourceManager) createRuntimeObject(runtimeName, domain string) error {
 	runtimeClient := k.dynClient.Resource(runtimeGVR)
 
-	entrypointURL := fmt.Sprintf("entrypoint.%s.%s", runtimeName, domain)
+	entrypointURL := fmt.Sprintf("%s.%s", runtimeName, domain)
 
 	runtimeDefinition := &unstructured.Unstructured{
 		Object: map[string]interface{}{
