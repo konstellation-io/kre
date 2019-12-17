@@ -1,9 +1,11 @@
+entrypoint:
+  host: "local"
 
 nats_streaming:
   replicas: 2
   storage:
     className: standard
-    size: 2Gi
+    size: 1Gi
 
 mongo:
   replicas: 1
@@ -12,7 +14,7 @@ mongo:
     password: "123456"
   storage:
     className: standard
-    size: 5Gi
+    size: 1Gi
 
 minio:
   credentials:
@@ -20,4 +22,4 @@ minio:
     secretKey: "12345678"
   storage:
     className: standard
-    size: 10Gi
+    size: 1Gi

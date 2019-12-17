@@ -14,6 +14,8 @@ var config *Config
 
 // Config holds the configuration values for the application
 type Config struct {
+	BaseDomainName string `mapstructure:"baseDomainName"`
+
 	Server struct {
 		Port string `mapstructure:"port"`
 	} `mapstructure:"server"`

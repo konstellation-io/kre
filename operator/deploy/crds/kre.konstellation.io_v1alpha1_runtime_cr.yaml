@@ -5,6 +5,9 @@ metadata:
 spec:
   # Default values copied from <project_dir>/helm-charts/kre-chart/values.yaml
 
+  entrypoint:
+    host: runtime.local
+
   nats_streaming:
     replicas: 2
     storage:
@@ -18,7 +21,7 @@ spec:
       password: "123456"
     storage:
       className: standard
-      size: 5Gi
+      size: 2Gi
 
   minio:
     credentials:
@@ -26,4 +29,4 @@ spec:
       secretKey: "12345678"
     storage:
       className: standard
-      size: 5Gi
+      size: 2Gi
