@@ -4,6 +4,7 @@ type Query {
   me: User
   users: [User!]!
   runtimes: [Runtime!]
+  version(id: ID!): Version!
   versions(runtimeId: ID!): [Version!]
   alerts: [Alert!]
   settings: Settings!

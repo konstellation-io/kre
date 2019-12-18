@@ -220,6 +220,25 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 
 	return gqlRuntimes, nil
 }
+func (r *queryResolver) Version(ctx context.Context, id string) (*Version, error) {
+	v, err := r.versionInteractor.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
+	if err != nil && err != usecase.ErrUserNotFound {
+		return nil, err
+	}
+
+	activationUser, err := r.userInteractor.GetByID(v.ActivationUserID)
+	if err != nil && err != usecase.ErrUserNotFound {
+		return nil, err
+	}
+
+	gqlVersion := toGQLVersion(v, creationUser, activationUser)
+	return gqlVersion, nil
+}
 func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Version, error) {
 	versions, err := r.versionInteractor.GetAll()
 	if err != nil {

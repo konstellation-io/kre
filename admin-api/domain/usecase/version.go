@@ -160,7 +160,7 @@ func (i *VersionInteractor) generateWorkflow(w KrtYmlWorkflow) entity.Workflow {
 		node := &entity.Node{
 			ID:     uuid.New().String(),
 			Name:   n,
-			Status: "RUNNING", // TODO get status using runtime-api or k8s
+			Status: "ACTIVE", // TODO get status using runtime-api or k8s
 		}
 
 		if previousN != nil {
@@ -234,4 +234,8 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 
 func (i *VersionInteractor) GetAll() ([]entity.Version, error) {
 	return i.versionRepo.GetAll()
+}
+
+func (i *VersionInteractor) GetByID(id string) (*entity.Version, error) {
+	return i.versionRepo.GetByID(id)
 }
