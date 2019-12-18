@@ -12,7 +12,6 @@ type Query {
     fromDate: String,
     toDate: String
   ): [UserActivity!]!
-
   runtime(id: ID!): Runtime!
 }
 
@@ -102,7 +101,7 @@ enum RuntimeStatus {
 
 type Version {
   id: ID!
-  versionNumber: String!
+  name: String!
   description: String!
   status: VersionStatus!
   creationDate: String!

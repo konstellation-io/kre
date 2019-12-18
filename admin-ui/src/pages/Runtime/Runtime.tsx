@@ -82,7 +82,7 @@ function Runtime() {
   const originalActiveVersion = runtime && runtime.versions[0];
   const activeVersion = runtime &&
     originalActiveVersion && {
-      versionNumber: originalActiveVersion.versionNumber,
+      name: originalActiveVersion.name,
       created: originalActiveVersion.creationDate,
       activated: originalActiveVersion.activationDate,
       status: 'active',

@@ -24,281 +24,85 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Runtime struct {
-	Name                 string             `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Minio                *Runtime_MinioConf `protobuf:"bytes,2,opt,name=minio,proto3" json:"minio,omitempty"`
-	Mongo                *Runtime_MongoConf `protobuf:"bytes,3,opt,name=mongo,proto3" json:"mongo,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
-}
-
-func (m *Runtime) Reset()         { *m = Runtime{} }
-func (m *Runtime) String() string { return proto.CompactTextString(m) }
-func (*Runtime) ProtoMessage()    {}
-func (*Runtime) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d0e5095094a8d27f, []int{0}
-}
-
-func (m *Runtime) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Runtime.Unmarshal(m, b)
-}
-func (m *Runtime) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Runtime.Marshal(b, m, deterministic)
-}
-func (m *Runtime) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Runtime.Merge(m, src)
-}
-func (m *Runtime) XXX_Size() int {
-	return xxx_messageInfo_Runtime.Size(m)
-}
-func (m *Runtime) XXX_DiscardUnknown() {
-	xxx_messageInfo_Runtime.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Runtime proto.InternalMessageInfo
-
-func (m *Runtime) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *Runtime) GetMinio() *Runtime_MinioConf {
-	if m != nil {
-		return m.Minio
-	}
-	return nil
-}
-
-func (m *Runtime) GetMongo() *Runtime_MongoConf {
-	if m != nil {
-		return m.Mongo
-	}
-	return nil
-}
-
-type Runtime_MongoConf struct {
-	Username             string   `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
-	Password             string   `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Runtime_MongoConf) Reset()         { *m = Runtime_MongoConf{} }
-func (m *Runtime_MongoConf) String() string { return proto.CompactTextString(m) }
-func (*Runtime_MongoConf) ProtoMessage()    {}
-func (*Runtime_MongoConf) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d0e5095094a8d27f, []int{0, 0}
-}
-
-func (m *Runtime_MongoConf) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Runtime_MongoConf.Unmarshal(m, b)
-}
-func (m *Runtime_MongoConf) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Runtime_MongoConf.Marshal(b, m, deterministic)
-}
-func (m *Runtime_MongoConf) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Runtime_MongoConf.Merge(m, src)
-}
-func (m *Runtime_MongoConf) XXX_Size() int {
-	return xxx_messageInfo_Runtime_MongoConf.Size(m)
-}
-func (m *Runtime_MongoConf) XXX_DiscardUnknown() {
-	xxx_messageInfo_Runtime_MongoConf.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Runtime_MongoConf proto.InternalMessageInfo
-
-func (m *Runtime_MongoConf) GetUsername() string {
-	if m != nil {
-		return m.Username
-	}
-	return ""
-}
-
-func (m *Runtime_MongoConf) GetPassword() string {
-	if m != nil {
-		return m.Password
-	}
-	return ""
-}
-
-type Runtime_MinioConf struct {
-	AccessKey            string   `protobuf:"bytes,1,opt,name=accessKey,proto3" json:"accessKey,omitempty"`
-	SecretKey            string   `protobuf:"bytes,2,opt,name=secretKey,proto3" json:"secretKey,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Runtime_MinioConf) Reset()         { *m = Runtime_MinioConf{} }
-func (m *Runtime_MinioConf) String() string { return proto.CompactTextString(m) }
-func (*Runtime_MinioConf) ProtoMessage()    {}
-func (*Runtime_MinioConf) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d0e5095094a8d27f, []int{0, 1}
-}
-
-func (m *Runtime_MinioConf) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Runtime_MinioConf.Unmarshal(m, b)
-}
-func (m *Runtime_MinioConf) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Runtime_MinioConf.Marshal(b, m, deterministic)
-}
-func (m *Runtime_MinioConf) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Runtime_MinioConf.Merge(m, src)
-}
-func (m *Runtime_MinioConf) XXX_Size() int {
-	return xxx_messageInfo_Runtime_MinioConf.Size(m)
-}
-func (m *Runtime_MinioConf) XXX_DiscardUnknown() {
-	xxx_messageInfo_Runtime_MinioConf.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Runtime_MinioConf proto.InternalMessageInfo
-
-func (m *Runtime_MinioConf) GetAccessKey() string {
-	if m != nil {
-		return m.AccessKey
-	}
-	return ""
-}
-
-func (m *Runtime_MinioConf) GetSecretKey() string {
-	if m != nil {
-		return m.SecretKey
-	}
-	return ""
-}
-
-type CreateRuntimeRequest struct {
-	Runtime              *Runtime `protobuf:"bytes,1,opt,name=runtime,proto3" json:"runtime,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CreateRuntimeRequest) Reset()         { *m = CreateRuntimeRequest{} }
-func (m *CreateRuntimeRequest) String() string { return proto.CompactTextString(m) }
-func (*CreateRuntimeRequest) ProtoMessage()    {}
-func (*CreateRuntimeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d0e5095094a8d27f, []int{1}
-}
-
-func (m *CreateRuntimeRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreateRuntimeRequest.Unmarshal(m, b)
-}
-func (m *CreateRuntimeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreateRuntimeRequest.Marshal(b, m, deterministic)
-}
-func (m *CreateRuntimeRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateRuntimeRequest.Merge(m, src)
-}
-func (m *CreateRuntimeRequest) XXX_Size() int {
-	return xxx_messageInfo_CreateRuntimeRequest.Size(m)
-}
-func (m *CreateRuntimeRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateRuntimeRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CreateRuntimeRequest proto.InternalMessageInfo
-
-func (m *CreateRuntimeRequest) GetRuntime() *Runtime {
-	if m != nil {
-		return m.Runtime
-	}
-	return nil
-}
-
-type CreateRuntimeResponse struct {
-	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CreateRuntimeResponse) Reset()         { *m = CreateRuntimeResponse{} }
-func (m *CreateRuntimeResponse) String() string { return proto.CompactTextString(m) }
-func (*CreateRuntimeResponse) ProtoMessage()    {}
-func (*CreateRuntimeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d0e5095094a8d27f, []int{2}
-}
-
-func (m *CreateRuntimeResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreateRuntimeResponse.Unmarshal(m, b)
-}
-func (m *CreateRuntimeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreateRuntimeResponse.Marshal(b, m, deterministic)
-}
-func (m *CreateRuntimeResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateRuntimeResponse.Merge(m, src)
-}
-func (m *CreateRuntimeResponse) XXX_Size() int {
-	return xxx_messageInfo_CreateRuntimeResponse.Size(m)
-}
-func (m *CreateRuntimeResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateRuntimeResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CreateRuntimeResponse proto.InternalMessageInfo
-
-func (m *CreateRuntimeResponse) GetSuccess() bool {
-	if m != nil {
-		return m.Success
-	}
-	return false
-}
-
-func (m *CreateRuntimeResponse) GetMessage() string {
-	if m != nil {
-		return m.Message
-	}
-	return ""
-}
-
-type CheckRuntimeIsCreatedRequest struct {
+type Version struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CheckRuntimeIsCreatedRequest) Reset()         { *m = CheckRuntimeIsCreatedRequest{} }
-func (m *CheckRuntimeIsCreatedRequest) String() string { return proto.CompactTextString(m) }
-func (*CheckRuntimeIsCreatedRequest) ProtoMessage()    {}
-func (*CheckRuntimeIsCreatedRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d0e5095094a8d27f, []int{3}
+func (m *Version) Reset()         { *m = Version{} }
+func (m *Version) String() string { return proto.CompactTextString(m) }
+func (*Version) ProtoMessage()    {}
+func (*Version) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d0e5095094a8d27f, []int{0}
 }
 
-func (m *CheckRuntimeIsCreatedRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CheckRuntimeIsCreatedRequest.Unmarshal(m, b)
+func (m *Version) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Version.Unmarshal(m, b)
 }
-func (m *CheckRuntimeIsCreatedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CheckRuntimeIsCreatedRequest.Marshal(b, m, deterministic)
+func (m *Version) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Version.Marshal(b, m, deterministic)
 }
-func (m *CheckRuntimeIsCreatedRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CheckRuntimeIsCreatedRequest.Merge(m, src)
+func (m *Version) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Version.Merge(m, src)
 }
-func (m *CheckRuntimeIsCreatedRequest) XXX_Size() int {
-	return xxx_messageInfo_CheckRuntimeIsCreatedRequest.Size(m)
+func (m *Version) XXX_Size() int {
+	return xxx_messageInfo_Version.Size(m)
 }
-func (m *CheckRuntimeIsCreatedRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_CheckRuntimeIsCreatedRequest.DiscardUnknown(m)
+func (m *Version) XXX_DiscardUnknown() {
+	xxx_messageInfo_Version.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CheckRuntimeIsCreatedRequest proto.InternalMessageInfo
+var xxx_messageInfo_Version proto.InternalMessageInfo
 
-func (m *CheckRuntimeIsCreatedRequest) GetName() string {
+func (m *Version) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-type CheckRuntimeIsCreatedResponse struct {
+type DeployVersionRequest struct {
+	Version              *Version `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeployVersionRequest) Reset()         { *m = DeployVersionRequest{} }
+func (m *DeployVersionRequest) String() string { return proto.CompactTextString(m) }
+func (*DeployVersionRequest) ProtoMessage()    {}
+func (*DeployVersionRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d0e5095094a8d27f, []int{1}
+}
+
+func (m *DeployVersionRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeployVersionRequest.Unmarshal(m, b)
+}
+func (m *DeployVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeployVersionRequest.Marshal(b, m, deterministic)
+}
+func (m *DeployVersionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeployVersionRequest.Merge(m, src)
+}
+func (m *DeployVersionRequest) XXX_Size() int {
+	return xxx_messageInfo_DeployVersionRequest.Size(m)
+}
+func (m *DeployVersionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeployVersionRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeployVersionRequest proto.InternalMessageInfo
+
+func (m *DeployVersionRequest) GetVersion() *Version {
+	if m != nil {
+		return m.Version
+	}
+	return nil
+}
+
+type DeployVersionResponse struct {
 	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -306,39 +110,125 @@ type CheckRuntimeIsCreatedResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CheckRuntimeIsCreatedResponse) Reset()         { *m = CheckRuntimeIsCreatedResponse{} }
-func (m *CheckRuntimeIsCreatedResponse) String() string { return proto.CompactTextString(m) }
-func (*CheckRuntimeIsCreatedResponse) ProtoMessage()    {}
-func (*CheckRuntimeIsCreatedResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d0e5095094a8d27f, []int{4}
+func (m *DeployVersionResponse) Reset()         { *m = DeployVersionResponse{} }
+func (m *DeployVersionResponse) String() string { return proto.CompactTextString(m) }
+func (*DeployVersionResponse) ProtoMessage()    {}
+func (*DeployVersionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d0e5095094a8d27f, []int{2}
 }
 
-func (m *CheckRuntimeIsCreatedResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CheckRuntimeIsCreatedResponse.Unmarshal(m, b)
+func (m *DeployVersionResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeployVersionResponse.Unmarshal(m, b)
 }
-func (m *CheckRuntimeIsCreatedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CheckRuntimeIsCreatedResponse.Marshal(b, m, deterministic)
+func (m *DeployVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeployVersionResponse.Marshal(b, m, deterministic)
 }
-func (m *CheckRuntimeIsCreatedResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CheckRuntimeIsCreatedResponse.Merge(m, src)
+func (m *DeployVersionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeployVersionResponse.Merge(m, src)
 }
-func (m *CheckRuntimeIsCreatedResponse) XXX_Size() int {
-	return xxx_messageInfo_CheckRuntimeIsCreatedResponse.Size(m)
+func (m *DeployVersionResponse) XXX_Size() int {
+	return xxx_messageInfo_DeployVersionResponse.Size(m)
 }
-func (m *CheckRuntimeIsCreatedResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CheckRuntimeIsCreatedResponse.DiscardUnknown(m)
+func (m *DeployVersionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeployVersionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CheckRuntimeIsCreatedResponse proto.InternalMessageInfo
+var xxx_messageInfo_DeployVersionResponse proto.InternalMessageInfo
 
-func (m *CheckRuntimeIsCreatedResponse) GetSuccess() bool {
+func (m *DeployVersionResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *CheckRuntimeIsCreatedResponse) GetMessage() string {
+func (m *DeployVersionResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+type ActivateVersionRequest struct {
+	Version              *Version `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ActivateVersionRequest) Reset()         { *m = ActivateVersionRequest{} }
+func (m *ActivateVersionRequest) String() string { return proto.CompactTextString(m) }
+func (*ActivateVersionRequest) ProtoMessage()    {}
+func (*ActivateVersionRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d0e5095094a8d27f, []int{3}
+}
+
+func (m *ActivateVersionRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ActivateVersionRequest.Unmarshal(m, b)
+}
+func (m *ActivateVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ActivateVersionRequest.Marshal(b, m, deterministic)
+}
+func (m *ActivateVersionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActivateVersionRequest.Merge(m, src)
+}
+func (m *ActivateVersionRequest) XXX_Size() int {
+	return xxx_messageInfo_ActivateVersionRequest.Size(m)
+}
+func (m *ActivateVersionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActivateVersionRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActivateVersionRequest proto.InternalMessageInfo
+
+func (m *ActivateVersionRequest) GetVersion() *Version {
+	if m != nil {
+		return m.Version
+	}
+	return nil
+}
+
+type ActivateVersionResponse struct {
+	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ActivateVersionResponse) Reset()         { *m = ActivateVersionResponse{} }
+func (m *ActivateVersionResponse) String() string { return proto.CompactTextString(m) }
+func (*ActivateVersionResponse) ProtoMessage()    {}
+func (*ActivateVersionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d0e5095094a8d27f, []int{4}
+}
+
+func (m *ActivateVersionResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ActivateVersionResponse.Unmarshal(m, b)
+}
+func (m *ActivateVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ActivateVersionResponse.Marshal(b, m, deterministic)
+}
+func (m *ActivateVersionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActivateVersionResponse.Merge(m, src)
+}
+func (m *ActivateVersionResponse) XXX_Size() int {
+	return xxx_messageInfo_ActivateVersionResponse.Size(m)
+}
+func (m *ActivateVersionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActivateVersionResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActivateVersionResponse proto.InternalMessageInfo
+
+func (m *ActivateVersionResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *ActivateVersionResponse) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
@@ -346,41 +236,33 @@ func (m *CheckRuntimeIsCreatedResponse) GetMessage() string {
 }
 
 func init() {
-	proto.RegisterType((*Runtime)(nil), "runtime.Runtime")
-	proto.RegisterType((*Runtime_MongoConf)(nil), "runtime.Runtime.MongoConf")
-	proto.RegisterType((*Runtime_MinioConf)(nil), "runtime.Runtime.MinioConf")
-	proto.RegisterType((*CreateRuntimeRequest)(nil), "runtime.CreateRuntimeRequest")
-	proto.RegisterType((*CreateRuntimeResponse)(nil), "runtime.CreateRuntimeResponse")
-	proto.RegisterType((*CheckRuntimeIsCreatedRequest)(nil), "runtime.CheckRuntimeIsCreatedRequest")
-	proto.RegisterType((*CheckRuntimeIsCreatedResponse)(nil), "runtime.CheckRuntimeIsCreatedResponse")
+	proto.RegisterType((*Version)(nil), "runtime.Version")
+	proto.RegisterType((*DeployVersionRequest)(nil), "runtime.DeployVersionRequest")
+	proto.RegisterType((*DeployVersionResponse)(nil), "runtime.DeployVersionResponse")
+	proto.RegisterType((*ActivateVersionRequest)(nil), "runtime.ActivateVersionRequest")
+	proto.RegisterType((*ActivateVersionResponse)(nil), "runtime.ActivateVersionResponse")
 }
 
 func init() { proto.RegisterFile("runtimepb/runtime.proto", fileDescriptor_d0e5095094a8d27f) }
 
 var fileDescriptor_d0e5095094a8d27f = []byte{
-	// 349 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xd1, 0x4a, 0xeb, 0x40,
-	0x10, 0x86, 0x4f, 0x7a, 0xce, 0xb1, 0xcd, 0x14, 0x45, 0x16, 0x8b, 0x21, 0xb4, 0x52, 0x02, 0x4a,
-	0xf1, 0xa2, 0x4a, 0x7c, 0x83, 0xe6, 0x42, 0xa4, 0x08, 0xb2, 0xbd, 0xf3, 0x2e, 0x4d, 0xc7, 0x36,
-	0x48, 0xb2, 0x71, 0x27, 0x51, 0x7c, 0x0a, 0x5f, 0xcc, 0x87, 0x92, 0xdd, 0x6c, 0xb6, 0x5a, 0x5a,
-	0x05, 0xef, 0x66, 0xe6, 0xdf, 0xff, 0xcf, 0xb7, 0x13, 0x16, 0x8e, 0x65, 0x95, 0x97, 0x69, 0x86,
-	0xc5, 0xfc, 0xc2, 0x54, 0xe3, 0x42, 0x8a, 0x52, 0xb0, 0xb6, 0x69, 0x83, 0xb7, 0x16, 0xb4, 0x79,
-	0x5d, 0x33, 0x06, 0xff, 0xf2, 0x38, 0x43, 0xcf, 0x19, 0x3a, 0x23, 0x97, 0xeb, 0x9a, 0x5d, 0xc2,
-	0xff, 0x2c, 0xcd, 0x53, 0xe1, 0xb5, 0x86, 0xce, 0xa8, 0x1b, 0xfa, 0xe3, 0x26, 0xc7, 0x98, 0xc6,
-	0xb7, 0x4a, 0x8d, 0x44, 0xfe, 0xc0, 0xeb, 0x83, 0xda, 0x21, 0xf2, 0xa5, 0xf0, 0xfe, 0xee, 0x72,
-	0x28, 0xd5, 0x38, 0x54, 0xe9, 0x47, 0xe0, 0xda, 0x19, 0xf3, 0xa1, 0x53, 0x11, 0xca, 0x4f, 0x20,
-	0xb6, 0x57, 0x5a, 0x11, 0x13, 0xbd, 0x08, 0xb9, 0xd0, 0x3c, 0x2e, 0xb7, 0xbd, 0x7f, 0x0d, 0xae,
-	0x45, 0x61, 0x7d, 0x70, 0xe3, 0x24, 0x41, 0xa2, 0x29, 0xbe, 0x9a, 0x94, 0xf5, 0x40, 0xa9, 0x84,
-	0x89, 0xc4, 0x52, 0xa9, 0x75, 0xce, 0x7a, 0x10, 0x4c, 0xe0, 0x28, 0x92, 0x18, 0x97, 0x68, 0x78,
-	0x39, 0x3e, 0x55, 0x48, 0x25, 0x3b, 0x87, 0x66, 0x69, 0x3a, 0xb1, 0x1b, 0x1e, 0x6e, 0xde, 0x8c,
-	0xdb, 0xad, 0x4e, 0xa1, 0xb7, 0x91, 0x41, 0x85, 0xc8, 0x09, 0x99, 0x07, 0x6d, 0xaa, 0x34, 0x88,
-	0x0e, 0xe9, 0xf0, 0xa6, 0x55, 0x4a, 0x86, 0x44, 0xf1, 0x12, 0x0d, 0x52, 0xd3, 0x06, 0x21, 0xf4,
-	0xa3, 0x15, 0x26, 0x8f, 0x26, 0xeb, 0x86, 0xea, 0xe8, 0x45, 0x03, 0xb6, 0xe5, 0xb7, 0x05, 0x33,
-	0x18, 0xec, 0xf0, 0xfc, 0x1e, 0x24, 0x7c, 0x77, 0xe0, 0xc0, 0x04, 0xce, 0x50, 0x3e, 0xa7, 0x09,
-	0xb2, 0x3b, 0xd8, 0xff, 0x72, 0x51, 0x36, 0xb0, 0x4b, 0xd9, 0xb6, 0x44, 0xff, 0x64, 0x97, 0x5c,
-	0x63, 0x05, 0x7f, 0xd8, 0x0a, 0x7a, 0x5b, 0xc9, 0xd9, 0xe9, 0xda, 0xfa, 0xcd, 0x36, 0xfc, 0xb3,
-	0x9f, 0x8e, 0x35, 0x5f, 0x9a, 0x74, 0xef, 0x5d, 0xfb, 0x3c, 0xe6, 0x7b, 0xfa, 0x5d, 0x5c, 0x7d,
-	0x04, 0x00, 0x00, 0xff, 0xff, 0x92, 0x0c, 0xa7, 0x40, 0x32, 0x03, 0x00, 0x00,
+	// 248 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2f, 0x2a, 0xcd, 0x2b,
+	0xc9, 0xcc, 0x4d, 0x2d, 0x48, 0xd2, 0x87, 0xb2, 0xf4, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85, 0xd8,
+	0xa1, 0x5c, 0x25, 0x59, 0x2e, 0xf6, 0xb0, 0xd4, 0xa2, 0xe2, 0xcc, 0xfc, 0x3c, 0x21, 0x21, 0x2e,
+	0x96, 0xbc, 0xc4, 0xdc, 0x54, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xce, 0x20, 0x30, 0x5b, 0xc9, 0x89,
+	0x4b, 0xc4, 0x25, 0xb5, 0x20, 0x27, 0xbf, 0x12, 0xaa, 0x28, 0x28, 0xb5, 0xb0, 0x34, 0xb5, 0xb8,
+	0x44, 0x48, 0x8b, 0x8b, 0xbd, 0x0c, 0x22, 0x02, 0x56, 0xce, 0x6d, 0x24, 0xa0, 0x07, 0xb3, 0x00,
+	0xa6, 0x12, 0xa6, 0x40, 0xc9, 0x9b, 0x4b, 0x14, 0xcd, 0x8c, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54,
+	0x21, 0x09, 0x2e, 0xf6, 0xe2, 0xd2, 0xe4, 0xe4, 0xd4, 0xe2, 0x62, 0xb0, 0x21, 0x1c, 0x41, 0x30,
+	0x2e, 0x48, 0x26, 0x37, 0xb5, 0xb8, 0x38, 0x31, 0x3d, 0x55, 0x82, 0x09, 0xec, 0x1a, 0x18, 0x57,
+	0xc9, 0x85, 0x4b, 0xcc, 0x31, 0xb9, 0x24, 0xb3, 0x2c, 0xb1, 0x24, 0x95, 0x02, 0x27, 0xf9, 0x72,
+	0x89, 0x63, 0x98, 0x42, 0xbe, 0xa3, 0x8c, 0x76, 0x31, 0x72, 0xf1, 0x05, 0x41, 0xec, 0x0a, 0x4e,
+	0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0x15, 0x0a, 0xe0, 0xe2, 0x45, 0xf1, 0xb4, 0x90, 0x2c, 0xdc, 0x35,
+	0xd8, 0x02, 0x54, 0x4a, 0x0e, 0x97, 0x34, 0xc4, 0x59, 0x4a, 0x0c, 0x42, 0x61, 0x5c, 0xfc, 0x68,
+	0x6e, 0x16, 0x92, 0x87, 0x6b, 0xc2, 0x1e, 0x26, 0x52, 0x0a, 0xb8, 0x15, 0xc0, 0xcc, 0x75, 0xe2,
+	0x8e, 0xe2, 0x84, 0xa7, 0x92, 0x24, 0x36, 0x70, 0xf2, 0x30, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff,
+	0xeb, 0xe7, 0x00, 0x40, 0x39, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -395,8 +277,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RuntimeServiceClient interface {
-	CreateRuntime(ctx context.Context, in *CreateRuntimeRequest, opts ...grpc.CallOption) (*CreateRuntimeResponse, error)
-	CheckRuntimeIsCreated(ctx context.Context, in *CheckRuntimeIsCreatedRequest, opts ...grpc.CallOption) (*CheckRuntimeIsCreatedResponse, error)
+	DeployVersion(ctx context.Context, in *DeployVersionRequest, opts ...grpc.CallOption) (*DeployVersionResponse, error)
+	ActivateVersion(ctx context.Context, in *ActivateVersionRequest, opts ...grpc.CallOption) (*ActivateVersionResponse, error)
 }
 
 type runtimeServiceClient struct {
@@ -407,18 +289,18 @@ func NewRuntimeServiceClient(cc *grpc.ClientConn) RuntimeServiceClient {
 	return &runtimeServiceClient{cc}
 }
 
-func (c *runtimeServiceClient) CreateRuntime(ctx context.Context, in *CreateRuntimeRequest, opts ...grpc.CallOption) (*CreateRuntimeResponse, error) {
-	out := new(CreateRuntimeResponse)
-	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/CreateRuntime", in, out, opts...)
+func (c *runtimeServiceClient) DeployVersion(ctx context.Context, in *DeployVersionRequest, opts ...grpc.CallOption) (*DeployVersionResponse, error) {
+	out := new(DeployVersionResponse)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/DeployVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *runtimeServiceClient) CheckRuntimeIsCreated(ctx context.Context, in *CheckRuntimeIsCreatedRequest, opts ...grpc.CallOption) (*CheckRuntimeIsCreatedResponse, error) {
-	out := new(CheckRuntimeIsCreatedResponse)
-	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/CheckRuntimeIsCreated", in, out, opts...)
+func (c *runtimeServiceClient) ActivateVersion(ctx context.Context, in *ActivateVersionRequest, opts ...grpc.CallOption) (*ActivateVersionResponse, error) {
+	out := new(ActivateVersionResponse)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/ActivateVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -427,57 +309,57 @@ func (c *runtimeServiceClient) CheckRuntimeIsCreated(ctx context.Context, in *Ch
 
 // RuntimeServiceServer is the server API for RuntimeService service.
 type RuntimeServiceServer interface {
-	CreateRuntime(context.Context, *CreateRuntimeRequest) (*CreateRuntimeResponse, error)
-	CheckRuntimeIsCreated(context.Context, *CheckRuntimeIsCreatedRequest) (*CheckRuntimeIsCreatedResponse, error)
+	DeployVersion(context.Context, *DeployVersionRequest) (*DeployVersionResponse, error)
+	ActivateVersion(context.Context, *ActivateVersionRequest) (*ActivateVersionResponse, error)
 }
 
 // UnimplementedRuntimeServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedRuntimeServiceServer struct {
 }
 
-func (*UnimplementedRuntimeServiceServer) CreateRuntime(ctx context.Context, req *CreateRuntimeRequest) (*CreateRuntimeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateRuntime not implemented")
+func (*UnimplementedRuntimeServiceServer) DeployVersion(ctx context.Context, req *DeployVersionRequest) (*DeployVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeployVersion not implemented")
 }
-func (*UnimplementedRuntimeServiceServer) CheckRuntimeIsCreated(ctx context.Context, req *CheckRuntimeIsCreatedRequest) (*CheckRuntimeIsCreatedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckRuntimeIsCreated not implemented")
+func (*UnimplementedRuntimeServiceServer) ActivateVersion(ctx context.Context, req *ActivateVersionRequest) (*ActivateVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ActivateVersion not implemented")
 }
 
 func RegisterRuntimeServiceServer(s *grpc.Server, srv RuntimeServiceServer) {
 	s.RegisterService(&_RuntimeService_serviceDesc, srv)
 }
 
-func _RuntimeService_CreateRuntime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRuntimeRequest)
+func _RuntimeService_DeployVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeployVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuntimeServiceServer).CreateRuntime(ctx, in)
+		return srv.(RuntimeServiceServer).DeployVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/runtime.RuntimeService/CreateRuntime",
+		FullMethod: "/runtime.RuntimeService/DeployVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuntimeServiceServer).CreateRuntime(ctx, req.(*CreateRuntimeRequest))
+		return srv.(RuntimeServiceServer).DeployVersion(ctx, req.(*DeployVersionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RuntimeService_CheckRuntimeIsCreated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CheckRuntimeIsCreatedRequest)
+func _RuntimeService_ActivateVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActivateVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuntimeServiceServer).CheckRuntimeIsCreated(ctx, in)
+		return srv.(RuntimeServiceServer).ActivateVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/runtime.RuntimeService/CheckRuntimeIsCreated",
+		FullMethod: "/runtime.RuntimeService/ActivateVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuntimeServiceServer).CheckRuntimeIsCreated(ctx, req.(*CheckRuntimeIsCreatedRequest))
+		return srv.(RuntimeServiceServer).ActivateVersion(ctx, req.(*ActivateVersionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -487,12 +369,12 @@ var _RuntimeService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*RuntimeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateRuntime",
-			Handler:    _RuntimeService_CreateRuntime_Handler,
+			MethodName: "DeployVersion",
+			Handler:    _RuntimeService_DeployVersion_Handler,
 		},
 		{
-			MethodName: "CheckRuntimeIsCreated",
-			Handler:    _RuntimeService_CheckRuntimeIsCreated_Handler,
+			MethodName: "ActivateVersion",
+			Handler:    _RuntimeService_ActivateVersion_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

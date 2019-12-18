@@ -22,8 +22,10 @@ func main() {
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
+	versionRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 
 	k8sManagerService := service.NewK8sManagerServiceGRPC(cfg, logger)
+	runtimeService := service.NewRuntimeAPIServiceGRPC(cfg, logger)
 
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
@@ -35,6 +37,7 @@ func main() {
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService, userActivityInteractor)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo)
+	versionInteractor := usecase.NewVersionInteractor(logger, versionRepo, runtimeService)
 
 	err := settingInteractor.CreateDefaults()
 	if err != nil {
@@ -49,6 +52,7 @@ func main() {
 		userInteractor,
 		settingInteractor,
 		userActivityInteractor,
+		versionInteractor,
 	)
 	app.Start()
 }

@@ -125,8 +125,8 @@ type ComplexityRoot struct {
 		CreationDate     func(childComplexity int) int
 		Description      func(childComplexity int) int
 		ID               func(childComplexity int) int
+		Name             func(childComplexity int) int
 		Status           func(childComplexity int) int
-		VersionNumber    func(childComplexity int) int
 	}
 }
 
@@ -506,19 +506,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Version.ID(childComplexity), true
 
+	case "Version.name":
+		if e.complexity.Version.Name == nil {
+			break
+		}
+
+		return e.complexity.Version.Name(childComplexity), true
+
 	case "Version.status":
 		if e.complexity.Version.Status == nil {
 			break
 		}
 
 		return e.complexity.Version.Status(childComplexity), true
-
-	case "Version.versionNumber":
-		if e.complexity.Version.VersionNumber == nil {
-			break
-		}
-
-		return e.complexity.Version.VersionNumber(childComplexity), true
 
 	}
 	return 0, false
@@ -625,7 +625,6 @@ type Query {
     fromDate: String,
     toDate: String
   ): [UserActivity!]!
-
   runtime(id: ID!): Runtime!
 }
 
@@ -715,7 +714,7 @@ enum RuntimeStatus {
 
 type Version {
   id: ID!
-  versionNumber: String!
+  name: String!
   description: String!
   status: VersionStatus!
   creationDate: String!
@@ -2474,7 +2473,7 @@ func (ec *executionContext) _Version_id(ctx context.Context, field graphql.Colle
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Version_versionNumber(ctx context.Context, field graphql.CollectedField, obj *Version) (ret graphql.Marshaler) {
+func (ec *executionContext) _Version_name(ctx context.Context, field graphql.CollectedField, obj *Version) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2493,7 +2492,7 @@ func (ec *executionContext) _Version_versionNumber(ctx context.Context, field gr
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.VersionNumber, nil
+		return obj.Name, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4466,8 +4465,8 @@ func (ec *executionContext) _Version(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "versionNumber":
-			out.Values[i] = ec._Version_versionNumber(ctx, field, obj)
+		case "name":
+			out.Values[i] = ec._Version_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

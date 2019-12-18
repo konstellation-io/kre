@@ -85,7 +85,7 @@ function VersionInfo({ version }: Props) {
       </div>
       <div className={styles.col2}>
         <p className={styles.name}>{version.description}</p>
-        <p className={styles.version}>{`VERSION ${version.versionNumber}`}</p>
+        <p className={styles.version}>{`VERSION ${version.name}`}</p>
         <p className={styles.descriptionTitle}>DESCRIPTION</p>
         <p className={styles.description}>{version.description}</p>
         {isVersionActive && (

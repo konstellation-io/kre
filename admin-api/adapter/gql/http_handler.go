@@ -16,6 +16,7 @@ func NewHttpHandler(
 	userInteractor *usecase.UserInteractor,
 	settingInteractor *usecase.SettingInteractor,
 	userActivityInteractor *usecase.UserActivityInteractor,
+	versionInteractor *usecase.VersionInteractor,
 ) http.Handler {
 	graphQLResolver := NewGraphQLResolver(
 		logger,
@@ -23,7 +24,10 @@ func NewHttpHandler(
 		userInteractor,
 		settingInteractor,
 		userActivityInteractor,
+		versionInteractor,
 	)
+
+	var mb int64 = 1 << 20
 
 	h := handler.GraphQL(
 		NewExecutableSchema(Config{Resolvers: graphQLResolver}),
@@ -33,6 +37,8 @@ func NewHttpHandler(
 				return true
 			},
 		}),
+		handler.UploadMaxMemory(500*mb),
+		handler.UploadMaxSize(500*mb),
 	)
 
 	return h

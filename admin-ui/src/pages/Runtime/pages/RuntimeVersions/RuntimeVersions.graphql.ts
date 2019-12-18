@@ -13,7 +13,7 @@ export const GET_VERSIONS = gql`
   query GetVersions($runtimeId: ID!) {
     versions(runtimeId: $runtimeId) {
       id
-      versionNumber
+      name
       description
       status
       creationDate

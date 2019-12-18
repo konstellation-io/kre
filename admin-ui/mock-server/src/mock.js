@@ -43,7 +43,7 @@ module.exports = {
   }),
   Version: () => ({
     id: parseInt(casual.array_of_digits(8).join('')),
-    versionNumber: `v${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}`,
+    name: `v${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}`,
     description: casual.sentence,
     status: casual.random_element(['CREATED', 'ACTIVE', 'RUNNING', 'STOPPED']),
     creationDate: casual.moment.toISOString(),

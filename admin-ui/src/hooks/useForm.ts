@@ -75,7 +75,7 @@ export default function useForm({
       ...inputVariables,
       ...additionalInputProps
     };
-    const variables = isQuery ? input : { variables: input };
+    const variables = isQuery ? input : { variables: { input } };
 
     return variables;
   }

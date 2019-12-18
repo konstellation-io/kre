@@ -80,7 +80,7 @@ type UserActivity struct {
 
 type Version struct {
 	ID               string        `json:"id"`
-	VersionNumber    string        `json:"versionNumber"`
+	Name             string        `json:"name"`
 	Description      string        `json:"description"`
 	Status           VersionStatus `json:"status"`
 	CreationDate     string        `json:"creationDate"`
