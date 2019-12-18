@@ -17,8 +17,9 @@ spec:
       serviceAccountName: kre-operator
       containers:
         - name: runtime-api
+          # TODO: This version should be fixed and the operator released in-sync with new runtime-api changes
           image: konstellation/kre-runtime-api:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 50051
               protocol: TCP
