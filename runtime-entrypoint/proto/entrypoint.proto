@@ -6,7 +6,10 @@ service EchoService {
     rpc Ping (PingRequest) returns (PingResponse) {}
 }
 
-message PingRequest {}
+message PingRequest {
+    string name = 1;
+    int32  nodes = 2;
+}
 
 message PingResponse{
     bool success = 1;
