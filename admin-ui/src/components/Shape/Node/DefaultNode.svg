@@ -1,5 +1,6 @@
-<svg width="218" height="66">
+<g>
   <path
+    class="int"
     d="M 35 5
       H 187
       A 1 1, 0, 1, 1, 187 61
@@ -8,4 +9,4 @@
       Z"
     fill="grey"
   />
-</svg>
+</g>

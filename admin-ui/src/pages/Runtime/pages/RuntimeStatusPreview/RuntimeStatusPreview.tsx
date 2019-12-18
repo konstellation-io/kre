@@ -1,12 +1,182 @@
-import React from 'react';
-import DefaultNode from '../../../../components/Shape/Node/DefaultNode/DefaultNode';
+import React, { useRef, useState, useEffect } from 'react';
+
+import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
+import Button from '../../../../components/Button/Button';
+import VersionStatusViewer from '../../../../components/VersionStatusViewer/VersionStatusViewer';
+import Node, { TYPES, STATUS } from '../../../../components/Shape/Node/Node';
+
+import styles from './RuntimeStatusPreview.module.scss';
+
+const data = [
+  {
+    name: 'MAKE_PREDICTION',
+    nodes: [
+      {
+        id: 'W1InputNode',
+        name: 'TICKET ASSET',
+        status: '',
+        type: TYPES.INPUT
+      },
+      {
+        id: 'W1InnerNode1',
+        name: 'TICKET STATUS TRANSFORMER',
+        status: '',
+        type: TYPES.DEFAULT_2
+      },
+      {
+        id: 'W1InnerNode2',
+        name: 'TICKET STATUS NORMALIZATOR',
+        status: '',
+        type: TYPES.DEFAULT_2
+      },
+      {
+        id: 'W1InnerNode3',
+        name: 'TICKET CLASIFICATOR NN',
+        status: '',
+        type: TYPES.DEFAULT_2
+      },
+      {
+        id: 'W1OutputNode',
+        name: 'TNBA ORDERED',
+        status: '',
+        type: TYPES.OUTPUT
+      }
+    ],
+    edges: [
+      {
+        id: 'Edge1',
+        name: 'Edge1',
+        status: '',
+        value: 0,
+        from: 'W1InputNode',
+        to: 'W1InnerNode1'
+      },
+      {
+        id: 'Edge2',
+        name: 'Edge2',
+        status: '',
+        value: 0,
+        from: 'W1InnerNode1',
+        to: 'W1InnerNode2'
+      },
+      {
+        id: 'Edge3',
+        name: 'Edge3',
+        status: '',
+        value: 0,
+        from: 'W1InnerNode2',
+        to: 'W1InnerNode3'
+      },
+      {
+        id: 'Edge4',
+        name: 'Edge4',
+        status: '',
+        value: 0,
+        from: 'W1InnerNode3',
+        to: 'W1OutputNode'
+      }
+    ]
+  },
+  {
+    name: 'SAVE_CLIENT_METRICS',
+    nodes: [
+      {
+        id: 'W1InputNode',
+        name: 'TICKET ASSET',
+        status: '',
+        type: TYPES.INPUT
+      },
+      {
+        id: 'W1InnerNode1',
+        name: 'TICKET STATUS TRANSFORMER',
+        status: '',
+        type: TYPES.DEFAULT_2
+      },
+      {
+        id: 'W1InnerNode2',
+        name: 'TICKET STATUS NORMALIZATOR',
+        status: '',
+        type: TYPES.DEFAULT_2
+      },
+      {
+        id: 'W1OutputNode',
+        name: 'TNBA ORDERED',
+        status: '',
+        type: TYPES.OUTPUT
+      }
+    ],
+    edges: [
+      {
+        id: 'Edge1',
+        name: 'Edge1',
+        status: '',
+        value: 0,
+        from: 'W1InputNode',
+        to: 'W1InnerNode1'
+      },
+      {
+        id: 'Edge2',
+        name: 'Edge2',
+        status: '',
+        value: 0,
+        from: 'W1InnerNode1',
+        to: 'W1InnerNode2'
+      },
+      {
+        id: 'Edge3',
+        name: 'Edge3',
+        status: '',
+        value: 0,
+        from: 'W1InnerNode2',
+        to: 'W1OutputNode'
+      }
+    ]
+  }
+];
 
 function RuntimeStatusPreview() {
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0
+  });
+  const container = useRef(null);
+
+  useEffect(() => {
+    const containerDOM = container.current;
+
+    setDimensions({
+      // @ts-ignore
+      width: containerDOM.clientWidth,
+      // @ts-ignore
+      height: containerDOM.clientHeight
+    });
+  }, [container]);
+
+  const { width, height } = dimensions;
+
   return (
-    <>
+    <div ref={container} className={styles.container}>
+      <HorizontalBar>
+        <Button label="DEPLOY" />
+        <Button label="ACTIVATE" />
+      </HorizontalBar>
       STATUS PREVIEW
-      <DefaultNode />
-    </>
+      <VersionStatusViewer
+        width={width}
+        height={height * 0.6}
+        margin={{
+          top: 10,
+          right: 10,
+          bottom: 10,
+          left: 10
+        }}
+        data={data}
+      />
+      <Node type={TYPES.INPUT} status={STATUS.INACTIVE} />
+      <Node type={TYPES.DEFAULT} status={STATUS.INACTIVE} />
+      <Node type={TYPES.DEFAULT_2} status={STATUS.INACTIVE} />
+      <Node type={TYPES.OUTPUT} status={STATUS.INACTIVE} />
+    </div>
   );
 }
 

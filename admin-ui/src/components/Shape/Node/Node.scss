@@ -1,0 +1,50 @@
+@import '../../../styles/colors';
+@import '../../../styles/mixins';
+
+.int {
+  fill: $color-node-content;
+}
+
+.label {
+  @include font-button;
+  fill: $font-color;
+}
+
+.inactive {
+  .ext {
+    fill: $color-grey-darker;
+  }
+}
+
+.active {
+  .ext {
+    fill: $color-green;
+    stroke: $color-green;
+  }
+  .int {
+    stroke: $color-green;
+  }
+  .label {
+    fill: $font-color-white;
+  }
+}
+
+.warning {
+  .ext {
+    fill: $color-orange;
+    stroke: $color-orange;
+  }
+  .int {
+    stroke: $color-orange;
+  }
+}
+
+.error {
+  .ext {
+    fill: $color-red;
+    stroke: $color-red;
+  }
+  .int {
+    stroke: $color-red;
+  }
+}
