@@ -19,16 +19,14 @@ type Node = {
   id: string;
   name: string;
   status: string;
-  type: string;
+  type?: string;
 };
 
 type Edge = {
   id: string;
-  name: string;
-  status: string;
-  value: number;
-  from: string;
-  to: string;
+  status?: string;
+  fromNode: string;
+  toNode: string;
 };
 
 type Workflow = {
@@ -218,7 +216,7 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
           .html(
             ReactDOMServer.renderToString(
               <VersionNode
-                type={d.type}
+                type={d.type || TYPES.DEFAULT}
                 width={nodeWidth}
                 height={DEFAULT_NODE_HEIGHT * nodeSizeRatio}
                 status={STATUS.ACTIVE}
@@ -229,7 +227,10 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
     nodes
       .append('text')
       .classed(styles.nodeText, true)
-      .attr('x', (d: Node) => getNodeTextPadding(d.type) * nodeSizeRatio)
+      .attr(
+        'x',
+        (d: Node) => getNodeTextPadding(d.type || TYPES.DEFAULT) * nodeSizeRatio
+      )
       .attr('y', 0)
       .attr('dy', 0)
       .style('font-size', fontSize)
@@ -243,13 +244,16 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .data((d: Workflow) => d.edges)
       .enter()
       .append('g')
-      .attr('class', (d: Edge) => styles[d.status])
+      .attr('class', (d: Edge) => styles[d.status || 'ACTIVE'])
       .classed(styles.edge, true);
     edges
       .append('line')
       // @ts-ignore
-      .attr('x1', (d: Edge) => xScale(nodeIdToIndex[d.from]) + nodeWidth - 2)
-      .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.to]))
+      .attr(
+        'x1',
+        (d: Edge) => xScale(nodeIdToIndex[d.fromNode]) + nodeWidth - 2
+      )
+      .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.toNode]))
       .attr('y1', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
       .attr('y2', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
       .attr('stroke-dasharray', '3, 3')
@@ -260,9 +264,9 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .attr(
         'transform',
         (d: Edge) =>
-          `translate(${xScale(nodeIdToIndex[d.to])}, ${(DEFAULT_NODE_HEIGHT *
-            nodeSizeRatio) /
-            2})`
+          `translate(${xScale(
+            nodeIdToIndex[d.toNode]
+          )}, ${(DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2})`
       )
       .attr('stroke-width', STROKE_WIDTH);
   }

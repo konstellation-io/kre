@@ -67,4 +67,19 @@ module.exports = {
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
     sessionLifetimeInDays: () => casual.integer(from = 1, to = 99)
   }),
+  Workflow: () => ({
+    name: casual.name,
+    nodes: () => new MockList([1, 4]),
+    edges: () => new MockList([1, 4]),
+  }),
+  Edge: () => ({
+    id: casual.ID,
+    fromNode: casual.ID,
+    toNode: casual.ID,
+  }),
+  Node: () => ({
+    id: casual.ID,
+    name: casual.name,
+    status: 'DEFAULT'
+  })
 }
