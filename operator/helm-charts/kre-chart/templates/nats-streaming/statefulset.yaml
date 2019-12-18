@@ -40,7 +40,7 @@ spec:
         name: kre-nats-pvc
       spec:
         accessModes:
-          - ReadWriteMany
+          - ReadWriteOnce
         storageClassName: {{ .Values.nats_streaming.storage.className }}
         resources:
           requests:
