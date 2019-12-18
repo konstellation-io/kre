@@ -18,7 +18,7 @@ publish-operator-image:
   services:
     - docker:18-dind
   variables:
-    SDK_RELEASE_VERSION: v0.12.0
+    SDK_RELEASE_VERSION: v0.13.0
     IMAGE_PROJECT_NAME: "konstellation/kre-operator"
     DOCKER_USER: $DOCKER_USER
     DOCKER_PASS: $DOCKER_PASS

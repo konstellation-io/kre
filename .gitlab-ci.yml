@@ -34,3 +34,5 @@ include:
   - local: helm/.gitlab-ci.yml
   - local: operator/.gitlab-ci.yml
   - local: k8s-manager/.gitlab-ci.yml
+  - local: runtime-api/.gitlab-ci.yml
+  - local: runtime-entrypoint/.gitlab-ci.yml

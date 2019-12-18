@@ -61,7 +61,8 @@ func (k *ResourceManager) CreateRuntime(runtimeName string) error {
 	}
 
 	// Create Runtime
-	err = k.createRuntimeObject(runtimeName)
+	domain := k.config.BaseDomainName
+	err = k.createRuntimeObject(runtimeName, domain)
 	if err != nil {
 		log.Printf("error creating runtime object: %v", err)
 		return ErrRuntimeResourceCreation

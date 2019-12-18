@@ -7,8 +7,8 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/k8smanagerpb"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/runtimepb"
 )
 
 // GrpcServer basic server
@@ -27,7 +27,7 @@ func NewGrpcServer(
 	}
 }
 
-func (s *GrpcServer) CreateRuntime(ctx context.Context, req *runtimepb.CreateRuntimeRequest) (*runtimepb.CreateRuntimeResponse, error) {
+func (s *GrpcServer) CreateRuntime(ctx context.Context, req *k8smanagerpb.CreateRuntimeRequest) (*k8smanagerpb.CreateRuntimeResponse, error) {
 	runtimeName := strcase.ToKebab(req.GetRuntime().GetName())
 	message := fmt.Sprintf("Runtime %s created", runtimeName)
 	success := true
@@ -43,7 +43,7 @@ func (s *GrpcServer) CreateRuntime(ctx context.Context, req *runtimepb.CreateRun
 	}
 
 	// Send response
-	res := &runtimepb.CreateRuntimeResponse{
+	res := &k8smanagerpb.CreateRuntimeResponse{
 		Success: success,
 		Message: message,
 	}
@@ -51,20 +51,20 @@ func (s *GrpcServer) CreateRuntime(ctx context.Context, req *runtimepb.CreateRun
 	return res, nil
 }
 
-func (s *GrpcServer) CheckRuntimeIsCreated(ctx context.Context, req *runtimepb.CheckRuntimeIsCreatedRequest) (*runtimepb.CheckRuntimeIsCreatedResponse, error) {
+func (s *GrpcServer) CheckRuntimeIsCreated(ctx context.Context, req *k8smanagerpb.CheckRuntimeIsCreatedRequest) (*k8smanagerpb.CheckRuntimeIsCreatedResponse, error) {
 	runtimeName := req.GetName()
 	runtimeNamespace := strcase.ToKebab(runtimeName)
 	log.Printf("Checking if runtime \"%s\" pods are created in namespace \"%s\"...\n", runtimeName, runtimeNamespace)
 
 	err := s.resources.WaitForPods(runtimeNamespace)
 	if err != nil {
-		return &runtimepb.CheckRuntimeIsCreatedResponse{
+		return &k8smanagerpb.CheckRuntimeIsCreatedResponse{
 			Success: false,
 			Message: err.Error(),
 		}, nil
 	}
 
-	return &runtimepb.CheckRuntimeIsCreatedResponse{
+	return &k8smanagerpb.CheckRuntimeIsCreatedResponse{
 		Success: true,
 		Message: "Runtime created correctly.",
 	}, nil

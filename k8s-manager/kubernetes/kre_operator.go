@@ -66,7 +66,7 @@ func (k *ResourceManager) createKreOpeartor(runtimeName string) error {
 		},
 	}
 
-	log.Print("Creating KRE Operator deployment...")
+	log.Printf("Creating KRE Operator deployment %s ...", operatorImage)
 	result, err := k.clientset.AppsV1().Deployments(runtimeName).Create(deployment)
 	if err != nil {
 		return err

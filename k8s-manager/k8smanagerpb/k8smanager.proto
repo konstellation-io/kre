@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package runtime;
-option go_package="runtimepb";
+option go_package="k8smanagerpb";
 
 message Runtime {
     message MongoConf {

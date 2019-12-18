@@ -73,3 +73,15 @@ func (r *RuntimeRepoMongoDB) Update(runtime *entity.Runtime) error {
 
 	return nil
 }
+
+func (r *RuntimeRepoMongoDB) GetByID(runtimeID string) (*entity.Runtime, error) {
+	runtime := &entity.Runtime{}
+	filter := bson.D{{"_id", runtimeID}}
+
+	err := r.collection.FindOne(context.Background(), filter).Decode(runtime)
+	if err == mongo.ErrNoDocuments {
+		return runtime, usecase.ErrRuntimeNotFound
+	}
+
+	return runtime, err
+}

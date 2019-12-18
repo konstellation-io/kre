@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
@@ -13,6 +14,7 @@ var (
 	RuntimeStatusCreating RuntimeStatus = "CREATING"
 	RuntimeStatusRunning  RuntimeStatus = "RUNNING"
 	RuntimeStatusError    RuntimeStatus = "ERROR"
+	ErrRuntimeNotFound                  = errors.New("error runtime not found")
 )
 
 type RuntimeInteractor struct {
@@ -83,4 +85,8 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 
 func (i *RuntimeInteractor) FindAll() ([]entity.Runtime, error) {
 	return i.runtimeRepo.FindAll()
+}
+
+func (i *RuntimeInteractor) GetByID(runtimeID string) (*entity.Runtime, error) {
+	return i.runtimeRepo.GetByID(runtimeID)
 }

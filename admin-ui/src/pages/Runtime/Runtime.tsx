@@ -78,13 +78,16 @@ function Runtime() {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  const activeVersion = data && {
-    versionNumber: data.runtime.versions[0].versionNumber,
-    created: data.runtime.versions[0].creationDate,
-    activated: data.runtime.versions[0].activationDate,
-    status: 'active',
-    title: data.runtime.name
-  };
+  const runtime = data && data.runtime;
+  const originalActiveVersion = runtime && runtime.versions[0];
+  const activeVersion = runtime &&
+    originalActiveVersion && {
+      versionNumber: originalActiveVersion.versionNumber,
+      created: originalActiveVersion.creationDate,
+      activated: originalActiveVersion.activationDate,
+      status: 'active',
+      title: runtime.name
+    };
 
   const navTabs = createNavTabs(runtimeId || '');
   const newVersionRoute = ROUTE.NEW_VERSION.replace(

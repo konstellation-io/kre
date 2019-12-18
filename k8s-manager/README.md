@@ -12,7 +12,7 @@ This service is part of the Engine, exposes a gRPC service to encapsulate all Ku
 
 ### gRPC
 
-The Protobuf file and the code generated are within `runtimepb` folder. 
+The Protobuf file and the code generated are within `k8smanagerpb` folder. 
 
 To generate the code from the `.proto` file run the following command.
 
