@@ -95,8 +95,43 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 
 	return &CreateVersionResponse{
 		Errors:  nil,
-		Version: toGQLVersion(version, author),
+		Version: toGQLVersion(version, author, nil),
 	}, nil
+}
+func (r *mutationResolver) DeployVersion(ctx context.Context, input DeployVersionInput) (*Version, error) {
+	userID := ctx.Value("userID").(string)
+
+	version, err := r.versionInteractor.Deploy(userID, input.VersionID)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLVersion(version, creationUser, nil), nil
+}
+func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVersionInput) (*Version, error) {
+	userID := ctx.Value("userID").(string)
+
+	version, err := r.versionInteractor.Activate(userID, input.VersionID)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
+	if err != nil {
+		return nil, err
+	}
+
+	activationUser, err := r.userInteractor.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLVersion(version, creationUser, activationUser), nil
 }
 func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
 	settings, err := r.settingInteractor.Get()

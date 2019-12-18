@@ -6,6 +6,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
@@ -47,4 +48,25 @@ func (r *VersionRepoMongoDB) Create(userID, runtimeID, name, description string)
 
 	version.ID = res.InsertedID.(string)
 	return version, nil
+}
+
+func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {
+	version := &entity.Version{}
+	filter := bson.D{{"_id", id}}
+
+	err := r.collection.FindOne(context.Background(), filter).Decode(version)
+	if err == mongo.ErrNoDocuments {
+		return version, usecase.ErrVersionNotFound
+	}
+
+	return version, err
+}
+
+func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
+	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": version.ID}, version)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -33,7 +33,7 @@ func toGQLRuntime(runtime *entity.Runtime, user *entity.User) (gqlRuntime *Runti
 	return
 }
 
-func toGQLVersion(version *entity.Version, creationUser *entity.User) (gqlVersion *Version) {
+func toGQLVersion(version *entity.Version, creationUser *entity.User, activationUser *entity.User) (gqlVersion *Version) {
 	if version == nil {
 		return
 	}
@@ -45,7 +45,11 @@ func toGQLVersion(version *entity.Version, creationUser *entity.User) (gqlVersio
 		Status:         VersionStatus(version.Status),
 		CreationDate:   version.CreationDate.Format(time.RFC3339),
 		CreationAuthor: toGQLUser(creationUser),
-		// TODO add activation fields, or not
+	}
+
+	if activationUser != nil {
+		gqlVersion.ActivationAuthor = toGQLUser(activationUser)
+		gqlVersion.ActivationDate = version.ActivationDate.Format(time.RFC3339)
 	}
 
 	return

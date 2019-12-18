@@ -17,7 +17,9 @@ type Query {
 
 type Mutation {
   createRuntime(input: CreateRuntimeInput!): CreateRuntimeResponse!
-  createVersion(input: CreateVersionInput!): CreateVersionResponse! 
+  createVersion(input: CreateVersionInput!): CreateVersionResponse!
+  deployVersion(input: DeployVersionInput!): Version!
+  activateVersion(input: ActivateVersionInput!): Version!
   updateSettings(input: SettingsInput!): UpdateSettingsResponse
 }
 
@@ -37,6 +39,14 @@ type CreateRuntimeResponse {
 input CreateVersionInput {
   file: Upload!
   runtimeId: String!
+}
+
+input DeployVersionInput {
+  versionId: ID!
+}
+
+input ActivateVersionInput {
+  versionId: ID!
 }
 
 type CreateVersionResponse {

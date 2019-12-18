@@ -10,6 +10,10 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
+type ActivateVersionInput struct {
+	VersionID string `json:"versionId"`
+}
+
 type Alert struct {
 	ID      string     `json:"id"`
 	Type    AlertLevel `json:"type"`
@@ -34,6 +38,10 @@ type CreateVersionInput struct {
 type CreateVersionResponse struct {
 	Errors  []*Error `json:"errors"`
 	Version *Version `json:"version"`
+}
+
+type DeployVersionInput struct {
+	VersionID string `json:"versionId"`
 }
 
 type Error struct {

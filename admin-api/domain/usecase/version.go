@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"time"
 )
 
 type VersionStatus string
@@ -24,22 +25,26 @@ var (
 	VersionStatusActive  VersionStatus = "ACTIVE"
 	VersionStatusRunning VersionStatus = "RUNNING"
 	VersionStatusStopped VersionStatus = "STOPPED"
+	ErrVersionNotFound                 = errors.New("error version not found")
 )
 
 type VersionInteractor struct {
 	logger         logging.Logger
 	versionRepo    repository.VersionRepo
+	runtimeRepo    repository.RuntimeRepo
 	runtimeService service.RuntimeService
 }
 
 func NewVersionInteractor(
 	logger logging.Logger,
 	versionRepo repository.VersionRepo,
+	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.RuntimeService,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		logger,
 		versionRepo,
+		runtimeRepo,
 		runtimeService,
 	}
 }
@@ -128,11 +133,54 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err
 	}
 
-	// TODO move to a new DeploymentVersion method
-	err = i.runtimeService.DeployVersion(&entity.Runtime{}, krtYML.Version)
+	return v, nil
+}
+
+func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is deploying version %s", userID, versionID))
+
+	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
 	}
 
-	return v, nil
+	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.runtimeService.DeployVersion(runtime, version.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return version, nil
+}
+
+func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is activating version %s", userID, versionID))
+
+	version, err := i.versionRepo.GetByID(versionID)
+	if err != nil {
+		return nil, err
+	}
+
+	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.runtimeService.ActivateVersion(runtime, version.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	version.ActivationDate = time.Now()
+	version.ActivationUserID = userID
+	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
+	return version, nil
 }
