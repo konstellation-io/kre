@@ -61,7 +61,7 @@ func (k *ResourceManagerService) createEntrypointConfigmap(namespace string) (*a
 }
 
 func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, label string) (*appsv1.Deployment, error) {
-	// TODO: Change to specific version
+	// TODO: Change to specific version instead of latest
 	entrypointImage := "konstellation/kre-runtime-entrypoint:latest"
 
 	k.logger.Info(fmt.Sprintf("Creating deployment in %s named %s from image %s", namespace, name, entrypointImage))
@@ -94,7 +94,7 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, lab
 						{
 							Name:            name,
 							Image:           entrypointImage,
-							ImagePullPolicy: apiv1.PullIfNotPresent,
+							ImagePullPolicy: apiv1.PullAlways,
 							Ports: []apiv1.ContainerPort{
 								{
 									ContainerPort: 9000,
