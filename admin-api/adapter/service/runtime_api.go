@@ -27,7 +27,7 @@ func NewRuntimeAPIServiceGRPC(cfg *config.Config, logger logging.Logger) *Runtim
 
 func (k *RuntimeAPIServiceGRPC) DeployVersion(runtime *entity.Runtime, versionName string) error {
 	ns := strcase.ToKebab(runtime.Name)
-	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure()) // TODO get port
+	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
 
 	if err != nil {
 		return err
@@ -65,7 +65,7 @@ func (k *RuntimeAPIServiceGRPC) DeployVersion(runtime *entity.Runtime, versionNa
 
 func (k *RuntimeAPIServiceGRPC) ActivateVersion(runtime *entity.Runtime, versionName string) error {
 	ns := strcase.ToKebab(runtime.Name)
-	cc, err := grpc.Dial("runtime-api."+ns, grpc.WithInsecure())
+	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
