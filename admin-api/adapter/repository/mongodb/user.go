@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type UserRepoMongoDB struct {
@@ -62,4 +63,25 @@ func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {
 	}
 
 	return user, err
+}
+
+func (r *UserRepoMongoDB) GetAll() ([]entity.User, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	var users []entity.User
+	cur, err := r.collection.Find(ctx, bson.D{})
+	if err != nil {
+		return users, err
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var runtime entity.User
+		err = cur.Decode(&runtime)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, runtime)
+	}
+
+	return users, nil
 }

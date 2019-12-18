@@ -7,6 +7,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
@@ -25,11 +26,17 @@ func NewUserActivityRepoMongoDB(cfg *config.Config, logger logging.Logger, clien
 	}
 }
 
-func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, fromDate *string, toDate *string) ([]entity.UserActivity, error) {
+func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]entity.UserActivity, error) {
+	const limit = 30
+
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	filter := bson.M{}
+	if lastID != nil {
+		filter["_id"] = bson.M{"$lt": lastID}
+	}
+
 	if activityType != nil {
 		filter["type"] = *activityType
 	}
@@ -62,7 +69,8 @@ func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, f
 	}
 
 	var activities []entity.UserActivity
-	cur, err := r.collection.Find(ctx, filter)
+	opts := options.Find().SetSort(bson.D{{"_id", -1}}).SetLimit(limit)
+	cur, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return activities, err
 	}
