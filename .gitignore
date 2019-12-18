@@ -3,3 +3,5 @@
 
 config.dev.yml
 helm/kre/values.yaml
+krt*
+*.krt
