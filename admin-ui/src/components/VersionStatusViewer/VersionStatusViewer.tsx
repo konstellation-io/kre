@@ -251,6 +251,7 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       // @ts-ignore
       .attr(
         'x1',
+        // @ts-ignore
         (d: Edge) => xScale(nodeIdToIndex[d.fromNode]) + nodeWidth - 2
       )
       .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.toNode]))
