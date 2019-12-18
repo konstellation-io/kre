@@ -19,6 +19,7 @@ type GraphQLController struct {
 	userInteractor         *usecase.UserInteractor
 	settingInteractor      *usecase.SettingInteractor
 	userActivityInteractor *usecase.UserActivityInteractor
+	versionInteractor      *usecase.VersionInteractor
 }
 
 func NewGraphQLController(
@@ -28,6 +29,7 @@ func NewGraphQLController(
 	userInteractor *usecase.UserInteractor,
 	settingInteractor *usecase.SettingInteractor,
 	userActivityInteractor *usecase.UserActivityInteractor,
+	versionInteractor *usecase.VersionInteractor,
 ) *GraphQLController {
 	return &GraphQLController{
 		cfg,
@@ -36,6 +38,7 @@ func NewGraphQLController(
 		userInteractor,
 		settingInteractor,
 		userActivityInteractor,
+		versionInteractor,
 	}
 }
 
@@ -52,6 +55,7 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 		g.userInteractor,
 		g.settingInteractor,
 		g.userActivityInteractor,
+		g.versionInteractor,
 	)
 
 	r := c.Request()

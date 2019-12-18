@@ -10,6 +10,7 @@ export type Tab = {
   label: string;
   route: string;
   Icon?: any;
+  exact?: boolean;
 };
 type Props = {
   title: string;

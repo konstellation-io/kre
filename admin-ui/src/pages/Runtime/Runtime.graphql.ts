@@ -14,7 +14,7 @@ export const GET_RUNTIME = gql`
     runtime(id: $runtimeId) {
       name
       versions(status: ACTIVE) {
-        versionNumber
+        name
         creationDate
         creationAuthor {
           email

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-protoc runtimepb/runtime.proto --go_out=plugins=grpc:.
+protoc --go_out=plugins=grpc:. k8smanagerpb/*.proto

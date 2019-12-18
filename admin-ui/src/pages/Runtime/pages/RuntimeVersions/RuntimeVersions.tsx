@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import * as ROUTE from '../../../../constants/routes';
 
@@ -23,7 +23,6 @@ import styles from './RuntimeVersions.module.scss';
 function RuntimeVersions() {
   const versionListRef = useRef(null);
   const { runtimeId } = useParams();
-  const [activeVersionFocussed, setActiveVersionFocussed] = useState(false);
   const { data, loading, error } = useQuery<
     RuntimeVersionsResponse,
     RuntimeVersionsVars
@@ -60,8 +59,6 @@ function RuntimeVersions() {
       top: scrollAmount,
       behavior: 'smooth'
     });
-
-    setActiveVersionFocussed(true);
   }
 
   function getContent() {
@@ -79,11 +76,7 @@ function RuntimeVersions() {
     const versions =
       data &&
       data.versions.map((version: Version, idx: number) => (
-        <VersionInfo
-          key={`version_${idx}`}
-          version={version}
-          focussed={activeVersionFocussed && version.status === 'ACTIVE'}
-        />
+        <VersionInfo key={`version_${idx}`} version={version} />
       ));
 
     return (

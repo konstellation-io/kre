@@ -246,7 +246,7 @@ func init() {
 func init() { proto.RegisterFile("runtimepb/runtime.proto", fileDescriptor_d0e5095094a8d27f) }
 
 var fileDescriptor_d0e5095094a8d27f = []byte{
-	// 247 bytes of a gzipped FileDescriptorProto
+	// 248 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2f, 0x2a, 0xcd, 0x2b,
 	0xc9, 0xcc, 0x4d, 0x2d, 0x48, 0xd2, 0x87, 0xb2, 0xf4, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85, 0xd8,
 	0xa1, 0x5c, 0x25, 0x59, 0x2e, 0xf6, 0xb0, 0xd4, 0xa2, 0xe2, 0xcc, 0xfc, 0x3c, 0x21, 0x21, 0x2e,
@@ -257,12 +257,12 @@ var fileDescriptor_d0e5095094a8d27f = []byte{
 	0x21, 0x09, 0x2e, 0xf6, 0xe2, 0xd2, 0xe4, 0xe4, 0xd4, 0xe2, 0x62, 0xb0, 0x21, 0x1c, 0x41, 0x30,
 	0x2e, 0x48, 0x26, 0x37, 0xb5, 0xb8, 0x38, 0x31, 0x3d, 0x55, 0x82, 0x09, 0xec, 0x1a, 0x18, 0x57,
 	0xc9, 0x85, 0x4b, 0xcc, 0x31, 0xb9, 0x24, 0xb3, 0x2c, 0xb1, 0x24, 0x95, 0x02, 0x27, 0xf9, 0x72,
-	0x89, 0x63, 0x98, 0x42, 0xbe, 0xa3, 0x8c, 0x76, 0x31, 0x72, 0xf1, 0x41, 0xcd, 0x09, 0x4e, 0x2d,
-	0x2a, 0xcb, 0x4c, 0x4e, 0x15, 0x0a, 0xe0, 0xe2, 0x45, 0xf1, 0xb4, 0x90, 0x2c, 0xdc, 0x35, 0xd8,
-	0x02, 0x54, 0x4a, 0x0e, 0x97, 0x34, 0xc4, 0x59, 0x4a, 0x0c, 0x42, 0x61, 0x5c, 0xfc, 0x68, 0x6e,
-	0x16, 0x92, 0x87, 0x6b, 0xc2, 0x1e, 0x26, 0x52, 0x0a, 0xb8, 0x15, 0xc0, 0xcc, 0x75, 0xe2, 0x8e,
-	0xe2, 0x84, 0xa7, 0x92, 0x24, 0x36, 0x70, 0xf2, 0x30, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x99,
-	0x5d, 0xa6, 0xc0, 0x39, 0x02, 0x00, 0x00,
+	0x89, 0x63, 0x98, 0x42, 0xbe, 0xa3, 0x8c, 0x76, 0x31, 0x72, 0xf1, 0x05, 0x41, 0xec, 0x0a, 0x4e,
+	0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0x15, 0x0a, 0xe0, 0xe2, 0x45, 0xf1, 0xb4, 0x90, 0x2c, 0xdc, 0x35,
+	0xd8, 0x02, 0x54, 0x4a, 0x0e, 0x97, 0x34, 0xc4, 0x59, 0x4a, 0x0c, 0x42, 0x61, 0x5c, 0xfc, 0x68,
+	0x6e, 0x16, 0x92, 0x87, 0x6b, 0xc2, 0x1e, 0x26, 0x52, 0x0a, 0xb8, 0x15, 0xc0, 0xcc, 0x75, 0xe2,
+	0x8e, 0xe2, 0x84, 0xa7, 0x92, 0x24, 0x36, 0x70, 0xf2, 0x30, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff,
+	0xeb, 0xe7, 0x00, 0x40, 0x39, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -273,108 +273,108 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// VersionServiceClient is the client API for VersionService service.
+// RuntimeServiceClient is the client API for RuntimeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type VersionServiceClient interface {
+type RuntimeServiceClient interface {
 	DeployVersion(ctx context.Context, in *DeployVersionRequest, opts ...grpc.CallOption) (*DeployVersionResponse, error)
 	ActivateVersion(ctx context.Context, in *ActivateVersionRequest, opts ...grpc.CallOption) (*ActivateVersionResponse, error)
 }
 
-type versionServiceClient struct {
+type runtimeServiceClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewVersionServiceClient(cc *grpc.ClientConn) VersionServiceClient {
-	return &versionServiceClient{cc}
+func NewRuntimeServiceClient(cc *grpc.ClientConn) RuntimeServiceClient {
+	return &runtimeServiceClient{cc}
 }
 
-func (c *versionServiceClient) DeployVersion(ctx context.Context, in *DeployVersionRequest, opts ...grpc.CallOption) (*DeployVersionResponse, error) {
+func (c *runtimeServiceClient) DeployVersion(ctx context.Context, in *DeployVersionRequest, opts ...grpc.CallOption) (*DeployVersionResponse, error) {
 	out := new(DeployVersionResponse)
-	err := c.cc.Invoke(ctx, "/runtime.VersionService/DeployVersion", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/DeployVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versionServiceClient) ActivateVersion(ctx context.Context, in *ActivateVersionRequest, opts ...grpc.CallOption) (*ActivateVersionResponse, error) {
+func (c *runtimeServiceClient) ActivateVersion(ctx context.Context, in *ActivateVersionRequest, opts ...grpc.CallOption) (*ActivateVersionResponse, error) {
 	out := new(ActivateVersionResponse)
-	err := c.cc.Invoke(ctx, "/runtime.VersionService/ActivateVersion", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/ActivateVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// VersionServiceServer is the server API for VersionService service.
-type VersionServiceServer interface {
+// RuntimeServiceServer is the server API for RuntimeService service.
+type RuntimeServiceServer interface {
 	DeployVersion(context.Context, *DeployVersionRequest) (*DeployVersionResponse, error)
 	ActivateVersion(context.Context, *ActivateVersionRequest) (*ActivateVersionResponse, error)
 }
 
-// UnimplementedVersionServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedVersionServiceServer struct {
+// UnimplementedRuntimeServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedRuntimeServiceServer struct {
 }
 
-func (*UnimplementedVersionServiceServer) DeployVersion(ctx context.Context, req *DeployVersionRequest) (*DeployVersionResponse, error) {
+func (*UnimplementedRuntimeServiceServer) DeployVersion(ctx context.Context, req *DeployVersionRequest) (*DeployVersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeployVersion not implemented")
 }
-func (*UnimplementedVersionServiceServer) ActivateVersion(ctx context.Context, req *ActivateVersionRequest) (*ActivateVersionResponse, error) {
+func (*UnimplementedRuntimeServiceServer) ActivateVersion(ctx context.Context, req *ActivateVersionRequest) (*ActivateVersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ActivateVersion not implemented")
 }
 
-func RegisterVersionServiceServer(s *grpc.Server, srv VersionServiceServer) {
-	s.RegisterService(&_VersionService_serviceDesc, srv)
+func RegisterRuntimeServiceServer(s *grpc.Server, srv RuntimeServiceServer) {
+	s.RegisterService(&_RuntimeService_serviceDesc, srv)
 }
 
-func _VersionService_DeployVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RuntimeService_DeployVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeployVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersionServiceServer).DeployVersion(ctx, in)
+		return srv.(RuntimeServiceServer).DeployVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/runtime.VersionService/DeployVersion",
+		FullMethod: "/runtime.RuntimeService/DeployVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersionServiceServer).DeployVersion(ctx, req.(*DeployVersionRequest))
+		return srv.(RuntimeServiceServer).DeployVersion(ctx, req.(*DeployVersionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersionService_ActivateVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RuntimeService_ActivateVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ActivateVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersionServiceServer).ActivateVersion(ctx, in)
+		return srv.(RuntimeServiceServer).ActivateVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/runtime.VersionService/ActivateVersion",
+		FullMethod: "/runtime.RuntimeService/ActivateVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersionServiceServer).ActivateVersion(ctx, req.(*ActivateVersionRequest))
+		return srv.(RuntimeServiceServer).ActivateVersion(ctx, req.(*ActivateVersionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _VersionService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "runtime.VersionService",
-	HandlerType: (*VersionServiceServer)(nil),
+var _RuntimeService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "runtime.RuntimeService",
+	HandlerType: (*RuntimeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "DeployVersion",
-			Handler:    _VersionService_DeployVersion_Handler,
+			Handler:    _RuntimeService_DeployVersion_Handler,
 		},
 		{
 			MethodName: "ActivateVersion",
-			Handler:    _VersionService_ActivateVersion_Handler,
+			Handler:    _RuntimeService_ActivateVersion_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

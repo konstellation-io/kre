@@ -12,7 +12,8 @@ export interface RuntimeVersionsVars {
 export const GET_VERSIONS = gql`
   query GetVersions($runtimeId: ID!) {
     versions(runtimeId: $runtimeId) {
-      versionNumber
+      id
+      name
       description
       status
       creationDate

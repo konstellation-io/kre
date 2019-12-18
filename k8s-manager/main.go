@@ -4,7 +4,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes"
 
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/runtimepb"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/k8smanagerpb"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/server"
 
 	"log"
@@ -25,7 +25,7 @@ func main() {
 
 	resManager := kubernetes.NewKubernetesResourceManager(cfg)
 	runtimeService := server.NewGrpcServer(cfg, resManager)
-	runtimepb.RegisterRuntimeServiceServer(s, runtimeService)
+	k8smanagerpb.RegisterRuntimeServiceServer(s, runtimeService)
 
 	log.Printf("Server listenting: %v", cfg.Server.Port)
 	if err := s.Serve(listener); err != nil {

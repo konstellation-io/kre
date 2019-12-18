@@ -29,9 +29,9 @@ func NewApp(
 
 	server := grpc.NewServer()
 	reflection.Register(server)
-	runtimeService := service.NewVersionService(cfg, logger, versionInteractor)
+	runtimeService := service.NewRuntimeService(cfg, logger, versionInteractor)
 
-	runtimepb.RegisterVersionServiceServer(server, runtimeService)
+	runtimepb.RegisterRuntimeServiceServer(server, runtimeService)
 
 	return &App{
 		server: server,

@@ -20,6 +20,7 @@ type GraphQLResolver struct {
 	userInteractor         *usecase.UserInteractor
 	settingInteractor      *usecase.SettingInteractor
 	userActivityInteractor *usecase.UserActivityInteractor
+	versionInteractor      *usecase.VersionInteractor
 }
 
 func NewGraphQLResolver(
@@ -28,6 +29,7 @@ func NewGraphQLResolver(
 	userInteractor *usecase.UserInteractor,
 	settingInteractor *usecase.SettingInteractor,
 	userActivityInteractor *usecase.UserActivityInteractor,
+	versionInteractor *usecase.VersionInteractor,
 ) *GraphQLResolver {
 	return &GraphQLResolver{
 		logger:                 logger,
@@ -35,6 +37,7 @@ func NewGraphQLResolver(
 		userInteractor:         userInteractor,
 		settingInteractor:      settingInteractor,
 		userActivityInteractor: userActivityInteractor,
+		versionInteractor:      versionInteractor,
 	}
 }
 
@@ -63,8 +66,8 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 	go func() {
 		runtime := <-onRuntimeRunningChannel
 
-		for _, observer := range runtimeCreatedChannels {
-			observer <- toGQLRuntime(runtime, owner)
+		for _, r := range runtimeCreatedChannels {
+			r <- toGQLRuntime(runtime, owner)
 		}
 	}()
 
@@ -79,7 +82,56 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 	}, nil
 }
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error) {
-	panic("not implemented")
+	userID := ctx.Value("userID").(string)
+	author, err := r.userInteractor.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	version, err := r.versionInteractor.Create(userID, input.RuntimeID, input.File.File)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CreateVersionResponse{
+		Errors:  nil,
+		Version: toGQLVersion(version, author, nil),
+	}, nil
+}
+func (r *mutationResolver) DeployVersion(ctx context.Context, input DeployVersionInput) (*Version, error) {
+	userID := ctx.Value("userID").(string)
+
+	version, err := r.versionInteractor.Deploy(userID, input.VersionID)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLVersion(version, creationUser, nil), nil
+}
+func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVersionInput) (*Version, error) {
+	userID := ctx.Value("userID").(string)
+
+	version, err := r.versionInteractor.Activate(userID, input.VersionID)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
+	if err != nil {
+		return nil, err
+	}
+
+	activationUser, err := r.userInteractor.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLVersion(version, creationUser, activationUser), nil
 }
 func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
 	settings, err := r.settingInteractor.Get()
@@ -198,7 +250,17 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 	return result, nil
 }
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
-	panic("not implemented")
+	runtime, err := r.runtimeInteractor.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	owner, err := r.userInteractor.GetByID(runtime.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLRuntime(runtime, owner), nil
 }
 
 type subscriptionResolver struct{ *GraphQLResolver }

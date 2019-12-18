@@ -41,3 +41,13 @@
 .buttons {
   margin-top: 32px;
 }
+
+.spinner {
+  position: relative;
+}
+
+.ack {
+  @include font-small;
+  font-weight: 400;
+  color: $color-green;
+}

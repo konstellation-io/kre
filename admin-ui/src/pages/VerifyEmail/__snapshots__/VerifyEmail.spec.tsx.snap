@@ -875,7 +875,6 @@ exports[`renders VerifyEmail without crashing 1`] = `
             DONE
           </div>
         </div>
-        ;
         <p
           class="subtitle"
         >

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/runtimepb"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/k8smanagerpb"
 	"google.golang.org/grpc"
 	"time"
 )
@@ -35,10 +35,10 @@ func (k *K8sManagerServiceGRPC) CreateRuntime(name string) (string, error) {
 		}
 	}()
 
-	c := runtimepb.NewRuntimeServiceClient(cc)
+	c := k8smanagerpb.NewRuntimeServiceClient(cc)
 
-	req := runtimepb.CreateRuntimeRequest{
-		Runtime: &runtimepb.Runtime{
+	req := k8smanagerpb.CreateRuntimeRequest{
+		Runtime: &k8smanagerpb.Runtime{
 			Name: name,
 		},
 	}
@@ -71,9 +71,9 @@ func (k *K8sManagerServiceGRPC) CheckRuntimeIsCreated(name string) error {
 		}
 	}()
 
-	c := runtimepb.NewRuntimeServiceClient(cc)
+	c := k8smanagerpb.NewRuntimeServiceClient(cc)
 
-	req := runtimepb.CheckRuntimeIsCreatedRequest{
+	req := k8smanagerpb.CheckRuntimeIsCreatedRequest{
 		Name: name,
 	}
 

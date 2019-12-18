@@ -9,27 +9,27 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/runtimepb"
 )
 
-// VersionService basic server
-type VersionService struct {
+// RuntimeService basic server
+type RuntimeService struct {
 	cfg        *config.Config
 	logger     logging.Logger
 	interactor *usecase.VersionInteractor
 }
 
-func NewVersionService(
+func NewRuntimeService(
 	cfg *config.Config,
 	logger logging.Logger,
 	interactor *usecase.VersionInteractor,
 
-) *VersionService {
-	return &VersionService{
+) *RuntimeService {
+	return &RuntimeService{
 		cfg:        cfg,
 		logger:     logger,
 		interactor: interactor,
 	}
 }
 
-func (s *VersionService) DeployVersion(ctx context.Context, req *runtimepb.DeployVersionRequest) (*runtimepb.DeployVersionResponse, error) {
+func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.DeployVersionRequest) (*runtimepb.DeployVersionResponse, error) {
 	s.logger.Info("DeployVersionRequest received")
 	runtimeName := req.GetVersion().GetName()
 
@@ -52,7 +52,7 @@ func (s *VersionService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 	return res, nil
 }
 
-func (s *VersionService) ActivateVersion(ctx context.Context, req *runtimepb.ActivateVersionRequest) (*runtimepb.ActivateVersionResponse, error) {
+func (s *RuntimeService) ActivateVersion(ctx context.Context, req *runtimepb.ActivateVersionRequest) (*runtimepb.ActivateVersionResponse, error) {
 	versionName := req.GetVersion().GetName()
 	namespace := s.cfg.Kubernetes.Namespace
 	s.logger.Info(fmt.Sprintf("Activating version \"%s\" in namespace \"%s\"...\n", versionName, namespace))

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, useParams } from 'react-router-dom';
+import { Route, Switch, useParams } from 'react-router-dom';
 import * as ROUTE from '../../constants/routes';
 
 import StatusIcon from '@material-ui/icons/DeviceHub';
@@ -9,6 +9,7 @@ import TimeIcon from '@material-ui/icons/AccessTime';
 import ConfigIcon from '@material-ui/icons/Settings';
 
 import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
+import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -32,7 +33,8 @@ function createNavTabs(runtimeId: string) {
     {
       label: 'STATUS',
       route: ROUTE.RUNTIME_STATUS,
-      Icon: StatusIcon
+      Icon: StatusIcon,
+      exact: false
     },
     {
       label: 'METRICS',
@@ -45,7 +47,7 @@ function createNavTabs(runtimeId: string) {
       Icon: DocumentationIcon
     },
     {
-      label: 'VERSION',
+      label: 'VERSIONS',
       route: ROUTE.RUNTIME_VERSIONS,
       Icon: TimeIcon
     },
@@ -76,13 +78,16 @@ function Runtime() {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  const activeVersion = data && {
-    versionNumber: data.runtime.versions[0].versionNumber,
-    created: data.runtime.versions[0].creationDate,
-    activated: data.runtime.versions[0].activationDate,
-    status: 'active',
-    title: data.runtime.name
-  };
+  const runtime = data && data.runtime;
+  const originalActiveVersion = runtime && runtime.versions[0];
+  const activeVersion = runtime &&
+    originalActiveVersion && {
+      name: originalActiveVersion.name,
+      created: originalActiveVersion.creationDate,
+      activated: originalActiveVersion.activationDate,
+      status: 'active',
+      title: runtime.name
+    };
 
   const navTabs = createNavTabs(runtimeId || '');
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
@@ -103,12 +108,23 @@ function Runtime() {
           tabs={navTabs}
         />
         <div className={styles.content}>
-          <Route exact path={ROUTE.RUNTIME_STATUS} component={RuntimeStatus} />
-          <Route
-            exact
-            path={ROUTE.RUNTIME_VERSIONS}
-            component={RuntimeVersions}
-          />
+          <Switch>
+            <Route
+              exact
+              path={ROUTE.RUNTIME_STATUS_PREVIEW}
+              component={RuntimeStatusPreview}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_STATUS}
+              component={RuntimeStatus}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_VERSIONS}
+              component={RuntimeVersions}
+            />
+          </Switch>
           {/*<Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
           <Route exact path={ROUTE.SETTINGS_AUDIT} component={AuditSettings} /> */}
         </div>

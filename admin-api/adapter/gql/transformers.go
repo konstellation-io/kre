@@ -5,24 +5,51 @@ import (
 	"time"
 )
 
+func toGQLUser(user *entity.User) (gqlUser *User) {
+	if user == nil {
+		return
+	}
+
+	return &User{
+		ID:    user.ID,
+		Email: user.Email,
+	}
+}
+
 func toGQLRuntime(runtime *entity.Runtime, user *entity.User) (gqlRuntime *Runtime) {
 	if runtime == nil {
 		return
 	}
 
 	gqlRuntime = &Runtime{
-		ID:           runtime.ID,
-		Name:         runtime.Name,
-		Status:       RuntimeStatus(runtime.Status),
-		CreationDate: runtime.CreationDate.Format(time.RFC3339),
-		Versions:     []*Version{},
+		ID:             runtime.ID,
+		Name:           runtime.Name,
+		Status:         RuntimeStatus(runtime.Status),
+		CreationDate:   runtime.CreationDate.Format(time.RFC3339),
+		Versions:       []*Version{},
+		CreationAuthor: toGQLUser(user),
 	}
 
-	if user != nil {
-		gqlRuntime.CreationAuthor = &User{
-			ID:    user.ID,
-			Email: user.Email,
-		}
+	return
+}
+
+func toGQLVersion(version *entity.Version, creationUser *entity.User, activationUser *entity.User) (gqlVersion *Version) {
+	if version == nil {
+		return
+	}
+
+	gqlVersion = &Version{
+		ID:             version.ID,
+		Name:           version.Name,
+		Description:    "",
+		Status:         VersionStatus(version.Status),
+		CreationDate:   version.CreationDate.Format(time.RFC3339),
+		CreationAuthor: toGQLUser(creationUser),
+	}
+
+	if activationUser != nil {
+		gqlVersion.ActivationAuthor = toGQLUser(activationUser)
+		gqlVersion.ActivationDate = version.ActivationDate.Format(time.RFC3339)
 	}
 
 	return

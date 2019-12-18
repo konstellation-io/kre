@@ -11,7 +11,7 @@ function VerifyEmail() {
       <div className={styles.grid}>
         <div className={styles.container}>
           <h1>Login link sent</h1>
-          <StateCircle animation={STATES.SUCCESS} label="DONE" />;
+          <StateCircle animation={STATES.SUCCESS} label="DONE" />
           <p className={styles.subtitle}>
             An email with an access link has been sent to your email address.
           </p>

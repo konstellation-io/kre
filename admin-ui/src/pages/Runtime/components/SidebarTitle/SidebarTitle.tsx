@@ -30,13 +30,17 @@ type Props = {
   version?: {
     title: string;
     status: string;
-    versionNumber: string;
+    name: string;
     created: string;
     activated: string;
   };
 };
 
 function SidebarTitle({ version }: Props) {
+  if (!version) {
+    return <div>No active version</div>; // TODO add final design
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.title}>{get(version, 'title')}</div>
@@ -47,7 +51,7 @@ function SidebarTitle({ version }: Props) {
             [styles[version.status]]: get(version, 'status')
           })}
         />
-        <p>{`VERSION ${get(version, 'versionNumber')}`}</p>
+        <p>{`VERSION ${get(version, 'name')}`}</p>
       </div>
       <div className={styles.dates}>
         <DateInfo

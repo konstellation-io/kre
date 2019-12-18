@@ -1,0 +1,19 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.wrapper {
+  cursor: grab;
+}
+
+.workflow {
+  display: inline;
+}
+
+.node {
+  display: inline;
+}
+
+.nodeText {
+  @include font-button;
+  fill: $font-color;
+}

@@ -10,8 +10,9 @@ export interface UserActivity {
 }
 
 export interface Version {
+  id: string;
   description: string;
-  versionNumber: string;
+  name: string;
   creationDate: string;
   creationAuthor: User;
   activationDate: string;
