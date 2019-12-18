@@ -56,7 +56,7 @@ const data = [
       {
         id: 'Edge1',
         name: 'Edge1',
-        status: '',
+        status: STATUS.ACTIVE,
         value: 0,
         from: 'W1InputNode',
         to: 'W1InnerNode1'
@@ -64,7 +64,7 @@ const data = [
       {
         id: 'Edge2',
         name: 'Edge2',
-        status: '',
+        status: STATUS.ACTIVE,
         value: 0,
         from: 'W1InnerNode1',
         to: 'W1InnerNode2'
@@ -72,7 +72,7 @@ const data = [
       {
         id: 'Edge3',
         name: 'Edge3',
-        status: '',
+        status: STATUS.ACTIVE,
         value: 0,
         from: 'W1InnerNode2',
         to: 'W1InnerNode3'
@@ -80,7 +80,7 @@ const data = [
       {
         id: 'Edge4',
         name: 'Edge4',
-        status: '',
+        status: STATUS.ACTIVE,
         value: 0,
         from: 'W1InnerNode3',
         to: 'W1OutputNode'
@@ -91,25 +91,25 @@ const data = [
     name: 'SAVE_CLIENT_METRICS',
     nodes: [
       {
-        id: 'W1InputNode',
+        id: 'W2InputNode',
         name: 'TICKET ASSET',
         status: '',
         type: TYPES.INPUT
       },
       {
-        id: 'W1InnerNode1',
+        id: 'W2InnerNode1',
         name: 'TICKET STATUS TRANSFORMER',
         status: '',
-        type: TYPES.DEFAULT_2
+        type: TYPES.DEFAULT
       },
       {
-        id: 'W1InnerNode2',
+        id: 'W2InnerNode2',
         name: 'TICKET STATUS NORMALIZATOR',
         status: '',
-        type: TYPES.DEFAULT_2
+        type: TYPES.DEFAULT
       },
       {
-        id: 'W1OutputNode',
+        id: 'W2OutputNode',
         name: 'TNBA ORDERED',
         status: '',
         type: TYPES.OUTPUT
@@ -119,26 +119,26 @@ const data = [
       {
         id: 'Edge1',
         name: 'Edge1',
-        status: '',
+        status: STATUS.ACTIVE,
         value: 0,
-        from: 'W1InputNode',
-        to: 'W1InnerNode1'
+        from: 'W2InputNode',
+        to: 'W2InnerNode1'
       },
       {
         id: 'Edge2',
         name: 'Edge2',
-        status: '',
+        status: STATUS.ACTIVE,
         value: 0,
-        from: 'W1InnerNode1',
-        to: 'W1InnerNode2'
+        from: 'W2InnerNode1',
+        to: 'W2InnerNode2'
       },
       {
         id: 'Edge3',
         name: 'Edge3',
-        status: '',
+        status: STATUS.ACTIVE,
         value: 0,
-        from: 'W1InnerNode2',
-        to: 'W1OutputNode'
+        from: 'W2InnerNode2',
+        to: 'W2OutputNode'
       }
     ]
   }
@@ -207,6 +207,7 @@ function RuntimeStatusPreview() {
           left: 10
         }}
         data={data}
+        preview={false}
       />
       <Node type={TYPES.INPUT} status={STATUS.INACTIVE} />
       <Node type={TYPES.DEFAULT} status={STATUS.INACTIVE} />
