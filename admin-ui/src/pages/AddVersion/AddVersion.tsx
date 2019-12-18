@@ -3,6 +3,7 @@ import useForm from '../../hooks/useForm';
 import { useMutation } from '@apollo/react-hooks';
 import { useHistory, useParams } from 'react-router';
 
+import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 import FileUpload from '../../components/Form/FileUpload/FileUpload';
 import UploadProgress from '../../components/Form/UploadProgress/UploadProgress';
 import Button from '../../components/Button/Button';
@@ -36,7 +37,7 @@ function AddVersion() {
     fetchFunction: addVersion,
     additionalInputProps: { runtimeId }
   });
-  const [versionUploaded, setVersionUploaded] = useState(false);
+  const [versionUploaded, setVersionUploaded] = useState('');
 
   useEffect(() => {
     if (error) {
@@ -46,12 +47,20 @@ function AddVersion() {
 
   function onCompleted(updatedData: any) {
     // TODO: CHECK FOR API ERRORS
-    console.log(`${updatedData.createVersion.version.id} version created`);
-    setVersionUploaded(true);
+    const versionCreatedId = updatedData.createVersion.version.id;
+    console.log(`${versionCreatedId} version created`);
+
+    setVersionUploaded(versionCreatedId);
   }
 
   function onDeploy() {
-    history.push(PAGES.RUNTIME_STATUS.replace(':runtimeId', runtimeId || ''));
+    console.log(PAGES.RUNTIME_STATUS_PREVIEW, versionUploaded);
+    history.push(
+      PAGES.RUNTIME_STATUS_PREVIEW.replace(
+        ':runtimeId',
+        runtimeId || ''
+      ).replace(':versionId', versionUploaded || '')
+    );
   }
 
   function onCancelClick() {
@@ -74,14 +83,21 @@ function AddVersion() {
               error={form.input.file.error}
               onChange={form.input.file.onChange}
             />
-            <UploadProgress fileName="" progress={100} />
+            {loading && (
+              <div className={styles.spinner}>
+                <SpinnerLinear />
+              </div>
+            )}
+            {versionUploaded && (
+              <div className={styles.ack}>Version created</div>
+            )}
+            {/* <UploadProgress fileName="" progress={100} /> */}
             <div className={styles.buttons}>
               <Button
                 primary
-                disabled={error !== undefined}
+                disabled={error !== undefined || loading}
                 label={versionUploaded ? 'ACCEPT' : 'CREATE'}
                 onClick={versionUploaded ? onDeploy : () => form.submit()}
-                loading={loading}
               />
               <Button label="CANCEL" onClick={onCancelClick} />
             </div>
