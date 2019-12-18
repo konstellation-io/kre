@@ -204,7 +204,26 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 	return gqlRuntimes, nil
 }
 func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Version, error) {
-	panic("not implemented")
+	versions, err := r.versionInteractor.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var gqlVersions []*Version
+	for _, v := range versions {
+		creationUser, err := r.userInteractor.GetByID(v.CreationAuthor) // TODO improve this using something like https://gqlgen.com/reference/dataloaders/
+		if err != nil && err != usecase.ErrUserNotFound {
+			return nil, err
+		}
+		activationUser, err := r.userInteractor.GetByID(v.ActivationUserID)
+		if err != nil && err != usecase.ErrUserNotFound {
+			return nil, err
+		}
+		gqlVersion := toGQLVersion(&v, creationUser, activationUser)
+		gqlVersions = append(gqlVersions, gqlVersion)
+	}
+
+	return gqlVersions, nil
 }
 func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
 	return []*Alert{}, nil

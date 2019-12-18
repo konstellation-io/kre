@@ -31,7 +31,7 @@ func NewVersionRepoMongoDB(
 	}
 }
 
-func (r *VersionRepoMongoDB) Create(userID, runtimeID, name, description string) (*entity.Version, error) {
+func (r *VersionRepoMongoDB) Create(userID, runtimeID, name, description string, workflows []entity.Workflow) (*entity.Version, error) {
 	version := &entity.Version{
 		ID:             primitive.NewObjectID().Hex(),
 		RuntimeID:      runtimeID,
@@ -40,6 +40,7 @@ func (r *VersionRepoMongoDB) Create(userID, runtimeID, name, description string)
 		CreationDate:   time.Now().UTC(),
 		CreationAuthor: userID,
 		Status:         string(usecase.VersionStatusCreated),
+		Workflows:      workflows,
 	}
 	res, err := r.collection.InsertOne(context.Background(), version)
 	if err != nil {
@@ -69,4 +70,25 @@ func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
 	}
 
 	return nil
+}
+
+func (r *VersionRepoMongoDB) GetAll() ([]entity.Version, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	var versions []entity.Version
+	cur, err := r.collection.Find(ctx, bson.D{})
+	if err != nil {
+		return versions, err
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var version entity.Version
+		err = cur.Decode(&version)
+		if err != nil {
+			return versions, err
+		}
+		versions = append(versions, version)
+	}
+
+	return versions, nil
 }

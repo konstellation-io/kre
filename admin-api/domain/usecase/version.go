@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
@@ -49,9 +50,16 @@ func NewVersionInteractor(
 	}
 }
 
+type KrtYmlWorkflow struct {
+	Name       string   `yaml:"name"`
+	Entrypoint string   `yaml:"entrypoint"`
+	Sequential []string `yaml:"sequential"`
+}
+
 type KrtYml struct {
-	Version     string `yaml:"version"`
-	Description string `yaml:"description"`
+	Version     string           `yaml:"version"`
+	Description string           `yaml:"description"`
+	Workflows   []KrtYmlWorkflow `yaml:"workflows"`
 }
 
 func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
@@ -128,12 +136,51 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err // TODO send custom error for invalid yaml
 	}
 
-	v, err := i.versionRepo.Create(userID, runtimeID, krtYML.Version, krtYML.Description)
+	var workflows []entity.Workflow
+	if len(krtYML.Workflows) > 0 {
+		for _, w := range krtYML.Workflows {
+			workflows = append(workflows, i.generateWorkflow(w))
+		}
+	}
+
+	v, err := i.versionRepo.Create(userID, runtimeID, krtYML.Version, krtYML.Description, workflows)
 	if err != nil {
 		return nil, err
 	}
 
 	return v, nil
+}
+
+func (i *VersionInteractor) generateWorkflow(w KrtYmlWorkflow) entity.Workflow {
+	var nodes []entity.Node
+	var edges []entity.Edge
+
+	var previousN *entity.Node
+	for _, n := range w.Sequential {
+		node := &entity.Node{
+			ID:     uuid.New().String(),
+			Name:   n,
+			Status: "RUNNING", // TODO get status using runtime-api or k8s
+		}
+
+		if previousN != nil {
+			e := entity.Edge{
+				ID:       uuid.New().String(),
+				FromNode: previousN.ID,
+				ToNode:   node.ID,
+			}
+			edges = append(edges, e)
+		}
+
+		nodes = append(nodes, *node)
+		previousN = node
+	}
+
+	return entity.Workflow{
+		Name:  w.Name,
+		Nodes: nodes,
+		Edges: edges,
+	}
 }
 
 func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Version, error) {
@@ -183,4 +230,8 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	}
 
 	return version, nil
+}
+
+func (i *VersionInteractor) GetAll() ([]entity.Version, error) {
+	return i.versionRepo.GetAll()
 }

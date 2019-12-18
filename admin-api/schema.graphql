@@ -109,6 +109,30 @@ enum RuntimeStatus {
   ERROR
 }
 
+type Edge {
+  id: ID!
+  fromNode: ID!
+  toNode: ID!
+}
+
+type Node {
+  id: ID!
+  name: String!
+  status: NodeStatus!
+}
+
+enum NodeStatus {
+  ACTIVE
+  INACTIVE
+  ERROR
+}
+
+type Workflow {
+  name: String!
+  nodes: [Node!]!
+  edges: [Edge!]!
+}
+
 type Version {
   id: ID!
   name: String!
@@ -118,6 +142,7 @@ type Version {
   creationAuthor: User!
   activationDate: String!
   activationAuthor: User!
+  workflows: [Workflow!]!
 }
 
 enum VersionStatus {
