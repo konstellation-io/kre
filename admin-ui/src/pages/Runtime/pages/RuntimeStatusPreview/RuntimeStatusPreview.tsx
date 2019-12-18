@@ -1,9 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
 import Button from '../../../../components/Button/Button';
 import VersionStatusViewer from '../../../../components/VersionStatusViewer/VersionStatusViewer';
 import Node, { TYPES, STATUS } from '../../../../components/Shape/Node/Node';
+
+import { useMutation } from '@apollo/react-hooks';
+import {
+  ACTIVATE_VERSION,
+  DEPLOY_VERSION,
+  ActivateVersionResponse,
+  DeployVersionResponse,
+  ActivateDeployVersionVars
+} from './RuntimeStatusPreview.graphql';
 
 import styles from './RuntimeStatusPreview.module.scss';
 
@@ -135,11 +145,21 @@ const data = [
 ];
 
 function RuntimeStatusPreview() {
+  // TODO: loading and error check
+  const [activateMutation] = useMutation<
+    ActivateVersionResponse,
+    ActivateDeployVersionVars
+  >(ACTIVATE_VERSION);
+  const [deployMutation] = useMutation<
+    DeployVersionResponse,
+    ActivateDeployVersionVars
+  >(DEPLOY_VERSION);
   const [dimensions, setDimensions] = useState({
     width: 0,
     height: 0
   });
   const container = useRef(null);
+  const { versionId } = useParams();
 
   useEffect(() => {
     const containerDOM = container.current;
@@ -152,13 +172,29 @@ function RuntimeStatusPreview() {
     });
   }, [container]);
 
+  function getMutationVars() {
+    return {
+      variables: {
+        input: {
+          versionId: versionId || ''
+        }
+      }
+    };
+  }
+  function onDeployVersion() {
+    deployMutation(getMutationVars());
+  }
+  function onActivateVersion() {
+    activateMutation(getMutationVars());
+  }
+
   const { width, height } = dimensions;
 
   return (
     <div ref={container} className={styles.container}>
       <HorizontalBar>
-        <Button label="DEPLOY" />
-        <Button label="ACTIVATE" />
+        <Button label="DEPLOY" onClick={onDeployVersion} />
+        <Button label="ACTIVATE" onClick={onActivateVersion} />
       </HorizontalBar>
       STATUS PREVIEW
       <VersionStatusViewer
