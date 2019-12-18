@@ -36,7 +36,7 @@ func (k *ResourceManager) createKreOpeartor(runtimeName string) error {
 						{
 							Name:            "kre-operator",
 							Image:           operatorImage,
-							ImagePullPolicy: apiv1.PullIfNotPresent,
+							ImagePullPolicy: apiv1.PullAlways,
 							Env: []apiv1.EnvVar{
 								{
 									Name: "WATCH_NAMESPACE",
