@@ -33,7 +33,6 @@ func (k *ResourceManager) createRuntimeObject(runtime *input.CreateRuntimeInput,
 				"entrypoint": map[string]interface{}{
 					"host": entrypointURL,
 				},
-				// TODO: Read minio credentials from params
 				"minio": map[string]interface{}{
 					"credentials": map[string]interface{}{
 						"accessKey": runtime.Minio.AccessKey,

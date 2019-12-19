@@ -44,7 +44,6 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 	runtime := &entity.Runtime{
 		Name:  name,
 		Owner: userID,
-		// TODO: make it random per namespace
 		Minio: entity.MinioConfig{
 			AccessKey: "admin",
 			SecretKey: generateRandomPassword(),

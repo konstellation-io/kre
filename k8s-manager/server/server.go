@@ -36,7 +36,7 @@ func (s *GrpcServer) CreateRuntime(ctx context.Context, req *k8smanagerpb.Create
 		Name: strcase.ToKebab(runtime.GetName()),
 		Minio: input.MinioConfig{
 			AccessKey: runtime.Minio.GetAccessKey(),
-			SecretKey: "",
+			SecretKey: runtime.Minio.GetSecretKey(),
 		},
 	}
 	message := fmt.Sprintf("Runtime %s created", runtimeInput.Name)

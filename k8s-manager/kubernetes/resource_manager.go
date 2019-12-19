@@ -55,7 +55,7 @@ func (k *ResourceManager) CreateRuntime(runtimeInput *input.CreateRuntimeInput) 
 	}
 
 	// Create operator
-	err = k.createKreOpeartor(name)
+	err = k.createKreOperator(name)
 	if err != nil {
 		log.Printf("error creating operator: %v", err)
 		return ErrRuntimeResourceCreation
