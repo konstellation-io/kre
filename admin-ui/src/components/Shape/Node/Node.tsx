@@ -65,16 +65,23 @@ function Node({ type, status, width = 218, height = 66 }: Props) {
         fill="none"
         stroke="red"
       /> */}
-      {/* <path
-        d="M 150 20
-          H 187
-          A 1 1, 0, 1, 1, 187 61
-          H 46
-          A 1 1, 0, 1, 1, 35 5
-          Z"
-        fill="none"
-        stroke="red"
-      /> */}
+      {[TYPES.DEFAULT, TYPES.DEFAULT_2].includes(type) && (
+        <g className="errorCount">
+          <path
+            d="M 179 26
+              H 187
+              A 1 1, 0, 1, 1, 187 40
+              H 179
+              A 1 1, 0, 1, 1, 179 26
+              Z"
+            fill="none"
+            stroke="#5d6c76"
+          />
+          <text x="180" y="36" className="errors">
+            0
+          </text>
+        </g>
+      )}
     </svg>
   );
 }
