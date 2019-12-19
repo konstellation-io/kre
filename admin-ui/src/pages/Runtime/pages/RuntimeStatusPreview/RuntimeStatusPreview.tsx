@@ -1,7 +1,8 @@
 import { get } from 'lodash';
 
 import React from 'react';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
+import * as PAGES from '../../../../constants/routes';
 
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
 import Button, { BUTTON_TYPES } from '../../../../components/Button/Button';
@@ -183,20 +184,25 @@ function getStateToButtons(
 }
 
 function RuntimeStatusPreview() {
-  const { versionId } = useParams();
+  const history = useHistory();
+  const { runtimeId, versionId } = useParams();
+  console.log('RECREATING');
   const { data, loading, error } = useQuery<
     GetVersionWorkflowsResponse,
     GetVersionWorkflowsVars
-  >(GET_VERSION_WORKFLOWS, { variables: { versionId } });
+  >(GET_VERSION_WORKFLOWS, {
+    variables: { versionId },
+    fetchPolicy: 'no-cache'
+  });
   // TODO: loading and error check
   const [activateMutation] = useMutation<
     ActivateVersionResponse,
     ActivateDeployVersionVars
-  >(ACTIVATE_VERSION);
+  >(ACTIVATE_VERSION, { onCompleted: refreshPage });
   const [deployMutation] = useMutation<
     DeployVersionResponse,
     ActivateDeployVersionVars
-  >(DEPLOY_VERSION);
+  >(DEPLOY_VERSION, { onCompleted: refreshPage });
 
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
@@ -209,6 +215,15 @@ function RuntimeStatusPreview() {
         }
       }
     };
+  }
+  function refreshPage() {
+    history.push('');
+    history.replace(
+      PAGES.RUNTIME_STATUS_PREVIEW.replace(
+        ':runtimeId',
+        runtimeId || ''
+      ).replace(':versionId', versionId || '')
+    );
   }
   function onDeployVersion() {
     deployMutation(getMutationVars());
