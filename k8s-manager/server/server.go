@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/input"
 	"log"
 
 	"github.com/iancoleman/strcase"
@@ -28,11 +29,19 @@ func NewGrpcServer(
 }
 
 func (s *GrpcServer) CreateRuntime(ctx context.Context, req *k8smanagerpb.CreateRuntimeRequest) (*k8smanagerpb.CreateRuntimeResponse, error) {
-	runtimeName := strcase.ToKebab(req.GetRuntime().GetName())
-	message := fmt.Sprintf("Runtime %s created", runtimeName)
+	runtime := req.GetRuntime()
 	success := true
 
-	err := s.resources.CreateRuntime(runtimeName)
+	runtimeInput := &input.CreateRuntimeInput{
+		Name: strcase.ToKebab(runtime.GetName()),
+		Minio: input.MinioConfig{
+			AccessKey: runtime.Minio.GetAccessKey(),
+			SecretKey: "",
+		},
+	}
+	message := fmt.Sprintf("Runtime %s created", runtimeInput.Name)
+
+	err := s.resources.CreateRuntime(runtimeInput)
 	if err != nil {
 		success = false
 		if err == kubernetes.ErrRuntimeResourceCreation {
