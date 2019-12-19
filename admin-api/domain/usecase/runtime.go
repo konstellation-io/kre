@@ -39,13 +39,22 @@ func NewRuntimeInteractor(
 }
 
 func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRuntime *entity.Runtime, onRuntimeRunningChannel chan *entity.Runtime, err error) {
-	createRuntimeInK8sResult, err := i.k8sManagerService.CreateRuntime(name)
+	runtime := &entity.Runtime{
+		Name:  name,
+		Owner: userID,
+		// TODO: make it random per namespace
+		Minio: entity.MinioConfig{
+			AccessKey: "admin",
+			SecretKey: "minio12345678",
+		},
+	}
+	createRuntimeInK8sResult, err := i.k8sManagerService.CreateRuntime(runtime)
 	if err != nil {
 		return
 	}
 	i.logger.Info("K8sManagerService create result: " + createRuntimeInK8sResult)
 
-	createdRuntime, err = i.runtimeRepo.Create(name, userID)
+	createdRuntime, err = i.runtimeRepo.Create(runtime)
 	if err != nil {
 		return
 	}

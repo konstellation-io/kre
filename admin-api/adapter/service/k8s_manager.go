@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/k8smanagerpb"
 	"google.golang.org/grpc"
@@ -22,7 +23,7 @@ func NewK8sManagerServiceGRPC(cfg *config.Config, logger logging.Logger) *K8sMan
 	}
 }
 
-func (k *K8sManagerServiceGRPC) CreateRuntime(name string) (string, error) {
+func (k *K8sManagerServiceGRPC) CreateRuntime(runtime *entity.Runtime) (string, error) {
 	cc, err := grpc.Dial(k.cfg.Services.K8sManager, grpc.WithInsecure())
 	if err != nil {
 		return "", err
@@ -39,7 +40,11 @@ func (k *K8sManagerServiceGRPC) CreateRuntime(name string) (string, error) {
 
 	req := k8smanagerpb.CreateRuntimeRequest{
 		Runtime: &k8smanagerpb.Runtime{
-			Name: name,
+			Name: runtime.Name,
+			Minio: &k8smanagerpb.Runtime_MinioConf{
+				AccessKey: runtime.Minio.AccessKey,
+				SecretKey: runtime.Minio.SecretKey,
+			},
 		},
 	}
 
