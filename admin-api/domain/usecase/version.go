@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"io/ioutil"
 	"os"
@@ -29,6 +30,7 @@ var (
 	VersionStatusRunning VersionStatus = "RUNNING"
 	VersionStatusStopped VersionStatus = "STOPPED"
 	ErrVersionNotFound                 = errors.New("error version not found")
+	ErrVersionDuplicated               = errors.New("error version duplicated")
 )
 
 type VersionInteractor struct {
@@ -52,9 +54,16 @@ func NewVersionInteractor(
 	}
 }
 
+type KrtYmlWorkflow struct {
+	Name       string   `yaml:"name"`
+	Entrypoint string   `yaml:"entrypoint"`
+	Sequential []string `yaml:"sequential"`
+}
+
 type KrtYml struct {
-	Version     string `yaml:"version"`
-	Description string `yaml:"description"`
+	Version     string           `yaml:"version"`
+	Description string           `yaml:"description"`
+	Workflows   []KrtYmlWorkflow `yaml:"workflows"`
 }
 
 func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
@@ -135,12 +144,29 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err // TODO send custom error for invalid yaml
 	}
 
-	versionCreated, err := i.versionRepo.Create(userID, runtimeID, krtYML.Version, krtYML.Description)
+	// Check if the version is duplicated
+	versions, err := i.versionRepo.GetByRuntime(runtimeID)
+	for _, v := range versions {
+		if v.Name == krtYML.Version {
+			return nil, ErrVersionDuplicated
+		}
+	}
+
+	// Parse Workflows
+	var workflows []entity.Workflow
+	if len(krtYML.Workflows) > 0 {
+		for _, w := range krtYML.Workflows {
+			workflows = append(workflows, i.generateWorkflow(w))
+		}
+	}
+
+	versionCreated, err := i.versionRepo.Create(userID, runtimeID, krtYML.Version, krtYML.Description, workflows)
 	if err != nil {
 		return nil, err
 	}
 	i.logger.Info("Version created ")
-	// create bucket
+
+	// Create bucket
 	ns := strcase.ToKebab(runtime.Name)
 	endpoint := fmt.Sprintf("kre-minio.%s:9000", ns)
 	accessKeyID := runtime.Minio.AccessKey
@@ -150,6 +176,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	fmt.Printf("Minio data: %#v \n endpoint: %s", runtime, endpoint)
 	// Initialize minio client object.
 	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
+
 	if err != nil {
 		return nil, err
 	}
@@ -168,32 +195,64 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 			return nil, err
 		}
 	}
-	i.logger.Info(fmt.Sprintf("Bucket %s connected", bucketName ))
+	i.logger.Info(fmt.Sprintf("Bucket %s connected", bucketName))
 
 	// Copy all KRT files
 	err = filepath.Walk(tmpDir, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			// Upload the zip file
-			if info.IsDir(){
-				return nil
-			}
-			i.logger.Info(fmt.Sprintf("Uploading file %s", path ))
-			filePath, _ := filepath.Rel(tmpDir, path)
-		_, err = minioClient.FPutObject(bucketName, filePath, path, minio.PutObjectOptions{})
-			if err != nil {
-				return err
-			}
-
+		if err != nil {
+			return err
+		}
+		// Upload the zip file
+		if info.IsDir() {
 			return nil
-		})
+		}
+		i.logger.Info(fmt.Sprintf("Uploading file %s", path))
+		filePath, _ := filepath.Rel(tmpDir, path)
+		_, err = minioClient.FPutObject(bucketName, filePath, path, minio.PutObjectOptions{})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
 
 	return versionCreated, nil
+}
 
+func (i *VersionInteractor) generateWorkflow(w KrtYmlWorkflow) entity.Workflow {
+	var nodes []entity.Node
+	var edges []entity.Edge
+
+	var previousN *entity.Node
+	for _, n := range w.Sequential {
+		node := &entity.Node{
+			ID:     uuid.New().String(),
+			Name:   n,
+			Status: "ACTIVE", // TODO get status using runtime-api or k8s
+		}
+
+		if previousN != nil {
+			e := entity.Edge{
+				ID:       uuid.New().String(),
+				FromNode: previousN.ID,
+				ToNode:   node.ID,
+			}
+			edges = append(edges, e)
+		}
+
+		nodes = append(nodes, *node)
+		previousN = node
+	}
+
+	return entity.Workflow{
+		Name:  w.Name,
+		Nodes: nodes,
+		Edges: edges,
+	}
 }
 
 func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Version, error) {
@@ -214,6 +273,12 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 		return nil, err
 	}
 
+	version.Status = string(VersionStatusRunning)
+	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
 	return version, nil
 }
 
@@ -230,17 +295,47 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 		return nil, err
 	}
 
+	// Deactivate the previous active version
+	versions, err := i.versionRepo.GetByRuntime(runtime.ID)
+	if err != nil {
+		return nil, err
+	}
+	if len(versions) > 0 {
+		for _, v := range versions {
+			if v.Status == string(VersionStatusActive) {
+				v.Status = string(VersionStatusRunning)
+				v.ActivationUserID = nil
+				v.ActivationDate = nil
+				err = i.versionRepo.Update(&v)
+				if err != nil {
+					return nil, err
+				}
+				break
+			}
+		}
+	}
+
 	err = i.runtimeService.ActivateVersion(runtime, version.Name)
 	if err != nil {
 		return nil, err
 	}
 
-	version.ActivationDate = time.Now()
-	version.ActivationUserID = userID
+	now := time.Now()
+	version.ActivationDate = &now
+	version.ActivationUserID = &userID
+	version.Status = string(VersionStatusActive)
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
 	}
 
 	return version, nil
+}
+
+func (i *VersionInteractor) GetByRuntime(runtimeID string) ([]entity.Version, error) {
+	return i.versionRepo.GetByRuntime(runtimeID)
+}
+
+func (i *VersionInteractor) GetByID(id string) (*entity.Version, error) {
+	return i.versionRepo.GetByID(id)
 }

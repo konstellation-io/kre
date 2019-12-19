@@ -10,13 +10,24 @@
   fill: $font-color;
 }
 
-.inactive {
+.errors {
+  @include font-body;
+  fill: $font-color;
+  font-size: 9px;
+}
+
+.INACTIVE,
+.CREATED {
   .ext {
     fill: $color-grey-darker;
   }
+  .int {
+    stroke: $color-node-content;
+  }
 }
 
-.active {
+.ACTIVE,
+.RUNNING {
   .ext {
     fill: $color-green;
     stroke: $color-green;
@@ -27,9 +38,22 @@
   .label {
     fill: $font-color-white;
   }
+
+  .errorCount {
+    path {
+      fill: $color-green;
+      stroke: $color-green;
+    }
+    .errors {
+      @include font-body;
+      fill: $font-color-white;
+      font-size: 9px;
+      font-weight: 600;
+    }
+  }
 }
 
-.warning {
+.WARNING {
   .ext {
     fill: $color-orange;
     stroke: $color-orange;
@@ -39,7 +63,7 @@
   }
 }
 
-.error {
+.ERROR {
   .ext {
     fill: $color-red;
     stroke: $color-red;

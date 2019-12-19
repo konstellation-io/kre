@@ -44,9 +44,21 @@ type DeployVersionInput struct {
 	VersionID string `json:"versionId"`
 }
 
+type Edge struct {
+	ID       string `json:"id"`
+	FromNode string `json:"fromNode"`
+	ToNode   string `json:"toNode"`
+}
+
 type Error struct {
 	Code    ErrorCode `json:"code"`
 	Message string    `json:"message"`
+}
+
+type Node struct {
+	ID     string     `json:"id"`
+	Name   string     `json:"name"`
+	Status NodeStatus `json:"status"`
 }
 
 type Runtime struct {
@@ -55,7 +67,7 @@ type Runtime struct {
 	Status         RuntimeStatus `json:"status"`
 	CreationDate   string        `json:"creationDate"`
 	CreationAuthor *User         `json:"creationAuthor"`
-	Versions       []*Version    `json:"versions"`
+	ActiveVersion  *Version      `json:"activeVersion"`
 }
 
 type Settings struct {
@@ -93,8 +105,15 @@ type Version struct {
 	Status           VersionStatus `json:"status"`
 	CreationDate     string        `json:"creationDate"`
 	CreationAuthor   *User         `json:"creationAuthor"`
-	ActivationDate   string        `json:"activationDate"`
+	ActivationDate   *string       `json:"activationDate"`
 	ActivationAuthor *User         `json:"activationAuthor"`
+	Workflows        []*Workflow   `json:"workflows"`
+}
+
+type Workflow struct {
+	Name  string  `json:"name"`
+	Nodes []*Node `json:"nodes"`
+	Edges []*Edge `json:"edges"`
 }
 
 type AlertLevel string
@@ -180,6 +199,49 @@ func (e *ErrorCode) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ErrorCode) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type NodeStatus string
+
+const (
+	NodeStatusActive   NodeStatus = "ACTIVE"
+	NodeStatusInactive NodeStatus = "INACTIVE"
+	NodeStatusError    NodeStatus = "ERROR"
+)
+
+var AllNodeStatus = []NodeStatus{
+	NodeStatusActive,
+	NodeStatusInactive,
+	NodeStatusError,
+}
+
+func (e NodeStatus) IsValid() bool {
+	switch e {
+	case NodeStatusActive, NodeStatusInactive, NodeStatusError:
+		return true
+	}
+	return false
+}
+
+func (e NodeStatus) String() string {
+	return string(e)
+}
+
+func (e *NodeStatus) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = NodeStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid NodeStatus", str)
+	}
+	return nil
+}
+
+func (e NodeStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

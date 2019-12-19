@@ -16,7 +16,7 @@ func toGQLUser(user *entity.User) (gqlUser *User) {
 	}
 }
 
-func toGQLRuntime(runtime *entity.Runtime, user *entity.User) (gqlRuntime *Runtime) {
+func toGQLRuntime(runtime *entity.Runtime, creationAuthor *entity.User) (gqlRuntime *Runtime) {
 	if runtime == nil {
 		return
 	}
@@ -26,8 +26,7 @@ func toGQLRuntime(runtime *entity.Runtime, user *entity.User) (gqlRuntime *Runti
 		Name:           runtime.Name,
 		Status:         RuntimeStatus(runtime.Status),
 		CreationDate:   runtime.CreationDate.Format(time.RFC3339),
-		Versions:       []*Version{},
-		CreationAuthor: toGQLUser(user),
+		CreationAuthor: toGQLUser(creationAuthor),
 	}
 
 	return
@@ -49,8 +48,62 @@ func toGQLVersion(version *entity.Version, creationUser *entity.User, activation
 
 	if activationUser != nil {
 		gqlVersion.ActivationAuthor = toGQLUser(activationUser)
-		gqlVersion.ActivationDate = version.ActivationDate.Format(time.RFC3339)
+	}
+
+	if version.ActivationDate != nil {
+		activationDate := version.ActivationDate.Format(time.RFC3339)
+		gqlVersion.ActivationDate = &activationDate
+	}
+
+	if len(version.Workflows) > 0 {
+		var gqlWorkflows []*Workflow
+		for _, w := range version.Workflows {
+			gqlWorkflows = append(gqlWorkflows, toGQLWorkflow(&w))
+		}
+		gqlVersion.Workflows = gqlWorkflows
 	}
 
 	return
+}
+
+func toGQLWorkflow(w *entity.Workflow) *Workflow {
+	if w == nil {
+		return nil
+	}
+
+	var nodes []*Node
+	if len(w.Nodes) > 0 {
+		for _, n := range w.Nodes {
+			nodes = append(nodes, toGQLNode(&n))
+		}
+	}
+
+	var edges []*Edge
+	if len(w.Edges) > 0 {
+		for _, e := range w.Edges {
+			edges = append(edges, toGQLEdge(&e))
+		}
+	}
+
+	return &Workflow{
+		Name:  w.Name,
+		Nodes: nodes,
+		Edges: edges,
+	}
+}
+
+func toGQLNode(n *entity.Node) *Node {
+	return &Node{
+		ID:     n.ID,
+		Name:   n.Name,
+		Status: NodeStatus(n.Status),
+	}
+}
+
+func toGQLEdge(e *entity.Edge) *Edge {
+	return &Edge{
+		ID:       e.ID,
+		FromNode: e.FromNode,
+		ToNode:   e.ToNode,
+	}
 }

@@ -30,3 +30,33 @@ export const DEPLOY_VERSION = gql`
     }
   }
 `;
+
+export interface GetVersionWorkflowsResponse {
+  version: Version;
+}
+
+export interface GetVersionWorkflowsVars {
+  versionId?: string;
+}
+
+export const GET_VERSION_WORKFLOWS = gql`
+  query GetVersionWorkflows($versionId: ID!) {
+    version(id: $versionId) {
+      name
+      status
+      workflows {
+        name
+        nodes {
+          id
+          name
+          status
+        }
+        edges {
+          id
+          fromNode
+          toNode
+        }
+      }
+    }
+  }
+`;

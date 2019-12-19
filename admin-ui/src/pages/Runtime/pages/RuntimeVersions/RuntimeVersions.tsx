@@ -35,7 +35,9 @@ function RuntimeVersions() {
   if (error) return <ErrorMessage />;
 
   let activeVersion: Version | undefined;
-  if (data && data.versions.length !== 0) {
+
+  let hasVersions = data && data.versions.length > 0;
+  if (data && hasVersions) {
     activeVersion = data.versions.find(version => version.status === 'ACTIVE');
   }
 
@@ -94,14 +96,19 @@ function RuntimeVersions() {
 
   return (
     <div className={styles.content}>
-      <h2>Versions</h2>
-      <p className={styles.subtitle}>
-        Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec
-        viverra eleifend lacus, vitae ullamcorper metus. Sed sollicitudin ipsum
-        quis nunc sollicitudin ultrices. Donec euismod scelerisque ligula.
-        Maecenas eu varius risus, eu aliquet arcu. Curabitur fermentum suscipit
-        est, tincidunt.
-      </p>
+      {hasVersions && (
+        <>
+          <h2>Versions</h2>
+          <p className={styles.subtitle}>
+            Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec
+            viverra eleifend lacus, vitae ullamcorper metus. Sed sollicitudin
+            ipsum quis nunc sollicitudin ultrices. Donec euismod scelerisque
+            ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur
+            fermentum suscipit est, tincidunt.
+          </p>
+        </>
+      )}
+
       {getContent()}
     </div>
   );

@@ -51,10 +51,11 @@ function AddVersion() {
     console.log(`${versionCreatedId} version created`);
 
     setVersionUploaded(versionCreatedId);
+
+    onDeploy();
   }
 
   function onDeploy() {
-    console.log(PAGES.RUNTIME_STATUS_PREVIEW, versionUploaded);
     history.push(
       PAGES.RUNTIME_STATUS_PREVIEW.replace(
         ':runtimeId',
@@ -80,7 +81,7 @@ function AddVersion() {
             <FileUpload
               label="upload version file (KRT file)"
               placeholder=".krt"
-              error={form.input.file.error}
+              error={error ? error.toString() : form.input.file.error}
               onChange={form.input.file.onChange}
             />
             {loading && (

@@ -1,6 +1,14 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+tspan {
+  alignment-baseline: hanging;
+}
+
+.container {
+  height: 100%;
+}
+
 .wrapper {
   cursor: grab;
 }
@@ -9,11 +17,43 @@
   display: inline;
 }
 
+.workflowTag {
+  line,
+  path {
+    stroke: $color-green;
+  }
+
+  &.preview line,
+  &.preview path {
+    stroke: $font-color;
+  }
+}
+
 .node {
   display: inline;
+}
+
+.edge {
+  stroke: $font-color;
+
+  &.ACTIVE line,
+  &.ACTIVE path,
+  &.RUNNING line,
+  &.RUNNING path {
+    stroke: $color-green;
+  }
 }
 
 .nodeText {
   @include font-button;
   fill: $font-color;
+}
+
+.workflowTagText {
+  @include font-button;
+  fill: $font-color;
+
+  line-height: 10px;
+  alignment-baseline: central;
+  text-anchor: end;
 }
