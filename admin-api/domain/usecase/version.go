@@ -201,6 +201,12 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 		return nil, err
 	}
 
+	version.Status = string(VersionStatusRunning)
+	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
 	return version, nil
 }
 
@@ -217,13 +223,35 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 		return nil, err
 	}
 
+	// Deactivate the previous active version
+	versions, err := i.versionRepo.GetByRuntime(runtime.ID)
+	if err != nil {
+		return nil, err
+	}
+	if len(versions) > 0 {
+		for _, v := range versions {
+			if v.Status == string(VersionStatusActive) {
+				v.Status = string(VersionStatusRunning)
+				v.ActivationUserID = nil
+				v.ActivationDate = nil
+				err = i.versionRepo.Update(&v)
+				if err != nil {
+					return nil, err
+				}
+				break
+			}
+		}
+	}
+
 	err = i.runtimeService.ActivateVersion(runtime, version.Name)
 	if err != nil {
 		return nil, err
 	}
 
-	version.ActivationDate = time.Now()
-	version.ActivationUserID = userID
+	now := time.Now()
+	version.ActivationDate = &now
+	version.ActivationUserID = &userID
+	version.Status = string(VersionStatusActive)
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -232,8 +260,8 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	return version, nil
 }
 
-func (i *VersionInteractor) GetAll() ([]entity.Version, error) {
-	return i.versionRepo.GetAll()
+func (i *VersionInteractor) GetByRuntime(runtimeID string) ([]entity.Version, error) {
+	return i.versionRepo.GetByRuntime(runtimeID)
 }
 
 func (i *VersionInteractor) GetByID(id string) (*entity.Version, error) {

@@ -3,6 +3,7 @@ package gql
 import (
 	"context"
 	"github.com/google/uuid"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"time"
@@ -197,6 +198,23 @@ func (r *queryResolver) Users(ctx context.Context) ([]*User, error) {
 
 	return result, nil
 }
+func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
+	runtime, err := r.runtimeInteractor.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	owner, err := r.userInteractor.GetByID(runtime.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	gqlRuntime := toGQLRuntime(runtime, owner)
+
+	// TODO Get Runtime Active Version
+
+	return gqlRuntime, nil
+}
 func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 	var gqlRuntimes []*Runtime
 	runtimes, err := r.runtimeInteractor.FindAll()
@@ -212,8 +230,7 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 			ID:           runtime.ID,
 			Name:         runtime.Name,
 			Status:       RuntimeStatus(runtime.Status),
-			CreationDate: runtime.CreationDate.Format("2006-01-02"),
-			Versions:     []*Version{},
+			CreationDate: runtime.CreationDate.Format("2006-01-02"), // TODO add activeVersion
 		}
 		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
 	}
@@ -231,29 +248,35 @@ func (r *queryResolver) Version(ctx context.Context, id string) (*Version, error
 		return nil, err
 	}
 
-	activationUser, err := r.userInteractor.GetByID(v.ActivationUserID)
-	if err != nil && err != usecase.ErrUserNotFound {
-		return nil, err
+	var activationUser *entity.User
+	if v.ActivationUserID != nil {
+		activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+		if err != nil && err != usecase.ErrUserNotFound {
+			return nil, err
+		}
 	}
 
 	gqlVersion := toGQLVersion(v, creationUser, activationUser)
 	return gqlVersion, nil
 }
 func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Version, error) {
-	versions, err := r.versionInteractor.GetAll()
+	versions, err := r.versionInteractor.GetByRuntime(runtimeID)
 	if err != nil {
 		return nil, err
 	}
 
 	var gqlVersions []*Version
 	for _, v := range versions {
-		creationUser, err := r.userInteractor.GetByID(v.CreationAuthor) // TODO improve this using something like https://gqlgen.com/reference/dataloaders/
+		creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
 		if err != nil && err != usecase.ErrUserNotFound {
 			return nil, err
 		}
-		activationUser, err := r.userInteractor.GetByID(v.ActivationUserID)
-		if err != nil && err != usecase.ErrUserNotFound {
-			return nil, err
+		var activationUser *entity.User
+		if v.ActivationUserID != nil {
+			activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+			if err != nil && err != usecase.ErrUserNotFound {
+				return nil, err
+			}
 		}
 		gqlVersion := toGQLVersion(&v, creationUser, activationUser)
 		gqlVersions = append(gqlVersions, gqlVersion)
@@ -303,19 +326,6 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 	}
 
 	return result, nil
-}
-func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
-	runtime, err := r.runtimeInteractor.GetByID(id)
-	if err != nil {
-		return nil, err
-	}
-
-	owner, err := r.userInteractor.GetByID(runtime.Owner)
-	if err != nil {
-		return nil, err
-	}
-
-	return toGQLRuntime(runtime, owner), nil
 }
 
 type subscriptionResolver struct{ *GraphQLResolver }

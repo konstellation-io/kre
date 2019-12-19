@@ -32,8 +32,8 @@ type Version struct {
 	CreationDate   time.Time `bson:"creationDate"`
 	CreationAuthor string    `bson:"creationAuthor"`
 
-	ActivationDate   time.Time `bson:"activationDate"`
-	ActivationUserID string    `bson:"activationUserId"`
+	ActivationDate   *time.Time `bson:"activationDate"`
+	ActivationUserID *string    `bson:"activationUserId"`
 
 	Status    string     `bson:"status"`
 	Workflows []Workflow `bson:"workflows"`

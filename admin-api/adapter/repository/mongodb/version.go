@@ -72,10 +72,10 @@ func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
 	return nil
 }
 
-func (r *VersionRepoMongoDB) GetAll() ([]entity.Version, error) {
+func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]entity.Version, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []entity.Version
-	cur, err := r.collection.Find(ctx, bson.D{})
+	cur, err := r.collection.Find(ctx, bson.M{"runtimeId": runtimeID})
 	if err != nil {
 		return versions, err
 	}

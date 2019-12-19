@@ -13,7 +13,7 @@ export const GET_RUNTIME = gql`
   query GetRuntime($runtimeId: ID!) {
     runtime(id: $runtimeId) {
       name
-      versions(status: ACTIVE) {
+      activeVersion {
         name
         creationDate
         creationAuthor {
