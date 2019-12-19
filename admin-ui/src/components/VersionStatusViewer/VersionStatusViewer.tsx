@@ -92,8 +92,6 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
     select(svg.current)
       .selectAll('*')
       .remove();
-    // TODO: remove tooltip
-    // select(svg.current.parentNode).selectAll('div').remove();
   }
 
   function buildNodeIdToIndex() {
@@ -219,7 +217,7 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
                 type={d.type || TYPES.DEFAULT}
                 width={nodeWidth}
                 height={DEFAULT_NODE_HEIGHT * nodeSizeRatio}
-                status={STATUS.ACTIVE}
+                status={d.status}
               />
             )
           );
@@ -231,12 +229,12 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
         'x',
         (d: Node) => getNodeTextPadding(d.type || TYPES.DEFAULT) * nodeSizeRatio
       )
-      .attr('y', 0)
+      .attr('y', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
       .attr('dy', 0)
       .style('font-size', fontSize)
       .text((d: Node) => d.name)
       .call(wrap, 47 * nodeSizeRatio)
-      .call(centerText, nodeSizeRatio);
+      .call(centerText);
 
     // Initialize edges
     edges = edgesG
@@ -275,7 +273,6 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
   return (
     <div className={styles.container} ref={container}>
       <svg width={width} height={height} ref={svg} className={styles.wrapper} />
-      VersionStatusViewer
     </div>
   );
 }

@@ -10,13 +10,18 @@
   fill: $font-color;
 }
 
-.inactive {
+.INACTIVE,
+.CREATED {
   .ext {
     fill: $color-grey-darker;
   }
+  .int {
+    stroke: $color-node-content;
+  }
 }
 
-.active {
+.ACTIVE,
+.RUNNING {
   .ext {
     fill: $color-green;
     stroke: $color-green;
@@ -29,7 +34,7 @@
   }
 }
 
-.warning {
+.WARNING {
   .ext {
     fill: $color-orange;
     stroke: $color-orange;
@@ -39,7 +44,7 @@
   }
 }
 
-.error {
+.ERROR {
   .ext {
     fill: $color-red;
     stroke: $color-red;

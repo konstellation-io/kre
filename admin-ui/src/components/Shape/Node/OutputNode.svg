@@ -2,9 +2,9 @@
   <g>
     <path
       class="ext"
-      d="M 7.5 5
+      d="M 9.5 5
         H 213
-        V 63
+        V 61
         H 10
         a 7, 7 0 0 1 -5, -5
         V 10
@@ -14,12 +14,12 @@
     />
     <path
       class="int"
-      d="M 7.5 5
+      d="M 9.5 5
         H 120
         a 10, 10 0 0 1 5, 2
-        L 149 33
+        L 149 30.5
         a 5, 5 0 0 1 0, 5
-        L 123 61
+        L 123 59
         a 10, 10 0 0 1 -5, 2
         H 10
         a 7, 7 0 0 1 -5, -5
@@ -28,6 +28,6 @@
         "
       fill="grey"
     />
-    <text x="155" y="39" class="label">OUTPUT</text>
+    <text x="155" y="37" class="label">OUTPUT</text>
   </g>
 </svg>

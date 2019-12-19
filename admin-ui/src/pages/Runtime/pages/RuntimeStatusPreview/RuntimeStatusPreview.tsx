@@ -1,14 +1,14 @@
-import { get, cloneDeep } from 'lodash';
+import { get } from 'lodash';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
 
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
-import Button from '../../../../components/Button/Button';
+import Button, { BUTTON_TYPES } from '../../../../components/Button/Button';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
-import VersionStatusViewer from '../../../../components/VersionStatusViewer/VersionStatusViewer';
-import Node, { TYPES, STATUS } from '../../../../components/Shape/Node/Node';
+import { TYPES, STATUS } from '../../../../components/Shape/Node/Node';
+import StatusViewer from '../../components/StatusViewer/StatusViewer';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import {
@@ -151,79 +151,35 @@ const data = [
   }
 ];
 
-function formatData(workflows: any) {
-  let formattedData = cloneDeep(workflows);
-
-  formattedData = formattedData.map((workflow: any, idx: number) => {
-    workflow.nodes.unshift({
-      id: `W${idx}InputNode`,
-      name: 'DATA INPUT',
-      status: '',
-      type: TYPES.INPUT
-    });
-    workflow.nodes.push({
-      id: `W${idx}OutputNode`,
-      name: 'DATA OUTPUT',
-      status: '',
-      type: TYPES.OUTPUT
-    });
-    workflow.edges.push({
-      id: 'InputEdge',
-      status: STATUS.ACTIVE,
-      fromNode: `W${idx}InputNode`,
-      toNode: workflow.nodes[1].id
-    });
-    workflow.edges.push({
-      id: 'OutputEdge',
-      status: STATUS.ACTIVE,
-      fromNode: workflow.nodes[workflow.nodes.length - 2].id,
-      toNode: `W${idx}OutputNode`
-    });
-
-    return workflow;
-  });
-
-  return formattedData;
+function generateActionButton(label: string, action: Function) {
+  return (
+    <Button
+      key={label}
+      label={label}
+      onClick={action}
+      type={BUTTON_TYPES.DARK}
+      height={30}
+    />
+  );
 }
 
-function Viewer({ data }: any) {
-  const container = useRef(null);
-  const [dimensions, setDimensions] = useState({
-    width: 0,
-    height: 0
-  });
+function getStateToButtons(
+  activateAction: Function,
+  deployAction: Function,
+  stopAction: Function,
+  deactivateAction: Function
+) {
+  const buttonDeploy = generateActionButton('DEPLOY', deployAction);
+  const buttonStop = generateActionButton('STOP', stopAction);
+  const buttonActivate = generateActionButton('ACTIVATE', activateAction);
+  const buttonDeactivate = generateActionButton('DEACTIVATE', deactivateAction);
 
-  useEffect(() => {
-    const containerDOM = container.current;
-
-    if (containerDOM) {
-      setDimensions({
-        // @ts-ignore
-        width: containerDOM.clientWidth,
-        // @ts-ignore
-        height: containerDOM.clientHeight
-      });
-    }
-  }, [container]);
-
-  const { width, height } = dimensions;
-
-  return (
-    <div ref={container} className={styles.container}>
-      <VersionStatusViewer
-        width={width}
-        height={height * 0.6}
-        margin={{
-          top: 10,
-          right: 10,
-          bottom: 10,
-          left: 10
-        }}
-        data={data}
-        preview={false}
-      />
-    </div>
-  );
+  return {
+    STOPPED: [buttonDeploy],
+    ACTIVE: [buttonDeactivate],
+    RUNNING: [buttonActivate, buttonStop],
+    CREATED: [buttonDeploy]
+  };
 }
 
 function RuntimeStatusPreview() {
@@ -261,18 +217,30 @@ function RuntimeStatusPreview() {
     activateMutation(getMutationVars());
   }
 
+  const stateToButtons: { [key: string]: any } = getStateToButtons(
+    onActivateVersion,
+    onDeployVersion,
+    function() {},
+    function() {}
+  );
+  const versionStatus = data && data.version && data.version.status;
+  const actionButtons: any = stateToButtons[versionStatus || ''];
+
   return (
     <div className={styles.container}>
-      <HorizontalBar>
-        <Button label="DEPLOY" onClick={onDeployVersion} />
-        <Button label="ACTIVATE" onClick={onActivateVersion} />
+      <HorizontalBar style={styles.horizontalBar}>
+        <div className={styles.horizontalBarButtons}>{actionButtons}</div>
+        <div className={styles.horizontalBarText}>
+          <span>PREVIEW MODE</span>
+          <div className={styles.horizontalBarSeparator} />
+          <span className={styles.horizontalText2}>Name of the version:</span>
+          <span>{data && data.version.name}</span>
+        </div>
       </HorizontalBar>
-      STATUS PREVIEW
-      <Viewer data={formatData(get(data, 'version.workflows', []))} />
-      <Node type={TYPES.INPUT} status={STATUS.INACTIVE} />
-      <Node type={TYPES.DEFAULT} status={STATUS.INACTIVE} />
-      <Node type={TYPES.DEFAULT_2} status={STATUS.INACTIVE} />
-      <Node type={TYPES.OUTPUT} status={STATUS.INACTIVE} />
+      <StatusViewer
+        data={get(data, 'version.workflows', [])}
+        status={versionStatus}
+      />
     </div>
   );
 }

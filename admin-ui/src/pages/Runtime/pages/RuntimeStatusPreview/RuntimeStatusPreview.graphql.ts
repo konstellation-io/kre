@@ -42,6 +42,8 @@ export interface GetVersionWorkflowsVars {
 export const GET_VERSION_WORKFLOWS = gql`
   query GetVersionWorkflows($versionId: ID!) {
     version(id: $versionId) {
+      name
+      status
       workflows {
         name
         nodes {

@@ -51,10 +51,11 @@ function AddVersion() {
     console.log(`${versionCreatedId} version created`);
 
     setVersionUploaded(versionCreatedId);
+
+    onDeploy();
   }
 
   function onDeploy() {
-    console.log(PAGES.RUNTIME_STATUS_PREVIEW, versionUploaded);
     history.push(
       PAGES.RUNTIME_STATUS_PREVIEW.replace(
         ':runtimeId',

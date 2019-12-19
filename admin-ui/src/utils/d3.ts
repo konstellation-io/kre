@@ -41,21 +41,22 @@ export function wrap(text: any, width: number) {
   });
 }
 
-export function centerText(text: any, sizeRatio: number) {
+export function centerText(text: any) {
   // @ts-ignore
   text.each(function() {
     // @ts-ignore
     const text = select(this);
-    const fontSize = parseFloat(text.style('font-size'));
 
-    // @ts-ignore
-    const textNode = text._groups[0][0];
+    const textNode = text.node();
+    const lineNode = text.select('tspan').node();
+
     const textHeight = textNode.getBBox().height;
+    // @ts-ignore
+    const lineHeight = lineNode.getBBox().height;
 
-    const parentNode = textNode.parentNode;
-    const parentHeight = parentNode.getBBox().height;
+    const lineHeightMargin = lineHeight * 0.15;
 
-    const padding = fontSize + (parentHeight - textHeight) / 2 - 2 * sizeRatio;
+    const padding = lineHeightMargin - textHeight / 2;
 
     text.attr('transform', `translate(0, ${padding})`);
   });

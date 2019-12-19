@@ -1,6 +1,14 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+tspan {
+  alignment-baseline: hanging;
+}
+
+.container {
+  height: 100%;
+}
+
 .wrapper {
   cursor: grab;
 }
@@ -28,8 +36,10 @@
 .edge {
   stroke: $font-color;
 
-  &.active line,
-  &.active path {
+  &.ACTIVE line,
+  &.ACTIVE path,
+  &.RUNNING line,
+  &.RUNNING path {
     stroke: $color-green;
   }
 }
