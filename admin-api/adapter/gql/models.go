@@ -67,7 +67,7 @@ type Runtime struct {
 	Status         RuntimeStatus `json:"status"`
 	CreationDate   string        `json:"creationDate"`
 	CreationAuthor *User         `json:"creationAuthor"`
-	Versions       []*Version    `json:"versions"`
+	ActiveVersion  *Version      `json:"activeVersion"`
 }
 
 type Settings struct {
@@ -105,7 +105,7 @@ type Version struct {
 	Status           VersionStatus `json:"status"`
 	CreationDate     string        `json:"creationDate"`
 	CreationAuthor   *User         `json:"creationAuthor"`
-	ActivationDate   string        `json:"activationDate"`
+	ActivationDate   *string       `json:"activationDate"`
 	ActivationAuthor *User         `json:"activationAuthor"`
 	Workflows        []*Workflow   `json:"workflows"`
 }

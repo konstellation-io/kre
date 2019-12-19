@@ -79,7 +79,7 @@ function Runtime() {
   if (loading) return <SpinnerCircular />;
 
   const runtime = data && data.runtime;
-  const originalActiveVersion = runtime && runtime.versions[0];
+  const originalActiveVersion = runtime && runtime.activeVersion;
   const activeVersion = runtime &&
     originalActiveVersion && {
       name: originalActiveVersion.name,

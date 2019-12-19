@@ -3,9 +3,10 @@ scalar Upload
 type Query {
   me: User
   users: [User!]!
-  runtimes: [Runtime!]
+  runtime(id: ID!): Runtime!
+  runtimes: [Runtime!]!
   version(id: ID!): Version!
-  versions(runtimeId: ID!): [Version!]
+  versions(runtimeId: ID!): [Version!]!
   alerts: [Alert!]
   settings: Settings!
   userActivityList(
@@ -15,7 +16,6 @@ type Query {
     toDate: String,
     lastId: String
   ): [UserActivity!]!
-  runtime(id: ID!): Runtime!
 }
 
 type Mutation {
@@ -103,7 +103,7 @@ type Runtime {
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!
-  versions(status: VersionStatus!): [Version!]!
+  activeVersion: Version
 }
 
 enum RuntimeStatus {
@@ -143,8 +143,8 @@ type Version {
   status: VersionStatus!
   creationDate: String!
   creationAuthor: User!
-  activationDate: String!
-  activationAuthor: User!
+  activationDate: String
+  activationAuthor: User
   workflows: [Workflow!]!
 }
 

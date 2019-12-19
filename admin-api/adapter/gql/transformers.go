@@ -16,7 +16,7 @@ func toGQLUser(user *entity.User) (gqlUser *User) {
 	}
 }
 
-func toGQLRuntime(runtime *entity.Runtime, user *entity.User) (gqlRuntime *Runtime) {
+func toGQLRuntime(runtime *entity.Runtime, creationAuthor *entity.User) (gqlRuntime *Runtime) {
 	if runtime == nil {
 		return
 	}
@@ -26,8 +26,7 @@ func toGQLRuntime(runtime *entity.Runtime, user *entity.User) (gqlRuntime *Runti
 		Name:           runtime.Name,
 		Status:         RuntimeStatus(runtime.Status),
 		CreationDate:   runtime.CreationDate.Format(time.RFC3339),
-		Versions:       []*Version{},
-		CreationAuthor: toGQLUser(user),
+		CreationAuthor: toGQLUser(creationAuthor),
 	}
 
 	return
@@ -49,7 +48,11 @@ func toGQLVersion(version *entity.Version, creationUser *entity.User, activation
 
 	if activationUser != nil {
 		gqlVersion.ActivationAuthor = toGQLUser(activationUser)
-		gqlVersion.ActivationDate = version.ActivationDate.Format(time.RFC3339)
+	}
+
+	if version.ActivationDate != nil {
+		activationDate := version.ActivationDate.Format(time.RFC3339)
+		gqlVersion.ActivationDate = &activationDate
 	}
 
 	if len(version.Workflows) > 0 {

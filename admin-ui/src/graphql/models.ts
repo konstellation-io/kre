@@ -26,7 +26,7 @@ export interface Runtime {
   name: string;
   status: string;
   creationDate: string;
-  versions: Version[];
+  activeVersion: Version;
 }
 
 export interface Alert {
