@@ -30,6 +30,7 @@ var (
 	VersionStatusRunning VersionStatus = "RUNNING"
 	VersionStatusStopped VersionStatus = "STOPPED"
 	ErrVersionNotFound                 = errors.New("error version not found")
+	ErrVersionDuplicated               = errors.New("error version duplicated")
 )
 
 type VersionInteractor struct {
@@ -143,6 +144,15 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err // TODO send custom error for invalid yaml
 	}
 
+	// Check if the version is duplicated
+	versions, err := i.versionRepo.GetByRuntime(runtimeID)
+	for _, v := range versions {
+		if v.Name == krtYML.Version {
+			return nil, ErrVersionDuplicated
+		}
+	}
+
+	// Parse Workflows
 	var workflows []entity.Workflow
 	if len(krtYML.Workflows) > 0 {
 		for _, w := range krtYML.Workflows {
