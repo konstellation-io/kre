@@ -38,7 +38,7 @@ type Props = {
 
 function SidebarTitle({ version }: Props) {
   if (!version) {
-    return <div>No active version</div>; // TODO add final design
+    return <div style={{ paddingLeft: '20px' }}>No active version</div>; // TODO add final design
   }
 
   return (

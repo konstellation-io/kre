@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func (k *ResourceManager) createKreOpeartor(runtimeName string) error {
+func (k *ResourceManager) createKreOperator(runtimeName string) error {
 	operatorImage := "konstellation/kre-operator:" + k.config.Kubernetes.Operator.Version
 
 	numReplicas := new(int32)
@@ -36,7 +36,7 @@ func (k *ResourceManager) createKreOpeartor(runtimeName string) error {
 						{
 							Name:            "kre-operator",
 							Image:           operatorImage,
-							ImagePullPolicy: apiv1.PullIfNotPresent,
+							ImagePullPolicy: apiv1.PullAlways,
 							Env: []apiv1.EnvVar{
 								{
 									Name: "WATCH_NAMESPACE",

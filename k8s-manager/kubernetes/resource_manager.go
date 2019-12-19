@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"errors"
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/input"
 	"log"
 
 	"k8s.io/client-go/dynamic"
@@ -35,10 +36,10 @@ var (
 	ErrUnexpected              = errors.New("unexpected error creating Runtime")
 )
 
-func (k *ResourceManager) CreateRuntime(runtimeName string) error {
-
+func (k *ResourceManager) CreateRuntime(runtimeInput *input.CreateRuntimeInput) error {
 	// Create namespace
-	res, err := k.createNamespace(runtimeName)
+	name := runtimeInput.Name
+	res, err := k.createNamespace(name)
 	if err != nil {
 		log.Printf("error creating namespace: %v", err)
 		return ErrRuntimeResourceCreation
@@ -54,7 +55,7 @@ func (k *ResourceManager) CreateRuntime(runtimeName string) error {
 	}
 
 	// Create operator
-	err = k.createKreOpeartor(runtimeName)
+	err = k.createKreOperator(name)
 	if err != nil {
 		log.Printf("error creating operator: %v", err)
 		return ErrRuntimeResourceCreation
@@ -62,7 +63,7 @@ func (k *ResourceManager) CreateRuntime(runtimeName string) error {
 
 	// Create Runtime
 	domain := k.config.BaseDomainName
-	err = k.createRuntimeObject(runtimeName, domain)
+	err = k.createRuntimeObject(runtimeInput, domain)
 	if err != nil {
 		log.Printf("error creating runtime object: %v", err)
 		return ErrRuntimeResourceCreation

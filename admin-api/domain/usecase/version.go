@@ -6,17 +6,20 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
 	"time"
+
+	"github.com/iancoleman/strcase"
+	"github.com/minio/minio-go/v6"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gopkg.in/yaml.v2"
 )
 
 type VersionStatus string
@@ -63,6 +66,10 @@ type KrtYml struct {
 }
 
 func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
+	runtime, err := i.runtimeRepo.GetByID(runtimeID)
+	if err != nil {
+		return nil, err
+	}
 	// Get name and description from krtFile
 	i.logger.Info("Decompressing KRT file...")
 	uncompressed, err := gzip.NewReader(krtFile)
@@ -143,12 +150,67 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		}
 	}
 
-	v, err := i.versionRepo.Create(userID, runtimeID, krtYML.Version, krtYML.Description, workflows)
+	versionCreated, err := i.versionRepo.Create(userID, runtimeID, krtYML.Version, krtYML.Description, workflows)
+	if err != nil {
+		return nil, err
+	}
+	i.logger.Info("Version created ")
+
+	// Create bucket
+	ns := strcase.ToKebab(runtime.Name)
+	endpoint := fmt.Sprintf("kre-minio.%s:9000", ns)
+	accessKeyID := runtime.Minio.AccessKey
+	secretAccessKey := runtime.Minio.SecretKey
+	useSSL := false
+
+	fmt.Printf("Minio data: %#v \n endpoint: %s", runtime, endpoint)
+	// Initialize minio client object.
+	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
+
+	if err != nil {
+		return nil, err
+	}
+	i.logger.Info("Minio connected")
+	// Make version bucket
+	bucketName := krtYML.Version
+	location := ""
+
+	err = minioClient.MakeBucket(bucketName, location)
+	if err != nil {
+		// Check to see if we already own this bucket (which happens if you run this twice)
+		exists, errBucketExists := minioClient.BucketExists(bucketName)
+		if errBucketExists == nil && exists {
+			i.logger.Info(fmt.Sprintf("We already own %s\n", bucketName))
+		} else {
+			return nil, err
+		}
+	}
+	i.logger.Info(fmt.Sprintf("Bucket %s connected", bucketName))
+
+	// Copy all KRT files
+	err = filepath.Walk(tmpDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		// Upload the zip file
+		if info.IsDir() {
+			return nil
+		}
+		i.logger.Info(fmt.Sprintf("Uploading file %s", path))
+		filePath, _ := filepath.Rel(tmpDir, path)
+		_, err = minioClient.FPutObject(bucketName, filePath, path, minio.PutObjectOptions{})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
 
-	return v, nil
+	return versionCreated, nil
 }
 
 func (i *VersionInteractor) generateWorkflow(w KrtYmlWorkflow) entity.Workflow {

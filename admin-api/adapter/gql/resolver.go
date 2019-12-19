@@ -211,7 +211,32 @@ func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error
 
 	gqlRuntime := toGQLRuntime(runtime, owner)
 
-	// TODO Get Runtime Active Version
+	// TODO Get Runtime Active Version from a property stored in the Runtime entity instead of
+	// get all runtime versions.
+	versions, err := r.versionInteractor.GetByRuntime(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var activeVersion *Version
+	for _, v := range versions {
+		if v.Status == string(VersionStatusActive) {
+			creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
+			if err != nil && err != usecase.ErrUserNotFound {
+				return nil, err
+			}
+			var activationUser *entity.User
+			if v.ActivationUserID != nil {
+				activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+				if err != nil && err != usecase.ErrUserNotFound {
+					return nil, err
+				}
+			}
+			activeVersion = toGQLVersion(&v, creationUser, activationUser)
+		}
+	}
+
+	gqlRuntime.ActiveVersion = activeVersion
 
 	return gqlRuntime, nil
 }
