@@ -60,7 +60,7 @@ function VersionInfo({ version }: Props) {
   return (
     <div
       className={cx(styles.container)}
-      id={`versionInfoElement_${version.description.replace(' ', '')}`}
+      id={`versionInfoElement_${version.id}`}
       onClick={onVersionClick}
     >
       <div className={styles.col1}>
