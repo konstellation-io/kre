@@ -43,8 +43,7 @@ function RuntimeVersions() {
 
   function onLocateActiveVersionClick() {
     const activeVersionInfoElement = document.getElementById(
-      `versionInfoElement_${activeVersion &&
-        activeVersion.description.replace(' ', '')}`
+      `versionInfoElement_${activeVersion && activeVersion.id}`
     );
 
     let scrollAmount = 0;
