@@ -81,7 +81,7 @@ function AddVersion() {
             <FileUpload
               label="upload version file (KRT file)"
               placeholder=".krt"
-              error={form.input.file.error}
+              error={error ? error.toString() : form.input.file.error}
               onChange={form.input.file.onChange}
             />
             {loading && (
