@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func (k *ResourceManager) createKreOpeartor(runtimeName string) error {
+func (k *ResourceManager) createKreOperator(runtimeName string) error {
 	operatorImage := "konstellation/kre-operator:" + k.config.Kubernetes.Operator.Version
 
 	numReplicas := new(int32)

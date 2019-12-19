@@ -27,14 +27,12 @@ func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mo
 	}
 }
 
-func (r *RuntimeRepoMongoDB) Create(name string, userID string) (*entity.Runtime, error) {
-	runtime := &entity.Runtime{
-		ID:           primitive.NewObjectID().Hex(),
-		Name:         name,
-		CreationDate: time.Now().UTC(),
-		Owner:        userID,
-		Status:       string(usecase.RuntimeStatusCreating),
-	}
+func (r *RuntimeRepoMongoDB) Create(runtime *entity.Runtime) (*entity.Runtime, error) {
+
+	runtime.ID = primitive.NewObjectID().Hex()
+	runtime.CreationDate = time.Now().UTC()
+	runtime.Status = string(usecase.RuntimeStatusCreating)
+
 	res, err := r.collection.InsertOne(context.Background(), runtime)
 	if err != nil {
 		return nil, err
