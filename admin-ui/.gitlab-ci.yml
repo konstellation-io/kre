@@ -12,6 +12,7 @@ test-admin-ui:
   only:
     refs:
       - merge_requests
+      - master
     changes:
       - admin-ui/**/*
 
