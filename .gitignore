@@ -3,5 +3,6 @@
 
 config.dev.yml
 helm/kre/values.yaml
+helm/kre/charts/*
 krt*
 *.krt
