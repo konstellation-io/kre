@@ -1,0 +1,56 @@
+plugins:
+
+  editorconfig:
+    enabled: true
+    channel: beta
+    config:
+      editorconfig: .editorconfig
+
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - go:
+        - javascript:
+        - typescript:
+
+  fixme:
+    enabled: true
+    config:
+      strings:
+        - FIXME
+        - BUG
+        - TODO
+
+  markdownlint:
+    enabled: true
+
+  shellcheck:
+    enabled: true
+
+  gofmt:
+    enabled: true
+
+  govet:
+    enabled: true
+
+  golint:
+    enabled: true
+
+  scss-lint:
+    enabled: true
+
+  eslint:
+    enabled: true
+    channel: "eslint-6"
+    config:
+      #config: path/to/.eslintrc
+      extensions:
+        - .jsx
+        - .tsx
+        - .ts
+        - .js
+
+  tslint:
+    enabled: true
+    #config: path/to/tslint.json

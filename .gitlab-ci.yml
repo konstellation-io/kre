@@ -36,3 +36,5 @@ include:
   - local: k8s-manager/.gitlab-ci.yml
   - local: runtime-api/.gitlab-ci.yml
   - local: runtime-entrypoint/.gitlab-ci.yml
+  # Gitlab defined template
+  - template: Code-Quality.gitlab-ci.yml
