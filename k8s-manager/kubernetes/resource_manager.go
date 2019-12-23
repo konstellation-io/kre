@@ -11,13 +11,14 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-// ResourceManager interacts with
+// ResourceManager interacts with K8s
 type ResourceManager struct {
 	config    *config.Config
 	clientset *kubernetes.Clientset
 	dynClient dynamic.Interface
 }
 
+// NewKubernetesResourceManager instantiate the KubernetesResourceManager
 func NewKubernetesResourceManager(
 	config *config.Config,
 ) *ResourceManager {
@@ -32,10 +33,13 @@ func NewKubernetesResourceManager(
 }
 
 var (
+	// ErrRuntimeResourceCreation error
 	ErrRuntimeResourceCreation = errors.New("error creating a Runtime resource")
-	ErrUnexpected              = errors.New("unexpected error creating Runtime")
+	// ErrUnexpected error
+	ErrUnexpected = errors.New("unexpected error creating Runtime")
 )
 
+// CreateRuntime calls kubernetes to create a new Runtime Object
 func (k *ResourceManager) CreateRuntime(runtimeInput *input.CreateRuntimeInput) error {
 	// Create namespace
 	name := runtimeInput.Name

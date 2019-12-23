@@ -18,6 +18,7 @@ type GrpcServer struct {
 	resources *kubernetes.ResourceManager
 }
 
+// NewGrpcServer instantiates the GRPC server implementation
 func NewGrpcServer(
 	cfg *config.Config,
 	resource *kubernetes.ResourceManager,
@@ -28,6 +29,7 @@ func NewGrpcServer(
 	}
 }
 
+// CreateRuntime creates a new Runtime object
 func (s *GrpcServer) CreateRuntime(ctx context.Context, req *k8smanagerpb.CreateRuntimeRequest) (*k8smanagerpb.CreateRuntimeResponse, error) {
 	runtime := req.GetRuntime()
 	success := true
@@ -60,6 +62,7 @@ func (s *GrpcServer) CreateRuntime(ctx context.Context, req *k8smanagerpb.Create
 	return res, nil
 }
 
+// CheckRuntimeIsCreated check K8s waiting for all the Runtime components to be on running state
 func (s *GrpcServer) CheckRuntimeIsCreated(ctx context.Context, req *k8smanagerpb.CheckRuntimeIsCreatedRequest) (*k8smanagerpb.CheckRuntimeIsCreatedResponse, error) {
 	runtimeName := req.GetName()
 	runtimeNamespace := strcase.ToKebab(runtimeName)
