@@ -6,6 +6,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 )
 
+// VersionStatus enum of the statuses 
 type VersionStatus string
 
 var (
