@@ -1,3 +1,11 @@
+code-quality-admin-ui:
+  extends: .code-quality
+  variables:
+    COMPONENT_PATH: admin-ui
+  only:
+    changes:
+      - admin-ui/**/*
+
 test-admin-ui:
   stage: test
   image: node:10
@@ -9,6 +17,9 @@ test-admin-ui:
   script:
     - yarn run test:cov:ci
   coverage: '/Statements   : \d+\.\d+/'
+  artifacts:
+    reports:
+      junit: admin-ui/junit.xml
   only:
     refs:
       - merge_requests

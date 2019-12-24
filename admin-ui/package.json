@@ -60,7 +60,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:cov": "react-scripts test --coverage --watchAll=false",
-    "test:cov:ci": "react-scripts test --coverage --watchAll=false --coverageReporters",
+    "test:cov:ci": "react-scripts test --coverage --watchAll=false --coverageReporters --testResultsProcessor jest-junit",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -113,6 +113,7 @@
     "husky": "^3.0.9",
     "jest-canvas-mock": "^2.1.1",
     "jest-enzyme": "^7.1.1",
+    "jest-junit": "10.0.0",
     "lint-staged": "^9.4.2",
     "prettier": "^1.19.1",
     "redux-devtools-extension": "^2.13.8",

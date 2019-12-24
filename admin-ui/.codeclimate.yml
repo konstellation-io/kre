@@ -1,0 +1,34 @@
+plugins:
+
+  editorconfig:
+    enabled: true
+    config:
+      editorconfig: .editorconfig
+
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - typescript:
+
+  fixme:
+    enabled: true
+    config:
+      strings:
+        - FIXME
+        - BUG
+        - TODO
+
+  scss-lint:
+    enabled: true
+
+  eslint:
+    enabled: true
+    channel: "eslint-6"
+
+exclude_patterns:
+  # this patterns are a hack to try and run only for admin-api and have proper links on Gitlab MR page
+  - "**/*"
+  - "!admin-ui/**"
+  - "**/node_modules/"
+  - "**/mock-server/"
