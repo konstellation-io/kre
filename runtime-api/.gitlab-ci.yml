@@ -12,7 +12,8 @@ test-runtime-api:
   script:
     - cd runtime-api
     - go get -u github.com/jstemmer/go-junit-report
-    - go test ./... -cover -v -coverprofile=runtime-api-coverage.out  2>&1 | go-junit-report > runtime-api-report.xml
+    - go test ./... -cover -v -coverprofile=runtime-api-coverage.out 2>&1 | tee -a report.out
+    - cat report.out | go-junit-report > runtime-api-report.xml
   coverage: /coverage:\s(\d+(?:\.\d+)?%)/
   artifacts:
     paths:
