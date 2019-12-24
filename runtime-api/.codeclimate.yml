@@ -22,12 +22,6 @@ plugins:
         - BUG
         - TODO
 
-  markdownlint:
-    enabled: true
-
-  shellcheck:
-    enabled: true
-
   gofmt:
     enabled: true
 
@@ -37,20 +31,10 @@ plugins:
   golint:
     enabled: true
 
-  scss-lint:
-    enabled: true
-
-  eslint:
-    enabled: true
-    channel: "eslint-6"
-    config:
-      #config: path/to/.eslintrc
-      extensions:
-        - .jsx
-        - .tsx
-        - .ts
-        - .js
-
-  tslint:
-    enabled: true
-    #config: path/to/tslint.json
+exclude_patterns:
+  # this patterns are a hack to try and run only for runtime-api and have proper links on Gitlab MR page
+  - "**"
+  - "!runtime-api/**"
+  - "**/*.pb.go"
+  - mocks/
+  - "**/mocks/"
