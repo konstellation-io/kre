@@ -48,7 +48,9 @@ include:
     DOCKER_TLS_CERTDIR: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.5"
   script:
-    - cp runtime-api/.codeclimate.yml .
+    - cp $COMPONENT_PATH/.codeclimate.yml .
+    - echo $COMPONENT_PATH
+    - cat .codeclimate.yml
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then

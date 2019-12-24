@@ -2,7 +2,6 @@ plugins:
 
   editorconfig:
     enabled: true
-    channel: beta
     config:
       editorconfig: .editorconfig
 
@@ -11,8 +10,6 @@ plugins:
     config:
       languages:
         - go:
-        - javascript:
-        - typescript:
 
   fixme:
     enabled: true
@@ -32,8 +29,8 @@ plugins:
     enabled: true
 
 exclude_patterns:
-  # this patterns are a hack to try and run only for runtime-api and have proper links on Gitlab MR page
+  # this patterns are a hack to try and run only for admin-api and have proper links on Gitlab MR page
   - "**/*"
-  - "!runtime-api/**"
+  - "!admin-api/**"
   - "**/*.pb.go"
   - "**/mocks/"
