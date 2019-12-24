@@ -3,11 +3,14 @@ test-runtime-api:
   image: golang:1.13
   script:
     - cd runtime-api
-    - go test ./... -cover -v -coverprofile=runtime-api-coverage.out
+    - go get -u github.com/jstemmer/go-junit-report
+    - go test ./... -cover -v -coverprofile=runtime-api-coverage.out  2>&1 | go-junit-report > runtime-api-report.xml
   coverage: /coverage:\s(\d+(?:\.\d+)?%)/
   artifacts:
     paths:
       - runtime-api/runtime-api-coverage.out
+    reports:
+      junit: runtime-api/runtime-api-report.xml
   only:
     refs:
       - merge_requests
