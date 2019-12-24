@@ -1,3 +1,11 @@
+code-quality-runtime-api:
+  extends: .code-quality
+  variables:
+    COMPONENT_PATH: runtime-api
+  only:
+    changes:
+      - runtime-api/**/*
+
 test-runtime-api:
   stage: test
   image: golang:1.13

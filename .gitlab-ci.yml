@@ -36,5 +36,38 @@ include:
   - local: k8s-manager/.gitlab-ci.yml
   - local: runtime-api/.gitlab-ci.yml
   - local: runtime-entrypoint/.gitlab-ci.yml
-  # Gitlab defined template
-  - template: Code-Quality.gitlab-ci.yml
+
+.code-quality:
+  stage: test
+  image: docker:stable
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.5"
+  script:
+    - cp runtime-api/.codeclimate.yml .
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+    - docker pull --quiet "$CODE_QUALITY_IMAGE"
+    - docker run
+      --env SOURCE_CODE="$PWD"
+      --volume "$PWD":/report
+      --volume /var/run/docker.sock:/var/run/docker.sock
+      "$CODE_QUALITY_IMAGE" /report
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    expire_in: 1 week
+  dependencies: []
+  only:
+    refs:
+      - merge_requests
+      - master
+
