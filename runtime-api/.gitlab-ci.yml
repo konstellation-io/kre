@@ -1,11 +1,3 @@
-code-quality-runtime-api:
-  extends: .code-quality
-  variables:
-    COMPONENT_PATH: runtime-api
-  only:
-    changes:
-      - runtime-api/**/*
-
 test-runtime-api:
   stage: test
   image: golang:1.13
@@ -26,25 +18,26 @@ test-runtime-api:
       - master
     changes:
       - runtime-api/**/*
-sonarcloud-runtime-api:
-  stage: test
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/runtime-api/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "50"  # Tells git to fetch all the branches of the project, required by the analysis task
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
-  script:
-    - cd runtime-api
-    - sonar-scanner
-  only:
-    - merge_requests
-    - master
 
+code-quality-runtime-api:
+  extends: .code-quality
+  variables:
+    COMPONENT_PATH: runtime-api
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - runtime-api/**/*
+
+sonar-runtime-api:
+  extends: .sonar-scanner
+  variables:
+    SONAR_TOKEN: $SONAR_TOKEN_RUNTIME_API
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/runtime-api/.sonar"
+    COMPONENT_PATH: runtime-api
+    GIT_DEPTH: "0"
+
+  
 release-runtime-api:
   stage: semantic-release
   image: node:10
