@@ -8,10 +8,11 @@ test-admin-ui:
     - yarn install
   script:
     - yarn run test:cov:ci
+    - yarn run test:cov:sonar
   coverage: '/Statements   : \d+\.\d+/'
   artifacts:
     paths:
-      - admin-ui/junit.xml
+      - admin-ui/test-report.xml
     reports:
       junit: admin-ui/junit.xml
   only:

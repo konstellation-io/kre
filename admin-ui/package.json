@@ -61,10 +61,8 @@
     "test": "react-scripts test",
     "test:cov": "react-scripts test --coverage --watchAll=false",
     "test:cov:ci": "react-scripts test --coverage --watchAll=false --coverageReporters --testResultsProcessor jest-junit",
+    "test:cov:sonar": "react-scripts test --coverage --watchAll=false --coverageReporters --testResultsProcessor jest-sonar-reporter",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -110,10 +108,12 @@
     "conventional-changelog": "3.1.3",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
+    "eslint-config-sonar": "0.0.7",
     "husky": "^3.0.9",
     "jest-canvas-mock": "^2.1.1",
     "jest-enzyme": "^7.1.1",
     "jest-junit": "10.0.0",
+    "jest-sonar-reporter": "2.0.0",
     "lint-staged": "^9.4.2",
     "prettier": "^1.19.1",
     "redux-devtools-extension": "^2.13.8",
