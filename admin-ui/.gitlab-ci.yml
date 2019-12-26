@@ -32,7 +32,7 @@ code-quality-admin-ui:
     changes:
       - admin-ui/**/*
 
-sonar-admin-api:
+sonar-admin-ui:
   extends: .sonar-scanner
   variables:
     SONAR_TOKEN: $SONAR_TOKEN_ADMIN_UI
