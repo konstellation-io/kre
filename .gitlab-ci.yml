@@ -1,5 +1,6 @@
 stages:
   - test
+  - quality
   - semantic-release
   - build
   - publish-image
@@ -27,15 +28,6 @@ variables:
   except:
     refs:
       - master
-
-include:
-  - local: admin-api/.gitlab-ci.yml
-  - local: admin-ui/.gitlab-ci.yml
-  - local: helm/.gitlab-ci.yml
-  - local: operator/.gitlab-ci.yml
-  - local: k8s-manager/.gitlab-ci.yml
-  - local: runtime-api/.gitlab-ci.yml
-  - local: runtime-entrypoint/.gitlab-ci.yml
 
 .code-quality:
   stage: test
@@ -73,3 +65,28 @@ include:
       - merge_requests
       - master
 
+.sonar-scanner:
+  stage: quality
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - cd $COMPONENT_PATH
+    - sonar-scanner
+  only:
+    - merge_requests
+    - master
+
+include:
+  - local: admin-api/.gitlab-ci.yml
+  - local: admin-ui/.gitlab-ci.yml
+  - local: helm/.gitlab-ci.yml
+  - local: operator/.gitlab-ci.yml
+  - local: k8s-manager/.gitlab-ci.yml
+  - local: runtime-api/.gitlab-ci.yml
+  - local: runtime-entrypoint/.gitlab-ci.yml

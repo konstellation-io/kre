@@ -34,3 +34,4 @@ exclude_patterns:
   - "!admin-api/**"
   - "**/*.pb.go"
   - "**/mocks/"
+  - "**/generated.go"
