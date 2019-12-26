@@ -14,13 +14,28 @@
 Konstellation Runtime Engine is an application that allow to run AI/ML models for inference based on the content of a
  `.krt` file. 
 
-|  Component  |                                                                                                  Coverage                                                                                                  |
-| :---------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|  Admin UI   |    [![coverage report](https://gitlab.com/konstellation/konstellation-ce/kre/badges/master/coverage.svg?job=test-admin-ui)](https://gitlab.com/konstellation/konstellation-ce/kre/tree/master/admin-ui)    |
-|  Admin API  |   [![coverage report](https://gitlab.com/konstellation/konstellation-ce/kre/badges/master/coverage.svg?job=test-admin-api)](https://gitlab.com/konstellation/konstellation-ce/kre/tree/master/admin-api)   |
-| K8s Manager | [![coverage report](https://gitlab.com/konstellation/konstellation-ce/kre/badges/master/coverage.svg?job=test-k8s-manager)](https://gitlab.com/konstellation/konstellation-ce/kre/tree/master/m8s-manager) |
-| Runtime API | [![coverage report](https://gitlab.com/konstellation/konstellation-ce/kre/badges/master/coverage.svg?job=test-runtime-api)](https://gitlab.com/konstellation/konstellation-ce/kre/tree/master/runtime-api) |
-|  Operator   |    [![coverage report](https://gitlab.com/konstellation/konstellation-ce/kre/badges/master/coverage.svg?job=test-operator)](https://gitlab.com/konstellation/konstellation-ce/kre/tree/master/operator)    |
+|  Component  | Coverage  |  Bugs  |  Lines of Code  |  Maintainability Rating  |
+| :---------: | :-----:   |  :---: |  :-----------:  |  :--------------------:  |
+|  Admin UI  | ![coverage][admin-ui-coverage] | ![bugs][admin-ui-bugs] | ![loc][admin-ui-loc] | ![mr][admin-ui-mr] |
+|  Admin API  | ![coverage][admin-api-coverage] | ![bugs][admin-api-bugs] | ![loc][admin-api-loc] | ![mr][admin-api-mr] |
+| K8s Manager |  |  |  |  |
+|  Runtime API  | ![coverage][runtime-api-coverage] | ![bugs][runtime-api-bugs] | ![loc][runtime-api-loc] | ![mr][runtime-api-mr] |
+|  Operator   |  |  |  |  |
+
+[admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=coverage 
+[admin-ui-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=bugs
+[admin-ui-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=ncloc
+[admin-ui-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=sqale_rating
+
+[admin-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=coverage 
+[admin-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=bugs
+[admin-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=ncloc
+[admin-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=sqale_rating
+
+[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=coverage 
+[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=bugs
+[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=ncloc
+[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=sqale_rating
 
 # Archiecture
 

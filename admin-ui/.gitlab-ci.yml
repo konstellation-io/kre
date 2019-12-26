@@ -1,13 +1,3 @@
-code-quality-admin-ui:
-  extends: .code-quality
-  variables:
-    COMPONENT_PATH: admin-ui
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - admin-ui/**/*
-
 test-admin-ui:
   stage: test
   image: node:10
@@ -20,6 +10,8 @@ test-admin-ui:
     - yarn run test:cov:ci
   coverage: '/Statements   : \d+\.\d+/'
   artifacts:
+    paths:
+      - admin-ui/junit.xml
     reports:
       junit: admin-ui/junit.xml
   only:
@@ -28,6 +20,24 @@ test-admin-ui:
       - master
     changes:
       - admin-ui/**/*
+
+code-quality-admin-ui:
+  extends: .code-quality
+  variables:
+    COMPONENT_PATH: admin-ui
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - admin-ui/**/*
+
+sonar-admin-api:
+  extends: .sonar-scanner
+  variables:
+    SONAR_TOKEN: $SONAR_TOKEN_ADMIN_UI
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin-ui/.sonar"
+    COMPONENT_PATH: admin-ui
+    GIT_DEPTH: "0"
 
 release-admin-ui:
   stage: semantic-release
