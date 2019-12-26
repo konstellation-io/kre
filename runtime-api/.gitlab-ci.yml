@@ -36,8 +36,10 @@ sonar-runtime-api:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/runtime-api/.sonar"
     COMPONENT_PATH: runtime-api
     GIT_DEPTH: "0"
+  only:
+    changes:
+      - runtime-api/**/*
 
-  
 release-runtime-api:
   stage: semantic-release
   image: node:10

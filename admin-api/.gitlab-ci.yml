@@ -36,6 +36,9 @@ sonar-admin-api:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin-api/.sonar"
     COMPONENT_PATH: admin-api
     GIT_DEPTH: "0"
+  only:
+    changes:
+      - admin-api/**/*
 
 release-admin-api:
   stage: semantic-release
