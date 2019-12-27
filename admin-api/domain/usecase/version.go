@@ -229,6 +229,12 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err
 	}
 
+	// Remove KRT file and tmpDir
+	err = os.RemoveAll(tmpDir)
+	if err != nil {
+		return nil, err
+	}
+
 	return versionCreated, nil
 }
 
