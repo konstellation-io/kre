@@ -10,15 +10,21 @@ import (
 	"time"
 )
 
+// RuntimeStatus enumerates all Runtime status
 type RuntimeStatus string
 
 var (
+	// RuntimeStatusCreating status
 	RuntimeStatusCreating RuntimeStatus = "CREATING"
-	RuntimeStatusRunning  RuntimeStatus = "RUNNING"
-	RuntimeStatusError    RuntimeStatus = "ERROR"
-	ErrRuntimeNotFound                  = errors.New("error runtime not found")
+	// RuntimeStatusRunning status
+	RuntimeStatusRunning RuntimeStatus = "RUNNING"
+	// RuntimeStatusError status
+	RuntimeStatusError RuntimeStatus = "ERROR"
+	// ErrRuntimeNotFound error
+	ErrRuntimeNotFound = errors.New("error runtime not found")
 )
 
+// RuntimeInteractor contains app logic to handle Runtime entities
 type RuntimeInteractor struct {
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
@@ -26,6 +32,7 @@ type RuntimeInteractor struct {
 	userActivity      *UserActivityInteractor
 }
 
+// NewRuntimeInteractor creates a new RuntimeInteractor
 func NewRuntimeInteractor(
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
@@ -40,6 +47,7 @@ func NewRuntimeInteractor(
 	}
 }
 
+// CreateRuntime adds a new Runtime
 func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRuntime *entity.Runtime, onRuntimeRunningChannel chan *entity.Runtime, err error) {
 	runtime := &entity.Runtime{
 		Name:  name,
@@ -93,10 +101,12 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 	return
 }
 
+// FindAll returns a list of all Runtimes
 func (i *RuntimeInteractor) FindAll() ([]entity.Runtime, error) {
 	return i.runtimeRepo.FindAll()
 }
 
+// GetByID return a Runtime by its ID
 func (i *RuntimeInteractor) GetByID(runtimeID string) (*entity.Runtime, error) {
 	return i.runtimeRepo.GetByID(runtimeID)
 }

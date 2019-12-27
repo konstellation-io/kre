@@ -44,10 +44,14 @@ func NewAuthInteractor(
 }
 
 var (
-	ErrUserNotFound             = errors.New("error user not found")
+	// ErrUserNotFound error
+	ErrUserNotFound = errors.New("error user not found")
+	// ErrVerificationCodeNotFound error
 	ErrVerificationCodeNotFound = errors.New("error the verification not found")
-	ErrExpiredVerificationCode  = errors.New("error the verification code code is expired")
-	ErrDomainNotAllowed         = errors.New("error domain not allowed")
+	// ErrExpiredVerificationCode error
+	ErrExpiredVerificationCode = errors.New("error the verification code code is expired")
+	// ErrDomainNotAllowed error
+	ErrDomainNotAllowed = errors.New("error domain not allowed")
 )
 
 // SignIn creates a temporal on-time-use verification code associated with the user and sends it to the user in the form of a “login link” via email, sms or whatever.
@@ -122,6 +126,7 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 	return a.loginLinkTransport.Send(user.Email, verificationCode)
 }
 
+// VerifyCode checks that the given VerificationCode is valid
 func (a *AuthInteractor) VerifyCode(code string) (string, error) {
 	verificationCode, err := a.verificationCodeRepo.Get(code)
 	if err != nil {
@@ -149,6 +154,7 @@ func (a *AuthInteractor) VerifyCode(code string) (string, error) {
 	return verificationCode.UID, nil
 }
 
+// Logout register the User logout request
 func (a *AuthInteractor) Logout(userID string) error {
 	return a.userActivityInteractor.Create(userID, UserActivityTypeLogout)
 }

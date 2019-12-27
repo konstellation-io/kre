@@ -22,17 +22,25 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// VersionStatus enumeration of Version statuses
 type VersionStatus string
 
 var (
+	// VersionStatusCreated status
 	VersionStatusCreated VersionStatus = "CREATED"
-	VersionStatusActive  VersionStatus = "ACTIVE"
+	// VersionStatusActive status
+	VersionStatusActive VersionStatus = "ACTIVE"
+	// VersionStatusRunning status
 	VersionStatusRunning VersionStatus = "RUNNING"
+	// VersionStatusStopped status
 	VersionStatusStopped VersionStatus = "STOPPED"
-	ErrVersionNotFound                 = errors.New("error version not found")
-	ErrVersionDuplicated               = errors.New("error version duplicated")
+	// ErrVersionNotFound error
+	ErrVersionNotFound = errors.New("error version not found")
+	// ErrVersionDuplicated error
+	ErrVersionDuplicated = errors.New("error version duplicated")
 )
 
+// VersionInteractor contains app logic about Version entities
 type VersionInteractor struct {
 	logger         logging.Logger
 	versionRepo    repository.VersionRepo
@@ -40,6 +48,7 @@ type VersionInteractor struct {
 	runtimeService service.RuntimeService
 }
 
+// NewVersionInteractor creates a new interactor
 func NewVersionInteractor(
 	logger logging.Logger,
 	versionRepo repository.VersionRepo,
@@ -54,18 +63,21 @@ func NewVersionInteractor(
 	}
 }
 
+// KrtYmlWorkflow contains data about a version's workflow
 type KrtYmlWorkflow struct {
 	Name       string   `yaml:"name"`
 	Entrypoint string   `yaml:"entrypoint"`
 	Sequential []string `yaml:"sequential"`
 }
 
+// KrtYml contains data about a version
 type KrtYml struct {
 	Version     string           `yaml:"version"`
 	Description string           `yaml:"description"`
 	Workflows   []KrtYmlWorkflow `yaml:"workflows"`
 }
 
+// Create creates a Version on the DB based on the content of a KRT file
 func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
 	runtime, err := i.runtimeRepo.GetByID(runtimeID)
 	if err != nil {
@@ -126,9 +138,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 				return nil, err
 			}
 		default:
-			return nil, errors.New(
-				fmt.Sprintf("ExtractTarGz: uknown type: %v in %s", header.Typeflag, path),
-			)
+			return nil, fmt.Errorf("ExtractTarGz: uknown type: %v in %s", header.Typeflag, path)
 		}
 	}
 
@@ -215,7 +225,6 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 
 		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -255,6 +264,7 @@ func (i *VersionInteractor) generateWorkflow(w KrtYmlWorkflow) entity.Workflow {
 	}
 }
 
+// Deploy create the resources of the given Version
 func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Version, error) {
 	i.logger.Info(fmt.Sprintf("The user %s is deploying version %s", userID, versionID))
 
@@ -282,6 +292,7 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 	return version, nil
 }
 
+// Activate set a Version as active on DB and K8s
 func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.Version, error) {
 	i.logger.Info(fmt.Sprintf("The user %s is activating version %s", userID, versionID))
 
@@ -332,10 +343,12 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	return version, nil
 }
 
+// GetByRuntime returns all Versions of the given Runtime
 func (i *VersionInteractor) GetByRuntime(runtimeID string) ([]entity.Version, error) {
 	return i.versionRepo.GetByRuntime(runtimeID)
 }
 
+// GetByID returns a Version by its ID
 func (i *VersionInteractor) GetByID(id string) (*entity.Version, error) {
 	return i.versionRepo.GetByID(id)
 }
