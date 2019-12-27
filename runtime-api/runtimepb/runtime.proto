@@ -1,19 +1,19 @@
 syntax = "proto3";
 
 package runtime;
-option go_package="runtimepb";
+option go_package = "runtimepb";
 
 message Version {
   string name = 1;
 }
 
 message DeployVersionRequest {
-    Version version = 1;
+  Version version = 1;
 }
 
 message DeployVersionResponse {
-    bool success = 1;
-    string message = 2;
+  bool success = 1;
+  string message = 2;
 }
 
 message ActivateVersionRequest {
@@ -25,7 +25,9 @@ message ActivateVersionResponse {
   string message = 2;
 }
 
-service RuntimeService{
-  rpc DeployVersion(DeployVersionRequest) returns (DeployVersionResponse) {};
-  rpc ActivateVersion(ActivateVersionRequest) returns (ActivateVersionResponse) {};
+service RuntimeService {
+  rpc DeployVersion (DeployVersionRequest) returns (DeployVersionResponse) {
+  };
+  rpc ActivateVersion (ActivateVersionRequest) returns (ActivateVersionResponse) {
+  };
 };
