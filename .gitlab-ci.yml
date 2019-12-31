@@ -1,4 +1,5 @@
 stages:
+  - security
   - test
   - quality
   - semantic-release
