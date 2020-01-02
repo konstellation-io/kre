@@ -80,6 +80,6 @@ module.exports = {
   Node: () => ({
     id: casual.ID,
     name: casual.name,
-    status: 'DEFAULT'
+    status: 'ACTIVE'
   })
 }

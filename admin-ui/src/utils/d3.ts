@@ -41,22 +41,16 @@ export function wrap(text: any, width: number) {
   });
 }
 
-export function centerText(text: any) {
+export function centerText(text: any, fontSize: number) {
   // @ts-ignore
   text.each(function() {
     // @ts-ignore
     const text = select(this);
-
     const textNode = text.node();
-    const lineNode = text.select('tspan').node();
 
     const textHeight = textNode.getBBox().height;
-    // @ts-ignore
-    const lineHeight = lineNode.getBBox().height;
 
-    const lineHeightMargin = lineHeight * 0.15;
-
-    const padding = lineHeightMargin - textHeight / 2;
+    const padding = fontSize - textHeight / 2;
 
     text.attr('transform', `translate(0, ${padding})`);
   });
