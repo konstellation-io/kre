@@ -23,7 +23,7 @@ RUN go build -o k8s-manager .
 
 
 # Final image
-FROM alpine:3.9.2
+FROM alpine:3.10.2
 
 RUN mkdir -p /var/log/app
 
