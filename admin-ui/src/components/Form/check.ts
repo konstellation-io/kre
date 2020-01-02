@@ -66,15 +66,6 @@ export function isGreaterThan(value: any, minValue: number) {
     : setInvalid(`Invalid value, ${value} must be greater than ${minValue}`);
 }
 
-export function isIntegerWithinRange(value: any, range: number[]) {
-  const [minValue, maxValue] = range.sort((a, b) => a - b);
-  return value >= minValue && value <= maxValue
-    ? VALID
-    : setInvalid(
-        `Invalid value, must be within the range ${minValue}-${maxValue}`
-      );
-}
-
 export function isEmailValid(email: string) {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

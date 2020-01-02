@@ -86,7 +86,7 @@ function Select({
     onChange(value);
   }
 
-  const optionList = options.sort().map((option: string, idx: number) => (
+  const optionList = [...options].sort().map((option: string, idx: number) => (
     <div
       key={`selectOption_${idx}`}
       className={styles.optionElement}

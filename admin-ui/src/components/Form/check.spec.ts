@@ -60,23 +60,6 @@ test('if isFieldAnInteger makes correct validations', () => {
   expect(positiveNumberInputWithPositiveCheck.valid).toBeTruthy();
 });
 
-test('if isIntegerWithinRange makes correct validations', () => {
-  const integerWithinSmallRange = CHECK.isIntegerWithinRange(5, [3, 7]);
-  const integerWithinBigRange = CHECK.isIntegerWithinRange(5, [0, 99999]);
-  const integerSameAsRange = CHECK.isIntegerWithinRange(5, [5, 5]);
-  const integerSameAsRangeBorder = CHECK.isIntegerWithinRange(5, [0, 5]);
-  const integerWithinRangeNegative = CHECK.isIntegerWithinRange(-5, [-3, -7]);
-  const integerOutsideRange = CHECK.isIntegerWithinRange(5, [0, 4]);
-
-  expect(integerOutsideRange.valid).toBeFalsy();
-
-  expect(integerWithinSmallRange.valid).toBeTruthy();
-  expect(integerWithinBigRange.valid).toBeTruthy();
-  expect(integerSameAsRange.valid).toBeTruthy();
-  expect(integerSameAsRangeBorder.valid).toBeTruthy();
-  expect(integerWithinRangeNegative.valid).toBeTruthy();
-});
-
 test('if isEmailValid makes correct validations', () => {
   const validEmail1 = CHECK.isEmailValid('mariano@intelygenz.com');
   const validEmail2 = CHECK.isEmailValid('a__something-2@google.de');
