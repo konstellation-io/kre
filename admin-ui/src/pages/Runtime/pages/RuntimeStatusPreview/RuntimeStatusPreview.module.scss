@@ -4,15 +4,33 @@
 .container {
   height: 100%;
   width: 100%;
-  background-color: $color-blue-dark-2;
 }
 
 .horizontalBar {
-  background-color: $color-blue;
   justify-content: space-between;
   align-items: center;
   padding: 0 40px 0 20px;
   height: 40px;
+
+  &.ACTIVE {
+    background-color: $color-green;
+  }
+
+  &.RUNNING {
+    background-color: $color-blue;
+  }
+
+  &.STOPPED {
+    background-color: $color-orange;
+  }
+
+  &.CREATED {
+    background-color: $color-grey;
+
+    span {
+      color: $font-color-white;
+    }
+  }
 }
 
 .horizontalBarText {

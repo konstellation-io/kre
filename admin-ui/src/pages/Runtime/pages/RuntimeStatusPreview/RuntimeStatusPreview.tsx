@@ -22,6 +22,7 @@ import {
   GetVersionWorkflowsVars
 } from './RuntimeStatusPreview.graphql';
 
+import cx from 'classnames';
 import styles from './RuntimeStatusPreview.module.scss';
 
 function generateActionButton(label: string, action: Function) {
@@ -114,10 +115,12 @@ function RuntimeStatusPreview() {
 
   return (
     <div className={styles.container}>
-      <HorizontalBar style={styles.horizontalBar}>
+      <HorizontalBar
+        style={cx(styles.horizontalBar, styles[versionStatus || ''])}
+      >
         <div className={styles.horizontalBarButtons}>{actionButtons}</div>
         <div className={styles.horizontalBarText}>
-          <span>PREVIEW MODE</span>
+          <span>{versionStatus}</span>
           <div className={styles.horizontalBarSeparator} />
           <span className={styles.horizontalText2}>Name of the version:</span>
           <span>{data && data.version.name}</span>

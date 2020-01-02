@@ -39,6 +39,7 @@ function RuntimeStatus() {
       runtimeId || ''
     ).replace(':versionId', activeVersion.id || '');
     history.replace(path);
+
     return null;
   }
 

@@ -84,7 +84,7 @@ function StatusViewer({ data, status }: any) {
           left: 10
         }}
         data={formatData(data, status)}
-        preview={status === 'CREATED'}
+        preview={['CREATED', 'STOPPED'].includes(status)}
       />
     </div>
   );
