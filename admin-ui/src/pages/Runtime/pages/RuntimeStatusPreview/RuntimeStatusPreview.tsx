@@ -30,12 +30,6 @@ const data = [
     name: 'MAKE_PREDICTION',
     nodes: [
       {
-        id: 'W1InputNode',
-        name: 'TICKET ASSET',
-        status: '',
-        type: TYPES.INPUT
-      },
-      {
         id: 'W1InnerNode1',
         name: 'TICKET STATUS TRANSFORMER',
         status: '',
@@ -52,58 +46,26 @@ const data = [
         name: 'TICKET CLASIFICATOR NN',
         status: '',
         type: TYPES.DEFAULT_2
-      },
-      {
-        id: 'W1OutputNode',
-        name: 'TNBA ORDERED',
-        status: '',
-        type: TYPES.OUTPUT
       }
     ],
     edges: [
       {
-        id: 'Edge1',
-        name: 'Edge1',
-        status: STATUS.ACTIVE,
-        value: 0,
-        from: 'W1InputNode',
-        to: 'W1InnerNode1'
-      },
-      {
         id: 'Edge2',
-        name: 'Edge2',
         status: STATUS.ACTIVE,
-        value: 0,
-        from: 'W1InnerNode1',
-        to: 'W1InnerNode2'
+        fromNode: 'W1InnerNode1',
+        toNode: 'W1InnerNode2'
       },
       {
         id: 'Edge3',
-        name: 'Edge3',
         status: STATUS.ACTIVE,
-        value: 0,
-        from: 'W1InnerNode2',
-        to: 'W1InnerNode3'
-      },
-      {
-        id: 'Edge4',
-        name: 'Edge4',
-        status: STATUS.ACTIVE,
-        value: 0,
-        from: 'W1InnerNode3',
-        to: 'W1OutputNode'
+        fromNode: 'W1InnerNode2',
+        toNode: 'W1InnerNode3'
       }
     ]
   },
   {
     name: 'SAVE_CLIENT_METRICS',
     nodes: [
-      {
-        id: 'W2InputNode',
-        name: 'TICKET ASSET',
-        status: '',
-        type: TYPES.INPUT
-      },
       {
         id: 'W2InnerNode1',
         name: 'TICKET STATUS TRANSFORMER',
@@ -115,38 +77,14 @@ const data = [
         name: 'TICKET STATUS NORMALIZATOR',
         status: '',
         type: TYPES.DEFAULT
-      },
-      {
-        id: 'W2OutputNode',
-        name: 'TNBA ORDERED',
-        status: '',
-        type: TYPES.OUTPUT
       }
     ],
     edges: [
       {
-        id: 'Edge1',
-        name: 'Edge1',
-        status: STATUS.ACTIVE,
-        value: 0,
-        from: 'W2InputNode',
-        to: 'W2InnerNode1'
-      },
-      {
         id: 'Edge2',
-        name: 'Edge2',
         status: STATUS.ACTIVE,
-        value: 0,
-        from: 'W2InnerNode1',
-        to: 'W2InnerNode2'
-      },
-      {
-        id: 'Edge3',
-        name: 'Edge3',
-        status: STATUS.ACTIVE,
-        value: 0,
-        from: 'W2InnerNode2',
-        to: 'W2OutputNode'
+        fromNode: 'W2InnerNode1',
+        toNode: 'W2InnerNode2'
       }
     ]
   }

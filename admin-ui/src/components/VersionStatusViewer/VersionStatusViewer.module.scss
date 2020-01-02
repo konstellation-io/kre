@@ -1,10 +1,6 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
-tspan {
-  alignment-baseline: hanging;
-}
-
 .container {
   height: 100%;
 }
@@ -54,6 +50,5 @@ tspan {
   fill: $font-color;
 
   line-height: 10px;
-  alignment-baseline: central;
   text-anchor: end;
 }

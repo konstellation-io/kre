@@ -132,7 +132,7 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
     const nodeWidth = xScale.bandwidth();
     const nodeSizeRatio = nodeWidth / DEFAULT_NODE_WIDTH;
     const nodeHeight = DEFAULT_NODE_HEIGHT * nodeSizeRatio;
-    const fontSize = nodeWidth / 21;
+    const fontSize = (nodeWidth / 21).toFixed(1);
 
     // Initialize workflows
     workflows = g
@@ -158,8 +158,9 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .attr('x', marginWorkflow - 10)
       .attr('y', nodeHeight / 2)
       .attr('dy', 0)
-      .style('font-size', fontSize)
-      .text((d: Workflow) => d.name);
+      .style('font-size', `${fontSize}px`)
+      .text((d: Workflow) => d.name)
+      .call(centerText, fontSize);
     workflowsTag
       .append('line')
       .attr('x1', marginWorkflow)
@@ -231,10 +232,10 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       )
       .attr('y', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
       .attr('dy', 0)
-      .style('font-size', fontSize)
+      .style('font-size', `${fontSize}px`)
       .text((d: Node) => d.name)
       .call(wrap, 47 * nodeSizeRatio)
-      .call(centerText);
+      .call(centerText, fontSize);
 
     // Initialize edges
     edges = edgesG
