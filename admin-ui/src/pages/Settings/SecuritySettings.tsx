@@ -83,7 +83,7 @@ function SecuritySettings() {
     error: inputError,
     clear,
     clearError
-  } = useInput('', (value: string) => validateForm(value, allowedDomains));
+  } = useInput('', (val: string) => validateForm(val, allowedDomains));
 
   // Set domains data after retrieving it from API
   useEffect(() => {

@@ -57,12 +57,12 @@ function MagicLink() {
   // Checks for token errors and send login request
   useEffect(function() {
     // @ts-ignore
-    const error = checkToken(token);
+    const err = checkToken(token);
 
-    if (!error) {
+    if (!err) {
       makeRequest({ verificationCode: token });
     } else {
-      setError(error);
+      setError(err);
     }
 
     timeout.current = setTimeout(() => {

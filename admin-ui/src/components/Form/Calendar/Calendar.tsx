@@ -55,7 +55,7 @@ function Calendar({
           setFocusedInput(focusedInput);
         }}
         focusedInput={focusedInput}
-        onFocusChange={(focusedInput: any) => setFocusedInput(focusedInput)}
+        onFocusChange={(input: any) => setFocusedInput(input)}
         customArrowIcon={<ArrowRightIcon className="icon-small" />}
         navPrev={
           <div className="DayPickerNavigation_button DayPickerNavigation_button_1 DayPickerNavigation_button__default DayPickerNavigation_button__default_2 DayPickerNavigation_button__horizontal DayPickerNavigation_button__horizontal_3 DayPickerNavigation_button__horizontalDefault DayPickerNavigation_button__horizontalDefault_4 DayPickerNavigation_leftButton__horizontalDefault DayPickerNavigation_leftButton__horizontalDefault_5">

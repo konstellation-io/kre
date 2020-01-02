@@ -72,7 +72,6 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
   let edges: any;
   let edgesG: any;
   let xScale: ScaleBand<string>;
-  let yScale;
 
   const marginWorkflow = width * MARGIN_WORKFLOW_NAMES_PERC;
   const marginLeft = marginWorkflow + margin.left;
@@ -81,7 +80,6 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
 
   const maxNodesInRow = max(data, d => d.nodes.length) || 0;
   const xDomainIndexes = range(maxNodesInRow).map(n => n.toString());
-  const workflowNames = data.map(d => d.name);
 
   useEffect(() => {
     cleanup();
@@ -124,10 +122,6 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .range([marginLeft, marginLeft + innerWidth])
       .padding(0.4)
       .domain(xDomainIndexes);
-
-    yScale = scaleOrdinal()
-      .range([margin.top, margin.top + innerHeight])
-      .domain(workflowNames);
 
     const nodeWidth = xScale.bandwidth();
     const nodeSizeRatio = nodeWidth / DEFAULT_NODE_WIDTH;

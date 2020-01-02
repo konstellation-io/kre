@@ -5,7 +5,7 @@ type Check = {
   message: string;
 };
 const VALID = { valid: true, message: '' } as Check;
-function setInvalid(message: String) {
+function setInvalid(message: string) {
   return {
     message,
     valid: false

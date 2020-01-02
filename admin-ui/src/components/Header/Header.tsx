@@ -13,10 +13,10 @@ import styles from './Header.module.scss';
 
 type Props = {
   children?: any;
-  login: Function;
+  doLogin: Function;
   loggedIn?: boolean;
 };
-const Header: FunctionComponent<Props> = ({ children, login, loggedIn }) => {
+const Header: FunctionComponent<Props> = ({ children, doLogin, loggedIn }) => {
   const { data, error, loading } = useQuery<GetUserEmailResponse>(
     GET_USER_EMAIL
   );
@@ -27,7 +27,7 @@ const Header: FunctionComponent<Props> = ({ children, login, loggedIn }) => {
   const username = data && !error ? data.me.email : 'unknown';
 
   if (username !== 'unknown' && !loggedIn) {
-    login();
+    doLogin();
   }
 
   return (
@@ -47,7 +47,7 @@ const mapStateToProps = (state: { app: AppState }) => ({
   loggedIn: state.app.loggedIn
 });
 const mapDispatchToProps = {
-  login
+  doLogin: login
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
