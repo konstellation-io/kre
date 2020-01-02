@@ -25,71 +25,6 @@ import {
 
 import styles from './RuntimeStatusPreview.module.scss';
 
-const data = [
-  {
-    name: 'MAKE_PREDICTION',
-    nodes: [
-      {
-        id: 'W1InnerNode1',
-        name: 'TICKET STATUS TRANSFORMER',
-        status: '',
-        type: TYPES.DEFAULT_2
-      },
-      {
-        id: 'W1InnerNode2',
-        name: 'TICKET STATUS NORMALIZATOR',
-        status: '',
-        type: TYPES.DEFAULT_2
-      },
-      {
-        id: 'W1InnerNode3',
-        name: 'TICKET CLASIFICATOR NN',
-        status: '',
-        type: TYPES.DEFAULT_2
-      }
-    ],
-    edges: [
-      {
-        id: 'Edge2',
-        status: STATUS.ACTIVE,
-        fromNode: 'W1InnerNode1',
-        toNode: 'W1InnerNode2'
-      },
-      {
-        id: 'Edge3',
-        status: STATUS.ACTIVE,
-        fromNode: 'W1InnerNode2',
-        toNode: 'W1InnerNode3'
-      }
-    ]
-  },
-  {
-    name: 'SAVE_CLIENT_METRICS',
-    nodes: [
-      {
-        id: 'W2InnerNode1',
-        name: 'TICKET STATUS TRANSFORMER',
-        status: '',
-        type: TYPES.DEFAULT
-      },
-      {
-        id: 'W2InnerNode2',
-        name: 'TICKET STATUS NORMALIZATOR',
-        status: '',
-        type: TYPES.DEFAULT
-      }
-    ],
-    edges: [
-      {
-        id: 'Edge2',
-        status: STATUS.ACTIVE,
-        fromNode: 'W2InnerNode1',
-        toNode: 'W2InnerNode2'
-      }
-    ]
-  }
-];
-
 function generateActionButton(label: string, action: Function) {
   return (
     <Button
@@ -124,7 +59,6 @@ function getStateToButtons(
 function RuntimeStatusPreview() {
   const history = useHistory();
   const { runtimeId, versionId } = useParams();
-  console.log('RECREATING');
   const { data, loading, error } = useQuery<
     GetVersionWorkflowsResponse,
     GetVersionWorkflowsVars
