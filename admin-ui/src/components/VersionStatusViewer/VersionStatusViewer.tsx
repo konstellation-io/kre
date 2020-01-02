@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import VersionNode, { STATUS, TYPES } from '../Shape/Node/Node';
+import VersionNode, { TYPES } from '../Shape/Node/Node';
 
 import { select, event } from 'd3-selection';
-import { scaleBand, scaleOrdinal, ScaleBand } from 'd3-scale';
+import { scaleBand, ScaleBand } from 'd3-scale';
 import { max, range } from 'd3-array';
 import { zoom } from 'd3-zoom';
 import { wrap, centerText } from '../../utils/d3';
@@ -76,7 +76,6 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
   const marginWorkflow = width * MARGIN_WORKFLOW_NAMES_PERC;
   const marginLeft = marginWorkflow + margin.left;
   const innerWidth = width - marginLeft - margin.right;
-  const innerHeight = height - margin.top - margin.bottom;
 
   const maxNodesInRow = max(data, d => d.nodes.length) || 0;
   const xDomainIndexes = range(maxNodesInRow).map(n => n.toString());
