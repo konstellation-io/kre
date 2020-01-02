@@ -23,7 +23,7 @@ RUN go build -o entrypoint .
 
 
 # Final image
-FROM alpine:3.9.2
+FROM alpine:3.10.2
 
 RUN mkdir -p /var/log/app
 

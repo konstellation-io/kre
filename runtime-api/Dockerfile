@@ -8,7 +8,7 @@ COPY . .
 RUN go build -o runtime-api .
 
 
-FROM alpine:3.9.2
+FROM alpine:3.10.2
 
 RUN apk add -U --no-cache ca-certificates
 RUN mkdir -p /var/log/app
