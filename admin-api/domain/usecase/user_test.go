@@ -26,7 +26,6 @@ func TestUserSuite(t *testing.T) {
 }
 
 func (s *UserSuite) SetupTest() {
-
 	s.mocks = UserSuiteMocks{
 		logger:   new(mocks.Logger),
 		userRepo: new(mocks.UserRepo),
