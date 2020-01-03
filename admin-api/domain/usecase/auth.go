@@ -3,7 +3,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"github.com/go-playground/validator"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/auth"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
@@ -46,6 +46,8 @@ func NewAuthInteractor(
 var (
 	// ErrUserNotFound error
 	ErrUserNotFound = errors.New("error user not found")
+	// ErrUserNotFound error
+	ErrUserEmailInvalid = errors.New("error user email is not valid")
 	// ErrVerificationCodeNotFound error
 	ErrVerificationCodeNotFound = errors.New("error the verification not found")
 	// ErrExpiredVerificationCode error
@@ -56,7 +58,12 @@ var (
 
 // SignIn creates a temporal on-time-use verification code associated with the user and sends it to the user in the form of a “login link” via email, sms or whatever.
 func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes int) error {
-	var user *entity.User
+	validate := validator.New()
+	err := validate.Var(email, "required,email")
+	if err != nil {
+		return ErrUserEmailInvalid
+	}
+
 	user, err := a.userRepo.GetByEmail(email)
 	isNewUser := false
 	if err == ErrUserNotFound {
@@ -78,22 +85,18 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 		isAllowed = true
 	} else {
 		split := strings.Split(email, "@")
-		if len(split) == 2 {
-			domain := split[1]
+		domain := split[1]
 
-			for _, d := range settings.AuthAllowedDomains {
-				if d == domain {
-					a.logger.Info(fmt.Sprintf("Email domain '%s' is allowed", domain))
-					isAllowed = true
-					break
-				}
+		for _, d := range settings.AuthAllowedDomains {
+			if d == domain {
+				a.logger.Info(fmt.Sprintf("Email domain '%s' is allowed", domain))
+				isAllowed = true
+				break
 			}
+		}
 
-			if !isAllowed {
-				a.logger.Info(fmt.Sprintf("Email domain '%s' is not in the allowed domain list", domain))
-			}
-		} else {
-			a.logger.Info(fmt.Sprintf("Invalid email '%s' format", email))
+		if !isAllowed {
+			a.logger.Info(fmt.Sprintf("Email domain '%s' is not in the allowed domain list", domain))
 		}
 	}
 
