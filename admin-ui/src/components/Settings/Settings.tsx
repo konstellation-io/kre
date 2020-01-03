@@ -26,7 +26,7 @@ type Props = {
 function Settings({ label, reduxLogout }: Props) {
   const history = useHistory();
   const [opened, setOpened] = useState(false);
-  const [logoutResponse, logout] = useEndpoint({
+  const [logoutResponse, doLogout] = useEndpoint({
     endpoint: ENDPOINT.LOGOUT,
     method: 'POST'
   });
@@ -46,7 +46,7 @@ function Settings({ label, reduxLogout }: Props) {
     <Button
       label={'LOGOUT'}
       type={BUTTON_TYPES.GREY}
-      onClick={() => logout()}
+      onClick={() => doLogout()}
       Icon={LogoutIcon}
       align={BUTTON_ALIGN.LEFT}
       style={buttonStyle}

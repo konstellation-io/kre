@@ -23,12 +23,12 @@ export default function useInput(initialValue: any, validator: Function) {
     clear: () => setValue(initialValue),
     clearError: () => setError(''),
     isValid: () => {
-      const error = validator(value);
-      if (error) {
-        setError(error);
+      const err = validator(value);
+      if (err) {
+        setError(err);
       }
 
-      return !error;
+      return !err;
     },
     onChange: (newValue: any) => {
       setValue(newValue);

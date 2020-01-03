@@ -62,9 +62,9 @@ function TextInput({
   }
 
   function onType(e: any) {
-    const value = e.target.value;
+    const newValue = e.target.value;
 
-    updateValue(value);
+    updateValue(newValue);
   }
 
   function onKeyPress(e: any) {

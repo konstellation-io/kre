@@ -34,12 +34,9 @@ function RuntimeVersions() {
   if (loading) return <SpinnerCircular />;
   if (error) return <ErrorMessage />;
 
-  let activeVersion: Version | undefined;
-
   let hasVersions = data && data.versions.length > 0;
-  if (data && hasVersions) {
-    activeVersion = data.versions.find(version => version.status === 'ACTIVE');
-  }
+  let activeVersion: Version | undefined =
+    data && data.versions.find(version => version.status === 'ACTIVE');
 
   function onLocateActiveVersionClick() {
     const activeVersionInfoElement = document.getElementById(

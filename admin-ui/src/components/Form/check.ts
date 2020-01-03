@@ -5,7 +5,7 @@ type Check = {
   message: string;
 };
 const VALID = { valid: true, message: '' } as Check;
-function setInvalid(message: String) {
+function setInvalid(message: string) {
   return {
     message,
     valid: false
@@ -64,15 +64,6 @@ export function isGreaterThan(value: any, minValue: number) {
   return value >= minValue
     ? VALID
     : setInvalid(`Invalid value, ${value} must be greater than ${minValue}`);
-}
-
-export function isIntegerWithinRange(value: any, range: number[]) {
-  const [minValue, maxValue] = range.sort((a, b) => a - b);
-  return value >= minValue && value <= maxValue
-    ? VALID
-    : setInvalid(
-        `Invalid value, must be within the range ${minValue}-${maxValue}`
-      );
 }
 
 export function isEmailValid(email: string) {

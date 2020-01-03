@@ -8,7 +8,6 @@ import HorizontalBar from '../../../../components/Layout/HorizontalBar/Horizonta
 import Button, { BUTTON_TYPES } from '../../../../components/Button/Button';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
-import { TYPES, STATUS } from '../../../../components/Shape/Node/Node';
 import StatusViewer from '../../components/StatusViewer/StatusViewer';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';

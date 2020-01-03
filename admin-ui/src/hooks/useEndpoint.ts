@@ -47,11 +47,11 @@ export default function useEndpoint({
         url: `${apiURL}/${endpoint}`,
         withCredentials: true
       })
-        .then((response: any) => {
+        .then((res: any) => {
           setResponse({
             ...defaultResponseState,
-            data: response.data,
-            status: response.status,
+            data: res.data,
+            status: res.status,
             complete: true
           });
         })
