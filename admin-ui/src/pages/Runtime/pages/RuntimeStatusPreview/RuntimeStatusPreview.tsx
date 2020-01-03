@@ -11,6 +11,7 @@ import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import StatusViewer from '../../components/StatusViewer/StatusViewer';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { VersionStatus } from '../../../../graphql/models';
 import {
   ACTIVATE_VERSION,
   DEPLOY_VERSION,
@@ -49,10 +50,10 @@ function getStateToButtons(
   const buttonDeactivate = generateActionButton('DEACTIVATE', deactivateAction);
 
   return {
-    STOPPED: [buttonDeploy],
-    ACTIVE: [buttonDeactivate],
-    RUNNING: [buttonActivate, buttonStop],
-    CREATED: [buttonDeploy]
+    [VersionStatus.STOPPED]: [buttonDeploy],
+    [VersionStatus.ACTIVE]: [buttonDeactivate],
+    [VersionStatus.RUNNING]: [buttonActivate, buttonStop],
+    [VersionStatus.CREATED]: [buttonDeploy]
   };
 }
 

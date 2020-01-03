@@ -11,7 +11,7 @@ import {
 } from '../RuntimeVersions/RuntimeVersions.graphql';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
-import { Version } from '../../../../graphql/models';
+import { Version, VersionStatus } from '../../../../graphql/models';
 import { useHistory } from 'react-router-dom';
 
 function RuntimeStatus() {
@@ -30,7 +30,9 @@ function RuntimeStatus() {
   let activeVersion: Version | undefined;
   let hasVersions = data && data.versions.length > 0;
   if (data && hasVersions) {
-    activeVersion = data.versions.find(version => version.status === 'ACTIVE');
+    activeVersion = data.versions.find(
+      version => version.status === VersionStatus.ACTIVE
+    );
   }
 
   if (activeVersion) {

@@ -20,7 +20,12 @@ import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
 import { GET_DASHBOARD, GetDashboardResponse } from './Dashboard.graphql';
-import { Alert, Runtime } from '../../graphql/models';
+import {
+  Alert,
+  Runtime,
+  VersionEnvStatus,
+  VersionStatus
+} from '../../graphql/models';
 import { ApolloError } from 'apollo-client';
 
 type Props = {
@@ -29,6 +34,20 @@ type Props = {
   loading: boolean;
   history: History;
 };
+
+// TODO: Add ERROR state
+// For now this label will only show ACTIVE for active versions and INACTIVE otherwise
+function getVersionStatus(runtime: Runtime) {
+  if (
+    !runtime.activeVersion ||
+    (runtime.activeVersion &&
+      runtime.activeVersion.status !== VersionStatus.ACTIVE)
+  ) {
+    return VersionEnvStatus.INACTIVE;
+  }
+
+  return VersionEnvStatus.ACTIVE;
+}
 
 function getDashboardContent({ data, error, loading, history }: Props) {
   if (error) return <ErrorMessage />;
@@ -45,7 +64,8 @@ function getDashboardContent({ data, error, loading, history }: Props) {
         history.push(runtimePath);
       }}
       id={runtime.id}
-      status={runtime.status.toLowerCase()}
+      status={runtime.status}
+      versionStatus={getVersionStatus(runtime)}
       title={runtime.name}
       info={[
         {

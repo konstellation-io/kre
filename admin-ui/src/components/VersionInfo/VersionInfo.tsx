@@ -13,7 +13,7 @@ import StopIcon from '@material-ui/icons/PauseCircleFilled';
 import ActivateIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import DeactivateIcon from '@material-ui/icons/Block';
 
-import { Version } from '../../graphql/models';
+import { Version, VersionStatus } from '../../graphql/models';
 
 import cx from 'classnames';
 import styles from './VersionInfo.module.scss';
@@ -34,10 +34,10 @@ const buttonActivate = generateButton('ACTIVATE', ActivateIcon);
 const buttonDeactivate = generateButton('DEACTIVATE', DeactivateIcon);
 
 const stateToButtons: { [key: string]: ActionButton[] } = {
-  STOPPED: [buttonActivate],
-  ACTIVE: [buttonDeactivate],
-  RUNNING: [buttonActivate, buttonStop],
-  CREATED: [buttonDeploy]
+  [VersionStatus.STOPPED]: [buttonActivate],
+  [VersionStatus.ACTIVE]: [buttonDeactivate],
+  [VersionStatus.RUNNING]: [buttonActivate, buttonStop],
+  [VersionStatus.CREATED]: [buttonDeploy]
 };
 
 type Props = {
@@ -46,7 +46,7 @@ type Props = {
 function VersionInfo({ version }: Props) {
   const history = useHistory();
   const { runtimeId } = useParams();
-  const isVersionActive = version.status === 'ACTIVE';
+  const isVersionActive = version.status === VersionStatus.ACTIVE;
 
   function onVersionClick() {
     const versionStatusPreviewPath = PAGES.RUNTIME_STATUS_PREVIEW.replace(

@@ -10,6 +10,8 @@ import { wrap, centerText } from '../../utils/d3';
 
 import styles from './VersionStatusViewer.module.scss';
 
+import { NodeStatus } from '../../graphql/models';
+
 const MARGIN_WORKFLOW_NAMES_PERC = 0.08;
 const DEFAULT_NODE_WIDTH = 120.33;
 const DEFAULT_NODE_HEIGHT = 37.9;
@@ -18,7 +20,7 @@ const STROKE_WIDTH = 0.7;
 type Node = {
   id: string;
   name: string;
-  status: string;
+  status: NodeStatus;
   type?: string;
 };
 
@@ -236,7 +238,7 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .data((d: Workflow) => d.edges)
       .enter()
       .append('g')
-      .attr('class', (d: Edge) => styles[d.status || 'ACTIVE'])
+      .attr('class', (d: Edge) => styles[d.status || NodeStatus.ACTIVE])
       .classed(styles.edge, true);
     edges
       .append('line')

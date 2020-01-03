@@ -13,6 +13,9 @@ export const GET_DASHBOARD = gql`
       name
       status
       creationDate
+      activeVersion {
+        status
+      }
     }
     alerts {
       type
