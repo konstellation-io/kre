@@ -11,6 +11,7 @@ export type Tab = {
   route: string;
   Icon?: any;
   exact?: boolean;
+  disabled?: boolean;
 };
 type Props = {
   title: string;

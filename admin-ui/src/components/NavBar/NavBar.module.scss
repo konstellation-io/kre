@@ -11,6 +11,10 @@
   border-bottom-width: 1px;
 }
 
+.disabled {
+  cursor: default;
+}
+
 .item {
   @include font-button;
   text-align: center;
@@ -34,6 +38,11 @@
   &:hover {
     background-color: rgba(191, 207, 255, 0.04);
     color: $font-color-white;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    color: $font-color-dark;
   }
 }
 

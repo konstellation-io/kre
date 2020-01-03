@@ -38,15 +38,9 @@ type Props = {
 // TODO: Add ERROR state
 // For now this label will only show ACTIVE for active versions and INACTIVE otherwise
 function getVersionStatus(runtime: Runtime) {
-  if (
-    !runtime.activeVersion ||
-    (runtime.activeVersion &&
-      runtime.activeVersion.status !== VersionStatus.ACTIVE)
-  ) {
-    return VersionEnvStatus.INACTIVE;
-  }
-
-  return VersionEnvStatus.ACTIVE;
+  return runtime.activeVersion
+    ? VersionEnvStatus.ACTIVE
+    : VersionEnvStatus.INACTIVE;
 }
 
 function getDashboardContent({ data, error, loading, history }: Props) {

@@ -26,11 +26,14 @@ import {
 import cx from 'classnames';
 import styles from './RuntimeStatusPreview.module.scss';
 
+const disabledButtons = ['STOP', 'DEACTIVATE'];
+
 function generateActionButton(label: string, action: Function) {
   return (
     <Button
       key={label}
       label={label}
+      disabled={disabledButtons.includes(label)}
       onClick={action}
       type={BUTTON_TYPES.DARK}
       height={30}

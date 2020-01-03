@@ -9,6 +9,8 @@ import TimeIcon from '@material-ui/icons/AccessTime';
 import cx from 'classnames';
 import styles from './SidebarTitle.module.scss';
 
+import { Version } from '../../../../graphql/models';
+
 type DateInfoProps = {
   label: string;
   Icon: any;
@@ -27,19 +29,15 @@ function DateInfo({ label, Icon, date }: DateInfoProps) {
 }
 
 type Props = {
-  version?: {
-    title: string;
-    status: string;
-    name: string;
-    created: string;
-    activated: string;
-  };
+  version?: Version;
 };
 
 function SidebarTitle({ version }: Props) {
   if (!version) {
     return <div style={{ paddingLeft: '20px' }}>No active version</div>; // TODO add final design
   }
+
+  console.log('VERSION', version);
 
   return (
     <div className={styles.container}>
@@ -56,12 +54,12 @@ function SidebarTitle({ version }: Props) {
       <div className={styles.dates}>
         <DateInfo
           label={'CREATED'}
-          date={version && formatDate(new Date(version.created))}
+          date={version && formatDate(new Date(version.creationDate))}
           Icon={CalendarIcon}
         />
         <DateInfo
           label={'ACTIVATED'}
-          date={version && formatDate(new Date(version.activated))}
+          date={version && formatDate(new Date(version.activationDate))}
           Icon={TimeIcon}
         />
       </div>

@@ -70,6 +70,10 @@ a.navLinkSelected .btn,
   &:active {
     box-shadow: none;
   }
+
+  &.disabled {
+    color: $font-color-grey;
+  }
 }
 
 .grey {
