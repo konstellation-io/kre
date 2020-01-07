@@ -1,5 +1,4 @@
 
-
 - [KRE (Konstellataion Runtime Engine)](#kre-konstellataion-runtime-engine)
 - [Archiecture](#archiecture)
   - [Engine](#engine)
@@ -85,11 +84,12 @@ run and a YAML file called `kre.yaml` with the desired workflows deffinitions.
 The base structure of a `kre.yaml` is as follow:
 
 ```yaml
-version: 1.0.3
+version: mettel-tnba-v1
+description: This is the new version that solves some problems.
 entrypoint: 
- - image: golang
-   name: input
-   entrypoint: src/ioapi
+ - proto: public_input.proto
+   image: konstellation/kre-golang
+   entrypoint: src/input.go
 
 config:
   variables:
@@ -99,27 +99,34 @@ config:
     - HTTPS_CERT
 
 nodes:
- - name: model_input_etl
-   image: konstellation/kre-python3
+ - name: ETL
+   image: konstellation/kre-python37
+   src: src/etl/model_input_etl.py
  
- - name: model
+ - name: Execute DL Model
    image: konstellation/kre-pytorch2
+   src: src/execute_model/model.py
 
- - name: output
-   image: konstellation/kre-python3
+ - name: Create Output
+   image: konstellation/kre-python37
+   src: src/output/output.py
 
- - name: client_metrics
-   image: konstellation/kre-python3
+ - name: Client Metrics
+   image: konstellation/kre-python37
+   src: src/client_metrics/client_metrics.py
 
 workflows:
-  - name: make_prediction
-    waterfall:
-      - model_input_etl
-      - model
-      - output
-  - name: save_client_metrics
-    sequencial:
-      - client_metrics
+  - name: New prediction
+    entrypoint: MakePrediction
+    sequential:
+      - ETL
+      - Execute DL Model
+      - Create Output
+  - name: Save Client Metrics
+    entrypoint: SaveClientMetric
+    sequential:
+      - Client Metrics
+
 ```
 
 # Install
