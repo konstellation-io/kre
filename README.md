@@ -1,4 +1,3 @@
-
 - [KRE (Konstellataion Runtime Engine)](#kre-konstellataion-runtime-engine)
 - [Archiecture](#archiecture)
   - [Engine](#engine)
@@ -88,8 +87,8 @@ version: mettel-tnba-v1
 description: This is the new version that solves some problems.
 entrypoint: 
  - proto: public_input.proto
-   image: konstellation/kre-golang
-   entrypoint: src/input.go
+   image: konstellation/kre-python37
+   src: src/entrypoint.py
 
 config:
   variables:
