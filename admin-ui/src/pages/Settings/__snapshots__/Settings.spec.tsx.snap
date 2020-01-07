@@ -134,6 +134,7 @@ exports[`Renders Settings without crashing 1`] = `
             </div>
           </a>
           <a
+            class=""
             href="/settings/security"
           >
             <div

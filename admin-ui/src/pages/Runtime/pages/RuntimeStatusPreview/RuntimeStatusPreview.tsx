@@ -1,24 +1,20 @@
 import { get } from 'lodash';
 
-import React from 'react';
-import { useParams, useHistory } from 'react-router';
+import React, { useState } from 'react';
+import { useParams } from 'react-router';
 import * as PAGES from '../../../../constants/routes';
 
+import { getVersionActionButtons } from '../../utils/generators';
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
-import Button, { BUTTON_TYPES } from '../../../../components/Button/Button';
+import ConfirmationModal from '../../../../components/ConfirmationModal/ConfirmationModal';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import StatusViewer from '../../components/StatusViewer/StatusViewer';
 
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { VersionStatus } from '../../../../graphql/models';
+import { useQuery } from '@apollo/react-hooks';
+import useVersionAction from '../../utils/hooks';
 import {
-  ACTIVATE_VERSION,
-  DEPLOY_VERSION,
   GET_VERSION_WORKFLOWS,
-  ActivateVersionResponse,
-  DeployVersionResponse,
-  ActivateDeployVersionVars,
   GetVersionWorkflowsResponse,
   GetVersionWorkflowsVars
 } from './RuntimeStatusPreview.graphql';
@@ -26,42 +22,7 @@ import {
 import cx from 'classnames';
 import styles from './RuntimeStatusPreview.module.scss';
 
-const disabledButtons = ['STOP', 'DEACTIVATE'];
-
-function generateActionButton(label: string, action: Function) {
-  return (
-    <Button
-      key={label}
-      label={label}
-      disabled={disabledButtons.includes(label)}
-      onClick={action}
-      type={BUTTON_TYPES.DARK}
-      height={30}
-    />
-  );
-}
-
-function getStateToButtons(
-  activateAction: Function,
-  deployAction: Function,
-  stopAction: Function,
-  deactivateAction: Function
-) {
-  const buttonDeploy = generateActionButton('DEPLOY', deployAction);
-  const buttonStop = generateActionButton('STOP', stopAction);
-  const buttonActivate = generateActionButton('ACTIVATE', activateAction);
-  const buttonDeactivate = generateActionButton('DEACTIVATE', deactivateAction);
-
-  return {
-    [VersionStatus.STOPPED]: [buttonDeploy],
-    [VersionStatus.ACTIVE]: [buttonDeactivate],
-    [VersionStatus.RUNNING]: [buttonActivate, buttonStop],
-    [VersionStatus.CREATED]: [buttonDeploy]
-  };
-}
-
 function RuntimeStatusPreview() {
-  const history = useHistory();
   const { runtimeId, versionId } = useParams();
   const { data, loading, error } = useQuery<
     GetVersionWorkflowsResponse,
@@ -71,51 +32,40 @@ function RuntimeStatusPreview() {
     fetchPolicy: 'no-cache'
   });
   // TODO: loading and error check
-  const [activateMutation] = useMutation<
-    ActivateVersionResponse,
-    ActivateDeployVersionVars
-  >(ACTIVATE_VERSION, { onCompleted: refreshPage });
-  const [deployMutation] = useMutation<
-    DeployVersionResponse,
-    ActivateDeployVersionVars
-  >(DEPLOY_VERSION, { onCompleted: refreshPage });
+  const redirectionPath = PAGES.RUNTIME_STATUS_PREVIEW.replace(
+    ':runtimeId',
+    runtimeId || ''
+  ).replace(':versionId', versionId || '');
+  const { activateVersion, deployVersion, getMutationVars } = useVersionAction(
+    redirectionPath
+  );
+  const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  function getMutationVars() {
-    return {
-      variables: {
-        input: {
-          versionId: versionId || ''
-        }
-      }
-    };
-  }
-  function refreshPage() {
-    history.push('');
-    history.replace(
-      PAGES.RUNTIME_STATUS_PREVIEW.replace(
-        ':runtimeId',
-        runtimeId || ''
-      ).replace(':versionId', versionId || '')
-    );
-  }
   function onDeployVersion() {
-    deployMutation(getMutationVars());
+    deployVersion(getMutationVars(versionId || ''));
   }
-  function onActivateVersion() {
-    activateMutation(getMutationVars());
+  function onActivateVersion(comment: string) {
+    activateVersion(getMutationVars(versionId || '', comment));
   }
 
-  const stateToButtons: { [key: string]: any } = getStateToButtons(
-    onActivateVersion,
-    onDeployVersion,
-    function() {},
-    function() {}
-  );
+  function onOpenModal() {
+    setShowActionConfirmation(true);
+  }
+  function onCloseModal() {
+    setShowActionConfirmation(false);
+  }
+
   const versionStatus = data && data.version && data.version.status;
-  const actionButtons: any = stateToButtons[versionStatus || ''];
+  const actionButtons: any = getVersionActionButtons(
+    onOpenModal,
+    onDeployVersion,
+    function() {}, // TODO: STOP
+    function() {}, // TODO: DEACTIVATE
+    versionStatus
+  );
 
   return (
     <div className={styles.container}>
@@ -134,6 +84,14 @@ function RuntimeStatusPreview() {
         data={get(data, 'version.workflows', [])}
         status={versionStatus}
       />
+      {showActionConfirmation && (
+        <ConfirmationModal
+          title="YOU ARE ABOUT TO ACTIVATE A VERSION"
+          message="And this cannot be undone. Are you sure?"
+          onAction={onActivateVersion}
+          onClose={onCloseModal}
+        />
+      )}
     </div>
   );
 }

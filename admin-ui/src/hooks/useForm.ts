@@ -8,7 +8,7 @@ export type Form = {
   uploadProgress: number;
   isValid: Function;
   loading?: boolean;
-  error: ApolloError | undefined;
+  error?: ApolloError;
   clearInputs: Function;
   getInputVariables: Function;
 };

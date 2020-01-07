@@ -37,8 +37,6 @@ function SidebarTitle({ version }: Props) {
     return <div style={{ paddingLeft: '20px' }}>No active version</div>; // TODO add final design
   }
 
-  console.log('VERSION', version);
-
   return (
     <div className={styles.container}>
       <div className={styles.title}>{get(version, 'title')}</div>

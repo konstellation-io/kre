@@ -50,6 +50,7 @@ input DeployVersionInput {
 
 input ActivateVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 type CreateVersionResponse {
