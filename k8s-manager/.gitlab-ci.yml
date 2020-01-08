@@ -15,6 +15,9 @@ security-k8s-manager:
     refs:
       - merge_requests
       - master
+    changes:
+      - k8s-manager/**/*
+      - .gitlab-ci.yml
 
 release-k8s-manager:
   stage: semantic-release

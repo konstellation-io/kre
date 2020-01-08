@@ -15,6 +15,8 @@ security-runtime-entrypoint:
     refs:
       - merge_requests
       - master
+    changes:
+      - runtime-entrypoint/**/*
 
 release-runtime-entrypoint:
   stage: semantic-release
