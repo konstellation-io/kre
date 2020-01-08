@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 
-RUN apt update
+RUN apt update && apt upgrade
 RUN apt -y install python3.7 python3-pip python3.7-dev 
 
 WORKDIR /kre
