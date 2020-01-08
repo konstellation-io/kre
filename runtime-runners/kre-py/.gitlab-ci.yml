@@ -1,22 +1,22 @@
-security-kre-py:
-  stage: security
-  image: golang:1.13
-  variables:
-    SNYK_TOKEN: $SNYK_TOKEN
-  before_script:
-    - apt update && apt install nodejs npm -y
-    - npm install -g snyk
-    - snyk auth $SNYK_TOKEN
-  script:
-    - cd runtime-runners/kre-py
-    - snyk test
-  only:
-    refs:
-      - merge_requests
-      - master
-    changes:
-      - runtime-runners/kre-py/**/*
-      - .gitlab-ci.yml
+# security-kre-py:
+#   stage: security
+#   image: golang:1.13
+#   variables:
+#     SNYK_TOKEN: $SNYK_TOKEN
+#   before_script:
+#     - apt update && apt install nodejs npm -y
+#     - npm install -g snyk
+#     - snyk auth $SNYK_TOKEN
+#   script:
+#     - cd runtime-runners/kre-py
+#     - snyk test
+#   only:
+#     refs:
+#       - merge_requests
+#       - master
+#     changes:
+#       - runtime-runners/kre-py/**/*
+#       - .gitlab-ci.yml
 
 test-kre-py:
   stage: test
@@ -88,8 +88,7 @@ publish-kre-py-image:
     - snyk auth $SNYK_TOKEN
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
-    # - TAG=${CI_COMMIT_TAG#kre-py-v}
-    - TAG=test
+    - TAG=${CI_COMMIT_TAG#kre-py-v}
     - docker build -t $IMAGE_PROJECT_NAME:$TAG runtime-runners/kre-py
     # IMAGE SECURITY CHECK
     # - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
