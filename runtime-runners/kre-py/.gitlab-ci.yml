@@ -91,8 +91,8 @@ publish-kre-py-image:
     - TAG=test
     - docker build -t $IMAGE_PROJECT_NAME:$TAG runtime-runners/kre-py
     # IMAGE SECURITY CHECK
-    - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
-    - snyk test --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
+    # - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
+    # - snyk test --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
