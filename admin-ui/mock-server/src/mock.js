@@ -40,7 +40,20 @@ module.exports = {
     name: casual.name,
     status: casual.random_element(['CREATING', 'RUNNING', 'ERROR']),
     creationDate: casual.moment.toISOString(),
-    versions: () => new MockList([1, 5])
+    versions: () => new MockList([1, 5]),
+    activeVersion: () => {
+      if (Math.random() > 0.5) {
+        return {
+          id: parseInt(casual.array_of_digits(8).join('')),
+          name: `v${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}`,
+          description: casual.sentence,
+          status: 'ACTIVE',
+          creationDate: casual.moment.toISOString(),
+          activationDate: casual.moment.toISOString(),
+        }
+      }
+      return null;
+    },
   }),
   Version: () => ({
     id: parseInt(casual.array_of_digits(8).join('')),

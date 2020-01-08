@@ -16,7 +16,7 @@ import {
   RuntimeVersionsResponse,
   RuntimeVersionsVars
 } from './RuntimeVersions.graphql';
-import { Version } from '../../../../graphql/models';
+import { Version, VersionStatus } from '../../../../graphql/models';
 
 import styles from './RuntimeVersions.module.scss';
 
@@ -36,7 +36,8 @@ function RuntimeVersions() {
 
   let hasVersions = data && data.versions.length > 0;
   let activeVersion: Version | undefined =
-    data && data.versions.find(version => version.status === 'ACTIVE');
+    data &&
+    data.versions.find(version => version.status === VersionStatus.ACTIVE);
 
   function onLocateActiveVersionClick() {
     const activeVersionInfoElement = document.getElementById(

@@ -63,12 +63,16 @@
   }
 }
 
-.ERROR {
+.ERROR,
+.STOPPED {
   .ext {
     fill: $color-red;
     stroke: $color-red;
   }
   .int {
     stroke: $color-red;
+  }
+  .label {
+    fill: $font-color-white;
   }
 }

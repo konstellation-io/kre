@@ -44,7 +44,8 @@ function createNavTabs(runtimeId: string) {
     {
       label: 'DOCUMENTATION',
       route: ROUTE.HOME,
-      Icon: DocumentationIcon
+      Icon: DocumentationIcon,
+      disabled: true
     },
     {
       label: 'VERSIONS',
@@ -54,7 +55,8 @@ function createNavTabs(runtimeId: string) {
     {
       label: 'CONFIGURATION',
       route: ROUTE.HOME,
-      Icon: ConfigIcon
+      Icon: ConfigIcon,
+      disabled: true
     }
   ];
 
@@ -79,15 +81,7 @@ function Runtime() {
   if (loading) return <SpinnerCircular />;
 
   const runtime = data && data.runtime;
-  const originalActiveVersion = runtime && runtime.activeVersion;
-  const activeVersion = runtime &&
-    originalActiveVersion && {
-      name: originalActiveVersion.name,
-      created: originalActiveVersion.creationDate,
-      activated: originalActiveVersion.activationDate,
-      status: 'active',
-      title: runtime.name
-    };
+  const activeVersion = runtime && runtime.activeVersion;
 
   const navTabs = createNavTabs(runtimeId || '');
   const newVersionRoute = ROUTE.NEW_VERSION.replace(

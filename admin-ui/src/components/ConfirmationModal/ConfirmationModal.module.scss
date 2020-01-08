@@ -1,0 +1,44 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.5;
+  pointer-events: all;
+  cursor: default;
+  z-index: 1;
+}
+
+.container {
+  padding: 14px 0 0 21px;
+  background-color: black;
+  width: 380px;
+
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -25%);
+  z-index: 1;
+}
+
+.title {
+  @include font-caption;
+  color: white;
+}
+
+.message {
+  @include font-body;
+  font-weight: 500;
+
+  margin: 20px 21px 65px 0;
+}
+
+.comment {
+  margin-bottom: 15px;
+  padding-right: 21px;
+}

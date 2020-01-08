@@ -5,7 +5,6 @@ import { useHistory, useParams } from 'react-router';
 
 import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 import FileUpload from '../../components/Form/FileUpload/FileUpload';
-import UploadProgress from '../../components/Form/UploadProgress/UploadProgress';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
 import * as PAGES from '../../constants/routes';

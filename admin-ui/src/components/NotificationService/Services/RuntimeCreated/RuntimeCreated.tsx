@@ -67,7 +67,14 @@ function RuntimeCreated() {
         message={notification.message}
         buttonLabel="GO TO RUNTIME"
         buttonAction={() => {
-          history.push(PAGES.RUNTIME.replace(':runtimeId', notification.id));
+          const runtimePath = PAGES.RUNTIME.replace(
+            ':runtimeId',
+            notification.id
+          );
+          if (!location.pathname.startsWith(runtimePath)) {
+            history.push(runtimePath);
+          }
+
           closeNotification(notification.id);
         }}
         onCloseNotification={() => closeNotification(notification.id)}

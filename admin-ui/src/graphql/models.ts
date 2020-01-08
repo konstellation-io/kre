@@ -18,13 +18,13 @@ export interface Version {
   creationAuthor: User;
   activationDate: string;
   activationAuthor: User;
-  status: string;
+  status: VersionStatus;
 }
 
 export interface Runtime {
   id: string;
   name: string;
-  status: string;
+  status: RuntimeStatus;
   creationDate: string;
   activeVersion: Version;
 }
@@ -39,3 +39,29 @@ export type Settings = {
   authAllowedDomains?: string[];
   sessionLifetimeInDays?: number;
 };
+
+export enum RuntimeStatus {
+  CREATING = 'CREATING',
+  RUNNING = 'RUNNING',
+  ERROR = 'ERROR',
+  UNKNOWN = 'UNKNOWN'
+}
+
+export enum VersionStatus {
+  CREATED = 'CREATED',
+  ACTIVE = 'ACTIVE',
+  RUNNING = 'RUNNING',
+  STOPPED = 'STOPPED'
+}
+
+export enum VersionEnvStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  ERROR = 'ERROR'
+}
+
+export enum NodeStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  ERROR = 'ERROR'
+}

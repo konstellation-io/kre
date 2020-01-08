@@ -23,6 +23,7 @@ export const GET_RUNTIME = gql`
         activationAuthor {
           email
         }
+        status
       }
     }
   }

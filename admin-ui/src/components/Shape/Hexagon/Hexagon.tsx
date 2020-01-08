@@ -4,6 +4,8 @@ import Lottie from '../../Lottie/Lottie';
 import { STATES } from '../../../constants/application';
 import animationData from './Hexagon.json';
 
+import { VersionEnvStatus, RuntimeStatus } from '../../../graphql/models';
+
 import styles from './Hexagon.module.scss';
 import cx from 'classnames';
 
@@ -31,7 +33,8 @@ type RuntimeInfo = {
 };
 type Props = {
   id?: string;
-  status?: string;
+  status?: RuntimeStatus;
+  versionStatus?: VersionEnvStatus;
   title?: string;
   info?: RuntimeInfo[];
   disabled?: boolean;
@@ -41,7 +44,8 @@ type Props = {
 
 function Hexagon({
   id = '00000000',
-  status = '',
+  status = RuntimeStatus.UNKNOWN,
+  versionStatus = VersionEnvStatus.INACTIVE,
   title = 'Default title',
   info = [],
   disabled = false,
@@ -101,9 +105,13 @@ function Hexagon({
           forceSegments
         />
         <div className={cx(styles.bgOverlap, styles[status])} />
-        <div className={cx(styles.bgVersionOverlap, styles.inactive)} />
-        <div className={styles.bgOverlapText}>{status.toUpperCase()}</div>
-        <div className={styles.bgOverlapVersionText}>VERSION: INACTIVE</div>
+        <div
+          className={cx(styles.bgVersionOverlap, styles[versionStatus || ''])}
+        />
+        <div className={styles.bgOverlapText}>{status}</div>
+        <div className={styles.bgOverlapVersionText}>
+          VERSION: {versionStatus}
+        </div>
       </div>
       <div
         className={styles.hexContent}
