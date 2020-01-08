@@ -86,8 +86,9 @@ publish-kre-py-image:
     - snyk auth $SNYK_TOKEN
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
-    - TAG=${CI_COMMIT_TAG#kre-py-v}
-    - docker build -t $IMAGE_PROJECT_NAME:$TAG kre-py
+    # - TAG=${CI_COMMIT_TAG#kre-py-v}
+    - TAG=test
+    - docker build -t $IMAGE_PROJECT_NAME:$TAG runtime-runners/kre-py
     # IMAGE SECURITY CHECK
     - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
     - snyk test --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
