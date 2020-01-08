@@ -1,0 +1,99 @@
+security-kre-py:
+  stage: security
+  image: golang:1.13
+  variables:
+    SNYK_TOKEN: $SNYK_TOKEN
+  before_script:
+    - apt update && apt install nodejs npm -y
+    - npm install -g snyk
+    - snyk auth $SNYK_TOKEN
+  script:
+    - cd runtime-runners/kre-py
+    - snyk monitor --file=requirements.txt
+    - snyk test --file=requirements.txt
+  only:
+    refs:
+      - merge_requests
+      - master
+
+test-kre-py:
+  stage: test
+  image: python:3.7
+  script:
+    - echo "HERE PASS PYTHON TESTS"
+    - touch runtime-runners/kre-py/kre-py-coverage.out
+    - touch runtime-runners/kre-py/kre-py-report.xml
+  coverage: /^TOTAL.+?(\d+\%)$/
+  artifacts:
+    paths:
+      - runtime-runners/kre-py/kre-py-coverage.out
+    reports:
+      junit: runtime-runners/kre-py/kre-py-report.xml
+  only:
+    refs:
+      - merge_requests
+      - master
+    changes:
+      - runtime-runners/kre-py/**/*
+
+code-quality-kre-py:
+  extends: .code-quality
+  variables:
+    COMPONENT_PATH: runtime-runners/kre-py
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - runtime-runners/kre-py/**/*
+
+sonar-kre-py:
+  extends: .sonar-scanner
+  variables:
+    SONAR_TOKEN: $SONAR_TOKEN_ADMIN_API
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/kre-py/.sonar"
+    COMPONENT_PATH: runtime-runners/kre-py
+    GIT_DEPTH: "0"
+  only:
+    changes:
+      - runtime-runners/kre-py/**/*
+
+release-kre-py:
+  stage: semantic-release
+  image: node:10
+  before_script:
+    - npm install --prefix kre-py
+  script:
+    - cd runtime-runners/kre-py && npx semantic-release -e semantic-release-monorepo
+  only:
+    refs:
+      - master
+    changes:
+      - runtime-runners/kre-py/**/*
+      - .gitlab-ci.yml
+
+publish-kre-py-image:
+  stage: publish-image
+  image: docker:18-git
+  services:
+    - docker:18-dind
+  variables:
+    IMAGE_PROJECT_NAME: "konstellation/kre-py"
+    DOCKER_USER: $DOCKER_USER
+    DOCKER_PASS: $DOCKER_PASS
+  before_script:
+    - apk add nodejs npm --update
+    - npm i -g snyk
+    - snyk auth $SNYK_TOKEN
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  script:
+    - TAG=${CI_COMMIT_TAG#kre-py-v}
+    - docker build -t $IMAGE_PROJECT_NAME:$TAG kre-py
+    # IMAGE SECURITY CHECK
+    - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
+    - snyk test --docker $IMAGE_PROJECT_NAME:$TAG --file=runtime-runners/kre-py/Dockerfile
+    - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
+    - docker push $IMAGE_PROJECT_NAME:$TAG
+    - docker push $IMAGE_PROJECT_NAME:latest
+  # only:
+  #   refs:
+  #     - /^kre-py-v\d*.\d*.\d*$/
