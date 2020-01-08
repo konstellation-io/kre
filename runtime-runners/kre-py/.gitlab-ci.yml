@@ -9,8 +9,8 @@ security-kre-py:
     - snyk auth $SNYK_TOKEN
   script:
     - cd runtime-runners/kre-py
-    - snyk monitor --file=requirements.txt
-    - snyk test --file=requirements.txt
+    - snyk monitor --file=requirements.txt --package-manager=pip
+    - snyk test --file=requirements.txt --package-manager=pip
   only:
     refs:
       - merge_requests
