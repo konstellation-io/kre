@@ -16,6 +16,7 @@ security-kre-py:
       - master
     changes:
       - runtime-runners/kre-py/**/*
+      - .gitlab-ci.yml
 
 test-kre-py:
   stage: test
@@ -96,6 +97,6 @@ publish-kre-py-image:
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
-  # only:
-  #   refs:
-  #     - /^kre-py-v\d*.\d*.\d*$/
+  only:
+    refs:
+      - /^kre-py-v\d*.\d*.\d*$/
