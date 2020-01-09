@@ -23,6 +23,8 @@ type Mutation {
   createVersion(input: CreateVersionInput!): CreateVersionResponse!
   deployVersion(input: DeployVersionInput!): Version!
   activateVersion(input: ActivateVersionInput!): Version!
+  stopVersion(input: StopVersionInput!): Version!
+  deactivateVersion(input: DeactivateVersionInput!): Version!
   updateSettings(input: SettingsInput!): UpdateSettingsResponse
 }
 
@@ -51,6 +53,14 @@ input DeployVersionInput {
 input ActivateVersionInput {
   versionId: ID!
   comment: String!
+}
+
+input StopVersionInput {
+  versionId: ID!
+}
+
+input DeactivateVersionInput {
+  versionId: ID!
 }
 
 type CreateVersionResponse {

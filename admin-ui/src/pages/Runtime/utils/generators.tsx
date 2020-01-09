@@ -6,14 +6,11 @@ import ActivateIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import DeactivateIcon from '@material-ui/icons/Block';
 import { VersionStatus } from '../../../graphql/models';
 
-const disabledButtons = ['STOP', 'DEACTIVATE'];
-
 function generateActionButton(label: string, icon: any, action: Function) {
   return (
     <Button
       key={label}
       label={label}
-      disabled={disabledButtons.includes(label)}
       onClick={action}
       height={30}
       Icon={icon}

@@ -36,19 +36,29 @@ function RuntimeStatusPreview() {
     ':runtimeId',
     runtimeId || ''
   ).replace(':versionId', versionId || '');
-  const { activateVersion, deployVersion, getMutationVars } = useVersionAction(
-    redirectionPath
-  );
+  const {
+    activateVersion,
+    deployVersion,
+    stopVersion,
+    deactivateVersion,
+    getMutationVars
+  } = useVersionAction(redirectionPath);
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
+  function onActivateVersion(comment: string) {
+    activateVersion(getMutationVars(versionId || '', comment));
+  }
+  function onDeactivateVersion() {
+    deactivateVersion(getMutationVars(versionId || ''));
+  }
   function onDeployVersion() {
     deployVersion(getMutationVars(versionId || ''));
   }
-  function onActivateVersion(comment: string) {
-    activateVersion(getMutationVars(versionId || '', comment));
+  function onStopVersion() {
+    stopVersion(getMutationVars(versionId || ''));
   }
 
   function onOpenModal() {
@@ -62,8 +72,8 @@ function RuntimeStatusPreview() {
   const actionButtons: any = getVersionActionButtons(
     onOpenModal,
     onDeployVersion,
-    function() {}, // TODO: STOP
-    function() {}, // TODO: DEACTIVATE
+    onStopVersion,
+    onDeactivateVersion,
     versionStatus
   );
 
