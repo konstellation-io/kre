@@ -36,7 +36,8 @@ export function Routes() {
         <Route path={PAGES.NEW_VERSION} component={AddVersion} />
 
         <Route exact path={PAGES.DASHBOARD} component={Dashboard} />
-        <Route path={PAGES.RUNTIME_PATHS} component={Runtime} />
+        <Route exact path={PAGES.RUNTIME} component={Runtime} />
+        <Route path={PAGES.RUNTIME_VERSION_PATHS} component={Runtime} />
         <Route path={PAGES.SETTINGS} component={Settings} />
         <Route path={PAGES.AUDIT} component={UsersActivity} />
         <Route component={NotFound} />

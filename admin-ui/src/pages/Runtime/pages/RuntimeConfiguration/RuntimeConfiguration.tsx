@@ -1,7 +1,6 @@
 import { get } from 'lodash';
 
 import React, { useState, useEffect } from 'react';
-import * as ROUTE from '../../../../constants/routes';
 import { useParams } from 'react-router';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 
@@ -52,7 +51,7 @@ function RuntimeConfiguration() {
     GetConfigurationVariablesResponse,
     GetConfigurationVariablesVars
   >(GET_CONFIGURATION_VARIABLES, {
-    variables: { versionId },
+    variables: { versionId: versionId || '' },
     fetchPolicy: 'no-cache'
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<

@@ -5,16 +5,16 @@ export const MAGIC_LINK = '/signin/:token';
 export const DASHBOARD = '/dashboard';
 
 export const RUNTIME = `${DASHBOARD}/runtime/:runtimeId`;
-export const RUNTIME_STATUS = `${DASHBOARD}/runtime/:runtimeId/status`;
-export const RUNTIME_VERSION_STATUS = `${DASHBOARD}/runtime/:runtimeId/status/:versionId`;
-export const RUNTIME_VERSIONS = `${DASHBOARD}/runtime/:runtimeId/versions`;
-export const RUNTIME_VERSION_CONFIGURATION = `${DASHBOARD}/runtime/:runtimeId/configuration/:versionId`;
+export const RUNTIME_STATUS = `${RUNTIME}/status`;
+export const RUNTIME_VERSIONS = `${RUNTIME}/versions`;
 
-export const RUNTIME_PATHS = [
-  RUNTIME_VERSION_STATUS,
-  RUNTIME_VERSION_CONFIGURATION,
-  RUNTIME,
+export const RUNTIME_VERSION = `${RUNTIME}/:versionId`;
+export const RUNTIME_VERSION_STATUS = `${RUNTIME_VERSION}/status`;
+export const RUNTIME_VERSION_CONFIGURATION = `${RUNTIME_VERSION}/configuration`;
+
+export const RUNTIME_VERSION_PATHS = [
   RUNTIME_STATUS,
+  RUNTIME_VERSION,
   RUNTIME_VERSIONS
 ];
 

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Runtime } from '../../graphql/models';
+import { Runtime, Version } from '../../graphql/models';
 
 export interface GetRuntimeResponse {
   runtime: Runtime;
@@ -25,6 +25,22 @@ export const GET_RUNTIME = gql`
         }
         status
       }
+    }
+  }
+`;
+
+export interface GetVersionConfStatusResponse {
+  version: Version;
+}
+
+export interface GetVersionConfStatusVars {
+  versionId?: string;
+}
+
+export const GET_VERSION_CONF_STATUS = gql`
+  query GetVersionConfStatus($versionId: ID!) {
+    version(id: $versionId) {
+      configurationCompleted
     }
   }
 `;

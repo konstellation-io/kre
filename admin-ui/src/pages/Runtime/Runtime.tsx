@@ -18,18 +18,33 @@ import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import { Tab } from '../../components/NavBar/NavBar';
 import SidebarTitle from './components/SidebarTitle/SidebarTitle';
 
 import { useQuery } from '@apollo/react-hooks';
 import {
   GET_RUNTIME,
   GetRuntimeResponse,
-  GetRuntimeVars
+  GetRuntimeVars,
+  GetVersionConfStatusResponse,
+  GetVersionConfStatusVars,
+  GET_VERSION_CONF_STATUS
 } from './Runtime.graphql';
 
 import styles from './Runtime.module.scss';
 
-function createNavTabs(runtimeId: string, versionId: string) {
+function addWarningToTab(label: string, tabs: Tab[], message: string): Tab[] {
+  const target = tabs.filter((tab: Tab) => tab.label === label)[0];
+  const tabIdx = tabs.indexOf(target);
+  const tabsCopy = tabs.map((tab: Tab) => ({ ...tab }));
+
+  tabsCopy[tabIdx].showWarning = true;
+  tabsCopy[tabIdx].warningTitle = message;
+
+  return tabsCopy;
+}
+
+function createNavTabs(runtimeId: string, versionId: string): Tab[] {
   const navTabs = [
     {
       label: 'STATUS',
@@ -79,14 +94,35 @@ function Runtime() {
       fetchPolicy: 'no-cache'
     }
   );
+  const {
+    data: versionData,
+    loading: versionLoading,
+    error: versionError
+  } = useQuery<GetVersionConfStatusResponse, GetVersionConfStatusVars>(
+    GET_VERSION_CONF_STATUS,
+    {
+      variables: { versionId },
+      skip: versionId === undefined,
+      fetchPolicy: 'no-cache'
+    }
+  );
 
-  if (error) return <ErrorMessage />;
-  if (loading) return <SpinnerCircular />;
+  if (error || versionError) return <ErrorMessage />;
+  if (loading || versionLoading) return <SpinnerCircular />;
 
   const runtime = data && data.runtime;
   const activeVersion = runtime && runtime.activeVersion;
 
-  const navTabs = createNavTabs(runtimeId || '', versionId || '');
+  let navTabs: Tab[] = createNavTabs(runtimeId || '', versionId || '');
+
+  if (!(versionData && versionData.version.configurationCompleted)) {
+    navTabs = addWarningToTab(
+      'CONFIGURATION',
+      navTabs,
+      'Configuration is not completed'
+    );
+  }
+
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
     ':runtimeId',
     runtimeId || ''

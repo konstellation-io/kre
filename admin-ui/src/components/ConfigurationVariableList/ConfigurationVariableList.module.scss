@@ -19,6 +19,7 @@
   display: flex;
   flex-direction: row;
   border-top: solid 1px $color-grey;
+  transition: color ease 0.3s, background-color ease 0.3s;
 
   &:hover {
     &,
@@ -27,9 +28,13 @@
       color: $font-color-white;
     }
 
-    & input,
-    & textarea {
+    input,
+    textarea {
       color: $font-color-white;
+    }
+
+    .separator {
+      z-index: 1 !important;
     }
   }
 

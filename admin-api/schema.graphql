@@ -187,6 +187,7 @@ type Version {
   activationAuthor: User
   workflows: [Workflow!]!
   configurationVariables: [ConfigurationVariable!]!
+  configurationCompleted: Boolean!
 }
 
 enum VersionStatus {

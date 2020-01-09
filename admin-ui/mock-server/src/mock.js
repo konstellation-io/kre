@@ -62,12 +62,18 @@ module.exports = {
     status: casual.random_element(['CREATED', 'ACTIVE', 'RUNNING', 'STOPPED']),
     creationDate: casual.moment.toISOString(),
     activationDate: casual.moment.toISOString(),
-    configurationVariables: () => new MockList([20, 25])
+    configurationVariables: () => new MockList([20, 25]),
+    configurationCompleted: true
   }),
   ConfigurationVariable: () => ({
     id: casual.id,
     variable: casual.word.toUpperCase(),
-    value: casual.sentence,
+    value: () => {
+      if (Math.random() < 0.1) {
+        return '';
+      }
+      return casual.sentence;
+    },
     type: casual.random_element(['VARIABLE', 'FILE']),
     protected: false
   }),

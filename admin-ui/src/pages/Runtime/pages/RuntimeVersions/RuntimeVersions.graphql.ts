@@ -24,6 +24,7 @@ export const GET_VERSIONS = gql`
       activationAuthor {
         email
       }
+      configurationCompleted
     }
   }
 `;
