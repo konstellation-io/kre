@@ -1,11 +1,13 @@
 import { get } from 'lodash';
 
 import React, { useState, useEffect } from 'react';
+import * as ROUTE from '../../../../constants/routes';
 import { useParams } from 'react-router';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
 import Button from '../../../../components/Button/Button';
+import Modal from '../../../../components/Modal/Modal';
 import SettingsHeader from '../../../Settings/components/SettingsHeader';
 import ConfigurationVariableList from '../../../../components/ConfigurationVariableList/ConfigurationVariableList';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
@@ -41,6 +43,7 @@ function cleanVars(
 }
 
 function RuntimeConfiguration() {
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [configurationVariables, setConfigurationVariables] = useState<
     ConfigurationVariable[]
   >([]);
@@ -114,7 +117,8 @@ function RuntimeConfiguration() {
     setConfigurationVariables(newConfigurationsVariables);
   }
 
-  function onSave(): void {
+  function makeUpdate(): void {
+    closeModal();
     updateConfiguration({
       variables: {
         input: {
@@ -123,6 +127,14 @@ function RuntimeConfiguration() {
         }
       }
     });
+  }
+
+  function openModal(): void {
+    setShowConfirmationModal(true);
+  }
+
+  function closeModal(): void {
+    setShowConfirmationModal(false);
   }
 
   return (
@@ -136,11 +148,21 @@ function RuntimeConfiguration() {
         fermentum suscipit est, tincidunt."
         />
         {getContent()}
+        {showConfirmationModal && (
+          <Modal
+            title="VERSION WILL BE RESTARTED"
+            message="After updating this configuration, the version will be restarted (this process may take several seconds)"
+            actionButtonLabel="ACCEPT"
+            onAccept={makeUpdate}
+            onClose={closeModal}
+            blocking
+          />
+        )}
       </div>
       <HorizontalBar>
         <Button
           label="SAVE CHANGES"
-          onClick={onSave}
+          onClick={openModal}
           disabled={mutationLoading || loading}
           primary
         />
