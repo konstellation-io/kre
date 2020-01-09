@@ -1,5 +1,5 @@
 import React from 'react';
-import Button, { BUTTON_TYPES } from '../../../components/Button/Button';
+import Button from '../../../components/Button/Button';
 import DeployIcon from '@material-ui/icons/SkipNext';
 import StopIcon from '@material-ui/icons/PauseCircleFilled';
 import ActivateIcon from '@material-ui/icons/PlayCircleFilledOutlined';

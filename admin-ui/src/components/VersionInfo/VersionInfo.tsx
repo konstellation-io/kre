@@ -38,7 +38,7 @@ function VersionInfo({ version }: Props) {
   const isVersionActive = version.status === VersionStatus.ACTIVE;
 
   function onVersionClick() {
-    const versionStatusPreviewPath = PAGES.RUNTIME_STATUS_PREVIEW.replace(
+    const versionStatusPreviewPath = PAGES.RUNTIME_VERSION_STATUS.replace(
       ':runtimeId',
       runtimeId || ''
     ).replace(':versionId', version.id);

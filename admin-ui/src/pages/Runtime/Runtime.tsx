@@ -11,6 +11,7 @@ import ConfigIcon from '@material-ui/icons/Settings';
 import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
 import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
+import RuntimeConfiguration from './pages/RuntimeConfiguration/RuntimeConfiguration';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Header from '../../components/Header/Header';
@@ -28,7 +29,7 @@ import {
 
 import styles from './Runtime.module.scss';
 
-function createNavTabs(runtimeId: string) {
+function createNavTabs(runtimeId: string, versionId: string) {
   const navTabs = [
     {
       label: 'STATUS',
@@ -39,7 +40,8 @@ function createNavTabs(runtimeId: string) {
     {
       label: 'METRICS',
       route: ROUTE.HOME,
-      Icon: MetricsIcon
+      Icon: MetricsIcon,
+      disabled: true
     },
     {
       label: 'DOCUMENTATION',
@@ -54,21 +56,22 @@ function createNavTabs(runtimeId: string) {
     },
     {
       label: 'CONFIGURATION',
-      route: ROUTE.HOME,
-      Icon: ConfigIcon,
-      disabled: true
+      route: ROUTE.RUNTIME_VERSION_CONFIGURATION,
+      Icon: ConfigIcon
     }
   ];
 
   navTabs.forEach(n => {
-    n.route = n.route.replace(':runtimeId', runtimeId);
+    n.route = n.route
+      .replace(':runtimeId', runtimeId)
+      .replace(':versionId', versionId);
   });
 
   return navTabs;
 }
 
 function Runtime() {
-  const { runtimeId } = useParams();
+  const { runtimeId, versionId } = useParams();
   const { data, loading, error } = useQuery<GetRuntimeResponse, GetRuntimeVars>(
     GET_RUNTIME,
     {
@@ -83,7 +86,7 @@ function Runtime() {
   const runtime = data && data.runtime;
   const activeVersion = runtime && runtime.activeVersion;
 
-  const navTabs = createNavTabs(runtimeId || '');
+  const navTabs = createNavTabs(runtimeId || '', versionId || '');
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
     ':runtimeId',
     runtimeId || ''
@@ -105,7 +108,7 @@ function Runtime() {
           <Switch>
             <Route
               exact
-              path={ROUTE.RUNTIME_STATUS_PREVIEW}
+              path={ROUTE.RUNTIME_VERSION_STATUS}
               component={RuntimeStatusPreview}
             />
             <Route
@@ -117,6 +120,11 @@ function Runtime() {
               exact
               path={ROUTE.RUNTIME_VERSIONS}
               component={RuntimeVersions}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_VERSION_CONFIGURATION}
+              component={RuntimeConfiguration}
             />
           </Switch>
           {/*<Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />

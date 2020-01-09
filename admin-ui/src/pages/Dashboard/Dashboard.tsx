@@ -20,12 +20,7 @@ import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
 import { GET_DASHBOARD, GetDashboardResponse } from './Dashboard.graphql';
-import {
-  Alert,
-  Runtime,
-  VersionEnvStatus,
-  VersionStatus
-} from '../../graphql/models';
+import { Alert, Runtime, VersionEnvStatus } from '../../graphql/models';
 import { ApolloError } from 'apollo-client';
 
 type Props = {

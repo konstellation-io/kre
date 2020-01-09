@@ -6,8 +6,17 @@ export const DASHBOARD = '/dashboard';
 
 export const RUNTIME = `${DASHBOARD}/runtime/:runtimeId`;
 export const RUNTIME_STATUS = `${DASHBOARD}/runtime/:runtimeId/status`;
-export const RUNTIME_STATUS_PREVIEW = `${DASHBOARD}/runtime/:runtimeId/status/:versionId`;
+export const RUNTIME_VERSION_STATUS = `${DASHBOARD}/runtime/:runtimeId/status/:versionId`;
 export const RUNTIME_VERSIONS = `${DASHBOARD}/runtime/:runtimeId/versions`;
+export const RUNTIME_VERSION_CONFIGURATION = `${DASHBOARD}/runtime/:runtimeId/configuration/:versionId`;
+
+export const RUNTIME_PATHS = [
+  RUNTIME_VERSION_STATUS,
+  RUNTIME_VERSION_CONFIGURATION,
+  RUNTIME,
+  RUNTIME_STATUS,
+  RUNTIME_VERSIONS
+];
 
 export const SETTINGS = '/settings';
 export const SETTINGS_GENERAL = `${SETTINGS}/general`;

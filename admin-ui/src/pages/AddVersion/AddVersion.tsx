@@ -56,7 +56,7 @@ function AddVersion() {
 
   function onDeploy() {
     history.push(
-      PAGES.RUNTIME_STATUS_PREVIEW.replace(
+      PAGES.RUNTIME_VERSION_STATUS.replace(
         ':runtimeId',
         runtimeId || ''
       ).replace(':versionId', versionUploaded || '')
