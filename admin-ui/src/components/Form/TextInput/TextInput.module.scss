@@ -9,8 +9,13 @@
     color: white;
   }
 
-  &.hasClearButton .input {
+  &.hasClearButton .input,
+  &.hasEyeButton .input {
     padding-right: 30px;
+  }
+
+  &.hasClearButton.hasEyeButton .input {
+    padding-right: 60px;
   }
 }
 
@@ -22,6 +27,10 @@
   &::-webkit-input-placeholder {
     color: $font-color;
   }
+
+  &.lockHorizontalGrowth {
+    resize: vertical;
+  }
 }
 
 .clearButton {
@@ -29,10 +38,28 @@
   right: 15px;
   top: 34px;
   font-size: 15px;
+  line-height: 11px;
   font-weight: 500;
   cursor: pointer;
+  transition: color ease 0.3s;
 
   &:hover {
-    font-weight: 700;
+    color: $font-color-white;
+  }
+}
+
+.eyeButton {
+  position: absolute;
+  right: 15px;
+  top: 34px;
+  cursor: pointer;
+  transition: color ease 0.3s, right ease 0.3s;
+
+  &:hover {
+    color: $font-color-white;
+  }
+
+  &.showClearButton {
+    right: 35px;
   }
 }

@@ -26,6 +26,7 @@ type Mutation {
   stopVersion(input: StopVersionInput!): Version!
   deactivateVersion(input: DeactivateVersionInput!): Version!
   updateSettings(input: SettingsInput!): UpdateSettingsResponse
+  updateVersionConfiguration(input: UpdateConfigurationInput!): UpdateVersionConfigurationResponse!
 }
 
 type Subscription {
@@ -90,7 +91,6 @@ enum ErrorCode {
   INTERNAL_SERVER_ERROR
 }
 
-
 type User {
   id: ID!
   email: String!
@@ -106,6 +106,35 @@ type Alert {
 enum AlertLevel {
   ERROR
   WARNING
+}
+
+type ConfigurationVariable {
+  id: ID!
+  variable: String!
+  value: String!
+  type: ConfigurationVariableType!
+  protected: Boolean!
+}
+
+enum ConfigurationVariableType {
+  VARIABLE
+  FILE
+}
+
+input ConfigurationVariablesInput {
+  variable: String!
+  value: String!
+  type: ConfigurationVariableType!
+}
+
+input UpdateConfigurationInput {
+  id: ID
+  configurationVariables: [ConfigurationVariablesInput!]!
+}
+
+type UpdateVersionConfigurationResponse {
+  errors: [Error!]
+  version: Version!
 }
 
 type Runtime {
@@ -157,6 +186,7 @@ type Version {
   activationDate: String
   activationAuthor: User
   workflows: [Workflow!]!
+  configurationVariables: [ConfigurationVariable!]!
 }
 
 enum VersionStatus {

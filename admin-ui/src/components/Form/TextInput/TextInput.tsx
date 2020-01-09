@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
+import IconShow from '@material-ui/icons/RemoveRedEye';
+import IconHide from '@material-ui/icons/RemoveRedEyeOutlined';
 import { isFieldAnInteger } from '../../Form/check';
 
 import cx from 'classnames';
@@ -15,6 +17,7 @@ type Props = {
   label?: string;
   textArea?: boolean;
   height?: number;
+  lockHorizontalGrowth?: boolean;
   limits?: {
     minWidth?: number;
     maxWidth?: number;
@@ -27,6 +30,8 @@ type Props = {
   onlyNumbers?: boolean;
   positive?: boolean;
   formValue?: any;
+  customStyles?: string;
+  hidden?: boolean;
 };
 
 function TextInput({
@@ -37,15 +42,19 @@ function TextInput({
   label = '',
   textArea = false,
   height = 40,
+  lockHorizontalGrowth = false,
   limits = {},
   error = '',
   showClearButton = false,
   whiteColor = false,
   onlyNumbers = false,
   positive = false,
-  formValue = ''
+  formValue = '',
+  customStyles = '',
+  hidden = false
 }: Props) {
   const [value, setValue] = useState(formValue);
+  const [isHidden, setIsHidden] = useState(hidden);
 
   useEffect(() => {
     setValue(formValue);
@@ -78,22 +87,29 @@ function TextInput({
     onBlur();
   }
 
+  function toggleVisibility(e: any) {
+    setIsHidden(!isHidden);
+  }
+
   const inputProps = {
     className: cx(styles.input, {
-      [styles.error]: error !== ''
+      [styles.error]: error !== '',
+      [styles.lockHorizontalGrowth]: lockHorizontalGrowth
     }),
     value: value,
+    type: isHidden ? 'password' : 'text',
     placeholder: placeholder,
     onChange: onType,
     onKeyPress: onKeyPress,
     onBlur: onInputBlur,
-    style: { ...limits, height }
+    style: { height }
   };
-  const inputElement = textArea ? (
-    <textarea {...inputProps} data-testid="input" />
-  ) : (
-    <input {...inputProps} type="text" data-testid="input" />
-  );
+  const inputElement =
+    textArea && !isHidden ? (
+      <textarea {...inputProps} data-testid="input" style={{ ...limits }} />
+    ) : (
+      <input {...inputProps} data-testid="input" />
+    );
   const cleanButton =
     showClearButton && value !== '' ? (
       <div
@@ -106,17 +122,32 @@ function TextInput({
     ) : (
       ''
     );
+  const VisibilityIcon = isHidden ? IconShow : IconHide;
+  const showButton = hidden ? (
+    <div
+      className={cx(styles.eyeButton, {
+        [styles.showClearButton]: showClearButton && value !== ''
+      })}
+      onClick={toggleVisibility}
+    >
+      <VisibilityIcon className="icon-small" />
+    </div>
+  ) : (
+    ''
+  );
 
   return (
     <div
-      className={cx(styles.container, {
+      className={cx(styles.container, customStyles, {
         [styles.white]: whiteColor,
-        [styles.hasClearButton]: showClearButton
+        [styles.hasClearButton]: showClearButton,
+        [styles.hasEyeButton]: hidden
       })}
     >
       <InputLabel text={label} />
       {inputElement}
       {cleanButton}
+      {showButton}
       <InputError message={error} />
     </div>
   );

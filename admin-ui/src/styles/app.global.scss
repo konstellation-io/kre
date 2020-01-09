@@ -108,6 +108,7 @@ a:active {
   */
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -117,6 +118,10 @@ a:active {
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #61646a;
+}
+
+::-webkit-scrollbar-corner {
+  display: none;
 }
 
 /*
