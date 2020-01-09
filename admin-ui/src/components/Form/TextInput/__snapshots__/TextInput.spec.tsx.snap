@@ -18,6 +18,7 @@ exports[`render TextInput without crashing 1`] = `
       value=""
     />
     
+    
     <div
       class="errorMessage"
       data-testid="error-message"
