@@ -40,6 +40,15 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 [admin-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=sqale_rating
 [admin-api-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_admin_api
 
+[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=coverage 
+[runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Coverage 
+[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=bugs
+[runtime-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Security&view=list
+[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=ncloc
+[runtime-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Coverage&view=list
+[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=sqale_rating
+[runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=alert_status&view=list
+
 [runner-python-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=coverage 
 [runner-python-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Coverage 
 [runner-python-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=bugs
