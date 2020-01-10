@@ -1,0 +1,10 @@
+version: "3"
+services:
+  nats-streaming:
+    build:
+      context: ./nats-streaming-server
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 4222:4222
+      - 8222:8222

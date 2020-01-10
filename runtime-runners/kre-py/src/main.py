@@ -73,7 +73,7 @@ class Result:
         return bytes(json.dumps(self.to_dict()), encoding='utf-8')
 
 
-class App:
+class Runner:
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger("kre-runner")
@@ -84,8 +84,7 @@ class App:
 
     def start(self):
         try:
-            asyncio.ensure_future(self.run())
-            # loop.set_exception_handler(handle_exception)
+            asyncio.ensure_future(self.process_messages())
             self.loop.run_forever()
         except KeyboardInterrupt:
             self.logger.info("process interrupted")
@@ -106,7 +105,7 @@ class App:
         self.logger.info("stop loop")
         self.loop.stop()
 
-    async def run(self):
+    async def process_messages(self):
         self.logger.info(f"connecting to NATS at '{self.config.nats_server}'")
         await self.nc.connect(self.config.nats_server, loop=self.loop)
 
@@ -173,5 +172,5 @@ class App:
 
 
 if __name__ == '__main__':
-    app = App()
-    app.start()
+    runner = Runner()
+    runner.start()

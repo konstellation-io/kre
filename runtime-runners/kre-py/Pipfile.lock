@@ -1,0 +1,28 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "46f0648dc114b1d9a3d6a3dfc40fba64d56f69391d11a67a66e1c6facec6af9e"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "asyncio-nats-client": {
+            "hashes": [
+                "sha256:9ff7e3a386bcb49851062bc9f43c26d6ab9079e22014de946ccec7da570b445f"
+            ],
+            "index": "pypi",
+            "version": "==0.10.0"
+        }
+    },
+    "develop": {}
+}
