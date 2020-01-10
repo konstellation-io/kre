@@ -35,13 +35,14 @@ import pickle
 import numpy as np
 import pandas as pd
 
+# this function will be executed once when the runner is starting
 def init(ctx):
   # load file and save in memory to be used within the handler
   ctx.set_value("categories", pickle.load(ctx.get_path("data/categories.pkl")))
 
+# this function will be executed when a message is received
 def handler(ctx, data):
   # data is the received message from the queue
-
   categories = ctx.get_value("categories")
   
   ctx.save_metric('elapsedtime', {'ms': 12345}) # Saves in MongoDB DB sending a message to the MongoWriter queue
