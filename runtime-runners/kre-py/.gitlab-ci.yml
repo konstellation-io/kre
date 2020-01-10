@@ -63,7 +63,7 @@ release-kre-py:
   stage: semantic-release
   image: node:10
   before_script:
-    - npm install --prefix kre-py
+    - npm install --prefix runtime-runners/kre-py
   script:
     - cd runtime-runners/kre-py && npx semantic-release -e semantic-release-monorepo
   only:
