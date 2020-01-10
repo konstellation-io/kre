@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
+import useRenderOnResize from '../../../../hooks/useRenderOnResize';
 import { TYPES } from '../../../../components/Shape/Node/Node';
 
 import VersionStatusViewer from '../../../../components/VersionStatusViewer/VersionStatusViewer';
@@ -52,23 +53,7 @@ function formatData(workflows: any, status: string) {
 
 function StatusViewer({ data, status }: any) {
   const container = useRef(null);
-  const [dimensions, setDimensions] = useState({
-    width: 0,
-    height: 0
-  });
-
-  useEffect(() => {
-    const containerDOM = container.current;
-
-    if (containerDOM) {
-      setDimensions({
-        // @ts-ignore
-        width: containerDOM.clientWidth,
-        // @ts-ignore
-        height: containerDOM.clientHeight
-      });
-    }
-  }, [container]);
+  const dimensions = useRenderOnResize({ container });
 
   const { width, height } = dimensions;
 

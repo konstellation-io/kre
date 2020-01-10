@@ -40,9 +40,26 @@
   }
 }
 
+.edgeLine {
+  transition: stroke-dasharray 0.3s ease, stroke-width 0.3s ease;
+}
+
+.lineContainer {
+  stroke-opacity: 0;
+  stroke-width: 20px;
+  cursor: pointer;
+}
+
 .nodeText {
   @include font-button;
   fill: $font-color;
+
+  pointer-events: none;
+  transition: fill 0.5s ease;
+
+  &.hovered {
+    fill: $font-color-white;
+  }
 }
 
 .workflowTagText {
@@ -51,4 +68,13 @@
 
   line-height: 10px;
   text-anchor: end;
+}
+
+.busLine {
+  stroke: $font-color;
+  stroke-dasharray: 3, 3;
+}
+
+.busLineArrow {
+  stroke: $font-color;
 }
