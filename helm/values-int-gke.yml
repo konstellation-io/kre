@@ -5,6 +5,9 @@ mongodb:
 
 config:
   baseDomainName: "kre-int.konstellation.io"
+  runtime:
+    sharedStorageClass: nfs-client
+    sharedStorageSize: 10Gi
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     email: terminus7@intelygenz.com

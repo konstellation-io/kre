@@ -2,11 +2,12 @@ package kubernetes
 
 import (
 	"fmt"
+	"log"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/input"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"log"
 )
 
 var (
@@ -33,10 +34,14 @@ func (k *ResourceManager) createRuntimeObject(runtime *input.CreateRuntimeInput,
 				"entrypoint": map[string]interface{}{
 					"host": entrypointURL,
 				},
+				"sharedStorageClass": k.config.SharedStorageClass,
 				"minio": map[string]interface{}{
 					"credentials": map[string]interface{}{
 						"accessKey": runtime.Minio.AccessKey,
 						"secretKey": runtime.Minio.SecretKey,
+					},
+					"storage": map[string]string{
+						"size": k.config.SharedStorageSize,
 					},
 				},
 			},
