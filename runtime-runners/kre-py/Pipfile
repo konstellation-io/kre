@@ -9,6 +9,7 @@ verify_ssl = true
 asyncio-nats-client = "==0.10.0"
 numpy = "==1.18.1"
 pandas = "==0.25.3"
+scikit-learn = "==0.22.1"
 
 [requires]
 python_version = "3.7"
