@@ -11,11 +11,11 @@ RUN apt -y install python3.7 python3-pip python3.7-dev
 
 WORKDIR /kre
 
-COPY src src
-COPY Pipfile .
-COPY Pipfile.lock .
+COPY . .
 
-RUN pip3 install pipenv
-RUN pipenv install --system --deploy
+RUN python3.7 -m pip install pipenv && \
+    pipenv sync && \
+    pipenv run pip freeze > requirements.txt && \
+    python3.7 -m pip install -r requirements.txt
 
-CMD [ "bash","-c","python3","/kre/src/main.py" ]
+CMD [ "/usr/bin/python3.7","/kre/src/main.py" ]
