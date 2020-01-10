@@ -1,3 +1,5 @@
+@import '../../../../styles/colors';
+
 .container {
   position: relative;
   height: 100%;
@@ -20,4 +22,11 @@
   left: 0;
   width: 100%;
   height: 80%;
+}
+
+.noConfig {
+  color: $color-yellow;
+  font-weight: 500;
+
+  margin: 50px 0 0 20px;
 }

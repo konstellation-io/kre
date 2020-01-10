@@ -64,9 +64,11 @@
     padding: 32px 0;
 
     .typeColValue {
+      position: absolute;
       background-color: $bg-color;
       width: fit-content;
       padding: 0 20px 0 30px;
+      z-index: 2;
     }
 
     .separator {

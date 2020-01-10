@@ -62,7 +62,7 @@ module.exports = {
     status: casual.random_element(['CREATED', 'ACTIVE', 'RUNNING', 'STOPPED']),
     creationDate: casual.moment.toISOString(),
     activationDate: casual.moment.toISOString(),
-    configurationVariables: () => new MockList([20, 25]),
+    configurationVariables: () => new MockList([10, 20]),
     configurationCompleted: true
   }),
   ConfigurationVariable: () => ({

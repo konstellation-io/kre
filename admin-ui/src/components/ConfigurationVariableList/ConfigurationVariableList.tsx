@@ -26,9 +26,10 @@ function capitalizeType(type: string): string {
 
 interface VariableRowPros extends ConfigurationVariable {
   onType: Function;
+  hide: boolean;
 }
 
-function VariableRow({ type, variable, value, onType }: VariableRowPros) {
+function VariableRow({ type, variable, value, onType, hide }: VariableRowPros) {
   function onValueUpdate(inputValue: string) {
     onType(variable, inputValue);
   }
@@ -57,7 +58,7 @@ function VariableRow({ type, variable, value, onType }: VariableRowPros) {
             maxHeight: 350
           }}
           showClearButton
-          hidden
+          hidden={hide}
           lockHorizontalGrowth
         />
       </div>
@@ -68,13 +69,19 @@ function VariableRow({ type, variable, value, onType }: VariableRowPros) {
 type Props = {
   data: ConfigurationVariable[];
   onType: Function;
+  hideAll: boolean;
 };
 
-function ConfigurationVariableList({ data, onType }: Props) {
+function ConfigurationVariableList({ data, onType, hideAll }: Props) {
   const sortedData = [...data].sort(sortAlphabetically);
   const variableRows = sortedData.map(
     (variable: ConfigurationVariable, idx: number) => (
-      <VariableRow {...variable} onType={onType} key={`variableRow_${idx}`} />
+      <VariableRow
+        {...variable}
+        onType={onType}
+        key={`variableRow_${idx}`}
+        hide={hideAll}
+      />
     )
   );
 

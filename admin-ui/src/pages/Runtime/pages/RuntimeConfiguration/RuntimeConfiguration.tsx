@@ -43,6 +43,7 @@ function cleanVars(
 
 function RuntimeConfiguration() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [hideAll, setHideAll] = useState(true);
   const [configurationVariables, setConfigurationVariables] = useState<
     ConfigurationVariable[]
   >([]);
@@ -82,13 +83,18 @@ function RuntimeConfiguration() {
 
   function getContent() {
     if (configurationVariables.length === 0) {
-      return <div>This version has no configuration variables</div>;
+      return (
+        <div className={styles.noConfig}>
+          This version has no configuration variables
+        </div>
+      );
     }
 
     return (
       <>
         <ConfigurationVariableList
           data={configurationVariables}
+          hideAll={hideAll}
           onType={onType}
         />
         {mutationLoading && (
@@ -136,15 +142,19 @@ function RuntimeConfiguration() {
     setShowConfirmationModal(false);
   }
 
+  function toggleVariablesVisibility(): void {
+    setHideAll(!hideAll);
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <SettingsHeader
           title="Configuration"
           subtitle="Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec viverra eleifend
-        lacus, vitae ullamcorper metus. Sed sollicitudin ipsum quis nunc sollicitudin ultrices.
-        Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur
-        fermentum suscipit est, tincidunt."
+            lacus, vitae ullamcorper metus. Sed sollicitudin ipsum quis nunc sollicitudin ultrices.
+            Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur
+            fermentum suscipit est, tincidunt."
         />
         {getContent()}
         {showConfirmationModal && (
@@ -164,6 +174,10 @@ function RuntimeConfiguration() {
           onClick={openModal}
           disabled={mutationLoading || loading}
           primary
+        />
+        <Button
+          label={`${hideAll ? 'SHOW' : 'HIDE'} ALL`}
+          onClick={toggleVariablesVisibility}
         />
       </HorizontalBar>
     </div>

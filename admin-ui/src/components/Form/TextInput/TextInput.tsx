@@ -57,6 +57,10 @@ function TextInput({
   const [isHidden, setIsHidden] = useState(hidden);
 
   useEffect(() => {
+    setIsHidden(hidden);
+  }, [hidden, setIsHidden]);
+
+  useEffect(() => {
     setValue(formValue);
   }, [formValue, setValue]);
 
