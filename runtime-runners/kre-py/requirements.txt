@@ -1,4 +1,0 @@
-numpy==1.18.1
-pandas==0.25.3
-asyncio-nats-client==0.10.0
-pymongo==3.10.1
