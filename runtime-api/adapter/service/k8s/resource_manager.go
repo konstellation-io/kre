@@ -6,6 +6,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -59,6 +60,47 @@ func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entit
 
 	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig)
 	return err
+}
+
+func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
+	namespace := k.cfg.Kubernetes.Namespace
+	name := fmt.Sprintf("%s-%s-%s", version.Name, strcase.ToKebab(node.Name), node.ID)
+
+	_, err := k.createNodeDeployment(namespace, name, version, node)
+	return err
+}
+
+func (k *ResourceManagerService) StopVersion(name string) error {
+	label := strcase.ToKebab(name)
+	namespace := k.cfg.Kubernetes.Namespace
+
+	k.logger.Info(fmt.Sprintf("Deleting version '%s' resources", name))
+	return k.deleteVersionResources(label, namespace)
+}
+
+func (k *ResourceManagerService) deleteVersionResources(label, namespace string) error {
+	gracePeriod := new(int64)
+	*gracePeriod = 0
+
+	deletePolicy := metav1.DeletePropagationForeground
+	deleteOptions := &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	}
+
+	listOptions := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("version-name=%s", label),
+		Watch:         false,
+	}
+
+	// Delete configmaps
+	err := k.clientset.CoreV1().ConfigMaps(namespace).DeleteCollection(deleteOptions, listOptions)
+	if err != nil {
+		return err
+	}
+
+	// Delete deployments
+	return k.clientset.AppsV1().Deployments(namespace).DeleteCollection(deleteOptions, listOptions)
 }
 
 func (k *ResourceManagerService) ActivateVersion(name string) error {

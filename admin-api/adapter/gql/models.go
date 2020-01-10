@@ -45,6 +45,10 @@ type DeployVersionInput struct {
 	VersionID string `json:"versionId"`
 }
 
+type StopVersionInput struct {
+	VersionID string `json:"versionId"`
+}
+
 type Edge struct {
 	ID       string `json:"id"`
 	FromNode string `json:"fromNode"`

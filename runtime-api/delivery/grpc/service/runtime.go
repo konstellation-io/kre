@@ -92,6 +92,29 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 	return res, nil
 }
 
+func (s *RuntimeService) StopVersion(ctx context.Context, req *runtimepb.DeployVersionRequest) (*runtimepb.StopVersionResponse, error) {
+	s.logger.Info("DeployVersionRequest received")
+	versionName := req.GetVersion().GetName()
+
+	message := fmt.Sprintf("Version '%s' stopped", versionName)
+	success := true
+
+	_, err := s.interactor.StopVersion(versionName)
+	if err != nil {
+		success = false
+		message = err.Error()
+		s.logger.Error(message)
+	}
+
+	// Send response
+	res := &runtimepb.StopVersionResponse{
+		Success: success,
+		Message: message,
+	}
+
+	return res, nil
+}
+
 func (s *RuntimeService) ActivateVersion(ctx context.Context, req *runtimepb.ActivateVersionRequest) (*runtimepb.ActivateVersionResponse, error) {
 	versionName := req.GetVersion().GetName()
 	namespace := s.cfg.Kubernetes.Namespace

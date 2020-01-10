@@ -14,12 +14,14 @@ type VersionStatus string
 var (
 	VersionStatusCreating VersionStatus = "CREATING"
 	VersionStatusRunning  VersionStatus = "RUNNING"
+	VersionStatusStopped  VersionStatus = "STOPPED"
 	VersionStatusError    VersionStatus = "ERROR"
 )
 
 var AllVersionStatus = []VersionStatus{
 	VersionStatusCreating,
 	VersionStatusRunning,
+	VersionStatusStopped,
 	VersionStatusError,
 }
 
@@ -109,6 +111,20 @@ func (i *VersionInteractor) getNodeById(nodes []*entity.Node, id string) *entity
 		}
 	}
 	return nil
+}
+
+func (i *VersionInteractor) StopVersion(name string) (*entity.Version, error) {
+	err := i.resourceManager.StopVersion(name)
+	if err != nil {
+		return nil, err
+	}
+
+	version := &entity.Version{
+		Name:   name,
+		Status: string(VersionStatusStopped),
+	}
+
+	return version, err
 }
 
 func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error) {

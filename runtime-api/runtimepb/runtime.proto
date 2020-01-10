@@ -45,6 +45,15 @@ message DeployVersionResponse {
   string message = 2;
 }
 
+message StopVersionRequest {
+  Version version = 1;
+}
+
+message StopVersionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 message ActivateVersionRequest {
   Version version = 1;
 }
@@ -56,6 +65,8 @@ message ActivateVersionResponse {
 
 service RuntimeService {
   rpc DeployVersion (DeployVersionRequest) returns (DeployVersionResponse) {
+  };
+  rpc StopVersion (StopVersionRequest) returns (StopVersionResponse) {
   };
   rpc ActivateVersion (ActivateVersionRequest) returns (ActivateVersionResponse) {
   };
