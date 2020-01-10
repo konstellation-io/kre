@@ -12,6 +12,9 @@ config:
     verificationCodeDurationInMinutes: 1
     jwtSignSecret: jwt_secret
     secureCookie: false
+  runtime:
+    sharedStorageClass: standard
+    sharedStorageSize: 2Gi
 
 adminApi:
   image:

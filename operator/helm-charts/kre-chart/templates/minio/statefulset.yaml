@@ -46,7 +46,7 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        storageClassName: {{ .Values.minio.storage.className }}
+        storageClassName: {{ .Values.sharedStorageClass }}
         resources:
           requests:
             storage: {{ .Values.minio.storage.size }}

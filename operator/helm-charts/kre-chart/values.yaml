@@ -1,6 +1,8 @@
 entrypoint:
   host: "local"
 
+sharedStorageClass: standard
+
 nats_streaming:
   replicas: 2
   storage:
@@ -21,5 +23,4 @@ minio:
     accessKey: admin
     secretKey: "12345678"
   storage:
-    className: standard
     size: 1Gi

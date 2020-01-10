@@ -13,6 +13,8 @@ data:
   KRE_SERVICES_K8S_MANAGER: "{{ .Values.config.admin.k8sManagerAddress }}"
   # K8S MANAGER
   KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
+  KRE_SHARED_STORAGECLASS: {{ .Values.config.runtime.sharedStorageClass }}
+  KRE_SHARED_STORAGE_SIZE: {{ .Values.config.runtime.sharedStorageSize }}
   # SMTP
   KRE_SMTP_ENABLED: "{{ .Values.config.smtp.enabled }}"
   {{- if .Values.config.smtp.enabled }}
