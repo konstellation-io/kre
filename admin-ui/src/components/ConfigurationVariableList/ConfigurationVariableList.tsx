@@ -13,7 +13,7 @@ import {
 import cx from 'classnames';
 import styles from './ConfigurationVariableList.module.scss';
 
-interface VariableRowPros {
+interface VariableRowProps {
   variable: ConfigurationVariable;
   onType: Function;
   hide: boolean;
@@ -23,7 +23,7 @@ function VariableRow({
   variable: { type, key, value },
   onType,
   hide
-}: VariableRowPros) {
+}: VariableRowProps) {
   function onValueUpdate(inputValue: string) {
     onType(key, inputValue);
   }
@@ -44,7 +44,7 @@ function VariableRow({
           error={''}
           onChange={onValueUpdate}
           onSubmit={() => {}}
-          customStyles={styles.variableValue}
+          customClassname={styles.variableValue}
           formValue={value}
           textArea={type === ConfigurationVariableType.FILE}
           limits={{

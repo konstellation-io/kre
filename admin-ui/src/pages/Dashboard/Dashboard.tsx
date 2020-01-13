@@ -109,6 +109,8 @@ function Dashboard() {
   const runtimes = get(data, 'runtimes', []);
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
 
+  console.log('DATA', data);
+
   return (
     <>
       <Header>

@@ -32,7 +32,6 @@ export interface ConfigurationVariable {
   key: string;
   value: string;
   type: ConfigurationVariableType;
-  protected: boolean;
 }
 
 export interface Runtime {

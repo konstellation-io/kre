@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import { Version, ConfigurationVariable } from '../../../../graphql/models';
 
-export interface GetConfigurationVariablesResponse {
+export interface GetVersionConfigResponse {
   version: Version;
 }
 
-export interface GetConfigurationVariablesVars {
+export interface GetVersionConfigVars {
   versionId?: string;
 }
 
@@ -21,7 +21,7 @@ export const GET_CONFIGURATION_VARIABLES = gql`
   }
 `;
 
-export interface UpdateVersionConfigurationVars {
+export interface UpdateVersionConfigVars {
   input: {
     versionId: string;
     configurationVariables: ConfigurationVariable[];

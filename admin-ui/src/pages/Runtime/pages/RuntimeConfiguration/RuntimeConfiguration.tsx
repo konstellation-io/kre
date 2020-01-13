@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, omit } from 'lodash';
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
@@ -14,9 +14,9 @@ import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 
 import {
   GET_CONFIGURATION_VARIABLES,
-  GetConfigurationVariablesVars,
-  GetConfigurationVariablesResponse,
-  UpdateVersionConfigurationVars,
+  GetVersionConfigVars,
+  GetVersionConfigResponse,
+  UpdateVersionConfigVars,
   UPDATE_VERSION_CONFIGURATION
 } from './RuntimeConfiguration.graphql';
 import { ConfigurationVariable, Version } from '../../../../graphql/models';
@@ -26,17 +26,14 @@ import styles from './RuntimeConfiguration.module.scss';
 /**
  * cache policy adds a non-desired _typename field to ConfigurationVariable elements.
  * This function cleans this field as it is not accepter by the input.
+ * Also removes type field
  */
 function cleanVars(
   variables: ConfigurationVariable[]
 ): ConfigurationVariable[] {
   return variables.map(
     (variable: ConfigurationVariable) =>
-      ({
-        key: variable.key,
-        value: variable.value,
-        type: variable.type
-      } as ConfigurationVariable)
+      omit(variable, ['__typename', 'type']) as ConfigurationVariable
   );
 }
 
@@ -48,15 +45,15 @@ function RuntimeConfiguration() {
   >([]);
   const { versionId } = useParams();
   const { data, loading, error } = useQuery<
-    GetConfigurationVariablesResponse,
-    GetConfigurationVariablesVars
+    GetVersionConfigResponse,
+    GetVersionConfigVars
   >(GET_CONFIGURATION_VARIABLES, {
-    variables: { versionId: versionId || '' },
+    variables: { versionId: versionId || undefined },
     fetchPolicy: 'no-cache'
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<
     Version,
-    UpdateVersionConfigurationVars
+    UpdateVersionConfigVars
   >(UPDATE_VERSION_CONFIGURATION, {
     onCompleted: onCompleteUpdate,
     fetchPolicy: 'no-cache'
@@ -126,14 +123,19 @@ function RuntimeConfiguration() {
 
   function makeUpdate(): void {
     closeModal();
-    updateConfiguration({
-      variables: {
-        input: {
-          versionId: versionId || '',
-          configurationVariables: cleanVars(configurationVariables)
+
+    if (versionId) {
+      updateConfiguration({
+        variables: {
+          input: {
+            versionId: versionId,
+            configurationVariables: cleanVars(configurationVariables)
+          }
         }
-      }
-    });
+      });
+    } else {
+      console.error('Cannot update version, there is no versionId');
+    }
   }
 
   function openModal(): void {

@@ -30,7 +30,7 @@ type Props = {
   onlyNumbers?: boolean;
   positive?: boolean;
   formValue?: any;
-  customStyles?: string;
+  customClassname?: string;
   hidden?: boolean;
 };
 
@@ -50,7 +50,7 @@ function TextInput({
   onlyNumbers = false,
   positive = false,
   formValue = '',
-  customStyles = '',
+  customClassname = '',
   hidden = false
 }: Props) {
   const [value, setValue] = useState(formValue);
@@ -127,7 +127,7 @@ function TextInput({
       ''
     );
   const VisibilityIcon = isHidden ? IconShow : IconHide;
-  const showButton = hidden ? (
+  const showEyeButton = hidden ? (
     <div
       className={cx(styles.eyeButton, {
         [styles.showClearButton]: showClearButton && value !== ''
@@ -142,7 +142,7 @@ function TextInput({
 
   return (
     <div
-      className={cx(styles.container, customStyles, {
+      className={cx(styles.container, customClassname, {
         [styles.white]: whiteColor,
         [styles.hasClearButton]: showClearButton,
         [styles.hasEyeButton]: hidden
@@ -151,7 +151,7 @@ function TextInput({
       <InputLabel text={label} />
       {inputElement}
       {cleanButton}
-      {showButton}
+      {showEyeButton}
       <InputError message={error} />
     </div>
   );

@@ -34,14 +34,16 @@ import {
 import styles from './Runtime.module.scss';
 
 function addWarningToTab(label: string, tabs: Tab[], message: string): Tab[] {
-  const target = tabs.filter((tab: Tab) => tab.label === label)[0];
-  const tabIdx = tabs.indexOf(target);
-  const tabsCopy = tabs.map((tab: Tab) => ({ ...tab }));
+  return tabs.map((tab: Tab) => {
+    const tabCp = { ...tab };
 
-  tabsCopy[tabIdx].showWarning = true;
-  tabsCopy[tabIdx].warningTitle = message;
+    if (tab.label === label) {
+      tabCp.showWarning = true;
+      tabCp.warningTitle = message;
+    }
 
-  return tabsCopy;
+    return tabCp;
+  });
 }
 
 function createNavTabs(runtimeId: string, versionId: string): Tab[] {

@@ -122,7 +122,6 @@ enum ConfigurationVariableType {
 input ConfigurationVariablesInput {
   key: String!
   value: String!
-  type: ConfigurationVariableType!
 }
 
 input UpdateConfigurationInput {
