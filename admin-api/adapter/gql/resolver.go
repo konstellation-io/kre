@@ -117,6 +117,7 @@ func (r *mutationResolver) DeployVersion(ctx context.Context, input DeployVersio
 func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVersionInput) (*Version, error) {
 	userID := ctx.Value("userID").(string)
 
+	// TODO use the input.Comment to create a UserActivity
 	version, err := r.versionInteractor.Activate(userID, input.VersionID)
 	if err != nil {
 		return nil, err
