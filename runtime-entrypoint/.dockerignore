@@ -1,4 +1,2 @@
-client.go
 Dockerfile
 .dockerignore
-nginx

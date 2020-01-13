@@ -3,8 +3,37 @@ syntax = "proto3";
 package runtime;
 option go_package = "runtimepb";
 
+message Entrypoint {
+  string proto_file = 1;
+  string image = 2;
+  string src = 3;
+}
+
+message Workflow {
+
+  message Node {
+    string Id = 1;
+    string Name = 2;
+    string Image = 3;
+    string Src = 4;
+  }
+
+  message Edge {
+    string Id = 1;
+    string FromNode = 2;
+    string ToNode = 3;
+  }
+
+  string name = 1;
+  string entrypoint = 2;
+  repeated Node nodes = 3;
+  repeated Edge edges = 4;
+}
+
 message Version {
   string name = 1;
+  Entrypoint entrypoint = 2;
+  repeated Workflow workflows = 3;
 }
 
 message DeployVersionRequest {

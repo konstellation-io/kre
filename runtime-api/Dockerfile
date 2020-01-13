@@ -4,6 +4,8 @@ FROM golang:1.12 as builder
 ENV CGO_ENABLED=0
 
 WORKDIR /app
+COPY go.* ./
+RUN go mod download
 COPY . .
 RUN go build -o runtime-api .
 
