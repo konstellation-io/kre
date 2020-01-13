@@ -127,7 +127,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		path := filepath.Join(tmpDir, header.Name)
 		i.logger.Info(" - " + path)
 
-		matched, err := regexp.Match("/krt.ya?ml$", []byte(header.Name))
+		matched, err := regexp.Match("(^|/)krt.ya?ml$", []byte(header.Name))
 		if err != nil {
 			return nil, err
 		}
