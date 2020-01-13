@@ -1,8 +1,17 @@
 @import '../../../styles/colors';
 @import '../../../styles/mixins';
 
+.nodeContainer {
+  cursor: pointer;
+}
+
 .int {
   fill: $color-node-content;
+  transition: stroke-width 0.5s ease;
+}
+
+.ext {
+  transition: stroke-width 0.5s ease, filter 0.5s ease;
 }
 
 .label {
