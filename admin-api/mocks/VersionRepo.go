@@ -10,13 +10,13 @@ type VersionRepo struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: userID, runtimeID, name, description, workflows
-func (_m *VersionRepo) Create(userID string, runtimeID string, name string, description string, workflows []entity.Workflow) (*entity.Version, error) {
-	ret := _m.Called(userID, runtimeID, name, description, workflows)
+// Create provides a mock function with given fields: userID, version
+func (_m *VersionRepo) Create(userID string, version *entity.Version) (*entity.Version, error) {
+	ret := _m.Called(userID, version)
 
 	var r0 *entity.Version
-	if rf, ok := ret.Get(0).(func(string, string, string, string, []entity.Workflow) *entity.Version); ok {
-		r0 = rf(userID, runtimeID, name, description, workflows)
+	if rf, ok := ret.Get(0).(func(string, *entity.Version) *entity.Version); ok {
+		r0 = rf(userID, version)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.Version)
@@ -24,8 +24,8 @@ func (_m *VersionRepo) Create(userID string, runtimeID string, name string, desc
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, string, string, string, []entity.Workflow) error); ok {
-		r1 = rf(userID, runtimeID, name, description, workflows)
+	if rf, ok := ret.Get(1).(func(string, *entity.Version) error); ok {
+		r1 = rf(userID, version)
 	} else {
 		r1 = ret.Error(1)
 	}

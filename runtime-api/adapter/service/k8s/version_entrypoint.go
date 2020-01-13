@@ -1,20 +1,34 @@
 package k8s
 
 import (
+	"encoding/json"
 	"fmt"
+	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"path"
 )
 
-func (k *ResourceManagerService) createEntrypointConfigmap(namespace string) (*apiv1.ConfigMap, error) {
-	_, err := k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
+func (k *ResourceManagerService) createEntrypointConfigmap(name, namespace string, entrypoint *entity.Entrypoint) (*apiv1.ConfigMap, error) {
+	natsSubject, err := json.Marshal(entrypoint.Config["nats-subjects"])
+	if err != nil {
+		return nil, err
+	}
+	_, err = k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "entrypoint-nginx",
+			Name: fmt.Sprintf("%s-entrypoint-conf", name),
+			Labels: map[string]string{
+				"type":         "entrypoint",
+				"version-name": name,
+			},
 		},
 		Data: map[string]string{
+			"KRT_ENTRYPOINT":         path.Join("/krt-files", entrypoint.Src),
+			"KRT_NATS_SERVER":        "kre-nats:4222",
+			"KRT_NATS_SUBJECTS_FILE": "/src/conf/nats_subject.json",
 			"nginx.conf": `server {
         listen       80;
         server_name  localhost;
@@ -30,6 +44,7 @@ func (k *ResourceManagerService) createEntrypointConfigmap(namespace string) (*a
         }
     }
 `,
+			"nats_subject.json": string(natsSubject),
 		},
 	})
 	if err != nil {
@@ -39,7 +54,11 @@ func (k *ResourceManagerService) createEntrypointConfigmap(namespace string) (*a
 	// TODO: Read proto files from Minio
 	return k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "entrypoint-protofiles",
+			Name: fmt.Sprintf("%s-entrypoint-protofiles", name),
+			Labels: map[string]string{
+				"type":         "entrypoint",
+				"version-name": name,
+			},
 		},
 		Data: map[string]string{
 			"entrypoint.proto": `syntax = "proto3";
@@ -60,33 +79,32 @@ func (k *ResourceManagerService) createEntrypointConfigmap(namespace string) (*a
 	})
 }
 
-func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, label string) (*appsv1.Deployment, error) {
-	// TODO: Change to specific version instead of latest
-	entrypointImage := "konstellation/kre-runtime-entrypoint:latest"
+func (k *ResourceManagerService) createEntrypointDeployment(name, namespace string, entrypoint *entity.Entrypoint) (*appsv1.Deployment, error) {
+	entrypointImage := entrypoint.Image
 
-	k.logger.Info(fmt.Sprintf("Creating deployment in %s named %s from image %s", namespace, name, entrypointImage))
+	k.logger.Info(fmt.Sprintf("Creating entrypoint deployment in %s named %s from image %s", namespace, name, entrypointImage))
 
 	return k.clientset.AppsV1().Deployments(namespace).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
+			Name:      fmt.Sprintf("%s-entrypoint", name),
 			Namespace: namespace,
 			Labels: map[string]string{
-				"app":          name,
-				"version-name": label,
+				"type":         "entrypoint",
+				"version-name": name,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app":          name,
-					"version-name": label,
+					"type":         "entrypoint",
+					"version-name": name,
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app":          name,
-						"version-name": label,
+						"type":         "entrypoint",
+						"version-name": name,
 					},
 				},
 				Spec: apiv1.PodSpec{
@@ -94,11 +112,34 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, lab
 						{
 							Name:            name,
 							Image:           entrypointImage,
-							ImagePullPolicy: apiv1.PullAlways,
+							ImagePullPolicy: apiv1.PullIfNotPresent,
 							Ports: []apiv1.ContainerPort{
 								{
 									ContainerPort: 9000,
 									Protocol:      "TCP",
+								},
+							},
+							VolumeMounts: []apiv1.VolumeMount{
+								{
+									Name:      "entrypoint-conf",
+									ReadOnly:  true,
+									MountPath: "/src/conf/nats_subject.json",
+									SubPath:   "nats_subject.json",
+								},
+								{
+									Name:      "shared-data",
+									ReadOnly:  true,
+									MountPath: "/krt-files",
+									SubPath:   name,
+								},
+							},
+							EnvFrom: []apiv1.EnvFromSource{
+								{
+									ConfigMapRef: &apiv1.ConfigMapEnvSource{
+										LocalObjectReference: apiv1.LocalObjectReference{
+											Name: fmt.Sprintf("%s-entrypoint-conf", name),
+										},
+									},
 								},
 							},
 						},
@@ -114,9 +155,10 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, lab
 							},
 							VolumeMounts: []apiv1.VolumeMount{
 								{
-									Name:      "nginx-conf",
+									Name:      "entrypoint-conf",
 									ReadOnly:  true,
-									MountPath: "/etc/nginx/conf.d/",
+									MountPath: "/etc/nginx/conf.d/nginx.conf",
+									SubPath:   "nginx.conf",
 								},
 								{
 									Name:      "proto-files",
@@ -128,11 +170,11 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, lab
 					},
 					Volumes: []apiv1.Volume{
 						{
-							Name: "nginx-conf",
+							Name: "entrypoint-conf",
 							VolumeSource: apiv1.VolumeSource{
 								ConfigMap: &apiv1.ConfigMapVolumeSource{
 									LocalObjectReference: apiv1.LocalObjectReference{
-										Name: "entrypoint-nginx",
+										Name: fmt.Sprintf("%s-entrypoint-conf", name),
 									},
 								},
 							},
@@ -142,8 +184,17 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace, lab
 							VolumeSource: apiv1.VolumeSource{
 								ConfigMap: &apiv1.ConfigMapVolumeSource{
 									LocalObjectReference: apiv1.LocalObjectReference{
-										Name: "entrypoint-protofiles",
+										Name: fmt.Sprintf("%s-entrypoint-protofiles", name),
 									},
+								},
+							},
+						},
+						{
+							Name: "shared-data",
+							VolumeSource: apiv1.VolumeSource{
+								PersistentVolumeClaim: &apiv1.PersistentVolumeClaimVolumeSource{
+									ClaimName: "kre-minio-pvc-kre-minio-0",
+									ReadOnly:  true,
 								},
 							},
 						},
@@ -158,7 +209,7 @@ func (k *ResourceManagerService) activateEntrypointService(name, namespace, labe
 	k.logger.Info(fmt.Sprintf("Updating service in %s named %s", namespace, name))
 
 	serviceLabels := map[string]string{
-		"app":          name,
+		"type":         "entrypoint",
 		"version-name": label,
 	}
 

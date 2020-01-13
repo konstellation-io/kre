@@ -45,7 +45,7 @@ spec:
         name: kre-minio-pvc
       spec:
         accessModes:
-          - ReadWriteOnce
+          - ReadWriteMany
         storageClassName: {{ .Values.sharedStorageClass }}
         resources:
           requests:
