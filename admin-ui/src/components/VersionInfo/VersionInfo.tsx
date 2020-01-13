@@ -26,9 +26,13 @@ function VersionInfo({ version }: Props) {
     ':runtimeId',
     runtimeId || ''
   );
-  const { activateVersion, deployVersion, getMutationVars } = useVersionAction(
-    redirectionPath
-  );
+  const {
+    activateVersion,
+    deployVersion,
+    stopVersion,
+    deactivateVersion,
+    getMutationVars
+  } = useVersionAction(redirectionPath);
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
   const isVersionActive = version.status === VersionStatus.ACTIVE;
@@ -42,11 +46,17 @@ function VersionInfo({ version }: Props) {
     history.push(versionStatusPreviewPath);
   }
 
-  function onDeployVersion() {
-    deployVersion(getMutationVars(version.id || ''));
-  }
   function onActivateVersion(comment: string) {
-    activateVersion(getMutationVars(version.id || '', comment));
+    activateVersion(getMutationVars(version.id, comment));
+  }
+  function onDeactivateVersion() {
+    deactivateVersion(getMutationVars(version.id));
+  }
+  function onDeployVersion() {
+    deployVersion(getMutationVars(version.id));
+  }
+  function onStopVersion() {
+    stopVersion(getMutationVars(version.id));
   }
 
   function onOpenModal(event: any) {
@@ -60,8 +70,8 @@ function VersionInfo({ version }: Props) {
   const actionButtons = getVersionActionButtons(
     onOpenModal,
     onDeployVersion,
-    function() {}, // TODO: STOP
-    function() {}, // TODO: DEACTIVATE
+    onStopVersion,
+    onDeactivateVersion,
     version.status
   );
 
