@@ -31,24 +31,18 @@ func NewVersionRepoMongoDB(
 	}
 }
 
-func (r *VersionRepoMongoDB) Create(userID, runtimeID, name, description string, workflows []entity.Workflow) (*entity.Version, error) {
-	version := &entity.Version{
-		ID:             primitive.NewObjectID().Hex(),
-		RuntimeID:      runtimeID,
-		Name:           name,
-		Description:    description,
-		CreationDate:   time.Now().UTC(),
-		CreationAuthor: userID,
-		Status:         string(usecase.VersionStatusCreated),
-		Workflows:      workflows,
-	}
-	res, err := r.collection.InsertOne(context.Background(), version)
+func (r *VersionRepoMongoDB) Create(userID string, newVersion *entity.Version) (*entity.Version, error) {
+	newVersion.ID = primitive.NewObjectID().Hex()
+	newVersion.CreationDate = time.Now().UTC()
+	newVersion.CreationAuthor = userID
+	newVersion.Status = string(usecase.VersionStatusCreated)
+	res, err := r.collection.InsertOne(context.Background(), newVersion)
 	if err != nil {
 		return nil, err
 	}
 
-	version.ID = res.InsertedID.(string)
-	return version, nil
+	newVersion.ID = res.InsertedID.(string)
+	return newVersion, nil
 }
 
 func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {

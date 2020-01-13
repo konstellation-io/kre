@@ -51,8 +51,13 @@ func (s *VersionSuite) TestDeployVersion() {
 	}
 
 	s.mocks.resourceManager.On("DeployVersion", name).Return(nil)
-
-	res, err := s.interactor.DeployVersion(name)
+	version := &entity.Version{
+		Name:       name,
+		Entrypoint: entity.Entrypoint{},
+		Workflows:  nil,
+	}
+	s.mocks.resourceManager.On("CreateEntrypoint", version).Return(nil)
+	res, err := s.interactor.DeployVersion(version)
 	require.Nil(t, err)
 	require.EqualValues(t, res, versionDeployed)
 }

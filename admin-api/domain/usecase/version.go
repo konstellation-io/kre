@@ -63,6 +63,13 @@ func NewVersionInteractor(
 	}
 }
 
+// KrtYmlNode contains data about a version's node
+type KrtYmlNode struct {
+	Name  string `yaml:"name"`
+	Image string `yaml:"image"`
+	Src   string `yaml:"src"`
+}
+
 // KrtYmlWorkflow contains data about a version's workflow
 type KrtYmlWorkflow struct {
 	Name       string   `yaml:"name"`
@@ -70,10 +77,18 @@ type KrtYmlWorkflow struct {
 	Sequential []string `yaml:"sequential"`
 }
 
+type KrtYmlEntrypoint struct {
+	Proto string `yaml:"proto"`
+	Image string `yaml:"image"`
+	Src   string `yaml:"src"`
+}
+
 // KrtYml contains data about a version
 type KrtYml struct {
 	Version     string           `yaml:"version"`
 	Description string           `yaml:"description"`
+	Entrypoint  KrtYmlEntrypoint `yaml:"entrypoint"`
+	Nodes       []KrtYmlNode     `yaml:"nodes"`
 	Workflows   []KrtYmlWorkflow `yaml:"workflows"`
 }
 
@@ -149,8 +164,10 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err
 	}
 
+	i.logger.Info("Parsing KRT file")
 	err = yaml.Unmarshal(krtYmlFile, &krtYML)
 	if err != nil {
+		i.logger.Error(err.Error())
 		return nil, err // TODO send custom error for invalid yaml
 	}
 
@@ -166,11 +183,21 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	var workflows []entity.Workflow
 	if len(krtYML.Workflows) > 0 {
 		for _, w := range krtYML.Workflows {
-			workflows = append(workflows, i.generateWorkflow(w))
+			workflows = append(workflows, i.generateWorkflow(krtYML.Nodes, w))
 		}
 	}
-
-	versionCreated, err := i.versionRepo.Create(userID, runtimeID, krtYML.Version, krtYML.Description, workflows)
+	version := &entity.Version{
+		RuntimeID:   runtimeID,
+		Name:        krtYML.Version,
+		Description: krtYML.Description,
+		Entrypoint: entity.Entrypoint{
+			ProtoFile: krtYML.Entrypoint.Proto,
+			Image:     krtYML.Entrypoint.Image,
+			Src:       krtYML.Entrypoint.Src,
+		},
+		Workflows: workflows,
+	}
+	versionCreated, err := i.versionRepo.Create(userID, version)
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +219,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	}
 	i.logger.Info("Minio connected")
 	// Make version bucket
-	bucketName := krtYML.Version
+	bucketName := strcase.ToKebab(krtYML.Version)
 	location := ""
 
 	err = minioClient.MakeBucket(bucketName, location)
@@ -238,15 +265,32 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	return versionCreated, nil
 }
 
-func (i *VersionInteractor) generateWorkflow(w KrtYmlWorkflow) entity.Workflow {
+func (i *VersionInteractor) getNodeByName(nodes []KrtYmlNode, name string) (*KrtYmlNode, error) {
+	for _, n := range nodes {
+		if n.Name == name {
+			return &n, nil
+		}
+	}
+	return nil, errors.New(fmt.Sprintf("Node '%s' not found in node list", name))
+}
+
+func (i *VersionInteractor) generateWorkflow(krtNodes []KrtYmlNode, w KrtYmlWorkflow) entity.Workflow {
 	var nodes []entity.Node
 	var edges []entity.Edge
 
 	var previousN *entity.Node
-	for _, n := range w.Sequential {
+	for _, name := range w.Sequential {
+		nodeInfo, err := i.getNodeByName(krtNodes, name)
+		if err != nil || nodeInfo == nil {
+			// TODO: HANDLE ERROR ON NODES WITH UNKNOWN NAMES
+		}
+		i.logger.Warn(fmt.Sprintf("NODE %#v", nodeInfo))
+
 		node := &entity.Node{
 			ID:     uuid.New().String(),
-			Name:   n,
+			Name:   name,
+			Image:  nodeInfo.Image,
+			Src:    nodeInfo.Src,
 			Status: "ACTIVE", // TODO get status using runtime-api or k8s
 		}
 
@@ -264,9 +308,10 @@ func (i *VersionInteractor) generateWorkflow(w KrtYmlWorkflow) entity.Workflow {
 	}
 
 	return entity.Workflow{
-		Name:  w.Name,
-		Nodes: nodes,
-		Edges: edges,
+		Name:       w.Name,
+		Entrypoint: w.Entrypoint,
+		Nodes:      nodes,
+		Edges:      edges,
 	}
 }
 
@@ -284,7 +329,7 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 		return nil, err
 	}
 
-	err = i.runtimeService.DeployVersion(runtime, version.Name)
+	err = i.runtimeService.DeployVersion(runtime, version)
 	if err != nil {
 		return nil, err
 	}

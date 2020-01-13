@@ -111,9 +111,9 @@ The base structure of a `kre.yaml` is as follow:
 version: mettel-tnba-v1
 description: This is the new version that solves some problems.
 entrypoint: 
- - proto: public_input.proto
-   image: konstellation/kre-python37
-   src: src/entrypoint.py
+  proto: public_input.proto
+  image: konstellation/kre-runtime-entrypoint:latest
+  src: src/entrypoint.py
 
 config:
   variables:
@@ -124,19 +124,19 @@ config:
 
 nodes:
  - name: ETL
-   image: konstellation/kre-python37
-   src: src/etl/model_input_etl.py
+   image: konstellation/kre-py:latest
+   src: src/etl/execute_etl.py
  
  - name: Execute DL Model
-   image: konstellation/kre-pytorch2
-   src: src/execute_model/model.py
+   image: konstellation/kre-py:latest
+   src: src/execute_model/execute_model.py
 
  - name: Create Output
-   image: konstellation/kre-python37
+   image: konstellation/kre-py:latest
    src: src/output/output.py
 
  - name: Client Metrics
-   image: konstellation/kre-python37
+   image: konstellation/kre-py:latest
    src: src/client_metrics/client_metrics.py
 
 workflows:
