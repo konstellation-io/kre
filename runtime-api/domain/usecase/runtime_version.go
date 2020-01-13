@@ -127,6 +127,20 @@ func (i *VersionInteractor) StopVersion(name string) (*entity.Version, error) {
 	return version, err
 }
 
+func (i *VersionInteractor) DeactivateVersion(name string) (*entity.Version, error) {
+	err := i.resourceManager.DeactivateVersion(name)
+	if err != nil {
+		return nil, err
+	}
+
+	version := &entity.Version{
+		Name:   name,
+		Status: string(VersionStatusRunning),
+	}
+
+	return version, err
+}
+
 func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error) {
 	err := i.resourceManager.ActivateVersion(name)
 	if err != nil {

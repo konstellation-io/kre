@@ -62,20 +62,20 @@ func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entit
 	return err
 }
 
-func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
-	namespace := k.cfg.Kubernetes.Namespace
-	name := fmt.Sprintf("%s-%s-%s", version.Name, strcase.ToKebab(node.Name), node.ID)
-
-	_, err := k.createNodeDeployment(namespace, name, version, node)
-	return err
-}
-
 func (k *ResourceManagerService) StopVersion(name string) error {
 	label := strcase.ToKebab(name)
 	namespace := k.cfg.Kubernetes.Namespace
 
 	k.logger.Info(fmt.Sprintf("Deleting version '%s' resources", name))
 	return k.deleteVersionResources(label, namespace)
+}
+
+func (k *ResourceManagerService) DeactivateVersion(name string) error {
+	label := strcase.ToKebab(name)
+	namespace := k.cfg.Kubernetes.Namespace
+
+	k.logger.Info(fmt.Sprintf("Deactivating version '%s'", name))
+	return k.deactivateEntrypointService(name, namespace, label)
 }
 
 func (k *ResourceManagerService) deleteVersionResources(label, namespace string) error {

@@ -422,6 +422,36 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	return version, nil
 }
 
+// Activate set a Version as active on DB and K8s
+func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is deactivating version %s", userID, versionID))
+
+	version, err := i.versionRepo.GetByID(versionID)
+	if err != nil {
+		return nil, err
+	}
+
+	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.runtimeService.DeactivateVersion(runtime, version.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	version.ActivationUserID = nil
+	version.ActivationDate = nil
+	version.Status = string(VersionStatusRunning)
+	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
+	return version, nil
+}
+
 // GetByRuntime returns all Versions of the given Runtime
 func (i *VersionInteractor) GetByRuntime(runtimeID string) ([]entity.Version, error) {
 	return i.versionRepo.GetByRuntime(runtimeID)
