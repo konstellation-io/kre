@@ -23,32 +23,45 @@ import cx from 'classnames';
 import styles from './RuntimeStatusPreview.module.scss';
 
 function RuntimeStatusPreview() {
-  const { runtimeId, versionId } = useParams();
+  const params: { runtimeId?: string; versionId?: string } = useParams();
+
   const { data, loading, error } = useQuery<
     GetVersionWorkflowsResponse,
     GetVersionWorkflowsVars
   >(GET_VERSION_WORKFLOWS, {
-    variables: { versionId },
+    variables: { versionId: params.versionId },
     fetchPolicy: 'no-cache'
   });
   // TODO: loading and error check
   const redirectionPath = PAGES.RUNTIME_STATUS_PREVIEW.replace(
     ':runtimeId',
-    runtimeId || ''
-  ).replace(':versionId', versionId || '');
-  const { activateVersion, deployVersion, getMutationVars } = useVersionAction(
-    redirectionPath
-  );
+    params.runtimeId || ''
+  ).replace(':versionId', params.versionId || '');
+  const {
+    activateVersion,
+    deployVersion,
+    stopVersion,
+    deactivateVersion,
+    getMutationVars
+  } = useVersionAction(redirectionPath);
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
-  if (error) return <ErrorMessage />;
+  if (error || !params.runtimeId || !params.versionId) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  function onDeployVersion() {
-    deployVersion(getMutationVars(versionId || ''));
-  }
+  const versionId = params.versionId;
+
   function onActivateVersion(comment: string) {
-    activateVersion(getMutationVars(versionId || '', comment));
+    activateVersion(getMutationVars(versionId, comment));
+  }
+  function onDeactivateVersion() {
+    deactivateVersion(getMutationVars(versionId));
+  }
+  function onDeployVersion() {
+    deployVersion(getMutationVars(versionId));
+  }
+  function onStopVersion() {
+    stopVersion(getMutationVars(versionId));
   }
 
   function onOpenModal() {
@@ -62,8 +75,8 @@ function RuntimeStatusPreview() {
   const actionButtons: any = getVersionActionButtons(
     onOpenModal,
     onDeployVersion,
-    function() {}, // TODO: STOP
-    function() {}, // TODO: DEACTIVATE
+    onStopVersion,
+    onDeactivateVersion,
     versionStatus
   );
 

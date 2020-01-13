@@ -12,6 +12,10 @@
   padding: 0 40px 0 20px;
   height: 40px;
 
+  div {
+    color: $font-color-dark;
+  }
+
   &.ACTIVE {
     background-color: $color-green;
   }
@@ -27,7 +31,7 @@
   &.CREATED {
     background-color: $color-grey;
 
-    span {
+    div {
       color: $font-color-white;
     }
   }

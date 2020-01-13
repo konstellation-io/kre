@@ -205,6 +205,22 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 	})
 }
 
+func (k *ResourceManagerService) deactivateEntrypointService(name, namespace, label string) error {
+	k.logger.Info(fmt.Sprintf("Deleting service in %s named %s", namespace, name))
+
+	gracePeriod := new(int64)
+	*gracePeriod = 0
+
+	deletePolicy := metav1.DeletePropagationForeground
+
+	err := k.clientset.CoreV1().Services(namespace).Delete("active-entrypoint", &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	})
+
+	return err
+}
+
 func (k *ResourceManagerService) activateEntrypointService(name, namespace, label string) (*apiv1.Service, error) {
 	k.logger.Info(fmt.Sprintf("Updating service in %s named %s", namespace, name))
 
