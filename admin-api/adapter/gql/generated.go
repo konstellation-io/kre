@@ -798,6 +798,7 @@ input DeployVersionInput {
 
 input ActivateVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 type CreateVersionResponse {
@@ -4630,6 +4631,12 @@ func (ec *executionContext) unmarshalInputActivateVersionInput(ctx context.Conte
 		case "versionId":
 			var err error
 			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

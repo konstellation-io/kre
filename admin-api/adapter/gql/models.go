@@ -12,6 +12,7 @@ import (
 
 type ActivateVersionInput struct {
 	VersionID string `json:"versionId"`
+	Comment   string `json:"comment"`
 }
 
 type Alert struct {
