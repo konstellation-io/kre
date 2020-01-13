@@ -309,12 +309,12 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.toNode]))
       .attr('y1', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
       .attr('y2', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      // @ts-ignore
       .on('mouseenter', function() {
+        // @ts-ignore
         events.edgeHighlight(this, true);
       })
-      // @ts-ignore
       .on('mouseleave', function() {
+        // @ts-ignore
         events.edgeHighlight(this, false);
       });
 
