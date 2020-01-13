@@ -1,33 +1,7 @@
-# Generate proto
-FROM grpc/go as protobuf
+FROM python:3.7.5
 
-WORKDIR /app
+RUN pip install protobuf grpclib asyncio-nats-client
 
-COPY scripts scripts
-COPY proto proto
+COPY entrypoint.sh /entrypoint.sh
 
-RUN ./scripts/generate_proto.sh
-
-
-# Build k8s-manager
-FROM golang:1.13 as builder
-
-ENV CGO_ENABLED=0
-
-WORKDIR /app
-COPY . .
-RUN rm -rf /app/proto
-COPY --from=protobuf /app/proto/*.go /app/proto/
-
-RUN go build -o entrypoint .
-
-
-# Final image
-FROM alpine:3.10.2
-
-RUN mkdir -p /var/log/app
-
-WORKDIR /app
-COPY --from=builder /app/entrypoint .
-
-CMD ["sh","-c","/app/entrypoint 2>&1 | tee -a /var/log/app/app.log"]
+ENTRYPOINT ["sh","-c","/entrypoint.sh"]
