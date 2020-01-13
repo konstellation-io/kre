@@ -104,7 +104,7 @@ func (k *ResourceManagerService) deleteVersionResources(label, namespace string)
 }
 
 func (k *ResourceManagerService) ActivateVersion(name string) error {
-	label := fmt.Sprintf("%s-entrypoint", strcase.ToKebab(name))
+	label := strcase.ToKebab(name)
 	namespace := k.cfg.Kubernetes.Namespace
 
 	k.logger.Info(fmt.Sprintf("Activating version %s", name))
