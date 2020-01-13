@@ -26,7 +26,7 @@ type Mutation {
   stopVersion(input: StopVersionInput!): Version!
   deactivateVersion(input: DeactivateVersionInput!): Version!
   updateSettings(input: SettingsInput!): UpdateSettingsResponse
-  updateVersionConfiguration(input: UpdateConfigurationInput!): UpdateVersionConfigurationResponse!
+  updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
 }
 
 type Subscription {
@@ -109,11 +109,9 @@ enum AlertLevel {
 }
 
 type ConfigurationVariable {
-  id: ID!
-  variable: String!
+  key: String!
   value: String!
   type: ConfigurationVariableType!
-  protected: Boolean!
 }
 
 enum ConfigurationVariableType {
@@ -122,19 +120,14 @@ enum ConfigurationVariableType {
 }
 
 input ConfigurationVariablesInput {
-  variable: String!
+  key: String!
   value: String!
   type: ConfigurationVariableType!
 }
 
 input UpdateConfigurationInput {
-  id: ID
+  versionId: ID
   configurationVariables: [ConfigurationVariablesInput!]!
-}
-
-type UpdateVersionConfigurationResponse {
-  errors: [Error!]
-  version: Version!
 }
 
 type Runtime {

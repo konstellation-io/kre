@@ -1,3 +1,5 @@
+import { sortBy, capitalize } from 'lodash';
+
 import React from 'react';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
@@ -11,38 +13,30 @@ import {
 import cx from 'classnames';
 import styles from './ConfigurationVariableList.module.scss';
 
-function sortAlphabetically(
-  a: ConfigurationVariable,
-  b: ConfigurationVariable
-) {
-  if (a.variable < b.variable) return -1;
-  if (b.variable < a.variable) return 1;
-  return 0;
-}
-
-function capitalizeType(type: string): string {
-  return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
-}
-
-interface VariableRowPros extends ConfigurationVariable {
+interface VariableRowPros {
+  variable: ConfigurationVariable;
   onType: Function;
   hide: boolean;
 }
 
-function VariableRow({ type, variable, value, onType, hide }: VariableRowPros) {
+function VariableRow({
+  variable: { type, key, value },
+  onType,
+  hide
+}: VariableRowPros) {
   function onValueUpdate(inputValue: string) {
-    onType(variable, inputValue);
+    onType(key, inputValue);
   }
 
   return (
     <div className={styles.row}>
       <div className={cx(styles.typeCol, styles.col1)}>
         <div className={styles.separator} />
-        <div className={styles.typeColValue}>{capitalizeType(type)}</div>
+        <div className={styles.typeColValue}>{capitalize(type)}</div>
       </div>
       <div className={cx(styles.variableCol, styles.col2)}>
         <IconKey className="icon-small" />
-        <div>{variable}</div>
+        <div>{key}</div>
       </div>
       <div className={styles.col3}>
         <TextInput
@@ -73,14 +67,14 @@ type Props = {
 };
 
 function ConfigurationVariableList({ data, onType, hideAll }: Props) {
-  const sortedData = [...data].sort(sortAlphabetically);
+  const sortedData = sortBy(data, ['key']);
   const variableRows = sortedData.map(
     (variable: ConfigurationVariable, idx: number) => (
       <VariableRow
-        {...variable}
         onType={onType}
         key={`variableRow_${idx}`}
         hide={hideAll}
+        variable={variable}
       />
     )
   );

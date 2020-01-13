@@ -17,10 +17,9 @@ import {
   GetConfigurationVariablesVars,
   GetConfigurationVariablesResponse,
   UpdateVersionConfigurationVars,
-  UpdateVersionConfigurationResponse,
   UPDATE_VERSION_CONFIGURATION
 } from './RuntimeConfiguration.graphql';
-import { ConfigurationVariable } from '../../../../graphql/models';
+import { ConfigurationVariable, Version } from '../../../../graphql/models';
 
 import styles from './RuntimeConfiguration.module.scss';
 
@@ -34,7 +33,7 @@ function cleanVars(
   return variables.map(
     (variable: ConfigurationVariable) =>
       ({
-        variable: variable.variable,
+        key: variable.key,
         value: variable.value,
         type: variable.type
       } as ConfigurationVariable)
@@ -56,7 +55,7 @@ function RuntimeConfiguration() {
     fetchPolicy: 'no-cache'
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<
-    UpdateVersionConfigurationResponse,
+    Version,
     UpdateVersionConfigurationVars
   >(UPDATE_VERSION_CONFIGURATION, {
     onCompleted: onCompleteUpdate,
@@ -77,12 +76,15 @@ function RuntimeConfiguration() {
   // TODO: CHECK FOR ERRORS
   function onCompleteUpdate(data: any) {
     setConfigurationVariables(
-      data.updateVersionConfiguration.version.configurationVariables
+      data.updateVersionConfiguration.configurationVariables
     );
   }
 
   function getContent() {
-    if (configurationVariables.length === 0) {
+    const noVars: boolean =
+      (data && data.version.configurationVariables.length === 0) || false;
+
+    if (noVars) {
       return (
         <div className={styles.noConfig}>
           This version has no configuration variables
@@ -111,7 +113,7 @@ function RuntimeConfiguration() {
    */
   function onType(variable: string, inputValue: string): void {
     const targetVariable: ConfigurationVariable = configurationVariables.filter(
-      (confVar: ConfigurationVariable) => confVar.variable === variable
+      (confVar: ConfigurationVariable) => confVar.key === variable
     )[0];
     const variableIdx = configurationVariables.indexOf(targetVariable);
     const newConfigurationsVariables: ConfigurationVariable[] = [
@@ -127,7 +129,7 @@ function RuntimeConfiguration() {
     updateConfiguration({
       variables: {
         input: {
-          id: versionId || '',
+          versionId: versionId || '',
           configurationVariables: cleanVars(configurationVariables)
         }
       }

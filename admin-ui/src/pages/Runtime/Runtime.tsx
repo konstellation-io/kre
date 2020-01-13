@@ -115,7 +115,7 @@ function Runtime() {
 
   let navTabs: Tab[] = createNavTabs(runtimeId || '', versionId || '');
 
-  if (!(versionData && versionData.version.configurationCompleted)) {
+  if (versionData && versionData.version.configurationCompleted === false) {
     navTabs = addWarningToTab(
       'CONFIGURATION',
       navTabs,

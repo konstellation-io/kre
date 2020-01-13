@@ -66,16 +66,14 @@ module.exports = {
     configurationCompleted: true
   }),
   ConfigurationVariable: () => ({
-    id: casual.id,
-    variable: casual.word.toUpperCase(),
+    key: casual.word.toUpperCase(),
     value: () => {
       if (Math.random() < 0.1) {
         return '';
       }
       return casual.sentence;
     },
-    type: casual.random_element(['VARIABLE', 'FILE']),
-    protected: false
+    type: casual.random_element(['VARIABLE', 'FILE'])
   }),
   Alert: () => ({
     id: casual.id,
