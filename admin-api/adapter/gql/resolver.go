@@ -114,6 +114,39 @@ func (r *mutationResolver) DeployVersion(ctx context.Context, input DeployVersio
 
 	return toGQLVersion(version, creationUser, nil), nil
 }
+
+func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInput) (*Version, error) {
+	userID := ctx.Value("userID").(string)
+
+	version, err := r.versionInteractor.Stop(userID, input.VersionID)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLVersion(version, creationUser, nil), nil
+}
+
+func (r *mutationResolver) DeactivateVersion(ctx context.Context, input DeactivateVersionInput) (*Version, error) {
+	userID := ctx.Value("userID").(string)
+
+	version, err := r.versionInteractor.Deactivate(userID, input.VersionID)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
+	if err != nil {
+		return nil, err
+	}
+
+	return toGQLVersion(version, creationUser, nil), nil
+}
+
 func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVersionInput) (*Version, error) {
 	userID := ctx.Value("userID").(string)
 

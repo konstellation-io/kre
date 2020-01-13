@@ -51,3 +51,31 @@ func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *enti
 
 	return r0
 }
+
+// DeactivateVersion provides a mock function with given fields: name
+func (_m *ResourceManagerService) DeactivateVersion(name string) error {
+	ret := _m.Called(name)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(name)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// StopVersion provides a mock function with given fields: name
+func (_m *ResourceManagerService) StopVersion(name string) error {
+	ret := _m.Called(name)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(name)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}

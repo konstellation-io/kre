@@ -343,6 +343,34 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 	return version, nil
 }
 
+// Stop removes the resources of the given Version
+func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is stopping version %s", userID, versionID))
+
+	version, err := i.versionRepo.GetByID(versionID)
+	if err != nil {
+		return nil, err
+	}
+
+	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.runtimeService.StopVersion(runtime, version.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	version.Status = string(VersionStatusStopped)
+	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
+	return version, nil
+}
+
 // Activate set a Version as active on DB and K8s
 func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.Version, error) {
 	i.logger.Info(fmt.Sprintf("The user %s is activating version %s", userID, versionID))
@@ -386,6 +414,36 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	version.ActivationDate = &now
 	version.ActivationUserID = &userID
 	version.Status = string(VersionStatusActive)
+	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
+	return version, nil
+}
+
+// Activate set a Version as active on DB and K8s
+func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is deactivating version %s", userID, versionID))
+
+	version, err := i.versionRepo.GetByID(versionID)
+	if err != nil {
+		return nil, err
+	}
+
+	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.runtimeService.DeactivateVersion(runtime, version.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	version.ActivationUserID = nil
+	version.ActivationDate = nil
+	version.Status = string(VersionStatusRunning)
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
