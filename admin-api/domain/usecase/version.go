@@ -83,11 +83,17 @@ type KrtYmlEntrypoint struct {
 	Src   string `yaml:"src"`
 }
 
+type KrtYmlConfig struct {
+	Variables []string `yaml:"variables"`
+	Files     []string `yaml:"files"`
+}
+
 // KrtYml contains data about a version
 type KrtYml struct {
 	Version     string           `yaml:"version"`
 	Description string           `yaml:"description"`
 	Entrypoint  KrtYmlEntrypoint `yaml:"entrypoint"`
+	Config      KrtYmlConfig     `yaml:"config"`
 	Nodes       []KrtYmlNode     `yaml:"nodes"`
 	Workflows   []KrtYmlWorkflow `yaml:"workflows"`
 }
@@ -186,10 +192,35 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 			workflows = append(workflows, i.generateWorkflow(krtYML.Nodes, w))
 		}
 	}
+
+	configVars := make([]*entity.ConfigVar, len(krtYML.Config.Files)+len(krtYML.Config.Variables))
+
+	for _, cf := range krtYML.Config.Files {
+		configVars = append(configVars, &entity.ConfigVar{
+			Key:   cf,
+			Value: "",
+			Type:  "FILE",
+		})
+	}
+
+	for _, cv := range krtYML.Config.Variables {
+		configVars = append(configVars, &entity.ConfigVar{
+			Key:   cv,
+			Value: "",
+			Type:  "VARIABLE",
+		})
+	}
+
+	// TODO: Read config values from previous version
+
 	version := &entity.Version{
 		RuntimeID:   runtimeID,
 		Name:        krtYML.Version,
 		Description: krtYML.Description,
+		Config: entity.VersionConfig{
+			Vars:      configVars,
+			Completed: false,
+		},
 		Entrypoint: entity.Entrypoint{
 			ProtoFile: krtYML.Entrypoint.Proto,
 			Image:     krtYML.Entrypoint.Image,

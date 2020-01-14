@@ -57,6 +57,9 @@ func (s *VersionSuite) TestDeployVersion() {
 		Workflows:  nil,
 	}
 	s.mocks.resourceManager.On("CreateEntrypoint", version).Return(nil)
+
+	versionName := "test-version-global"
+	s.mocks.resourceManager.On("CreateVersionConfig", version).Return(&versionName, nil)
 	res, err := s.interactor.DeployVersion(version)
 	require.Nil(t, err)
 	require.EqualValues(t, res, versionDeployed)

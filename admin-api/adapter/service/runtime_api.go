@@ -72,9 +72,18 @@ func (k *RuntimeAPIServiceGRPC) DeployVersion(runtime *entity.Runtime, version *
 		}
 	}
 
+	configVars := make([]*runtimepb.Version_Config, len(version.Config.Vars))
+	for i, c := range version.Config.Vars {
+		configVars[i] = &runtimepb.Version_Config{
+			Key:   c.Key,
+			Value: c.Value,
+		}
+	}
+
 	req := runtimepb.DeployVersionRequest{
 		Version: &runtimepb.Version{
-			Name: version.Name,
+			Name:   version.Name,
+			Config: configVars,
 			Entrypoint: &runtimepb.Entrypoint{
 				ProtoFile: version.Entrypoint.ProtoFile,
 				Image:     version.Entrypoint.Image,
