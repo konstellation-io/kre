@@ -31,9 +31,15 @@ message Workflow {
 }
 
 message Version {
+  message Config {
+    string key = 1;
+    string value = 2;
+  }
+
   string name = 1;
   Entrypoint entrypoint = 2;
-  repeated Workflow workflows = 3;
+  repeated Config config = 3;
+  repeated Workflow workflows = 4;
 }
 
 message DeployVersionRequest {

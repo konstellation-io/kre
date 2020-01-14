@@ -27,10 +27,15 @@ type Entrypoint struct {
 	Src       string
 	Config    map[string]interface{}
 }
+type Config struct {
+	Key   string
+	Value string
+}
 
 type Version struct {
 	Name       string
 	Entrypoint Entrypoint
+	Config     []*Config
 	Workflows  []Workflow
 	Status     string
 }

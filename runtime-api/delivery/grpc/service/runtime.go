@@ -66,6 +66,14 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 	success := true
 
 	entrypoint := req.GetVersion().GetEntrypoint()
+	config := make([]*entity.Config, len(req.GetVersion().GetConfig()))
+	for i, c := range req.GetVersion().GetConfig(){
+		config[i] = &entity.Config{
+			Key:   c.GetKey(),
+			Value: c.GetValue(),
+		}
+	}
+
 	version := &entity.Version{
 		Name: req.GetVersion().GetName(),
 		Entrypoint: entity.Entrypoint{
@@ -73,6 +81,7 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 			Image:     entrypoint.GetImage(),
 			Src:       entrypoint.GetSrc(),
 		},
+		Config : config,
 		Workflows: workflows,
 	}
 
