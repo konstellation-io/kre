@@ -28,20 +28,20 @@ export const usersActivityMock = {
       userActivityList: [
         {
           user: { email: 'user1@domain.com' },
-          message: 'some message 1',
           type: 'LOGIN',
+          vars: [],
           date: '2019-11-28T15:28:01+00:00'
         },
         {
           user: { email: 'user2@domain.com' },
-          message: 'some message 2',
           type: 'LOGIN',
+          vars: [],
           date: '2019-11-27T15:28:01+00:00'
         },
         {
           user: { email: 'user3@domain.com' },
-          message: 'some message 3',
           type: 'LOGIN',
+          vars: [],
           date: '2019-11-26T15:28:01+00:00'
         }
       ]

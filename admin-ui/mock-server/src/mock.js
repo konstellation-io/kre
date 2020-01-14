@@ -1,5 +1,6 @@
 const { MockList } = require('graphql-tools');
 const casual = require('casual');
+const { UserActivityOptions } = require('./mockSamples');
 
 module.exports = {
   Query: () =>({
@@ -69,13 +70,7 @@ module.exports = {
     message: casual.sentence,
     runtime: this.Runtime
   }),
-  UserActivity: () => ({
-    id: casual.id,
-    user: this.User,
-    message: casual.sentence,
-    date: casual.moment.toISOString(),
-    type: casual.random_element(['LOGIN', 'LOGOUT', 'CREATE_RUNTIME']),
-  }),
+  UserActivity: () => casual.random_element(UserActivityOptions(this.User)),
   Settings: () => ({
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
     sessionLifetimeInDays: () => casual.integer(from = 1, to = 99)
