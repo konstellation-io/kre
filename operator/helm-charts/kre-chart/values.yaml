@@ -4,7 +4,7 @@ entrypoint:
 sharedStorageClass: standard
 
 nats_streaming:
-  replicas: 2
+  replicas: 1
   storage:
     className: standard
     size: 1Gi

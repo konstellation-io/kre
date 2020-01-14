@@ -35,6 +35,9 @@ func (k *ResourceManager) createRuntimeObject(runtime *input.CreateRuntimeInput,
 					"host": entrypointURL,
 				},
 				"sharedStorageClass": k.config.SharedStorageClass,
+				"nats_streaming": map[string]interface{}{
+					"replicas": 1,
+				},
 				"minio": map[string]interface{}{
 					"credentials": map[string]interface{}{
 						"accessKey": runtime.Minio.AccessKey,
