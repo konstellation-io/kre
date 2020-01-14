@@ -80,7 +80,7 @@ func (i *VersionInteractor) generateNodeConfig(version *entity.Version, workflow
 		fromNode := i.getNodeById(workflow.Nodes, e.FromNode)
 		toNode := i.getNodeById(workflow.Nodes, e.ToNode)
 
-		fromNode.Config["KRT_NATS_OUTPUT"] = toNode.ID
+		fromNode.Config["KRT_NATS_OUTPUT"] = fromNode.ID
 		toNode.Config["KRT_NATS_INPUT"] = fromNode.ID
 	}
 
@@ -94,7 +94,6 @@ func (i *VersionInteractor) generateNodeConfig(version *entity.Version, workflow
 	} else {
 		firstNode = i.getNodeById(workflow.Nodes, workflow.Edges[0].FromNode)
 		lastNode = i.getNodeById(workflow.Nodes, workflow.Edges[len(workflow.Edges)-1].ToNode)
-
 	}
 
 	// First node input is the workflow entrypoint
