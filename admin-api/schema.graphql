@@ -171,16 +171,29 @@ type Settings {
   sessionLifetimeInDays: Int!
 }
 
+type UserActivityVar {
+  key: String!
+  value: String!
+}
+
 type UserActivity {
   id: ID!
-  user: User!
-  message: String!
-  date: String!
   type: UserActivityType!
+  user: User!
+  date: String!
+  vars: [UserActivityVar!]!
 }
 
 enum UserActivityType {
   LOGIN
   LOGOUT
   CREATE_RUNTIME
+  CREATE_VERSION
+  ACTIVATE_VERSION
+  DEACTIVATE_VERSION
+  STOP_VERSION
+  DEPLOY_VERSION
+  UPDATE_GENERAL_SETTINGS
+  UPDATE_SECURITY_SETTINGS
+  UPDATE_VERSION_CONFIGURATION
 }
