@@ -91,18 +91,6 @@ export default function getMessage(
     ) : (
       undefined
     );
-  const expTimeLink =
-    userActivity.type === UserActivityType.UPDATE_GENERAL_SETTINGS ? (
-      <Link to={ROUTES.SETTINGS_GENERAL}>{settingName}</Link>
-    ) : (
-      undefined
-    );
-  const allowedDomainsLink =
-    userActivity.type === UserActivityType.UPDATE_SECURITY_SETTINGS ? (
-      <Link to={ROUTES.SETTINGS_SECURITY}>{settingName}</Link>
-    ) : (
-      undefined
-    );
 
   switch (userActivity.type) {
     case UserActivityType.LOGIN:
@@ -161,23 +149,11 @@ export default function getMessage(
         </>
       );
       break;
-    case UserActivityType.UPDATE_GENERAL_SETTINGS:
+    case UserActivityType.UPDATE_SETTING:
       message = (
         <>
           {'Has updated '}
-          {getVar(expTimeLink)}
-          {' setting from '}
-          {getVar(oldValue)}
-          {' to '}
-          {getVar(newValue)}
-        </>
-      );
-      break;
-    case UserActivityType.UPDATE_SECURITY_SETTINGS:
-      message = (
-        <>
-          {'Has updated '}
-          {getVar(allowedDomainsLink)}
+          {getVar(settingName)}
           {' setting from '}
           {getVar(oldValue)}
           {' to '}

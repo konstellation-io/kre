@@ -69,7 +69,19 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 	}
 	i.logger.Info("Runtime stored in the database with ID=" + createdRuntime.ID)
 
-	err = i.userActivity.Create(userID, UserActivityTypeCreateRuntime)
+	err = i.userActivity.Create(
+		userID,
+		UserActivityTypeCreateRuntime,
+		[]entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: createdRuntime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: createdRuntime.Name,
+			},
+		})
 	if err != nil {
 		return
 	}

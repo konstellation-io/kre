@@ -82,20 +82,11 @@ function getOptions(User) {
     },
     {
       ...UserActivityBase,
-      type: 'UPDATE_GENERAL_SETTINGS',
+      type: 'UPDATE_SETTING',
       vars: [
         { key: 'SETTING_NAME', value: 'EXPIRATION_TIME' },
         { key: 'OLD_VALUE', value: '10' },
         { key: 'NEW_VALUE', value: '55' }
-      ]
-    },
-    {
-      ...UserActivityBase,
-      type: 'UPDATE_SECURITY_SETTINGS',
-      vars: [
-        { key: 'SETTING_NAME', value: 'ALLOWED_DOMAINS' },
-        { key: 'OLD_VALUE', value: 'a.com, b.com, c.com' },
-        { key: 'NEW_VALUE', value: 'a.com, c.com' },
       ]
     },
     {
