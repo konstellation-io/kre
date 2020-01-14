@@ -80,8 +80,8 @@ func (i *VersionInteractor) generateNodeConfig(version *entity.Version, workflow
 		fromNode := i.getNodeById(workflow.Nodes, e.FromNode)
 		toNode := i.getNodeById(workflow.Nodes, e.ToNode)
 
-		fromNode.Config["KRT_NATS_OUTPUT"] = fromNode.ID
-		toNode.Config["KRT_NATS_INPUT"] = fromNode.ID
+		fromNode.Config["KRT_NATS_OUTPUT"] = e.ID
+		toNode.Config["KRT_NATS_INPUT"] = e.ID
 	}
 
 	var firstNode *entity.Node
