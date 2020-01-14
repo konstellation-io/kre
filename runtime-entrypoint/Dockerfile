@@ -2,7 +2,7 @@ FROM python:3.7.5
 
 ENV PYTHONUNBUFFERED=1
 
-RUN pip install protobuf grpclib asyncio-nats-client
+RUN pip install protobuf grpclib asyncio-nats-client protobuf3-to-dict
 
 COPY entrypoint.sh /entrypoint.sh
 
