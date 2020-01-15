@@ -103,9 +103,39 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 }
 
 func (s *RuntimeService) UpdateVersionConfig(ctx context.Context, req *runtimepb.UpdateVersionConfigRequest) (*runtimepb.UpdateVersionConfigResponse, error) {
+	s.logger.Info("UpdateVersionConfig received")
 
-	s.logger.Info(fmt.Sprintf("--------------- IMPLEMENT UPDATE VERSION ----------------------\n %#v", req.String()))
-	return nil, nil
+	configVars := make([]*entity.Config, len(req.GetVersion().GetConfig()))
+	for i, c := range req.GetVersion().GetConfig() {
+		configVars[i] = &entity.Config{
+			Key:   c.GetKey(),
+			Value: c.GetValue(),
+		}
+	}
+
+	version := &entity.Version{
+		Name:   req.GetVersion().GetName(),
+		Config: configVars,
+	}
+	s.logger.Info(fmt.Sprintf("---------------------------------MSG--- %#v", req.String()))
+
+	message := fmt.Sprintf("Version %s config updated", req.GetVersion().GetName())
+	success := true
+
+	err := s.interactor.UpdateVersionConfig(version)
+	if err != nil {
+		success = false
+		message = err.Error()
+		s.logger.Error(message)
+	}
+
+	// Send response
+	res := &runtimepb.UpdateVersionConfigResponse{
+		Success: success,
+		Message: message,
+	}
+
+	return res, nil
 }
 
 func (s *RuntimeService) StopVersion(ctx context.Context, req *runtimepb.StopVersionRequest) (*runtimepb.StopVersionResponse, error) {

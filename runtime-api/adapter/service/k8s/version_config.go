@@ -27,3 +27,21 @@ func (k *ResourceManagerService) createVersionConfigmap(namespace string, versio
 		Data: config,
 	})
 }
+
+func (k *ResourceManagerService) updateVersionConfigmap(namespace string, version *entity.Version) (*apiv1.ConfigMap, error) {
+	name := fmt.Sprintf("%s-global", strcase.ToKebab(version.Name))
+
+	config := make(map[string]string)
+	for _, c := range version.Config {
+		config[c.Key] = c.Value
+	}
+
+	currentConfig, err := k.clientset.CoreV1().ConfigMaps(namespace).Get(name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	currentConfig.Data = config
+
+	return k.clientset.CoreV1().ConfigMaps(namespace).Update(currentConfig)
+}

@@ -9,4 +9,5 @@ type ResourceManagerService interface {
 	StopVersion(name string) error
 	DeactivateVersion(name string) error
 	ActivateVersion(name string) error
+	UpdateVersionConfig(version *entity.Version) error
 }

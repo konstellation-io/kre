@@ -90,6 +90,36 @@ func (k *ResourceManagerService) DeactivateVersion(name string) error {
 	return k.deactivateEntrypointService(name, namespace, label)
 }
 
+func (k *ResourceManagerService) UpdateVersionConfig(version *entity.Version) error {
+
+	label := strcase.ToKebab(version.Name)
+	namespace := k.cfg.Kubernetes.Namespace
+
+	return k.restartVersionPods(label, namespace)
+}
+
+func (k *ResourceManagerService) restartVersionPods(label, namespace string) error {
+	gracePeriod := new(int64)
+	*gracePeriod = 0
+
+	deletePolicy := metav1.DeletePropagationForeground
+	deleteOptions := &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	}
+
+	listOptions := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("version-name=%s", label),
+		Watch:         false,
+		TypeMeta: metav1.TypeMeta{
+			Kind: "Pod",
+		},
+	}
+
+	// Delete pods for restart
+	return k.clientset.CoreV1().Pods(namespace).DeleteCollection(deleteOptions, listOptions)
+}
+
 func (k *ResourceManagerService) deleteVersionResources(label, namespace string) error {
 	gracePeriod := new(int64)
 	*gracePeriod = 0

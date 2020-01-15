@@ -158,3 +158,8 @@ func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error
 
 	return activeVersion, err
 }
+
+func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version) error {
+
+	return i.resourceManager.UpdateVersionConfig(version)
+}

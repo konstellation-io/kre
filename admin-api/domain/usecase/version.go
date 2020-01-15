@@ -526,7 +526,9 @@ func (i *VersionInteractor) generateNewConfig(currentConfig, newValues []*entity
 	return newConfig, isComplete
 }
 
-func (i *VersionInteractor) UpdateConfig(version *entity.Version, config []*entity.ConfigVar) (*entity.Version, error) {
+func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config []*entity.ConfigVar) (*entity.Version, error) {
+	i.logger.Info("----- Graph QL UpdateVersionConfig interactor")
+
 	isRunning := i.versionIsActiveOrRunning(version)
 
 	newConfig, newConfigIsComplete := i.generateNewConfig(version.Config.Vars, config)
@@ -538,7 +540,12 @@ func (i *VersionInteractor) UpdateConfig(version *entity.Version, config []*enti
 	version.Config.Vars = newConfig
 	version.Config.Completed = newConfigIsComplete
 
-	err := i.runtimeService.UpdateVersionConfig(version)
+	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.runtimeService.UpdateVersionConfig(runtime, version)
 	if err != nil {
 		return nil, err
 	}
