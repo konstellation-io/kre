@@ -36,8 +36,8 @@ func main() {
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService, userActivityInteractor)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
-	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo)
-	versionInteractor := usecase.NewVersionInteractor(logger, versionRepo, runtimeRepo, runtimeService)
+	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
+	versionInteractor := usecase.NewVersionInteractor(logger, versionRepo, runtimeRepo, runtimeService, userActivityInteractor)
 
 	err := settingInteractor.CreateDefaults()
 	if err != nil {
