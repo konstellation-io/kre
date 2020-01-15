@@ -120,8 +120,13 @@ export default function getMessage(
         <>
           {'Has activated version '}
           {getVar(versionLink)}
-          {'. Previous active version: '}
-          {getVar(oldVersionLink)}
+          {'. '}
+          {oldVersionLink && (
+            <>
+              {'Previous active version: '}
+              {getVar(oldVersionLink)}
+            </>
+          )}
         </>
       );
       break;

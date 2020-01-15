@@ -11,7 +11,14 @@ import { ApolloError } from 'apollo-client';
 export const typeToText = {
   LOGIN: 'Login',
   LOGOUT: 'Logout',
-  CREATE_RUNTIME: 'Runtime Creation'
+  CREATE_RUNTIME: 'Create Runtime',
+  CREATE_VERSION: 'Create Version',
+  ACTIVATE_VERSION: 'Activate Version',
+  DEACTIVATE_VERSION: 'Deactivate Version',
+  STOP_VERSION: 'Stop Version',
+  DEPLOY_VERSION: 'Deploy Version',
+  UPDATE_SETTING: 'Update Settings',
+  UPDATE_VERSION_CONFIGURATION: 'Update Version Configuration'
 };
 
 type FormFieldProps = {
