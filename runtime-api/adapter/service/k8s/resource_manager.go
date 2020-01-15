@@ -50,7 +50,7 @@ func (k *ResourceManagerService) CreateEntrypoint(version *entity.Version) error
 	return err
 }
 
-func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
+func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node, versionConfig string) error {
 	namespace := k.cfg.Kubernetes.Namespace
 
 	nodeConfig, err := k.createNodeConfigmap(namespace, version, node)
@@ -58,8 +58,19 @@ func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entit
 		return err
 	}
 
-	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig)
+	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig, versionConfig)
 	return err
+}
+
+func (k *ResourceManagerService) CreateVersionConfig(version *entity.Version) (string, error) {
+	namespace := k.cfg.Kubernetes.Namespace
+
+	versionConfig, err := k.createVersionConfigmap(namespace, version)
+	if err != nil {
+		return "", err
+	}
+
+	return versionConfig.Name, nil
 }
 
 func (k *ResourceManagerService) StopVersion(name string) error {
@@ -76,6 +87,40 @@ func (k *ResourceManagerService) DeactivateVersion(name string) error {
 
 	k.logger.Info(fmt.Sprintf("Deactivating version '%s'", name))
 	return k.deactivateEntrypointService(name, namespace, label)
+}
+
+func (k *ResourceManagerService) UpdateVersionConfig(version *entity.Version) error {
+	label := strcase.ToKebab(version.Name)
+	namespace := k.cfg.Kubernetes.Namespace
+
+	_, err := k.updateVersionConfigmap(namespace, version)
+	if err != nil {
+		return err
+	}
+
+	return k.restartVersionPods(label, namespace)
+}
+
+func (k *ResourceManagerService) restartVersionPods(label, namespace string) error {
+	gracePeriod := new(int64)
+	*gracePeriod = 0
+
+	deletePolicy := metav1.DeletePropagationForeground
+	deleteOptions := &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	}
+
+	listOptions := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("version-name=%s", label),
+		Watch:         false,
+		TypeMeta: metav1.TypeMeta{
+			Kind: "Pod",
+		},
+	}
+
+	// Delete pods for restart
+	return k.clientset.CoreV1().Pods(namespace).DeleteCollection(deleteOptions, listOptions)
 }
 
 func (k *ResourceManagerService) deleteVersionResources(label, namespace string) error {

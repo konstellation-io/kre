@@ -1,6 +1,8 @@
+@import '../../../styles/colors';
+
 .container {
   width: 100%;
   display: flex;
   flex-direction: row-reverse;
-  background-color: black;
+  background-color: $bg-color-dark;
 }

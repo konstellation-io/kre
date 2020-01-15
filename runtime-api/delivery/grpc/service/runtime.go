@@ -62,10 +62,15 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 		workflows[i].Edges = edges
 	}
 
-	message := fmt.Sprintf("Runtime %s created", req.GetVersion().GetName())
-	success := true
-
 	entrypoint := req.GetVersion().GetEntrypoint()
+	configVars := make([]*entity.Config, len(req.GetVersion().GetConfig()))
+	for i, c := range req.GetVersion().GetConfig() {
+		configVars[i] = &entity.Config{
+			Key:   c.GetKey(),
+			Value: c.GetValue(),
+		}
+	}
+
 	version := &entity.Version{
 		Name: req.GetVersion().GetName(),
 		Entrypoint: entity.Entrypoint{
@@ -73,8 +78,12 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 			Image:     entrypoint.GetImage(),
 			Src:       entrypoint.GetSrc(),
 		},
+		Config:    configVars,
 		Workflows: workflows,
 	}
+
+	message := fmt.Sprintf("Version %s deployed", req.GetVersion().GetName())
+	success := true
 
 	_, err := s.interactor.DeployVersion(version)
 	if err != nil {
@@ -85,6 +94,41 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 
 	// Send response
 	res := &runtimepb.DeployVersionResponse{
+		Success: success,
+		Message: message,
+	}
+
+	return res, nil
+}
+
+func (s *RuntimeService) UpdateVersionConfig(ctx context.Context, req *runtimepb.UpdateVersionConfigRequest) (*runtimepb.UpdateVersionConfigResponse, error) {
+	s.logger.Info("UpdateVersionConfig received")
+
+	configVars := make([]*entity.Config, len(req.GetVersion().GetConfig()))
+	for i, c := range req.GetVersion().GetConfig() {
+		configVars[i] = &entity.Config{
+			Key:   c.GetKey(),
+			Value: c.GetValue(),
+		}
+	}
+
+	version := &entity.Version{
+		Name:   req.GetVersion().GetName(),
+		Config: configVars,
+	}
+
+	message := fmt.Sprintf("Version %s config updated", req.GetVersion().GetName())
+	success := true
+
+	err := s.interactor.UpdateVersionConfig(version)
+	if err != nil {
+		success = false
+		message = err.Error()
+		s.logger.Error(message)
+	}
+
+	// Send response
+	res := &runtimepb.UpdateVersionConfigResponse{
 		Success: success,
 		Message: message,
 	}

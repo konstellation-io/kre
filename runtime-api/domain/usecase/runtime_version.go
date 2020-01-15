@@ -42,18 +42,23 @@ func NewVersionInteractor(
 
 func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Version, error) {
 	i.logger.Info(fmt.Sprintf("Deploying version: %s", version.Name))
+
+	versionConfig, err := i.resourceManager.CreateVersionConfig(version)
+	if err != nil {
+		return nil, err
+	}
 	for _, w := range version.Workflows {
 		i.logger.Info(fmt.Sprintf("Processing workflow %s", w.Name))
 		i.generateNodeConfig(version, &w)
 		for _, n := range w.Nodes {
-			err := i.resourceManager.CreateNode(version, n)
+			err := i.resourceManager.CreateNode(version, n, versionConfig)
 			if err != nil {
 				i.logger.Error(err.Error())
 				return nil, err
 			}
 		}
 	}
-	err := i.resourceManager.CreateEntrypoint(version)
+	err = i.resourceManager.CreateEntrypoint(version)
 	if err != nil {
 		i.logger.Error(err.Error())
 		return nil, err
@@ -152,4 +157,9 @@ func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error
 	}
 
 	return activeVersion, err
+}
+
+func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version) error {
+
+	return i.resourceManager.UpdateVersionConfig(version)
 }

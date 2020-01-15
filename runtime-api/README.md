@@ -5,7 +5,7 @@
 
 - [Mockery](https://github.com/vektra/mockery)
 
-## Test Mocks 
+## Test Mocks
 
 Mocks used on tests are generated with Mockery, when you need a new mock, create it with this command:
 
@@ -55,3 +55,12 @@ Repositories implementation are responsible for converting "kubernetes objects" 
 3. **delivery**: Everything related to serving content via HTTP or CLI should be here.
     - **grpc**: The grpc package contains all the services implementations. It is responsible for handling gRPC
      requests, converting messages to objects, invoking use cases and delivering responses.
+
+
+## Development
+
+Before running the first time this code you need to install this specific kubernetes client go version:
+```
+    go get k8s.io/client-go@kubernetes-1.15.4
+    go run .
+```

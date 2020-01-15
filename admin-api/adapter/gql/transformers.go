@@ -62,6 +62,21 @@ func toGQLVersion(version *entity.Version, creationUser *entity.User, activation
 		}
 		gqlVersion.Workflows = gqlWorkflows
 	}
+	gqlVersion.ConfigurationVariables = make([]*ConfigurationVariable, len(version.Config.Vars))
+	for i, c := range version.Config.Vars {
+		gqlVersion.ConfigurationVariables[i] = &ConfigurationVariable{
+			Key:   c.Key,
+			Value: c.Value,
+		}
+
+		switch c.Type {
+		case string(ConfigurationVariableTypeVariable):
+			gqlVersion.ConfigurationVariables[i].Type = ConfigurationVariableTypeVariable
+		case string(ConfigurationVariableTypeFile):
+			gqlVersion.ConfigurationVariables[i].Type = ConfigurationVariableTypeFile
+		}
+	}
+	gqlVersion.ConfigurationCompleted = version.Config.Completed
 
 	return
 }

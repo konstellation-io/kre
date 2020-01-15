@@ -81,6 +81,7 @@ export const GET_VERSION_WORKFLOWS = gql`
           toNode
         }
       }
+      configurationCompleted
     }
   }
 `;

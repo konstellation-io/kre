@@ -1,18 +1,11 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import NavBar from '../NavBar/NavBar';
+import NavBar, { Tab } from '../NavBar/NavBar';
 import LeftArrowIcon from '@material-ui/icons/KeyboardBackspace';
 
 import styles from './Sidebar.module.scss';
 
-export type Tab = {
-  label: string;
-  route: string;
-  Icon?: any;
-  exact?: boolean;
-  disabled?: boolean;
-};
 type Props = {
   title: string;
   subtitle?: string;

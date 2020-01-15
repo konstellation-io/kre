@@ -1,6 +1,7 @@
 import { has } from 'lodash';
 
 import React from 'react';
+import IconWarning from '@material-ui/icons/Warning';
 import { NavLink } from 'react-router-dom';
 
 import styles from './NavBar.module.scss';
@@ -12,6 +13,8 @@ export type Tab = {
   Icon?: any;
   exact?: boolean;
   disabled?: boolean;
+  showWarning?: boolean;
+  warningTitle?: string;
 };
 type Props = {
   tabs: Tab[];
@@ -40,6 +43,11 @@ function NavBar({ tabs }: Props) {
         <div className={cx(styles.item, { [styles.disabled]: tab.disabled })}>
           <tab.Icon className="icon-regular" />
           <span>{tab.label}</span>
+          {tab.showWarning && (
+            <div title={tab.warningTitle}>
+              <IconWarning className={cx('icon-regular', styles.warning)} />
+            </div>
+          )}
         </div>
       </NavLink>
     );

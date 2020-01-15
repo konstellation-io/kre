@@ -242,6 +242,43 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 	}, nil
 }
 
+func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*Version, error) {
+	v, err := r.versionInteractor.GetByID(input.VersionID)
+	if err != nil {
+		return nil, err
+	}
+
+	config := make([]*entity.ConfigVar, len(input.ConfigurationVariables))
+
+	for i, c := range input.ConfigurationVariables {
+		config[i] = &entity.ConfigVar{
+			Key:   c.Key,
+			Value: c.Value,
+		}
+	}
+
+	v, err = r.versionInteractor.UpdateVersionConfig(v, config)
+	if err != nil {
+		return nil, err
+	}
+
+	creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
+	if err != nil && err != usecase.ErrUserNotFound {
+		return nil, err
+	}
+
+	var activationUser *entity.User
+	if v.ActivationUserID != nil {
+		activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+		if err != nil && err != usecase.ErrUserNotFound {
+			return nil, err
+		}
+	}
+
+	gqlVersion := toGQLVersion(v, creationUser, activationUser)
+	return gqlVersion, nil
+}
+
 type queryResolver struct{ *GraphQLResolver }
 
 func (r *queryResolver) Me(ctx context.Context) (*User, error) {

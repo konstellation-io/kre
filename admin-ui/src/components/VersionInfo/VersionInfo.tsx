@@ -38,7 +38,7 @@ function VersionInfo({ version }: Props) {
   const isVersionActive = version.status === VersionStatus.ACTIVE;
 
   function onVersionClick() {
-    const versionStatusPreviewPath = PAGES.RUNTIME_STATUS_PREVIEW.replace(
+    const versionStatusPreviewPath = PAGES.RUNTIME_VERSION_STATUS.replace(
       ':runtimeId',
       runtimeId || ''
     ).replace(':versionId', version.id);
@@ -67,6 +67,7 @@ function VersionInfo({ version }: Props) {
     setShowActionConfirmation(false);
   }
 
+  const versionIsConfigured = version.configurationCompleted;
   const actionButtons = getVersionActionButtons(
     onOpenModal,
     onDeployVersion,
@@ -95,7 +96,11 @@ function VersionInfo({ version }: Props) {
                 {`CREATED: ${formatDate(new Date(version.creationDate))}`}
               </p>
             </div>
-            <div className={styles.actionButtons}>{actionButtons}</div>
+            {versionIsConfigured ? (
+              <div className={styles.actionButtons}>{actionButtons}</div>
+            ) : (
+              <div className={styles.versionConf}>Version not configured</div>
+            )}
           </div>
         </div>
         <div className={styles.col2}>

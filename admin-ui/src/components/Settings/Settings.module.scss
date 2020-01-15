@@ -11,7 +11,7 @@
   cursor: pointer;
   transition: color ease 0.4s;
   color: $font-color;
-  background-color: black;
+  background-color: $bg-color-dark;
   z-index: 1;
 
   &:hover {

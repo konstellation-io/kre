@@ -38,18 +38,39 @@ func (_m *ResourceManagerService) CreateEntrypoint(version *entity.Version) erro
 	return r0
 }
 
-// CreateNode provides a mock function with given fields: version, node
-func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
-	ret := _m.Called(version, node)
+// CreateNode provides a mock function with given fields: version, node, versionConfig
+func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node, versionConfig string) error {
+	ret := _m.Called(version, node, versionConfig)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Version, *entity.Node) error); ok {
-		r0 = rf(version, node)
+	if rf, ok := ret.Get(0).(func(*entity.Version, *entity.Node, string) error); ok {
+		r0 = rf(version, node, versionConfig)
 	} else {
 		r0 = ret.Error(0)
 	}
 
 	return r0
+}
+
+// CreateVersionConfig provides a mock function with given fields: version
+func (_m *ResourceManagerService) CreateVersionConfig(version *entity.Version) (string, error) {
+	ret := _m.Called(version)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(*entity.Version) string); ok {
+		r0 = rf(version)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*entity.Version) error); ok {
+		r1 = rf(version)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // DeactivateVersion provides a mock function with given fields: name
@@ -73,6 +94,20 @@ func (_m *ResourceManagerService) StopVersion(name string) error {
 	var r0 error
 	if rf, ok := ret.Get(0).(func(string) error); ok {
 		r0 = rf(name)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UpdateVersionConfig provides a mock function with given fields: version
+func (_m *ResourceManagerService) UpdateVersionConfig(version *entity.Version) error {
+	ret := _m.Called(version)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*entity.Version) error); ok {
+		r0 = rf(version)
 	} else {
 		r0 = ret.Error(0)
 	}

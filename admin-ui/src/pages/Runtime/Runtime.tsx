@@ -11,24 +11,57 @@ import ConfigIcon from '@material-ui/icons/Settings';
 import RuntimeStatus from './pages/RuntimeStatus/RuntimeStatus';
 import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
+import RuntimeConfiguration from './pages/RuntimeConfiguration/RuntimeConfiguration';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import { Tab } from '../../components/NavBar/NavBar';
 import SidebarTitle from './components/SidebarTitle/SidebarTitle';
 
 import { useQuery } from '@apollo/react-hooks';
 import {
   GET_RUNTIME,
   GetRuntimeResponse,
-  GetRuntimeVars
+  GetRuntimeVars,
+  GetVersionConfStatusResponse,
+  GetVersionConfStatusVars,
+  GET_VERSION_CONF_STATUS
 } from './Runtime.graphql';
 
 import styles from './Runtime.module.scss';
 
-function createNavTabs(runtimeId: string) {
+function updateTab(
+  label: string,
+  tabs: Tab[],
+  updateFunc: (t: Tab) => void
+): Tab[] {
+  return tabs.map((tab: Tab) => {
+    let tabCp = { ...tab };
+
+    if (tab.label === label) {
+      updateFunc(tabCp);
+    }
+
+    return tabCp;
+  });
+}
+
+function disableTab(label: string, tabs: Tab[]): Tab[] {
+  return updateTab(label, tabs, function(tab: Tab) {
+    tab.disabled = true;
+  });
+}
+function addWarningToTab(label: string, tabs: Tab[], message: string): Tab[] {
+  return updateTab(label, tabs, function(tab: Tab) {
+    tab.showWarning = true;
+    tab.warningTitle = message;
+  });
+}
+
+function createNavTabs(runtimeId: string, versionId: string): Tab[] {
   const navTabs = [
     {
       label: 'STATUS',
@@ -39,7 +72,8 @@ function createNavTabs(runtimeId: string) {
     {
       label: 'METRICS',
       route: ROUTE.HOME,
-      Icon: MetricsIcon
+      Icon: MetricsIcon,
+      disabled: true
     },
     {
       label: 'DOCUMENTATION',
@@ -54,21 +88,23 @@ function createNavTabs(runtimeId: string) {
     },
     {
       label: 'CONFIGURATION',
-      route: ROUTE.HOME,
-      Icon: ConfigIcon,
-      disabled: true
+      route: ROUTE.RUNTIME_VERSION_CONFIGURATION,
+      Icon: ConfigIcon
     }
   ];
 
   navTabs.forEach(n => {
-    n.route = n.route.replace(':runtimeId', runtimeId);
+    n.route = n.route
+      .replace(':runtimeId', runtimeId)
+      .replace(':versionId', versionId);
   });
 
   return navTabs;
 }
 
 function Runtime() {
-  const { runtimeId } = useParams();
+  const { runtimeId, versionId } = useParams();
+  const noVersion = versionId === undefined;
   const { data, loading, error } = useQuery<GetRuntimeResponse, GetRuntimeVars>(
     GET_RUNTIME,
     {
@@ -76,14 +112,39 @@ function Runtime() {
       fetchPolicy: 'no-cache'
     }
   );
+  const {
+    data: versionData,
+    loading: versionLoading,
+    error: versionError
+  } = useQuery<GetVersionConfStatusResponse, GetVersionConfStatusVars>(
+    GET_VERSION_CONF_STATUS,
+    {
+      variables: { versionId },
+      skip: noVersion,
+      fetchPolicy: 'no-cache'
+    }
+  );
 
-  if (error) return <ErrorMessage />;
-  if (loading) return <SpinnerCircular />;
+  if (error || versionError) return <ErrorMessage />;
+  if (loading || versionLoading) return <SpinnerCircular />;
 
   const runtime = data && data.runtime;
   const activeVersion = runtime && runtime.activeVersion;
 
-  const navTabs = createNavTabs(runtimeId || '');
+  let navTabs: Tab[] = createNavTabs(runtimeId || '', versionId || '');
+
+  if (versionData && versionData.version.configurationCompleted === false) {
+    navTabs = addWarningToTab(
+      'CONFIGURATION',
+      navTabs,
+      'Configuration is not completed'
+    );
+  }
+
+  if (noVersion) {
+    navTabs = disableTab('CONFIGURATION', navTabs);
+  }
+
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
     ':runtimeId',
     runtimeId || ''
@@ -105,7 +166,7 @@ function Runtime() {
           <Switch>
             <Route
               exact
-              path={ROUTE.RUNTIME_STATUS_PREVIEW}
+              path={ROUTE.RUNTIME_VERSION_STATUS}
               component={RuntimeStatusPreview}
             />
             <Route
@@ -117,6 +178,11 @@ function Runtime() {
               exact
               path={ROUTE.RUNTIME_VERSIONS}
               component={RuntimeVersions}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_VERSION_CONFIGURATION}
+              component={RuntimeConfiguration}
             />
           </Switch>
           {/*<Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />

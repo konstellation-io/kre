@@ -9,17 +9,11 @@ rules:
     resources:
       - namespaces
       - configmaps
-      - secrets
+      - pods
       - secrets
       - services
     verbs:
       - "*"
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - get
   - apiGroups:
       - monitoring.coreos.com
     resources:

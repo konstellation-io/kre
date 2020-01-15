@@ -51,7 +51,7 @@
 
 @mixin font-code {
   @include font-by-size(13px, 22px);
-  font-family: 'Roboto Mono' sans-serif;
+  font-family: 'Roboto Mono', sans-serif;
 }
 
 @mixin form-input {

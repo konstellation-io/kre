@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import useForm from '../../hooks/useForm';
 import { useMutation } from '@apollo/react-hooks';
 import { useHistory, useParams } from 'react-router';
@@ -36,7 +36,6 @@ function AddVersion() {
     fetchFunction: addVersion,
     additionalInputProps: { runtimeId }
   });
-  const [versionUploaded, setVersionUploaded] = useState('');
 
   useEffect(() => {
     if (error) {
@@ -49,17 +48,11 @@ function AddVersion() {
     const versionCreatedId = updatedData.createVersion.version.id;
     console.log(`${versionCreatedId} version created`);
 
-    setVersionUploaded(versionCreatedId);
-
-    onDeploy();
-  }
-
-  function onDeploy() {
     history.push(
-      PAGES.RUNTIME_STATUS_PREVIEW.replace(
+      PAGES.RUNTIME_VERSION_STATUS.replace(
         ':runtimeId',
         runtimeId || ''
-      ).replace(':versionId', versionUploaded || '')
+      ).replace(':versionId', versionCreatedId || '')
     );
   }
 
@@ -88,16 +81,13 @@ function AddVersion() {
                 <SpinnerLinear />
               </div>
             )}
-            {versionUploaded && (
-              <div className={styles.ack}>Version created</div>
-            )}
             {/* <UploadProgress fileName="" progress={100} /> */}
             <div className={styles.buttons}>
               <Button
                 primary
                 disabled={error !== undefined || loading}
-                label={versionUploaded ? 'ACCEPT' : 'CREATE'}
-                onClick={versionUploaded ? onDeploy : () => form.submit()}
+                label={'CREATE'}
+                onClick={() => form.submit()}
               />
               <Button label="CANCEL" onClick={onCancelClick} />
             </div>

@@ -61,13 +61,15 @@ function RuntimeVersions() {
   }
 
   function getContent() {
-    if (data && data.versions.length === 0) {
+    if (data && data.versions.length === 0 && runtimeId) {
+      const toRoute = ROUTE.NEW_VERSION.replace(':runtimeId', runtimeId);
+
       return (
         <Modal
           title="THERE IS NO RUNTIME VERSIONS"
           message="Please, upload a new version to start working on this runtime"
           actionButtonLabel="NEW VERSION"
-          to={ROUTE.NEW_VERSION}
+          to={toRoute}
         />
       );
     }

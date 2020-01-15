@@ -9,9 +9,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *entity.Version, node *entity.Node) (*apiv1.ConfigMap, error) {
+func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *entity.Version, node *entity.Node) (string, error) {
 	name := fmt.Sprintf("%s-%s", strcase.ToKebab(node.Name), node.ID)
-	return k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
+	nodeConfig, err := k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
@@ -24,9 +24,15 @@ func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *
 		},
 		Data: node.Config,
 	})
+
+	if err != nil {
+		return "", err
+	}
+
+	return nodeConfig.Name, nil
 }
 
-func (k *ResourceManagerService) createNodeDeployment(namespace string, version *entity.Version, node *entity.Node, configMap *apiv1.ConfigMap) (*appsv1.Deployment, error) {
+func (k *ResourceManagerService) createNodeDeployment(namespace string, version *entity.Version, node *entity.Node, nodeConfig, versionConfig string) (*appsv1.Deployment, error) {
 	name := fmt.Sprintf("%s-%s-%s", strcase.ToKebab(version.Name), strcase.ToKebab(node.Name), node.ID)
 	k.logger.Info(fmt.Sprintf("Creating node deployment in %s named %s from image %s", namespace, name, node.Image))
 
@@ -69,7 +75,14 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
 										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: configMap.Name,
+											Name: nodeConfig,
+										},
+									},
+								},
+								{
+									ConfigMapRef: &apiv1.ConfigMapEnvSource{
+										LocalObjectReference: apiv1.LocalObjectReference{
+											Name: versionConfig,
 										},
 									},
 								},

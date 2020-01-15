@@ -24,6 +24,19 @@ export interface Version {
   activationDate: string;
   activationAuthor: User;
   status: VersionStatus;
+  configurationVariables: ConfigurationVariable[];
+  configurationCompleted: boolean;
+}
+
+export enum ConfigurationVariableType {
+  VARIABLE = 'VARIABLE',
+  FILE = 'FILE'
+}
+
+export interface ConfigurationVariable {
+  key: string;
+  value: string;
+  type: ConfigurationVariableType;
 }
 
 export interface Runtime {

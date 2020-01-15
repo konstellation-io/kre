@@ -19,6 +19,7 @@
   @include font-button;
   text-align: center;
   color: $font-color;
+  line-height: 10px;
 
   height: 56px;
   position: relative;
@@ -32,7 +33,11 @@
   align-items: center;
 
   span {
-    margin-left: 15px;
+    margin: 0 15px;
+  }
+
+  .warning {
+    color: $color-orange;
   }
 
   &:hover {

@@ -36,7 +36,7 @@ function RuntimeStatus() {
   }
 
   if (activeVersion) {
-    const path = ROUTE.RUNTIME_STATUS_PREVIEW.replace(
+    const path = ROUTE.RUNTIME_VERSION_STATUS.replace(
       ':runtimeId',
       runtimeId || ''
     ).replace(':versionId', activeVersion.id || '');

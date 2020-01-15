@@ -31,6 +31,17 @@ type Entrypoint struct {
 	Src       string `bson:"src"`
 }
 
+type ConfigVar struct {
+	Key   string `bson:"key"`
+	Value string `bson:"value"`
+	Type  string `bson:"type"`
+}
+
+type VersionConfig struct {
+	Completed bool         `bson:"completed"`
+	Vars      []*ConfigVar `bson:"vars"`
+}
+
 type Version struct {
 	ID        string `bson:"_id"`
 	RuntimeID string `bson:"runtimeId"`
@@ -46,6 +57,7 @@ type Version struct {
 
 	Status string `bson:"status"`
 
-	Entrypoint Entrypoint `bson:"entrypoint"`
-	Workflows  []Workflow `bson:"workflows"`
+	Config     VersionConfig `bson:"config"`
+	Entrypoint Entrypoint    `bson:"entrypoint"`
+	Workflows  []Workflow    `bson:"workflows"`
 }

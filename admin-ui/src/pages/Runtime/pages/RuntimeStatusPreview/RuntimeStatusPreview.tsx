@@ -33,7 +33,7 @@ function RuntimeStatusPreview() {
     fetchPolicy: 'no-cache'
   });
   // TODO: loading and error check
-  const redirectionPath = PAGES.RUNTIME_STATUS_PREVIEW.replace(
+  const redirectionPath = PAGES.RUNTIME_VERSION_STATUS.replace(
     ':runtimeId',
     params.runtimeId || ''
   ).replace(':versionId', params.versionId || '');

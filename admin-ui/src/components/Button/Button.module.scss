@@ -61,7 +61,7 @@ a.navLinkSelected .btn,
 
 .dark {
   color: $font-color;
-  background-color: black;
+  background-color: $bg-color-dark;
 
   &:hover {
     color: $font-color-white;

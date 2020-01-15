@@ -31,9 +31,15 @@ message Workflow {
 }
 
 message Version {
+  message Config {
+    string key = 1;
+    string value = 2;
+  }
+
   string name = 1;
   Entrypoint entrypoint = 2;
-  repeated Workflow workflows = 3;
+  repeated Config config = 3;
+  repeated Workflow workflows = 4;
 }
 
 message DeployVersionRequest {
@@ -41,6 +47,15 @@ message DeployVersionRequest {
 }
 
 message DeployVersionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message UpdateVersionConfigRequest {
+  Version version = 1;
+}
+
+message UpdateVersionConfigResponse {
   bool success = 1;
   string message = 2;
 }
@@ -74,6 +89,8 @@ message ActivateVersionResponse {
 
 service RuntimeService {
   rpc DeployVersion (DeployVersionRequest) returns (DeployVersionResponse) {
+  };
+  rpc UpdateVersionConfig (UpdateVersionConfigRequest) returns (UpdateVersionConfigResponse) {
   };
   rpc StopVersion (StopVersionRequest) returns (StopVersionResponse) {
   };
