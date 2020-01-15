@@ -33,16 +33,31 @@ import {
 
 import styles from './Runtime.module.scss';
 
-function addWarningToTab(label: string, tabs: Tab[], message: string): Tab[] {
+function updateTab(
+  label: string,
+  tabs: Tab[],
+  updateFunc: (t: Tab) => void
+): Tab[] {
   return tabs.map((tab: Tab) => {
-    const tabCp = { ...tab };
+    let tabCp = { ...tab };
 
     if (tab.label === label) {
-      tabCp.showWarning = true;
-      tabCp.warningTitle = message;
+      updateFunc(tabCp);
     }
 
     return tabCp;
+  });
+}
+
+function disableTab(label: string, tabs: Tab[]): Tab[] {
+  return updateTab(label, tabs, function(tab: Tab) {
+    tab.disabled = true;
+  });
+}
+function addWarningToTab(label: string, tabs: Tab[], message: string): Tab[] {
+  return updateTab(label, tabs, function(tab: Tab) {
+    tab.showWarning = true;
+    tab.warningTitle = message;
   });
 }
 
@@ -89,6 +104,7 @@ function createNavTabs(runtimeId: string, versionId: string): Tab[] {
 
 function Runtime() {
   const { runtimeId, versionId } = useParams();
+  const noVersion = versionId === undefined;
   const { data, loading, error } = useQuery<GetRuntimeResponse, GetRuntimeVars>(
     GET_RUNTIME,
     {
@@ -104,7 +120,7 @@ function Runtime() {
     GET_VERSION_CONF_STATUS,
     {
       variables: { versionId },
-      skip: versionId === undefined,
+      skip: noVersion,
       fetchPolicy: 'no-cache'
     }
   );
@@ -123,6 +139,10 @@ function Runtime() {
       navTabs,
       'Configuration is not completed'
     );
+  }
+
+  if (noVersion) {
+    navTabs = disableTab('CONFIGURATION', navTabs);
   }
 
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
