@@ -22,6 +22,17 @@ type Alert struct {
 	Runtime *Runtime   `json:"runtime"`
 }
 
+type ConfigurationVariable struct {
+	Key   string                    `json:"key"`
+	Value string                    `json:"value"`
+	Type  ConfigurationVariableType `json:"type"`
+}
+
+type ConfigurationVariablesInput struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
 type CreateRuntimeInput struct {
 	Name string `json:"name"`
 }
@@ -41,15 +52,11 @@ type CreateVersionResponse struct {
 	Version *Version `json:"version"`
 }
 
-type DeployVersionInput struct {
-	VersionID string `json:"versionId"`
-}
-
-type StopVersionInput struct {
-	VersionID string `json:"versionId"`
-}
-
 type DeactivateVersionInput struct {
+	VersionID string `json:"versionId"`
+}
+
+type DeployVersionInput struct {
 	VersionID string `json:"versionId"`
 }
 
@@ -89,6 +96,15 @@ type SettingsInput struct {
 	SessionLifetimeInDays *int     `json:"sessionLifetimeInDays"`
 }
 
+type StopVersionInput struct {
+	VersionID string `json:"versionId"`
+}
+
+type UpdateConfigurationInput struct {
+	VersionID              string                         `json:"versionId"`
+	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
+}
+
 type UpdateSettingsResponse struct {
 	Errors   []*Error  `json:"errors"`
 	Settings *Settings `json:"settings"`
@@ -108,15 +124,17 @@ type UserActivity struct {
 }
 
 type Version struct {
-	ID               string        `json:"id"`
-	Name             string        `json:"name"`
-	Description      string        `json:"description"`
-	Status           VersionStatus `json:"status"`
-	CreationDate     string        `json:"creationDate"`
-	CreationAuthor   *User         `json:"creationAuthor"`
-	ActivationDate   *string       `json:"activationDate"`
-	ActivationAuthor *User         `json:"activationAuthor"`
-	Workflows        []*Workflow   `json:"workflows"`
+	ID                     string                   `json:"id"`
+	Name                   string                   `json:"name"`
+	Description            string                   `json:"description"`
+	Status                 VersionStatus            `json:"status"`
+	CreationDate           string                   `json:"creationDate"`
+	CreationAuthor         *User                    `json:"creationAuthor"`
+	ActivationDate         *string                  `json:"activationDate"`
+	ActivationAuthor       *User                    `json:"activationAuthor"`
+	Workflows              []*Workflow              `json:"workflows"`
+	ConfigurationVariables []*ConfigurationVariable `json:"configurationVariables"`
+	ConfigurationCompleted bool                     `json:"configurationCompleted"`
 }
 
 type Workflow struct {
@@ -163,6 +181,47 @@ func (e *AlertLevel) UnmarshalGQL(v interface{}) error {
 }
 
 func (e AlertLevel) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type ConfigurationVariableType string
+
+const (
+	ConfigurationVariableTypeVariable ConfigurationVariableType = "VARIABLE"
+	ConfigurationVariableTypeFile     ConfigurationVariableType = "FILE"
+)
+
+var AllConfigurationVariableType = []ConfigurationVariableType{
+	ConfigurationVariableTypeVariable,
+	ConfigurationVariableTypeFile,
+}
+
+func (e ConfigurationVariableType) IsValid() bool {
+	switch e {
+	case ConfigurationVariableTypeVariable, ConfigurationVariableTypeFile:
+		return true
+	}
+	return false
+}
+
+func (e ConfigurationVariableType) String() string {
+	return string(e)
+}
+
+func (e *ConfigurationVariableType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ConfigurationVariableType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ConfigurationVariableType", str)
+	}
+	return nil
+}
+
+func (e ConfigurationVariableType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

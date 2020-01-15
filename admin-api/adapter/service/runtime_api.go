@@ -72,9 +72,18 @@ func (k *RuntimeAPIServiceGRPC) DeployVersion(runtime *entity.Runtime, version *
 		}
 	}
 
+	configVars := make([]*runtimepb.Version_Config, len(version.Config.Vars))
+	for i, c := range version.Config.Vars {
+		configVars[i] = &runtimepb.Version_Config{
+			Key:   c.Key,
+			Value: c.Value,
+		}
+	}
+
 	req := runtimepb.DeployVersionRequest{
 		Version: &runtimepb.Version{
-			Name: version.Name,
+			Name:   version.Name,
+			Config: configVars,
 			Entrypoint: &runtimepb.Entrypoint{
 				ProtoFile: version.Entrypoint.ProtoFile,
 				Image:     version.Entrypoint.Image,
@@ -126,6 +135,54 @@ func (k *RuntimeAPIServiceGRPC) StopVersion(runtime *entity.Runtime, versionName
 	defer cancel()
 
 	res, err := c.StopVersion(ctx, &req)
+	if err != nil {
+		return err
+	}
+
+	if !res.GetSuccess() {
+		return errors.New(res.GetMessage())
+	}
+
+	return nil
+}
+
+func (k *RuntimeAPIServiceGRPC) UpdateVersionConfig(runtime *entity.Runtime, version *entity.Version) error {
+	ns := strcase.ToKebab(runtime.Name)
+	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
+
+	if err != nil {
+		k.logger.Error(err.Error())
+		return err
+	}
+
+	defer func() {
+		err := cc.Close()
+		if err != nil {
+			k.logger.Error(err.Error())
+		}
+	}()
+
+	c := runtimepb.NewRuntimeServiceClient(cc)
+
+	configVars := make([]*runtimepb.Version_Config, len(version.Config.Vars))
+	for x, c := range version.Config.Vars {
+		configVars[x] = &runtimepb.Version_Config{
+			Key:   c.Key,
+			Value: c.Value,
+		}
+	}
+
+	req := runtimepb.UpdateVersionConfigRequest{
+		Version: &runtimepb.Version{
+			Name:   version.Name,
+			Config: configVars,
+		},
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+
+	res, err := c.UpdateVersionConfig(ctx, &req)
 	if err != nil {
 		return err
 	}
