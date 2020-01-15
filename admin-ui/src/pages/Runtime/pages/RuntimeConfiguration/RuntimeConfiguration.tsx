@@ -1,4 +1,4 @@
-import { get, omit } from 'lodash';
+import { get, omit, isEqual, cloneDeep } from 'lodash';
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
@@ -38,6 +38,9 @@ function cleanVars(
 }
 
 function RuntimeConfiguration() {
+  const [initialConfiguration, setInitialConfiguration] = useState<
+    ConfigurationVariable[]
+  >([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [hideAll, setHideAll] = useState(true);
   const [configurationVariables, setConfigurationVariables] = useState<
@@ -61,7 +64,7 @@ function RuntimeConfiguration() {
 
   useEffect(() => {
     if (data) {
-      setConfigurationVariables(
+      updateConfigurationVariables(
         get(data, 'version.configurationVariables', [])
       );
     }
@@ -70,9 +73,14 @@ function RuntimeConfiguration() {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
+  function updateConfigurationVariables(data: ConfigurationVariable[]) {
+    setConfigurationVariables(data);
+    setInitialConfiguration(cloneDeep(data));
+  }
+
   // TODO: CHECK FOR ERRORS
   function onCompleteUpdate(data: any) {
-    setConfigurationVariables(
+    updateConfigurationVariables(
       data.updateVersionConfiguration.configurationVariables
     );
   }
@@ -103,6 +111,10 @@ function RuntimeConfiguration() {
         )}
       </>
     );
+  }
+
+  function configurationHasChanged(): boolean {
+    return !isEqual(initialConfiguration, configurationVariables);
   }
 
   /**
@@ -176,7 +188,7 @@ function RuntimeConfiguration() {
         <Button
           label="SAVE CHANGES"
           onClick={openModal}
-          disabled={mutationLoading || loading}
+          disabled={mutationLoading || loading || !configurationHasChanged()}
           primary
         />
         <Button
