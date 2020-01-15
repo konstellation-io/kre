@@ -53,16 +53,14 @@ func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *enti
 }
 
 // CreateVersionConfig provides a mock function with given fields: version
-func (_m *ResourceManagerService) CreateVersionConfig(version *entity.Version) (*string, error) {
+func (_m *ResourceManagerService) CreateVersionConfig(version *entity.Version) (string, error) {
 	ret := _m.Called(version)
 
-	var r0 *string
-	if rf, ok := ret.Get(0).(func(*entity.Version) *string); ok {
+	var r0 string
+	if rf, ok := ret.Get(0).(func(*entity.Version) string); ok {
 		r0 = rf(version)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*string)
-		}
+		r0 = ret.Get(0).(string)
 	}
 
 	var r1 error

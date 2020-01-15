@@ -51,7 +51,7 @@ func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Vers
 		i.logger.Info(fmt.Sprintf("Processing workflow %s", w.Name))
 		i.generateNodeConfig(version, &w)
 		for _, n := range w.Nodes {
-			err := i.resourceManager.CreateNode(version, n, *versionConfig)
+			err := i.resourceManager.CreateNode(version, n, versionConfig)
 			if err != nil {
 				i.logger.Error(err.Error())
 				return nil, err

@@ -58,19 +58,19 @@ func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entit
 		return err
 	}
 
-	_, err = k.createNodeDeployment(namespace, version, node, *nodeConfig, versionConfig)
+	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig, versionConfig)
 	return err
 }
 
-func (k *ResourceManagerService) CreateVersionConfig(version *entity.Version) (*string, error) {
+func (k *ResourceManagerService) CreateVersionConfig(version *entity.Version) (string, error) {
 	namespace := k.cfg.Kubernetes.Namespace
 
 	versionConfig, err := k.createVersionConfigmap(namespace, version)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &versionConfig.Name, nil
+	return versionConfig.Name, nil
 }
 
 func (k *ResourceManagerService) StopVersion(name string) error {

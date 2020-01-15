@@ -9,7 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *entity.Version, node *entity.Node) (*string, error) {
+func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *entity.Version, node *entity.Node) (string, error) {
 	name := fmt.Sprintf("%s-%s", strcase.ToKebab(node.Name), node.ID)
 	nodeConfig, err := k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
@@ -26,10 +26,10 @@ func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *
 	})
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &nodeConfig.Name, nil
+	return nodeConfig.Name, nil
 }
 
 func (k *ResourceManagerService) createNodeDeployment(namespace string, version *entity.Version, node *entity.Node, nodeConfig, versionConfig string) (*appsv1.Deployment, error) {
