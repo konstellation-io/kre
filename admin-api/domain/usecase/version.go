@@ -200,7 +200,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	for _, cf := range krtYML.Config.Files {
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cf,
-			Value: "EMPTY",
+			Value: "",
 			Type:  "FILE",
 		})
 	}
@@ -208,7 +208,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	for _, cv := range krtYML.Config.Variables {
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cv,
-			Value: "EMPTY",
+			Value: "",
 			Type:  "VARIABLE",
 		})
 	}
