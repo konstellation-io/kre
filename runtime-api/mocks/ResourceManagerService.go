@@ -102,3 +102,17 @@ func (_m *ResourceManagerService) StopVersion(name string) error {
 
 	return r0
 }
+
+// UpdateVersionConfig provides a mock function with given fields: version
+func (_m *ResourceManagerService) UpdateVersionConfig(version *entity.Version) error {
+	ret := _m.Called(version)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*entity.Version) error); ok {
+		r0 = rf(version)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}

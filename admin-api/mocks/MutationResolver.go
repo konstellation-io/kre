@@ -80,6 +80,29 @@ func (_m *MutationResolver) CreateVersion(ctx context.Context, input gql.CreateV
 	return r0, r1
 }
 
+// DeactivateVersion provides a mock function with given fields: ctx, input
+func (_m *MutationResolver) DeactivateVersion(ctx context.Context, input gql.DeactivateVersionInput) (*gql.Version, error) {
+	ret := _m.Called(ctx, input)
+
+	var r0 *gql.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.DeactivateVersionInput) *gql.Version); ok {
+		r0 = rf(ctx, input)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*gql.Version)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, gql.DeactivateVersionInput) error); ok {
+		r1 = rf(ctx, input)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // DeployVersion provides a mock function with given fields: ctx, input
 func (_m *MutationResolver) DeployVersion(ctx context.Context, input gql.DeployVersionInput) (*gql.Version, error) {
 	ret := _m.Called(ctx, input)
@@ -103,6 +126,29 @@ func (_m *MutationResolver) DeployVersion(ctx context.Context, input gql.DeployV
 	return r0, r1
 }
 
+// StopVersion provides a mock function with given fields: ctx, input
+func (_m *MutationResolver) StopVersion(ctx context.Context, input gql.StopVersionInput) (*gql.Version, error) {
+	ret := _m.Called(ctx, input)
+
+	var r0 *gql.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.StopVersionInput) *gql.Version); ok {
+		r0 = rf(ctx, input)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*gql.Version)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, gql.StopVersionInput) error); ok {
+		r1 = rf(ctx, input)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateSettings provides a mock function with given fields: ctx, input
 func (_m *MutationResolver) UpdateSettings(ctx context.Context, input gql.SettingsInput) (*gql.UpdateSettingsResponse, error) {
 	ret := _m.Called(ctx, input)
@@ -118,6 +164,29 @@ func (_m *MutationResolver) UpdateSettings(ctx context.Context, input gql.Settin
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, gql.SettingsInput) error); ok {
+		r1 = rf(ctx, input)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateVersionConfiguration provides a mock function with given fields: ctx, input
+func (_m *MutationResolver) UpdateVersionConfiguration(ctx context.Context, input gql.UpdateConfigurationInput) (*gql.Version, error) {
+	ret := _m.Called(ctx, input)
+
+	var r0 *gql.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.UpdateConfigurationInput) *gql.Version); ok {
+		r0 = rf(ctx, input)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*gql.Version)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, gql.UpdateConfigurationInput) error); ok {
 		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)

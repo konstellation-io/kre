@@ -24,8 +24,50 @@ func (_m *RuntimeService) ActivateVersion(runtime *entity.Runtime, versionName s
 	return r0
 }
 
+// DeactivateVersion provides a mock function with given fields: runtime, versionName
+func (_m *RuntimeService) DeactivateVersion(runtime *entity.Runtime, versionName string) error {
+	ret := _m.Called(runtime, versionName)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*entity.Runtime, string) error); ok {
+		r0 = rf(runtime, versionName)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // DeployVersion provides a mock function with given fields: runtime, version
 func (_m *RuntimeService) DeployVersion(runtime *entity.Runtime, version *entity.Version) error {
+	ret := _m.Called(runtime, version)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*entity.Runtime, *entity.Version) error); ok {
+		r0 = rf(runtime, version)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// StopVersion provides a mock function with given fields: runtime, versionName
+func (_m *RuntimeService) StopVersion(runtime *entity.Runtime, versionName string) error {
+	ret := _m.Called(runtime, versionName)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*entity.Runtime, string) error); ok {
+		r0 = rf(runtime, versionName)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UpdateVersionConfig provides a mock function with given fields: runtime, version
+func (_m *RuntimeService) UpdateVersionConfig(runtime *entity.Runtime, version *entity.Version) error {
 	ret := _m.Called(runtime, version)
 
 	var r0 error
