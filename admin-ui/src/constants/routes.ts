@@ -9,6 +9,7 @@ export const RUNTIME = `${DASHBOARD}/runtime/:runtimeId`;
 export const RUNTIME_VERSION = `${RUNTIME}/version/:versionId`;
 export const RUNTIME_VERSION_STATUS = `${RUNTIME_VERSION}/status`;
 export const RUNTIME_VERSION_CONFIGURATION = `${RUNTIME_VERSION}/configuration`;
+export const RUNTIME_VERSION_METRICS = `${RUNTIME_VERSION}/metrics`;
 
 export const SETTINGS = '/settings';
 export const SETTINGS_GENERAL = `${SETTINGS}/general`;

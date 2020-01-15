@@ -1,0 +1,62 @@
+@import '../../../../styles/colors';
+
+.container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  min-width: 700px;
+  overflow: auto;
+  padding: 23px 0 10px 36px;
+}
+
+.content {
+  position: relative;
+  padding: 10px;
+}
+
+.row,
+.col {
+  position: relative;
+  min-height: 160px;
+  min-width: 160px;
+}
+
+.separator {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    transition: background-color ease 0.3s;
+  }
+
+  &:hover::after {
+    background-color: $color-blue;
+  }
+}
+
+.separatorCol {
+  @extend .separator;
+
+  cursor: col-resize;
+
+  &::after {
+    height: 100%;
+    width: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+.separatorRow {
+  @extend .separator;
+
+  cursor: row-resize;
+
+  &::after {
+    height: 1px;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
