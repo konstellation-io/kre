@@ -38,6 +38,8 @@ var (
 	ErrVersionNotFound = errors.New("error version not found")
 	// ErrVersionDuplicated error
 	ErrVersionDuplicated = errors.New("error version duplicated")
+	// ErrVersionConfigIncomplete error
+	ErrVersionConfigIncomplete = errors.New("version config is incomplete")
 )
 
 // VersionInteractor contains app logic about Version entities
@@ -193,12 +195,12 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		}
 	}
 
-	configVars := make([]*entity.ConfigVar, len(krtYML.Config.Files)+len(krtYML.Config.Variables))
+	configVars := make([]*entity.ConfigVar, 0)
 
 	for _, cf := range krtYML.Config.Files {
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cf,
-			Value: "",
+			Value: "EMPTY",
 			Type:  "FILE",
 		})
 	}
@@ -206,7 +208,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	for _, cv := range krtYML.Config.Variables {
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cv,
-			Value: "",
+			Value: "EMPTY",
 			Type:  "VARIABLE",
 		})
 	}
@@ -355,6 +357,11 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 		return nil, err
 	}
 
+	i.logger.Info(fmt.Sprintf("Checking version config: %#v", version.Config))
+	if !version.Config.Completed {
+		return nil, ErrVersionConfigIncomplete
+	}
+
 	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
 	if err != nil {
 		return nil, err
@@ -475,6 +482,67 @@ func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity
 	version.ActivationUserID = nil
 	version.ActivationDate = nil
 	version.Status = string(VersionStatusRunning)
+	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
+	return version, nil
+}
+
+func (i *VersionInteractor) versionIsActiveOrRunning(version *entity.Version) bool {
+	switch version.Status {
+	case string(VersionStatusRunning), string(VersionStatusActive):
+		return false
+	}
+	return true
+}
+
+func (i *VersionInteractor) getConfigFromList(list []*entity.ConfigVar, key string) *entity.ConfigVar {
+	for _, c := range list {
+		if c.Key == key {
+			return c
+		}
+	}
+	return nil
+}
+
+func (i *VersionInteractor) generateNewConfig(currentConfig, newValues []*entity.ConfigVar) ([]*entity.ConfigVar, bool) {
+	isComplete := false
+
+	// Only get values that already exists on currentConfig
+	newConfig := make([]*entity.ConfigVar, len(currentConfig))
+	totalValues := 0
+	for x, c := range currentConfig {
+		nc := i.getConfigFromList(newValues, c.Key)
+		newConfig[x] = nc
+		if nc.Value != "" {
+			totalValues += 1
+		}
+	}
+	if len(currentConfig) == totalValues {
+		isComplete = true
+	}
+	return newConfig, isComplete
+}
+
+func (i *VersionInteractor) UpdateConfig(version *entity.Version, config []*entity.ConfigVar) (*entity.Version, error) {
+	isRunning := i.versionIsActiveOrRunning(version)
+
+	newConfig, newConfigIsComplete := i.generateNewConfig(version.Config.Vars, config)
+
+	if isRunning && newConfigIsComplete == false {
+		return nil, ErrVersionConfigIncomplete
+	}
+
+	version.Config.Vars = newConfig
+	version.Config.Completed = newConfigIsComplete
+
+	err := i.runtimeService.UpdateVersionConfig(version)
+	if err != nil {
+		return nil, err
+	}
+
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err

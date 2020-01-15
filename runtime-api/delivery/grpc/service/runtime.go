@@ -62,13 +62,10 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 		workflows[i].Edges = edges
 	}
 
-	message := fmt.Sprintf("Runtime %s created", req.GetVersion().GetName())
-	success := true
-
 	entrypoint := req.GetVersion().GetEntrypoint()
-	config := make([]*entity.Config, len(req.GetVersion().GetConfig()))
-	for i, c := range req.GetVersion().GetConfig(){
-		config[i] = &entity.Config{
+	configVars := make([]*entity.Config, len(req.GetVersion().GetConfig()))
+	for i, c := range req.GetVersion().GetConfig() {
+		configVars[i] = &entity.Config{
 			Key:   c.GetKey(),
 			Value: c.GetValue(),
 		}
@@ -81,9 +78,13 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 			Image:     entrypoint.GetImage(),
 			Src:       entrypoint.GetSrc(),
 		},
-		Config : config,
+		Config:    configVars,
 		Workflows: workflows,
 	}
+	s.logger.Info(fmt.Sprintf("---------------------------------MSG--- %#v", req.String()))
+
+	message := fmt.Sprintf("Version %s deployed", req.GetVersion().GetName())
+	success := true
 
 	_, err := s.interactor.DeployVersion(version)
 	if err != nil {
@@ -99,6 +100,12 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 	}
 
 	return res, nil
+}
+
+func (s *RuntimeService) UpdateVersionConfig(ctx context.Context, req *runtimepb.UpdateVersionConfigRequest) (*runtimepb.UpdateVersionConfigResponse, error) {
+
+	s.logger.Info(fmt.Sprintf("--------------- IMPLEMENT UPDATE VERSION ----------------------\n %#v", req.String()))
+	return nil, nil
 }
 
 func (s *RuntimeService) StopVersion(ctx context.Context, req *runtimepb.StopVersionRequest) (*runtimepb.StopVersionResponse, error) {
