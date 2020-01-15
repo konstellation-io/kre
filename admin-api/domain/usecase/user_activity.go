@@ -12,12 +12,15 @@ import (
 type UserActivityType string
 
 const (
-	// UserActivityTypeLogin type
-	UserActivityTypeLogin UserActivityType = "LOGIN"
-	// UserActivityTypeLogout type
-	UserActivityTypeLogout UserActivityType = "LOGOUT"
-	// UserActivityTypeCreateRuntime type
-	UserActivityTypeCreateRuntime UserActivityType = "CREATE_RUNTIME"
+	UserActivityTypeLogin             UserActivityType = "LOGIN"
+	UserActivityTypeLogout            UserActivityType = "LOGOUT"
+	UserActivityTypeCreateRuntime     UserActivityType = "CREATE_RUNTIME"
+	UserActivityTypeCreateVersion     UserActivityType = "CREATE_VERSION"
+	UserActivityTypeActivateVersion   UserActivityType = "ACTIVATE_VERSION"
+	UserActivityTypeDeactivateVersion UserActivityType = "DEACTIVATE_VERSION"
+	UserActivityTypeStopVersion       UserActivityType = "STOP_VERSION"
+	UserActivityTypeDeployVersion     UserActivityType = "DEPLOY_VERSION"
+	UserActivityTypeUpdateSetting     UserActivityType = "UPDATE_SETTING"
 )
 
 // UserActivityInteractor  contains app logic about UserActivity entities
@@ -46,7 +49,7 @@ func (i *UserActivityInteractor) Get(userEmail *string, activityType *string, fr
 }
 
 // Create add a new UserActivity to the given user
-func (i *UserActivityInteractor) Create(userID string, userActivityType UserActivityType) error {
+func (i *UserActivityInteractor) Create(userID string, userActivityType UserActivityType, vars []entity.UserActivityVar) error {
 	user, err := i.userRepo.GetByID(userID)
 	if err != nil {
 		return err
@@ -57,6 +60,7 @@ func (i *UserActivityInteractor) Create(userID string, userActivityType UserActi
 		User: *user,
 		Type: string(userActivityType),
 		Date: time.Now(),
+		Vars: vars,
 	}
 
 	return i.userActivityRepo.Create(userActivity)

@@ -122,3 +122,18 @@ func toGQLEdge(e *entity.Edge) *Edge {
 		ToNode:   e.ToNode,
 	}
 }
+
+func toGQLUserActivityVars(vars []entity.UserActivityVar) []*UserActivityVar {
+	var result []*UserActivityVar
+	for _, v := range vars {
+		result = append(result, toGQLUserActivityVar(v))
+	}
+	return result
+}
+
+func toGQLUserActivityVar(a entity.UserActivityVar) *UserActivityVar {
+	return &UserActivityVar{
+		Key:   a.Key,
+		Value: a.Value,
+	}
+}

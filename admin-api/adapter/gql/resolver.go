@@ -6,6 +6,8 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -82,6 +84,7 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 		Runtime: toGQLRuntime(runtime, owner),
 	}, nil
 }
+
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error) {
 	userID := ctx.Value("userID").(string)
 	author, err := r.userInteractor.GetByID(userID)
@@ -99,6 +102,7 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 		Version: toGQLVersion(version, author, nil),
 	}, nil
 }
+
 func (r *mutationResolver) DeployVersion(ctx context.Context, input DeployVersionInput) (*Version, error) {
 	userID := ctx.Value("userID").(string)
 
@@ -150,8 +154,7 @@ func (r *mutationResolver) DeactivateVersion(ctx context.Context, input Deactiva
 func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVersionInput) (*Version, error) {
 	userID := ctx.Value("userID").(string)
 
-	// TODO use the input.Comment to create a UserActivity
-	version, err := r.versionInteractor.Activate(userID, input.VersionID)
+	version, err := r.versionInteractor.Activate(userID, input.VersionID, input.Comment)
 	if err != nil {
 		return nil, err
 	}
@@ -168,25 +171,63 @@ func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVe
 
 	return toGQLVersion(version, creationUser, activationUser), nil
 }
+
 func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
+	userID := ctx.Value("userID").(string)
 	settings, err := r.settingInteractor.Get()
 	if err != nil {
 		return nil, err
 	}
 
-	hasChanges := false
+	var changes []entity.UserActivity
 	if input.SessionLifetimeInDays != nil && settings.SessionLifetimeInDays != *input.SessionLifetimeInDays {
-		hasChanges = true
+		changes = append(changes, entity.UserActivity{
+			User: entity.User{
+				ID: userID,
+			},
+			Vars: []entity.UserActivityVar{
+				{
+					Key:   "SETTING_NAME",
+					Value: "SessionLifetimeInDays",
+				},
+				{
+					Key:   "OLD_VALUE",
+					Value: strconv.Itoa(settings.SessionLifetimeInDays),
+				},
+				{
+					Key:   "NEW_VALUE",
+					Value: strconv.Itoa(*input.SessionLifetimeInDays),
+				},
+			},
+		})
 		settings.SessionLifetimeInDays = *input.SessionLifetimeInDays
 	}
 
 	if input.AuthAllowedDomains != nil {
-		hasChanges = true
+		changes = append(changes, entity.UserActivity{
+			User: entity.User{
+				ID: userID,
+			},
+			Vars: []entity.UserActivityVar{
+				{
+					Key:   "SETTING_NAME",
+					Value: "AuthAllowedDomains",
+				},
+				{
+					Key:   "OLD_VALUE",
+					Value: strings.Join(settings.AuthAllowedDomains, ","),
+				},
+				{
+					Key:   "NEW_VALUE",
+					Value: strings.Join(input.AuthAllowedDomains, ","),
+				},
+			},
+		})
 		settings.AuthAllowedDomains = input.AuthAllowedDomains
 	}
 
-	if hasChanges {
-		err = r.settingInteractor.Update(settings)
+	if len(changes) > 0 {
+		err = r.settingInteractor.Update(settings, changes)
 		if err != nil {
 			return nil, err
 		}
@@ -253,6 +294,7 @@ func (r *queryResolver) Me(ctx context.Context) (*User, error) {
 		Email: user.Email,
 	}, nil
 }
+
 func (r *queryResolver) Users(ctx context.Context) ([]*User, error) {
 	users, err := r.userInteractor.GetAllUsers()
 	if err != nil {
@@ -269,6 +311,7 @@ func (r *queryResolver) Users(ctx context.Context) ([]*User, error) {
 
 	return result, nil
 }
+
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
 	runtime, err := r.runtimeInteractor.GetByID(id)
 	if err != nil {
@@ -311,6 +354,7 @@ func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error
 
 	return gqlRuntime, nil
 }
+
 func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 	var gqlRuntimes []*Runtime
 	runtimes, err := r.runtimeInteractor.FindAll()
@@ -333,6 +377,7 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 
 	return gqlRuntimes, nil
 }
+
 func (r *queryResolver) Version(ctx context.Context, id string) (*Version, error) {
 	v, err := r.versionInteractor.GetByID(id)
 	if err != nil {
@@ -355,6 +400,7 @@ func (r *queryResolver) Version(ctx context.Context, id string) (*Version, error
 	gqlVersion := toGQLVersion(v, creationUser, activationUser)
 	return gqlVersion, nil
 }
+
 func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Version, error) {
 	versions, err := r.versionInteractor.GetByRuntime(runtimeID)
 	if err != nil {
@@ -380,9 +426,11 @@ func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Vers
 
 	return gqlVersions, nil
 }
+
 func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
 	return []*Alert{}, nil
 }
+
 func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
 	settings, err := r.settingInteractor.Get()
 	if err != nil {
@@ -394,6 +442,7 @@ func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
 		SessionLifetimeInDays: settings.SessionLifetimeInDays,
 	}, nil
 }
+
 func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*UserActivity, error) {
 	activityType := new(string)
 	if typeArg != nil {
@@ -415,9 +464,9 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 				ID:    a.User.ID,
 				Email: a.User.Email,
 			},
-			Message: a.Message,
-			Date:    a.Date.Format(time.RFC3339),
-			Type:    UserActivityType(a.Type),
+			Date: a.Date.Format(time.RFC3339),
+			Type: UserActivityType(a.Type),
+			Vars: toGQLUserActivityVars(a.Vars),
 		})
 	}
 

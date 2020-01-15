@@ -37,9 +37,12 @@ export const GET_USERS_ACTIVITY = gql`
       user {
         email
       }
-      message
       date
       type
+      vars {
+        key
+        value
+      }
     }
   }
 `;

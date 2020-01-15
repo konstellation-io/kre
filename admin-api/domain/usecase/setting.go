@@ -12,15 +12,21 @@ const DefaultSessionLifetimeInDays = 30
 
 // SettingInteractor contains app logic about Setting entities
 type SettingInteractor struct {
-	logger      logging.Logger
-	settingRepo repository.SettingRepo
+	logger       logging.Logger
+	settingRepo  repository.SettingRepo
+	userActivity *UserActivityInteractor
 }
 
 // NewSettingInteractor creates a new SettingInteractor
-func NewSettingInteractor(logger logging.Logger, settingRepo repository.SettingRepo) *SettingInteractor {
+func NewSettingInteractor(
+	logger logging.Logger,
+	settingRepo repository.SettingRepo,
+	userActivity *UserActivityInteractor,
+) *SettingInteractor {
 	return &SettingInteractor{
 		logger,
 		settingRepo,
+		userActivity,
 	}
 }
 
@@ -50,7 +56,14 @@ func (i *SettingInteractor) CreateDefaults() error {
 }
 
 // Update change a given Setting to a new value
-func (i *SettingInteractor) Update(settings entity.Setting) error {
+func (i *SettingInteractor) Update(settings entity.Setting, changes []entity.UserActivity) error {
+	for _, c := range changes {
+		err := i.userActivity.Create(c.User.ID, UserActivityTypeUpdateSetting, c.Vars)
+		if err != nil {
+			return err
+		}
+	}
+
 	return i.settingRepo.Update(settings)
 }
 

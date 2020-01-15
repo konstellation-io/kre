@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, sortBy } from 'lodash';
 
 import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
@@ -74,11 +74,12 @@ function RuntimeVersions() {
       );
     }
 
-    const versions =
-      data &&
-      data.versions.map((version: Version, idx: number) => (
-        <VersionInfo key={`version_${idx}`} version={version} />
-      ));
+    const sortedVersionsData = sortBy(get(data, 'versions', []), [
+      'creationDate'
+    ]).reverse() as Version[];
+    const versions = sortedVersionsData.map((version: Version, idx: number) => (
+      <VersionInfo key={`version_${idx}`} version={version} />
+    ));
 
     return (
       <>

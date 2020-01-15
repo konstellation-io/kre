@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatDate } from '../../../../utils/format';
+import getMessage from './messageGenerator';
 
 import EmailIcon from '@material-ui/icons/Email';
 import TimeIcon from '@material-ui/icons/AccessTime';
@@ -7,12 +8,6 @@ import TimeIcon from '@material-ui/icons/AccessTime';
 import styles from './UserActivityList.module.scss';
 
 import { UserActivity } from '../../../../graphql/models';
-
-const typeToMessage: { [key: string]: string } = {
-  LOGIN: 'Has logged in',
-  LOGOUT: 'Has logged out',
-  CREATE_RUNTIME: 'Has created a Runtime'
-};
 
 type Props = {
   data?: UserActivity[];
@@ -22,6 +17,8 @@ function UserActivityList({ data }: Props) {
   const usersActivity =
     data &&
     data.map((userActivity: UserActivity, idx: number) => {
+      const [message, comment] = getMessage(userActivity);
+
       return (
         <div
           className={styles.row}
@@ -33,7 +30,8 @@ function UserActivityList({ data }: Props) {
               <EmailIcon className="icon-regular" />
               <p className={styles.user}>{userActivity.user.email}</p>
             </span>
-            <p className={styles.message}>{typeToMessage[userActivity.type]}</p>
+            <p className={styles.message}>{message}</p>
+            {comment && <p className={styles.comment}>{comment}</p>}
           </div>
           <div className={styles.date}>
             <TimeIcon className="icon-regular" />

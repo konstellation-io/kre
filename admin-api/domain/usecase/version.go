@@ -52,6 +52,7 @@ type VersionInteractor struct {
 	versionRepo    repository.VersionRepo
 	runtimeRepo    repository.RuntimeRepo
 	runtimeService service.RuntimeService
+	userActivity   *UserActivityInteractor
 }
 
 // NewVersionInteractor creates a new interactor
@@ -60,12 +61,14 @@ func NewVersionInteractor(
 	versionRepo repository.VersionRepo,
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.RuntimeService,
+	userActivity *UserActivityInteractor,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		logger,
 		versionRepo,
 		runtimeRepo,
 		runtimeService,
+		userActivity,
 	}
 }
 
@@ -299,6 +302,32 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err
 	}
 
+	err = i.userActivity.Create(
+		userID,
+		UserActivityTypeCreateVersion,
+		[]entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
+			{
+				Key:   "VERSION_ID",
+				Value: versionCreated.ID,
+			},
+			{
+				Key:   "VERSION_NAME",
+				Value: versionCreated.Name,
+			},
+		})
+
+	if err != nil {
+		return nil, nil
+	}
+
 	return versionCreated, nil
 }
 
@@ -382,6 +411,31 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 		return nil, err
 	}
 
+	err = i.userActivity.Create(
+		userID,
+		UserActivityTypeDeployVersion,
+		[]entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
+			{
+				Key:   "VERSION_ID",
+				Value: version.ID,
+			},
+			{
+				Key:   "VERSION_NAME",
+				Value: version.Name,
+			},
+		})
+	if err != nil {
+		return nil, err
+	}
+
 	return version, nil
 }
 
@@ -410,11 +464,36 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 		return nil, err
 	}
 
+	err = i.userActivity.Create(
+		userID,
+		UserActivityTypeStopVersion,
+		[]entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
+			{
+				Key:   "VERSION_ID",
+				Value: version.ID,
+			},
+			{
+				Key:   "VERSION_NAME",
+				Value: version.Name,
+			},
+		})
+	if err != nil {
+		return nil, err
+	}
+
 	return version, nil
 }
 
 // Activate set a Version as active on DB and K8s
-func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.Version, error) {
+func (i *VersionInteractor) Activate(userID string, versionID string, comment string) (*entity.Version, error) {
 	i.logger.Info(fmt.Sprintf("The user %s is activating version %s", userID, versionID))
 
 	version, err := i.versionRepo.GetByID(versionID)
@@ -428,6 +507,7 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	}
 
 	// Deactivate the previous active version
+	previousActiveVersion := entity.Version{}
 	versions, err := i.versionRepo.GetByRuntime(runtime.ID)
 	if err != nil {
 		return nil, err
@@ -435,6 +515,7 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	if len(versions) > 0 {
 		for _, v := range versions {
 			if v.Status == string(VersionStatusActive) {
+				previousActiveVersion = v
 				v.Status = string(VersionStatusRunning)
 				v.ActivationUserID = nil
 				v.ActivationDate = nil
@@ -457,6 +538,43 @@ func (i *VersionInteractor) Activate(userID string, versionID string) (*entity.V
 	version.ActivationUserID = &userID
 	version.Status = string(VersionStatusActive)
 	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.userActivity.Create(
+		userID,
+		UserActivityTypeActivateVersion,
+		[]entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
+			{
+				Key:   "VERSION_ID",
+				Value: version.ID,
+			},
+			{
+				Key:   "VERSION_NAME",
+				Value: version.Name,
+			},
+			{
+				Key:   "OLD_ACTIVE_VERSION_ID",
+				Value: previousActiveVersion.ID,
+			},
+			{
+				Key:   "OLD_ACTIVE_VERSION_NAME",
+				Value: previousActiveVersion.Name,
+			},
+			{
+				Key:   "COMMENT",
+				Value: comment,
+			},
+		})
 	if err != nil {
 		return nil, err
 	}
@@ -487,6 +605,31 @@ func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity
 	version.ActivationDate = nil
 	version.Status = string(VersionStatusRunning)
 	err = i.versionRepo.Update(version)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.userActivity.Create(
+		userID,
+		UserActivityTypeDeactivateVersion,
+		[]entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
+			{
+				Key:   "VERSION_ID",
+				Value: version.ID,
+			},
+			{
+				Key:   "VERSION_NAME",
+				Value: version.Name,
+			},
+		})
 	if err != nil {
 		return nil, err
 	}

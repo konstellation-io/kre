@@ -2,12 +2,17 @@ export interface User {
   email: string;
 }
 
+export interface UserActivityVar {
+  key: string;
+  value: string;
+}
+
 export interface UserActivity {
   id: string;
   user: User;
-  message: string;
   date: string;
   type: string;
+  vars: UserActivityVar[];
 }
 
 export interface Version {
@@ -77,4 +82,17 @@ export enum NodeStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
   ERROR = 'ERROR'
+}
+
+export enum UserActivityType {
+  LOGIN = 'LOGIN',
+  LOGOUT = 'LOGOUT',
+  CREATE_RUNTIME = 'CREATE_RUNTIME',
+  CREATE_VERSION = 'CREATE_VERSION',
+  ACTIVATE_VERSION = 'ACTIVATE_VERSION',
+  DEACTIVATE_VERSION = 'DEACTIVATE_VERSION',
+  STOP_VERSION = 'STOP_VERSION',
+  DEPLOY_VERSION = 'DEPLOY_VERSION',
+  UPDATE_SETTING = 'UPDATE_SETTING',
+  UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION'
 }

@@ -116,11 +116,16 @@ type User struct {
 }
 
 type UserActivity struct {
-	ID      string           `json:"id"`
-	User    *User            `json:"user"`
-	Message string           `json:"message"`
-	Date    string           `json:"date"`
-	Type    UserActivityType `json:"type"`
+	ID   string             `json:"id"`
+	Type UserActivityType   `json:"type"`
+	User *User              `json:"user"`
+	Date string             `json:"date"`
+	Vars []*UserActivityVar `json:"vars"`
+}
+
+type UserActivityVar struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 type Version struct {
@@ -359,20 +364,34 @@ func (e RuntimeStatus) MarshalGQL(w io.Writer) {
 type UserActivityType string
 
 const (
-	UserActivityTypeLogin         UserActivityType = "LOGIN"
-	UserActivityTypeLogout        UserActivityType = "LOGOUT"
-	UserActivityTypeCreateRuntime UserActivityType = "CREATE_RUNTIME"
+	UserActivityTypeLogin                      UserActivityType = "LOGIN"
+	UserActivityTypeLogout                     UserActivityType = "LOGOUT"
+	UserActivityTypeCreateRuntime              UserActivityType = "CREATE_RUNTIME"
+	UserActivityTypeCreateVersion              UserActivityType = "CREATE_VERSION"
+	UserActivityTypeActivateVersion            UserActivityType = "ACTIVATE_VERSION"
+	UserActivityTypeDeactivateVersion          UserActivityType = "DEACTIVATE_VERSION"
+	UserActivityTypeStopVersion                UserActivityType = "STOP_VERSION"
+	UserActivityTypeDeployVersion              UserActivityType = "DEPLOY_VERSION"
+	UserActivityTypeUpdateSetting              UserActivityType = "UPDATE_SETTING"
+	UserActivityTypeUpdateVersionConfiguration UserActivityType = "UPDATE_VERSION_CONFIGURATION"
 )
 
 var AllUserActivityType = []UserActivityType{
 	UserActivityTypeLogin,
 	UserActivityTypeLogout,
 	UserActivityTypeCreateRuntime,
+	UserActivityTypeCreateVersion,
+	UserActivityTypeActivateVersion,
+	UserActivityTypeDeactivateVersion,
+	UserActivityTypeStopVersion,
+	UserActivityTypeDeployVersion,
+	UserActivityTypeUpdateSetting,
+	UserActivityTypeUpdateVersionConfiguration,
 }
 
 func (e UserActivityType) IsValid() bool {
 	switch e {
-	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime:
+	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime, UserActivityTypeCreateVersion, UserActivityTypeActivateVersion, UserActivityTypeDeactivateVersion, UserActivityTypeStopVersion, UserActivityTypeDeployVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration:
 		return true
 	}
 	return false
