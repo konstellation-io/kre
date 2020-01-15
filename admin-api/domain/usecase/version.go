@@ -40,6 +40,8 @@ var (
 	ErrVersionDuplicated = errors.New("error version duplicated")
 	// ErrVersionConfigIncomplete error
 	ErrVersionConfigIncomplete = errors.New("version config is incomplete")
+	// ErrVersionConfigInvalidKey error
+	ErrVersionConfigInvalidKey = errors.New("version config contains an unknown key")
 )
 
 // VersionInteractor contains app logic about Version entities
@@ -507,16 +509,33 @@ func (i *VersionInteractor) getConfigFromList(list []*entity.ConfigVar, key stri
 	return nil
 }
 
+func (i *VersionInteractor) validateNewConfig(currentConfig, newValues []*entity.ConfigVar) error {
+	for _, c := range newValues {
+		nc := i.getConfigFromList(currentConfig, c.Key)
+		if nc == nil {
+			return ErrVersionConfigInvalidKey
+		}
+	}
+	return nil
+}
+
 func (i *VersionInteractor) generateNewConfig(currentConfig, newValues []*entity.ConfigVar) ([]*entity.ConfigVar, bool) {
 	isComplete := false
 
 	// Only get values that already exists on currentConfig
-	newConfig := make([]*entity.ConfigVar, len(currentConfig))
+	configToUpdate := make([]*entity.ConfigVar, len(currentConfig))
 	totalValues := 0
 	for x, c := range currentConfig {
+		configToUpdate[x] = c
 		nc := i.getConfigFromList(newValues, c.Key)
+		if nc == nil {
+			if configToUpdate[x].Value != "" {
+				totalValues += 1
+			}
+			continue
+		}
 		nc.Type = c.Type
-		newConfig[x] = nc
+		configToUpdate[x] = nc
 		if nc.Value != "" {
 			totalValues += 1
 		}
@@ -524,10 +543,15 @@ func (i *VersionInteractor) generateNewConfig(currentConfig, newValues []*entity
 	if len(currentConfig) == totalValues {
 		isComplete = true
 	}
-	return newConfig, isComplete
+	return configToUpdate, isComplete
 }
 
 func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config []*entity.ConfigVar) (*entity.Version, error) {
+	err := i.validateNewConfig(version.Config.Vars, config)
+	if err != nil {
+		return nil, err
+	}
+
 	isRunning := i.versionIsActiveOrRunning(version)
 
 	newConfig, newConfigIsComplete := i.generateNewConfig(version.Config.Vars, config)
