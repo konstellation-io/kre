@@ -42,6 +42,8 @@ var (
 	ErrVersionConfigIncomplete = errors.New("version config is incomplete")
 	// ErrVersionConfigInvalidKey error
 	ErrVersionConfigInvalidKey = errors.New("version config contains an unknown key")
+	// ErrUpdatingRunningVersionConfig error
+	ErrUpdatingRunningVersionConfig = errors.New("config can't be incomplete for running version")
 )
 
 // VersionInteractor contains app logic about Version entities
@@ -557,7 +559,7 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config 
 	newConfig, newConfigIsComplete := i.generateNewConfig(version.Config.Vars, config)
 
 	if isRunning && newConfigIsComplete == false {
-		return nil, ErrVersionConfigIncomplete
+		return nil, ErrUpdatingRunningVersionConfig
 	}
 
 	version.Config.Vars = newConfig
