@@ -81,7 +81,6 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 		Config:    configVars,
 		Workflows: workflows,
 	}
-	s.logger.Info(fmt.Sprintf("---------------------------------MSG--- %#v", req.String()))
 
 	message := fmt.Sprintf("Version %s deployed", req.GetVersion().GetName())
 	success := true
@@ -117,7 +116,6 @@ func (s *RuntimeService) UpdateVersionConfig(ctx context.Context, req *runtimepb
 		Name:   req.GetVersion().GetName(),
 		Config: configVars,
 	}
-	s.logger.Info(fmt.Sprintf("---------------------------------MSG--- %#v", req.String()))
 
 	message := fmt.Sprintf("Version %s config updated", req.GetVersion().GetName())
 	success := true

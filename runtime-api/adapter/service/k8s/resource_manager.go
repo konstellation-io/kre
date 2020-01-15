@@ -66,7 +66,6 @@ func (k *ResourceManagerService) CreateVersionConfig(version *entity.Version) (*
 	namespace := k.cfg.Kubernetes.Namespace
 
 	versionConfig, err := k.createVersionConfigmap(namespace, version)
-
 	if err != nil {
 		return nil, err
 	}
@@ -91,9 +90,13 @@ func (k *ResourceManagerService) DeactivateVersion(name string) error {
 }
 
 func (k *ResourceManagerService) UpdateVersionConfig(version *entity.Version) error {
-
 	label := strcase.ToKebab(version.Name)
 	namespace := k.cfg.Kubernetes.Namespace
+
+	_, err := k.updateVersionConfigmap(namespace, version)
+	if err != nil {
+		return err
+	}
 
 	return k.restartVersionPods(label, namespace)
 }

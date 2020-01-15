@@ -493,9 +493,9 @@ func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity
 func (i *VersionInteractor) versionIsActiveOrRunning(version *entity.Version) bool {
 	switch version.Status {
 	case string(VersionStatusRunning), string(VersionStatusActive):
-		return false
+		return true
 	}
-	return true
+	return false
 }
 
 func (i *VersionInteractor) getConfigFromList(list []*entity.ConfigVar, key string) *entity.ConfigVar {
@@ -515,6 +515,7 @@ func (i *VersionInteractor) generateNewConfig(currentConfig, newValues []*entity
 	totalValues := 0
 	for x, c := range currentConfig {
 		nc := i.getConfigFromList(newValues, c.Key)
+		nc.Type = c.Type
 		newConfig[x] = nc
 		if nc.Value != "" {
 			totalValues += 1
@@ -527,8 +528,6 @@ func (i *VersionInteractor) generateNewConfig(currentConfig, newValues []*entity
 }
 
 func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config []*entity.ConfigVar) (*entity.Version, error) {
-	i.logger.Info("----- Graph QL UpdateVersionConfig interactor")
-
 	isRunning := i.versionIsActiveOrRunning(version)
 
 	newConfig, newConfigIsComplete := i.generateNewConfig(version.Config.Vars, config)
@@ -545,9 +544,12 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config 
 		return nil, err
 	}
 
-	err = i.runtimeService.UpdateVersionConfig(runtime, version)
-	if err != nil {
-		return nil, err
+	// No need to call runtime-api if there are no resources running
+	if isRunning {
+		err = i.runtimeService.UpdateVersionConfig(runtime, version)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	err = i.versionRepo.Update(version)

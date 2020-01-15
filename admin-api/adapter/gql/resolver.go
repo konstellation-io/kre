@@ -216,7 +216,6 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		}
 	}
 
-	r.logger.Info("----- Graph QL UpdateVersionConfig request")
 	v, err = r.versionInteractor.UpdateVersionConfig(v, config)
 	if err != nil {
 		return nil, err

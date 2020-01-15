@@ -147,8 +147,6 @@ func (k *RuntimeAPIServiceGRPC) StopVersion(runtime *entity.Runtime, versionName
 }
 
 func (k *RuntimeAPIServiceGRPC) UpdateVersionConfig(runtime *entity.Runtime, version *entity.Version) error {
-	k.logger.Info("----- Graph QL UpdateVersionConfig call grpc api service")
-
 	ns := strcase.ToKebab(runtime.Name)
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
 
@@ -186,11 +184,8 @@ func (k *RuntimeAPIServiceGRPC) UpdateVersionConfig(runtime *entity.Runtime, ver
 
 	res, err := c.UpdateVersionConfig(ctx, &req)
 	if err != nil {
-		k.logger.Info("----- Graph QL UpdateVersionConfig call grpc api service finished")
 		return err
 	}
-
-	k.logger.Info("----- Graph QL UpdateVersionConfig call grpc api service finished")
 
 	if !res.GetSuccess() {
 		return errors.New(res.GetMessage())
