@@ -958,7 +958,7 @@ input ConfigurationVariablesInput {
 }
 
 input UpdateConfigurationInput {
-  versionId: ID
+  versionId: ID!
   configurationVariables: [ConfigurationVariablesInput!]!
 }
 
@@ -5275,7 +5275,7 @@ func (ec *executionContext) unmarshalInputUpdateConfigurationInput(ctx context.C
 		switch k {
 		case "versionId":
 			var err error
-			it.VersionID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7342,29 +7342,6 @@ func (ec *executionContext) marshalOError2ᚕᚖgitlabᚗcomᚋkonstellationᚋk
 	}
 	wg.Wait()
 	return ret
-}
-
-func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalID(v)
-}
-
-func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalID(v)
-}
-
-func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalOID2string(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec.marshalOID2string(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {

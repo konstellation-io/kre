@@ -202,7 +202,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 }
 
 func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*Version, error) {
-	v, err := r.versionInteractor.GetByID(*input.VersionID)
+	v, err := r.versionInteractor.GetByID(input.VersionID)
 	if err != nil {
 		return nil, err
 	}
@@ -221,7 +221,20 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		return nil, err
 	}
 
-	gqlVersion := toGQLVersion(v, nil, nil)
+	creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
+	if err != nil && err != usecase.ErrUserNotFound {
+		return nil, err
+	}
+
+	var activationUser *entity.User
+	if v.ActivationUserID != nil {
+		activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+		if err != nil && err != usecase.ErrUserNotFound {
+			return nil, err
+		}
+	}
+
+	gqlVersion := toGQLVersion(v, creationUser, activationUser)
 	return gqlVersion, nil
 }
 

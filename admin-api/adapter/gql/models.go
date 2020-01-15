@@ -101,7 +101,7 @@ type StopVersionInput struct {
 }
 
 type UpdateConfigurationInput struct {
-	VersionID              *string                        `json:"versionId"`
+	VersionID              string                         `json:"versionId"`
 	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
 }
 

@@ -125,7 +125,7 @@ input ConfigurationVariablesInput {
 }
 
 input UpdateConfigurationInput {
-  versionId: ID
+  versionId: ID!
   configurationVariables: [ConfigurationVariablesInput!]!
 }
 
