@@ -9,7 +9,7 @@ auth:
   jwtSignSecret: "jwt_secret"
   secureCookie: false
 mongodb:
-  address: "mongodb://localhost:27017"
+  address: "mongodb://admin:123456@mongodb:27017/localKRE"
   dbName: "localKRE"
 services:
   k8sManager: "localhost:50051"

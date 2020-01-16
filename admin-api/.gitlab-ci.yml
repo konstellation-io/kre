@@ -39,16 +39,6 @@ test-admin-api:
     changes:
       - admin-api/**/*
 
-code-quality-admin-api:
-  extends: .code-quality
-  variables:
-    COMPONENT_PATH: admin-api
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - admin-api/**/*
-
 sonar-admin-api:
   extends: .sonar-scanner
   variables:

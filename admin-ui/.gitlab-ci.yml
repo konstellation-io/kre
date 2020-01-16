@@ -22,16 +22,6 @@ test-admin-ui:
     changes:
       - admin-ui/**/*
 
-code-quality-admin-ui:
-  extends: .code-quality
-  variables:
-    COMPONENT_PATH: admin-ui
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - admin-ui/**/*
-
 sonar-admin-ui:
   extends: .sonar-scanner
   variables:

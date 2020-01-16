@@ -38,16 +38,6 @@ test-kre-py:
     changes:
       - runtime-runners/kre-py/**/*
 
-code-quality-kre-py:
-  extends: .code-quality
-  variables:
-    COMPONENT_PATH: runtime-runners/kre-py
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - runtime-runners/kre-py/**/*
-
 sonar-kre-py:
   extends: .sonar-scanner
   variables:

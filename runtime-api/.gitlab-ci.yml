@@ -39,16 +39,6 @@ test-runtime-api:
     changes:
       - runtime-api/**/*
 
-code-quality-runtime-api:
-  extends: .code-quality
-  variables:
-    COMPONENT_PATH: runtime-api
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - runtime-api/**/*
-
 sonar-runtime-api:
   extends: .sonar-scanner
   variables:

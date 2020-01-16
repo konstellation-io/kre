@@ -30,42 +30,6 @@ variables:
     refs:
       - master
 
-.code-quality:
-  stage: test
-  image: docker:stable
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/security-products/codequality:0.85.5"
-  script:
-    - cp $COMPONENT_PATH/.codeclimate.yml .
-    - echo $COMPONENT_PATH
-    - cat .codeclimate.yml
-    - |
-      if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
-          export DOCKER_HOST='tcp://localhost:2375'
-        fi
-      fi
-    - docker pull --quiet "$CODE_QUALITY_IMAGE"
-    - docker run
-      --env SOURCE_CODE="$PWD"
-      --volume "$PWD":/report
-      --volume /var/run/docker.sock:/var/run/docker.sock
-      "$CODE_QUALITY_IMAGE" /report
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-    expire_in: 1 week
-  dependencies: []
-  only:
-    refs:
-      - merge_requests
-      - master
-
 .sonar-scanner:
   stage: quality
   image:
