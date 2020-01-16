@@ -102,7 +102,7 @@ func (i *VersionInteractor) generateNodeConfig(version *entity.Version, workflow
 	}
 
 	// First node input is the workflow entrypoint
-	firstNode.Config["KRT_NATS_INPUT"] = fmt.Sprintf("%s-entrypoint", strcase.ToKebab(workflow.Entrypoint))
+	firstNode.Config["KRT_NATS_INPUT"] = fmt.Sprintf("%s-%s-entrypoint", strcase.ToKebab(version.Name), strcase.ToKebab(workflow.Entrypoint))
 
 	// Last node output is empty to reply to entrypoint
 	lastNode.Config["KRT_NATS_OUTPUT"] = ""
