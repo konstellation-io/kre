@@ -46,7 +46,10 @@ function cleanVars(
   );
 }
 
-function RuntimeConfiguration() {
+type Props = {
+  refetchVersion: Function;
+};
+function RuntimeConfiguration({ refetchVersion }: Props) {
   const [initialConfiguration, setInitialConfiguration] = useState<
     ConfigurationVariable[]
   >([]);
@@ -92,6 +95,7 @@ function RuntimeConfiguration() {
     updateConfigurationVariables(
       data.updateVersionConfiguration.configurationVariables
     );
+    refetchVersion();
   }
 
   function getContent() {
