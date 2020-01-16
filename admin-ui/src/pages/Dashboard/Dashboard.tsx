@@ -20,8 +20,15 @@ import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
 import { GET_DASHBOARD, GetDashboardResponse } from './Dashboard.graphql';
-import { Alert, Runtime, VersionEnvStatus } from '../../graphql/models';
+import {
+  Alert,
+  Runtime,
+  VersionEnvStatus,
+  RuntimeStatus
+} from '../../graphql/models';
 import { ApolloError } from 'apollo-client';
+
+const disabledRuntimeStatus = [RuntimeStatus.CREATING];
 
 type Props = {
   data: GetDashboardResponse;
@@ -62,6 +69,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
           date: runtime.creationDate
         }
       ]}
+      disabled={disabledRuntimeStatus.includes(runtime.status)}
     />
   ));
   runtimes.push(
@@ -108,8 +116,6 @@ function Dashboard() {
   });
   const runtimes = get(data, 'runtimes', []);
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
-
-  console.log('DATA', data);
 
   return (
     <>
