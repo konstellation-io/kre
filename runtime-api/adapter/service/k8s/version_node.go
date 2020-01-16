@@ -126,6 +126,7 @@ func (k *ResourceManagerService) deleteVersionResources(label, namespace string)
 	return k.deleteDeploymentsSync(label, namespace)
 }
 
+// FIXME Restart Pod Sync Is not waiting for ready state of PODs
 func (k *ResourceManagerService) restartPodsSync(label, namespace string) error {
 	gracePeriod := new(int64)
 	*gracePeriod = 0
@@ -183,6 +184,7 @@ func (k *ResourceManagerService) restartPodsSync(label, namespace string) error 
 	}
 }
 
+// TODO try to reuse code
 func (k *ResourceManagerService) deleteDeploymentsSync(label, namespace string) error {
 	gracePeriod := new(int64)
 	*gracePeriod = 0
