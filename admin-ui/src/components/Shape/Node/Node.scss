@@ -26,7 +26,8 @@
 }
 
 .INACTIVE,
-.CREATED {
+.CREATED,
+.STOPPED {
   .ext {
     fill: $color-grey-darker;
   }
@@ -72,8 +73,7 @@
   }
 }
 
-.ERROR,
-.STOPPED {
+.ERROR {
   .ext {
     fill: $color-red;
     stroke: $color-red;
