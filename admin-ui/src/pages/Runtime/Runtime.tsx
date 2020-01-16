@@ -115,7 +115,8 @@ function Runtime() {
   const {
     data: versionData,
     loading: versionLoading,
-    error: versionError
+    error: versionError,
+    refetch: refetchVersion
   } = useQuery<GetVersionConfStatusResponse, GetVersionConfStatusVars>(
     GET_VERSION_CONF_STATUS,
     {
@@ -182,7 +183,12 @@ function Runtime() {
             <Route
               exact
               path={ROUTE.RUNTIME_VERSION_CONFIGURATION}
-              component={RuntimeConfiguration}
+              render={props => (
+                <RuntimeConfiguration
+                  {...props}
+                  refetchVersion={refetchVersion}
+                />
+              )}
             />
           </Switch>
           {/*<Route exact path={ROUTE.SETTINGS_SECURITY} component={SecuritySettings} />
