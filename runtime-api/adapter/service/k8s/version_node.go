@@ -113,3 +113,50 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 		},
 	})
 }
+
+func (k *ResourceManagerService) restartVersionPods(label, namespace string) error {
+	gracePeriod := new(int64)
+	*gracePeriod = 0
+
+	deletePolicy := metav1.DeletePropagationForeground
+	deleteOptions := &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	}
+
+	listOptions := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("version-name=%s", label),
+		Watch:         false,
+		TypeMeta: metav1.TypeMeta{
+			Kind: "Pod",
+		},
+	}
+
+	// Delete pods for restart
+	return k.clientset.CoreV1().Pods(namespace).DeleteCollection(deleteOptions, listOptions)
+}
+
+func (k *ResourceManagerService) deleteVersionResources(label, namespace string) error {
+	gracePeriod := new(int64)
+	*gracePeriod = 0
+
+	deletePolicy := metav1.DeletePropagationForeground
+	deleteOptions := &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	}
+
+	listOptions := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("version-name=%s", label),
+		Watch:         false,
+	}
+
+	// Delete configmaps
+	err := k.clientset.CoreV1().ConfigMaps(namespace).DeleteCollection(deleteOptions, listOptions)
+	if err != nil {
+		return err
+	}
+
+	// Delete deployments
+	return k.clientset.AppsV1().Deployments(namespace).DeleteCollection(deleteOptions, listOptions)
+}
