@@ -1,12 +1,15 @@
 package k8s
 
 import (
+	"errors"
 	"fmt"
 	"github.com/iancoleman/strcase"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
+	"time"
 )
 
 func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *entity.Version, node *entity.Node) (string, error) {
@@ -114,7 +117,16 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 	})
 }
 
-func (k *ResourceManagerService) restartVersionPods(label, namespace string) error {
+func (k *ResourceManagerService) deleteVersionResources(label, namespace string) error {
+	err := k.deleteConfigMapsSync(label, namespace)
+	if err != nil {
+		return err
+	}
+
+	return k.deleteDeploymentsSync(label, namespace)
+}
+
+func (k *ResourceManagerService) restartPodsSync(label, namespace string) error {
 	gracePeriod := new(int64)
 	*gracePeriod = 0
 
@@ -126,17 +138,52 @@ func (k *ResourceManagerService) restartVersionPods(label, namespace string) err
 
 	listOptions := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("version-name=%s", label),
-		Watch:         false,
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Pod",
 		},
 	}
 
-	// Delete pods for restart
-	return k.clientset.CoreV1().Pods(namespace).DeleteCollection(deleteOptions, listOptions)
+	pods := k.clientset.CoreV1().Pods(namespace)
+	list, err := pods.List(listOptions)
+	if err != nil {
+		return err
+	}
+	numPods := len(list.Items)
+
+	err = pods.DeleteCollection(deleteOptions, listOptions)
+	if err != nil {
+		return err
+	}
+
+	startTime := time.Now()
+	timeToWait := 3 * time.Minute
+	w, err := pods.Watch(listOptions)
+	if err != nil {
+		return err
+	}
+
+	watchResults := w.ResultChan()
+	for {
+		select {
+		case event := <-watchResults:
+			pod := event.Object.(*apiv1.Pod)
+
+			if pod.Status.Phase == apiv1.PodRunning {
+				numPods = numPods - 1
+				if numPods == 0 {
+					w.Stop()
+					return nil
+				}
+			}
+
+		case <-time.After(timeToWait - time.Since(startTime)):
+			w.Stop()
+			return errors.New("timeout restarting pods")
+		}
+	}
 }
 
-func (k *ResourceManagerService) deleteVersionResources(label, namespace string) error {
+func (k *ResourceManagerService) deleteDeploymentsSync(label, namespace string) error {
 	gracePeriod := new(int64)
 	*gracePeriod = 0
 
@@ -148,15 +195,101 @@ func (k *ResourceManagerService) deleteVersionResources(label, namespace string)
 
 	listOptions := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("version-name=%s", label),
-		Watch:         false,
+		TypeMeta: metav1.TypeMeta{
+			Kind: "Deployment",
+		},
 	}
 
-	// Delete configmaps
-	err := k.clientset.CoreV1().ConfigMaps(namespace).DeleteCollection(deleteOptions, listOptions)
+	deployments := k.clientset.AppsV1().Deployments(namespace)
+	list, err := deployments.List(listOptions)
+	if err != nil {
+		return err
+	}
+	numDeployments := len(list.Items)
+
+	err = deployments.DeleteCollection(deleteOptions, listOptions)
 	if err != nil {
 		return err
 	}
 
-	// Delete deployments
-	return k.clientset.AppsV1().Deployments(namespace).DeleteCollection(deleteOptions, listOptions)
+	startTime := time.Now()
+	timeToWait := 1 * time.Minute
+	w, err := deployments.Watch(listOptions)
+	if err != nil {
+		return err
+	}
+
+	watchResults := w.ResultChan()
+	for {
+		select {
+		case event := <-watchResults:
+			if event.Type == watch.Deleted {
+				numDeployments = numDeployments - 1
+				if numDeployments == 0 {
+					w.Stop()
+					return nil
+				}
+			}
+
+		case <-time.After(timeToWait - time.Since(startTime)):
+			w.Stop()
+			return errors.New("timeout deleting deployments")
+		}
+	}
+}
+
+// TODO try to reuse code
+func (k *ResourceManagerService) deleteConfigMapsSync(label, namespace string) error {
+	gracePeriod := new(int64)
+	*gracePeriod = 0
+
+	deletePolicy := metav1.DeletePropagationForeground
+	deleteOptions := &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	}
+
+	listOptions := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("version-name=%s", label),
+		TypeMeta: metav1.TypeMeta{
+			Kind: "ConfigMap",
+		},
+	}
+
+	configMaps := k.clientset.CoreV1().ConfigMaps(namespace)
+	list, err := configMaps.List(listOptions)
+	if err != nil {
+		return err
+	}
+	numConfigMaps := len(list.Items)
+
+	err = configMaps.DeleteCollection(deleteOptions, listOptions)
+	if err != nil {
+		return err
+	}
+
+	startTime := time.Now()
+	timeToWait := 1 * time.Minute
+	w, err := configMaps.Watch(listOptions)
+	if err != nil {
+		return err
+	}
+
+	watchResults := w.ResultChan()
+	for {
+		select {
+		case event := <-watchResults:
+			if event.Type == watch.Deleted {
+				numConfigMaps = numConfigMaps - 1
+				if numConfigMaps == 0 {
+					w.Stop()
+					return nil
+				}
+			}
+
+		case <-time.After(timeToWait - time.Since(startTime)):
+			w.Stop()
+			return errors.New("timeout deleting config maps")
+		}
+	}
 }

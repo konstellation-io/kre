@@ -97,7 +97,7 @@ func (k *ResourceManagerService) UpdateVersionConfig(version *entity.Version) er
 		return err
 	}
 
-	return k.restartVersionPods(label, namespace)
+	return k.restartPodsSync(label, namespace)
 }
 
 func (k *ResourceManagerService) ActivateVersion(name string) error {
