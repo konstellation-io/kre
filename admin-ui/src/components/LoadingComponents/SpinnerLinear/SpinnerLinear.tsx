@@ -3,16 +3,20 @@ import React from 'react';
 import Lottie from '../../Lottie/Lottie';
 import animationData from './SpinnerLinear.json';
 
+import cx from 'classnames';
 import styles from './SpinnerLinear.module.scss';
 
 type Props = {
   size?: number;
+  dark?: boolean;
 };
 
-function SpinnerLinear({ size = 125 }: Props = {}) {
+function SpinnerLinear({ size = 125, dark = false }: Props = {}) {
   return (
     <div
-      className={styles.loaderContainer}
+      className={cx(styles.loaderContainer, {
+        [styles.dark]: dark
+      })}
       style={{ width: size, height: size }}
       data-testid="spinner"
     >

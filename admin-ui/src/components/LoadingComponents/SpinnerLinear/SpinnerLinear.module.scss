@@ -4,8 +4,12 @@
   margin: auto;
   position: absolute;
   left: 50%;
-  top: 25%;
+  top: 50%;
   transform: translate(-50%, -50%);
+
+  &.dark {
+    filter: brightness(0);
+  }
 }
 
 .innerContainer {
