@@ -19,7 +19,7 @@ func (k *ResourceManagerService) createEntrypointConfigmap(name, namespace strin
 	}
 	_, err = k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-entrypoint-conf", name),
+			Name: fmt.Sprintf("%s-entrypoint-env", name),
 			Labels: map[string]string{
 				"type":         "entrypoint",
 				"version-name": name,
@@ -29,7 +29,22 @@ func (k *ResourceManagerService) createEntrypointConfigmap(name, namespace strin
 			"KRT_ENTRYPOINT":         path.Join("/krt-files", entrypoint.Src),
 			"KRT_NATS_SERVER":        "kre-nats:4222",
 			"KRT_NATS_SUBJECTS_FILE": "/src/conf/nats_subject.json",
-			"nginx.conf": `server {
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: fmt.Sprintf("%s-entrypoint-conf-files", name),
+			Labels: map[string]string{
+				"type":         "entrypoint",
+				"version-name": name,
+			},
+		},
+		Data: map[string]string{
+			"default.conf": `server {
         listen       80;
         server_name  localhost;
 
@@ -45,36 +60,6 @@ func (k *ResourceManagerService) createEntrypointConfigmap(name, namespace strin
     }
 `,
 			"nats_subject.json": string(natsSubject),
-		},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// TODO: Read proto files from Minio
-	return k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-entrypoint-protofiles", name),
-			Labels: map[string]string{
-				"type":         "entrypoint",
-				"version-name": name,
-			},
-		},
-		Data: map[string]string{
-			"entrypoint.proto": `syntax = "proto3";
-
-    package entrypoint;
-
-    service EchoService {
-        rpc Ping (PingRequest) returns (PingResponse) {}
-    }
-
-    message PingRequest {}
-
-    message PingResponse{
-        bool success = 1;
-    }
-`,
 		},
 	})
 }
@@ -121,7 +106,7 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 							},
 							VolumeMounts: []apiv1.VolumeMount{
 								{
-									Name:      "entrypoint-conf",
+									Name:      "entrypoint-conf-files",
 									ReadOnly:  true,
 									MountPath: "/src/conf/nats_subject.json",
 									SubPath:   "nats_subject.json",
@@ -137,7 +122,7 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
 										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: fmt.Sprintf("%s-entrypoint-conf", name),
+											Name: fmt.Sprintf("%s-entrypoint-env", name),
 										},
 									},
 								},
@@ -155,36 +140,27 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 							},
 							VolumeMounts: []apiv1.VolumeMount{
 								{
-									Name:      "entrypoint-conf",
+									Name:      "entrypoint-conf-files",
 									ReadOnly:  true,
-									MountPath: "/etc/nginx/conf.d/nginx.conf",
-									SubPath:   "nginx.conf",
+									MountPath: "/etc/nginx/conf.d/default.conf",
+									SubPath:   "default.conf",
 								},
 								{
-									Name:      "proto-files",
+									Name:      "shared-data",
 									ReadOnly:  true,
-									MountPath: "/proto",
+									MountPath: fmt.Sprintf("/proto/%s", entrypoint.ProtoFile),
+									SubPath:   fmt.Sprintf("%s/%s", name, entrypoint.ProtoFile),
 								},
 							},
 						},
 					},
 					Volumes: []apiv1.Volume{
 						{
-							Name: "entrypoint-conf",
+							Name: "entrypoint-conf-files",
 							VolumeSource: apiv1.VolumeSource{
 								ConfigMap: &apiv1.ConfigMapVolumeSource{
 									LocalObjectReference: apiv1.LocalObjectReference{
-										Name: fmt.Sprintf("%s-entrypoint-conf", name),
-									},
-								},
-							},
-						},
-						{
-							Name: "proto-files",
-							VolumeSource: apiv1.VolumeSource{
-								ConfigMap: &apiv1.ConfigMapVolumeSource{
-									LocalObjectReference: apiv1.LocalObjectReference{
-										Name: fmt.Sprintf("%s-entrypoint-protofiles", name),
+										Name: fmt.Sprintf("%s-entrypoint-conf-files", name),
 									},
 								},
 							},
