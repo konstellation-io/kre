@@ -81,13 +81,17 @@ function RuntimeStatusPreview() {
   }
 
   const versionStatus = data && data.version && data.version.status;
-  const actionButtons: any = getVersionActionButtons(
+  let actionButtons: any = getVersionActionButtons(
     onOpenModal,
     onDeployVersion,
     onStopVersion,
     onDeactivateVersion,
     versionStatus
   );
+
+  if (data && !data.version.configurationCompleted) {
+    actionButtons = [];
+  }
 
   return (
     <div className={styles.container}>
