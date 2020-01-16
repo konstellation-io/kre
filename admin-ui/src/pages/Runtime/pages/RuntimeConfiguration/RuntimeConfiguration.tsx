@@ -19,9 +19,18 @@ import {
   UpdateVersionConfigVars,
   UPDATE_VERSION_CONFIGURATION
 } from './RuntimeConfiguration.graphql';
-import { ConfigurationVariable, Version } from '../../../../graphql/models';
+import {
+  ConfigurationVariable,
+  Version,
+  VersionStatus
+} from '../../../../graphql/models';
 
 import styles from './RuntimeConfiguration.module.scss';
+
+const statusWithConfirmationModal = [
+  VersionStatus.ACTIVE,
+  VersionStatus.RUNNING
+];
 
 /**
  * cache policy adds a non-desired _typename field to ConfigurationVariable elements.
@@ -162,6 +171,17 @@ function RuntimeConfiguration() {
     setHideAll(!hideAll);
   }
 
+  function onSave(): void {
+    const versionStatus = data && data.version.status;
+    const showModal =
+      versionStatus && statusWithConfirmationModal.includes(versionStatus);
+    if (showModal) {
+      openModal();
+    } else {
+      makeUpdate();
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -187,7 +207,7 @@ function RuntimeConfiguration() {
       <HorizontalBar>
         <Button
           label="SAVE CHANGES"
-          onClick={openModal}
+          onClick={onSave}
           disabled={mutationLoading || loading || !configurationHasChanged()}
           primary
         />

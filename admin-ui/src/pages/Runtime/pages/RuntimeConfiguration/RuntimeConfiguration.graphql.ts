@@ -12,6 +12,7 @@ export interface GetVersionConfigVars {
 export const GET_CONFIGURATION_VARIABLES = gql`
   query GetConfigurationVariables($versionId: ID!) {
     version(id: $versionId) {
+      status
       configurationVariables {
         key
         value
