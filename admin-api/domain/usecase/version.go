@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"time"
 
 	"github.com/iancoleman/strcase"
@@ -202,20 +203,30 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		}
 	}
 
+	currentConfig := i.getConfigFromPreviousVersions(versions)
+
 	configVars := make([]*entity.ConfigVar, 0)
 
 	for _, cf := range krtYML.Config.Files {
+		val := ""
+		if previousVal, ok := currentConfig[cf]; ok {
+			val = previousVal
+		}
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cf,
-			Value: "",
+			Value: val,
 			Type:  "FILE",
 		})
 	}
 
 	for _, cv := range krtYML.Config.Variables {
+		val := ""
+		if previousVal, ok := currentConfig[cv]; ok {
+			val = previousVal
+		}
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cv,
-			Value: "",
+			Value: val,
 			Type:  "VARIABLE",
 		})
 	}
@@ -338,6 +349,29 @@ func (i *VersionInteractor) getNodeByName(nodes []KrtYmlNode, name string) (*Krt
 		}
 	}
 	return nil, errors.New(fmt.Sprintf("Node '%s' not found in node list", name))
+}
+
+func (i *VersionInteractor) getConfigFromPreviousVersions(versions []entity.Version) map[string]string {
+	currentConfig := map[string]string{}
+
+	if len(versions) == 0 {
+		return currentConfig
+	}
+
+	// Sort version list by creation date descending
+	sort.Slice(versions, func(i, j int) bool {
+		return versions[i].CreationDate.Unix() < versions[j].CreationDate.Unix()
+	})
+
+	for _, v := range versions {
+		for _, c := range v.Config.Vars {
+			if c.Value != "" {
+				currentConfig[c.Key] = c.Value
+			}
+		}
+	}
+
+	return currentConfig
 }
 
 func (i *VersionInteractor) generateWorkflow(krtNodes []KrtYmlNode, w KrtYmlWorkflow) entity.Workflow {
