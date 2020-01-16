@@ -205,12 +205,17 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 
 	currentConfig := i.getConfigFromPreviousVersions(versions)
 
+	// mark config as completed unless it finds an empty value
+	configCompleted := true
+
 	configVars := make([]*entity.ConfigVar, 0)
 
 	for _, cf := range krtYML.Config.Files {
 		val := ""
 		if previousVal, ok := currentConfig[cf]; ok {
 			val = previousVal
+		} else {
+			configCompleted = false
 		}
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cf,
@@ -223,6 +228,8 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		val := ""
 		if previousVal, ok := currentConfig[cv]; ok {
 			val = previousVal
+		} else {
+			configCompleted = false
 		}
 		configVars = append(configVars, &entity.ConfigVar{
 			Key:   cv,
@@ -231,15 +238,13 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		})
 	}
 
-	// TODO: Read config values from previous version
-
 	version := &entity.Version{
 		RuntimeID:   runtimeID,
 		Name:        krtYML.Version,
 		Description: krtYML.Description,
 		Config: entity.VersionConfig{
 			Vars:      configVars,
-			Completed: false,
+			Completed: configCompleted,
 		},
 		Entrypoint: entity.Entrypoint{
 			ProtoFile: krtYML.Entrypoint.Proto,
