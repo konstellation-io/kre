@@ -23,21 +23,25 @@ export enum actions {
 
 export default function useVersionAction(redirectionPath: string) {
   const history = useHistory();
-  const [activateMutation] = useMutation<
+  const [activateMutation, { loading: loadingM1 }] = useMutation<
     ActivateVersionResponse,
     VersionActionVars
   >(ACTIVATE_VERSION, { onCompleted: refreshPage });
-  const [deactivateMutation] = useMutation<
+  const [deactivateMutation, { loading: loadingM2 }] = useMutation<
     DeactivateVersionResponse,
     VersionActionVars
   >(DEACTIVATE_VERSION, { onCompleted: refreshPage });
-  const [deployMutation] = useMutation<
+  const [deployMutation, { loading: loadingM3 }] = useMutation<
     DeployVersionResponse,
     VersionActionVars
   >(DEPLOY_VERSION, { onCompleted: refreshPage });
-  const [stopMutation] = useMutation<StopVersionResponse, VersionActionVars>(
-    STOP_VERSION,
-    { onCompleted: refreshPage }
+  const [stopMutation, { loading: loadingM4 }] = useMutation<
+    StopVersionResponse,
+    VersionActionVars
+  >(STOP_VERSION, { onCompleted: refreshPage });
+
+  const mutationLoading = [loadingM1, loadingM2, loadingM3, loadingM4].some(
+    el => el
   );
 
   function refreshPage() {
@@ -66,6 +70,7 @@ export default function useVersionAction(redirectionPath: string) {
     [actions.deploy]: deployMutation,
     [actions.stop]: stopMutation,
     [actions.deactivate]: deactivateMutation,
-    getMutationVars
+    getMutationVars,
+    mutationLoading
   };
 }

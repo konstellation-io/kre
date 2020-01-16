@@ -18,9 +18,17 @@ import {
   GetVersionWorkflowsResponse,
   GetVersionWorkflowsVars
 } from './RuntimeStatusPreview.graphql';
+import { VersionStatus } from '../../../../graphql/models';
 
 import cx from 'classnames';
 import styles from './RuntimeStatusPreview.module.scss';
+import SpinnerLinear from '../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
+
+const darkLoaderStatus = [
+  VersionStatus.RUNNING,
+  VersionStatus.STOPPED,
+  VersionStatus.ACTIVE
+];
 
 function RuntimeStatusPreview() {
   const params: { runtimeId?: string; versionId?: string } = useParams();
@@ -42,7 +50,8 @@ function RuntimeStatusPreview() {
     deployVersion,
     stopVersion,
     deactivateVersion,
-    getMutationVars
+    getMutationVars,
+    mutationLoading
   } = useVersionAction(redirectionPath);
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
@@ -85,7 +94,16 @@ function RuntimeStatusPreview() {
       <HorizontalBar
         style={cx(styles.horizontalBar, styles[versionStatus || ''])}
       >
-        <div className={styles.horizontalBarButtons}>{actionButtons}</div>
+        {mutationLoading ? (
+          <div className={styles.loadingAction}>
+            <SpinnerLinear
+              size={60}
+              dark={versionStatus && darkLoaderStatus.includes(versionStatus)}
+            />
+          </div>
+        ) : (
+          <div className={styles.horizontalBarButtons}>{actionButtons}</div>
+        )}
         <div className={styles.horizontalBarText}>
           <span>{versionStatus}</span>
           <div className={styles.horizontalBarSeparator} />
