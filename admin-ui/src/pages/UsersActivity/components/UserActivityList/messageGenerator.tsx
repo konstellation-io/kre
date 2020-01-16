@@ -65,7 +65,7 @@ export default function getMessage(
     runtimeId && versionId ? (
       <Link
         to={buildRoute.version(
-          ROUTES.RUNTIME_STATUS_PREVIEW,
+          ROUTES.RUNTIME_VERSION_STATUS,
           runtimeId,
           versionId
         )}
@@ -81,7 +81,7 @@ export default function getMessage(
     oldActiveVersionId ? (
       <Link
         to={buildRoute.version(
-          ROUTES.RUNTIME_STATUS_PREVIEW,
+          ROUTES.RUNTIME_VERSION_STATUS,
           runtimeId,
           oldActiveVersionId
         )}
