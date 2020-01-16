@@ -31,5 +31,4 @@ func main() {
 	if err := s.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
-
 }
