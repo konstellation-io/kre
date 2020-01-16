@@ -151,6 +151,10 @@ func (k *ResourceManagerService) restartPodsSync(label, namespace string) error 
 	}
 	numPods := len(list.Items)
 
+	if numPods == 0 {
+		return nil
+	}
+
 	err = pods.DeleteCollection(deleteOptions, listOptions)
 	if err != nil {
 		return err
@@ -209,13 +213,17 @@ func (k *ResourceManagerService) deleteDeploymentsSync(label, namespace string) 
 	}
 	numDeployments := len(list.Items)
 
+	if numDeployments == 0 {
+		return nil
+	}
+
 	err = deployments.DeleteCollection(deleteOptions, listOptions)
 	if err != nil {
 		return err
 	}
 
 	startTime := time.Now()
-	timeToWait := 1 * time.Minute
+	timeToWait := 5 * time.Minute
 	w, err := deployments.Watch(listOptions)
 	if err != nil {
 		return err
@@ -265,13 +273,17 @@ func (k *ResourceManagerService) deleteConfigMapsSync(label, namespace string) e
 	}
 	numConfigMaps := len(list.Items)
 
+	if numConfigMaps == 0 {
+		return nil
+	}
+
 	err = configMaps.DeleteCollection(deleteOptions, listOptions)
 	if err != nil {
 		return err
 	}
 
 	startTime := time.Now()
-	timeToWait := 1 * time.Minute
+	timeToWait := 2 * time.Minute
 	w, err := configMaps.Watch(listOptions)
 	if err != nil {
 		return err
