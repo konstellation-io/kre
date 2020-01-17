@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import useRenderOnResize from '../../../../../../hooks/useRenderOnResize';
 
 import Box from '../../components/Box/Box';
 import Title from '../../components/Box/Title';
+import ExpandButton from '../../components/Box/ExpandButton';
 import BarChart from '../../../../../../components/Chart/BarChart/BarChart';
 
 import styles from './Accuracy.module.scss';
@@ -38,24 +39,35 @@ const data = [
   }
 ];
 
-function Accuracy() {
+type Props = {
+  withBgBars?: boolean;
+  wrapper?: any;
+};
+function Accuracy({ withBgBars = false, wrapper }: Props) {
   const container = useRef(null);
+  const [expanded, setExpanded] = useState(false);
   const { width, height } = useRenderOnResize({ container });
 
+  function toggleBoxSize(): void {
+    setExpanded(!expanded);
+  }
+
   return (
-    <Box>
+    <Box expanded={expanded} dashboardContainer={wrapper}>
       <Title text="Accuracy" />
+      <ExpandButton onClick={toggleBoxSize} />
       <div className={styles.chartContainer} ref={container}>
         <BarChart
           width={width}
           height={height}
           margin={{
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0
+            top: height * 0.3,
+            right: 14,
+            bottom: 23,
+            left: 14
           }}
           data={data}
+          withBgBars={withBgBars}
         />
       </div>
     </Box>

@@ -10,9 +10,20 @@
   border-radius: 4px;
   box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.03);
   background-color: $bg-color-lighter;
+  transition: all ease 1s;
 
   p {
     margin: 0;
+  }
+
+  &.expandedInitial {
+    position: fixed;
+    z-index: 1;
+  }
+
+  &.expanded {
+    // width: auto;
+    // height: auto;
   }
 }
 
@@ -30,5 +41,17 @@
   }
   &.big {
     @include font-headline;
+  }
+}
+
+.expandIcon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  transition: color ease 0.4s;
+
+  &:hover {
+    color: $font-color-white;
   }
 }

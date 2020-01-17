@@ -8,19 +8,26 @@ function cleanup(component: any) {
     .remove();
 }
 
+export type Margin = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+};
 type Props = {
   width: number;
   height: number;
+  margin?: Margin;
   initialize: Function;
 };
-export default function useChart({ width, height, initialize }: Props) {
+export default function useChart({ width, height, margin, initialize }: Props) {
   const container = useRef(null);
   const svg = useRef(null);
 
   useEffect(() => {
     cleanup(svg.current);
     initialize();
-  }, [width, height]);
+  }, [width, height, margin]);
 
   const chart = (
     <div ref={container} style={{ height: '100%' }}>
