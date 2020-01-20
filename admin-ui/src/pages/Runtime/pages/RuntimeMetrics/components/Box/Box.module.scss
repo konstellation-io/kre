@@ -2,28 +2,24 @@
 @import '../../../../../../styles/colors';
 
 .container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.03);
+  background-color: $bg-color-lighter;
+}
+
+.content {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   padding: 13px 18px;
-  border-radius: 4px;
-  box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.03);
-  background-color: $bg-color-lighter;
-  transition: all ease 1s;
+  transition: all ease 2s;
 
   p {
     margin: 0;
-  }
-
-  &.expandedInitial {
-    position: fixed;
-    z-index: 1;
-  }
-
-  &.expanded {
-    // width: auto;
-    // height: auto;
   }
 }
 

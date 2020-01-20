@@ -3,12 +3,13 @@ import useChart, { Margin } from '../../../hooks/useChart';
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
-import { max } from 'd3-array';
+import { color, RGBColor } from 'd3-color';
 
 import styles from './BarChart.module.scss';
 
-const X_SCALE_PADDING_INNER = 0.2;
-const X_SCALE_PADDING_OUTER = 0.4;
+const X_SCALE_PADDING_INNER: number = 0.3;
+const X_SCALE_PADDING_OUTER: number = 0.4;
+const DEFAULT_BAR_COLOR: RGBColor = color('#007c99') as RGBColor;
 
 type D = {
   x: string;
@@ -127,7 +128,7 @@ function BarChart({ width, height, margin, data, withBgBars }: Props) {
         .attr('y', (d: D) => yScale(100))
         .attr('height', (d: D) => innerHeight - xAxisHeight - yScale(100))
         .attr('width', barWidth)
-        .attr('rx', barWidth / 2);
+        .attr('rx', Math.min(barWidth / 2, 30));
     }
 
     bars = barsG
@@ -140,12 +141,27 @@ function BarChart({ width, height, margin, data, withBgBars }: Props) {
       .attr('y', (d: D) => yScale(d.y))
       .attr('height', (d: D) => innerHeight - xAxisHeight - yScale(d.y))
       .attr('width', barWidth)
-      .attr('rx', barWidth / 2);
+      .attr('rx', Math.min(barWidth / 2, 30))
+      .attr('fill', DEFAULT_BAR_COLOR)
+      .on('mouseenter', function(d: D) {
+        // @ts-ignore
+        events.barHighlight(d, this, true);
+      })
+      .on('mouseleave', function(d: D) {
+        // @ts-ignore
+        events.barHighlight(d, this, false);
+      });
   }
 
   const events = {
-    barHighlight: function(d: D) {},
-    barUnhighlight: function(d: D) {}
+    barHighlight: function(d: D, node: any, enter: boolean): void {
+      const newBarColor = enter
+        ? DEFAULT_BAR_COLOR.brighter(0.6)
+        : DEFAULT_BAR_COLOR;
+      select(node)
+        // @ts-ignore
+        .attr('fill', newBarColor);
+    }
   };
 
   return chart;

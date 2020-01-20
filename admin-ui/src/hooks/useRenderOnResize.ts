@@ -1,18 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 
-function debounce(fn: Function, ms: number): Function {
-  let timer: any;
-
-  return () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      timer = null;
-      // @ts-ignore
-      fn.apply(this, arguments);
-    }, ms);
-  };
-}
-
 type Dimensions = {
   width: number;
   height: number;
@@ -26,18 +13,19 @@ export default function useRenderOnResize({ container }: Params) {
   // the component to have zero height|width on its first render and the desired one after
   // it. With this flag I remove debouncing after the first render.
   const isFirstRender = useRef(true);
+  const timer: any = useRef(null);
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: 0,
     height: 0
   });
-  // @ts-ignore
   const observer = useRef(
+    // @ts-ignore
     new ResizeObserver((entries: any) => {
       const { width, height } = entries[0].contentRect;
       let rerender: Function = () => handleResize({ width, height });
 
       if (!isFirstRender.current) {
-        rerender = debounce(rerender, 300);
+        rerender = debounce(rerender, 20);
       } else {
         isFirstRender.current = false;
       }
@@ -47,15 +35,27 @@ export default function useRenderOnResize({ container }: Params) {
 
   useEffect(() => {
     const target = container.current;
+    const observedNode = observer.current;
     const [width, height] = [target.clientWidth, target.clientHeight];
 
     handleResize({ width, height });
 
-    observer.current.observe(target);
+    observedNode.observe(target);
     return () => {
-      observer.current.unobserve(target);
+      observedNode.unobserve(target);
     };
   }, [container]);
+
+  function debounce(fn: Function, ms: number): Function {
+    return () => {
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        timer.current = null;
+        // @ts-ignore
+        fn.apply(this, arguments);
+      }, ms);
+    };
+  }
 
   function handleResize({ width, height }: Dimensions) {
     setDimensions({

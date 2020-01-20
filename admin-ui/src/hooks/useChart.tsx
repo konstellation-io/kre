@@ -8,6 +8,19 @@ function cleanup(component: any) {
     .remove();
 }
 
+function canBeRendered(
+  width: number,
+  height: number,
+  margin?: Margin
+): boolean {
+  const horizontalMargin: number = (margin && margin.left + margin.right) || 0;
+  const verticalMargin: number = (margin && margin.top + margin.bottom) || 0;
+  const widthOk: boolean = width > 0 && width > horizontalMargin;
+  const heightOk: boolean = height > 0 && height > verticalMargin;
+
+  return widthOk && heightOk;
+}
+
 export type Margin = {
   top: number;
   right: number;
@@ -26,12 +39,15 @@ export default function useChart({ width, height, margin, initialize }: Props) {
 
   useEffect(() => {
     cleanup(svg.current);
-    initialize();
+
+    if (canBeRendered(width, height, margin)) {
+      initialize();
+    }
   }, [width, height, margin]);
 
   const chart = (
     <div ref={container} style={{ height: '100%' }}>
-      <svg width={width} height={height} ref={svg} style={{ cursor: 'grab' }} />
+      <svg width={width} height={height} ref={svg} />
     </div>
   );
 

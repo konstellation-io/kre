@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 
 import { Col, ColsWrapper, Row, RowsWrapper } from 'react-grid-resizable';
 import DashboardTitle from './components/DashboardTitle/DashboardTitle';
@@ -7,60 +7,145 @@ import Box from './components/Box/Box';
 import GeneralInfo from './boxes/GeneralInfo/GeneralInfo';
 import Accuracy from './boxes/Accuracy/Accuracy';
 
+import cx from 'classnames';
 import styles from './RuntimeMetrics.module.scss';
 
 function RuntimeMetrics() {
-  const container = useRef(null);
   const separatorColProps = { className: styles.separatorCol };
   const separatorRowProps = { className: styles.separatorRow };
+
+  const [expanded, setExpanded] = useState<string>('');
+
+  function toggleExpanded(nodeId: string): void {
+    if (expanded) {
+      setExpanded('');
+    } else {
+      setExpanded(nodeId);
+    }
+  }
+
+  function getNodesToExpand() {
+    const nodes = [expanded];
+    let act = expanded;
+
+    while (act.length > 0) {
+      act = act.slice(0, -2);
+      nodes.push(act);
+    }
+
+    return nodes;
+  }
+
+  const minimize = {
+    [styles.minimize]: expanded
+  };
+
+  const nodesToExpand = getNodesToExpand();
+
+  const height = expanded ? window.innerHeight - 164 : '100%';
+  const width = window.innerWidth - 310;
+
   return (
     <div className={styles.container}>
       <DashboardTitle runtimeName={'Runtime X'} versionName={' V1.0.2'} />
       <div className={styles.content}>
-        <div className={styles.wrapper} ref={container}>
+        <div
+          className={cx(styles.wrapper, {
+            [styles.expanded]: expanded
+          })}
+          style={{ height }}
+        >
           <RowsWrapper separatorProps={separatorRowProps}>
-            <Row initialHeight={165} className={styles.row} disabled>
+            <Row
+              initialHeight={165}
+              style={{
+                maxHeight: '165px'
+              }}
+              className={cx(styles.row, minimize, {
+                [styles.maximize]: nodesToExpand.includes('r1')
+              })}
+              disabled
+            >
               <GeneralInfo />
             </Row>
             <Row
               initialHeight={590}
-              className={styles.row}
+              style={{
+                maxHeight: '590px',
+                marginTop: '10px'
+              }}
+              className={cx(styles.row, minimize, {
+                [styles.maximize]: nodesToExpand.includes('r2')
+              })}
               top={false}
-              style={{ marginTop: 10 }}
             >
               <ColsWrapper separatorProps={separatorColProps}>
                 <Col
-                  className={styles.col}
+                  initialWidth={width * 0.25}
+                  className={cx(styles.col, minimize, {
+                    [styles.maximize]: nodesToExpand.includes('r2c1')
+                  })}
                   style={{ maxWidth: 'calc(100% - 160px)' }}
                 >
                   <RowsWrapper separatorProps={separatorRowProps}>
                     <Row
-                      className={styles.row}
+                      className={cx(styles.row, minimize, {
+                        [styles.maximize]: nodesToExpand.includes('r2c1r1')
+                      })}
                       style={{ maxHeight: 590 - 160 }}
                     >
-                      <Accuracy wrapper={container} />
+                      <Accuracy
+                        toggleExpanded={toggleExpanded}
+                        nodeId={'r2c1r1'}
+                      />
                     </Row>
-                    <Row className={styles.row}>
-                      <Accuracy />
+                    <Row
+                      className={cx(styles.row, minimize, {
+                        [styles.maximize]: nodesToExpand.includes('r2c1r2')
+                      })}
+                    >
+                      <Accuracy
+                        toggleExpanded={toggleExpanded}
+                        nodeId={'r2c1r2'}
+                      />
                     </Row>
                   </RowsWrapper>
                 </Col>
-                <Col className={styles.col}>
+                <Col
+                  className={cx(styles.col, minimize, {
+                    [styles.maximize]: nodesToExpand.includes('r2c2')
+                  })}
+                  style={{ maxWidth: 'calc(100% - 160px)' }}
+                >
                   <Box />
                 </Col>
               </ColsWrapper>
             </Row>
             <Row
               initialHeight={277}
-              className={styles.row}
+              className={cx(styles.row, minimize, {
+                [styles.maximize]: nodesToExpand.includes('r3')
+              })}
               style={{ maxHeight: 277 + 590 - 160 }}
             >
               <ColsWrapper separatorProps={separatorColProps}>
-                <Col className={styles.col}>
-                  <Accuracy />
+                <Col
+                  className={cx(styles.col, minimize, {
+                    [styles.maximize]: nodesToExpand.includes('r3c1')
+                  })}
+                >
+                  <Accuracy toggleExpanded={toggleExpanded} nodeId={'r3c1'} />
                 </Col>
-                <Col className={styles.col}>
-                  <Accuracy withBgBars={true} />
+                <Col
+                  className={cx(styles.col, minimize, {
+                    [styles.maximize]: nodesToExpand.includes('r3c2')
+                  })}
+                >
+                  <Accuracy
+                    withBgBars={true}
+                    toggleExpanded={toggleExpanded}
+                    nodeId={'r3c2'}
+                  />
                 </Col>
               </ColsWrapper>
             </Row>

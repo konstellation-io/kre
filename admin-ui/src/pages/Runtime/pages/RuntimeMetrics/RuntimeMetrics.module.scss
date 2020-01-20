@@ -2,6 +2,8 @@
 
 .container {
   position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
   min-width: 700px;
@@ -12,13 +14,66 @@
 .content {
   position: relative;
   padding: 10px;
+  flex-grow: 1;
+}
+
+.wrapper {
+  height: 100%;
+
+  &.expanded {
+    .row,
+    .col {
+      transition: max-height ease 0.4s, min-height ease 0.4s, height ease 0.4s,
+        width ease 0.4s, max-width ease 0.4s, min-width ease 0.4s;
+    }
+    .separatorCol,
+    .separatorRow {
+      transition: height ease 0.4s, width ease 0.4s;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  }
 }
 
 .row,
 .col {
   position: relative;
+  max-width: initial;
+  max-height: initial;
+  min-width: initial;
+  min-height: initial;
+  height: initial;
   min-height: 160px;
   min-width: 160px;
+}
+
+.row {
+  &.minimize {
+    min-height: 0 !important;
+    max-height: 0 !important;
+  }
+  &.maximize {
+    max-height: none !important;
+    min-height: none !important;
+    height: 100% !important;
+  }
+}
+.col {
+  &.minimize {
+    max-width: 0 !important;
+    min-width: 0 !important;
+  }
+  &.maximize {
+    max-width: none !important;
+    min-width: none !important;
+    width: 100% !important;
+  }
+}
+.minimize section div {
+  display: none;
+}
+.maximize section div {
+  display: flex;
 }
 
 .separator {

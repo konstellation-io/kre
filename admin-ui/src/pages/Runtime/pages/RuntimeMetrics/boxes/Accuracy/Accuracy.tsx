@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import useRenderOnResize from '../../../../../../hooks/useRenderOnResize';
 
 import Box from '../../components/Box/Box';
@@ -42,20 +42,20 @@ const data = [
 type Props = {
   withBgBars?: boolean;
   wrapper?: any;
+  toggleExpanded?: Function;
+  nodeId?: string;
 };
-function Accuracy({ withBgBars = false, wrapper }: Props) {
+function Accuracy({ withBgBars = false, toggleExpanded, nodeId }: Props) {
   const container = useRef(null);
-  const [expanded, setExpanded] = useState(false);
   const { width, height } = useRenderOnResize({ container });
-
-  function toggleBoxSize(): void {
-    setExpanded(!expanded);
-  }
-
   return (
-    <Box expanded={expanded} dashboardContainer={wrapper}>
+    <Box>
       <Title text="Accuracy" />
-      <ExpandButton onClick={toggleBoxSize} />
+      <ExpandButton
+        onClick={() => {
+          toggleExpanded && toggleExpanded(nodeId);
+        }}
+      />
       <div className={styles.chartContainer} ref={container}>
         <BarChart
           width={width}
