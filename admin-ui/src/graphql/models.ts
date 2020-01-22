@@ -79,8 +79,8 @@ export enum VersionEnvStatus {
 }
 
 export enum NodeStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
+  STARTED = 'STARTED',
+  STOPPED = 'STOPPED',
   ERROR = 'ERROR'
 }
 

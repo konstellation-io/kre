@@ -488,3 +488,39 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *Runt
 
 	return runtimeCreatedChan, nil
 }
+
+func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId string) (<-chan *VersionNodeStatus, error) {
+	stopCh := make(chan bool)
+	inputChan, err := r.versionInteractor.WatchVersionStatus(versionId, stopCh)
+	if err != nil {
+		return nil, err
+	}
+
+	r.logger.Info("------------ STARTING SUBSCRIPTION -------------")
+
+	outputChan := make(chan *VersionNodeStatus)
+
+	go func() {
+		for {
+			select {
+			case nodeStatus := <-inputChan:
+				if nodeStatus == nil {
+					r.logger.Info("------------ SUBSCRIPTION INPUTCHAN CLOSED. CLOSING -------------")
+					close(outputChan)
+					return
+				}
+				outputChan <- toGQlVersionNodeStatus(nodeStatus)
+
+			case <-ctx.Done():
+				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")
+				stopCh <- true
+				close(outputChan)
+				return
+			}
+
+		}
+
+	}()
+
+	return outputChan, nil
+}

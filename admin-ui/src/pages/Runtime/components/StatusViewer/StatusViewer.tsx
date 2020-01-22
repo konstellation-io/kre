@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash';
 import React, { useRef } from 'react';
 import useRenderOnResize from '../../../../hooks/useRenderOnResize';
 import { TYPES } from '../../../../components/Shape/Node/Node';
+import { NodeStatus } from '../../../../graphql/models';
 
 import VersionStatusViewer from '../../../../components/VersionStatusViewer/VersionStatusViewer';
 
@@ -13,7 +14,7 @@ function formatData(workflows: any, status: string) {
 
   formattedData = formattedData.map((workflow: any, idx: number) => {
     workflow.nodes = workflow.nodes.map((node: any) => {
-      node.status = status;
+      node.status = NodeStatus.STOPPED;
       return node;
     });
     workflow.edges = workflow.edges.map((edge: any) => {
