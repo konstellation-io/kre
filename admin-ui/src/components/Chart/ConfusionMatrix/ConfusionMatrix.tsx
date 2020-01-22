@@ -278,10 +278,10 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
 
   const events = {
     cellHighlight: function(d: D, node: any, enter: boolean): void {
+      const cellColor = color(colorScale(d.value));
       const newCellColor = enter
-        ? // @ts-ignore
-          color(colorScale(d.value)).darker(0.6)
-        : colorScale(d.value);
+        ? cellColor && cellColor.darker(0.6)
+        : cellColor;
       select(node)
         // @ts-ignore
         .attr('fill', newCellColor);
