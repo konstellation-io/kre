@@ -1,7 +1,6 @@
 package k8s
 
 import (
-	"encoding/json"
 	"fmt"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
 	appsv1 "k8s.io/api/apps/v1"
@@ -13,11 +12,7 @@ import (
 )
 
 func (k *ResourceManagerService) createEntrypointConfigmap(name, namespace string, entrypoint *entity.Entrypoint) (*apiv1.ConfigMap, error) {
-	natsSubject, err := json.Marshal(entrypoint.Config["nats-subjects"])
-	if err != nil {
-		return nil, err
-	}
-	_, err = k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
+	return k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: fmt.Sprintf("%s-entrypoint-env", name),
 			Labels: map[string]string{
@@ -29,37 +24,6 @@ func (k *ResourceManagerService) createEntrypointConfigmap(name, namespace strin
 			"KRT_ENTRYPOINT":         path.Join("/krt-files", entrypoint.Src),
 			"KRT_NATS_SERVER":        "kre-nats:4222",
 			"KRT_NATS_SUBJECTS_FILE": "/src/conf/nats_subject.json",
-		},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return k.clientset.CoreV1().ConfigMaps(namespace).Create(&apiv1.ConfigMap{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-entrypoint-conf-files", name),
-			Labels: map[string]string{
-				"type":         "entrypoint",
-				"version-name": name,
-			},
-		},
-		Data: map[string]string{
-			"default.conf": `server {
-        listen       80;
-        server_name  localhost;
-
-        location / {
-            root   /proto;
-            autoindex on;
-        }
-
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-        }
-    }
-`,
-			"nats_subject.json": string(natsSubject),
 		},
 	})
 }
@@ -106,7 +70,7 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 							},
 							VolumeMounts: []apiv1.VolumeMount{
 								{
-									Name:      "entrypoint-conf-files",
+									Name:      "version-conf-files",
 									ReadOnly:  true,
 									MountPath: "/src/conf/nats_subject.json",
 									SubPath:   "nats_subject.json",
@@ -117,6 +81,16 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 									MountPath: "/krt-files",
 									SubPath:   name,
 								},
+								{
+									Name:      "app-log-volume",
+									MountPath: "/var/log/app",
+								},
+							},
+							Env: []apiv1.EnvVar{
+								{
+									Name:  "KRE_VERSION_NAME",
+									Value: name,
+								},
 							},
 							EnvFrom: []apiv1.EnvFromSource{
 								{
@@ -125,6 +99,36 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 											Name: fmt.Sprintf("%s-entrypoint-env", name),
 										},
 									},
+								},
+							},
+						},
+						{
+							Name:            "fluent-bit",
+							Image:           "fluent/fluent-bit:1.3",
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							Command: []string{
+								"/fluent-bit/bin/fluent-bit",
+								"-c",
+								"/fluent-bit/etc/fluent-bit.conf",
+								"-v",
+							},
+							Env: []apiv1.EnvVar{
+								{
+									Name:  "KRE_VERSION_NAME",
+									Value: name,
+								},
+							},
+							VolumeMounts: []apiv1.VolumeMount{
+								{
+									Name:      "version-conf-files",
+									ReadOnly:  true,
+									MountPath: "/fluent-bit/etc/fluent-bit.conf",
+									SubPath:   "fluent-bit.conf",
+								},
+								{
+									Name:      "app-log-volume",
+									ReadOnly:  true,
+									MountPath: "/var/log/app",
 								},
 							},
 						},
@@ -140,7 +144,7 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 							},
 							VolumeMounts: []apiv1.VolumeMount{
 								{
-									Name:      "entrypoint-conf-files",
+									Name:      "version-conf-files",
 									ReadOnly:  true,
 									MountPath: "/etc/nginx/conf.d/default.conf",
 									SubPath:   "default.conf",
@@ -156,11 +160,11 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 					},
 					Volumes: []apiv1.Volume{
 						{
-							Name: "entrypoint-conf-files",
+							Name: "version-conf-files",
 							VolumeSource: apiv1.VolumeSource{
 								ConfigMap: &apiv1.ConfigMapVolumeSource{
 									LocalObjectReference: apiv1.LocalObjectReference{
-										Name: fmt.Sprintf("%s-entrypoint-conf-files", name),
+										Name: fmt.Sprintf("%s-conf-files", name),
 									},
 								},
 							},
@@ -172,6 +176,12 @@ func (k *ResourceManagerService) createEntrypointDeployment(name, namespace stri
 									ClaimName: "kre-minio-pvc-kre-minio-0",
 									ReadOnly:  true,
 								},
+							},
+						},
+						{
+							Name: "app-log-volume",
+							VolumeSource: apiv1.VolumeSource{
+								EmptyDir: &apiv1.EmptyDirVolumeSource{},
 							},
 						},
 					},

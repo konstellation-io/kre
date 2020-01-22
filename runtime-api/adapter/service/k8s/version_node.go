@@ -73,7 +73,21 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 						{
 							Name:            name,
 							Image:           node.Image,
-							ImagePullPolicy: apiv1.PullAlways,
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							Env: []apiv1.EnvVar{
+								{
+									Name:  "KRE_VERSION_NAME",
+									Value: strcase.ToKebab(version.Name),
+								},
+								{
+									Name:  "KRE_NODE_NAME",
+									Value: node.Name,
+								},
+								{
+									Name:  "KRE_NODE_ID",
+									Value: node.ID,
+								},
+							},
 							EnvFrom: []apiv1.EnvFromSource{
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
@@ -97,10 +111,62 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 									MountPath: "/krt-files",
 									SubPath:   strcase.ToKebab(version.Name),
 								},
+								{
+									Name:      "app-log-volume",
+									MountPath: "/var/log/app",
+								},
+							},
+						},
+						{
+							Name:            "fluent-bit",
+							Image:           "fluent/fluent-bit:1.3",
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							Command: []string{
+								"/fluent-bit/bin/fluent-bit",
+								"-c",
+								"/fluent-bit/etc/fluent-bit.conf",
+								"-v",
+							},
+							Env: []apiv1.EnvVar{
+								{
+									Name:  "KRE_VERSION_NAME",
+									Value: strcase.ToKebab(version.Name),
+								},
+								{
+									Name:  "KRE_NODE_NAME",
+									Value: node.Name,
+								},
+								{
+									Name:  "KRE_NODE_ID",
+									Value: node.ID,
+								},
+							},
+							VolumeMounts: []apiv1.VolumeMount{
+								{
+									Name:      "version-conf-files",
+									ReadOnly:  true,
+									MountPath: "/fluent-bit/etc/fluent-bit.conf",
+									SubPath:   "fluent-bit.conf",
+								},
+								{
+									Name:      "app-log-volume",
+									ReadOnly:  true,
+									MountPath: "/var/log/app",
+								},
 							},
 						},
 					},
 					Volumes: []apiv1.Volume{
+						{
+							Name: "version-conf-files",
+							VolumeSource: apiv1.VolumeSource{
+								ConfigMap: &apiv1.ConfigMapVolumeSource{
+									LocalObjectReference: apiv1.LocalObjectReference{
+										Name: fmt.Sprintf("%s-conf-files", strcase.ToKebab(version.Name)),
+									},
+								},
+							},
+						},
 						{
 							Name: "shared-data",
 							VolumeSource: apiv1.VolumeSource{
@@ -108,6 +174,12 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 									ClaimName: "kre-minio-pvc-kre-minio-0",
 									ReadOnly:  true,
 								},
+							},
+						},
+						{
+							Name: "app-log-volume",
+							VolumeSource: apiv1.VolumeSource{
+								EmptyDir: &apiv1.EmptyDirVolumeSource{},
 							},
 						},
 					},

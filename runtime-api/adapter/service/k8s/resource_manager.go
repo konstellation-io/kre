@@ -69,6 +69,11 @@ func (k *ResourceManagerService) CreateVersionConfig(version *entity.Version) (s
 		return "", err
 	}
 
+	_, err = k.createVersionFilesConfigmap(namespace, version)
+	if err != nil {
+		return "", err
+	}
+
 	return versionConfig.Name, nil
 }
 

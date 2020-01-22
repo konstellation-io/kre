@@ -18,4 +18,4 @@ COPY . .
 RUN python3 -m pip install pipenv && \
     pipenv install --system --deploy
 
-CMD [ "/usr/bin/python3","/kre/src/main.py" ]
+CMD ["sh","-c","/usr/bin/python3 /kre/src/main.py 2>&1 | tee -a /var/log/app/app.log"]
