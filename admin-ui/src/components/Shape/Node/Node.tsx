@@ -13,13 +13,6 @@ export const TYPES = {
   OUTPUT: 'OUTPUT'
 };
 
-export const STATUS = {
-  ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
-  WARNING: 'WARNING',
-  ERROR: 'ERROR'
-};
-
 type Props = {
   type: string;
   status: string;

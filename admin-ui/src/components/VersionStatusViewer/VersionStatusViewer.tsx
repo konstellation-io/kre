@@ -270,7 +270,7 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .data((d: Workflow) => d.edges)
       .enter()
       .append('g')
-      .attr('class', (d: Edge) => styles[d.status || NodeStatus.ACTIVE])
+      .attr('class', (d: Edge) => styles[d.status || NodeStatus.STARTED])
       .classed(styles.edge, true);
     edges
       .append('path')

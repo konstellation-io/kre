@@ -163,3 +163,11 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version) error {
 
 	return i.resourceManager.UpdateVersionConfig(version)
 }
+
+func (i *VersionInteractor) WatchVersionStatus(versionName string) (chan *entity.VersionNodeStatus, chan struct{}) {
+
+	statusCh := make(chan *entity.VersionNodeStatus, 1)
+	stopCh := i.resourceManager.WatchVersionNodeStatus(versionName, statusCh)
+
+	return statusCh, stopCh
+}

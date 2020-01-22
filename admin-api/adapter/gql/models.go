@@ -142,6 +142,13 @@ type Version struct {
 	ConfigurationCompleted bool                     `json:"configurationCompleted"`
 }
 
+type VersionNodeStatus struct {
+	Date    string     `json:"date"`
+	NodeID  string     `json:"nodeId"`
+	Status  NodeStatus `json:"status"`
+	Message string     `json:"message"`
+}
+
 type Workflow struct {
 	Name  string  `json:"name"`
 	Nodes []*Node `json:"nodes"`
@@ -278,20 +285,20 @@ func (e ErrorCode) MarshalGQL(w io.Writer) {
 type NodeStatus string
 
 const (
-	NodeStatusActive   NodeStatus = "ACTIVE"
-	NodeStatusInactive NodeStatus = "INACTIVE"
-	NodeStatusError    NodeStatus = "ERROR"
+	NodeStatusStarted NodeStatus = "STARTED"
+	NodeStatusStopped NodeStatus = "STOPPED"
+	NodeStatusError   NodeStatus = "ERROR"
 )
 
 var AllNodeStatus = []NodeStatus{
-	NodeStatusActive,
-	NodeStatusInactive,
+	NodeStatusStarted,
+	NodeStatusStopped,
 	NodeStatusError,
 }
 
 func (e NodeStatus) IsValid() bool {
 	switch e {
-	case NodeStatusActive, NodeStatusInactive, NodeStatusError:
+	case NodeStatusStarted, NodeStatusStopped, NodeStatusError:
 		return true
 	}
 	return false

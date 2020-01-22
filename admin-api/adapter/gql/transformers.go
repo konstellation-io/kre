@@ -137,3 +137,23 @@ func toGQLUserActivityVar(a entity.UserActivityVar) *UserActivityVar {
 		Value: a.Value,
 	}
 }
+
+func toGQlVersionNodeStatus(v *entity.VersionNodeStatus) *VersionNodeStatus {
+	var status NodeStatus
+
+	switch v.Status {
+	case entity.NodeStatusStarted:
+		status = NodeStatusStarted
+	case entity.NodeStatusStopped:
+		status = NodeStatusStopped
+	case entity.NodeStatusError:
+		status = NodeStatusError
+	}
+
+	return &VersionNodeStatus{
+		Date:    time.Now().Format(time.RFC3339),
+		NodeID:  v.NodeID,
+		Status:  status,
+		Message: v.Message,
+	}
+}
