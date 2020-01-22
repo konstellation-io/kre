@@ -1,5 +1,7 @@
 import useChart, { Margin } from '../../../hooks/useChart';
 
+import { getAxesMargins, rotateAxis } from '../../../utils/d3';
+
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
@@ -38,17 +40,18 @@ function BarChart({ width, height, margin, data, withBgBars }: Props) {
   let bars: any;
   let bgBarsG: any;
   let bgBars: any;
+  let marginLeft: number;
+  let marginTop: number;
 
   let innerWidth: number = width - margin.left - margin.right;
   let innerHeight: number = height - margin.top - margin.bottom;
 
   function initialize() {
     const svgSelection = select(svg.current);
+    marginLeft = margin.left;
+    marginTop = margin.top;
 
-    g = svgSelection
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
-    g.append('rect').attr('fill');
+    g = svgSelection.append('g');
 
     const xDomain = data.map((d: D) => d.x);
     const yDomain: [number, number] = [0, 100];
@@ -79,27 +82,20 @@ function BarChart({ width, height, margin, data, withBgBars }: Props) {
       .classed(styles.yAxis, true)
       .call(yAxis);
 
-    // Recalculate margins with the new axis sizes
-    let xAxisHeight = 0;
-    let yAxisWidth = 0;
+    rotateAxis(xAxisG, -45);
 
-    xAxisG.selectAll('text').each(function() {
-      // @ts-ignore
-      const actHeight = this.getBBox().height;
-      if (actHeight > xAxisHeight) xAxisHeight = actHeight;
-    });
-    yAxisG.selectAll('text').each(function() {
-      // @ts-ignore
-      const actWidth = this.getBBox().width;
-      if (actWidth > yAxisWidth) yAxisWidth = actWidth;
-    });
-    yAxisWidth += 6;
+    const [xAxisHeight, yAxisWidth] = getAxesMargins({ xAxisG, yAxisG });
 
-    xScale.range([yAxisWidth, innerWidth]);
-    yScale.range([innerHeight - xAxisHeight, 0]);
+    marginLeft += yAxisWidth;
+    innerWidth -= yAxisWidth;
+    innerHeight -= xAxisHeight;
 
-    xAxisG.attr('transform', `translate(0,${innerHeight - xAxisHeight + 8})`);
-    yAxisG.attr('transform', `translate(${yAxisWidth},0)`);
+    g.attr('transform', `translate(${marginLeft},${marginTop})`);
+
+    xScale.range([0, innerWidth]);
+    yScale.range([innerHeight, 0]);
+
+    xAxisG.attr('transform', `translate(0,${innerHeight})`);
 
     xAxis.scale(xScale);
     yAxis.scale(yScale).tickSize(-innerWidth);
@@ -126,9 +122,9 @@ function BarChart({ width, height, margin, data, withBgBars }: Props) {
         .classed(styles.bgBar, true)
         .attr('x', (d: D) => xScale(d.x))
         .attr('y', (d: D) => yScale(100))
-        .attr('height', (d: D) => innerHeight - xAxisHeight - yScale(100))
+        .attr('height', (d: D) => innerHeight - yScale(100))
         .attr('width', barWidth)
-        .attr('rx', Math.min(barWidth / 2, 30));
+        .attr('rx', 5);
     }
 
     bars = barsG
@@ -139,9 +135,9 @@ function BarChart({ width, height, margin, data, withBgBars }: Props) {
       .classed(styles.bar, true)
       .attr('x', (d: D) => xScale(d.x))
       .attr('y', (d: D) => yScale(d.y))
-      .attr('height', (d: D) => innerHeight - xAxisHeight - yScale(d.y))
+      .attr('height', (d: D) => innerHeight - yScale(d.y))
       .attr('width', barWidth)
-      .attr('rx', Math.min(barWidth / 2, 30))
+      .attr('rx', 5)
       .attr('fill', DEFAULT_BAR_COLOR)
       .on('mouseenter', function(d: D) {
         // @ts-ignore

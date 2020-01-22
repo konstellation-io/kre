@@ -6,6 +6,7 @@ import Box from './components/Box/Box';
 
 import GeneralInfo from './boxes/GeneralInfo/GeneralInfo';
 import Accuracy from './boxes/Accuracy/Accuracy';
+import ConfusionMatrixBox from './boxes/ConfusionMatrixBox/ConfusionMatrixBox';
 
 import cx from 'classnames';
 import styles from './RuntimeMetrics.module.scss';
@@ -72,7 +73,7 @@ function RuntimeMetrics() {
               initialHeight={590}
               style={{
                 maxHeight: '590px',
-                marginTop: '10px'
+                marginTop: '25px'
               }}
               className={cx(styles.row, minimize, {
                 [styles.maximize]: nodesToExpand.includes('r2')
@@ -117,7 +118,10 @@ function RuntimeMetrics() {
                   })}
                   style={{ maxWidth: 'calc(100% - 160px)' }}
                 >
-                  <Box />
+                  <ConfusionMatrixBox
+                    toggleExpanded={toggleExpanded}
+                    nodeId={'r2c2'}
+                  />
                 </Col>
               </ColsWrapper>
             </Row>
@@ -130,6 +134,7 @@ function RuntimeMetrics() {
             >
               <ColsWrapper separatorProps={separatorColProps}>
                 <Col
+                  initialWidth={width * 0.25}
                   className={cx(styles.col, minimize, {
                     [styles.maximize]: nodesToExpand.includes('r3c1')
                   })}

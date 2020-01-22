@@ -1,0 +1,39 @@
+@import '../../../styles/colors';
+@import '../../../styles/mixins';
+
+text {
+  @include font-caption;
+}
+
+.cellText {
+  font-weight: 600;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.axisBoxes {
+  rect {
+    fill: $color-dashboard-blue-dark;
+    opacity: 0.1;
+  }
+
+  text {
+    fill: $color-bright-blue-2;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+}
+
+.legendRect {
+  rx: 5px;
+}
+
+.legendG {
+  line {
+    stroke: $bg-color;
+    opacity: 0.4;
+  }
+  text {
+    transform: translateX(8px);
+  }
+}

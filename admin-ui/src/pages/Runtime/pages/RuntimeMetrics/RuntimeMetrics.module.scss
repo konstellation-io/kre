@@ -95,6 +95,7 @@
   @extend .separator;
 
   cursor: col-resize;
+  width: 25px;
 
   &::after {
     height: 100%;
@@ -107,6 +108,7 @@
   @extend .separator;
 
   cursor: row-resize;
+  height: 25px;
 
   &::after {
     height: 1px;

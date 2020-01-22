@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from 'react';
 
 import { select } from 'd3-selection';
 
+import styles from './useChart.module.scss';
+
 function cleanup(component: any) {
   select(component)
     .selectAll('*')
@@ -32,10 +34,18 @@ type Props = {
   height: number;
   margin?: Margin;
   initialize: Function;
+  useTooltip?: boolean;
 };
-export default function useChart({ width, height, margin, initialize }: Props) {
+export default function useChart({
+  width,
+  height,
+  margin,
+  initialize,
+  useTooltip = false
+}: Props) {
   const container = useRef(null);
   const svg = useRef(null);
+  const tooltip = useRef(null);
 
   useEffect(() => {
     cleanup(svg.current);
@@ -46,13 +56,19 @@ export default function useChart({ width, height, margin, initialize }: Props) {
   }, [width, height, margin]);
 
   const chart = (
-    <div ref={container} style={{ height: '100%' }}>
+    <div ref={container} className={styles.container}>
       <svg width={width} height={height} ref={svg} />
+      {useTooltip && (
+        <div ref={tooltip} className="chartTooltip">
+          <div className="tooltipContent" />
+        </div>
+      )}
     </div>
   );
 
   return {
     svg,
-    chart
+    chart,
+    tooltip
   };
 }
