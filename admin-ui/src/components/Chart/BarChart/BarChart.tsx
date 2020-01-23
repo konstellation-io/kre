@@ -82,7 +82,7 @@ function BarChart({ width, height, margin, data, withBgBars }: Props) {
       .classed(styles.yAxis, true)
       .call(yAxis);
 
-    rotateAxis(xAxisG, -45);
+    // rotateAxis(xAxisG, -45);
 
     const [xAxisHeight, yAxisWidth] = getAxesMargins({ xAxisG, yAxisG });
 

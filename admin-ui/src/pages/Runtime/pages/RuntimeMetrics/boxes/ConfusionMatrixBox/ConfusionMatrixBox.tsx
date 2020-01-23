@@ -87,16 +87,11 @@ const data = [
 ];
 
 type Props = {
-  withBgBars?: boolean;
   wrapper?: any;
   toggleExpanded?: Function;
   nodeId?: string;
 };
-function ConfusionMatrixBox({
-  withBgBars = false,
-  toggleExpanded,
-  nodeId
-}: Props) {
+function ConfusionMatrixBox({ toggleExpanded, nodeId }: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (
@@ -118,7 +113,6 @@ function ConfusionMatrixBox({
             left: 14
           }}
           data={data}
-          withBgBars={withBgBars}
         />
       </div>
     </Box>

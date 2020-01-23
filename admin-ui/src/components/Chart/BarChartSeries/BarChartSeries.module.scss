@@ -1,0 +1,22 @@
+@import '../../../styles/colors';
+
+.bar {
+}
+
+.bgBar {
+  fill: $color-orange;
+}
+
+.bars,
+.bar,
+.series,
+.serieG,
+.serie,
+.seriesAxis,
+.rowBgG,
+.rowBg,
+.axes,
+.xAxis,
+.yAxis {
+  display: inherit;
+}

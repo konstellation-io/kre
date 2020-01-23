@@ -6,6 +6,7 @@ import Box from './components/Box/Box';
 
 import GeneralInfo from './boxes/GeneralInfo/GeneralInfo';
 import Accuracy from './boxes/Accuracy/Accuracy';
+import LabelStats from './boxes/LabelStats/LabelStats';
 import ConfusionMatrixBox from './boxes/ConfusionMatrixBox/ConfusionMatrixBox';
 
 import cx from 'classnames';
@@ -132,24 +133,33 @@ function RuntimeMetrics() {
               })}
               style={{ maxHeight: 277 + 590 - 160 }}
             >
+              <LabelStats toggleExpanded={toggleExpanded} nodeId={'r3'} />
+            </Row>
+            <Row
+              initialHeight={277}
+              className={cx(styles.row, minimize, {
+                [styles.maximize]: nodesToExpand.includes('r4')
+              })}
+              style={{ maxHeight: 277 + 590 - 160 }}
+            >
               <ColsWrapper separatorProps={separatorColProps}>
                 <Col
                   initialWidth={width * 0.25}
                   className={cx(styles.col, minimize, {
-                    [styles.maximize]: nodesToExpand.includes('r3c1')
+                    [styles.maximize]: nodesToExpand.includes('r4c1')
                   })}
                 >
-                  <Accuracy toggleExpanded={toggleExpanded} nodeId={'r3c1'} />
+                  <Accuracy toggleExpanded={toggleExpanded} nodeId={'r4c1'} />
                 </Col>
                 <Col
                   className={cx(styles.col, minimize, {
-                    [styles.maximize]: nodesToExpand.includes('r3c2')
+                    [styles.maximize]: nodesToExpand.includes('r4c2')
                   })}
                 >
                   <Accuracy
                     withBgBars={true}
                     toggleExpanded={toggleExpanded}
-                    nodeId={'r3c2'}
+                    nodeId={'r4c2'}
                   />
                 </Col>
               </ColsWrapper>

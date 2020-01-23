@@ -55,7 +55,7 @@ export function centerText(text: any, fontSize: number) {
   });
 }
 export function getAxesMargins({
-  xAxisG,
+  xAxisG = null,
   yAxisG,
   padding = 0
 }: any): [number, number] {
@@ -63,11 +63,13 @@ export function getAxesMargins({
   let xAxisHeight = padding;
   let yAxisWidth = padding;
 
-  xAxisG.selectAll('text').each(function() {
-    // @ts-ignore
-    const actHeight = this.getBoundingClientRect().height + padding;
-    if (actHeight > xAxisHeight) xAxisHeight = actHeight;
-  });
+  if (xAxisG !== null) {
+    xAxisG.selectAll('text').each(function() {
+      // @ts-ignore
+      const actHeight = this.getBoundingClientRect().height + padding;
+      if (actHeight > xAxisHeight) xAxisHeight = actHeight;
+    });
+  }
   yAxisG.selectAll('text').each(function() {
     // @ts-ignore
     const actWidth = this.getBoundingClientRect().width + padding;
