@@ -43,21 +43,24 @@ func NewVersionInteractor(
 func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Version, error) {
 	i.logger.Info(fmt.Sprintf("Deploying version: %s", version.Name))
 
-	versionConfig, err := i.resourceManager.CreateVersionConfig(version)
-	if err != nil {
-		return nil, err
-	}
+	// TODO: Refactor to avoid modifing Config with pointers, collect to new struct instead
 	for _, w := range version.Workflows {
 		i.logger.Info(fmt.Sprintf("Processing workflow %s", w.Name))
 		i.generateNodeConfig(version, &w)
 		for _, n := range w.Nodes {
-			err := i.resourceManager.CreateNode(version, n, versionConfig)
+			err := i.resourceManager.CreateNode(version, n)
 			if err != nil {
 				i.logger.Error(err.Error())
 				return nil, err
 			}
 		}
 	}
+
+	_, err := i.resourceManager.CreateVersionConfig(version)
+	if err != nil {
+		return nil, err
+	}
+
 	err = i.resourceManager.CreateEntrypoint(version)
 	if err != nil {
 		i.logger.Error(err.Error())

@@ -35,7 +35,7 @@ func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *
 	return nodeConfig.Name, nil
 }
 
-func (k *ResourceManagerService) createNodeDeployment(namespace string, version *entity.Version, node *entity.Node, nodeConfig, versionConfig string) (*appsv1.Deployment, error) {
+func (k *ResourceManagerService) createNodeDeployment(namespace string, version *entity.Version, node *entity.Node, nodeConfig string) (*appsv1.Deployment, error) {
 	name := fmt.Sprintf("%s-%s-%s", strcase.ToKebab(version.Name), strcase.ToKebab(node.Name), node.ID)
 	k.logger.Info(fmt.Sprintf("Creating node deployment in %s named %s from image %s", namespace, name, node.Image))
 
@@ -99,7 +99,7 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
 										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: versionConfig,
+											Name: fmt.Sprintf("%s-conf-files", version.Name),
 										},
 									},
 								},

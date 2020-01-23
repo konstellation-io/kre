@@ -49,7 +49,7 @@ func (k *ResourceManagerService) CreateEntrypoint(version *entity.Version) error
 	return err
 }
 
-func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node, versionConfig string) error {
+func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
 	namespace := k.cfg.Kubernetes.Namespace
 
 	nodeConfig, err := k.createNodeConfigmap(namespace, version, node)
@@ -57,7 +57,7 @@ func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entit
 		return err
 	}
 
-	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig, versionConfig)
+	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig)
 	return err
 }
 
