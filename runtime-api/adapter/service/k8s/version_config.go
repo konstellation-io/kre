@@ -78,13 +78,9 @@ func (k *ResourceManagerService) createVersionFilesConfigmap(namespace string, v
 
 [INPUT]
     Name        tail
-    Tag         entrypoint_output
+    Tag         mongo_writer
     Buffer_Chunk_Size 1k
     Path        /var/log/app/*.log
-
-[FILTER]
-    Name  stdout
-    Match *
 
 [FILTER]
     Name record_modifier
@@ -92,6 +88,22 @@ func (k *ResourceManagerService) createVersionFilesConfigmap(namespace string, v
     Record version-name ${KRE_VERSION_NAME}
     Record node-name ${KRE_NODE_NAME}
     Record node-id ${KRE_NODE_ID}
+
+[FILTER]
+    Name nest
+    Match *
+    Operation nest
+    Wildcard *
+    Nest_under doc
+
+[FILTER]
+    Name record_modifier
+    Match *
+    Record coll logs
+
+[FILTER]
+    Name  stdout
+    Match *
 
 [OUTPUT]
     Name  nats

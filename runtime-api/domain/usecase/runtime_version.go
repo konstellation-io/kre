@@ -75,7 +75,7 @@ func (i *VersionInteractor) generateNodeConfig(version *entity.Version, workflow
 			"KRT_VERSION":           version.Name,
 			"KRT_NODE_NAME":         n.Name,
 			"KRT_NATS_SERVER":       "kre-nats:4222",
-			"KRT_NATS_MONGO_WRITER": "kre-nats:4222",
+			"KRT_NATS_MONGO_WRITER": "some_channel",
 			"KRT_BASE_PATH":         "/krt-files",
 			"KRT_HANDLER_PATH":      n.Src,
 		}
