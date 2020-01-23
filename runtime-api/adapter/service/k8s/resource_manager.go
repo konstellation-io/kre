@@ -30,17 +30,7 @@ func (k *ResourceManagerService) CreateEntrypoint(version *entity.Version) error
 	namespace := k.cfg.Kubernetes.Namespace
 	entrypoint := &version.Entrypoint
 
-	natsSubjects := map[string]string{}
-
-	for _, w := range version.Workflows {
-		natsSubjects[w.Entrypoint] = w.Nodes[0].Config["KRT_NATS_INPUT"]
-	}
-
-	k.logger.Info("Creating configmap")
-	entrypoint.Config = map[string]interface{}{
-		"nats-subjects": natsSubjects,
-	}
-
+	k.logger.Info("Creating entrypoint configmap")
 	_, err := k.createEntrypointConfigmap(name, namespace, entrypoint)
 
 	k.logger.Info("Creating entrypoint deployment")

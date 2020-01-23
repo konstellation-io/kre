@@ -56,6 +56,8 @@ func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Vers
 		}
 	}
 
+	i.generateEntrypointConfig(version)
+
 	_, err := i.resourceManager.CreateVersionConfig(version)
 	if err != nil {
 		return nil, err
@@ -70,6 +72,18 @@ func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Vers
 	version.Status = string(VersionStatusCreating)
 
 	return version, err
+}
+
+func (i *VersionInteractor) generateEntrypointConfig(version *entity.Version) {
+	natsSubjects := map[string]string{}
+
+	for _, w := range version.Workflows {
+		natsSubjects[w.Entrypoint] = w.Nodes[0].Config["KRT_NATS_INPUT"]
+	}
+
+	version.Entrypoint.Config = map[string]interface{}{
+		"nats-subjects": natsSubjects,
+	}
 }
 
 func (i *VersionInteractor) generateNodeConfig(version *entity.Version, workflow *entity.Workflow) {

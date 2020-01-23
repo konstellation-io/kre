@@ -99,7 +99,7 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
 										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: fmt.Sprintf("%s-conf-files", version.Name),
+											Name: fmt.Sprintf("%s-conf-files", strcase.ToKebab(version.Name)),
 										},
 									},
 								},
