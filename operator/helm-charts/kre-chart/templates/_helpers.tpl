@@ -49,3 +49,10 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create MongoDB ReplicaSet URI.
+*/}}
+{{- define "runtime.mongoURI" -}}
+mongodb://{{ .Values.mongo.auth.adminUser }}:{{ .Values.mongo.auth.adminPassword }}@{{ .Release.Name }}-mongo-0:27017,{{ .Release.Name }}-mongo-1:27017,{{ .Release.Name }}-mongo-2:27017/admin?replicaSet=rs0
+{{- end -}}

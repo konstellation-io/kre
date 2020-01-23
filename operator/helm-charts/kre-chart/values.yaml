@@ -9,7 +9,7 @@ nats_streaming:
     className: standard
     size: 1Gi
 
-mongodb-replicaset:
+mongo:
   replicas: 3
   replicaSetName: rs0
   securityContext:
