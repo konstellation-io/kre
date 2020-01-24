@@ -1,13 +1,15 @@
 package usecase
 
 import (
+	b64 "encoding/base64"
 	"errors"
+	"math/rand"
+	"time"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"math/rand"
-	"time"
 )
 
 // RuntimeStatus enumerates all Runtime status
@@ -52,6 +54,11 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 	runtime := &entity.Runtime{
 		Name:  name,
 		Owner: userID,
+		Mongo: entity.MongoConfig{
+			Username:  "admin",
+			Password:  generateRandomPassword(),
+			SharedKey: b64.StdEncoding.EncodeToString([]byte(generateRandomPassword())),
+		},
 		Minio: entity.MinioConfig{
 			AccessKey: "admin",
 			SecretKey: generateRandomPassword(),

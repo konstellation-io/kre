@@ -30,3 +30,6 @@ spec:
                   fieldPath: metadata.namespace
             - name: KRE_SHARED_STORAGECLASS
               value: {{ .Values.sharedStorageClass }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-secrets

@@ -38,6 +38,13 @@ func (k *ResourceManager) createRuntimeObject(runtime *input.CreateRuntimeInput,
 				"nats_streaming": map[string]interface{}{
 					"replicas": 1,
 				},
+				"mongo": map[string]interface{}{
+					"auth": map[string]interface{}{
+						"key": runtime.Mongo.SharedKey,
+						"adminUser": runtime.Mongo.Username,
+						"adminPassword": runtime.Mongo.Password,
+					},
+				},
 				"minio": map[string]interface{}{
 					"credentials": map[string]interface{}{
 						"accessKey": runtime.Minio.AccessKey,

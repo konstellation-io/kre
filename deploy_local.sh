@@ -38,6 +38,9 @@ export OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
 
 ./scripts/replace_env_path.sh
 
+echo "Init helm tiller...\n"
+helm init --upgrade --wait
+
 if [ "$SKIP_BUILD" != "1" ]; then
     show_header "kre-admin-api"
     docker build -t konstellation/kre-admin-api:latest admin-api
@@ -52,6 +55,7 @@ if [ "$SKIP_BUILD" != "1" ]; then
 
     if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
       show_header "kre-operator"
+      helm dep update operator/helm-charts/kre-chart
       cd operator && operator-sdk build konstellation/kre-operator:latest && cd ..
     fi
 fi
@@ -59,8 +63,7 @@ fi
 echo "Create Namespace if not exist...\n"
 kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
 
-echo "Init helm tiller...\n"
-helm init --upgrade --wait
+
 
 helm dep update helm/kre
 helm upgrade \

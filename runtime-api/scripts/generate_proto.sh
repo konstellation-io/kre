@@ -2,4 +2,6 @@
 
 protoc runtimepb/runtime.proto --go_out=plugins=grpc:.
 
-cp runtimepb/runtime.pb.go ../admin-api/runtimepb/
+if [ -d "../admin-api" ]; then
+    cp runtimepb/runtime.pb.go ../admin-api/runtimepb/
+fi
