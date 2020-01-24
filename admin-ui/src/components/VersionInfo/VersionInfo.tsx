@@ -22,17 +22,13 @@ type Props = {
 function VersionInfo({ version }: Props) {
   const history = useHistory();
   const { runtimeId } = useParams();
-  const redirectionPath = PAGES.RUNTIME_VERSIONS.replace(
-    ':runtimeId',
-    runtimeId || ''
-  );
   const {
     activateVersion,
     deployVersion,
     stopVersion,
     deactivateVersion,
     getMutationVars
-  } = useVersionAction(redirectionPath);
+  } = useVersionAction();
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
   const isVersionActive = version.status === VersionStatus.ACTIVE;

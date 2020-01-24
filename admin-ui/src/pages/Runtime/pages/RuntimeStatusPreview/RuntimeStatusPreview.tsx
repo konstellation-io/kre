@@ -1,8 +1,7 @@
 import { get } from 'lodash';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import * as PAGES from '../../../../constants/routes';
 
 import { getVersionActionButtons } from '../../utils/generators';
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
@@ -32,7 +31,9 @@ const darkLoaderStatus = [
 
 function RuntimeStatusPreview() {
   const params: { runtimeId?: string; versionId?: string } = useParams();
-
+  const [versionStatus, setVersionStatus] = useState<VersionStatus | null>(
+    null
+  );
   const { data, loading, error } = useQuery<
     GetVersionWorkflowsResponse,
     GetVersionWorkflowsVars
@@ -40,11 +41,11 @@ function RuntimeStatusPreview() {
     variables: { versionId: params.versionId },
     fetchPolicy: 'no-cache'
   });
-  // TODO: loading and error check
-  const redirectionPath = PAGES.RUNTIME_VERSION_STATUS.replace(
-    ':runtimeId',
-    params.runtimeId || ''
-  ).replace(':versionId', params.versionId || '');
+
+  function onVersionUpdated(response: any) {
+    const mutationName = Object.keys(response)[0];
+    setVersionStatus(response[mutationName].status);
+  }
   const {
     activateVersion,
     deployVersion,
@@ -52,8 +53,14 @@ function RuntimeStatusPreview() {
     deactivateVersion,
     getMutationVars,
     mutationLoading
-  } = useVersionAction(redirectionPath);
+  } = useVersionAction(onVersionUpdated);
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      setVersionStatus(get(data, 'version.status', VersionStatus.CREATED));
+    }
+  }, [data]);
 
   if (error || !params.runtimeId || !params.versionId) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
@@ -80,18 +87,19 @@ function RuntimeStatusPreview() {
     setShowActionConfirmation(false);
   }
 
-  const versionStatus = data && data.version && data.version.status;
   let actionButtons: any = getVersionActionButtons(
     onOpenModal,
     onDeployVersion,
     onStopVersion,
     onDeactivateVersion,
-    versionStatus
+    versionStatus || ''
   );
 
   if (data && !data.version.configurationCompleted) {
     actionButtons = [];
   }
+
+  const workflows = get(data, 'version.workflows', []);
 
   return (
     <div className={styles.container}>
@@ -102,7 +110,10 @@ function RuntimeStatusPreview() {
           <div className={styles.loadingAction}>
             <SpinnerLinear
               size={60}
-              dark={versionStatus && darkLoaderStatus.includes(versionStatus)}
+              dark={
+                (versionStatus && darkLoaderStatus.includes(versionStatus)) ||
+                false
+              }
             />
           </div>
         ) : (
@@ -115,10 +126,9 @@ function RuntimeStatusPreview() {
           <span>{data && data.version.name}</span>
         </div>
       </HorizontalBar>
-      <StatusViewer
-        data={get(data, 'version.workflows', [])}
-        status={versionStatus}
-      />
+      {data && versionStatus !== null && (
+        <StatusViewer data={workflows} status={versionStatus} />
+      )}
       {showActionConfirmation && (
         <ConfirmationModal
           title="YOU ARE ABOUT TO ACTIVATE A VERSION"
