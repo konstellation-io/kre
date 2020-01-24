@@ -488,3 +488,39 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *Runt
 
 	return runtimeCreatedChan, nil
 }
+
+func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID string) (<-chan *NodeLog, error) {
+	stopCh := make(chan bool)
+	inputChan, err := r.versionInteractor.WatchNodeLogs(runtimeID, nodeID, stopCh)
+	if err != nil {
+		return nil, err
+	}
+
+	r.logger.Info("------------ STARTING LOGGER SUBSCRIPTION -------------")
+
+	outputChan := make(chan *NodeLog)
+
+	go func() {
+		for {
+			select {
+			case nodeLog := <-inputChan:
+				if nodeLog == nil {
+					r.logger.Info("------------ SUBSCRIPTION LOGGER INPUTCHAN CLOSED. CLOSING -------------")
+					close(outputChan)
+					return
+				}
+				outputChan <- toGQlNodeLog(nodeLog)
+
+			case <-ctx.Done():
+				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")
+				stopCh <- true
+				close(outputChan)
+				return
+			}
+
+		}
+
+	}()
+
+	return outputChan, nil
+}

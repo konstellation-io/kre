@@ -777,3 +777,14 @@ func (i *VersionInteractor) GetByRuntime(runtimeID string) ([]entity.Version, er
 func (i *VersionInteractor) GetByID(id string) (*entity.Version, error) {
 	return i.versionRepo.GetByID(id)
 }
+
+func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
+	stopChannel chan bool) (<-chan *entity.NodeLog, error) {
+
+	runtime, err := i.runtimeRepo.GetByID(runtimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	return i.runtimeService.WatchNodeLogs(runtime, nodeID, stopChannel)
+}

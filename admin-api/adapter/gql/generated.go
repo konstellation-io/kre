@@ -95,6 +95,16 @@ type ComplexityRoot struct {
 		Status func(childComplexity int) int
 	}
 
+	NodeLog struct {
+		Date      func(childComplexity int) int
+		Level     func(childComplexity int) int
+		Message   func(childComplexity int) int
+		NodeID    func(childComplexity int) int
+		PodID     func(childComplexity int) int
+		Type      func(childComplexity int) int
+		VersionID func(childComplexity int) int
+	}
+
 	Query struct {
 		Alerts           func(childComplexity int) int
 		Me               func(childComplexity int) int
@@ -122,6 +132,7 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
+		NodeLogs       func(childComplexity int, runtimeID string, nodeID string) int
 		RuntimeCreated func(childComplexity int) int
 	}
 
@@ -192,6 +203,7 @@ type QueryResolver interface {
 }
 type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *Runtime, error)
+	NodeLogs(ctx context.Context, runtimeID string, nodeID string) (<-chan *NodeLog, error)
 }
 
 type executableSchema struct {
@@ -438,6 +450,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Node.Status(childComplexity), true
 
+	case "NodeLog.date":
+		if e.complexity.NodeLog.Date == nil {
+			break
+		}
+
+		return e.complexity.NodeLog.Date(childComplexity), true
+
+	case "NodeLog.level":
+		if e.complexity.NodeLog.Level == nil {
+			break
+		}
+
+		return e.complexity.NodeLog.Level(childComplexity), true
+
+	case "NodeLog.message":
+		if e.complexity.NodeLog.Message == nil {
+			break
+		}
+
+		return e.complexity.NodeLog.Message(childComplexity), true
+
+	case "NodeLog.nodeId":
+		if e.complexity.NodeLog.NodeID == nil {
+			break
+		}
+
+		return e.complexity.NodeLog.NodeID(childComplexity), true
+
+	case "NodeLog.podId":
+		if e.complexity.NodeLog.PodID == nil {
+			break
+		}
+
+		return e.complexity.NodeLog.PodID(childComplexity), true
+
+	case "NodeLog.type":
+		if e.complexity.NodeLog.Type == nil {
+			break
+		}
+
+		return e.complexity.NodeLog.Type(childComplexity), true
+
+	case "NodeLog.versionId":
+		if e.complexity.NodeLog.VersionID == nil {
+			break
+		}
+
+		return e.complexity.NodeLog.VersionID(childComplexity), true
+
 	case "Query.alerts":
 		if e.complexity.Query.Alerts == nil {
 			break
@@ -576,6 +637,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Settings.SessionLifetimeInDays(childComplexity), true
+
+	case "Subscription.nodeLogs":
+		if e.complexity.Subscription.NodeLogs == nil {
+			break
+		}
+
+		args, err := ec.field_Subscription_nodeLogs_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.NodeLogs(childComplexity, args["runtimeId"].(string), args["nodeId"].(string)), true
 
 	case "Subscription.runtimeCreated":
 		if e.complexity.Subscription.RuntimeCreated == nil {
@@ -883,6 +956,27 @@ type Mutation {
 
 type Subscription {
   runtimeCreated: Runtime!
+  nodeLogs(runtimeId: ID!, nodeId: ID!): NodeLog!
+}
+
+enum NodeLogLevel {
+  INFO
+  ERROR
+}
+
+enum NodeLogType {
+  SYSTEM
+  APP
+}
+
+type NodeLog {
+  date: String!
+  type: NodeLogType!
+  versionId: ID!
+  nodeId: ID!
+  podId: ID!
+  message: String!
+  level: NodeLogLevel!
 }
 
 input CreateRuntimeInput {
@@ -1289,6 +1383,28 @@ func (ec *executionContext) field_Query_versions_args(ctx context.Context, rawAr
 		}
 	}
 	args["runtimeId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Subscription_nodeLogs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["runtimeId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["runtimeId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["nodeId"]; ok {
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["nodeId"] = arg1
 	return args, nil
 }
 
@@ -2371,6 +2487,265 @@ func (ec *executionContext) _Node_status(ctx context.Context, field graphql.Coll
 	return ec.marshalNNodeStatus2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeStatus(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _NodeLog_date(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "NodeLog",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Date, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NodeLog_type(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "NodeLog",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(NodeLogType)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNNodeLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NodeLog_versionId(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "NodeLog",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.VersionID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NodeLog_nodeId(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "NodeLog",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NodeID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NodeLog_podId(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "NodeLog",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PodID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NodeLog_message(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "NodeLog",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Message, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NodeLog_level(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "NodeLog",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Level, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(NodeLogLevel)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNNodeLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogLevel(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_me(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -3135,6 +3510,59 @@ func (ec *executionContext) _Subscription_runtimeCreated(ctx context.Context, fi
 			graphql.MarshalString(field.Alias).MarshalGQL(w)
 			w.Write([]byte{':'})
 			ec.marshalNRuntime2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐRuntime(ctx, field.Selections, res).MarshalGQL(w)
+			w.Write([]byte{'}'})
+		})
+	}
+}
+
+func (ec *executionContext) _Subscription_nodeLogs(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Subscription",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Subscription_nodeLogs_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().NodeLogs(rctx, args["runtimeId"].(string), args["nodeId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-resTmp.(<-chan *NodeLog)
+		if !ok {
+			return nil
+		}
+		return graphql.WriterFunc(func(w io.Writer) {
+			w.Write([]byte{'{'})
+			graphql.MarshalString(field.Alias).MarshalGQL(w)
+			w.Write([]byte{':'})
+			ec.marshalNNodeLog2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLog(ctx, field.Selections, res).MarshalGQL(w)
 			w.Write([]byte{'}'})
 		})
 	}
@@ -5707,6 +6135,63 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	return out
 }
 
+var nodeLogImplementors = []string{"NodeLog"}
+
+func (ec *executionContext) _NodeLog(ctx context.Context, sel ast.SelectionSet, obj *NodeLog) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, nodeLogImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NodeLog")
+		case "date":
+			out.Values[i] = ec._NodeLog_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "type":
+			out.Values[i] = ec._NodeLog_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "versionId":
+			out.Values[i] = ec._NodeLog_versionId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "nodeId":
+			out.Values[i] = ec._NodeLog_nodeId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "podId":
+			out.Values[i] = ec._NodeLog_podId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "message":
+			out.Values[i] = ec._NodeLog_message(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "level":
+			out.Values[i] = ec._NodeLog_level(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -5953,6 +6438,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	switch fields[0].Name {
 	case "runtimeCreated":
 		return ec._Subscription_runtimeCreated(ctx, fields[0])
+	case "nodeLogs":
+		return ec._Subscription_nodeLogs(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}
@@ -6776,6 +7263,38 @@ func (ec *executionContext) marshalNNode2ᚖgitlabᚗcomᚋkonstellationᚋkonst
 		return graphql.Null
 	}
 	return ec._Node(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNNodeLog2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLog(ctx context.Context, sel ast.SelectionSet, v NodeLog) graphql.Marshaler {
+	return ec._NodeLog(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNNodeLog2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLog(ctx context.Context, sel ast.SelectionSet, v *NodeLog) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._NodeLog(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNNodeLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogLevel(ctx context.Context, v interface{}) (NodeLogLevel, error) {
+	var res NodeLogLevel
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNNodeLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogLevel(ctx context.Context, sel ast.SelectionSet, v NodeLogLevel) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNNodeLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogType(ctx context.Context, v interface{}) (NodeLogType, error) {
+	var res NodeLogType
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNNodeLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogType(ctx context.Context, sel ast.SelectionSet, v NodeLogType) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNNodeStatus2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeStatus(ctx context.Context, v interface{}) (NodeStatus, error) {

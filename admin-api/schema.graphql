@@ -31,6 +31,27 @@ type Mutation {
 
 type Subscription {
   runtimeCreated: Runtime!
+  nodeLogs(runtimeId: ID!, nodeId: ID!): NodeLog!
+}
+
+enum NodeLogLevel {
+  INFO
+  ERROR
+}
+
+enum NodeLogType {
+  SYSTEM
+  APP
+}
+
+type NodeLog {
+  date: String!
+  type: NodeLogType!
+  versionId: ID!
+  nodeId: ID!
+  podId: ID!
+  message: String!
+  level: NodeLogLevel!
 }
 
 input CreateRuntimeInput {

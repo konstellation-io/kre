@@ -10,6 +10,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/runtimepb"
 	"google.golang.org/grpc"
+	"io"
 	"time"
 )
 
@@ -267,4 +268,101 @@ func (k *RuntimeAPIServiceGRPC) ActivateVersion(runtime *entity.Runtime, version
 	}
 
 	return nil
+}
+
+func fromGRPCNodeType(nodeType runtimepb.WatchNodeLogsResponse_NodeLogType) entity.NodeLogType {
+	var logType entity.NodeLogType
+
+	switch nodeType {
+	case runtimepb.WatchNodeLogsResponse_APP:
+		logType = entity.NodeLogTypeApp
+	case runtimepb.WatchNodeLogsResponse_SYSTEM:
+		logType = entity.NodeLogTypeSystem
+	}
+
+	return logType
+}
+
+func fromGRPCNodeLevel(nodeLevel runtimepb.WatchNodeLogsResponse_NodeLogLevel) entity.NodeLogLevel {
+	var logLevel entity.NodeLogLevel
+
+	switch nodeLevel {
+	case runtimepb.WatchNodeLogsResponse_INFO:
+		logLevel = entity.NodeLogLevelInfo
+	case runtimepb.WatchNodeLogsResponse_ERROR:
+		logLevel = entity.NodeLogLevelError
+	}
+
+	return logLevel
+}
+
+func (k *RuntimeAPIServiceGRPC) WatchNodeLogs(runtime *entity.Runtime, nodeId string, stopCh <-chan bool) (<-chan *entity.NodeLog, error) {
+	ns := strcase.ToKebab(runtime.Name)
+
+	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+
+	c := runtimepb.NewRuntimeServiceClient(cc)
+
+	req := runtimepb.WatchNodeLogsRequest{
+		NodeId: nodeId,
+	}
+
+	ctx := context.Background()
+
+	k.logger.Info("------------ CALLING RUNTIME API -------------")
+
+	stream, err := c.WatchNodeLogs(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+
+	ch := make(chan *entity.NodeLog, 1)
+
+	go func() {
+		for {
+			k.logger.Info("------ WAITING FOR stream.Recv() -----")
+			msg, err := stream.Recv()
+
+			if err == io.EOF {
+				k.logger.Info("------ EOF MSG RECEIVED. STOPPING  -----")
+				close(ch)
+				return
+			}
+
+			if err != nil {
+				k.logger.Error(err.Error())
+				close(ch)
+				return
+			}
+
+			k.logger.Info(fmt.Sprintf("------ Message received: %#v -----", msg.String()))
+
+			if msg.GetNodeId() != "" {
+
+				ch <- &entity.NodeLog{
+					Date:      msg.Date,
+					Type:      fromGRPCNodeType(msg.GetType()),
+					VersionId: msg.GetVersionId(),
+					NodeId:    msg.GetNodeId(),
+					PodId:     msg.GetPodId(),
+					Message:   msg.GetMessage(),
+					Level:     fromGRPCNodeLevel(msg.GetLevel()),
+				}
+			}
+		}
+	}()
+
+	go func() {
+		<-stopCh
+		k.logger.Info("------ STOP RECEIVED. CLOSING GRPC CONNECTION -----")
+		err := cc.Close()
+		if err != nil {
+			k.logger.Error(err.Error())
+		}
+	}()
+
+	return ch, nil
 }

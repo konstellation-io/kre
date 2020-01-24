@@ -8,6 +8,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/runtimepb"
+	"time"
 )
 
 // RuntimeService basic server
@@ -200,4 +201,77 @@ func (s *RuntimeService) ActivateVersion(ctx context.Context, req *runtimepb.Act
 		Success: true,
 		Message: "Version activated correctly.",
 	}, nil
+}
+
+func toGRPCNodeType(nodeType entity.NodeLogType) runtimepb.WatchNodeLogsResponse_NodeLogType {
+	var logType runtimepb.WatchNodeLogsResponse_NodeLogType
+
+	switch nodeType {
+	case entity.NodeLogTypeApp:
+		logType = runtimepb.WatchNodeLogsResponse_APP
+	case entity.NodeLogTypeSystem:
+		logType = runtimepb.WatchNodeLogsResponse_SYSTEM
+	}
+
+	return logType
+}
+
+func toGRPCNodeLevel(nodeLevel entity.NodeLogLevel) runtimepb.WatchNodeLogsResponse_NodeLogLevel {
+	var logLevel runtimepb.WatchNodeLogsResponse_NodeLogLevel
+
+	switch nodeLevel {
+	case entity.NodeLogLevelInfo:
+		logLevel = runtimepb.WatchNodeLogsResponse_INFO
+	case entity.NodeLogLevelError:
+		logLevel = runtimepb.WatchNodeLogsResponse_ERROR
+	}
+
+	return logLevel
+}
+
+func (s *RuntimeService) WatchNodeLogs(req *runtimepb.WatchNodeLogsRequest, stream runtimepb.RuntimeService_WatchNodeLogsServer) error {
+	nodeId := req.GetNodeId()
+
+	s.logger.Info("------------ STARTING WATCHER -------------")
+
+	statusCh, waitCh := s.interactor.WatchNodeLogs(nodeId)
+
+	keepAliveCh := time.Tick(5 * time.Second)
+
+	for {
+		select {
+		case <-waitCh:
+			s.logger.Info("------------- WATCHER STOPPED. RETURN FROM GRPC FUNCTION ---------")
+			return nil
+
+		case <-keepAliveCh:
+			s.logger.Info("------------- SENDING KEEP ALIVE ---------")
+
+			err := stream.Send(&runtimepb.WatchNodeLogsResponse{})
+			if err != nil {
+				s.logger.Info("---------- KEEP ALIVE FAIL SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
+				close(waitCh)
+				s.logger.Error(err.Error())
+				return err
+			}
+
+		case nodeLog := <-statusCh:
+			err := stream.Send(&runtimepb.WatchNodeLogsResponse{
+				Date:      nodeLog.Date,
+				Type:      toGRPCNodeType(nodeLog.Type),
+				VersionId: nodeLog.VersionId,
+				NodeId:    nodeLog.NodeId,
+				PodId:     nodeLog.PodId,
+				Message:   nodeLog.Message,
+				Level:     toGRPCNodeLevel(nodeLog.Level),
+			})
+
+			if err != nil {
+				s.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
+				close(waitCh)
+				s.logger.Error(err.Error())
+				return err
+			}
+		}
+	}
 }
