@@ -70,13 +70,14 @@
   }
 }
 
+// FIXME: change this COLOR to RED
 .ERROR {
   .ext {
-    fill: $color-red;
-    stroke: $color-red;
+    fill: $color-blue;
+    stroke: $color-blue;
   }
   .int {
-    stroke: $color-red;
+    stroke: $color-blue;
   }
   .label {
     fill: $font-color-white;

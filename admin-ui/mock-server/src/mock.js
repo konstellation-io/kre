@@ -100,6 +100,6 @@ module.exports = {
   Node: () => ({
     id: casual.ID,
     name: casual.name,
-    status: casual.random_element(['STARTED', 'STOPPED', 'ERROR']),
+    status: 'STOPPED',
   })
 }

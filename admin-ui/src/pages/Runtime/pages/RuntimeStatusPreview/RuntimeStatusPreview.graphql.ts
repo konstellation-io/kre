@@ -27,6 +27,7 @@ export const ACTIVATE_VERSION = gql`
   mutation ActivateVersion($input: ActivateVersionInput!) {
     activateVersion(input: $input) {
       id
+      status
     }
   }
 `;
@@ -35,6 +36,7 @@ export const DEACTIVATE_VERSION = gql`
   mutation DeactivateVersion($input: DeactivateVersionInput!) {
     deactivateVersion(input: $input) {
       id
+      status
     }
   }
 `;
@@ -43,6 +45,7 @@ export const DEPLOY_VERSION = gql`
   mutation DeployVersion($input: DeployVersionInput!) {
     deployVersion(input: $input) {
       id
+      status
     }
   }
 `;
@@ -51,6 +54,7 @@ export const STOP_VERSION = gql`
   mutation StopVersion($input: StopVersionInput!) {
     stopVersion(input: $input) {
       id
+      status
     }
   }
 `;

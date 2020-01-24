@@ -11,6 +11,7 @@
   align-items: center;
   padding: 0 40px 0 20px;
   height: 40px;
+  transition: background-color ease 0.5s;
 
   div {
     color: $font-color-dark;
