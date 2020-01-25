@@ -385,18 +385,23 @@ func (k *ResourceManagerService) WatchNodeLogs(nodeId string, logsCh chan<- *ent
 
 	stopCh := make(chan struct{})
 
-	for n := 0; n <= 3000; n++ {
+	go func() {
+		// TODO: Read logs from mongo oplogs
+		for n := 0; n <= 100; n++ {
 
-		logsCh <- &entity.NodeLog{
-			Date:      time.Now().Format(time.RFC3339),
-			Type:      entity.NodeLogTypeSystem,
-			VersionId: "airbnb-v100",
-			NodeId:    nodeId,
-			PodId:     "adasdfasdfa",
-			Message:   fmt.Sprintf("Log: %d", n),
-			Level:     entity.NodeLogLevelInfo,
+			logsCh <- &entity.NodeLog{
+				Date:      time.Now().Format(time.RFC3339),
+				Type:      "SYSTEM",
+				VersionId: "airbnb-v100",
+				NodeId:    nodeId,
+				PodId:     "adasdfasdfa",
+				Message:   fmt.Sprintf("Log: %d", n),
+				Level:     "INFO",
+			}
+			time.Sleep(100 * time.Millisecond)
 		}
-	}
+		stopCh <- struct{}{}
+	}()
 
 	return stopCh
 }

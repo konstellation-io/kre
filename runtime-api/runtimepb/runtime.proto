@@ -92,23 +92,13 @@ message WatchNodeLogsRequest {
 }
 
 message WatchNodeLogsResponse {
-  enum NodeLogType {
-    SYSTEM = 0;
-    APP = 1;
-  }
-
-  enum NodeLogLevel {
-    INFO = 0;
-    ERROR = 1;
-  }
-
   string date = 1;
-  NodeLogType type = 2;
+  string type = 2;
   string versionId = 3;
   string nodeId = 4;
   string podId = 5;
   string message = 6;
-  NodeLogLevel level = 7;
+  string level = 7;
 }
 
 service RuntimeService {

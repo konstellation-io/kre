@@ -34,24 +34,14 @@ type Subscription {
   nodeLogs(runtimeId: ID!, nodeId: ID!): NodeLog!
 }
 
-enum NodeLogLevel {
-  INFO
-  ERROR
-}
-
-enum NodeLogType {
-  SYSTEM
-  APP
-}
-
 type NodeLog {
   date: String!
-  type: NodeLogType!
+  type: String!
   versionId: ID!
   nodeId: ID!
   podId: ID!
   message: String!
-  level: NodeLogLevel!
+  level: String!
 }
 
 input CreateRuntimeInput {

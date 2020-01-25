@@ -959,24 +959,14 @@ type Subscription {
   nodeLogs(runtimeId: ID!, nodeId: ID!): NodeLog!
 }
 
-enum NodeLogLevel {
-  INFO
-  ERROR
-}
-
-enum NodeLogType {
-  SYSTEM
-  APP
-}
-
 type NodeLog {
   date: String!
-  type: NodeLogType!
+  type: String!
   versionId: ID!
   nodeId: ID!
   podId: ID!
   message: String!
-  level: NodeLogLevel!
+  level: String!
 }
 
 input CreateRuntimeInput {
@@ -2555,10 +2545,10 @@ func (ec *executionContext) _NodeLog_type(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(NodeLogType)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNNodeLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogType(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _NodeLog_versionId(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
@@ -2740,10 +2730,10 @@ func (ec *executionContext) _NodeLog_level(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(NodeLogLevel)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNNodeLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogLevel(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_me(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7277,24 +7267,6 @@ func (ec *executionContext) marshalNNodeLog2ᚖgitlabᚗcomᚋkonstellationᚋko
 		return graphql.Null
 	}
 	return ec._NodeLog(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNNodeLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogLevel(ctx context.Context, v interface{}) (NodeLogLevel, error) {
-	var res NodeLogLevel
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalNNodeLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogLevel(ctx context.Context, sel ast.SelectionSet, v NodeLogLevel) graphql.Marshaler {
-	return v
-}
-
-func (ec *executionContext) unmarshalNNodeLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogType(ctx context.Context, v interface{}) (NodeLogType, error) {
-	var res NodeLogType
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalNNodeLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeLogType(ctx context.Context, sel ast.SelectionSet, v NodeLogType) graphql.Marshaler {
-	return v
 }
 
 func (ec *executionContext) unmarshalNNodeStatus2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNodeStatus(ctx context.Context, v interface{}) (NodeStatus, error) {

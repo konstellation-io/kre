@@ -203,32 +203,6 @@ func (s *RuntimeService) ActivateVersion(ctx context.Context, req *runtimepb.Act
 	}, nil
 }
 
-func toGRPCNodeType(nodeType entity.NodeLogType) runtimepb.WatchNodeLogsResponse_NodeLogType {
-	var logType runtimepb.WatchNodeLogsResponse_NodeLogType
-
-	switch nodeType {
-	case entity.NodeLogTypeApp:
-		logType = runtimepb.WatchNodeLogsResponse_APP
-	case entity.NodeLogTypeSystem:
-		logType = runtimepb.WatchNodeLogsResponse_SYSTEM
-	}
-
-	return logType
-}
-
-func toGRPCNodeLevel(nodeLevel entity.NodeLogLevel) runtimepb.WatchNodeLogsResponse_NodeLogLevel {
-	var logLevel runtimepb.WatchNodeLogsResponse_NodeLogLevel
-
-	switch nodeLevel {
-	case entity.NodeLogLevelInfo:
-		logLevel = runtimepb.WatchNodeLogsResponse_INFO
-	case entity.NodeLogLevelError:
-		logLevel = runtimepb.WatchNodeLogsResponse_ERROR
-	}
-
-	return logLevel
-}
-
 func (s *RuntimeService) WatchNodeLogs(req *runtimepb.WatchNodeLogsRequest, stream runtimepb.RuntimeService_WatchNodeLogsServer) error {
 	nodeId := req.GetNodeId()
 
@@ -258,12 +232,12 @@ func (s *RuntimeService) WatchNodeLogs(req *runtimepb.WatchNodeLogsRequest, stre
 		case nodeLog := <-statusCh:
 			err := stream.Send(&runtimepb.WatchNodeLogsResponse{
 				Date:      nodeLog.Date,
-				Type:      toGRPCNodeType(nodeLog.Type),
+				Type:      nodeLog.Type,
 				VersionId: nodeLog.VersionId,
 				NodeId:    nodeLog.NodeId,
 				PodId:     nodeLog.PodId,
 				Message:   nodeLog.Message,
-				Level:     toGRPCNodeLevel(nodeLog.Level),
+				Level:     nodeLog.Level,
 			})
 
 			if err != nil {

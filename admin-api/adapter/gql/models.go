@@ -78,13 +78,13 @@ type Node struct {
 }
 
 type NodeLog struct {
-	Date      string       `json:"date"`
-	Type      NodeLogType  `json:"type"`
-	VersionID string       `json:"versionId"`
-	NodeID    string       `json:"nodeId"`
-	PodID     string       `json:"podId"`
-	Message   string       `json:"message"`
-	Level     NodeLogLevel `json:"level"`
+	Date      string `json:"date"`
+	Type      string `json:"type"`
+	VersionID string `json:"versionId"`
+	NodeID    string `json:"nodeId"`
+	PodID     string `json:"podId"`
+	Message   string `json:"message"`
+	Level     string `json:"level"`
 }
 
 type Runtime struct {
@@ -282,88 +282,6 @@ func (e *ErrorCode) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ErrorCode) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-type NodeLogLevel string
-
-const (
-	NodeLogLevelInfo  NodeLogLevel = "INFO"
-	NodeLogLevelError NodeLogLevel = "ERROR"
-)
-
-var AllNodeLogLevel = []NodeLogLevel{
-	NodeLogLevelInfo,
-	NodeLogLevelError,
-}
-
-func (e NodeLogLevel) IsValid() bool {
-	switch e {
-	case NodeLogLevelInfo, NodeLogLevelError:
-		return true
-	}
-	return false
-}
-
-func (e NodeLogLevel) String() string {
-	return string(e)
-}
-
-func (e *NodeLogLevel) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = NodeLogLevel(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid NodeLogLevel", str)
-	}
-	return nil
-}
-
-func (e NodeLogLevel) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-type NodeLogType string
-
-const (
-	NodeLogTypeSystem NodeLogType = "SYSTEM"
-	NodeLogTypeApp    NodeLogType = "APP"
-)
-
-var AllNodeLogType = []NodeLogType{
-	NodeLogTypeSystem,
-	NodeLogTypeApp,
-}
-
-func (e NodeLogType) IsValid() bool {
-	switch e {
-	case NodeLogTypeSystem, NodeLogTypeApp:
-		return true
-	}
-	return false
-}
-
-func (e NodeLogType) String() string {
-	return string(e)
-}
-
-func (e *NodeLogType) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = NodeLogType(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid NodeLogType", str)
-	}
-	return nil
-}
-
-func (e NodeLogType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

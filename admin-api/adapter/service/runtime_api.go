@@ -270,32 +270,6 @@ func (k *RuntimeAPIServiceGRPC) ActivateVersion(runtime *entity.Runtime, version
 	return nil
 }
 
-func fromGRPCNodeType(nodeType runtimepb.WatchNodeLogsResponse_NodeLogType) entity.NodeLogType {
-	var logType entity.NodeLogType
-
-	switch nodeType {
-	case runtimepb.WatchNodeLogsResponse_APP:
-		logType = entity.NodeLogTypeApp
-	case runtimepb.WatchNodeLogsResponse_SYSTEM:
-		logType = entity.NodeLogTypeSystem
-	}
-
-	return logType
-}
-
-func fromGRPCNodeLevel(nodeLevel runtimepb.WatchNodeLogsResponse_NodeLogLevel) entity.NodeLogLevel {
-	var logLevel entity.NodeLogLevel
-
-	switch nodeLevel {
-	case runtimepb.WatchNodeLogsResponse_INFO:
-		logLevel = entity.NodeLogLevelInfo
-	case runtimepb.WatchNodeLogsResponse_ERROR:
-		logLevel = entity.NodeLogLevelError
-	}
-
-	return logLevel
-}
-
 func (k *RuntimeAPIServiceGRPC) WatchNodeLogs(runtime *entity.Runtime, nodeId string, stopCh <-chan bool) (<-chan *entity.NodeLog, error) {
 	ns := strcase.ToKebab(runtime.Name)
 
@@ -344,12 +318,12 @@ func (k *RuntimeAPIServiceGRPC) WatchNodeLogs(runtime *entity.Runtime, nodeId st
 
 				ch <- &entity.NodeLog{
 					Date:      msg.Date,
-					Type:      fromGRPCNodeType(msg.GetType()),
+					Type:      msg.GetType(),
 					VersionId: msg.GetVersionId(),
 					NodeId:    msg.GetNodeId(),
 					PodId:     msg.GetPodId(),
 					Message:   msg.GetMessage(),
-					Level:     fromGRPCNodeLevel(msg.GetLevel()),
+					Level:     msg.GetLevel(),
 				}
 			}
 		}
