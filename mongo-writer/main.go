@@ -44,6 +44,8 @@ func main() {
 
 	ticker := time.NewTicker(5 * time.Second)
 
+	msgProcessed := 0
+
 out:
 	for {
 		select {
@@ -53,6 +55,10 @@ out:
 			break out
 
 		case <-ticker.C:
+			if natsCli.TotalMsgs == msgProcessed {
+				continue
+			}
+			msgProcessed = natsCli.TotalMsgs
 			logger.Info(fmt.Sprintf("NATS MSGS: %6d  MONGO INSERTS: %6d documents", natsCli.TotalMsgs, mongoCli.TotalInserts))
 
 		case msg := <-natsMsgsCh:
