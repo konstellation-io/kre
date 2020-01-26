@@ -52,6 +52,8 @@ if [ "$SKIP_BUILD" != "1" ]; then
     docker build -t konstellation/kre-runtime-api:latest runtime-api
     show_header "kre-runtime-entrypoint"
     docker build -t konstellation/kre-runtime-entrypoint runtime-entrypoint
+    show_header "kre-mongo-writer"
+    docker build -t konstellation/kre-mongo-writer mongo-writer
 
     if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
       show_header "kre-operator"
