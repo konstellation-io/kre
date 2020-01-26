@@ -38,13 +38,13 @@ func (_m *ResourceManagerService) CreateEntrypoint(version *entity.Version) erro
 	return r0
 }
 
-// CreateNode provides a mock function with given fields: version, node, versionConfig
-func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node, versionConfig string) error {
-	ret := _m.Called(version, node, versionConfig)
+// CreateNode provides a mock function with given fields: version, node
+func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
+	ret := _m.Called(version, node)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Version, *entity.Node, string) error); ok {
-		r0 = rf(version, node, versionConfig)
+	if rf, ok := ret.Get(0).(func(*entity.Version, *entity.Node) error); ok {
+		r0 = rf(version, node)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -110,6 +110,22 @@ func (_m *ResourceManagerService) UpdateVersionConfig(version *entity.Version) e
 		r0 = rf(version)
 	} else {
 		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// WatchNodeLogs provides a mock function with given fields: nodeId, logsCh
+func (_m *ResourceManagerService) WatchNodeLogs(nodeId string, logsCh chan<- *entity.NodeLog) chan struct{} {
+	ret := _m.Called(nodeId, logsCh)
+
+	var r0 chan struct{}
+	if rf, ok := ret.Get(0).(func(string, chan<- *entity.NodeLog) chan struct{}); ok {
+		r0 = rf(nodeId, logsCh)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(chan struct{})
+		}
 	}
 
 	return r0

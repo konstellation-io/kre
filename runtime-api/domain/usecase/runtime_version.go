@@ -180,3 +180,10 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version) error {
 
 	return i.resourceManager.UpdateVersionConfig(version)
 }
+
+func (i *VersionInteractor) WatchNodeLogs(nodeId string) (chan *entity.NodeLog, chan struct{}) {
+	statusCh := make(chan *entity.NodeLog, 1)
+	stopCh := i.resourceManager.WatchNodeLogs(nodeId, statusCh)
+
+	return statusCh, stopCh
+}

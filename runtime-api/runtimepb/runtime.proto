@@ -87,6 +87,20 @@ message ActivateVersionResponse {
   string message = 2;
 }
 
+message WatchNodeLogsRequest {
+  string nodeId = 1;
+}
+
+message WatchNodeLogsResponse {
+  string date = 1;
+  string type = 2;
+  string versionId = 3;
+  string nodeId = 4;
+  string podId = 5;
+  string message = 6;
+  string level = 7;
+}
+
 service RuntimeService {
   rpc DeployVersion (DeployVersionRequest) returns (DeployVersionResponse) {
   };
@@ -98,4 +112,7 @@ service RuntimeService {
   };
   rpc ActivateVersion (ActivateVersionRequest) returns (ActivateVersionResponse) {
   };
+  rpc WatchNodeLogs (WatchNodeLogsRequest) returns (stream WatchNodeLogsResponse) {
+  };
+
 };

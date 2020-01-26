@@ -39,3 +39,13 @@ type Version struct {
 	Workflows  []Workflow
 	Status     string
 }
+
+type NodeLog struct {
+	Date      string
+	Type      string
+	VersionId string
+	NodeId    string
+	PodId     string
+	Message   string
+	Level     string
+}

@@ -61,3 +61,13 @@ type Version struct {
 	Entrypoint Entrypoint    `bson:"entrypoint"`
 	Workflows  []Workflow    `bson:"workflows"`
 }
+
+type NodeLog struct {
+	Date      string
+	Type      string
+	VersionId string
+	NodeId    string
+	PodId     string
+	Message   string
+	Level     string
+}
