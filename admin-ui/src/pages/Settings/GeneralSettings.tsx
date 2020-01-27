@@ -59,8 +59,7 @@ function isExpirationInvalid(value: string) {
 
 function GeneralSettings() {
   const { data, loading, error: queryError } = useQuery<SettingsResponse>(
-    GET_EXPIRATION_TIME,
-    { fetchPolicy: 'no-cache' }
+    GET_EXPIRATION_TIME
   );
   const [updateExpirationTime] = useMutation<SettingsResponse, SettingsVars>(
     UPDATE_SESSION_LIFETIME

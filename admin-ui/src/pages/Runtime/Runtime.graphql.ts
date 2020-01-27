@@ -1,45 +1,38 @@
 import gql from 'graphql-tag';
 import { Runtime, Version } from '../../graphql/models';
 
-export interface GetRuntimeResponse {
+export interface GetRuntimeAndVersionsResponse {
   runtime: Runtime;
+  versions: [Version];
 }
 
-export interface GetRuntimeVars {
+export interface GetRuntimeAndVersionsVars {
   runtimeId?: string;
 }
 
-export const GET_RUNTIME = gql`
-  query GetRuntime($runtimeId: ID!) {
+export const GET_RUNTIME_AND_VERSIONS = gql`
+  query GetVersionConfStatus($runtimeId: ID!) {
     runtime(id: $runtimeId) {
+      id
       name
-      activeVersion {
-        name
-        creationDate
-        creationAuthor {
-          email
-        }
-        activationDate
-        activationAuthor {
-          email
-        }
-        status
-      }
+      status
     }
-  }
-`;
 
-export interface GetVersionConfStatusResponse {
-  version: Version;
-}
-
-export interface GetVersionConfStatusVars {
-  versionId?: string;
-}
-
-export const GET_VERSION_CONF_STATUS = gql`
-  query GetVersionConfStatus($versionId: ID!) {
-    version(id: $versionId) {
+    versions(runtimeId: $runtimeId) {
+      id
+      name
+      description
+      status
+      creationDate
+      creationAuthor {
+        id
+        email
+      }
+      activationDate
+      activationAuthor {
+        id
+        email
+      }
       configurationCompleted
     }
   }

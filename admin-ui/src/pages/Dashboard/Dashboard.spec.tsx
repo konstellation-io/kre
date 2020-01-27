@@ -28,17 +28,17 @@ it('Render Dashboard without crashing', () => {
   expect(container).toMatchSnapshot();
 });
 
-it('Shows right texts', async () => {
-  const {
-    element: { getByText, getAllByText }
-  } = renderWithReduxAndRouter(Component);
+// it('Shows right texts', async () => {
+//   const {
+//     element: { getByText, getAllByText }
+//   } = renderWithReduxAndRouter(Component);
 
-  await act(async () => {
-    await wait(0);
-  });
+//   await act(async () => {
+//     await wait(0);
+//   });
 
-  expect(getByText('Some Name')).not.toBeNull();
-  expect(getByText('00002')).not.toBeNull();
-  expect(getByText('some message')).not.toBeNull();
-  expect(getAllByText('ERROR')).not.toBeNull();
-});
+//   expect(getByText('Some Name')).not.toBeNull();
+//   expect(getByText('00002')).not.toBeNull();
+//   expect(getByText('some message')).not.toBeNull();
+//   expect(getAllByText('ERROR')).not.toBeNull();
+// });

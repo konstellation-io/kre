@@ -71,7 +71,7 @@ function SecuritySettings() {
 
   const { data: queryData, loading, error: queryError } = useQuery<
     SettingsResponse
-  >(GET_DOMAINS, { fetchPolicy: 'no-cache' });
+  >(GET_DOMAINS);
   const [updateAllowedDomain] = useMutation<SettingsResponse, SettingsVars>(
     UPDATE_DOMAINS,
     { onCompleted: onCompleteUpdateDomain }

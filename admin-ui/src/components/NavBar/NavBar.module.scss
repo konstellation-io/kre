@@ -2,15 +2,6 @@
 @import '../../styles/mixins';
 @import '../../styles/variables';
 
-.container {
-  border: solid 0px black;
-  border-width: 1px 0;
-}
-.container a:not(:last-child) div {
-  border: solid 0px black;
-  border-bottom-width: 1px;
-}
-
 .disabled {
   cursor: default;
 }
@@ -49,6 +40,11 @@
     pointer-events: none;
     color: $font-color-dark;
   }
+}
+
+.active {
+  cursor: default;
+  pointer-events: none;
 }
 
 .active .item {

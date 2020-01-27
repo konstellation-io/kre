@@ -106,9 +106,7 @@ exports[`Renders Settings without crashing 1`] = `
       <div
         class="navButtons"
       >
-        <div
-          class="container"
-        >
+        <div>
           <a
             aria-current="page"
             class="active"

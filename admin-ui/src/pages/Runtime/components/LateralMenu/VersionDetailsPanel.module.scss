@@ -1,0 +1,138 @@
+@import '../../../../styles/mixins';
+@import '../../../../styles/colors';
+@import '../../../../styles/variables';
+
+.shield {
+  position: fixed;
+  z-index: 3;
+  left: $lateral-menu-width + $runtime-menu-width;
+  top: $header-height;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.wrapper {
+  background-color: black;
+  width: 480px;
+  height: 100%;
+  border-top: 2px solid $color-grey-darker;
+}
+
+.section {
+  border-bottom: 1px solid #0d0e11;
+  padding: 25px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: bold;
+  color: $font-color-dark;
+}
+
+.sectionBtns {
+  width: 100px;
+  margin-left: auto;
+  padding: 16px;
+}
+
+.versionName {
+  color: $font-color-white;
+  font-weight: bold;
+  padding: 10px;
+}
+.versionDesc {
+  font-size: 11px;
+  padding: 10px;
+  color: $font-color;
+}
+
+.topContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px 20px 0 20px;
+
+  div {
+    display: flex;
+  }
+
+  .actionButtons {
+    margin-left: auto;
+  }
+
+  .circle {
+    width: 8px;
+    height: 8px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background-color: $color-green;
+    flex-shrink: 0;
+
+    &.CREATED,
+    &.STOPPED {
+      background-color: $font-color;
+    }
+    &.ACTIVE {
+      background-color: $color-green;
+    }
+    &.RUNNING {
+      background-color: $color-blue;
+    }
+  }
+  .status {
+    @include font-button;
+    color: $bg-color;
+
+    &.CREATED,
+    &.STOPPED {
+      color: $font-color;
+    }
+    &.ACTIVE {
+      color: $color-green;
+    }
+    &.RUNNING {
+      color: $color-blue;
+    }
+  }
+}
+
+.name {
+  @include font-body;
+  font-weight: 600;
+  line-height: 17px;
+
+  margin-bottom: 6px;
+}
+
+.version {
+  @include font-caption;
+
+  margin-bottom: 15px;
+}
+
+.col2CreatorName,
+.col2CreationDate {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.description {
+  @include font-small;
+}
+
+.activatedContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.activatedAuthor,
+.activatedDate {
+  @include font-caption;
+  line-height: 17px;
+
+  margin: 0 8px 0 8px;
+}

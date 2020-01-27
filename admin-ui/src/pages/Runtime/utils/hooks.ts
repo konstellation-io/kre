@@ -11,30 +11,30 @@ import {
   VersionActionVars
 } from '../pages/RuntimeStatusPreview/RuntimeStatusPreview.graphql';
 
-export enum actions {
+export enum versionActions {
   activate = 'activateVersion',
   deploy = 'deployVersion',
   stop = 'stopVersion',
   deactivate = 'deactivateVersion'
 }
 
-export default function useVersionAction(onCompleted: any = () => {}) {
+export default function useVersionAction() {
   const [activateMutation, { loading: loadingM1 }] = useMutation<
     ActivateVersionResponse,
     VersionActionVars
-  >(ACTIVATE_VERSION, { onCompleted });
+  >(ACTIVATE_VERSION);
   const [deactivateMutation, { loading: loadingM2 }] = useMutation<
     DeactivateVersionResponse,
     VersionActionVars
-  >(DEACTIVATE_VERSION, { onCompleted });
+  >(DEACTIVATE_VERSION);
   const [deployMutation, { loading: loadingM3 }] = useMutation<
     DeployVersionResponse,
     VersionActionVars
-  >(DEPLOY_VERSION, { onCompleted });
+  >(DEPLOY_VERSION);
   const [stopMutation, { loading: loadingM4 }] = useMutation<
     StopVersionResponse,
     VersionActionVars
-  >(STOP_VERSION, { onCompleted });
+  >(STOP_VERSION);
 
   const mutationLoading = [loadingM1, loadingM2, loadingM3, loadingM4].some(
     el => el
@@ -57,10 +57,10 @@ export default function useVersionAction(onCompleted: any = () => {}) {
   }
 
   return {
-    [actions.activate]: activateMutation,
-    [actions.deploy]: deployMutation,
-    [actions.stop]: stopMutation,
-    [actions.deactivate]: deactivateMutation,
+    [versionActions.activate]: activateMutation,
+    [versionActions.deploy]: deployMutation,
+    [versionActions.stop]: stopMutation,
+    [versionActions.deactivate]: deactivateMutation,
     getMutationVars,
     mutationLoading
   };

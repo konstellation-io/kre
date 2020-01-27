@@ -111,9 +111,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
 
 function Dashboard() {
   const history = useHistory();
-  const { data, loading, error } = useQuery(GET_DASHBOARD, {
-    fetchPolicy: 'no-cache'
-  });
+  const { data, loading, error } = useQuery(GET_DASHBOARD);
   const runtimes = get(data, 'runtimes', []);
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
 

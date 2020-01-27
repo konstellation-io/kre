@@ -77,9 +77,7 @@ function UsersActivity() {
     error,
     refetch: getUsersActivity,
     fetchMore
-  } = useQuery<UserActivityResponse>(GET_USERS_ACTIVITY, {
-    fetchPolicy: 'no-cache'
-  });
+  } = useQuery<UserActivityResponse>(GET_USERS_ACTIVITY);
 
   const [usersActivityData, setUsersActivityData] = useState<UserActivity[]>(
     []

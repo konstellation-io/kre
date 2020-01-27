@@ -26,7 +26,6 @@ export function Routes() {
       <Switch>
         <Redirect exact from={PAGES.HOME} to={PAGES.DASHBOARD} />
         <Redirect exact from={PAGES.SETTINGS} to={PAGES.SETTINGS_GENERAL} />
-        <Redirect exact from={PAGES.RUNTIME} to={PAGES.RUNTIME_STATUS} />
 
         <Route exact path={PAGES.LOGIN} component={Login} />
         <Route exact path={PAGES.VERIFY_EMAIL} component={VerifyEmail} />
@@ -36,8 +35,10 @@ export function Routes() {
         <Route path={PAGES.NEW_VERSION} component={AddVersion} />
 
         <Route exact path={PAGES.DASHBOARD} component={Dashboard} />
+
         <Route exact path={PAGES.RUNTIME} component={Runtime} />
-        <Route path={PAGES.RUNTIME_VERSION_PATHS} component={Runtime} />
+        <Route path={PAGES.RUNTIME_VERSION} component={Runtime} />
+
         <Route path={PAGES.SETTINGS} component={Settings} />
         <Route path={PAGES.AUDIT} component={UsersActivity} />
         <Route component={NotFound} />
