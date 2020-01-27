@@ -1,6 +1,13 @@
 #!/bin/sh
 
 . ./config.sh
+
+case $* in
+  # WARNING: Doing a hard reset before deploying
+   *--hard*)
+     . ./minikube_hard_reset.sh
+esac
+
 . ./minikube_start.sh
 
 set -e
@@ -54,6 +61,8 @@ if [ "$SKIP_BUILD" != "1" ]; then
     docker build -t konstellation/kre-runtime-entrypoint runtime-entrypoint
     show_header "kre-mongo-writer"
     docker build -t konstellation/kre-mongo-writer mongo-writer
+    show_header "runtime runner kre-py"
+    docker build -t konstellation/kre-py:latest runtime-runners/kre-py
 
     if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
       show_header "kre-operator"
@@ -70,10 +79,10 @@ kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
 helm dep update helm/kre
 helm upgrade \
   --wait --recreate-pods \
-  --install ${DEPLOY_NAME} --namespace ${NAMESPACE} \
+  --install "${DEPLOY_NAME}" --namespace "${NAMESPACE}" \
   helm/kre
 
-./scripts/show_minikube_etc_hosts.sh $MINIKUBE_PROFILE
+./scripts/show_minikube_etc_hosts.sh "${MINIKUBE_PROFILE}"
 
 if [ "$OPERATOR_SDK_INSTALLED" != "1" ]; then
       echo_warning "\n\n\n¡¡¡¡¡WARNING: Operator SDK not installed. Operator image was not built!!!\n\n\n"

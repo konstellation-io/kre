@@ -54,5 +54,9 @@ Create the name of the service account to use
 Create MongoDB ReplicaSet URI.
 */}}
 {{- define "runtime.mongoURI" -}}
-mongodb://{{ .Values.mongo.auth.adminUser }}:{{ .Values.mongo.auth.adminPassword }}@{{ .Release.Name }}-mongo-0:27017,{{ .Release.Name }}-mongo-1:27017,{{ .Release.Name }}-mongo-2:27017/admin?replicaSet=rs0
+  {{- printf "mongodb://%s:%s@" $.Values.mongo.auth.adminUser $.Values.mongo.auth.adminPassword -}}
+    {{- printf "%s-mongo-%d.%s-mongo:27017," $.Release.Name 0 $.Release.Name -}}
+    {{- printf "%s-mongo-%d.%s-mongo:27017," $.Release.Name 1 $.Release.Name -}}
+    {{- printf "%s-mongo-%d.%s-mongo:27017" $.Release.Name 2 $.Release.Name -}}
+  {{- printf "/admin?replicaSet=rs0" -}}
 {{- end -}}

@@ -39,7 +39,7 @@ func (m *MongoDB) Connect() error {
 		os.Exit(1)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(m.cfg.MongoDB.ConnTimeout)*time.Second)
 	defer cancel()
 
 	err = client.Connect(ctx)
@@ -49,7 +49,7 @@ func (m *MongoDB) Connect() error {
 	}
 
 	// Call Ping to verify that the deployment is up and the Client was configured successfully.
-	ctx, cancel = context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), time.Duration(m.cfg.MongoDB.ConnTimeout)*time.Second)
 	defer cancel()
 
 	m.logger.Info("MongoDB ping...")
@@ -71,7 +71,7 @@ func (m *MongoDB) Disconnect() error {
 		return nil
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(m.cfg.MongoDB.ConnTimeout)*time.Second)
 	defer cancel()
 
 	return m.client.Disconnect(ctx)
@@ -82,7 +82,7 @@ func (m *MongoDB) KeepAlive(waitc chan<- struct{}) {
 		for {
 			time.Sleep(5 * time.Second)
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-			m.logger.Info("Mongo keep alive...")
+			m.logger.Debug("Mongo keep alive...")
 			err := m.client.Ping(ctx, readpref.Primary())
 			if err != nil {
 				cancel()

@@ -1,6 +1,8 @@
+debug: 0
 nats:
-  server: "localhost:4222"
+  server: "kre-nats:4222"
   clusterId: "test-cluster"
 mongodb:
-  address: "mongodb://admin:123456@localhost:27017/localKRE"
+  address: "mongodb://admin:123456@kre-mongo:27017/admin"
   dbName: "localKRE"
+  connTimeout: 120

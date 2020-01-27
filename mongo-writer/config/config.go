@@ -12,14 +12,16 @@ var cfg *Config
 
 // Config holds the configuration values for the application
 type Config struct {
-	Nats struct {
+	Debug string `yaml:"debug" envconfig:"DEBUG"`
+	Nats  struct {
 		Server    string `yaml:"server" envconfig:"KRT_NATS_SERVER"`
 		ClusterID string `yaml:"clusterId" envconfig:"KRT_NATS_CLUSTER_ID"`
 	} `yaml:"nats"`
 
 	MongoDB struct {
-		Address string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
-		DBName  string `yaml:"dbName" envconfig:"KRE_MONGODB_DB_NAME"`
+		Address     string `yaml:"address" envconfig:"KRE_RUNTIME_MONGO_URI"`
+		DBName      string `yaml:"dbName" envconfig:"KRE_MONGODB_DB_NAME"`
+		ConnTimeout int    `yaml:"connTimeout" envconfig:"KRE_MONGODB_CONN_TIMEOUT"`
 	} `yaml:"mongodb"`
 }
 

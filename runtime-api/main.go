@@ -4,6 +4,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/service/k8s"
+	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/service/mongodb"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/delivery/grpc"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase"
 )
@@ -13,8 +14,8 @@ func main() {
 	logger := logging.NewLogger()
 
 	resourceManager := k8s.NewResourceManagerService(cfg, logger)
-
-	versionInteractor := usecase.NewVersionInteractor(logger, resourceManager)
+	logStreamService := mongodb.NewLogStreamService(cfg, logger)
+	versionInteractor := usecase.NewVersionInteractor(logger, resourceManager, logStreamService)
 
 	app := grpc.NewApp(
 		cfg,

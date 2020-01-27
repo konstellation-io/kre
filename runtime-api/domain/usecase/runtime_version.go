@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"github.com/iancoleman/strcase"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
@@ -26,17 +27,20 @@ var AllVersionStatus = []VersionStatus{
 }
 
 type VersionInteractor struct {
-	logger          logging.Logger
-	resourceManager service.ResourceManagerService
+	logger           logging.Logger
+	resourceManager  service.ResourceManagerService
+	logStreamService service.LogStreamService
 }
 
 func NewVersionInteractor(
 	logger logging.Logger,
 	resourceManager service.ResourceManagerService,
+	logStreamService service.LogStreamService,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		logger,
 		resourceManager,
+		logStreamService,
 	}
 }
 
@@ -181,9 +185,9 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version) error {
 	return i.resourceManager.UpdateVersionConfig(version)
 }
 
-func (i *VersionInteractor) WatchNodeLogs(nodeId string) (chan *entity.NodeLog, chan struct{}) {
+func (i *VersionInteractor) WatchNodeLogs(ctx context.Context, nodeId string) chan *entity.NodeLog {
 	statusCh := make(chan *entity.NodeLog, 1)
-	stopCh := i.resourceManager.WatchNodeLogs(nodeId, statusCh)
+	i.logStreamService.WatchNodeLogs(ctx, nodeId, statusCh)
 
-	return statusCh, stopCh
+	return statusCh
 }

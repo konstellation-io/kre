@@ -10,5 +10,4 @@ type ResourceManagerService interface {
 	DeactivateVersion(name string) error
 	ActivateVersion(name string) error
 	UpdateVersionConfig(version *entity.Version) error
-	WatchNodeLogs(nodeId string, logsCh chan<- *entity.NodeLog) chan struct{}
 }

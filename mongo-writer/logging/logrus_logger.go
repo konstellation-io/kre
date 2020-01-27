@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -11,7 +12,7 @@ type Logger struct {
 }
 
 // NewLogger creates a new logrus logger instance.
-func NewLogger() *Logger {
+func NewLogger(cfg *config.Config) *Logger {
 	// Log as JSON instead of the default ASCII formatter.
 	log.SetFormatter(&log.JSONFormatter{})
 
@@ -21,20 +22,27 @@ func NewLogger() *Logger {
 
 	// Only log the warning severity or above.
 	log.SetLevel(log.InfoLevel)
+	if cfg.Debug == "1" {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	return &Logger{
 		log.WithField("app_name", "admin-api"),
 	}
 }
 
-func (l *Logger) Info(msg string) {
-	l.logger.Info(msg)
+func (l *Logger) Debug(all ...interface{}) {
+	l.logger.Debug(all...)
 }
 
-func (l *Logger) Warn(msg string) {
-	l.logger.Warn(msg)
+func (l *Logger) Info(all ...interface{}) {
+	l.logger.Info(all...)
 }
 
-func (l *Logger) Error(msg string) {
-	l.logger.Error(msg)
+func (l *Logger) Warn(all ...interface{}) {
+	l.logger.Warn(all...)
+}
+
+func (l *Logger) Error(all ...interface{}) {
+	l.logger.Error(all...)
 }

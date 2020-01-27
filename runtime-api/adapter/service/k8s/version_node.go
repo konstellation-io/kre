@@ -379,29 +379,3 @@ func (k *ResourceManagerService) deleteConfigMapsSync(label, namespace string) e
 		}
 	}
 }
-
-// Node Logs
-func (k *ResourceManagerService) WatchNodeLogs(nodeId string, logsCh chan<- *entity.NodeLog) chan struct{} {
-
-	stopCh := make(chan struct{})
-
-	go func() {
-		// TODO: Read logs from mongo oplogs
-		for n := 0; n <= 100; n++ {
-
-			logsCh <- &entity.NodeLog{
-				Date:      time.Now().Format(time.RFC3339),
-				Type:      "SYSTEM",
-				VersionId: "airbnb-v100",
-				NodeId:    nodeId,
-				PodId:     "adasdfasdfa",
-				Message:   fmt.Sprintf("Log: %d", n),
-				Level:     "INFO",
-			}
-			time.Sleep(100 * time.Millisecond)
-		}
-		stopCh <- struct{}{}
-	}()
-
-	return stopCh
-}

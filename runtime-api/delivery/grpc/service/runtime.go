@@ -8,7 +8,6 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/runtimepb"
-	"time"
 )
 
 // RuntimeService basic server
@@ -208,27 +207,16 @@ func (s *RuntimeService) WatchNodeLogs(req *runtimepb.WatchNodeLogsRequest, stre
 
 	s.logger.Info("------------ STARTING WATCHER -------------")
 
-	statusCh, waitCh := s.interactor.WatchNodeLogs(nodeId)
+	ctx, cancel := context.WithCancel(stream.Context())
+	defer cancel()
 
-	keepAliveCh := time.Tick(5 * time.Second)
+	statusCh := s.interactor.WatchNodeLogs(ctx, nodeId)
 
 	for {
 		select {
-		case <-waitCh:
-			s.logger.Info("------------- WATCHER STOPPED. RETURN FROM GRPC FUNCTION ---------")
+		case <-ctx.Done():
+			s.logger.Info("------------- STREAM CONTEXT STOPPED ---------")
 			return nil
-
-		case <-keepAliveCh:
-			s.logger.Info("------------- SENDING KEEP ALIVE ---------")
-
-			err := stream.Send(&runtimepb.WatchNodeLogsResponse{})
-			if err != nil {
-				s.logger.Info("---------- KEEP ALIVE FAIL SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
-				close(waitCh)
-				s.logger.Error(err.Error())
-				return err
-			}
-
 		case nodeLog := <-statusCh:
 			err := stream.Send(&runtimepb.WatchNodeLogsResponse{
 				Date:      nodeLog.Date,
@@ -242,7 +230,6 @@ func (s *RuntimeService) WatchNodeLogs(req *runtimepb.WatchNodeLogsRequest, stre
 
 			if err != nil {
 				s.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
-				close(waitCh)
 				s.logger.Error(err.Error())
 				return err
 			}

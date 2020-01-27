@@ -15,20 +15,20 @@ import (
 
 func main() {
 	cfg := config.NewConfig()
-	logger := logging.NewLogger()
+	logger := logging.NewLogger(cfg)
 
 	mongoCli := mongodb.NewMongoDB(cfg, logger)
 	natsCli := nats.NewNats(cfg, logger)
 
 	err := mongoCli.Connect()
 	if err != nil {
-		logger.Error(fmt.Sprintf("MONGO CONN ERROR: %s", err.Error()))
+		logger.Error("MONGO CONN ERROR:", err.Error())
 		os.Exit(1)
 	}
 
 	err = natsCli.ConnectNats()
 	if err != nil {
-		logger.Error(fmt.Sprintf("NATS CONN ERROR: %s", err.Error()))
+		logger.Error("NATS CONN ERROR: ", err.Error())
 		os.Exit(1)
 	}
 
@@ -40,6 +40,7 @@ func main() {
 
 	if err != nil {
 		shutdownService(mongoCli, natsCli, logger)
+		return
 	}
 
 	ticker := time.NewTicker(5 * time.Second)
@@ -77,9 +78,6 @@ out:
 
 		}
 	}
-
-	// Wait until some error occur
-	<-waitc
 }
 
 func shutdownService(mongoCli *mongodb.MongoDB, natsCli *nats.Nats, logger *logging.Logger) {
