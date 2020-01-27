@@ -1,8 +1,9 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
+@import '../../styles/variables';
 
 .container {
-  width: 204px;
+  width: $lateral-menu-width;
   height: 100%;
   flex-shrink: 0;
   background-color: $color-sidebar;

@@ -778,6 +778,20 @@ func (i *VersionInteractor) GetByID(id string) (*entity.Version, error) {
 	return i.versionRepo.GetByID(id)
 }
 
+func (i *VersionInteractor) WatchVersionStatus(versionId string, stopCh <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
+	version, err := i.versionRepo.GetByID(versionId)
+	if err != nil {
+		return nil, err
+	}
+
+	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	return i.runtimeService.WatchVersionStatus(runtime, version.Name, stopCh)
+}
+
 func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
 	stopChannel chan bool) (<-chan *entity.NodeLog, error) {
 

@@ -18,6 +18,34 @@ type Node struct {
 	Status string `bson:"status"`
 }
 
+type NodeStatus string
+
+const (
+	NodeStatusStarted NodeStatus = "STARTED"
+	NodeStatusStopped NodeStatus = "STOPPED"
+	NodeStatusError   NodeStatus = "ERROR"
+)
+
+func (n *NodeStatus) GetStatus(key string) NodeStatus {
+	var status NodeStatus
+	switch key {
+	case "STARTED":
+		status = NodeStatusStarted
+	case "STOPPED":
+		status = NodeStatusStopped
+	case "ERROR":
+		status = NodeStatusError
+	}
+
+	return status
+}
+
+type VersionNodeStatus struct {
+	NodeID  string
+	Status  NodeStatus
+	Message string
+}
+
 type Workflow struct {
 	Name       string `bson:"name"`
 	Entrypoint string `bson:"entrypoint"`

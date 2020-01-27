@@ -191,3 +191,11 @@ func (i *VersionInteractor) WatchNodeLogs(ctx context.Context, nodeId string) ch
 
 	return statusCh
 }
+
+func (i *VersionInteractor) WatchVersionStatus(versionName string) (chan *entity.VersionNodeStatus, chan struct{}) {
+
+	statusCh := make(chan *entity.VersionNodeStatus, 1)
+	stopCh := i.resourceManager.WatchVersionNodeStatus(versionName, statusCh)
+
+	return statusCh, stopCh
+}

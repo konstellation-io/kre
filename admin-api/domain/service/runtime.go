@@ -9,4 +9,5 @@ type RuntimeService interface {
 	DeactivateVersion(runtime *entity.Runtime, versionName string) error
 	ActivateVersion(runtime *entity.Runtime, versionName string) error
 	WatchNodeLogs(runtime *entity.Runtime, nodeID string, stopChannel <-chan bool) (<-chan *entity.NodeLog, error)
+	WatchVersionStatus(runtime *entity.Runtime, versionName string, stopChannel <-chan bool) (<-chan *entity.VersionNodeStatus, error)
 }

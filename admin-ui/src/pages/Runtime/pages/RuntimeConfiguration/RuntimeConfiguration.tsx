@@ -63,15 +63,13 @@ function RuntimeConfiguration({ refetchVersion }: Props) {
     GetVersionConfigResponse,
     GetVersionConfigVars
   >(GET_CONFIGURATION_VARIABLES, {
-    variables: { versionId: versionId || undefined },
-    fetchPolicy: 'no-cache'
+    variables: { versionId: versionId || undefined }
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<
     Version,
     UpdateVersionConfigVars
   >(UPDATE_VERSION_CONFIGURATION, {
-    onCompleted: onCompleteUpdate,
-    fetchPolicy: 'no-cache'
+    onCompleted: onCompleteUpdate
   });
 
   useEffect(() => {

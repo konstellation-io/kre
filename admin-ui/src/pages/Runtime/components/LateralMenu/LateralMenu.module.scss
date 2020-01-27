@@ -1,0 +1,27 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/colors';
+@import '../../../../styles/mixins';
+
+.wrapper {
+  position: relative;
+  width: $lateral-menu-width;
+  background-color: $color-grey-darker;
+  display: flex;
+  flex-direction: column;
+}
+
+.runtimeNameSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.runtimeHexagon {
+  padding: 15px;
+}
+
+.runtimeName {
+  @include font-subheader;
+  color: $font-color-white;
+  margin-right: 15px;
+}

@@ -139,3 +139,54 @@ a:active {
 .icon-big {
   font-size: 2rem !important;
 }
+
+/*
+ * Tabs
+ */
+.react-tabs {
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &__tab-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__tab {
+    flex-grow: 1;
+    position: relative;
+    list-style: none;
+    cursor: pointer;
+
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #121317;
+    font-weight: bold;
+
+    &--selected {
+      color: $font-color-white;
+      background-color: #212428;
+      height: 32px;
+    }
+
+    &--disabled {
+      color: $font-color-dark;
+      cursor: default;
+    }
+  }
+
+  &__tab-panel {
+    display: none;
+    overflow: hidden;
+    position: relative;
+
+    &--selected {
+      display: block;
+    }
+  }
+}

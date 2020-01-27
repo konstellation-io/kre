@@ -101,6 +101,16 @@ message WatchNodeLogsResponse {
   string level = 7;
 }
 
+message WatchVersionRequest {
+  Version version = 1;
+}
+
+message VersionNodeStatusResponse {
+  string NodeId = 1;
+  string Status = 2;
+  string Message = 3;
+}
+
 service RuntimeService {
   rpc DeployVersion (DeployVersionRequest) returns (DeployVersionResponse) {
   };
@@ -114,5 +124,6 @@ service RuntimeService {
   };
   rpc WatchNodeLogs (WatchNodeLogsRequest) returns (stream WatchNodeLogsResponse) {
   };
-
+  rpc WatchVersionStatus (WatchVersionRequest) returns (stream VersionNodeStatusResponse) {
+  };
 };

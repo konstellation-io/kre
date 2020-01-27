@@ -53,7 +53,7 @@ function NavBar({ tabs }: Props) {
     );
   });
 
-  return <div className={styles.container}>{tabElements}</div>;
+  return <div>{tabElements}</div>;
 }
 
 export default NavBar;

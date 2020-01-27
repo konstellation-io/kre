@@ -489,16 +489,49 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *Runt
 	return runtimeCreatedChan, nil
 }
 
-func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID string) (<-chan *NodeLog, error) {
+func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId string) (<-chan *VersionNodeStatus, error) {
 	stopCh := make(chan bool)
-	inputChan, err := r.versionInteractor.WatchNodeLogs(runtimeID, nodeID, stopCh)
+	inputChan, err := r.versionInteractor.WatchVersionStatus(versionId, stopCh)
 	if err != nil {
 		return nil, err
 	}
+	r.logger.Info("------------ STARTING SUBSCRIPTION -------------")
+
+	outputChan := make(chan *VersionNodeStatus)
+
+	go func() {
+		for {
+			select {
+			case nodeStatus := <-inputChan:
+				if nodeStatus == nil {
+					r.logger.Info("------------ SUBSCRIPTION INPUTCHAN CLOSED. CLOSING -------------")
+					close(outputChan)
+					return
+				}
+				outputChan <- toGQlVersionNodeStatus(nodeStatus)
+			case <-ctx.Done():
+				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")
+				stopCh <- true
+				close(outputChan)
+				return
+			}
+
+		}
+
+	}()
+
+	return outputChan, nil
+}
+
+func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID string) (<-chan *NodeLog, error) {
+	stopCh := make(chan bool)
+	inputChan, err := r.versionInteractor.WatchNodeLogs(runtimeID, nodeID, stopCh)
+
 
 	r.logger.Info("------------ STARTING LOGGER SUBSCRIPTION -------------")
 
 	outputChan := make(chan *NodeLog)
+
 
 	go func() {
 		for {
@@ -510,6 +543,7 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 					return
 				}
 				outputChan <- toGQlNodeLog(nodeLog)
+			
 
 			case <-ctx.Done():
 				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")

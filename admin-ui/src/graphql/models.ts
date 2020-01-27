@@ -24,9 +24,28 @@ export interface Version {
   activationDate: string;
   activationAuthor: User;
   status: VersionStatus;
+  workflows: Workflow[];
   configurationVariables: ConfigurationVariable[];
   configurationCompleted: boolean;
 }
+
+export type Workflow = {
+  name: string;
+  nodes: Node[];
+  edges: Edge[];
+};
+
+export type Edge = {
+  id: string;
+  fromNode: string;
+  toNode: string;
+};
+
+export type Node = {
+  id: string;
+  name?: string;
+  status: NodeStatus;
+};
 
 export enum ConfigurationVariableType {
   VARIABLE = 'VARIABLE',
@@ -58,6 +77,13 @@ export type Settings = {
   sessionLifetimeInDays?: number;
 };
 
+export type VersionNodeStatus = {
+  date: string;
+  nodeId: string;
+  status: NodeStatus;
+  message: string;
+};
+
 export enum RuntimeStatus {
   CREATING = 'CREATING',
   RUNNING = 'RUNNING',
@@ -79,8 +105,8 @@ export enum VersionEnvStatus {
 }
 
 export enum NodeStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
+  STARTED = 'STARTED',
+  STOPPED = 'STOPPED',
   ERROR = 'ERROR'
 }
 

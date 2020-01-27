@@ -28,8 +28,8 @@ require (
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
 	go.mongodb.org/mongo-driver v1.1.3
-	golang.org/x/net v0.0.0-20190522155817-f3200d17e092
-	google.golang.org/grpc v1.25.1
+	golang.org/x/net v0.0.0-20190812203447-cdfb69ac37fc
+	google.golang.org/grpc v1.26.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df

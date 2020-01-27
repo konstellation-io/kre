@@ -1,0 +1,18 @@
+@import '../../../../styles/colors';
+
+.wrapper {
+  padding: 16px;
+}
+
+.title {
+  color: $font-color-white;
+  font-weight: bold;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.text {
+  color: $font-color;
+  font-size: 13px;
+  margin-bottom: 32px;
+}

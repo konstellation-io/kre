@@ -55,7 +55,7 @@ export default function getMessage(
 
   const runtimeLink =
     userActivity.type === UserActivityType.CREATE_RUNTIME && runtimeId ? (
-      <Link to={buildRoute.runtime(ROUTES.RUNTIME_STATUS, runtimeId)}>
+      <Link to={buildRoute.runtime(ROUTES.RUNTIME, runtimeId)}>
         {runtimeName}
       </Link>
     ) : (

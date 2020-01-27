@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import VersionNode, { TYPES } from '../Shape/Node/Node';
 
@@ -33,7 +33,7 @@ type Edge = {
   toNode: string;
 };
 
-type Workflow = {
+export type Workflow = {
   name: string;
   nodes: Node[];
   edges: Edge[];
@@ -49,7 +49,7 @@ type Props = {
     left: number;
   };
   data: Workflow[];
-  preview: boolean;
+  published: boolean;
 };
 
 function getNodeTextPadding(type: string) {
@@ -63,21 +63,41 @@ function getNodeTextPadding(type: string) {
   }
 }
 
-function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
+function VersionStatusViewer({
+  width,
+  height,
+  margin,
+  data,
+  published
+}: Props) {
+  const [shouldComponentUpdate, setShouldComponentUpdate] = useState(false);
   const container = useRef(null);
   const svg = useRef(null);
 
   const nodeIdToIndex: any = {};
   let g: any;
   let defs: any;
-  let workflows: any;
+  let newWorkflows: any;
   let workflowsTag: any;
   let nodes: any;
-  let nodesG: any;
+  let newNodes: any;
   let edges: any;
+  let newEdges: any;
   let edgesG: any;
   let busG: any;
-  let xScale: ScaleBand<string>;
+  let xScale: any;
+  let fontSize: any;
+  let nodeHeight: any;
+  let outerPadding: any;
+  const ref = useRef<any>({
+    workflowsG: null,
+    workflows: null,
+    oldWorkflows: null,
+    nodesG: null,
+    oldNodes: null,
+    nodeWidth: null,
+    nodeSizeRatio: null
+  });
 
   const marginWorkflow = width * MARGIN_WORKFLOW_NAMES_PERC;
   const marginLeft = marginWorkflow + margin.left;
@@ -89,7 +109,14 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
   useEffect(() => {
     cleanup();
     initialize();
+    setShouldComponentUpdate(true);
   }, [width, height]);
+
+  useEffect(() => {
+    if (shouldComponentUpdate) {
+      updateChart();
+    }
+  }, [data]);
 
   function cleanup() {
     select(svg.current)
@@ -119,6 +146,14 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
   }
 
+  function updateChart() {
+    setData.workflows();
+    setData.nodes();
+    update.workflows();
+    update.nodes();
+    update.workflowTags();
+  }
+
   function initialize() {
     const svgSelection = select(svg.current);
 
@@ -134,7 +169,7 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       [width * 1.25, height * 1.25]
     ];
 
-    // Add zoom
+    // Adds zoom
     const zoomed = () => g.attr('transform', event.transform);
     const zoomFunc = zoom()
       .scaleExtent([0.5, 7])
@@ -150,204 +185,283 @@ function VersionStatusViewer({ width, height, margin, data, preview }: Props) {
       .paddingOuter(SCALE_PADDING_OUTER)
       .domain(xDomainIndexes);
 
-    const nodeWidth = xScale.bandwidth();
-    const stepWidth = xScale.step();
-    const outerPadding = stepWidth * SCALE_PADDING_OUTER;
-    const nodeSizeRatio = nodeWidth / DEFAULT_NODE_WIDTH;
-    const nodeHeight = DEFAULT_NODE_HEIGHT * nodeSizeRatio;
-    const fontSize = (nodeWidth / 21).toFixed(1);
+    ref.current.nodeWidth = xScale.bandwidth();
+    ref.current.nodeSizeRatio = ref.current.nodeWidth / DEFAULT_NODE_WIDTH;
+    outerPadding = xScale.step() * SCALE_PADDING_OUTER;
+    nodeHeight = DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio;
+    fontSize = (ref.current.nodeWidth / 21).toFixed(1);
 
-    // Initialize workflows
-    workflows = g
-      .selectAll(`.${styles.workflow}`)
-      .data(data)
-      .enter()
-      .append('g')
-      .classed(styles.workflow, true)
-      .attr(
-        'transform',
-        (d: Workflow, idx: number) => `translate(0,${idx * 100})`
-      );
+    // Create workflows
+    ref.current.workflowsG = g.append('g').classed(styles.workflows, true);
+    setData.workflows();
+    create.workflows();
 
-    // Initialize workflows tag
-    workflowsTag = workflows
-      .append('g')
-      .attr('transform', `translate(0, 50)`)
-      .classed(styles.preview, preview)
-      .classed(styles.workflowTag, true);
-    workflowsTag
-      .append('text')
-      .classed(styles.workflowTagText, true)
-      .attr('x', marginWorkflow - 10)
-      .attr('y', nodeHeight / 2)
-      .attr('dy', 0)
-      .style('font-size', `${fontSize}px`)
-      .text((d: Workflow) => d.name)
-      .call(centerText, fontSize);
-    workflowsTag
-      .append('line')
-      .attr('x1', marginWorkflow)
-      .attr('x2', marginWorkflow)
-      .attr('y1', 2.5)
-      .attr('y2', -2.5 + nodeHeight)
-      .attr('stroke-width', STROKE_WIDTH);
-    workflowsTag
-      .append('line')
-      .attr('x1', marginWorkflow)
-      .attr('x2', xScale('0'))
-      .attr('y1', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      .attr('y2', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      .attr('stroke-width', STROKE_WIDTH)
-      .attr('stroke-dasharray', '3, 3');
-    workflowsTag
-      .append('path')
-      .attr('d', 'M 0 0 l -7 -3 M 0 0 l -7 3')
-      .attr(
-        'transform',
-        `translate(${xScale('0')}, ${(DEFAULT_NODE_HEIGHT * nodeSizeRatio) /
-          2})`
-      )
-      .attr('stroke-width', STROKE_WIDTH);
+    // Create workflows tag
+    create.workflowTags();
 
-    // Initialize nodes/edges groups
-    nodesG = workflows
+    // Create nodes/edges groups
+    ref.current.nodesG = newWorkflows
       .append('g')
       .classed(styles.nodesG, true)
       .attr('transform', 'translate(0, 50)');
-    edgesG = workflows
+    edgesG = newWorkflows
       .append('g')
       .classed(styles.edgesG, true)
       .attr('transform', 'translate(0, 50)');
 
-    // Initialize nodes
-    nodes = nodesG
-      .selectAll(`.${styles.node}`)
-      .data((d: Workflow) => d.nodes)
-      .enter()
-      .append('g')
-      .attr('id', (d: Node) => `node_${d.id}`)
-      .classed(styles.node, true)
-      .attr(
-        'transform',
-        (d: Node, idx: number) => `translate(${xScale(idx.toString())}, 0)`
-      )
-      .on('mouseenter', (d: Node) => events.nodeHighlight(d, true))
-      .on('mouseleave', (d: Node) => events.nodeHighlight(d, false))
-      .each(function(d: Node) {
+    // Create nodes
+    setData.nodes();
+    create.nodes();
+
+    // Create edges
+    setData.edges();
+    create.edges();
+
+    // Create Data Bus
+    create.bus();
+  }
+
+  const setData = {
+    workflows: function() {
+      ref.current.workflows = ref.current.workflowsG
+        .selectAll(`.${styles.workflow}`)
+        .data(data);
+    },
+    nodes: function() {
+      nodes = ref.current.nodesG
+        .selectAll(`.${styles.node}`)
+        .data((d: Workflow) => d.nodes);
+    },
+    edges: function() {
+      edges = edgesG
+        .selectAll(`.${styles.edge}`)
+        .data((d: Workflow) => d.edges);
+    }
+  };
+
+  const update = {
+    // Pass new data to children components
+    workflows: function() {
+      ref.current.oldWorkflows = ref.current.workflows.select(
+        `.${styles.nodesG}`
+      );
+
+      ref.current.oldNodes = ref.current.workflows
+        .selectAll(`.${styles.node}`)
+        .data((d: Workflow) => {
+          return d.nodes;
+        });
+    },
+    // Updates node status
+    nodes: function() {
+      ref.current.oldNodes.each(function(d: Node) {
         // @ts-ignore
         select(this)
-          .append('g')
-          .attr('transform', 'translate(0, 0)')
+          .select('g')
           .html(
             ReactDOMServer.renderToString(
               <VersionNode
                 type={d.type || TYPES.DEFAULT}
-                width={nodeWidth}
-                height={DEFAULT_NODE_HEIGHT * nodeSizeRatio}
+                width={ref.current.nodeWidth}
+                height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}
                 status={d.status}
               />
             )
           );
       });
-    nodes
-      .append('text')
-      .classed('nodeText', true)
-      .classed(styles.nodeText, true)
-      .attr(
-        'x',
-        (d: Node) => getNodeTextPadding(d.type || TYPES.DEFAULT) * nodeSizeRatio
-      )
-      .attr('y', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      .attr('dy', 0)
-      .style('font-size', `${fontSize}px`)
-      .text((d: Node) => d.name)
-      .call(wrap, 47 * nodeSizeRatio)
-      .call(centerText, fontSize);
+    },
+    workflowTags: function() {
+      ref.current.workflows
+        .selectAll(`.${styles.workflowTag}`)
+        .classed(styles.published, published);
+    }
+  };
 
-    // Initialize edges
-    edges = edgesG
-      .selectAll(`.${styles.edge}`)
-      .data((d: Workflow) => d.edges)
-      .enter()
-      .append('g')
-      .attr('class', (d: Edge) => styles[d.status || NodeStatus.ACTIVE])
-      .classed(styles.edge, true);
-    edges
-      .append('path')
-      .classed(styles.edgeLine, true)
-      .attr('d', 'M 0 0 m -7 -3 l +7 +3 l -7 3')
-      .attr(
-        'transform',
-        (d: Edge) =>
-          `translate(${xScale(
-            nodeIdToIndex[d.toNode]
-          )}, ${(DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2})`
-      )
-      .attr('stroke-width', STROKE_WIDTH);
-    edges
-      .append('line')
-      .classed('edgeLine', true)
-      .classed(styles.edgeLine, true)
-      .attr(
-        'x1',
-        // @ts-ignore
-        (d: Edge) => xScale(nodeIdToIndex[d.fromNode]) + nodeWidth - 2
-      )
-      .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.toNode]))
-      .attr('y1', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      .attr('y2', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      .attr('stroke-dasharray', '3, 3')
-      .attr('stroke-width', STROKE_WIDTH);
-    edges
-      .append('line')
-      .classed(styles.lineContainer, true)
-      .attr(
-        'x1',
-        // @ts-ignore
-        (d: Edge) => xScale(nodeIdToIndex[d.fromNode]) + nodeWidth - 2
-      )
-      .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.toNode]))
-      .attr('y1', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      .attr('y2', (DEFAULT_NODE_HEIGHT * nodeSizeRatio) / 2)
-      .on('mouseenter', function() {
-        // @ts-ignore
-        events.edgeHighlight(this, true);
-      })
-      .on('mouseleave', function() {
-        // @ts-ignore
-        events.edgeHighlight(this, false);
-      });
+  const create = {
+    workflows: function() {
+      newWorkflows = ref.current.workflows
+        .enter()
+        .append('g')
+        .classed(styles.workflow, true)
+        .attr(
+          'transform',
+          (d: Workflow, idx: number) => `translate(0,${idx * 100})`
+        );
+    },
+    nodes: function() {
+      newNodes = nodes
+        .enter()
+        .append('g')
+        .attr('id', (d: Node) => `node_${d.id}`)
+        .classed(styles.node, true)
+        .attr(
+          'transform',
+          (d: Node, idx: number) => `translate(${xScale(idx.toString())}, 0)`
+        )
+        .on('mouseenter', (d: Node) => events.nodeHighlight(d, true))
+        .on('mouseleave', (d: Node) => events.nodeHighlight(d, false))
+        .each(function(d: Node) {
+          // @ts-ignore
+          select(this)
+            .append('g')
+            .attr('transform', 'translate(0, 0)')
+            .html(
+              ReactDOMServer.renderToString(
+                <VersionNode
+                  type={d.type || TYPES.DEFAULT}
+                  width={ref.current.nodeWidth}
+                  height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}
+                  status={d.status}
+                />
+              )
+            );
+        });
+      newNodes
+        .append('text')
+        .classed('nodeText', true)
+        .classed(styles.nodeText, true)
+        .attr(
+          'x',
+          (d: Node) =>
+            getNodeTextPadding(d.type || TYPES.DEFAULT) *
+            ref.current.nodeSizeRatio
+        )
+        .attr('y', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
+        .attr('dy', 0)
+        .style('font-size', `${fontSize}px`)
+        .text((d: Node) => d.name)
+        .call(wrap, 47 * ref.current.nodeSizeRatio)
+        .call(centerText, fontSize);
+    },
+    workflowTags: function() {
+      workflowsTag = newWorkflows
+        .append('g')
+        .attr('transform', `translate(0, 50)`)
+        .classed(styles.published, published)
+        .classed(styles.workflowTag, true);
+      workflowsTag
+        .append('text')
+        .classed(styles.workflowTagText, true)
+        .attr('x', marginWorkflow - 10)
+        .attr('y', nodeHeight / 2)
+        .attr('dy', 0)
+        .style('font-size', `${fontSize}px`)
+        .text((d: Workflow) => d.name)
+        .call(centerText, fontSize);
+      workflowsTag
+        .append('line')
+        .attr('x1', marginWorkflow)
+        .attr('x2', marginWorkflow)
+        .attr('y1', 2.5)
+        .attr('y2', -2.5 + nodeHeight)
+        .attr('stroke-width', STROKE_WIDTH);
+      workflowsTag
+        .append('line')
+        .attr('x1', marginWorkflow)
+        .attr('x2', xScale('0'))
+        .attr('y1', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
+        .attr('y2', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
+        .attr('stroke-width', STROKE_WIDTH)
+        .attr('stroke-dasharray', '3, 3');
+      workflowsTag
+        .append('path')
+        .attr('d', 'M 0 0 l -7 -3 M 0 0 l -7 3')
+        .attr(
+          'transform',
+          `translate(${xScale('0')}, ${(DEFAULT_NODE_HEIGHT *
+            ref.current.nodeSizeRatio) /
+            2})`
+        )
+        .attr('stroke-width', STROKE_WIDTH);
+    },
+    edges: function() {
+      newEdges = edges
+        .enter()
+        .append('g')
+        .attr('class', (d: Edge) => styles[d.status || NodeStatus.STARTED])
+        .classed(styles.edge, true);
+      newEdges
+        .append('path')
+        .classed(styles.edgeLine, true)
+        .attr('d', 'M 0 0 m -7 -3 l +7 +3 l -7 3')
+        .attr(
+          'transform',
+          (d: Edge) =>
+            `translate(${xScale(
+              nodeIdToIndex[d.toNode]
+            )}, ${(DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2})`
+        )
+        .attr('stroke-width', STROKE_WIDTH);
+      newEdges
+        .append('line')
+        .classed('edgeLine', true)
+        .classed(styles.edgeLine, true)
+        .attr(
+          'x1',
+          // @ts-ignore
+          (d: Edge) =>
+            xScale(nodeIdToIndex[d.fromNode]) + ref.current.nodeWidth - 2
+        )
+        .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.toNode]))
+        .attr('y1', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
+        .attr('y2', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
+        .attr('stroke-dasharray', '3, 3')
+        .attr('stroke-width', STROKE_WIDTH);
+      newEdges
+        .append('line')
+        .classed(styles.lineContainer, true)
+        .attr(
+          'x1',
+          // @ts-ignore
+          (d: Edge) =>
+            xScale(nodeIdToIndex[d.fromNode]) + ref.current.nodeWidth - 2
+        )
+        .attr('x2', (d: Edge) => xScale(nodeIdToIndex[d.toNode]))
+        .attr('y1', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
+        .attr('y2', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
+        .on('mouseenter', function() {
+          // @ts-ignore
+          events.edgeHighlight(this, true);
+        })
+        .on('mouseleave', function() {
+          // @ts-ignore
+          events.edgeHighlight(this, false);
+        });
+    },
+    bus: function() {
+      busG = g
+        .append('g')
+        .classed(styles.busG, true)
+        .attr('transform', `translate(0, ${80 + data.length * 100})`);
 
-    // Data Bus
-    busG = g
-      .append('g')
-      .classed(styles.busG, true)
-      .attr('transform', `translate(0, ${80 + data.length * 100})`);
-
-    busG
-      .append('text')
-      .classed(styles.workflowTagText, true)
-      .attr('x', 20)
-      .attr('y', 0)
-      .attr('dy', 0)
-      .style('font-size', `${fontSize}px`)
-      .text('BUS')
-      .call(centerText, fontSize);
-    busG
-      .append('line')
-      .classed(styles.busLine, true)
-      .attr('x1', 30)
-      .attr('x2', width - margin.right - outerPadding)
-      .attr('y1', 0)
-      .attr('y2', 0)
-      .attr('stroke-width', STROKE_WIDTH);
-    busG
-      .append('path')
-      .classed(styles.busLineArrow, true)
-      .attr('d', 'M 0 0 m -7 -3 l +7 +3 l -7 3')
-      .attr('transform', `translate(${width - margin.right - outerPadding}, 0)`)
-      .attr('stroke-width', STROKE_WIDTH);
-  }
+      busG
+        .append('text')
+        .classed(styles.workflowTagText, true)
+        .attr('x', 20)
+        .attr('y', 0)
+        .attr('dy', 0)
+        .style('font-size', `${fontSize}px`)
+        .text('BUS')
+        .call(centerText, fontSize);
+      busG
+        .append('line')
+        .classed(styles.busLine, true)
+        .attr('x1', 30)
+        .attr('x2', width - margin.right - outerPadding)
+        .attr('y1', 0)
+        .attr('y2', 0)
+        .attr('stroke-width', STROKE_WIDTH);
+      busG
+        .append('path')
+        .classed(styles.busLineArrow, true)
+        .attr('d', 'M 0 0 m -7 -3 l +7 +3 l -7 3')
+        .attr(
+          'transform',
+          `translate(${width - margin.right - outerPadding}, 0)`
+        )
+        .attr('stroke-width', STROKE_WIDTH);
+    }
+  };
 
   const events = {
     nodeHighlight: function(d: Node, enter: boolean = true) {

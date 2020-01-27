@@ -14,6 +14,20 @@ type Node struct {
 	Config map[string]string
 }
 
+type NodeStatus string
+
+const (
+	NodeStatusStarted NodeStatus = "STARTED"
+	NodeStatusStopped NodeStatus = "STOPPED"
+	NodeStatusError   NodeStatus = "ERROR"
+)
+
+type VersionNodeStatus struct {
+	NodeID  string
+	Status  NodeStatus
+	Message string
+}
+
 type Workflow struct {
 	Name       string
 	Entrypoint string

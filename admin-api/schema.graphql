@@ -10,10 +10,10 @@ type Query {
   alerts: [Alert!]
   settings: Settings!
   userActivityList(
-    userEmail: String,
-    type: UserActivityType,
-    fromDate: String,
-    toDate: String,
+    userEmail: String
+    type: UserActivityType
+    fromDate: String
+    toDate: String
     lastId: String
   ): [UserActivity!]!
 }
@@ -32,6 +32,7 @@ type Mutation {
 type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, nodeId: ID!): NodeLog!
+  versionNodeStatus(versionId: ID!): VersionNodeStatus!
 }
 
 type NodeLog {
@@ -78,6 +79,13 @@ input DeactivateVersionInput {
 type CreateVersionResponse {
   errors: [Error!]
   version: Version!
+}
+
+type VersionNodeStatus {
+  date: String!
+  nodeId: String!
+  status: NodeStatus!
+  message: String!
 }
 
 input SettingsInput {
@@ -168,8 +176,8 @@ type Node {
 }
 
 enum NodeStatus {
-  ACTIVE
-  INACTIVE
+  STARTED
+  STOPPED
   ERROR
 }
 

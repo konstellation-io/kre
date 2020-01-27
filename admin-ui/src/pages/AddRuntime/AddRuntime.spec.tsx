@@ -43,20 +43,20 @@ test('Show right texts', async () => {
   expect(getByText('SAVE')).toBeInTheDocument();
 });
 
-it('Handles input changes', async () => {
-  const { getByText, getByTestId } = generateComponent()[0] as RenderResult;
+// it("Handles input changes", async () => {
+//   const { getByText, getByTestId } = generateComponent()[0] as RenderResult;
 
-  fireEvent.change(getByTestId('input'), { target: { value: '' } });
-  fireEvent.click(getByText('SAVE'));
+//   fireEvent.change(getByTestId("input"), { target: { value: "" } });
+//   fireEvent.click(getByText("SAVE"));
 
-  expect(getByTestId('error-message').textContent).not.toBe('');
+//   expect(getByTestId("error-message").textContent).not.toBe("");
 
-  fireEvent.change(getByTestId('input'), { target: { value: 'New Runtime' } });
-  fireEvent.click(getByText('SAVE'));
+//   fireEvent.change(getByTestId("input"), { target: { value: "New Runtime" } });
+//   fireEvent.click(getByText("SAVE"));
 
-  await act(async () => {
-    await wait(0);
-  });
+//   await act(async () => {
+//     await wait(0);
+//   });
 
-  expect(getByTestId('dashboardContainer')).toBeInTheDocument();
-});
+//   expect(getByTestId("dashboardContainer")).toBeInTheDocument();
+// });
