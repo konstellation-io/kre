@@ -162,3 +162,7 @@ export function generateVerticalGradient(
     .attr('stop-color', color90)
     .attr('stop-opacity', 1);
 }
+
+export function getClassFromLabel(label: string) {
+  return `node_${label.replace(/[^a-zA-Z0-9]/g, '_')}`;
+}

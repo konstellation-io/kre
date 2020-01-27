@@ -29,7 +29,9 @@ function Section1({ total, micro, macro, weighted }: Section1Props) {
   return (
     <div className={styles.section}>
       <div className={styles.accuracy}>
-        <div className={styles.tempBox} />
+        <div className={styles.totalAccuracy}>
+          <span>{`${total}%`}</span>
+        </div>
         <div className={styles.infoRows}>
           <Section1InfoRow value={micro} label="micro" />
           <Section1InfoRow value={macro} label="macro" />
@@ -53,15 +55,28 @@ function Section2({ value, label }: Section2Props) {
   );
 }
 
-function GeneralInfo() {
+type Props = {
+  data: {
+    accuracy: {
+      total: number;
+      micro: number;
+      macro: number;
+      weighted: number;
+    };
+    null: number;
+    labels: number;
+    stdev: number;
+  };
+};
+function GeneralInfo({ data }: Props) {
   return (
     <Box>
       <Title text="Accuracy" />
       <div className={styles.sections}>
-        <Section1 total={75} micro={30} macro={45} weighted={45} />
-        <Section2 value="30%" label="Null" />
-        <Section2 value="45%" label="New labels" />
-        <Section2 value="45%" label="Standard deviation" />
+        <Section1 {...data.accuracy} />
+        <Section2 value={`${data.null}%`} label="Null" />
+        <Section2 value={`${data.labels}%`} label="New labels" />
+        <Section2 value={`${data.stdev}%`} label="Standard deviation" />
       </div>
     </Box>
   );

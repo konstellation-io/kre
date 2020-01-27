@@ -4,53 +4,25 @@ import useRenderOnResize from '../../../../../../hooks/useRenderOnResize';
 import Box from '../../components/Box/Box';
 import Title from '../../components/Box/Title';
 import ExpandButton from '../../components/Box/ExpandButton';
-import BarChart from '../../../../../../components/Chart/BarChart/BarChart';
+import BarChart, {
+  D
+} from '../../../../../../components/Chart/BarChart/BarChart';
 
 import styles from './Accuracy.module.scss';
-
-const data = [
-  {
-    x: 'Repair Completed',
-    y: 40
-  },
-  {
-    x: 'Request Completed',
-    y: 45
-  },
-  {
-    x: 'Disconnect Service',
-    y: 52
-  },
-  {
-    x: 'Confirmed Issue Resolved',
-    y: 32
-  },
-  {
-    x: 'Others',
-    y: 60
-  },
-  {
-    x: 'Plan of Feature Change Completed',
-    y: 72
-  },
-  {
-    x: 'Resolved By Customer',
-    y: 50
-  }
-];
 
 type Props = {
   withBgBars?: boolean;
   wrapper?: any;
   toggleExpanded?: Function;
   nodeId?: string;
+  data: D[];
 };
-function Accuracy({ withBgBars = false, toggleExpanded, nodeId }: Props) {
+function Accuracy({ toggleExpanded, nodeId, data }: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (
     <Box>
-      <Title text="Accuracy" />
+      <Title text="Success VS Fails" />
       <ExpandButton
         onClick={() => {
           toggleExpanded && toggleExpanded(nodeId);
@@ -67,7 +39,6 @@ function Accuracy({ withBgBars = false, toggleExpanded, nodeId }: Props) {
             left: 14
           }}
           data={data}
-          withBgBars={withBgBars}
         />
       </div>
     </Box>

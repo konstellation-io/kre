@@ -32,7 +32,7 @@ function getTooltipContent(d: D) {
   );
 }
 
-type D = {
+export type D = {
   x: string;
   y: string;
   value: number;
@@ -71,6 +71,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
   let cells: any;
   let marginLeft: number;
   let marginTop: number;
+  let sideMargin: number;
 
   let innerWidth: number = width - margin.left - margin.right;
   let innerHeight: number = height - margin.top - margin.bottom;
@@ -142,6 +143,12 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
     innerWidth -= yAxisWidth;
     innerHeight -= xAxisHeight;
 
+    // Make chart squared
+    sideMargin = (innerWidth - innerHeight) / 2;
+
+    marginLeft += sideMargin;
+    innerWidth -= sideMargin * 2;
+
     g.attr('transform', `translate(${marginLeft},${marginTop})`);
 
     xScale.range([0, innerWidth]);
@@ -189,9 +196,6 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .attr('y', 0);
     yAxisBox
       .append('text')
-      // .attr('x', axisBoxSide / 2)
-      // .attr('y', 0)
-      // .attr('dy', innerHeight / 2)
       .style(
         'transform',
         `translate(${-axisBoxSide / 2}px, ${innerHeight / 2}px)rotate(-90deg)`
@@ -201,7 +205,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
     // Add legend
     legendG = g.append('g').classed(styles.legendG, true);
 
-    const legendWidth = legendMargin * 0.4;
+    const legendWidth = Math.min(xScale.bandwidth() / 2, legendMargin * 0.4);
     generateVerticalGradient(g, ['#0D5266', '#0D84A1', '#21D4FF', '#CAF5FF']);
 
     legendG
@@ -210,10 +214,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .attr('width', legendWidth)
       .attr('height', innerHeight)
       .style('fill', 'url(#verticalGradient)')
-      .attr(
-        'transform',
-        `translate(${innerWidth + legendMargin - legendWidth - 25},0)`
-      );
+      .attr('transform', `translate(${innerWidth + 40},0)`);
 
     legendScale = scaleBand()
       .range([innerHeight, 0])
@@ -225,7 +226,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
 
     zAxisG = legendG
       .append('g')
-      .attr('transform', `translate(${innerWidth + legendMargin - 25},0)`)
+      .attr('transform', `translate(${innerWidth + legendWidth + 40},0)`)
       .classed(styles.zAxis, true)
       .call(zAxis);
     zAxisG.select('.domain').remove();
@@ -266,7 +267,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .classed(styles.cellText, true)
       .attr('text-anchor', 'middle')
       .attr('transform', `translate(${cellWidth / 2},0)`)
-      .attr('font-size', cellHeight / 3)
+      .style('font-size', cellHeight / 3)
       .attr('fill', (d: D) => {
         const c: RGBColor = color(colorScale(d.value)) as RGBColor;
         return c.r * 0.299 + c.g * 0.587 + c.b * 0.114 > 90

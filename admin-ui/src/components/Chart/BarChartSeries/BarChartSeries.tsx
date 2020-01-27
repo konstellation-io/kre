@@ -1,29 +1,19 @@
-import React from 'react';
-
 import useChart, { Margin } from '../../../hooks/useChart';
 
-import { getAxesMargins, tooltipAction } from '../../../utils/d3';
+import { getAxesMargins, getClassFromLabel } from '../../../utils/d3';
 
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
-import { color, RGBColor } from 'd3-color';
 
 import styles from './BarChartSeries.module.scss';
 
-const X_SCALE_PADDING_INNER: number = 0.4;
-const X_SCALE_PADDING_OUTER: number = 0.3;
-const DEFAULT_BAR_COLOR: RGBColor = color('#007c99') as RGBColor;
+const X_SCALE_PADDING_INNER: number = 0.45;
+const X_SCALE_PADDING_OUTER: number = 0.5;
+const PADDING_SERIE_LABEL: number = 30;
+const PADDING_X_AXIS: number = 8;
 
-function getTooltipContent(d: D) {
-  return (
-    <div>
-      <div>{`${d.y}: ${d.x}`}</div>
-    </div>
-  );
-}
-
-type Serie = {
+export type Serie = {
   title: string;
   data: D[];
 };
@@ -41,41 +31,42 @@ type Props = {
   withBgBars?: boolean;
 };
 function BarChartSeries({ width, height, margin, data }: Props) {
-  const { svg, chart, tooltip } = useChart({
+  const { svg, chart } = useChart({
     width,
     height,
     margin,
-    initialize,
-    useTooltip: true
+    initialize
   });
 
   let g: any;
   let seriesScale: ScaleBand<string>;
   let xScale: ScaleLinear<number, number>;
   let yScale: ScaleBand<string>;
+  let yScale1: ScaleBand<string>;
+  let yScale2: ScaleLinear<number, number>;
   let axes: any;
   let xAxis: any;
   let yAxis: any;
-  let xAxisG: any;
   let yAxisG: any;
   let seriesG: any;
   let series: any;
   let bars: any;
   let barsG: any;
   let rowBgG: any;
-  let rowsBg: any;
   let marginLeft: number;
   let marginTop: number;
 
   let innerWidth: number = width - margin.left - margin.right;
-  let innerHeight: number = height - margin.top - margin.bottom;
+  let innerHeight: number =
+    height - margin.top - margin.bottom - PADDING_SERIE_LABEL - PADDING_X_AXIS;
 
   function initialize() {
     const svgSelection = select(svg.current);
     marginLeft = margin.left;
-    marginTop = margin.top;
+    marginTop = margin.top + PADDING_SERIE_LABEL;
 
-    g = svgSelection.append('g');
+    g = svgSelection.append('g').classed(styles.g, true);
+    rowBgG = g.append('g').classed(styles.rowBgG, true);
 
     const seriesDomain: string[] = data.map((d: Serie) => d.title);
     const xDomain: [number, number] = [0, 100];
@@ -88,8 +79,8 @@ function BarChartSeries({ width, height, margin, data }: Props) {
     // Initialize scales
     seriesScale = scaleBand()
       .range([0, innerWidth])
-      .paddingInner(0.1)
-      .paddingOuter(0.1)
+      .paddingInner(0.3)
+      .paddingOuter(0.15)
       .domain(seriesDomain);
 
     xScale = scaleLinear()
@@ -102,11 +93,22 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .paddingInner(X_SCALE_PADDING_INNER)
       .paddingOuter(X_SCALE_PADDING_OUTER);
 
+    yScale1 = scaleBand()
+      .range([innerHeight, 0])
+      .domain(yDomain)
+      .paddingInner(X_SCALE_PADDING_INNER)
+      .paddingOuter(X_SCALE_PADDING_OUTER);
+
+    // yScale2 = scaleLinear()
+    //   .range([innerHeight, 0])
+    //   .domain([])
+
     // Initialize axes
     yAxis = axisLeft(yScale).tickSize(0);
     xAxis = axisBottom(xScale)
-      .ticks(4)
-      .tickFormat((text: number | { valueOf(): number }) => `${text}%`);
+      .ticks(3)
+      .tickFormat((text: number | { valueOf(): number }) => `${text}%`)
+      .tickPadding(PADDING_X_AXIS);
 
     axes = g.append('g').classed(styles.axes, true);
     yAxisG = axes
@@ -114,19 +116,22 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .classed(styles.yAxis, true)
       .call(yAxis);
 
-    const [xAxisHeight, yAxisWidth] = getAxesMargins({ yAxisG });
+    let [xAxisHeight, yAxisWidth] = getAxesMargins({ yAxisG, padding: 8 });
 
     marginLeft += yAxisWidth;
     innerWidth -= yAxisWidth;
+    innerHeight -= xAxisHeight;
 
     g.attr('transform', `translate(${marginLeft},${marginTop})`);
 
     seriesScale.range([0, innerWidth]);
     xScale.range([0, seriesScale.bandwidth()]);
+    yScale.range([0, innerHeight]);
 
-    yScale.range([innerHeight, 0]);
     yAxis.scale(yScale);
     yAxisG.call(yAxis);
+
+    yAxisG.selectAll('text').attr('class', (d: string) => getClassFromLabel(d));
 
     // Remove unwanted axes lines
     yAxisG.select('.domain').remove();
@@ -151,75 +156,120 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('transform', `translate(0,${innerHeight})`)
       .call(xAxis);
 
+    series
+      .append('text')
+      .classed(styles.seriesLabel, true)
+      .attr('transform', `translate(0,${-PADDING_SERIE_LABEL / 2})`)
+      .text((d: Serie) => d.title);
+
+    series
+      .append('line')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', innerHeight)
+      .classed(styles.guideLine, true);
+    series
+      .append('line')
+      .attr('x1', 0)
+      .attr('y1', innerHeight)
+      .attr('x2', seriesScale.bandwidth())
+      .attr('y2', innerHeight)
+      .classed(styles.guideLine, true);
+    series
+      .append('line')
+      .attr('x1', seriesScale.bandwidth() * 0.25)
+      .attr('y1', 0)
+      .attr('x2', seriesScale.bandwidth() * 0.25)
+      .attr('y2', innerHeight)
+      .classed(styles.innerGuideLine, true);
+    series
+      .append('line')
+      .attr('x1', seriesScale.bandwidth() * 0.75)
+      .attr('y1', 0)
+      .attr('x2', seriesScale.bandwidth() * 0.75)
+      .attr('y2', innerHeight)
+      .classed(styles.innerGuideLine, true);
+
     // Initialize row bg
-    rowBgG = g.append('g').classed(styles.rowBgG, true);
-    const rowHeight = +yScale.bandwidth + +yScale.paddingInner / 2;
-    rowsBg = rowBgG
+    const barPadding = yScale.step() * yScale.paddingInner();
+    const rowHeight = yScale.bandwidth() + barPadding;
+    rowBgG
       .selectAll(`.${styles.rowBg}`)
       .data(yDomain)
       .enter()
       .append('rect')
+      .attr('class', (d: string) => getClassFromLabel(d))
       .classed(styles.rowBg, true)
       .attr('x', -yAxisWidth)
-      .attr('y', (d: string) => yScale(d))
+      .attr('y', (d: string) => (yScale(d) || 0) - barPadding / 2)
       .attr('width', innerWidth + yAxisWidth)
-      .attr('height', yScale.bandwidth)
-      .attr('fill', 'red');
+      .attr('height', rowHeight)
+      .attr('fill', 'transparent')
+      .attr('fill-opacity', 0.5)
+      .on('mouseenter', function(d: D) {
+        // @ts-ignore
+        events.rowHighlight(d, this, true);
+      })
+      .on('mouseleave', function(d: D) {
+        // @ts-ignore
+        events.rowHighlight(d, this, false);
+      });
 
     // Initialize bars
     const barHeight: number = yScale.bandwidth();
     barsG = series.append('g').classed(styles.bars, true);
 
     bars = barsG
-      .selectAll(`.${styles.bar}`)
+      .selectAll(`.${styles.barG}`)
       .data((d: Serie) => d.data)
       .enter()
+      .append('g')
+      .attr('class', (d: D) => getClassFromLabel(d.y))
+      .classed(styles.barG, true);
+    bars
       .append('rect')
       .classed(styles.bar, true)
       .attr('x', 0)
       .attr('y', (d: D) => yScale(d.y))
       .attr('height', barHeight)
-      .attr('width', (d: D) => xScale(d.x))
-      .attr('rx', 5)
-      .attr('fill', DEFAULT_BAR_COLOR)
-      .on('mouseenter', function(d: D) {
-        // @ts-ignore
-        events.barHighlight(d, this, true);
-      })
-      .on('mouseleave', function(d: D) {
-        // @ts-ignore
-        events.barHighlight(d, this, false);
-      });
+      .attr('width', (d: D) => xScale(d.x));
+    bars
+      .append('text')
+      .classed(styles.barValue, true)
+      .attr('x', seriesScale.bandwidth() + 8)
+      .attr('y', (d: D) => (yScale(d.y) || 0) + barHeight / 2)
+      .text((d: D) => `${d.x}%`);
   }
 
   const events = {
-    barHighlight: function(d: D, node: any, enter: boolean): void {
-      const newBarColor = enter
-        ? DEFAULT_BAR_COLOR.brighter(0.6)
-        : DEFAULT_BAR_COLOR;
-      select(node)
-        // @ts-ignore
-        .attr('fill', newBarColor);
+    rowHighlight: function(label: string, node: any, enter: boolean): void {
+      const groupClass = getClassFromLabel(label);
+
+      const groupBars = g.selectAll(`.${groupClass}.${styles.barG}`);
+      const groupBg = g.selectAll(`rect.${groupClass}.${styles.rowBg}`);
+      const yLabel = g.select(`text.${groupClass}`);
 
       if (enter) {
-        // @ts-ignore
-        const serieTitle = select(node.parentNode).datum().title;
+        g.selectAll(`rect.${styles.bar}`).classed(styles.unhighlighted, true);
 
-        const barHeight: number = yScale.bandwidth();
-        const barWidth: number = xScale(d.x);
-        const serieOffset: number = seriesScale(serieTitle) || 0;
-        const content = getTooltipContent(d);
-        const dx = marginLeft + serieOffset + barWidth;
-        const dy = marginTop + (yScale(d.y) || 0) + barHeight / 2;
-        tooltipAction.showTooltip({
-          svg: svg.current,
-          tooltip: tooltip.current,
-          content,
-          dx,
-          dy
-        });
+        groupBars.select('rect').classed(styles.highlighted, true);
+        groupBars.select('text').classed(styles.highlighted, true);
+        groupBg.attr('fill', 'black');
+
+        yLabel.classed(styles.highlighted, true);
       } else {
-        tooltipAction.hideTooltip(tooltip.current);
+        groupBg.attr('fill', 'transparent');
+
+        g.selectAll(`rect.${styles.bar}`)
+          .classed(styles.unhighlighted, false)
+          .classed(styles.highlighted, false);
+        g.selectAll(`text.${styles.barValue}`).classed(
+          styles.highlighted,
+          false
+        );
+
+        yLabel.classed(styles.highlighted, false);
       }
     }
   };

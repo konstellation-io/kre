@@ -44,6 +44,24 @@
   height: 100%;
 }
 
+.totalAccuracy {
+  color: $color-green;
+
+  position: relative;
+  width: 40%;
+  margin-right: 30px;
+  height: 100%;
+
+  span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 360%;
+    font-weight: 400;
+  }
+}
+
 .tempBox {
   width: 40%;
   margin-right: 30px;
