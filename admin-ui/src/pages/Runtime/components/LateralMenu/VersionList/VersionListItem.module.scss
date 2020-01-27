@@ -1,0 +1,55 @@
+@import '../../../../../styles/colors';
+
+.item {
+  cursor: pointer;
+  padding: 10px;
+}
+
+.itemSelected {
+  color: $font-color-white;
+  background-color: #282d33;
+  pointer-events: none;
+  cursor: default;
+}
+
+.circle {
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: $color-green;
+  flex-shrink: 0;
+
+  &.CREATED,
+  &.STOPPED {
+    background-color: $font-color;
+  }
+  &.ACTIVE {
+    background-color: $color-green;
+  }
+  &.RUNNING {
+    background-color: $color-blue;
+  }
+}
+
+.name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  font-size: 13px;
+  color: $font-color-white;
+
+  padding: 12px;
+
+  svg {
+    margin-left: auto;
+  }
+}
+
+.desc {
+  font-size: 11px;
+  color: $font-color;
+  font-weight: bold;
+  padding: 0 30px;
+}
