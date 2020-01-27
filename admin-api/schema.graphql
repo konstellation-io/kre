@@ -31,6 +31,7 @@ type Mutation {
 
 type Subscription {
   runtimeCreated: Runtime!
+  versionNodeStatus(versionId: ID! ): VersionNodeStatus!
 }
 
 input CreateRuntimeInput {
@@ -67,6 +68,13 @@ input DeactivateVersionInput {
 type CreateVersionResponse {
   errors: [Error!]
   version: Version!
+}
+
+type VersionNodeStatus {
+  date: String!
+  nodeId: String!
+  status: NodeStatus!
+  message: String!
 }
 
 input SettingsInput {
@@ -157,8 +165,8 @@ type Node {
 }
 
 enum NodeStatus {
-  ACTIVE
-  INACTIVE
+  STARTED
+  STOPPED
   ERROR
 }
 

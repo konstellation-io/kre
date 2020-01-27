@@ -9,6 +9,10 @@
   cursor: grab;
 }
 
+.workflows {
+  display: initial;
+}
+
 .workflow {
   display: inline;
 }
@@ -16,13 +20,17 @@
 .workflowTag {
   line,
   path {
-    stroke: $color-green;
-  }
-
-  &.preview line,
-  &.preview path {
     stroke: $font-color;
   }
+
+  &.published line,
+  &.published path {
+    stroke: $color-green;
+  }
+}
+
+.nodesG {
+  display: inherit;
 }
 
 .node {

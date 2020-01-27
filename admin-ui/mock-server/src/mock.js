@@ -100,6 +100,6 @@ module.exports = {
   Node: () => ({
     id: casual.ID,
     name: casual.name,
-    status: 'ACTIVE'
+    status: 'STOPPED',
   })
 }
