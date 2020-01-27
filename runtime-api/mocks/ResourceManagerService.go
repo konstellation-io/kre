@@ -114,19 +114,3 @@ func (_m *ResourceManagerService) UpdateVersionConfig(version *entity.Version) e
 
 	return r0
 }
-
-// WatchNodeLogs provides a mock function with given fields: nodeId, logsCh
-func (_m *ResourceManagerService) WatchNodeLogs(nodeId string, logsCh chan<- *entity.NodeLog) chan struct{} {
-	ret := _m.Called(nodeId, logsCh)
-
-	var r0 chan struct{}
-	if rf, ok := ret.Get(0).(func(string, chan<- *entity.NodeLog) chan struct{}); ok {
-		r0 = rf(nodeId, logsCh)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(chan struct{})
-		}
-	}
-
-	return r0
-}
