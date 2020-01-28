@@ -99,9 +99,7 @@ exports[`Renders Settings without crashing 1`] = `
         </div>
         <div
           class="description"
-        >
-          Fusce vehicula dolor arcu, sit amet.
-        </div>
+        />
       </div>
       <div
         class="navButtons"
