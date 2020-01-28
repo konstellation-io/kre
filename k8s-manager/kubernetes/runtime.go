@@ -40,8 +40,8 @@ func (k *ResourceManager) createRuntimeObject(runtime *input.CreateRuntimeInput,
 				},
 				"mongo": map[string]interface{}{
 					"auth": map[string]interface{}{
-						"key": runtime.Mongo.SharedKey,
-						"adminUser": runtime.Mongo.Username,
+						"key":           runtime.Mongo.SharedKey,
+						"adminUser":     runtime.Mongo.Username,
 						"adminPassword": runtime.Mongo.Password,
 					},
 				},
