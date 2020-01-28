@@ -122,3 +122,22 @@ export enum UserActivityType {
   UPDATE_SETTING = 'UPDATE_SETTING',
   UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION'
 }
+
+export type NodeLog = {
+  date: string;
+  type: LogType;
+  versionId: string;
+  nodeId: string;
+  podId: string;
+  message: string;
+  level: LogLevel;
+};
+
+export enum LogType {
+  SYSTEM = 'SYSTEM',
+  LEVEL = 'LEVEL'
+}
+
+export enum LogLevel {
+  INFO = 'INFO'
+}

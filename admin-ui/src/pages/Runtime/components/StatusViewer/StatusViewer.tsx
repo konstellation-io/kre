@@ -76,7 +76,7 @@ function updateNodeStatus(workflows: Workflow[], newNode: Node): Workflow[] {
   return workflowsCopy;
 }
 
-function StatusViewer({ data, status }: any) {
+function StatusViewer({ data, status, onNodeClick }: any) {
   const { versionId } = useParams();
 
   const [workflows, setWorkflows] = useState<Workflow[]>(
@@ -139,6 +139,7 @@ function StatusViewer({ data, status }: any) {
           }}
           data={workflows}
           published={status === VersionStatus.ACTIVE}
+          onNodeClick={onNodeClick}
         />
       )}
     </div>

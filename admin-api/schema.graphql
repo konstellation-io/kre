@@ -35,16 +35,6 @@ type Subscription {
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
 }
 
-type NodeLog {
-  date: String!
-  type: String!
-  versionId: ID!
-  nodeId: ID!
-  podId: ID!
-  message: String!
-  level: String!
-}
-
 input CreateRuntimeInput {
   name: String!
 }
@@ -237,4 +227,23 @@ enum UserActivityType {
   DEPLOY_VERSION
   UPDATE_SETTING
   UPDATE_VERSION_CONFIGURATION
+}
+
+type NodeLog {
+  date: String!
+  type: LogType!
+  versionId: ID!
+  nodeId: ID!
+  podId: ID!
+  message: String!
+  level: LogLevel!
+}
+
+enum LogType {
+  SYSTEM
+  LEVEL
+}
+
+enum LogLevel {
+  INFO
 }

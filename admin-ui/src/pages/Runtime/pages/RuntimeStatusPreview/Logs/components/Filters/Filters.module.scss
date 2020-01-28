@@ -1,0 +1,28 @@
+@import '../../../../../../../styles/colors';
+@import '../../../../../../../styles/mixins';
+
+.container {
+  @include font-body;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 48px;
+}
+
+.title {
+  margin: 0 20px;
+}
+
+.filter {
+  @include font-code;
+  display: flex;
+  flex-direction: row;
+  padding: 3px 16px;
+
+  background-color: $font-color-dark;
+  color: $font-color-white;
+
+  div:first-child {
+    margin-right: 8px;
+  }
+}
