@@ -50,6 +50,7 @@ type Props = {
   };
   data: Workflow[];
   published: boolean;
+  onNodeClick: Function;
 };
 
 function getNodeTextPadding(type: string) {
@@ -68,7 +69,8 @@ function VersionStatusViewer({
   height,
   margin,
   data,
-  published
+  published,
+  onNodeClick
 }: Props) {
   const [shouldComponentUpdate, setShouldComponentUpdate] = useState(false);
   const container = useRef(null);
@@ -300,6 +302,7 @@ function VersionStatusViewer({
         )
         .on('mouseenter', (d: Node) => events.nodeHighlight(d, true))
         .on('mouseleave', (d: Node) => events.nodeHighlight(d, false))
+        .on('click', (d: Node) => onNodeClick(d.id))
         .each(function(d: Node) {
           // @ts-ignore
           select(this)

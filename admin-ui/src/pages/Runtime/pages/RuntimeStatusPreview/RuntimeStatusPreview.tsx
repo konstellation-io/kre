@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { get } from 'lodash';
 import { useParams } from 'react-router';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import StatusViewer from '../../components/StatusViewer/StatusViewer';
+import Logs from './Logs/Logs';
+
 import { useQuery } from '@apollo/react-hooks';
 import {
   GET_VERSION_WORKFLOWS,
@@ -12,8 +14,17 @@ import {
 } from './RuntimeStatusPreview.graphql';
 import styles from './RuntimeStatusPreview.module.scss';
 
-function RuntimeStatusPreview() {
+type Props = {
+  runtime: any;
+  version: any;
+};
+function RuntimeStatusPreview({ runtime, version }: Props) {
   const params: { runtimeId?: string; versionId?: string } = useParams();
+
+  const [selectedNode, setSelectedNode] = useState<string | undefined>(
+    undefined
+  );
+
   const { data, loading, error } = useQuery<
     GetVersionWorkflowsResponse,
     GetVersionWorkflowsVars
@@ -26,11 +37,24 @@ function RuntimeStatusPreview() {
 
   const versionStatus = data && data.version && data.version.status;
 
+  function setNode(nodeId: string) {
+    if (!nodeId.includes('InputNode') && !nodeId.includes('OutputNode')) {
+      setSelectedNode(nodeId);
+    }
+  }
+
   return (
     <div className={styles.container}>
       <StatusViewer
         data={get(data, 'version.workflows', [])}
         status={versionStatus}
+        onNodeClick={setNode}
+      />
+      <Logs
+        nodeId={selectedNode}
+        runtimeName={runtime && runtime.name}
+        versionName={version && version.name}
+        setSelectedNode={setSelectedNode}
       />
     </div>
   );

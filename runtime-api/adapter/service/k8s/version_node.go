@@ -35,7 +35,7 @@ func (k *ResourceManagerService) createNodeConfigmap(namespace string, version *
 	return nodeConfig.Name, nil
 }
 
-func (k *ResourceManagerService) createNodeDeployment(namespace string, version *entity.Version, node *entity.Node, nodeConfig, versionConfig string) (*appsv1.Deployment, error) {
+func (k *ResourceManagerService) createNodeDeployment(namespace string, version *entity.Version, node *entity.Node, nodeConfig string) (*appsv1.Deployment, error) {
 	name := fmt.Sprintf("%s-%s-%s", strcase.ToKebab(version.Name), strcase.ToKebab(node.Name), node.ID)
 	k.logger.Info(fmt.Sprintf("Creating node deployment in %s named %s from image %s", namespace, name, node.Image))
 
@@ -73,7 +73,21 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 						{
 							Name:            name,
 							Image:           node.Image,
-							ImagePullPolicy: apiv1.PullAlways,
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							Env: []apiv1.EnvVar{
+								{
+									Name:  "KRE_VERSION_NAME",
+									Value: strcase.ToKebab(version.Name),
+								},
+								{
+									Name:  "KRE_NODE_NAME",
+									Value: node.Name,
+								},
+								{
+									Name:  "KRE_NODE_ID",
+									Value: node.ID,
+								},
+							},
 							EnvFrom: []apiv1.EnvFromSource{
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
@@ -85,7 +99,7 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
 										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: versionConfig,
+											Name: fmt.Sprintf("%s-conf-files", strcase.ToKebab(version.Name)),
 										},
 									},
 								},
@@ -97,10 +111,62 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 									MountPath: "/krt-files",
 									SubPath:   strcase.ToKebab(version.Name),
 								},
+								{
+									Name:      "app-log-volume",
+									MountPath: "/var/log/app",
+								},
+							},
+						},
+						{
+							Name:            "fluent-bit",
+							Image:           "fluent/fluent-bit:1.3",
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							Command: []string{
+								"/fluent-bit/bin/fluent-bit",
+								"-c",
+								"/fluent-bit/etc/fluent-bit.conf",
+								"-v",
+							},
+							Env: []apiv1.EnvVar{
+								{
+									Name:  "KRE_VERSION_NAME",
+									Value: strcase.ToKebab(version.Name),
+								},
+								{
+									Name:  "KRE_NODE_NAME",
+									Value: node.Name,
+								},
+								{
+									Name:  "KRE_NODE_ID",
+									Value: node.ID,
+								},
+							},
+							VolumeMounts: []apiv1.VolumeMount{
+								{
+									Name:      "version-conf-files",
+									ReadOnly:  true,
+									MountPath: "/fluent-bit/etc/fluent-bit.conf",
+									SubPath:   "fluent-bit.conf",
+								},
+								{
+									Name:      "app-log-volume",
+									ReadOnly:  true,
+									MountPath: "/var/log/app",
+								},
 							},
 						},
 					},
 					Volumes: []apiv1.Volume{
+						{
+							Name: "version-conf-files",
+							VolumeSource: apiv1.VolumeSource{
+								ConfigMap: &apiv1.ConfigMapVolumeSource{
+									LocalObjectReference: apiv1.LocalObjectReference{
+										Name: fmt.Sprintf("%s-conf-files", strcase.ToKebab(version.Name)),
+									},
+								},
+							},
+						},
 						{
 							Name: "shared-data",
 							VolumeSource: apiv1.VolumeSource{
@@ -108,6 +174,12 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 									ClaimName: "kre-minio-pvc-kre-minio-0",
 									ReadOnly:  true,
 								},
+							},
+						},
+						{
+							Name: "app-log-volume",
+							VolumeSource: apiv1.VolumeSource{
+								EmptyDir: &apiv1.EmptyDirVolumeSource{},
 							},
 						},
 					},
@@ -193,12 +265,6 @@ func (k *ResourceManagerService) deleteDeploymentsSync(label, namespace string) 
 	gracePeriod := new(int64)
 	*gracePeriod = 0
 
-	deletePolicy := metav1.DeletePropagationForeground
-	deleteOptions := &metav1.DeleteOptions{
-		PropagationPolicy:  &deletePolicy,
-		GracePeriodSeconds: gracePeriod,
-	}
-
 	listOptions := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("version-name=%s", label),
 		TypeMeta: metav1.TypeMeta{
@@ -217,19 +283,41 @@ func (k *ResourceManagerService) deleteDeploymentsSync(label, namespace string) 
 		return nil
 	}
 
-	err = deployments.DeleteCollection(deleteOptions, listOptions)
-	if err != nil {
-		return err
-	}
-
 	startTime := time.Now()
 	timeToWait := 5 * time.Minute
 	w, err := deployments.Watch(listOptions)
 	if err != nil {
 		return err
 	}
-
 	watchResults := w.ResultChan()
+
+	go func() {
+		deletePolicy := metav1.DeletePropagationForeground
+		deleteOptions := &metav1.DeleteOptions{
+			PropagationPolicy:  &deletePolicy,
+			GracePeriodSeconds: gracePeriod,
+		}
+		for _, d := range list.Items {
+			_ = deployments.Delete(d.Name, deleteOptions)
+		}
+
+		time.Sleep(2 * time.Second)
+		k.logger.Info("Forcing POD deletion")
+		pods := k.clientset.CoreV1().Pods(namespace)
+		listOptions := metav1.ListOptions{
+			LabelSelector: fmt.Sprintf("version-name=%s", label),
+			TypeMeta: metav1.TypeMeta{
+				Kind: "Pod",
+			},
+		}
+		deletePodsPolicy := metav1.DeletePropagationBackground
+		deleteOptions.PropagationPolicy = &deletePodsPolicy
+		list, _ := pods.List(listOptions)
+		for _, p := range list.Items {
+			_ = pods.Delete(p.Name, deleteOptions)
+		}
+	}()
+
 	for {
 		select {
 		case event := <-watchResults:

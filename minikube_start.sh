@@ -17,6 +17,7 @@ startMinikube()
     minikube addons enable dashboard
     minikube addons enable registry
     minikube addons enable storage-provisioner
+    minikube addons enable metrics-server
   fi
 }
 

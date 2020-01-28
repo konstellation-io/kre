@@ -4,7 +4,7 @@ import "gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
 
 type ResourceManagerService interface {
 	CreateEntrypoint(version *entity.Version) error
-	CreateNode(version *entity.Version, node *entity.Node, versionConfig string) error
+	CreateNode(version *entity.Version, node *entity.Node) error
 	CreateVersionConfig(version *entity.Version) (string, error)
 	StopVersion(name string) error
 	DeactivateVersion(name string) error

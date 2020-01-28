@@ -3,8 +3,9 @@ package server
 import (
 	"context"
 	"fmt"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/input"
 	"log"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/input"
 
 	"github.com/iancoleman/strcase"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
@@ -36,9 +37,14 @@ func (s *GrpcServer) CreateRuntime(ctx context.Context, req *k8smanagerpb.Create
 
 	runtimeInput := &input.CreateRuntimeInput{
 		Name: strcase.ToKebab(runtime.GetName()),
+		Mongo: input.MongoConfig{
+			Username:  runtime.GetMongo().GetUsername(),
+			Password:  runtime.GetMongo().GetPassword(),
+			SharedKey: runtime.GetMongo().GetSharedkey(),
+		},
 		Minio: input.MinioConfig{
-			AccessKey: runtime.Minio.GetAccessKey(),
-			SecretKey: runtime.Minio.GetSecretKey(),
+			AccessKey: runtime.GetMinio().GetAccessKey(),
+			SecretKey: runtime.GetMinio().GetSecretKey(),
 		},
 	}
 	message := fmt.Sprintf("Runtime %s created", runtimeInput.Name)

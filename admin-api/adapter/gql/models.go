@@ -77,6 +77,16 @@ type Node struct {
 	Status NodeStatus `json:"status"`
 }
 
+type NodeLog struct {
+	Date      string `json:"date"`
+	Type      string `json:"type"`
+	VersionID string `json:"versionId"`
+	NodeID    string `json:"nodeId"`
+	PodID     string `json:"podId"`
+	Message   string `json:"message"`
+	Level     string `json:"level"`
+}
+
 type Runtime struct {
 	ID             string        `json:"id"`
 	Name           string        `json:"name"`

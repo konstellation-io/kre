@@ -30,17 +30,7 @@ func (k *ResourceManagerService) CreateEntrypoint(version *entity.Version) error
 	namespace := k.cfg.Kubernetes.Namespace
 	entrypoint := &version.Entrypoint
 
-	natsSubjects := map[string]string{}
-
-	for _, w := range version.Workflows {
-		natsSubjects[w.Entrypoint] = w.Nodes[0].Config["KRT_NATS_INPUT"]
-	}
-
-	k.logger.Info("Creating configmap")
-	entrypoint.Config = map[string]interface{}{
-		"nats-subjects": natsSubjects,
-	}
-
+	k.logger.Info("Creating entrypoint configmap")
 	_, err := k.createEntrypointConfigmap(name, namespace, entrypoint)
 
 	k.logger.Info("Creating entrypoint deployment")
@@ -49,7 +39,7 @@ func (k *ResourceManagerService) CreateEntrypoint(version *entity.Version) error
 	return err
 }
 
-func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node, versionConfig string) error {
+func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
 	namespace := k.cfg.Kubernetes.Namespace
 
 	nodeConfig, err := k.createNodeConfigmap(namespace, version, node)
@@ -57,7 +47,7 @@ func (k *ResourceManagerService) CreateNode(version *entity.Version, node *entit
 		return err
 	}
 
-	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig, versionConfig)
+	_, err = k.createNodeDeployment(namespace, version, node, nodeConfig)
 	return err
 }
 
@@ -65,6 +55,11 @@ func (k *ResourceManagerService) CreateVersionConfig(version *entity.Version) (s
 	namespace := k.cfg.Kubernetes.Namespace
 
 	versionConfig, err := k.createVersionConfigmap(namespace, version)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = k.createVersionFilesConfigmap(namespace, version)
 	if err != nil {
 		return "", err
 	}

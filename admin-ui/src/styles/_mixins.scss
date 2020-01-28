@@ -1,3 +1,5 @@
+@import './colors';
+
 @mixin font-by-size($font-size, $line-height, $font-weight: normal) {
   font-size: $font-size;
   line-height: $line-height;
@@ -75,4 +77,14 @@
     border: solid 1px $color-red;
     color: $color-red;
   }
+}
+
+@mixin shield {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: $color-shield;
+  opacity: $opacity-shield;
 }

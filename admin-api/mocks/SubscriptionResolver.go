@@ -11,6 +11,29 @@ type SubscriptionResolver struct {
 	mock.Mock
 }
 
+// NodeLogs provides a mock function with given fields: ctx, runtimeID, nodeID
+func (_m *SubscriptionResolver) NodeLogs(ctx context.Context, runtimeID string, nodeID string) (<-chan *gql.NodeLog, error) {
+	ret := _m.Called(ctx, runtimeID, nodeID)
+
+	var r0 <-chan *gql.NodeLog
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) <-chan *gql.NodeLog); ok {
+		r0 = rf(ctx, runtimeID, nodeID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(<-chan *gql.NodeLog)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, runtimeID, nodeID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // RuntimeCreated provides a mock function with given fields: ctx
 func (_m *SubscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *gql.Runtime, error) {
 	ret := _m.Called(ctx)

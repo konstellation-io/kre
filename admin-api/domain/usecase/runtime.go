@@ -2,12 +2,14 @@ package usecase
 
 import (
 	"errors"
+	"math/rand"
+	"strings"
+	"time"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"math/rand"
-	"time"
 )
 
 // RuntimeStatus enumerates all Runtime status
@@ -52,9 +54,14 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 	runtime := &entity.Runtime{
 		Name:  name,
 		Owner: userID,
+		Mongo: entity.MongoConfig{
+			Username:  "admin",
+			Password:  generateRandomPassword(8),
+			SharedKey: generateRandomPassword(8),
+		},
 		Minio: entity.MinioConfig{
 			AccessKey: "admin",
-			SecretKey: generateRandomPassword(),
+			SecretKey: generateRandomPassword(8),
 		},
 	}
 	createRuntimeInK8sResult, err := i.k8sManagerService.CreateRuntime(runtime)
@@ -123,23 +130,14 @@ func (i *RuntimeInteractor) GetByID(runtimeID string) (*entity.Runtime, error) {
 	return i.runtimeRepo.GetByID(runtimeID)
 }
 
-func generateRandomPassword() string {
-	passwordLength := 8
+func generateRandomPassword(passwordLength int) string {
 	rand.Seed(time.Now().UnixNano())
-	digits := "0123456789"
-	specials := "%*@#$"
-	all := "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
 		"abcdefghijklmnopqrstuvwxyz" +
-		digits + specials
-	buf := make([]byte, passwordLength)
-	buf[0] = digits[rand.Intn(len(digits))]
-	buf[1] = specials[rand.Intn(len(specials))]
-	for i := 2; i < passwordLength; i++ {
-		buf[i] = all[rand.Intn(len(all))]
+		"0123456789")
+	var b strings.Builder
+	for i := 0; i < passwordLength; i++ {
+		b.WriteRune(chars[rand.Intn(len(chars))])
 	}
-	rand.Shuffle(len(buf), func(i, j int) {
-		buf[i], buf[j] = buf[j], buf[i]
-	})
-	str := string(buf)
-	return str
+	return b.String()
 }

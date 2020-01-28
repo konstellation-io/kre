@@ -9,6 +9,12 @@ type MinioConfig struct {
 	SecretKey string `bson:"secretKey"`
 }
 
+type MongoConfig struct {
+	Username  string
+	Password  string
+	SharedKey string
+}
+
 type Runtime struct {
 	ID           string      `bson:"_id"`
 	Name         string      `bson:"name"`
@@ -16,4 +22,5 @@ type Runtime struct {
 	Owner        string      `bson:"owner"`
 	Status       string      `bson:"status"`
 	Minio        MinioConfig `bson:"minio"`
+	Mongo        MongoConfig
 }

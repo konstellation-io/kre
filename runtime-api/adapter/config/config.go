@@ -14,6 +14,11 @@ type Config struct {
 		Port string `yaml:"port" envconfig:"KRE_RUNTIME_API_SERVER_PORT"`
 	} `yaml:"server"`
 
+	MongoDB struct {
+		Address string `yaml:"address" envconfig:"KRE_RUNTIME_MONGO_URI"`
+		DBName  string `yaml:"dbName" envconfig:"KRE_MONGODB_DB_NAME"`
+	} `yaml:"mongodb"`
+
 	Kubernetes struct {
 		Namespace       string `envconfig:"POD_NAMESPACE"`
 		IsInsideCluster bool

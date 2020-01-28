@@ -1,7 +1,9 @@
-@import '../../../../styles/colors';
-@import '../../../../styles/mixins';
+@import "../../../../styles/colors";
+@import "../../../../styles/mixins";
 
 .container {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
 }
@@ -12,6 +14,7 @@
   padding: 0 40px 0 20px;
   height: 40px;
   transition: background-color ease 0.5s;
+  flex: 0 0 40px;
 
   div {
     color: $font-color-dark;

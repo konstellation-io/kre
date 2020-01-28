@@ -1,2 +1,3 @@
 #!/bin/bash
-python $KRT_ENTRYPOINT
+
+sh -c "python $KRT_ENTRYPOINT 2>&1 | tee -a /var/log/app/app.log"

@@ -1,0 +1,106 @@
+@import '../../../../../../../styles/colors';
+@import '../../../../../../../styles/mixins';
+@import '../../../../../../../styles/variables';
+
+.listContainer {
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.listContainer > div:not(:first-child) {
+  border-top: solid 1px $border-color-1;
+}
+
+.container {
+  @include font-body;
+
+  height: 57px;
+  background-color: $bg-color;
+
+  &.opened {
+    height: auto;
+
+    .expand {
+      transform: scaleY(-1);
+      margin-top: -4px;
+    }
+  }
+
+  &:hover {
+    background-color: $bg-color-lighter;
+    .expand {
+      opacity: 1;
+    }
+  }
+}
+
+.row1 {
+  height: $height-log-item;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 0 0 20px;
+
+  div {
+    flex-shrink: 0;
+  }
+
+  div:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.icon {
+  color: $font-color-white;
+}
+
+.date {
+  width: 75px;
+  text-align: center;
+}
+
+.hour {
+  // color: $color-green;
+  width: 75px;
+  text-align: center;
+}
+
+.nodeId {
+  color: $font-color-white;
+}
+
+.podId {
+  color: $color-orange;
+}
+
+.message {
+  color: $font-color-white;
+
+  height: $height-log-item;
+  line-height: $height-log-item;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: initial !important;
+}
+
+.expand {
+  height: $height-log-item;
+  width: $height-log-item;
+  line-height: 63px;
+  text-align: center;
+
+  transform: rotateX(0);
+  transition: transform ease 0.4s, margin-top ease 0.4s, opacity ease 0.4s;
+  opacity: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: $font-color-white;
+  }
+}
+
+.messageComplete {
+  padding: 10px 47px 30px 47px;
+}

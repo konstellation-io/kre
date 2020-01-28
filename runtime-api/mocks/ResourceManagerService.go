@@ -38,13 +38,13 @@ func (_m *ResourceManagerService) CreateEntrypoint(version *entity.Version) erro
 	return r0
 }
 
-// CreateNode provides a mock function with given fields: version, node, versionConfig
-func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node, versionConfig string) error {
-	ret := _m.Called(version, node, versionConfig)
+// CreateNode provides a mock function with given fields: version, node
+func (_m *ResourceManagerService) CreateNode(version *entity.Version, node *entity.Node) error {
+	ret := _m.Called(version, node)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Version, *entity.Node, string) error); ok {
-		r0 = rf(version, node, versionConfig)
+	if rf, ok := ret.Get(0).(func(*entity.Version, *entity.Node) error); ok {
+		r0 = rf(version, node)
 	} else {
 		r0 = ret.Error(0)
 	}

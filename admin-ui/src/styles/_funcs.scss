@@ -1,0 +1,17 @@
+@import './colors';
+
+@function get-color-prop($status) {
+  $color: red;
+
+  @if $status == 'ACTIVE' {
+    $color: $color-green;
+  } @else if $status == 'RUNNING' {
+    $color: $color-blue;
+  } @else if $status == 'STOPPED' {
+    $color: $color-orange;
+  } @else if $status == 'CREATED' {
+    $color: $color-grey;
+  }
+
+  @return $color;
+}

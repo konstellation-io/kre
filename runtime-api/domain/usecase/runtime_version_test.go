@@ -1,6 +1,7 @@
 package usecase_test
 
 import (
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -17,8 +18,9 @@ type VersionSuite struct {
 }
 
 type VersionSuiteMocks struct {
-	logger          *mocks.Logger
-	resourceManager *mocks.ResourceManagerService
+	logger           *mocks.Logger
+	resourceManager  *mocks.ResourceManagerService
+	logStreamService *mocks.LogStreamService
 }
 
 func TestVersionSuite(t *testing.T) {
@@ -28,8 +30,9 @@ func TestVersionSuite(t *testing.T) {
 func (s *VersionSuite) SetupTest() {
 
 	s.mocks = VersionSuiteMocks{
-		logger:          new(mocks.Logger),
-		resourceManager: new(mocks.ResourceManagerService),
+		logger:           new(mocks.Logger),
+		resourceManager:  new(mocks.ResourceManagerService),
+		logStreamService: new(mocks.LogStreamService),
 	}
 
 	s.mocks.logger.On("Info", mock.Anything).Return()
@@ -37,6 +40,7 @@ func (s *VersionSuite) SetupTest() {
 	s.interactor = usecase.NewVersionInteractor(
 		s.mocks.logger,
 		s.mocks.resourceManager,
+		s.mocks.logStreamService,
 	)
 }
 
@@ -45,24 +49,25 @@ func (s *VersionSuite) TestDeployVersion() {
 
 	name := "test-version"
 
-	versionDeployed := &entity.Version{
-		Name:   name,
-		Status: string(usecase.VersionStatusCreating),
-	}
-
 	s.mocks.resourceManager.On("DeployVersion", name).Return(nil)
 	version := &entity.Version{
-		Name:       name,
-		Entrypoint: entity.Entrypoint{},
-		Workflows:  nil,
+		Name: name,
+		Entrypoint: entity.Entrypoint{
+			Config: map[string]interface{}{
+				"nats-subjects": map[string]string{},
+			},
+		},
+		Workflows: nil,
 	}
 	s.mocks.resourceManager.On("CreateEntrypoint", version).Return(nil)
 
 	versionName := "test-version-global"
 	s.mocks.resourceManager.On("CreateVersionConfig", version).Return(versionName, nil)
-	res, err := s.interactor.DeployVersion(version)
+	actual, err := s.interactor.DeployVersion(version)
+	version.Status = string(usecase.VersionStatusCreating)
+
 	require.Nil(t, err)
-	require.EqualValues(t, res, versionDeployed)
+	assert.EqualValues(t, actual, version)
 }
 
 func (s *VersionSuite) TestActivateVersion() {

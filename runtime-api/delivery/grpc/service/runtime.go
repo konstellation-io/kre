@@ -203,6 +203,41 @@ func (s *RuntimeService) ActivateVersion(ctx context.Context, req *runtimepb.Act
 	}, nil
 }
 
+func (s *RuntimeService) WatchNodeLogs(req *runtimepb.WatchNodeLogsRequest, stream runtimepb.RuntimeService_WatchNodeLogsServer) error {
+	nodeId := req.GetNodeId()
+
+	s.logger.Info("------------ STARTING WATCHER -------------")
+
+	ctx, cancel := context.WithCancel(stream.Context())
+	defer cancel()
+
+	statusCh := s.interactor.WatchNodeLogs(ctx, nodeId)
+
+	for {
+		select {
+		case <-ctx.Done():
+			s.logger.Info("------------- STREAM CONTEXT STOPPED ---------")
+			return nil
+		case nodeLog := <-statusCh:
+			err := stream.Send(&runtimepb.WatchNodeLogsResponse{
+				Date:      nodeLog.Date,
+				Type:      nodeLog.Type,
+				VersionId: nodeLog.VersionId,
+				NodeId:    nodeLog.NodeId,
+				PodId:     nodeLog.PodId,
+				Message:   nodeLog.Message,
+				Level:     nodeLog.Level,
+			})
+
+			if err != nil {
+				s.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
+				s.logger.Error(err.Error())
+				return err
+			}
+		}
+	}
+}
+
 func (s *RuntimeService) WatchVersionStatus(req *runtimepb.WatchVersionRequest, stream runtimepb.RuntimeService_WatchVersionStatusServer) error {
 	versionName := req.GetVersion().GetName()
 

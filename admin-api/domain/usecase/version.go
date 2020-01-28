@@ -791,3 +791,14 @@ func (i *VersionInteractor) WatchVersionStatus(versionId string, stopCh <-chan b
 
 	return i.runtimeService.WatchVersionStatus(runtime, version.Name, stopCh)
 }
+
+func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
+	stopChannel chan bool) (<-chan *entity.NodeLog, error) {
+
+	runtime, err := i.runtimeRepo.GetByID(runtimeID)
+	if err != nil {
+		return nil, err
+	}
+
+	return i.runtimeService.WatchNodeLogs(runtime, nodeID, stopChannel)
+}

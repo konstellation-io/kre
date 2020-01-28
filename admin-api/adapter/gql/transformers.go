@@ -138,6 +138,18 @@ func toGQLUserActivityVar(a entity.UserActivityVar) *UserActivityVar {
 	}
 }
 
+func toGQlNodeLog(l *entity.NodeLog) *NodeLog {
+	return &NodeLog{
+		Date:      l.Date,
+		Type:      l.Type,
+		VersionID: l.VersionId,
+		NodeID:    l.NodeId,
+		PodID:     l.PodId,
+		Message:   l.Message,
+		Level:     l.Level,
+	}
+}
+
 func toGQlVersionNodeStatus(v *entity.VersionNodeStatus) *VersionNodeStatus {
 	var status NodeStatus
 

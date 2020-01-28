@@ -4,6 +4,11 @@
   flex-direction: row;
   overflow-x: scroll;
   overflow: hidden;
+  transition: padding ease 0.4s;
+
+  &.viewWithLogs {
+    padding-bottom: 25px;
+  }
 }
 
 .content {

@@ -3,12 +3,13 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/k8smanagerpb"
 	"google.golang.org/grpc"
-	"time"
 )
 
 type K8sManagerServiceGRPC struct {
@@ -41,13 +42,17 @@ func (k *K8sManagerServiceGRPC) CreateRuntime(runtime *entity.Runtime) (string, 
 	req := k8smanagerpb.CreateRuntimeRequest{
 		Runtime: &k8smanagerpb.Runtime{
 			Name: runtime.Name,
+			Mongo: &k8smanagerpb.Runtime_MongoConf{
+				Username:  runtime.Mongo.Username,
+				Password:  runtime.Mongo.Password,
+				Sharedkey: runtime.Mongo.SharedKey,
+			},
 			Minio: &k8smanagerpb.Runtime_MinioConf{
 				AccessKey: runtime.Minio.AccessKey,
 				SecretKey: runtime.Minio.SecretKey,
 			},
 		},
 	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 

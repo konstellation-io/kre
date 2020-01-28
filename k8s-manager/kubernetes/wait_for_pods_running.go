@@ -2,11 +2,12 @@ package kubernetes
 
 import (
 	"fmt"
-	v1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"strings"
 	"time"
+
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // WaitForPods watch all resources until everything is running and ready
@@ -23,7 +24,7 @@ func (k *ResourceManager) WaitForPods(ns string) error {
 		return err
 	}
 
-	mongoChan, err := k.waitForPodRunning(ns, []string{"app=kre-mongo"}, timeout)
+	mongoChan, err := k.waitForPodRunning(ns, []string{"kre-app=kre-mongo"}, timeout)
 	if err != nil {
 		return err
 	}

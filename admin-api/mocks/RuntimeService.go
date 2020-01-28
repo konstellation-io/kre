@@ -79,3 +79,49 @@ func (_m *RuntimeService) UpdateVersionConfig(runtime *entity.Runtime, version *
 
 	return r0
 }
+
+// WatchNodeLogs provides a mock function with given fields: runtime, nodeID, stopChannel
+func (_m *RuntimeService) WatchNodeLogs(runtime *entity.Runtime, nodeID string, stopChannel <-chan bool) (<-chan *entity.NodeLog, error) {
+	ret := _m.Called(runtime, nodeID, stopChannel)
+
+	var r0 <-chan *entity.NodeLog
+	if rf, ok := ret.Get(0).(func(*entity.Runtime, string, <-chan bool) <-chan *entity.NodeLog); ok {
+		r0 = rf(runtime, nodeID, stopChannel)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(<-chan *entity.NodeLog)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*entity.Runtime, string, <-chan bool) error); ok {
+		r1 = rf(runtime, nodeID, stopChannel)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// WatchVersionStatus provides a mock function with given fields: runtime, versionName, stopChannel
+func (_m *RuntimeService) WatchVersionStatus(runtime *entity.Runtime, versionName string, stopChannel <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
+	ret := _m.Called(runtime, versionName, stopChannel)
+
+	var r0 <-chan *entity.VersionNodeStatus
+	if rf, ok := ret.Get(0).(func(*entity.Runtime, string, <-chan bool) <-chan *entity.VersionNodeStatus); ok {
+		r0 = rf(runtime, versionName, stopChannel)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(<-chan *entity.VersionNodeStatus)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*entity.Runtime, string, <-chan bool) error); ok {
+		r1 = rf(runtime, versionName, stopChannel)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

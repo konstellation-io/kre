@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"github.com/iancoleman/strcase"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
@@ -26,38 +27,46 @@ var AllVersionStatus = []VersionStatus{
 }
 
 type VersionInteractor struct {
-	logger          logging.Logger
-	resourceManager service.ResourceManagerService
+	logger           logging.Logger
+	resourceManager  service.ResourceManagerService
+	logStreamService service.LogStreamService
 }
 
 func NewVersionInteractor(
 	logger logging.Logger,
 	resourceManager service.ResourceManagerService,
+	logStreamService service.LogStreamService,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		logger,
 		resourceManager,
+		logStreamService,
 	}
 }
 
 func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Version, error) {
 	i.logger.Info(fmt.Sprintf("Deploying version: %s", version.Name))
 
-	versionConfig, err := i.resourceManager.CreateVersionConfig(version)
-	if err != nil {
-		return nil, err
-	}
+	// TODO: Refactor to avoid modifing Config with pointers, collect to new struct instead
 	for _, w := range version.Workflows {
 		i.logger.Info(fmt.Sprintf("Processing workflow %s", w.Name))
 		i.generateNodeConfig(version, &w)
 		for _, n := range w.Nodes {
-			err := i.resourceManager.CreateNode(version, n, versionConfig)
+			err := i.resourceManager.CreateNode(version, n)
 			if err != nil {
 				i.logger.Error(err.Error())
 				return nil, err
 			}
 		}
 	}
+
+	i.generateEntrypointConfig(version)
+
+	_, err := i.resourceManager.CreateVersionConfig(version)
+	if err != nil {
+		return nil, err
+	}
+
 	err = i.resourceManager.CreateEntrypoint(version)
 	if err != nil {
 		i.logger.Error(err.Error())
@@ -69,13 +78,25 @@ func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Vers
 	return version, err
 }
 
+func (i *VersionInteractor) generateEntrypointConfig(version *entity.Version) {
+	natsSubjects := map[string]string{}
+
+	for _, w := range version.Workflows {
+		natsSubjects[w.Entrypoint] = w.Nodes[0].Config["KRT_NATS_INPUT"]
+	}
+
+	version.Entrypoint.Config = map[string]interface{}{
+		"nats-subjects": natsSubjects,
+	}
+}
+
 func (i *VersionInteractor) generateNodeConfig(version *entity.Version, workflow *entity.Workflow) {
 	for _, n := range workflow.Nodes {
 		n.Config = map[string]string{
 			"KRT_VERSION":           version.Name,
 			"KRT_NODE_NAME":         n.Name,
 			"KRT_NATS_SERVER":       "kre-nats:4222",
-			"KRT_NATS_MONGO_WRITER": "kre-nats:4222",
+			"KRT_NATS_MONGO_WRITER": "some_channel",
 			"KRT_BASE_PATH":         "/krt-files",
 			"KRT_HANDLER_PATH":      n.Src,
 		}
@@ -162,6 +183,13 @@ func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error
 func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version) error {
 
 	return i.resourceManager.UpdateVersionConfig(version)
+}
+
+func (i *VersionInteractor) WatchNodeLogs(ctx context.Context, nodeId string) chan *entity.NodeLog {
+	statusCh := make(chan *entity.NodeLog, 1)
+	i.logStreamService.WatchNodeLogs(ctx, nodeId, statusCh)
+
+	return statusCh
 }
 
 func (i *VersionInteractor) WatchVersionStatus(versionName string) (chan *entity.VersionNodeStatus, chan struct{}) {
