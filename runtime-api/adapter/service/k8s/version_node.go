@@ -265,12 +265,6 @@ func (k *ResourceManagerService) deleteDeploymentsSync(label, namespace string) 
 	gracePeriod := new(int64)
 	*gracePeriod = 0
 
-	deletePolicy := metav1.DeletePropagationForeground
-	deleteOptions := &metav1.DeleteOptions{
-		PropagationPolicy:  &deletePolicy,
-		GracePeriodSeconds: gracePeriod,
-	}
-
 	listOptions := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("version-name=%s", label),
 		TypeMeta: metav1.TypeMeta{
@@ -289,19 +283,41 @@ func (k *ResourceManagerService) deleteDeploymentsSync(label, namespace string) 
 		return nil
 	}
 
-	err = deployments.DeleteCollection(deleteOptions, listOptions)
-	if err != nil {
-		return err
-	}
-
 	startTime := time.Now()
 	timeToWait := 5 * time.Minute
 	w, err := deployments.Watch(listOptions)
 	if err != nil {
 		return err
 	}
-
 	watchResults := w.ResultChan()
+
+	go func() {
+		deletePolicy := metav1.DeletePropagationForeground
+		deleteOptions := &metav1.DeleteOptions{
+			PropagationPolicy:  &deletePolicy,
+			GracePeriodSeconds: gracePeriod,
+		}
+		for _, d := range list.Items {
+			_ = deployments.Delete(d.Name, deleteOptions)
+		}
+
+		time.Sleep(2 * time.Second)
+		k.logger.Info("Forcing POD deletion")
+		pods := k.clientset.CoreV1().Pods(namespace)
+		listOptions := metav1.ListOptions{
+			LabelSelector: fmt.Sprintf("version-name=%s", label),
+			TypeMeta: metav1.TypeMeta{
+				Kind: "Pod",
+			},
+		}
+		deletePodsPolicy := metav1.DeletePropagationBackground
+		deleteOptions.PropagationPolicy = &deletePodsPolicy
+		list, _ := pods.List(listOptions)
+		for _, p := range list.Items {
+			_ = pods.Delete(p.Name, deleteOptions)
+		}
+	}()
+
 	for {
 		select {
 		case event := <-watchResults:
