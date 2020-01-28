@@ -28,6 +28,7 @@ publish-operator-image:
     - cd operator
     - ./scripts/install_operator_sdk.sh
     - wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
+    - chmod +x /usr/local/bin/helm
     - helm dependency update helm-charts/kre-chart
   script:
     - TAG=${CI_COMMIT_TAG#operator-v}
