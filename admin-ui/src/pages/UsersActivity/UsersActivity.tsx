@@ -149,13 +149,7 @@ function UsersActivity() {
       <div className={styles.container} data-testid="settingsContainer">
         <NavigationBar />
         <div className={cx(styles.form, styles.content)}>
-          <SettingsHeader
-            title="Audit. User History."
-            subtitle="Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec viverra eleifend
-            lacus, vitae ullamcorper metus. Sed sollicitudin ipsum quis nunc sollicitudin ultrices.
-            Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur
-            fermentum suscipit est, tincidunt."
-          />
+          <SettingsHeader title="User Audit" />
           <FiltersBar
             error={error}
             form={form}

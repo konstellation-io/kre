@@ -13,7 +13,7 @@
 
   &.STOPPED,
   &.CREATING {
-    background-color: $font-color;
+    background-color: $font-color-regular;
   }
   &.RUNNING {
     background-color: $color-blue;

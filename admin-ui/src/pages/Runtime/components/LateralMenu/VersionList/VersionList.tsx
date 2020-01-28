@@ -1,34 +1,35 @@
 import React from 'react';
-import { Version, Runtime } from '../../../../../graphql/models';
+import { Version } from '../../../../../graphql/models';
 
-import VersionListItem from './VersionListItem';
+import VersionListItem from '../VersionListItem/VersionListItem';
 
 import styles from './VersionList.module.scss';
 
 type VersionListProps = {
+  label: string;
   versions: Version[];
-  detailsVersion?: Version;
-  setDetailsVersion: (v: Version) => void;
+  openedVersion?: Version;
+  setOpenedVersion: (v: Version) => void;
 };
 
 function VersionList({
+  label,
   versions,
-  detailsVersion,
-  setDetailsVersion
+  openedVersion,
+  setOpenedVersion
 }: VersionListProps) {
-  const numVersions = versions.length;
   const versionItems = versions.map((v: Version) => (
     <VersionListItem
       key={v.id}
       version={v}
-      selected={detailsVersion ? v.id === detailsVersion.id : false}
-      onSelect={setDetailsVersion}
+      selected={openedVersion ? v.id === openedVersion.id : false}
+      onSelect={setOpenedVersion}
     />
   ));
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.desc}>{numVersions} versions shown</div>
+      <div className={styles.label}>{label}</div>
       <div className={styles.items}>{versionItems}</div>
     </div>
   );

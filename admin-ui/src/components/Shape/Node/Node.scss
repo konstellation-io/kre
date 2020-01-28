@@ -16,12 +16,12 @@
 
 .label {
   @include font-button;
-  fill: $font-color;
+  fill: $font-color-regular;
 }
 
 .errors {
   @include font-body;
-  fill: $font-color;
+  fill: $font-color-regular;
   font-size: 9px;
 }
 

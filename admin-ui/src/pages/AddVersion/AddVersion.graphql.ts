@@ -9,6 +9,14 @@ export const ADD_VERSION = gql`
       }
       version {
         id
+        name
+        description
+        status
+        creationDate
+        creationAuthor {
+          id
+          email
+        }
       }
     }
   }

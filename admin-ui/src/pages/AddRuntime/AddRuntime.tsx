@@ -15,6 +15,10 @@ import {
   AddRuntimeResponse,
   AddRuntimeVars
 } from './AddRuntime.graphql';
+import {
+  GET_DASHBOARD,
+  GetDashboardResponse
+} from '../Dashboard/Dashboard.graphql';
 
 function verifyRuntimeName(value: string) {
   return CHECK.getValidationError([
@@ -33,7 +37,23 @@ function AddRuntime() {
     AddRuntimeResponse,
     AddRuntimeVars
   >(ADD_RUNTIME, {
-    onCompleted: onCompleteAddRuntime
+    onCompleted: onCompleteAddRuntime,
+    update(cache, updateResult) {
+      if (updateResult.data !== undefined && updateResult.data !== null) {
+        const newRuntime = updateResult.data.createRuntime.runtime;
+        const cacheResult = cache.readQuery<GetDashboardResponse>({
+          query: GET_DASHBOARD
+        });
+
+        if (cacheResult !== null) {
+          const { runtimes, alerts } = cacheResult;
+          cache.writeQuery({
+            query: GET_DASHBOARD,
+            data: { runtimes: runtimes.concat([newRuntime]), alerts }
+          });
+        }
+      }
+    }
   });
 
   useEffect(() => {

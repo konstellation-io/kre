@@ -3,13 +3,13 @@ import styles from '../Settings.module.scss';
 
 type Props = {
   title: string;
-  subtitle: string;
+  subtitle?: string;
 };
 function SettingsHeader({ title, subtitle }: Props) {
   return (
     <>
       <div className={styles.formTitle}>{title}</div>
-      <div className={styles.formDescription}>{subtitle}</div>
+      {subtitle && <div className={styles.formDescription}>{subtitle}</div>}
     </>
   );
 }

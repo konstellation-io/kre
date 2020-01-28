@@ -19,7 +19,7 @@
 
   padding: 7px 9px;
   background-color: $bg-color-lighter;
-  color: $font-color;
+  color: $font-color-light;
 }
 .DateInput_input__focused {
   border-bottom: solid 1px $color-blue;
@@ -40,7 +40,7 @@
 
 .CalendarMonth_caption > strong {
   @include font-title;
-  color: $font-color;
+  color: $font-color-regular;
 }
 
 .DateInput_fang {
@@ -72,7 +72,7 @@
 .DayPicker_transitionContainer,
 .CalendarMonthGrid {
   background-color: $bg-color-lighter;
-  color: $font-color;
+  color: $font-color-regular;
 }
 
 .CalendarDay {

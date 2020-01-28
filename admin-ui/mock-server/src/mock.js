@@ -3,13 +3,13 @@ const casual = require('casual');
 const { UserActivityOptions } = require('./mockSamples');
 
 module.exports = {
-  Query: () =>({
+  Query: () => ({
     users: () => new MockList([4, 6]),
     runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 4]),
-    versions: () => new MockList([8, 12]),
+    versions: () => new MockList([18, 28]),
     domains: () => new MockList([2, 6]),
-    userActivityList: () => new MockList([30, 30]),
+    userActivityList: () => new MockList([30, 30])
   }),
   Mutation: () => ({
     createRuntime: () => ({
@@ -23,7 +23,7 @@ module.exports = {
     updateSettings: () => ({
       errors: [],
       settings: this.Settings
-    }),
+    })
   }),
   User: () => ({
     id: casual.id,
@@ -33,7 +33,7 @@ module.exports = {
       'user3@intelygenz.com',
       'user4@intelygenz.com',
       'user5@intelygenz.com',
-      'user6@intelygenz.com',
+      'user6@intelygenz.com'
     ])
   }),
   Runtime: () => ({
@@ -46,19 +46,28 @@ module.exports = {
       if (Math.random() > 0.5) {
         return {
           id: parseInt(casual.array_of_digits(8).join('')),
-          name: `v${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}`,
+          name: `v${casual.integer((from = 1), (to = 10))}.${casual.integer(
+            (from = 1),
+            (to = 10)
+          )}.${casual.integer((from = 1), (to = 10))}`,
           description: casual.sentence,
           status: 'ACTIVE',
           creationDate: casual.moment.toISOString(),
-          activationDate: casual.moment.toISOString(),
-        }
+          activationDate: casual.moment.toISOString()
+        };
       }
       return null;
-    },
+    }
   }),
   Version: () => ({
-    id: parseInt(casual.array_of_digits(8).join('')),
-    name: `v${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}.${casual.integer(from = 1, to = 10)}`,
+    // id: 'version1234',
+    // id: parseInt(casual.array_of_digits(8).join('')),
+    id: casual.random_element(['v1', 'v2', 'v3', 'v4', 'v5', 'v6']),
+
+    name: `v${casual.integer((from = 1), (to = 10))}.${casual.integer(
+      (from = 1),
+      (to = 10)
+    )}.${casual.integer((from = 1), (to = 10))}`,
     description: casual.sentence,
     status: casual.random_element(['CREATED', 'ACTIVE', 'RUNNING', 'STOPPED']),
     creationDate: casual.moment.toISOString(),
@@ -85,21 +94,21 @@ module.exports = {
   UserActivity: () => casual.random_element(UserActivityOptions(this.User)),
   Settings: () => ({
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
-    sessionLifetimeInDays: () => casual.integer(from = 1, to = 99)
+    sessionLifetimeInDays: () => casual.integer((from = 1), (to = 99))
   }),
   Workflow: () => ({
     name: casual.name,
     nodes: () => new MockList([1, 4]),
-    edges: () => new MockList([1, 4]),
+    edges: () => new MockList([1, 4])
   }),
   Edge: () => ({
     id: casual.ID,
     fromNode: casual.ID,
-    toNode: casual.ID,
+    toNode: casual.ID
   }),
   Node: () => ({
     id: casual.ID,
     name: casual.name,
-    status: 'STOPPED',
+    status: 'STOPPED'
   })
-}
+};

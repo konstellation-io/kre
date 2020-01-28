@@ -22,7 +22,7 @@
   font-weight: 600;
 
   &.placeholder {
-    color: $font-color;
+    color: $font-color-light;
   }
 
   &:after {
@@ -56,6 +56,7 @@
 }
 
 .optionElement {
+  color: $font-color-light;
   line-height: 16px;
   height: 40px;
   padding: 11px 16px;
@@ -63,6 +64,6 @@
 
   &:hover {
     background-color: rgba(191, 207, 255, 0.15);
-    color: white;
+    color: $font-color-white;
   }
 }

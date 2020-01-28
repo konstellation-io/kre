@@ -1,7 +1,9 @@
 @import '../../styles/mixins';
+@import '../../styles/colors';
 
 .row {
   @include font-body;
+  color: $font-color-light;
   font-weight: 600;
 
   display: flex;

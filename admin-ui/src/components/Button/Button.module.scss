@@ -4,6 +4,7 @@
 
 .btn {
   @include font-button;
+  color: $font-color-light;
   position: relative;
   text-align: center;
   padding: 0 42px;
@@ -41,7 +42,7 @@
   }
 
   &:active {
-    color: $font-color;
+    color: $font-color-light;
   }
 
   &.border {
@@ -60,7 +61,7 @@ a.navLinkSelected .btn,
 }
 
 .dark {
-  color: $font-color;
+  color: $font-color-light;
   background-color: $bg-color-dark;
 
   &:hover {
@@ -72,12 +73,12 @@ a.navLinkSelected .btn,
   }
 
   &.disabled {
-    color: $font-color-grey;
+    color: $font-color-dark;
   }
 }
 
 .grey {
-  color: $font-color;
+  color: $font-color-light;
   background-color: $color-grey-darker;
 
   &:hover {
@@ -90,7 +91,7 @@ a.navLinkSelected .btn,
 }
 
 .transparent {
-  color: $font-color;
+  color: $font-color-light;
   background-color: transparent;
 
   &:hover {
@@ -108,11 +109,11 @@ a.navLinkSelected .btn,
 }
 
 .label {
-  color: $font-color;
+  color: $font-color-light;
 }
 
 .disabled {
-  color: $font-color;
+  color: $font-color-light;
   pointer-events: none;
   opacity: 0.5;
 }
