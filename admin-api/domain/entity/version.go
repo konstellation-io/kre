@@ -80,8 +80,8 @@ type Version struct {
 	CreationDate   time.Time `bson:"creationDate"`
 	CreationAuthor string    `bson:"creationAuthor"`
 
-	ActivationDate   *time.Time `bson:"activationDate"`
-	ActivationUserID *string    `bson:"activationUserId"`
+	PublicationDate   *time.Time `bson:"publicationDate"`
+	PublicationUserID *string    `bson:"publicationUserId"`
 
 	Status string `bson:"status"`
 

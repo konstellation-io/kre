@@ -10,13 +10,13 @@ export const dashboardMock = {
       runtimes: [
         {
           id: '00001',
-          status: 'ACTIVE',
+          status: 'STARTED',
           name: 'Some Name',
           creationDate: '2019-11-28T15:28:01+00:00'
         },
         {
           id: '00002',
-          status: 'ACTIVE',
+          status: 'STARTED',
           name: 'Some Other Name',
           creationDate: '2019-11-27T15:28:01+00:00'
         }

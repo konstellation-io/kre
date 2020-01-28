@@ -25,6 +25,10 @@ func NewResourceManagerService(cfg *config.Config, logger logging.Logger) *Resou
 	}
 }
 
+func (k *ResourceManagerService) GetClientset() *kubernetes.Clientset {
+	return k.clientset
+}
+
 func (k *ResourceManagerService) CreateEntrypoint(version *entity.Version) error {
 	name := strcase.ToKebab(version.Name)
 	namespace := k.cfg.Kubernetes.Namespace
@@ -75,7 +79,7 @@ func (k *ResourceManagerService) StopVersion(name string) error {
 	return k.deleteVersionResources(label, namespace)
 }
 
-func (k *ResourceManagerService) DeactivateVersion(name string) error {
+func (k *ResourceManagerService) UnpublishVersion(name string) error {
 	label := strcase.ToKebab(name)
 	namespace := k.cfg.Kubernetes.Namespace
 
@@ -95,7 +99,7 @@ func (k *ResourceManagerService) UpdateVersionConfig(version *entity.Version) er
 	return k.restartPodsSync(label, namespace)
 }
 
-func (k *ResourceManagerService) ActivateVersion(name string) error {
+func (k *ResourceManagerService) PublishVersion(name string) error {
 	label := strcase.ToKebab(name)
 	namespace := k.cfg.Kubernetes.Namespace
 

@@ -34,7 +34,7 @@ type Props = {
 
 function SidebarTitle({ version }: Props) {
   if (!version) {
-    return <div style={{ paddingLeft: '20px' }}>No active version</div>; // TODO add final design
+    return <div style={{ paddingLeft: '20px' }}>No published version</div>; // TODO add final design
   }
 
   return (
@@ -56,8 +56,8 @@ function SidebarTitle({ version }: Props) {
           Icon={CalendarIcon}
         />
         <DateInfo
-          label={'ACTIVATED'}
-          date={version && formatDate(new Date(version.activationDate))}
+          label={'PUBLISHED'}
+          date={version && formatDate(new Date(version.publicationDate))}
           Icon={TimeIcon}
         />
       </div>

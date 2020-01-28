@@ -2,19 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import * as ROUTES from '../../../../constants/routes';
 import { buildRoute } from '../../../../utils/routes';
-import {
-  UserActivity,
-  UserActivityVar,
-  UserActivityType
-} from '../../../../graphql/models';
+import { UserActivity, UserActivityType, UserActivityVar } from '../../../../graphql/models';
 
 enum VarTypes {
   RUNTIME_ID = 'RUNTIME_ID',
   RUNTIME_NAME = 'RUNTIME_NAME',
   VERSION_ID = 'VERSION_ID',
   VERSION_NAME = 'VERSION_NAME',
-  OLD_ACTIVE_VERSION_NAME = 'OLD_ACTIVE_VERSION_NAME',
-  OLD_ACTIVE_VERSION_ID = 'OLD_ACTIVE_VERSION_ID',
+  OLD_PUBLISHED_VERSION_NAME = 'OLD_PUBLISHED_VERSION_NAME',
+  OLD_PUBLISHED_VERSION_ID = 'OLD_PUBLISHED_VERSION_ID',
   COMMENT = 'COMMENT',
   SETTING_NAME = 'SETTING_NAME',
   OLD_VALUE = 'OLD_VALUE',
@@ -43,10 +39,10 @@ export default function getMessage(
     runtimeId: string | undefined = vars[VarTypes.RUNTIME_ID],
     versionName: string | undefined = vars[VarTypes.VERSION_NAME],
     versionId: string | undefined = vars[VarTypes.VERSION_ID],
-    oldActiveVersionName: string | undefined =
-      vars[VarTypes.OLD_ACTIVE_VERSION_NAME],
-    oldActiveVersionId: string | undefined =
-      vars[VarTypes.OLD_ACTIVE_VERSION_ID],
+    oldPublishedVersionName: string | undefined =
+      vars[VarTypes.OLD_PUBLISHED_VERSION_NAME],
+    oldPublishedVersionId: string | undefined =
+      vars[VarTypes.OLD_PUBLISHED_VERSION_ID],
     comment: string | undefined = vars[VarTypes.COMMENT],
     settingName: string | undefined = vars[VarTypes.SETTING_NAME],
     oldValue: string | undefined = vars[VarTypes.OLD_VALUE],
@@ -76,17 +72,17 @@ export default function getMessage(
       undefined
     );
   const oldVersionLink =
-    userActivity.type === UserActivityType.ACTIVATE_VERSION &&
+    userActivity.type === UserActivityType.PUBLISH_VERSION &&
     runtimeId &&
-    oldActiveVersionId ? (
+    oldPublishedVersionId ? (
       <Link
         to={buildRoute.version(
           ROUTES.RUNTIME_VERSION_STATUS,
           runtimeId,
-          oldActiveVersionId
+          oldPublishedVersionId
         )}
       >
-        {oldActiveVersionName}
+        {oldPublishedVersionName}
       </Link>
     ) : (
       undefined
@@ -115,25 +111,25 @@ export default function getMessage(
         </>
       );
       break;
-    case UserActivityType.ACTIVATE_VERSION:
+    case UserActivityType.PUBLISH_VERSION:
       message = (
         <>
-          {'Has activated version '}
+          {'Has published version '}
           {getVar(versionLink)}
           {'. '}
           {oldVersionLink && (
             <>
-              {'Previous active version: '}
+              {'Previous published version: '}
               {getVar(oldVersionLink)}
             </>
           )}
         </>
       );
       break;
-    case UserActivityType.DEACTIVATE_VERSION:
+    case UserActivityType.UNPUBLISH_VERSION:
       message = (
         <>
-          {'Has deactivated version '}
+          {'Has unpublished version '}
           {getVar(versionLink)}
         </>
       );
@@ -146,10 +142,10 @@ export default function getMessage(
         </>
       );
       break;
-    case UserActivityType.DEPLOY_VERSION:
+    case UserActivityType.START_VERSION:
       message = (
         <>
-          {'Has deployed version '}
+          {'Has started version '}
           {getVar(versionLink)}
         </>
       );

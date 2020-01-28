@@ -10,20 +10,6 @@ type ResourceManagerService struct {
 	mock.Mock
 }
 
-// ActivateVersion provides a mock function with given fields: name
-func (_m *ResourceManagerService) ActivateVersion(name string) error {
-	ret := _m.Called(name)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(name)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
 // CreateEntrypoint provides a mock function with given fields: version
 func (_m *ResourceManagerService) CreateEntrypoint(version *entity.Version) error {
 	ret := _m.Called(version)
@@ -73,8 +59,8 @@ func (_m *ResourceManagerService) CreateVersionConfig(version *entity.Version) (
 	return r0, r1
 }
 
-// DeactivateVersion provides a mock function with given fields: name
-func (_m *ResourceManagerService) DeactivateVersion(name string) error {
+// PublishVersion provides a mock function with given fields: name
+func (_m *ResourceManagerService) PublishVersion(name string) error {
 	ret := _m.Called(name)
 
 	var r0 error
@@ -89,6 +75,20 @@ func (_m *ResourceManagerService) DeactivateVersion(name string) error {
 
 // StopVersion provides a mock function with given fields: name
 func (_m *ResourceManagerService) StopVersion(name string) error {
+	ret := _m.Called(name)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(name)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UnpublishVersion provides a mock function with given fields: name
+func (_m *ResourceManagerService) UnpublishVersion(name string) error {
 	ret := _m.Called(name)
 
 	var r0 error

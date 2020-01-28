@@ -1,40 +1,32 @@
 import { useMutation } from '@apollo/react-hooks';
 import {
-  ACTIVATE_VERSION,
-  DEACTIVATE_VERSION,
-  DEPLOY_VERSION,
+  PUBLISH_VERSION,
+  PublishVersionResponse,
+  START_VERSION,
+  StartVersionResponse,
   STOP_VERSION,
-  ActivateVersionResponse,
-  DeactivateVersionResponse,
-  DeployVersionResponse,
   StopVersionResponse,
+  UNPUBLISH_VERSION,
+  UnpublishVersionResponse,
   VersionActionVars
 } from '../pages/RuntimeStatusPreview/RuntimeStatusPreview.graphql';
 
 export enum versionActions {
-  activate = 'activateVersion',
-  deploy = 'deployVersion',
+  start = 'startVersion',
   stop = 'stopVersion',
-  deactivate = 'deactivateVersion'
+  publish = 'publishVersion',
+  unpublish = 'unpublishVersion',
 }
 
 export default function useVersionAction() {
-  const [activateMutation, { loading: loadingM1 }] = useMutation<
-    ActivateVersionResponse,
-    VersionActionVars
-  >(ACTIVATE_VERSION);
-  const [deactivateMutation, { loading: loadingM2 }] = useMutation<
-    DeactivateVersionResponse,
-    VersionActionVars
-  >(DEACTIVATE_VERSION);
-  const [deployMutation, { loading: loadingM3 }] = useMutation<
-    DeployVersionResponse,
-    VersionActionVars
-  >(DEPLOY_VERSION);
-  const [stopMutation, { loading: loadingM4 }] = useMutation<
-    StopVersionResponse,
-    VersionActionVars
-  >(STOP_VERSION);
+  const [publishMutation, { loading: loadingM1 }] = useMutation<PublishVersionResponse,
+    VersionActionVars>(PUBLISH_VERSION);
+  const [unpublishMutation, { loading: loadingM2 }] = useMutation<UnpublishVersionResponse,
+    VersionActionVars>(UNPUBLISH_VERSION);
+  const [startMutation, { loading: loadingM3 }] = useMutation<StartVersionResponse,
+    VersionActionVars>(START_VERSION);
+  const [stopMutation, { loading: loadingM4 }] = useMutation<StopVersionResponse,
+    VersionActionVars>(STOP_VERSION);
 
   const mutationLoading = [loadingM1, loadingM2, loadingM3, loadingM4].some(
     el => el
@@ -57,10 +49,10 @@ export default function useVersionAction() {
   }
 
   return {
-    [versionActions.activate]: activateMutation,
-    [versionActions.deploy]: deployMutation,
+    [versionActions.publish]: publishMutation,
+    [versionActions.start]: startMutation,
     [versionActions.stop]: stopMutation,
-    [versionActions.deactivate]: deactivateMutation,
+    [versionActions.unpublish]: unpublishMutation,
     getMutationVars,
     mutationLoading
   };

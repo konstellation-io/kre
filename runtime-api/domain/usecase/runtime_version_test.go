@@ -44,12 +44,12 @@ func (s *VersionSuite) SetupTest() {
 	)
 }
 
-func (s *VersionSuite) TestDeployVersion() {
+func (s *VersionSuite) TestStartVersion() {
 	t := s.T()
 
 	name := "test-version"
 
-	s.mocks.resourceManager.On("DeployVersion", name).Return(nil)
+	s.mocks.resourceManager.On("StartVersion", name).Return(nil)
 	version := &entity.Version{
 		Name: name,
 		Entrypoint: entity.Entrypoint{
@@ -63,26 +63,24 @@ func (s *VersionSuite) TestDeployVersion() {
 
 	versionName := "test-version-global"
 	s.mocks.resourceManager.On("CreateVersionConfig", version).Return(versionName, nil)
-	actual, err := s.interactor.DeployVersion(version)
-	version.Status = string(usecase.VersionStatusCreating)
+	actual, err := s.interactor.StartVersion(version)
 
 	require.Nil(t, err)
 	assert.EqualValues(t, actual, version)
 }
 
-func (s *VersionSuite) TestActivateVersion() {
+func (s *VersionSuite) TestPublishVersion() {
 	t := s.T()
 
 	name := "test-version"
 
-	versionActivated := &entity.Version{
+	versionPublished := &entity.Version{
 		Name:   name,
-		Status: string(usecase.VersionStatusRunning),
 	}
 
-	s.mocks.resourceManager.On("ActivateVersion", name).Return(nil)
+	s.mocks.resourceManager.On("PublishVersion", name).Return(nil)
 
-	res, err := s.interactor.ActivateVersion(name)
+	res, err := s.interactor.PublishVersion(name)
 	require.Nil(t, err)
-	require.EqualValues(t, res, versionActivated)
+	require.EqualValues(t, res, versionPublished)
 }

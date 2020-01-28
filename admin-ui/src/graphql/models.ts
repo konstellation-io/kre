@@ -21,8 +21,8 @@ export interface Version {
   name: string;
   creationDate: string;
   creationAuthor: User;
-  activationDate: string;
-  activationAuthor: User;
+  publicationDate: string;
+  publicationAuthor: User;
   status: VersionStatus;
   workflows: Workflow[];
   configurationVariables: ConfigurationVariable[];
@@ -63,7 +63,7 @@ export interface Runtime {
   name: string;
   status: RuntimeStatus;
   creationDate: string;
-  activeVersion: Version;
+  publishedVersion: Version;
 }
 
 export interface Alert {
@@ -86,21 +86,20 @@ export type VersionNodeStatus = {
 
 export enum RuntimeStatus {
   CREATING = 'CREATING',
-  RUNNING = 'RUNNING',
+  STARTED = 'STARTED',
   ERROR = 'ERROR',
   UNKNOWN = 'UNKNOWN'
 }
 
 export enum VersionStatus {
-  CREATED = 'CREATED',
-  ACTIVE = 'ACTIVE',
-  RUNNING = 'RUNNING',
+  PUBLISHED = 'PUBLISHED',
+  STARTED = 'STARTED',
   STOPPED = 'STOPPED'
 }
 
 export enum VersionEnvStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
+  PUBLISHED = 'PUBLISHED',
+  STARTED = 'STARTED',
   ERROR = 'ERROR'
 }
 
@@ -115,10 +114,10 @@ export enum UserActivityType {
   LOGOUT = 'LOGOUT',
   CREATE_RUNTIME = 'CREATE_RUNTIME',
   CREATE_VERSION = 'CREATE_VERSION',
-  ACTIVATE_VERSION = 'ACTIVATE_VERSION',
-  DEACTIVATE_VERSION = 'DEACTIVATE_VERSION',
+  PUBLISH_VERSION = 'PUBLISH_VERSION',
+  UNPUBLISH_VERSION = 'UNPUBLISH_VERSION',
   STOP_VERSION = 'STOP_VERSION',
-  DEPLOY_VERSION = 'DEPLOY_VERSION',
+  START_VERSION = 'START_VERSION',
   UPDATE_SETTING = 'UPDATE_SETTING',
   UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION'
 }

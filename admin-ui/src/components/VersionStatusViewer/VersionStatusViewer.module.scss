@@ -40,10 +40,10 @@
 .edge {
   stroke: $font-color-regular;
 
-  &.ACTIVE line,
-  &.ACTIVE path,
-  &.RUNNING line,
-  &.RUNNING path {
+  &.PUBLISHED line,
+  &.PUBLISHED path,
+  &.STARTED line,
+  &.STARTED path {
     stroke: $color-green;
   }
 }

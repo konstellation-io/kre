@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import EmailIcon from '@material-ui/icons/Email';
 import TimeIcon from '@material-ui/icons/AccessTime';
-import { Version, Runtime, VersionStatus } from '../../../../../graphql/models';
+import { Runtime, Version, VersionStatus } from '../../../../../graphql/models';
 import * as PAGES from '../../../../../constants/routes';
 import history from '../../../../../history';
 import cx from 'classnames';
@@ -32,39 +32,44 @@ function VersionDetailsPanel({
   ).replace(':versionId', version.id);
 
   const {
-    activateVersion,
-    deployVersion,
+    publishVersion,
+    startVersion,
     stopVersion,
-    deactivateVersion,
+    unpublishVersion,
     getMutationVars
   } = useVersionAction();
 
   const actionButtons = getVersionActionButtons(
     onOpenModal,
-    onDeployVersion,
+    onStartVersion,
     onStopVersion,
-    onDeactivateVersion,
+    onUnpublishVersion,
     version.status
   );
-  const isVersionActive = version.status === VersionStatus.ACTIVE;
+  const isVersionPublished = version.status === VersionStatus.PUBLISHED;
 
-  function onActivateVersion(comment: string) {
+  function onPublishVersion(comment: string) {
     setShowActionConfirmation(false);
-    activateVersion(getMutationVars(version.id, comment));
+    publishVersion(getMutationVars(version.id, comment));
   }
-  function onDeactivateVersion() {
-    deactivateVersion(getMutationVars(version.id));
+
+  function onUnpublishVersion() {
+    unpublishVersion(getMutationVars(version.id));
   }
-  function onDeployVersion() {
-    deployVersion(getMutationVars(version.id));
+
+  function onStartVersion() {
+    startVersion(getMutationVars(version.id));
   }
+
   function onStopVersion() {
     stopVersion(getMutationVars(version.id));
   }
+
   function onOpenModal(event: any) {
     event.stopPropagation();
     setShowActionConfirmation(true);
   }
+
   function onCloseModal() {
     setShowActionConfirmation(false);
   }
@@ -121,20 +126,20 @@ function VersionDetailsPanel({
           </div>
         </div>
       </div>
-      {isVersionActive && (
+      {isVersionPublished && (
         <div className={styles.section}>
-          <p className={styles.sectionLabel}>ACTIVATED BY</p>
+          <p className={styles.sectionLabel}>PUBLISHED BY</p>
           <div className={styles.authorDateContainer}>
             <div className={styles.col2CreatorName}>
-              <EmailIcon className="icon-small" />
+              <EmailIcon className="icon-small"/>
               <span className={styles.author}>
-                {version.activationAuthor.email}
+                {version.publicationAuthor.email}
               </span>
             </div>
             <div className={styles.date}>
-              <TimeIcon className="icon-small" />
+              <TimeIcon className="icon-small"/>
               <span className={styles.activatedDate}>
-                {version.activationDate}
+                {version.publicationDate}
               </span>
             </div>
           </div>
@@ -148,9 +153,9 @@ function VersionDetailsPanel({
 
       {showActionConfirmation && (
         <ConfirmationModal
-          title="YOU ARE ABOUT TO ACTIVATE A VERSION"
+          title="YOU ARE ABOUT TO PUBLISH A VERSION"
           message="And this cannot be undone. Are you sure?"
-          onAction={onActivateVersion}
+          onAction={onPublishVersion}
           onClose={onCloseModal}
         />
       )}

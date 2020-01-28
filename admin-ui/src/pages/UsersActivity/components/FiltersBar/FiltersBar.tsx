@@ -13,10 +13,10 @@ export const typeToText = {
   LOGOUT: 'Logout',
   CREATE_RUNTIME: 'Create Runtime',
   CREATE_VERSION: 'Create Version',
-  ACTIVATE_VERSION: 'Activate Version',
-  DEACTIVATE_VERSION: 'Deactivate Version',
+  PUBLISH_VERSION: 'Publish Version',
+  UNPUBLISH_VERSION: 'Unpublish Version',
   STOP_VERSION: 'Stop Version',
-  DEPLOY_VERSION: 'Deploy Version',
+  START_VERSION: 'Start Version',
   UPDATE_SETTING: 'Update Settings',
   UPDATE_VERSION_CONFIGURATION: 'Update Version Configuration'
 };

@@ -1,18 +1,15 @@
 import { cloneDeep, get } from 'lodash';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSubscription } from '@apollo/react-hooks';
 import { useParams } from 'react-router';
 
 import useRenderOnResize from '../../../../hooks/useRenderOnResize';
 import { TYPES } from '../../../../components/Shape/Node/Node';
-import { NodeStatus, VersionStatus } from '../../../../graphql/models';
+import { Node, NodeStatus, VersionNodeStatus, VersionStatus } from '../../../../graphql/models';
 import { NODE_STATUS_UPDATE_SUBSCRIPTION } from './StatusViewer.graphql';
-import { VersionNodeStatus, Node } from '../../../../graphql/models';
 
-import VersionStatusViewer, {
-  Workflow
-} from '../../../../components/VersionStatusViewer/VersionStatusViewer';
+import VersionStatusViewer, { Workflow } from '../../../../components/VersionStatusViewer/VersionStatusViewer';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 
 import styles from './StatusViewer.module.scss';
@@ -27,7 +24,7 @@ function formatData(workflows: any, versionStatus: VersionStatus) {
     }));
 
     const inoutNodeStatus =
-      versionStatus === VersionStatus.ACTIVE
+      versionStatus === VersionStatus.PUBLISHED
         ? NodeStatus.STARTED
         : NodeStatus.STOPPED;
 
@@ -102,7 +99,7 @@ function StatusViewer({ data, status, onNodeClick }: any) {
     let newWorkflows = workflows;
     workflows.forEach((workflow: Workflow, idx: number) => {
       const newNodeState =
-        status === VersionStatus.ACTIVE
+        status === VersionStatus.PUBLISHED
           ? NodeStatus.STARTED
           : NodeStatus.STOPPED;
       const newInputNode = {
@@ -138,7 +135,7 @@ function StatusViewer({ data, status, onNodeClick }: any) {
             left: 10
           }}
           data={workflows}
-          published={status === VersionStatus.ACTIVE}
+          published={status === VersionStatus.PUBLISHED}
           onNodeClick={onNodeClick}
         />
       )}

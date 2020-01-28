@@ -13,7 +13,7 @@
   margin: 0 16px;
   border-radius: 50%;
 
-  @each $status in 'ACTIVE' {
+  @each $status in 'PUBLISHED' {
     background-color: get-color-prop($status);
   }
 }

@@ -370,46 +370,46 @@ func (m *Version_Config) GetValue() string {
 	return ""
 }
 
-type DeployVersionRequest struct {
+type StartVersionRequest struct {
 	Version              *Version `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DeployVersionRequest) Reset()         { *m = DeployVersionRequest{} }
-func (m *DeployVersionRequest) String() string { return proto.CompactTextString(m) }
-func (*DeployVersionRequest) ProtoMessage()    {}
-func (*DeployVersionRequest) Descriptor() ([]byte, []int) {
+func (m *StartVersionRequest) Reset()         { *m = StartVersionRequest{} }
+func (m *StartVersionRequest) String() string { return proto.CompactTextString(m) }
+func (*StartVersionRequest) ProtoMessage()    {}
+func (*StartVersionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d0e5095094a8d27f, []int{3}
 }
 
-func (m *DeployVersionRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeployVersionRequest.Unmarshal(m, b)
+func (m *StartVersionRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StartVersionRequest.Unmarshal(m, b)
 }
-func (m *DeployVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeployVersionRequest.Marshal(b, m, deterministic)
+func (m *StartVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StartVersionRequest.Marshal(b, m, deterministic)
 }
-func (m *DeployVersionRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeployVersionRequest.Merge(m, src)
+func (m *StartVersionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StartVersionRequest.Merge(m, src)
 }
-func (m *DeployVersionRequest) XXX_Size() int {
-	return xxx_messageInfo_DeployVersionRequest.Size(m)
+func (m *StartVersionRequest) XXX_Size() int {
+	return xxx_messageInfo_StartVersionRequest.Size(m)
 }
-func (m *DeployVersionRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeployVersionRequest.DiscardUnknown(m)
+func (m *StartVersionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_StartVersionRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DeployVersionRequest proto.InternalMessageInfo
+var xxx_messageInfo_StartVersionRequest proto.InternalMessageInfo
 
-func (m *DeployVersionRequest) GetVersion() *Version {
+func (m *StartVersionRequest) GetVersion() *Version {
 	if m != nil {
 		return m.Version
 	}
 	return nil
 }
 
-type DeployVersionResponse struct {
+type StartVersionResponse struct {
 	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -417,39 +417,39 @@ type DeployVersionResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DeployVersionResponse) Reset()         { *m = DeployVersionResponse{} }
-func (m *DeployVersionResponse) String() string { return proto.CompactTextString(m) }
-func (*DeployVersionResponse) ProtoMessage()    {}
-func (*DeployVersionResponse) Descriptor() ([]byte, []int) {
+func (m *StartVersionResponse) Reset()         { *m = StartVersionResponse{} }
+func (m *StartVersionResponse) String() string { return proto.CompactTextString(m) }
+func (*StartVersionResponse) ProtoMessage()    {}
+func (*StartVersionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d0e5095094a8d27f, []int{4}
 }
 
-func (m *DeployVersionResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeployVersionResponse.Unmarshal(m, b)
+func (m *StartVersionResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StartVersionResponse.Unmarshal(m, b)
 }
-func (m *DeployVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeployVersionResponse.Marshal(b, m, deterministic)
+func (m *StartVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StartVersionResponse.Marshal(b, m, deterministic)
 }
-func (m *DeployVersionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeployVersionResponse.Merge(m, src)
+func (m *StartVersionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StartVersionResponse.Merge(m, src)
 }
-func (m *DeployVersionResponse) XXX_Size() int {
-	return xxx_messageInfo_DeployVersionResponse.Size(m)
+func (m *StartVersionResponse) XXX_Size() int {
+	return xxx_messageInfo_StartVersionResponse.Size(m)
 }
-func (m *DeployVersionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeployVersionResponse.DiscardUnknown(m)
+func (m *StartVersionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_StartVersionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DeployVersionResponse proto.InternalMessageInfo
+var xxx_messageInfo_StartVersionResponse proto.InternalMessageInfo
 
-func (m *DeployVersionResponse) GetSuccess() bool {
+func (m *StartVersionResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *DeployVersionResponse) GetMessage() string {
+func (m *StartVersionResponse) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
@@ -628,46 +628,46 @@ func (m *StopVersionResponse) GetMessage() string {
 	return ""
 }
 
-type DeactivateVersionRequest struct {
+type UnpublishVersionRequest struct {
 	Version              *Version `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DeactivateVersionRequest) Reset()         { *m = DeactivateVersionRequest{} }
-func (m *DeactivateVersionRequest) String() string { return proto.CompactTextString(m) }
-func (*DeactivateVersionRequest) ProtoMessage()    {}
-func (*DeactivateVersionRequest) Descriptor() ([]byte, []int) {
+func (m *UnpublishVersionRequest) Reset()         { *m = UnpublishVersionRequest{} }
+func (m *UnpublishVersionRequest) String() string { return proto.CompactTextString(m) }
+func (*UnpublishVersionRequest) ProtoMessage()    {}
+func (*UnpublishVersionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d0e5095094a8d27f, []int{9}
 }
 
-func (m *DeactivateVersionRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeactivateVersionRequest.Unmarshal(m, b)
+func (m *UnpublishVersionRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UnpublishVersionRequest.Unmarshal(m, b)
 }
-func (m *DeactivateVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeactivateVersionRequest.Marshal(b, m, deterministic)
+func (m *UnpublishVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UnpublishVersionRequest.Marshal(b, m, deterministic)
 }
-func (m *DeactivateVersionRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeactivateVersionRequest.Merge(m, src)
+func (m *UnpublishVersionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnpublishVersionRequest.Merge(m, src)
 }
-func (m *DeactivateVersionRequest) XXX_Size() int {
-	return xxx_messageInfo_DeactivateVersionRequest.Size(m)
+func (m *UnpublishVersionRequest) XXX_Size() int {
+	return xxx_messageInfo_UnpublishVersionRequest.Size(m)
 }
-func (m *DeactivateVersionRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeactivateVersionRequest.DiscardUnknown(m)
+func (m *UnpublishVersionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnpublishVersionRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DeactivateVersionRequest proto.InternalMessageInfo
+var xxx_messageInfo_UnpublishVersionRequest proto.InternalMessageInfo
 
-func (m *DeactivateVersionRequest) GetVersion() *Version {
+func (m *UnpublishVersionRequest) GetVersion() *Version {
 	if m != nil {
 		return m.Version
 	}
 	return nil
 }
 
-type DeactivateVersionResponse struct {
+type UnpublishVersionResponse struct {
 	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -675,85 +675,85 @@ type DeactivateVersionResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DeactivateVersionResponse) Reset()         { *m = DeactivateVersionResponse{} }
-func (m *DeactivateVersionResponse) String() string { return proto.CompactTextString(m) }
-func (*DeactivateVersionResponse) ProtoMessage()    {}
-func (*DeactivateVersionResponse) Descriptor() ([]byte, []int) {
+func (m *UnpublishVersionResponse) Reset()         { *m = UnpublishVersionResponse{} }
+func (m *UnpublishVersionResponse) String() string { return proto.CompactTextString(m) }
+func (*UnpublishVersionResponse) ProtoMessage()    {}
+func (*UnpublishVersionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d0e5095094a8d27f, []int{10}
 }
 
-func (m *DeactivateVersionResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeactivateVersionResponse.Unmarshal(m, b)
+func (m *UnpublishVersionResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UnpublishVersionResponse.Unmarshal(m, b)
 }
-func (m *DeactivateVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeactivateVersionResponse.Marshal(b, m, deterministic)
+func (m *UnpublishVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UnpublishVersionResponse.Marshal(b, m, deterministic)
 }
-func (m *DeactivateVersionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeactivateVersionResponse.Merge(m, src)
+func (m *UnpublishVersionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnpublishVersionResponse.Merge(m, src)
 }
-func (m *DeactivateVersionResponse) XXX_Size() int {
-	return xxx_messageInfo_DeactivateVersionResponse.Size(m)
+func (m *UnpublishVersionResponse) XXX_Size() int {
+	return xxx_messageInfo_UnpublishVersionResponse.Size(m)
 }
-func (m *DeactivateVersionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeactivateVersionResponse.DiscardUnknown(m)
+func (m *UnpublishVersionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnpublishVersionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DeactivateVersionResponse proto.InternalMessageInfo
+var xxx_messageInfo_UnpublishVersionResponse proto.InternalMessageInfo
 
-func (m *DeactivateVersionResponse) GetSuccess() bool {
+func (m *UnpublishVersionResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *DeactivateVersionResponse) GetMessage() string {
+func (m *UnpublishVersionResponse) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
 }
 
-type ActivateVersionRequest struct {
+type PublishVersionRequest struct {
 	Version              *Version `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ActivateVersionRequest) Reset()         { *m = ActivateVersionRequest{} }
-func (m *ActivateVersionRequest) String() string { return proto.CompactTextString(m) }
-func (*ActivateVersionRequest) ProtoMessage()    {}
-func (*ActivateVersionRequest) Descriptor() ([]byte, []int) {
+func (m *PublishVersionRequest) Reset()         { *m = PublishVersionRequest{} }
+func (m *PublishVersionRequest) String() string { return proto.CompactTextString(m) }
+func (*PublishVersionRequest) ProtoMessage()    {}
+func (*PublishVersionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d0e5095094a8d27f, []int{11}
 }
 
-func (m *ActivateVersionRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ActivateVersionRequest.Unmarshal(m, b)
+func (m *PublishVersionRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PublishVersionRequest.Unmarshal(m, b)
 }
-func (m *ActivateVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ActivateVersionRequest.Marshal(b, m, deterministic)
+func (m *PublishVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PublishVersionRequest.Marshal(b, m, deterministic)
 }
-func (m *ActivateVersionRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActivateVersionRequest.Merge(m, src)
+func (m *PublishVersionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PublishVersionRequest.Merge(m, src)
 }
-func (m *ActivateVersionRequest) XXX_Size() int {
-	return xxx_messageInfo_ActivateVersionRequest.Size(m)
+func (m *PublishVersionRequest) XXX_Size() int {
+	return xxx_messageInfo_PublishVersionRequest.Size(m)
 }
-func (m *ActivateVersionRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActivateVersionRequest.DiscardUnknown(m)
+func (m *PublishVersionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_PublishVersionRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ActivateVersionRequest proto.InternalMessageInfo
+var xxx_messageInfo_PublishVersionRequest proto.InternalMessageInfo
 
-func (m *ActivateVersionRequest) GetVersion() *Version {
+func (m *PublishVersionRequest) GetVersion() *Version {
 	if m != nil {
 		return m.Version
 	}
 	return nil
 }
 
-type ActivateVersionResponse struct {
+type PublishVersionResponse struct {
 	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -761,39 +761,39 @@ type ActivateVersionResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ActivateVersionResponse) Reset()         { *m = ActivateVersionResponse{} }
-func (m *ActivateVersionResponse) String() string { return proto.CompactTextString(m) }
-func (*ActivateVersionResponse) ProtoMessage()    {}
-func (*ActivateVersionResponse) Descriptor() ([]byte, []int) {
+func (m *PublishVersionResponse) Reset()         { *m = PublishVersionResponse{} }
+func (m *PublishVersionResponse) String() string { return proto.CompactTextString(m) }
+func (*PublishVersionResponse) ProtoMessage()    {}
+func (*PublishVersionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d0e5095094a8d27f, []int{12}
 }
 
-func (m *ActivateVersionResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ActivateVersionResponse.Unmarshal(m, b)
+func (m *PublishVersionResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PublishVersionResponse.Unmarshal(m, b)
 }
-func (m *ActivateVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ActivateVersionResponse.Marshal(b, m, deterministic)
+func (m *PublishVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PublishVersionResponse.Marshal(b, m, deterministic)
 }
-func (m *ActivateVersionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActivateVersionResponse.Merge(m, src)
+func (m *PublishVersionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PublishVersionResponse.Merge(m, src)
 }
-func (m *ActivateVersionResponse) XXX_Size() int {
-	return xxx_messageInfo_ActivateVersionResponse.Size(m)
+func (m *PublishVersionResponse) XXX_Size() int {
+	return xxx_messageInfo_PublishVersionResponse.Size(m)
 }
-func (m *ActivateVersionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActivateVersionResponse.DiscardUnknown(m)
+func (m *PublishVersionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_PublishVersionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ActivateVersionResponse proto.InternalMessageInfo
+var xxx_messageInfo_PublishVersionResponse proto.InternalMessageInfo
 
-func (m *ActivateVersionResponse) GetSuccess() bool {
+func (m *PublishVersionResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *ActivateVersionResponse) GetMessage() string {
+func (m *PublishVersionResponse) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
@@ -1027,16 +1027,16 @@ func init() {
 	proto.RegisterType((*Workflow_Edge)(nil), "runtime.Workflow.Edge")
 	proto.RegisterType((*Version)(nil), "runtime.Version")
 	proto.RegisterType((*Version_Config)(nil), "runtime.Version.Config")
-	proto.RegisterType((*DeployVersionRequest)(nil), "runtime.DeployVersionRequest")
-	proto.RegisterType((*DeployVersionResponse)(nil), "runtime.DeployVersionResponse")
+	proto.RegisterType((*StartVersionRequest)(nil), "runtime.StartVersionRequest")
+	proto.RegisterType((*StartVersionResponse)(nil), "runtime.StartVersionResponse")
 	proto.RegisterType((*UpdateVersionConfigRequest)(nil), "runtime.UpdateVersionConfigRequest")
 	proto.RegisterType((*UpdateVersionConfigResponse)(nil), "runtime.UpdateVersionConfigResponse")
 	proto.RegisterType((*StopVersionRequest)(nil), "runtime.StopVersionRequest")
 	proto.RegisterType((*StopVersionResponse)(nil), "runtime.StopVersionResponse")
-	proto.RegisterType((*DeactivateVersionRequest)(nil), "runtime.DeactivateVersionRequest")
-	proto.RegisterType((*DeactivateVersionResponse)(nil), "runtime.DeactivateVersionResponse")
-	proto.RegisterType((*ActivateVersionRequest)(nil), "runtime.ActivateVersionRequest")
-	proto.RegisterType((*ActivateVersionResponse)(nil), "runtime.ActivateVersionResponse")
+	proto.RegisterType((*UnpublishVersionRequest)(nil), "runtime.UnpublishVersionRequest")
+	proto.RegisterType((*UnpublishVersionResponse)(nil), "runtime.UnpublishVersionResponse")
+	proto.RegisterType((*PublishVersionRequest)(nil), "runtime.PublishVersionRequest")
+	proto.RegisterType((*PublishVersionResponse)(nil), "runtime.PublishVersionResponse")
 	proto.RegisterType((*WatchNodeLogsRequest)(nil), "runtime.WatchNodeLogsRequest")
 	proto.RegisterType((*WatchNodeLogsResponse)(nil), "runtime.WatchNodeLogsResponse")
 	proto.RegisterType((*WatchVersionRequest)(nil), "runtime.WatchVersionRequest")
@@ -1046,56 +1046,56 @@ func init() {
 func init() { proto.RegisterFile("runtimepb/runtime.proto", fileDescriptor_d0e5095094a8d27f) }
 
 var fileDescriptor_d0e5095094a8d27f = []byte{
-	// 775 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xdd, 0x4e, 0xdb, 0x4c,
-	0x10, 0x25, 0x89, 0x49, 0xc8, 0x44, 0xf0, 0xc1, 0x06, 0x82, 0x31, 0x3f, 0x1f, 0x75, 0x7b, 0x81,
-	0xaa, 0x2a, 0xa0, 0xf0, 0x02, 0x85, 0x02, 0x6a, 0x68, 0xa1, 0xad, 0xd3, 0x82, 0x84, 0x2a, 0x55,
-	0xc6, 0x5e, 0x52, 0x0b, 0xc7, 0xeb, 0x7a, 0x9d, 0xa0, 0xbc, 0x5a, 0xfb, 0x3e, 0x7d, 0x86, 0x5e,
-	0x56, 0xfb, 0xe3, 0x8d, 0x9d, 0x38, 0x5c, 0x90, 0xde, 0xed, 0xcc, 0xce, 0x9c, 0x39, 0x73, 0xbc,
-	0x33, 0x32, 0xac, 0x47, 0xfd, 0x20, 0xf6, 0x7a, 0x38, 0xbc, 0xdd, 0x97, 0xa7, 0x66, 0x18, 0x91,
-	0x98, 0xa0, 0x8a, 0x34, 0xcd, 0x0e, 0xc0, 0x69, 0x10, 0x47, 0xc3, 0x90, 0x78, 0x41, 0x8c, 0xb6,
-	0x01, 0xf8, 0xfd, 0xb7, 0x3b, 0xcf, 0xc7, 0x7a, 0x61, 0xb7, 0xb0, 0x57, 0xb5, 0xaa, 0xdc, 0x73,
-	0xe6, 0xf9, 0x18, 0xad, 0xc2, 0xbc, 0xd7, 0xb3, 0xbb, 0x58, 0x2f, 0xf2, 0x1b, 0x61, 0xa0, 0x65,
-	0x28, 0xd1, 0xc8, 0xd1, 0x4b, 0xdc, 0xc7, 0x8e, 0xe6, 0xcf, 0x22, 0x2c, 0x5c, 0x93, 0xe8, 0xfe,
-	0xce, 0x27, 0x0f, 0x08, 0x81, 0x16, 0xd8, 0xbd, 0x04, 0x8d, 0x9f, 0xd1, 0x0e, 0x00, 0x56, 0x55,
-	0x25, 0x5a, 0xca, 0x83, 0x5e, 0xc1, 0x7c, 0x40, 0x5c, 0x4c, 0xf5, 0xd2, 0x6e, 0x69, 0xaf, 0xd6,
-	0x6a, 0x34, 0x13, 0xf6, 0x09, 0x6a, 0xf3, 0x92, 0xb8, 0xd8, 0x12, 0x41, 0x2c, 0x1a, 0xbb, 0x5d,
-	0x4c, 0x75, 0x6d, 0x5a, 0xf4, 0xa9, 0xdb, 0xc5, 0x96, 0x08, 0x32, 0x2c, 0xd0, 0x58, 0x32, 0x5a,
-	0x82, 0x62, 0xdb, 0x95, 0xac, 0x8a, 0x6d, 0x97, 0xf1, 0xbc, 0x64, 0x3c, 0x05, 0x1b, 0x7e, 0x66,
-	0x0d, 0xb7, 0x79, 0xc3, 0xa2, 0x39, 0x61, 0xb0, 0x86, 0x3b, 0x91, 0xa3, 0x6b, 0xa2, 0xe1, 0x4e,
-	0xe4, 0x18, 0xe7, 0xa0, 0xb1, 0x12, 0x13, 0x98, 0x06, 0x2c, 0x9c, 0x45, 0xa4, 0xc7, 0xea, 0x49,
-	0x5c, 0x65, 0xa3, 0x06, 0x94, 0x3f, 0x13, 0x7e, 0x23, 0xc0, 0xa5, 0x65, 0xfe, 0x2e, 0x40, 0xe5,
-	0x0a, 0x47, 0xd4, 0x23, 0x41, 0xae, 0x76, 0x87, 0x13, 0xda, 0xd5, 0x5a, 0x75, 0xd5, 0xf2, 0xe8,
-	0x63, 0x66, 0x04, 0xdd, 0x87, 0xb2, 0x43, 0x82, 0x3b, 0xaf, 0x2b, 0x15, 0x5d, 0x57, 0x09, 0xb2,
-	0x54, 0xf3, 0x0d, 0xbf, 0xb6, 0x64, 0x18, 0xda, 0x87, 0xea, 0x83, 0x54, 0x2f, 0xd1, 0x75, 0x65,
-	0x42, 0x57, 0x6b, 0x14, 0x63, 0x1c, 0x40, 0x59, 0x40, 0x30, 0x79, 0xee, 0xf1, 0x50, 0x72, 0x66,
-	0x47, 0x26, 0xe3, 0xc0, 0xf6, 0xfb, 0xea, 0xdd, 0x70, 0xc3, 0x3c, 0x86, 0xd5, 0x13, 0x1c, 0xfa,
-	0x64, 0x28, 0x29, 0x58, 0xf8, 0x47, 0x1f, 0xd3, 0x18, 0xbd, 0x84, 0xca, 0x40, 0x78, 0x38, 0x46,
-	0xad, 0xb5, 0x3c, 0x4e, 0xd6, 0x4a, 0x02, 0xcc, 0x77, 0xb0, 0x36, 0x86, 0x41, 0x43, 0x12, 0x50,
-	0x8c, 0x74, 0xa8, 0xd0, 0xbe, 0xe3, 0x60, 0x4a, 0x39, 0xc8, 0x82, 0x95, 0x98, 0xec, 0xa6, 0x87,
-	0x29, 0x1d, 0x3d, 0xe3, 0xc4, 0x34, 0xdf, 0x82, 0xf1, 0x25, 0x74, 0xed, 0x18, 0x4b, 0x30, 0x29,
-	0xc9, 0x13, 0x68, 0x7d, 0x82, 0xcd, 0x5c, 0xa4, 0x19, 0xc8, 0xbd, 0x06, 0xd4, 0x89, 0x49, 0x38,
-	0x83, 0x56, 0x6d, 0xa8, 0x67, 0x10, 0x66, 0x20, 0x73, 0x06, 0xfa, 0x09, 0xb6, 0x9d, 0xd8, 0x1b,
-	0x8c, 0x7a, 0x7c, 0x0a, 0xa5, 0x0f, 0xb0, 0x91, 0x83, 0x33, 0x03, 0xb1, 0x13, 0x68, 0x1c, 0xcd,
-	0x4e, 0xeb, 0x02, 0xd6, 0x8f, 0xfe, 0x21, 0xa9, 0x26, 0xac, 0x5e, 0xdb, 0xb1, 0xf3, 0x9d, 0x8d,
-	0xf7, 0x7b, 0xd2, 0xa5, 0x09, 0xa5, 0x06, 0x94, 0xd9, 0x02, 0x53, 0x1b, 0x43, 0x5a, 0xe6, 0xaf,
-	0x02, 0xac, 0x8d, 0x25, 0xc8, 0xea, 0x08, 0x34, 0xf6, 0xaa, 0x92, 0x7d, 0xc0, 0xce, 0xcc, 0x17,
-	0x0f, 0x43, 0xb5, 0xb7, 0xd8, 0x19, 0x6d, 0x41, 0x55, 0xf6, 0xd2, 0x76, 0xe5, 0x7a, 0x19, 0x39,
-	0x52, 0x75, 0xb5, 0x74, 0x5d, 0x36, 0xa6, 0x21, 0x71, 0xdb, 0xae, 0x3e, 0x2f, 0xc6, 0x94, 0x1b,
-	0xe9, 0xbe, 0xca, 0x99, 0xbe, 0x58, 0xbc, 0x8f, 0x07, 0xd8, 0xd7, 0x2b, 0x22, 0x9e, 0x1b, 0xe6,
-	0x11, 0xd4, 0x39, 0xf9, 0x19, 0xf4, 0xc7, 0xb0, 0x21, 0x7d, 0x4c, 0x81, 0x4e, 0x6c, 0xc7, 0xfd,
-	0x91, 0x06, 0x0d, 0x28, 0x5f, 0x66, 0x54, 0x13, 0x16, 0xf3, 0x8b, 0x48, 0xa9, 0x84, 0xb4, 0x18,
-	0xff, 0x0b, 0xc9, 0x5f, 0x28, 0x91, 0x98, 0xad, 0x3f, 0x1a, 0x2c, 0x59, 0x82, 0x43, 0x07, 0x47,
-	0x03, 0xcf, 0xc1, 0xe8, 0x23, 0x2c, 0x66, 0xf6, 0x09, 0xda, 0x56, 0x2c, 0xf3, 0x76, 0x95, 0xb1,
-	0x33, 0xed, 0x5a, 0x90, 0x35, 0xe7, 0xd0, 0x2d, 0xd4, 0x73, 0x56, 0x01, 0x7a, 0xae, 0x12, 0xa7,
-	0xaf, 0x1c, 0xe3, 0xc5, 0xe3, 0x41, 0xaa, 0xc6, 0x39, 0xd4, 0x52, 0x93, 0x8d, 0x36, 0x55, 0xda,
-	0xe4, 0xc6, 0x30, 0xb6, 0xf2, 0x2f, 0x15, 0xd6, 0x57, 0x58, 0x99, 0x18, 0x49, 0xf4, 0x2c, 0xd5,
-	0x66, 0xfe, 0xd8, 0x1b, 0xe6, 0x63, 0x21, 0x0a, 0xfd, 0x0a, 0xfe, 0x1b, 0x9b, 0x2c, 0xf4, 0xbf,
-	0x4a, 0xcc, 0x9f, 0x5c, 0x63, 0x77, 0x7a, 0x80, 0xc2, 0xb5, 0x60, 0x31, 0x33, 0x31, 0xa9, 0xef,
-	0x96, 0x37, 0x7a, 0xa9, 0xef, 0x96, 0x3b, 0x68, 0xe6, 0xdc, 0x41, 0x01, 0xdd, 0x00, 0x4a, 0x3f,
-	0x64, 0xf9, 0x9c, 0xb6, 0xb2, 0x99, 0x53, 0x55, 0x98, 0xfa, 0x80, 0x19, 0xf6, 0x71, 0xed, 0xa6,
-	0xaa, 0x7e, 0xcd, 0x6e, 0xcb, 0xfc, 0x0f, 0xeb, 0xf0, 0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x1e,
-	0x2f, 0x54, 0x8b, 0xae, 0x09, 0x00, 0x00,
+	// 772 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x5f, 0x53, 0xd3, 0x40,
+	0x10, 0xb7, 0x6d, 0x68, 0xe9, 0x56, 0x19, 0x3c, 0xa0, 0xc4, 0x50, 0x10, 0xa3, 0x0f, 0x8c, 0xe3,
+	0x14, 0xa6, 0x7c, 0x01, 0x95, 0x81, 0xb1, 0x0c, 0x74, 0x30, 0x11, 0x19, 0x79, 0x71, 0xda, 0xe4,
+	0x28, 0x19, 0xda, 0x5c, 0xcc, 0xa5, 0x65, 0xf8, 0x6a, 0xfa, 0x7d, 0x7c, 0xf5, 0x2b, 0x38, 0xf7,
+	0x27, 0x97, 0xa4, 0x4d, 0x79, 0x30, 0xbe, 0xdd, 0xde, 0xee, 0xfd, 0xf6, 0xb7, 0xbf, 0xec, 0xee,
+	0x04, 0x36, 0xc3, 0x89, 0x1f, 0x79, 0x63, 0x1c, 0x0c, 0xf6, 0xe5, 0xa9, 0x1d, 0x84, 0x24, 0x22,
+	0xa8, 0x26, 0x4d, 0xd3, 0x06, 0x38, 0xf6, 0xa3, 0xf0, 0x21, 0x20, 0x9e, 0x1f, 0xa1, 0x6d, 0x00,
+	0xee, 0xff, 0x7e, 0xe3, 0x8d, 0xb0, 0x5e, 0xda, 0x2d, 0xed, 0xd5, 0xad, 0x3a, 0xbf, 0x39, 0xf1,
+	0x46, 0x18, 0xad, 0xc3, 0x92, 0x37, 0xee, 0x0f, 0xb1, 0x5e, 0xe6, 0x1e, 0x61, 0xa0, 0x55, 0xa8,
+	0xd0, 0xd0, 0xd1, 0x2b, 0xfc, 0x8e, 0x1d, 0xcd, 0x9f, 0x65, 0x58, 0xbe, 0x22, 0xe1, 0xdd, 0xcd,
+	0x88, 0xdc, 0x23, 0x04, 0x9a, 0xdf, 0x1f, 0xc7, 0x68, 0xfc, 0x8c, 0x76, 0x00, 0xb0, 0xca, 0x2a,
+	0xd1, 0x52, 0x37, 0xe8, 0x1d, 0x2c, 0xf9, 0xc4, 0xc5, 0x54, 0xaf, 0xec, 0x56, 0xf6, 0x1a, 0x9d,
+	0x66, 0x3b, 0x66, 0x1f, 0xa3, 0xb6, 0x7b, 0xc4, 0xc5, 0x96, 0x08, 0x62, 0xd1, 0xd8, 0x1d, 0x62,
+	0xaa, 0x6b, 0x8b, 0xa2, 0x8f, 0xdd, 0x21, 0xb6, 0x44, 0x90, 0x61, 0x81, 0xc6, 0x1e, 0xa3, 0x15,
+	0x28, 0x77, 0x5d, 0xc9, 0xaa, 0xdc, 0x75, 0x19, 0xcf, 0x1e, 0xe3, 0x29, 0xd8, 0xf0, 0x33, 0x2b,
+	0xb8, 0xcb, 0x0b, 0x16, 0xc5, 0x09, 0x83, 0x15, 0x6c, 0x87, 0x8e, 0xae, 0x89, 0x82, 0xed, 0xd0,
+	0x31, 0x4e, 0x41, 0x63, 0x29, 0xe6, 0x30, 0x0d, 0x58, 0x3e, 0x09, 0xc9, 0x98, 0xe5, 0x93, 0xb8,
+	0xca, 0x46, 0x4d, 0xa8, 0x7e, 0x21, 0xdc, 0x23, 0xc0, 0xa5, 0x65, 0xfe, 0x2e, 0x41, 0xed, 0x2b,
+	0x0e, 0xa9, 0x47, 0xfc, 0x5c, 0xed, 0x0e, 0xe7, 0xb4, 0x6b, 0x74, 0xd6, 0x54, 0xc9, 0xc9, 0xc7,
+	0xcc, 0x08, 0xba, 0x0f, 0x55, 0x87, 0xf8, 0x37, 0xde, 0x50, 0x2a, 0xba, 0xa9, 0x1e, 0xc8, 0x54,
+	0xed, 0x23, 0xee, 0xb6, 0x64, 0x18, 0xda, 0x87, 0xfa, 0xbd, 0x54, 0x2f, 0xd6, 0xf5, 0xf9, 0x9c,
+	0xae, 0x56, 0x12, 0x63, 0x1c, 0x40, 0x55, 0x40, 0x30, 0x79, 0xee, 0xf0, 0x83, 0xe4, 0xcc, 0x8e,
+	0x4c, 0xc6, 0x69, 0x7f, 0x34, 0x51, 0x7d, 0xc3, 0x0d, 0xf3, 0x03, 0xac, 0xd9, 0x51, 0x3f, 0x8c,
+	0x24, 0x03, 0x0b, 0xff, 0x98, 0x60, 0x1a, 0xa1, 0xb7, 0x50, 0x9b, 0x8a, 0x1b, 0x0e, 0xd1, 0xe8,
+	0xac, 0xce, 0x72, 0xb5, 0xe2, 0x00, 0xf3, 0x14, 0xd6, 0xb3, 0x10, 0x34, 0x20, 0x3e, 0xc5, 0x48,
+	0x87, 0x1a, 0x9d, 0x38, 0x0e, 0xa6, 0x94, 0x63, 0x2c, 0x5b, 0xb1, 0xc9, 0x3c, 0x63, 0x4c, 0x69,
+	0xd2, 0xc4, 0xb1, 0x69, 0x7e, 0x02, 0xe3, 0x32, 0x70, 0xfb, 0x11, 0x96, 0x60, 0x52, 0x90, 0x7f,
+	0x60, 0xf5, 0x19, 0xb6, 0x72, 0x91, 0x0a, 0x90, 0x7b, 0x0f, 0xc8, 0x8e, 0x48, 0x50, 0x40, 0xaa,
+	0x2e, 0x53, 0x3b, 0x85, 0x50, 0x80, 0xcc, 0x31, 0x6c, 0x5e, 0xfa, 0xc1, 0x64, 0x30, 0xf2, 0xe8,
+	0x6d, 0x01, 0x46, 0x3d, 0xd0, 0xe7, 0x61, 0x0a, 0xd0, 0x3a, 0x82, 0x8d, 0x8b, 0xc2, 0xa4, 0xce,
+	0xa0, 0x79, 0xf1, 0xff, 0x28, 0xb5, 0x61, 0xfd, 0xaa, 0x1f, 0x39, 0xb7, 0x6c, 0xb0, 0xcf, 0xc8,
+	0x90, 0xc6, 0x8c, 0x9a, 0x50, 0x65, 0xab, 0x4b, 0xed, 0x0a, 0x69, 0x99, 0xbf, 0x4a, 0xb0, 0x31,
+	0xf3, 0x40, 0x66, 0x47, 0xa0, 0xb1, 0x8e, 0x8a, 0x37, 0x01, 0x3b, 0xb3, 0xbb, 0xe8, 0x21, 0x50,
+	0x1b, 0x8b, 0x9d, 0x51, 0x0b, 0xea, 0xb2, 0x94, 0xae, 0x2b, 0x17, 0x4b, 0x72, 0x91, 0xca, 0xab,
+	0xa5, 0xf3, 0xb2, 0x01, 0x0d, 0x88, 0xdb, 0x75, 0xf5, 0x25, 0x31, 0xa0, 0xdc, 0x48, 0xd7, 0x55,
+	0xcd, 0xd4, 0xc5, 0xe2, 0x47, 0x78, 0x8a, 0x47, 0x7a, 0x4d, 0xc4, 0x73, 0x83, 0x0d, 0x34, 0x27,
+	0x5f, 0x40, 0x7e, 0x0c, 0x2f, 0xe4, 0x1d, 0x53, 0xc0, 0x8e, 0xfa, 0xd1, 0x24, 0xd1, 0xa0, 0x09,
+	0xd5, 0x5e, 0x46, 0x35, 0x61, 0xb1, 0x7b, 0x11, 0x29, 0x95, 0x90, 0x16, 0xe3, 0x7f, 0x2e, 0xf9,
+	0x0b, 0x25, 0x62, 0xb3, 0xf3, 0x47, 0x83, 0x15, 0x4b, 0x70, 0xb0, 0x71, 0x38, 0xf5, 0x1c, 0x8c,
+	0xce, 0xe1, 0x69, 0x7a, 0x95, 0xa0, 0x96, 0x22, 0x99, 0xb3, 0xa4, 0x8c, 0xed, 0x05, 0x5e, 0xc1,
+	0xd4, 0x7c, 0x82, 0x4e, 0xa1, 0x91, 0x1a, 0x37, 0xb4, 0x95, 0x8a, 0x9f, 0x1d, 0x63, 0xa3, 0x95,
+	0xef, 0x54, 0x58, 0x36, 0xac, 0x64, 0x7b, 0x12, 0xed, 0xa8, 0x17, 0xb9, 0x1d, 0x6f, 0xbc, 0x5c,
+	0xe8, 0x57, 0xa0, 0xdf, 0x60, 0x75, 0x76, 0xfa, 0xd0, 0xae, 0x7a, 0xb6, 0x60, 0xbe, 0x8d, 0x57,
+	0x8f, 0x44, 0x28, 0xe8, 0x01, 0xac, 0xe5, 0xec, 0x3f, 0xf4, 0x3a, 0x79, 0xbb, 0x70, 0xcf, 0x1a,
+	0x6f, 0x1e, 0x0f, 0x52, 0x39, 0x2c, 0x78, 0x96, 0x19, 0x14, 0x94, 0x7c, 0x91, 0xbc, 0x89, 0x33,
+	0x76, 0x16, 0xb9, 0x63, 0xc4, 0x83, 0x12, 0xba, 0x06, 0x94, 0xee, 0x5f, 0xd9, 0x45, 0xad, 0xec,
+	0xcb, 0x19, 0x41, 0xcc, 0xd9, 0x5e, 0x9e, 0xef, 0x5b, 0x86, 0xfd, 0xb1, 0x71, 0x5d, 0x57, 0xff,
+	0x62, 0x83, 0x2a, 0xff, 0xa5, 0x3a, 0xfc, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x65, 0xb8, 0x50, 0x5e,
+	0x9f, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1110,11 +1110,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RuntimeServiceClient interface {
-	DeployVersion(ctx context.Context, in *DeployVersionRequest, opts ...grpc.CallOption) (*DeployVersionResponse, error)
-	UpdateVersionConfig(ctx context.Context, in *UpdateVersionConfigRequest, opts ...grpc.CallOption) (*UpdateVersionConfigResponse, error)
+	StartVersion(ctx context.Context, in *StartVersionRequest, opts ...grpc.CallOption) (*StartVersionResponse, error)
 	StopVersion(ctx context.Context, in *StopVersionRequest, opts ...grpc.CallOption) (*StopVersionResponse, error)
-	DeactivateVersion(ctx context.Context, in *DeactivateVersionRequest, opts ...grpc.CallOption) (*DeactivateVersionResponse, error)
-	ActivateVersion(ctx context.Context, in *ActivateVersionRequest, opts ...grpc.CallOption) (*ActivateVersionResponse, error)
+	PublishVersion(ctx context.Context, in *PublishVersionRequest, opts ...grpc.CallOption) (*PublishVersionResponse, error)
+	UnpublishVersion(ctx context.Context, in *UnpublishVersionRequest, opts ...grpc.CallOption) (*UnpublishVersionResponse, error)
+	UpdateVersionConfig(ctx context.Context, in *UpdateVersionConfigRequest, opts ...grpc.CallOption) (*UpdateVersionConfigResponse, error)
 	WatchNodeLogs(ctx context.Context, in *WatchNodeLogsRequest, opts ...grpc.CallOption) (RuntimeService_WatchNodeLogsClient, error)
 	WatchVersionStatus(ctx context.Context, in *WatchVersionRequest, opts ...grpc.CallOption) (RuntimeService_WatchVersionStatusClient, error)
 }
@@ -1127,18 +1127,9 @@ func NewRuntimeServiceClient(cc *grpc.ClientConn) RuntimeServiceClient {
 	return &runtimeServiceClient{cc}
 }
 
-func (c *runtimeServiceClient) DeployVersion(ctx context.Context, in *DeployVersionRequest, opts ...grpc.CallOption) (*DeployVersionResponse, error) {
-	out := new(DeployVersionResponse)
-	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/DeployVersion", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *runtimeServiceClient) UpdateVersionConfig(ctx context.Context, in *UpdateVersionConfigRequest, opts ...grpc.CallOption) (*UpdateVersionConfigResponse, error) {
-	out := new(UpdateVersionConfigResponse)
-	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/UpdateVersionConfig", in, out, opts...)
+func (c *runtimeServiceClient) StartVersion(ctx context.Context, in *StartVersionRequest, opts ...grpc.CallOption) (*StartVersionResponse, error) {
+	out := new(StartVersionResponse)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/StartVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1154,18 +1145,27 @@ func (c *runtimeServiceClient) StopVersion(ctx context.Context, in *StopVersionR
 	return out, nil
 }
 
-func (c *runtimeServiceClient) DeactivateVersion(ctx context.Context, in *DeactivateVersionRequest, opts ...grpc.CallOption) (*DeactivateVersionResponse, error) {
-	out := new(DeactivateVersionResponse)
-	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/DeactivateVersion", in, out, opts...)
+func (c *runtimeServiceClient) PublishVersion(ctx context.Context, in *PublishVersionRequest, opts ...grpc.CallOption) (*PublishVersionResponse, error) {
+	out := new(PublishVersionResponse)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/PublishVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *runtimeServiceClient) ActivateVersion(ctx context.Context, in *ActivateVersionRequest, opts ...grpc.CallOption) (*ActivateVersionResponse, error) {
-	out := new(ActivateVersionResponse)
-	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/ActivateVersion", in, out, opts...)
+func (c *runtimeServiceClient) UnpublishVersion(ctx context.Context, in *UnpublishVersionRequest, opts ...grpc.CallOption) (*UnpublishVersionResponse, error) {
+	out := new(UnpublishVersionResponse)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/UnpublishVersion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *runtimeServiceClient) UpdateVersionConfig(ctx context.Context, in *UpdateVersionConfigRequest, opts ...grpc.CallOption) (*UpdateVersionConfigResponse, error) {
+	out := new(UpdateVersionConfigResponse)
+	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/UpdateVersionConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1238,11 +1238,11 @@ func (x *runtimeServiceWatchVersionStatusClient) Recv() (*VersionNodeStatusRespo
 
 // RuntimeServiceServer is the server API for RuntimeService service.
 type RuntimeServiceServer interface {
-	DeployVersion(context.Context, *DeployVersionRequest) (*DeployVersionResponse, error)
-	UpdateVersionConfig(context.Context, *UpdateVersionConfigRequest) (*UpdateVersionConfigResponse, error)
+	StartVersion(context.Context, *StartVersionRequest) (*StartVersionResponse, error)
 	StopVersion(context.Context, *StopVersionRequest) (*StopVersionResponse, error)
-	DeactivateVersion(context.Context, *DeactivateVersionRequest) (*DeactivateVersionResponse, error)
-	ActivateVersion(context.Context, *ActivateVersionRequest) (*ActivateVersionResponse, error)
+	PublishVersion(context.Context, *PublishVersionRequest) (*PublishVersionResponse, error)
+	UnpublishVersion(context.Context, *UnpublishVersionRequest) (*UnpublishVersionResponse, error)
+	UpdateVersionConfig(context.Context, *UpdateVersionConfigRequest) (*UpdateVersionConfigResponse, error)
 	WatchNodeLogs(*WatchNodeLogsRequest, RuntimeService_WatchNodeLogsServer) error
 	WatchVersionStatus(*WatchVersionRequest, RuntimeService_WatchVersionStatusServer) error
 }
@@ -1251,20 +1251,20 @@ type RuntimeServiceServer interface {
 type UnimplementedRuntimeServiceServer struct {
 }
 
-func (*UnimplementedRuntimeServiceServer) DeployVersion(ctx context.Context, req *DeployVersionRequest) (*DeployVersionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeployVersion not implemented")
-}
-func (*UnimplementedRuntimeServiceServer) UpdateVersionConfig(ctx context.Context, req *UpdateVersionConfigRequest) (*UpdateVersionConfigResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateVersionConfig not implemented")
+func (*UnimplementedRuntimeServiceServer) StartVersion(ctx context.Context, req *StartVersionRequest) (*StartVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartVersion not implemented")
 }
 func (*UnimplementedRuntimeServiceServer) StopVersion(ctx context.Context, req *StopVersionRequest) (*StopVersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StopVersion not implemented")
 }
-func (*UnimplementedRuntimeServiceServer) DeactivateVersion(ctx context.Context, req *DeactivateVersionRequest) (*DeactivateVersionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeactivateVersion not implemented")
+func (*UnimplementedRuntimeServiceServer) PublishVersion(ctx context.Context, req *PublishVersionRequest) (*PublishVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublishVersion not implemented")
 }
-func (*UnimplementedRuntimeServiceServer) ActivateVersion(ctx context.Context, req *ActivateVersionRequest) (*ActivateVersionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ActivateVersion not implemented")
+func (*UnimplementedRuntimeServiceServer) UnpublishVersion(ctx context.Context, req *UnpublishVersionRequest) (*UnpublishVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnpublishVersion not implemented")
+}
+func (*UnimplementedRuntimeServiceServer) UpdateVersionConfig(ctx context.Context, req *UpdateVersionConfigRequest) (*UpdateVersionConfigResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVersionConfig not implemented")
 }
 func (*UnimplementedRuntimeServiceServer) WatchNodeLogs(req *WatchNodeLogsRequest, srv RuntimeService_WatchNodeLogsServer) error {
 	return status.Errorf(codes.Unimplemented, "method WatchNodeLogs not implemented")
@@ -1277,38 +1277,20 @@ func RegisterRuntimeServiceServer(s *grpc.Server, srv RuntimeServiceServer) {
 	s.RegisterService(&_RuntimeService_serviceDesc, srv)
 }
 
-func _RuntimeService_DeployVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeployVersionRequest)
+func _RuntimeService_StartVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuntimeServiceServer).DeployVersion(ctx, in)
+		return srv.(RuntimeServiceServer).StartVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/runtime.RuntimeService/DeployVersion",
+		FullMethod: "/runtime.RuntimeService/StartVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuntimeServiceServer).DeployVersion(ctx, req.(*DeployVersionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RuntimeService_UpdateVersionConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateVersionConfigRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RuntimeServiceServer).UpdateVersionConfig(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/runtime.RuntimeService/UpdateVersionConfig",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuntimeServiceServer).UpdateVersionConfig(ctx, req.(*UpdateVersionConfigRequest))
+		return srv.(RuntimeServiceServer).StartVersion(ctx, req.(*StartVersionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1331,38 +1313,56 @@ func _RuntimeService_StopVersion_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RuntimeService_DeactivateVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeactivateVersionRequest)
+func _RuntimeService_PublishVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublishVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuntimeServiceServer).DeactivateVersion(ctx, in)
+		return srv.(RuntimeServiceServer).PublishVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/runtime.RuntimeService/DeactivateVersion",
+		FullMethod: "/runtime.RuntimeService/PublishVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuntimeServiceServer).DeactivateVersion(ctx, req.(*DeactivateVersionRequest))
+		return srv.(RuntimeServiceServer).PublishVersion(ctx, req.(*PublishVersionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RuntimeService_ActivateVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ActivateVersionRequest)
+func _RuntimeService_UnpublishVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnpublishVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RuntimeServiceServer).ActivateVersion(ctx, in)
+		return srv.(RuntimeServiceServer).UnpublishVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/runtime.RuntimeService/ActivateVersion",
+		FullMethod: "/runtime.RuntimeService/UnpublishVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RuntimeServiceServer).ActivateVersion(ctx, req.(*ActivateVersionRequest))
+		return srv.(RuntimeServiceServer).UnpublishVersion(ctx, req.(*UnpublishVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RuntimeService_UpdateVersionConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateVersionConfigRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RuntimeServiceServer).UpdateVersionConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/runtime.RuntimeService/UpdateVersionConfig",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RuntimeServiceServer).UpdateVersionConfig(ctx, req.(*UpdateVersionConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1414,24 +1414,24 @@ var _RuntimeService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*RuntimeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DeployVersion",
-			Handler:    _RuntimeService_DeployVersion_Handler,
-		},
-		{
-			MethodName: "UpdateVersionConfig",
-			Handler:    _RuntimeService_UpdateVersionConfig_Handler,
+			MethodName: "StartVersion",
+			Handler:    _RuntimeService_StartVersion_Handler,
 		},
 		{
 			MethodName: "StopVersion",
 			Handler:    _RuntimeService_StopVersion_Handler,
 		},
 		{
-			MethodName: "DeactivateVersion",
-			Handler:    _RuntimeService_DeactivateVersion_Handler,
+			MethodName: "PublishVersion",
+			Handler:    _RuntimeService_PublishVersion_Handler,
 		},
 		{
-			MethodName: "ActivateVersion",
-			Handler:    _RuntimeService_ActivateVersion_Handler,
+			MethodName: "UnpublishVersion",
+			Handler:    _RuntimeService_UnpublishVersion_Handler,
+		},
+		{
+			MethodName: "UpdateVersionConfig",
+			Handler:    _RuntimeService_UpdateVersionConfig_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

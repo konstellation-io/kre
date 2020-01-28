@@ -21,10 +21,10 @@ type Query {
 type Mutation {
   createRuntime(input: CreateRuntimeInput!): CreateRuntimeResponse!
   createVersion(input: CreateVersionInput!): CreateVersionResponse!
-  deployVersion(input: DeployVersionInput!): Version!
-  activateVersion(input: ActivateVersionInput!): Version!
+  startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
-  deactivateVersion(input: DeactivateVersionInput!): Version!
+  publishVersion(input: PublishVersionInput!): Version!
+  unpublishVersion(input: UnpublishVersionInput!): Version!
   updateSettings(input: SettingsInput!): UpdateSettingsResponse
   updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
 }
@@ -49,20 +49,20 @@ input CreateVersionInput {
   runtimeId: String!
 }
 
-input DeployVersionInput {
+input StartVersionInput {
   versionId: ID!
-}
-
-input ActivateVersionInput {
-  versionId: ID!
-  comment: String!
 }
 
 input StopVersionInput {
   versionId: ID!
 }
 
-input DeactivateVersionInput {
+input PublishVersionInput {
+  versionId: ID!
+  comment: String!
+}
+
+input UnpublishVersionInput {
   versionId: ID!
 }
 
@@ -144,12 +144,12 @@ type Runtime {
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!
-  activeVersion: Version
+  publishedVersion: Version
 }
 
 enum RuntimeStatus {
   CREATING
-  RUNNING
+  STARTED
   ERROR
 }
 
@@ -184,17 +184,18 @@ type Version {
   status: VersionStatus!
   creationDate: String!
   creationAuthor: User!
-  activationDate: String
-  activationAuthor: User
+  publicationDate: String
+  publicationAuthor: User
   workflows: [Workflow!]!
   configurationVariables: [ConfigurationVariable!]!
   configurationCompleted: Boolean!
 }
 
 enum VersionStatus {
-  CREATED
-  ACTIVE
-  RUNNING
+  STARTING
+  STARTED
+  PUBLISHED
+  STOPPING
   STOPPED
 }
 
@@ -221,10 +222,10 @@ enum UserActivityType {
   LOGOUT
   CREATE_RUNTIME
   CREATE_VERSION
-  ACTIVATE_VERSION
-  DEACTIVATE_VERSION
+  PUBLISH_VERSION
+  UNPUBLISH_VERSION
+  START_VERSION
   STOP_VERSION
-  DEPLOY_VERSION
   UPDATE_SETTING
   UPDATE_VERSION_CONFIGURATION
 }

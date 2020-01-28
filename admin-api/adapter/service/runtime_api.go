@@ -26,8 +26,8 @@ func NewRuntimeAPIServiceGRPC(cfg *config.Config, logger logging.Logger) *Runtim
 	}
 }
 
-// DeployVersion creates resources in k8s
-func (k *RuntimeAPIServiceGRPC) DeployVersion(runtime *entity.Runtime, version *entity.Version) error {
+// StartVersion creates resources in k8s
+func (k *RuntimeAPIServiceGRPC) StartVersion(runtime *entity.Runtime, version *entity.Version) error {
 	ns := strcase.ToKebab(runtime.Name)
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
 
@@ -81,7 +81,7 @@ func (k *RuntimeAPIServiceGRPC) DeployVersion(runtime *entity.Runtime, version *
 		}
 	}
 
-	req := runtimepb.DeployVersionRequest{
+	req := runtimepb.StartVersionRequest{
 		Version: &runtimepb.Version{
 			Name:   version.Name,
 			Config: configVars,
@@ -97,7 +97,7 @@ func (k *RuntimeAPIServiceGRPC) DeployVersion(runtime *entity.Runtime, version *
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 
-	res, err := c.DeployVersion(ctx, &req)
+	res, err := c.StartVersion(ctx, &req)
 	if err != nil {
 		return err
 	}
@@ -195,7 +195,7 @@ func (k *RuntimeAPIServiceGRPC) UpdateVersionConfig(runtime *entity.Runtime, ver
 	return nil
 }
 
-func (k *RuntimeAPIServiceGRPC) DeactivateVersion(runtime *entity.Runtime, versionName string) error {
+func (k *RuntimeAPIServiceGRPC) UnpublishVersion(runtime *entity.Runtime, versionName string) error {
 	ns := strcase.ToKebab(runtime.Name)
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
 
@@ -212,7 +212,7 @@ func (k *RuntimeAPIServiceGRPC) DeactivateVersion(runtime *entity.Runtime, versi
 
 	c := runtimepb.NewRuntimeServiceClient(cc)
 
-	req := runtimepb.DeactivateVersionRequest{
+	req := runtimepb.UnpublishVersionRequest{
 		Version: &runtimepb.Version{
 			Name: versionName,
 		},
@@ -221,7 +221,7 @@ func (k *RuntimeAPIServiceGRPC) DeactivateVersion(runtime *entity.Runtime, versi
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 
-	res, err := c.DeactivateVersion(ctx, &req)
+	res, err := c.UnpublishVersion(ctx, &req)
 	if err != nil {
 		return err
 	}
@@ -233,7 +233,7 @@ func (k *RuntimeAPIServiceGRPC) DeactivateVersion(runtime *entity.Runtime, versi
 	return nil
 }
 
-func (k *RuntimeAPIServiceGRPC) ActivateVersion(runtime *entity.Runtime, versionName string) error {
+func (k *RuntimeAPIServiceGRPC) PublishVersion(runtime *entity.Runtime, versionName string) error {
 	ns := strcase.ToKebab(runtime.Name)
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", ns), grpc.WithInsecure())
 	if err != nil {
@@ -249,7 +249,7 @@ func (k *RuntimeAPIServiceGRPC) ActivateVersion(runtime *entity.Runtime, version
 
 	c := runtimepb.NewRuntimeServiceClient(cc)
 
-	req := runtimepb.ActivateVersionRequest{
+	req := runtimepb.PublishVersionRequest{
 		Version: &runtimepb.Version{
 			Name: versionName,
 		},
@@ -258,7 +258,7 @@ func (k *RuntimeAPIServiceGRPC) ActivateVersion(runtime *entity.Runtime, version
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
 
-	res, err := c.ActivateVersion(ctx, &req)
+	res, err := c.PublishVersion(ctx, &req)
 	if err != nil {
 		return err
 	}

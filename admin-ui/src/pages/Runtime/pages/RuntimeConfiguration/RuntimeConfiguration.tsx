@@ -1,8 +1,8 @@
-import { get, omit, isEqual, cloneDeep } from 'lodash';
+import { cloneDeep, get, isEqual, omit } from 'lodash';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
 import Button from '../../../../components/Button/Button';
@@ -14,22 +14,18 @@ import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 
 import {
   GET_CONFIGURATION_VARIABLES,
-  GetVersionConfigVars,
   GetVersionConfigResponse,
-  UpdateVersionConfigVars,
-  UPDATE_VERSION_CONFIGURATION
+  GetVersionConfigVars,
+  UPDATE_VERSION_CONFIGURATION,
+  UpdateVersionConfigVars
 } from './RuntimeConfiguration.graphql';
-import {
-  ConfigurationVariable,
-  Version,
-  VersionStatus
-} from '../../../../graphql/models';
+import { ConfigurationVariable, Version, VersionStatus } from '../../../../graphql/models';
 
 import styles from './RuntimeConfiguration.module.scss';
 
 const statusWithConfirmationModal = [
-  VersionStatus.ACTIVE,
-  VersionStatus.RUNNING
+  VersionStatus.PUBLISHED,
+  VersionStatus.STARTED
 ];
 
 /**

@@ -42,11 +42,11 @@ message Version {
   repeated Workflow workflows = 4;
 }
 
-message DeployVersionRequest {
+message StartVersionRequest {
   Version version = 1;
 }
 
-message DeployVersionResponse {
+message StartVersionResponse {
   bool success = 1;
   string message = 2;
 }
@@ -69,20 +69,20 @@ message StopVersionResponse {
   string message = 2;
 }
 
-message DeactivateVersionRequest {
+message PublishVersionRequest {
   Version version = 1;
 }
 
-message DeactivateVersionResponse {
+message PublishVersionResponse {
   bool success = 1;
   string message = 2;
 }
 
-message ActivateVersionRequest {
+message UnpublishVersionRequest {
   Version version = 1;
 }
 
-message ActivateVersionResponse {
+message UnpublishVersionResponse {
   bool success = 1;
   string message = 2;
 }
@@ -112,15 +112,15 @@ message VersionNodeStatusResponse {
 }
 
 service RuntimeService {
-  rpc DeployVersion (DeployVersionRequest) returns (DeployVersionResponse) {
-  };
-  rpc UpdateVersionConfig (UpdateVersionConfigRequest) returns (UpdateVersionConfigResponse) {
+  rpc StartVersion (StartVersionRequest) returns (StartVersionResponse) {
   };
   rpc StopVersion (StopVersionRequest) returns (StopVersionResponse) {
   };
-  rpc DeactivateVersion (DeactivateVersionRequest) returns (DeactivateVersionResponse) {
+  rpc PublishVersion (PublishVersionRequest) returns (PublishVersionResponse) {
   };
-  rpc ActivateVersion (ActivateVersionRequest) returns (ActivateVersionResponse) {
+  rpc UnpublishVersion (UnpublishVersionRequest) returns (UnpublishVersionResponse) {
+  };
+  rpc UpdateVersionConfig (UpdateVersionConfigRequest) returns (UpdateVersionConfigResponse) {
   };
   rpc WatchNodeLogs (WatchNodeLogsRequest) returns (stream WatchNodeLogsResponse) {
   };

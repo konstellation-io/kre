@@ -31,8 +31,8 @@ func NewRuntimeService(
 	}
 }
 
-func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.DeployVersionRequest) (*runtimepb.DeployVersionResponse, error) {
-	s.logger.Info("DeployVersionRequest received")
+func (s *RuntimeService) StartVersion(ctx context.Context, req *runtimepb.StartVersionRequest) (*runtimepb.StartVersionResponse, error) {
+	s.logger.Info("StartVersionRequest received")
 	mWorkflows := req.GetVersion().GetWorkflows()
 
 	workflows := make([]entity.Workflow, len(mWorkflows))
@@ -83,10 +83,10 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 		Workflows: workflows,
 	}
 
-	message := fmt.Sprintf("Version %s deployed", req.GetVersion().GetName())
+	message := fmt.Sprintf("Version %s started", req.GetVersion().GetName())
 	success := true
 
-	_, err := s.interactor.DeployVersion(version)
+	_, err := s.interactor.StartVersion(version)
 	if err != nil {
 		success = false
 		message = err.Error()
@@ -94,7 +94,7 @@ func (s *RuntimeService) DeployVersion(ctx context.Context, req *runtimepb.Deplo
 	}
 
 	// Send response
-	res := &runtimepb.DeployVersionResponse{
+	res := &runtimepb.StartVersionResponse{
 		Success: success,
 		Message: message,
 	}
@@ -160,14 +160,14 @@ func (s *RuntimeService) StopVersion(ctx context.Context, req *runtimepb.StopVer
 	return res, nil
 }
 
-func (s *RuntimeService) DeactivateVersion(ctx context.Context, req *runtimepb.DeactivateVersionRequest) (*runtimepb.DeactivateVersionResponse, error) {
-	s.logger.Info("DeactivateVersionRequest received")
+func (s *RuntimeService) UnpublishVersion(ctx context.Context, req *runtimepb.UnpublishVersionRequest) (*runtimepb.UnpublishVersionResponse, error) {
+	s.logger.Info("UnpublishVersionRequest received")
 	versionName := req.GetVersion().GetName()
 
 	message := fmt.Sprintf("Version '%s' deactivated", versionName)
 	success := true
 
-	_, err := s.interactor.DeactivateVersion(versionName)
+	_, err := s.interactor.UnpublishVersion(versionName)
 	if err != nil {
 		success = false
 		message = err.Error()
@@ -175,7 +175,7 @@ func (s *RuntimeService) DeactivateVersion(ctx context.Context, req *runtimepb.D
 	}
 
 	// Send response
-	res := &runtimepb.DeactivateVersionResponse{
+	res := &runtimepb.UnpublishVersionResponse{
 		Success: success,
 		Message: message,
 	}
@@ -183,21 +183,21 @@ func (s *RuntimeService) DeactivateVersion(ctx context.Context, req *runtimepb.D
 	return res, nil
 }
 
-func (s *RuntimeService) ActivateVersion(ctx context.Context, req *runtimepb.ActivateVersionRequest) (*runtimepb.ActivateVersionResponse, error) {
+func (s *RuntimeService) PublishVersion(ctx context.Context, req *runtimepb.PublishVersionRequest) (*runtimepb.PublishVersionResponse, error) {
 	versionName := req.GetVersion().GetName()
 	namespace := s.cfg.Kubernetes.Namespace
 	s.logger.Info(fmt.Sprintf("Activating version \"%s\" in namespace \"%s\"...\n", versionName, namespace))
 
-	_, err := s.interactor.ActivateVersion(versionName)
+	_, err := s.interactor.PublishVersion(versionName)
 	if err != nil {
 		s.logger.Error(err.Error())
-		return &runtimepb.ActivateVersionResponse{
+		return &runtimepb.PublishVersionResponse{
 			Success: false,
 			Message: err.Error(),
 		}, nil
 	}
 
-	return &runtimepb.ActivateVersionResponse{
+	return &runtimepb.PublishVersionResponse{
 		Success: true,
 		Message: "Version activated correctly.",
 	}, nil

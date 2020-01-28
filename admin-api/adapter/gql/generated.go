@@ -79,12 +79,12 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		ActivateVersion            func(childComplexity int, input ActivateVersionInput) int
 		CreateRuntime              func(childComplexity int, input CreateRuntimeInput) int
 		CreateVersion              func(childComplexity int, input CreateVersionInput) int
-		DeactivateVersion          func(childComplexity int, input DeactivateVersionInput) int
-		DeployVersion              func(childComplexity int, input DeployVersionInput) int
+		PublishVersion             func(childComplexity int, input PublishVersionInput) int
+		StartVersion               func(childComplexity int, input StartVersionInput) int
 		StopVersion                func(childComplexity int, input StopVersionInput) int
+		UnpublishVersion           func(childComplexity int, input UnpublishVersionInput) int
 		UpdateSettings             func(childComplexity int, input SettingsInput) int
 		UpdateVersionConfiguration func(childComplexity int, input UpdateConfigurationInput) int
 	}
@@ -118,12 +118,12 @@ type ComplexityRoot struct {
 	}
 
 	Runtime struct {
-		ActiveVersion  func(childComplexity int) int
-		CreationAuthor func(childComplexity int) int
-		CreationDate   func(childComplexity int) int
-		ID             func(childComplexity int) int
-		Name           func(childComplexity int) int
-		Status         func(childComplexity int) int
+		CreationAuthor   func(childComplexity int) int
+		CreationDate     func(childComplexity int) int
+		ID               func(childComplexity int) int
+		Name             func(childComplexity int) int
+		PublishedVersion func(childComplexity int) int
+		Status           func(childComplexity int) int
 	}
 
 	Settings struct {
@@ -161,8 +161,6 @@ type ComplexityRoot struct {
 	}
 
 	Version struct {
-		ActivationAuthor       func(childComplexity int) int
-		ActivationDate         func(childComplexity int) int
 		ConfigurationCompleted func(childComplexity int) int
 		ConfigurationVariables func(childComplexity int) int
 		CreationAuthor         func(childComplexity int) int
@@ -170,6 +168,8 @@ type ComplexityRoot struct {
 		Description            func(childComplexity int) int
 		ID                     func(childComplexity int) int
 		Name                   func(childComplexity int) int
+		PublicationAuthor      func(childComplexity int) int
+		PublicationDate        func(childComplexity int) int
 		Status                 func(childComplexity int) int
 		Workflows              func(childComplexity int) int
 	}
@@ -191,10 +191,10 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*CreateRuntimeResponse, error)
 	CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error)
-	DeployVersion(ctx context.Context, input DeployVersionInput) (*Version, error)
-	ActivateVersion(ctx context.Context, input ActivateVersionInput) (*Version, error)
+	StartVersion(ctx context.Context, input StartVersionInput) (*Version, error)
 	StopVersion(ctx context.Context, input StopVersionInput) (*Version, error)
-	DeactivateVersion(ctx context.Context, input DeactivateVersionInput) (*Version, error)
+	PublishVersion(ctx context.Context, input PublishVersionInput) (*Version, error)
+	UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*Version, error)
 	UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error)
 	UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*Version, error)
 }
@@ -342,18 +342,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Error.Message(childComplexity), true
 
-	case "Mutation.activateVersion":
-		if e.complexity.Mutation.ActivateVersion == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_activateVersion_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.ActivateVersion(childComplexity, args["input"].(ActivateVersionInput)), true
-
 	case "Mutation.createRuntime":
 		if e.complexity.Mutation.CreateRuntime == nil {
 			break
@@ -378,29 +366,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateVersion(childComplexity, args["input"].(CreateVersionInput)), true
 
-	case "Mutation.deactivateVersion":
-		if e.complexity.Mutation.DeactivateVersion == nil {
+	case "Mutation.publishVersion":
+		if e.complexity.Mutation.PublishVersion == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deactivateVersion_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_publishVersion_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeactivateVersion(childComplexity, args["input"].(DeactivateVersionInput)), true
+		return e.complexity.Mutation.PublishVersion(childComplexity, args["input"].(PublishVersionInput)), true
 
-	case "Mutation.deployVersion":
-		if e.complexity.Mutation.DeployVersion == nil {
+	case "Mutation.startVersion":
+		if e.complexity.Mutation.StartVersion == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deployVersion_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_startVersion_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeployVersion(childComplexity, args["input"].(DeployVersionInput)), true
+		return e.complexity.Mutation.StartVersion(childComplexity, args["input"].(StartVersionInput)), true
 
 	case "Mutation.stopVersion":
 		if e.complexity.Mutation.StopVersion == nil {
@@ -413,6 +401,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.StopVersion(childComplexity, args["input"].(StopVersionInput)), true
+
+	case "Mutation.unpublishVersion":
+		if e.complexity.Mutation.UnpublishVersion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_unpublishVersion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UnpublishVersion(childComplexity, args["input"].(UnpublishVersionInput)), true
 
 	case "Mutation.updateSettings":
 		if e.complexity.Mutation.UpdateSettings == nil {
@@ -591,13 +591,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Versions(childComplexity, args["runtimeId"].(string)), true
 
-	case "Runtime.activeVersion":
-		if e.complexity.Runtime.ActiveVersion == nil {
-			break
-		}
-
-		return e.complexity.Runtime.ActiveVersion(childComplexity), true
-
 	case "Runtime.creationAuthor":
 		if e.complexity.Runtime.CreationAuthor == nil {
 			break
@@ -625,6 +618,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Runtime.Name(childComplexity), true
+
+	case "Runtime.publishedVersion":
+		if e.complexity.Runtime.PublishedVersion == nil {
+			break
+		}
+
+		return e.complexity.Runtime.PublishedVersion(childComplexity), true
 
 	case "Runtime.status":
 		if e.complexity.Runtime.Status == nil {
@@ -755,20 +755,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserActivityVar.Value(childComplexity), true
 
-	case "Version.activationAuthor":
-		if e.complexity.Version.ActivationAuthor == nil {
-			break
-		}
-
-		return e.complexity.Version.ActivationAuthor(childComplexity), true
-
-	case "Version.activationDate":
-		if e.complexity.Version.ActivationDate == nil {
-			break
-		}
-
-		return e.complexity.Version.ActivationDate(childComplexity), true
-
 	case "Version.configurationCompleted":
 		if e.complexity.Version.ConfigurationCompleted == nil {
 			break
@@ -817,6 +803,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Version.Name(childComplexity), true
+
+	case "Version.publicationAuthor":
+		if e.complexity.Version.PublicationAuthor == nil {
+			break
+		}
+
+		return e.complexity.Version.PublicationAuthor(childComplexity), true
+
+	case "Version.publicationDate":
+		if e.complexity.Version.PublicationDate == nil {
+			break
+		}
+
+		return e.complexity.Version.PublicationDate(childComplexity), true
 
 	case "Version.status":
 		if e.complexity.Version.Status == nil {
@@ -995,10 +995,10 @@ type Query {
 type Mutation {
   createRuntime(input: CreateRuntimeInput!): CreateRuntimeResponse!
   createVersion(input: CreateVersionInput!): CreateVersionResponse!
-  deployVersion(input: DeployVersionInput!): Version!
-  activateVersion(input: ActivateVersionInput!): Version!
+  startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
-  deactivateVersion(input: DeactivateVersionInput!): Version!
+  publishVersion(input: PublishVersionInput!): Version!
+  unpublishVersion(input: UnpublishVersionInput!): Version!
   updateSettings(input: SettingsInput!): UpdateSettingsResponse
   updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
 }
@@ -1033,11 +1033,11 @@ input CreateVersionInput {
   runtimeId: String!
 }
 
-input DeployVersionInput {
+input StartVersionInput {
   versionId: ID!
 }
 
-input ActivateVersionInput {
+input PublishVersionInput {
   versionId: ID!
   comment: String!
 }
@@ -1046,7 +1046,7 @@ input StopVersionInput {
   versionId: ID!
 }
 
-input DeactivateVersionInput {
+input UnpublishVersionInput {
   versionId: ID!
 }
 
@@ -1128,12 +1128,12 @@ type Runtime {
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!
-  activeVersion: Version
+  publishedVersion: Version
 }
 
 enum RuntimeStatus {
   CREATING
-  RUNNING
+  STARTED
   ERROR
 }
 
@@ -1168,17 +1168,18 @@ type Version {
   status: VersionStatus!
   creationDate: String!
   creationAuthor: User!
-  activationDate: String
-  activationAuthor: User
+  publicationDate: String
+  publicationAuthor: User
   workflows: [Workflow!]!
   configurationVariables: [ConfigurationVariable!]!
   configurationCompleted: Boolean!
 }
 
 enum VersionStatus {
-  CREATED
-  ACTIVE
-  RUNNING
+  STARTING
+  STARTED
+  PUBLISHED
+  STOPPING
   STOPPED
 }
 
@@ -1205,10 +1206,10 @@ enum UserActivityType {
   LOGOUT
   CREATE_RUNTIME
   CREATE_VERSION
-  ACTIVATE_VERSION
-  DEACTIVATE_VERSION
+  PUBLISH_VERSION
+  UNPUBLISH_VERSION
   STOP_VERSION
-  DEPLOY_VERSION
+  START_VERSION
   UPDATE_SETTING
   UPDATE_VERSION_CONFIGURATION
 }
@@ -1218,20 +1219,6 @@ enum UserActivityType {
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_Mutation_activateVersion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 ActivateVersionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNActivateVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐActivateVersionInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
 
 func (ec *executionContext) field_Mutation_createRuntime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1261,12 +1248,12 @@ func (ec *executionContext) field_Mutation_createVersion_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deactivateVersion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_publishVersion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 DeactivateVersionInput
+	var arg0 PublishVersionInput
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNDeactivateVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐDeactivateVersionInput(ctx, tmp)
+		arg0, err = ec.unmarshalNPublishVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐPublishVersionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1275,12 +1262,12 @@ func (ec *executionContext) field_Mutation_deactivateVersion_args(ctx context.Co
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deployVersion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_startVersion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 DeployVersionInput
+	var arg0 StartVersionInput
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNDeployVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐDeployVersionInput(ctx, tmp)
+		arg0, err = ec.unmarshalNStartVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐStartVersionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1295,6 +1282,20 @@ func (ec *executionContext) field_Mutation_stopVersion_args(ctx context.Context,
 	var arg0 StopVersionInput
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNStopVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐStopVersionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_unpublishVersion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 UnpublishVersionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNUnpublishVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUnpublishVersionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2176,7 +2177,7 @@ func (ec *executionContext) _Mutation_createVersion(ctx context.Context, field g
 	return ec.marshalNCreateVersionResponse2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐCreateVersionResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_deployVersion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_startVersion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2193,7 +2194,7 @@ func (ec *executionContext) _Mutation_deployVersion(ctx context.Context, field g
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deployVersion_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_startVersion_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -2202,51 +2203,7 @@ func (ec *executionContext) _Mutation_deployVersion(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeployVersion(rctx, args["input"].(DeployVersionInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*Version)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNVersion2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersion(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_activateVersion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_activateVersion_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx.Args = args
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ActivateVersion(rctx, args["input"].(ActivateVersionInput))
+		return ec.resolvers.Mutation().StartVersion(rctx, args["input"].(StartVersionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2308,7 +2265,7 @@ func (ec *executionContext) _Mutation_stopVersion(ctx context.Context, field gra
 	return ec.marshalNVersion2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersion(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_deactivateVersion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_publishVersion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2325,7 +2282,7 @@ func (ec *executionContext) _Mutation_deactivateVersion(ctx context.Context, fie
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deactivateVersion_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_publishVersion_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -2334,7 +2291,51 @@ func (ec *executionContext) _Mutation_deactivateVersion(ctx context.Context, fie
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeactivateVersion(rctx, args["input"].(DeactivateVersionInput))
+		return ec.resolvers.Mutation().PublishVersion(rctx, args["input"].(PublishVersionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Version)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNVersion2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐVersion(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_unpublishVersion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_unpublishVersion_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UnpublishVersion(rctx, args["input"].(UnpublishVersionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3422,7 +3423,7 @@ func (ec *executionContext) _Runtime_creationAuthor(ctx context.Context, field g
 	return ec.marshalNUser2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Runtime_activeVersion(ctx context.Context, field graphql.CollectedField, obj *Runtime) (ret graphql.Marshaler) {
+func (ec *executionContext) _Runtime_publishedVersion(ctx context.Context, field graphql.CollectedField, obj *Runtime) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3441,7 +3442,7 @@ func (ec *executionContext) _Runtime_activeVersion(ctx context.Context, field gr
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ActiveVersion, nil
+		return obj.PublishedVersion, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4305,7 +4306,7 @@ func (ec *executionContext) _Version_creationAuthor(ctx context.Context, field g
 	return ec.marshalNUser2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Version_activationDate(ctx context.Context, field graphql.CollectedField, obj *Version) (ret graphql.Marshaler) {
+func (ec *executionContext) _Version_publicationDate(ctx context.Context, field graphql.CollectedField, obj *Version) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -4324,7 +4325,7 @@ func (ec *executionContext) _Version_activationDate(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ActivationDate, nil
+		return obj.PublicationDate, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4339,7 +4340,7 @@ func (ec *executionContext) _Version_activationDate(ctx context.Context, field g
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Version_activationAuthor(ctx context.Context, field graphql.CollectedField, obj *Version) (ret graphql.Marshaler) {
+func (ec *executionContext) _Version_publicationAuthor(ctx context.Context, field graphql.CollectedField, obj *Version) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -4358,7 +4359,7 @@ func (ec *executionContext) _Version_activationAuthor(ctx context.Context, field
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ActivationAuthor, nil
+		return obj.PublicationAuthor, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5894,30 +5895,6 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputActivateVersionInput(ctx context.Context, obj interface{}) (ActivateVersionInput, error) {
-	var it ActivateVersionInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "versionId":
-			var err error
-			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "comment":
-			var err error
-			it.Comment, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputConfigurationVariablesInput(ctx context.Context, obj interface{}) (ConfigurationVariablesInput, error) {
 	var it ConfigurationVariablesInput
 	var asMap = obj.(map[string]interface{})
@@ -5984,8 +5961,8 @@ func (ec *executionContext) unmarshalInputCreateVersionInput(ctx context.Context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputDeactivateVersionInput(ctx context.Context, obj interface{}) (DeactivateVersionInput, error) {
-	var it DeactivateVersionInput
+func (ec *executionContext) unmarshalInputPublishVersionInput(ctx context.Context, obj interface{}) (PublishVersionInput, error) {
+	var it PublishVersionInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -5996,21 +5973,9 @@ func (ec *executionContext) unmarshalInputDeactivateVersionInput(ctx context.Con
 			if err != nil {
 				return it, err
 			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputDeployVersionInput(ctx context.Context, obj interface{}) (DeployVersionInput, error) {
-	var it DeployVersionInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "versionId":
+		case "comment":
 			var err error
-			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6044,8 +6009,44 @@ func (ec *executionContext) unmarshalInputSettingsInput(ctx context.Context, obj
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputStartVersionInput(ctx context.Context, obj interface{}) (StartVersionInput, error) {
+	var it StartVersionInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "versionId":
+			var err error
+			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputStopVersionInput(ctx context.Context, obj interface{}) (StopVersionInput, error) {
 	var it StopVersionInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "versionId":
+			var err error
+			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUnpublishVersionInput(ctx context.Context, obj interface{}) (UnpublishVersionInput, error) {
+	var it UnpublishVersionInput
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -6322,13 +6323,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deployVersion":
-			out.Values[i] = ec._Mutation_deployVersion(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "activateVersion":
-			out.Values[i] = ec._Mutation_activateVersion(ctx, field)
+		case "startVersion":
+			out.Values[i] = ec._Mutation_startVersion(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -6337,8 +6333,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deactivateVersion":
-			out.Values[i] = ec._Mutation_deactivateVersion(ctx, field)
+		case "publishVersion":
+			out.Values[i] = ec._Mutation_publishVersion(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "unpublishVersion":
+			out.Values[i] = ec._Mutation_unpublishVersion(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -6640,8 +6641,8 @@ func (ec *executionContext) _Runtime(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "activeVersion":
-			out.Values[i] = ec._Runtime_activeVersion(ctx, field, obj)
+		case "publishedVersion":
+			out.Values[i] = ec._Runtime_publishedVersion(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6887,10 +6888,10 @@ func (ec *executionContext) _Version(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "activationDate":
-			out.Values[i] = ec._Version_activationDate(ctx, field, obj)
-		case "activationAuthor":
-			out.Values[i] = ec._Version_activationAuthor(ctx, field, obj)
+		case "publicationDate":
+			out.Values[i] = ec._Version_publicationDate(ctx, field, obj)
+		case "publicationAuthor":
+			out.Values[i] = ec._Version_publicationAuthor(ctx, field, obj)
 		case "workflows":
 			out.Values[i] = ec._Version_workflows(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -7241,10 +7242,6 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNActivateVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐActivateVersionInput(ctx context.Context, v interface{}) (ActivateVersionInput, error) {
-	return ec.unmarshalInputActivateVersionInput(ctx, v)
-}
-
 func (ec *executionContext) marshalNAlert2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlert(ctx context.Context, sel ast.SelectionSet, v Alert) graphql.Marshaler {
 	return ec._Alert(ctx, sel, &v)
 }
@@ -7408,14 +7405,6 @@ func (ec *executionContext) marshalNCreateVersionResponse2ᚖgitlabᚗcomᚋkons
 		return graphql.Null
 	}
 	return ec._CreateVersionResponse(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNDeactivateVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐDeactivateVersionInput(ctx context.Context, v interface{}) (DeactivateVersionInput, error) {
-	return ec.unmarshalInputDeactivateVersionInput(ctx, v)
-}
-
-func (ec *executionContext) unmarshalNDeployVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐDeployVersionInput(ctx context.Context, v interface{}) (DeployVersionInput, error) {
-	return ec.unmarshalInputDeployVersionInput(ctx, v)
 }
 
 func (ec *executionContext) marshalNEdge2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐEdge(ctx context.Context, sel ast.SelectionSet, v Edge) graphql.Marshaler {
@@ -7594,6 +7583,10 @@ func (ec *executionContext) marshalNNodeStatus2gitlabᚗcomᚋkonstellationᚋko
 	return v
 }
 
+func (ec *executionContext) unmarshalNPublishVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐPublishVersionInput(ctx context.Context, v interface{}) (PublishVersionInput, error) {
+	return ec.unmarshalInputPublishVersionInput(ctx, v)
+}
+
 func (ec *executionContext) marshalNRuntime2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐRuntime(ctx context.Context, sel ast.SelectionSet, v Runtime) graphql.Marshaler {
 	return ec._Runtime(ctx, sel, &v)
 }
@@ -7672,6 +7665,10 @@ func (ec *executionContext) unmarshalNSettingsInput2gitlabᚗcomᚋkonstellation
 	return ec.unmarshalInputSettingsInput(ctx, v)
 }
 
+func (ec *executionContext) unmarshalNStartVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐStartVersionInput(ctx context.Context, v interface{}) (StartVersionInput, error) {
+	return ec.unmarshalInputStartVersionInput(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNStopVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐStopVersionInput(ctx context.Context, v interface{}) (StopVersionInput, error) {
 	return ec.unmarshalInputStopVersionInput(ctx, v)
 }
@@ -7717,6 +7714,10 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	}
 
 	return ret
+}
+
+func (ec *executionContext) unmarshalNUnpublishVersionInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUnpublishVersionInput(ctx context.Context, v interface{}) (UnpublishVersionInput, error) {
+	return ec.unmarshalInputUnpublishVersionInput(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNUpdateConfigurationInput2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUpdateConfigurationInput(ctx context.Context, v interface{}) (UpdateConfigurationInput, error) {

@@ -56,3 +56,26 @@ func (_m *SubscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *gql
 
 	return r0, r1
 }
+
+// VersionNodeStatus provides a mock function with given fields: ctx, versionID
+func (_m *SubscriptionResolver) VersionNodeStatus(ctx context.Context, versionID string) (<-chan *gql.VersionNodeStatus, error) {
+	ret := _m.Called(ctx, versionID)
+
+	var r0 <-chan *gql.VersionNodeStatus
+	if rf, ok := ret.Get(0).(func(context.Context, string) <-chan *gql.VersionNodeStatus); ok {
+		r0 = rf(ctx, versionID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(<-chan *gql.VersionNodeStatus)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, versionID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

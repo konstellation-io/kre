@@ -12,15 +12,15 @@ import (
 type UserActivityType string
 
 const (
-	UserActivityTypeLogin             UserActivityType = "LOGIN"
-	UserActivityTypeLogout            UserActivityType = "LOGOUT"
-	UserActivityTypeCreateRuntime     UserActivityType = "CREATE_RUNTIME"
-	UserActivityTypeCreateVersion     UserActivityType = "CREATE_VERSION"
-	UserActivityTypeActivateVersion   UserActivityType = "ACTIVATE_VERSION"
-	UserActivityTypeDeactivateVersion UserActivityType = "DEACTIVATE_VERSION"
-	UserActivityTypeStopVersion       UserActivityType = "STOP_VERSION"
-	UserActivityTypeDeployVersion     UserActivityType = "DEPLOY_VERSION"
-	UserActivityTypeUpdateSetting     UserActivityType = "UPDATE_SETTING"
+	UserActivityTypeLogin            UserActivityType = "LOGIN"
+	UserActivityTypeLogout           UserActivityType = "LOGOUT"
+	UserActivityTypeCreateRuntime    UserActivityType = "CREATE_RUNTIME"
+	UserActivityTypeCreateVersion    UserActivityType = "CREATE_VERSION"
+	UserActivityTypePublishVersion   UserActivityType = "PUBLISH_VERSION"
+	UserActivityTypeUnpublishVersion UserActivityType = "UNPUBLISH_VERSION"
+	UserActivityTypeStopVersion      UserActivityType = "STOP_VERSION"
+	UserActivityTypeStartVersion     UserActivityType = "START_VERSION"
+	UserActivityTypeUpdateSetting    UserActivityType = "UPDATE_SETTING"
 )
 
 // UserActivityInteractor  contains app logic about UserActivity entities

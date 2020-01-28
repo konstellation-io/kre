@@ -64,10 +64,10 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 		return nil, err
 	}
 
-	runtime, onRuntimeRunningChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
+	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
 
 	go func() {
-		runtime := <-onRuntimeRunningChannel
+		runtime := <-onRuntimeStartedChannel
 
 		for _, r := range runtimeCreatedChannels {
 			r <- toGQLRuntime(runtime, owner)
@@ -103,10 +103,10 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 	}, nil
 }
 
-func (r *mutationResolver) DeployVersion(ctx context.Context, input DeployVersionInput) (*Version, error) {
+func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*Version, error) {
 	userID := ctx.Value("userID").(string)
 
-	version, err := r.versionInteractor.Deploy(userID, input.VersionID)
+	version, err := r.versionInteractor.Start(userID, input.VersionID)
 	if err != nil {
 		return nil, err
 	}
@@ -135,10 +135,10 @@ func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInp
 	return toGQLVersion(version, creationUser, nil), nil
 }
 
-func (r *mutationResolver) DeactivateVersion(ctx context.Context, input DeactivateVersionInput) (*Version, error) {
+func (r *mutationResolver) UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*Version, error) {
 	userID := ctx.Value("userID").(string)
 
-	version, err := r.versionInteractor.Deactivate(userID, input.VersionID)
+	version, err := r.versionInteractor.Unpublish(userID, input.VersionID)
 	if err != nil {
 		return nil, err
 	}
@@ -151,10 +151,10 @@ func (r *mutationResolver) DeactivateVersion(ctx context.Context, input Deactiva
 	return toGQLVersion(version, creationUser, nil), nil
 }
 
-func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVersionInput) (*Version, error) {
+func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVersionInput) (*Version, error) {
 	userID := ctx.Value("userID").(string)
 
-	version, err := r.versionInteractor.Activate(userID, input.VersionID, input.Comment)
+	version, err := r.versionInteractor.Publish(userID, input.VersionID, input.Comment)
 	if err != nil {
 		return nil, err
 	}
@@ -164,12 +164,12 @@ func (r *mutationResolver) ActivateVersion(ctx context.Context, input ActivateVe
 		return nil, err
 	}
 
-	activationUser, err := r.userInteractor.GetByID(userID)
+	publicationUser, err := r.userInteractor.GetByID(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	return toGQLVersion(version, creationUser, activationUser), nil
+	return toGQLVersion(version, creationUser, publicationUser), nil
 }
 
 func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
@@ -267,15 +267,15 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		return nil, err
 	}
 
-	var activationUser *entity.User
-	if v.ActivationUserID != nil {
-		activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+	var publicationUser *entity.User
+	if v.PublicationUserID != nil {
+		publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
 		if err != nil && err != usecase.ErrUserNotFound {
 			return nil, err
 		}
 	}
 
-	gqlVersion := toGQLVersion(v, creationUser, activationUser)
+	gqlVersion := toGQLVersion(v, creationUser, publicationUser)
 	return gqlVersion, nil
 }
 
@@ -325,32 +325,32 @@ func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error
 
 	gqlRuntime := toGQLRuntime(runtime, owner)
 
-	// TODO Get Runtime Active Version from a property stored in the Runtime entity instead of
+	// TODO Get Runtime Published Version from a property stored in the Runtime entity instead of
 	// get all runtime versions.
 	versions, err := r.versionInteractor.GetByRuntime(id)
 	if err != nil {
 		return nil, err
 	}
 
-	var activeVersion *Version
+	var publishedVersion *Version
 	for _, v := range versions {
-		if v.Status == string(VersionStatusActive) {
+		if v.Status == string(VersionStatusPublished) {
 			creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
 			if err != nil && err != usecase.ErrUserNotFound {
 				return nil, err
 			}
-			var activationUser *entity.User
-			if v.ActivationUserID != nil {
-				activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+			var publicationUser *entity.User
+			if v.PublicationUserID != nil {
+				publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
 				if err != nil && err != usecase.ErrUserNotFound {
 					return nil, err
 				}
 			}
-			activeVersion = toGQLVersion(&v, creationUser, activationUser)
+			publishedVersion = toGQLVersion(&v, creationUser, publicationUser)
 		}
 	}
 
-	gqlRuntime.ActiveVersion = activeVersion
+	gqlRuntime.PublishedVersion = publishedVersion
 
 	return gqlRuntime, nil
 }
@@ -370,7 +370,7 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 			ID:           runtime.ID,
 			Name:         runtime.Name,
 			Status:       RuntimeStatus(runtime.Status),
-			CreationDate: runtime.CreationDate.Format("2006-01-02"), // TODO add activeVersion
+			CreationDate: runtime.CreationDate.Format("2006-01-02"), // TODO add publishedVersion
 		}
 		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
 	}
@@ -389,15 +389,15 @@ func (r *queryResolver) Version(ctx context.Context, id string) (*Version, error
 		return nil, err
 	}
 
-	var activationUser *entity.User
-	if v.ActivationUserID != nil {
-		activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+	var publicationUser *entity.User
+	if v.PublicationUserID != nil {
+		publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
 		if err != nil && err != usecase.ErrUserNotFound {
 			return nil, err
 		}
 	}
 
-	gqlVersion := toGQLVersion(v, creationUser, activationUser)
+	gqlVersion := toGQLVersion(v, creationUser, publicationUser)
 	return gqlVersion, nil
 }
 
@@ -413,14 +413,14 @@ func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Vers
 		if err != nil && err != usecase.ErrUserNotFound {
 			return nil, err
 		}
-		var activationUser *entity.User
-		if v.ActivationUserID != nil {
-			activationUser, err = r.userInteractor.GetByID(*v.ActivationUserID)
+		var publicationUser *entity.User
+		if v.PublicationUserID != nil {
+			publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
 			if err != nil && err != usecase.ErrUserNotFound {
 				return nil, err
 			}
 		}
-		gqlVersion := toGQLVersion(&v, creationUser, activationUser)
+		gqlVersion := toGQLVersion(&v, creationUser, publicationUser)
 		gqlVersions = append(gqlVersions, gqlVersion)
 	}
 

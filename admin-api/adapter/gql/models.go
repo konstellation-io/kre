@@ -10,11 +10,6 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-type ActivateVersionInput struct {
-	VersionID string `json:"versionId"`
-	Comment   string `json:"comment"`
-}
-
 type Alert struct {
 	ID      string     `json:"id"`
 	Type    AlertLevel `json:"type"`
@@ -52,14 +47,6 @@ type CreateVersionResponse struct {
 	Version *Version `json:"version"`
 }
 
-type DeactivateVersionInput struct {
-	VersionID string `json:"versionId"`
-}
-
-type DeployVersionInput struct {
-	VersionID string `json:"versionId"`
-}
-
 type Edge struct {
 	ID       string `json:"id"`
 	FromNode string `json:"fromNode"`
@@ -87,13 +74,18 @@ type NodeLog struct {
 	Level     string `json:"level"`
 }
 
+type PublishVersionInput struct {
+	VersionID string `json:"versionId"`
+	Comment   string `json:"comment"`
+}
+
 type Runtime struct {
-	ID             string        `json:"id"`
-	Name           string        `json:"name"`
-	Status         RuntimeStatus `json:"status"`
-	CreationDate   string        `json:"creationDate"`
-	CreationAuthor *User         `json:"creationAuthor"`
-	ActiveVersion  *Version      `json:"activeVersion"`
+	ID               string        `json:"id"`
+	Name             string        `json:"name"`
+	Status           RuntimeStatus `json:"status"`
+	CreationDate     string        `json:"creationDate"`
+	CreationAuthor   *User         `json:"creationAuthor"`
+	PublishedVersion *Version      `json:"publishedVersion"`
 }
 
 type Settings struct {
@@ -106,7 +98,15 @@ type SettingsInput struct {
 	SessionLifetimeInDays *int     `json:"sessionLifetimeInDays"`
 }
 
+type StartVersionInput struct {
+	VersionID string `json:"versionId"`
+}
+
 type StopVersionInput struct {
+	VersionID string `json:"versionId"`
+}
+
+type UnpublishVersionInput struct {
 	VersionID string `json:"versionId"`
 }
 
@@ -145,8 +145,8 @@ type Version struct {
 	Status                 VersionStatus            `json:"status"`
 	CreationDate           string                   `json:"creationDate"`
 	CreationAuthor         *User                    `json:"creationAuthor"`
-	ActivationDate         *string                  `json:"activationDate"`
-	ActivationAuthor       *User                    `json:"activationAuthor"`
+	PublicationDate        *string                  `json:"publicationDate"`
+	PublicationAuthor      *User                    `json:"publicationAuthor"`
 	Workflows              []*Workflow              `json:"workflows"`
 	ConfigurationVariables []*ConfigurationVariable `json:"configurationVariables"`
 	ConfigurationCompleted bool                     `json:"configurationCompleted"`
@@ -339,19 +339,19 @@ type RuntimeStatus string
 
 const (
 	RuntimeStatusCreating RuntimeStatus = "CREATING"
-	RuntimeStatusRunning  RuntimeStatus = "RUNNING"
+	RuntimeStatusStarted  RuntimeStatus = "STARTED"
 	RuntimeStatusError    RuntimeStatus = "ERROR"
 )
 
 var AllRuntimeStatus = []RuntimeStatus{
 	RuntimeStatusCreating,
-	RuntimeStatusRunning,
+	RuntimeStatusStarted,
 	RuntimeStatusError,
 }
 
 func (e RuntimeStatus) IsValid() bool {
 	switch e {
-	case RuntimeStatusCreating, RuntimeStatusRunning, RuntimeStatusError:
+	case RuntimeStatusCreating, RuntimeStatusStarted, RuntimeStatusError:
 		return true
 	}
 	return false
@@ -385,10 +385,10 @@ const (
 	UserActivityTypeLogout                     UserActivityType = "LOGOUT"
 	UserActivityTypeCreateRuntime              UserActivityType = "CREATE_RUNTIME"
 	UserActivityTypeCreateVersion              UserActivityType = "CREATE_VERSION"
-	UserActivityTypeActivateVersion            UserActivityType = "ACTIVATE_VERSION"
-	UserActivityTypeDeactivateVersion          UserActivityType = "DEACTIVATE_VERSION"
+	UserActivityTypePublishVersion             UserActivityType = "PUBLISH_VERSION"
+	UserActivityTypeUnpublishVersion           UserActivityType = "UNPUBLISH_VERSION"
 	UserActivityTypeStopVersion                UserActivityType = "STOP_VERSION"
-	UserActivityTypeDeployVersion              UserActivityType = "DEPLOY_VERSION"
+	UserActivityTypeStartVersion               UserActivityType = "START_VERSION"
 	UserActivityTypeUpdateSetting              UserActivityType = "UPDATE_SETTING"
 	UserActivityTypeUpdateVersionConfiguration UserActivityType = "UPDATE_VERSION_CONFIGURATION"
 )
@@ -398,17 +398,17 @@ var AllUserActivityType = []UserActivityType{
 	UserActivityTypeLogout,
 	UserActivityTypeCreateRuntime,
 	UserActivityTypeCreateVersion,
-	UserActivityTypeActivateVersion,
-	UserActivityTypeDeactivateVersion,
+	UserActivityTypePublishVersion,
+	UserActivityTypeUnpublishVersion,
 	UserActivityTypeStopVersion,
-	UserActivityTypeDeployVersion,
+	UserActivityTypeStartVersion,
 	UserActivityTypeUpdateSetting,
 	UserActivityTypeUpdateVersionConfiguration,
 }
 
 func (e UserActivityType) IsValid() bool {
 	switch e {
-	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime, UserActivityTypeCreateVersion, UserActivityTypeActivateVersion, UserActivityTypeDeactivateVersion, UserActivityTypeStopVersion, UserActivityTypeDeployVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration:
+	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime, UserActivityTypeCreateVersion, UserActivityTypePublishVersion, UserActivityTypeUnpublishVersion, UserActivityTypeStopVersion, UserActivityTypeStartVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration:
 		return true
 	}
 	return false
@@ -438,22 +438,24 @@ func (e UserActivityType) MarshalGQL(w io.Writer) {
 type VersionStatus string
 
 const (
-	VersionStatusCreated VersionStatus = "CREATED"
-	VersionStatusActive  VersionStatus = "ACTIVE"
-	VersionStatusRunning VersionStatus = "RUNNING"
-	VersionStatusStopped VersionStatus = "STOPPED"
+	VersionStatusStarting  VersionStatus = "STARTING"
+	VersionStatusStarted   VersionStatus = "STARTED"
+	VersionStatusPublished VersionStatus = "PUBLISHED"
+	VersionStatusStopping  VersionStatus = "STOPPING"
+	VersionStatusStopped   VersionStatus = "STOPPED"
 )
 
 var AllVersionStatus = []VersionStatus{
-	VersionStatusCreated,
-	VersionStatusActive,
-	VersionStatusRunning,
+	VersionStatusStarting,
+	VersionStatusStarted,
+	VersionStatusPublished,
+	VersionStatusStopping,
 	VersionStatusStopped,
 }
 
 func (e VersionStatus) IsValid() bool {
 	switch e {
-	case VersionStatusCreated, VersionStatusActive, VersionStatusRunning, VersionStatusStopped:
+	case VersionStatusStarting, VersionStatusStarted, VersionStatusPublished, VersionStatusStopping, VersionStatusStopped:
 		return true
 	}
 	return false

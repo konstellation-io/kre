@@ -27,12 +27,14 @@ import (
 type VersionStatus string
 
 var (
-	// VersionStatusCreated status
-	VersionStatusCreated VersionStatus = "CREATED"
-	// VersionStatusActive status
-	VersionStatusActive VersionStatus = "ACTIVE"
-	// VersionStatusRunning status
-	VersionStatusRunning VersionStatus = "RUNNING"
+	// VersionStatusStarting status
+	VersionStatusStarting VersionStatus = "STARTING"
+	// VersionStatusStarted status
+	VersionStatusStarted VersionStatus = "STARTED"
+	// VersionStatusPublished status
+	VersionStatusPublished VersionStatus = "PUBLISHED"
+	// VersionStatusStopping status
+	VersionStatusStopping VersionStatus = "STOPPING"
 	// VersionStatusStopped status
 	VersionStatusStopped VersionStatus = "STOPPED"
 	// ErrVersionNotFound error
@@ -44,7 +46,7 @@ var (
 	// ErrVersionConfigInvalidKey error
 	ErrVersionConfigInvalidKey = errors.New("version config contains an unknown key")
 	// ErrUpdatingRunningVersionConfig error
-	ErrUpdatingRunningVersionConfig = errors.New("config can't be incomplete for running version")
+	ErrUpdatingStartedVersionConfig = errors.New("config can't be incomplete for started version")
 )
 
 // VersionInteractor contains app logic about Version entities
@@ -396,7 +398,7 @@ func (i *VersionInteractor) generateWorkflow(krtNodes []KrtYmlNode, w KrtYmlWork
 			Name:   name,
 			Image:  nodeInfo.Image,
 			Src:    nodeInfo.Src,
-			Status: "ACTIVE", // TODO get status using runtime-api or k8s
+			Status: "STOPPED", // TODO get status using runtime-api or k8s
 		}
 
 		if previousN != nil {
@@ -420,9 +422,9 @@ func (i *VersionInteractor) generateWorkflow(krtNodes []KrtYmlNode, w KrtYmlWork
 	}
 }
 
-// Deploy create the resources of the given Version
-func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("The user %s is deploying version %s", userID, versionID))
+// Start create the resources of the given Version
+func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is starting version %s", userID, versionID))
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -439,12 +441,12 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 		return nil, err
 	}
 
-	err = i.runtimeService.DeployVersion(runtime, version)
+	err = i.runtimeService.StartVersion(runtime, version)
 	if err != nil {
 		return nil, err
 	}
 
-	version.Status = string(VersionStatusRunning)
+	version.Status = string(VersionStatusStarted) // TODO: First go to Starting
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -452,7 +454,7 @@ func (i *VersionInteractor) Deploy(userID string, versionID string) (*entity.Ver
 
 	err = i.userActivity.Create(
 		userID,
-		UserActivityTypeDeployVersion,
+		UserActivityTypeStartVersion,
 		[]entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
@@ -531,9 +533,9 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 	return version, nil
 }
 
-// Activate set a Version as active on DB and K8s
-func (i *VersionInteractor) Activate(userID string, versionID string, comment string) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("The user %s is activating version %s", userID, versionID))
+// Publish set a Version as published on DB and K8s
+func (i *VersionInteractor) Publish(userID string, versionID string, comment string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is publishing version %s", userID, versionID))
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -545,19 +547,19 @@ func (i *VersionInteractor) Activate(userID string, versionID string, comment st
 		return nil, err
 	}
 
-	// Deactivate the previous active version
-	previousActiveVersion := entity.Version{}
+	// Unpublish previous published version
+	previousPublishedVersion := entity.Version{}
 	versions, err := i.versionRepo.GetByRuntime(runtime.ID)
 	if err != nil {
 		return nil, err
 	}
 	if len(versions) > 0 {
 		for _, v := range versions {
-			if v.Status == string(VersionStatusActive) {
-				previousActiveVersion = v
-				v.Status = string(VersionStatusRunning)
-				v.ActivationUserID = nil
-				v.ActivationDate = nil
+			if v.Status == string(VersionStatusPublished) {
+				previousPublishedVersion = v
+				v.Status = string(VersionStatusStarted)
+				v.PublicationUserID = nil
+				v.PublicationDate = nil
 				err = i.versionRepo.Update(&v)
 				if err != nil {
 					return nil, err
@@ -567,15 +569,15 @@ func (i *VersionInteractor) Activate(userID string, versionID string, comment st
 		}
 	}
 
-	err = i.runtimeService.ActivateVersion(runtime, version.Name)
+	err = i.runtimeService.PublishVersion(runtime, version.Name)
 	if err != nil {
 		return nil, err
 	}
 
 	now := time.Now()
-	version.ActivationDate = &now
-	version.ActivationUserID = &userID
-	version.Status = string(VersionStatusActive)
+	version.PublicationDate = &now
+	version.PublicationUserID = &userID
+	version.Status = string(VersionStatusPublished)
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -583,7 +585,7 @@ func (i *VersionInteractor) Activate(userID string, versionID string, comment st
 
 	err = i.userActivity.Create(
 		userID,
-		UserActivityTypeActivateVersion,
+		UserActivityTypePublishVersion,
 		[]entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
@@ -602,12 +604,12 @@ func (i *VersionInteractor) Activate(userID string, versionID string, comment st
 				Value: version.Name,
 			},
 			{
-				Key:   "OLD_ACTIVE_VERSION_ID",
-				Value: previousActiveVersion.ID,
+				Key:   "OLD_PUBLISHED_VERSION_ID",
+				Value: previousPublishedVersion.ID,
 			},
 			{
-				Key:   "OLD_ACTIVE_VERSION_NAME",
-				Value: previousActiveVersion.Name,
+				Key:   "OLD_PUBLISHED_VERSION_NAME",
+				Value: previousPublishedVersion.Name,
 			},
 			{
 				Key:   "COMMENT",
@@ -621,9 +623,9 @@ func (i *VersionInteractor) Activate(userID string, versionID string, comment st
 	return version, nil
 }
 
-// Activate set a Version as active on DB and K8s
-func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("The user %s is deactivating version %s", userID, versionID))
+// Unpublish set a Version as not published on DB and K8s
+func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("The user %s is unpublishing version %s", userID, versionID))
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -635,14 +637,14 @@ func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity
 		return nil, err
 	}
 
-	err = i.runtimeService.DeactivateVersion(runtime, version.Name)
+	err = i.runtimeService.UnpublishVersion(runtime, version.Name)
 	if err != nil {
 		return nil, err
 	}
 
-	version.ActivationUserID = nil
-	version.ActivationDate = nil
-	version.Status = string(VersionStatusRunning)
+	version.PublicationUserID = nil
+	version.PublicationDate = nil
+	version.Status = string(VersionStatusStarted)
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -650,7 +652,7 @@ func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity
 
 	err = i.userActivity.Create(
 		userID,
-		UserActivityTypeDeactivateVersion,
+		UserActivityTypeUnpublishVersion,
 		[]entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
@@ -676,9 +678,9 @@ func (i *VersionInteractor) Deactivate(userID string, versionID string) (*entity
 	return version, nil
 }
 
-func (i *VersionInteractor) versionIsActiveOrRunning(version *entity.Version) bool {
+func (i *VersionInteractor) versionIsPublishedOrStarted(version *entity.Version) bool {
 	switch version.Status {
-	case string(VersionStatusRunning), string(VersionStatusActive):
+	case string(VersionStatusStarted), string(VersionStatusPublished):
 		return true
 	}
 	return false
@@ -736,12 +738,12 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config 
 		return nil, err
 	}
 
-	isRunning := i.versionIsActiveOrRunning(version)
+	isStarted := i.versionIsPublishedOrStarted(version)
 
 	newConfig, newConfigIsComplete := i.generateNewConfig(version.Config.Vars, config)
 
-	if isRunning && newConfigIsComplete == false {
-		return nil, ErrUpdatingRunningVersionConfig
+	if isStarted && newConfigIsComplete == false {
+		return nil, ErrUpdatingStartedVersionConfig
 	}
 
 	version.Config.Vars = newConfig
@@ -753,7 +755,7 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config 
 	}
 
 	// No need to call runtime-api if there are no resources running
-	if isRunning {
+	if isStarted {
 		err = i.runtimeService.UpdateVersionConfig(runtime, version)
 		if err != nil {
 			return nil, err

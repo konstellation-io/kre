@@ -9,23 +9,6 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 )
 
-// VersionStatus enum of the statuses
-type VersionStatus string
-
-var (
-	VersionStatusCreating VersionStatus = "CREATING"
-	VersionStatusRunning  VersionStatus = "RUNNING"
-	VersionStatusStopped  VersionStatus = "STOPPED"
-	VersionStatusError    VersionStatus = "ERROR"
-)
-
-var AllVersionStatus = []VersionStatus{
-	VersionStatusCreating,
-	VersionStatusRunning,
-	VersionStatusStopped,
-	VersionStatusError,
-}
-
 type VersionInteractor struct {
 	logger           logging.Logger
 	resourceManager  service.ResourceManagerService
@@ -44,10 +27,10 @@ func NewVersionInteractor(
 	}
 }
 
-func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("Deploying version: %s", version.Name))
+func (i *VersionInteractor) StartVersion(version *entity.Version) (*entity.Version, error) {
+	i.logger.Info(fmt.Sprintf("Starting version: %s", version.Name))
 
-	// TODO: Refactor to avoid modifing Config with pointers, collect to new struct instead
+	// TODO: Refactor to avoid modifying Config with pointers, collect to new struct instead
 	for _, w := range version.Workflows {
 		i.logger.Info(fmt.Sprintf("Processing workflow %s", w.Name))
 		i.generateNodeConfig(version, &w)
@@ -72,8 +55,6 @@ func (i *VersionInteractor) DeployVersion(version *entity.Version) (*entity.Vers
 		i.logger.Error(err.Error())
 		return nil, err
 	}
-
-	version.Status = string(VersionStatusCreating)
 
 	return version, err
 }
@@ -146,35 +127,32 @@ func (i *VersionInteractor) StopVersion(name string) (*entity.Version, error) {
 
 	version := &entity.Version{
 		Name:   name,
-		Status: string(VersionStatusStopped),
 	}
 
 	return version, err
 }
 
-func (i *VersionInteractor) DeactivateVersion(name string) (*entity.Version, error) {
-	err := i.resourceManager.DeactivateVersion(name)
+func (i *VersionInteractor) UnpublishVersion(name string) (*entity.Version, error) {
+	err := i.resourceManager.UnpublishVersion(name)
 	if err != nil {
 		return nil, err
 	}
 
 	version := &entity.Version{
 		Name:   name,
-		Status: string(VersionStatusRunning),
 	}
 
 	return version, err
 }
 
-func (i *VersionInteractor) ActivateVersion(name string) (*entity.Version, error) {
-	err := i.resourceManager.ActivateVersion(name)
+func (i *VersionInteractor) PublishVersion(name string) (*entity.Version, error) {
+	err := i.resourceManager.PublishVersion(name)
 	if err != nil {
 		return nil, err
 	}
 
 	activeVersion := &entity.Version{
 		Name:   name,
-		Status: string(VersionStatusRunning),
 	}
 
 	return activeVersion, err
