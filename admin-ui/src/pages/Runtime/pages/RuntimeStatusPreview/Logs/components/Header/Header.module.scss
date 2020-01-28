@@ -1,0 +1,52 @@
+@import '../../../../../../../styles/mixins';
+@import '../../../../../../../styles/funcs';
+@import '../../../../../../../styles/colors';
+
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.statusCircle {
+  width: 8px;
+  height: 8px;
+  margin: 0 16px;
+  border-radius: 50%;
+
+  @each $status in 'ACTIVE' {
+    background-color: get-color-prop($status);
+  }
+}
+
+.runtime {
+  @include font-body;
+  color: $font-color-white;
+}
+
+.version {
+  @include font-body;
+  color: $font-color;
+
+  margin-left: 16px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  opacity: 0;
+  transition: opacity ease 0.4s;
+  margin: 4px 8px 0 auto;
+
+  &.opened {
+    opacity: 1;
+  }
+
+  div {
+    margin-left: 8px;
+    cursor: pointer;
+
+    &:hover {
+      color: $font-color-white;
+    }
+  }
+}

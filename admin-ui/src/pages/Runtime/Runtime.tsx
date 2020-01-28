@@ -1,6 +1,7 @@
 import React from 'react';
-import { Route, Switch, useParams } from 'react-router-dom';
+import { Route, Switch, useParams, useLocation } from 'react-router-dom';
 import * as ROUTE from '../../constants/routes';
+import { buildRoute } from '../../utils/routes';
 
 import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
 import RuntimeConfiguration from './pages/RuntimeConfiguration/RuntimeConfiguration';
@@ -18,10 +19,12 @@ import {
   GetRuntimeAndVersionsVars
 } from './Runtime.graphql';
 
+import cx from 'classnames';
 import styles from './Runtime.module.scss';
 
 function Runtime() {
   const { runtimeId, versionId } = useParams();
+  const location = useLocation();
   const { data, loading, error, refetch } = useQuery<
     GetRuntimeAndVersionsResponse,
     GetRuntimeAndVersionsVars
@@ -41,12 +44,24 @@ function Runtime() {
     runtimeId || ''
   );
 
+  const statusPath: string = buildRoute.version(
+    ROUTE.RUNTIME_VERSION_STATUS,
+    runtimeId,
+    versionId
+  );
+  const isUserInVersionStatus: boolean = location.pathname === statusPath;
+
   return (
     <>
       <Header>
         <Button label="ADD VERSION" height={40} to={newVersionRoute} />
       </Header>
-      <div className={styles.container} data-testid="runtimeContainer">
+      <div
+        className={cx(styles.container, {
+          [styles.viewWithLogs]: isUserInVersionStatus
+        })}
+        data-testid="runtimeContainer"
+      >
         <NavigationBar />
         <LateralMenu runtime={runtime} versions={versions} version={version} />
         <div className={styles.content}>
@@ -54,7 +69,13 @@ function Runtime() {
             <Route
               exact
               path={ROUTE.RUNTIME_VERSION_STATUS}
-              component={RuntimeStatusPreview}
+              render={props => (
+                <RuntimeStatusPreview
+                  {...props}
+                  runtime={runtime}
+                  version={version}
+                />
+              )}
             />
             <Route
               exact

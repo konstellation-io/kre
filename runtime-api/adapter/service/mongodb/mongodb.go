@@ -84,7 +84,7 @@ func (m *LogStreamService) Disconnect() {
 
 // Node Logs
 func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<- *entity.NodeLog) {
-	const QueryLimit = 100
+	const QueryLimit = 10
 
 	pipeline := mongo.Pipeline{
 		bson.D{
@@ -114,9 +114,11 @@ func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, log
 		*queryLimit = QueryLimit
 
 		queryOptions := &options.FindOptions{
+			Sort:  bson.D{{"time", -1}},
 			Limit: queryLimit,
 		}
 
+		m.logger.Info("-------- RUNNING INITIAL LOGS --------")
 		cur, err := collection.Find(ctx, query, queryOptions)
 		if err != nil {
 			m.logger.Error(err.Error())
@@ -133,7 +135,7 @@ func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, log
 
 		operationTime := uint32(time.Now().Unix())
 		if len(results) != 0 {
-			queryId, ok := results[len(results)-1]["_id"].(primitive.ObjectID)
+			queryId, ok := results[0]["_id"].(primitive.ObjectID)
 			if !ok {
 				m.logger.Error("MongoId to ObjectID conversion error")
 				cancel()
@@ -141,8 +143,11 @@ func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, log
 			}
 
 			operationTime = uint32(queryId.Timestamp().Unix())
+			m.logger.Info(fmt.Sprintf("-------- OPERATION TIME FROM QUERY: %s  --------", queryId.Timestamp().String()))
 
-			for _, result := range results {
+			count := len(results)
+			for i, _ := range results {
+				result := results[count-i-1]
 				logsCh <- &entity.NodeLog{
 					Date:      getValueOrDefault(result, "time", ""),
 					Message:   getValueOrDefault(result, "log", ""),
@@ -171,6 +176,7 @@ func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, log
 		m.logger.Info("waiting for changes")
 
 		var changeDoc bson.M
+		count := 0
 		for {
 			ok := stream.Next(ctx)
 			if !ok {
@@ -178,6 +184,9 @@ func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, log
 				cancel()
 				return
 			}
+
+			m.logger.Info(fmt.Sprintf("-------------- STREAM ELEMENT COUNT: %d", count))
+			count++
 
 			if e := stream.Decode(&changeDoc); e != nil {
 				m.logger.Info(fmt.Sprintf("error decoding: %s", e))
