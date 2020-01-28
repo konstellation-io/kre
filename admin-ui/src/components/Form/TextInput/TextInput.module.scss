@@ -22,10 +22,10 @@
 .input {
   @include form-input;
 
-  color: $font-color;
+  color: $font-color-regular;
 
   &::-webkit-input-placeholder {
-    color: $font-color;
+    color: $font-color-regular;
   }
 
   &.lockHorizontalGrowth {

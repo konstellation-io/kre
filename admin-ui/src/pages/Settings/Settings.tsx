@@ -32,11 +32,7 @@ function Settings() {
       <Header />
       <div className={styles.container} data-testid="settingsContainer">
         <NavigationBar />
-        <Sidebar
-          title="Settings"
-          subtitle="Fusce vehicula dolor arcu, sit amet."
-          tabs={tabs}
-        />
+        <Sidebar title="Settings" tabs={tabs} />
         <div className={styles.content}>
           <Route
             exact

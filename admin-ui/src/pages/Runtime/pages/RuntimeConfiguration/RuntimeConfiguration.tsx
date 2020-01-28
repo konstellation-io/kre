@@ -187,13 +187,7 @@ function RuntimeConfiguration({ refetchVersion }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <SettingsHeader
-          title="Configuration"
-          subtitle="Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec viverra eleifend
-            lacus, vitae ullamcorper metus. Sed sollicitudin ipsum quis nunc sollicitudin ultrices.
-            Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur
-            fermentum suscipit est, tincidunt."
-        />
+        <SettingsHeader title="Configuration" />
         {getContent()}
         {showConfirmationModal && (
           <Modal

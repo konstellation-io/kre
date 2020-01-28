@@ -79,6 +79,15 @@
   }
 }
 
+@mixin list-item-hover {
+  transition: color ease 0.4s, background-color ease 0.4s;
+
+  &:hover {
+    background-color: rgba(191, 207, 255, 0.04);
+    color: $font-color-white;
+  }
+}
+
 @mixin shield {
   width: 100%;
   height: 100%;

@@ -8,8 +8,10 @@
 
 .item {
   @include font-button;
+  @include list-item-hover;
+
   text-align: center;
-  color: $font-color;
+  color: $font-color-light;
   line-height: 10px;
 
   height: 56px;
@@ -17,7 +19,6 @@
   padding: 0 28px;
   white-space: nowrap;
   cursor: pointer;
-  transition: color ease 0.4s, background-color ease 0.4s;
 
   display: flex;
   flex-direction: row;
@@ -29,11 +30,6 @@
 
   .warning {
     color: $color-orange;
-  }
-
-  &:hover {
-    background-color: rgba(191, 207, 255, 0.04);
-    color: $font-color-white;
   }
 
   &.disabled {

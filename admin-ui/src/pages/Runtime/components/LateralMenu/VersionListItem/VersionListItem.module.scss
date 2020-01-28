@@ -1,8 +1,17 @@
 @import '../../../../../styles/colors';
+@import '../../../../../styles/mixins';
 
 .item {
+  @include list-item-hover;
+
   cursor: pointer;
-  padding: 10px;
+  padding: 16px 0;
+
+  &:hover {
+    .arrow {
+      opacity: 1;
+    }
+  }
 }
 
 .itemSelected {
@@ -10,6 +19,15 @@
   background-color: #282d33;
   pointer-events: none;
   cursor: default;
+
+  .arrow {
+    opacity: 1;
+  }
+}
+
+.arrow {
+  opacity: 0;
+  margin-left: auto;
 }
 
 .circle {
@@ -22,7 +40,7 @@
 
   &.CREATED,
   &.STOPPED {
-    background-color: $font-color;
+    background-color: $font-color-regular;
   }
   &.ACTIVE {
     background-color: $color-green;
@@ -40,16 +58,12 @@
   font-size: 13px;
   color: $font-color-white;
 
-  padding: 12px;
-
-  svg {
-    margin-left: auto;
-  }
+  padding: 0 16px 16px 16px;
 }
 
 .desc {
   font-size: 11px;
-  color: $font-color;
+  color: $font-color-regular;
   font-weight: bold;
   padding: 0 30px;
 }

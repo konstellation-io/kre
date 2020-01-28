@@ -2,15 +2,5 @@
 @import '../../../../../styles/colors';
 
 .wrapper {
-  height: 100%;
   width: $lateral-menu-width;
-}
-
-.desc {
-  font-weight: 600;
-  font-size: 11px;
-  color: $font-color;
-  background-color: #212428;
-  padding: 18px;
-  border-bottom: 1px solid #121317;
 }

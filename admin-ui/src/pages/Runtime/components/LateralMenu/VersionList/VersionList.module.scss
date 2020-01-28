@@ -3,18 +3,18 @@
 
 .wrapper {
   height: 100%;
+  overflow: hidden;
   width: $lateral-menu-width;
   display: flex;
   flex-direction: column;
 }
 
-.desc {
-  font-weight: 600;
+.label {
+  font-weight: bold;
   font-size: 11px;
-  color: $font-color;
+  color: $font-color-white;
   background-color: #212428;
   padding: 18px;
-  border-bottom: 1px solid #121317;
 }
 
 .items {

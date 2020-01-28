@@ -1,19 +1,9 @@
-@import '../../../../styles/mixins';
-@import '../../../../styles/colors';
-@import '../../../../styles/variables';
-
-.shield {
-  position: fixed;
-  z-index: 3;
-  left: $lateral-menu-width + $runtime-menu-width;
-  top: $header-height;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-}
+@import '../../../../../styles/mixins';
+@import '../../../../../styles/colors';
+@import '../../../../../styles/variables';
 
 .wrapper {
+  z-index: 3;
   background-color: black;
   width: 480px;
   height: 100%;
@@ -28,7 +18,7 @@
 .sectionLabel {
   font-size: 11px;
   font-weight: bold;
-  color: $font-color-dark;
+  color: $font-color-regular;
 }
 
 .sectionBtns {
@@ -45,7 +35,8 @@
 .versionDesc {
   font-size: 11px;
   padding: 10px;
-  color: $font-color;
+  color: $font-color-light;
+  font-weight: 600;
 }
 
 .topContainer {
@@ -72,7 +63,7 @@
 
     &.CREATED,
     &.STOPPED {
-      background-color: $font-color;
+      background-color: $font-color-regular;
     }
     &.ACTIVE {
       background-color: $color-green;
@@ -87,7 +78,7 @@
 
     &.CREATED,
     &.STOPPED {
-      color: $font-color;
+      color: $font-color-regular;
     }
     &.ACTIVE {
       color: $color-green;
@@ -123,16 +114,16 @@
   @include font-small;
 }
 
-.activatedContainer {
+.authorDateContainer {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.activatedAuthor,
-.activatedDate {
+.author,
+.date {
   @include font-caption;
   line-height: 17px;
-
   margin: 0 8px 0 8px;
+  color: $font-color-light;
 }

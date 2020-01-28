@@ -6,23 +6,17 @@ import * as ROUTE from '../../../../../constants/routes';
 
 import StatusIcon from '@material-ui/icons/DeviceHub';
 import MetricsIcon from '@material-ui/icons/ShowChart';
-import DocumentationIcon from '@material-ui/icons/Toc';
+// import DocumentationIcon from '@material-ui/icons/Toc';
 import ConfigIcon from '@material-ui/icons/Settings';
 import styles from './VersionMenu.module.scss';
-import VersionListItem from '../VersionList/VersionListItem';
 import { Version, Runtime } from '../../../../../graphql/models';
 
-type VersionMenuProps = {
+type VersionDetailsProps = {
   runtime: Runtime;
   version: Version;
-  setDetailsVersion: (v: Version) => void;
 };
 
-function VersionMenu({
-  runtime,
-  version,
-  setDetailsVersion
-}: VersionMenuProps) {
+function VersionMenu({ runtime, version }: VersionDetailsProps) {
   let navTabs: NavBarTab[] = createNavTabs(
     runtime.id || '',
     (version && version.id) || ''
@@ -38,14 +32,6 @@ function VersionMenu({
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.desc}>
-        <span>VERSION OPENED</span>
-        <VersionListItem
-          version={version}
-          selected={false}
-          onSelect={setDetailsVersion}
-        />
-      </div>
       <NavBar tabs={navTabs} />
     </div>
   );
@@ -92,12 +78,12 @@ function createNavTabs(runtimeId: string, versionId: string): NavBarTab[] {
       Icon: MetricsIcon,
       disabled: true
     },
-    {
-      label: 'DOCUMENTATION',
-      route: ROUTE.HOME,
-      Icon: DocumentationIcon,
-      disabled: true
-    },
+    // {
+    //   label: 'DOCUMENTATION',
+    //   route: ROUTE.HOME,
+    //   Icon: DocumentationIcon,
+    //   disabled: true
+    // },
     {
       label: 'CONFIGURATION',
       route: ROUTE.RUNTIME_VERSION_CONFIGURATION,

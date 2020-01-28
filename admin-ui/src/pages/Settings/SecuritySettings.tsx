@@ -137,13 +137,7 @@ function SecuritySettings() {
   return (
     <>
       <div className={cx(styles.form, styles.securitySettings)}>
-        <SettingsHeader
-          title="Security settings"
-          subtitle="Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec viverra eleifend
-            lacus, vitae ullamcorper metus. Sed sollicitudin ipsum quis nunc sollicitudin ultrices.
-            Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur
-            fermentum suscipit est, tincidunt."
-        />
+        <SettingsHeader title="Security settings" />
         <FormField
           error={inputError}
           onChange={onChange}

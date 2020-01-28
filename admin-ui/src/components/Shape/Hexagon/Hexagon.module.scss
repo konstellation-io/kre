@@ -72,10 +72,10 @@
 
   top: 50.5%;
   transform: translateX(-50%) perspective(47px) rotateX(-13deg);
-  background-color: $font-color;
+  background-color: $font-color-regular;
 
   &.INACTIVE {
-    background-color: $font-color;
+    background-color: $font-color-regular;
   }
 
   &.ACTIVE {
@@ -171,7 +171,7 @@
 .empty {
   svg path {
     fill: transparent;
-    stroke: $font-color;
+    stroke: $font-color-regular;
     stroke-dasharray: 5 5;
     stroke-width: 1px;
     transition: stroke ease 0.3s;

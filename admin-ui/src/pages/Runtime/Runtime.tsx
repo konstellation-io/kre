@@ -29,6 +29,7 @@ function Runtime() {
     GetRuntimeAndVersionsResponse,
     GetRuntimeAndVersionsVars
   >(GET_RUNTIME_AND_VERSIONS, {
+    fetchPolicy: 'cache-and-network',
     variables: { runtimeId }
   });
 

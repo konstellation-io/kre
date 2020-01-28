@@ -23,7 +23,9 @@ function VersionListItem({
       <div className={styles.name}>
         <div className={cx(styles.circle, styles[version.status])}></div>
         <div>{version.name}</div>
-        {selected && <IconArrowForward className="icon-regular" />}
+        <div className={styles.arrow}>
+          <IconArrowForward className="icon-regular" />
+        </div>
       </div>
       <div>
         <div className={styles.desc}>{version.description}</div>

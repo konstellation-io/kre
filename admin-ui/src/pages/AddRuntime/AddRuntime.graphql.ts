@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { Runtime } from '../../graphql/models';
 
 export interface AddRuntimeResponse {
-  addRuntime: {
+  createRuntime: {
     errors?: string[];
     runtime: Runtime;
   };
@@ -22,7 +22,17 @@ export const ADD_RUNTIME = gql`
         message
       }
       runtime {
+        id
         name
+        status
+        creationDate
+        creationAuthor {
+          id
+          email
+        }
+        activeVersion {
+          status
+        }
       }
     }
   }
