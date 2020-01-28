@@ -12,6 +12,8 @@ nats_streaming:
 mongo:
   replicas: 3
   replicaSetName: rs0
+  image:
+    tag: 4.2
   securityContext:
     enabled: false
   persistentVolume:

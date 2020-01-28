@@ -7,6 +7,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase/logging"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -83,6 +84,8 @@ func (m *LogStreamService) Disconnect() {
 
 // Node Logs
 func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<- *entity.NodeLog) {
+	const QueryLimit = 100
+
 	pipeline := mongo.Pipeline{
 		bson.D{
 			{"$match", bson.D{
@@ -102,7 +105,63 @@ func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, log
 		defer m.Disconnect()
 
 		collection := m.client.Database(m.cfg.MongoDB.DBName).Collection("logs")
-		stream, err := collection.Watch(ctx, pipeline, options.ChangeStream().SetFullDocument(options.UpdateLookup))
+
+		query := bson.D{
+			{"node-id", nodeId},
+		}
+
+		queryLimit := new(int64)
+		*queryLimit = QueryLimit
+
+		queryOptions := &options.FindOptions{
+			Limit: queryLimit,
+		}
+
+		cur, err := collection.Find(ctx, query, queryOptions)
+		if err != nil {
+			m.logger.Error(err.Error())
+			cancel()
+			return
+		}
+
+		var results []bson.M
+		if err = cur.All(ctx, &results); err != nil {
+			m.logger.Error(err.Error())
+			cancel()
+			return
+		}
+
+		operationTime := uint32(time.Now().Unix())
+		if len(results) != 0 {
+			queryId, ok := results[len(results)-1]["_id"].(primitive.ObjectID)
+			if !ok {
+				m.logger.Error("MongoId to ObjectID conversion error")
+				cancel()
+				return
+			}
+
+			operationTime = uint32(queryId.Timestamp().Unix())
+
+			for _, result := range results {
+				logsCh <- &entity.NodeLog{
+					Date:      getValueOrDefault(result, "time", ""),
+					Message:   getValueOrDefault(result, "log", ""),
+					Type:      getValueOrDefault(result, "type", "APP"),
+					VersionId: getValueOrDefault(result, "version-name", ""),
+					NodeId:    getValueOrDefault(result, "node-id", ""),
+					PodId:     getValueOrDefault(result, "pod-id", ""),
+					Level:     getValueOrDefault(result, "level", "INFO"),
+				}
+			}
+		}
+
+		opts := options.ChangeStream()
+		opts.SetFullDocument(options.UpdateLookup)
+		opts.SetStartAtOperationTime(&primitive.Timestamp{
+			T: operationTime,
+			I: 0,
+		})
+		stream, err := collection.Watch(ctx, pipeline, opts)
 		if err != nil {
 			m.logger.Error(err.Error())
 			stream.Close(ctx)
@@ -119,14 +178,18 @@ func (m *LogStreamService) WatchNodeLogs(ctx context.Context, nodeId string, log
 				cancel()
 				return
 			}
-			m.logger.Info("--- msg ----")
 
 			if e := stream.Decode(&changeDoc); e != nil {
 				m.logger.Info(fmt.Sprintf("error decoding: %s", e))
 				continue
 			}
 
-			doc := changeDoc["fullDocument"].(bson.M)
+			doc, ok := changeDoc["fullDocument"].(bson.M)
+			if !ok {
+				m.logger.Error("Conversion error")
+				cancel()
+				return
+			}
 
 			logsCh <- &entity.NodeLog{
 				Date:      getValueOrDefault(doc, "time", ""),
