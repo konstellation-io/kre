@@ -3,6 +3,7 @@
 
 text {
   @include font-caption;
+  color: $font-color-light;
 }
 
 .cellText {

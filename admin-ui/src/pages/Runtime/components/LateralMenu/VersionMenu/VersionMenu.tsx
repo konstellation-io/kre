@@ -74,9 +74,8 @@ function createNavTabs(runtimeId: string, versionId: string): NavBarTab[] {
     },
     {
       label: 'METRICS',
-      route: ROUTE.HOME,
-      Icon: MetricsIcon,
-      disabled: true
+      route: ROUTE.RUNTIME_VERSION_METRICS,
+      Icon: MetricsIcon
     },
     // {
     //   label: 'DOCUMENTATION',
