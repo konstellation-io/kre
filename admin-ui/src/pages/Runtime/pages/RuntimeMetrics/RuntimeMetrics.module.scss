@@ -1,0 +1,121 @@
+@import '../../../../styles/colors';
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 700px;
+  overflow: auto;
+  padding: 23px 0 10px 36px;
+}
+
+.content {
+  position: relative;
+  padding: 10px;
+  flex-grow: 1;
+}
+
+.wrapper {
+  height: 100%;
+
+  &.expanded {
+    .row,
+    .col {
+      transition: max-height ease 0.4s, min-height ease 0.4s, height ease 0.4s,
+        width ease 0.4s, max-width ease 0.4s, min-width ease 0.4s,
+        padding ease 0.4s;
+    }
+    .separatorCol,
+    .separatorRow {
+      transition: height ease 0.4s, width ease 0.4s;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  }
+}
+
+.row,
+.col {
+  position: relative;
+  max-width: initial;
+  max-height: initial;
+  min-width: initial;
+  min-height: initial;
+  height: initial;
+  min-height: 160px;
+  min-width: 160px;
+}
+
+.row {
+  &.minimize {
+    min-height: 0 !important;
+    max-height: 0 !important;
+  }
+  &.maximize {
+    max-height: none !important;
+    min-height: none !important;
+    height: 100% !important;
+    padding-bottom: 25px;
+  }
+}
+.col {
+  &.minimize {
+    max-width: 0 !important;
+    min-width: 0 !important;
+  }
+  &.maximize {
+    max-width: none !important;
+    min-width: none !important;
+    width: 100% !important;
+  }
+}
+.minimize section div {
+  display: none;
+}
+.maximize section div {
+  display: flex;
+}
+
+.separator {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    transition: background-color ease 0.3s;
+  }
+
+  &:hover::after {
+    background-color: $color-blue;
+  }
+}
+
+.separatorCol {
+  @extend .separator;
+
+  cursor: col-resize;
+  width: 25px;
+
+  &::after {
+    height: 100%;
+    width: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+.separatorRow {
+  @extend .separator;
+
+  cursor: row-resize;
+  height: 25px;
+
+  &::after {
+    height: 1px;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

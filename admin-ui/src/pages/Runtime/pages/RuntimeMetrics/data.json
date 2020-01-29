@@ -1,0 +1,179 @@
+{
+  "general": {
+    "accuracy": {
+      "total": 70,
+      "micro": 30,
+      "macro": 45,
+      "weighted": 45
+    },
+    "null": 30,
+    "labels": 45,
+    "stdev": 45
+  },
+  "confusionMatrix": [
+    { "x": "Repair Completed", "y": "Repair Completed", "value": 95 },
+    { "x": "Repair Completed", "y": "Request Completed", "value": 56 },
+    { "x": "Repair Completed", "y": "Disconnect Service", "value": 37 },
+    { "x": "Repair Completed", "y": "Confirmed Issue Resolved", "value": 37 },
+    { "x": "Repair Completed", "y": "Others", "value": 10 },
+    {
+      "x": "Repair Completed",
+      "y": "Plan of Feature Change Completed",
+      "value": 10
+    },
+    { "x": "Repair Completed", "y": "Resolved By Customer", "value": 10 },
+
+    { "x": "Request Completed", "y": "Repair Completed", "value": 56 },
+    { "x": "Request Completed", "y": "Request Completed", "value": 91 },
+    { "x": "Request Completed", "y": "Disconnect Service", "value": 37 },
+    { "x": "Request Completed", "y": "Confirmed Issue Resolved", "value": 37 },
+    { "x": "Request Completed", "y": "Others", "value": 10 },
+    {
+      "x": "Request Completed",
+      "y": "Plan of Feature Change Completed",
+      "value": 10
+    },
+    { "x": "Request Completed", "y": "Resolved By Customer", "value": 10 },
+
+    { "x": "Disconnect Service", "y": "Repair Completed", "value": 37 },
+    { "x": "Disconnect Service", "y": "Request Completed", "value": 56 },
+    { "x": "Disconnect Service", "y": "Disconnect Service", "value": 88 },
+    { "x": "Disconnect Service", "y": "Confirmed Issue Resolved", "value": 37 },
+    { "x": "Disconnect Service", "y": "Others", "value": 37 },
+    {
+      "x": "Disconnect Service",
+      "y": "Plan of Feature Change Completed",
+      "value": 10
+    },
+    { "x": "Disconnect Service", "y": "Resolved By Customer", "value": 10 },
+
+    { "x": "Confirmed Issue Resolved", "y": "Repair Completed", "value": 37 },
+    { "x": "Confirmed Issue Resolved", "y": "Request Completed", "value": 37 },
+    { "x": "Confirmed Issue Resolved", "y": "Disconnect Service", "value": 42 },
+    {
+      "x": "Confirmed Issue Resolved",
+      "y": "Confirmed Issue Resolved",
+      "value": 78
+    },
+    { "x": "Confirmed Issue Resolved", "y": "Others", "value": 37 },
+    {
+      "x": "Confirmed Issue Resolved",
+      "y": "Plan of Feature Change Completed",
+      "value": 10
+    },
+    {
+      "x": "Confirmed Issue Resolved",
+      "y": "Resolved By Customer",
+      "value": 10
+    },
+
+    { "x": "Others", "y": "Repair Completed", "value": 10 },
+    { "x": "Others", "y": "Request Completed", "value": 37 },
+    { "x": "Others", "y": "Disconnect Service", "value": 37 },
+    { "x": "Others", "y": "Confirmed Issue Resolved", "value": 42 },
+    { "x": "Others", "y": "Others", "value": 78 },
+    { "x": "Others", "y": "Plan of Feature Change Completed", "value": 42 },
+    { "x": "Others", "y": "Resolved By Customer", "value": 42 },
+
+    {
+      "x": "Plan of Feature Change Completed",
+      "y": "Repair Completed",
+      "value": 10
+    },
+    {
+      "x": "Plan of Feature Change Completed",
+      "y": "Request Completed",
+      "value": 10
+    },
+    {
+      "x": "Plan of Feature Change Completed",
+      "y": "Disconnect Service",
+      "value": 37
+    },
+    {
+      "x": "Plan of Feature Change Completed",
+      "y": "Confirmed Issue Resolved",
+      "value": 37
+    },
+    { "x": "Plan of Feature Change Completed", "y": "Others", "value": 42 },
+    {
+      "x": "Plan of Feature Change Completed",
+      "y": "Plan of Feature Change Completed",
+      "value": 76
+    },
+    {
+      "x": "Plan of Feature Change Completed",
+      "y": "Resolved By Customer",
+      "value": 76
+    },
+
+    { "x": "Resolved By Customer", "y": "Repair Completed", "value": 10 },
+    { "x": "Resolved By Customer", "y": "Request Completed", "value": 10 },
+    { "x": "Resolved By Customer", "y": "Disconnect Service", "value": 10 },
+    {
+      "x": "Resolved By Customer",
+      "y": "Confirmed Issue Resolved",
+      "value": 37
+    },
+    { "x": "Resolved By Customer", "y": "Others", "value": 42 },
+    {
+      "x": "Resolved By Customer",
+      "y": "Plan of Feature Change Completed",
+      "value": 42
+    },
+    { "x": "Resolved By Customer", "y": "Resolved By Customer", "value": 74 }
+  ],
+  "series": [
+    {
+      "title": "Accuracy",
+      "data": [
+        { "y": "Repair Completed", "x": 40 },
+        { "y": "Request Completed", "x": 45 },
+        { "y": "Disconnect Service", "x": 52 },
+        { "y": "Confirmed Issue Resolved", "x": 32 },
+        { "y": "Others", "x": 60 },
+        { "y": "Plan of Feature Change Completed", "x": 72 },
+        { "y": "Resolved By Customer", "x": 50 }
+      ]
+    },
+    {
+      "title": "Recall",
+      "data": [
+        { "y": "Repair Completed", "x": 80 },
+        { "y": "Request Completed", "x": 25 },
+        { "y": "Disconnect Service", "x": 12 },
+        { "y": "Confirmed Issue Resolved", "x": 62 },
+        { "y": "Others", "x": 70 },
+        { "y": "Plan of Feature Change Completed", "x": 72 },
+        { "y": "Resolved By Customer", "x": 30 }
+      ]
+    },
+    {
+      "title": "Support",
+      "data": [
+        { "y": "Repair Completed", "x": 20 },
+        { "y": "Request Completed", "x": 25 },
+        { "y": "Disconnect Service", "x": 12 },
+        { "y": "Confirmed Issue Resolved", "x": 22 },
+        { "y": "Others", "x": 50 },
+        { "y": "Plan of Feature Change Completed", "x": 50 },
+        { "y": "Resolved By Customer", "x": 10 }
+      ]
+    }
+  ],
+  "successVsFails": [
+    { "x": "0:00", "y": 40 },
+    { "x": "2:00", "y": 18 },
+    { "x": "4:00", "y": 5 },
+    { "x": "6:00", "y": 4 },
+    { "x": "8:00", "y": 12 },
+    { "x": "10:00", "y": 56 },
+    { "x": "12:00", "y": 60 },
+    { "x": "14:00", "y": 62 },
+    { "x": "16:00", "y": 45 },
+    { "x": "18:00", "y": 87 },
+    { "x": "20:00", "y": 72 },
+    { "x": "22:00", "y": 60 },
+    { "x": "24:00", "y": 55 }
+  ]
+}

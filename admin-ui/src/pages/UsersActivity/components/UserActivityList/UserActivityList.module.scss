@@ -28,6 +28,7 @@
 }
 
 .message {
+  color: $font-color-light;
   margin: 5px 0 0 25px;
   padding-right: 45px;
 
@@ -42,7 +43,7 @@
 }
 
 .comment {
-  color: $font-color-dark;
+  color: $font-color-regular;
 
   margin: 5px 0 0 25px;
   padding-right: 45px;

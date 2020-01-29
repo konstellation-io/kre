@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import useChart from '../../hooks/useChart';
 import ReactDOMServer from 'react-dom/server';
 import VersionNode, { TYPES } from '../Shape/Node/Node';
 
@@ -73,8 +74,7 @@ function VersionStatusViewer({
   onNodeClick
 }: Props) {
   const [shouldComponentUpdate, setShouldComponentUpdate] = useState(false);
-  const container = useRef(null);
-  const svg = useRef(null);
+  const { svg, chart } = useChart({ width, height, initialize });
 
   const nodeIdToIndex: any = {};
   let g: any;
@@ -109,8 +109,6 @@ function VersionStatusViewer({
   const xDomainIndexes = range(maxNodesInRow).map(n => n.toString());
 
   useEffect(() => {
-    cleanup();
-    initialize();
     setShouldComponentUpdate(true);
   }, [width, height]);
 
@@ -119,12 +117,6 @@ function VersionStatusViewer({
       updateChart();
     }
   }, [data]);
-
-  function cleanup() {
-    select(svg.current)
-      .selectAll('*')
-      .remove();
-  }
 
   function buildNodeIdToIndex() {
     data.forEach((workflow: Workflow) =>
@@ -489,11 +481,7 @@ function VersionStatusViewer({
     }
   };
 
-  return (
-    <div className={styles.container} ref={container}>
-      <svg width={width} height={height} ref={svg} className={styles.wrapper} />
-    </div>
-  );
+  return chart;
 }
 
 export default VersionStatusViewer;

@@ -5,6 +5,7 @@ import { buildRoute } from '../../utils/routes';
 
 import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
 import RuntimeConfiguration from './pages/RuntimeConfiguration/RuntimeConfiguration';
+import RuntimeMetrics from './pages/RuntimeMetrics/RuntimeMetrics';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Header from '../../components/Header/Header';
@@ -83,6 +84,17 @@ function Runtime() {
               path={ROUTE.RUNTIME_VERSION_CONFIGURATION}
               render={props => (
                 <RuntimeConfiguration {...props} refetchVersion={refetch} />
+              )}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_VERSION_METRICS}
+              render={props => (
+                <RuntimeMetrics
+                  {...props}
+                  runtime={runtime}
+                  version={version}
+                />
               )}
             />
           </Switch>

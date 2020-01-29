@@ -10,7 +10,7 @@ import { DateRangePicker } from 'react-dates';
 
 type Props = {
   label?: string;
-  error?: string;
+  error?: string | boolean;
   formFromDate?: Moment | null;
   formToDate?: Moment | null;
   onChangeFromDate?: Function;
@@ -73,7 +73,7 @@ function Calendar({
         isOutsideRange={day => !isInclusivelyBeforeDay(day, moment())}
         minimumNights={0}
       />
-      <InputError message={error} />
+      {error !== false && <InputError message={error.toString()} />}
     </div>
   );
 }

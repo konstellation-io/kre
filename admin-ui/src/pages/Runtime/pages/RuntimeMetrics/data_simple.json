@@ -1,0 +1,78 @@
+{
+  "general": {
+    "accuracy": {
+      "total": 65,
+      "micro": 65,
+      "macro": 58,
+      "weighted": 64
+    },
+    "null": 5,
+    "labels": 4,
+    "stdev": 4
+  },
+  "confusionMatrix": [
+    { "x": "low", "y": "low", "value": 86 },
+    { "x": "low", "y": "mid", "value": 25 },
+    { "x": "low", "y": "high", "value": 8 },
+    { "x": "low", "y": "lux", "value": 8 },
+
+    { "x": "mid", "y": "low", "value": 13 },
+    { "x": "mid", "y": "mid", "value": 65 },
+    { "x": "mid", "y": "high", "value": 5 },
+    { "x": "mid", "y": "lux", "value": 3 },
+
+    { "x": "high", "y": "low", "value": 1 },
+    { "x": "high", "y": "mid", "value": 9 },
+    { "x": "high", "y": "high", "value": 3 },
+    { "x": "high", "y": "lux", "value": 49 },
+
+    { "x": "lux", "y": "low", "value": 0 },
+    { "x": "lux", "y": "mid", "value": 0 },
+    { "x": "lux", "y": "high", "value": 2 },
+    { "x": "lux", "y": "lux", "value": 14 }
+  ],
+  "series": [
+    {
+      "title": "Accuracy",
+      "data": [
+        { "y": "low", "x": 78 },
+        { "y": "mid", "x": 56 },
+        { "y": "high", "x": 53 },
+        { "y": "lux", "x": 45 }
+      ]
+    },
+    {
+      "title": "Recall",
+      "data": [
+        { "y": "low", "x": 86 },
+        { "y": "mid", "x": 65 },
+        { "y": "high", "x": 30 },
+        { "y": "lux", "x": 14 }
+      ]
+    },
+    {
+      "title": "Support",
+      "data": [
+        { "y": "low", "x": 3081 },
+        { "y": "mid", "x": 2629 },
+        { "y": "high", "x": 1486 },
+        { "y": "lux", "x": 233 }
+      ]
+    }
+  ],
+  "successVsFails": [
+    { "x": "0:00", "y": 40 },
+    { "x": "2:00", "y": 18 },
+    { "x": "4:00", "y": 5 },
+    { "x": "6:00", "y": 4 },
+    { "x": "8:00", "y": 12 },
+    { "x": "10:00", "y": 56 },
+    { "x": "12:00", "y": 60 },
+    { "x": "14:00", "y": 62 },
+    { "x": "16:00", "y": 45 },
+    { "x": "18:00", "y": 87 },
+    { "x": "20:00", "y": 72 },
+    { "x": "22:00", "y": 60 },
+    { "x": "24:00", "y": 55 }
+  ]
+}

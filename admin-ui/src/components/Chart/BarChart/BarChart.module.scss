@@ -1,0 +1,34 @@
+@import '../../../styles/colors';
+
+.bar {
+  pointer-events: none;
+  fill: $color-dashboard-blue;
+}
+
+.bgBar {
+  fill: $color-orange;
+}
+
+.g {
+  rect {
+    transition: fill-opacity ease 0.4s;
+  }
+
+  g.legend {
+    text {
+      fill: $font-color-light;
+      dominant-baseline: central;
+    }
+
+    rect {
+      rx: 10px;
+    }
+
+    & > g:nth-child(1) > rect {
+      fill: $color-dashboard-blue;
+    }
+    & > g:nth-child(2) > rect {
+      fill: $color-orange;
+    }
+  }
+}
