@@ -14,7 +14,7 @@
 .container {
   @include font-body;
 
-  height: 57px;
+  height: $height-log-item;
   background-color: $bg-color;
 
   &.opened {
@@ -46,7 +46,7 @@
   }
 
   div:not(:first-child) {
-    margin-left: 20px;
+    margin-left: 8px;
   }
 }
 
@@ -88,7 +88,7 @@
 .expand {
   height: $height-log-item;
   width: $height-log-item;
-  line-height: 63px;
+  line-height: 41px;
   text-align: center;
 
   transform: rotateX(0);
