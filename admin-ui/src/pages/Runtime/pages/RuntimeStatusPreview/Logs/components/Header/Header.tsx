@@ -1,7 +1,7 @@
 import React from 'react';
 
 import IconClose from '@material-ui/icons/Close';
-import IconGoBottom from '@material-ui/icons/VerticalAlignBottom';
+import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
 
 import cx from 'classnames';
 import styles from './Header.module.scss';
@@ -11,8 +11,17 @@ type Props = {
   versionName: string;
   closeLogs: () => void;
   opened: boolean;
+  stickToBottom: boolean;
+  toggleStickToBottom: () => void;
 };
-function Header({ runtimeName, versionName, closeLogs, opened }: Props) {
+function Header({
+  runtimeName,
+  versionName,
+  closeLogs,
+  opened,
+  stickToBottom,
+  toggleStickToBottom
+}: Props) {
   function scrollToBottom() {
     const listContainer = document.getElementById('VersionLogsListContainer');
     if (listContainer) {
@@ -33,8 +42,11 @@ function Header({ runtimeName, versionName, closeLogs, opened }: Props) {
           [styles.opened]: opened
         })}
       >
-        <div onClick={scrollToBottom}>
-          <IconGoBottom className="icon-regular" />
+        <div
+          className={cx(styles.stickBottom, { [styles.active]: stickToBottom })}
+          onClick={toggleStickToBottom}
+        >
+          <IconStickBottom className="icon-regular" />
         </div>
         <div onClick={closeLogs}>
           <IconClose className="icon-regular" />

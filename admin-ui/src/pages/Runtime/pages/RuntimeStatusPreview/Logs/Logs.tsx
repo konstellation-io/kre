@@ -15,6 +15,7 @@ type Props = {
 };
 function Logs({ nodeId, runtimeName, versionName, setSelectedNode }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
+  const [stickToBottom, setStickToBottom] = useState<boolean>(false);
 
   useEffect(() => {
     setOpened(nodeId !== undefined);
@@ -22,6 +23,30 @@ function Logs({ nodeId, runtimeName, versionName, setSelectedNode }: Props) {
 
   function closeLogs() {
     setSelectedNode(undefined);
+  }
+
+  function scrollToBottom() {
+    const listContainer = document.getElementById('VersionLogsListContainer');
+    if (listContainer) {
+      listContainer.scrollTo({
+        top: listContainer.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  function toggleStickToBottom() {
+    if (!stickToBottom) {
+      scrollToBottom();
+    }
+
+    setStickToBottom(!stickToBottom);
+  }
+
+  function onLogsUpdate() {
+    if (stickToBottom) {
+      scrollToBottom();
+    }
   }
 
   return (
@@ -32,12 +57,14 @@ function Logs({ nodeId, runtimeName, versionName, setSelectedNode }: Props) {
           versionName={versionName}
           closeLogs={closeLogs}
           opened={opened}
+          stickToBottom={stickToBottom}
+          toggleStickToBottom={toggleStickToBottom}
         />
         <div className={styles.content}>
           {nodeId && (
             <>
               <Filters filters={{ node_id: nodeId }} />
-              <LogsList nodeId={nodeId} />
+              <LogsList nodeId={nodeId} onUpdate={onLogsUpdate} />
             </>
           )}
         </div>
