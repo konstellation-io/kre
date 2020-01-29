@@ -1205,21 +1205,12 @@ enum UserActivityType {
 
 type NodeLog {
   date: String!
-  type: LogType!
+  type: String!
   versionId: ID!
   nodeId: ID!
   podId: ID!
   message: String!
-  level: LogLevel!
-}
-
-enum LogType {
-  SYSTEM
-  LEVEL
-}
-
-enum LogLevel {
-  INFO
+  level: String!
 }
 `},
 )
@@ -2625,10 +2616,10 @@ func (ec *executionContext) _NodeLog_type(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(LogType)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogType(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _NodeLog_versionId(ctx context.Context, field graphql.CollectedField, obj *NodeLog) (ret graphql.Marshaler) {
@@ -2810,10 +2801,10 @@ func (ec *executionContext) _NodeLog_level(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(LogLevel)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_me(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7515,24 +7506,6 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, v interface{}) (LogLevel, error) {
-	var res LogLevel
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalNLogLevel2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, sel ast.SelectionSet, v LogLevel) graphql.Marshaler {
-	return v
-}
-
-func (ec *executionContext) unmarshalNLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogType(ctx context.Context, v interface{}) (LogType, error) {
-	var res LogType
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalNLogType2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogType(ctx context.Context, sel ast.SelectionSet, v LogType) graphql.Marshaler {
-	return v
 }
 
 func (ec *executionContext) marshalNNode2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐNode(ctx context.Context, sel ast.SelectionSet, v Node) graphql.Marshaler {

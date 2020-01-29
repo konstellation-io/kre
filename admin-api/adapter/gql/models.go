@@ -65,13 +65,13 @@ type Node struct {
 }
 
 type NodeLog struct {
-	Date      string   `json:"date"`
-	Type      LogType  `json:"type"`
-	VersionID string   `json:"versionId"`
-	NodeID    string   `json:"nodeId"`
-	PodID     string   `json:"podId"`
-	Message   string   `json:"message"`
-	Level     LogLevel `json:"level"`
+	Date      string `json:"date"`
+	Type      string `json:"type"`
+	VersionID string `json:"versionId"`
+	NodeID    string `json:"nodeId"`
+	PodID     string `json:"podId"`
+	Message   string `json:"message"`
+	Level     string `json:"level"`
 }
 
 type PublishVersionInput struct {
@@ -289,86 +289,6 @@ func (e *ErrorCode) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ErrorCode) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-type LogLevel string
-
-const (
-	LogLevelInfo LogLevel = "INFO"
-)
-
-var AllLogLevel = []LogLevel{
-	LogLevelInfo,
-}
-
-func (e LogLevel) IsValid() bool {
-	switch e {
-	case LogLevelInfo:
-		return true
-	}
-	return false
-}
-
-func (e LogLevel) String() string {
-	return string(e)
-}
-
-func (e *LogLevel) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = LogLevel(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid LogLevel", str)
-	}
-	return nil
-}
-
-func (e LogLevel) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-type LogType string
-
-const (
-	LogTypeSystem LogType = "SYSTEM"
-	LogTypeLevel  LogType = "LEVEL"
-)
-
-var AllLogType = []LogType{
-	LogTypeSystem,
-	LogTypeLevel,
-}
-
-func (e LogType) IsValid() bool {
-	switch e {
-	case LogTypeSystem, LogTypeLevel:
-		return true
-	}
-	return false
-}
-
-func (e LogType) String() string {
-	return string(e)
-}
-
-func (e *LogType) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = LogType(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid LogType", str)
-	}
-	return nil
-}
-
-func (e LogType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

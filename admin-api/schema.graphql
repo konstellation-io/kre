@@ -231,19 +231,10 @@ enum UserActivityType {
 
 type NodeLog {
   date: String!
-  type: LogType!
+  type: String!
   versionId: ID!
   nodeId: ID!
   podId: ID!
   message: String!
-  level: LogLevel!
-}
-
-enum LogType {
-  SYSTEM
-  LEVEL
-}
-
-enum LogLevel {
-  INFO
+  level: String!
 }
