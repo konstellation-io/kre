@@ -14,7 +14,11 @@ import dataComplete from './data_complete.json';
 import cx from 'classnames';
 import styles from './RuntimeMetrics.module.scss';
 
-function RuntimeMetrics() {
+type Props = {
+  runtime: any;
+  version: any;
+};
+function RuntimeMetrics({ runtime, version }: Props) {
   const separatorRowProps = { className: styles.separatorRow };
 
   const [expanded, setExpanded] = useState<string>('');
@@ -59,7 +63,7 @@ function RuntimeMetrics() {
 
   return (
     <div className={styles.container}>
-      <DashboardTitle runtimeName={'Runtime X'} versionName={'V1.0.2'} />
+      <DashboardTitle runtimeName={runtime.name} versionName={version.name} />
       <div className={styles.content}>
         <div
           className={cx(styles.wrapper, {

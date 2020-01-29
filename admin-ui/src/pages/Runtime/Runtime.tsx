@@ -89,7 +89,13 @@ function Runtime() {
             <Route
               exact
               path={ROUTE.RUNTIME_VERSION_METRICS}
-              component={RuntimeMetrics}
+              render={props => (
+                <RuntimeMetrics
+                  {...props}
+                  runtime={runtime}
+                  version={version}
+                />
+              )}
             />
           </Switch>
         </div>
