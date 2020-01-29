@@ -1,9 +1,9 @@
 import React from 'react';
 import Button from '../../../components/Button/Button';
-import DeployIcon from '@material-ui/icons/SkipNext';
+import StartIcon from '@material-ui/icons/SkipNext';
 import StopIcon from '@material-ui/icons/PauseCircleFilled';
-import ActivateIcon from '@material-ui/icons/PlayCircleFilledOutlined';
-import DeactivateIcon from '@material-ui/icons/Block';
+import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
+import UnpublishIcon from '@material-ui/icons/Block';
 import { VersionStatus } from '../../../graphql/models';
 
 function generateActionButton(label: string, icon: any, action: Function) {
@@ -19,44 +19,44 @@ function generateActionButton(label: string, icon: any, action: Function) {
 }
 
 function getStateToButtons(
-  activateAction: Function,
-  deployAction: Function,
+  publishAction: Function,
+  startAction: Function,
   stopAction: Function,
-  deactivateAction: Function
+  unpublishAction: Function
 ) {
-  const buttonDeploy = generateActionButton('DEPLOY', DeployIcon, deployAction);
+  const buttonStart = generateActionButton('START', StartIcon, startAction);
   const buttonStop = generateActionButton('STOP', StopIcon, stopAction);
-  const buttonActivate = generateActionButton(
-    'ACTIVATE',
-    ActivateIcon,
-    activateAction
+  const buttonPublish = generateActionButton(
+    'PUBLISH',
+    PublishIcon,
+    publishAction
   );
-  const buttonDeactivate = generateActionButton(
-    'DEACTIVATE',
-    DeactivateIcon,
-    deactivateAction
+  const buttonUnpublish = generateActionButton(
+    'UNPUBLISH',
+    UnpublishIcon,
+    unpublishAction
   );
 
   return {
-    [VersionStatus.STOPPED]: [buttonDeploy],
-    [VersionStatus.ACTIVE]: [buttonDeactivate],
-    [VersionStatus.RUNNING]: [buttonActivate, buttonStop],
-    [VersionStatus.CREATED]: [buttonDeploy]
+    [VersionStatus.STOPPED]: [buttonStart],
+    [VersionStatus.PUBLISHED]: [buttonUnpublish],
+    [VersionStatus.STARTED]: [buttonPublish, buttonStop],
+    [VersionStatus.STOPPED]: [buttonStart]
   };
 }
 
 export function getVersionActionButtons(
-  activateAction: Function,
-  deployAction: Function,
+  publishAction: Function,
+  startAction: Function,
   stopAction: Function,
-  deactivateAction: Function,
+  unpublishAction: Function,
   status?: string
 ) {
   const stateToButtons: { [key: string]: any } = getStateToButtons(
-    activateAction,
-    deployAction,
+    publishAction,
+    startAction,
     stopAction,
-    deactivateAction
+    unpublishAction
   );
 
   return stateToButtons[status || ''];

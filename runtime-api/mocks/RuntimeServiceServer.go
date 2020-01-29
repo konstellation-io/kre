@@ -11,21 +11,21 @@ type RuntimeServiceServer struct {
 	mock.Mock
 }
 
-// ActivateVersion provides a mock function with given fields: _a0, _a1
-func (_m *RuntimeServiceServer) ActivateVersion(_a0 context.Context, _a1 *runtimepb.ActivateVersionRequest) (*runtimepb.ActivateVersionResponse, error) {
+// PublishVersion provides a mock function with given fields: _a0, _a1
+func (_m *RuntimeServiceServer) PublishVersion(_a0 context.Context, _a1 *runtimepb.PublishVersionRequest) (*runtimepb.PublishVersionResponse, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *runtimepb.ActivateVersionResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.ActivateVersionRequest) *runtimepb.ActivateVersionResponse); ok {
+	var r0 *runtimepb.PublishVersionResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.PublishVersionRequest) *runtimepb.PublishVersionResponse); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*runtimepb.ActivateVersionResponse)
+			r0 = ret.Get(0).(*runtimepb.PublishVersionResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.ActivateVersionRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.PublishVersionRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -34,44 +34,21 @@ func (_m *RuntimeServiceServer) ActivateVersion(_a0 context.Context, _a1 *runtim
 	return r0, r1
 }
 
-// DeactivateVersion provides a mock function with given fields: _a0, _a1
-func (_m *RuntimeServiceServer) DeactivateVersion(_a0 context.Context, _a1 *runtimepb.DeactivateVersionRequest) (*runtimepb.DeactivateVersionResponse, error) {
+// StartVersion provides a mock function with given fields: _a0, _a1
+func (_m *RuntimeServiceServer) StartVersion(_a0 context.Context, _a1 *runtimepb.StartVersionRequest) (*runtimepb.StartVersionResponse, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *runtimepb.DeactivateVersionResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.DeactivateVersionRequest) *runtimepb.DeactivateVersionResponse); ok {
+	var r0 *runtimepb.StartVersionResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.StartVersionRequest) *runtimepb.StartVersionResponse); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*runtimepb.DeactivateVersionResponse)
+			r0 = ret.Get(0).(*runtimepb.StartVersionResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.DeactivateVersionRequest) error); ok {
-		r1 = rf(_a0, _a1)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// DeployVersion provides a mock function with given fields: _a0, _a1
-func (_m *RuntimeServiceServer) DeployVersion(_a0 context.Context, _a1 *runtimepb.DeployVersionRequest) (*runtimepb.DeployVersionResponse, error) {
-	ret := _m.Called(_a0, _a1)
-
-	var r0 *runtimepb.DeployVersionResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.DeployVersionRequest) *runtimepb.DeployVersionResponse); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*runtimepb.DeployVersionResponse)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.DeployVersionRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.StartVersionRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -95,6 +72,29 @@ func (_m *RuntimeServiceServer) StopVersion(_a0 context.Context, _a1 *runtimepb.
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.StopVersionRequest) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UnpublishVersion provides a mock function with given fields: _a0, _a1
+func (_m *RuntimeServiceServer) UnpublishVersion(_a0 context.Context, _a1 *runtimepb.UnpublishVersionRequest) (*runtimepb.UnpublishVersionResponse, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 *runtimepb.UnpublishVersionResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.UnpublishVersionRequest) *runtimepb.UnpublishVersionResponse); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*runtimepb.UnpublishVersionResponse)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.UnpublishVersionRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -132,6 +132,20 @@ func (_m *RuntimeServiceServer) WatchNodeLogs(_a0 *runtimepb.WatchNodeLogsReques
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(*runtimepb.WatchNodeLogsRequest, runtimepb.RuntimeService_WatchNodeLogsServer) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// WatchVersionStatus provides a mock function with given fields: _a0, _a1
+func (_m *RuntimeServiceServer) WatchVersionStatus(_a0 *runtimepb.WatchVersionRequest, _a1 runtimepb.RuntimeService_WatchVersionStatusServer) error {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*runtimepb.WatchVersionRequest, runtimepb.RuntimeService_WatchVersionStatusServer) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)

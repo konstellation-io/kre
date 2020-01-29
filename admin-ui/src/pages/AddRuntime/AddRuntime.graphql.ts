@@ -30,7 +30,7 @@ export const ADD_RUNTIME = gql`
           id
           email
         }
-        activeVersion {
+        publishedVersion {
           status
         }
       }

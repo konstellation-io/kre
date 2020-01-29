@@ -42,10 +42,12 @@
   &.STOPPED {
     background-color: $font-color-regular;
   }
-  &.ACTIVE {
+
+  &.PUBLISHED {
     background-color: $color-green;
   }
-  &.RUNNING {
+
+  &.STARTED {
     background-color: $color-blue;
   }
 }

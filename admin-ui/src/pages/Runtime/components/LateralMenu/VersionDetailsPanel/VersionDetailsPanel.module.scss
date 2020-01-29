@@ -61,14 +61,15 @@
     background-color: $color-green;
     flex-shrink: 0;
 
-    &.CREATED,
     &.STOPPED {
       background-color: $font-color-regular;
     }
-    &.ACTIVE {
+
+    &.PUBLISHED {
       background-color: $color-green;
     }
-    &.RUNNING {
+
+    &.STARTED {
       background-color: $color-blue;
     }
   }
@@ -76,14 +77,15 @@
     @include font-button;
     color: $bg-color;
 
-    &.CREATED,
     &.STOPPED {
       color: $font-color-regular;
     }
-    &.ACTIVE {
+
+    &.PUBLISHED {
       color: $color-green;
     }
-    &.RUNNING {
+
+    &.STARTED {
       color: $color-blue;
     }
   }

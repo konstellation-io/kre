@@ -35,7 +35,7 @@ func (r *VersionRepoMongoDB) Create(userID string, newVersion *entity.Version) (
 	newVersion.ID = primitive.NewObjectID().Hex()
 	newVersion.CreationDate = time.Now().UTC()
 	newVersion.CreationAuthor = userID
-	newVersion.Status = string(usecase.VersionStatusCreated)
+	newVersion.Status = string(usecase.VersionStatusStopped)
 	res, err := r.collection.InsertOne(context.Background(), newVersion)
 	if err != nil {
 		return nil, err

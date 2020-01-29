@@ -20,12 +20,7 @@ import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
 import { GET_DASHBOARD, GetDashboardResponse } from './Dashboard.graphql';
-import {
-  Alert,
-  Runtime,
-  VersionEnvStatus,
-  RuntimeStatus
-} from '../../graphql/models';
+import { Alert, Runtime, RuntimeStatus, VersionEnvStatus } from '../../graphql/models';
 import { ApolloError } from 'apollo-client';
 
 const disabledRuntimeStatus = [RuntimeStatus.CREATING];
@@ -38,11 +33,11 @@ type Props = {
 };
 
 // TODO: Add ERROR state
-// For now this label will only show ACTIVE for active versions and INACTIVE otherwise
+// For now this label will only show PUBLISHED for published versions and STARTED otherwise
 function getVersionStatus(runtime: Runtime) {
-  return runtime.activeVersion
-    ? VersionEnvStatus.ACTIVE
-    : VersionEnvStatus.INACTIVE;
+  return runtime.publishedVersion
+    ? VersionEnvStatus.PUBLISHED
+    : VersionEnvStatus.STARTED;
 }
 
 function getDashboardContent({ data, error, loading, history }: Props) {

@@ -51,7 +51,6 @@ type Version struct {
 	Entrypoint Entrypoint
 	Config     []*Config
 	Workflows  []Workflow
-	Status     string
 }
 
 type NodeLog struct {

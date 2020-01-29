@@ -28,8 +28,8 @@ export const GET_RUNTIME_AND_VERSIONS = gql`
         id
         email
       }
-      activationDate
-      activationAuthor {
+      publicationDate
+      publicationAuthor {
         id
         email
       }

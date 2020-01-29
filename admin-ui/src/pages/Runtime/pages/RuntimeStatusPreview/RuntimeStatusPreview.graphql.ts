@@ -1,16 +1,16 @@
 import gql from 'graphql-tag';
 import { Version } from '../../../../graphql/models';
 
-export interface ActivateVersionResponse {
-  activateVersion: Version;
+export interface PublishVersionResponse {
+  publishVersion: Version;
 }
 
-export interface DeactivateVersionResponse {
-  deactivateVersion: Version;
+export interface UnpublishVersionResponse {
+  unpublishVersion: Version;
 }
 
-export interface DeployVersionResponse {
-  deployVersion: Version;
+export interface StartVersionResponse {
+  startVersion: Version;
 }
 
 export interface StopVersionResponse {
@@ -23,27 +23,27 @@ export interface VersionActionVars {
   };
 }
 
-export const ACTIVATE_VERSION = gql`
-  mutation ActivateVersion($input: ActivateVersionInput!) {
-    activateVersion(input: $input) {
+export const PUBLISH_VERSION = gql`
+  mutation PublishVersion($input: PublishVersionInput!) {
+    publishVersion(input: $input) {
       id
       status
     }
   }
 `;
 
-export const DEACTIVATE_VERSION = gql`
-  mutation DeactivateVersion($input: DeactivateVersionInput!) {
-    deactivateVersion(input: $input) {
+export const UNPUBLISH_VERSION = gql`
+  mutation UnpublishVersion($input: UnpublishVersionInput!) {
+    unpublishVersion(input: $input) {
       id
       status
     }
   }
 `;
 
-export const DEPLOY_VERSION = gql`
-  mutation DeployVersion($input: DeployVersionInput!) {
-    deployVersion(input: $input) {
+export const START_VERSION = gql`
+  mutation StartVersion($input: StartVersionInput!) {
+    startVersion(input: $input) {
       id
       status
     }

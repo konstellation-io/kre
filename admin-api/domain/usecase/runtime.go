@@ -18,8 +18,8 @@ type RuntimeStatus string
 var (
 	// RuntimeStatusCreating status
 	RuntimeStatusCreating RuntimeStatus = "CREATING"
-	// RuntimeStatusRunning status
-	RuntimeStatusRunning RuntimeStatus = "RUNNING"
+	// RuntimeStatusStarted status
+	RuntimeStatusStarted RuntimeStatus = "STARTED"
 	// RuntimeStatusError status
 	RuntimeStatusError RuntimeStatus = "ERROR"
 	// ErrRuntimeNotFound error
@@ -50,7 +50,7 @@ func NewRuntimeInteractor(
 }
 
 // CreateRuntime adds a new Runtime
-func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRuntime *entity.Runtime, onRuntimeRunningChannel chan *entity.Runtime, err error) {
+func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
 	runtime := &entity.Runtime{
 		Name:  name,
 		Owner: userID,
@@ -93,7 +93,7 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 		return
 	}
 
-	onRuntimeRunningChannel = make(chan *entity.Runtime, 1)
+	onRuntimeStartedChannel = make(chan *entity.Runtime, 1)
 
 	go func() {
 		err := i.k8sManagerService.CheckRuntimeIsCreated(name)
@@ -104,7 +104,7 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 			createdRuntime.Status = string(RuntimeStatusError)
 			i.logger.Error(err.Error())
 		} else {
-			createdRuntime.Status = string(RuntimeStatusRunning)
+			createdRuntime.Status = string(RuntimeStatusStarted)
 		}
 
 		i.logger.Info("Set runtime status to " + createdRuntime.Status)
@@ -113,8 +113,8 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 			i.logger.Error(err.Error())
 		}
 
-		onRuntimeRunningChannel <- createdRuntime
-		close(onRuntimeRunningChannel)
+		onRuntimeStartedChannel <- createdRuntime
+		close(onRuntimeStartedChannel)
 	}()
 
 	return

@@ -20,11 +20,11 @@
     color: $font-color-dark;
   }
 
-  &.ACTIVE {
+  &.STARTED {
     background-color: $color-green;
   }
 
-  &.RUNNING {
+  &.STARTING {
     background-color: $color-blue;
   }
 

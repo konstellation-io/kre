@@ -15,9 +15,11 @@
   &.CREATING {
     background-color: $font-color-regular;
   }
-  &.RUNNING {
+
+  &.STARTED {
     background-color: $color-blue;
   }
+
   &.ERROR {
     background-color: $color-red;
   }

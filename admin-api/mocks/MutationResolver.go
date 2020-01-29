@@ -11,29 +11,6 @@ type MutationResolver struct {
 	mock.Mock
 }
 
-// ActivateVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) ActivateVersion(ctx context.Context, input gql.ActivateVersionInput) (*gql.Version, error) {
-	ret := _m.Called(ctx, input)
-
-	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.ActivateVersionInput) *gql.Version); ok {
-		r0 = rf(ctx, input)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Version)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, gql.ActivateVersionInput) error); ok {
-		r1 = rf(ctx, input)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // CreateRuntime provides a mock function with given fields: ctx, input
 func (_m *MutationResolver) CreateRuntime(ctx context.Context, input gql.CreateRuntimeInput) (*gql.CreateRuntimeResponse, error) {
 	ret := _m.Called(ctx, input)
@@ -80,12 +57,12 @@ func (_m *MutationResolver) CreateVersion(ctx context.Context, input gql.CreateV
 	return r0, r1
 }
 
-// DeactivateVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) DeactivateVersion(ctx context.Context, input gql.DeactivateVersionInput) (*gql.Version, error) {
+// PublishVersion provides a mock function with given fields: ctx, input
+func (_m *MutationResolver) PublishVersion(ctx context.Context, input gql.PublishVersionInput) (*gql.Version, error) {
 	ret := _m.Called(ctx, input)
 
 	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.DeactivateVersionInput) *gql.Version); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, gql.PublishVersionInput) *gql.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
@@ -94,7 +71,7 @@ func (_m *MutationResolver) DeactivateVersion(ctx context.Context, input gql.Dea
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, gql.DeactivateVersionInput) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, gql.PublishVersionInput) error); ok {
 		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
@@ -103,12 +80,12 @@ func (_m *MutationResolver) DeactivateVersion(ctx context.Context, input gql.Dea
 	return r0, r1
 }
 
-// DeployVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) DeployVersion(ctx context.Context, input gql.DeployVersionInput) (*gql.Version, error) {
+// StartVersion provides a mock function with given fields: ctx, input
+func (_m *MutationResolver) StartVersion(ctx context.Context, input gql.StartVersionInput) (*gql.Version, error) {
 	ret := _m.Called(ctx, input)
 
 	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.DeployVersionInput) *gql.Version); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, gql.StartVersionInput) *gql.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
@@ -117,7 +94,7 @@ func (_m *MutationResolver) DeployVersion(ctx context.Context, input gql.DeployV
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, gql.DeployVersionInput) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, gql.StartVersionInput) error); ok {
 		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
@@ -141,6 +118,29 @@ func (_m *MutationResolver) StopVersion(ctx context.Context, input gql.StopVersi
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, gql.StopVersionInput) error); ok {
+		r1 = rf(ctx, input)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UnpublishVersion provides a mock function with given fields: ctx, input
+func (_m *MutationResolver) UnpublishVersion(ctx context.Context, input gql.UnpublishVersionInput) (*gql.Version, error) {
+	ret := _m.Called(ctx, input)
+
+	var r0 *gql.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.UnpublishVersionInput) *gql.Version); ok {
+		r0 = rf(ctx, input)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*gql.Version)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, gql.UnpublishVersionInput) error); ok {
 		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)

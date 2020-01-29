@@ -12,8 +12,8 @@ type RuntimeServiceClient struct {
 	mock.Mock
 }
 
-// ActivateVersion provides a mock function with given fields: ctx, in, opts
-func (_m *RuntimeServiceClient) ActivateVersion(ctx context.Context, in *runtimepb.ActivateVersionRequest, opts ...grpc.CallOption) (*runtimepb.ActivateVersionResponse, error) {
+// PublishVersion provides a mock function with given fields: ctx, in, opts
+func (_m *RuntimeServiceClient) PublishVersion(ctx context.Context, in *runtimepb.PublishVersionRequest, opts ...grpc.CallOption) (*runtimepb.PublishVersionResponse, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -23,17 +23,17 @@ func (_m *RuntimeServiceClient) ActivateVersion(ctx context.Context, in *runtime
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *runtimepb.ActivateVersionResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.ActivateVersionRequest, ...grpc.CallOption) *runtimepb.ActivateVersionResponse); ok {
+	var r0 *runtimepb.PublishVersionResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.PublishVersionRequest, ...grpc.CallOption) *runtimepb.PublishVersionResponse); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*runtimepb.ActivateVersionResponse)
+			r0 = ret.Get(0).(*runtimepb.PublishVersionResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.ActivateVersionRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.PublishVersionRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -42,8 +42,8 @@ func (_m *RuntimeServiceClient) ActivateVersion(ctx context.Context, in *runtime
 	return r0, r1
 }
 
-// DeactivateVersion provides a mock function with given fields: ctx, in, opts
-func (_m *RuntimeServiceClient) DeactivateVersion(ctx context.Context, in *runtimepb.DeactivateVersionRequest, opts ...grpc.CallOption) (*runtimepb.DeactivateVersionResponse, error) {
+// StartVersion provides a mock function with given fields: ctx, in, opts
+func (_m *RuntimeServiceClient) StartVersion(ctx context.Context, in *runtimepb.StartVersionRequest, opts ...grpc.CallOption) (*runtimepb.StartVersionResponse, error) {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -53,47 +53,17 @@ func (_m *RuntimeServiceClient) DeactivateVersion(ctx context.Context, in *runti
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *runtimepb.DeactivateVersionResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.DeactivateVersionRequest, ...grpc.CallOption) *runtimepb.DeactivateVersionResponse); ok {
+	var r0 *runtimepb.StartVersionResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.StartVersionRequest, ...grpc.CallOption) *runtimepb.StartVersionResponse); ok {
 		r0 = rf(ctx, in, opts...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*runtimepb.DeactivateVersionResponse)
+			r0 = ret.Get(0).(*runtimepb.StartVersionResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.DeactivateVersionRequest, ...grpc.CallOption) error); ok {
-		r1 = rf(ctx, in, opts...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// DeployVersion provides a mock function with given fields: ctx, in, opts
-func (_m *RuntimeServiceClient) DeployVersion(ctx context.Context, in *runtimepb.DeployVersionRequest, opts ...grpc.CallOption) (*runtimepb.DeployVersionResponse, error) {
-	_va := make([]interface{}, len(opts))
-	for _i := range opts {
-		_va[_i] = opts[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, in)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
-
-	var r0 *runtimepb.DeployVersionResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.DeployVersionRequest, ...grpc.CallOption) *runtimepb.DeployVersionResponse); ok {
-		r0 = rf(ctx, in, opts...)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*runtimepb.DeployVersionResponse)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.DeployVersionRequest, ...grpc.CallOption) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.StartVersionRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -124,6 +94,36 @@ func (_m *RuntimeServiceClient) StopVersion(ctx context.Context, in *runtimepb.S
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.StopVersionRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UnpublishVersion provides a mock function with given fields: ctx, in, opts
+func (_m *RuntimeServiceClient) UnpublishVersion(ctx context.Context, in *runtimepb.UnpublishVersionRequest, opts ...grpc.CallOption) (*runtimepb.UnpublishVersionResponse, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *runtimepb.UnpublishVersionResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.UnpublishVersionRequest, ...grpc.CallOption) *runtimepb.UnpublishVersionResponse); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*runtimepb.UnpublishVersionResponse)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.UnpublishVersionRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)
@@ -184,6 +184,36 @@ func (_m *RuntimeServiceClient) WatchNodeLogs(ctx context.Context, in *runtimepb
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.WatchNodeLogsRequest, ...grpc.CallOption) error); ok {
+		r1 = rf(ctx, in, opts...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// WatchVersionStatus provides a mock function with given fields: ctx, in, opts
+func (_m *RuntimeServiceClient) WatchVersionStatus(ctx context.Context, in *runtimepb.WatchVersionRequest, opts ...grpc.CallOption) (runtimepb.RuntimeService_WatchVersionStatusClient, error) {
+	_va := make([]interface{}, len(opts))
+	for _i := range opts {
+		_va[_i] = opts[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, in)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 runtimepb.RuntimeService_WatchVersionStatusClient
+	if rf, ok := ret.Get(0).(func(context.Context, *runtimepb.WatchVersionRequest, ...grpc.CallOption) runtimepb.RuntimeService_WatchVersionStatusClient); ok {
+		r0 = rf(ctx, in, opts...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(runtimepb.RuntimeService_WatchVersionStatusClient)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *runtimepb.WatchVersionRequest, ...grpc.CallOption) error); ok {
 		r1 = rf(ctx, in, opts...)
 	} else {
 		r1 = ret.Error(1)

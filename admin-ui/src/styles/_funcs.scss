@@ -3,14 +3,12 @@
 @function get-color-prop($status) {
   $color: red;
 
-  @if $status == 'ACTIVE' {
+  @if $status == 'PUBLISHED' {
     $color: $color-green;
-  } @else if $status == 'RUNNING' {
+  } @else if $status == 'STARTED' {
     $color: $color-blue;
   } @else if $status == 'STOPPED' {
     $color: $color-orange;
-  } @else if $status == 'CREATED' {
-    $color: $color-grey;
   }
 
   @return $color;

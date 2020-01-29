@@ -13,7 +13,7 @@ export const GET_DASHBOARD = gql`
       name
       status
       creationDate
-      activeVersion {
+      publishedVersion {
         status
       }
     }

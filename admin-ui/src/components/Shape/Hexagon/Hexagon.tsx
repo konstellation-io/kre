@@ -4,7 +4,7 @@ import Lottie from '../../Lottie/Lottie';
 import { STATES } from '../../../constants/application';
 import animationData from './Hexagon.json';
 
-import { VersionEnvStatus, RuntimeStatus } from '../../../graphql/models';
+import { RuntimeStatus, VersionEnvStatus } from '../../../graphql/models';
 
 import styles from './Hexagon.module.scss';
 import cx from 'classnames';
@@ -12,8 +12,8 @@ import cx from 'classnames';
 const ANIM_SEGMENTS: { [key: string]: number[] } = {
   [STATES.DEFAULT]: [0, 178],
   [STATES.HOVER]: [180, 329],
-  [STATES.ACTIVE]: [330, 479],
-  [STATES.INACTIVE]: [480, 600]
+  [STATES.STARTED]: [330, 479],
+  [STATES.STOPPED]: [480, 600]
 };
 
 /**
@@ -45,7 +45,7 @@ type Props = {
 function Hexagon({
   id = '00000000',
   status = RuntimeStatus.UNKNOWN,
-  versionStatus = VersionEnvStatus.INACTIVE,
+  versionStatus = VersionEnvStatus.PUBLISHED,
   title = 'Default title',
   info = [],
   disabled = false,
@@ -53,14 +53,17 @@ function Hexagon({
   onClick = function() {}
 }: Props) {
   const defaultAnimation = disabled
-    ? ANIM_SEGMENTS.INACTIVE
+    ? ANIM_SEGMENTS.STARTED
     : ANIM_SEGMENTS.DEFAULT;
   const [segments, setSegments] = useState(defaultAnimation);
   const [hovered, setHovered] = useState(false);
 
+  console.log(title + ' status-> ', status);
+  console.log(title + ' versionStatus-> ', versionStatus);
+
   const onMouseDown = () => {
     if (!disabled) {
-      return setSegments(ANIM_SEGMENTS.ACTIVE);
+      return setSegments(ANIM_SEGMENTS.PUBLISHED);
     }
   };
 
@@ -91,7 +94,7 @@ function Hexagon({
   return (
     <div
       className={cx(styles.container, {
-        [styles.active]: segments === ANIM_SEGMENTS.ACTIVE,
+        [styles.active]: segments === ANIM_SEGMENTS.PUBLISHED,
         [styles.disabled]: disabled,
         [styles.hovered]: hovered
       })}
