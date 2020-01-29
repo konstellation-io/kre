@@ -2,7 +2,7 @@
 
 .bar {
   pointer-events: none;
-  fill: #007c99;
+  fill: $color-dashboard-blue;
 }
 
 .bgBar {
@@ -12,10 +12,6 @@
 .g {
   rect {
     transition: fill-opacity ease 0.4s;
-
-    &.unhighlighted {
-      fill-opacity: 0.7;
-    }
   }
 
   g.legend {
@@ -29,7 +25,7 @@
     }
 
     & > g:nth-child(1) > rect {
-      fill: #007c99;
+      fill: $color-dashboard-blue;
     }
     & > g:nth-child(2) > rect {
       fill: $color-orange;

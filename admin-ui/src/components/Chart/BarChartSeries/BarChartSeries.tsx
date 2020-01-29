@@ -5,6 +5,7 @@ import { getAxesMargins, getClassFromLabel } from '../../../utils/d3';
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
+import { max } from 'd3-array';
 
 import styles from './BarChartSeries.module.scss';
 
@@ -40,12 +41,12 @@ function BarChartSeries({ width, height, margin, data }: Props) {
 
   let g: any;
   let seriesScale: ScaleBand<string>;
-  let xScale: ScaleLinear<number, number>;
+  let xScale1: ScaleLinear<number, number>;
+  let xScale2: ScaleLinear<number, number>;
   let yScale: ScaleBand<string>;
-  let yScale1: ScaleBand<string>;
-  let yScale2: ScaleLinear<number, number>;
   let axes: any;
-  let xAxis: any;
+  let xAxis1: any;
+  let xAxis2: any;
   let yAxis: any;
   let yAxisG: any;
   let seriesG: any;
@@ -70,6 +71,10 @@ function BarChartSeries({ width, height, margin, data }: Props) {
 
     const seriesDomain: string[] = data.map((d: Serie) => d.title);
     const xDomain: [number, number] = [0, 100];
+    const xDomainSupport: [number, number] = [
+      0,
+      max(data[2].data, (d: D) => d.x) || 0
+    ];
     let yDomain = data.reduce(
       (a: string[], b: Serie) => a.concat(b.data.map((c: D) => c.y)),
       []
@@ -83,9 +88,12 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .paddingOuter(0.15)
       .domain(seriesDomain);
 
-    xScale = scaleLinear()
+    xScale1 = scaleLinear()
       .range([0, seriesScale.bandwidth()])
       .domain(xDomain);
+    xScale2 = scaleLinear()
+      .range([0, seriesScale.bandwidth()])
+      .domain(xDomainSupport);
 
     yScale = scaleBand()
       .range([innerHeight, 0])
@@ -93,21 +101,14 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .paddingInner(X_SCALE_PADDING_INNER)
       .paddingOuter(X_SCALE_PADDING_OUTER);
 
-    yScale1 = scaleBand()
-      .range([innerHeight, 0])
-      .domain(yDomain)
-      .paddingInner(X_SCALE_PADDING_INNER)
-      .paddingOuter(X_SCALE_PADDING_OUTER);
-
-    // yScale2 = scaleLinear()
-    //   .range([innerHeight, 0])
-    //   .domain([])
-
     // Initialize axes
     yAxis = axisLeft(yScale).tickSize(0);
-    xAxis = axisBottom(xScale)
+    xAxis1 = axisBottom(xScale1)
       .ticks(3)
       .tickFormat((text: number | { valueOf(): number }) => `${text}%`)
+      .tickPadding(PADDING_X_AXIS);
+    xAxis2 = axisBottom(xScale2)
+      .ticks(3)
       .tickPadding(PADDING_X_AXIS);
 
     axes = g.append('g').classed(styles.axes, true);
@@ -125,7 +126,8 @@ function BarChartSeries({ width, height, margin, data }: Props) {
     g.attr('transform', `translate(${marginLeft},${marginTop})`);
 
     seriesScale.range([0, innerWidth]);
-    xScale.range([0, seriesScale.bandwidth()]);
+    xScale1.range([0, seriesScale.bandwidth()]);
+    xScale2.range([0, seriesScale.bandwidth()]);
     yScale.range([0, innerHeight]);
 
     yAxis.scale(yScale);
@@ -135,7 +137,6 @@ function BarChartSeries({ width, height, margin, data }: Props) {
 
     // Remove unwanted axes lines
     yAxisG.select('.domain').remove();
-    // xAxisG.select('.domain').remove();
 
     // Initialize Series
     seriesG = g.append('g').classed(styles.series, true);
@@ -148,13 +149,20 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('transform', (d: Serie) => `translate(${seriesScale(d.title)}, 0)`);
 
     // Add X axis to series
-    xAxis.scale(xScale).tickSize(-innerHeight);
+    xAxis1.scale(xScale1).tickSize(-innerHeight);
+    xAxis2.scale(xScale2).tickSize(-innerHeight);
+
+    const percCharts = [data[0].title, data[1].title];
 
     series
       .append('g')
       .classed(styles.seriesAxis, true)
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(xAxis);
+      .each(function(d: Serie) {
+        const axis = percCharts.includes(d.title) ? xAxis1 : xAxis2;
+        // @ts-ignore
+        select(this).call(axis);
+      });
 
     series
       .append('text')
@@ -176,20 +184,6 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('x2', seriesScale.bandwidth())
       .attr('y2', innerHeight)
       .classed(styles.guideLine, true);
-    series
-      .append('line')
-      .attr('x1', seriesScale.bandwidth() * 0.25)
-      .attr('y1', 0)
-      .attr('x2', seriesScale.bandwidth() * 0.25)
-      .attr('y2', innerHeight)
-      .classed(styles.innerGuideLine, true);
-    series
-      .append('line')
-      .attr('x1', seriesScale.bandwidth() * 0.75)
-      .attr('y1', 0)
-      .attr('x2', seriesScale.bandwidth() * 0.75)
-      .attr('y2', innerHeight)
-      .classed(styles.innerGuideLine, true);
 
     // Initialize row bg
     const barPadding = yScale.step() * yScale.paddingInner();
@@ -233,13 +227,23 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('x', 0)
       .attr('y', (d: D) => yScale(d.y))
       .attr('height', barHeight)
-      .attr('width', (d: D) => xScale(d.x));
+      .attr('width', function(d: D) {
+        // @ts-ignore
+        const title = select(this.parentNode.parentNode).datum().title;
+        const xScale = percCharts.includes(title) ? xScale1 : xScale2;
+        return xScale(d.x);
+      });
     bars
       .append('text')
       .classed(styles.barValue, true)
       .attr('x', seriesScale.bandwidth() + 8)
       .attr('y', (d: D) => (yScale(d.y) || 0) + barHeight / 2)
-      .text((d: D) => `${d.x}%`);
+      .text(function(d: D) {
+        // @ts-ignore
+        const title = select(this.parentNode.parentNode).datum().title;
+        const usePerc = percCharts.includes(title);
+        return `${d.x}${usePerc ? '%' : ''}`;
+      });
   }
 
   const events = {

@@ -76,7 +76,7 @@ function GeneralInfo({ data }: Props) {
         <Section1 {...data.accuracy} />
         <Section2 value={`${data.null}%`} label="Null" />
         <Section2 value={`${data.labels}%`} label="New labels" />
-        <Section2 value={`${data.stdev}%`} label="Standard deviation" />
+        <Section2 value={data.stdev.toString()} label="Standard deviation" />
       </div>
     </Box>
   );

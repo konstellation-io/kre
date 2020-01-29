@@ -25,7 +25,7 @@ const LEGEND_MARGIN_PERC: number = 0.1;
 
 function getTooltipContent(d: D) {
   return (
-    <div>
+    <div className={styles.tooltipContent}>
       <div>{`${d.value}%`}</div>
       <div>{`${d.y} \\ ${d.x}`}</div>
     </div>

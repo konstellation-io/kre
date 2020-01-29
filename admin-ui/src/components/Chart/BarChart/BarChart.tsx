@@ -11,6 +11,7 @@ import {
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
+import { color } from 'd3-color';
 
 import styles from './BarChart.module.scss';
 
@@ -205,13 +206,6 @@ function BarChart({ width, height, margin, data }: Props) {
 
   const events = {
     barHighlight: function(d: D, node: any, enter: boolean): void {
-      g.selectAll('rect').classed(styles.unhighlighted, enter);
-
-      g.selectAll(`.${getClassFromLabel(d.x)}`).classed(
-        styles.unhighlighted,
-        false
-      );
-
       if (enter) {
         const barWidth: number = xScale.bandwidth();
         const content = getTooltipContent(d);

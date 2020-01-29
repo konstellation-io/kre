@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Col, ColsWrapper, Row, RowsWrapper } from 'react-grid-resizable';
+import { Row, RowsWrapper } from 'react-grid-resizable';
 import DashboardTitle from './components/DashboardTitle/DashboardTitle';
 
 import GeneralInfo from './boxes/GeneralInfo/GeneralInfo';
@@ -8,16 +8,19 @@ import Accuracy from './boxes/Accuracy/Accuracy';
 import LabelStats from './boxes/LabelStats/LabelStats';
 import ConfusionMatrixBox from './boxes/ConfusionMatrixBox/ConfusionMatrixBox';
 
-import data from './data_complete.json';
+import dataSimple from './data_simple.json';
+import dataComplete from './data_complete.json';
 
 import cx from 'classnames';
 import styles from './RuntimeMetrics.module.scss';
 
 function RuntimeMetrics() {
-  const separatorColProps = { className: styles.separatorCol };
   const separatorRowProps = { className: styles.separatorRow };
 
   const [expanded, setExpanded] = useState<string>('');
+
+  // TODO: check version
+  const data = true ? dataSimple : dataComplete;
 
   function toggleExpanded(nodeId: string): void {
     if (expanded) {
@@ -48,8 +51,6 @@ function RuntimeMetrics() {
   const height = expanded ? window.innerHeight - 164 : '100%';
   const width = window.innerWidth - 310;
 
-  // const confusionMatrixHeight = width / 2;
-  // const SeriesHeight = width / 4;
   const SuccessFailsHeight = width / 4;
 
   const nLabels = Math.sqrt(data.confusionMatrix.length);
@@ -58,7 +59,7 @@ function RuntimeMetrics() {
 
   return (
     <div className={styles.container}>
-      <DashboardTitle runtimeName={'Runtime X'} versionName={' V1.0.2'} />
+      <DashboardTitle runtimeName={'Runtime X'} versionName={'V1.0.2'} />
       <div className={styles.content}>
         <div
           className={cx(styles.wrapper, {
