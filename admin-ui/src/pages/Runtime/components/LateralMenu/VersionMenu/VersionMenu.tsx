@@ -1,13 +1,9 @@
 import React from 'react';
 import NavBar, {
-  Tab as NavBarTab
+  Tab as NavBarTab,
+  ItemSize
 } from '../../../../../components/NavBar/NavBar';
 import * as ROUTE from '../../../../../constants/routes';
-
-import StatusIcon from '@material-ui/icons/DeviceHub';
-import MetricsIcon from '@material-ui/icons/ShowChart';
-// import DocumentationIcon from '@material-ui/icons/Toc';
-import ConfigIcon from '@material-ui/icons/Settings';
 import styles from './VersionMenu.module.scss';
 import { Version, Runtime } from '../../../../../graphql/models';
 
@@ -32,7 +28,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
 
   return (
     <div className={styles.wrapper}>
-      <NavBar tabs={navTabs} />
+      <NavBar tabs={navTabs} itemSize={ItemSize.SMALL} showItemArrows={true} />
     </div>
   );
 }
@@ -69,24 +65,15 @@ function createNavTabs(runtimeId: string, versionId: string): NavBarTab[] {
     {
       label: 'STATUS',
       route: ROUTE.RUNTIME_VERSION_STATUS,
-      Icon: StatusIcon,
       exact: false
     },
     {
       label: 'METRICS',
-      route: ROUTE.RUNTIME_VERSION_METRICS,
-      Icon: MetricsIcon
+      route: ROUTE.RUNTIME_VERSION_METRICS
     },
-    // {
-    //   label: 'DOCUMENTATION',
-    //   route: ROUTE.HOME,
-    //   Icon: DocumentationIcon,
-    //   disabled: true
-    // },
     {
       label: 'CONFIGURATION',
-      route: ROUTE.RUNTIME_VERSION_CONFIGURATION,
-      Icon: ConfigIcon
+      route: ROUTE.RUNTIME_VERSION_CONFIGURATION
     }
   ];
 

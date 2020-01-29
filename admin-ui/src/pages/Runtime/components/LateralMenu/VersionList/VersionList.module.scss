@@ -9,15 +9,23 @@
   flex-direction: column;
 }
 
-.label {
-  font-weight: bold;
-  font-size: 11px;
-  color: $font-color-white;
-  background-color: #212428;
-  padding: 18px;
-}
-
 .items {
   flex-grow: 1;
   overflow-y: auto;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #212428;
+
+  font-weight: 600;
+  color: $font-color-light;
+  padding: 0 16px;
+  font-size: 11px;
+
+  a {
+    margin-left: auto;
+  }
 }
