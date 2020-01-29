@@ -7,6 +7,7 @@ import configureStore from './store';
 import App from './App';
 import { ApolloProvider } from '@apollo/react-hooks';
 import './styles/app.global.scss';
+import './styles/d3.scss';
 
 import * as ROUTE from './constants/routes';
 import history from './history';

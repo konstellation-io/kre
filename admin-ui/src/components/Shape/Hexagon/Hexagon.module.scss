@@ -2,6 +2,8 @@
 @import '../../../styles/mixins';
 
 .container {
+  color: $font-color-light;
+
   overflow: visible;
   pointer-events: none;
 }

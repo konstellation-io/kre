@@ -50,6 +50,7 @@
 
 .edgeLine {
   transition: stroke-dasharray 0.3s ease, stroke-width 0.3s ease;
+  fill: transparent;
 }
 
 .lineContainer {

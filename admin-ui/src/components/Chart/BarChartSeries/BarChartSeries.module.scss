@@ -1,0 +1,93 @@
+@import '../../../styles/colors';
+
+.g {
+  text,
+  path,
+  line,
+  rect {
+    pointer-events: none;
+  }
+
+  .yAxis text {
+    transition: fill ease 0.5s;
+
+    &.highlighted {
+      fill: $font-color-white;
+    }
+  }
+
+  .guideLine {
+    stroke: $color-dashboard-guide-line;
+    stroke-width: 2px;
+  }
+  .innerGuideLine {
+    stroke: $color-dashboard-blue;
+    stroke-dasharray: 3 3;
+    stroke-opacity: 0.33;
+  }
+
+  .seriesAxis {
+    > path {
+      display: none;
+    }
+
+    & > g:nth-child(2) > line {
+      display: none;
+    }
+    line {
+      @extend .innerGuideLine;
+    }
+  }
+
+  .seriesLabel {
+    fill: $font-color-white;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .rowBg {
+    pointer-events: all;
+  }
+
+  .bar {
+    fill: $color-dashboard-blue;
+    transition: fill ease 0.4s;
+
+    &.unhighlighted {
+      fill: $color-dashboard-blue-dark;
+    }
+    &.highlighted {
+      fill: $color-button-blue;
+    }
+  }
+
+  .bgBar {
+    fill: $color-orange;
+  }
+
+  .barValue {
+    dominant-baseline: central;
+    fill: $color-blue;
+    font-weight: 600;
+    fill-opacity: 0;
+    transition: fill-opacity ease 0.4s;
+
+    &.highlighted {
+      fill-opacity: 1;
+    }
+  }
+
+  .bars,
+  .bar,
+  .series,
+  .serieG,
+  .serie,
+  .seriesAxis,
+  .rowBgG,
+  .rowBg,
+  .axes,
+  .xAxis,
+  .yAxis {
+    display: inherit;
+  }
+}

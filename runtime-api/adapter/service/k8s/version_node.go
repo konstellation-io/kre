@@ -103,6 +103,13 @@ func (k *ResourceManagerService) createNodeDeployment(namespace string, version 
 										},
 									},
 								},
+								{
+									ConfigMapRef: &apiv1.ConfigMapEnvSource{
+										LocalObjectReference: apiv1.LocalObjectReference{
+											Name: fmt.Sprintf("%s-global", strcase.ToKebab(version.Name)),
+										},
+									},
+								},
 							},
 							VolumeMounts: []apiv1.VolumeMount{
 								{

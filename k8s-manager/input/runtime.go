@@ -15,7 +15,7 @@ type MinioConfig struct {
 
 // MongoConfig contains credentials configuration for the MongoDB for a given runtime
 type MongoConfig struct {
-	Username string
-	Password string
+	Username  string
+	Password  string
 	SharedKey string
 }
