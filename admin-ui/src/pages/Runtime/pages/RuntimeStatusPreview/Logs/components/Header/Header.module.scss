@@ -51,10 +51,15 @@
   }
 }
 
-.stickBottom.active {
-  color: $font-color-white;
+.stickBottom {
+  transition: color ease 0.4s, background-color ease 0.4s;
 
-  &:hover {
-    color: $font-color-light;
+  &.active {
+    color: $font-color-white;
+    background-color: $bg-color-lighter;
+
+    &:hover {
+      color: $font-color-light;
+    }
   }
 }
