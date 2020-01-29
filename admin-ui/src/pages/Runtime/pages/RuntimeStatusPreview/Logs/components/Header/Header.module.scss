@@ -50,3 +50,11 @@
     }
   }
 }
+
+.stickBottom.active {
+  color: $font-color-white;
+
+  &:hover {
+    color: $font-color-light;
+  }
+}

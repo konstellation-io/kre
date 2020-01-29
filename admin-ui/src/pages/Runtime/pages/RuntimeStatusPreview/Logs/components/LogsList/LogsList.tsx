@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useSubscription } from '@apollo/react-hooks';
 
@@ -13,8 +13,9 @@ import styles from './LogsList.module.scss';
 
 type Props = {
   nodeId?: string;
+  onUpdate: () => void;
 };
-function LogsList({ nodeId }: Props) {
+function LogsList({ nodeId, onUpdate }: Props) {
   const { runtimeId } = useParams();
   const [logs, setLogs] = useState<NodeLog[]>([]);
 
@@ -28,6 +29,10 @@ function LogsList({ nodeId }: Props) {
       addLog(logInfo);
     }
   });
+
+  useEffect(() => {
+    onUpdate();
+  }, [logs]);
 
   function addLog(item: NodeLog) {
     setLogs((logsCp: NodeLog[]) => logsCp.concat([item]));
