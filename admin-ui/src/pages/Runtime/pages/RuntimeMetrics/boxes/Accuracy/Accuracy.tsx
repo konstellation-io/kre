@@ -33,7 +33,7 @@ function Accuracy({ toggleExpanded, nodeId, data }: Props) {
           width={width}
           height={height}
           margin={{
-            top: height * 0.3,
+            top: 40,
             right: 14,
             bottom: 23,
             left: 14
