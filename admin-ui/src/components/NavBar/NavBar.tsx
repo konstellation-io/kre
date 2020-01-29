@@ -2,10 +2,16 @@ import { has } from 'lodash';
 
 import React from 'react';
 import IconWarning from '@material-ui/icons/Warning';
+import IconArrowForward from '@material-ui/icons/ArrowForward';
 import { NavLink } from 'react-router-dom';
 
 import styles from './NavBar.module.scss';
 import cx from 'classnames';
+
+export enum ItemSize {
+  SMALL = 'size_s',
+  MEDIUM = 'size_m'
+}
 
 export type Tab = {
   label: string;
@@ -19,9 +25,15 @@ export type Tab = {
 type Props = {
   tabs: Tab[];
   defaultActive?: number;
+  itemSize?: ItemSize;
+  showItemArrows?: boolean;
 };
 
-function NavBar({ tabs }: Props) {
+function NavBar({
+  tabs,
+  itemSize = ItemSize.MEDIUM,
+  showItemArrows = false
+}: Props) {
   function handleClick(event: any, disabled: boolean = false) {
     if (disabled) {
       event.preventDefault();
@@ -40,9 +52,20 @@ function NavBar({ tabs }: Props) {
         className={cx({ [styles.disabled]: tab.disabled })}
         replace
       >
-        <div className={cx(styles.item, { [styles.disabled]: tab.disabled })}>
-          <tab.Icon className="icon-regular" />
+        <div
+          className={cx(
+            styles.item,
+            { [styles.disabled]: tab.disabled },
+            styles[itemSize]
+          )}
+        >
+          {tab.Icon && <tab.Icon className="icon-regular" />}
           <span>{tab.label}</span>
+          {showItemArrows && (
+            <div className={styles.arrow}>
+              <IconArrowForward className="icon-regular" />
+            </div>
+          )}
           {tab.showWarning && (
             <div title={tab.warningTitle}>
               <IconWarning className={cx('icon-regular', styles.warning)} />

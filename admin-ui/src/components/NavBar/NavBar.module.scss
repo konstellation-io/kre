@@ -14,9 +14,7 @@
   color: $font-color-light;
   line-height: 10px;
 
-  height: 56px;
   position: relative;
-  padding: 0 28px;
   white-space: nowrap;
   cursor: pointer;
 
@@ -36,6 +34,29 @@
     pointer-events: none;
     color: $font-color-dark;
   }
+
+  &.size_s {
+    height: 32px;
+    padding: 0 16px;
+  }
+
+  &.size_m {
+    height: 56px;
+    padding: 0 28px;
+  }
+
+  &:hover {
+    .arrow {
+      opacity: 1;
+      margin-left: auto;
+    }
+  }
+
+  .arrow {
+    opacity: 0;
+    margin-left: auto;
+    transition: opacity ease 0.2s;
+  }
 }
 
 .active {
@@ -46,4 +67,9 @@
 .active .item {
   background-color: rgba(191, 207, 255, 0.15);
   color: white;
+
+  .arrow {
+    opacity: 1;
+    margin-left: auto;
+  }
 }

@@ -111,7 +111,7 @@ exports[`Renders Settings without crashing 1`] = `
             href="/settings/general"
           >
             <div
-              class="item"
+              class="item size_m"
             >
               <svg
                 aria-hidden="true"
@@ -134,7 +134,7 @@ exports[`Renders Settings without crashing 1`] = `
             href="/settings/security"
           >
             <div
-              class="item"
+              class="item size_m"
             >
               <svg
                 aria-hidden="true"

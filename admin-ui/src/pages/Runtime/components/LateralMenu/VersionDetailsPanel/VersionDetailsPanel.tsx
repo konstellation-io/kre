@@ -126,7 +126,7 @@ function VersionDetailsPanel({
           </div>
         </div>
       </div>
-      {isVersionPublished && (
+      {version.publicationAuthor && (
         <div className={styles.section}>
           <p className={styles.sectionLabel}>PUBLISHED BY</p>
           <div className={styles.authorDateContainer}>

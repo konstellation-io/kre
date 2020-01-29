@@ -10,6 +10,7 @@ import VersionDetailsPanel from './VersionDetailsPanel/VersionDetailsPanel';
 import VersionList from './VersionList/VersionList';
 import VersionMenu from './VersionMenu/VersionMenu';
 import cx from 'classnames';
+import Accordion from '../../../../components/Accordion/Accordion';
 
 type LateralMenuProps = {
   runtime: Runtime;
@@ -57,7 +58,10 @@ function LateralMenu({ runtime, version, versions }: LateralMenuProps) {
       </div>
       {versions.length === 0 && <NoVersionsPanel runtime={runtime} />}
       {version && (
-        <>
+        <Accordion
+          label={'VERSION OPENED'}
+          customStyles={{ height: 'fit-content' }}
+        >
           <div>
             <VersionListItem
               version={version}
@@ -66,15 +70,17 @@ function LateralMenu({ runtime, version, versions }: LateralMenuProps) {
             />
           </div>
           <VersionMenu runtime={runtime} version={version} />
-        </>
+        </Accordion>
       )}
       {filteredVersions.length > 0 && (
-        <VersionList
-          label={version ? 'OTHER VERSIONS' : 'ALL VERSIONS'}
-          versions={filteredVersions}
-          openedVersion={openedVersion}
-          setOpenedVersion={v => setOpenedVersion(v)}
-        />
+        <Accordion label={version ? 'OTHER VERSIONS' : 'ALL VERSIONS'}>
+          <VersionList
+            runtimeId={runtime.id}
+            versions={filteredVersions}
+            openedVersion={openedVersion}
+            setOpenedVersion={v => setOpenedVersion(v)}
+          />
+        </Accordion>
       )}
       <div
         className={cx(styles.lateralPanel, { [styles.opened]: openedVersion })}

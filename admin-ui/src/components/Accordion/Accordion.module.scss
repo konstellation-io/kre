@@ -1,0 +1,42 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  &.opened {
+    height: 100%;
+  }
+}
+
+.label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #e5ebf0;
+  background-color: #282d33;
+  height: 32px;
+  line-height: 32px;
+  cursor: pointer;
+
+  span {
+    flex-grow: 1;
+    padding-left: 10px;
+  }
+
+  .icon {
+    padding-left: 20px;
+  }
+
+  .arrow {
+    margin-right: auto;
+    padding-right: 20px;
+  }
+}
+
+.content {
+  height: 0;
+
+  &.opened {
+    height: 100%;
+  }
+}
