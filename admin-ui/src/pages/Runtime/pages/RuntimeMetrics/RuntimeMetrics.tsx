@@ -14,6 +14,24 @@ import dataComplete from './data_complete.json';
 import cx from 'classnames';
 import styles from './RuntimeMetrics.module.scss';
 
+const VERSION_SIMPLE = 'airbnb-v1';
+const VERSION_COMPLETE = 'airbnb-v2';
+
+function getData(versionName: string) {
+  let data;
+
+  switch (versionName) {
+    case VERSION_SIMPLE:
+      data = dataSimple;
+      break;
+    case VERSION_COMPLETE:
+    default:
+      data = dataComplete;
+  }
+
+  return data;
+}
+
 type Props = {
   runtime: any;
   version: any;
@@ -23,8 +41,7 @@ function RuntimeMetrics({ runtime, version }: Props) {
 
   const [expanded, setExpanded] = useState<string>('');
 
-  // TODO: check version
-  const data = true ? dataSimple : dataComplete;
+  const data = getData(version.name);
 
   function toggleExpanded(nodeId: string): void {
     if (expanded) {
