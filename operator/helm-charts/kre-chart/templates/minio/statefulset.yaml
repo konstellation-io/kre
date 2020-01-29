@@ -32,14 +32,14 @@ spec:
             httpGet:
               path: /minio/health/ready
               port: 9000
-            initialDelaySeconds: 60
-            periodSeconds: 20
+            initialDelaySeconds: 20
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /minio/health/live
               port: 9000
-            initialDelaySeconds: 60
-            periodSeconds: 20
+            initialDelaySeconds: 10
+            periodSeconds: 10
   volumeClaimTemplates:
     - metadata:
         name: kre-minio-pvc
