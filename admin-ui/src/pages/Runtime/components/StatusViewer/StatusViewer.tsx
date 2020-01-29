@@ -6,10 +6,17 @@ import { useParams } from 'react-router';
 
 import useRenderOnResize from '../../../../hooks/useRenderOnResize';
 import { TYPES } from '../../../../components/Shape/Node/Node';
-import { Node, NodeStatus, VersionNodeStatus, VersionStatus } from '../../../../graphql/models';
+import {
+  Node,
+  NodeStatus,
+  VersionNodeStatus,
+  VersionStatus
+} from '../../../../graphql/models';
 import { NODE_STATUS_UPDATE_SUBSCRIPTION } from './StatusViewer.graphql';
 
-import VersionStatusViewer, { Workflow } from '../../../../components/VersionStatusViewer/VersionStatusViewer';
+import VersionStatusViewer, {
+  Workflow
+} from '../../../../components/VersionStatusViewer/VersionStatusViewer';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 
 import styles from './StatusViewer.module.scss';
@@ -126,6 +133,7 @@ function StatusViewer({ data, status, onNodeClick }: any) {
         <SpinnerCircular />
       ) : (
         <VersionStatusViewer
+          key={`versionStatus_${versionId}`}
           width={width}
           height={height}
           margin={{

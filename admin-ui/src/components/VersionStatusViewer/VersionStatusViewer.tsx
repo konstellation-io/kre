@@ -86,7 +86,6 @@ function VersionStatusViewer({
   let edges: any;
   let newEdges: any;
   let edgesG: any;
-  let busG: any;
   let xScale: any;
   let fontSize: any;
   let nodeHeight: any;
@@ -210,9 +209,6 @@ function VersionStatusViewer({
     // Create edges
     setData.edges();
     create.edges();
-
-    // Create Data Bus
-    create.bus();
   }
 
   const setData = {
@@ -373,7 +369,7 @@ function VersionStatusViewer({
       newEdges = edges
         .enter()
         .append('g')
-        .attr('class', (d: Edge) => styles[d.status || NodeStatus.STARTED])
+        .attr('class', (d: Edge) => styles[NodeStatus.STOPPED])
         .classed(styles.edge, true);
       newEdges
         .append('path')
@@ -422,39 +418,6 @@ function VersionStatusViewer({
           // @ts-ignore
           events.edgeHighlight(this, false);
         });
-    },
-    bus: function() {
-      busG = g
-        .append('g')
-        .classed(styles.busG, true)
-        .attr('transform', `translate(0, ${80 + data.length * 100})`);
-
-      busG
-        .append('text')
-        .classed(styles.workflowTagText, true)
-        .attr('x', 20)
-        .attr('y', 0)
-        .attr('dy', 0)
-        .style('font-size', `${fontSize}px`)
-        .text('BUS')
-        .call(centerText, fontSize);
-      busG
-        .append('line')
-        .classed(styles.busLine, true)
-        .attr('x1', 30)
-        .attr('x2', width - margin.right - outerPadding)
-        .attr('y1', 0)
-        .attr('y2', 0)
-        .attr('stroke-width', STROKE_WIDTH);
-      busG
-        .append('path')
-        .classed(styles.busLineArrow, true)
-        .attr('d', 'M 0 0 m -7 -3 l +7 +3 l -7 3')
-        .attr(
-          'transform',
-          `translate(${width - margin.right - outerPadding}, 0)`
-        )
-        .attr('stroke-width', STROKE_WIDTH);
     }
   };
 
