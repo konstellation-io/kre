@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { buildRoute } from '../../../../../utils/routes';
 import EmailIcon from '@material-ui/icons/Email';
 import TimeIcon from '@material-ui/icons/AccessTime';
 import { Runtime, Version, VersionStatus } from '../../../../../graphql/models';
@@ -26,10 +27,16 @@ function VersionDetailsPanel({
 }: VersionDetailsPanelProps) {
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
-  const versionStatusUrl = PAGES.RUNTIME_VERSION_STATUS.replace(
-    ':runtimeId',
-    runtime.id
-  ).replace(':versionId', version.id);
+  const versionStatusUrl = buildRoute.version(
+    PAGES.RUNTIME_VERSION_STATUS,
+    runtime.id,
+    version.id
+  );
+  const versionConfUrl = buildRoute.version(
+    PAGES.RUNTIME_VERSION_CONFIGURATION,
+    runtime.id,
+    version.id
+  );
 
   const {
     publishVersion,
@@ -95,12 +102,26 @@ function VersionDetailsPanel({
         <div className={cx(styles.status, styles[version.status])}>
           {version.status}
         </div>
-        {version.configurationCompleted ? (
+        {version.configurationCompleted && (
           <div className={styles.actionButtons}>{actionButtons}</div>
-        ) : (
-          <div className={styles.versionConf}>Version not configured</div>
         )}
       </div>
+      {!version.configurationCompleted && (
+        <div className={styles.versionConf}>
+          <div className={styles.versionConfText}>
+            This version is not setted up.
+          </div>
+          <div className={styles.versionConfButton}>
+            <Button
+              label="SET UP NOW"
+              border
+              style={{ borderColor: '#ea4747' }}
+              height={32}
+              to={versionConfUrl}
+            />
+          </div>
+        </div>
+      )}
       <div className={styles.section}>
         <div className={styles.sectionLabel}>VERSION NAME</div>
         <div className={styles.versionName}>{version.name}</div>
