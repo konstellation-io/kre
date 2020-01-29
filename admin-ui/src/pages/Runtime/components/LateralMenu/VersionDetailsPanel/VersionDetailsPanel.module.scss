@@ -129,3 +129,17 @@
   margin: 0 8px 0 8px;
   color: $font-color-light;
 }
+
+.versionConf {
+  margin: 17px 24px;
+}
+
+.versionConfText {
+  @include font-small;
+  color: $color-red;
+}
+
+.versionConfButton {
+  width: 168px;
+  margin-top: 17px;
+}
