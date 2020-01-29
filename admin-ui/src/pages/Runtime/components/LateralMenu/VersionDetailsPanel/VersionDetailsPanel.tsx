@@ -131,16 +131,14 @@ function VersionDetailsPanel({
           <p className={styles.sectionLabel}>PUBLISHED BY</p>
           <div className={styles.authorDateContainer}>
             <div className={styles.col2CreatorName}>
-              <EmailIcon className="icon-small"/>
+              <EmailIcon className="icon-small" />
               <span className={styles.author}>
                 {version.publicationAuthor.email}
               </span>
             </div>
-            <div className={styles.date}>
-              <TimeIcon className="icon-small"/>
-              <span className={styles.activatedDate}>
-                {version.publicationDate}
-              </span>
+            <div className={styles.col2CreationDate}>
+              <TimeIcon className="icon-small" />
+              <span className={styles.date}>{version.publicationDate}</span>
             </div>
           </div>
         </div>

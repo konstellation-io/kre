@@ -195,7 +195,6 @@ enum VersionStatus {
   STARTING
   STARTED
   PUBLISHED
-  STOPPING
   STOPPED
 }
 

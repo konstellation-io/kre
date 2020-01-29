@@ -39,10 +39,10 @@ module.exports = {
   Runtime: () => ({
     id: parseInt(casual.array_of_digits(8).join('')),
     name: casual.name,
-    status: casual.random_element(['CREATING', 'RUNNING', 'ERROR']),
+    status: casual.random_element(['CREATING', 'STARTED', 'ERROR']),
     creationDate: casual.moment.toISOString(),
     versions: () => new MockList([1, 5]),
-    activeVersion: () => {
+    publishedVersion: () => {
       if (Math.random() > 0.5) {
         return {
           id: parseInt(casual.array_of_digits(8).join('')),
@@ -51,7 +51,7 @@ module.exports = {
             (to = 10)
           )}.${casual.integer((from = 1), (to = 10))}`,
           description: casual.sentence,
-          status: 'ACTIVE',
+          status: 'STARTED',
           creationDate: casual.moment.toISOString(),
           activationDate: casual.moment.toISOString()
         };
@@ -69,9 +69,14 @@ module.exports = {
       (to = 10)
     )}.${casual.integer((from = 1), (to = 10))}`,
     description: casual.sentence,
-    status: casual.random_element(['CREATED', 'ACTIVE', 'RUNNING', 'STOPPED']),
+    status: casual.random_element([
+      'STARTING',
+      'STARTED',
+      'PUBLISHED',
+      'STOPPED'
+    ]),
     creationDate: casual.moment.toISOString(),
-    activationDate: casual.moment.toISOString(),
+    publicationDate: casual.moment.toISOString(),
     configurationVariables: () => new MockList([2, 20]),
     configurationCompleted: true
   }),

@@ -56,16 +56,11 @@
   top: 43%;
   transform: translateX(-50%) perspective(47px) rotateX(13deg);
 
-  &.STARTED {
-    background-color: $color-green;
-  }
-
-  &.STARTING {
+  &.CREATING {
     background-color: $color-blue;
   }
-
-  &.WARNING {
-    background-color: $color-orange;
+  &.STARTED {
+    background-color: $color-green;
   }
   &.ERROR {
     background-color: $color-red;
@@ -79,8 +74,7 @@
   background-color: $font-color-regular;
 
   &.STARTED,
-  &.STOPPED,
-  {
+  &.STOPPED {
     background-color: $font-color-regular;
   }
 

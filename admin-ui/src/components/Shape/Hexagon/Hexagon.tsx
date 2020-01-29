@@ -43,21 +43,23 @@ type Props = {
 };
 
 function Hexagon({
-                   id = '00000000',
-                   status = RuntimeStatus.UNKNOWN,
-                   versionStatus = VersionEnvStatus.PUBLISHED,
-                   title = 'Default title',
-                   info = [],
-                   disabled = false,
-                   size = 360,
-                   onClick = function () {
-                   }
-                 }: Props) {
+  id = '00000000',
+  status = RuntimeStatus.UNKNOWN,
+  versionStatus = VersionEnvStatus.PUBLISHED,
+  title = 'Default title',
+  info = [],
+  disabled = false,
+  size = 360,
+  onClick = function() {}
+}: Props) {
   const defaultAnimation = disabled
     ? ANIM_SEGMENTS.STARTED
     : ANIM_SEGMENTS.DEFAULT;
   const [segments, setSegments] = useState(defaultAnimation);
   const [hovered, setHovered] = useState(false);
+
+  console.log(title + ' status-> ', status);
+  console.log(title + ' versionStatus-> ', versionStatus);
 
   const onMouseDown = () => {
     if (!disabled) {

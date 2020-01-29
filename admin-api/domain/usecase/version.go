@@ -5,7 +5,6 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"io"
 	"io/ioutil"
 	"os"
@@ -13,6 +12,8 @@ import (
 	"regexp"
 	"sort"
 	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/iancoleman/strcase"
 	"github.com/minio/minio-go/v6"
@@ -33,8 +34,6 @@ var (
 	VersionStatusStarted VersionStatus = "STARTED"
 	// VersionStatusPublished status
 	VersionStatusPublished VersionStatus = "PUBLISHED"
-	// VersionStatusStopping status
-	VersionStatusStopping VersionStatus = "STOPPING"
 	// VersionStatusStopped status
 	VersionStatusStopped VersionStatus = "STOPPED"
 	// ErrVersionNotFound error

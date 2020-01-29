@@ -1,6 +1,5 @@
 const casual = require('casual');
 
-
 function getOptions(User) {
   const UserActivityBase = {
     id: casual.id,
@@ -24,7 +23,7 @@ function getOptions(User) {
       type: 'CREATE_RUNTIME',
       vars: [
         { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
+        { key: 'RUNTIME_NAME', value: 'Runtime X' }
       ]
     },
     {
@@ -34,30 +33,34 @@ function getOptions(User) {
         { key: 'RUNTIME_ID', value: 'ID_001' },
         { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
-        { key: 'VERSION_NAME', value: 'Version Y' },
+        { key: 'VERSION_NAME', value: 'Version Y' }
       ]
     },
     {
       ...UserActivityBase,
-      type: 'ACTIVATE_VERSION',
+      type: 'PUBLISH_VERSION',
       vars: [
         { key: 'RUNTIME_ID', value: 'ID_001' },
         { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' },
-        { key: 'OLD_ACTIVE_VERSION_NAME', value: 'VERSION 1' },
-        { key: 'OLD_ACTIVE_VERSION_ID', value: 'ID_003' },
-        { key: 'COMMENT', value: 'This version includes the bug fixing regarding the security vulnerability #12345' }
+        { key: 'OLD_PUBLISHED_VERSION_NAME', value: 'VERSION 1' },
+        { key: 'OLD_PUBLISHED_VERSION_ID', value: 'ID_003' },
+        {
+          key: 'COMMENT',
+          value:
+            'This version includes the bug fixing regarding the security vulnerability #12345'
+        }
       ]
     },
     {
       ...UserActivityBase,
-      type: 'DEACTIVATE_VERSION',
+      type: 'UNPUBLISH_VERSION',
       vars: [
         { key: 'RUNTIME_ID', value: 'ID_001' },
         { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
-        { key: 'VERSION_NAME', value: 'Version Y' },
+        { key: 'VERSION_NAME', value: 'Version Y' }
       ]
     },
     {
@@ -67,17 +70,17 @@ function getOptions(User) {
         { key: 'RUNTIME_ID', value: 'ID_001' },
         { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
-        { key: 'VERSION_NAME', value: 'Version Y' },
+        { key: 'VERSION_NAME', value: 'Version Y' }
       ]
     },
     {
       ...UserActivityBase,
-      type: 'DEPLOY_VERSION',
+      type: 'START_VERSION',
       vars: [
         { key: 'RUNTIME_ID', value: 'ID_001' },
         { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
-        { key: 'VERSION_NAME', value: 'Version Y' },
+        { key: 'VERSION_NAME', value: 'Version Y' }
       ]
     },
     {
@@ -97,7 +100,7 @@ function getOptions(User) {
         { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' },
-        { key: 'CONFIG_KEYS', value: 'KEY_A, KEY_B' },
+        { key: 'CONFIG_KEYS', value: 'KEY_A, KEY_B' }
       ]
     }
   ];
