@@ -109,11 +109,11 @@ function VersionDetailsPanel({
       {!version.configurationCompleted && (
         <div className={styles.versionConf}>
           <div className={styles.versionConfText}>
-            This version is not setted up.
+            This version is not configured.
           </div>
           <div className={styles.versionConfButton}>
             <Button
-              label="SET UP NOW"
+              label="CONFIGURE IT NOW"
               border
               style={{ borderColor: '#ea4747' }}
               height={32}
