@@ -74,7 +74,7 @@ function GeneralInfo({ data }: Props) {
       <Title text="Accuracy" />
       <div className={styles.sections}>
         <Section1 {...data.accuracy} />
-        <Section2 value={`${data.null}%`} label="Null" />
+        <Section2 value={`${data.null}%`} label="Missing values" />
         <Section2 value={`${data.labels}%`} label="New labels" />
         <Section2 value={data.stdev.toString()} label="Standard deviation" />
       </div>
