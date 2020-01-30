@@ -9,9 +9,15 @@ type AccordionProps = {
   label: string;
   children: any;
   customStyles?: object;
+  subHeader: any;
 };
 
-function Accordion({ label, children, customStyles = {} }: AccordionProps) {
+function Accordion({
+  label,
+  subHeader,
+  children,
+  customStyles = {}
+}: AccordionProps) {
   const [isOpen, setOpen] = useState<boolean>(true);
 
   function onLabelClick() {
@@ -23,7 +29,7 @@ function Accordion({ label, children, customStyles = {} }: AccordionProps) {
       className={cx(styles.wrapper, { [styles.opened]: isOpen })}
       style={customStyles}
     >
-      <div className={styles.label} onClick={onLabelClick}>
+      <div className={styles.header} onClick={onLabelClick}>
         <div className={styles.icon}>
           <IconDeviceHub className="icon-small" />
         </div>
@@ -37,7 +43,12 @@ function Accordion({ label, children, customStyles = {} }: AccordionProps) {
         </div>
       </div>
       <div className={cx(styles.content, { [styles.opened]: isOpen })}>
-        {isOpen && children}
+        {isOpen && (
+          <>
+            <div className={styles.subHeader}>{subHeader}</div>
+            {children}
+          </>
+        )}
       </div>
     </div>
   );

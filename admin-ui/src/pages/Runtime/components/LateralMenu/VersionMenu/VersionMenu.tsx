@@ -1,11 +1,12 @@
 import React from 'react';
-import NavBar, {
-  Tab as NavBarTab,
-  ItemSize
-} from '../../../../../components/NavBar/NavBar';
-import * as ROUTE from '../../../../../constants/routes';
 import styles from './VersionMenu.module.scss';
 import { Version, Runtime } from '../../../../../graphql/models';
+import VersionMenuItem, { VersionMenuItemProps } from './VersionMenuItem';
+import {
+  RUNTIME_VERSION_STATUS,
+  RUNTIME_VERSION_METRICS,
+  RUNTIME_VERSION_CONFIGURATION
+} from '../../../../../constants/routes';
 
 type VersionDetailsProps = {
   runtime: Runtime;
@@ -13,77 +14,36 @@ type VersionDetailsProps = {
 };
 
 function VersionMenu({ runtime, version }: VersionDetailsProps) {
-  let navTabs: NavBarTab[] = createNavTabs(
-    runtime.id || '',
-    (version && version.id) || ''
-  );
-
-  if (version && version.configurationCompleted === false) {
-    navTabs = addWarningToTab(
-      'CONFIGURATION',
-      navTabs,
-      'Configuration is not completed'
-    );
-  }
-
-  return (
-    <div className={styles.wrapper}>
-      <NavBar tabs={navTabs} itemSize={ItemSize.SMALL} showItemArrows={true} />
-    </div>
-  );
-}
-
-function addWarningToTab(
-  label: string,
-  tabs: NavBarTab[],
-  message: string
-): NavBarTab[] {
-  return updateTab(label, tabs, function(tab: NavBarTab) {
-    tab.showWarning = true;
-    tab.warningTitle = message;
-  });
-}
-
-function updateTab(
-  label: string,
-  tabs: NavBarTab[],
-  updateFunc: (t: NavBarTab) => void
-): NavBarTab[] {
-  return tabs.map((tab: NavBarTab) => {
-    let tabCp = { ...tab };
-
-    if (tab.label === label) {
-      updateFunc(tabCp);
-    }
-
-    return tabCp;
-  });
-}
-
-function createNavTabs(runtimeId: string, versionId: string): NavBarTab[] {
-  const navTabs = [
+  const itemProps: VersionMenuItemProps[] = [
     {
       label: 'STATUS',
-      route: ROUTE.RUNTIME_VERSION_STATUS,
+      to: RUNTIME_VERSION_STATUS,
       exact: false
     },
     {
       label: 'METRICS',
-      route: ROUTE.RUNTIME_VERSION_METRICS
+      to: RUNTIME_VERSION_METRICS
     },
     {
       label: 'CONFIGURATION',
-      route: ROUTE.RUNTIME_VERSION_CONFIGURATION
+      to: RUNTIME_VERSION_CONFIGURATION,
+      warning: version.configurationCompleted
+        ? ''
+        : 'Configuration is not completed'
     }
   ];
 
-  navTabs.forEach(n => {
-    n.route = n.route
-      .replace(':runtimeId', runtimeId)
-      .replace(':versionId', versionId);
+  itemProps.forEach(p => {
+    p.to = p.to
+      .replace(':runtimeId', runtime.id)
+      .replace(':versionId', version.id);
   });
 
-  return navTabs;
+  const items = itemProps.map((props, idx) => (
+    <VersionMenuItem key={idx} {...props} />
+  ));
+
+  return <div className={styles.wrapper}>{items}</div>;
 }
 
 export default VersionMenu;

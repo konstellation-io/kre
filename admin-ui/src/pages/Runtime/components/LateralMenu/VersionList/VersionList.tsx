@@ -9,14 +9,12 @@ import { ADD_VERSION } from '../../../../AddVersion/AddVersion.graphql';
 import { NEW_VERSION } from '../../../../../constants/routes';
 
 type VersionListProps = {
-  runtimeId: string;
   versions: Version[];
   openedVersion?: Version;
   setOpenedVersion: (v: Version) => void;
 };
 
 function VersionList({
-  runtimeId,
   versions,
   openedVersion,
   setOpenedVersion
@@ -30,17 +28,28 @@ function VersionList({
     />
   ));
 
-  const numVersions = versions.length;
-
-  const newVersionRoute = NEW_VERSION.replace(':runtimeId', runtimeId || '');
-
   return (
     <div className={styles.wrapper}>
-      <div className={styles.title}>
-        <span>{numVersions} versions shown</span>
-        <Button label="ADD" to={newVersionRoute} />
-      </div>
       <div className={styles.items}>{versionItems}</div>
+    </div>
+  );
+}
+
+type VersionListHeaderProps = {
+  runtimeId: string;
+  numVersions: number;
+};
+
+export function VersionListHeader({
+  runtimeId,
+  numVersions
+}: VersionListHeaderProps) {
+  const newVersionRoute = NEW_VERSION.replace(':runtimeId', runtimeId);
+
+  return (
+    <div className={styles.header}>
+      <span>{numVersions} versions</span>
+      <Button label="ADD" to={newVersionRoute} />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+@import '../../styles/colors';
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -6,13 +8,13 @@
   }
 }
 
-.label {
+.header {
   display: flex;
   flex-direction: row;
   align-items: center;
   font-weight: bold;
   font-size: 13px;
-  color: #e5ebf0;
+  color: $font-color-white;
   background-color: #282d33;
   height: 32px;
   line-height: 32px;
@@ -33,7 +35,13 @@
   }
 }
 
+.subHeader {
+  background-color: #26292c;
+}
+
 .content {
+  display: flex;
+  flex-direction: column;
   height: 0;
 
   &.opened {

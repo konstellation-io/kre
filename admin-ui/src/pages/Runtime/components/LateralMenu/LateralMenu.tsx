@@ -7,7 +7,7 @@ import RuntimeHexagon, {
 import NoVersionsPanel from './NoVersionsPanel';
 import VersionListItem from './VersionListItem/VersionListItem';
 import VersionDetailsPanel from './VersionDetailsPanel/VersionDetailsPanel';
-import VersionList from './VersionList/VersionList';
+import VersionList, { VersionListHeader } from './VersionList/VersionList';
 import VersionMenu from './VersionMenu/VersionMenu';
 import cx from 'classnames';
 import Accordion from '../../../../components/Accordion/Accordion';
@@ -61,21 +61,28 @@ function LateralMenu({ runtime, version, versions }: LateralMenuProps) {
         <Accordion
           label={'VERSION OPENED'}
           customStyles={{ height: 'fit-content' }}
-        >
-          <div>
+          subHeader={
             <VersionListItem
               version={version}
               selected={isVersionOpened}
               onSelect={setOpenedVersion}
             />
-          </div>
+          }
+        >
           <VersionMenu runtime={runtime} version={version} />
         </Accordion>
       )}
       {filteredVersions.length > 0 && (
-        <Accordion label={version ? 'OTHER VERSIONS' : 'ALL VERSIONS'}>
+        <Accordion
+          label={version ? 'OTHER VERSIONS' : 'ALL VERSIONS'}
+          subHeader={
+            <VersionListHeader
+              runtimeId={runtime.id}
+              numVersions={filteredVersions.length}
+            />
+          }
+        >
           <VersionList
-            runtimeId={runtime.id}
             versions={filteredVersions}
             openedVersion={openedVersion}
             setOpenedVersion={v => setOpenedVersion(v)}

@@ -2,7 +2,7 @@
 @import '../../../../../styles/mixins';
 
 .item {
-  @include list-item-hover;
+  color: $font-color-white;
 
   cursor: pointer;
   padding: 16px 0;
@@ -11,17 +11,26 @@
     .arrow {
       opacity: 1;
     }
+
+    .name,
+    .desc {
+      color: $font-color-white;
+    }
   }
 }
 
 .itemSelected {
-  color: $font-color-white;
-  background-color: #282d33;
+  color: $font-color-light;
   pointer-events: none;
   cursor: default;
 
   .arrow {
     opacity: 1;
+  }
+
+  .name,
+  .desc {
+    color: $font-color-white;
   }
 }
 
@@ -57,8 +66,9 @@
   flex-direction: row;
   align-items: center;
 
+  font-weight: 500;
   font-size: 13px;
-  color: $font-color-white;
+  color: $font-color-light;
 
   padding: 0 16px 16px 16px;
 }
@@ -66,6 +76,6 @@
 .desc {
   font-size: 11px;
   color: $font-color-regular;
-  font-weight: bold;
   padding: 0 30px;
+  font-weight: 500;
 }
