@@ -1,0 +1,28 @@
+@import '../../../../../styles/colors';
+
+.item {
+  color: $font-color-light;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px;
+  letter-spacing: 0.55px;
+  height: 32px;
+  line-height: 16px;
+  padding-left: 32px;
+
+  &:hover {
+    color: $font-color-white;
+  }
+}
+
+.active {
+  cursor: default;
+  pointer-events: none;
+  color: $font-color-white;
+}
+
+.active .item {
+  background-color: #151618;
+  color: $font-color-white;
+  border-right: 4px solid #3f4c55;
+}
