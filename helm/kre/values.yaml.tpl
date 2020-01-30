@@ -4,7 +4,7 @@ config:
   admin:
     k8sManagerAddress: "k8s-manager:50051"
     apiAddress: ":80"
-    frontendBaseURL: "http://admin-kre.local"
+    frontendBaseURL: ${KRE_ADMIN_FRONTEND_BASE_URL}
     corsEnabled: true
   smtp:
     enabled: false

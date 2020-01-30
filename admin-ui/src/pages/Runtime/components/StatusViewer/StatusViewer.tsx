@@ -95,14 +95,23 @@ function StatusViewer({ data, status, onNodeClick }: any) {
         status: nodeInfo.status
       };
 
-      setWorkflows(updateNodeStatus(workflows, newNode));
+      // FIXME: remove this delay and find another workaround
+      setTimeout(() => {
+        setWorkflows((tempWorkflows: Workflow[]) => {
+          return updateNodeStatus(tempWorkflows, newNode);
+        });
+      }, 100);
     }
   });
 
   const container = useRef(null);
+  const prevParams = useRef<any>({
+    data: undefined,
+    status: undefined
+  });
   const dimensions = useRenderOnResize({ container });
 
-  useEffect(() => {
+  function updateInOutNodes() {
     let newWorkflows = workflows;
     workflows.forEach((workflow: Workflow, idx: number) => {
       const newNodeState =
@@ -123,7 +132,19 @@ function StatusViewer({ data, status, onNodeClick }: any) {
     });
 
     setWorkflows(newWorkflows);
-  }, [status]);
+  }
+
+  useEffect(() => {
+    if (JSON.stringify(data) !== JSON.stringify(prevParams.current.data)) {
+      const newWorkflows = formatData(data, status);
+      setWorkflows(newWorkflows);
+    } else if (prevParams.current.status !== status) {
+      updateInOutNodes();
+    }
+
+    prevParams.current.data = data;
+    prevParams.current.status = status;
+  }, [data, status]);
 
   const { width, height } = dimensions;
 
@@ -145,6 +166,7 @@ function StatusViewer({ data, status, onNodeClick }: any) {
           data={workflows}
           published={status === VersionStatus.PUBLISHED}
           onNodeClick={onNodeClick}
+          chartId={`status_${versionId}`}
         />
       )}
     </div>

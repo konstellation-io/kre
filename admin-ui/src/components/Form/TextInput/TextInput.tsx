@@ -32,6 +32,7 @@ type Props = {
   formValue?: any;
   customClassname?: string;
   hidden?: boolean;
+  autoFocus?: boolean;
 };
 
 function TextInput({
@@ -51,7 +52,8 @@ function TextInput({
   positive = false,
   formValue = '',
   customClassname = '',
-  hidden = false
+  hidden = false,
+  autoFocus = false
 }: Props) {
   const [value, setValue] = useState(formValue);
   const [isHidden, setIsHidden] = useState(hidden);
@@ -110,9 +112,14 @@ function TextInput({
   };
   const inputElement =
     textArea && !isHidden ? (
-      <textarea {...inputProps} data-testid="input" style={{ ...limits }} />
+      <textarea
+        {...inputProps}
+        data-testid="input"
+        style={{ ...limits }}
+        autoFocus={autoFocus}
+      />
     ) : (
-      <input {...inputProps} data-testid="input" />
+      <input {...inputProps} data-testid="input" autoFocus={autoFocus} />
     );
   const cleanButton =
     showClearButton && value !== '' ? (

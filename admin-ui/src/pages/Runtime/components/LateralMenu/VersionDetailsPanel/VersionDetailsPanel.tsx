@@ -44,7 +44,7 @@ function VersionDetailsPanel({
     stopVersion,
     unpublishVersion,
     getMutationVars
-  } = useVersionAction();
+  } = useVersionAction(runtime.id);
 
   const actionButtons = getVersionActionButtons(
     onOpenModal,
@@ -53,7 +53,6 @@ function VersionDetailsPanel({
     onUnpublishVersion,
     version.status
   );
-  const isVersionPublished = version.status === VersionStatus.PUBLISHED;
 
   function onPublishVersion(comment: string) {
     setShowActionConfirmation(false);

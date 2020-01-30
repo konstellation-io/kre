@@ -91,6 +91,7 @@ function AddRuntime() {
               error={error}
               onChange={onChange}
               onSubmit={onSubmit}
+              autoFocus
             />
             <div className={styles.buttons}>
               <Button

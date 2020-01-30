@@ -29,13 +29,16 @@ function RuntimeStatusPreview({ runtime, version }: Props) {
     GetVersionWorkflowsResponse,
     GetVersionWorkflowsVars
   >(GET_VERSION_WORKFLOWS, {
-    variables: { versionId: params.versionId }
+    variables: { versionId: params.versionId },
+    // FIXME: This query is not getting updated!
+    fetchPolicy: 'no-cache'
   });
 
   if (error || !params.runtimeId || !params.versionId) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  const versionStatus = data && data.version && data.version.status;
+  // const versionStatus = data && data.version && data.version.status;
+  const versionStatus = version.status;
 
   function setNode(nodeId: string) {
     if (!nodeId.includes('InputNode') && !nodeId.includes('OutputNode')) {
