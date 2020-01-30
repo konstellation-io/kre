@@ -117,7 +117,10 @@ function VersionDetailsPanel({
               border
               style={{ borderColor: '#ea4747' }}
               height={32}
-              to={versionConfUrl}
+              onClick={function() {
+                history.push(versionConfUrl);
+                setOpenedVersion(undefined);
+              }}
             />
           </div>
         </div>
