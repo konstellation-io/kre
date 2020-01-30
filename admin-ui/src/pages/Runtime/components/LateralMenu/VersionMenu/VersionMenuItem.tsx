@@ -17,7 +17,7 @@ function VersionMenuItem({ label, to, exact, warning }: VersionMenuItemProps) {
       <div className={styles.item}>
         <span>{label}</span>
         {warning && (
-          <div title={warning}>
+          <div title={warning} className={styles.icon}>
             <IconWarning className={cx('icon-regular', styles.warning)} />
           </div>
         )}
