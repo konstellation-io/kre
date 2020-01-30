@@ -63,6 +63,7 @@ Subchart info configuration
 | `mongodb.mongodbDatabase` | Database to create                                          | `localKRE` |
 | `mongodb.mongodbUsername` | MongoDB custom user (mandatory if `mongodbDatabase` is set) | `admin`    |
 | `mongodb.mongodbPassword` | MongoDB custom user password                                | `123456`   |
+| `mongodb.image.tag`       | MongoDB version 4.2                                         | `3.6`      |
 
 
 
