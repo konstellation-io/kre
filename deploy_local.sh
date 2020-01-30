@@ -2,14 +2,6 @@
 
 . ./config.sh
 
-case $* in
-  # WARNING: Doing a hard reset before deploying
-   *--hard*)
-     . ./minikube_hard_reset.sh
-esac
-
-. ./minikube_start.sh
-
 set -e
 
 if [ "$DEBUG" = "1" ]; then
@@ -34,25 +26,45 @@ show_header() {
   echo "#########################################\n\n"
 }
 
-# Setup environment to build images inside minikube
-eval `minikube docker-env -p $MINIKUBE_PROFILE`
-
 export ADMIN_API_IMAGE_TAG="latest"
 export ADMIN_UI_IMAGE_TAG="latest"
 export K8S_MANAGER_IMAGE_TAG="latest"
-export SDK_RELEASE_VERSION="v0.13.0"
-export OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
+export KRE_ADMIN_FRONTEND_BASE_URL="http://admin-kre.local"
+
+case $* in
+  # WARNING: Doing a hard reset before deploying
+   *--hard*)
+     . ./minikube_hard_reset.sh
+    ;;
+  # Use it when you want to develop on admin-ui outside k8s
+   *--local-frontend*)
+     KRE_ADMIN_FRONTEND_BASE_URL="http://localhost:3000"
+     export SKIP_FRONTEND_BUILD=1
+     ;;
+esac
+
+. ./minikube_start.sh
+
+# Setup environment to build images inside minikube
+eval `minikube docker-env -p $MINIKUBE_PROFILE`
 
 ./scripts/replace_env_path.sh
 
 echo "Init helm tiller...\n"
 helm init --upgrade --wait
 
+export SDK_RELEASE_VERSION="v0.13.0"
+export OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
+
 if [ "$SKIP_BUILD" != "1" ]; then
     show_header "kre-admin-api"
     docker build -t konstellation/kre-admin-api:latest admin-api
-    show_header "kre-admin-ui"
-    docker build -t konstellation/kre-admin-ui:latest admin-ui
+
+    if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
+      show_header "kre-admin-ui"
+      docker build -t konstellation/kre-admin-ui:latest admin-ui
+    fi
+    
     show_header "kre-k8s-manager"
     docker build -t konstellation/kre-k8s-manager:latest k8s-manager
     show_header "kre-runtime-api"
@@ -86,6 +98,10 @@ helm upgrade \
 
 if [ "$OPERATOR_SDK_INSTALLED" != "1" ]; then
       echo_warning "\n\n\n¡¡¡¡¡WARNING: Operator SDK not installed. Operator image was not built!!!\n\n\n"
+fi
+
+if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
+      echo_warning "\n\n\n¡¡¡¡¡WARNING: started with local-frontend option. Now run \`yarn start\` inside /admin-ui!!!\n\n\n"
 fi
 
 echo "Done."

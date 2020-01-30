@@ -68,6 +68,13 @@ func (n *NodeStatusResolver) OnAdd(obj interface{}) {
 			Status:  entity.NodeStatusStarted,
 			Message: "",
 		}
+	} else {
+		n.logger.Info("----- STATUS: ERROR ------")
+		n.out <- &entity.VersionNodeStatus{
+			NodeID:  d.Labels["node-id"],
+			Status:  entity.NodeStatusError,
+			Message: "",
+		}
 	}
 
 	n.logger.Info(fmt.Sprintf("\n[ADD] DEPLOYMENT: %63s  ready/total: %d/%d\n", d.Name, ready, total))

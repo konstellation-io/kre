@@ -1,13 +1,13 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useChart from '../../hooks/useChart';
 import ReactDOMServer from 'react-dom/server';
 import VersionNode, { TYPES } from '../Shape/Node/Node';
 
-import { select, event } from 'd3-selection';
-import { scaleBand, ScaleBand } from 'd3-scale';
+import { event, select } from 'd3-selection';
+import { scaleBand } from 'd3-scale';
 import { max, range } from 'd3-array';
 import { zoom } from 'd3-zoom';
-import { wrap, centerText } from '../../utils/d3';
+import { centerText, wrap } from '../../utils/d3';
 
 import styles from './VersionStatusViewer.module.scss';
 
@@ -19,6 +19,21 @@ const DEFAULT_NODE_HEIGHT = 37.9;
 const STROKE_WIDTH = 0.7;
 const SCALE_PADDING_INNER = 0.4;
 const SCALE_PADDING_OUTER = 0.1;
+
+function cleanup(component: any) {
+  select(component)
+    .selectAll('*')
+    .remove();
+}
+
+function canBeRendered(width: number, height: number, margin?: any): boolean {
+  const horizontalMargin: number = (margin && margin.left + margin.right) || 0;
+  const verticalMargin: number = (margin && margin.top + margin.bottom) || 0;
+  const widthOk: boolean = width > 0 && width > horizontalMargin;
+  const heightOk: boolean = height > 0 && height > verticalMargin;
+
+  return widthOk && heightOk;
+}
 
 type Node = {
   id: string;
@@ -52,6 +67,7 @@ type Props = {
   data: Workflow[];
   published: boolean;
   onNodeClick: Function;
+  chartId: string;
 };
 
 function getNodeTextPadding(type: string) {
@@ -71,10 +87,15 @@ function VersionStatusViewer({
   margin,
   data,
   published,
-  onNodeClick
+  onNodeClick,
+  chartId
 }: Props) {
-  const [shouldComponentUpdate, setShouldComponentUpdate] = useState(false);
-  const { svg, chart } = useChart({ width, height, initialize });
+  const { svg, chart } = useChart({
+    width,
+    height,
+    initialize,
+    removeUpdate: true
+  });
 
   const nodeIdToIndex: any = {};
   let g: any;
@@ -107,15 +128,51 @@ function VersionStatusViewer({
   const maxNodesInRow = max(data, d => d.nodes.length) || 0;
   const xDomainIndexes = range(maxNodesInRow).map(n => n.toString());
 
-  useEffect(() => {
-    setShouldComponentUpdate(true);
-  }, [width, height]);
+  // FIXME:
+  // REFACTOR THE FOLLOWING 42 lines
+  const prevProps = useRef<any>({
+    width: undefined,
+    height: undefined,
+    chartId: undefined,
+    data: undefined
+  });
 
+  function idsAreDifferent(d1: Workflow[], d2: Workflow[]): boolean {
+    if (d1 === undefined) {
+      return true;
+    }
+
+    // @ts-ignore
+    const nodesD1 = d1.reduce((a: string[], b: Workflow) => {
+      return a.concat(b.nodes.map((node: Node) => node.id));
+    }, []);
+    // @ts-ignore
+    const nodesD2 = d2.reduce((a: string[], b: Workflow) => {
+      return a.concat(b.nodes.map((node: Node) => node.id));
+    }, []);
+
+    return JSON.stringify(nodesD1) !== JSON.stringify(nodesD2);
+  }
   useEffect(() => {
-    if (shouldComponentUpdate) {
+    if (
+      prevProps.current.width !== width ||
+      prevProps.current.height !== height ||
+      prevProps.current.chartId !== chartId ||
+      idsAreDifferent(prevProps.current.data, data)
+    ) {
+      if (canBeRendered(width, height, margin)) {
+        cleanup(svg.current);
+        initialize();
+      }
+    } else {
       updateChart();
     }
-  }, [data]);
+
+    prevProps.current.width = width;
+    prevProps.current.height = height;
+    prevProps.current.chartId = chartId;
+    prevProps.current.data = data;
+  }, [width, height, chartId, data, initialize]);
 
   function buildNodeIdToIndex() {
     data.forEach((workflow: Workflow) =>

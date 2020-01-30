@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { select } from 'd3-selection';
 
@@ -35,23 +35,28 @@ type Props = {
   margin?: Margin;
   initialize: Function;
   useTooltip?: boolean;
+  chartId?: string;
+  removeUpdate?: boolean;
 };
 export default function useChart({
   width,
   height,
   margin,
   initialize,
-  useTooltip = false
+  useTooltip = false,
+  removeUpdate = false
 }: Props) {
   const container = useRef(null);
   const svg = useRef(null);
   const tooltip = useRef(null);
 
   useEffect(() => {
-    cleanup(svg.current);
+    if (!removeUpdate) {
+      cleanup(svg.current);
 
-    if (canBeRendered(width, height, margin)) {
-      initialize();
+      if (canBeRendered(width, height, margin)) {
+        initialize();
+      }
     }
   }, [width, height, margin]);
 
