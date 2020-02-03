@@ -2,11 +2,10 @@ import React from 'react';
 import styles from './VersionMenu.module.scss';
 import { Version, Runtime } from '../../../../../graphql/models';
 import VersionMenuItem, { VersionMenuItemProps } from './VersionMenuItem';
-import {
-  RUNTIME_VERSION_STATUS,
-  RUNTIME_VERSION_METRICS,
-  RUNTIME_VERSION_CONFIGURATION
-} from '../../../../../constants/routes';
+import ROUTE from '../../../../../constants/routes';
+import IconDeviceHub from '@material-ui/icons/DeviceHub';
+import IconShowChart from '@material-ui/icons/ShowChart';
+import IconSettings from '@material-ui/icons/Settings';
 
 type VersionDetailsProps = {
   runtime: Runtime;
@@ -17,16 +16,19 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
   const itemProps: VersionMenuItemProps[] = [
     {
       label: 'STATUS',
-      to: RUNTIME_VERSION_STATUS,
-      exact: false
+      to: ROUTE.RUNTIME_VERSION_STATUS,
+      exact: false,
+      Icon: IconDeviceHub
     },
     {
       label: 'METRICS',
-      to: RUNTIME_VERSION_METRICS
+      to: ROUTE.RUNTIME_VERSION_METRICS,
+      Icon: IconShowChart
     },
     {
       label: 'CONFIGURATION',
-      to: RUNTIME_VERSION_CONFIGURATION,
+      to: ROUTE.RUNTIME_VERSION_CONFIGURATION,
+      Icon: IconSettings,
       warning: version.configurationCompleted
         ? ''
         : 'Configuration is not completed'

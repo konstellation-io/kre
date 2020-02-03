@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router';
-import * as ROUTE from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 
 import GeneralIcon from '@material-ui/icons/DeviceHub';
 import SecurityIcon from '@material-ui/icons/Security';

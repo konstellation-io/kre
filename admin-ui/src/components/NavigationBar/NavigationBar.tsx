@@ -5,14 +5,14 @@ import DashboardIcon from '@material-ui/icons/ChangeHistory';
 import SecurityIcon from '@material-ui/icons/VerifiedUser';
 import AuditIcon from '@material-ui/icons/SupervisorAccount';
 
-import * as ROUTE from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
 import SquaredButton from '../SquaredButton/SquaredButton';
 
 export const navigationButtons = [
   {
     id: 'dashboardRoute',
-    path: ROUTE.DASHBOARD,
+    path: ROUTE.HOME,
     Icon: DashboardIcon
   },
   {

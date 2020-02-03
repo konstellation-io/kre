@@ -9,15 +9,25 @@ export type VersionMenuItemProps = {
   to: string;
   exact?: boolean;
   warning?: string;
+  Icon: any;
 };
 
-function VersionMenuItem({ label, to, exact, warning }: VersionMenuItemProps) {
+function VersionMenuItem({
+  label,
+  to,
+  exact,
+  warning,
+  Icon
+}: VersionMenuItemProps) {
   return (
     <NavLink to={to} activeClassName={styles.active} exact={exact} replace>
       <div className={styles.item}>
+        <div className={styles.icon}>
+          <Icon className="icon-regular" />
+        </div>
         <span>{label}</span>
         {warning && (
-          <div title={warning} className={styles.icon}>
+          <div title={warning} className={styles.iconWarning}>
             <IconWarning className={cx('icon-regular', styles.warning)} />
           </div>
         )}

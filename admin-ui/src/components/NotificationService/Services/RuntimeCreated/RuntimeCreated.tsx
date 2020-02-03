@@ -2,11 +2,10 @@ import { get } from 'lodash';
 import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import Notification from '../../Notification';
-import * as PAGES from '../../../../constants/routes';
-
 import { RUNTIME_CREATED_SUBSCRIPTION } from './RuntimeCreated.graphql';
 import { useSubscription } from '@apollo/react-hooks';
 import { Runtime } from '../../../../graphql/models';
+import ROUTE from '../../../../constants/routes';
 
 const NOTIFICATION_TIMEOUT = 15 * 1000;
 
@@ -44,9 +43,9 @@ function RuntimeCreated() {
     }, NOTIFICATION_TIMEOUT);
 
     // Refresh dashboard
-    if (location.pathname === PAGES.DASHBOARD) {
+    if (location.pathname === ROUTE.HOME) {
       history.push('/other');
-      history.replace(PAGES.DASHBOARD);
+      history.replace(ROUTE.HOME);
     }
 
     setNotifications((notifs: Notification[]) =>
@@ -67,7 +66,7 @@ function RuntimeCreated() {
         message={notification.message}
         buttonLabel="GO TO RUNTIME"
         buttonAction={() => {
-          const runtimePath = PAGES.RUNTIME.replace(
+          const runtimePath = ROUTE.RUNTIME.replace(
             ':runtimeId',
             notification.id
           );

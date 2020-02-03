@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import React from 'react';
 import { useHistory } from 'react-router';
 import { History } from 'history';
-import * as PAGES from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
@@ -20,7 +20,12 @@ import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
 import { GET_DASHBOARD, GetDashboardResponse } from './Dashboard.graphql';
-import { Alert, Runtime, RuntimeStatus, VersionEnvStatus } from '../../graphql/models';
+import {
+  Alert,
+  Runtime,
+  RuntimeStatus,
+  VersionEnvStatus
+} from '../../graphql/models';
 import { ApolloError } from 'apollo-client';
 
 const disabledRuntimeStatus = [RuntimeStatus.CREATING];
@@ -51,7 +56,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     <Hexagon
       key={`runtimeHexagon-${idx}`}
       onClick={() => {
-        const runtimePath = PAGES.RUNTIME.replace(':runtimeId', runtime.id);
+        const runtimePath = ROUTE.RUNTIME.replace(':runtimeId', runtime.id);
         history.push(runtimePath);
       }}
       id={runtime.id}
@@ -71,7 +76,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     <HexagonBorder
       text="+ ADD RUNTIME"
       key="add_runtime"
-      onClick={() => history.push(PAGES.NEW_RUNTIME)}
+      onClick={() => history.push(ROUTE.NEW_RUNTIME)}
     />
   );
 
@@ -91,7 +96,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
         title="THERE ARE NO RUNTIMES"
         message="Please, create a new runtime to start working on this dashboard"
         actionButtonLabel="NEW RUNTIME"
-        to={PAGES.NEW_RUNTIME}
+        to={ROUTE.NEW_RUNTIME}
       />
     );
   }
@@ -115,7 +120,7 @@ function Dashboard() {
   return (
     <>
       <Header>
-        <Button label="ADD RUNTIME" to={PAGES.NEW_RUNTIME} height={40} />
+        <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
         <div>{`${nRuntimes} runtimes shown`}</div>
       </Header>
       <div className={styles.container} data-testid="dashboardContainer">

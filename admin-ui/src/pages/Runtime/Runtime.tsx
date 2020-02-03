@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch, useParams, useLocation } from 'react-router-dom';
-import * as ROUTE from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import { buildRoute } from '../../utils/routes';
 
 import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
@@ -41,6 +41,7 @@ function Runtime() {
   const runtime = data.runtime;
   const versions = data.versions;
   const version = versions.find(v => v.id === versionId);
+
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
     ':runtimeId',
     runtimeId || ''

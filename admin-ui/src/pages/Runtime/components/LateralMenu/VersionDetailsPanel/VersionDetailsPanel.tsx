@@ -3,7 +3,7 @@ import { buildRoute } from '../../../../../utils/routes';
 import EmailIcon from '@material-ui/icons/Email';
 import TimeIcon from '@material-ui/icons/AccessTime';
 import { Runtime, Version, VersionStatus } from '../../../../../graphql/models';
-import * as PAGES from '../../../../../constants/routes';
+import ROUTE from '../../../../../constants/routes';
 import history from '../../../../../history';
 import cx from 'classnames';
 import styles from './VersionDetailsPanel.module.scss';
@@ -28,12 +28,12 @@ function VersionDetailsPanel({
   const [showActionConfirmation, setShowActionConfirmation] = useState(false);
 
   const versionStatusUrl = buildRoute.version(
-    PAGES.RUNTIME_VERSION_STATUS,
+    ROUTE.RUNTIME_VERSION_STATUS,
     runtime.id,
     version.id
   );
   const versionConfUrl = buildRoute.version(
-    PAGES.RUNTIME_VERSION_CONFIGURATION,
+    ROUTE.RUNTIME_VERSION_CONFIGURATION,
     runtime.id,
     version.id
   );

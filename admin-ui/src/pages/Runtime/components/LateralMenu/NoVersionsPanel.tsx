@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../../../../components/Button/Button';
 import styles from './NoVersionsPanel.module.scss';
-import { NEW_VERSION } from '../../../../constants/routes';
+import ROUTE from '../../../../constants/routes';
 import { Runtime } from '../../../../graphql/models';
 
 type NoVersionsPanelProps = {
@@ -9,7 +9,7 @@ type NoVersionsPanelProps = {
 };
 
 function NoVersionsPanel({ runtime }: NoVersionsPanelProps) {
-  const newVersionRoute = NEW_VERSION.replace(':runtimeId', runtime.id);
+  const newVersionRoute = ROUTE.NEW_VERSION.replace(':runtimeId', runtime.id);
 
   return (
     <div className={styles.wrapper}>

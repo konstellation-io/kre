@@ -5,13 +5,13 @@ import { useHistory } from 'react-router';
 import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
 import useEndpoint from '../../hooks/useEndpoint';
-import * as PAGES from '../../constants/routes';
 import { ENDPOINT } from '../../constants/application';
 
 import { connect } from 'react-redux';
 import { logout } from '../../actions/appActions';
 
 import styles from './Settings.module.scss';
+import ROUTE from '../../constants/routes';
 
 const BUTTON_HEIGHT = 40;
 const buttonStyle = {
@@ -35,7 +35,7 @@ function Settings({ label, reduxLogout }: Props) {
     if (logoutResponse.complete) {
       if (get(logoutResponse, 'status') === 200) {
         reduxLogout();
-        history.push(PAGES.LOGIN);
+        history.push(ROUTE.LOGIN);
       } else {
         console.error(`Error sending logout request.`);
       }

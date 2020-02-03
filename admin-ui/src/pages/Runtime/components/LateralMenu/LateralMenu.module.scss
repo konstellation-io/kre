@@ -11,6 +11,19 @@
   display: flex;
 }
 
+.backSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: $font-color-white;
+  font-size: 14px;
+  margin: 16px;
+
+  span {
+    padding-left: 8px;
+  }
+}
+
 .runtimeNameSection {
   display: flex;
   flex-direction: row;

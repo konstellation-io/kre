@@ -7,14 +7,18 @@
   color: $font-color-light;
   font-size: 11px;
   font-weight: 700;
-  padding: 8px;
+  padding: 16px;
   letter-spacing: 0.55px;
-  height: 32px;
-  line-height: 16px;
-  padding-left: 32px;
+  height: 48px;
+  border-right: 4px solid transparent;
 
   .icon {
+    margin-right: 16px;
+  }
+
+  .iconWarning {
     margin-left: auto;
+    color: $color-yellow;
   }
 
   &:hover {
