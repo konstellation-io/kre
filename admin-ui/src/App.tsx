@@ -19,7 +19,7 @@ import AddRuntime from './pages/AddRuntime/AddRuntime';
 import AddVersion from './pages/AddVersion/AddVersion';
 import NotFound from './pages/NotFound/NotFound';
 import ROUTE from './constants/routes';
-import Versions from './pages/Versions/Versions';
+import RuntimeVersions from './pages/Runtime/pages/RuntimeVersions/RuntimeVersions';
 
 export function Routes() {
   return (
@@ -41,8 +41,7 @@ export function Routes() {
         <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
         <Route exact path={ROUTE.HOME} component={Dashboard} />
-        <Route exact path={ROUTE.RUNTIME_VERSIONS} component={Versions} />
-        <Route path={ROUTE.RUNTIME_VERSION} component={Runtime} />
+        <Route path={ROUTE.RUNTIME} component={Runtime} />
 
         <Route path={ROUTE.SETTINGS} component={Settings} />
         <Route path={ROUTE.AUDIT} component={UsersActivity} />

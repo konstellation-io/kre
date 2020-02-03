@@ -11,6 +11,7 @@ import IconArrowBack from '@material-ui/icons/ArrowBack';
 import { Link } from 'react-router-dom';
 import ROUTE from '../../../../constants/routes';
 import VersionActions from './VersionActions/VersionActions';
+import { buildRoute } from '../../../../utils/routes';
 
 type LateralMenuProps = {
   runtime: Runtime;
@@ -21,7 +22,7 @@ type LateralMenuProps = {
 function LateralMenu({ runtime, version, versions }: LateralMenuProps) {
   return (
     <div className={styles.wrapper}>
-      <Link to={ROUTE.RUNTIME}>
+      <Link to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}>
         <div className={styles.runtimeNameSection}>
           <div className={styles.runtimeHexagon}>
             <RuntimeHexagon runtime={runtime} size={RuntimeHexagonSize.LARGE} />

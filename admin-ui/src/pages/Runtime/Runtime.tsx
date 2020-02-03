@@ -22,6 +22,7 @@ import {
 
 import cx from 'classnames';
 import styles from './Runtime.module.scss';
+import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 
 function Runtime() {
   const { runtimeId, versionId } = useParams();
@@ -34,10 +35,7 @@ function Runtime() {
     variables: { runtimeId }
   });
 
-  const newVersionRoute = ROUTE.NEW_VERSION.replace(
-    ':runtimeId',
-    runtimeId || ''
-  );
+  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
 
   const statusPath: string = buildRoute.version(
     ROUTE.RUNTIME_VERSION_STATUS,
@@ -57,9 +55,20 @@ function Runtime() {
 
     return (
       <>
-        <LateralMenu runtime={runtime} versions={versions} version={version} />
+        {version && (
+          <LateralMenu
+            runtime={runtime}
+            versions={versions}
+            version={version}
+          />
+        )}
         <div className={styles.content}>
           <Switch>
+            <Route
+              exact
+              path={ROUTE.RUNTIME_VERSIONS}
+              render={props => <RuntimeVersions />}
+            />
             <Route
               exact
               path={ROUTE.RUNTIME_VERSION_STATUS}
@@ -95,6 +104,7 @@ function Runtime() {
     );
   }
 
+  // TODO use PageBase
   return (
     <>
       <Header>
