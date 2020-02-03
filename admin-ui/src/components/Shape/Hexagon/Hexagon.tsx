@@ -58,9 +58,6 @@ function Hexagon({
   const [segments, setSegments] = useState(defaultAnimation);
   const [hovered, setHovered] = useState(false);
 
-  console.log(title + ' status-> ', status);
-  console.log(title + ' versionStatus-> ', versionStatus);
-
   const onMouseDown = () => {
     if (!disabled) {
       return setSegments(ANIM_SEGMENTS.PUBLISHED);

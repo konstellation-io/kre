@@ -3,9 +3,12 @@ import React, { useState, useEffect } from 'react';
 
 import { useHistory } from 'react-router';
 import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
-import LogoutIcon from '@material-ui/icons/ExitToApp';
 import useEndpoint from '../../hooks/useEndpoint';
 import { ENDPOINT } from '../../constants/application';
+
+import SettingsIcon from '@material-ui/icons/VerifiedUser';
+import AuditIcon from '@material-ui/icons/SupervisorAccount';
+import LogoutIcon from '@material-ui/icons/ExitToApp';
 
 import { connect } from 'react-redux';
 import { logout } from '../../actions/appActions';
@@ -42,15 +45,27 @@ function Settings({ label, reduxLogout }: Props) {
     }
   }, [logoutResponse, history, reduxLogout]);
 
+  function getBaseProps(label: string) {
+    return {
+      label: label.toUpperCase(),
+      key: `button${label}`,
+      type: BUTTON_TYPES.GREY,
+      align: BUTTON_ALIGN.LEFT,
+      style: buttonStyle
+    };
+  }
+
   const buttons = [
     <Button
-      label={'LOGOUT'}
-      type={BUTTON_TYPES.GREY}
+      {...getBaseProps('Settings')}
+      to={ROUTE.SETTINGS}
+      Icon={SettingsIcon}
+    />,
+    <Button {...getBaseProps('Audit')} to={ROUTE.AUDIT} Icon={AuditIcon} />,
+    <Button
+      {...getBaseProps('Logout')}
       onClick={() => doLogout()}
       Icon={LogoutIcon}
-      align={BUTTON_ALIGN.LEFT}
-      style={buttonStyle}
-      key={'buttonLogout'}
     />
   ];
   const nButtons = buttons.length;

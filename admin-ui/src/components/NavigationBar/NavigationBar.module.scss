@@ -1,0 +1,138 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.container {
+  padding-top: 16px;
+
+  .link:last-child:after {
+    background-color: transparent;
+  }
+}
+
+.link {
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 40px;
+    background-color: $color-hexagon;
+    transition: background-color ease 0.4s;
+  }
+}
+
+.buttonWrapper {
+  height: 40px;
+  width: 40px;
+  margin-bottom: 24px;
+
+  &:hover {
+    .button {
+      background-color: #38a7c1;
+      box-shadow: -26px -2px 29px -2px rgba($color-bright-blue, 0.3);
+    }
+    .buttonText {
+      color: $font-color-dark;
+    }
+  }
+}
+
+.buttonContainer {
+  @include hexagonWrapper;
+
+  position: absolute;
+  left: 15px;
+
+  width: 40px;
+  height: 40px;
+}
+
+.button {
+  @include font-button;
+  color: $font-color-regular;
+
+  @include hexagon;
+
+  background-color: $color-hexagon;
+  transition: background-color ease 0.2s, box-shadow ease 0.2s;
+}
+
+.active {
+  &:after {
+    background-color: $color-bright-blue;
+  }
+
+  .button {
+    background-color: $color-bright-blue;
+    box-shadow: -26px -2px 29px -2px rgba($color-bright-blue, 0.4);
+  }
+
+  .buttonText {
+    color: $font-color-dark;
+  }
+}
+
+.buttonText {
+  @include center;
+
+  @include font-button;
+  color: $font-color-light;
+
+  transition: color ease 0.3s;
+
+  pointer-events: none;
+}
+
+.miniHex {
+  .buttonWrapper,
+  .buttonContainer {
+    height: 14px;
+    width: 14px;
+  }
+}
+
+.buttonWrapper {
+  .miniHex:nth-child(1) .buttonContainer {
+    left: 17px;
+    top: 0px;
+  }
+  .miniHex:nth-child(2) .buttonContainer {
+    left: 31px;
+    top: 8px;
+  }
+  .miniHex:nth-child(3) .buttonContainer {
+    left: 17px;
+    top: 16px;
+  }
+  .miniHex:nth-child(4) .buttonContainer {
+    left: 31px;
+    top: 24px;
+  }
+}
+
+.addButton {
+  .buttonWrapper:last-child {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+
+    &,
+    .buttonContainer {
+      height: 36px;
+      width: 36px;
+    }
+
+    .button {
+      background-color: $bg-color-dark;
+    }
+
+    &:hover {
+      .button {
+        background-color: #38a7c1;
+      }
+    }
+  }
+}

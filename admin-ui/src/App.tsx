@@ -31,6 +31,7 @@ export function Routes() {
           from={ROUTE.RUNTIME_VERSION}
           to={ROUTE.RUNTIME_VERSION_STATUS}
         />
+        <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
 
         <Route exact path={ROUTE.LOGIN} component={Login} />
         <Route exact path={ROUTE.VERIFY_EMAIL} component={VerifyEmail} />

@@ -10,7 +10,6 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
 import Hexagon from '../../components/Shape/Hexagon/Hexagon';
 import HexagonBorder from '../../components/Shape/Hexagon/HexagonBorder';
-import AlertMessage from '../../components/Alert/Alert';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Button from '../../components/Button/Button';
@@ -19,19 +18,14 @@ import Modal from '../../components/Modal/Modal';
 import styles from './Dashboard.module.scss';
 
 import { useQuery } from '@apollo/react-hooks';
-import { GET_DASHBOARD, GetDashboardResponse } from './Dashboard.graphql';
-import {
-  Alert,
-  Runtime,
-  RuntimeStatus,
-  VersionEnvStatus
-} from '../../graphql/models';
+import { GET_RUNTIMES } from './Dashboard.graphql';
+import { Runtime, RuntimeStatus, VersionEnvStatus } from '../../graphql/models';
 import { ApolloError } from 'apollo-client';
 
 const disabledRuntimeStatus = [RuntimeStatus.CREATING];
 
 type Props = {
-  data: GetDashboardResponse;
+  data: Runtime[];
   error?: ApolloError;
   loading: boolean;
   history: History;
@@ -49,10 +43,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  // FIXME: remove when runtime response fixed
-  const dataRuntimes = data.runtimes === null ? [] : data.runtimes;
-
-  const runtimes = dataRuntimes.map((runtime: Runtime, idx: number) => (
+  const runtimes = data.map((runtime: Runtime, idx: number) => (
     <Hexagon
       key={`runtimeHexagon-${idx}`}
       onClick={() => {
@@ -80,15 +71,6 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     />
   );
 
-  const alerts = data.alerts.map((alert: Alert, idx: number) => (
-    <AlertMessage
-      key={`runtimeAlert-${idx}`}
-      type={alert.type}
-      message={alert.message}
-      runtimeId={alert.runtime.id}
-    />
-  ));
-
   let runtimesPanel: any = <HexagonPanel>{runtimes}</HexagonPanel>;
   if (runtimes.length === 0) {
     runtimesPanel = (
@@ -101,17 +83,12 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     );
   }
 
-  return (
-    <>
-      <div>{alerts}</div>
-      {runtimesPanel}
-    </>
-  );
+  return <>{runtimesPanel}</>;
 }
 
 function Dashboard() {
   const history = useHistory();
-  const { data, loading, error } = useQuery(GET_DASHBOARD, {
+  const { data, loading, error } = useQuery(GET_RUNTIMES, {
     fetchPolicy: 'cache-and-network'
   });
   const runtimes = get(data, 'runtimes', []);
@@ -127,7 +104,7 @@ function Dashboard() {
         <NavigationBar />
         <div className={styles.content}>
           <div className={styles.hexagons}>
-            {getDashboardContent({ data, error, loading, history })}
+            {getDashboardContent({ data: runtimes, error, loading, history })}
           </div>
         </div>
       </div>

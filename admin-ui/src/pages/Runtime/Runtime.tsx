@@ -34,14 +34,6 @@ function Runtime() {
     variables: { runtimeId }
   });
 
-  if (loading) return <SpinnerCircular />;
-  if (error) return <ErrorMessage />;
-  if (!data) return null;
-
-  const runtime = data.runtime;
-  const versions = data.versions;
-  const version = versions.find(v => v.id === versionId);
-
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
     ':runtimeId',
     runtimeId || ''
@@ -54,18 +46,17 @@ function Runtime() {
   );
   const isUserInVersionStatus: boolean = location.pathname === statusPath;
 
-  return (
-    <>
-      <Header>
-        <Button label="ADD VERSION" height={40} to={newVersionRoute} />
-      </Header>
-      <div
-        className={cx(styles.container, {
-          [styles.viewWithLogs]: isUserInVersionStatus
-        })}
-        data-testid="runtimeContainer"
-      >
-        <NavigationBar />
+  function getContent() {
+    if (loading) return <SpinnerCircular />;
+    if (error) return <ErrorMessage />;
+    if (!data) return null;
+
+    const runtime = data.runtime;
+    const versions = data.versions;
+    const version = versions.find(v => v.id === versionId);
+
+    return (
+      <>
         <LateralMenu runtime={runtime} versions={versions} version={version} />
         <div className={styles.content}>
           <Switch>
@@ -100,6 +91,23 @@ function Runtime() {
             />
           </Switch>
         </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Header>
+        <Button label="ADD VERSION" height={40} to={newVersionRoute} />
+      </Header>
+      <div
+        className={cx(styles.container, {
+          [styles.viewWithLogs]: isUserInVersionStatus
+        })}
+        data-testid="runtimeContainer"
+      >
+        <NavigationBar />
+        {getContent()}
       </div>
     </>
   );
