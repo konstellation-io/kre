@@ -22,16 +22,6 @@ function Header({
   stickToBottom,
   toggleStickToBottom
 }: Props) {
-  function scrollToBottom() {
-    const listContainer = document.getElementById('VersionLogsListContainer');
-    if (listContainer) {
-      listContainer.scrollTo({
-        top: listContainer.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.statusCircle} />

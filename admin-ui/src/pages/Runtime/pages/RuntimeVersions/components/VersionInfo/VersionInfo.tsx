@@ -21,7 +21,7 @@ function VersionInfo({ version }: Props) {
   const history = useHistory();
   const { runtimeId } = useParams();
 
-  const isVersionActive = version.status === VersionStatus.PUBLISHED;
+  const isPublishedVersion = version.status === VersionStatus.PUBLISHED;
 
   function onVersionClick() {
     const versionStatusPreviewPath = buildRoute.version(
@@ -62,9 +62,9 @@ function VersionInfo({ version }: Props) {
             <p className={styles.descriptionTitle}>DESCRIPTION</p>
           )}
           <p className={styles.description}>{version.description}</p>
-          {isVersionActive && (
+          {isPublishedVersion && (
             <>
-              <p className={styles.activatedTitle}>ACTIVATED BY</p>
+              <p className={styles.activatedTitle}>PUBLISHED BY</p>
               <div className={styles.activatedContainer}>
                 <div className={styles.col2CreatorName}>
                   <EmailIcon className="icon-small" />

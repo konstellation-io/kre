@@ -4,8 +4,9 @@
 .wrapper {
   color: $font-color-white;
   padding: 16px 0;
-  background-color: #26292c;
+  padding-left: 16px;
 }
+
 .name {
   display: flex;
   flex-direction: row;

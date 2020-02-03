@@ -15,12 +15,16 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: $font-color-white;
+  color: $font-color-light;
   font-size: 14px;
   margin: 16px;
 
   span {
     padding-left: 8px;
+  }
+
+  &:hover {
+    color: $font-color-white;
   }
 }
 

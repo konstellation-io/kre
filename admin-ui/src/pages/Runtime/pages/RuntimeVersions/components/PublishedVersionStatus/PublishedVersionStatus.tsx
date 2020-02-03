@@ -14,12 +14,11 @@ import cx from 'classnames';
 import styles from '../../RuntimeVersions.module.scss';
 
 type Props = {
-  activeVersion?: Version;
-  onClick: Function;
+  publishedVersion?: Version;
 };
-function ActiveVersionStatus({ activeVersion, onClick }: Props) {
+function PublishedVersionStatus({ publishedVersion }: Props) {
   const { runtimeId } = useParams();
-  const isVersionActive = activeVersion !== undefined;
+  const isVersionActive = publishedVersion !== undefined;
   const title = isVersionActive
     ? 'Version published'
     : 'There is no published version';
@@ -38,17 +37,18 @@ function ActiveVersionStatus({ activeVersion, onClick }: Props) {
     >
       <Icon className="icon-regular" />
       <span className={styles.versionTitle}>{title}</span>
-      {isVersionActive && activeVersion && (
+      {isVersionActive && publishedVersion && (
         <>
           <span className={styles.versionCreation}>
-            {`CREATED: ${formatDate(new Date(activeVersion.creationDate))}`}
+            {`CREATED: ${formatDate(new Date(publishedVersion.creationDate))}`}
           </span>
           <div className={styles.secondRow}>
             <div className={styles.versionStatus}>
               <div className={styles.greenCircle} />
-              <span className={styles.versionName}>{activeVersion.name}</span>
+              <span className={styles.versionName}>
+                {publishedVersion.name}
+              </span>
             </div>
-            <Button label="LOCATE THIS VERSION" onClick={onClick} />
             <Button label="ADD NEW VERSION" to={newVersionRoute} border />
           </div>
         </>
@@ -57,4 +57,4 @@ function ActiveVersionStatus({ activeVersion, onClick }: Props) {
   );
 }
 
-export default ActiveVersionStatus;
+export default PublishedVersionStatus;

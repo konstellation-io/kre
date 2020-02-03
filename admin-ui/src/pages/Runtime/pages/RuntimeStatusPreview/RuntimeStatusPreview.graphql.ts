@@ -28,6 +28,10 @@ export const PUBLISH_VERSION = gql`
     publishVersion(input: $input) {
       id
       status
+      publicationAuthor {
+        email
+        id
+      }
     }
   }
 `;

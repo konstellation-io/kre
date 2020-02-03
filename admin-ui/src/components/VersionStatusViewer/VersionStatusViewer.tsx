@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useChart from '../../hooks/useChart';
 import ReactDOMServer from 'react-dom/server';
 import VersionNode, { TYPES } from '../Shape/Node/Node';
@@ -110,7 +110,6 @@ function VersionStatusViewer({
   let xScale: any;
   let fontSize: any;
   let nodeHeight: any;
-  let outerPadding: any;
   const ref = useRef<any>({
     workflowsG: null,
     workflows: null,
@@ -237,7 +236,6 @@ function VersionStatusViewer({
 
     ref.current.nodeWidth = xScale.bandwidth();
     ref.current.nodeSizeRatio = ref.current.nodeWidth / DEFAULT_NODE_WIDTH;
-    outerPadding = xScale.step() * SCALE_PADDING_OUTER;
     nodeHeight = DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio;
     fontSize = (ref.current.nodeWidth / 21).toFixed(1);
 

@@ -11,7 +11,7 @@ import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
-import LateralMenu from './components/LateralMenu/LateralMenu';
+import VersionSideBar from './components/VersionSideBar/VersionSideBar';
 
 import { useQuery } from '@apollo/react-hooks';
 import {
@@ -55,20 +55,18 @@ function Runtime() {
 
     return (
       <>
-        {version && (
-          <LateralMenu
-            runtime={runtime}
-            versions={versions}
-            version={version}
-          />
-        )}
+        {version && <VersionSideBar runtime={runtime} version={version} />}
         <div className={styles.content}>
           <Switch>
             <Route
               exact
               path={ROUTE.RUNTIME_VERSIONS}
               render={props => (
-                <RuntimeVersions {...props} versions={versions} />
+                <RuntimeVersions
+                  {...props}
+                  runtime={runtime}
+                  versions={versions}
+                />
               )}
             />
             <Route

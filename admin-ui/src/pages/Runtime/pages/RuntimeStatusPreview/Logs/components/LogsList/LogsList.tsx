@@ -32,7 +32,7 @@ function LogsList({ nodeId, onUpdate }: Props) {
 
   useEffect(() => {
     onUpdate();
-  }, [logs]);
+  }, [logs, onUpdate]);
 
   function addLog(item: NodeLog) {
     setLogs((logsCp: NodeLog[]) => logsCp.concat([item]));

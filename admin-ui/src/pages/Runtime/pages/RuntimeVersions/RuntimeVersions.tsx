@@ -2,47 +2,25 @@ import { get } from 'lodash';
 
 import React, { useRef } from 'react';
 
-import ActiveVersionStatus from './components/ActiveVersionStatus/ActiveVersionStatus';
+import PublishedVersionStatus from './components/PublishedVersionStatus/PublishedVersionStatus';
 import VersionInfo from './components/VersionInfo/VersionInfo';
 import Modal from '../../../../components/Modal/Modal';
 import ROUTE from '../../../../constants/routes';
 
-import { Version, VersionStatus } from '../../../../graphql/models';
+import { Version, VersionStatus, Runtime } from '../../../../graphql/models';
 
 import styles from './RuntimeVersions.module.scss';
 
 type Props = {
+  runtime: Runtime;
   versions: Version[];
 };
 
-function RuntimeVersions({ versions }: Props) {
-  const versionListRef = useRef(null);
-
+function RuntimeVersions({ runtime, versions }: Props) {
   let hasVersions = versions.length > 0;
-  let activeVersion: Version | undefined = versions.find(
+  let publishedVersion: Version | undefined = versions.find(
     version => version.status === VersionStatus.PUBLISHED
   );
-
-  function onLocateActiveVersionClick() {
-    const activeVersionInfoElement = document.getElementById(
-      `versionInfoElement_${activeVersion && activeVersion.id}`
-    );
-
-    let scrollAmount = 0;
-
-    const targetTop = activeVersionInfoElement
-      ? activeVersionInfoElement.offsetTop
-      : 0;
-
-    const listTop: number = get(versionListRef, 'current.offsetTop') || 0;
-    scrollAmount = targetTop - listTop;
-
-    // @ts-ignore
-    versionListRef.current.scrollTo({
-      top: scrollAmount,
-      behavior: 'smooth'
-    });
-  }
 
   function getContent() {
     if (versions.length === 0) {
@@ -62,13 +40,8 @@ function RuntimeVersions({ versions }: Props) {
 
     return (
       <>
-        <ActiveVersionStatus
-          activeVersion={activeVersion}
-          onClick={onLocateActiveVersionClick}
-        />
-        <div className={styles.versionList} ref={versionListRef}>
-          {versionsComponents}
-        </div>
+        <PublishedVersionStatus publishedVersion={publishedVersion} />
+        <div className={styles.versionList}>{versionsComponents}</div>
       </>
     );
   }
@@ -77,7 +50,7 @@ function RuntimeVersions({ versions }: Props) {
     <div className={styles.content}>
       {hasVersions && (
         <>
-          <h2>Versions</h2>
+          <h2>Versions of runtime {runtime.name}</h2>
           <p className={styles.subtitle}>
             Here you can see all the versions from the opened runtime. Click on
             any version to open it or add a new version by clicking on the 'ADD
