@@ -67,7 +67,9 @@ function Runtime() {
             <Route
               exact
               path={ROUTE.RUNTIME_VERSIONS}
-              render={props => <RuntimeVersions />}
+              render={props => (
+                <RuntimeVersions {...props} versions={versions} />
+              )}
             />
             <Route
               exact
