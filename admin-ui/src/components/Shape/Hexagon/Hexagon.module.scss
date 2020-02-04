@@ -84,14 +84,13 @@
 }
 
 .statusText {
+  @include font-button;
+  line-height: 24px;
+  color: $color-grey;
+
   position: absolute;
   width: 100%;
-  color: $color-grey;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.55px;
   text-align: center;
-  line-height: 24px;
   z-index: 9;
 }
 
@@ -113,7 +112,7 @@
 
 .id,
 .info span {
-  font-size: 11px;
+  @include font-small;
 }
 
 .status {
