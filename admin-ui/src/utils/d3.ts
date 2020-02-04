@@ -166,3 +166,10 @@ export function generateVerticalGradient(
 export function getClassFromLabel(label: string) {
   return `node_${label.replace(/[^a-zA-Z0-9]/g, '_')}`;
 }
+
+export function getArrowD(nodeSizeRatio: number, sizePerc: number): string {
+  const dx = nodeSizeRatio * sizePerc * 7;
+  const dy = nodeSizeRatio * sizePerc * 3;
+
+  return `M 0 0 m -${dx} -${dy} l +${dx} +${dy} l -${dx} ${dy}`;
+}
