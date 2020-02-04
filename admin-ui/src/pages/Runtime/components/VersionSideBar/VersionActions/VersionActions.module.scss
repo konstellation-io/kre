@@ -10,10 +10,11 @@
   margin-top: auto;
 
   .item {
+    @include font-body;
+    font-weight: 600;
+
     height: 48px;
     padding-left: 16px;
-    font-size: 13px;
-    font-weight: 600;
     display: flex;
     flex-direction: row;
     align-items: center;

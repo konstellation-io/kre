@@ -114,6 +114,10 @@
 }
 
 .addButton {
+  .buttonWrapper:first-child {
+    pointer-events: none;
+  }
+
   .buttonWrapper:last-child {
     position: absolute;
     top: 2px;
@@ -133,6 +137,10 @@
       .button {
         background-color: #38a7c1;
       }
+    }
+
+    .buttonText {
+      font-size: 16px;
     }
   }
 }

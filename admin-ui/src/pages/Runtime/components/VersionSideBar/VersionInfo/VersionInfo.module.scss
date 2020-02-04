@@ -8,21 +8,21 @@
 }
 
 .name {
+  @include font-body;
+
   display: flex;
   flex-direction: row;
   align-items: center;
-
-  font-weight: 500;
-  font-size: 13px;
 
   padding: 0 16px 16px 16px;
 }
 
 .desc {
-  font-size: 11px;
-  padding: 0 30px;
-  color: $font-color-light;
+  @include font-small;
   font-weight: 500;
+  color: $font-color-light;
+
+  padding: 0 30px;
 }
 
 .circle {

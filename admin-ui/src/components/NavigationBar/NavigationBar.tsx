@@ -4,9 +4,6 @@ import React from 'react';
 import { buildRoute } from '../../utils/routes';
 
 import { NavLink } from 'react-router-dom';
-import DashboardIcon from '@material-ui/icons/ChangeHistory';
-import SecurityIcon from '@material-ui/icons/VerifiedUser';
-import AuditIcon from '@material-ui/icons/SupervisorAccount';
 
 import ROUTE from '../../constants/routes';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
@@ -21,24 +18,6 @@ import { GET_RUNTIMES } from '../../pages/Dashboard/Dashboard.graphql';
 import { Runtime } from '../../graphql/models';
 
 import styles from './NavigationBar.module.scss';
-
-export const navigationButtons = [
-  {
-    id: 'dashboardRoute',
-    path: ROUTE.HOME,
-    Icon: DashboardIcon
-  },
-  {
-    id: 'settingsRoute',
-    path: ROUTE.SETTINGS,
-    Icon: SecurityIcon
-  },
-  {
-    id: 'auditRoute',
-    path: ROUTE.AUDIT,
-    Icon: AuditIcon
-  }
-];
 
 function NavigationBar() {
   const { data, loading, error } = useQuery(GET_RUNTIMES);

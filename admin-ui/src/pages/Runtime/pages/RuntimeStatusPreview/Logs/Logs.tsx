@@ -3,23 +3,22 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header/Header';
 import Filters from './components/Filters/Filters';
 import LogsList from './components/LogsList/LogsList';
+import { Node } from '../RuntimeStatusPreview';
 
 import cx from 'classnames';
 import styles from './Logs.module.scss';
 
 type Props = {
-  nodeId?: string;
-  runtimeName: string;
-  versionName: string;
+  node?: Node;
   setSelectedNode: Function;
 };
-function Logs({ nodeId, runtimeName, versionName, setSelectedNode }: Props) {
+function Logs({ node, setSelectedNode }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
   const [stickToBottom, setStickToBottom] = useState<boolean>(false);
 
   useEffect(() => {
-    setOpened(nodeId !== undefined);
-  }, [nodeId]);
+    setOpened(node !== undefined);
+  }, [node]);
 
   function closeLogs() {
     setSelectedNode(undefined);
@@ -53,18 +52,16 @@ function Logs({ nodeId, runtimeName, versionName, setSelectedNode }: Props) {
     <>
       <div className={cx(styles.container, { [styles.opened]: opened })}>
         <Header
-          runtimeName={runtimeName}
-          versionName={versionName}
           closeLogs={closeLogs}
           opened={opened}
           stickToBottom={stickToBottom}
           toggleStickToBottom={toggleStickToBottom}
         />
         <div className={styles.content}>
-          {nodeId && (
+          {node && (
             <>
-              <Filters filters={{ node_id: nodeId }} />
-              <LogsList nodeId={nodeId} onUpdate={onLogsUpdate} />
+              <Filters filters={{ node: node.name }} />
+              <LogsList node={node} onUpdate={onLogsUpdate} />
             </>
           )}
         </div>

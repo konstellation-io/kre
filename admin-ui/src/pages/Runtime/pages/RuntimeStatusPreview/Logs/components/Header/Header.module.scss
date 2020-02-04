@@ -5,6 +5,23 @@
 .container {
   display: flex;
   align-items: center;
+
+  transition: height ease 0.3s;
+
+  &.opened {
+    height: 50px;
+
+    .buttons {
+      opacity: 1;
+    }
+  }
+}
+
+.title {
+  @include font-caption;
+  color: $font-color-light;
+
+  margin: 0 20px 0 15px;
 }
 
 .statusCircle {
@@ -25,7 +42,7 @@
 
 .version {
   @include font-body;
-  color: $font-color-regular;
+  color: $font-color-light;
 
   margin-left: 16px;
 }
@@ -36,10 +53,6 @@
   opacity: 0;
   transition: opacity ease 0.4s;
   margin: 4px 8px 0 auto;
-
-  &.opened {
-    opacity: 1;
-  }
 
   div {
     margin-left: 8px;

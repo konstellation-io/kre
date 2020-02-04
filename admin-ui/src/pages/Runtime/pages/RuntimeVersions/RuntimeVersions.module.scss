@@ -11,23 +11,24 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 40px 46px 0 46px;
+  padding: 40px 46px 32px 46px;
 }
 
 .subtitle {
   @include font-body;
+  color: $font-color-light;
 
   margin-bottom: 60px;
 }
 
 .activeVersion {
-  margin-bottom: 35px;
-  padding-bottom: 20px;
+  margin-bottom: 32px;
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
   border-bottom: solid 2px $color-grey;
+  background-color: $color-node-content;
 
   svg {
     color: $color-red;
@@ -48,7 +49,7 @@
 
 .versionCreation {
   @include font-caption;
-  font-weight: 700;
+  color: $font-color-light;
 
   margin: 5px 25px;
 }
@@ -77,6 +78,7 @@
   flex-direction: row;
   flex-grow: 1;
   align-items: center;
+  padding-right: 16px;
 }
 
 .versionList {

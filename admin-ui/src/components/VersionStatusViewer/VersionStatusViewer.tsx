@@ -7,7 +7,7 @@ import { event, select } from 'd3-selection';
 import { scaleBand } from 'd3-scale';
 import { max, range } from 'd3-array';
 import { zoom } from 'd3-zoom';
-import { centerText, wrap } from '../../utils/d3';
+import { centerText, wrap, getArrowD } from '../../utils/d3';
 
 import styles from './VersionStatusViewer.module.scss';
 
@@ -16,7 +16,8 @@ import { NodeStatus } from '../../graphql/models';
 const MARGIN_WORKFLOW_NAMES_PERC = 0.08;
 const DEFAULT_NODE_WIDTH = 120.33;
 const DEFAULT_NODE_HEIGHT = 37.9;
-const STROKE_WIDTH = 0.7;
+const STROKE_WIDTH_PERC = 0.035;
+const ARROW_SIZE_PERC = 0.8;
 const SCALE_PADDING_INNER = 0.4;
 const SCALE_PADDING_OUTER = 0.1;
 
@@ -117,7 +118,8 @@ function VersionStatusViewer({
     nodesG: null,
     oldNodes: null,
     nodeWidth: null,
-    nodeSizeRatio: null
+    nodeSizeRatio: null,
+    nodeHeight: null
   });
 
   const marginWorkflow = width * MARGIN_WORKFLOW_NAMES_PERC;
@@ -236,7 +238,7 @@ function VersionStatusViewer({
 
     ref.current.nodeWidth = xScale.bandwidth();
     ref.current.nodeSizeRatio = ref.current.nodeWidth / DEFAULT_NODE_WIDTH;
-    nodeHeight = DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio;
+    ref.current.nodeHeight = DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio;
     fontSize = (ref.current.nodeWidth / 21).toFixed(1);
 
     // Create workflows
@@ -345,7 +347,10 @@ function VersionStatusViewer({
         )
         .on('mouseenter', (d: Node) => events.nodeHighlight(d, true))
         .on('mouseleave', (d: Node) => events.nodeHighlight(d, false))
-        .on('click', (d: Node) => onNodeClick(d.id))
+        .on('click', (d: Node) => {
+          onNodeClick(d.id, d.name);
+          events.nodeHighlight(d, false);
+        })
         .each(function(d: Node) {
           // @ts-ignore
           select(this)
@@ -389,7 +394,7 @@ function VersionStatusViewer({
         .append('text')
         .classed(styles.workflowTagText, true)
         .attr('x', marginWorkflow - 10)
-        .attr('y', nodeHeight / 2)
+        .attr('y', ref.current.nodeHeight / 2)
         .attr('dy', 0)
         .style('font-size', `${fontSize}px`)
         .text((d: Workflow) => d.name)
@@ -399,26 +404,27 @@ function VersionStatusViewer({
         .attr('x1', marginWorkflow)
         .attr('x2', marginWorkflow)
         .attr('y1', 2.5)
-        .attr('y2', -2.5 + nodeHeight)
-        .attr('stroke-width', STROKE_WIDTH);
+        .attr('y2', -2.5 + ref.current.nodeHeight)
+        .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
       workflowsTag
         .append('line')
         .attr('x1', marginWorkflow)
         .attr('x2', xScale('0'))
         .attr('y1', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
         .attr('y2', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
-        .attr('stroke-width', STROKE_WIDTH)
+        .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC)
         .attr('stroke-dasharray', '3, 3');
       workflowsTag
         .append('path')
-        .attr('d', 'M 0 0 l -7 -3 M 0 0 l -7 3')
+        .attr('d', getArrowD(ref.current.nodeSizeRatio, ARROW_SIZE_PERC))
         .attr(
           'transform',
           `translate(${xScale('0')}, ${(DEFAULT_NODE_HEIGHT *
             ref.current.nodeSizeRatio) /
             2})`
         )
-        .attr('stroke-width', STROKE_WIDTH);
+        .attr('stroke-dasharray', '3, 3')
+        .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
     },
     edges: function() {
       newEdges = edges
@@ -429,7 +435,7 @@ function VersionStatusViewer({
       newEdges
         .append('path')
         .classed(styles.edgeLine, true)
-        .attr('d', 'M 0 0 m -7 -3 l +7 +3 l -7 3')
+        .attr('d', getArrowD(ref.current.nodeSizeRatio, ARROW_SIZE_PERC))
         .attr(
           'transform',
           (d: Edge) =>
@@ -437,7 +443,8 @@ function VersionStatusViewer({
               nodeIdToIndex[d.toNode]
             )}, ${(DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2})`
         )
-        .attr('stroke-width', STROKE_WIDTH);
+        .attr('stroke-dasharray', '3, 3')
+        .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
       newEdges
         .append('line')
         .classed('edgeLine', true)
@@ -452,7 +459,7 @@ function VersionStatusViewer({
         .attr('y1', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
         .attr('y2', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
         .attr('stroke-dasharray', '3, 3')
-        .attr('stroke-width', STROKE_WIDTH);
+        .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
       newEdges
         .append('line')
         .classed(styles.lineContainer, true)
@@ -490,7 +497,9 @@ function VersionStatusViewer({
     },
     edgeHighlight: function(node: any, enter: boolean = true) {
       const strokeDashArray = enter ? '10, 0.01' : '3, 3',
-        strokeWidth = enter ? 1 : 0.7;
+        strokeWidth = enter
+          ? ref.current.nodeHeight * STROKE_WIDTH_PERC * 1.2
+          : ref.current.nodeHeight * STROKE_WIDTH_PERC;
 
       // @ts-ignore
       const lines = select(node.parentNode).selectAll(`.${styles.edgeLine}`);

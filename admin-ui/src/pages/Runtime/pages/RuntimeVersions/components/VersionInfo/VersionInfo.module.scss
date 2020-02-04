@@ -10,6 +10,10 @@
   transition: background-color ease 0.3s;
   color: $font-color-light;
 
+  &.even {
+    background-color: $bg-color-lighter;
+  }
+
   .creationDate,
   .name,
   .version,
@@ -80,6 +84,7 @@
   .creation {
     @include font-caption;
     font-weight: 700;
+    line-height: 24px;
 
     display: flex;
     flex-direction: row;
@@ -122,6 +127,7 @@
 
   .version {
     @include font-caption;
+    line-height: 24px;
 
     margin-bottom: 15px;
   }

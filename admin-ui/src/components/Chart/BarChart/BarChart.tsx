@@ -20,8 +20,8 @@ const X_SCALE_PADDING_OUTER: number = 0.4;
 function getTooltipContent(d: D) {
   return (
     <div>
-      <div>{`Success: ${d.y}%`}</div>
-      <div>{`Fail: ${100 - d.y}%`}</div>
+      <div>{`Hits: ${d.y}%`}</div>
+      <div>{`Fails: ${100 - d.y}%`}</div>
     </div>
   );
 }
@@ -132,7 +132,7 @@ function BarChart({ width, height, margin, data }: Props) {
 
     const lg = legend
       .selectAll('g')
-      .data(['successes', 'fails'])
+      .data(['hits', 'fails'])
       .enter()
       .append('g')
       .attr('transform', (d: string, i: number) => `translate(${i * 100},0)`);
