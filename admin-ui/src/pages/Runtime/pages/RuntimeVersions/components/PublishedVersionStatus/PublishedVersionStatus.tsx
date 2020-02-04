@@ -49,7 +49,7 @@ function PublishedVersionStatus({ publishedVersion }: Props) {
                 {publishedVersion.name}
               </span>
             </div>
-            <Button label="ADD NEW VERSION" to={newVersionRoute} border />
+            <Button label="ADD VERSION" to={newVersionRoute} primary />
           </div>
         </>
       )}
