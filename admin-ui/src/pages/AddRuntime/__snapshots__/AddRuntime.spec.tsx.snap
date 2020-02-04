@@ -16,9 +16,7 @@ exports[`Renders AddRuntime without crashing 1`] = `
         </h1>
         <p
           class="subtitle"
-        >
-          Cras quis nulla commodo, aliquam lectus sed, blandit augue. Cras ullamcorper bibendum bibendum.
-        </p>
+        />
         <div
           class="content"
         >
@@ -57,19 +55,14 @@ exports[`Renders AddRuntime without crashing 1`] = `
                 SAVE
               </span>
             </div>
-            <a
-              data-testid="buttonLink"
-              href="/dashboard"
+            <div
+              class="btn default middle label"
+              style="height: 40px; line-height: 40px;"
             >
-              <div
-                class="btn default middle label"
-                style="height: 40px; line-height: 40px;"
-              >
-                <span>
-                  CANCEL
-                </span>
-              </div>
-            </a>
+              <span>
+                CANCEL
+              </span>
+            </div>
           </div>
         </div>
       </div>

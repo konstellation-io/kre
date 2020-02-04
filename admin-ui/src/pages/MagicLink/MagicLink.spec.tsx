@@ -3,15 +3,15 @@ import { Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { render, cleanup, act } from '@testing-library/react';
 import MagicLink from './MagicLink';
-import * as PAGES from '../../constants/routes';
 import axios from 'axios';
 import '@testing-library/jest-dom/extend-expect';
+import ROUTE from '../../constants/routes';
 
 jest.mock('axios');
 
 afterEach(cleanup);
 
-const magicLinkWithTokenPath = PAGES.MAGIC_LINK.replace(':token', '123456');
+const magicLinkWithTokenPath = ROUTE.MAGIC_LINK.replace(':token', '123456');
 
 function renderComponent(locationPath: string) {
   const history = createMemoryHistory();
@@ -19,7 +19,7 @@ function renderComponent(locationPath: string) {
 
   return render(
     <Router history={history}>
-      <Route exact path={PAGES.MAGIC_LINK}>
+      <Route exact path={ROUTE.MAGIC_LINK}>
         <MagicLink history={history} />
       </Route>
     </Router>

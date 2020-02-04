@@ -2,7 +2,7 @@ import React from 'react';
 import { renderWithRouter } from '../../utils/testUtils';
 import { fireEvent, cleanup } from '@testing-library/react';
 import Alert, { Props } from './Alert';
-import { RUNTIME } from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import '@testing-library/jest-dom/extend-expect';
 
 afterEach(cleanup);
@@ -43,6 +43,6 @@ it('handle click events', () => {
 
   fireEvent.click(getByText('GO TO RUNTIME'));
   expect(history.location.pathname).toBe(
-    RUNTIME.replace(':runtimeId', defaultProps.runtimeId)
+    ROUTE.RUNTIME.replace(':runtimeId', defaultProps.runtimeId)
   );
 });
