@@ -111,7 +111,7 @@ export enum VersionStatus {
 
 export enum VersionEnvStatus {
   PUBLISHED = 'PUBLISHED',
-  STARTED = 'STARTED',
+  UNPUBLISHED = 'UNPUBLISHED',
   ERROR = 'ERROR'
 }
 

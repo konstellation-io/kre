@@ -120,7 +120,7 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       {showActionConfirmation && (
         <ConfirmationModal
           title="YOU ARE ABOUT TO PUBLISH A VERSION"
-          message="Are you sure?"
+          message=""
           onAction={onPublishVersion}
           onClose={closePublishModal}
         />

@@ -121,7 +121,6 @@ function Hexagon({
         onClick={onClick}
       >
         <div className={styles.title}>{title}</div>
-        <span className={styles.id}>{id}</span>
         {hexInfo}
       </div>
       ;

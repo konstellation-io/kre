@@ -16,7 +16,8 @@
 
 .label {
   @include font-button;
-  fill: $font-color-regular;
+  font-size: 11px;
+  fill: $font-color-light;
 }
 
 .errors {

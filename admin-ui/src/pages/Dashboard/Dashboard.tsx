@@ -36,7 +36,7 @@ type Props = {
 function getVersionStatus(runtime: Runtime) {
   return runtime.publishedVersion
     ? VersionEnvStatus.PUBLISHED
-    : VersionEnvStatus.STARTED;
+    : VersionEnvStatus.UNPUBLISHED;
 }
 
 function getDashboardContent({ data, error, loading, history }: Props) {
@@ -56,7 +56,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
       title={runtime.name}
       info={[
         {
-          type: 'active',
+          type: 'created',
           date: runtime.creationDate
         }
       ]}

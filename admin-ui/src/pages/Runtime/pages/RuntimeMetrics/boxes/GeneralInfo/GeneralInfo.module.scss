@@ -2,7 +2,7 @@
 @import '../../../../../../styles/mixins';
 
 .sections {
-  @include font-small;
+  @include font-body;
   font-weight: 600;
   color: $font-color-light;
 

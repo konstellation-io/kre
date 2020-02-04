@@ -23,36 +23,36 @@
 }
 
 @mixin font-title {
-  @include font-by-size(20px, 24px);
+  @include font-by-size(21px, 24px);
 }
 
 @mixin font-subheader {
-  @include font-by-size(16px, 19px, 500);
+  @include font-by-size(18px, 19px, 400);
 }
 
 @mixin font-body {
-  @include font-by-size(13px, 20px, 500);
+  @include font-by-size(15px, 20px, 400);
 }
 
 @mixin font-caption {
-  @include font-by-size(11px, 14px, bold);
+  @include font-by-size(13px, 14px, 600);
 }
 
 @mixin font-small {
-  @include font-by-size(11px, 16px, 600);
+  @include font-by-size(13px, 16px, 500);
 }
 
 @mixin font-button {
-  @include font-by-size(11px, 16px, 800);
+  @include font-by-size(13px, 16px, 700);
   letter-spacing: 0.55px;
 }
 
 @mixin font-tabnav {
-  @include font-by-size(13px, 17px, bold);
+  @include font-by-size(15px, 17px, 700);
 }
 
 @mixin font-code {
-  @include font-by-size(13px, 22px);
+  @include font-by-size(15px, 22px);
   font-family: 'Roboto Mono', sans-serif;
 }
 

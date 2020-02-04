@@ -30,10 +30,11 @@ body,
   box-sizing: inherit;
 }
 
-body {
+body,
+text {
   font-family: $font-family;
   background-color: $bg-color;
-  color: $font-color-regular;
+  color: $font-color-light;
   font-size: $font-size-body;
   -webkit-font-smoothing: antialiased;
   border-radius: 25px;

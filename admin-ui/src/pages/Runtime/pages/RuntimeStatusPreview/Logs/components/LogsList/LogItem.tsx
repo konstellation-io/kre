@@ -17,7 +17,7 @@ function LogItem({ date, nodeId, podId, message, level }: NodeLog) {
   const [opened, setOpened] = useState<boolean>(false);
 
   const dateFormatted = moment(date).format('YYYY-MM-DD');
-  const hourFormatted = moment(date).format('hh:mm:sss');
+  const hourFormatted = moment(date).format('hh:mm:ss');
 
   const LevelIcon = LEVEL_TO_ICON[level];
 

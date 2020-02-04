@@ -48,7 +48,7 @@ function ConfirmationModal({
         <div className={styles.message}>{message}</div>
         <div className={styles.comment}>
           <TextInput
-            label="write your comment"
+            label="please, write your comment:  "
             error={error}
             onChange={onChange}
             onSubmit={onSubmit}

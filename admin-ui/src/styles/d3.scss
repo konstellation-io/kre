@@ -1,7 +1,8 @@
 @import './colors';
+@import './mixins';
 
 .chartTooltip {
-  font-weight: 500;
+  @include font-body;
   color: $font-color-white;
 
   position: absolute;

@@ -61,7 +61,7 @@
 
 .nodeText {
   @include font-button;
-  fill: $font-color-regular;
+  fill: $font-color-light;
 
   pointer-events: none;
   transition: fill 0.5s ease;
@@ -73,17 +73,8 @@
 
 .workflowTagText {
   @include font-button;
-  fill: $font-color-regular;
+  fill: $font-color-light;
 
   line-height: 10px;
   text-anchor: end;
-}
-
-.busLine {
-  stroke: $font-color-regular;
-  stroke-dasharray: 3, 3;
-}
-
-.busLineArrow {
-  stroke: $font-color-regular;
 }
