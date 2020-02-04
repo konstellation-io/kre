@@ -110,7 +110,6 @@ function VersionStatusViewer({
   let edgesG: any;
   let xScale: any;
   let fontSize: any;
-  let nodeHeight: any;
   const ref = useRef<any>({
     workflowsG: null,
     workflows: null,

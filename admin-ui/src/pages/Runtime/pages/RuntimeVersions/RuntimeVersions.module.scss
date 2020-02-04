@@ -23,27 +23,19 @@
 
 .activeVersion {
   margin-bottom: 32px;
+  padding: 8px 24px;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   border-bottom: solid 2px $color-grey;
   background-color: $color-node-content;
-
-  svg {
-    color: $color-red;
-    margin: 0 15px;
-  }
-
-  &.active svg {
-    color: $color-green;
-  }
 }
 
 .versionTitle,
 .versionName {
   @include font-body;
-  font-weight: 700;
   color: $font-color-white;
 }
 

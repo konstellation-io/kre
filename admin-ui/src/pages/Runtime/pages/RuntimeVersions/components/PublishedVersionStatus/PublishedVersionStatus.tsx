@@ -3,26 +3,28 @@ import ROUTE from '../../../../../../constants/routes';
 import { useParams } from 'react-router';
 
 import Button from '../../../../../../components/Button/Button';
-import { formatDate } from '../../../../../../utils/format';
-
-import Check from '@material-ui/icons/Check';
-import ErrorOutline from '@material-ui/icons/ErrorOutline';
-
-import { Version } from '../../../../../../graphql/models';
 
 import cx from 'classnames';
 import styles from '../../RuntimeVersions.module.scss';
 
 type Props = {
-  publishedVersion?: Version;
+  nPublishedVersions: number;
+  noVersions: boolean;
 };
-function PublishedVersionStatus({ publishedVersion }: Props) {
+function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
   const { runtimeId } = useParams();
-  const isVersionActive = publishedVersion !== undefined;
-  const title = isVersionActive
-    ? 'Version published'
-    : 'There is no published version';
-  const Icon = isVersionActive ? Check : ErrorOutline;
+
+  let title;
+  if (noVersions) {
+    title =
+      'There are no runtime versions. Please, upload a new version to start working on this runtime.';
+  } else if (nPublishedVersions >= 1) {
+    title = `${nPublishedVersions} version${
+      nPublishedVersions > 1 ? 's' : ''
+    } published`;
+  } else {
+    title = 'There is no published version';
+  }
 
   const newVersionRoute = ROUTE.NEW_VERSION.replace(
     ':runtimeId',
@@ -32,33 +34,17 @@ function PublishedVersionStatus({ publishedVersion }: Props) {
   return (
     <div
       className={cx(styles.activeVersion, {
-        [styles['active']]: isVersionActive
+        [styles['active']]: nPublishedVersions
       })}
     >
-      <Icon className="icon-regular" />
       <span className={styles.versionTitle}>{title}</span>
-      {isVersionActive && publishedVersion && (
-        <>
-          <span className={styles.versionCreation}>
-            {`CREATED: ${formatDate(new Date(publishedVersion.creationDate))}`}
-          </span>
-          <div className={styles.secondRow}>
-            <div className={styles.versionStatus}>
-              <div className={styles.greenCircle} />
-              <span className={styles.versionName}>
-                {publishedVersion.name}
-              </span>
-            </div>
-            <Button
-              label="ADD VERSION"
-              to={newVersionRoute}
-              primary
-              height={30}
-              style={{ borderRadius: 2 }}
-            />
-          </div>
-        </>
-      )}
+      <Button
+        label="ADD VERSION"
+        to={newVersionRoute}
+        primary
+        height={30}
+        style={{ borderRadius: 2 }}
+      />
     </div>
   );
 }
