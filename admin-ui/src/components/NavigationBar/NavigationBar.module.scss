@@ -114,6 +114,10 @@
 }
 
 .addButton {
+  .buttonWrapper:first-child {
+    pointer-events: none;
+  }
+
   .buttonWrapper:last-child {
     position: absolute;
     top: 2px;
