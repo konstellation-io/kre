@@ -84,6 +84,7 @@
   .creation {
     @include font-caption;
     font-weight: 700;
+    line-height: 24px;
 
     display: flex;
     flex-direction: row;
@@ -126,6 +127,7 @@
 
   .version {
     @include font-caption;
+    line-height: 24px;
 
     margin-bottom: 15px;
   }

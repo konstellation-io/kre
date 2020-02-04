@@ -57,7 +57,6 @@ function VersionInfo({ version, even }: Props) {
           </div>
         </div>
         <div className={styles.col2}>
-          <p className={styles.name}>{version.description}</p>
           <p className={styles.version}>{`VERSION ${version.name}`}</p>
           {version.description && (
             <p className={styles.descriptionTitle}>DESCRIPTION</p>

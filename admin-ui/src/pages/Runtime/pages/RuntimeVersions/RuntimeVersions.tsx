@@ -38,7 +38,7 @@ function RuntimeVersions({ runtime, versions }: Props) {
       <VersionInfo
         key={`version_${idx}`}
         version={version}
-        even={idx % 2 === 0}
+        even={idx % 2 !== 0}
       />
     ));
 
