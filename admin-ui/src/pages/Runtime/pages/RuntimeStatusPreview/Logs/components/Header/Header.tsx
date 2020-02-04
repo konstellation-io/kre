@@ -23,15 +23,16 @@ function Header({
   toggleStickToBottom
 }: Props) {
   return (
-    <div className={styles.container}>
+    <div
+      className={cx(styles.container, {
+        [styles.opened]: opened
+      })}
+    >
+      <div className={styles.title}>LOGS CONSOLE</div>
       <div className={styles.statusCircle} />
       <span className={styles.runtime}>{runtimeName}</span>
       <span className={styles.version}>{versionName}</span>
-      <div
-        className={cx(styles.buttons, {
-          [styles.opened]: opened
-        })}
-      >
+      <div className={styles.buttons}>
         <div
           className={cx(styles.stickBottom, { [styles.active]: stickToBottom })}
           onClick={toggleStickToBottom}
