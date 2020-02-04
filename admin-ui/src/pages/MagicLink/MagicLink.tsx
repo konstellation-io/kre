@@ -3,7 +3,7 @@ import useEndpoint from '../../hooks/useEndpoint';
 import { useParams, useHistory } from 'react-router-dom';
 
 import { ENDPOINT } from '../../constants/application';
-import * as PAGES from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import * as CHECK from '../../components/Form/check';
 import StateCircle from '../../components/Shape/StateCircle/StateCircle';
 import { STATES } from '../../constants/application';
@@ -87,7 +87,7 @@ function MagicLink() {
           if (response.status === 200) {
             setStatus(STATES.SUCCESS);
             timeout.current = setTimeout(() => {
-              history.push(PAGES.DASHBOARD);
+              history.push(ROUTE.HOME);
             }, 2500) as any;
           } else if (
             response.error &&

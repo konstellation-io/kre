@@ -7,7 +7,7 @@ import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/Spin
 import FileUpload from '../../components/Form/FileUpload/FileUpload';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
-import * as PAGES from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 
 import styles from './AddVersion.module.scss';
 
@@ -49,7 +49,7 @@ function AddVersion() {
     console.log(`${versionCreatedId} version created`);
 
     history.push(
-      PAGES.RUNTIME_VERSION_STATUS.replace(
+      ROUTE.RUNTIME_VERSION_STATUS.replace(
         ':runtimeId',
         runtimeId || ''
       ).replace(':versionId', versionCreatedId || '')
@@ -65,10 +65,7 @@ function AddVersion() {
       <div className={styles.grid}>
         <div className={styles.container}>
           <h1>Add Version</h1>
-          <p className={styles.subtitle}>
-            Cras quis nulla commodo, aliquam lectus sed, blandit augue. Cras
-            ullamcorper bibendum bibendum.
-          </p>
+          <p className={styles.subtitle}></p>
           <div className={styles.content}>
             <FileUpload
               label="upload version file (KRT file)"

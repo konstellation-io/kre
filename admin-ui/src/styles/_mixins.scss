@@ -56,6 +56,13 @@
   font-family: 'Roboto Mono', sans-serif;
 }
 
+@mixin center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 @mixin form-input {
   @include font-body;
   line-height: 16px;
@@ -96,4 +103,37 @@
   left: 0;
   background-color: $color-shield;
   opacity: $opacity-shield;
+}
+
+@mixin hexagonWrapper {
+  text-align: center;
+  position: relative;
+}
+
+@mixin hexagon {
+  height: 100%;
+  width: calc(100% * 0.57735);
+  display: inline-block;
+
+  &:before {
+    position: absolute;
+    top: 0;
+    right: calc((100% / 2) - ((100% * 0.57735) / 2));
+    background-color: inherit;
+    height: inherit;
+    width: inherit;
+    content: '';
+    transform: rotateZ(60deg);
+  }
+
+  &:after {
+    position: absolute;
+    top: 0;
+    right: calc((100% / 2) - ((100% * 0.57735) / 2));
+    background-color: inherit;
+    height: inherit;
+    width: inherit;
+    content: '';
+    transform: rotateZ(-60deg);
+  }
 }

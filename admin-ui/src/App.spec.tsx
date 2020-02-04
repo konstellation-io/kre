@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderWithReduxAndRouter } from './utils/testUtils';
 import { cleanup } from '@testing-library/react';
-import { HOME } from './constants/routes';
+import ROUTE from './constants/routes';
 import App, { Routes } from './App';
 
 import { MockedProvider } from '@apollo/react-testing';
@@ -30,7 +30,7 @@ it('it shows dashboard page on home URL when logged', () => {
     <MockedProvider mocks={mocks} addTypename={false}>
       <Routes />
     </MockedProvider>,
-    HOME
+    ROUTE.HOME
   );
 
   expect(getByTestId('dashboardContainer')).toBeInTheDocument();

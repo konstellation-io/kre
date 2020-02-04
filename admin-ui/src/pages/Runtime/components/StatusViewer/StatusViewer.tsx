@@ -144,7 +144,7 @@ function StatusViewer({ data, status, onNodeClick }: any) {
 
     prevParams.current.data = data;
     prevParams.current.status = status;
-  }, [data, status]);
+  }, [data, status]); // FIXME remove warning
 
   const { width, height } = dimensions;
 

@@ -1,13 +1,12 @@
 import gql from 'graphql-tag';
-import { Alert, Runtime } from '../../graphql/models';
+import { Runtime } from '../../graphql/models';
 
-export interface GetDashboardResponse {
+export interface GetRuntimesResponse {
   runtimes: Runtime[];
-  alerts: Alert[];
 }
 
-export const GET_DASHBOARD = gql`
-  query GetDashboard {
+export const GET_RUNTIMES = gql`
+  query GetRuntimes {
     runtimes {
       id
       name
@@ -15,13 +14,6 @@ export const GET_DASHBOARD = gql`
       creationDate
       publishedVersion {
         status
-      }
-    }
-    alerts {
-      type
-      message
-      runtime {
-        id
       }
     }
   }

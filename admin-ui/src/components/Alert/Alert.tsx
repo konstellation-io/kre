@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router';
 import Button from '../Button/Button';
-import * as PAGES from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 
 import cx from 'classnames';
 import styles from './Alert.module.scss';
@@ -23,7 +23,7 @@ function Alert({ type, message, runtimeId }: Props) {
       <Button
         label="GO TO RUNTIME"
         onClick={() =>
-          history.push(PAGES.RUNTIME.replace(':runtimeId', runtimeId))
+          history.push(ROUTE.RUNTIME.replace(':runtimeId', runtimeId))
         }
       />
     </div>

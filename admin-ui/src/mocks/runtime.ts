@@ -1,9 +1,9 @@
-import { GET_DASHBOARD } from '../pages/Dashboard/Dashboard.graphql';
+import { GET_RUNTIMES } from '../pages/Dashboard/Dashboard.graphql';
 import { ADD_RUNTIME } from '../pages/AddRuntime/AddRuntime.graphql';
 
 export const dashboardMock = {
   request: {
-    query: GET_DASHBOARD
+    query: GET_RUNTIMES
   },
   result: {
     data: {
@@ -19,20 +19,6 @@ export const dashboardMock = {
           status: 'STARTED',
           name: 'Some Other Name',
           creationDate: '2019-11-27T15:28:01+00:00'
-        }
-      ],
-      alerts: [
-        {
-          id: 'id0',
-          type: 'ERROR',
-          message: 'some message',
-          runtime: { id: '00001' }
-        },
-        {
-          id: 'id1',
-          type: 'ERROR',
-          message: 'some message 2',
-          runtime: { id: '00001' }
         }
       ]
     }

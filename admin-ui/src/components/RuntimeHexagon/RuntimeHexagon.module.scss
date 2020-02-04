@@ -1,15 +1,12 @@
 @import '../../styles/colors';
+@import '../../styles/mixins';
 
 .wrapper {
-  text-align: center;
-  position: relative;
-  display: inline-block;
+  @include hexagonWrapper;
 }
 
 .hexagon {
-  height: 100%;
-  width: calc(100% * 0.57735);
-  display: inline-block;
+  @include hexagon;
 
   &.STOPPED,
   &.CREATING {
@@ -23,26 +20,4 @@
   &.ERROR {
     background-color: $color-red;
   }
-}
-
-.hexagon:before {
-  position: absolute;
-  top: 0;
-  right: calc((100% / 2) - ((100% * 0.57735) / 2));
-  background-color: inherit;
-  height: inherit;
-  width: inherit;
-  content: '';
-  transform: rotateZ(60deg);
-}
-
-.hexagon:after {
-  position: absolute;
-  top: 0;
-  right: calc((100% / 2) - ((100% * 0.57735) / 2));
-  background-color: inherit;
-  height: inherit;
-  width: inherit;
-  content: '';
-  transform: rotateZ(-60deg);
 }

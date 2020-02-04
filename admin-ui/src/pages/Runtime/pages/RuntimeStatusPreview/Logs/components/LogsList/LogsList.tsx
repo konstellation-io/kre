@@ -5,6 +5,7 @@ import { useParams } from 'react-router';
 import { useSubscription } from '@apollo/react-hooks';
 
 import LogItem from './LogItem';
+import { Node } from '../../../RuntimeStatusPreview';
 
 import { GET_LOGS_SUBSCRIPTION } from '../../Logs.graphql';
 import { NodeLog } from '../../../../../../../graphql/models';
@@ -12,17 +13,17 @@ import { NodeLog } from '../../../../../../../graphql/models';
 import styles from './LogsList.module.scss';
 
 type Props = {
-  nodeId?: string;
+  node: Node;
   onUpdate: () => void;
 };
-function LogsList({ nodeId, onUpdate }: Props) {
+function LogsList({ node, onUpdate }: Props) {
   const { runtimeId } = useParams();
   const [logs, setLogs] = useState<NodeLog[]>([]);
 
   useSubscription<NodeLog>(GET_LOGS_SUBSCRIPTION, {
     variables: {
       runtimeId,
-      nodeId
+      nodeId: node.id
     },
     onSubscriptionData: (msg: any) => {
       const logInfo = get(msg, 'subscriptionData.data.nodeLogs');
@@ -32,7 +33,7 @@ function LogsList({ nodeId, onUpdate }: Props) {
 
   useEffect(() => {
     onUpdate();
-  }, [logs]);
+  }, [logs, onUpdate]);
 
   function addLog(item: NodeLog) {
     setLogs((logsCp: NodeLog[]) => logsCp.concat([item]));

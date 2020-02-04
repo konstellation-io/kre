@@ -14,16 +14,18 @@ import {
 } from './RuntimeStatusPreview.graphql';
 import styles from './RuntimeStatusPreview.module.scss';
 
+export type Node = {
+  id: string;
+  name: string;
+};
+
 type Props = {
-  runtime: any;
   version: any;
 };
-function RuntimeStatusPreview({ runtime, version }: Props) {
+function RuntimeStatusPreview({ version }: Props) {
   const params: { runtimeId?: string; versionId?: string } = useParams();
 
-  const [selectedNode, setSelectedNode] = useState<string | undefined>(
-    undefined
-  );
+  const [selectedNode, setSelectedNode] = useState<Node | undefined>(undefined);
 
   const { data, loading, error } = useQuery<
     GetVersionWorkflowsResponse,
@@ -40,9 +42,12 @@ function RuntimeStatusPreview({ runtime, version }: Props) {
   // const versionStatus = data && data.version && data.version.status;
   const versionStatus = version.status;
 
-  function setNode(nodeId: string) {
+  function setNode(nodeId: string, nodeName: string) {
     if (!nodeId.includes('InputNode') && !nodeId.includes('OutputNode')) {
-      setSelectedNode(nodeId);
+      setSelectedNode({
+        id: nodeId,
+        name: nodeName
+      } as Node);
     }
   }
 
@@ -53,12 +58,7 @@ function RuntimeStatusPreview({ runtime, version }: Props) {
         status={versionStatus}
         onNodeClick={setNode}
       />
-      <Logs
-        nodeId={selectedNode}
-        runtimeName={runtime && runtime.name}
-        versionName={version && version.name}
-        setSelectedNode={setSelectedNode}
-      />
+      <Logs node={selectedNode} setSelectedNode={setSelectedNode} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { renderWithReduxAndRouter } from '../../utils/testUtils';
 import { fireEvent, cleanup, RenderResult } from '@testing-library/react';
 import { Router } from 'react-router-dom';
-import * as ROUTE from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import { Routes } from '../../App';
 import { createMemoryHistory } from 'history';
 

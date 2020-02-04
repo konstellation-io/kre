@@ -1,4 +1,5 @@
 @import '../../../styles/colors';
+@import '../../../styles/mixins';
 
 .g {
   text,
@@ -40,9 +41,9 @@
   }
 
   .seriesLabel {
+    @include font-body;
+
     fill: $font-color-white;
-    font-size: 13px;
-    font-weight: 500;
   }
 
   .rowBg {

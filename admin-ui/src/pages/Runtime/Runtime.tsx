@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch, useParams, useLocation } from 'react-router-dom';
-import * as ROUTE from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import { buildRoute } from '../../utils/routes';
 
 import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
@@ -11,7 +11,7 @@ import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
-import LateralMenu from './components/LateralMenu/LateralMenu';
+import VersionSideBar from './components/VersionSideBar/VersionSideBar';
 
 import { useQuery } from '@apollo/react-hooks';
 import {
@@ -22,6 +22,7 @@ import {
 
 import cx from 'classnames';
 import styles from './Runtime.module.scss';
+import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 
 function Runtime() {
   const { runtimeId, versionId } = useParams();
@@ -34,17 +35,7 @@ function Runtime() {
     variables: { runtimeId }
   });
 
-  if (loading) return <SpinnerCircular />;
-  if (error) return <ErrorMessage />;
-  if (!data) return null;
-
-  const runtime = data.runtime;
-  const versions = data.versions;
-  const version = versions.find(v => v.id === versionId);
-  const newVersionRoute = ROUTE.NEW_VERSION.replace(
-    ':runtimeId',
-    runtimeId || ''
-  );
+  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
 
   const statusPath: string = buildRoute.version(
     ROUTE.RUNTIME_VERSION_STATUS,
@@ -53,30 +44,36 @@ function Runtime() {
   );
   const isUserInVersionStatus: boolean = location.pathname === statusPath;
 
-  return (
-    <>
-      <Header>
-        <Button label="ADD VERSION" height={40} to={newVersionRoute} />
-      </Header>
-      <div
-        className={cx(styles.container, {
-          [styles.viewWithLogs]: isUserInVersionStatus
-        })}
-        data-testid="runtimeContainer"
-      >
-        <NavigationBar />
-        <LateralMenu runtime={runtime} versions={versions} version={version} />
+  function getContent() {
+    if (loading) return <SpinnerCircular />;
+    if (error) return <ErrorMessage />;
+    if (!data) return null;
+
+    const runtime = data.runtime;
+    const versions = data.versions;
+    const version = versions.find(v => v.id === versionId);
+
+    return (
+      <>
+        {version && <VersionSideBar runtime={runtime} version={version} />}
         <div className={styles.content}>
           <Switch>
             <Route
               exact
-              path={ROUTE.RUNTIME_VERSION_STATUS}
+              path={ROUTE.RUNTIME_VERSIONS}
               render={props => (
-                <RuntimeStatusPreview
+                <RuntimeVersions
                   {...props}
                   runtime={runtime}
-                  version={version}
+                  versions={versions}
                 />
+              )}
+            />
+            <Route
+              exact
+              path={ROUTE.RUNTIME_VERSION_STATUS}
+              render={props => (
+                <RuntimeStatusPreview {...props} version={version} />
               )}
             />
             <Route
@@ -99,6 +96,24 @@ function Runtime() {
             />
           </Switch>
         </div>
+      </>
+    );
+  }
+
+  // TODO use PageBase
+  return (
+    <>
+      <Header>
+        <Button label="ADD VERSION" height={40} to={newVersionRoute} />
+      </Header>
+      <div
+        className={cx(styles.container, {
+          [styles.viewWithLogs]: isUserInVersionStatus
+        })}
+        data-testid="runtimeContainer"
+      >
+        <NavigationBar />
+        {getContent()}
       </div>
     </>
   );

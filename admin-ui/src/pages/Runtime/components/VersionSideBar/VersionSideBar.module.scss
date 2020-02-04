@@ -11,6 +11,23 @@
   display: flex;
 }
 
+.backSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: $font-color-light;
+  font-size: 14px;
+  padding-left: 8px;
+
+  span {
+    padding-left: 8px;
+  }
+
+  &:hover {
+    color: $font-color-white;
+  }
+}
+
 .runtimeNameSection {
   display: flex;
   flex-direction: row;
@@ -23,7 +40,6 @@
 
 .runtimeName {
   @include font-subheader;
-  color: $font-color-white;
   margin-right: 15px;
 }
 

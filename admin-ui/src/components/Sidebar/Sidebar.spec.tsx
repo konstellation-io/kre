@@ -8,7 +8,7 @@ import {
 import { renderWithReduxAndRouter } from '../../utils/testUtils';
 import { MemoryRouter } from 'react-router';
 import { Router } from 'react-router-dom';
-import * as ROUTE from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import Sidebar, { Tab } from './Sidebar';
 import { createMemoryHistory, History } from 'history';
 

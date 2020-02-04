@@ -5,7 +5,6 @@ import useInput from '../../hooks/useInput';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
-import * as PAGES from '../../constants/routes';
 
 import styles from './AddRuntime.module.scss';
 
@@ -16,9 +15,10 @@ import {
   AddRuntimeVars
 } from './AddRuntime.graphql';
 import {
-  GET_DASHBOARD,
-  GetDashboardResponse
+  GET_RUNTIMES,
+  GetRuntimesResponse
 } from '../Dashboard/Dashboard.graphql';
+import ROUTE from '../../constants/routes';
 
 function verifyRuntimeName(value: string) {
   return CHECK.getValidationError([
@@ -41,15 +41,15 @@ function AddRuntime() {
     update(cache, updateResult) {
       if (updateResult.data !== undefined && updateResult.data !== null) {
         const newRuntime = updateResult.data.createRuntime.runtime;
-        const cacheResult = cache.readQuery<GetDashboardResponse>({
-          query: GET_DASHBOARD
+        const cacheResult = cache.readQuery<GetRuntimesResponse>({
+          query: GET_RUNTIMES
         });
 
         if (cacheResult !== null) {
-          const { runtimes, alerts } = cacheResult;
+          const { runtimes } = cacheResult;
           cache.writeQuery({
-            query: GET_DASHBOARD,
-            data: { runtimes: runtimes.concat([newRuntime]), alerts }
+            query: GET_RUNTIMES,
+            data: { runtimes: runtimes.concat([newRuntime]) }
           });
         }
       }
@@ -65,7 +65,7 @@ function AddRuntime() {
   function onCompleteAddRuntime(updatedData: any) {
     // TODO: CHECK FOR API ERRORS
     console.log(`${value} runtime created`);
-    history.push(PAGES.DASHBOARD);
+    history.push(ROUTE.HOME);
   }
 
   function onSubmit() {
@@ -80,10 +80,7 @@ function AddRuntime() {
       <div className={styles.grid}>
         <div className={styles.container}>
           <h1>Add Runtime</h1>
-          <p className={styles.subtitle}>
-            Cras quis nulla commodo, aliquam lectus sed, blandit augue. Cras
-            ullamcorper bibendum bibendum.
-          </p>
+          <p className={styles.subtitle}></p>
           <div className={styles.content}>
             <TextInput
               whiteColor
@@ -100,7 +97,12 @@ function AddRuntime() {
                 onClick={onSubmit}
                 loading={loading}
               />
-              <Button label="CANCEL" to={PAGES.DASHBOARD} />
+              <Button
+                label="CANCEL"
+                onClick={() => {
+                  history.goBack();
+                }}
+              />
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ import useEndpoint from '../../hooks/useEndpoint';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
-import * as PAGES from '../../constants/routes';
+import ROUTE from '../../constants/routes';
 import { ENDPOINT } from '../../constants/application';
 
 import styles from './Login.module.scss';
@@ -42,15 +42,13 @@ function Login() {
     function() {
       if (response.complete) {
         if (get(response, 'status') === 200) {
-          history.push(PAGES.VERIFY_EMAIL);
+          history.push(ROUTE.VERIFY_EMAIL);
         } else if (
           get(response, 'error') &&
           get(response, 'data.code') === 'validation_error'
         ) {
           setError('Invalid email');
-        } else if (
-          get(response, 'data.code') === 'domain_not_allowed'
-        ) {
+        } else if (get(response, 'data.code') === 'domain_not_allowed') {
           setError('Domain not allowed');
         } else {
           setError('Unexpected error. Contact support for more information');

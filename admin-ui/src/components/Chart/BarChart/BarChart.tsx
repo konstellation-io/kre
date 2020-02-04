@@ -11,7 +11,6 @@ import {
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
-import { color } from 'd3-color';
 
 import styles from './BarChart.module.scss';
 
@@ -21,8 +20,8 @@ const X_SCALE_PADDING_OUTER: number = 0.4;
 function getTooltipContent(d: D) {
   return (
     <div>
-      <div>{`Success: ${d.y}%`}</div>
-      <div>{`Fail: ${100 - d.y}%`}</div>
+      <div>{`Hits: ${d.y}%`}</div>
+      <div>{`Fails: ${100 - d.y}%`}</div>
     </div>
   );
 }
@@ -56,9 +55,7 @@ function BarChart({ width, height, margin, data }: Props) {
   let xAxisG: any;
   let yAxisG: any;
   let barsG: any;
-  let bars: any;
   let bgBarsG: any;
-  let bgBars: any;
   let marginLeft: number;
   let marginTop: number;
 
@@ -135,7 +132,7 @@ function BarChart({ width, height, margin, data }: Props) {
 
     const lg = legend
       .selectAll('g')
-      .data(['successes', 'fails'])
+      .data(['hits', 'fails'])
       .enter()
       .append('g')
       .attr('transform', (d: string, i: number) => `translate(${i * 100},0)`);
@@ -171,7 +168,7 @@ function BarChart({ width, height, margin, data }: Props) {
     bgBarsG = g.append('g').classed(styles.bars, true);
     barsG = g.append('g').classed(styles.bars, true);
 
-    bgBars = bgBarsG
+    bgBarsG
       .selectAll(`.${styles.bgBar}`)
       .data(data)
       .enter()
@@ -191,7 +188,7 @@ function BarChart({ width, height, margin, data }: Props) {
         events.barHighlight(d, this, false);
       });
 
-    bars = barsG
+    barsG
       .selectAll(`.${styles.bar}`)
       .data(data)
       .enter()

@@ -9,7 +9,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import './styles/app.global.scss';
 import './styles/d3.scss';
 
-import * as ROUTE from './constants/routes';
+import ROUTE from './constants/routes';
 import history from './history';
 
 import { ApolloClient } from 'apollo-client';

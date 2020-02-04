@@ -7,41 +7,25 @@ import cx from 'classnames';
 import styles from './Header.module.scss';
 
 type Props = {
-  runtimeName: string;
-  versionName: string;
   closeLogs: () => void;
   opened: boolean;
   stickToBottom: boolean;
   toggleStickToBottom: () => void;
 };
 function Header({
-  runtimeName,
-  versionName,
   closeLogs,
   opened,
   stickToBottom,
   toggleStickToBottom
 }: Props) {
-  function scrollToBottom() {
-    const listContainer = document.getElementById('VersionLogsListContainer');
-    if (listContainer) {
-      listContainer.scrollTo({
-        top: listContainer.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
-  }
-
   return (
-    <div className={styles.container}>
-      <div className={styles.statusCircle} />
-      <span className={styles.runtime}>{runtimeName}</span>
-      <span className={styles.version}>{versionName}</span>
-      <div
-        className={cx(styles.buttons, {
-          [styles.opened]: opened
-        })}
-      >
+    <div
+      className={cx(styles.container, {
+        [styles.opened]: opened
+      })}
+    >
+      <div className={styles.title}>LOGS CONSOLE</div>
+      <div className={styles.buttons}>
         <div
           className={cx(styles.stickBottom, { [styles.active]: stickToBottom })}
           onClick={toggleStickToBottom}

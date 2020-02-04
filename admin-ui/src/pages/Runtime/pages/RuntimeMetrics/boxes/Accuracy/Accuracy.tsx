@@ -22,7 +22,7 @@ function Accuracy({ toggleExpanded, nodeId, data }: Props) {
   const { width, height } = useRenderOnResize({ container });
   return (
     <Box>
-      <Title text="Success VS Fails" />
+      <Title text="Hits VS Fails" />
       <ExpandButton
         onClick={() => {
           toggleExpanded && toggleExpanded(nodeId);

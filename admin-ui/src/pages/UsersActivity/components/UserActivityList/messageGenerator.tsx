@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import * as ROUTES from '../../../../constants/routes';
+import ROUTE from '../../../../constants/routes';
 import { buildRoute } from '../../../../utils/routes';
-import { UserActivity, UserActivityType, UserActivityVar } from '../../../../graphql/models';
+import {
+  UserActivity,
+  UserActivityType,
+  UserActivityVar
+} from '../../../../graphql/models';
 
 enum VarTypes {
   RUNTIME_ID = 'RUNTIME_ID',
@@ -51,7 +55,7 @@ export default function getMessage(
 
   const runtimeLink =
     userActivity.type === UserActivityType.CREATE_RUNTIME && runtimeId ? (
-      <Link to={buildRoute.runtime(ROUTES.RUNTIME, runtimeId)}>
+      <Link to={buildRoute.runtime(ROUTE.RUNTIME, runtimeId)}>
         {runtimeName}
       </Link>
     ) : (
@@ -61,7 +65,7 @@ export default function getMessage(
     runtimeId && versionId ? (
       <Link
         to={buildRoute.version(
-          ROUTES.RUNTIME_VERSION_STATUS,
+          ROUTE.RUNTIME_VERSION_STATUS,
           runtimeId,
           versionId
         )}
@@ -77,7 +81,7 @@ export default function getMessage(
     oldPublishedVersionId ? (
       <Link
         to={buildRoute.version(
-          ROUTES.RUNTIME_VERSION_STATUS,
+          ROUTE.RUNTIME_VERSION_STATUS,
           runtimeId,
           oldPublishedVersionId
         )}
