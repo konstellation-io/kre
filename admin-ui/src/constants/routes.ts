@@ -20,7 +20,7 @@ const ROUTE = {
   RUNTIME_VERSION_CONFIGURATION: `${RUNTIME_VERSION}/configuration`,
   RUNTIME_VERSION_METRICS: `${RUNTIME_VERSION}/metrics`,
   NEW_RUNTIME: '/new-runtime',
-  NEW_VERSION: `${RUNTIME_VERSIONS}/new_version`
+  NEW_VERSION: `${RUNTIME}/new_version`
 };
 
 export default ROUTE;
