@@ -47,6 +47,10 @@
   color: $font-color-white;
 }
 
+.versionTitle {
+  line-height: 40px;
+}
+
 .versionCreation {
   @include font-caption;
   color: $font-color-light;
