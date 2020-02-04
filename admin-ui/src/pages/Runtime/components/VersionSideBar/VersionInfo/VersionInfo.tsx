@@ -11,9 +11,15 @@ function VersionInfo({ version }: VersionListItemProps) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.name}>
-        <div className={cx(styles.circle, styles[version.status])}></div>
         <div>{version.name}</div>
       </div>
+      <div className={styles.labelContainer}>
+        <div className={cx(styles.circle, styles[version.status])}></div>
+        <div className={cx(styles.label, styles[version.status])}>
+          {version.status}
+        </div>
+      </div>
+
       <div>
         <div className={styles.desc}>{version.description}</div>
       </div>

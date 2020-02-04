@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Version, Runtime, VersionStatus } from '../../../../../graphql/models';
-import cx from 'classnames';
 import styles from './VersionActions.module.scss';
 
 // Icons
@@ -10,6 +9,7 @@ import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import UnpublishIcon from '@material-ui/icons/Block';
 import useVersionAction from '../../../utils/hooks';
 import ConfirmationModal from '../../../../../components/ConfirmationModal/ConfirmationModal';
+import Button, { BUTTON_TYPES } from '../../../../../components/Button/Button';
 
 type VersionActionsProps = {
   runtime: Runtime;
@@ -21,6 +21,7 @@ type ActionProps = {
   label: string;
   action?: Function;
   disabled?: boolean;
+  primary?: boolean;
 };
 
 function VersionActions({ runtime, version }: VersionActionsProps) {
@@ -65,10 +66,11 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       buttons[0] = {
         Icon: StartIcon,
         label: 'START',
-        action: onStartVersion
+        action: onStartVersion,
+        primary: true
       };
       buttons[1] = {
-        Icon: StartIcon,
+        Icon: PublishIcon,
         label: 'PUBLISH',
         disabled: true
       };
@@ -82,7 +84,8 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       buttons[1] = {
         Icon: PublishIcon,
         label: 'PUBLISH',
-        action: openPublishModal
+        action: openPublishModal,
+        primary: true
       };
       break;
     case VersionStatus.PUBLISHED:
@@ -94,7 +97,8 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       buttons[1] = {
         Icon: UnpublishIcon,
         label: 'UNPUBLISH',
-        action: onUnpublishVersion
+        action: onUnpublishVersion,
+        primary: true
       };
       break;
   }
@@ -102,21 +106,21 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
   return (
     <div className={styles.wrapper}>
       {buttons.map((btn, idx) => (
-        <div
+        <Button
           key={idx}
-          className={cx(styles.item, { [styles.disabled]: btn.disabled })}
           onClick={() => btn.action && btn.action()}
-        >
-          <div className={styles.icon}>
-            <btn.Icon className="icon-small" />
-          </div>
-          <div>{btn.label}</div>
-        </div>
+          label={btn.label}
+          Icon={btn.Icon}
+          type={BUTTON_TYPES.DEFAULT}
+          disabled={btn.disabled}
+          primary={btn.primary}
+          style={{ flexGrow: 1 }}
+        />
       ))}
       {showActionConfirmation && (
         <ConfirmationModal
           title="YOU ARE ABOUT TO PUBLISH A VERSION"
-          message="And this cannot be undone. Are you sure?"
+          message="Are you sure?"
           onAction={onPublishVersion}
           onClose={closePublishModal}
         />

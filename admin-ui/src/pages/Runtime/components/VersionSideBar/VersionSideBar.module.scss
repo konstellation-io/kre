@@ -17,7 +17,7 @@
   align-items: center;
   color: $font-color-light;
   font-size: 14px;
-  margin: 16px;
+  padding-left: 8px;
 
   span {
     padding-left: 8px;
@@ -40,7 +40,6 @@
 
 .runtimeName {
   @include font-subheader;
-  color: $font-color-white;
   margin-right: 15px;
 }
 
