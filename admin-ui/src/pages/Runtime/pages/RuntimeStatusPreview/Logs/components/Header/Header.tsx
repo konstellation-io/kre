@@ -7,16 +7,12 @@ import cx from 'classnames';
 import styles from './Header.module.scss';
 
 type Props = {
-  runtimeName: string;
-  versionName: string;
   closeLogs: () => void;
   opened: boolean;
   stickToBottom: boolean;
   toggleStickToBottom: () => void;
 };
 function Header({
-  runtimeName,
-  versionName,
   closeLogs,
   opened,
   stickToBottom,
@@ -29,9 +25,6 @@ function Header({
       })}
     >
       <div className={styles.title}>LOGS CONSOLE</div>
-      <div className={styles.statusCircle} />
-      <span className={styles.runtime}>{runtimeName}</span>
-      <span className={styles.version}>{versionName}</span>
       <div className={styles.buttons}>
         <div
           className={cx(styles.stickBottom, { [styles.active]: stickToBottom })}

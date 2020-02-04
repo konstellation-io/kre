@@ -347,7 +347,10 @@ function VersionStatusViewer({
         )
         .on('mouseenter', (d: Node) => events.nodeHighlight(d, true))
         .on('mouseleave', (d: Node) => events.nodeHighlight(d, false))
-        .on('click', (d: Node) => onNodeClick(d.id))
+        .on('click', (d: Node) => {
+          onNodeClick(d.id, d.name);
+          events.nodeHighlight(d, false);
+        })
         .each(function(d: Node) {
           // @ts-ignore
           select(this)
