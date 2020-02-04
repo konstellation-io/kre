@@ -3,9 +3,9 @@ import { Version, Runtime, VersionStatus } from '../../../../../graphql/models';
 import styles from './VersionActions.module.scss';
 
 // Icons
-import StartIcon from '@material-ui/icons/SkipNext';
-import StopIcon from '@material-ui/icons/PauseCircleFilled';
-import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
+import StartIcon from '@material-ui/icons/PlayArrowOutlined';
+import StopIcon from '@material-ui/icons/Stop';
+import PublishIcon from '@material-ui/icons/Publish';
 import UnpublishIcon from '@material-ui/icons/Block';
 import useVersionAction from '../../../utils/hooks';
 import ConfirmationModal from '../../../../../components/ConfirmationModal/ConfirmationModal';
