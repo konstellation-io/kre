@@ -57,10 +57,10 @@
   transform: translateX(-50%) perspective(47px) rotateX(13deg);
 
   &.CREATING {
-    background-color: $color-blue;
+    background-color: $font-color-light;
   }
   &.STARTED {
-    background-color: $color-green;
+    background-color: $color-blue;
   }
   &.ERROR {
     background-color: $color-red;
@@ -97,7 +97,7 @@
 .bgOverlapText {
   @extend .statusText;
 
-  top: 42.7%;
+  top: 43.1%;
 }
 .bgOverlapVersionText {
   @extend .statusText;
