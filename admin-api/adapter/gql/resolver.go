@@ -312,22 +312,9 @@ func (r *queryResolver) Users(ctx context.Context) ([]*User, error) {
 	return result, nil
 }
 
-func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
-	runtime, err := r.runtimeInteractor.GetByID(id)
-	if err != nil {
-		return nil, err
-	}
-
-	owner, err := r.userInteractor.GetByID(runtime.Owner)
-	if err != nil {
-		return nil, err
-	}
-
-	gqlRuntime := toGQLRuntime(runtime, owner)
-
-	// TODO Get Runtime Published Version from a property stored in the Runtime entity instead of
-	// get all runtime versions.
-	versions, err := r.versionInteractor.GetByRuntime(id)
+// TODO Get Runtime Published Version from a property stored in the Runtime entity instead of get all runtime versions.
+func (r *queryResolver) getPublishedVersion(runtimeID string) (*Version, error) {
+	versions, err := r.versionInteractor.GetByRuntime(runtimeID)
 	if err != nil {
 		return nil, err
 	}
@@ -350,6 +337,25 @@ func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error
 		}
 	}
 
+	return publishedVersion, nil
+}
+
+func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
+	runtime, err := r.runtimeInteractor.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	owner, err := r.userInteractor.GetByID(runtime.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	gqlRuntime := toGQLRuntime(runtime, owner)
+	publishedVersion, err := r.getPublishedVersion(runtime.ID)
+	if err != nil {
+		return nil, err
+	}
 	gqlRuntime.PublishedVersion = publishedVersion
 
 	return gqlRuntime, nil
@@ -364,14 +370,21 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
 		return gqlRuntimes, err
 	}
 
-	// TODO Use https://gqlgen.com/reference/dataloaders/ to get the users data
 	for _, runtime := range runtimes {
 		gqlRuntime := &Runtime{
 			ID:           runtime.ID,
 			Name:         runtime.Name,
 			Status:       RuntimeStatus(runtime.Status),
-			CreationDate: runtime.CreationDate.Format("2006-01-02"), // TODO add publishedVersion
+			CreationDate: runtime.CreationDate.Format("2006-01-02"),
 		}
+
+		// TODO Use https://gqlgen.com/reference/dataloaders/ to get the users data
+		publishedVersion, err := r.getPublishedVersion(runtime.ID)
+		if err != nil {
+			return nil, err
+		}
+		gqlRuntime.PublishedVersion = publishedVersion
+
 		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
 	}
 
