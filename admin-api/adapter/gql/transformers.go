@@ -40,7 +40,7 @@ func toGQLVersion(version *entity.Version, creationUser *entity.User, publicatio
 	gqlVersion = &Version{
 		ID:             version.ID,
 		Name:           version.Name,
-		Description:    "",
+		Description:    version.Description,
 		Status:         VersionStatus(version.Status),
 		CreationDate:   version.CreationDate.Format(time.RFC3339),
 		CreationAuthor: toGQLUser(creationUser),
