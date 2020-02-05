@@ -56,7 +56,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
       title={runtime.name}
       info={[
         {
-          type: 'created',
+          type: '',
           date: runtime.creationDate
         }
       ]}
