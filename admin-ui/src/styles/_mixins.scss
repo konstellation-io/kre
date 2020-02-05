@@ -137,3 +137,13 @@
     transform: rotateZ(-60deg);
   }
 }
+
+@mixin border-header {
+  border-bottom: 2px solid #4f4f4f;
+}
+
+@mixin listItems {
+  > div:nth-child(even) {
+    background-color: $bg-color-lighter;
+  }
+}

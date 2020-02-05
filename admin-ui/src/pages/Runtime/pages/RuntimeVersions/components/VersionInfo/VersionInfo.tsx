@@ -16,9 +16,8 @@ import styles from './VersionInfo.module.scss';
 
 type Props = {
   version: Version;
-  even: boolean;
 };
-function VersionInfo({ version, even }: Props) {
+function VersionInfo({ version }: Props) {
   const history = useHistory();
   const { runtimeId } = useParams();
 
@@ -37,7 +36,7 @@ function VersionInfo({ version, even }: Props) {
   return (
     <>
       <div
-        className={cx(styles.container, { [styles.even]: even })}
+        className={styles.container}
         id={`versionInfoElement_${version.id}`}
         onClick={onVersionClick}
       >

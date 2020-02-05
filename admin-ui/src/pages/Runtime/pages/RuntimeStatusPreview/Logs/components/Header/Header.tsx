@@ -2,6 +2,7 @@ import React from 'react';
 
 import IconClose from '@material-ui/icons/Close';
 import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
+import IconLogs from '@material-ui/icons/ListAlt';
 
 import cx from 'classnames';
 import styles from './Header.module.scss';
@@ -24,7 +25,10 @@ function Header({
         [styles.opened]: opened
       })}
     >
-      <div className={styles.title}>LOGS CONSOLE</div>
+      <div className={styles.title}>
+        <IconLogs className="icon-regular" />
+        <span>Logs console</span>
+      </div>
       <div className={styles.buttons}>
         <div
           className={cx(styles.stickBottom, { [styles.active]: stickToBottom })}

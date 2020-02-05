@@ -19,11 +19,7 @@ function RuntimeVersions({ runtime, versions }: Props) {
   ).length;
 
   const versionsComponents = versions.map((version: Version, idx: number) => (
-    <VersionInfo
-      key={`version_${idx}`}
-      version={version}
-      even={idx % 2 !== 0}
-    />
+    <VersionInfo key={`version_${idx}`} version={version} />
   ));
 
   return (

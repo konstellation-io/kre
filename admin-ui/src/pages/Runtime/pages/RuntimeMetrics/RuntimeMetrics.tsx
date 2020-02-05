@@ -14,8 +14,8 @@ import dataComplete from './data_complete.json';
 import cx from 'classnames';
 import styles from './RuntimeMetrics.module.scss';
 
-const VERSION_SIMPLE = 'airbnb-new-york-v1';
-const VERSION_COMPLETE = 'airbnb-new-york-v2';
+const VERSION_SIMPLE = 'price-estimator-v1';
+const VERSION_COMPLETE = 'price-estimator-v2';
 
 function getData(versionName: string) {
   let data;
