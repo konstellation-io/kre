@@ -31,4 +31,8 @@
       fill: $color-orange;
     }
   }
+
+  .yAxis line {
+    stroke-opacity: 0.5;
+  }
 }

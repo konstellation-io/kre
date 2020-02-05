@@ -22,6 +22,8 @@
 }
 
 .activeVersion {
+  @include border-header;
+
   margin-bottom: 32px;
   padding: 8px 24px;
   display: flex;
@@ -29,7 +31,6 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  border-bottom: solid 2px $color-grey;
   background-color: $color-node-content;
 }
 
@@ -78,6 +79,8 @@
 }
 
 .versionList {
+  @include listItems;
+
   display: relative;
   padding: 0 0 30px 0;
   overflow: overlay;

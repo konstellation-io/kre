@@ -21,17 +21,16 @@
   @include font-caption;
   color: $font-color-light;
 
-  margin: 0 20px 0 15px;
-}
+  display: flex;
+  align-items: center;
+  margin: 0px 20px 0 20px;
 
-.statusCircle {
-  width: 8px;
-  height: 8px;
-  margin: 0 16px;
-  border-radius: 50%;
+  span {
+    font-size: 14px;
+  }
 
-  @each $status in 'PUBLISHED' {
-    background-color: get-color-prop($status);
+  svg {
+    margin-right: 8px;
   }
 }
 

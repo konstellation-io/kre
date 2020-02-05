@@ -86,7 +86,7 @@ function ConfigurationVariableList({ data, onType, hideAll }: Props) {
         <div className={styles.col2}>KEY</div>
         <div className={styles.col3}>VALUE</div>
       </div>
-      {variableRows}
+      <div className={styles.list}>{variableRows}</div>
     </div>
   );
 }

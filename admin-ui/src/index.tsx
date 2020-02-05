@@ -22,13 +22,15 @@ import { getMainDefinition } from 'apollo-utilities';
 
 import { logout } from './actions/appActions';
 
+export let cache: any = null;
+
 config
   .then(envVariables => {
     const store = configureStore();
 
     const API_BASE_URL_WS = envVariables.API_BASE_URL.replace('http', 'ws');
 
-    const cache = new InMemoryCache();
+    cache = new InMemoryCache();
     const errorLink = onError(({ networkError }: any) => {
       if (
         networkError &&

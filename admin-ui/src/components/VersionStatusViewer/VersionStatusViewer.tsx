@@ -422,7 +422,6 @@ function VersionStatusViewer({
             ref.current.nodeSizeRatio) /
             2})`
         )
-        .attr('stroke-dasharray', '3, 3')
         .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
     },
     edges: function() {
@@ -442,7 +441,6 @@ function VersionStatusViewer({
               nodeIdToIndex[d.toNode]
             )}, ${(DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2})`
         )
-        .attr('stroke-dasharray', '3, 3')
         .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
       newEdges
         .append('line')
@@ -501,7 +499,9 @@ function VersionStatusViewer({
           : ref.current.nodeHeight * STROKE_WIDTH_PERC;
 
       // @ts-ignore
-      const lines = select(node.parentNode).selectAll(`.${styles.edgeLine}`);
+      const lines = select(node.parentNode).selectAll(
+        `line.${styles.edgeLine}`
+      );
       lines.attr('stroke-dasharray', strokeDashArray);
       lines.attr('stroke-width', strokeWidth);
     }
