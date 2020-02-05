@@ -67,7 +67,8 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
         Icon: StartIcon,
         label: 'START',
         action: onStartVersion,
-        primary: true
+        primary: version.configurationCompleted,
+        disabled: !version.configurationCompleted
       };
       buttons[1] = {
         Icon: PublishIcon,
