@@ -1,5 +1,5 @@
 - [KRE (Konstellataion Runtime Engine)](#kre-konstellataion-runtime-engine)
-- [Archiecture](#archiecture)
+- [Architecture](#archiecture)
   - [Engine](#engine)
   - [Runtime](#runtime)
     - [KRT](#krt)
@@ -60,7 +60,7 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
 
 
-# Archiecture
+# Architecture
 
 KRE is designed based on a microservice pattern to be run on top of a Kubernetes cluster.
 
