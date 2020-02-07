@@ -13,17 +13,18 @@ spec:
       labels:
         {{- include "kre.labels" . | nindent 8 }}
         app: {{ template "kre.fullname" . }}-admin-api
+      annotations:
+        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: {{ template "kre.fullname" . }}-admin-api
           image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
           imagePullPolicy: {{ .Values.adminApi.image.pullPolicy }}
           envFrom:
-          - configMapRef:
-              name: {{ .Release.Name }}-configmap
-          - secretRef:
-              name: {{ .Release.Name }}-secrets
-
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+            - secretRef:
+                name: {{ .Release.Name }}-secrets
           ports:
             - containerPort: {{ .Values.adminApi.service.port }}
               protocol: TCP

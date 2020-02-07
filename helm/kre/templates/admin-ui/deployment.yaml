@@ -13,6 +13,8 @@ spec:
       labels:
         {{- include "kre.labels" . | nindent 8 }}
         app: {{ template "kre.fullname" . }}-admin-ui
+      annotations:
+        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: {{ template "kre.fullname" . }}-admin-ui
