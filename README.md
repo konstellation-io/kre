@@ -165,6 +165,17 @@ helm upgrade --install --namespace kre --values ./custom-values.yaml kre-v1.0.0
 
 # Development 
 
+
+## Requirements
+
+In order to start development on this project you will need these tools: 
+
+- **gettext**: OS package to fill templates during deployment
+- **minikube**: the local version of Kubernetes to deploy KRE
+- **helm**: K8s package manager. Make sure you have v3+
+
+*NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `deploy_local.sh`. 
+
 ## Deploy local
 
 Deploy KRE with Helm in Minikube environment
@@ -172,3 +183,5 @@ Deploy KRE with Helm in Minikube environment
 ```
     ./deploy_local.sh
 ```
+
+

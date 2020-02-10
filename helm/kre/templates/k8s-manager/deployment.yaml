@@ -13,6 +13,8 @@ spec:
       labels:
         {{- include "kre.labels" . | nindent 8 }}
         app: {{ template "kre.fullname" . }}-k8s-manager
+      annotations:
+        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
       serviceAccountName: k8s-manager
       containers:
@@ -20,11 +22,10 @@ spec:
           image: {{ .Values.k8sManager.image.repository }}:{{ .Values.k8sManager.image.tag }}
           imagePullPolicy: {{ .Values.k8sManager.image.pullPolicy }}
           envFrom:
-          - configMapRef:
-              name: {{ .Release.Name }}-configmap
-          - secretRef:
-              name: {{ .Release.Name }}-secrets
-
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+            - secretRef:
+                name: {{ .Release.Name }}-secrets
           ports:
             - containerPort: {{ .Values.k8sManager.service.port }}
               protocol: TCP
