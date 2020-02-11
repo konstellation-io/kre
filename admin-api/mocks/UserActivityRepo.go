@@ -25,15 +25,15 @@ func (_m *UserActivityRepo) Create(activity entity.UserActivity) error {
 }
 
 // Get provides a mock function with given fields: userEmail, activityType, fromDate, toDate, lastID
-func (_m *UserActivityRepo) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]entity.UserActivity, error) {
+func (_m *UserActivityRepo) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
 	ret := _m.Called(userEmail, activityType, fromDate, toDate, lastID)
 
-	var r0 []entity.UserActivity
-	if rf, ok := ret.Get(0).(func(*string, *string, *string, *string, *string) []entity.UserActivity); ok {
+	var r0 []*entity.UserActivity
+	if rf, ok := ret.Get(0).(func(*string, *string, *string, *string, *string) []*entity.UserActivity); ok {
 		r0 = rf(userEmail, activityType, fromDate, toDate, lastID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]entity.UserActivity)
+			r0 = ret.Get(0).([]*entity.UserActivity)
 		}
 	}
 

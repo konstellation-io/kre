@@ -56,16 +56,41 @@ func (_m *VersionRepo) GetByID(id string) (*entity.Version, error) {
 	return r0, r1
 }
 
+// GetByIDs provides a mock function with given fields: ids
+func (_m *VersionRepo) GetByIDs(ids []string) ([]*entity.Version, []error) {
+	ret := _m.Called(ids)
+
+	var r0 []*entity.Version
+	if rf, ok := ret.Get(0).(func([]string) []*entity.Version); ok {
+		r0 = rf(ids)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Version)
+		}
+	}
+
+	var r1 []error
+	if rf, ok := ret.Get(1).(func([]string) []error); ok {
+		r1 = rf(ids)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).([]error)
+		}
+	}
+
+	return r0, r1
+}
+
 // GetByRuntime provides a mock function with given fields: runtimeID
-func (_m *VersionRepo) GetByRuntime(runtimeID string) ([]entity.Version, error) {
+func (_m *VersionRepo) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
 	ret := _m.Called(runtimeID)
 
-	var r0 []entity.Version
-	if rf, ok := ret.Get(0).(func(string) []entity.Version); ok {
+	var r0 []*entity.Version
+	if rf, ok := ret.Get(0).(func(string) []*entity.Version); ok {
 		r0 = rf(runtimeID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]entity.Version)
+			r0 = ret.Get(0).([]*entity.Version)
 		}
 	}
 

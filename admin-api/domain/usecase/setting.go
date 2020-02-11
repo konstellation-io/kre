@@ -56,7 +56,7 @@ func (i *SettingInteractor) CreateDefaults() error {
 }
 
 // Update change a given Setting to a new value
-func (i *SettingInteractor) Update(settings entity.Setting, changes []entity.UserActivity) error {
+func (i *SettingInteractor) Update(settings *entity.Setting, changes []entity.UserActivity) error {
 	for _, c := range changes {
 		err := i.userActivity.Create(c.User.ID, UserActivityTypeUpdateSetting, c.Vars)
 		if err != nil {
@@ -68,6 +68,6 @@ func (i *SettingInteractor) Update(settings entity.Setting, changes []entity.Use
 }
 
 // Get returns a Setting
-func (i *SettingInteractor) Get() (entity.Setting, error) {
+func (i *SettingInteractor) Get() (*entity.Setting, error) {
 	return i.settingRepo.Get()
 }

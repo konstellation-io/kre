@@ -59,7 +59,7 @@ func (s *UserSuite) TestGetByID() {
 func (s *UserSuite) TestGetAllUsers() {
 	t := s.T()
 
-	usersFound := []entity.User{
+	usersFound := []*entity.User{
 		{
 			ID:    "user1",
 			Email: "test@test.com",

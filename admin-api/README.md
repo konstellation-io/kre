@@ -46,10 +46,28 @@ Repositories implementation are responsible for converting "database objects" in
 ## Frameworks and libraries
 
 - [Echo](https://echo.labstack.com/) as HTTP delivery mechanic.
+- [Mockery](https://github.com/vektra/mockery) as HTTP delivery mechanic.
+
+Mocks used on tests are generated with Mockery, when you need a new mock, create it with this command:
+
+```sh
+$> ./scripts/generate_mocks.sh
+```
+
 - [gqlgen](https://github.com/99designs/gqlgen) as library for building GraphQL servers
 
 **Important** If the GraphQL schema (`../admin-ui/schema.graphql`) changes, use the following command to regenerate
  the code:
 ```sh
-go run github.com/99designs/gqlgen -v
+$> ./scripts/generate_graphql.sh
 ```
+
+- [dataloaden](https://github.com/vektah/dataloaden) to reduce the number of queries being sent to the database:
+
+In order to generate the dataloaders, we executed the following commands:
+
+```sh
+$> ./scripts/generate_dataloaders.sh
+```
+
+Please, if you want to create a new one remember to add it to the previous script.

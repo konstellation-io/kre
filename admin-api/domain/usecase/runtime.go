@@ -79,7 +79,7 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 	err = i.userActivity.Create(
 		userID,
 		UserActivityTypeCreateRuntime,
-		[]entity.UserActivityVar{
+		[]*entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
 				Value: createdRuntime.ID,
@@ -121,7 +121,7 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 }
 
 // FindAll returns a list of all Runtimes
-func (i *RuntimeInteractor) FindAll() ([]entity.Runtime, error) {
+func (i *RuntimeInteractor) FindAll() ([]*entity.Runtime, error) {
 	return i.runtimeRepo.FindAll()
 }
 

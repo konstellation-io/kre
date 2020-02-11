@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/controller"
+	kremiddleware "gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/middleware"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
@@ -34,6 +35,8 @@ func NewApp(
 	e.Use(
 		middleware.RequestID(),
 		middleware.Logger(),
+		kremiddleware.NewUserLoader(userInteractor),
+		kremiddleware.NewVersionLoader(versionInteractor),
 	)
 
 	if cfg.Admin.CORSEnabled {

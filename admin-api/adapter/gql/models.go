@@ -8,13 +8,14 @@ import (
 	"strconv"
 
 	"github.com/99designs/gqlgen/graphql"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 )
 
 type Alert struct {
-	ID      string     `json:"id"`
-	Type    AlertLevel `json:"type"`
-	Message string     `json:"message"`
-	Runtime *Runtime   `json:"runtime"`
+	ID      string          `json:"id"`
+	Type    AlertLevel      `json:"type"`
+	Message string          `json:"message"`
+	Runtime *entity.Runtime `json:"runtime"`
 }
 
 type ConfigurationVariable struct {
@@ -33,8 +34,8 @@ type CreateRuntimeInput struct {
 }
 
 type CreateRuntimeResponse struct {
-	Errors  []*Error `json:"errors"`
-	Runtime *Runtime `json:"runtime"`
+	Errors  []*Error        `json:"errors"`
+	Runtime *entity.Runtime `json:"runtime"`
 }
 
 type CreateVersionInput struct {
@@ -43,14 +44,8 @@ type CreateVersionInput struct {
 }
 
 type CreateVersionResponse struct {
-	Errors  []*Error `json:"errors"`
-	Version *Version `json:"version"`
-}
-
-type Edge struct {
-	ID       string `json:"id"`
-	FromNode string `json:"fromNode"`
-	ToNode   string `json:"toNode"`
+	Errors  []*Error        `json:"errors"`
+	Version *entity.Version `json:"version"`
 }
 
 type Error struct {
@@ -58,39 +53,9 @@ type Error struct {
 	Message string    `json:"message"`
 }
 
-type Node struct {
-	ID     string     `json:"id"`
-	Name   string     `json:"name"`
-	Status NodeStatus `json:"status"`
-}
-
-type NodeLog struct {
-	Date      string `json:"date"`
-	Type      string `json:"type"`
-	VersionID string `json:"versionId"`
-	NodeID    string `json:"nodeId"`
-	PodID     string `json:"podId"`
-	Message   string `json:"message"`
-	Level     string `json:"level"`
-}
-
 type PublishVersionInput struct {
 	VersionID string `json:"versionId"`
 	Comment   string `json:"comment"`
-}
-
-type Runtime struct {
-	ID               string        `json:"id"`
-	Name             string        `json:"name"`
-	Status           RuntimeStatus `json:"status"`
-	CreationDate     string        `json:"creationDate"`
-	CreationAuthor   *User         `json:"creationAuthor"`
-	PublishedVersion *Version      `json:"publishedVersion"`
-}
-
-type Settings struct {
-	AuthAllowedDomains    []string `json:"authAllowedDomains"`
-	SessionLifetimeInDays int      `json:"sessionLifetimeInDays"`
 }
 
 type SettingsInput struct {
@@ -116,53 +81,8 @@ type UpdateConfigurationInput struct {
 }
 
 type UpdateSettingsResponse struct {
-	Errors   []*Error  `json:"errors"`
-	Settings *Settings `json:"settings"`
-}
-
-type User struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-}
-
-type UserActivity struct {
-	ID   string             `json:"id"`
-	Type UserActivityType   `json:"type"`
-	User *User              `json:"user"`
-	Date string             `json:"date"`
-	Vars []*UserActivityVar `json:"vars"`
-}
-
-type UserActivityVar struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-type Version struct {
-	ID                     string                   `json:"id"`
-	Name                   string                   `json:"name"`
-	Description            string                   `json:"description"`
-	Status                 VersionStatus            `json:"status"`
-	CreationDate           string                   `json:"creationDate"`
-	CreationAuthor         *User                    `json:"creationAuthor"`
-	PublicationDate        *string                  `json:"publicationDate"`
-	PublicationAuthor      *User                    `json:"publicationAuthor"`
-	Workflows              []*Workflow              `json:"workflows"`
-	ConfigurationVariables []*ConfigurationVariable `json:"configurationVariables"`
-	ConfigurationCompleted bool                     `json:"configurationCompleted"`
-}
-
-type VersionNodeStatus struct {
-	Date    string     `json:"date"`
-	NodeID  string     `json:"nodeId"`
-	Status  NodeStatus `json:"status"`
-	Message string     `json:"message"`
-}
-
-type Workflow struct {
-	Name  string  `json:"name"`
-	Nodes []*Node `json:"nodes"`
-	Edges []*Edge `json:"edges"`
+	Errors   []*Error        `json:"errors"`
+	Settings *entity.Setting `json:"settings"`
 }
 
 type AlertLevel string

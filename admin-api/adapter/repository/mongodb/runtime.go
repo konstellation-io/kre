@@ -42,9 +42,9 @@ func (r *RuntimeRepoMongoDB) Create(runtime *entity.Runtime) (*entity.Runtime, e
 	return runtime, nil
 }
 
-func (r *RuntimeRepoMongoDB) FindAll() ([]entity.Runtime, error) {
+func (r *RuntimeRepoMongoDB) FindAll() ([]*entity.Runtime, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
-	var runtimes []entity.Runtime
+	var runtimes []*entity.Runtime
 	cur, err := r.collection.Find(ctx, bson.D{})
 	if err != nil {
 		return runtimes, err
@@ -57,7 +57,7 @@ func (r *RuntimeRepoMongoDB) FindAll() ([]entity.Runtime, error) {
 		if err != nil {
 			return runtimes, err
 		}
-		runtimes = append(runtimes, runtime)
+		runtimes = append(runtimes, &runtime)
 	}
 
 	return runtimes, nil

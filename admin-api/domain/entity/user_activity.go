@@ -10,9 +10,9 @@ type UserActivityVar struct {
 }
 
 type UserActivity struct {
-	ID   string            `bson:"_id"`
-	Date time.Time         `bson:"date"`
-	User User              `bson:"user"`
-	Type string            `bson:"type"`
-	Vars []UserActivityVar `bson:"vars"`
+	ID   string             `bson:"_id"`
+	Date time.Time          `bson:"date"`
+	User User               `bson:"user"`
+	Type string             `bson:"type"`
+	Vars []*UserActivityVar `bson:"vars"`
 }

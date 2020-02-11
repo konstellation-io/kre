@@ -34,15 +34,15 @@ func (_m *UserRepo) Create(email string) (*entity.User, error) {
 }
 
 // GetAll provides a mock function with given fields:
-func (_m *UserRepo) GetAll() ([]entity.User, error) {
+func (_m *UserRepo) GetAll() ([]*entity.User, error) {
 	ret := _m.Called()
 
-	var r0 []entity.User
-	if rf, ok := ret.Get(0).(func() []entity.User); ok {
+	var r0 []*entity.User
+	if rf, ok := ret.Get(0).(func() []*entity.User); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]entity.User)
+			r0 = ret.Get(0).([]*entity.User)
 		}
 	}
 
@@ -97,6 +97,31 @@ func (_m *UserRepo) GetByID(userID string) (*entity.User, error) {
 		r1 = rf(userID)
 	} else {
 		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetByIDs provides a mock function with given fields: keys
+func (_m *UserRepo) GetByIDs(keys []string) ([]*entity.User, []error) {
+	ret := _m.Called(keys)
+
+	var r0 []*entity.User
+	if rf, ok := ret.Get(0).(func([]string) []*entity.User); ok {
+		r0 = rf(keys)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.User)
+		}
+	}
+
+	var r1 []error
+	if rf, ok := ret.Get(1).(func([]string) []error); ok {
+		r1 = rf(keys)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).([]error)
+		}
 	}
 
 	return r0, r1

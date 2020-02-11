@@ -85,24 +85,24 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	}
 	i.logger.Info("Created temp dir to extract the KRT files at " + tmpDir)
 
-	krt, err := i.CreateKrtYaml(tmpDir, krtFile)
+	krtYml, err := i.CreateKrtYaml(tmpDir, krtFile)
 	if err != nil {
-		return nil, fmt.Errorf("error creating krt yaml: %w", err)
+		return nil, fmt.Errorf("error creating krtYml yaml: %w", err)
 	}
 
 	// Check if the version is duplicated
 	versions, err := i.versionRepo.GetByRuntime(runtimeID)
 	for _, v := range versions {
-		if v.Name == krt.Version {
+		if v.Name == krtYml.Version {
 			return nil, ErrVersionDuplicated
 		}
 	}
 
 	// Parse Workflows
-	var workflows []entity.Workflow
-	if len(krt.Workflows) > 0 {
-		for _, w := range krt.Workflows {
-			workflows = append(workflows, i.generateWorkflow(krt.Nodes, w))
+	var workflows []*entity.Workflow
+	if len(krtYml.Workflows) > 0 {
+		for _, w := range krtYml.Workflows {
+			workflows = append(workflows, i.generateWorkflow(krtYml.Nodes, w))
 		}
 	}
 
@@ -113,7 +113,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 
 	configVars := make([]*entity.ConfigVar, 0)
 
-	for _, cf := range krt.Config.Files {
+	for _, cf := range krtYml.Config.Files {
 		val := ""
 		if previousVal, ok := currentConfig[cf]; ok {
 			val = previousVal
@@ -127,7 +127,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		})
 	}
 
-	for _, cv := range krt.Config.Variables {
+	for _, cv := range krtYml.Config.Variables {
 		val := ""
 		if previousVal, ok := currentConfig[cv]; ok {
 			val = previousVal
@@ -143,16 +143,16 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 
 	version := &entity.Version{
 		RuntimeID:   runtimeID,
-		Name:        krt.Version,
-		Description: krt.Description,
+		Name:        krtYml.Version,
+		Description: krtYml.Description,
 		Config: entity.VersionConfig{
 			Vars:      configVars,
 			Completed: configCompleted,
 		},
 		Entrypoint: entity.Entrypoint{
-			ProtoFile: krt.Entrypoint.Proto,
-			Image:     krt.Entrypoint.Image,
-			Src:       krt.Entrypoint.Src,
+			ProtoFile: krtYml.Entrypoint.Proto,
+			Image:     krtYml.Entrypoint.Image,
+			Src:       krtYml.Entrypoint.Src,
 		},
 		Workflows: workflows,
 	}
@@ -169,10 +169,10 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	}
 	i.logger.Info(fmt.Sprintf("Minio Client Initialized for Runtime %s", runtime.Name))
 
-	bucket, err := i.minio.CreateBucket(krt.Version, minioClient)
+	bucket, err := i.minio.CreateBucket(krtYml.Version, minioClient)
 	if err != nil {
-		i.logger.Error(fmt.Sprintf("error Creating Bucket for Version %s", krt.Version))
-		return nil, fmt.Errorf("error Creating Bucket for Version %s: %w", krt.Version, err)
+		i.logger.Error(fmt.Sprintf("error Creating Bucket for Version %s", krtYml.Version))
+		return nil, fmt.Errorf("error Creating Bucket for Version %s: %w", krtYml.Version, err)
 	}
 
 	i.logger.Info(fmt.Sprintf("Bucket Created for Version %s", runtime.Name))
@@ -197,7 +197,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeCreateVersion,
-		[]entity.UserActivityVar{
+		[]*entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
 				Value: runtime.ID,
@@ -237,7 +237,7 @@ func (i *VersionInteractor) getNodeByName(nodes []krt.KrtNode, name string) (*kr
 	return nil, errors.New(fmt.Sprintf("Node '%s' not found in node list", name))
 }
 
-func (i *VersionInteractor) getConfigFromPreviousVersions(versions []entity.Version) map[string]string {
+func (i *VersionInteractor) getConfigFromPreviousVersions(versions []*entity.Version) map[string]string {
 	currentConfig := map[string]string{}
 
 	if len(versions) == 0 {
@@ -260,7 +260,7 @@ func (i *VersionInteractor) getConfigFromPreviousVersions(versions []entity.Vers
 	return currentConfig
 }
 
-func (i *VersionInteractor) generateWorkflow(krtNodes []krt.KrtNode, w krt.KrtWorkflow) entity.Workflow {
+func (i *VersionInteractor) generateWorkflow(krtNodes []krt.KrtNode, w krt.KrtWorkflow) *entity.Workflow {
 	var nodes []entity.Node
 	var edges []entity.Edge
 
@@ -293,7 +293,7 @@ func (i *VersionInteractor) generateWorkflow(krtNodes []krt.KrtNode, w krt.KrtWo
 		previousN = node
 	}
 
-	return entity.Workflow{
+	return &entity.Workflow{
 		Name:       w.Name,
 		Entrypoint: w.Entrypoint,
 		Nodes:      nodes,
@@ -334,7 +334,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeStartVersion,
-		[]entity.UserActivityVar{
+		[]*entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
 				Value: runtime.ID,
@@ -387,7 +387,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeStopVersion,
-		[]entity.UserActivityVar{
+		[]*entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
 				Value: runtime.ID,
@@ -427,7 +427,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 	}
 
 	// Unpublish previous published version
-	previousPublishedVersion := entity.Version{}
+	previousPublishedVersion := &entity.Version{}
 	versions, err := i.versionRepo.GetByRuntime(runtime.ID)
 	if err != nil {
 		return nil, err
@@ -439,7 +439,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 				v.Status = string(VersionStatusStarted)
 				v.PublicationUserID = nil
 				v.PublicationDate = nil
-				err = i.versionRepo.Update(&v)
+				err = i.versionRepo.Update(v)
 				if err != nil {
 					return nil, err
 				}
@@ -465,7 +465,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypePublishVersion,
-		[]entity.UserActivityVar{
+		[]*entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
 				Value: runtime.ID,
@@ -532,7 +532,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.
 	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeUnpublishVersion,
-		[]entity.UserActivityVar{
+		[]*entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
 				Value: runtime.ID,
@@ -650,7 +650,7 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config 
 }
 
 // GetByRuntime returns all Versions of the given Runtime
-func (i *VersionInteractor) GetByRuntime(runtimeID string) ([]entity.Version, error) {
+func (i *VersionInteractor) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
 	return i.versionRepo.GetByRuntime(runtimeID)
 }
 
@@ -682,4 +682,8 @@ func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
 	}
 
 	return i.runtimeService.WatchNodeLogs(runtime, nodeID, stopChannel)
+}
+
+func (i *VersionInteractor) GetByIDs(ids []string) ([]*entity.Version, []error) {
+	return i.versionRepo.GetByIDs(ids)
 }

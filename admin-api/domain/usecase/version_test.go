@@ -86,7 +86,7 @@ func (s *VersionSuite) TestCreateNewVersion() {
 		Email: "test@test.com",
 	}
 
-	version := entity.Version{
+	version := &entity.Version{
 		ID:                userID,
 		RuntimeID:         runtimeID,
 		Name:              "version-1",
@@ -108,8 +108,8 @@ func (s *VersionSuite) TestCreateNewVersion() {
 
 	s.mocks.userRepo.On("GetByID", userID).Return(userFound, nil)
 	s.mocks.runtimeRepo.On("GetByID", runtimeID).Return(runtime, nil)
-	s.mocks.versionRepo.On("GetByRuntime", runtimeID).Return([]entity.Version{version}, nil)
-	s.mocks.versionRepo.On("Create", userID, mock.Anything).Return(&version, nil)
+	s.mocks.versionRepo.On("GetByRuntime", runtimeID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.On("Create", userID, mock.Anything).Return(version, nil)
 
 	minioClient := &minio.MinioClient{}
 	mockBucket := mocks.Bucket{}

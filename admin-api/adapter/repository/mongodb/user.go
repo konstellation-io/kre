@@ -65,9 +65,30 @@ func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {
 	return user, err
 }
 
-func (r *UserRepoMongoDB) GetAll() ([]entity.User, error) {
+func (r *UserRepoMongoDB) GetByIDs(keys []string) ([]*entity.User, []error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
-	var users []entity.User
+	var users []*entity.User
+	cur, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": keys}})
+	if err != nil {
+		return users, []error{err}
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var user entity.User
+		err = cur.Decode(&user)
+		if err != nil {
+			return users, []error{err}
+		}
+		users = append(users, &user)
+	}
+
+	return users, nil
+}
+
+func (r *UserRepoMongoDB) GetAll() ([]*entity.User, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	var users []*entity.User
 	cur, err := r.collection.Find(ctx, bson.D{})
 	if err != nil {
 		return users, err
@@ -75,12 +96,12 @@ func (r *UserRepoMongoDB) GetAll() ([]entity.User, error) {
 	defer cur.Close(ctx)
 
 	for cur.Next(ctx) {
-		var runtime entity.User
-		err = cur.Decode(&runtime)
+		var user entity.User
+		err = cur.Decode(&user)
 		if err != nil {
 			return users, err
 		}
-		users = append(users, runtime)
+		users = append(users, &user)
 	}
 
 	return users, nil
