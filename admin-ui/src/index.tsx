@@ -2,8 +2,6 @@ import config from './config';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import configureStore from './store';
 import App from './App';
 import { ApolloProvider } from '@apollo/react-hooks';
 import './styles/app.global.scss';
@@ -20,14 +18,10 @@ import { onError } from 'apollo-link-error';
 import { createUploadLink } from 'apollo-upload-client';
 import { getMainDefinition } from 'apollo-utilities';
 
-import { logout } from './actions/appActions';
-
 export let cache: any = null;
 
 config
   .then(envVariables => {
-    const store = configureStore();
-
     const API_BASE_URL_WS = envVariables.API_BASE_URL.replace('http', 'ws');
 
     cache = new InMemoryCache();
@@ -41,7 +35,6 @@ config
       ) {
         history.push(ROUTE.LOGIN);
         client.resetStore();
-        store.dispatch(logout());
       }
     });
     const uploadLink = createUploadLink({
@@ -69,16 +62,20 @@ config
 
     const link = ApolloLink.from([errorLink, transportLink]);
 
+    const defaultCache = { data: { loggedIn: false } };
+
     const client = new ApolloClient({
       cache,
       link
     });
 
+    // Sets initial cache
+    cache.writeData(defaultCache);
+    client.onResetStore(() => cache.writeData(defaultCache));
+
     ReactDOM.render(
       <ApolloProvider client={client}>
-        <Provider store={store}>
-          <App />
-        </Provider>
+        <App />
       </ApolloProvider>,
       document.getElementById('root')
     );

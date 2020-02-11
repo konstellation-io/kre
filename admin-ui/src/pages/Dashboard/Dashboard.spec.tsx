@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithReduxAndRouter } from '../../utils/testUtils';
+import { renderWithRouter } from '../../utils/testUtils';
 import { cleanup } from '@testing-library/react';
 import Dashboard from './Dashboard';
 
@@ -23,7 +23,7 @@ afterEach(cleanup);
 it('Render Dashboard without crashing', () => {
   const {
     element: { container }
-  } = renderWithReduxAndRouter(Component);
+  } = renderWithRouter(Component);
 
   expect(container).toMatchSnapshot();
 });

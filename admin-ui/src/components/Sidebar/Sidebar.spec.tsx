@@ -5,7 +5,7 @@ import {
   cleanup,
   RenderResult
 } from '@testing-library/react';
-import { renderWithReduxAndRouter } from '../../utils/testUtils';
+import { renderWithRouter } from '../../utils/testUtils';
 import { MemoryRouter } from 'react-router';
 import { Router } from 'react-router-dom';
 import ROUTE from '../../constants/routes';
@@ -37,7 +37,7 @@ function generateComponent() {
   history.push(ROUTE.HOME);
   history.push(ROUTE.SETTINGS);
 
-  const wrapper = renderWithReduxAndRouter(
+  const wrapper = renderWithRouter(
     <Router history={history}>
       <Sidebar title="SIDEBAR" tabs={tabs} />
     </Router>

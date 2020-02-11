@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithReduxAndRouter } from '../../utils/testUtils';
+import { renderWithRouter } from '../../utils/testUtils';
 import { fireEvent, cleanup, RenderResult } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import ROUTE from '../../constants/routes';
@@ -28,7 +28,7 @@ function generateComponent() {
   const history = createMemoryHistory();
   history.push(ROUTE.SETTINGS);
 
-  const wrapper = renderWithReduxAndRouter(
+  const wrapper = renderWithRouter(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router history={history}>
         <Routes />

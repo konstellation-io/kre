@@ -1,17 +1,15 @@
 import { get } from 'lodash';
 import React, { useState, useEffect } from 'react';
-
 import { useHistory } from 'react-router';
-import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
 import useEndpoint from '../../hooks/useEndpoint';
+import { useApolloClient } from '@apollo/react-hooks';
+
 import { ENDPOINT } from '../../constants/application';
 
+import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
 import SettingsIcon from '@material-ui/icons/VerifiedUser';
 import AuditIcon from '@material-ui/icons/SupervisorAccount';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
-
-import { connect } from 'react-redux';
-import { logout } from '../../actions/appActions';
 
 import styles from './Settings.module.scss';
 import ROUTE from '../../constants/routes';
@@ -23,10 +21,10 @@ const buttonStyle = {
 
 type Props = {
   label: string;
-  reduxLogout: Function;
 };
 
-function Settings({ label, reduxLogout }: Props) {
+function Settings({ label }: Props) {
+  const client = useApolloClient();
   const history = useHistory();
   const [opened, setOpened] = useState(false);
   const [logoutResponse, doLogout] = useEndpoint({
@@ -37,13 +35,13 @@ function Settings({ label, reduxLogout }: Props) {
   useEffect(() => {
     if (logoutResponse.complete) {
       if (get(logoutResponse, 'status') === 200) {
-        reduxLogout();
+        client.writeData({ data: { loggedIn: false } });
         history.push(ROUTE.LOGIN);
       } else {
         console.error(`Error sending logout request.`);
       }
     }
-  }, [logoutResponse, history, reduxLogout]);
+  }, [logoutResponse, history]);
 
   function getBaseProps(label: string) {
     return {
@@ -93,8 +91,4 @@ function Settings({ label, reduxLogout }: Props) {
   );
 }
 
-const mapDispatchToProps = {
-  reduxLogout: logout
-};
-
-export default connect(null, mapDispatchToProps)(Settings);
+export default Settings;
