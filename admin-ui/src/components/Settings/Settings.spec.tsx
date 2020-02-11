@@ -1,13 +1,29 @@
 import React from 'react';
-import { renderWithReduxAndRouter } from '../../utils/testUtils';
+import { renderWithRouter } from '../../utils/testUtils';
 import { fireEvent, cleanup } from '@testing-library/react';
 import Settings from './Settings';
+import { ApolloClient } from 'apollo-client';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloLink } from 'apollo-link';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+
 import { getByTestId } from '@testing-library/dom';
 
 afterEach(cleanup);
 
 function renderComponent() {
-  return renderWithReduxAndRouter(<Settings />).element;
+  return renderWithRouter(
+    <ApolloProvider
+      client={
+        new ApolloClient({
+          cache: new InMemoryCache(),
+          link: new ApolloLink()
+        })
+      }
+    >
+      <Settings />
+    </ApolloProvider>
+  ).element;
 }
 
 it('Renders Settings without crashing', () => {

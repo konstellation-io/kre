@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithReduxAndRouter } from './utils/testUtils';
+import { renderWithRouter } from './utils/testUtils';
 import { cleanup } from '@testing-library/react';
 import ROUTE from './constants/routes';
 import App, { Routes } from './App';
@@ -15,7 +15,7 @@ afterEach(cleanup);
 it('renders without crashing', () => {
   const {
     element: { container }
-  } = renderWithReduxAndRouter(
+  } = renderWithRouter(
     <MockedProvider mocks={mocks} addTypename={false}>
       <App />
     </MockedProvider>
@@ -26,7 +26,7 @@ it('renders without crashing', () => {
 it('it shows dashboard page on home URL when logged', () => {
   const {
     element: { getByTestId }
-  } = renderWithReduxAndRouter(
+  } = renderWithRouter(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Routes />
     </MockedProvider>,

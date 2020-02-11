@@ -2,21 +2,17 @@ import React, { FunctionComponent } from 'react';
 
 import Settings from '../../components/Settings/Settings';
 
-import { useQuery } from '@apollo/react-hooks';
-import { GET_USER_EMAIL, GetUserEmailResponse } from './Header.graphql';
+import { useQuery, useApolloClient } from '@apollo/react-hooks';
 
-import { connect } from 'react-redux';
-import { login } from '../../actions/appActions';
-import { AppState } from '../../reducers/appReducer';
+import { GET_USER_EMAIL, GetUserEmailResponse } from './Header.graphql';
 
 import styles from './Header.module.scss';
 
 type Props = {
   children?: any;
-  doLogin: Function;
-  loggedIn?: boolean;
 };
-const Header: FunctionComponent<Props> = ({ children, doLogin, loggedIn }) => {
+const Header: FunctionComponent<Props> = ({ children }) => {
+  const client = useApolloClient();
   const { data, error, loading } = useQuery<GetUserEmailResponse>(
     GET_USER_EMAIL
   );
@@ -26,8 +22,8 @@ const Header: FunctionComponent<Props> = ({ children, doLogin, loggedIn }) => {
 
   const username = data && !error ? data.me.email : 'unknown';
 
-  if (username !== 'unknown' && !loggedIn) {
-    doLogin();
+  if (username !== 'unknown') {
+    client.writeData({ data: { loggedIn: true } });
   }
 
   return (
@@ -43,11 +39,4 @@ const Header: FunctionComponent<Props> = ({ children, doLogin, loggedIn }) => {
   );
 };
 
-const mapStateToProps = (state: { app: AppState }) => ({
-  loggedIn: state.app.loggedIn
-});
-const mapDispatchToProps = {
-  doLogin: login
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

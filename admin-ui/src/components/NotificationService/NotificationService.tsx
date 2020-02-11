@@ -1,19 +1,17 @@
 import React from 'react';
 import RuntimeCreated from './Services/RuntimeCreated/RuntimeCreated';
 
-import { connect } from 'react-redux';
-import { AppState } from '../../reducers/appReducer';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_LOGIN_STATUS } from './NotificationService.graphql';
 
 import styles from './Notification.module.scss';
 
-type Props = {
-  loggedIn: boolean;
-};
+function NotificationService() {
+  const { data } = useQuery(GET_LOGIN_STATUS);
 
-function NotificationService({ loggedIn }: Props) {
   let notificationServices: any = [];
 
-  if (loggedIn) {
+  if (data && data.loggedIn) {
     notificationServices = [<RuntimeCreated key="createRuntimeService" />];
   }
 
@@ -22,8 +20,4 @@ function NotificationService({ loggedIn }: Props) {
   );
 }
 
-const mapStateToProps = (state: { app: AppState }) => ({
-  loggedIn: state.app.loggedIn
-});
-
-export default connect(mapStateToProps)(NotificationService);
+export default NotificationService;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router';
-import { renderWithRedux } from '../../utils/testUtils';
+import { renderWithRouter } from '../../utils/testUtils';
 import { act } from 'react-dom/test-utils';
 import Header from './Header';
 
@@ -10,13 +10,13 @@ import { usernameMock } from '../../mocks/auth';
 import '@testing-library/jest-dom/extend-expect';
 
 function renderComponent() {
-  return renderWithRedux(
+  return renderWithRouter(
     <MockedProvider mocks={[usernameMock]} addTypename={false}>
       <MemoryRouter>
         <Header />
       </MemoryRouter>
     </MockedProvider>
-  );
+  ).element;
 }
 it('Render Header without crashing', () => {
   const { container } = renderComponent();
