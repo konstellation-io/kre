@@ -2,8 +2,10 @@
 
 ## Deploy dev environment
 
+Use the script that is on the root of the repo:
+
 ```bash
-helm upgrade --install --namespace kre --values ./values-dev-local.yml kre ./kre
+</path/kre/root> ./deploy_local.sh
 ```
 
 ## Chart values
