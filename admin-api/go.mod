@@ -22,6 +22,7 @@ require (
 	github.com/minio/minio-go/v6 v6.0.44
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
+	github.com/teris-io/shortid v0.0.0-20171029131806-771a37caa5cf
 	github.com/tidwall/pretty v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	github.com/vektah/gqlparser v1.2.0

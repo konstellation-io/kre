@@ -1,7 +1,10 @@
 package entity
 
 import (
+	"fmt"
 	"time"
+
+	"github.com/iancoleman/strcase"
 )
 
 type MinioConfig struct {
@@ -15,6 +18,11 @@ type MongoConfig struct {
 	SharedKey string
 }
 
+type RuntimeStatus struct {
+	Name   string
+	Status string
+}
+
 type Runtime struct {
 	ID           string      `bson:"_id"`
 	Name         string      `bson:"name"`
@@ -23,4 +31,8 @@ type Runtime struct {
 	Status       string      `bson:"status"` // TODO use enum
 	Minio        MinioConfig `bson:"minio"`
 	Mongo        MongoConfig
+}
+
+func (r *Runtime) GetNamespace() string {
+	return fmt.Sprintf("kre-%s", strcase.ToKebab(r.Name))
 }

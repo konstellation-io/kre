@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package monitoring;
+option go_package = "monitoringpb";
+
+message NodeLogsRequest {
+  string nodeId = 1;
+}
+
+message NodeLogsResponse {
+  string date = 1;
+  string type = 2;
+  string versionId = 3;
+  string nodeId = 4;
+  string podId = 5;
+  string message = 6;
+  string level = 7;
+}
+
+message NodeStatusRequest {
+  string versionName = 2;
+}
+
+message NodeStatusResponse {
+  string NodeId = 1;
+  string Status = 2;
+  string Message = 3;
+}
+
+service MonitoringService {
+  rpc NodeLogs (NodeLogsRequest) returns (stream NodeLogsResponse) {
+  };
+  rpc NodeStatus (NodeStatusRequest) returns (stream NodeStatusResponse) {
+  };
+};

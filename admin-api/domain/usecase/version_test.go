@@ -1,16 +1,18 @@
 package usecase_test
 
 import (
+	"os"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/minio"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/mocks"
-	"os"
-	"testing"
-	"time"
 )
 
 type VersionSuite struct {
@@ -21,13 +23,14 @@ type VersionSuite struct {
 }
 
 type VersionSuiteMocks struct {
-	logger           *mocks.Logger
-	versionRepo      *mocks.VersionRepo
-	runtimeRepo      *mocks.RuntimeRepo
-	runtimeService   *mocks.RuntimeService
-	userActivityRepo *mocks.UserActivityRepo
-	userRepo         *mocks.UserRepo
-	minioRepo        *mocks.MinioRepo
+	logger            *mocks.Logger
+	versionRepo       *mocks.VersionRepo
+	runtimeRepo       *mocks.RuntimeRepo
+	versionService    *mocks.VersionService
+	monitoringService *mocks.MonitoringService
+	userActivityRepo  *mocks.UserActivityRepo
+	userRepo          *mocks.UserRepo
+	minioRepo         *mocks.MinioRepo
 }
 
 func TestVersionSuite(t *testing.T) {
@@ -36,13 +39,14 @@ func TestVersionSuite(t *testing.T) {
 
 func (s *VersionSuite) SetupTest() {
 	s.mocks = VersionSuiteMocks{
-		logger:           new(mocks.Logger),
-		versionRepo:      new(mocks.VersionRepo),
-		runtimeRepo:      new(mocks.RuntimeRepo),
-		runtimeService:   new(mocks.RuntimeService),
-		userActivityRepo: new(mocks.UserActivityRepo),
-		userRepo:         new(mocks.UserRepo),
-		minioRepo:        new(mocks.MinioRepo),
+		logger:            new(mocks.Logger),
+		versionRepo:       new(mocks.VersionRepo),
+		runtimeRepo:       new(mocks.RuntimeRepo),
+		monitoringService: new(mocks.MonitoringService),
+		versionService:    new(mocks.VersionService),
+		userActivityRepo:  new(mocks.UserActivityRepo),
+		userRepo:          new(mocks.UserRepo),
+		minioRepo:         new(mocks.MinioRepo),
 	}
 
 	s.mocks.logger.On("Info", mock.Anything).Return()
@@ -58,7 +62,8 @@ func (s *VersionSuite) SetupTest() {
 		s.mocks.logger,
 		s.mocks.versionRepo,
 		s.mocks.runtimeRepo,
-		s.mocks.runtimeService,
+		s.mocks.versionService,
+		s.mocks.monitoringService,
 		s.userActivityInteractor,
 		s.mocks.minioRepo,
 	)

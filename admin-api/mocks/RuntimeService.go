@@ -10,92 +10,20 @@ type RuntimeService struct {
 	mock.Mock
 }
 
-// PublishVersion provides a mock function with given fields: runtime, versionName
-func (_m *RuntimeService) PublishVersion(runtime *entity.Runtime, versionName string) error {
-	ret := _m.Called(runtime, versionName)
+// Create provides a mock function with given fields: runtime
+func (_m *RuntimeService) Create(runtime *entity.Runtime) (string, error) {
+	ret := _m.Called(runtime)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Runtime, string) error); ok {
-		r0 = rf(runtime, versionName)
+	var r0 string
+	if rf, ok := ret.Get(0).(func(*entity.Runtime) string); ok {
+		r0 = rf(runtime)
 	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// StartVersion provides a mock function with given fields: runtime, version
-func (_m *RuntimeService) StartVersion(runtime *entity.Runtime, version *entity.Version) error {
-	ret := _m.Called(runtime, version)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Runtime, *entity.Version) error); ok {
-		r0 = rf(runtime, version)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// StopVersion provides a mock function with given fields: runtime, versionName
-func (_m *RuntimeService) StopVersion(runtime *entity.Runtime, versionName string) error {
-	ret := _m.Called(runtime, versionName)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Runtime, string) error); ok {
-		r0 = rf(runtime, versionName)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// UnpublishVersion provides a mock function with given fields: runtime, versionName
-func (_m *RuntimeService) UnpublishVersion(runtime *entity.Runtime, versionName string) error {
-	ret := _m.Called(runtime, versionName)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Runtime, string) error); ok {
-		r0 = rf(runtime, versionName)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// UpdateVersionConfig provides a mock function with given fields: runtime, version
-func (_m *RuntimeService) UpdateVersionConfig(runtime *entity.Runtime, version *entity.Version) error {
-	ret := _m.Called(runtime, version)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*entity.Runtime, *entity.Version) error); ok {
-		r0 = rf(runtime, version)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// WatchNodeLogs provides a mock function with given fields: runtime, nodeID, stopChannel
-func (_m *RuntimeService) WatchNodeLogs(runtime *entity.Runtime, nodeID string, stopChannel <-chan bool) (<-chan *entity.NodeLog, error) {
-	ret := _m.Called(runtime, nodeID, stopChannel)
-
-	var r0 <-chan *entity.NodeLog
-	if rf, ok := ret.Get(0).(func(*entity.Runtime, string, <-chan bool) <-chan *entity.NodeLog); ok {
-		r0 = rf(runtime, nodeID, stopChannel)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan *entity.NodeLog)
-		}
+		r0 = ret.Get(0).(string)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*entity.Runtime, string, <-chan bool) error); ok {
-		r1 = rf(runtime, nodeID, stopChannel)
+	if rf, ok := ret.Get(1).(func(*entity.Runtime) error); ok {
+		r1 = rf(runtime)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -103,22 +31,22 @@ func (_m *RuntimeService) WatchNodeLogs(runtime *entity.Runtime, nodeID string, 
 	return r0, r1
 }
 
-// WatchVersionStatus provides a mock function with given fields: runtime, versionName, stopChannel
-func (_m *RuntimeService) WatchVersionStatus(runtime *entity.Runtime, versionName string, stopChannel <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
-	ret := _m.Called(runtime, versionName, stopChannel)
+// WaitForRuntimeStarted provides a mock function with given fields: runtime
+func (_m *RuntimeService) WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatus, error) {
+	ret := _m.Called(runtime)
 
-	var r0 <-chan *entity.VersionNodeStatus
-	if rf, ok := ret.Get(0).(func(*entity.Runtime, string, <-chan bool) <-chan *entity.VersionNodeStatus); ok {
-		r0 = rf(runtime, versionName, stopChannel)
+	var r0 *entity.RuntimeStatus
+	if rf, ok := ret.Get(0).(func(*entity.Runtime) *entity.RuntimeStatus); ok {
+		r0 = rf(runtime)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(<-chan *entity.VersionNodeStatus)
+			r0 = ret.Get(0).(*entity.RuntimeStatus)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*entity.Runtime, string, <-chan bool) error); ok {
-		r1 = rf(runtime, versionName, stopChannel)
+	if rf, ok := ret.Get(1).(func(*entity.Runtime) error); ok {
+		r1 = rf(runtime)
 	} else {
 		r1 = ret.Error(1)
 	}

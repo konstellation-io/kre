@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package version;
+option go_package = "versionpb";
+
+message Version {
+  string name = 1;
+  string namespace = 2;
+  Entrypoint entrypoint = 3;
+  repeated Config config = 4;
+  repeated Workflow workflows = 5;
+
+  message Config {
+    string key = 1;
+    string value = 2;
+  }
+
+  message Entrypoint {
+    string proto_file = 1;
+    string image = 2;
+    string src = 3;
+  }
+
+  message Workflow {
+
+    message Node {
+      string Id = 1;
+      string Name = 2;
+      string Image = 3;
+      string Src = 4;
+    }
+
+    message Edge {
+      string Id = 1;
+      string FromNode = 2;
+      string ToNode = 3;
+    }
+
+    string name = 1;
+    string entrypoint = 2;
+    repeated Node nodes = 3;
+    repeated Edge edges = 4;
+  }
+
+}
+
+message Request {
+  Version version = 1;
+}
+
+message Response {
+  string message = 2;
+}
+
+
+service VersionService {
+  rpc Start (Request) returns (Response) {
+  };
+  rpc Stop (Request) returns (Response) {
+  };
+  rpc Publish (Request) returns (Response) {
+  };
+  rpc Unpublish (Request) returns (Response) {
+  };
+  rpc UpdateConfig (Request) returns (Response) {
+  };
+};
