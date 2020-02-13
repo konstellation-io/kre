@@ -5,15 +5,17 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
+
+	"github.com/go-playground/validator/v10"
+	"gopkg.in/yaml.v2"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
 
 // KrtNode contains data about a version's node

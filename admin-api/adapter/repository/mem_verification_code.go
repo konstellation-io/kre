@@ -2,11 +2,12 @@ package repository
 
 import (
 	"errors"
+	"sync"
+	"time"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"sync"
-	"time"
 )
 
 var ErrTokenNotFound = errors.New("error token not found")

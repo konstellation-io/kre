@@ -2,14 +2,16 @@ package mongodb
 
 import (
 	"context"
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/logging"
+	"os"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"os"
-	"time"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/logging"
 )
 
 type MongoDB struct {

@@ -2,14 +2,16 @@ package usecase_test
 
 import (
 	"errors"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/mocks"
-	"testing"
-	"time"
 )
 
 type AuthSuite struct {

@@ -2,15 +2,17 @@ package gql
 
 import (
 	"context"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/google/uuid"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/dataloader"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/middleware"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"strconv"
-	"strings"
-	"time"
 )
 
 var runtimeCreatedChannels map[string]chan *entity.Runtime

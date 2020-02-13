@@ -3,11 +3,13 @@ package auth
 import (
 	"bytes"
 	"fmt"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"gopkg.in/gomail.v2"
 	"html/template"
 	"strconv"
+
+	"gopkg.in/gomail.v2"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
 
 type VerificationCodeSMTPTransport struct {

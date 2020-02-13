@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"time"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 )
 
 type VerificationCodeRepo interface {

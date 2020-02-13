@@ -6,6 +6,7 @@ import (
 	"github.com/99designs/gqlgen/handler"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/gql"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"

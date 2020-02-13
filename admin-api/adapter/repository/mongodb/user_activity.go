@@ -2,13 +2,15 @@ package mongodb
 
 import (
 	"context"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
 
 type UserActivityRepoMongoDB struct {

@@ -1,14 +1,15 @@
 package controller
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"net/http"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
 
 type signInInput struct {

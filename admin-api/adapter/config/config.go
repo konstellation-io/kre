@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/kelseyhightower/envconfig"
-	"gopkg.in/yaml.v2"
 	"os"
 	"sync"
+
+	"github.com/kelseyhightower/envconfig"
+	"gopkg.in/yaml.v2"
 )
 
 // Config holds the configuration values for the application.

@@ -2,11 +2,13 @@ package nats
 
 import (
 	"fmt"
+	"time"
+
 	nc "github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/logging"
-	"time"
 )
 
 // Connect to a server

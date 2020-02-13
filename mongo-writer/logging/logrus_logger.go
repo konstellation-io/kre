@@ -1,8 +1,9 @@
 package logging
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
 	"os"
+
+	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
 
 	log "github.com/sirupsen/logrus"
 )

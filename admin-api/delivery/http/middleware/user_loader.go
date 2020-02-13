@@ -2,11 +2,13 @@ package middleware
 
 import (
 	"context"
+	"time"
+
 	"github.com/labstack/echo"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/dataloader"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
-	"time"
 )
 
 const UserLoaderKey = "userloader"

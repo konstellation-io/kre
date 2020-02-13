@@ -3,13 +3,15 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/go-playground/validator"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/auth"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"strings"
-	"time"
 )
 
 // AuthInteractor will manage all things related to authorizations.

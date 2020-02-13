@@ -3,9 +3,10 @@ package minio
 import (
 	"errors"
 	"fmt"
-	"github.com/minio/minio-go/v6"
 	"os"
 	"path/filepath"
+
+	"github.com/minio/minio-go/v6"
 )
 
 type BucketObject struct {
