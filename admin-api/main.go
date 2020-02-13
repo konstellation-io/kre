@@ -4,6 +4,7 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/auth"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/logging"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/minio"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/mongodb"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/service"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http"
@@ -22,7 +23,8 @@ func main() {
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
-	versionRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
+	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
+	versionMinioRepo := minio.NewMinioRepo(logger)
 
 	k8sManagerService := service.NewK8sManagerServiceGRPC(cfg, logger)
 	runtimeService := service.NewRuntimeAPIServiceGRPC(cfg, logger)
@@ -37,7 +39,7 @@ func main() {
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService, userActivityInteractor)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
-	versionInteractor := usecase.NewVersionInteractor(logger, versionRepo, runtimeRepo, runtimeService, userActivityInteractor)
+	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, runtimeService, userActivityInteractor, versionMinioRepo)
 
 	err := settingInteractor.CreateDefaults()
 	if err != nil {

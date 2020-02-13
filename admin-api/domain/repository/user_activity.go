@@ -1,6 +1,8 @@
 package repository
 
-import "gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+import (
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+)
 
 type UserActivityRepo interface {
 	Create(activity entity.UserActivity) error

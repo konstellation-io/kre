@@ -1,27 +1,22 @@
 package usecase
 
 import (
-	"archive/tar"
-	"compress/gzip"
 	"errors"
 	"fmt"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/minio"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/krt"
 	"io"
 	"io/ioutil"
 	"os"
-	"path/filepath"
-	"regexp"
 	"sort"
 	"time"
 
 	"github.com/google/uuid"
 
-	"github.com/iancoleman/strcase"
-	"github.com/minio/minio-go/v6"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
-	"gopkg.in/yaml.v2"
 )
 
 // VersionStatus enumeration of Version statuses
@@ -50,11 +45,12 @@ var (
 
 // VersionInteractor contains app logic about Version entities
 type VersionInteractor struct {
-	logger         logging.Logger
-	versionRepo    repository.VersionRepo
-	runtimeRepo    repository.RuntimeRepo
-	runtimeService service.RuntimeService
-	userActivity   *UserActivityInteractor
+	logger                 logging.Logger
+	versionRepo            repository.VersionRepo
+	runtimeRepo            repository.RuntimeRepo
+	runtimeService         service.RuntimeService
+	userActivityInteractor *UserActivityInteractor
+	minio                  minio.MinioRepo
 }
 
 // NewVersionInteractor creates a new interactor
@@ -63,144 +59,50 @@ func NewVersionInteractor(
 	versionRepo repository.VersionRepo,
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.RuntimeService,
-	userActivity *UserActivityInteractor,
+	userActivityInteractor *UserActivityInteractor,
+	minioRepo minio.MinioRepo,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		logger,
 		versionRepo,
 		runtimeRepo,
 		runtimeService,
-		userActivity,
+		userActivityInteractor,
+		minioRepo,
 	}
-}
-
-// KrtYmlNode contains data about a version's node
-type KrtYmlNode struct {
-	Name  string `yaml:"name"`
-	Image string `yaml:"image"`
-	Src   string `yaml:"src"`
-}
-
-// KrtYmlWorkflow contains data about a version's workflow
-type KrtYmlWorkflow struct {
-	Name       string   `yaml:"name"`
-	Entrypoint string   `yaml:"entrypoint"`
-	Sequential []string `yaml:"sequential"`
-}
-
-type KrtYmlEntrypoint struct {
-	Proto string `yaml:"proto"`
-	Image string `yaml:"image"`
-	Src   string `yaml:"src"`
-}
-
-type KrtYmlConfig struct {
-	Variables []string `yaml:"variables"`
-	Files     []string `yaml:"files"`
-}
-
-// KrtYml contains data about a version
-type KrtYml struct {
-	Version     string           `yaml:"version"`
-	Description string           `yaml:"description"`
-	Entrypoint  KrtYmlEntrypoint `yaml:"entrypoint"`
-	Config      KrtYmlConfig     `yaml:"config"`
-	Nodes       []KrtYmlNode     `yaml:"nodes"`
-	Workflows   []KrtYmlWorkflow `yaml:"workflows"`
 }
 
 // Create creates a Version on the DB based on the content of a KRT file
 func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
 	runtime, err := i.runtimeRepo.GetByID(runtimeID)
 	if err != nil {
-		return nil, err
-	}
-	// Get name and description from krtFile
-	i.logger.Info("Decompressing KRT file...")
-	uncompressed, err := gzip.NewReader(krtFile)
-	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error runtime repo GetByID: %w", err)
 	}
 
 	tmpDir, err := ioutil.TempDir("", "version")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating temp dir for version: %w", err)
 	}
 	i.logger.Info("Created temp dir to extract the KRT files at " + tmpDir)
 
-	krtYmlPath := ""
-
-	tarReader := tar.NewReader(uncompressed)
-	for {
-		header, err := tarReader.Next()
-		if err == io.EOF {
-			break
-		}
-
-		if err != nil {
-			return nil, err
-		}
-
-		path := filepath.Join(tmpDir, header.Name)
-		i.logger.Info(" - " + path)
-
-		matched, err := regexp.Match("(^|/)krt.ya?ml$", []byte(header.Name))
-		if err != nil {
-			return nil, err
-		}
-		if matched {
-			krtYmlPath = path
-		}
-
-		switch header.Typeflag {
-		case tar.TypeDir:
-			if err := os.Mkdir(path, 0755); err != nil {
-				return nil, err
-			}
-		case tar.TypeReg:
-			outFile, err := os.Create(path)
-			if err != nil {
-				return nil, err
-			}
-			if _, err := io.Copy(outFile, tarReader); err != nil {
-				return nil, err
-			}
-			err = outFile.Close()
-			if err != nil {
-				return nil, err
-			}
-		default:
-			return nil, fmt.Errorf("ExtractTarGz: uknown type: %v in %s", header.Typeflag, path)
-		}
-	}
-
-	var krtYML KrtYml
-
-	krtYmlFile, err := ioutil.ReadFile(krtYmlPath)
+	krt, err := i.CreateKrtYaml(tmpDir, krtFile)
 	if err != nil {
-		return nil, err
-	}
-
-	i.logger.Info("Parsing KRT file")
-	err = yaml.Unmarshal(krtYmlFile, &krtYML)
-	if err != nil {
-		i.logger.Error(err.Error())
-		return nil, err // TODO send custom error for invalid yaml
+		return nil, fmt.Errorf("error creating krt yaml: %w", err)
 	}
 
 	// Check if the version is duplicated
 	versions, err := i.versionRepo.GetByRuntime(runtimeID)
 	for _, v := range versions {
-		if v.Name == krtYML.Version {
+		if v.Name == krt.Version {
 			return nil, ErrVersionDuplicated
 		}
 	}
 
 	// Parse Workflows
 	var workflows []entity.Workflow
-	if len(krtYML.Workflows) > 0 {
-		for _, w := range krtYML.Workflows {
-			workflows = append(workflows, i.generateWorkflow(krtYML.Nodes, w))
+	if len(krt.Workflows) > 0 {
+		for _, w := range krt.Workflows {
+			workflows = append(workflows, i.generateWorkflow(krt.Nodes, w))
 		}
 	}
 
@@ -211,7 +113,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 
 	configVars := make([]*entity.ConfigVar, 0)
 
-	for _, cf := range krtYML.Config.Files {
+	for _, cf := range krt.Config.Files {
 		val := ""
 		if previousVal, ok := currentConfig[cf]; ok {
 			val = previousVal
@@ -225,7 +127,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		})
 	}
 
-	for _, cv := range krtYML.Config.Variables {
+	for _, cv := range krt.Config.Variables {
 		val := ""
 		if previousVal, ok := currentConfig[cv]; ok {
 			val = previousVal
@@ -241,16 +143,16 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 
 	version := &entity.Version{
 		RuntimeID:   runtimeID,
-		Name:        krtYML.Version,
-		Description: krtYML.Description,
+		Name:        krt.Version,
+		Description: krt.Description,
 		Config: entity.VersionConfig{
 			Vars:      configVars,
 			Completed: configCompleted,
 		},
 		Entrypoint: entity.Entrypoint{
-			ProtoFile: krtYML.Entrypoint.Proto,
-			Image:     krtYML.Entrypoint.Image,
-			Src:       krtYML.Entrypoint.Src,
+			ProtoFile: krt.Entrypoint.Proto,
+			Image:     krt.Entrypoint.Image,
+			Src:       krt.Entrypoint.Src,
 		},
 		Workflows: workflows,
 	}
@@ -260,66 +162,39 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	}
 	i.logger.Info("Version created ")
 
-	// Create bucket
-	ns := strcase.ToKebab(runtime.Name)
-	endpoint := fmt.Sprintf("kre-minio.%s:9000", ns)
-	accessKeyID := runtime.Minio.AccessKey
-	secretAccessKey := runtime.Minio.SecretKey
-	useSSL := false
-
-	fmt.Printf("Minio data: %#v \n endpoint: %s", runtime, endpoint)
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-
+	minioClient, err := i.minio.NewClient(i.logger, runtime)
 	if err != nil {
-		return nil, err
+		i.logger.Error(fmt.Sprintf("error Initializing Minio Client for Runtime %s", runtime.Name))
+		return nil, fmt.Errorf("error Initializing Minio Client for Runtime %s: %w", runtime.Name, err)
 	}
-	i.logger.Info("Minio connected")
-	// Make version bucket
-	bucketName := strcase.ToKebab(krtYML.Version)
-	location := ""
+	i.logger.Info(fmt.Sprintf("Minio Client Initialized for Runtime %s", runtime.Name))
 
-	err = minioClient.MakeBucket(bucketName, location)
+	bucket, err := i.minio.CreateBucket(krt.Version, minioClient)
 	if err != nil {
-		// Check to see if we already own this bucket (which happens if you run this twice)
-		exists, errBucketExists := minioClient.BucketExists(bucketName)
-		if errBucketExists == nil && exists {
-			i.logger.Info(fmt.Sprintf("We already own %s\n", bucketName))
-		} else {
-			return nil, err
-		}
+		i.logger.Error(fmt.Sprintf("error Creating Bucket for Version %s", krt.Version))
+		return nil, fmt.Errorf("error Creating Bucket for Version %s: %w", krt.Version, err)
 	}
-	i.logger.Info(fmt.Sprintf("Bucket %s connected", bucketName))
 
-	// Copy all KRT files
-	err = filepath.Walk(tmpDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		// Upload the zip file
-		if info.IsDir() {
-			return nil
-		}
-		i.logger.Info(fmt.Sprintf("Uploading file %s", path))
-		filePath, _ := filepath.Rel(tmpDir, path)
-		_, err = minioClient.FPutObject(bucketName, filePath, path, minio.PutObjectOptions{})
-		if err != nil {
-			return err
-		}
+	i.logger.Info(fmt.Sprintf("Bucket Created for Version %s", runtime.Name))
 
-		return nil
-	})
+	err = bucket.CopyDir(tmpDir, minioClient)
 	if err != nil {
-		return nil, err
+		i.logger.Error(fmt.Sprintf("error Copying dir %s", tmpDir))
+		return nil, fmt.Errorf("error Copying dir %s: %w", tmpDir, err)
 	}
+
+	i.logger.Info(fmt.Sprintf("Dir %s Copied ", tmpDir))
 
 	// Remove KRT file and tmpDir
 	err = os.RemoveAll(tmpDir)
 	if err != nil {
-		return nil, err
+		i.logger.Error(fmt.Sprintf("error Removing dir %s", tmpDir))
+		return nil, fmt.Errorf("error Removing dir %s: %w", tmpDir, err)
 	}
 
-	err = i.userActivity.Create(
+	i.logger.Info(fmt.Sprintf("Dir %s Removed ", tmpDir))
+
+	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeCreateVersion,
 		[]entity.UserActivityVar{
@@ -342,13 +217,18 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		})
 
 	if err != nil {
-		return nil, nil
+		i.logger.Error("error creating userActivity")
+		return nil, fmt.Errorf("error creating userActivity: %w", err)
 	}
 
 	return versionCreated, nil
 }
 
-func (i *VersionInteractor) getNodeByName(nodes []KrtYmlNode, name string) (*KrtYmlNode, error) {
+func (i *VersionInteractor) CreateKrtYaml(tmpDir string, krtFile io.Reader) (*krt.Krt, error) {
+	return krt.CreateKrtYaml(i.logger, tmpDir, krtFile)
+}
+
+func (i *VersionInteractor) getNodeByName(nodes []krt.KrtNode, name string) (*krt.KrtNode, error) {
 	for _, n := range nodes {
 		if n.Name == name {
 			return &n, nil
@@ -380,7 +260,7 @@ func (i *VersionInteractor) getConfigFromPreviousVersions(versions []entity.Vers
 	return currentConfig
 }
 
-func (i *VersionInteractor) generateWorkflow(krtNodes []KrtYmlNode, w KrtYmlWorkflow) entity.Workflow {
+func (i *VersionInteractor) generateWorkflow(krtNodes []krt.KrtNode, w krt.KrtWorkflow) entity.Workflow {
 	var nodes []entity.Node
 	var edges []entity.Edge
 
@@ -451,7 +331,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 		return nil, err
 	}
 
-	err = i.userActivity.Create(
+	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeStartVersion,
 		[]entity.UserActivityVar{
@@ -504,7 +384,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 		return nil, err
 	}
 
-	err = i.userActivity.Create(
+	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeStopVersion,
 		[]entity.UserActivityVar{
@@ -582,7 +462,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 		return nil, err
 	}
 
-	err = i.userActivity.Create(
+	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypePublishVersion,
 		[]entity.UserActivityVar{
@@ -649,7 +529,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.
 		return nil, err
 	}
 
-	err = i.userActivity.Create(
+	err = i.userActivityInteractor.Create(
 		userID,
 		UserActivityTypeUnpublishVersion,
 		[]entity.UserActivityVar{

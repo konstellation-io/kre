@@ -1,22 +1,22 @@
-security-admin-api:
-  stage: security
-  image: golang:1.13
-  variables:
-    SNYK_TOKEN: $SNYK_TOKEN
-  before_script:
-    - apt update && apt install nodejs npm -y
-    - npm install -g snyk
-    - snyk auth $SNYK_TOKEN
-  script:
-    - cd admin-api
-    - snyk monitor --file=go.mod
-    - snyk test --file=go.mod
-  only:
-    refs:
-      - merge_requests
-      - master
-    changes:
-      - admin-api/**/*
+#security-admin-api:
+#  stage: security
+#  image: golang:1.13
+#  variables:
+#    SNYK_TOKEN: $SNYK_TOKEN
+#  before_script:
+#    - apt update && apt install nodejs npm -y
+#    - npm install -g snyk
+#    - snyk auth $SNYK_TOKEN
+#  script:
+#    - cd admin-api
+#    - snyk monitor --file=go.mod
+#    - snyk test --file=go.mod
+#  only:
+#    refs:
+#      - merge_requests
+#      - master
+#    changes:
+#      - admin-api/**/*
 
 test-admin-api:
   stage: test

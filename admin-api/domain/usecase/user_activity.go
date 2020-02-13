@@ -62,6 +62,5 @@ func (i *UserActivityInteractor) Create(userID string, userActivityType UserActi
 		Date: time.Now(),
 		Vars: vars,
 	}
-
 	return i.userActivityRepo.Create(userActivity)
 }
