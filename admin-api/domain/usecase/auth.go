@@ -150,7 +150,7 @@ func (a *AuthInteractor) VerifyCode(code string) (string, error) {
 	}
 
 	a.logger.Info("The verification code is valid")
-	err = a.userActivityInteractor.Create(verificationCode.UID, UserActivityTypeLogin, []entity.UserActivityVar{})
+	err = a.userActivityInteractor.Create(verificationCode.UID, UserActivityTypeLogin, []*entity.UserActivityVar{})
 	if err != nil {
 		return "", err
 	}
@@ -160,5 +160,5 @@ func (a *AuthInteractor) VerifyCode(code string) (string, error) {
 
 // Logout register the User logout request
 func (a *AuthInteractor) Logout(userID string) error {
-	return a.userActivityInteractor.Create(userID, UserActivityTypeLogout, []entity.UserActivityVar{})
+	return a.userActivityInteractor.Create(userID, UserActivityTypeLogout, []*entity.UserActivityVar{})
 }

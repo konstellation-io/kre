@@ -44,12 +44,12 @@ func NewUserActivityInteractor(
 }
 
 // Get return a list of UserActivities
-func (i *UserActivityInteractor) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]entity.UserActivity, error) {
+func (i *UserActivityInteractor) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
 	return i.userActivityRepo.Get(userEmail, activityType, fromDate, toDate, lastID)
 }
 
 // Create add a new UserActivity to the given user
-func (i *UserActivityInteractor) Create(userID string, userActivityType UserActivityType, vars []entity.UserActivityVar) error {
+func (i *UserActivityInteractor) Create(userID string, userActivityType UserActivityType, vars []*entity.UserActivityVar) error {
 	user, err := i.userRepo.GetByID(userID)
 	if err != nil {
 		return err

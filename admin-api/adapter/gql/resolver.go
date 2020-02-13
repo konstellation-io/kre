@@ -3,6 +3,8 @@ package gql
 import (
 	"context"
 	"github.com/google/uuid"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/dataloader"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/middleware"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
@@ -11,10 +13,10 @@ import (
 	"time"
 )
 
-var runtimeCreatedChannels map[string]chan *Runtime
+var runtimeCreatedChannels map[string]chan *entity.Runtime
 
 func init() {
-	runtimeCreatedChannels = map[string]chan *Runtime{}
+	runtimeCreatedChannels = map[string]chan *entity.Runtime{}
 }
 
 type GraphQLResolver struct {
@@ -47,30 +49,39 @@ func NewGraphQLResolver(
 func (r *GraphQLResolver) Mutation() MutationResolver {
 	return &mutationResolver{r}
 }
+func (r *GraphQLResolver) Node() NodeResolver {
+	return &nodeResolver{r}
+}
 func (r *GraphQLResolver) Query() QueryResolver {
 	return &queryResolver{r}
 }
+func (r *GraphQLResolver) Runtime() RuntimeResolver {
+	return &runtimeResolver{r}
+}
 func (r *GraphQLResolver) Subscription() SubscriptionResolver {
 	return &subscriptionResolver{r}
+}
+func (r *GraphQLResolver) UserActivity() UserActivityResolver {
+	return &userActivityResolver{r}
+}
+func (r *GraphQLResolver) Version() VersionResolver {
+	return &versionResolver{r}
+}
+func (r *GraphQLResolver) VersionNodeStatus() VersionNodeStatusResolver {
+	return &versionNodeStatusResolver{r}
 }
 
 type mutationResolver struct{ *GraphQLResolver }
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*CreateRuntimeResponse, error) {
 	userID := ctx.Value("userID").(string)
-
-	owner, err := r.userInteractor.GetByID(userID)
-	if err != nil {
-		return nil, err
-	}
-
 	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
 
 	go func() {
 		runtime := <-onRuntimeStartedChannel
 
 		for _, r := range runtimeCreatedChannels {
-			r <- toGQLRuntime(runtime, owner)
+			r <- runtime
 		}
 	}()
 
@@ -81,17 +92,12 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 
 	return &CreateRuntimeResponse{
 		Errors:  nil,
-		Runtime: toGQLRuntime(runtime, owner),
+		Runtime: runtime,
 	}, nil
 }
 
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error) {
 	userID := ctx.Value("userID").(string)
-	author, err := r.userInteractor.GetByID(userID)
-	if err != nil {
-		return nil, err
-	}
-
 	version, err := r.versionInteractor.Create(userID, input.RuntimeID, input.File.File)
 	if err != nil {
 		return nil, err
@@ -99,77 +105,28 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 
 	return &CreateVersionResponse{
 		Errors:  nil,
-		Version: toGQLVersion(version, author, nil),
+		Version: version,
 	}, nil
 }
 
-func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*Version, error) {
+func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-
-	version, err := r.versionInteractor.Start(userID, input.VersionID)
-	if err != nil {
-		return nil, err
-	}
-
-	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
-	if err != nil {
-		return nil, err
-	}
-
-	return toGQLVersion(version, creationUser, nil), nil
+	return r.versionInteractor.Start(userID, input.VersionID)
 }
 
-func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInput) (*Version, error) {
+func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-
-	version, err := r.versionInteractor.Stop(userID, input.VersionID)
-	if err != nil {
-		return nil, err
-	}
-
-	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
-	if err != nil {
-		return nil, err
-	}
-
-	return toGQLVersion(version, creationUser, nil), nil
+	return r.versionInteractor.Stop(userID, input.VersionID)
 }
 
-func (r *mutationResolver) UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*Version, error) {
+func (r *mutationResolver) UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-
-	version, err := r.versionInteractor.Unpublish(userID, input.VersionID)
-	if err != nil {
-		return nil, err
-	}
-
-	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
-	if err != nil {
-		return nil, err
-	}
-
-	return toGQLVersion(version, creationUser, nil), nil
+	return r.versionInteractor.Unpublish(userID, input.VersionID)
 }
 
-func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVersionInput) (*Version, error) {
+func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-
-	version, err := r.versionInteractor.Publish(userID, input.VersionID, input.Comment)
-	if err != nil {
-		return nil, err
-	}
-
-	creationUser, err := r.userInteractor.GetByID(version.CreationAuthor)
-	if err != nil {
-		return nil, err
-	}
-
-	publicationUser, err := r.userInteractor.GetByID(userID)
-	if err != nil {
-		return nil, err
-	}
-
-	return toGQLVersion(version, creationUser, publicationUser), nil
+	return r.versionInteractor.Publish(userID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
@@ -185,7 +142,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 			User: entity.User{
 				ID: userID,
 			},
-			Vars: []entity.UserActivityVar{
+			Vars: []*entity.UserActivityVar{
 				{
 					Key:   "SETTING_NAME",
 					Value: "SessionLifetimeInDays",
@@ -208,7 +165,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 			User: entity.User{
 				ID: userID,
 			},
-			Vars: []entity.UserActivityVar{
+			Vars: []*entity.UserActivityVar{
 				{
 					Key:   "SETTING_NAME",
 					Value: "AuthAllowedDomains",
@@ -234,15 +191,12 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 	}
 
 	return &UpdateSettingsResponse{
-		Errors: nil,
-		Settings: &Settings{
-			AuthAllowedDomains:    settings.AuthAllowedDomains,
-			SessionLifetimeInDays: settings.SessionLifetimeInDays,
-		},
+		Errors:   nil,
+		Settings: settings,
 	}, nil
 }
 
-func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*Version, error) {
+func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error) {
 	v, err := r.versionInteractor.GetByID(input.VersionID)
 	if err != nil {
 		return nil, err
@@ -257,206 +211,51 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		}
 	}
 
-	v, err = r.versionInteractor.UpdateVersionConfig(v, config)
-	if err != nil {
-		return nil, err
-	}
+	return r.versionInteractor.UpdateVersionConfig(v, config)
+}
 
-	creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
-	if err != nil && err != usecase.ErrUserNotFound {
-		return nil, err
-	}
+type nodeResolver struct{ *GraphQLResolver }
 
-	var publicationUser *entity.User
-	if v.PublicationUserID != nil {
-		publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
-		if err != nil && err != usecase.ErrUserNotFound {
-			return nil, err
-		}
-	}
-
-	gqlVersion := toGQLVersion(v, creationUser, publicationUser)
-	return gqlVersion, nil
+func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus, error) {
+	return NodeStatus(obj.Status), nil
 }
 
 type queryResolver struct{ *GraphQLResolver }
 
-func (r *queryResolver) Me(ctx context.Context) (*User, error) {
+func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	userID := ctx.Value("userID").(string)
-	user, err := r.userInteractor.GetByID(userID)
-	if err != nil {
-		r.logger.Error("Error getting user " + userID + ": " + err.Error())
-		return nil, err
-	}
-
-	return &User{
-		ID:    userID,
-		Email: user.Email,
-	}, nil
+	return r.userInteractor.GetByID(userID)
 }
 
-func (r *queryResolver) Users(ctx context.Context) ([]*User, error) {
-	users, err := r.userInteractor.GetAllUsers()
-	if err != nil {
-		return nil, err
-	}
-
-	var result []*User
-	for _, user := range users {
-		result = append(result, &User{
-			ID:    user.ID,
-			Email: user.Email,
-		})
-	}
-
-	return result, nil
+func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
+	return r.userInteractor.GetAllUsers()
 }
 
-// TODO Get Runtime Published Version from a property stored in the Runtime entity instead of get all runtime versions.
-func (r *queryResolver) getPublishedVersion(runtimeID string) (*Version, error) {
-	versions, err := r.versionInteractor.GetByRuntime(runtimeID)
-	if err != nil {
-		return nil, err
-	}
-
-	var publishedVersion *Version
-	for _, v := range versions {
-		if v.Status == string(VersionStatusPublished) {
-			creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
-			if err != nil && err != usecase.ErrUserNotFound {
-				return nil, err
-			}
-			var publicationUser *entity.User
-			if v.PublicationUserID != nil {
-				publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
-				if err != nil && err != usecase.ErrUserNotFound {
-					return nil, err
-				}
-			}
-			publishedVersion = toGQLVersion(&v, creationUser, publicationUser)
-		}
-	}
-
-	return publishedVersion, nil
+func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
+	return r.runtimeInteractor.GetByID(id)
 }
 
-func (r *queryResolver) Runtime(ctx context.Context, id string) (*Runtime, error) {
-	runtime, err := r.runtimeInteractor.GetByID(id)
-	if err != nil {
-		return nil, err
-	}
-
-	owner, err := r.userInteractor.GetByID(runtime.Owner)
-	if err != nil {
-		return nil, err
-	}
-
-	gqlRuntime := toGQLRuntime(runtime, owner)
-	publishedVersion, err := r.getPublishedVersion(runtime.ID)
-	if err != nil {
-		return nil, err
-	}
-	gqlRuntime.PublishedVersion = publishedVersion
-
-	return gqlRuntime, nil
+func (r *queryResolver) Runtimes(ctx context.Context) ([]*entity.Runtime, error) {
+	return r.runtimeInteractor.FindAll()
 }
 
-func (r *queryResolver) Runtimes(ctx context.Context) ([]*Runtime, error) {
-	var gqlRuntimes []*Runtime
-	runtimes, err := r.runtimeInteractor.FindAll()
-
-	if err != nil {
-		r.logger.Error("Error getting runtimes: " + err.Error())
-		return gqlRuntimes, err
-	}
-
-	for _, runtime := range runtimes {
-		gqlRuntime := &Runtime{
-			ID:           runtime.ID,
-			Name:         runtime.Name,
-			Status:       RuntimeStatus(runtime.Status),
-			CreationDate: runtime.CreationDate.Format("2006-01-02"),
-		}
-
-		// TODO Use https://gqlgen.com/reference/dataloaders/ to get the users data
-		publishedVersion, err := r.getPublishedVersion(runtime.ID)
-		if err != nil {
-			return nil, err
-		}
-		gqlRuntime.PublishedVersion = publishedVersion
-
-		gqlRuntimes = append(gqlRuntimes, gqlRuntime)
-	}
-
-	return gqlRuntimes, nil
+func (r *queryResolver) Version(ctx context.Context, id string) (*entity.Version, error) {
+	return r.versionInteractor.GetByID(id)
 }
 
-func (r *queryResolver) Version(ctx context.Context, id string) (*Version, error) {
-	v, err := r.versionInteractor.GetByID(id)
-	if err != nil {
-		return nil, err
-	}
-
-	creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
-	if err != nil && err != usecase.ErrUserNotFound {
-		return nil, err
-	}
-
-	var publicationUser *entity.User
-	if v.PublicationUserID != nil {
-		publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
-		if err != nil && err != usecase.ErrUserNotFound {
-			return nil, err
-		}
-	}
-
-	gqlVersion := toGQLVersion(v, creationUser, publicationUser)
-	return gqlVersion, nil
-}
-
-func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*Version, error) {
-	versions, err := r.versionInteractor.GetByRuntime(runtimeID)
-	if err != nil {
-		return nil, err
-	}
-
-	var gqlVersions []*Version
-	for _, v := range versions {
-		creationUser, err := r.userInteractor.GetByID(v.CreationAuthor)
-		if err != nil && err != usecase.ErrUserNotFound {
-			return nil, err
-		}
-		var publicationUser *entity.User
-		if v.PublicationUserID != nil {
-			publicationUser, err = r.userInteractor.GetByID(*v.PublicationUserID)
-			if err != nil && err != usecase.ErrUserNotFound {
-				return nil, err
-			}
-		}
-		gqlVersion := toGQLVersion(&v, creationUser, publicationUser)
-		gqlVersions = append(gqlVersions, gqlVersion)
-	}
-
-	return gqlVersions, nil
+func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error) {
+	return r.versionInteractor.GetByRuntime(runtimeID)
 }
 
 func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
 	return []*Alert{}, nil
 }
 
-func (r *queryResolver) Settings(ctx context.Context) (*Settings, error) {
-	settings, err := r.settingInteractor.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	return &Settings{
-		AuthAllowedDomains:    settings.AuthAllowedDomains,
-		SessionLifetimeInDays: settings.SessionLifetimeInDays,
-	}, nil
+func (r *queryResolver) Settings(ctx context.Context) (*entity.Setting, error) {
+	return r.settingInteractor.Get()
 }
 
-func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*UserActivity, error) {
+func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
 	activityType := new(string)
 	if typeArg != nil {
 		*activityType = typeArg.String()
@@ -464,34 +263,49 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 		activityType = nil
 	}
 
-	activities, err := r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate, lastID)
+	return r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate, lastID)
+}
+
+type runtimeResolver struct{ *GraphQLResolver }
+
+func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
+	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
+	return userLoader.Load(runtime.Owner)
+}
+
+func (r *runtimeResolver) Status(ctx context.Context, obj *entity.Runtime) (RuntimeStatus, error) {
+	// TODO enums for custom models
+	return RuntimeStatus(obj.Status), nil
+}
+
+func (r *runtimeResolver) CreationDate(ctx context.Context, obj *entity.Runtime) (string, error) {
+	return obj.CreationDate.Format(time.RFC3339), nil
+}
+
+func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
+	// TODO Get Runtime Published Version from a property stored in the Runtime entity instead of get all runtime versions.
+	// TODO use the version loader to get the published version
+	versions, err := r.versionInteractor.GetByRuntime(obj.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []*UserActivity
-	for _, a := range activities {
-		result = append(result, &UserActivity{
-			ID: a.ID,
-			User: &User{
-				ID:    a.User.ID,
-				Email: a.User.Email,
-			},
-			Date: a.Date.Format(time.RFC3339),
-			Type: UserActivityType(a.Type),
-			Vars: toGQLUserActivityVars(a.Vars),
-		})
+	var publishedVersion *entity.Version
+	for _, v := range versions {
+		if v.Status == string(VersionStatusPublished) {
+			publishedVersion = v
+		}
 	}
 
-	return result, nil
+	return publishedVersion, nil
 }
 
 type subscriptionResolver struct{ *GraphQLResolver }
 
-func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *Runtime, error) {
+func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
 	id := uuid.New().String()
 
-	runtimeCreatedChan := make(chan *Runtime, 1)
+	runtimeCreatedChan := make(chan *entity.Runtime, 1)
 	go func() {
 		<-ctx.Done()
 		delete(runtimeCreatedChannels, id)
@@ -502,7 +316,7 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *Runt
 	return runtimeCreatedChan, nil
 }
 
-func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId string) (<-chan *VersionNodeStatus, error) {
+func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId string) (<-chan *entity.VersionNodeStatus, error) {
 	stopCh := make(chan bool)
 	inputChan, err := r.versionInteractor.WatchVersionStatus(versionId, stopCh)
 	if err != nil {
@@ -511,7 +325,7 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 
 	r.logger.Info("------------ STARTING SUBSCRIPTION -------------")
 
-	outputChan := make(chan *VersionNodeStatus)
+	outputChan := make(chan *entity.VersionNodeStatus)
 
 	go func() {
 		for {
@@ -522,7 +336,7 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 					close(outputChan)
 					return
 				}
-				outputChan <- toGQlVersionNodeStatus(nodeStatus)
+				outputChan <- nodeStatus
 
 			case <-ctx.Done():
 				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")
@@ -538,7 +352,7 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 	return outputChan, nil
 }
 
-func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID string) (<-chan *NodeLog, error) {
+func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID string) (<-chan *entity.NodeLog, error) {
 	stopCh := make(chan bool)
 	inputChan, err := r.versionInteractor.WatchNodeLogs(runtimeID, nodeID, stopCh)
 	if err != nil {
@@ -547,7 +361,7 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 
 	r.logger.Info("------------ STARTING LOGGER SUBSCRIPTION -------------")
 
-	outputChan := make(chan *NodeLog)
+	outputChan := make(chan *entity.NodeLog)
 
 	go func() {
 		for {
@@ -558,7 +372,7 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 					close(outputChan)
 					return
 				}
-				outputChan <- toGQlNodeLog(nodeLog)
+				outputChan <- nodeLog
 
 			case <-ctx.Done():
 				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")
@@ -572,4 +386,80 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 	}()
 
 	return outputChan, nil
+}
+
+type userActivityResolver struct{ *GraphQLResolver }
+
+func (r *userActivityResolver) Type(ctx context.Context, obj *entity.UserActivity) (UserActivityType, error) {
+	return UserActivityType(obj.Type), nil
+}
+
+func (r *userActivityResolver) Date(ctx context.Context, obj *entity.UserActivity) (string, error) {
+	return obj.Date.Format(time.RFC3339), nil
+}
+
+type versionResolver struct{ *GraphQLResolver }
+
+func (r *versionResolver) Status(ctx context.Context, obj *entity.Version) (VersionStatus, error) {
+	return VersionStatus(obj.Status), nil
+}
+
+func (r *versionResolver) CreationDate(ctx context.Context, obj *entity.Version) (string, error) {
+	return obj.CreationDate.Format(time.RFC3339), nil
+}
+
+func (r *versionResolver) CreationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error) {
+	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
+	return userLoader.Load(obj.CreationAuthor)
+}
+
+func (r *versionResolver) PublicationDate(ctx context.Context, obj *entity.Version) (*string, error) {
+	if obj.PublicationDate == nil {
+		return nil, nil
+	}
+	result := obj.PublicationDate.Format(time.RFC3339)
+	return &result, nil
+}
+
+func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error) {
+	if obj.PublicationUserID == nil {
+		return nil, nil
+	}
+
+	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
+	return userLoader.Load(*obj.PublicationUserID)
+}
+
+// TODO change entity struct to match with the gql definition
+func (r *versionResolver) ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*ConfigurationVariable, error) {
+	vars := make([]*ConfigurationVariable, len(obj.Config.Vars))
+	for i, c := range obj.Config.Vars {
+		vars[i] = &ConfigurationVariable{
+			Key:   c.Key,
+			Value: c.Value,
+		}
+
+		switch c.Type {
+		case string(ConfigurationVariableTypeVariable):
+			vars[i].Type = ConfigurationVariableTypeVariable
+		case string(ConfigurationVariableTypeFile):
+			vars[i].Type = ConfigurationVariableTypeFile
+		}
+	}
+	return vars, nil
+}
+
+// TODO change entity struct to match with the gql definition
+func (r *versionResolver) ConfigurationCompleted(ctx context.Context, obj *entity.Version) (bool, error) {
+	return obj.Config.Completed, nil
+}
+
+type versionNodeStatusResolver struct{ *GraphQLResolver }
+
+func (r *versionNodeStatusResolver) Date(ctx context.Context, obj *entity.VersionNodeStatus) (string, error) {
+	return time.Now().Format(time.RFC3339), nil
+}
+
+func (r *versionNodeStatusResolver) Status(ctx context.Context, obj *entity.VersionNodeStatus) (NodeStatus, error) {
+	return NodeStatus(obj.Status), nil
 }

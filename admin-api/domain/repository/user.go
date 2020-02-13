@@ -13,5 +13,7 @@ type UserRepo interface {
 
 	GetByID(userID string) (*entity.User, error)
 
-	GetAll() ([]entity.User, error)
+	GetByIDs(keys []string) ([]*entity.User, []error)
+
+	GetAll() ([]*entity.User, error)
 }

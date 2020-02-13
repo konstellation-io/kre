@@ -25,7 +25,12 @@ func (i *UserInteractor) GetByID(userID string) (*entity.User, error) {
 	return i.userRepo.GetByID(userID)
 }
 
+// GetByIDs returns a list of User by IDs
+func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, []error) {
+	return i.userRepo.GetByIDs(userIDs)
+}
+
 // GetAllUsers returns all existing Users
-func (i *UserInteractor) GetAllUsers() ([]entity.User, error) {
+func (i *UserInteractor) GetAllUsers() ([]*entity.User, error) {
 	return i.userRepo.GetAll()
 }

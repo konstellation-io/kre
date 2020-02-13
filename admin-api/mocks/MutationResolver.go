@@ -3,6 +3,7 @@
 package mocks
 
 import context "context"
+import entity "gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 import gql "gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/gql"
 import mock "github.com/stretchr/testify/mock"
 
@@ -58,15 +59,15 @@ func (_m *MutationResolver) CreateVersion(ctx context.Context, input gql.CreateV
 }
 
 // PublishVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) PublishVersion(ctx context.Context, input gql.PublishVersionInput) (*gql.Version, error) {
+func (_m *MutationResolver) PublishVersion(ctx context.Context, input gql.PublishVersionInput) (*entity.Version, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.PublishVersionInput) *gql.Version); ok {
+	var r0 *entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.PublishVersionInput) *entity.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Version)
+			r0 = ret.Get(0).(*entity.Version)
 		}
 	}
 
@@ -81,15 +82,15 @@ func (_m *MutationResolver) PublishVersion(ctx context.Context, input gql.Publis
 }
 
 // StartVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) StartVersion(ctx context.Context, input gql.StartVersionInput) (*gql.Version, error) {
+func (_m *MutationResolver) StartVersion(ctx context.Context, input gql.StartVersionInput) (*entity.Version, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.StartVersionInput) *gql.Version); ok {
+	var r0 *entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.StartVersionInput) *entity.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Version)
+			r0 = ret.Get(0).(*entity.Version)
 		}
 	}
 
@@ -104,15 +105,15 @@ func (_m *MutationResolver) StartVersion(ctx context.Context, input gql.StartVer
 }
 
 // StopVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) StopVersion(ctx context.Context, input gql.StopVersionInput) (*gql.Version, error) {
+func (_m *MutationResolver) StopVersion(ctx context.Context, input gql.StopVersionInput) (*entity.Version, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.StopVersionInput) *gql.Version); ok {
+	var r0 *entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.StopVersionInput) *entity.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Version)
+			r0 = ret.Get(0).(*entity.Version)
 		}
 	}
 
@@ -127,15 +128,15 @@ func (_m *MutationResolver) StopVersion(ctx context.Context, input gql.StopVersi
 }
 
 // UnpublishVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) UnpublishVersion(ctx context.Context, input gql.UnpublishVersionInput) (*gql.Version, error) {
+func (_m *MutationResolver) UnpublishVersion(ctx context.Context, input gql.UnpublishVersionInput) (*entity.Version, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.UnpublishVersionInput) *gql.Version); ok {
+	var r0 *entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.UnpublishVersionInput) *entity.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Version)
+			r0 = ret.Get(0).(*entity.Version)
 		}
 	}
 
@@ -173,15 +174,15 @@ func (_m *MutationResolver) UpdateSettings(ctx context.Context, input gql.Settin
 }
 
 // UpdateVersionConfiguration provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) UpdateVersionConfiguration(ctx context.Context, input gql.UpdateConfigurationInput) (*gql.Version, error) {
+func (_m *MutationResolver) UpdateVersionConfiguration(ctx context.Context, input gql.UpdateConfigurationInput) (*entity.Version, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, gql.UpdateConfigurationInput) *gql.Version); ok {
+	var r0 *entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.UpdateConfigurationInput) *entity.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Version)
+			r0 = ret.Get(0).(*entity.Version)
 		}
 	}
 

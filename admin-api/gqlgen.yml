@@ -11,3 +11,63 @@ resolver:
   filename: adapter/gql/resolver.go
   type: Resolver
 autobind: []
+models:
+  User:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.User
+  Runtime:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.Runtime
+    fields:
+      creationDate:
+        resolver: true
+      creationAuthor:
+        resolver: true
+      status:
+        resolver: true
+      publishedVersion:
+        resolver: true
+  Version:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.Version
+    fields:
+      creationDate:
+        resolver: true
+      creationAuthor:
+        resolver: true
+      publicationDate:
+        resolver: true
+      publicationAuthor:
+        resolver: true
+      status:
+        resolver: true
+      configurationVariables:
+        resolver: true
+      configurationCompleted:
+        resolver: true
+  Workflow:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.Workflow
+  Node:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.Node
+    fields:
+      status:
+        resolver: true
+  Edge:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.Edge
+  VersionNodeStatus:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.VersionNodeStatus
+    fields:
+      date:
+        resolver: true
+      status:
+        resolver: true
+  UserActivity:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.UserActivity
+    fields:
+      date:
+        resolver: true
+      type:
+        resolver: true
+  UserActivityVar:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.UserActivityVar
+  NodeLog:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.NodeLog
+  Settings:
+    model: gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity.Setting

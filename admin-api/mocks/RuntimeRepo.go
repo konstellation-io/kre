@@ -34,15 +34,15 @@ func (_m *RuntimeRepo) Create(_a0 *entity.Runtime) (*entity.Runtime, error) {
 }
 
 // FindAll provides a mock function with given fields:
-func (_m *RuntimeRepo) FindAll() ([]entity.Runtime, error) {
+func (_m *RuntimeRepo) FindAll() ([]*entity.Runtime, error) {
 	ret := _m.Called()
 
-	var r0 []entity.Runtime
-	if rf, ok := ret.Get(0).(func() []entity.Runtime); ok {
+	var r0 []*entity.Runtime
+	if rf, ok := ret.Get(0).(func() []*entity.Runtime); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]entity.Runtime)
+			r0 = ret.Get(0).([]*entity.Runtime)
 		}
 	}
 

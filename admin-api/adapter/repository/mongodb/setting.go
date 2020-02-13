@@ -29,8 +29,8 @@ func NewSettingRepoMongoDB(cfg *config.Config,
 	}
 }
 
-func (r *SettingRepoMongoDB) Get() (entity.Setting, error) {
-	setting := entity.Setting{}
+func (r *SettingRepoMongoDB) Get() (*entity.Setting, error) {
+	setting := &entity.Setting{}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -55,7 +55,7 @@ func (r *SettingRepoMongoDB) Create(setting entity.Setting) error {
 	return nil
 }
 
-func (r *SettingRepoMongoDB) Update(setting entity.Setting) error {
+func (r *SettingRepoMongoDB) Update(setting *entity.Setting) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 

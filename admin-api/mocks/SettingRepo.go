@@ -25,14 +25,16 @@ func (_m *SettingRepo) Create(_a0 entity.Setting) error {
 }
 
 // Get provides a mock function with given fields:
-func (_m *SettingRepo) Get() (entity.Setting, error) {
+func (_m *SettingRepo) Get() (*entity.Setting, error) {
 	ret := _m.Called()
 
-	var r0 entity.Setting
-	if rf, ok := ret.Get(0).(func() entity.Setting); ok {
+	var r0 *entity.Setting
+	if rf, ok := ret.Get(0).(func() *entity.Setting); ok {
 		r0 = rf()
 	} else {
-		r0 = ret.Get(0).(entity.Setting)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.Setting)
+		}
 	}
 
 	var r1 error
@@ -46,11 +48,11 @@ func (_m *SettingRepo) Get() (entity.Setting, error) {
 }
 
 // Update provides a mock function with given fields: setting
-func (_m *SettingRepo) Update(setting entity.Setting) error {
+func (_m *SettingRepo) Update(setting *entity.Setting) error {
 	ret := _m.Called(setting)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(entity.Setting) error); ok {
+	if rf, ok := ret.Get(0).(func(*entity.Setting) error); ok {
 		r0 = rf(setting)
 	} else {
 		r0 = ret.Error(0)

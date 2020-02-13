@@ -20,7 +20,7 @@ type Runtime struct {
 	Name         string      `bson:"name"`
 	CreationDate time.Time   `bson:"creationDate"`
 	Owner        string      `bson:"owner"`
-	Status       string      `bson:"status"`
+	Status       string      `bson:"status"` // TODO use enum
 	Minio        MinioConfig `bson:"minio"`
 	Mongo        MongoConfig
 }

@@ -87,7 +87,7 @@ type Version struct {
 
 	Config     VersionConfig `bson:"config"`
 	Entrypoint Entrypoint    `bson:"entrypoint"`
-	Workflows  []Workflow    `bson:"workflows"`
+	Workflows  []*Workflow   `bson:"workflows"`
 }
 
 type NodeLog struct {

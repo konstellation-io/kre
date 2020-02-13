@@ -74,7 +74,7 @@ func (s *AuthSuite) TestSignInWithoutDomainValidation() {
 		Email: "userA@testdomain.com",
 		ID:    "userA",
 	}
-	settings := entity.Setting{
+	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{},
 	}
@@ -99,7 +99,7 @@ func (s *AuthSuite) TestSignInWithValidDomain() {
 		Email: "userA@" + domain,
 		ID:    "userA",
 	}
-	settings := entity.Setting{
+	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{domain},
 	}
@@ -123,7 +123,7 @@ func (s *AuthSuite) TestSignInWithInvalidDomain() {
 		Email: "userA@testdomain.com",
 		ID:    "userA",
 	}
-	settings := entity.Setting{
+	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{"anotherdomain.com"},
 	}
@@ -148,7 +148,7 @@ func (s *AuthSuite) TestSignUpWithValidDomain() {
 		Email: "userA@" + domain,
 		ID:    "userA",
 	}
-	settings := entity.Setting{
+	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{domain},
 	}
@@ -187,7 +187,7 @@ func (s *AuthSuite) TestSignInErrGettingSettings() {
 	}
 
 	s.mocks.userRepo.On("GetByEmail", user.Email).Return(user, nil)
-	s.mocks.settingRepo.On("Get").Return(entity.Setting{}, unexpectedErr)
+	s.mocks.settingRepo.On("Get").Return(&entity.Setting{}, unexpectedErr)
 
 	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
 	require.Equal(t, unexpectedErr, err)
@@ -212,7 +212,7 @@ func (s *AuthSuite) TestSignInErrStoringValidationCode() {
 		Email: "userA@testdomain.com",
 		ID:    "userA",
 	}
-	settings := entity.Setting{
+	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{},
 	}
@@ -237,7 +237,7 @@ func (s *AuthSuite) TestSignUpErrCreatingUser() {
 		Email: "userA@" + domain,
 		ID:    "userA",
 	}
-	settings := entity.Setting{
+	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{domain},
 	}

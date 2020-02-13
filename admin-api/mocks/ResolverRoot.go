@@ -26,6 +26,22 @@ func (_m *ResolverRoot) Mutation() gql.MutationResolver {
 	return r0
 }
 
+// Node provides a mock function with given fields:
+func (_m *ResolverRoot) Node() gql.NodeResolver {
+	ret := _m.Called()
+
+	var r0 gql.NodeResolver
+	if rf, ok := ret.Get(0).(func() gql.NodeResolver); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(gql.NodeResolver)
+		}
+	}
+
+	return r0
+}
+
 // Query provides a mock function with given fields:
 func (_m *ResolverRoot) Query() gql.QueryResolver {
 	ret := _m.Called()
@@ -42,6 +58,22 @@ func (_m *ResolverRoot) Query() gql.QueryResolver {
 	return r0
 }
 
+// Runtime provides a mock function with given fields:
+func (_m *ResolverRoot) Runtime() gql.RuntimeResolver {
+	ret := _m.Called()
+
+	var r0 gql.RuntimeResolver
+	if rf, ok := ret.Get(0).(func() gql.RuntimeResolver); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(gql.RuntimeResolver)
+		}
+	}
+
+	return r0
+}
+
 // Subscription provides a mock function with given fields:
 func (_m *ResolverRoot) Subscription() gql.SubscriptionResolver {
 	ret := _m.Called()
@@ -52,6 +84,54 @@ func (_m *ResolverRoot) Subscription() gql.SubscriptionResolver {
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(gql.SubscriptionResolver)
+		}
+	}
+
+	return r0
+}
+
+// UserActivity provides a mock function with given fields:
+func (_m *ResolverRoot) UserActivity() gql.UserActivityResolver {
+	ret := _m.Called()
+
+	var r0 gql.UserActivityResolver
+	if rf, ok := ret.Get(0).(func() gql.UserActivityResolver); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(gql.UserActivityResolver)
+		}
+	}
+
+	return r0
+}
+
+// Version provides a mock function with given fields:
+func (_m *ResolverRoot) Version() gql.VersionResolver {
+	ret := _m.Called()
+
+	var r0 gql.VersionResolver
+	if rf, ok := ret.Get(0).(func() gql.VersionResolver); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(gql.VersionResolver)
+		}
+	}
+
+	return r0
+}
+
+// VersionNodeStatus provides a mock function with given fields:
+func (_m *ResolverRoot) VersionNodeStatus() gql.VersionNodeStatusResolver {
+	ret := _m.Called()
+
+	var r0 gql.VersionNodeStatusResolver
+	if rf, ok := ret.Get(0).(func() gql.VersionNodeStatusResolver); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(gql.VersionNodeStatusResolver)
 		}
 	}
 

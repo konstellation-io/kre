@@ -57,6 +57,27 @@ func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {
 	return version, err
 }
 
+func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error) {
+	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	var versions []*entity.Version
+	cur, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": ids}})
+	if err != nil {
+		return versions, []error{err}
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var version entity.Version
+		err = cur.Decode(&version)
+		if err != nil {
+			return versions, []error{err}
+		}
+		versions = append(versions, &version)
+	}
+
+	return versions, nil
+}
+
 func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
 	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": version.ID}, version)
 	if err != nil {
@@ -66,9 +87,9 @@ func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
 	return nil
 }
 
-func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]entity.Version, error) {
+func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
-	var versions []entity.Version
+	var versions []*entity.Version
 	cur, err := r.collection.Find(ctx, bson.M{"runtimeId": runtimeID})
 	if err != nil {
 		return versions, err
@@ -81,7 +102,7 @@ func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]entity.Version, e
 		if err != nil {
 			return versions, err
 		}
-		versions = append(versions, version)
+		versions = append(versions, &version)
 	}
 
 	return versions, nil

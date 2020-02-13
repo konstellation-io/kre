@@ -3,6 +3,7 @@
 package mocks
 
 import context "context"
+import entity "gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 import gql "gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/gql"
 import mock "github.com/stretchr/testify/mock"
 
@@ -35,15 +36,15 @@ func (_m *QueryResolver) Alerts(ctx context.Context) ([]*gql.Alert, error) {
 }
 
 // Me provides a mock function with given fields: ctx
-func (_m *QueryResolver) Me(ctx context.Context) (*gql.User, error) {
+func (_m *QueryResolver) Me(ctx context.Context) (*entity.User, error) {
 	ret := _m.Called(ctx)
 
-	var r0 *gql.User
-	if rf, ok := ret.Get(0).(func(context.Context) *gql.User); ok {
+	var r0 *entity.User
+	if rf, ok := ret.Get(0).(func(context.Context) *entity.User); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.User)
+			r0 = ret.Get(0).(*entity.User)
 		}
 	}
 
@@ -58,15 +59,15 @@ func (_m *QueryResolver) Me(ctx context.Context) (*gql.User, error) {
 }
 
 // Runtime provides a mock function with given fields: ctx, id
-func (_m *QueryResolver) Runtime(ctx context.Context, id string) (*gql.Runtime, error) {
+func (_m *QueryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *gql.Runtime
-	if rf, ok := ret.Get(0).(func(context.Context, string) *gql.Runtime); ok {
+	var r0 *entity.Runtime
+	if rf, ok := ret.Get(0).(func(context.Context, string) *entity.Runtime); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Runtime)
+			r0 = ret.Get(0).(*entity.Runtime)
 		}
 	}
 
@@ -81,15 +82,15 @@ func (_m *QueryResolver) Runtime(ctx context.Context, id string) (*gql.Runtime, 
 }
 
 // Runtimes provides a mock function with given fields: ctx
-func (_m *QueryResolver) Runtimes(ctx context.Context) ([]*gql.Runtime, error) {
+func (_m *QueryResolver) Runtimes(ctx context.Context) ([]*entity.Runtime, error) {
 	ret := _m.Called(ctx)
 
-	var r0 []*gql.Runtime
-	if rf, ok := ret.Get(0).(func(context.Context) []*gql.Runtime); ok {
+	var r0 []*entity.Runtime
+	if rf, ok := ret.Get(0).(func(context.Context) []*entity.Runtime); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*gql.Runtime)
+			r0 = ret.Get(0).([]*entity.Runtime)
 		}
 	}
 
@@ -104,15 +105,15 @@ func (_m *QueryResolver) Runtimes(ctx context.Context) ([]*gql.Runtime, error) {
 }
 
 // Settings provides a mock function with given fields: ctx
-func (_m *QueryResolver) Settings(ctx context.Context) (*gql.Settings, error) {
+func (_m *QueryResolver) Settings(ctx context.Context) (*entity.Setting, error) {
 	ret := _m.Called(ctx)
 
-	var r0 *gql.Settings
-	if rf, ok := ret.Get(0).(func(context.Context) *gql.Settings); ok {
+	var r0 *entity.Setting
+	if rf, ok := ret.Get(0).(func(context.Context) *entity.Setting); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Settings)
+			r0 = ret.Get(0).(*entity.Setting)
 		}
 	}
 
@@ -127,15 +128,15 @@ func (_m *QueryResolver) Settings(ctx context.Context) (*gql.Settings, error) {
 }
 
 // UserActivityList provides a mock function with given fields: ctx, userEmail, typeArg, fromDate, toDate, lastID
-func (_m *QueryResolver) UserActivityList(ctx context.Context, userEmail *string, typeArg *gql.UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*gql.UserActivity, error) {
+func (_m *QueryResolver) UserActivityList(ctx context.Context, userEmail *string, typeArg *gql.UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
 	ret := _m.Called(ctx, userEmail, typeArg, fromDate, toDate, lastID)
 
-	var r0 []*gql.UserActivity
-	if rf, ok := ret.Get(0).(func(context.Context, *string, *gql.UserActivityType, *string, *string, *string) []*gql.UserActivity); ok {
+	var r0 []*entity.UserActivity
+	if rf, ok := ret.Get(0).(func(context.Context, *string, *gql.UserActivityType, *string, *string, *string) []*entity.UserActivity); ok {
 		r0 = rf(ctx, userEmail, typeArg, fromDate, toDate, lastID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*gql.UserActivity)
+			r0 = ret.Get(0).([]*entity.UserActivity)
 		}
 	}
 
@@ -150,15 +151,15 @@ func (_m *QueryResolver) UserActivityList(ctx context.Context, userEmail *string
 }
 
 // Users provides a mock function with given fields: ctx
-func (_m *QueryResolver) Users(ctx context.Context) ([]*gql.User, error) {
+func (_m *QueryResolver) Users(ctx context.Context) ([]*entity.User, error) {
 	ret := _m.Called(ctx)
 
-	var r0 []*gql.User
-	if rf, ok := ret.Get(0).(func(context.Context) []*gql.User); ok {
+	var r0 []*entity.User
+	if rf, ok := ret.Get(0).(func(context.Context) []*entity.User); ok {
 		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*gql.User)
+			r0 = ret.Get(0).([]*entity.User)
 		}
 	}
 
@@ -173,15 +174,15 @@ func (_m *QueryResolver) Users(ctx context.Context) ([]*gql.User, error) {
 }
 
 // Version provides a mock function with given fields: ctx, id
-func (_m *QueryResolver) Version(ctx context.Context, id string) (*gql.Version, error) {
+func (_m *QueryResolver) Version(ctx context.Context, id string) (*entity.Version, error) {
 	ret := _m.Called(ctx, id)
 
-	var r0 *gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, string) *gql.Version); ok {
+	var r0 *entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, string) *entity.Version); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.Version)
+			r0 = ret.Get(0).(*entity.Version)
 		}
 	}
 
@@ -196,15 +197,15 @@ func (_m *QueryResolver) Version(ctx context.Context, id string) (*gql.Version, 
 }
 
 // Versions provides a mock function with given fields: ctx, runtimeID
-func (_m *QueryResolver) Versions(ctx context.Context, runtimeID string) ([]*gql.Version, error) {
+func (_m *QueryResolver) Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error) {
 	ret := _m.Called(ctx, runtimeID)
 
-	var r0 []*gql.Version
-	if rf, ok := ret.Get(0).(func(context.Context, string) []*gql.Version); ok {
+	var r0 []*entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, string) []*entity.Version); ok {
 		r0 = rf(ctx, runtimeID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*gql.Version)
+			r0 = ret.Get(0).([]*entity.Version)
 		}
 	}
 

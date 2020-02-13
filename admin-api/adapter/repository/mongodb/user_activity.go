@@ -26,7 +26,7 @@ func NewUserActivityRepoMongoDB(cfg *config.Config, logger logging.Logger, clien
 	}
 }
 
-func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]entity.UserActivity, error) {
+func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
 	const limit = 30
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -68,7 +68,7 @@ func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, f
 		filter["date"] = filterDate
 	}
 
-	var activities []entity.UserActivity
+	var activities []*entity.UserActivity
 	opts := options.Find().SetSort(bson.D{{"_id", -1}}).SetLimit(limit)
 	cur, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
@@ -82,7 +82,7 @@ func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, f
 		if err != nil {
 			return activities, err
 		}
-		activities = append(activities, activity)
+		activities = append(activities, &activity)
 	}
 
 	return activities, nil
