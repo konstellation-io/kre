@@ -1,0 +1,10 @@
+query GetConfigurationVariables($versionId: ID!) {
+  version(id: $versionId) {
+    status
+    configurationVariables {
+      key
+      value
+      type
+    }
+  }
+}

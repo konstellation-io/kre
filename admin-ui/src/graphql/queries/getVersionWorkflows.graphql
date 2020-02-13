@@ -1,0 +1,20 @@
+query GetVersionWorkflows($versionId: ID!) {
+  version(id: $versionId) {
+    name
+    status
+    workflows {
+      name
+      nodes {
+        id
+        name
+        status
+      }
+      edges {
+        id
+        fromNode
+        toNode
+      }
+    }
+    configurationCompleted
+  }
+}

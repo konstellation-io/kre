@@ -1,0 +1,5 @@
+query GetDomains {
+  settings {
+    authAllowedDomains
+  }
+}

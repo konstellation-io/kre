@@ -1,0 +1,6 @@
+mutation StartVersion($input: StartVersionInput!) {
+  startVersion(input: $input) {
+    id
+    status
+  }
+}

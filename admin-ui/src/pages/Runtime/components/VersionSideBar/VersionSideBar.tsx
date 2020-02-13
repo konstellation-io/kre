@@ -1,6 +1,9 @@
 import React from 'react';
 import styles from './VersionSideBar.module.scss';
-import { Version, Runtime } from '../../../../graphql/models';
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from '../../../../graphql/queries/types/GetVersionConfStatus';
 import RuntimeHexagon, {
   RuntimeHexagonSize
 } from '../../../../components/RuntimeHexagon/RuntimeHexagon';
@@ -13,11 +16,15 @@ import VersionActions from './VersionActions/VersionActions';
 import { buildRoute } from '../../../../utils/routes';
 
 type VersionSideBarProps = {
-  runtime: Runtime;
-  version: Version;
+  runtime?: GetVersionConfStatus_runtime;
+  version?: GetVersionConfStatus_versions;
 };
 
 function VersionSideBar({ runtime, version }: VersionSideBarProps) {
+  if (runtime === undefined || version === undefined) {
+    return null;
+  }
+
   return (
     <div className={styles.wrapper}>
       <Link to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}>

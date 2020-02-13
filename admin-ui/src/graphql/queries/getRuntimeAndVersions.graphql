@@ -1,0 +1,25 @@
+query GetVersionConfStatus($runtimeId: ID!) {
+  runtime(id: $runtimeId) {
+    id
+    name
+    status
+  }
+
+  versions(runtimeId: $runtimeId) {
+    id
+    name
+    description
+    status
+    creationDate
+    creationAuthor {
+      id
+      email
+    }
+    publicationDate
+    publicationAuthor {
+      id
+      email
+    }
+    configurationCompleted
+  }
+}

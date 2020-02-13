@@ -1,0 +1,6 @@
+subscription runtimeCreated {
+  runtimeCreated {
+    id
+    name
+  }
+}

@@ -11,7 +11,7 @@ import { centerText, wrap, getArrowD } from '../../utils/d3';
 
 import styles from './VersionStatusViewer.module.scss';
 
-import { NodeStatus } from '../../graphql/models';
+import { NodeStatus } from '../../graphql/types/globalTypes';
 
 const MARGIN_WORKFLOW_NAMES_PERC = 0.08;
 const DEFAULT_NODE_WIDTH = 120.33;
@@ -36,9 +36,9 @@ function canBeRendered(width: number, height: number, margin?: any): boolean {
   return widthOk && heightOk;
 }
 
-type Node = {
+export type Node = {
   id: string;
-  name: string;
+  name?: string;
   status: NodeStatus;
   type?: string;
 };

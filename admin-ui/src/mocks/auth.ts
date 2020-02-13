@@ -1,8 +1,10 @@
-import { GET_USER_EMAIL } from '../components/Header/Header.graphql';
+import { loader } from 'graphql.macro';
+
+const GetUserEmailQuery = loader('../graphql/queries/getUserEmail.graphql');
 
 export const usernameMock = {
   request: {
-    query: GET_USER_EMAIL
+    query: GetUserEmailQuery
   },
   result: {
     data: {
@@ -15,7 +17,7 @@ export const usernameMock = {
 
 export const unauthorizedUsernameMock = {
   request: {
-    query: GET_USER_EMAIL
+    query: GetUserEmailQuery
   },
   result: {
     data: {

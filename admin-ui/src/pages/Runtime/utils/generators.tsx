@@ -4,7 +4,7 @@ import StartIcon from '@material-ui/icons/SkipNext';
 import StopIcon from '@material-ui/icons/PauseCircleFilled';
 import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import UnpublishIcon from '@material-ui/icons/Block';
-import { VersionStatus } from '../../../graphql/models';
+import { VersionStatus } from '../../../graphql/types/globalTypes';
 
 function generateActionButton(label: string, icon: any, action: Function) {
   return (

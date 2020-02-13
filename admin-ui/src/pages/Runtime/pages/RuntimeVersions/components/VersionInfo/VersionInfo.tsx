@@ -9,13 +9,14 @@ import EmailIcon from '@material-ui/icons/Email';
 import TimeIcon from '@material-ui/icons/AccessTime';
 import CalendarIcon from '@material-ui/icons/Today';
 
-import { Version, VersionStatus } from '../../../../../../graphql/models';
+import { GetVersionConfStatus_versions } from '../../../../../../graphql/queries/types/GetVersionConfStatus';
+import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 
 import cx from 'classnames';
 import styles from './VersionInfo.module.scss';
 
 type Props = {
-  version: Version;
+  version: GetVersionConfStatus_versions;
 };
 function VersionInfo({ version }: Props) {
   const history = useHistory();
@@ -68,7 +69,9 @@ function VersionInfo({ version }: Props) {
                 <div className={styles.col2CreatorName}>
                   <EmailIcon className="icon-small" />
                   <span className={styles.activatedAuthor}>
-                    {version.publicationAuthor.email}
+                    {version &&
+                      version.publicationAuthor &&
+                      version.publicationAuthor.email}
                   </span>
                 </div>
                 <div className={styles.col2CreationDate}>

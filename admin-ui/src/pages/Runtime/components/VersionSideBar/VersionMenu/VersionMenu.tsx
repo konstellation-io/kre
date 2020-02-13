@@ -1,6 +1,9 @@
 import React from 'react';
 import styles from './VersionMenu.module.scss';
-import { Version, Runtime } from '../../../../../graphql/models';
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from '../../../../../graphql/queries/types/GetVersionConfStatus';
 import VersionMenuItem, { VersionMenuItemProps } from './VersionMenuItem';
 import ROUTE from '../../../../../constants/routes';
 import IconDeviceHub from '@material-ui/icons/DeviceHub';
@@ -8,8 +11,8 @@ import IconShowChart from '@material-ui/icons/ShowChart';
 import IconSettings from '@material-ui/icons/Settings';
 
 type VersionDetailsProps = {
-  runtime: Runtime;
-  version: Version;
+  runtime: GetVersionConfStatus_runtime;
+  version: GetVersionConfStatus_versions;
 };
 
 function VersionMenu({ runtime, version }: VersionDetailsProps) {

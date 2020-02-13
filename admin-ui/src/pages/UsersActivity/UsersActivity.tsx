@@ -8,14 +8,14 @@ import FiltersBar, { typeToText } from './components/FiltersBar/FiltersBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
 import * as CHECK from '../../components/Form/check';
 
+import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 import {
-  GET_USERS_ACTIVITY,
-  GET_USERS,
-  UserActivityResponse,
-  GetUsersResponse
-} from './UsersActivity.graphql';
-import { UserActivity, User } from '../../graphql/models';
+  GetUsersActivity,
+  GetUsersActivity_userActivityList,
+  GetUsersActivity_userActivityList_user
+} from '../../graphql/queries/types/GetUsersActivity';
+import { GetUsers } from '../../graphql/queries/types/GetUsers';
 
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
@@ -23,6 +23,11 @@ import { Moment } from 'moment';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import InfoMessage from '../../components/InfoMessage/InfoMessage';
+
+const GetUsersQuery = loader('../../graphql/queries/getUsers.graphql');
+const GetUserActivityQuery = loader(
+  '../../graphql/queries/getUserActivity.graphql'
+);
 
 const N_LIST_ITEMS_STEP = 30;
 const ITEM_HEIGHT = 63;
@@ -68,8 +73,8 @@ function getInputs(actionTypeValidator: Function, userValidator: Function) {
 function UsersActivity() {
   const [nPages, setNPages] = useState(0);
 
-  const { data: usersData, error: usersError } = useQuery<GetUsersResponse>(
-    GET_USERS
+  const { data: usersData, error: usersError } = useQuery<GetUsers>(
+    GetUsersQuery
   );
   const {
     loading,
@@ -77,11 +82,13 @@ function UsersActivity() {
     error,
     refetch: getUsersActivity,
     fetchMore
-  } = useQuery<UserActivityResponse>(GET_USERS_ACTIVITY);
+  } = useQuery<GetUsersActivity>(GetUserActivityQuery, {
+    fetchPolicy: 'no-cache'
+  });
 
-  const [usersActivityData, setUsersActivityData] = useState<UserActivity[]>(
-    []
-  );
+  const [usersActivityData, setUsersActivityData] = useState<
+    GetUsersActivity_userActivityList[]
+  >([]);
 
   const inputs = getInputs(verifyActionType, verifyUser);
   const form = useForm({
@@ -108,7 +115,7 @@ function UsersActivity() {
       const lastId = usersActivityData && usersActivityData.slice(-1)[0].id;
 
       fetchMore({
-        query: GET_USERS_ACTIVITY,
+        query: GetUserActivityQuery,
         variables: { ...form.getInputVariables(), lastId },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           const prevData = previousResult.userActivityList;
@@ -128,7 +135,10 @@ function UsersActivity() {
   }
 
   const usersList =
-    usersData && usersData.users.map((user: User) => user.email);
+    usersData &&
+    usersData.users.map(
+      (user: GetUsersActivity_userActivityList_user) => user.email
+    );
 
   function verifyUser(value: string) {
     return CHECK.getValidationError([

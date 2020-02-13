@@ -2,10 +2,17 @@ import { get } from 'lodash';
 import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import Notification from '../../Notification';
-import { RUNTIME_CREATED_SUBSCRIPTION } from './RuntimeCreated.graphql';
+import { loader } from 'graphql.macro';
+import {
+  runtimeCreated_runtimeCreated,
+  runtimeCreated
+} from '../../../../graphql/subscriptions/types/runtimeCreated';
 import { useSubscription } from '@apollo/react-hooks';
-import { Runtime } from '../../../../graphql/models';
 import ROUTE from '../../../../constants/routes';
+
+const RuntimeCreatedSubscription = loader(
+  '../../../../graphql/subscriptions/runtimeCreated.graphql'
+);
 
 const NOTIFICATION_TIMEOUT = 15 * 1000;
 
@@ -20,21 +27,23 @@ function RuntimeCreated() {
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  useSubscription<Runtime>(RUNTIME_CREATED_SUBSCRIPTION, {
+  useSubscription<runtimeCreated>(RuntimeCreatedSubscription, {
     onSubscriptionData: (msg: any) => {
       const runtime = get(msg, 'subscriptionData.data.runtimeCreated');
       addNotification(runtime);
     }
   });
 
-  function createNotificationObject(runtime: Runtime): Notification {
+  function createNotificationObject(
+    runtime: runtimeCreated_runtimeCreated
+  ): Notification {
     return {
       id: runtime.id,
       message: `The RUNTIME "${runtime.name}" has been successfully created!`
     };
   }
 
-  function addNotification(runtime: Runtime) {
+  function addNotification(runtime: runtimeCreated_runtimeCreated) {
     const newNotification = createNotificationObject(runtime);
 
     // Close notification after NOTIFICATION_TIMEOUT seconds

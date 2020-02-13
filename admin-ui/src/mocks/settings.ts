@@ -1,14 +1,20 @@
-import {
-  GET_DOMAINS,
-  GET_EXPIRATION_TIME,
-  UPDATE_SESSION_LIFETIME,
-  UPDATE_DOMAINS
-} from '../pages/Settings/Settings.graphql';
-import { GET_USERS_ACTIVITY } from '../pages/UsersActivity/components/UserActivityList/UserActivityList.graphql';
+import { loader } from 'graphql.macro';
+
+const GetUserActivityQuery = loader(
+  '../graphql/queries/getUserActivity.graphql'
+);
+const GetDomainsQuery = loader('../graphql/queries/getDomains.graphql');
+const GetExpTimeQuery = loader('../graphql/queries/getExpirationTime.graphql');
+const UpdateSessionLifetimeMutation = loader(
+  '../graphql/mutations/updateVersionConfiguration.graphql'
+);
+const UpdateDomainsMutation = loader(
+  '../graphql/mutations/updateDomains.graphql'
+);
 
 export const domainMock = {
   request: {
-    query: GET_DOMAINS
+    query: GetDomainsQuery
   },
   result: {
     data: {
@@ -21,7 +27,7 @@ export const domainMock = {
 
 export const usersActivityMock = {
   request: {
-    query: GET_USERS_ACTIVITY
+    query: GetUserActivityQuery
   },
   result: {
     data: {
@@ -51,7 +57,7 @@ export const usersActivityMock = {
 
 export const expirationTimeMock = {
   request: {
-    query: GET_EXPIRATION_TIME
+    query: GetExpTimeQuery
   },
   result: {
     data: {
@@ -64,7 +70,7 @@ export const expirationTimeMock = {
 
 export const addAllowedDomainMock = {
   request: {
-    query: UPDATE_DOMAINS,
+    query: UpdateDomainsMutation,
     variables: {
       input: {
         authAllowedDomains: [
@@ -94,7 +100,7 @@ export const addAllowedDomainMock = {
 
 export const updateExpirationTime = {
   request: {
-    query: UPDATE_SESSION_LIFETIME,
+    query: UpdateSessionLifetimeMutation,
     variables: { input: { sessionLifetimeInDays: 10 } }
   },
   result: {

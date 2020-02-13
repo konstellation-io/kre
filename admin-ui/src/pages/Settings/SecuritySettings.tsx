@@ -14,13 +14,18 @@ import * as CHECK from '../../components/Form/check';
 import cx from 'classnames';
 import styles from './Settings.module.scss';
 
+import { loader } from 'graphql.macro';
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { GetDomains } from '../../graphql/queries/types/GetDomains';
 import {
-  GET_DOMAINS,
-  UPDATE_DOMAINS,
-  SettingsResponse,
-  SettingsVars
-} from './Settings.graphql';
+  UpdateDomains,
+  UpdateDomainsVariables
+} from '../../graphql/mutations/types/UpdateDomains';
+
+const GetDomainsQuery = loader('../../graphql/queries/getDomains.graphql');
+const UpdateDomainsMutation = loader(
+  '../../graphql/mutations/updateDomains.graphql'
+);
 
 type FormFieldProps = {
   value?: string;
@@ -69,13 +74,13 @@ function domainDuplicated(newDomain: string, domains: string[]) {
 function SecuritySettings() {
   const [allowedDomains, setAllowedDomains] = useState([]);
 
-  const { data: queryData, loading, error: queryError } = useQuery<
-    SettingsResponse
-  >(GET_DOMAINS);
-  const [updateAllowedDomain] = useMutation<SettingsResponse, SettingsVars>(
-    UPDATE_DOMAINS,
-    { onCompleted: onCompleteUpdateDomain }
+  const { data: queryData, loading, error: queryError } = useQuery<GetDomains>(
+    GetDomainsQuery
   );
+  const [updateAllowedDomain] = useMutation<
+    UpdateDomains,
+    UpdateDomainsVariables
+  >(UpdateDomainsMutation, { onCompleted: onCompleteUpdateDomain });
   const {
     value,
     isValid,

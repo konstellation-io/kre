@@ -1,9 +1,13 @@
-import { GET_RUNTIMES } from '../pages/Dashboard/Dashboard.graphql';
-import { ADD_RUNTIME } from '../pages/AddRuntime/AddRuntime.graphql';
+import { loader } from 'graphql.macro';
+
+const GetRuntimesQuery = loader('../graphql/queries/getRuntimes.graphql');
+const CreateRuntimeMutation = loader(
+  '../graphql/mutations/createRuntime.graphql'
+);
 
 export const dashboardMock = {
   request: {
-    query: GET_RUNTIMES
+    query: GetRuntimesQuery
   },
   result: {
     data: {
@@ -27,7 +31,7 @@ export const dashboardMock = {
 
 export const addRuntimeMock = {
   request: {
-    query: ADD_RUNTIME,
+    query: CreateRuntimeMutation,
     variables: { input: { name: 'New Runtime' } }
   },
   result: {

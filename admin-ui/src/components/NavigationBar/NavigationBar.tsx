@@ -13,21 +13,26 @@ import AddHexButton from './AddHexButton';
 import SpinnerCircular from '../LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
+import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_RUNTIMES } from '../../pages/Dashboard/Dashboard.graphql';
-import { Runtime } from '../../graphql/models';
+import {
+  GetRuntimes,
+  GetRuntimes_runtimes
+} from '../../graphql/queries/types/GetRuntimes';
 
 import styles from './NavigationBar.module.scss';
 
+const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
+
 function NavigationBar() {
-  const { data, loading, error } = useQuery(GET_RUNTIMES);
+  const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery);
 
   if (loading) return <SpinnerCircular />;
   if (error) return <ErrorMessage />;
 
-  const runtimes = get(data, 'runtimes', []);
+  const runtimes: GetRuntimes_runtimes[] = get(data, 'runtimes', []);
 
-  const buttons = runtimes.map((runtime: Runtime, idx: number) => (
+  const buttons = runtimes.map((runtime: GetRuntimes_runtimes, idx: number) => (
     <NavLink
       key={`NavBarItem_${idx}`}
       to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}

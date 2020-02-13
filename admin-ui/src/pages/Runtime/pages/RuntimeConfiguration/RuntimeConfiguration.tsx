@@ -12,16 +12,26 @@ import ConfigurationVariableList from '../../../../components/ConfigurationVaria
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 
+import { loader } from 'graphql.macro';
 import {
-  GET_CONFIGURATION_VARIABLES,
-  GetVersionConfigResponse,
-  GetVersionConfigVars,
-  UPDATE_VERSION_CONFIGURATION,
-  UpdateVersionConfigVars
-} from './RuntimeConfiguration.graphql';
-import { ConfigurationVariable, Version, VersionStatus } from '../../../../graphql/models';
+  GetConfigurationVariables_version_configurationVariables as ConfigurationVariable,
+  GetConfigurationVariables,
+  GetConfigurationVariablesVariables
+} from '../../../../graphql/queries/types/GetConfigurationVariables';
+import {
+  UpdateVersionConfiguration,
+  UpdateVersionConfigurationVariables
+} from '../../../../graphql/mutations/types/UpdateVersionConfiguration';
+import { VersionStatus } from '../../../../graphql/types/globalTypes';
 
 import styles from './RuntimeConfiguration.module.scss';
+
+const GetConfVariablesQuery = loader(
+  '../../../../graphql/queries/getConfigurationVariables.graphql'
+);
+const UpdateVersionConfigurationMutation = loader(
+  '../../../../graphql/mutations/updateVersionConfiguration.graphql'
+);
 
 const statusWithConfirmationModal = [
   VersionStatus.PUBLISHED,
@@ -56,15 +66,15 @@ function RuntimeConfiguration({ refetchVersion }: Props) {
   >([]);
   const { versionId } = useParams();
   const { data, loading, error } = useQuery<
-    GetVersionConfigResponse,
-    GetVersionConfigVars
-  >(GET_CONFIGURATION_VARIABLES, {
-    variables: { versionId: versionId || undefined }
+    GetConfigurationVariables,
+    GetConfigurationVariablesVariables
+  >(GetConfVariablesQuery, {
+    variables: { versionId: versionId || '' }
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<
-    Version,
-    UpdateVersionConfigVars
-  >(UPDATE_VERSION_CONFIGURATION, {
+    UpdateVersionConfiguration,
+    UpdateVersionConfigurationVariables
+  >(UpdateVersionConfigurationMutation, {
     onCompleted: onCompleteUpdate
   });
 

@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import ROUTE from '../../../../constants/routes';
 import { buildRoute } from '../../../../utils/routes';
 import {
-  UserActivity,
-  UserActivityType,
-  UserActivityVar
-} from '../../../../graphql/models';
+  GetUsersActivity_userActivityList,
+  GetUsersActivity_userActivityList_vars
+} from '../../../../graphql/queries/types/GetUsersActivity';
+import { UserActivityType } from '../../../../graphql/types/globalTypes';
 
 enum VarTypes {
   RUNTIME_ID = 'RUNTIME_ID',
@@ -27,12 +27,15 @@ function getVar(text: any) {
 }
 
 export default function getMessage(
-  userActivity: UserActivity
+  userActivity: GetUsersActivity_userActivityList
 ): [any, string | undefined] {
   let message: any = '';
 
   const vars = userActivity.vars.reduce(
-    (result: { [key: string]: string }, v: UserActivityVar) => {
+    (
+      result: { [key: string]: string },
+      v: GetUsersActivity_userActivityList_vars
+    ) => {
       result[v.key] = v.value;
       return result;
     },

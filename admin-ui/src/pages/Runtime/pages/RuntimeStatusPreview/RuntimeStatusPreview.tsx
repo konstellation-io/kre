@@ -6,13 +6,18 @@ import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import StatusViewer from '../../components/StatusViewer/StatusViewer';
 import Logs from './Logs/Logs';
 
+import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 import {
-  GET_VERSION_WORKFLOWS,
-  GetVersionWorkflowsResponse,
-  GetVersionWorkflowsVars
-} from './RuntimeStatusPreview.graphql';
+  GetVersionWorkflows,
+  GetVersionWorkflowsVariables
+} from '../../../../graphql/queries/types/GetVersionWorkflows';
+
 import styles from './RuntimeStatusPreview.module.scss';
+
+const GetVersionWorkflowsQuery = loader(
+  '../../../../graphql/queries/getVersionWorkflows.graphql'
+);
 
 export type Node = {
   id: string;
@@ -28,10 +33,10 @@ function RuntimeStatusPreview({ version }: Props) {
   const [selectedNode, setSelectedNode] = useState<Node | undefined>(undefined);
 
   const { data, loading, error } = useQuery<
-    GetVersionWorkflowsResponse,
-    GetVersionWorkflowsVars
-  >(GET_VERSION_WORKFLOWS, {
-    variables: { versionId: params.versionId },
+    GetVersionWorkflows,
+    GetVersionWorkflowsVariables
+  >(GetVersionWorkflowsQuery, {
+    variables: { versionId: params.versionId || '' },
     // FIXME: This query is not getting updated!
     fetchPolicy: 'no-cache'
   });
@@ -40,7 +45,7 @@ function RuntimeStatusPreview({ version }: Props) {
   if (loading) return <SpinnerCircular />;
 
   // const versionStatus = data && data.version && data.version.status;
-  const versionStatus = version.status;
+  const versionStatus = version && version.status;
 
   function setNode(nodeId: string, nodeName: string) {
     if (!nodeId.includes('InputNode') && !nodeId.includes('OutputNode')) {
