@@ -1,26 +1,42 @@
 package main
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/logging"
-	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/service/k8s"
-	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/adapter/service/mongodb"
-	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/delivery/grpc"
-	"gitlab.com/konstellation/konstellation-ce/kre/runtime-api/domain/usecase"
+	"log"
+	"net"
+
+	"google.golang.org/grpc"
+
+	"gitlab.com/konstellation/kre/runtime-api/config"
+	"gitlab.com/konstellation/kre/runtime-api/kubernetes"
+	"gitlab.com/konstellation/kre/runtime-api/logging"
+	"gitlab.com/konstellation/kre/runtime-api/mongo"
+	"gitlab.com/konstellation/kre/runtime-api/proto/monitoringpb"
+	"gitlab.com/konstellation/kre/runtime-api/service"
 )
 
 func main() {
 	cfg := config.NewConfig()
 	logger := logging.NewLogger()
 
-	resourceManager := k8s.NewResourceManagerService(cfg, logger)
-	logStreamService := mongodb.NewLogStreamService(cfg, logger)
-	versionInteractor := usecase.NewVersionInteractor(logger, resourceManager, logStreamService)
+	port := cfg.Server.Port
+	listener, err := net.Listen("tcp", "0.0.0.0:"+port)
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
 
-	app := grpc.NewApp(
-		cfg,
-		logger,
-		versionInteractor,
-	)
-	app.Start()
+	s := grpc.NewServer()
+
+	clientset := kubernetes.NewClientset(cfg)
+
+	status := kubernetes.NewWatcher(cfg, logger, clientset)
+	logs := mongo.NewWatcher(cfg, logger)
+
+	srv := service.NewMonitoringService(cfg, logger, status, logs)
+
+	monitoringpb.RegisterMonitoringServiceServer(s, srv)
+
+	log.Printf("Server listenting: %v", port)
+	if err := s.Serve(listener); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
 }

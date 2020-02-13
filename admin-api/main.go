@@ -26,8 +26,16 @@ func main() {
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 	versionMinioRepo := minio.NewMinioRepo(logger)
 
-	k8sManagerService := service.NewK8sManagerServiceGRPC(cfg, logger)
-	runtimeService := service.NewRuntimeAPIServiceGRPC(cfg, logger)
+	runtimeService, err := service.NewK8sRuntimeClient(cfg, logger)
+	if err != nil {
+		panic(err)
+	}
+	versionService, err := service.NewK8sVersionClient(cfg, logger)
+	if err != nil {
+		panic(err)
+	}
+
+	monitoringService := service.NewMonitoringService(cfg, logger)
 
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
@@ -36,12 +44,12 @@ func main() {
 	authInteractor := usecase.NewAuthInteractor(
 		logger, loginLinkTransport, verificationCodeGenerator, verificationCodeRepo, userRepo, settingRepo, userActivityInteractor)
 
-	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, k8sManagerService, userActivityInteractor)
+	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, runtimeService, userActivityInteractor)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
-	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, runtimeService, userActivityInteractor, versionMinioRepo)
+	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, versionService, monitoringService, userActivityInteractor, versionMinioRepo)
 
-	err := settingInteractor.CreateDefaults()
+	err = settingInteractor.CreateDefaults()
 	if err != nil {
 		panic(err)
 	}

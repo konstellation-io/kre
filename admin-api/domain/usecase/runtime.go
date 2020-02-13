@@ -28,23 +28,23 @@ var (
 
 // RuntimeInteractor contains app logic to handle Runtime entities
 type RuntimeInteractor struct {
-	logger            logging.Logger
-	runtimeRepo       repository.RuntimeRepo
-	k8sManagerService service.K8sManagerService
-	userActivity      *UserActivityInteractor
+	logger         logging.Logger
+	runtimeRepo    repository.RuntimeRepo
+	runtimeService service.RuntimeService
+	userActivity   *UserActivityInteractor
 }
 
 // NewRuntimeInteractor creates a new RuntimeInteractor
 func NewRuntimeInteractor(
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
-	k8sManagerService service.K8sManagerService,
+	runtimeService service.RuntimeService,
 	userActivity *UserActivityInteractor,
 ) *RuntimeInteractor {
 	return &RuntimeInteractor{
 		logger,
 		runtimeRepo,
-		k8sManagerService,
+		runtimeService,
 		userActivity,
 	}
 }
@@ -64,7 +64,7 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 			SecretKey: generateRandomPassword(8),
 		},
 	}
-	createRuntimeInK8sResult, err := i.k8sManagerService.CreateRuntime(runtime)
+	createRuntimeInK8sResult, err := i.runtimeService.Create(runtime)
 	if err != nil {
 		return
 	}
@@ -96,7 +96,7 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 	onRuntimeStartedChannel = make(chan *entity.Runtime, 1)
 
 	go func() {
-		err := i.k8sManagerService.CheckRuntimeIsCreated(name)
+		_, err := i.runtimeService.WaitForRuntimeStarted(createdRuntime)
 
 		// If all pods are running, the runtime status should be set to running.
 		// In other case, the runtime status will be set to error

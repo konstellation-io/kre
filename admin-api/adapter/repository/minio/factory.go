@@ -2,8 +2,9 @@ package minio
 
 import (
 	"fmt"
-	"github.com/iancoleman/strcase"
+
 	"github.com/minio/minio-go/v6"
+
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
@@ -30,8 +31,7 @@ func NewMinioRepo(logger logging.Logger) MinioRepo {
 func (f *MinioFactory) NewClient(logger logging.Logger, runtime *entity.Runtime) (*MinioClient, error) {
 	logger.Info("Minio connecting...")
 
-	ns := strcase.ToKebab(runtime.Name)
-	endpoint := fmt.Sprintf("kre-minio.%s:9000", ns)
+	endpoint := fmt.Sprintf("kre-minio.%s:9000", runtime.GetNamespace())
 	accessKeyID := runtime.Minio.AccessKey
 	secretAccessKey := runtime.Minio.SecretKey
 	useSSL := false

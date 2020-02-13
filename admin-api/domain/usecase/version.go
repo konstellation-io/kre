@@ -3,21 +3,27 @@ package usecase
 import (
 	"errors"
 	"fmt"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/minio"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/krt"
 	"io"
 	"io/ioutil"
 	"os"
 	"sort"
+	"strings"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/teris-io/shortid"
 
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/minio"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/service"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/krt"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 )
+
+func init() {
+	sid, _ := shortid.New(1, shortid.DefaultABC, 2342)
+	shortid.SetDefault(sid)
+}
 
 // VersionStatus enumeration of Version statuses
 type VersionStatus string
@@ -48,7 +54,8 @@ type VersionInteractor struct {
 	logger                 logging.Logger
 	versionRepo            repository.VersionRepo
 	runtimeRepo            repository.RuntimeRepo
-	runtimeService         service.RuntimeService
+	versionService         service.VersionService
+	monitoringService      service.MonitoringService
 	userActivityInteractor *UserActivityInteractor
 	minio                  minio.MinioRepo
 }
@@ -58,7 +65,8 @@ func NewVersionInteractor(
 	logger logging.Logger,
 	versionRepo repository.VersionRepo,
 	runtimeRepo repository.RuntimeRepo,
-	runtimeService service.RuntimeService,
+	runtimeService service.VersionService,
+	monitoringService service.MonitoringService,
 	userActivityInteractor *UserActivityInteractor,
 	minioRepo minio.MinioRepo,
 ) *VersionInteractor {
@@ -67,6 +75,7 @@ func NewVersionInteractor(
 		versionRepo,
 		runtimeRepo,
 		runtimeService,
+		monitoringService,
 		userActivityInteractor,
 		minioRepo,
 	}
@@ -260,6 +269,11 @@ func (i *VersionInteractor) getConfigFromPreviousVersions(versions []*entity.Ver
 	return currentConfig
 }
 
+func (i VersionInteractor) generateId() string {
+	id, _ := shortid.Generate()
+	return strings.ToLower(strings.ReplaceAll(id, "_", "-"))
+}
+
 func (i *VersionInteractor) generateWorkflow(krtNodes []krt.KrtNode, w krt.KrtWorkflow) *entity.Workflow {
 	var nodes []entity.Node
 	var edges []entity.Edge
@@ -269,11 +283,11 @@ func (i *VersionInteractor) generateWorkflow(krtNodes []krt.KrtNode, w krt.KrtWo
 		nodeInfo, err := i.getNodeByName(krtNodes, name)
 		if err != nil || nodeInfo == nil {
 			// TODO: HANDLE ERROR ON NODES WITH UNKNOWN NAMES
+			i.logger.Error(fmt.Sprintf("!!!!ERROR ON NODE INFO %#v %#v", err, nodeInfo))
 		}
-		i.logger.Warn(fmt.Sprintf("NODE %#v", nodeInfo))
 
 		node := &entity.Node{
-			ID:     uuid.New().String(),
+			ID:     i.generateId(),
 			Name:   name,
 			Image:  nodeInfo.Image,
 			Src:    nodeInfo.Src,
@@ -282,7 +296,7 @@ func (i *VersionInteractor) generateWorkflow(krtNodes []krt.KrtNode, w krt.KrtWo
 
 		if previousN != nil {
 			e := entity.Edge{
-				ID:       uuid.New().String(),
+				ID:       i.generateId(),
 				FromNode: previousN.ID,
 				ToNode:   node.ID,
 			}
@@ -320,7 +334,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 		return nil, err
 	}
 
-	err = i.runtimeService.StartVersion(runtime, version)
+	err = i.versionService.Start(runtime, version)
 	if err != nil {
 		return nil, err
 	}
@@ -373,7 +387,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 		return nil, err
 	}
 
-	err = i.runtimeService.StopVersion(runtime, version.Name)
+	err = i.versionService.Stop(runtime, version)
 	if err != nil {
 		return nil, err
 	}
@@ -448,7 +462,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 		}
 	}
 
-	err = i.runtimeService.PublishVersion(runtime, version.Name)
+	err = i.versionService.Publish(runtime, version)
 	if err != nil {
 		return nil, err
 	}
@@ -516,7 +530,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.
 		return nil, err
 	}
 
-	err = i.runtimeService.UnpublishVersion(runtime, version.Name)
+	err = i.versionService.Unpublish(runtime, version)
 	if err != nil {
 		return nil, err
 	}
@@ -635,7 +649,7 @@ func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config 
 
 	// No need to call runtime-api if there are no resources running
 	if isStarted {
-		err = i.runtimeService.UpdateVersionConfig(runtime, version)
+		err = i.versionService.UpdateConfig(runtime, version)
 		if err != nil {
 			return nil, err
 		}
@@ -670,7 +684,7 @@ func (i *VersionInteractor) WatchVersionStatus(versionId string, stopCh <-chan b
 		return nil, err
 	}
 
-	return i.runtimeService.WatchVersionStatus(runtime, version.Name, stopCh)
+	return i.monitoringService.VersionStatus(runtime, version.Name, stopCh)
 }
 
 func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
@@ -681,7 +695,7 @@ func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
 		return nil, err
 	}
 
-	return i.runtimeService.WatchNodeLogs(runtime, nodeID, stopChannel)
+	return i.monitoringService.NodeLogs(runtime, nodeID, stopChannel)
 }
 
 func (i *VersionInteractor) GetByIDs(ids []string) ([]*entity.Version, []error) {

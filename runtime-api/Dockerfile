@@ -4,12 +4,13 @@ FROM grpc/go as protobuf
 WORKDIR /app
 
 COPY scripts scripts
-COPY runtimepb runtimepb
+COPY proto proto
 
 RUN ./scripts/generate_proto.sh
 
-# Build the binary statically.
-FROM golang:1.12 as builder
+
+# Build runtime-api
+FROM golang:1.13 as builder
 
 ENV CGO_ENABLED=0
 
@@ -17,11 +18,13 @@ WORKDIR /app
 COPY go.* ./
 RUN go mod download
 COPY . .
-RUN rm -rf /app/runtimepb
-COPY --from=protobuf /app/runtimepb/*.go /app/runtimepb/
+RUN rm -rf /app/proto
+COPY --from=protobuf /app/proto/ /app/proto/
+
 RUN go build -o runtime-api .
 
 
+# Final image
 FROM alpine:3.10.2
 
 RUN apk add -U --no-cache ca-certificates
