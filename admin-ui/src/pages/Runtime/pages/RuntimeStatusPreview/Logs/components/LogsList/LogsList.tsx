@@ -2,15 +2,23 @@ import { get } from 'lodash';
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
+import { loader } from 'graphql.macro';
 import { useSubscription } from '@apollo/react-hooks';
 
 import LogItem from './LogItem';
 import { Node } from '../../../RuntimeStatusPreview';
 
-import { GET_LOGS_SUBSCRIPTION } from '../../Logs.graphql';
-import { NodeLog } from '../../../../../../../graphql/models';
+import {
+  GetLogs,
+  GetLogs_nodeLogs,
+  GetLogsVariables
+} from '../../../../../../../graphql/subscriptions/types/GetLogs';
 
 import styles from './LogsList.module.scss';
+
+const GetLogsSubscription = loader(
+  '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
+);
 
 type Props = {
   node: Node;
@@ -18,11 +26,11 @@ type Props = {
 };
 function LogsList({ node, onUpdate }: Props) {
   const { runtimeId } = useParams();
-  const [logs, setLogs] = useState<NodeLog[]>([]);
+  const [logs, setLogs] = useState<GetLogs_nodeLogs[]>([]);
 
-  useSubscription<NodeLog>(GET_LOGS_SUBSCRIPTION, {
+  useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
     variables: {
-      runtimeId,
+      runtimeId: runtimeId || '',
       nodeId: node.id
     },
     onSubscriptionData: (msg: any) => {
@@ -35,12 +43,12 @@ function LogsList({ node, onUpdate }: Props) {
     onUpdate();
   }, [logs, onUpdate]);
 
-  function addLog(item: NodeLog) {
-    setLogs((logsCp: NodeLog[]) => logsCp.concat([item]));
+  function addLog(item: GetLogs_nodeLogs) {
+    setLogs((logsCp: GetLogs_nodeLogs[]) => logsCp.concat([item]));
   }
 
   // TODO: change this
-  const logElements = logs.map((log: NodeLog, idx: number) => (
+  const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
     <LogItem {...log} key={`logItem_${idx}`} />
   ));
 

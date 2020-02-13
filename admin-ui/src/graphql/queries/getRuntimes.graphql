@@ -1,0 +1,11 @@
+query GetRuntimes {
+  runtimes {
+    id
+    name
+    status
+    creationDate
+    publishedVersion {
+      status
+    }
+  }
+}

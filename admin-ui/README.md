@@ -1,31 +1,47 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-
 ## Environment variables
 
 Environment variables files:
-* .env: Default.
-* .env.local: Local overrides. This file is loaded for all environments except test.
-* .env.development, .env.test, .env.production: Environment-specific settings.
-* .env.development.local, .env.test.local, .env.production.local: Local overrides of environment-specific settings.
-Files on the left have more priority than files on the right:
+
+- .env: Default.
+- .env.local: Local overrides. This file is loaded for all environments except test.
+- .env.development, .env.test, .env.production: Environment-specific settings.
+- .env.development.local, .env.test.local, .env.production.local: Local overrides of environment-specific settings.
+  Files on the left have more priority than files on the right:
 
 Priority by scripts:
-* npm start: .env.development.local, .env.development, .env.local, .env
-* npm run build: .env.production.local, .env.production, .env.local, .env
-* npm test: .env.test.local, .env.test, .env (note .env.local is missing)
+
+- npm start: .env.development.local, .env.development, .env.local, .env
+- npm run build: .env.production.local, .env.production, .env.local, .env
+- npm test: .env.test.local, .env.test, .env (note .env.local is missing)
 
 ## Development
 
 To run the application in your local machine start the [Mock Server](mock-server/README.md).
 To start the development server run:
+
 ```
 yarn start
 ```
 
+## Generate GraphQL types
+
+Install `apollo` globally:
+
+```
+npm i -g apollo
+```
+
+Go to admin-ui/src/graphql and run the following command:
+
+```
+apollo client:codegen types --target typescript --includes=./*.graphql --localSchemaFile=../../../admin-api/schema.graphql
+```
+
 ## Available Scripts
 
-In the project directory, you can run: 
+In the project directory, you can run:
 
 ### `npm start`
 

@@ -4,22 +4,18 @@ import moment from 'moment';
 import IconInfo from '@material-ui/icons/Info';
 import IconExpand from '@material-ui/icons/ArrowDownward';
 
-import { NodeLog, LogLevel } from '../../../../../../../graphql/models';
+import { GetLogs_nodeLogs } from '../../../../../../../graphql/subscriptions/types/GetLogs';
 
 import styles from './LogsList.module.scss';
 import cx from 'classnames';
 
-const LEVEL_TO_ICON: { [key: string]: any } = {
-  [LogLevel.INFO]: IconInfo
-};
-
-function LogItem({ date, nodeId, podId, message, level }: NodeLog) {
+function LogItem({ date, nodeId, podId, message, level }: GetLogs_nodeLogs) {
   const [opened, setOpened] = useState<boolean>(false);
 
   const dateFormatted = moment(date).format('YYYY-MM-DD');
   const hourFormatted = moment(date).format('hh:mm:ss');
 
-  const LevelIcon = LEVEL_TO_ICON[level];
+  const LevelIcon = IconInfo;
 
   function toggleOpenStatus() {
     setOpened(!opened);

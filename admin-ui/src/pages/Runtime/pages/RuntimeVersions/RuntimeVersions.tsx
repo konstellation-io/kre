@@ -3,13 +3,17 @@ import React from 'react';
 import PublishedVersionStatus from './components/PublishedVersionStatus/PublishedVersionStatus';
 import VersionInfo from './components/VersionInfo/VersionInfo';
 
-import { Version, VersionStatus, Runtime } from '../../../../graphql/models';
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from '../../../../graphql/queries/types/GetVersionConfStatus';
+import { VersionStatus } from '../../../../graphql/types/globalTypes';
 
 import styles from './RuntimeVersions.module.scss';
 
 type Props = {
-  runtime: Runtime;
-  versions: Version[];
+  runtime: GetVersionConfStatus_runtime;
+  versions: GetVersionConfStatus_versions[];
 };
 
 function RuntimeVersions({ runtime, versions }: Props) {
@@ -18,9 +22,11 @@ function RuntimeVersions({ runtime, versions }: Props) {
     version => version.status === VersionStatus.PUBLISHED
   ).length;
 
-  const versionsComponents = versions.map((version: Version, idx: number) => (
-    <VersionInfo key={`version_${idx}`} version={version} />
-  ));
+  const versionsComponents = versions.map(
+    (version: GetVersionConfStatus_versions, idx: number) => (
+      <VersionInfo key={`version_${idx}`} version={version} />
+    )
+  );
 
   return (
     <div className={styles.content}>

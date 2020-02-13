@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Version, Runtime, VersionStatus } from '../../../../../graphql/models';
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from '../../../../../graphql/queries/types/GetVersionConfStatus';
+import { VersionStatus } from '../../../../../graphql/types/globalTypes';
 import styles from './VersionActions.module.scss';
 
 // Icons
@@ -12,8 +16,8 @@ import ConfirmationModal from '../../../../../components/ConfirmationModal/Confi
 import Button, { BUTTON_TYPES } from '../../../../../components/Button/Button';
 
 type VersionActionsProps = {
-  runtime: Runtime;
-  version: Version;
+  runtime: GetVersionConfStatus_runtime;
+  version: GetVersionConfStatus_versions;
 };
 
 type ActionProps = {

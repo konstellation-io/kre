@@ -10,13 +10,20 @@ import * as CHECK from '../../components/Form/check';
 import cx from 'classnames';
 import styles from './Settings.module.scss';
 
+import { loader } from 'graphql.macro';
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { GetSettings } from '../../graphql/queries/types/GetSettings';
 import {
-  SettingsResponse,
-  SettingsVars,
-  GET_EXPIRATION_TIME,
-  UPDATE_SESSION_LIFETIME
-} from './Settings.graphql';
+  UpdateSettings,
+  UpdateSettingsVariables
+} from '../../graphql/mutations/types/UpdateSettings';
+
+const GetExpirationTimeQuery = loader(
+  '../../graphql/queries/getExpirationTime.graphql'
+);
+const updateSessionLifetimeMutation = loader(
+  '../../graphql/mutations/updateSettings.graphql'
+);
 
 const MIN_EXPIRATION_DAYS = 1;
 
@@ -58,12 +65,13 @@ function isExpirationInvalid(value: string) {
 }
 
 function GeneralSettings() {
-  const { data, loading, error: queryError } = useQuery<SettingsResponse>(
-    GET_EXPIRATION_TIME
+  const { data, loading, error: queryError } = useQuery<GetSettings>(
+    GetExpirationTimeQuery
   );
-  const [updateExpirationTime] = useMutation<SettingsResponse, SettingsVars>(
-    UPDATE_SESSION_LIFETIME
-  );
+  const [updateExpirationTime] = useMutation<
+    UpdateSettings,
+    UpdateSettingsVariables
+  >(updateSessionLifetimeMutation);
   const { value, isValid, onChange, setValue, error: inputError } = useInput(
     '',
     isExpirationInvalid

@@ -1,21 +1,42 @@
+import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/react-hooks';
 import {
-  PUBLISH_VERSION,
-  PublishVersionResponse,
-  START_VERSION,
-  StartVersionResponse,
-  STOP_VERSION,
-  StopVersionResponse,
-  UNPUBLISH_VERSION,
-  UnpublishVersionResponse,
-  VersionActionVars
-} from '../pages/RuntimeStatusPreview/RuntimeStatusPreview.graphql';
+  GetVersionConfStatus,
+  GetVersionConfStatusVariables
+} from '../../../graphql/queries/types/GetVersionConfStatus';
 import {
-  GET_RUNTIME_AND_VERSIONS,
-  GetRuntimeAndVersionsResponse,
-  GetRuntimeAndVersionsVars
-} from '../Runtime.graphql';
-import { VersionStatus } from '../../../graphql/models';
+  StartVersion,
+  StartVersionVariables
+} from '../../../graphql/mutations/types/StartVersion';
+import {
+  StopVersion,
+  StopVersionVariables
+} from '../../../graphql/mutations/types/StopVersion';
+import {
+  UnpublishVersion,
+  UnpublishVersionVariables
+} from '../../../graphql/mutations/types/UnpublishVersion';
+import {
+  PublishVersion,
+  PublishVersionVariables
+} from '../../../graphql/mutations/types/PublishVersion';
+import { VersionStatus } from '../../../graphql/types/globalTypes';
+
+const PublishVersionMutation = loader(
+  '../../../graphql/mutations/publishVersion.graphql'
+);
+const UnpublishVersionMutation = loader(
+  '../../../graphql/mutations/unpublishVersion.graphql'
+);
+const StartVersionMutation = loader(
+  '../../../graphql/mutations/startVersion.graphql'
+);
+const StopVersionMutation = loader(
+  '../../../graphql/mutations/stopVersion.graphql'
+);
+const GetRuntimeAndVersionsQuery = loader(
+  '../../../graphql/queries/getRuntimeAndVersions.graphql'
+);
 
 export enum versionActions {
   start = 'startVersion',
@@ -26,9 +47,9 @@ export enum versionActions {
 
 export default function useVersionAction(runtimeId: string) {
   const [publishMutation, { loading: loadingM1 }] = useMutation<
-    PublishVersionResponse,
-    VersionActionVars
-  >(PUBLISH_VERSION, {
+    PublishVersion,
+    PublishVersionVariables
+  >(PublishVersionMutation, {
     update(cache, updateResult) {
       // TODO: This update the previous one activated version.
       // We should remove this when multi activation feature is implemented.
@@ -36,10 +57,10 @@ export default function useVersionAction(runtimeId: string) {
         const updatedVersion = updateResult.data.publishVersion;
 
         const cacheResult = cache.readQuery<
-          GetRuntimeAndVersionsResponse,
-          GetRuntimeAndVersionsVars
+          GetVersionConfStatus,
+          GetVersionConfStatusVariables
         >({
-          query: GET_RUNTIME_AND_VERSIONS,
+          query: GetRuntimeAndVersionsQuery,
           variables: {
             runtimeId: runtimeId
           }
@@ -56,7 +77,7 @@ export default function useVersionAction(runtimeId: string) {
           });
 
           cache.writeQuery({
-            query: GET_RUNTIME_AND_VERSIONS,
+            query: GetRuntimeAndVersionsQuery,
             data: {
               runtime,
               versions: newVersions
@@ -68,17 +89,17 @@ export default function useVersionAction(runtimeId: string) {
   });
 
   const [unpublishMutation, { loading: loadingM2 }] = useMutation<
-    UnpublishVersionResponse,
-    VersionActionVars
-  >(UNPUBLISH_VERSION);
+    UnpublishVersion,
+    UnpublishVersionVariables
+  >(UnpublishVersionMutation);
   const [startMutation, { loading: loadingM3 }] = useMutation<
-    StartVersionResponse,
-    VersionActionVars
-  >(START_VERSION);
+    StartVersion,
+    StartVersionVariables
+  >(StartVersionMutation);
   const [stopMutation, { loading: loadingM4 }] = useMutation<
-    StopVersionResponse,
-    VersionActionVars
-  >(STOP_VERSION);
+    StopVersion,
+    StopVersionVariables
+  >(StopVersionMutation);
 
   const mutationLoading = [loadingM1, loadingM2, loadingM3, loadingM4].some(
     el => el

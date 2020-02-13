@@ -8,17 +8,22 @@ import * as CHECK from '../../components/Form/check';
 
 import styles from './AddRuntime.module.scss';
 
+import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/react-hooks';
 import {
-  ADD_RUNTIME,
-  AddRuntimeResponse,
-  AddRuntimeVars
-} from './AddRuntime.graphql';
+  GetRuntimes,
+  GetRuntimes_runtimes
+} from '../../graphql/queries/types/GetRuntimes';
 import {
-  GET_RUNTIMES,
-  GetRuntimesResponse
-} from '../Dashboard/Dashboard.graphql';
+  CreateRuntime,
+  CreateRuntimeVariables
+} from '../../graphql/mutations/types/CreateRuntime';
 import ROUTE from '../../constants/routes';
+
+const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
+const CreateRuntimeMutation = loader(
+  '../../graphql/mutations/createRuntime.graphql'
+);
 
 function verifyRuntimeName(value: string) {
   return CHECK.getValidationError([
@@ -34,21 +39,22 @@ function AddRuntime() {
     verifyRuntimeName
   );
   const [addRuntime, { loading, error: mutationError }] = useMutation<
-    AddRuntimeResponse,
-    AddRuntimeVars
-  >(ADD_RUNTIME, {
+    CreateRuntime,
+    CreateRuntimeVariables
+  >(CreateRuntimeMutation, {
     onCompleted: onCompleteAddRuntime,
     update(cache, updateResult) {
       if (updateResult.data !== undefined && updateResult.data !== null) {
-        const newRuntime = updateResult.data.createRuntime.runtime;
-        const cacheResult = cache.readQuery<GetRuntimesResponse>({
-          query: GET_RUNTIMES
+        const newRuntime = updateResult.data.createRuntime
+          .runtime as GetRuntimes_runtimes;
+        const cacheResult = cache.readQuery<GetRuntimes>({
+          query: GetRuntimesQuery
         });
 
         if (cacheResult !== null) {
           const { runtimes } = cacheResult;
           cache.writeQuery({
-            query: GET_RUNTIMES,
+            query: GetRuntimesQuery,
             data: { runtimes: runtimes.concat([newRuntime]) }
           });
         }

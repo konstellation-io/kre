@@ -1,0 +1,6 @@
+mutation UnpublishVersion($input: UnpublishVersionInput!) {
+  unpublishVersion(input: $input) {
+    id
+    status
+  }
+}

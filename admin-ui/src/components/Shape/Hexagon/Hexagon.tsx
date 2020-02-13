@@ -4,7 +4,8 @@ import Lottie from '../../Lottie/Lottie';
 import { STATES } from '../../../constants/application';
 import animationData from './Hexagon.json';
 
-import { RuntimeStatus, VersionEnvStatus } from '../../../graphql/models';
+import { VersionEnvStatus } from '../../../pages/Dashboard/Dashboard';
+import { RuntimeStatus } from '../../../graphql/types/globalTypes';
 
 import styles from './Hexagon.module.scss';
 import cx from 'classnames';
@@ -33,7 +34,7 @@ type RuntimeInfo = {
 };
 type Props = {
   id?: string;
-  status?: RuntimeStatus;
+  status?: RuntimeStatus | 'UNKNOWN';
   versionStatus?: VersionEnvStatus;
   title?: string;
   info?: RuntimeInfo[];
@@ -44,7 +45,7 @@ type Props = {
 
 function Hexagon({
   id = '00000000',
-  status = RuntimeStatus.UNKNOWN,
+  status = 'UNKNOWN',
   versionStatus = VersionEnvStatus.PUBLISHED,
   title = 'Default title',
   info = [],

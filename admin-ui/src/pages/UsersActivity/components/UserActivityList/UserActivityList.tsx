@@ -7,16 +7,16 @@ import TimeIcon from '@material-ui/icons/AccessTime';
 
 import styles from './UserActivityList.module.scss';
 
-import { UserActivity } from '../../../../graphql/models';
+import { GetUsersActivity_userActivityList } from '../../../../graphql/queries/types/GetUsersActivity';
 
 type Props = {
-  data?: UserActivity[];
+  data?: GetUsersActivity_userActivityList[];
 };
 
 function UserActivityList({ data }: Props) {
   const usersActivity =
     data &&
-    data.map((userActivity: UserActivity, idx: number) => {
+    data.map((userActivity: GetUsersActivity_userActivityList, idx: number) => {
       const [message, comment] = getMessage(userActivity);
 
       return (

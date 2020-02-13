@@ -1,0 +1,5 @@
+query GetSettings {
+  settings {
+    sessionLifetimeInDays
+  }
+}

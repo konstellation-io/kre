@@ -1,0 +1,13 @@
+query GetAllUserActivity {
+  userActivityList {
+    user {
+      email
+    }
+    date
+    type
+    vars {
+      key
+      value
+    }
+  }
+}

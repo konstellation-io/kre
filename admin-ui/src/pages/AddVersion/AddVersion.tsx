@@ -11,7 +11,13 @@ import ROUTE from '../../constants/routes';
 
 import styles from './AddVersion.module.scss';
 
-import { ADD_VERSION } from './AddVersion.graphql';
+import { loader } from 'graphql.macro';
+import {
+  CreateVersion,
+  CreateVersionVariables
+} from '../../graphql/mutations/types/CreateVersion';
+
+const AddVersionMutation = loader('../../graphql/mutations/addVersion.graphql');
 
 function verifyVersionFile(value: string) {
   return CHECK.getValidationError([CHECK.isDefined(value)]);
@@ -28,7 +34,10 @@ const inputs = [
 function AddVersion() {
   const history = useHistory();
   const { runtimeId } = useParams();
-  const [addVersion, { loading, error }] = useMutation(ADD_VERSION, {
+  const [addVersion, { loading, error }] = useMutation<
+    CreateVersion,
+    CreateVersionVariables
+  >(AddVersionMutation, {
     onCompleted
   });
   const form = useForm({

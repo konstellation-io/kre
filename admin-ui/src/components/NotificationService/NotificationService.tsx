@@ -2,7 +2,7 @@ import React from 'react';
 import RuntimeCreated from './Services/RuntimeCreated/RuntimeCreated';
 
 import { useQuery } from '@apollo/react-hooks';
-import { GET_LOGIN_STATUS } from './NotificationService.graphql';
+import { GET_LOGIN_STATUS } from '../../graphql/client/getLoginStatus.graphql';
 
 import styles from './Notification.module.scss';
 

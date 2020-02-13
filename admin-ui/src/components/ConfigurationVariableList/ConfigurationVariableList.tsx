@@ -5,16 +5,14 @@ import React from 'react';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import IconKey from '@material-ui/icons/VpnKey';
 
-import {
-  ConfigurationVariable,
-  ConfigurationVariableType
-} from '../../graphql/models';
+import { GetConfigurationVariables_version_configurationVariables as ConfVar } from '../../graphql/queries/types/GetConfigurationVariables';
+import { ConfigurationVariableType } from '../../graphql/types/globalTypes';
 
 import cx from 'classnames';
 import styles from './ConfigurationVariableList.module.scss';
 
 interface VariableRowProps {
-  variable: ConfigurationVariable;
+  variable: ConfVar;
   onType: Function;
   hide: boolean;
 }
@@ -61,23 +59,21 @@ function VariableRow({
 }
 
 type Props = {
-  data: ConfigurationVariable[];
+  data: ConfVar[];
   onType: Function;
   hideAll: boolean;
 };
 
 function ConfigurationVariableList({ data, onType, hideAll }: Props) {
   const sortedData = sortBy(data, ['key']);
-  const variableRows = sortedData.map(
-    (variable: ConfigurationVariable, idx: number) => (
-      <VariableRow
-        onType={onType}
-        key={`variableRow_${idx}`}
-        hide={hideAll}
-        variable={variable}
-      />
-    )
-  );
+  const variableRows = sortedData.map((variable: ConfVar, idx: number) => (
+    <VariableRow
+      onType={onType}
+      key={`variableRow_${idx}`}
+      hide={hideAll}
+      variable={variable}
+    />
+  ));
 
   return (
     <div className={styles.container}>

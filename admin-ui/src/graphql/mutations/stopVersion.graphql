@@ -1,0 +1,6 @@
+mutation StopVersion($input: StopVersionInput!) {
+  stopVersion(input: $input) {
+    id
+    status
+  }
+}

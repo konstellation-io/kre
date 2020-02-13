@@ -2,25 +2,26 @@ import React, { FunctionComponent } from 'react';
 
 import Settings from '../../components/Settings/Settings';
 
+import { loader } from 'graphql.macro';
 import { useQuery, useApolloClient } from '@apollo/react-hooks';
 
-import { GET_USER_EMAIL, GetUserEmailResponse } from './Header.graphql';
+import { GetUserEmail } from '../../graphql/queries/types/GetUserEmail';
 
 import styles from './Header.module.scss';
+
+const GetUserEmailQuery = loader('../../graphql/queries/getUserEmail.graphql');
 
 type Props = {
   children?: any;
 };
 const Header: FunctionComponent<Props> = ({ children }) => {
   const client = useApolloClient();
-  const { data, error, loading } = useQuery<GetUserEmailResponse>(
-    GET_USER_EMAIL
-  );
+  const { data, error, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
 
   if (loading)
     return <div className={styles.splash} data-testid={'splashscreen'} />;
 
-  const username = data && !error ? data.me.email : 'unknown';
+  const username = data && data.me && !error ? data.me.email : 'unknown';
 
   if (username !== 'unknown') {
     client.writeData({ data: { loggedIn: true } });

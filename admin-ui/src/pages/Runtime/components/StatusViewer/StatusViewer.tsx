@@ -1,25 +1,32 @@
 import { cloneDeep, get } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { loader } from 'graphql.macro';
 import { useSubscription } from '@apollo/react-hooks';
 import { useParams } from 'react-router';
 
 import useRenderOnResize from '../../../../hooks/useRenderOnResize';
 import { TYPES } from '../../../../components/Shape/Node/Node';
 import {
-  Node,
-  NodeStatus,
   VersionNodeStatus,
-  VersionStatus
-} from '../../../../graphql/models';
-import { NODE_STATUS_UPDATE_SUBSCRIPTION } from './StatusViewer.graphql';
+  VersionNodeStatusVariables
+} from '../../../../graphql/subscriptions/types/VersionNodeStatus';
+import {
+  VersionStatus,
+  NodeStatus
+} from '../../../../graphql/types/globalTypes';
 
 import VersionStatusViewer, {
-  Workflow
+  Workflow,
+  Node
 } from '../../../../components/VersionStatusViewer/VersionStatusViewer';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 
 import styles from './StatusViewer.module.scss';
+
+const VersionNodeStatusSubscription = loader(
+  '../../../../graphql/subscriptions/versionNodeStatus.graphql'
+);
 
 function formatData(workflows: any, versionStatus: VersionStatus) {
   let formattedData = cloneDeep(workflows);
@@ -86,23 +93,26 @@ function StatusViewer({ data, status, onNodeClick }: any) {
   const [workflows, setWorkflows] = useState<Workflow[]>(
     formatData(data, status)
   );
-  useSubscription<VersionNodeStatus>(NODE_STATUS_UPDATE_SUBSCRIPTION, {
-    variables: { versionId },
-    onSubscriptionData: (msg: any) => {
-      const nodeInfo = get(msg, 'subscriptionData.data.versionNodeStatus');
-      const newNode: Node = {
-        id: nodeInfo.nodeId,
-        status: nodeInfo.status
-      };
+  useSubscription<VersionNodeStatus, VersionNodeStatusVariables>(
+    VersionNodeStatusSubscription,
+    {
+      variables: { versionId: versionId || '' },
+      onSubscriptionData: (msg: any) => {
+        const nodeInfo = get(msg, 'subscriptionData.data.versionNodeStatus');
+        const newNode: Node = {
+          id: nodeInfo.nodeId,
+          status: nodeInfo.status
+        };
 
-      // FIXME: remove this delay and find another workaround
-      setTimeout(() => {
-        setWorkflows((tempWorkflows: Workflow[]) => {
-          return updateNodeStatus(tempWorkflows, newNode);
-        });
-      }, 100);
+        // FIXME: remove this delay and find another workaround
+        setTimeout(() => {
+          setWorkflows((tempWorkflows: Workflow[]) => {
+            return updateNodeStatus(tempWorkflows, newNode);
+          });
+        }, 100);
+      }
     }
-  });
+  );
 
   const container = useRef(null);
   const prevParams = useRef<any>({

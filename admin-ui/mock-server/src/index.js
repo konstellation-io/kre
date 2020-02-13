@@ -7,11 +7,14 @@ const mocks = require('./mock');
 
 const server = new ApolloServer({
   typeDefs,
-  mocks,
+  mocks
 });
 const app = express();
 
-app.use(bodyParser.json(), cors({origin: 'http://localhost:3000', credentials: true}));
+app.use(
+  bodyParser.json(),
+  cors({ origin: 'http://localhost:3000', credentials: true })
+);
 
 // # This endpoint is used to test unauthorized response
 // app.post('/graphql', (req, res) => {
@@ -21,25 +24,30 @@ app.use(bodyParser.json(), cors({origin: 'http://localhost:3000', credentials: t
 
 app.post('/api/v1/auth/signin', (req, res) => {
   if (!req.body.email) {
-    return res.status(400)
-      .send({"code": "bad_email", "message": "Invalid email"});
+    return res
+      .status(400)
+      .send({ code: 'bad_email', message: 'Invalid email' });
   }
-  
-  res.json({"message": "Email sent to the user"});
+
+  res.json({ message: 'Email sent to the user' });
 });
 
 app.post('/api/v1/auth/signin/verify', (req, res) => {
   if (!req.body.verificationCode) {
-    return res.status(400)
-      .send({"code": "invalid_verification_code", "message": "The verification code is invalid."});
+    return res
+      .status(400)
+      .send({
+        code: 'invalid_verification_code',
+        message: 'The verification code is invalid.'
+      });
   }
 
   res.cookie('LOCAL_JWT_TOKEN', 'LOCAL_JWT_TOKEN_VALUE');
-  res.json({"message": "Login success"});
+  res.json({ message: 'Login success' });
 });
 
 server.applyMiddleware({ app, path: '/graphql', cors: false });
-  const appServer = app.listen(4000, () => {
+const appServer = app.listen(4000, () => {
   const address = appServer.address();
   console.log(`🚀 Server ready at ${address.address}${address.port}`);
-})
+});

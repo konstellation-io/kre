@@ -13,26 +13,30 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
 import VersionSideBar from './components/VersionSideBar/VersionSideBar';
 
+import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 import {
-  GET_RUNTIME_AND_VERSIONS,
-  GetRuntimeAndVersionsResponse,
-  GetRuntimeAndVersionsVars
-} from './Runtime.graphql';
+  GetVersionConfStatus,
+  GetVersionConfStatusVariables
+} from '../../graphql/queries/types/GetVersionConfStatus';
 
 import cx from 'classnames';
 import styles from './Runtime.module.scss';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 
+const GetRuntimeAndVersionQuery = loader(
+  '../../graphql/queries/getRuntimeAndVersions.graphql'
+);
+
 function Runtime() {
   const { runtimeId, versionId } = useParams();
   const location = useLocation();
   const { data, loading, error, refetch } = useQuery<
-    GetRuntimeAndVersionsResponse,
-    GetRuntimeAndVersionsVars
-  >(GET_RUNTIME_AND_VERSIONS, {
+    GetVersionConfStatus,
+    GetVersionConfStatusVariables
+  >(GetRuntimeAndVersionQuery, {
     fetchPolicy: 'cache-and-network',
-    variables: { runtimeId }
+    variables: { runtimeId: runtimeId || '' }
   });
 
   const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Version } from '../../../../../graphql/models';
+import { GetVersionConfStatus_versions } from '../../../../../graphql/queries/types/GetVersionConfStatus';
 import cx from 'classnames';
 import styles from './VersionInfo.module.scss';
 
 type VersionListItemProps = {
-  version: Version;
+  version: GetVersionConfStatus_versions;
 };
 
 function VersionInfo({ version }: VersionListItemProps) {

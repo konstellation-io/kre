@@ -1,0 +1,8 @@
+subscription VersionNodeStatus($versionId: ID!) {
+  versionNodeStatus(versionId: $versionId) {
+    date
+    nodeId
+    status
+    message
+  }
+}

@@ -17,15 +17,27 @@ import Modal from '../../components/Modal/Modal';
 
 import styles from './Dashboard.module.scss';
 
+import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_RUNTIMES } from './Dashboard.graphql';
-import { Runtime, RuntimeStatus, VersionEnvStatus } from '../../graphql/models';
+import {
+  GetRuntimes,
+  GetRuntimes_runtimes
+} from '../../graphql/queries/types/GetRuntimes';
+import { RuntimeStatus } from '../../graphql/types/globalTypes';
 import { ApolloError } from 'apollo-client';
+
+const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
+
+export enum VersionEnvStatus {
+  PUBLISHED = 'PUBLISHED',
+  UNPUBLISHED = 'UNPUBLISHED',
+  ERROR = 'ERROR'
+}
 
 const disabledRuntimeStatus = [RuntimeStatus.CREATING];
 
 type Props = {
-  data: Runtime[];
+  data: GetRuntimes_runtimes[];
   error?: ApolloError;
   loading: boolean;
   history: History;
@@ -33,7 +45,7 @@ type Props = {
 
 // TODO: Add ERROR state
 // For now this label will only show PUBLISHED for published versions and STARTED otherwise
-function getVersionStatus(runtime: Runtime) {
+function getVersionStatus(runtime: GetRuntimes_runtimes) {
   return runtime.publishedVersion
     ? VersionEnvStatus.PUBLISHED
     : VersionEnvStatus.UNPUBLISHED;
@@ -43,7 +55,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  const runtimes = data.map((runtime: Runtime, idx: number) => (
+  const runtimes = data.map((runtime: GetRuntimes_runtimes, idx: number) => (
     <Hexagon
       key={`runtimeHexagon-${idx}`}
       onClick={() => {
@@ -88,7 +100,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
 
 function Dashboard() {
   const history = useHistory();
-  const { data, loading, error } = useQuery(GET_RUNTIMES, {
+  const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery, {
     fetchPolicy: 'cache-and-network'
   });
   const runtimes = get(data, 'runtimes', []);

@@ -1,0 +1,9 @@
+mutation UpdateVersionConfiguration($input: UpdateConfigurationInput!) {
+  updateVersionConfiguration(input: $input) {
+    configurationVariables {
+      key
+      value
+      type
+    }
+  }
+}
