@@ -1,3 +1,5 @@
+developmentMode: false
+
 entrypoint:
   host: "local"
 
@@ -27,7 +29,6 @@ mongo:
     adminPassword: "123456"
   extraLabels:
     kre-app: kre-mongo
-
 
 minio:
   credentials:
