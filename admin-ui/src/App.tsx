@@ -4,9 +4,10 @@ import './styles/react-calendar.scss';
 
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
-import { Redirect, Switch } from 'react-router';
+import { Redirect, Switch, useHistory } from 'react-router';
 import history from './history';
 
+import SpinnerCircular from './components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import NotificationService from './components/NotificationService/NotificationService';
 import Login from './pages/Login/Login';
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
@@ -20,41 +21,73 @@ import AddVersion from './pages/AddVersion/AddVersion';
 import NotFound from './pages/NotFound/NotFound';
 import ROUTE from './constants/routes';
 
+import { loader } from 'graphql.macro';
+import { useQuery, useApolloClient } from '@apollo/react-hooks';
+import { GetUserEmail } from './graphql/queries/types/GetUserEmail';
+
+const GetUserEmailQuery = loader('./graphql/queries/getUserEmail.graphql');
+
+function ProtectedRoutes() {
+  const { data, error, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
+  const client = useApolloClient();
+  const history = useHistory();
+
+  if (loading) {
+    return (
+      <div className="splash">
+        <SpinnerCircular />
+      </div>
+    );
+  }
+  if (error) {
+    history.push(ROUTE.LOGIN);
+  }
+
+  // Checks if the user is logged in
+  if (data && data.me) {
+    client.writeData({ data: { loggedIn: true } });
+  }
+
+  return (
+    <Switch>
+      <Redirect exact from={ROUTE.SETTINGS} to={ROUTE.SETTINGS_GENERAL} />
+      <Redirect
+        exact
+        from={ROUTE.RUNTIME_VERSION}
+        to={ROUTE.RUNTIME_VERSION_STATUS}
+      />
+      <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
+
+      <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
+      <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
+
+      <Route exact path={ROUTE.HOME} component={Dashboard} />
+      <Route
+        path={[
+          ROUTE.RUNTIME_VERSION_CONFIGURATION,
+          ROUTE.RUNTIME_VERSION_METRICS,
+          ROUTE.RUNTIME_VERSION_STATUS
+        ]}
+        component={Runtime}
+      />
+      <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
+
+      <Route path={ROUTE.SETTINGS} component={Settings} />
+      <Route path={ROUTE.AUDIT} component={UsersActivity} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 export function Routes() {
   return (
-    <>
-      <Switch>
-        <Redirect exact from={ROUTE.SETTINGS} to={ROUTE.SETTINGS_GENERAL} />
-        <Redirect
-          exact
-          from={ROUTE.RUNTIME_VERSION}
-          to={ROUTE.RUNTIME_VERSION_STATUS}
-        />
-        <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
+    <Switch>
+      <Route exact path={ROUTE.LOGIN} component={Login} />
+      <Route exact path={ROUTE.VERIFY_EMAIL} component={VerifyEmail} />
+      <Route exact path={ROUTE.MAGIC_LINK} component={MagicLink} />
 
-        <Route exact path={ROUTE.LOGIN} component={Login} />
-        <Route exact path={ROUTE.VERIFY_EMAIL} component={VerifyEmail} />
-        <Route exact path={ROUTE.MAGIC_LINK} component={MagicLink} />
-
-        <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
-        <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
-
-        <Route exact path={ROUTE.HOME} component={Dashboard} />
-        <Route
-          path={[
-            ROUTE.RUNTIME_VERSION_CONFIGURATION,
-            ROUTE.RUNTIME_VERSION_METRICS,
-            ROUTE.RUNTIME_VERSION_STATUS
-          ]}
-          component={Runtime}
-        />
-        <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
-
-        <Route path={ROUTE.SETTINGS} component={Settings} />
-        <Route path={ROUTE.AUDIT} component={UsersActivity} />
-        <Route component={NotFound} />
-      </Switch>
-    </>
+      <Route component={ProtectedRoutes} />
+    </Switch>
   );
 }
 

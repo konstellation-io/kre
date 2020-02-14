@@ -44,8 +44,12 @@ it('Renders Settings without crashing', () => {
   expect(container).toMatchSnapshot();
 });
 
-it('Shows general settings by default', () => {
+it('Shows general settings by default', async () => {
   const { getByText } = generateComponent()[0] as RenderResult;
+
+  await act(async () => {
+    await wait(0);
+  });
 
   expect(getByText('GENERAL')).toBeInTheDocument();
 });
@@ -63,8 +67,12 @@ it('Shows general settings by default', () => {
 //   expect(getByTestId('input').value).toBe('45');
 // });
 
-it('can move to other settings', () => {
+it('can move to other settings', async () => {
   const { container, getByText } = generateComponent()[0] as RenderResult;
+
+  await act(async () => {
+    await wait(0);
+  });
 
   fireEvent.click(container, getByText('SECURITY'));
   expect(getByText('SECURITY')).toBeInTheDocument();
