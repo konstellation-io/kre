@@ -62,7 +62,12 @@ config
 
     const link = ApolloLink.from([errorLink, transportLink]);
 
-    const defaultCache = { data: { loggedIn: false } };
+    const defaultCache = {
+      data: {
+        loggedIn: false,
+        clearLogs: false
+      }
+    };
 
     const client = new ApolloClient({
       cache,

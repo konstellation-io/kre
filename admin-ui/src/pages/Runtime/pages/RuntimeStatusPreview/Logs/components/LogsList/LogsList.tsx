@@ -3,7 +3,12 @@ import { get } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { loader } from 'graphql.macro';
-import { useSubscription } from '@apollo/react-hooks';
+import {
+  useSubscription,
+  useQuery,
+  useApolloClient
+} from '@apollo/react-hooks';
+import { CLEAR_LOGS } from '../../../../../../../graphql/client/clearLogs.graphql';
 
 import LogItem from './LogItem';
 import { Node } from '../../../RuntimeStatusPreview';
@@ -25,8 +30,10 @@ type Props = {
   onUpdate: () => void;
 };
 function LogsList({ node, onUpdate }: Props) {
+  const client = useApolloClient();
   const { runtimeId } = useParams();
   const [logs, setLogs] = useState<GetLogs_nodeLogs[]>([]);
+  const { data } = useQuery(CLEAR_LOGS);
 
   useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
     variables: {
@@ -38,6 +45,13 @@ function LogsList({ node, onUpdate }: Props) {
       addLog(logInfo);
     }
   });
+
+  useEffect(() => {
+    if (data && data.clearLogs) {
+      setLogs([]);
+      client.writeData({ data: { clearLogs: false } });
+    }
+  }, [data]);
 
   useEffect(() => {
     onUpdate();
