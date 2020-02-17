@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 function replace_env() {
-    INPUT=$1
-    OUTPUT=$(echo $INPUT | sed -e 's/\.tpl//')
+  INPUT=$1
+  OUTPUT=$(echo $INPUT | sed -e 's/\.tpl//')
 
-    echo "Replacing env to '$INPUT' into '$OUTPUT'"
-    envsubst < $INPUT > $OUTPUT
+  echo "Replacing env to '$INPUT' into '$OUTPUT'"
+  envsubst <$INPUT >$OUTPUT
 }
 
 export -f replace_env
