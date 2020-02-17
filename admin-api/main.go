@@ -24,7 +24,6 @@ func main() {
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
-	versionMinioRepo := minio.NewMinioRepo(logger)
 
 	runtimeService, err := service.NewK8sRuntimeClient(cfg, logger)
 	if err != nil {
@@ -47,7 +46,9 @@ func main() {
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, runtimeService, userActivityInteractor)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
-	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, versionService, monitoringService, userActivityInteractor, versionMinioRepo)
+
+	minioCreateStorage := minio.CreateStorage
+	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, versionService, monitoringService, userActivityInteractor, minioCreateStorage)
 
 	err = settingInteractor.CreateDefaults()
 	if err != nil {
