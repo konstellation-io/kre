@@ -2,9 +2,8 @@ package entity
 
 import (
 	"fmt"
+	"strings"
 	"time"
-
-	"github.com/iancoleman/strcase"
 )
 
 type MinioConfig struct {
@@ -34,5 +33,5 @@ type Runtime struct {
 }
 
 func (r *Runtime) GetNamespace() string {
-	return fmt.Sprintf("kre-%s", strcase.ToKebab(r.Name))
+	return fmt.Sprintf("kre-%s", strings.ToLower(r.Name))
 }

@@ -17,5 +17,3 @@ rm krt.yml.tpl
 cd ..
 
 tar -zcvf $KRT_FILE $VERSION_DIR
-
-
