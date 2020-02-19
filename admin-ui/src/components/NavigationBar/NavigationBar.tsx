@@ -21,6 +21,7 @@ import {
 } from '../../graphql/queries/types/GetRuntimes';
 
 import styles from './NavigationBar.module.scss';
+import { RuntimeStatus } from '../../graphql/types/globalTypes';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 
@@ -32,19 +33,32 @@ function NavigationBar() {
 
   const runtimes: GetRuntimes_runtimes[] = get(data, 'runtimes', []);
 
-  const buttons = runtimes.map((runtime: GetRuntimes_runtimes, idx: number) => (
-    <NavLink
-      key={`NavBarItem_${idx}`}
-      to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}
-      activeClassName={styles.active}
-      className={styles.link}
-    >
-      <HexButton
-        key={`navigationButton_${runtime.name}`}
-        label={runtime.name}
-      />
-    </NavLink>
-  ));
+  const buttons = runtimes.map((runtime: GetRuntimes_runtimes, idx: number) => {
+    if (runtime.status === RuntimeStatus.CREATING) {
+      return (
+        <div className={styles.link} key={`NavBarItem_${idx}`}>
+          <HexButton
+            key={`navigationButton_${runtime.name}`}
+            label={runtime.name}
+            disabled
+          />
+        </div>
+      );
+    }
+    return (
+      <NavLink
+        key={`NavBarItem_${idx}`}
+        to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}
+        activeClassName={styles.active}
+        className={styles.link}
+      >
+        <HexButton
+          key={`navigationButton_${runtime.name}`}
+          label={runtime.name}
+        />
+      </NavLink>
+    );
+  });
 
   buttons.unshift(
     <NavLink

@@ -38,6 +38,20 @@
       color: $font-color-dark;
     }
   }
+  &.disabled {
+    .button {
+      background-color: #555555;
+      cursor: not-allowed;
+    }
+    .buttonText {
+      color: $font-color-dark;
+    }
+    &:hover {
+      .button {
+        box-shadow: unset;
+      }
+    }
+  }
 }
 
 .buttonContainer {
