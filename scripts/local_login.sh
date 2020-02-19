@@ -24,8 +24,8 @@ echo "watching $WATCH_FILE"
 echo "pod $ADMIN_API_POD"
 kubectl -n kre logs $ADMIN_API_POD | tail -n 100 >$WATCH_FILE
 
-# REVERSE CONTENT OF THE FILE
-LINK=$(sed -n '1{h;T;};G;h;$p;' $WATCH_FILE | egrep -oh "http://.*/signin/([^\"]*)")
+# Read the file in reverse order and capture the first signin link
+LINK=$(cat $WATCH_FILE | awk '{print NR" "$0}' | sort -k1 -n -r | sed 's/^[^ ]* //g' | egrep -oh "http://.*/signin/([^\"]*)" | head -n 1)
 
 rm $WATCH_FILE
 
