@@ -142,7 +142,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 		return nil, err
 	}
 
-	err = i.registerCreateAction(userID, runtime, versionCreated)
+	err = i.userActivityInteractor.RegisterCreateAction(userID, runtime, versionCreated)
 	if err != nil {
 		return nil, fmt.Errorf("error registering activity: %w", err)
 	}
@@ -179,7 +179,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 		return nil, err
 	}
 
-	err = i.registerStartAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterStartAction(userID, runtime, version)
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +211,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 		return nil, err
 	}
 
-	err = i.registerStopAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterStopAction(userID, runtime, version)
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +252,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 		return nil, err
 	}
 
-	err = i.registerPublishAction(userID, runtime, version, previousPublishedVersion, comment)
+	err = i.userActivityInteractor.RegisterPublishAction(userID, runtime, version, previousPublishedVersion, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -311,7 +311,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.
 		return nil, err
 	}
 
-	err = i.registerUnpublishAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterUnpublishAction(userID, runtime, version)
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package usecase_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -327,7 +328,7 @@ func (s *AuthSuite) TestVerifyCodeErrCreatingUserActivity() {
 	s.mocks.userActivityRepo.On("Create", mock.Anything).Return(unexpectedErr)
 
 	_, err := s.authInteractor.VerifyCode(code)
-	require.Equal(t, unexpectedErr, err)
+	require.Equal(t, fmt.Errorf("error creating userActivity: %w", unexpectedErr), err)
 }
 
 func (s *AuthSuite) TestVerifyCodeErrDeletingValidationCode() {

@@ -231,7 +231,7 @@ type SubscriptionResolver interface {
 }
 type UserActivityResolver interface {
 	Type(ctx context.Context, obj *entity.UserActivity) (UserActivityType, error)
-
+	User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error)
 	Date(ctx context.Context, obj *entity.UserActivity) (string, error)
 }
 type VersionResolver interface {
@@ -3946,13 +3946,13 @@ func (ec *executionContext) _UserActivity_user(ctx context.Context, field graphq
 		Object:   "UserActivity",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.User, nil
+		return ec.resolvers.UserActivity().User(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3964,10 +3964,10 @@ func (ec *executionContext) _UserActivity_user(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entity.User)
+	res := resTmp.(*entity.User)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNUser2gitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋdomainᚋentityᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgitlabᚗcomᚋkonstellationᚋkonstellationᚑceᚋkreᚋadminᚑapiᚋdomainᚋentityᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserActivity_date(ctx context.Context, field graphql.CollectedField, obj *entity.UserActivity) (ret graphql.Marshaler) {
@@ -6878,10 +6878,19 @@ func (ec *executionContext) _UserActivity(ctx context.Context, sel ast.Selection
 				return res
 			})
 		case "user":
-			out.Values[i] = ec._UserActivity_user(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._UserActivity_user(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "date":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
