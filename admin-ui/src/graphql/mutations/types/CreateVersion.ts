@@ -1,43 +1,28 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
-import {
-  CreateVersionInput,
-  ErrorCode,
-  VersionStatus
-} from './../../types/globalTypes';
+import { CreateVersionInput, VersionStatus } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: CreateVersion
 // ====================================================
 
-export interface CreateVersion_createVersion_errors {
-  __typename: 'Error';
-  code: ErrorCode;
-  message: string;
-}
-
-export interface CreateVersion_createVersion_version_creationAuthor {
+export interface CreateVersion_createVersion_creationAuthor {
   __typename: 'User';
   id: string;
   email: string;
 }
 
-export interface CreateVersion_createVersion_version {
+export interface CreateVersion_createVersion {
   __typename: 'Version';
   id: string;
   name: string;
   description: string;
   status: VersionStatus;
   creationDate: string;
-  creationAuthor: CreateVersion_createVersion_version_creationAuthor;
-}
-
-export interface CreateVersion_createVersion {
-  __typename: 'CreateVersionResponse';
-  errors: CreateVersion_createVersion_errors[] | null;
-  version: CreateVersion_createVersion_version;
+  creationAuthor: CreateVersion_createVersion_creationAuthor;
 }
 
 export interface CreateVersion {

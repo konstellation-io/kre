@@ -45,8 +45,8 @@ function AddRuntime() {
     onCompleted: onCompleteAddRuntime,
     update(cache, updateResult) {
       if (updateResult.data !== undefined && updateResult.data !== null) {
-        const newRuntime = updateResult.data.createRuntime
-          .runtime as GetRuntimes_runtimes;
+        const newRuntime = updateResult.data
+          .createRuntime as GetRuntimes_runtimes;
         const cacheResult = cache.readQuery<GetRuntimes>({
           query: GetRuntimesQuery
         });

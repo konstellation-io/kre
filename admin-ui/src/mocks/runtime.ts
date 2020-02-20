@@ -36,10 +36,7 @@ export const addRuntimeMock = {
   },
   result: {
     data: {
-      createRuntime: {
-        errors: [],
-        runtime: { name: 'some name' }
-      }
+      createRuntime: { name: 'some name' }
     }
   }
 };

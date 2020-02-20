@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 //==============================================================
@@ -9,13 +10,6 @@
 export enum ConfigurationVariableType {
   FILE = 'FILE',
   VARIABLE = 'VARIABLE'
-}
-
-export enum ErrorCode {
-  BAD_REQUEST = 'BAD_REQUEST',
-  INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
-  UNEXPECTED_ERROR = 'UNEXPECTED_ERROR',
-  VALIDATION_ERROR = 'VALIDATION_ERROR'
 }
 
 export enum NodeStatus {

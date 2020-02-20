@@ -85,14 +85,12 @@ export const addAllowedDomainMock = {
   result: {
     data: {
       updateSettings: {
-        settings: {
-          authAllowedDomains: [
-            'domain.1',
-            'domain.2',
-            'domain.3.sample',
-            'intelygenz.com'
-          ]
-        }
+        authAllowedDomains: [
+          'domain.1',
+          'domain.2',
+          'domain.3.sample',
+          'intelygenz.com'
+        ]
       }
     }
   }

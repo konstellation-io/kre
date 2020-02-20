@@ -13,15 +13,15 @@ type MutationResolver struct {
 }
 
 // CreateRuntime provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) CreateRuntime(ctx context.Context, input gql.CreateRuntimeInput) (*gql.CreateRuntimeResponse, error) {
+func (_m *MutationResolver) CreateRuntime(ctx context.Context, input gql.CreateRuntimeInput) (*entity.Runtime, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.CreateRuntimeResponse
-	if rf, ok := ret.Get(0).(func(context.Context, gql.CreateRuntimeInput) *gql.CreateRuntimeResponse); ok {
+	var r0 *entity.Runtime
+	if rf, ok := ret.Get(0).(func(context.Context, gql.CreateRuntimeInput) *entity.Runtime); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.CreateRuntimeResponse)
+			r0 = ret.Get(0).(*entity.Runtime)
 		}
 	}
 
@@ -36,15 +36,15 @@ func (_m *MutationResolver) CreateRuntime(ctx context.Context, input gql.CreateR
 }
 
 // CreateVersion provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) CreateVersion(ctx context.Context, input gql.CreateVersionInput) (*gql.CreateVersionResponse, error) {
+func (_m *MutationResolver) CreateVersion(ctx context.Context, input gql.CreateVersionInput) (*entity.Version, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.CreateVersionResponse
-	if rf, ok := ret.Get(0).(func(context.Context, gql.CreateVersionInput) *gql.CreateVersionResponse); ok {
+	var r0 *entity.Version
+	if rf, ok := ret.Get(0).(func(context.Context, gql.CreateVersionInput) *entity.Version); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.CreateVersionResponse)
+			r0 = ret.Get(0).(*entity.Version)
 		}
 	}
 
@@ -151,15 +151,15 @@ func (_m *MutationResolver) UnpublishVersion(ctx context.Context, input gql.Unpu
 }
 
 // UpdateSettings provides a mock function with given fields: ctx, input
-func (_m *MutationResolver) UpdateSettings(ctx context.Context, input gql.SettingsInput) (*gql.UpdateSettingsResponse, error) {
+func (_m *MutationResolver) UpdateSettings(ctx context.Context, input gql.SettingsInput) (*entity.Setting, error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *gql.UpdateSettingsResponse
-	if rf, ok := ret.Get(0).(func(context.Context, gql.SettingsInput) *gql.UpdateSettingsResponse); ok {
+	var r0 *entity.Setting
+	if rf, ok := ret.Get(0).(func(context.Context, gql.SettingsInput) *entity.Setting); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*gql.UpdateSettingsResponse)
+			r0 = ret.Get(0).(*entity.Setting)
 		}
 	}
 

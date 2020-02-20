@@ -72,7 +72,7 @@ function domainDuplicated(newDomain: string, domains: string[]) {
 }
 
 function SecuritySettings() {
-  const [allowedDomains, setAllowedDomains] = useState([]);
+  const [allowedDomains, setAllowedDomains] = useState<string[]>([]);
 
   const { data: queryData, loading, error: queryError } = useQuery<GetDomains>(
     GetDomainsQuery
@@ -97,8 +97,8 @@ function SecuritySettings() {
     }
   }, [queryData]);
   // Set domains data after making a mutation
-  function onCompleteUpdateDomain(updatedData: any) {
-    setAllowedDomains(updatedData.updateSettings.settings.authAllowedDomains);
+  function onCompleteUpdateDomain(updatedData: UpdateDomains) {
+    setAllowedDomains(updatedData.updateSettings.authAllowedDomains);
   }
 
   function updateDomains(newDomains: any) {

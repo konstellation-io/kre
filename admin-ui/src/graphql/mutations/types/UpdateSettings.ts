@@ -1,32 +1,21 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
-import { SettingsInput, ErrorCode } from './../../types/globalTypes';
+import { SettingsInput } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: UpdateSettings
 // ====================================================
 
-export interface UpdateSettings_updateSettings_errors {
-  __typename: 'Error';
-  code: ErrorCode;
-  message: string;
-}
-
-export interface UpdateSettings_updateSettings_settings {
+export interface UpdateSettings_updateSettings {
   __typename: 'Settings';
   sessionLifetimeInDays: number;
 }
 
-export interface UpdateSettings_updateSettings {
-  __typename: 'UpdateSettingsResponse';
-  errors: UpdateSettings_updateSettings_errors[] | null;
-  settings: UpdateSettings_updateSettings_settings | null;
-}
-
 export interface UpdateSettings {
-  updateSettings: UpdateSettings_updateSettings | null;
+  updateSettings: UpdateSettings_updateSettings;
 }
 
 export interface UpdateSettingsVariables {
