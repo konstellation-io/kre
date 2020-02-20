@@ -1,9 +1,14 @@
 import { get } from 'lodash';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { loader } from 'graphql.macro';
-import { useSubscription } from '@apollo/react-hooks';
+import {
+  useSubscription,
+  useQuery,
+  useApolloClient
+} from '@apollo/react-hooks';
+import { GET_LOGS } from '../../../../../../../graphql/client/getLogs.graphql';
 
 import LogItem from './LogItem';
 import { Node } from '../../../RuntimeStatusPreview';
@@ -15,6 +20,7 @@ import {
 } from '../../../../../../../graphql/subscriptions/types/GetLogs';
 
 import styles from './LogsList.module.scss';
+import { LocalState } from '../../../../../../../index';
 import { RuntimeRouteParams } from '../../../../../../../constants/routes';
 
 const GetLogsSubscription = loader(
@@ -26,8 +32,10 @@ type Props = {
   onUpdate: () => void;
 };
 function LogsList({ node, onUpdate }: Props) {
+  const client = useApolloClient();
+  const { data } = useQuery<LocalState>(GET_LOGS);
   const { runtimeId } = useParams<RuntimeRouteParams>();
-  const [logs, setLogs] = useState<GetLogs_nodeLogs[]>([]);
+  const logs = data ? data.logs : [];
 
   useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
     variables: {
@@ -40,15 +48,26 @@ function LogsList({ node, onUpdate }: Props) {
     }
   });
 
+  // Clear logs before closing the logs panel
+  useEffect(() => {
+    return () => {
+      client.writeData({ data: { logs: [] } });
+    };
+  }, [client]);
+
   useEffect(() => {
     onUpdate();
   }, [logs, onUpdate]);
 
   function addLog(item: GetLogs_nodeLogs) {
-    setLogs((logsCp: GetLogs_nodeLogs[]) => logsCp.concat([item]));
+    client.writeData({
+      data: {
+        logs: logs.concat([item])
+      }
+    });
   }
 
-  // FIXME: change key value
+  // FIXME: change key values (maybe by getting an ID from the API?)
   const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
     <LogItem {...log} key={`logItem_${idx}`} />
   ));

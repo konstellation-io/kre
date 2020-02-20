@@ -2,7 +2,10 @@ import React from 'react';
 
 import IconClose from '@material-ui/icons/Close';
 import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
+import IconClear from '@material-ui/icons/DeleteOutline';
 import IconLogs from '@material-ui/icons/ListAlt';
+
+import { useApolloClient } from '@apollo/react-hooks';
 
 import cx from 'classnames';
 import styles from './Header.module.scss';
@@ -19,6 +22,12 @@ function Header({
   stickToBottom,
   toggleStickToBottom
 }: Props) {
+  const client = useApolloClient();
+
+  function clearLogs(): void {
+    client.writeData({ data: { logs: [] } });
+  }
+
   return (
     <div
       className={cx(styles.container, {
@@ -30,6 +39,9 @@ function Header({
         <span>Logs console</span>
       </div>
       <div className={styles.buttons}>
+        <div onClick={clearLogs}>
+          <IconClear className="icon-regular" />
+        </div>
         <div
           className={cx(styles.stickBottom, { [styles.active]: stickToBottom })}
           onClick={toggleStickToBottom}

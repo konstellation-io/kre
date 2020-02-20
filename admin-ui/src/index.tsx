@@ -18,8 +18,17 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { onError } from 'apollo-link-error';
 import { createUploadLink } from 'apollo-upload-client';
 import { getMainDefinition } from 'apollo-utilities';
+import { GetLogs_nodeLogs } from './graphql/subscriptions/types/GetLogs';
 
 export let cache: any = null;
+
+export interface LocalState {
+  loggedIn: boolean;
+  logs: GetLogs_nodeLogs[];
+}
+interface DefaultCache {
+  data: LocalState;
+}
 
 config
   .then(envVariables => {
@@ -61,7 +70,12 @@ config
 
     const link = ApolloLink.from([errorLink, transportLink]);
 
-    const defaultCache = { data: { loggedIn: false } };
+    const defaultCache: DefaultCache = {
+      data: {
+        loggedIn: false,
+        logs: []
+      }
+    };
 
     const client = new ApolloClient({
       cache,
