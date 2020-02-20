@@ -141,46 +141,22 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 	var changes []entity.UserActivity
 	if input.SessionLifetimeInDays != nil && settings.SessionLifetimeInDays != *input.SessionLifetimeInDays {
 		changes = append(changes, entity.UserActivity{
-			User: entity.User{
-				ID: userID,
-			},
-			Vars: []*entity.UserActivityVar{
-				{
-					Key:   "SETTING_NAME",
-					Value: "SessionLifetimeInDays",
-				},
-				{
-					Key:   "OLD_VALUE",
-					Value: strconv.Itoa(settings.SessionLifetimeInDays),
-				},
-				{
-					Key:   "NEW_VALUE",
-					Value: strconv.Itoa(*input.SessionLifetimeInDays),
-				},
-			},
+			UserID: userID,
+			Vars: r.userActivityInteractor.NewUpdateSettingVars(
+				"SessionLifetimeInDays",
+				strconv.Itoa(settings.SessionLifetimeInDays),
+				strconv.Itoa(*input.SessionLifetimeInDays)),
 		})
 		settings.SessionLifetimeInDays = *input.SessionLifetimeInDays
 	}
 
 	if input.AuthAllowedDomains != nil {
 		changes = append(changes, entity.UserActivity{
-			User: entity.User{
-				ID: userID,
-			},
-			Vars: []*entity.UserActivityVar{
-				{
-					Key:   "SETTING_NAME",
-					Value: "AuthAllowedDomains",
-				},
-				{
-					Key:   "OLD_VALUE",
-					Value: strings.Join(settings.AuthAllowedDomains, ","),
-				},
-				{
-					Key:   "NEW_VALUE",
-					Value: strings.Join(input.AuthAllowedDomains, ","),
-				},
-			},
+			UserID: userID,
+			Vars: r.userActivityInteractor.NewUpdateSettingVars(
+				"AuthAllowedDomains",
+				strings.Join(settings.AuthAllowedDomains, ","),
+				strings.Join(input.AuthAllowedDomains, ",")),
 		})
 		settings.AuthAllowedDomains = input.AuthAllowedDomains
 	}
@@ -398,6 +374,11 @@ func (r *userActivityResolver) Type(ctx context.Context, obj *entity.UserActivit
 
 func (r *userActivityResolver) Date(ctx context.Context, obj *entity.UserActivity) (string, error) {
 	return obj.Date.Format(time.RFC3339), nil
+}
+
+func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error) {
+	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
+	return userLoader.Load(obj.UserID)
 }
 
 type versionResolver struct{ *GraphQLResolver }
