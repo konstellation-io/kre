@@ -25,6 +25,7 @@ import {
 import { VersionStatus } from '../../../../graphql/types/globalTypes';
 
 import styles from './RuntimeConfiguration.module.scss';
+import { VersionRouteParams } from '../../../../constants/routes';
 
 const GetConfVariablesQuery = loader(
   '../../../../graphql/queries/getConfigurationVariables.graphql'
@@ -64,12 +65,12 @@ function RuntimeConfiguration({ refetchVersion }: Props) {
   const [configurationVariables, setConfigurationVariables] = useState<
     ConfigurationVariable[]
   >([]);
-  const { versionId } = useParams();
+  const { versionId } = useParams<VersionRouteParams>();
   const { data, loading, error } = useQuery<
     GetConfigurationVariables,
     GetConfigurationVariablesVariables
   >(GetConfVariablesQuery, {
-    variables: { versionId: versionId || '' }
+    variables: { versionId }
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<
     UpdateVersionConfiguration,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch, useParams, useLocation } from 'react-router-dom';
-import ROUTE from '../../constants/routes';
+import ROUTE, { VersionRouteParams } from '../../constants/routes';
 import { buildRoute } from '../../utils/routes';
 
 import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
@@ -29,14 +29,14 @@ const GetRuntimeAndVersionQuery = loader(
 );
 
 function Runtime() {
-  const { runtimeId, versionId } = useParams();
+  const { runtimeId, versionId } = useParams<VersionRouteParams>();
   const location = useLocation();
   const { data, loading, error, refetch } = useQuery<
     GetVersionConfStatus,
     GetVersionConfStatusVariables
   >(GetRuntimeAndVersionQuery, {
     fetchPolicy: 'cache-and-network',
-    variables: { runtimeId: runtimeId || '' }
+    variables: { runtimeId }
   });
 
   const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);

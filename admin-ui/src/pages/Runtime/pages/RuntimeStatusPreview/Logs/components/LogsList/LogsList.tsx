@@ -15,6 +15,7 @@ import {
 } from '../../../../../../../graphql/subscriptions/types/GetLogs';
 
 import styles from './LogsList.module.scss';
+import { RuntimeRouteParams } from '../../../../../../../constants/routes';
 
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
@@ -25,12 +26,12 @@ type Props = {
   onUpdate: () => void;
 };
 function LogsList({ node, onUpdate }: Props) {
-  const { runtimeId } = useParams();
+  const { runtimeId } = useParams<RuntimeRouteParams>();
   const [logs, setLogs] = useState<GetLogs_nodeLogs[]>([]);
 
   useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
     variables: {
-      runtimeId: runtimeId || '',
+      runtimeId,
       nodeId: node.id
     },
     onSubscriptionData: (msg: any) => {
@@ -47,7 +48,7 @@ function LogsList({ node, onUpdate }: Props) {
     setLogs((logsCp: GetLogs_nodeLogs[]) => logsCp.concat([item]));
   }
 
-  // TODO: change this
+  // FIXME: change key value
   const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
     <LogItem {...log} key={`logItem_${idx}`} />
   ));

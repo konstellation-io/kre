@@ -23,6 +23,7 @@ import VersionStatusViewer, {
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 
 import styles from './StatusViewer.module.scss';
+import { VersionRouteParams } from '../../../../constants/routes';
 
 const VersionNodeStatusSubscription = loader(
   '../../../../graphql/subscriptions/versionNodeStatus.graphql'
@@ -88,7 +89,7 @@ function updateNodeStatus(workflows: Workflow[], newNode: Node): Workflow[] {
 }
 
 function StatusViewer({ data, status, onNodeClick }: any) {
-  const { versionId } = useParams();
+  const { versionId } = useParams<VersionRouteParams>();
 
   const [workflows, setWorkflows] = useState<Workflow[]>(
     formatData(data, status)
@@ -96,7 +97,7 @@ function StatusViewer({ data, status, onNodeClick }: any) {
   useSubscription<VersionNodeStatus, VersionNodeStatusVariables>(
     VersionNodeStatusSubscription,
     {
-      variables: { versionId: versionId || '' },
+      variables: { versionId },
       onSubscriptionData: (msg: any) => {
         const nodeInfo = get(msg, 'subscriptionData.data.versionNodeStatus');
         const newNode: Node = {

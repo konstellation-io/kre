@@ -5,6 +5,7 @@ import ROUTE from '../../constants/routes';
 
 import cx from 'classnames';
 import styles from './Alert.module.scss';
+import { buildRoute } from '../../utils/routes';
 
 export type Props = {
   type: string;
@@ -23,7 +24,7 @@ function Alert({ type, message, runtimeId }: Props) {
       <Button
         label="GO TO RUNTIME"
         onClick={() =>
-          history.push(ROUTE.RUNTIME.replace(':runtimeId', runtimeId))
+          history.push(buildRoute.runtime(ROUTE.RUNTIME, runtimeId))
         }
       />
     </div>
