@@ -53,3 +53,26 @@ func (_m *UserActivityResolver) Type(ctx context.Context, obj *entity.UserActivi
 
 	return r0, r1
 }
+
+// User provides a mock function with given fields: ctx, obj
+func (_m *UserActivityResolver) User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error) {
+	ret := _m.Called(ctx, obj)
+
+	var r0 *entity.User
+	if rf, ok := ret.Get(0).(func(context.Context, *entity.UserActivity) *entity.User); ok {
+		r0 = rf(ctx, obj)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *entity.UserActivity) error); ok {
+		r1 = rf(ctx, obj)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

@@ -29,14 +29,14 @@ func NewVersionLoader(versionInteractor *usecase.VersionInteractor) echo.Middlew
 					// The result array must preserve the order of the keys arrays
 					result := make([]*entity.Version, len(keys))
 					for idx, key := range keys {
-						var version *entity.Version
+						var ver *entity.Version
 						for _, v := range versions {
 							if v.ID == key {
-								version = v
+								ver = v
 								break
 							}
 						}
-						result[idx] = version
+						result[idx] = ver
 					}
 
 					return result, nil

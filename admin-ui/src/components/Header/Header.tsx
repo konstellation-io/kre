@@ -1,9 +1,11 @@
+import { get } from 'lodash';
+
 import React, { FunctionComponent } from 'react';
 
 import Settings from '../../components/Settings/Settings';
 
 import { loader } from 'graphql.macro';
-import { useQuery, useApolloClient } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 import { GetUserEmail } from '../../graphql/queries/types/GetUserEmail';
 
@@ -15,17 +17,12 @@ type Props = {
   children?: any;
 };
 const Header: FunctionComponent<Props> = ({ children }) => {
-  const client = useApolloClient();
   const { data, error, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
 
   if (loading)
     return <div className={styles.splash} data-testid={'splashscreen'} />;
 
-  const username = data && data.me && !error ? data.me.email : 'unknown';
-
-  if (username !== 'unknown') {
-    client.writeData({ data: { loggedIn: true } });
-  }
+  const username: string = get(data, 'me.email');
 
   return (
     <header className={styles.container}>

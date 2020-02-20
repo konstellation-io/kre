@@ -8,6 +8,7 @@ fi
 . ./config.sh
 . ./scripts/functions.sh
 
+export DEVELOPMENT_MODE=true
 export ADMIN_API_IMAGE_TAG="latest"
 export ADMIN_UI_IMAGE_TAG="latest"
 export K8S_MANAGER_IMAGE_TAG="latest"
@@ -73,7 +74,9 @@ export OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
 if [ "$SKIP_BUILD" != "1" ] && [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
   build_header "kre-operator"
   helm dep update operator/helm-charts/kre-chart
-  cd operator && operator-sdk build konstellation/kre-operator:latest && cd ..
+  cd operator \
+  && operator-sdk build konstellation/kre-operator:latest --image-build-args "--build-arg DEVELOPMENT_MODE=$DEVELOPMENT_MODE" \
+  && cd ..
 fi
 
 echo "📚️ Create Namespace if not exist...\n"
@@ -85,6 +88,7 @@ helm upgrade \
   --wait \
   --install "${DEPLOY_NAME}" \
   --namespace "${NAMESPACE}" \
+  --set developmentMode=${DEVELOPMENT_MODE} \
   helm/kre
 
 ./scripts/show_minikube_etc_hosts.sh "${MINIKUBE_PROFILE}"

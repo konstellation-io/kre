@@ -8,6 +8,9 @@ import { MockedProvider } from '@apollo/react-testing';
 import { dashboardMock } from './mocks/runtime';
 import { usernameMock } from './mocks/auth';
 
+import wait from 'waait';
+import { act } from 'react-dom/test-utils';
+
 const mocks = [dashboardMock, usernameMock];
 
 afterEach(cleanup);
@@ -23,7 +26,7 @@ it('renders without crashing', () => {
   expect(container).toMatchSnapshot();
 });
 
-it('it shows dashboard page on home URL when logged', () => {
+it('it shows dashboard page on home URL when logged', async () => {
   const {
     element: { getByTestId }
   } = renderWithRouter(
@@ -32,6 +35,10 @@ it('it shows dashboard page on home URL when logged', () => {
     </MockedProvider>,
     ROUTE.HOME
   );
+
+  await act(async () => {
+    await wait(0);
+  });
 
   expect(getByTestId('dashboardContainer')).toBeInTheDocument();
 });

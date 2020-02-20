@@ -1,4 +1,6 @@
 # Default values for konstellation Runtime Environment.
+developmentMode: false
+
 config:
   baseDomainName: "local"
   admin:

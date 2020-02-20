@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { loader } from 'graphql.macro';
 import {
@@ -20,7 +20,8 @@ import {
 } from '../../../../../../../graphql/subscriptions/types/GetLogs';
 
 import styles from './LogsList.module.scss';
-import { LocalState } from '../../../../../../..';
+import { LocalState } from '../../../../../../../index';
+import { RuntimeRouteParams } from '../../../../../../../constants/routes';
 
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
@@ -32,12 +33,13 @@ type Props = {
 };
 function LogsList({ node, onUpdate }: Props) {
   const client = useApolloClient();
-  const { runtimeId } = useParams();
   const { data } = useQuery<LocalState>(GET_LOGS);
+  const { runtimeId } = useParams<RuntimeRouteParams>();
+  const logs = data ? data.logs : [];
 
   useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
     variables: {
-      runtimeId: runtimeId || '',
+      runtimeId,
       nodeId: node.id
     },
     onSubscriptionData: (msg: any) => {
@@ -51,26 +53,24 @@ function LogsList({ node, onUpdate }: Props) {
     return () => {
       client.writeData({ data: { logs: [] } });
     };
-  }, []);
+  }, [client]);
 
   useEffect(() => {
     onUpdate();
-  }, [data && data.logs, onUpdate]);
+  }, [logs, onUpdate]);
 
   function addLog(item: GetLogs_nodeLogs) {
     client.writeData({
       data: {
-        logs: data && data.logs.concat([item])
+        logs: logs.concat([item])
       }
     });
   }
 
   // FIXME: change key values (maybe by getting an ID from the API?)
-  const logElements =
-    data &&
-    data.logs.map((log: GetLogs_nodeLogs, idx: number) => (
-      <LogItem {...log} key={`logItem_${idx}`} />
-    ));
+  const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
+    <LogItem {...log} key={`logItem_${idx}`} />
+  ));
 
   return (
     <div className={styles.listContainer} id="VersionLogsListContainer">

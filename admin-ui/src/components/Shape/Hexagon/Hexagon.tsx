@@ -106,9 +106,7 @@ function Hexagon({
           forceSegments
         />
         <div className={cx(styles.bgOverlap, styles[status])} />
-        <div
-          className={cx(styles.bgVersionOverlap, styles[versionStatus || ''])}
-        />
+        <div className={cx(styles.bgVersionOverlap, styles[versionStatus])} />
         <div className={styles.bgOverlapText}>{status}</div>
         <div className={styles.bgOverlapVersionText}>
           VERSION: {versionStatus}

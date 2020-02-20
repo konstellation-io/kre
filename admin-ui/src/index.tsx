@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import config from './config';
 
 import React from 'react';
@@ -36,11 +37,9 @@ config
     cache = new InMemoryCache();
     const errorLink = onError(({ networkError }: any) => {
       if (
-        networkError &&
-        networkError.statusCode === 400 &&
-        networkError &&
-        networkError.result &&
-        networkError.result.message === 'missing or malformed jwt'
+        get(networkError, 'statusCode') === 400 &&
+        get(networkError, 'result.message') === 'missing or malformed jwt' &&
+        history.location.pathname !== ROUTE.LOGIN
       ) {
         history.push(ROUTE.LOGIN);
         client.resetStore();

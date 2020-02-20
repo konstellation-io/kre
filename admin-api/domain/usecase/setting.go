@@ -59,7 +59,7 @@ func (i *SettingInteractor) CreateDefaults() error {
 // Update change a given Setting to a new value
 func (i *SettingInteractor) Update(settings *entity.Setting, changes []entity.UserActivity) error {
 	for _, c := range changes {
-		err := i.userActivity.Create(c.User.ID, UserActivityTypeUpdateSetting, c.Vars)
+		err := i.userActivity.RegisterUpdateSettings(c.UserID, c.Vars)
 		if err != nil {
 			return err
 		}

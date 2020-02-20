@@ -6,6 +6,7 @@ metadata:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "kre.fullname" . }}-admin-api
 data:
+  KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
   # Admin
   KRE_ADMIN_API_ADDRESS: "{{ .Values.config.admin.apiAddress }}"
   KRE_ADMIN_FRONTEND_BASE_URL: "{{ .Values.config.admin.frontendBaseURL }}"

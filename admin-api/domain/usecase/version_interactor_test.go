@@ -9,9 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/minio"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
+	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/mocks"
 )
 
@@ -30,7 +31,7 @@ type VersionSuiteMocks struct {
 	monitoringService *mocks.MonitoringService
 	userActivityRepo  *mocks.UserActivityRepo
 	userRepo          *mocks.UserRepo
-	minioRepo         *mocks.MinioRepo
+	createStorage     repository.CreateStorage
 }
 
 func TestVersionSuite(t *testing.T) {
@@ -38,6 +39,13 @@ func TestVersionSuite(t *testing.T) {
 }
 
 func (s *VersionSuite) SetupTest() {
+	CreateStorageMock := func(logger logging.Logger, runtime *entity.Runtime) (repository.Storage, error) {
+		m := new(mocks.Storage)
+		m.On("CreateBucket", mock.Anything).Return(nil)
+		m.On("CopyDir", mock.Anything, mock.Anything).Return(nil)
+		return m, nil
+	}
+
 	s.mocks = VersionSuiteMocks{
 		logger:            new(mocks.Logger),
 		versionRepo:       new(mocks.VersionRepo),
@@ -46,13 +54,14 @@ func (s *VersionSuite) SetupTest() {
 		versionService:    new(mocks.VersionService),
 		userActivityRepo:  new(mocks.UserActivityRepo),
 		userRepo:          new(mocks.UserRepo),
-		minioRepo:         new(mocks.MinioRepo),
+		createStorage:     CreateStorageMock,
 	}
 
 	s.mocks.logger.On("Info", mock.Anything).Return()
 	s.mocks.logger.On("Warn", mock.Anything).Return()
 
 	s.userActivityInteractor = usecase.NewUserActivityInteractor(
+
 		s.mocks.logger,
 		s.mocks.userActivityRepo,
 		s.mocks.userRepo,
@@ -65,7 +74,7 @@ func (s *VersionSuite) SetupTest() {
 		s.mocks.versionService,
 		s.mocks.monitoringService,
 		s.userActivityInteractor,
-		s.mocks.minioRepo,
+		s.mocks.createStorage,
 	)
 }
 
@@ -115,13 +124,6 @@ func (s *VersionSuite) TestCreateNewVersion() {
 	s.mocks.runtimeRepo.On("GetByID", runtimeID).Return(runtime, nil)
 	s.mocks.versionRepo.On("GetByRuntime", runtimeID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.On("Create", userID, mock.Anything).Return(version, nil)
-
-	minioClient := &minio.MinioClient{}
-	mockBucket := mocks.Bucket{}
-	mockBucket.On("CopyDir", mock.Anything, minioClient).Return(nil)
-
-	s.mocks.minioRepo.On("NewClient", s.mocks.logger, runtime).Return(minioClient, nil)
-	s.mocks.minioRepo.On("CreateBucket", mock.Anything, minioClient).Return(&mockBucket, nil)
 
 	s.mocks.userActivityRepo.On("Create", mock.Anything).Return(nil)
 

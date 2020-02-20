@@ -23,4 +23,11 @@ const ROUTE = {
   NEW_VERSION: `${RUNTIME}/new_version`
 };
 
+export interface RuntimeRouteParams {
+  runtimeId: string;
+}
+export interface VersionRouteParams extends RuntimeRouteParams {
+  versionId: string;
+}
+
 export default ROUTE;

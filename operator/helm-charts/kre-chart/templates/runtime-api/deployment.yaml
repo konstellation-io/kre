@@ -19,7 +19,7 @@ spec:
         - name: runtime-api
           # TODO: This version should be fixed and the operator released in-sync with new runtime-api changes
           image: konstellation/kre-runtime-api:latest
-          imagePullPolicy: Always
+          imagePullPolicy: {{ if .Values.developmentMode }}IfNotPresent{{ else }}Always{{ end }}
           ports:
             - containerPort: 50051
               protocol: TCP

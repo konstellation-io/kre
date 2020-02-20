@@ -39,6 +39,10 @@ it('Renders AddRuntime without crashing', () => {
 test('Show right texts', async () => {
   const { getByText } = generateComponent()[0] as RenderResult;
 
+  await act(async () => {
+    await wait(0);
+  });
+
   expect(getByText('Add Runtime')).toBeInTheDocument();
   expect(getByText('SAVE')).toBeInTheDocument();
 });

@@ -25,6 +25,7 @@ import {
 } from '../../graphql/queries/types/GetRuntimes';
 import { RuntimeStatus } from '../../graphql/types/globalTypes';
 import { ApolloError } from 'apollo-client';
+import { buildRoute } from '../../utils/routes';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 
@@ -59,7 +60,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     <Hexagon
       key={`runtimeHexagon-${idx}`}
       onClick={() => {
-        const runtimePath = ROUTE.RUNTIME.replace(':runtimeId', runtime.id);
+        const runtimePath = buildRoute.runtime(ROUTE.RUNTIME, runtime.id);
         history.push(runtimePath);
       }}
       id={runtime.id}

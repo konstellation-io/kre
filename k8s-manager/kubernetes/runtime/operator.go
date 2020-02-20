@@ -67,6 +67,11 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 }
 
 func (m *Manager) createOperator(runtimeName string) error {
+	pullPolicyOption := apiv1.PullAlways
+	if m.config.DevelopmentMode {
+		pullPolicyOption = apiv1.PullIfNotPresent
+	}
+
 	operatorImage := "konstellation/kre-operator:" + m.config.Kubernetes.Operator.Version
 
 	numReplicas := new(int32)
@@ -95,7 +100,7 @@ func (m *Manager) createOperator(runtimeName string) error {
 						{
 							Name:            "kre-operator",
 							Image:           operatorImage,
-							ImagePullPolicy: apiv1.PullIfNotPresent,
+							ImagePullPolicy: pullPolicyOption,
 							Env: []apiv1.EnvVar{
 								{
 									Name: "WATCH_NAMESPACE",
