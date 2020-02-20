@@ -1,4 +1,4 @@
-import { cloneDeep, get, isEqual, omit } from 'lodash';
+import { cloneDeep, get, isEqual, pick } from 'lodash';
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
@@ -22,6 +22,10 @@ import {
   UpdateVersionConfiguration,
   UpdateVersionConfigurationVariables
 } from '../../../../graphql/mutations/types/UpdateVersionConfiguration';
+import {
+  UpdateConfigurationInput,
+  ConfigurationVariablesInput
+} from '../../../../graphql/types/globalTypes';
 import { VersionStatus } from '../../../../graphql/types/globalTypes';
 
 import styles from './RuntimeConfiguration.module.scss';
@@ -38,17 +42,12 @@ const statusWithConfirmationModal = [
   VersionStatus.STARTED
 ];
 
-/**
- * cache policy adds a non-desired _typename field to ConfigurationVariable elements.
- * This function cleans this field as it is not accepter by the input.
- * Also removes type field
- */
-function cleanVars(
+function formatConfVars(
   variables: ConfigurationVariable[]
-): ConfigurationVariable[] {
+): ConfigurationVariablesInput[] {
   return variables.map(
     (variable: ConfigurationVariable) =>
-      omit(variable, ['__typename', 'type']) as ConfigurationVariable
+      pick(variable, ['key', 'value']) as ConfigurationVariable
   );
 }
 
@@ -158,9 +157,9 @@ function RuntimeConfiguration({ refetchVersion }: Props) {
         variables: {
           input: {
             versionId: versionId,
-            configurationVariables: cleanVars(configurationVariables)
-          }
-        }
+            configurationVariables: formatConfVars(configurationVariables)
+          } as UpdateConfigurationInput
+        } as UpdateVersionConfigurationVariables
       });
     } else {
       console.error('Cannot update version, there is no versionId');
