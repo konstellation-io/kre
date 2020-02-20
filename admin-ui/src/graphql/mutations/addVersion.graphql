@@ -1,19 +1,13 @@
 mutation CreateVersion($input: CreateVersionInput!) {
   createVersion(input: $input) {
-    errors {
-      code
-      message
-    }
-    version {
+    id
+    name
+    description
+    status
+    creationDate
+    creationAuthor {
       id
-      name
-      description
-      status
-      creationDate
-      creationAuthor {
-        id
-        email
-      }
+      email
     }
   }
 }

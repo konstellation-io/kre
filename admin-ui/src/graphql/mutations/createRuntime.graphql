@@ -1,21 +1,15 @@
 mutation CreateRuntime($input: CreateRuntimeInput!) {
   createRuntime(input: $input) {
-    errors {
-      code
-      message
-    }
-    runtime {
+    id
+    name
+    status
+    creationDate
+    creationAuthor {
       id
-      name
+      email
+    }
+    publishedVersion {
       status
-      creationDate
-      creationAuthor {
-        id
-        email
-      }
-      publishedVersion {
-        status
-      }
     }
   }
 }

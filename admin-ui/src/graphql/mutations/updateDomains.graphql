@@ -1,11 +1,5 @@
 mutation UpdateDomains($input: SettingsInput!) {
   updateSettings(input: $input) {
-    errors {
-      code
-      message
-    }
-    settings {
-      authAllowedDomains
-    }
+    authAllowedDomains
   }
 }

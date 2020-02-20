@@ -33,24 +33,9 @@ type CreateRuntimeInput struct {
 	Name string `json:"name"`
 }
 
-type CreateRuntimeResponse struct {
-	Errors  []*Error        `json:"errors"`
-	Runtime *entity.Runtime `json:"runtime"`
-}
-
 type CreateVersionInput struct {
 	File      graphql.Upload `json:"file"`
 	RuntimeID string         `json:"runtimeId"`
-}
-
-type CreateVersionResponse struct {
-	Errors  []*Error        `json:"errors"`
-	Version *entity.Version `json:"version"`
-}
-
-type Error struct {
-	Code    ErrorCode `json:"code"`
-	Message string    `json:"message"`
 }
 
 type PublishVersionInput struct {
@@ -78,11 +63,6 @@ type UnpublishVersionInput struct {
 type UpdateConfigurationInput struct {
 	VersionID              string                         `json:"versionId"`
 	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
-}
-
-type UpdateSettingsResponse struct {
-	Errors   []*Error        `json:"errors"`
-	Settings *entity.Setting `json:"settings"`
 }
 
 type AlertLevel string
@@ -164,51 +144,6 @@ func (e *ConfigurationVariableType) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ConfigurationVariableType) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-type ErrorCode string
-
-const (
-	ErrorCodeUnexpectedError     ErrorCode = "UNEXPECTED_ERROR"
-	ErrorCodeValidationError     ErrorCode = "VALIDATION_ERROR"
-	ErrorCodeBadRequest          ErrorCode = "BAD_REQUEST"
-	ErrorCodeInternalServerError ErrorCode = "INTERNAL_SERVER_ERROR"
-)
-
-var AllErrorCode = []ErrorCode{
-	ErrorCodeUnexpectedError,
-	ErrorCodeValidationError,
-	ErrorCodeBadRequest,
-	ErrorCodeInternalServerError,
-}
-
-func (e ErrorCode) IsValid() bool {
-	switch e {
-	case ErrorCodeUnexpectedError, ErrorCodeValidationError, ErrorCodeBadRequest, ErrorCodeInternalServerError:
-		return true
-	}
-	return false
-}
-
-func (e ErrorCode) String() string {
-	return string(e)
-}
-
-func (e *ErrorCode) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = ErrorCode(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid ErrorCode", str)
-	}
-	return nil
-}
-
-func (e ErrorCode) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

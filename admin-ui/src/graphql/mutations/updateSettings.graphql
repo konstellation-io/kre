@@ -1,11 +1,5 @@
 mutation UpdateSettings($input: SettingsInput!) {
   updateSettings(input: $input) {
-    errors {
-      code
-      message
-    }
-    settings {
-      sessionLifetimeInDays
-    }
+    sessionLifetimeInDays
   }
 }

@@ -53,9 +53,9 @@ function AddVersion() {
     }
   }, [error]);
 
-  function onCompleted(updatedData: any) {
+  function onCompleted(updatedData: CreateVersion) {
     // TODO: CHECK FOR API ERRORS
-    const versionCreatedId = updatedData.createVersion.version.id;
+    const versionCreatedId = updatedData.createVersion.id;
     console.log(`${versionCreatedId} version created`);
 
     history.push(

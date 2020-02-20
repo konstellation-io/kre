@@ -27,16 +27,10 @@ yarn start
 
 ## Generate GraphQL types
 
-Install `apollo` globally:
+Run the following command:
 
 ```
-npm i -g apollo
-```
-
-Go to admin-ui/src/graphql and run the following command:
-
-```
-apollo client:codegen types --target typescript --includes=./*.graphql --localSchemaFile=../../../admin-api/schema.graphql
+yarn gen:types
 ```
 
 ## Available Scripts

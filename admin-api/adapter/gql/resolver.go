@@ -75,7 +75,7 @@ func (r *GraphQLResolver) VersionNodeStatus() VersionNodeStatusResolver {
 
 type mutationResolver struct{ *GraphQLResolver }
 
-func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*CreateRuntimeResponse, error) {
+func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
 	userID := ctx.Value("userID").(string)
 	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
 
@@ -92,23 +92,17 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 		return nil, err
 	}
 
-	return &CreateRuntimeResponse{
-		Errors:  nil,
-		Runtime: runtime,
-	}, nil
+	return runtime, nil
 }
 
-func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*CreateVersionResponse, error) {
+func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
 	version, err := r.versionInteractor.Create(userID, input.RuntimeID, input.File.File)
 	if err != nil {
 		return nil, err
 	}
 
-	return &CreateVersionResponse{
-		Errors:  nil,
-		Version: version,
-	}, nil
+	return version, nil
 }
 
 func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*entity.Version, error) {
@@ -131,7 +125,7 @@ func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVers
 	return r.versionInteractor.Publish(userID, input.VersionID, input.Comment)
 }
 
-func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*UpdateSettingsResponse, error) {
+func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*entity.Setting, error) {
 	userID := ctx.Value("userID").(string)
 	settings, err := r.settingInteractor.Get()
 	if err != nil {
@@ -168,10 +162,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 		}
 	}
 
-	return &UpdateSettingsResponse{
-		Errors:   nil,
-		Settings: settings,
-	}, nil
+	return settings, nil
 }
 
 func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error) {
