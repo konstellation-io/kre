@@ -25,7 +25,7 @@ function Header({
   const client = useApolloClient();
 
   function clearLogs(): void {
-    client.writeData({ data: { clearLogs: true } });
+    client.writeData({ data: { logs: [] } });
   }
 
   return (
