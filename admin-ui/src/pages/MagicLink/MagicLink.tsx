@@ -34,6 +34,10 @@ function checkToken(token: string) {
   return CHECK.getValidationError([CHECK.isFieldNotEmpty(token)]);
 }
 
+interface RouteParams {
+  token: string;
+}
+
 /**
  * Design requirements:
  *  - Loading animation must be shown for a short period of time
@@ -52,11 +56,10 @@ function MagicLink() {
     method: 'POST'
   });
   const timeout = useRef();
-  const { token } = useParams();
+  const { token } = useParams<RouteParams>();
 
   // Checks for token errors and send login request
   useEffect(function() {
-    // @ts-ignore
     const err = checkToken(token);
 
     if (!err) {

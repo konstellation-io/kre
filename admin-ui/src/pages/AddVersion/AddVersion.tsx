@@ -16,6 +16,7 @@ import {
   CreateVersion,
   CreateVersionVariables
 } from '../../graphql/mutations/types/CreateVersion';
+import { buildRoute } from '../../utils/routes';
 
 const AddVersionMutation = loader('../../graphql/mutations/addVersion.graphql');
 
@@ -58,10 +59,11 @@ function AddVersion() {
     console.log(`${versionCreatedId} version created`);
 
     history.push(
-      ROUTE.RUNTIME_VERSION_STATUS.replace(
-        ':runtimeId',
-        runtimeId || ''
-      ).replace(':versionId', versionCreatedId || '')
+      buildRoute.version(
+        ROUTE.RUNTIME_VERSION_STATUS,
+        runtimeId,
+        versionCreatedId
+      )
     );
   }
 

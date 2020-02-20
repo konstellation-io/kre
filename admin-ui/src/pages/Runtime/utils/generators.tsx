@@ -52,12 +52,16 @@ export function getVersionActionButtons(
   unpublishAction: Function,
   status?: string
 ) {
-  const stateToButtons: { [key: string]: any } = getStateToButtons(
+  const stateToButtons: { [key: string]: any[] } = getStateToButtons(
     publishAction,
     startAction,
     stopAction,
     unpublishAction
   );
 
-  return stateToButtons[status || ''];
+  if (status === undefined) {
+    return [];
+  }
+
+  return stateToButtons[status];
 }

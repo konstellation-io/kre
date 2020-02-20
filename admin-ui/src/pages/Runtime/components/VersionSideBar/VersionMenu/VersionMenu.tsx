@@ -9,6 +9,7 @@ import ROUTE from '../../../../../constants/routes';
 import IconDeviceHub from '@material-ui/icons/DeviceHub';
 import IconShowChart from '@material-ui/icons/ShowChart';
 import IconSettings from '@material-ui/icons/Settings';
+import { buildRoute } from '../../../../../utils/routes';
 
 type VersionDetailsProps = {
   runtime: GetVersionConfStatus_runtime;
@@ -39,9 +40,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
   ];
 
   itemProps.forEach(p => {
-    p.to = p.to
-      .replace(':runtimeId', runtime.id)
-      .replace(':versionId', version.id);
+    p.to = buildRoute.version(p.to, runtime.id, version.id);
   });
 
   const items = itemProps.map((props, idx) => (

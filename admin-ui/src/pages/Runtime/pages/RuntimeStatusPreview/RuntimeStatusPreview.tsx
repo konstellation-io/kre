@@ -14,6 +14,7 @@ import {
 } from '../../../../graphql/queries/types/GetVersionWorkflows';
 
 import styles from './RuntimeStatusPreview.module.scss';
+import { VersionRouteParams } from '../../../../constants/routes';
 
 const GetVersionWorkflowsQuery = loader(
   '../../../../graphql/queries/getVersionWorkflows.graphql'
@@ -28,7 +29,7 @@ type Props = {
   version: any;
 };
 function RuntimeStatusPreview({ version }: Props) {
-  const params: { runtimeId?: string; versionId?: string } = useParams();
+  const { versionId } = useParams<VersionRouteParams>();
 
   const [selectedNode, setSelectedNode] = useState<Node | undefined>(undefined);
 
@@ -36,12 +37,12 @@ function RuntimeStatusPreview({ version }: Props) {
     GetVersionWorkflows,
     GetVersionWorkflowsVariables
   >(GetVersionWorkflowsQuery, {
-    variables: { versionId: params.versionId || '' },
+    variables: { versionId },
     // FIXME: This query is not getting updated!
     fetchPolicy: 'no-cache'
   });
 
-  if (error || !params.runtimeId || !params.versionId) return <ErrorMessage />;
+  if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
   // const versionStatus = data && data.version && data.version.status;

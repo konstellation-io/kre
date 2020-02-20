@@ -1,5 +1,6 @@
 import React from 'react';
 import ROUTE from '../../../../../../constants/routes';
+import { buildRoute } from '../../../../../../utils/routes';
 import { useParams } from 'react-router';
 
 import Button from '../../../../../../components/Button/Button';
@@ -26,10 +27,7 @@ function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
     title = 'There is no published version';
   }
 
-  const newVersionRoute = ROUTE.NEW_VERSION.replace(
-    ':runtimeId',
-    runtimeId || ''
-  );
+  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
 
   return (
     <div
