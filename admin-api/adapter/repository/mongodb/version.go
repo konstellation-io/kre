@@ -37,7 +37,7 @@ func (r *VersionRepoMongoDB) Create(userID string, newVersion *entity.Version) (
 	newVersion.ID = primitive.NewObjectID().Hex()
 	newVersion.CreationDate = time.Now().UTC()
 	newVersion.CreationAuthor = userID
-	newVersion.Status = string(usecase.VersionStatusStopped)
+	newVersion.Status = string(entity.VersionStatusStopped)
 	res, err := r.collection.InsertOne(context.Background(), newVersion)
 	if err != nil {
 		return nil, err
@@ -48,15 +48,15 @@ func (r *VersionRepoMongoDB) Create(userID string, newVersion *entity.Version) (
 }
 
 func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {
-	version := &entity.Version{}
+	v := &entity.Version{}
 	filter := bson.D{{"_id", id}}
 
-	err := r.collection.FindOne(context.Background(), filter).Decode(version)
+	err := r.collection.FindOne(context.Background(), filter).Decode(v)
 	if err == mongo.ErrNoDocuments {
-		return version, usecase.ErrVersionNotFound
+		return v, usecase.ErrVersionNotFound
 	}
 
-	return version, err
+	return v, err
 }
 
 func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error) {
@@ -69,12 +69,12 @@ func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error)
 	defer cur.Close(ctx)
 
 	for cur.Next(ctx) {
-		var version entity.Version
-		err = cur.Decode(&version)
+		var v entity.Version
+		err = cur.Decode(&v)
 		if err != nil {
 			return versions, []error{err}
 		}
-		versions = append(versions, &version)
+		versions = append(versions, &v)
 	}
 
 	return versions, nil
@@ -99,12 +99,12 @@ func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]*entity.Version, 
 	defer cur.Close(ctx)
 
 	for cur.Next(ctx) {
-		var version entity.Version
-		err = cur.Decode(&version)
+		var v entity.Version
+		err = cur.Decode(&v)
 		if err != nil {
 			return versions, err
 		}
-		versions = append(versions, &version)
+		versions = append(versions, &v)
 	}
 
 	return versions, nil

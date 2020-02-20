@@ -1,30 +1,87 @@
 package krt
 
 import (
+	"fmt"
+	"os"
+	"path"
 	"regexp"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
 
-var validate *validator.Validate
+var krtValidator *validator.Validate
 
 func init() {
-	validate = validator.New()
-	validate.RegisterValidation("resource-name", ValidateResourceName)
-	validate.RegisterValidation("env", ValidateEnvVar)
+	krtValidator = validator.New()
 
+	// register validator for resource names. Ex: name-valid123
+	reResourceName := regexp.MustCompile("^[a-z0-9]([-a-z0-9]*[a-z0-9])?$")
+	_ = krtValidator.RegisterValidation("resource-name", func(fl validator.FieldLevel) bool {
+		return reResourceName.MatchString(fl.Field().String())
+	})
+
+	// register validator for env var names. Ex: NAME_VALID123
+	reEnvVar := regexp.MustCompile("^[A-Z0-9]([_A-Z0-9]*[A-Z0-9])?$")
+	_ = krtValidator.RegisterValidation("env", func(fl validator.FieldLevel) bool {
+		return reEnvVar.MatchString(fl.Field().String())
+	})
 }
 
-func (k *Krt) GetValidator() *validator.Validate {
-	return validate
+func validateYaml(krt *Krt) error {
+	err := krtValidator.Struct(krt)
+	if err != nil {
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			return fmt.Errorf("error on KRT validation: %w", err)
+		}
+		var errList []string
+		for _, e := range err.(validator.ValidationErrors) {
+			errList = append(errList, fmt.Sprint(e))
+		}
+
+		return fmt.Errorf("KRT Yaml ValidationErrors: %s", strings.Join(errList, "\n -"))
+	}
+
+	return nil
 }
 
-func ValidateResourceName(fl validator.FieldLevel) bool {
-	var matchVersionName = regexp.MustCompile("^[a-z0-9]([-a-z0-9]*[a-z0-9])?$")
-	return matchVersionName.MatchString(fl.Field().String())
+func validateSrcPaths(krt *Krt, dstDir string) error {
+	entrypointFile := path.Join(dstDir, krt.Entrypoint.Src)
+	if !fileExists(entrypointFile) {
+		return fmt.Errorf("error entrypointFile %s not exists", entrypointFile)
+	}
+
+	for _, node := range krt.Nodes {
+		nodeFile := path.Join(dstDir, node.Src)
+		if !fileExists(nodeFile) {
+			return fmt.Errorf("error src File %s for node %s not exists ", nodeFile, node.Name)
+		}
+	}
+
+	return nil
 }
 
-func ValidateEnvVar(fl validator.FieldLevel) bool {
-	var matchVersionName = regexp.MustCompile("^A-Z0-9]([_A-Z0-9]*[A-Z0-9])?$")
-	return matchVersionName.MatchString(fl.Field().String())
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
+}
+
+func validateWorkflows(k *Krt) error {
+	nodeList := map[string]int{}
+	for _, node := range k.Nodes {
+		nodeList[node.Name] = 1
+	}
+
+	for _, workflow := range k.Workflows {
+		for _, nodeName := range workflow.Sequential {
+			if _, ok := nodeList[nodeName]; !ok {
+				return fmt.Errorf("node in sequential not found: %s", nodeName)
+			}
+		}
+	}
+
+	return nil
 }

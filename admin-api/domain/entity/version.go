@@ -90,6 +90,30 @@ type Version struct {
 	Workflows  []*Workflow   `bson:"workflows"`
 }
 
+type VersionStatus string
+
+var (
+	// VersionStatusStarting status
+	VersionStatusStarting VersionStatus = "STARTING"
+	// VersionStatusStarting status
+	VersionStatusStopping VersionStatus = "STOPPING"
+	// VersionStatusStarted status
+	VersionStatusStarted VersionStatus = "STARTED"
+	// VersionStatusPublished status
+	VersionStatusPublished VersionStatus = "PUBLISHED"
+	// VersionStatusStopped status
+	VersionStatusStopped VersionStatus = "STOPPED"
+)
+
+func (v Version) PublishedOrStarted() bool {
+	switch v.Status {
+	case string(VersionStatusStarted),
+		string(VersionStatusPublished):
+		return true
+	}
+	return false
+}
+
 type NodeLog struct {
 	Date      string
 	Type      string
