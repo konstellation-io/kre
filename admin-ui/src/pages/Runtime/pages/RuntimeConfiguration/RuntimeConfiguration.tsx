@@ -90,7 +90,7 @@ function RuntimeConfiguration({ refetchVersion }: Props) {
   if (loading) return <SpinnerCircular />;
 
   function updateConfigurationVariables(data: ConfigurationVariable[]) {
-    setConfigurationVariables(data);
+    setConfigurationVariables(cloneDeep(data));
     setInitialConfiguration(cloneDeep(data));
   }
 
