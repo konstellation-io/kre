@@ -34,27 +34,21 @@ function NavigationBar() {
   const runtimes: GetRuntimes_runtimes[] = get(data, 'runtimes', []);
 
   const buttons = runtimes.map((runtime: GetRuntimes_runtimes, idx: number) => {
-    if (runtime.status === RuntimeStatus.CREATING) {
-      return (
-        <div className={styles.link} key={`NavBarItem_${idx}`}>
-          <HexButton
-            key={`navigationButton_${runtime.name}`}
-            label={runtime.name}
-            disabled
-          />
-        </div>
-      );
-    }
+    const disabled = runtime.status === RuntimeStatus.CREATING;
     return (
       <NavLink
         key={`NavBarItem_${idx}`}
         to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}
         activeClassName={styles.active}
         className={styles.link}
+        onClick={e => {
+          disabled && e.preventDefault();
+        }}
       >
         <HexButton
           key={`navigationButton_${runtime.name}`}
           label={runtime.name}
+          disabled={disabled}
         />
       </NavLink>
     );
