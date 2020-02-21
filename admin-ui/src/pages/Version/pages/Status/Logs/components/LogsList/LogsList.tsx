@@ -11,7 +11,7 @@ import {
 import { GET_LOGS } from '../../../../../../../graphql/client/getLogs.graphql';
 
 import LogItem from './LogItem';
-import { Node } from '../../../RuntimeStatusPreview';
+import { Node } from '../../../Status';
 
 import {
   GetLogs,

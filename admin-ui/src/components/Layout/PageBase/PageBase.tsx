@@ -5,13 +5,19 @@ import NavigationBar from '../../NavigationBar/NavigationBar';
 
 type PageBaseProps = {
   children: any;
+  headerChildren?: any;
+  customContentStyles?: object;
 };
 
-function PageBase({ children }: PageBaseProps) {
+function PageBase({
+  children,
+  headerChildren,
+  customContentStyles
+}: PageBaseProps) {
   return (
     <>
-      <Header />
-      <div className={styles.content}>
+      <Header>{headerChildren}</Header>
+      <div className={styles.content} style={customContentStyles}>
         <NavigationBar />
         {children}
       </div>
