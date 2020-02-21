@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useChart from '../../hooks/useChart';
 import ReactDOMServer from 'react-dom/server';
 import VersionNode, { TYPES } from '../Shape/Node/Node';
@@ -82,6 +82,11 @@ function getNodeTextPadding(type: string) {
   }
 }
 
+function setGroups(selection: any) {
+  selection.enter = selection.group.enter();
+  selection.exit = selection.group.exit();
+}
+
 function VersionStatusViewer({
   width,
   height,
@@ -97,25 +102,33 @@ function VersionStatusViewer({
     initialize,
     removeUpdate: true
   });
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   const nodeIdToIndex: any = {};
   let g: any;
   let defs: any;
-  let newWorkflows: any;
   let workflowsTag: any;
-  let nodes: any;
-  let newNodes: any;
-  let edges: any;
-  let newEdges: any;
-  let edgesG: any;
   let xScale: any;
   let fontSize: any;
   const ref = useRef<any>({
     workflowsG: null,
-    workflows: null,
-    oldWorkflows: null,
+    workflows: {
+      enter: null,
+      exit: null,
+      group: null
+    },
     nodesG: null,
-    oldNodes: null,
+    nodes: {
+      enter: null,
+      exit: null,
+      group: null
+    },
+    edgesG: null,
+    edges: {
+      enter: null,
+      exit: null,
+      group: null
+    },
     nodeWidth: null,
     nodeSizeRatio: null,
     nodeHeight: null
@@ -128,51 +141,17 @@ function VersionStatusViewer({
   const maxNodesInRow = max(data, d => d.nodes.length) || 0;
   const xDomainIndexes = range(maxNodesInRow).map(n => n.toString());
 
-  // FIXME:
-  // REFACTOR THE FOLLOWING 42 lines
-  const prevProps = useRef<any>({
-    width: undefined,
-    height: undefined,
-    chartId: undefined,
-    data: undefined
-  });
-
-  function idsAreDifferent(d1: Workflow[], d2: Workflow[]): boolean {
-    if (d1 === undefined) {
-      return true;
-    }
-
-    // @ts-ignore
-    const nodesD1 = d1.reduce((a: string[], b: Workflow) => {
-      return a.concat(b.nodes.map((node: Node) => node.id));
-    }, []);
-    // @ts-ignore
-    const nodesD2 = d2.reduce((a: string[], b: Workflow) => {
-      return a.concat(b.nodes.map((node: Node) => node.id));
-    }, []);
-
-    return JSON.stringify(nodesD1) !== JSON.stringify(nodesD2);
-  }
   useEffect(() => {
-    if (
-      prevProps.current.width !== width ||
-      prevProps.current.height !== height ||
-      prevProps.current.chartId !== chartId ||
-      idsAreDifferent(prevProps.current.data, data)
-    ) {
-      if (canBeRendered(width, height, margin)) {
-        cleanup(svg.current);
-        initialize();
-      }
-    } else {
-      updateChart();
-    }
+    initialized && updateChart();
+  }, [data]);
 
-    prevProps.current.width = width;
-    prevProps.current.height = height;
-    prevProps.current.chartId = chartId;
-    prevProps.current.data = data;
-  }, [width, height, chartId, data, initialize]);
+  useEffect(() => {
+    if (canBeRendered(width, height, margin)) {
+      cleanup(svg.current);
+      initialize();
+      setInitialized(true);
+    }
+  }, [chartId, width, height]);
 
   function buildNodeIdToIndex() {
     data.forEach((workflow: Workflow) =>
@@ -196,12 +175,16 @@ function VersionStatusViewer({
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
   }
 
+  function updateComponent(component: string): void {
+    setData[component]();
+    update[component]();
+    create[component]();
+  }
+
   function updateChart() {
-    setData.workflows();
-    setData.nodes();
-    update.workflows();
-    update.nodes();
-    update.workflowTags();
+    updateComponent('workflows');
+    updateComponent('nodes');
+    updateComponent('edges');
   }
 
   function initialize() {
@@ -249,11 +232,11 @@ function VersionStatusViewer({
     create.workflowTags();
 
     // Create nodes/edges groups
-    ref.current.nodesG = newWorkflows
+    ref.current.nodesG = ref.current.workflows.enter
       .append('g')
       .classed(styles.nodesG, true)
       .attr('transform', 'translate(0, 50)');
-    edgesG = newWorkflows
+    ref.current.edgesG = ref.current.workflows.enter
       .append('g')
       .classed(styles.edgesG, true)
       .attr('transform', 'translate(0, 50)');
@@ -267,66 +250,30 @@ function VersionStatusViewer({
     create.edges();
   }
 
-  const setData = {
+  const setData: { [key: string]: Function } = {
     workflows: function() {
-      ref.current.workflows = ref.current.workflowsG
+      ref.current.workflows.group = ref.current.workflowsG
         .selectAll(`.${styles.workflow}`)
         .data(data);
+      setGroups(ref.current.workflows);
     },
     nodes: function() {
-      nodes = ref.current.nodesG
+      ref.current.nodes.group = ref.current.nodesG
         .selectAll(`.${styles.node}`)
         .data((d: Workflow) => d.nodes);
+      setGroups(ref.current.nodes);
     },
     edges: function() {
-      edges = edgesG
+      ref.current.edges.group = ref.current.edgesG
         .selectAll(`.${styles.edge}`)
         .data((d: Workflow) => d.edges);
+      setGroups(ref.current.edges);
     }
   };
 
-  const update = {
-    // Pass new data to children components
+  const create: { [key: string]: Function } = {
     workflows: function() {
-      ref.current.oldWorkflows = ref.current.workflows.select(
-        `.${styles.nodesG}`
-      );
-
-      ref.current.oldNodes = ref.current.workflows
-        .selectAll(`.${styles.node}`)
-        .data((d: Workflow) => {
-          return d.nodes;
-        });
-    },
-    // Updates node status
-    nodes: function() {
-      ref.current.oldNodes.each(function(d: Node) {
-        // @ts-ignore
-        select(this)
-          .select('g')
-          .html(
-            ReactDOMServer.renderToString(
-              <VersionNode
-                type={d.type || TYPES.DEFAULT}
-                width={ref.current.nodeWidth}
-                height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}
-                status={d.status}
-              />
-            )
-          );
-      });
-    },
-    workflowTags: function() {
-      ref.current.workflows
-        .selectAll(`.${styles.workflowTag}`)
-        .classed(styles.published, published);
-    }
-  };
-
-  const create = {
-    workflows: function() {
-      newWorkflows = ref.current.workflows
-        .enter()
+      ref.current.workflows.enter = ref.current.workflows.enter
         .append('g')
         .classed(styles.workflow, true)
         .attr(
@@ -334,9 +281,23 @@ function VersionStatusViewer({
           (d: Workflow, idx: number) => `translate(0,${idx * 100})`
         );
     },
+    node: function(container: any, d: Node) {
+      select(container)
+        .append('g')
+        .attr('transform', 'translate(0, 0)')
+        .html(
+          ReactDOMServer.renderToString(
+            <VersionNode
+              type={d.type || TYPES.DEFAULT}
+              width={ref.current.nodeWidth}
+              height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}
+              status={d.status}
+            />
+          )
+        );
+    },
     nodes: function() {
-      newNodes = nodes
-        .enter()
+      const nodesContainer = ref.current.nodes.enter
         .append('g')
         .attr('id', (d: Node) => `node_${d.id}`)
         .classed(styles.node, true)
@@ -352,21 +313,9 @@ function VersionStatusViewer({
         })
         .each(function(d: Node) {
           // @ts-ignore
-          select(this)
-            .append('g')
-            .attr('transform', 'translate(0, 0)')
-            .html(
-              ReactDOMServer.renderToString(
-                <VersionNode
-                  type={d.type || TYPES.DEFAULT}
-                  width={ref.current.nodeWidth}
-                  height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}
-                  status={d.status}
-                />
-              )
-            );
+          create.node(this, d);
         });
-      newNodes
+      nodesContainer
         .append('text')
         .classed('nodeText', true)
         .classed(styles.nodeText, true)
@@ -384,7 +333,7 @@ function VersionStatusViewer({
         .call(centerText, fontSize);
     },
     workflowTags: function() {
-      workflowsTag = newWorkflows
+      workflowsTag = ref.current.workflows.enter
         .append('g')
         .attr('transform', `translate(0, 50)`)
         .classed(styles.published, published)
@@ -425,12 +374,11 @@ function VersionStatusViewer({
         .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
     },
     edges: function() {
-      newEdges = edges
-        .enter()
+      const edgesContainers = ref.current.edges.enter
         .append('g')
         .attr('class', (d: Edge) => styles[NodeStatus.STOPPED])
         .classed(styles.edge, true);
-      newEdges
+      edgesContainers
         .append('path')
         .classed(styles.edgeLine, true)
         .attr('d', getArrowD(ref.current.nodeSizeRatio, ARROW_SIZE_PERC))
@@ -442,7 +390,7 @@ function VersionStatusViewer({
             )}, ${(DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2})`
         )
         .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
-      newEdges
+      edgesContainers
         .append('line')
         .classed('edgeLine', true)
         .classed(styles.edgeLine, true)
@@ -457,7 +405,7 @@ function VersionStatusViewer({
         .attr('y2', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
         .attr('stroke-dasharray', '3, 3')
         .attr('stroke-width', ref.current.nodeHeight * STROKE_WIDTH_PERC);
-      newEdges
+      edgesContainers
         .append('line')
         .classed(styles.lineContainer, true)
         .attr(
@@ -478,6 +426,44 @@ function VersionStatusViewer({
           events.edgeHighlight(this, false);
         });
     }
+  };
+
+  const update: { [key: string]: Function } = {
+    // Pass new data to children components
+    workflows: function() {
+      ref.current.workflows.group = ref.current.workflows.group.select(
+        `.${styles.nodesG}`
+      );
+
+      ref.current.nodes.group = ref.current.workflows.group
+        .selectAll(`.${styles.node}`)
+        .data((d: Workflow) => {
+          return d.nodes;
+        });
+
+      ref.current.workflows.group
+        .selectAll(`.${styles.workflowTag}`)
+        .classed(styles.published, published);
+    },
+    // Updates node status
+    nodes: function() {
+      ref.current.nodes.group.each(function(d: Node) {
+        // @ts-ignore
+        select(this)
+          .select('g')
+          .html(
+            ReactDOMServer.renderToString(
+              <VersionNode
+                type={d.type || TYPES.DEFAULT}
+                width={ref.current.nodeWidth}
+                height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}
+                status={d.status}
+              />
+            )
+          );
+      });
+    },
+    edges: function() {}
   };
 
   const events = {

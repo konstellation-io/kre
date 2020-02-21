@@ -37,9 +37,7 @@ function RuntimeStatusPreview({ version }: Props) {
     GetVersionWorkflows,
     GetVersionWorkflowsVariables
   >(GetVersionWorkflowsQuery, {
-    variables: { versionId },
-    // FIXME: This query is not getting updated!
-    fetchPolicy: 'no-cache'
+    variables: { versionId }
   });
 
   if (error) return <ErrorMessage />;

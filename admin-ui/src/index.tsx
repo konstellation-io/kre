@@ -79,7 +79,8 @@ config
 
     const client = new ApolloClient({
       cache,
-      link
+      link,
+      resolvers: {}
     });
 
     // Sets initial cache

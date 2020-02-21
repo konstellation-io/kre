@@ -17,7 +17,7 @@ type Props = {
   children?: any;
 };
 const Header: FunctionComponent<Props> = ({ children }) => {
-  const { data, error, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
+  const { data, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
 
   if (loading)
     return <div className={styles.splash} data-testid={'splashscreen'} />;

@@ -1,4 +1,4 @@
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, isEqual } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { loader } from 'graphql.macro';
@@ -29,7 +29,7 @@ const VersionNodeStatusSubscription = loader(
   '../../../../graphql/subscriptions/versionNodeStatus.graphql'
 );
 
-function formatData(workflows: any, versionStatus: VersionStatus) {
+function formatData(workflows: Workflow[], versionStatus: VersionStatus) {
   let formattedData = cloneDeep(workflows);
 
   formattedData = formattedData.map((workflow: any, idx: number) => {
@@ -88,12 +88,27 @@ function updateNodeStatus(workflows: Workflow[], newNode: Node): Workflow[] {
   return workflowsCopy;
 }
 
+function getInOutStatus(status: VersionStatus): NodeStatus {
+  return status === VersionStatus.PUBLISHED
+    ? NodeStatus.STARTED
+    : NodeStatus.STOPPED;
+}
+function getInOutNode(id: string, status: VersionStatus): Node {
+  return {
+    id,
+    status: getInOutStatus(status)
+  };
+}
+
 function StatusViewer({ data, status, onNodeClick }: any) {
   const { versionId } = useParams<VersionRouteParams>();
 
   const [workflows, setWorkflows] = useState<Workflow[]>(
     formatData(data, status)
   );
+  const [nodesObtained, setNodesObtained] = useState<boolean>(false);
+  const [nodesToUpdate, setNodesToUpdate] = useState<Node[]>([]);
+
   useSubscription<VersionNodeStatus, VersionNodeStatusVariables>(
     VersionNodeStatusSubscription,
     {
@@ -105,12 +120,8 @@ function StatusViewer({ data, status, onNodeClick }: any) {
           status: nodeInfo.status
         };
 
-        // FIXME: remove this delay and find another workaround
-        setTimeout(() => {
-          setWorkflows((tempWorkflows: Workflow[]) => {
-            return updateNodeStatus(tempWorkflows, newNode);
-          });
-        }, 100);
+        // Add node to update queue
+        setNodesToUpdate(nodesToUpdate.concat([newNode]));
       }
     }
   );
@@ -122,40 +133,51 @@ function StatusViewer({ data, status, onNodeClick }: any) {
   });
   const dimensions = useRenderOnResize({ container });
 
-  function updateInOutNodes() {
-    let newWorkflows = workflows;
-    workflows.forEach((workflow: Workflow, idx: number) => {
-      const newNodeState =
-        status === VersionStatus.PUBLISHED
-          ? NodeStatus.STARTED
-          : NodeStatus.STOPPED;
-      const newInputNode = {
-        id: `W${idx}InputNode`,
-        status: newNodeState
-      };
-      const newOutputNode = {
-        id: `W${idx}OutputNode`,
-        status: newNodeState
-      };
-
-      newWorkflows = updateNodeStatus(newWorkflows, newInputNode);
-      newWorkflows = updateNodeStatus(newWorkflows, newOutputNode);
-    });
-
-    setWorkflows(newWorkflows);
-  }
-
   useEffect(() => {
-    if (JSON.stringify(data) !== JSON.stringify(prevParams.current.data)) {
-      const newWorkflows = formatData(data, status);
+    function updateInOutNodes() {
+      let newWorkflows = workflows;
+      workflows.forEach((w: Workflow, idx: number) => {
+        const newInputNode = getInOutNode(`W${idx}InputNode`, status);
+        const newOutputNode = getInOutNode(`W${idx}OutputNode`, status);
+
+        newWorkflows = updateNodeStatus(newWorkflows, newInputNode);
+        newWorkflows = updateNodeStatus(newWorkflows, newOutputNode);
+      });
+
       setWorkflows(newWorkflows);
+    }
+
+    if (!isEqual(data, prevParams.current.data)) {
+      setWorkflows(formatData(data, status));
     } else if (prevParams.current.status !== status) {
       updateInOutNodes();
     }
 
     prevParams.current.data = data;
     prevParams.current.status = status;
-  }, [data, status]); // FIXME remove warning
+
+    // Update nodes after the nodes info has been retrieved
+    if (nodesObtained && nodesToUpdate.length !== 0) {
+      let newWorkflows = workflows;
+      while (nodesToUpdate.length !== 0) {
+        const newNode: Node = nodesToUpdate.pop() as Node;
+        newWorkflows = updateNodeStatus(newWorkflows, newNode);
+      }
+
+      setNodesToUpdate([]);
+      setWorkflows(newWorkflows);
+    } else if (!nodesObtained) {
+      setNodesObtained(true);
+    }
+  }, [
+    data,
+    status,
+    workflows,
+    nodesToUpdate,
+    setNodesToUpdate,
+    nodesObtained,
+    setNodesObtained
+  ]);
 
   const { width, height } = dimensions;
 
