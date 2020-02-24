@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header/Header';
 import Filters from './components/Filters/Filters';
 import LogsList from './components/LogsList/LogsList';
-import { Node } from '../RuntimeStatusPreview';
+import { Node } from '../Status';
 
 import cx from 'classnames';
 import styles from './Logs.module.scss';

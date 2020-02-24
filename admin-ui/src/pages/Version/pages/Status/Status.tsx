@@ -13,7 +13,7 @@ import {
   GetVersionWorkflowsVariables
 } from '../../../../graphql/queries/types/GetVersionWorkflows';
 
-import styles from './RuntimeStatusPreview.module.scss';
+import styles from './Status.module.scss';
 import { VersionRouteParams } from '../../../../constants/routes';
 
 const GetVersionWorkflowsQuery = loader(
@@ -28,7 +28,7 @@ export type Node = {
 type Props = {
   version: any;
 };
-function RuntimeStatusPreview({ version }: Props) {
+function Status({ version }: Props) {
   const { versionId } = useParams<VersionRouteParams>();
 
   const [selectedNode, setSelectedNode] = useState<Node | undefined>(undefined);
@@ -37,9 +37,7 @@ function RuntimeStatusPreview({ version }: Props) {
     GetVersionWorkflows,
     GetVersionWorkflowsVariables
   >(GetVersionWorkflowsQuery, {
-    variables: { versionId },
-    // FIXME: This query is not getting updated!
-    fetchPolicy: 'no-cache'
+    variables: { versionId }
   });
 
   if (error) return <ErrorMessage />;
@@ -69,4 +67,4 @@ function RuntimeStatusPreview({ version }: Props) {
   );
 }
 
-export default RuntimeStatusPreview;
+export default Status;

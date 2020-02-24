@@ -28,7 +28,7 @@ import {
 } from '../../../../graphql/types/globalTypes';
 import { VersionStatus } from '../../../../graphql/types/globalTypes';
 
-import styles from './RuntimeConfiguration.module.scss';
+import styles from './Configuration.module.scss';
 import { VersionRouteParams } from '../../../../constants/routes';
 
 const GetConfVariablesQuery = loader(
@@ -55,7 +55,7 @@ function formatConfVars(
 type Props = {
   refetchVersion: Function;
 };
-function RuntimeConfiguration({ refetchVersion }: Props) {
+function Configuration({ refetchVersion }: Props) {
   const [initialConfiguration, setInitialConfiguration] = useState<
     ConfigurationVariable[]
   >([]);
@@ -222,4 +222,4 @@ function RuntimeConfiguration({ refetchVersion }: Props) {
   );
 }
 
-export default RuntimeConfiguration;
+export default Configuration;

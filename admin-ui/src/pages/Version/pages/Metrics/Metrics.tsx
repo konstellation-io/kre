@@ -12,7 +12,7 @@ import dataSimple from './data_simple.json';
 import dataComplete from './data_complete.json';
 
 import cx from 'classnames';
-import styles from './RuntimeMetrics.module.scss';
+import styles from './Metrics.module.scss';
 
 const VERSION_SIMPLE = 'price-estimator-v1';
 const VERSION_COMPLETE = 'price-estimator-v2';
@@ -37,7 +37,7 @@ type Props = {
   version: any;
 };
 
-function RuntimeMetrics({ runtime, version }: Props) {
+function Metrics({ runtime, version }: Props) {
   const separatorRowProps = { className: styles.separatorRow };
 
   const [expanded, setExpanded] = useState<string>('');
@@ -152,4 +152,4 @@ function RuntimeMetrics({ runtime, version }: Props) {
   );
 }
 
-export default RuntimeMetrics;
+export default Metrics;

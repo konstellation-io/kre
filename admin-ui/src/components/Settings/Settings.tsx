@@ -41,7 +41,7 @@ function Settings({ label }: Props) {
         console.error(`Error sending logout request.`);
       }
     }
-  }, [logoutResponse, history]);
+  }, [logoutResponse, history, client]);
 
   function getBaseProps(label: string) {
     return {

@@ -1,16 +1,3 @@
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  overflow-x: scroll;
-  overflow: hidden;
-  transition: padding ease 0.4s;
-
-  &.viewWithLogs {
-    padding-bottom: 25px;
-  }
-}
-
 .content {
   position: relative;
   width: 100%;

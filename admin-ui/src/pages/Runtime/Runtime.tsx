@@ -3,15 +3,10 @@ import { Route, Switch, useParams, useLocation } from 'react-router-dom';
 import ROUTE, { VersionRouteParams } from '../../constants/routes';
 import { buildRoute } from '../../utils/routes';
 
-import RuntimeStatusPreview from './pages/RuntimeStatusPreview/RuntimeStatusPreview';
-import RuntimeConfiguration from './pages/RuntimeConfiguration/RuntimeConfiguration';
-import RuntimeMetrics from './pages/RuntimeMetrics/RuntimeMetrics';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
-import Header from '../../components/Header/Header';
-import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Button from '../../components/Button/Button';
-import VersionSideBar from './components/VersionSideBar/VersionSideBar';
+import Version from '../Version/Version';
 
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
@@ -20,9 +15,9 @@ import {
   GetVersionConfStatusVariables
 } from '../../graphql/queries/types/GetVersionConfStatus';
 
-import cx from 'classnames';
 import styles from './Runtime.module.scss';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
+import PageBase from '../../components/Layout/PageBase/PageBase';
 
 const GetRuntimeAndVersionQuery = loader(
   '../../graphql/queries/getRuntimeAndVersions.graphql'
@@ -38,16 +33,6 @@ function Runtime() {
     fetchPolicy: 'cache-and-network',
     variables: { runtimeId }
   });
-
-  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
-
-  const statusPath: string = buildRoute.version(
-    ROUTE.RUNTIME_VERSION_STATUS,
-    runtimeId,
-    versionId
-  );
-  const isUserInVersionStatus: boolean = location.pathname === statusPath;
-
   function getContent() {
     if (loading) return <SpinnerCircular />;
     if (error) return <ErrorMessage />;
@@ -59,7 +44,6 @@ function Runtime() {
 
     return (
       <>
-        {version && <VersionSideBar runtime={runtime} version={version} />}
         <div className={styles.content}>
           <Switch>
             <Route
@@ -74,27 +58,12 @@ function Runtime() {
               )}
             />
             <Route
-              exact
-              path={ROUTE.RUNTIME_VERSION_STATUS}
               render={props => (
-                <RuntimeStatusPreview {...props} version={version} />
-              )}
-            />
-            <Route
-              exact
-              path={ROUTE.RUNTIME_VERSION_CONFIGURATION}
-              render={props => (
-                <RuntimeConfiguration {...props} refetchVersion={refetch} />
-              )}
-            />
-            <Route
-              exact
-              path={ROUTE.RUNTIME_VERSION_METRICS}
-              render={props => (
-                <RuntimeMetrics
+                <Version
                   {...props}
-                  runtime={runtime}
                   version={version}
+                  runtime={runtime}
+                  refetch={refetch}
                 />
               )}
             />
@@ -104,22 +73,34 @@ function Runtime() {
     );
   }
 
-  // TODO use PageBase
+  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
+
+  const versionsPath: string = buildRoute.runtime(
+    ROUTE.RUNTIME_VERSIONS,
+    runtimeId
+  );
+  const isUserInRuntimeVersions: boolean = location.pathname === versionsPath;
+
+  const statusPath: string = buildRoute.version(
+    ROUTE.RUNTIME_VERSION_STATUS,
+    runtimeId,
+    versionId
+  );
+  const isUserInVersionStatus: boolean = location.pathname === statusPath;
+
+  const logsPadding: object = { paddingBottom: 65 };
+
   return (
-    <>
-      <Header>
-        <Button label="ADD VERSION" height={40} to={newVersionRoute} />
-      </Header>
-      <div
-        className={cx(styles.container, {
-          [styles.viewWithLogs]: isUserInVersionStatus
-        })}
-        data-testid="runtimeContainer"
-      >
-        <NavigationBar />
-        {getContent()}
-      </div>
-    </>
+    <PageBase
+      customContentStyles={isUserInVersionStatus ? logsPadding : {}}
+      headerChildren={
+        isUserInRuntimeVersions && (
+          <Button label="ADD VERSION" height={40} to={newVersionRoute} />
+        )
+      }
+    >
+      {getContent()}
+    </PageBase>
   );
 }
 

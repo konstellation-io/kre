@@ -58,7 +58,7 @@ export default function useChart({
         initialize();
       }
     }
-  }, [width, height, margin]); // FIXME React Hook useEffect has missing dependencies: 'initialize' and 'removeUpdate'.
+  }, [width, height, margin, initialize, removeUpdate]);
 
   const chart = (
     <div ref={container} className={styles.container}>
