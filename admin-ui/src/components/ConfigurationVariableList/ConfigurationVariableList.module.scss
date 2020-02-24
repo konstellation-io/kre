@@ -8,7 +8,8 @@
   height: 100%;
   overflow: hidden;
 
-  .row:nth-child(odd) {
+  .row:nth-child(odd),
+  .row:nth-child(0) {
     &,
     .typeColValue {
       background-color: $bg-color-lighter;
@@ -44,10 +45,6 @@
     textarea {
       color: $font-color-white;
     }
-
-    .separator {
-      z-index: 1 !important;
-    }
   }
 
   > div:not(:last-child) {
@@ -72,32 +69,22 @@
   }
 
   .typeCol {
+    display: flex;
     position: relative;
-    padding: 32px 0;
+    padding: 16px 0;
 
     .typeColValue {
-      position: absolute;
+      padding: 0 8px 0 16px;
       background-color: $bg-color;
       transition: background-color ease 0.3s;
       width: fit-content;
-      padding: 0 20px 0 30px;
       z-index: 2;
-    }
-
-    .separator {
-      position: absolute;
-      left: 20px;
-      top: 39px;
-      width: 100%;
-      height: 1px;
-      background-color: $color-node-content;
-      z-index: -1;
     }
   }
 
   .variableCol {
     display: flex;
-    flex-direction: row;
+    padding: 16px 0;
 
     > div {
       margin-left: 8px;
