@@ -4,6 +4,7 @@ import React from 'react';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
 import IconKey from '@material-ui/icons/VpnKey';
+import TypeIcon from '@material-ui/icons/Code';
 
 import { GetConfigurationVariables_version_configurationVariables as ConfVar } from '../../graphql/queries/types/GetConfigurationVariables';
 import { ConfigurationVariableType } from '../../graphql/types/globalTypes';
@@ -28,13 +29,17 @@ function VariableRow({
 
   return (
     <div className={styles.row}>
-      <div className={cx(styles.typeCol, styles.col1)}>
-        <div className={styles.separator} />
-        <div className={styles.typeColValue}>{capitalize(type)}</div>
+      <div className={styles.col1}>
+        <div className={styles.typeCol}>
+          <TypeIcon className="icon-small" />
+          <div className={styles.typeColValue}>{capitalize(type)}</div>
+        </div>
       </div>
-      <div className={cx(styles.variableCol, styles.col2)}>
-        <IconKey className="icon-small" />
-        <div>{key}</div>
+      <div className={styles.col2}>
+        <div className={styles.variableCol}>
+          <IconKey className="icon-small" />
+          <div>{key}</div>
+        </div>
       </div>
       <div className={styles.col3}>
         <TextInput
