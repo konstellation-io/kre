@@ -6,6 +6,7 @@ import animationData from './Hexagon.json';
 
 import { VersionEnvStatus } from '../../../pages/Dashboard/Dashboard';
 import { RuntimeStatus } from '../../../graphql/types/globalTypes';
+import { ConditionalLink } from '../../../utils/routes';
 
 import styles from './Hexagon.module.scss';
 import cx from 'classnames';
@@ -40,18 +41,17 @@ type Props = {
   info?: RuntimeInfo[];
   disabled?: boolean;
   size?: number;
-  onClick?: any;
+  to?: string;
 };
 
 function Hexagon({
-  id = '00000000',
   status = 'UNKNOWN',
   versionStatus = VersionEnvStatus.PUBLISHED,
   title = 'Default title',
   info = [],
   disabled = false,
   size = 360,
-  onClick = function() {}
+  to = ''
 }: Props) {
   const defaultAnimation = disabled
     ? ANIM_SEGMENTS.STARTED
@@ -80,8 +80,8 @@ function Hexagon({
   };
 
   // Created and Updated dates. Can show none, one or both.
-  const hexInfo = info.map((infoEl, idx) => (
-    <div className={styles.info} key={`hexInfo-${idx}`}>
+  const hexInfo = info.map(infoEl => (
+    <div className={styles.info} key={infoEl.type}>
       <span className={styles.info_type}>
         {infoEl.type && infoEl.type.toUpperCase()}
       </span>
@@ -112,17 +112,17 @@ function Hexagon({
           VERSION: {versionStatus}
         </div>
       </div>
-      <div
-        className={styles.hexContent}
-        onMouseDown={onMouseDown}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onClick={onClick}
-      >
-        <div className={styles.title}>{title}</div>
-        {hexInfo}
-      </div>
-      ;
+      <ConditionalLink to={to} disabled={to === '' || disabled}>
+        <div
+          className={styles.hexContent}
+          onMouseDown={onMouseDown}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+        >
+          <div className={styles.title}>{title}</div>
+          {hexInfo}
+        </div>
+      </ConditionalLink>
     </div>
   );
 }
