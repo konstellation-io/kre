@@ -71,7 +71,16 @@ function GeneralSettings() {
   const [updateExpirationTime] = useMutation<
     UpdateSettings,
     UpdateSettingsVariables
-  >(updateSessionLifetimeMutation);
+  >(updateSessionLifetimeMutation, {
+    update(cache, { data }) {
+      if (data && data.updateSettings) {
+        cache.writeQuery({
+          query: GetExpirationTimeQuery,
+          data: { settings: data.updateSettings }
+        });
+      }
+    }
+  });
   const { value, isValid, onChange, setValue, error: inputError } = useInput(
     '',
     isExpirationInvalid
