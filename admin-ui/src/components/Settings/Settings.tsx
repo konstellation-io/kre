@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router';
 import useEndpoint from '../../hooks/useEndpoint';
 import { useApolloClient } from '@apollo/react-hooks';
@@ -10,9 +10,11 @@ import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
 import SettingsIcon from '@material-ui/icons/VerifiedUser';
 import AuditIcon from '@material-ui/icons/SupervisorAccount';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
+import cx from 'classnames';
 
 import styles from './Settings.module.scss';
 import ROUTE from '../../constants/routes';
+import useClickOutsideListener from '../../hooks/useClickOutsideListener';
 
 const BUTTON_HEIGHT = 40;
 const buttonStyle = {
@@ -31,6 +33,8 @@ function Settings({ label }: Props) {
     endpoint: ENDPOINT.LOGOUT,
     method: 'POST'
   });
+  const ref = useRef(null);
+  useClickOutsideListener({ ref, onClickOutside: () => setOpened(false) });
 
   useEffect(() => {
     if (logoutResponse.complete) {
@@ -71,15 +75,12 @@ function Settings({ label }: Props) {
 
   return (
     <div
-      className={styles.container}
-      onMouseEnter={() => setOpened(true)}
-      onMouseLeave={() => setOpened(false)}
+      className={cx(styles.container, { [styles['is-open']]: opened })}
+      onClick={() => setOpened(!opened)}
       data-testid="settingsContainer"
+      ref={ref}
     >
-      <div className={styles.label}>
-        {label}
-        <div className={styles.arrow} />
-      </div>
+      <div className={styles.label}>{label}</div>
       <div
         className={styles.options}
         style={{ maxHeight: opened ? optionsHeight : 0 }}
