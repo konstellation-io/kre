@@ -8,11 +8,7 @@ exports[`Renders Settings without crashing 1`] = `
   >
     <div
       class="label"
-    >
-      <div
-        class="arrow"
-      />
-    </div>
+    />
     <div
       class="options"
       data-testid="settingsContent"

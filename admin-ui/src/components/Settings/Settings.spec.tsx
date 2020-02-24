@@ -37,18 +37,18 @@ it('Shows logout option', () => {
   expect(getByText('LOGOUT')).toBeInTheDocument();
 });
 
-it('Shows options on mouse enter', () => {
+it('Shows options on mouse click', () => {
   const { container } = renderComponent();
 
   const settingsContent = getByTestId(container, 'settingsContent');
   // @ts-ignore
   expect(settingsContent.style['max-height']).toBe('0');
 
-  fireEvent.mouseEnter(getByTestId(container, 'settingsContainer'));
+  fireEvent.click(getByTestId(container, 'settingsContainer'));
   // @ts-ignore
   expect(settingsContent.style['max-height']).not.toBe('0');
 
-  fireEvent.mouseLeave(getByTestId(container, 'settingsContainer'));
+  fireEvent.click(getByTestId(container, 'settingsContainer'));
   // @ts-ignore
   expect(settingsContent.style['max-height']).toBe('0');
 });

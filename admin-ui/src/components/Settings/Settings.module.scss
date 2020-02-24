@@ -25,21 +25,32 @@
   &:active {
     box-shadow: none;
   }
+
+  &:after {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    right: 14px;
+    top: 14px;
+    content: '';
+    border: solid 1px transparent;
+    border-bottom-color: white;
+    border-right-color: white;
+    transition: transform ease 0.3s, top ease 0.3s;
+  }
+
+  &.is-open:after {
+    transform: rotate(45deg) scale(-1);
+    top: 17px;
+  }
 }
 
 .label {
   display: flex;
   flex-direction: row;
   padding: 0 20px;
-}
-
-.arrow {
-  margin: 16px 0 0 10px;
-  height: 6px;
-  width: 6px;
-  border-right: 1px solid $font-color-regular;
-  border-bottom: 1px solid $font-color-regular;
-  transform: rotateZ(45deg);
+  user-select: none;
 }
 
 .options {
