@@ -21,6 +21,7 @@ import {
   UpdateDomains,
   UpdateDomainsVariables
 } from '../../graphql/mutations/types/UpdateDomains';
+import { GetRuntimes } from '../../graphql/queries/types/GetRuntimes';
 
 const GetDomainsQuery = loader('../../graphql/queries/getDomains.graphql');
 const UpdateDomainsMutation = loader(
@@ -80,7 +81,17 @@ function SecuritySettings() {
   const [updateAllowedDomain] = useMutation<
     UpdateDomains,
     UpdateDomainsVariables
-  >(UpdateDomainsMutation, { onCompleted: onCompleteUpdateDomain });
+  >(UpdateDomainsMutation, {
+    update: (cache, { data }) => {
+      if (data && data.updateSettings) {
+        cache.writeQuery({
+          query: GetDomainsQuery,
+          data: { settings: data.updateSettings }
+        });
+      }
+    },
+    onCompleted: onCompleteUpdateDomain
+  });
   const {
     value,
     isValid,
