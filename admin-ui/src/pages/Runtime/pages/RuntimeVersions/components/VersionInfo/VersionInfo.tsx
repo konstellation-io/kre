@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import ROUTE from '../../../../../../constants/routes';
 
 import { formatDate } from '../../../../../../utils/format';
@@ -14,33 +14,25 @@ import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 
 import cx from 'classnames';
 import styles from './VersionInfo.module.scss';
+import { Link } from 'react-router-dom';
 
 type Props = {
   version: GetVersionConfStatus_versions;
 };
 function VersionInfo({ version }: Props) {
-  const history = useHistory();
   const { runtimeId } = useParams();
 
   const isPublishedVersion = version.status === VersionStatus.PUBLISHED;
 
-  function onVersionClick() {
-    const versionStatusPreviewPath = buildRoute.version(
-      ROUTE.RUNTIME_VERSION_STATUS,
-      runtimeId,
-      version.id
-    );
-
-    history.push(versionStatusPreviewPath);
-  }
+  const versionPath = buildRoute.version(
+    ROUTE.RUNTIME_VERSION_STATUS,
+    runtimeId,
+    version.id
+  );
 
   return (
-    <>
-      <div
-        className={styles.container}
-        id={`versionInfoElement_${version.id}`}
-        onClick={onVersionClick}
-      >
+    <Link to={versionPath}>
+      <div className={styles.container} id={`versionInfoElement_${version.id}`}>
         <div className={styles.col1}>
           <div className={styles.labelContainer}>
             <div className={cx(styles.label, styles[version.status])}>
@@ -85,7 +77,7 @@ function VersionInfo({ version }: Props) {
           )}
         </div>
       </div>
-    </>
+    </Link>
   );
 }
 

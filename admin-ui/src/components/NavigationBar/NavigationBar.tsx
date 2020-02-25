@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom';
 
 import ROUTE from '../../constants/routes';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
+import ConditionalLink from '../ConditionalLink/ConditionalLink';
 import HexButton from './HexButton';
 import MultiHexButton from './MultiHexButton';
 import AddHexButton from './AddHexButton';
@@ -36,13 +37,14 @@ function NavigationBar() {
   const buttons = runtimes.map((runtime: GetRuntimes_runtimes, idx: number) => {
     const disabled = runtime.status === RuntimeStatus.CREATING;
     return (
-      <NavLink
+      <ConditionalLink
         key={`NavBarItem_${idx}`}
+        LinkType={NavLink}
         to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}
-        activeClassName={styles.active}
-        className={styles.link}
-        onClick={e => {
-          disabled && e.preventDefault();
+        disabled={disabled}
+        linkProps={{
+          activeClassName: styles.active,
+          className: styles.link
         }}
       >
         <HexButton
@@ -50,7 +52,7 @@ function NavigationBar() {
           label={runtime.name}
           disabled={disabled}
         />
-      </NavLink>
+      </ConditionalLink>
     );
   });
 

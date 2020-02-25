@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router';
 import Button from '../Button/Button';
 import ROUTE from '../../constants/routes';
 
@@ -14,7 +13,6 @@ export type Props = {
 };
 
 function Alert({ type, message, runtimeId }: Props) {
-  const history = useHistory();
   return (
     <div className={styles.container}>
       <div className={cx(styles.label, styles[type.toLowerCase()])}>{type}</div>
@@ -23,9 +21,7 @@ function Alert({ type, message, runtimeId }: Props) {
       </div>
       <Button
         label="GO TO RUNTIME"
-        onClick={() =>
-          history.push(buildRoute.runtime(ROUTE.RUNTIME, runtimeId))
-        }
+        to={buildRoute.runtime(ROUTE.RUNTIME, runtimeId)}
       />
     </div>
   );

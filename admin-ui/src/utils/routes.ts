@@ -1,4 +1,3 @@
-// TODO: use this function everywhere
 export const buildRoute = {
   runtime: function(route: string, runtimeId: string = ''): string {
     return route.replace(':runtimeId', runtimeId);

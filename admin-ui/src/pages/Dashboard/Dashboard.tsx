@@ -59,10 +59,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
   const runtimes = data.map((runtime: GetRuntimes_runtimes, idx: number) => (
     <Hexagon
       key={`runtimeHexagon-${idx}`}
-      onClick={() => {
-        const runtimePath = buildRoute.runtime(ROUTE.RUNTIME, runtime.id);
-        history.push(runtimePath);
-      }}
+      to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}
       id={runtime.id}
       status={runtime.status}
       versionStatus={getVersionStatus(runtime)}
@@ -80,7 +77,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     <HexagonBorder
       text="+ ADD RUNTIME"
       key="add_runtime"
-      onClick={() => history.push(ROUTE.NEW_RUNTIME)}
+      to={ROUTE.NEW_RUNTIME}
     />
   );
 

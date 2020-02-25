@@ -5,18 +5,15 @@ import animationData from './HexagonBorder.json';
 
 import styles from './Hexagon.module.scss';
 import cx from 'classnames';
+import { Link } from 'react-router-dom';
 
 type Props = {
+  to: string;
   size?: number;
-  onClick?: any;
   text: string;
 };
 
-function HexagonBorder({
-  size = 360,
-  onClick = function() {},
-  text = 'label'
-}: Props) {
+function HexagonBorder({ to = '', size = 360, text = 'label' }: Props) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -35,12 +32,13 @@ function HexagonBorder({
         />
         <div className={styles.hexagonBorderText}>{text}</div>
       </div>
-      <div
-        className={styles.hexContent}
-        onClick={onClick}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      />
+      <Link to={to}>
+        <div
+          className={styles.hexContent}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        />
+      </Link>
     </div>
   );
 }
