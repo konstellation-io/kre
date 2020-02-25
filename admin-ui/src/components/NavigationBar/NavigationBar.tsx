@@ -1,12 +1,13 @@
 import { get } from 'lodash';
 
 import React from 'react';
-import { buildRoute, ConditionalLink } from '../../utils/routes';
+import { buildRoute } from '../../utils/routes';
 
 import { NavLink } from 'react-router-dom';
 
 import ROUTE from '../../constants/routes';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
+import ConditionalLink from '../ConditionalLink/ConditionalLink';
 import HexButton from './HexButton';
 import MultiHexButton from './MultiHexButton';
 import AddHexButton from './AddHexButton';

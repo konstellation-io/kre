@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
 import Lottie from '../../Lottie/Lottie';
+import ConditionalLink from '../../ConditionalLink/ConditionalLink';
 import { STATES } from '../../../constants/application';
 import animationData from './Hexagon.json';
 
 import { VersionEnvStatus } from '../../../pages/Dashboard/Dashboard';
 import { RuntimeStatus } from '../../../graphql/types/globalTypes';
-import { ConditionalLink } from '../../../utils/routes';
 
 import styles from './Hexagon.module.scss';
 import cx from 'classnames';
