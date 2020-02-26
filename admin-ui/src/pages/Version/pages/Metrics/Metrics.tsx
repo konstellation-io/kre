@@ -13,11 +13,15 @@ import dataComplete from './data_complete.json';
 
 import cx from 'classnames';
 import styles from './Metrics.module.scss';
+import {
+  GetVersionConfStatus_versions,
+  GetVersionConfStatus_runtime
+} from '../../../../graphql/queries/types/GetVersionConfStatus';
 
 const VERSION_SIMPLE = 'price-estimator-v1';
 const VERSION_COMPLETE = 'price-estimator-v2';
 
-function getData(versionName: string) {
+function getData(versionName?: string) {
   let data;
 
   switch (versionName) {
@@ -33,8 +37,8 @@ function getData(versionName: string) {
 }
 
 type Props = {
-  runtime: any;
-  version: any;
+  runtime?: GetVersionConfStatus_runtime;
+  version?: GetVersionConfStatus_versions;
 };
 
 function Metrics({ runtime, version }: Props) {
@@ -42,7 +46,7 @@ function Metrics({ runtime, version }: Props) {
 
   const [expanded, setExpanded] = useState<string>('');
 
-  const data = getData(version.name);
+  const data = getData(version && version.name);
 
   function toggleExpanded(nodeId: string): void {
     if (expanded) {
@@ -81,7 +85,10 @@ function Metrics({ runtime, version }: Props) {
 
   return (
     <div className={styles.container}>
-      <DashboardTitle runtimeName={runtime.name} versionName={version.name} />
+      <DashboardTitle
+        runtimeName={runtime && runtime.name}
+        versionName={version && version.name}
+      />
       <div className={styles.content}>
         <div
           className={cx(styles.wrapper, {

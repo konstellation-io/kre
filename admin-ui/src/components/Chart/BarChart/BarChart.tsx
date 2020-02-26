@@ -9,8 +9,8 @@ import {
 } from '../../../utils/d3';
 
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
-import { axisBottom, axisLeft } from 'd3-axis';
-import { select } from 'd3-selection';
+import { axisBottom, axisLeft, Axis } from 'd3-axis';
+import { select, Selection } from 'd3-selection';
 
 import styles from './BarChart.module.scss';
 
@@ -46,16 +46,16 @@ function BarChart({ width, height, margin, data }: Props) {
     useTooltip: true
   });
 
-  let g: any;
+  let g: Selection<SVGGElement, unknown, null, undefined>;
   let xScale: ScaleBand<string>;
   let yScale: ScaleLinear<number, number>;
-  let axes: any;
-  let xAxis: any;
-  let yAxis: any;
-  let xAxisG: any;
-  let yAxisG: any;
-  let barsG: any;
-  let bgBarsG: any;
+  let axes: Selection<SVGGElement, unknown, null, undefined>;
+  let xAxis: Axis<string>;
+  let yAxis: Axis<number | { valueOf(): number }>;
+  let xAxisG: Selection<SVGGElement, unknown, null, undefined>;
+  let yAxisG: Selection<SVGGElement, unknown, null, undefined>;
+  let barsG: Selection<SVGGElement, unknown, null, undefined>;
+  let bgBarsG: Selection<SVGGElement, unknown, null, undefined>;
   let marginLeft: number;
   let marginTop: number;
 
@@ -149,16 +149,14 @@ function BarChart({ width, height, margin, data }: Props) {
       .text((d: string) => d.toUpperCase());
 
     let offset = 0;
-    var nodeWidth = (d: any) => d.getBBox().width;
-    lg.attr('transform', function(d: any, i: number) {
+    var nodeWidth = (d: SVGGraphicsElement) => d.getBBox().width;
+    lg.attr('transform', function(d: string, i: number) {
       let x = offset;
-      // @ts-ignore
       offset += nodeWidth(this) + 10;
       return `translate(${x},${0 - 30})`;
     });
 
     legend.attr('transform', function() {
-      // @ts-ignore
       return `translate(${(width - nodeWidth(this)) / 2},${0})`;
     });
 
@@ -175,16 +173,14 @@ function BarChart({ width, height, margin, data }: Props) {
       .append('rect')
       .attr('class', (d: D) => getClassFromLabel(d.x))
       .classed(styles.bgBar, true)
-      .attr('x', (d: D) => xScale(d.x))
+      .attr('x', (d: D) => xScale(d.x) || 0)
       .attr('y', (d: D) => yScale(100))
       .attr('height', (d: D) => innerHeight - yScale(100))
       .attr('width', barWidth)
       .on('mouseenter', function(d: D) {
-        // @ts-ignore
         events.barHighlight(d, this, true);
       })
       .on('mouseleave', function(d: D) {
-        // @ts-ignore
         events.barHighlight(d, this, false);
       });
 
@@ -195,22 +191,22 @@ function BarChart({ width, height, margin, data }: Props) {
       .append('rect')
       .attr('class', (d: D) => getClassFromLabel(d.x))
       .classed(styles.bar, true)
-      .attr('x', (d: D) => xScale(d.x))
+      .attr('x', (d: D) => xScale(d.x) || 0)
       .attr('y', (d: D) => yScale(d.y))
       .attr('height', (d: D) => innerHeight - yScale(d.y))
       .attr('width', barWidth);
   }
 
   const events = {
-    barHighlight: function(d: D, node: any, enter: boolean): void {
+    barHighlight: function(d: D, node: SVGRectElement, enter: boolean): void {
       if (enter) {
         const barWidth: number = xScale.bandwidth();
         const content = getTooltipContent(d);
         const dx = marginLeft + (xScale(d.x) || 0) + barWidth / 2;
         const dy = marginTop + (yScale(d.y) || 0);
         tooltipAction.showTooltip({
-          svg: svg.current,
-          tooltip: tooltip.current,
+          svg: svg.current as SVGElement,
+          tooltip: tooltip.current as HTMLDivElement,
           content,
           dx,
           dy

@@ -1,8 +1,33 @@
 import React, { useEffect, useRef } from 'react';
-import lottie from 'lottie-web/build/player/lottie_light';
+import lottie, {
+  AnimationConfigWithPath,
+  AnimationConfigWithData,
+  AnimationDirection,
+  AnimationItem
+} from 'lottie-web/build/player/lottie_light';
+
+interface LottieOptions {
+  loop?: boolean;
+  autoplay?: boolean;
+  animationData: object;
+}
+type Props = {
+  options: LottieOptions;
+  segments: [number, number] | [number, number][];
+  forceSegments: boolean;
+  width: number;
+  height: number;
+  speed?: number;
+  direction?: AnimationDirection;
+  style?: object;
+};
 
 function Lottie({
-  options,
+  options = {
+    loop: true,
+    autoplay: true,
+    animationData: {}
+  },
   segments,
   forceSegments,
   width,
@@ -10,11 +35,11 @@ function Lottie({
   speed = 1,
   direction = 1,
   style
-}: any) {
+}: Props) {
   const { loop, autoplay, animationData } = options;
 
-  let el = useRef<any>(null);
-  let animRef = useRef<any>(null);
+  let el = useRef<HTMLDivElement>(null);
+  let animRef = useRef<AnimationItem | null>(null);
 
   useEffect(() => {
     if (!animRef.current) {
@@ -24,7 +49,7 @@ function Lottie({
         return;
       }
 
-      const lottieOptions = {
+      const lottieOptions: AnimationConfigWithPath | AnimationConfigWithData = {
         container: el.current,
         renderer: 'svg',
         loop: loop !== false,
@@ -33,7 +58,7 @@ function Lottie({
         ...options
       };
 
-      let anim = lottie.loadAnimation(lottieOptions);
+      let anim: AnimationItem = lottie.loadAnimation(lottieOptions);
       anim.setSpeed(speed);
       anim.setDirection(direction);
 

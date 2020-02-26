@@ -16,7 +16,6 @@ import styles from './Login.module.scss';
 function verifyEmail(value: string) {
   return CHECK.getValidationError([
     CHECK.isFieldNotEmpty(value),
-    CHECK.isFieldAnString(value),
     CHECK.isEmailValid(value)
   ]);
 }

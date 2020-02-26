@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useHistory } from 'react-router';
 import { History } from 'history';
 import ROUTE from '../../constants/routes';
@@ -81,7 +81,7 @@ function getDashboardContent({ data, error, loading, history }: Props) {
     />
   );
 
-  let runtimesPanel: any = <HexagonPanel>{runtimes}</HexagonPanel>;
+  let runtimesPanel: ReactElement = <HexagonPanel>{runtimes}</HexagonPanel>;
   if (runtimes.length === 0) {
     runtimesPanel = (
       <Modal

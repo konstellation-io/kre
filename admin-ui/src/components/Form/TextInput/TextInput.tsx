@@ -1,4 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  MouseEvent,
+  KeyboardEvent,
+  FocusEvent,
+  ChangeEvent,
+  ReactElement
+} from 'react';
 
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
@@ -29,7 +37,7 @@ type Props = {
   whiteColor?: boolean;
   onlyNumbers?: boolean;
   positive?: boolean;
-  formValue?: any;
+  formValue?: string | number;
   customClassname?: string;
   hidden?: boolean;
   autoFocus?: boolean;
@@ -66,7 +74,7 @@ function TextInput({
     setValue(formValue);
   }, [formValue, setValue]);
 
-  function updateValue(newValue: any) {
+  function updateValue(newValue: string) {
     if (
       !onlyNumbers ||
       (onlyNumbers && isFieldAnInteger(newValue, positive).valid)
@@ -76,24 +84,26 @@ function TextInput({
     }
   }
 
-  function onType(e: any) {
+  function onType(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const newValue = e.target.value;
 
     updateValue(newValue);
   }
 
-  function onKeyPress(e: any) {
+  function onKeyPress(
+    e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     if (e.which === 13 && !textArea) {
       // Enter key
       onSubmit(value);
     }
   }
 
-  function onInputBlur(e: any) {
+  function onInputBlur(e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     onBlur();
   }
 
-  function toggleVisibility(e: any) {
+  function toggleVisibility(e: MouseEvent<HTMLDivElement>) {
     setIsHidden(!isHidden);
   }
 
@@ -110,7 +120,7 @@ function TextInput({
     onBlur: onInputBlur,
     style: { height }
   };
-  const inputElement =
+  const inputElement: ReactElement =
     textArea && !isHidden ? (
       <textarea
         {...inputProps}

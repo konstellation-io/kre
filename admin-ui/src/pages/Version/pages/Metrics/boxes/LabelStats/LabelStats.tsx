@@ -12,7 +12,6 @@ import styles from './LabelStats.module.scss';
 
 type Props = {
   withBgBars?: boolean;
-  wrapper?: any;
   toggleExpanded?: Function;
   nodeId?: string;
   data: Serie[];

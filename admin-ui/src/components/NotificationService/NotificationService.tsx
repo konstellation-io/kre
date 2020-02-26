@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import RuntimeCreated from './Services/RuntimeCreated/RuntimeCreated';
 
 import { useQuery } from '@apollo/react-hooks';
@@ -9,7 +9,7 @@ import styles from './Notification.module.scss';
 function NotificationService() {
   const { data } = useQuery(GET_LOGIN_STATUS);
 
-  let notificationServices: any = [];
+  let notificationServices: ReactElement[] = [];
 
   if (data && data.loggedIn) {
     notificationServices = [<RuntimeCreated key="createRuntimeService" />];

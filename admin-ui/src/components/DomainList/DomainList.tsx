@@ -22,7 +22,7 @@ function DomainList({
   if (loading) return <SpinnerCircular />;
   if (error) return <ErrorMessage />;
 
-  const domains = data.map((domain: any, idx: number) => (
+  const domains = data.map((domain: string, idx: number) => (
     <div className={styles.row} key={`domainListElement${idx}`}>
       <p className={styles.domainPosition}>{idx + 1}</p>
       <p className={styles.domainName} data-testid={`domainListName${idx}`}>

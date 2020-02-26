@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, UIEvent } from 'react';
 import useForm from '../../hooks/useForm';
 
 import Header from '../../components/Header/Header';
@@ -105,7 +105,7 @@ function UsersActivity() {
     }
   }, [data, setUsersActivityData]);
 
-  function handleOnScroll({ currentTarget }: any) {
+  function handleOnScroll({ currentTarget }: UIEvent<HTMLDivElement>) {
     const actualScroll = currentTarget.scrollTop + currentTarget.clientHeight;
     const scrollLimit = SCROLL_THRESHOLD + nPages * LIST_STEP_HEIGHT;
 

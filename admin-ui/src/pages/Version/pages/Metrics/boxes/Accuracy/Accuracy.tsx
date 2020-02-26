@@ -12,7 +12,6 @@ import styles from './Accuracy.module.scss';
 
 type Props = {
   withBgBars?: boolean;
-  wrapper?: any;
   toggleExpanded?: Function;
   nodeId?: string;
   data: D[];

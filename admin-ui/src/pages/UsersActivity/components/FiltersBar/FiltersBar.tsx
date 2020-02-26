@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 
 import Calendar from '../../../../components/Form/Calendar/Calendar';
 import Select from '../../../../components/Form/Select/Select';
@@ -24,7 +24,7 @@ export const typeToText = {
 type FormFieldProps = {
   error?: ApolloError;
   form: Form;
-  onSubmit: Function;
+  onSubmit: (e: MouseEvent<HTMLDivElement>) => void;
   types: string[];
   users: string[];
 };

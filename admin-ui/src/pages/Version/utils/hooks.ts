@@ -105,14 +105,20 @@ export default function useVersionAction(runtimeId: string) {
     el => el
   );
 
-  function getMutationVars(versionId: string, comment?: string) {
-    const variables = {
+  type MutationsVariables = {
+    variables: PublishVersionVariables;
+  };
+  function getMutationVars(
+    versionId: string,
+    comment?: string
+  ): MutationsVariables {
+    const variables: MutationsVariables = {
       variables: {
         input: {
           versionId: versionId
         }
-      }
-    } as any;
+      } as PublishVersionVariables
+    };
 
     if (comment) {
       variables.variables.input.comment = comment;

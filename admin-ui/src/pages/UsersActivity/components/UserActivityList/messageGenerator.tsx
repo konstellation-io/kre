@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import ROUTE from '../../../../constants/routes';
 import { buildRoute } from '../../../../utils/routes';
@@ -22,14 +22,16 @@ enum VarTypes {
   CONFIG_KEYS = 'CONFIG_KEYS'
 }
 
-function getVar(text: any) {
+function getVar(text: string | ReactElement | undefined): ReactElement {
   return <strong>{text}</strong>;
 }
 
+type Message = ReactElement | null;
+
 export default function getMessage(
   userActivity: GetUsersActivity_userActivityList
-): [any, string | undefined] {
-  let message: any = '';
+): [Message | null, string | undefined] {
+  let message: Message | null = null;
 
   const vars = userActivity.vars.reduce(
     (

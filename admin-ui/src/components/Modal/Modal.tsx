@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, MouseEvent } from 'react';
 
 import HorizontalBar from '../Layout/HorizontalBar/HorizontalBar';
 import Button from '../Button/Button';
@@ -12,7 +12,7 @@ type Props = {
   actionButtonLabel: string;
   to?: string;
   blocking?: boolean;
-  onAccept?: Function;
+  onAccept?: (e: MouseEvent<HTMLDivElement>) => void;
   onClose?: Function | null;
 };
 

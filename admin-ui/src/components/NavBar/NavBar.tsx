@@ -1,12 +1,13 @@
 import { has } from 'lodash';
 
-import React from 'react';
+import React, { MouseEvent, FunctionComponent } from 'react';
 import IconWarning from '@material-ui/icons/Warning';
 import IconArrowForward from '@material-ui/icons/ArrowForward';
 import { NavLink } from 'react-router-dom';
 
 import styles from './NavBar.module.scss';
 import cx from 'classnames';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export enum ItemSize {
   SMALL = 'size_s',
@@ -16,7 +17,7 @@ export enum ItemSize {
 export type Tab = {
   label: string;
   route: string;
-  Icon?: any;
+  Icon?: FunctionComponent<SvgIconProps>;
   exact?: boolean;
   disabled?: boolean;
   showWarning?: boolean;
@@ -34,7 +35,10 @@ function NavBar({
   itemSize = ItemSize.MEDIUM,
   showItemArrows = false
 }: Props) {
-  function handleClick(event: any, disabled: boolean = false) {
+  function handleClick(
+    event: MouseEvent<HTMLAnchorElement>,
+    disabled: boolean = false
+  ) {
     if (disabled) {
       event.preventDefault();
     }
@@ -48,7 +52,9 @@ function NavBar({
         to={tab.route}
         activeClassName={styles.active}
         exact={exact}
-        onClick={e => handleClick(e, tab.disabled)}
+        onClick={(e: MouseEvent<HTMLAnchorElement>) =>
+          handleClick(e, tab.disabled)
+        }
         className={cx({ [styles.disabled]: tab.disabled })}
         replace
       >

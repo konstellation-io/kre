@@ -18,37 +18,23 @@ test('if isFieldNotEmpty makes correct validations', () => {
   expect(numberZero.valid).toBeTruthy();
 });
 
-test('if isFieldAnString makes correct validations', () => {
-  const numberInput = CHECK.isFieldAnString(1);
-  const stringInput = CHECK.isFieldAnString('a');
-  const functionInput = CHECK.isFieldAnString(function() {});
-  const booleanInput = CHECK.isFieldAnString(false);
-
-  expect(functionInput.valid).toBeFalsy();
-  expect(booleanInput.valid).toBeFalsy();
-  expect(numberInput.valid).toBeFalsy();
-
-  expect(stringInput.valid).toBeTruthy();
-});
-
 test('if isFieldAnInteger makes correct validations', () => {
-  const numberInput = CHECK.isFieldAnInteger(1);
-  const negativeNumberInput = CHECK.isFieldAnInteger(-50);
-  const positiveNumberInput = CHECK.isFieldAnInteger(50);
-  const bigNumberInput = CHECK.isFieldAnInteger(9999999999);
-  const tinyNumberInput = CHECK.isFieldAnInteger(0.00000001);
+  const numberInput = CHECK.isFieldAnInteger('1');
+  const negativeNumberInput = CHECK.isFieldAnInteger('-50');
+  const positiveNumberInput = CHECK.isFieldAnInteger('50');
+  const bigNumberInput = CHECK.isFieldAnInteger('9999999999');
+  const tinyNumberInput = CHECK.isFieldAnInteger('0.00000001');
   const stringInput = CHECK.isFieldAnInteger('a');
-  const functionInput = CHECK.isFieldAnInteger(function() {});
-  const booleanInput = CHECK.isFieldAnInteger(false);
 
   const negativeNumberInputWithPositiveCheck = CHECK.isFieldAnInteger(
-    -50,
+    '-50',
     true
   );
-  const positiveNumberInputWithPositiveCheck = CHECK.isFieldAnInteger(50, true);
+  const positiveNumberInputWithPositiveCheck = CHECK.isFieldAnInteger(
+    '50',
+    true
+  );
 
-  expect(functionInput.valid).toBeFalsy();
-  expect(booleanInput.valid).toBeFalsy();
   expect(stringInput.valid).toBeFalsy();
   expect(negativeNumberInputWithPositiveCheck.valid).toBeFalsy();
 
@@ -94,17 +80,12 @@ test('if getValidationError returns errors', () => {
   const isFieldNotEmptyError = CHECK.getValidationError([
     CHECK.isFieldNotEmpty('')
   ]);
-  const isFieldAnStringError = CHECK.getValidationError([
-    CHECK.isFieldNotEmpty('1234'),
-    CHECK.isFieldAnString(1234)
-  ]);
   const isFieldValid = CHECK.getValidationError([
     CHECK.isFieldNotEmpty('1234'),
     CHECK.isFieldAnInteger('1234')
   ]);
 
   expect(isFieldNotEmptyError).toBe('This field cannot be empty');
-  expect(isFieldAnStringError).toBe('Invalid type, field is not a text');
   expect(isFieldValid).toBe('');
 });
 

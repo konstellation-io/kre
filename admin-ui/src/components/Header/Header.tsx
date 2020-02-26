@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 
 import Settings from '../../components/Settings/Settings';
 
@@ -14,7 +14,7 @@ import styles from './Header.module.scss';
 const GetUserEmailQuery = loader('../../graphql/queries/getUserEmail.graphql');
 
 type Props = {
-  children?: any;
+  children?: ReactElement | ReactElement[] | null;
 };
 const Header: FunctionComponent<Props> = ({ children }) => {
   const { data, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);

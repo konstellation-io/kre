@@ -3,8 +3,8 @@ import useChart from '../../hooks/useChart';
 import ReactDOMServer from 'react-dom/server';
 import VersionNode, { TYPES } from '../Shape/Node/Node';
 
-import { event, select } from 'd3-selection';
-import { scaleBand } from 'd3-scale';
+import { event, select, Selection } from 'd3-selection';
+import { scaleBand, ScaleBand } from 'd3-scale';
 import { max, range } from 'd3-array';
 import { zoom } from 'd3-zoom';
 import { centerText, wrap, getArrowD } from '../../utils/d3';
@@ -27,7 +27,18 @@ function cleanup(component: any) {
     .remove();
 }
 
-function canBeRendered(width: number, height: number, margin?: any): boolean {
+type Margin = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+};
+
+function canBeRendered(
+  width: number,
+  height: number,
+  margin?: Margin
+): boolean {
   const horizontalMargin: number = (margin && margin.left + margin.right) || 0;
   const verticalMargin: number = (margin && margin.top + margin.bottom) || 0;
   const widthOk: boolean = width > 0 && width > horizontalMargin;
@@ -105,11 +116,11 @@ function VersionStatusViewer({
   const [initialized, setInitialized] = useState<boolean>(false);
 
   const nodeIdToIndex: any = {};
-  let g: any;
-  let defs: any;
+  let g: Selection<SVGGElement, unknown, null, undefined>;
+  let defs: Selection<SVGGElement, unknown, null, undefined>;
   let workflowsTag: any;
-  let xScale: any;
-  let fontSize: any;
+  let xScale: ScaleBand<string>;
+  let fontSize: string;
   const ref = useRef<any>({
     workflowsG: null,
     workflows: {
@@ -188,6 +199,10 @@ function VersionStatusViewer({
   }
 
   function initialize() {
+    if (svg.current === null) {
+      return;
+    }
+
     const svgSelection = select(svg.current);
 
     g = svgSelection
@@ -204,11 +219,11 @@ function VersionStatusViewer({
 
     // Adds zoom
     const zoomed = () => g.attr('transform', event.transform);
-    const zoomFunc = zoom()
+    const zoomFunc = zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 7])
       .translateExtent(zoomLimits)
       .on('zoom', zoomed);
-    // @ts-ignore
+
     svgSelection.call(zoomFunc);
 
     // Initialize scales
@@ -281,7 +296,7 @@ function VersionStatusViewer({
           (d: Workflow, idx: number) => `translate(0,${idx * 100})`
         );
     },
-    node: function(container: any, d: Node) {
+    node: function(container: SVGGElement, d: Node) {
       select(container)
         .append('g')
         .attr('transform', 'translate(0, 0)')
@@ -312,7 +327,6 @@ function VersionStatusViewer({
           events.nodeHighlight(d, false);
         })
         .each(function(d: Node) {
-          // @ts-ignore
           create.node(this, d);
         });
       nodesContainer
@@ -396,7 +410,6 @@ function VersionStatusViewer({
         .classed(styles.edgeLine, true)
         .attr(
           'x1',
-          // @ts-ignore
           (d: Edge) =>
             xScale(nodeIdToIndex[d.fromNode]) + ref.current.nodeWidth - 2
         )
@@ -410,7 +423,6 @@ function VersionStatusViewer({
         .classed(styles.lineContainer, true)
         .attr(
           'x1',
-          // @ts-ignore
           (d: Edge) =>
             xScale(nodeIdToIndex[d.fromNode]) + ref.current.nodeWidth - 2
         )
@@ -418,11 +430,9 @@ function VersionStatusViewer({
         .attr('y1', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
         .attr('y2', (DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio) / 2)
         .on('mouseenter', function() {
-          // @ts-ignore
           events.edgeHighlight(this, true);
         })
         .on('mouseleave', function() {
-          // @ts-ignore
           events.edgeHighlight(this, false);
         });
     }
@@ -448,7 +458,6 @@ function VersionStatusViewer({
     // Updates node status
     nodes: function() {
       ref.current.nodes.group.each(function(d: Node) {
-        // @ts-ignore
         select(this)
           .select('g')
           .html(
@@ -484,7 +493,6 @@ function VersionStatusViewer({
           ? ref.current.nodeHeight * STROKE_WIDTH_PERC * 1.2
           : ref.current.nodeHeight * STROKE_WIDTH_PERC;
 
-      // @ts-ignore
       const lines = select(node.parentNode).selectAll(
         `line.${styles.edgeLine}`
       );

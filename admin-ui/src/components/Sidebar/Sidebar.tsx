@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import NavBar, { Tab } from '../NavBar/NavBar';
@@ -10,7 +10,7 @@ type Props = {
   title: string;
   subtitle?: string;
   tabs: Tab[];
-  subheader?: any;
+  subheader?: ReactElement;
 };
 
 function Sidebar({ title, tabs, subtitle = '', subheader = undefined }: Props) {

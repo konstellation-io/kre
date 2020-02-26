@@ -7,7 +7,7 @@ import animationData from './StateCircle.json';
 import cx from 'classnames';
 import styles from './StateCircle.module.scss';
 
-const ANIM_SEGMENTS: { [key: string]: number[] } = {
+const ANIM_SEGMENTS: { [key: string]: [number, number] } = {
   [STATES.INITIALIZING]: [0, 119],
   [STATES.LOADING]: [120, 399],
   [STATES.DISABLED]: [400, 799],

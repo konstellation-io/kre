@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '../Button/Button';
 
@@ -8,8 +8,8 @@ import styles from './Notification.module.scss';
 export type Props = {
   message: string;
   buttonLabel: string;
-  buttonAction: Function;
-  onCloseNotification: Function;
+  buttonAction: (e: MouseEvent<HTMLDivElement>) => void;
+  onCloseNotification: (e: MouseEvent<HTMLDivElement>) => void;
 };
 
 function Notification({

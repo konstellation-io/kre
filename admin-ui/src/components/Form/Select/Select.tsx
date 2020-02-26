@@ -32,8 +32,8 @@ function Select({
   formSelectedOption,
   valuesMapper = {}
 }: Props) {
-  const inputEl = useRef(null);
-  const containerEl = useRef(null);
+  const inputEl = useRef<HTMLInputElement>(null);
+  const containerEl = useRef<HTMLDivElement>(null);
   const [selectedOption, setSelectedOption] = useState<
     string | undefined | null
   >(placeholder || defaultOption);
@@ -58,8 +58,10 @@ function Select({
 
     document[listenerAction]('contextmenu', handleClickOutside);
     document[listenerAction]('click', closeOptions);
-    // @ts-ignore
-    containerEl.current[listenerAction]('scroll', closeOptions);
+
+    if (containerEl.current !== null) {
+      containerEl.current[listenerAction]('scroll', closeOptions);
+    }
 
     setOptionsOpened(show);
   }
@@ -72,10 +74,11 @@ function Select({
     changeOptionsState(false);
   }
 
-  function handleClickOutside(e: any) {
+  function handleClickOutside(e: Event) {
+    const inputNode = inputEl.current;
+    const target = e.target as HTMLElement;
     // Has the user clicked outside the selector options?
-    // @ts-ignore
-    if (inputEl.current && !inputEl.current.contains(e.target)) {
+    if (inputNode !== null && !inputNode.contains(target)) {
       closeOptions();
     }
   }

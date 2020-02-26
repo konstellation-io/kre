@@ -15,12 +15,12 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink, split } from 'apollo-link';
 import { WebSocketLink } from 'apollo-link-ws';
-import { onError } from 'apollo-link-error';
+import { onError, ErrorResponse } from 'apollo-link-error';
 import { createUploadLink } from 'apollo-upload-client';
 import { getMainDefinition } from 'apollo-utilities';
 import { GetLogs_nodeLogs } from './graphql/subscriptions/types/GetLogs';
 
-export let cache: any = null;
+export let cache: InMemoryCache;
 
 export interface LocalState {
   loggedIn: boolean;
@@ -35,7 +35,7 @@ config
     const API_BASE_URL_WS = envVariables.API_BASE_URL.replace('http', 'ws');
 
     cache = new InMemoryCache();
-    const errorLink = onError(({ networkError }: any) => {
+    const errorLink = onError(({ networkError }: ErrorResponse) => {
       if (
         get(networkError, 'statusCode') === 400 &&
         get(networkError, 'result.message') === 'missing or malformed jwt' &&
@@ -85,7 +85,10 @@ config
 
     // Sets initial cache
     cache.writeData(defaultCache);
-    client.onResetStore(() => cache.writeData(defaultCache));
+    // onResetStore callback must return a Promise
+    client.onResetStore(() =>
+      Promise.resolve(() => cache.writeData(defaultCache))
+    );
 
     ReactDOM.render(
       <ApolloProvider client={client}>

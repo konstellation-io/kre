@@ -7,7 +7,7 @@ import {
   runtimeCreated_runtimeCreated,
   runtimeCreated
 } from '../../../../graphql/subscriptions/types/runtimeCreated';
-import { useSubscription } from '@apollo/react-hooks';
+import { useSubscription, SubscriptionHookOptions } from '@apollo/react-hooks';
 import ROUTE from '../../../../constants/routes';
 
 const RuntimeCreatedSubscription = loader(
@@ -28,7 +28,7 @@ function RuntimeCreated() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useSubscription<runtimeCreated>(RuntimeCreatedSubscription, {
-    onSubscriptionData: (msg: any) => {
+    onSubscriptionData: (msg: SubscriptionHookOptions<runtimeCreated>) => {
       const runtime = get(msg, 'subscriptionData.data.runtimeCreated');
       addNotification(runtime);
     }

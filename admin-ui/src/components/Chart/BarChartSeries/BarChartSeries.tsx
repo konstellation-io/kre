@@ -3,11 +3,12 @@ import useChart, { Margin } from '../../../hooks/useChart';
 import { getAxesMargins, getClassFromLabel } from '../../../utils/d3';
 
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
-import { axisBottom, axisLeft } from 'd3-axis';
-import { select } from 'd3-selection';
+import { axisBottom, axisLeft, Axis } from 'd3-axis';
+import { select, Selection } from 'd3-selection';
 import { max } from 'd3-array';
 
 import styles from './BarChartSeries.module.scss';
+import { get } from 'lodash';
 
 const X_SCALE_PADDING_INNER: number = 0.45;
 const X_SCALE_PADDING_OUTER: number = 0.5;
@@ -39,21 +40,21 @@ function BarChartSeries({ width, height, margin, data }: Props) {
     initialize
   });
 
-  let g: any;
+  let g: Selection<SVGGElement, unknown, null, undefined>;
   let seriesScale: ScaleBand<string>;
   let xScale1: ScaleLinear<number, number>;
   let xScale2: ScaleLinear<number, number>;
   let yScale: ScaleBand<string>;
-  let axes: any;
-  let xAxis1: any;
-  let xAxis2: any;
-  let yAxis: any;
-  let yAxisG: any;
-  let seriesG: any;
-  let series: any;
-  let bars: any;
-  let barsG: any;
-  let rowBgG: any;
+  let axes: Selection<SVGGElement, unknown, null, undefined>;
+  let xAxis1: Axis<number | { valueOf(): number }>;
+  let xAxis2: Axis<number | { valueOf(): number }>;
+  let yAxis: Axis<string>;
+  let yAxisG: Selection<SVGGElement, unknown, null, undefined>;
+  let seriesG: Selection<SVGGElement, unknown, null, undefined>;
+  let series: Selection<SVGGElement, Serie, SVGGElement, unknown>;
+  let bars: Selection<SVGGElement, D, SVGGElement, unknown>;
+  let barsG: Selection<SVGGElement, Serie, SVGGElement, unknown>;
+  let rowBgG: Selection<SVGGElement, unknown, null, undefined>;
   let marginLeft: number;
   let marginTop: number;
 
@@ -133,7 +134,9 @@ function BarChartSeries({ width, height, margin, data }: Props) {
     yAxis.scale(yScale);
     yAxisG.call(yAxis);
 
-    yAxisG.selectAll('text').attr('class', (d: string) => getClassFromLabel(d));
+    yAxisG
+      .selectAll<SVGTextElement, string>('text')
+      .attr('class', (d: string) => getClassFromLabel(d));
 
     // Remove unwanted axes lines
     yAxisG.select('.domain').remove();
@@ -160,7 +163,6 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('transform', `translate(0,${innerHeight})`)
       .each(function(d: Serie) {
         const axis = percCharts.includes(d.title) ? xAxis1 : xAxis2;
-        // @ts-ignore
         select(this).call(axis);
       });
 
@@ -189,7 +191,7 @@ function BarChartSeries({ width, height, margin, data }: Props) {
     const barPadding = yScale.step() * yScale.paddingInner();
     const rowHeight = yScale.bandwidth() + barPadding;
     rowBgG
-      .selectAll(`.${styles.rowBg}`)
+      .selectAll<SVGElement, D>(`.${styles.rowBg}`)
       .data(yDomain)
       .enter()
       .append('rect')
@@ -201,13 +203,11 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('height', rowHeight)
       .attr('fill', 'transparent')
       .attr('fill-opacity', 0.5)
-      .on('mouseenter', function(d: D) {
-        // @ts-ignore
-        events.rowHighlight(d, this, true);
+      .on('mouseenter', function(d: string) {
+        events.rowHighlight(d, true);
       })
-      .on('mouseleave', function(d: D) {
-        // @ts-ignore
-        events.rowHighlight(d, this, false);
+      .on('mouseleave', function(d: string) {
+        events.rowHighlight(d, false);
       });
 
     // Initialize bars
@@ -225,13 +225,18 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .append('rect')
       .classed(styles.bar, true)
       .attr('x', 0)
-      .attr('y', (d: D) => yScale(d.y))
+      .attr('y', (d: D) => yScale(d.y) || 0)
       .attr('height', barHeight)
       .attr('width', function(d: D) {
-        // @ts-ignore
-        const title = select(this.parentNode.parentNode).datum().title;
-        const xScale = percCharts.includes(title) ? xScale1 : xScale2;
-        return xScale(d.x);
+        const parent = get(this, 'parentNode.parentNode') as SVGGElement;
+
+        if (parent) {
+          const title = select<SVGGElement, Serie>(parent).datum().title;
+          const xScale = percCharts.includes(title) ? xScale1 : xScale2;
+          return xScale(d.x);
+        }
+
+        return 0;
       });
     bars
       .append('text')
@@ -239,15 +244,18 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('x', seriesScale.bandwidth() + 8)
       .attr('y', (d: D) => (yScale(d.y) || 0) + barHeight / 2)
       .text(function(d: D) {
-        // @ts-ignore
-        const title = select(this.parentNode.parentNode).datum().title;
-        const usePerc = percCharts.includes(title);
-        return `${d.x}${usePerc ? '%' : ''}`;
+        const parent = get(this, 'parentNode.parentNode') as SVGGElement;
+        if (parent) {
+          const title = select<SVGGElement, Serie>(parent).datum().title;
+          const usePerc = percCharts.includes(title);
+          return `${d.x}${usePerc ? '%' : ''}`;
+        }
+        return '';
       });
   }
 
   const events = {
-    rowHighlight: function(label: string, node: any, enter: boolean): void {
+    rowHighlight: function(label: string, enter: boolean): void {
       const groupClass = getClassFromLabel(label);
 
       const groupBars = g.selectAll(`.${groupClass}.${styles.barG}`);
