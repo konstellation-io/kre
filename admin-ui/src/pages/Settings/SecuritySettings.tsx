@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 import useInput from '../../hooks/useInput';
 
 import DomainIcon from '@material-ui/icons/Language';
@@ -32,7 +32,7 @@ type FormFieldProps = {
   value?: string;
   error: string;
   onChange: Function;
-  onSubmit: Function;
+  onSubmit: (e: MouseEvent<HTMLDivElement>) => void;
 };
 
 function FormField({ value, error, onChange, onSubmit }: FormFieldProps) {
@@ -60,7 +60,6 @@ function FormField({ value, error, onChange, onSubmit }: FormFieldProps) {
 function validateForm(value: string, domains: string[]) {
   return CHECK.getValidationError([
     CHECK.isFieldNotEmpty(value),
-    CHECK.isFieldAnString(value),
     CHECK.isDomainValid(value),
     domainDuplicated(value, domains)
   ]);
@@ -99,7 +98,7 @@ function SecuritySettings() {
     error: inputError,
     clear,
     clearError
-  } = useInput('', (val: string) => validateForm(val, allowedDomains));
+  } = useInput<string>('', (val: string) => validateForm(val, allowedDomains));
 
   // Set domains data after retrieving it from API
   useEffect(() => {
@@ -112,7 +111,7 @@ function SecuritySettings() {
     setAllowedDomains(updatedData.updateSettings.authAllowedDomains);
   }
 
-  function updateDomains(newDomains: any) {
+  function updateDomains(newDomains: string[]) {
     const input = { authAllowedDomains: newDomains };
     updateAllowedDomain({ variables: { input } });
     setAllowedDomains(newDomains);
@@ -125,7 +124,7 @@ function SecuritySettings() {
       const domain = value.toLowerCase();
       console.log(`Domain ${domain} added`);
 
-      const newDomains = allowedDomains.concat(domain);
+      const newDomains: string[] = allowedDomains.concat(domain);
       updateDomains(newDomains);
       clear();
       clearError();

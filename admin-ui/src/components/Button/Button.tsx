@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { FunctionComponent, MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 
 import cx from 'classnames';
 import styles from './Button.module.scss';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export const BUTTON_TYPES = {
   DEFAULT: 'default',
@@ -22,9 +23,9 @@ type Props = {
   label?: string;
   type?: string;
   border?: boolean;
-  Icon?: any;
+  Icon?: FunctionComponent<SvgIconProps>;
   to?: string;
-  onClick?: any;
+  onClick?: (e: MouseEvent<HTMLDivElement>) => void;
   primary?: boolean;
   disabled?: boolean;
   loading?: boolean;

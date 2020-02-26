@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, MutableRefObject } from 'react';
 
 type Dimensions = {
   width: number;
   height: number;
 };
 type Params = {
-  container: any;
+  container: MutableRefObject<HTMLDivElement | null>;
 };
 
 export default function useRenderOnResize({ container }: Params) {
@@ -13,14 +13,14 @@ export default function useRenderOnResize({ container }: Params) {
   // the component to have zero height|width on its first render and the desired one after
   // it. With this flag I remove debouncing after the first render.
   const isFirstRender = useRef(true);
-  const timer: any = useRef(null);
+  const timer = useRef<number>();
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: 0,
     height: 0
   });
   const observer = useRef(
     // @ts-ignore
-    new ResizeObserver((entries: any) => {
+    new ResizeObserver((entries: ResizeObserverEntry[]) => {
       const { width, height } = entries[0].contentRect;
       let rerender: Function = () => handleResize({ width, height });
 
@@ -35,23 +35,26 @@ export default function useRenderOnResize({ container }: Params) {
 
   useEffect(() => {
     const target = container.current;
-    const observedNode = observer.current;
-    const [width, height] = [target.clientWidth, target.clientHeight];
+    if (target) {
+      const observedNode = observer.current;
+      const [width, height] = [target.clientWidth, target.clientHeight];
 
-    handleResize({ width, height });
+      handleResize({ width, height });
 
-    observedNode.observe(target);
-    return () => {
-      observedNode.unobserve(target);
-    };
+      observedNode.observe(target);
+      return () => {
+        observedNode.unobserve(target);
+      };
+    }
   }, [container]);
 
   function debounce(fn: Function, ms: number): Function {
     return () => {
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => {
-        timer.current = null;
-        // @ts-ignore
+      if (timer.current) {
+        window.clearTimeout(timer.current);
+      }
+      timer.current = window.setTimeout(() => {
+        timer.current = 0;
         fn.apply(this, arguments);
       }, ms);
     };

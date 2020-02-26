@@ -1,15 +1,16 @@
 import styles from './VersionMenuItem.module.scss';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { NavLink } from 'react-router-dom';
 import IconWarning from '@material-ui/icons/Warning';
 import cx from 'classnames';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export type VersionMenuItemProps = {
   label: string;
   to: string;
   exact?: boolean;
   warning?: string;
-  Icon: any;
+  Icon: FunctionComponent<SvgIconProps>;
 };
 
 function VersionMenuItem({

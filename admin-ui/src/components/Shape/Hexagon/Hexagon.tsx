@@ -11,7 +11,7 @@ import { RuntimeStatus } from '../../../graphql/types/globalTypes';
 import styles from './Hexagon.module.scss';
 import cx from 'classnames';
 
-const ANIM_SEGMENTS: { [key: string]: number[] } = {
+const ANIM_SEGMENTS: { [key: string]: [number, number] } = {
   [STATES.DEFAULT]: [0, 178],
   [STATES.HOVER]: [180, 329],
   [STATES.STARTED]: [330, 479],
@@ -56,7 +56,7 @@ function Hexagon({
   const defaultAnimation = disabled
     ? ANIM_SEGMENTS.STARTED
     : ANIM_SEGMENTS.DEFAULT;
-  const [segments, setSegments] = useState(defaultAnimation);
+  const [segments, setSegments] = useState<[number, number]>(defaultAnimation);
   const [hovered, setHovered] = useState(false);
 
   const onMouseDown = () => {

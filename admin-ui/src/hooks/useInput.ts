@@ -1,19 +1,22 @@
 import { useState } from 'react';
 
-export type InputHookElement = {
-  value: any;
+export type InputHookElement<ValueType> = {
+  value: ValueType;
   setValue: Function;
   error: string;
   setError: Function;
   clear: Function;
   clearError: Function;
   isValid: Function;
-  onChange: Function;
+  onChange: (newValue: ValueType) => void;
 };
 
-export default function useInput(initialValue: any, validator: Function) {
-  const [value, setValue] = useState(initialValue);
-  const [error, setError] = useState('');
+export default function useInput<ValueType>(
+  initialValue: ValueType,
+  validator: Function
+) {
+  const [value, setValue] = useState<ValueType>(initialValue);
+  const [error, setError] = useState<string>('');
 
   return {
     value,
@@ -30,9 +33,9 @@ export default function useInput(initialValue: any, validator: Function) {
 
       return !err;
     },
-    onChange: (newValue: any) => {
+    onChange: (newValue: ValueType) => {
       setValue(newValue);
       setError('');
     }
-  } as InputHookElement;
+  } as InputHookElement<ValueType>;
 }

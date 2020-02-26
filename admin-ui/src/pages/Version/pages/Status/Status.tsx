@@ -15,6 +15,7 @@ import {
 
 import styles from './Status.module.scss';
 import { VersionRouteParams } from '../../../../constants/routes';
+import { GetVersionConfStatus_versions } from '../../../../graphql/queries/types/GetVersionConfStatus';
 
 const GetVersionWorkflowsQuery = loader(
   '../../../../graphql/queries/getVersionWorkflows.graphql'
@@ -26,7 +27,7 @@ export type Node = {
 };
 
 type Props = {
-  version: any;
+  version?: GetVersionConfStatus_versions;
 };
 function Status({ version }: Props) {
   const { versionId } = useParams<VersionRouteParams>();

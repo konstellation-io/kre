@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Route, Switch, useParams, useLocation } from 'react-router-dom';
 import ROUTE, { VersionRouteParams } from '../../constants/routes';
 import { buildRoute } from '../../utils/routes';
@@ -15,6 +15,7 @@ import {
   GetVersionConfStatusVariables
 } from '../../graphql/queries/types/GetVersionConfStatus';
 
+import cx from 'classnames';
 import styles from './Runtime.module.scss';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import PageBase from '../../components/Layout/PageBase/PageBase';
@@ -33,7 +34,7 @@ function Runtime() {
     fetchPolicy: 'cache-and-network',
     variables: { runtimeId }
   });
-  function getContent() {
+  function getContent(): ReactElement | null {
     if (loading) return <SpinnerCircular />;
     if (error) return <ErrorMessage />;
     if (!data) return null;
@@ -88,15 +89,15 @@ function Runtime() {
   );
   const isUserInVersionStatus: boolean = location.pathname === statusPath;
 
-  const logsPadding: object = { paddingBottom: 65 };
-
   return (
     <PageBase
-      customContentStyles={isUserInVersionStatus ? logsPadding : {}}
+      customClassname={cx({
+        [styles.logsPadding]: isUserInVersionStatus
+      })}
       headerChildren={
-        isUserInRuntimeVersions && (
+        isUserInRuntimeVersions ? (
           <Button label="ADD VERSION" height={40} to={newVersionRoute} />
-        )
+        ) : null
       }
     >
       {getContent()}

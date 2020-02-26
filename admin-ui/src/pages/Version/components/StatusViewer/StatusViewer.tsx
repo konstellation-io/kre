@@ -2,7 +2,7 @@ import { cloneDeep, get, isEqual } from 'lodash';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { loader } from 'graphql.macro';
-import { useSubscription } from '@apollo/react-hooks';
+import { useSubscription, SubscriptionHookOptions } from '@apollo/react-hooks';
 import { useParams } from 'react-router';
 
 import useRenderOnResize from '../../../../hooks/useRenderOnResize';
@@ -29,10 +29,10 @@ const VersionNodeStatusSubscription = loader(
   '../../../../graphql/subscriptions/versionNodeStatus.graphql'
 );
 
-function formatData(workflows: Workflow[], versionStatus: VersionStatus) {
+function formatData(workflows: Workflow[], versionStatus?: VersionStatus) {
   let formattedData = cloneDeep(workflows);
 
-  formattedData = formattedData.map((workflow: any, idx: number) => {
+  formattedData = formattedData.map((workflow: Workflow, idx: number) => {
     workflow.nodes = workflow.nodes.map((node: Node) => ({
       ...node,
       status: NodeStatus.STOPPED
@@ -88,19 +88,29 @@ function updateNodeStatus(workflows: Workflow[], newNode: Node): Workflow[] {
   return workflowsCopy;
 }
 
-function getInOutStatus(status: VersionStatus): NodeStatus {
+function getInOutStatus(status?: VersionStatus): NodeStatus {
   return status === VersionStatus.PUBLISHED
     ? NodeStatus.STARTED
     : NodeStatus.STOPPED;
 }
-function getInOutNode(id: string, status: VersionStatus): Node {
+function getInOutNode(id: string, status?: VersionStatus): Node {
   return {
     id,
     status: getInOutStatus(status)
   };
 }
 
-function StatusViewer({ data, status, onNodeClick }: any) {
+type PrevParams = {
+  data?: Workflow[];
+  status?: VersionStatus;
+};
+type Props = {
+  data: Workflow[];
+  status?: VersionStatus;
+  onNodeClick: (id: string, name: string) => void;
+};
+
+function StatusViewer({ data, status, onNodeClick }: Props) {
   const { versionId } = useParams<VersionRouteParams>();
 
   const [workflows, setWorkflows] = useState<Workflow[]>(
@@ -113,7 +123,12 @@ function StatusViewer({ data, status, onNodeClick }: any) {
     VersionNodeStatusSubscription,
     {
       variables: { versionId },
-      onSubscriptionData: (msg: any) => {
+      onSubscriptionData: (
+        msg: SubscriptionHookOptions<
+          VersionNodeStatus,
+          VersionNodeStatusVariables
+        >
+      ) => {
         const nodeInfo = get(msg, 'subscriptionData.data.versionNodeStatus');
         const newNode: Node = {
           id: nodeInfo.nodeId,
@@ -126,8 +141,8 @@ function StatusViewer({ data, status, onNodeClick }: any) {
     }
   );
 
-  const container = useRef(null);
-  const prevParams = useRef<any>({
+  const container = useRef<HTMLDivElement>(null);
+  const prevParams = useRef<PrevParams>({
     data: undefined,
     status: undefined
   });

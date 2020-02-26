@@ -11,7 +11,6 @@ import ConfusionMatrix, {
 import styles from './ConfusionMatrixBox.module.scss';
 
 type Props = {
-  wrapper?: any;
   toggleExpanded?: Function;
   nodeId?: string;
   data: D[];

@@ -8,6 +8,11 @@ import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import ArrowLeftIcon from '@material-ui/icons/ArrowBack';
 import { DateRangePicker } from 'react-dates';
 
+type DateKey = 'startDate' | 'endDate' | null;
+type Dates = {
+  startDate: Moment | null;
+  endDate: Moment | null;
+};
 type Props = {
   label?: string;
   error?: string | boolean;
@@ -27,7 +32,7 @@ function Calendar({
 }: Props) {
   const [fromDate, setFromDate] = useState<Moment | null>(null);
   const [toDate, setToDate] = useState<Moment | null>(null);
-  const [focusedInput, setFocusedInput] = useState(null);
+  const [focusedInput, setFocusedInput] = useState<DateKey>(null);
 
   useEffect(() => {
     setFromDate(formFromDate);
@@ -47,7 +52,7 @@ function Calendar({
         endDate={toDate}
         endDateId="calendar_to_date"
         endDatePlaceholderText="To Date"
-        onDatesChange={({ startDate, endDate }: any) => {
+        onDatesChange={({ startDate, endDate }: Dates) => {
           setFromDate(startDate);
           onChangeFromDate(startDate);
           setToDate(endDate);
@@ -55,7 +60,7 @@ function Calendar({
           setFocusedInput(focusedInput);
         }}
         focusedInput={focusedInput}
-        onFocusChange={(input: any) => setFocusedInput(input)}
+        onFocusChange={(input: DateKey) => setFocusedInput(input)}
         customArrowIcon={<ArrowRightIcon className="icon-small" />}
         navPrev={
           <div className="DayPickerNavigation_button DayPickerNavigation_button_1 DayPickerNavigation_button__default DayPickerNavigation_button__default_2 DayPickerNavigation_button__horizontal DayPickerNavigation_button__horizontal_3 DayPickerNavigation_button__horizontalDefault DayPickerNavigation_button__horizontalDefault_4 DayPickerNavigation_leftButton__horizontalDefault DayPickerNavigation_leftButton__horizontalDefault_5">

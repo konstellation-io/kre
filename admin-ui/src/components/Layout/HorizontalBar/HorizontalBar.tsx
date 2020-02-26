@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import styles from './HorizontalBar.module.scss';
 import cx from 'classnames';
 
 type Props = {
-  children: any;
+  children: ReactElement | ReactElement[];
   style?: string;
 };
 

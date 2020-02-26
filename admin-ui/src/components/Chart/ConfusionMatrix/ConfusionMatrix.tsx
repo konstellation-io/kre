@@ -10,8 +10,8 @@ import {
 } from '../../../utils/d3';
 
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
-import { axisBottom, axisLeft, axisRight } from 'd3-axis';
-import { select } from 'd3-selection';
+import { axisBottom, axisLeft, axisRight, Axis } from 'd3-axis';
+import { select, Selection } from 'd3-selection';
 import { interpolateHcl } from 'd3-interpolate';
 import { color, RGBColor } from 'd3-color';
 
@@ -54,21 +54,21 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
     useTooltip: true
   });
 
-  let g: any;
+  let g: Selection<SVGGElement, unknown, null, undefined>;
   let xScale: ScaleBand<string>;
   let yScale: ScaleBand<string>;
   let colorScale: ScaleLinear<number, string>;
   let legendScale: ScaleBand<string>;
-  let axes: any;
-  let xAxis: any;
-  let yAxis: any;
-  let zAxis: any;
-  let xAxisG: any;
-  let yAxisG: any;
-  let zAxisG: any;
-  let legendG: any;
-  let cellsG: any;
-  let cells: any;
+  let axes: Selection<SVGGElement, unknown, null, undefined>;
+  let xAxis: Axis<string>;
+  let yAxis: Axis<string>;
+  let zAxis: Axis<string>;
+  let xAxisG: Selection<SVGGElement, unknown, null, undefined>;
+  let yAxisG: Selection<SVGGElement, unknown, null, undefined>;
+  let zAxisG: Selection<SVGGElement, unknown, null, undefined>;
+  let legendG: Selection<SVGGElement, unknown, null, undefined>;
+  let cellsG: Selection<SVGGElement, unknown, null, undefined>;
+  let cells: Selection<SVGGElement, D, SVGGElement, unknown>;
   let marginLeft: number;
   let marginTop: number;
   let sideMargin: number;
@@ -219,7 +219,6 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
     legendScale = scaleBand()
       .range([innerHeight, 0])
       .domain(['10', '20', '30', '40', '50', '60', '70', '80', '90']);
-    // @ts-ignore
     zAxis = axisRight(legendScale)
       .tickFormat((n: string) => `${n}%`)
       .tickSize(-legendWidth);
@@ -246,23 +245,21 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
 
     cells
       .append('rect')
-      .attr('x', (d: D) => xScale(d.x))
-      .attr('y', (d: D) => yScale(d.y))
+      .attr('x', (d: D) => xScale(d.x) || 0)
+      .attr('y', (d: D) => yScale(d.y) || 0)
       .attr('height', cellHeight)
       .attr('width', cellWidth)
       .attr('fill', (d: D) => colorScale(d.value))
       .on('mouseenter', function(d: D) {
-        // @ts-ignore
         events.cellHighlight(d, this, true);
       })
       .on('mouseleave', function(d: D) {
-        // @ts-ignore
         events.cellHighlight(d, this, false);
       });
     cells
       .append('text')
-      .attr('x', (d: D) => xScale(d.x))
-      .attr('y', (d: D) => yScale(d.y))
+      .attr('x', (d: D) => xScale(d.x) || 0)
+      .attr('y', (d: D) => yScale(d.y) || 0)
       .attr('dy', cellHeight / 2)
       .classed(styles.cellText, true)
       .attr('text-anchor', 'middle')
@@ -278,7 +275,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
   }
 
   const events = {
-    cellHighlight: function(d: D, node: any, enter: boolean): void {
+    cellHighlight: function(d: D, node: SVGRectElement, enter: boolean): void {
       const cellColor = color(colorScale(d.value));
       const newCellColor = enter
         ? cellColor && cellColor.darker(0.6)

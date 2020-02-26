@@ -1,17 +1,19 @@
 import ReactDOMServer from 'react-dom/server';
-import { select } from 'd3-selection';
+import { select, Selection } from 'd3-selection';
+import { ReactElement } from 'react';
 
-export function wrap(text: any, width: number) {
-  // @ts-ignore
+export function wrap(
+  text: Selection<SVGTextElement, unknown, null, undefined>,
+  width: number
+) {
   text.each(function() {
-    // @ts-ignore
     let textNode = select(this),
       words = textNode
         .text()
         .split(/\s+/)
         .reverse(),
       word,
-      line: any[] = [],
+      line: string[] = [],
       lineNumber = 0,
       lineHeight = 1.3, // ems
       y = textNode.attr('y'),
@@ -24,10 +26,11 @@ export function wrap(text: any, width: number) {
         .attr('y', y)
         .attr('dy', dy + 'em');
     while ((word = words.pop())) {
+      const tspanNode = tspan.node();
       line.push(word);
       tspan.text(line.join(' '));
-      // @ts-ignore
-      if (tspan.node().getComputedTextLength() > width) {
+
+      if (tspanNode !== null && tspanNode.getComputedTextLength() > width) {
         line.pop();
         tspan.text(line.join(' '));
         line = [word];
@@ -42,57 +45,83 @@ export function wrap(text: any, width: number) {
   });
 }
 
-export function centerText(text: any, fontSize: number) {
-  // @ts-ignore
+export function centerText(
+  text: Selection<SVGTextElement, unknown, null, undefined>,
+  fontSize: number
+) {
   text.each(function() {
-    // @ts-ignore
     const textNode = select(this);
-    const textHeight = textNode.node().getBBox().height;
+    const textDOMNode = textNode.node();
 
-    const padding = fontSize - textHeight / 2;
+    if (textDOMNode !== null) {
+      const textHeight = textDOMNode.getBBox().height;
 
-    textNode.attr('transform', `translate(0, ${padding})`);
+      const padding = fontSize - textHeight / 2;
+
+      textNode.attr('transform', `translate(0, ${padding})`);
+    }
   });
 }
+
+type GetAxesMarginsParams = {
+  xAxisG?: Selection<SVGGElement, unknown, null, undefined> | null;
+  yAxisG?: Selection<SVGGElement, unknown, null, undefined> | null;
+  padding?: number;
+};
 export function getAxesMargins({
   xAxisG = null,
-  yAxisG,
+  yAxisG = null,
   padding = 0
-}: any): [number, number] {
+}: GetAxesMarginsParams): [number, number] {
   // Recalculate margins with the new axis sizes
   let xAxisHeight = padding;
   let yAxisWidth = padding;
 
   if (xAxisG !== null) {
-    xAxisG.selectAll('text').each(function() {
-      // @ts-ignore
+    xAxisG.selectAll<SVGTextElement, string>('text').each(function() {
       const actHeight = this.getBoundingClientRect().height + padding;
       if (actHeight > xAxisHeight) xAxisHeight = actHeight;
     });
   }
-  yAxisG.selectAll('text').each(function() {
-    // @ts-ignore
-    const actWidth = this.getBoundingClientRect().width + padding;
-    if (actWidth > yAxisWidth) yAxisWidth = actWidth;
-  });
+  if (yAxisG !== null) {
+    yAxisG.selectAll<SVGTextElement, string>('text').each(function() {
+      const actWidth = this.getBoundingClientRect().width + padding;
+      if (actWidth > yAxisWidth) yAxisWidth = actWidth;
+    });
+  }
 
   return [xAxisHeight, yAxisWidth];
 }
 
-export function rotateAxis(axisG: any, angle: number): void {
+export function rotateAxis(
+  axisG: Selection<SVGGElement, unknown, null, undefined>,
+  angle: number
+): void {
   axisG
     .selectAll('text')
     .style('text-anchor', 'end')
     .style('transform', `rotate(${angle}deg)`);
 }
 
+type ShowTooltipParams = {
+  svg: SVGElement | null;
+  tooltip: HTMLDivElement | null;
+  content: ReactElement;
+  dx: number;
+  dy: number;
+};
 export const tooltipAction = {
-  showTooltip: function({ svg, tooltip, content, dx, dy }: any) {
-    const containerDims = svg.parentNode.getBoundingClientRect();
+  showTooltip: function({ svg, tooltip, content, dx, dy }: ShowTooltipParams) {
+    if (svg === null || tooltip === null || svg.parentNode === null) {
+      return;
+    }
+
+    const svgParent = svg.parentNode as HTMLDivElement;
+
+    const containerDims = svgParent.getBoundingClientRect();
     const tooltipSelection = select(tooltip);
 
     const tooltipContent = tooltipSelection.select('.tooltipContent');
-    // @ts-ignore
     tooltipContent.html(ReactDOMServer.renderToString(content));
 
     const wrapper = tooltip.getBoundingClientRect();
@@ -118,13 +147,15 @@ export const tooltipAction = {
       .style('top', tooltipTop + 'px')
       .style('opacity', 1);
   },
-  hideTooltip: function(tooltip: any) {
-    select(tooltip).style('opacity', 0);
+  hideTooltip: function(tooltip: HTMLDivElement | null) {
+    if (tooltip !== null) {
+      select(tooltip).style('opacity', 0);
+    }
   }
 };
 
 export function generateVerticalGradient(
-  g: any,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   colors: [string, string, string, string]
 ): void {
   const [color10, color30, color60, color90] = colors;

@@ -6,7 +6,8 @@ import { loader } from 'graphql.macro';
 import {
   useSubscription,
   useQuery,
-  useApolloClient
+  useApolloClient,
+  SubscriptionHookOptions
 } from '@apollo/react-hooks';
 import { GET_LOGS } from '../../../../../../../graphql/client/getLogs.graphql';
 
@@ -42,7 +43,9 @@ function LogsList({ node, onUpdate }: Props) {
       runtimeId,
       nodeId: node.id
     },
-    onSubscriptionData: (msg: any) => {
+    onSubscriptionData: (
+      msg: SubscriptionHookOptions<GetLogs, GetLogsVariables>
+    ) => {
       const logInfo = get(msg, 'subscriptionData.data.nodeLogs');
       addLog(logInfo);
     }

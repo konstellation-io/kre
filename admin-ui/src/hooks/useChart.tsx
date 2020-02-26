@@ -4,7 +4,7 @@ import { select } from 'd3-selection';
 
 import styles from './useChart.module.scss';
 
-function cleanup(component: any) {
+function cleanup(component: SVGSVGElement) {
   select(component)
     .selectAll('*')
     .remove();
@@ -47,12 +47,14 @@ export default function useChart({
   removeUpdate = false
 }: Props) {
   const container = useRef(null);
-  const svg = useRef(null);
-  const tooltip = useRef(null);
+  const svg = useRef<SVGSVGElement>(null);
+  const tooltip = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!removeUpdate) {
-      cleanup(svg.current);
+      if (svg.current) {
+        cleanup(svg.current);
+      }
 
       if (canBeRendered(width, height, margin)) {
         initialize();

@@ -19,6 +19,7 @@ import {
   CreateRuntimeVariables
 } from '../../graphql/mutations/types/CreateRuntime';
 import ROUTE from '../../constants/routes';
+import { CreateRuntimeInput } from '../../graphql/types/globalTypes';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 const CreateRuntimeMutation = loader(
@@ -26,15 +27,12 @@ const CreateRuntimeMutation = loader(
 );
 
 function verifyRuntimeName(value: string) {
-  return CHECK.getValidationError([
-    CHECK.isFieldNotEmpty(value),
-    CHECK.isFieldAnString(value)
-  ]);
+  return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
 }
 
 function AddRuntime() {
   const history = useHistory();
-  const { value, isValid, onChange, error, setError } = useInput(
+  const { value, isValid, onChange, error, setError } = useInput<string>(
     '',
     verifyRuntimeName
   );
@@ -68,7 +66,7 @@ function AddRuntime() {
     }
   }, [mutationError, setError]);
 
-  function onCompleteAddRuntime(updatedData: any) {
+  function onCompleteAddRuntime(updatedData: CreateRuntime) {
     // TODO: CHECK FOR API ERRORS
     console.log(`${value} runtime created`);
     history.push(ROUTE.HOME);
@@ -76,7 +74,7 @@ function AddRuntime() {
 
   function onSubmit() {
     if (isValid()) {
-      const input = { name: value };
+      const input: CreateRuntimeInput = { name: value };
       addRuntime({ variables: { input } });
     }
   }

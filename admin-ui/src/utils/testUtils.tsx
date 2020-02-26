@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { MemoryRouter } from 'react-router';
-import { render } from '@testing-library/react';
+import { render, RenderResult } from '@testing-library/react';
 import { mount } from 'enzyme';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -18,8 +18,12 @@ export const testHook = (callback: Function) => {
   mount(<TestHook callback={callback} />);
 };
 
+interface RenderWithRouterEl extends RenderResult {
+  customRerender: Function;
+}
+
 export function renderWithRouter(
-  component: any,
+  component: ReactElement,
   route: string = '/path/:someParam/index',
   param = { param: 'someParam', value: 'someValue' }
 ) {
@@ -32,11 +36,9 @@ export function renderWithRouter(
         <Route path={route}>{component}</Route>
       </Router>
     </MemoryRouter>
-  );
+  ) as RenderWithRouterEl;
 
-  // FIXME: typescript
-  // @ts-ignore
-  element.customRerender = function(newComponent: any) {
+  element.customRerender = function(newComponent: ReactElement) {
     element.rerender(<MemoryRouter>{newComponent}</MemoryRouter>);
   };
 

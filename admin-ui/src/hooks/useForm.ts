@@ -3,7 +3,9 @@ import useInput, { InputHookElement } from './useInput';
 import { ApolloError } from 'apollo-client';
 
 export type Form = {
-  input: { [key: string]: InputHookElement };
+  input: {
+    [key: string]: InputHookElement<any>;
+  };
   submit: Function;
   uploadProgress: number;
   isValid: Function;
@@ -14,7 +16,7 @@ export type Form = {
 };
 
 type InputElement = {
-  defaultValue: any;
+  defaultValue: string | number | null;
   verifier: Function;
   id: string;
 };
@@ -27,7 +29,16 @@ type Params = {
   clearOnSubmit?: boolean;
 };
 
-const form: any = {};
+const form: Form = {
+  input: {},
+  submit: () => {},
+  uploadProgress: 0,
+  isValid: () => {},
+  loading: false,
+  error: undefined,
+  clearInputs: () => {},
+  getInputVariables: () => {}
+};
 
 function initializeForm(
   submit: Function,
@@ -65,7 +76,7 @@ export default function useForm({
   }
 
   function getDefaultVariables() {
-    const defaultVariables: { [key: string]: any } = {};
+    const defaultVariables: { [key: string]: string | number | null } = {};
     inputElements.forEach((input: InputElement) => {
       defaultVariables[input.id] = input.defaultValue;
     });
@@ -95,7 +106,7 @@ export default function useForm({
   }
 
   function getInputVariables() {
-    const mutationVariables: { [key: string]: any } = {};
+    const mutationVariables: { [key: string]: string | number | null } = {};
     Object.keys(form.input).forEach(input => {
       mutationVariables[input] = form.input[input].value;
 
@@ -139,5 +150,5 @@ export default function useForm({
     form.input[inputElement.id] = input;
   });
 
-  return form as Form;
+  return form;
 }

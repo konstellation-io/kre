@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { ReactElement, MouseEvent, FunctionComponent } from 'react';
 import Button from '../../../components/Button/Button';
 import StartIcon from '@material-ui/icons/SkipNext';
 import StopIcon from '@material-ui/icons/PauseCircleFilled';
 import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import UnpublishIcon from '@material-ui/icons/Block';
 import { VersionStatus } from '../../../graphql/types/globalTypes';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-function generateActionButton(label: string, icon: any, action: Function) {
+function generateActionButton(
+  label: string,
+  icon: FunctionComponent<SvgIconProps>,
+  action: (e: MouseEvent<HTMLDivElement>) => void
+): ReactElement {
   return (
     <Button
       key={label}
@@ -19,11 +24,11 @@ function generateActionButton(label: string, icon: any, action: Function) {
 }
 
 function getStateToButtons(
-  publishAction: Function,
-  startAction: Function,
-  stopAction: Function,
-  unpublishAction: Function
-) {
+  publishAction: (e: MouseEvent<HTMLDivElement>) => void,
+  startAction: (e: MouseEvent<HTMLDivElement>) => void,
+  stopAction: (e: MouseEvent<HTMLDivElement>) => void,
+  unpublishAction: (e: MouseEvent<HTMLDivElement>) => void
+): { [key: string]: ReactElement[] } {
   const buttonStart = generateActionButton('START', StartIcon, startAction);
   const buttonStop = generateActionButton('STOP', StopIcon, stopAction);
   const buttonPublish = generateActionButton(
@@ -46,13 +51,13 @@ function getStateToButtons(
 }
 
 export function getVersionActionButtons(
-  publishAction: Function,
-  startAction: Function,
-  stopAction: Function,
-  unpublishAction: Function,
+  publishAction: (e: MouseEvent<HTMLDivElement>) => void,
+  startAction: (e: MouseEvent<HTMLDivElement>) => void,
+  stopAction: (e: MouseEvent<HTMLDivElement>) => void,
+  unpublishAction: (e: MouseEvent<HTMLDivElement>) => void,
   status?: string
 ) {
-  const stateToButtons: { [key: string]: any[] } = getStateToButtons(
+  const stateToButtons = getStateToButtons(
     publishAction,
     startAction,
     stopAction,

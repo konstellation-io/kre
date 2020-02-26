@@ -24,14 +24,16 @@ function FileUpload({
   height = 40,
   error = ''
 }: Props) {
-  const [selectedFile, setSelectedFile] = useState();
-  const fileButton = useRef(null);
+  const [selectedFile, setSelectedFile] = useState<File>();
+  const fileButton = useRef<HTMLInputElement>(null);
 
   function onFileUpload() {
-    // @ts-ignore
-    const file = fileButton.current.files[0];
-    setSelectedFile(file);
-    onChange(file);
+    const fileButtonEl = fileButton.current;
+    if (fileButtonEl !== null && fileButtonEl.files !== null) {
+      const file = fileButtonEl.files[0];
+      setSelectedFile(file);
+      onChange(file);
+    }
   }
 
   const inputText = get(selectedFile, 'name', placeholder);
@@ -54,8 +56,10 @@ function FileUpload({
         <Button
           label="BROWSE"
           onClick={() => {
-            // @ts-ignore
-            fileButton.current.click();
+            const submitButton = fileButton.current;
+            if (submitButton !== null) {
+              submitButton.click();
+            }
           }}
           border
         />

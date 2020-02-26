@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import styles from './Box.module.scss';
 
 type Props = {
-  children?: any;
+  children?: ReactElement | ReactElement[];
 };
 const Box: FunctionComponent<Props> = ({ children }) => {
   return (

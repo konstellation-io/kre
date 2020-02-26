@@ -5,8 +5,8 @@ import Calendar from '../../../../../../components/Form/Calendar/Calendar';
 import styles from './DashboardTitle.module.scss';
 
 type Props = {
-  runtimeName: string;
-  versionName: string;
+  runtimeName?: string;
+  versionName?: string;
 };
 function DashboardTitle({ runtimeName, versionName }: Props) {
   return (

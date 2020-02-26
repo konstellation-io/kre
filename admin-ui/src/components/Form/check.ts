@@ -37,21 +37,10 @@ export function isFieldNotEmpty(value: string) {
   return value !== '' ? VALID : setInvalid('This field cannot be empty');
 }
 
-export function isFieldAnString(value: any) {
-  return typeof value === 'string' || value instanceof String
-    ? VALID
-    : setInvalid('Invalid type, field is not a text');
-}
-
-export function isFieldAnInteger(
-  value: any | number,
-  positive: boolean = false
-) {
+export function isFieldAnInteger(value: string, positive: boolean = false) {
   const integerValue = parseInt(value);
   const isValid =
-    typeof value !== 'boolean' &&
-    !isNaN(value) &&
-    (positive ? integerValue >= 0 : true);
+    !Number.isNaN(integerValue) && (positive ? integerValue >= 0 : true);
 
   return isValid
     ? VALID
@@ -60,7 +49,7 @@ export function isFieldAnInteger(
       );
 }
 
-export function isGreaterThan(value: any, minValue: number) {
+export function isGreaterThan(value: number | string, minValue: number) {
   return value >= minValue
     ? VALID
     : setInvalid(`Invalid value, ${value} must be greater than ${minValue}`);

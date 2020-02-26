@@ -95,7 +95,7 @@ function Configuration({ refetchVersion }: Props) {
   }
 
   // TODO: CHECK FOR ERRORS
-  function onCompleteUpdate(data: any) {
+  function onCompleteUpdate(data: UpdateVersionConfiguration) {
     updateConfigurationVariables(
       data.updateVersionConfiguration.configurationVariables
     );

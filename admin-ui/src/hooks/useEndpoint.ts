@@ -3,10 +3,10 @@ import { get } from 'lodash';
 import { envVariables } from '../config';
 
 import { useState, useCallback } from 'react';
-import axios from 'axios';
+import axios, { Method, AxiosResponse } from 'axios';
 
 export type Response = {
-  data: any;
+  data: Response | null;
   status?: number;
   complete: boolean;
   pending: boolean;
@@ -23,7 +23,7 @@ const defaultResponseState: Response = {
 
 type Params = {
   endpoint?: string;
-  method?: any;
+  method?: Method;
 };
 export default function useEndpoint({
   endpoint = '',
@@ -47,7 +47,7 @@ export default function useEndpoint({
         url: `${apiURL}/${endpoint}`,
         withCredentials: true
       })
-        .then((res: any) => {
+        .then((res: AxiosResponse) => {
           setResponse({
             ...defaultResponseState,
             data: res.data,

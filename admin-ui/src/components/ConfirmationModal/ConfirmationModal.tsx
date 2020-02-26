@@ -9,10 +9,7 @@ import Button from '../Button/Button';
 import styles from './ConfirmationModal.module.scss';
 
 function verifyComment(value: string) {
-  return CHECK.getValidationError([
-    CHECK.isFieldNotEmpty(value),
-    CHECK.isFieldAnString(value)
-  ]);
+  return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
 }
 
 type Props = {

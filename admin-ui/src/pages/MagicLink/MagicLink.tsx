@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 import React, { useEffect, useState, useRef } from 'react';
 import useEndpoint from '../../hooks/useEndpoint';
 import { useParams, useHistory } from 'react-router-dom';
@@ -55,7 +57,7 @@ function MagicLink() {
     endpoint: ENDPOINT.VALIDATE_MAGIC_LINK,
     method: 'POST'
   });
-  const timeout = useRef();
+  const timeout = useRef<number>();
   const { token } = useParams<RouteParams>();
 
   // Checks for token errors and send login request
@@ -68,12 +70,12 @@ function MagicLink() {
       setError(err);
     }
 
-    timeout.current = setTimeout(() => {
+    timeout.current = window.setTimeout(() => {
       setAnimationPending(false);
-    }, 3000) as any;
+    }, 3000);
 
     return function() {
-      if (timeout.current) clearTimeout(timeout.current);
+      if (timeout.current) window.clearTimeout(timeout.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,12 +91,13 @@ function MagicLink() {
         } else if (response.complete) {
           if (response.status === 200) {
             setStatus(STATES.SUCCESS);
-            timeout.current = setTimeout(() => {
+
+            timeout.current = window.setTimeout(() => {
               history.push(ROUTE.HOME);
-            }, 2500) as any;
+            }, 2500);
           } else if (
             response.error &&
-            response.data.code === 'invalid_verification_code'
+            get(response, 'data.code') === 'invalid_verification_code'
           ) {
             setError('Invalid verification code');
           } else {

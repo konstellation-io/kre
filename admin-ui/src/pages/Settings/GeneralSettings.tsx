@@ -31,7 +31,7 @@ type FormFieldProps = {
   error: string;
   onChange: Function;
   onBlur: Function;
-  formValue: any;
+  formValue: string | number | undefined;
 };
 function FormField({ error, onChange, onBlur, formValue }: FormFieldProps) {
   return (
@@ -81,10 +81,9 @@ function GeneralSettings() {
       }
     }
   });
-  const { value, isValid, onChange, setValue, error: inputError } = useInput(
-    '',
-    isExpirationInvalid
-  );
+  const { value, isValid, onChange, setValue, error: inputError } = useInput<
+    string
+  >('', isExpirationInvalid);
 
   // Sets domains data after receiving API response
   useEffect(() => {

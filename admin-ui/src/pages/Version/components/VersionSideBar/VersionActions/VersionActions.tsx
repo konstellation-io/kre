@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions
@@ -14,6 +14,7 @@ import UnpublishIcon from '@material-ui/icons/Block';
 import useVersionAction from '../../../utils/hooks';
 import ConfirmationModal from '../../../../../components/ConfirmationModal/ConfirmationModal';
 import Button, { BUTTON_TYPES } from '../../../../../components/Button/Button';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 type VersionActionsProps = {
   runtime: GetVersionConfStatus_runtime;
@@ -21,7 +22,7 @@ type VersionActionsProps = {
 };
 
 type ActionProps = {
-  Icon: any;
+  Icon: FunctionComponent<SvgIconProps>;
   label: string;
   action?: Function;
   disabled?: boolean;
