@@ -56,9 +56,9 @@ function getDashboardContent({ data, error, loading, history }: Props) {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  const runtimes = data.map((runtime: GetRuntimes_runtimes, idx: number) => (
+  const runtimes = data.map((runtime: GetRuntimes_runtimes) => (
     <Hexagon
-      key={`runtimeHexagon-${idx}`}
+      key={runtime.name}
       to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}
       id={runtime.id}
       status={runtime.status}

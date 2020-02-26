@@ -43,8 +43,8 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
     p.to = buildRoute.version(p.to, runtime.id, version.id);
   });
 
-  const items = itemProps.map((props, idx) => (
-    <VersionMenuItem key={idx} {...props} />
+  const items = itemProps.map(props => (
+    <VersionMenuItem key={`${props.label}-${props.to}`} {...props} />
   ));
 
   return <div className={styles.wrapper}>{items}</div>;

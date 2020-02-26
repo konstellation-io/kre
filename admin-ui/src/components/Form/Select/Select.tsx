@@ -91,7 +91,7 @@ function Select({
 
   const optionList = [...options].sort().map((option: string, idx: number) => (
     <div
-      key={`selectOption_${idx}`}
+      key={`${option}-${idx}`}
       className={styles.optionElement}
       onClick={() => handleOnOptionCLick(option)}
     >

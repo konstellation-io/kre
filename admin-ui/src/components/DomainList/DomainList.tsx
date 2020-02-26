@@ -23,7 +23,7 @@ function DomainList({
   if (error) return <ErrorMessage />;
 
   const domains = data.map((domain: string, idx: number) => (
-    <div className={styles.row} key={`domainListElement${idx}`}>
+    <div className={styles.row} key={domain}>
       <p className={styles.domainPosition}>{idx + 1}</p>
       <p className={styles.domainName} data-testid={`domainListName${idx}`}>
         {domain}

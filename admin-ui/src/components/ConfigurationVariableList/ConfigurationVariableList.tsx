@@ -71,10 +71,10 @@ type Props = {
 
 function ConfigurationVariableList({ data, onType, hideAll }: Props) {
   const sortedData = sortBy(data, ['key']);
-  const variableRows = sortedData.map((variable: ConfVar, idx: number) => (
+  const variableRows = sortedData.map((variable: ConfVar) => (
     <VariableRow
       onType={onType}
-      key={`variableRow_${idx}`}
+      key={variable.key}
       hide={hideAll}
       variable={variable}
     />

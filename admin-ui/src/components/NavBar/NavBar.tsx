@@ -44,11 +44,11 @@ function NavBar({
     }
   }
 
-  const tabElements = tabs.map((tab, idx) => {
+  const tabElements = tabs.map(tab => {
     const exact = has(tab, 'exact') ? tab.exact : true;
     return (
       <NavLink
-        key={`NavBarItem_${idx}`}
+        key={`${tab.label}-${tab.route}`}
         to={tab.route}
         activeClassName={styles.active}
         exact={exact}

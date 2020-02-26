@@ -111,9 +111,9 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
 
   return (
     <div className={styles.wrapper}>
-      {buttons.map((btn, idx) => (
+      {buttons.map(btn => (
         <Button
-          key={idx}
+          key={btn.label}
           onClick={() => btn.action && btn.action()}
           label={btn.label}
           Icon={btn.Icon}
