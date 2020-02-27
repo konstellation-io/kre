@@ -26,8 +26,13 @@ const CreateRuntimeMutation = loader(
   '../../graphql/mutations/createRuntime.graphql'
 );
 
+const MAX_LENGTH = 20;
+
 function verifyRuntimeName(value: string) {
-  return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
+  return CHECK.getValidationError([
+    CHECK.isFieldNotEmpty(value),
+    CHECK.isLengthAllowed(value, MAX_LENGTH)
+  ]);
 }
 
 function AddRuntime() {
@@ -84,7 +89,7 @@ function AddRuntime() {
       <div className={styles.grid}>
         <div className={styles.container}>
           <h1>Add Runtime</h1>
-          <p className={styles.subtitle}></p>
+          <p className={styles.subtitle} />
           <div className={styles.content}>
             <TextInput
               whiteColor
@@ -92,6 +97,8 @@ function AddRuntime() {
               error={error}
               onChange={onChange}
               onSubmit={onSubmit}
+              helpText={`${value.length}/${MAX_LENGTH}`}
+              maxLength={MAX_LENGTH}
               autoFocus
             />
             <div className={styles.buttons}>
