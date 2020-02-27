@@ -22,7 +22,7 @@ function UserActivityList({ data }: Props) {
       return (
         <div
           className={styles.row}
-          key={`userActivityListElement${idx}`}
+          key={`${userActivity.date}-${idx}`}
           data-testid={`userActivityListElement${idx}`}
         >
           <div className={styles.userAndMessage}>

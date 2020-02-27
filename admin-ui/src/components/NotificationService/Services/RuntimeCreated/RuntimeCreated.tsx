@@ -71,7 +71,7 @@ function RuntimeCreated() {
   const notificationComponents = notifications.map(
     (notification: Notification) => (
       <Notification
-        key={`notification_${notification.id}`}
+        key={notification.id}
         message={notification.message}
         buttonLabel="GO TO RUNTIME"
         buttonAction={() => {

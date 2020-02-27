@@ -34,11 +34,11 @@ function NavigationBar() {
 
   const runtimes: GetRuntimes_runtimes[] = get(data, 'runtimes', []);
 
-  const buttons = runtimes.map((runtime: GetRuntimes_runtimes, idx: number) => {
+  const buttons = runtimes.map((runtime: GetRuntimes_runtimes) => {
     const disabled = runtime.status === RuntimeStatus.CREATING;
     return (
       <ConditionalLink
-        key={`NavBarItem_${idx}`}
+        key={runtime.name}
         LinkType={NavLink}
         to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}
         disabled={disabled}
@@ -47,11 +47,7 @@ function NavigationBar() {
           className: styles.link
         }}
       >
-        <HexButton
-          key={`navigationButton_${runtime.name}`}
-          label={runtime.name}
-          disabled={disabled}
-        />
+        <HexButton label={runtime.name} disabled={disabled} />
       </ConditionalLink>
     );
   });
@@ -64,7 +60,7 @@ function NavigationBar() {
       className={styles.link}
       exact={true}
     >
-      <MultiHexButton key={`navigationButton_Runtimes`} />
+      <MultiHexButton />
     </NavLink>
   );
 
@@ -75,7 +71,7 @@ function NavigationBar() {
       activeClassName={styles.active}
       className={styles.link}
     >
-      <AddHexButton key={`navigationButton_AddRuntime`} />
+      <AddHexButton />
     </NavLink>
   );
 

@@ -19,7 +19,7 @@ type Props = {
 };
 function Filters({ filters }: Props) {
   const filterNodes = Object.keys(filters).map((filter: string) => (
-    <Filter filter={filter} value={filters[filter]} key={`filter_${filter}`} />
+    <Filter filter={filter} value={filters[filter]} key={filter} />
   ));
   return (
     <div className={styles.container}>

@@ -202,7 +202,7 @@ function StatusViewer({ data, status, onNodeClick }: Props) {
         <SpinnerCircular />
       ) : (
         <VersionStatusViewer
-          key={`versionStatus_${versionId}`}
+          key={versionId}
           width={width}
           height={height}
           margin={{
