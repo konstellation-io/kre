@@ -13,7 +13,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
 func ProcessFile(logger logging.Logger, krtFile io.Reader, dstDir string) (*Krt, error) {

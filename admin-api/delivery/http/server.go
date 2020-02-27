@@ -3,11 +3,11 @@ package http
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/controller"
-	kremiddleware "gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/middleware"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/kre/admin-api/delivery/http/controller"
+	kremiddleware "gitlab.com/konstellation/kre/admin-api/delivery/http/middleware"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
 // App is the top-level struct.

@@ -8,8 +8,8 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
+	"gitlab.com/konstellation/kre/k8s-manager/config"
+	"gitlab.com/konstellation/kre/k8s-manager/entity"
 )
 
 type Manager struct {

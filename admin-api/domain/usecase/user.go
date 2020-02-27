@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/kre/admin-api/domain/repository"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
 // UserInteractor contains app logic to handle User entities

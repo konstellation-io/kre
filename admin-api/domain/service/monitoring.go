@@ -1,6 +1,6 @@
 package service
 
-import "gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+import "gitlab.com/konstellation/kre/admin-api/domain/entity"
 
 // TODO: Change stop channel to derived context
 type MonitoringService interface {

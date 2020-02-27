@@ -7,8 +7,8 @@ import (
 	"github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
 func NewHttpHandler(

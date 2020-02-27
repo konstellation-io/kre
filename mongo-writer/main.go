@@ -10,9 +10,9 @@ import (
 	nc "github.com/nats-io/nats.go"
 	"go.mongodb.org/mongo-driver/bson"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/mongodb"
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/nats"
+	"gitlab.com/konstellation/kre/mongo-writer/config"
+	"gitlab.com/konstellation/kre/mongo-writer/mongodb"
+	"gitlab.com/konstellation/kre/mongo-writer/nats"
 )
 
 func main() {

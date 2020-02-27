@@ -7,9 +7,9 @@ import (
 
 	"github.com/go-playground/validator"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/auth"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/domain/repository"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/auth"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
 // AuthInteractor will manage all things related to authorizations.

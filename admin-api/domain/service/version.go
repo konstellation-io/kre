@@ -1,6 +1,6 @@
 package service
 
-import "gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+import "gitlab.com/konstellation/kre/admin-api/domain/entity"
 
 type VersionService interface {
 	Start(runtime *entity.Runtime, version *entity.Version) error

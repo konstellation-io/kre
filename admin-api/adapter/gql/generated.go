@@ -15,7 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 )
 
 // region    ************************** generated!.gotpl **************************

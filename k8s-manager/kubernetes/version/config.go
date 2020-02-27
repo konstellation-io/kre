@@ -7,7 +7,7 @@ import (
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
+	"gitlab.com/konstellation/kre/k8s-manager/entity"
 )
 
 func (m *Manager) createConfig(version *entity.Version, econf EntrypointConfig) (string, error) {

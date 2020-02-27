@@ -8,7 +8,7 @@ import (
 	nc "github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
+	"gitlab.com/konstellation/kre/mongo-writer/config"
 )
 
 // Connect to a server

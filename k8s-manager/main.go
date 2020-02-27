@@ -7,13 +7,13 @@ import (
 
 	"google.golang.org/grpc"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/runtime"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/version"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/runtimepb"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/versionpb"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/service"
+	"gitlab.com/konstellation/kre/k8s-manager/config"
+	"gitlab.com/konstellation/kre/k8s-manager/kubernetes"
+	"gitlab.com/konstellation/kre/k8s-manager/kubernetes/runtime"
+	"gitlab.com/konstellation/kre/k8s-manager/kubernetes/version"
+	"gitlab.com/konstellation/kre/k8s-manager/proto/runtimepb"
+	"gitlab.com/konstellation/kre/k8s-manager/proto/versionpb"
+	"gitlab.com/konstellation/kre/k8s-manager/service"
 )
 
 func main() {

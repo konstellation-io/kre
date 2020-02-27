@@ -6,9 +6,9 @@ import (
 
 	"github.com/labstack/echo"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/dataloader"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
+	"gitlab.com/konstellation/kre/admin-api/adapter/dataloader"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 )
 
 const UserLoaderKey = "userloader"
