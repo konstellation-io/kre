@@ -3,6 +3,7 @@ package mongo
 import (
 	"context"
 	"fmt"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"os"
 	"time"
 
@@ -14,16 +15,15 @@ import (
 
 	"gitlab.com/konstellation/kre/runtime-api/config"
 	"gitlab.com/konstellation/kre/runtime-api/entity"
-	"gitlab.com/konstellation/kre/runtime-api/logging"
 )
 
 type Watcher struct {
 	cfg    *config.Config
-	logger *logging.Logger
+	logger *simplelogger.SimpleLogger
 	client *mongo.Client
 }
 
-func NewWatcher(cfg *config.Config, logger *logging.Logger) *Watcher {
+func NewWatcher(cfg *config.Config, logger *simplelogger.SimpleLogger) *Watcher {
 	return &Watcher{
 		cfg,
 		logger,

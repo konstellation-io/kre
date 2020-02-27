@@ -67,7 +67,7 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 				return
 			}
 
-			m.logger.Info(fmt.Sprintf("------ Message received: %#v -----", msg.String()))
+			m.logger.Infof("------ Message received: %#v -----", msg.String())
 
 			if msg.GetNodeId() != "" {
 
@@ -137,7 +137,7 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 				return
 			}
 
-			m.logger.Info(fmt.Sprintf("------ Message received: %#v -----", msg.String()))
+			m.logger.Infof("------ Message received: %#v -----", msg.String())
 
 			if msg.GetNodeId() != "" {
 				ch <- &entity.VersionNodeStatus{

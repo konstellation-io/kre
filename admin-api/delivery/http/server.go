@@ -3,7 +3,6 @@ package http
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/controller"
 	kremiddleware "gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http/middleware"
@@ -18,6 +17,10 @@ type App struct {
 	logger logging.Logger
 }
 
+const logFormat = "${time_rfc3339} INFO remote_ip=${remote_ip}, method=${method}, uri=${uri}, status=${status}" +
+	", bytes_in=${bytes_in}, bytes_out=${bytes_out}, latency=${latency}, referer=${referer}" +
+	", user_agent=${user_agent}, error=${error}\n"
+
 // NewApp creates a new App instance.
 func NewApp(
 	cfg *config.Config,
@@ -31,11 +34,14 @@ func NewApp(
 ) *App {
 	e := echo.New()
 	e.HideBanner = true
+	e.HidePort = true
 	e.Validator = newCustomValidator()
 
 	e.Use(
 		middleware.RequestID(),
-		middleware.Logger(),
+		middleware.LoggerWithConfig(middleware.LoggerConfig{
+			Format: logFormat,
+		}),
 		kremiddleware.NewUserLoader(userInteractor),
 		kremiddleware.NewVersionLoader(versionInteractor),
 	)
@@ -82,5 +88,6 @@ func NewApp(
 
 // Start runs the HTTP server.
 func (a *App) Start() {
+	a.logger.Info("HTTP server started on " + a.cfg.Admin.APIAddress)
 	a.server.Logger.Fatal(a.server.Start(a.cfg.Admin.APIAddress))
 }

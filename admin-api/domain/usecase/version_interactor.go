@@ -151,14 +151,14 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 
 // Start create the resources of the given Version
 func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("The user %s is starting version %s", userID, versionID))
+	i.logger.Infof("The user %s is starting version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
 	}
 
-	i.logger.Info(fmt.Sprintf("Checking version config: %#v", version.Config))
+	i.logger.Infof("Checking version config: %#v", version.Config)
 	if !version.Config.Completed {
 		return nil, ErrVersionConfigIncomplete
 	}
@@ -188,7 +188,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 
 // Stop removes the resources of the given Version
 func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("The user %s is stopping version %s", userID, versionID))
+	i.logger.Infof("The user %s is stopping version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -220,7 +220,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 
 // Publish set a Version as published on DB and K8s
 func (i *VersionInteractor) Publish(userID string, versionID string, comment string) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("The user %s is publishing version %s", userID, versionID))
+	i.logger.Infof("The user %s is publishing version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -286,7 +286,7 @@ func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*
 
 // Unpublish set a Version as not published on DB and K8s
 func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.Version, error) {
-	i.logger.Info(fmt.Sprintf("The user %s is unpublishing version %s", userID, versionID))
+	i.logger.Infof("The user %s is unpublishing version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {

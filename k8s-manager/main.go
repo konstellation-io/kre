@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"log"
 	"net"
 
@@ -10,7 +11,6 @@ import (
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/runtime"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/version"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/runtimepb"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/versionpb"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/service"
@@ -24,7 +24,7 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	logger := logging.NewLogger()
+	logger := simplelogger.New(simplelogger.LevelDebug)
 	s := grpc.NewServer()
 
 	clientset := kubernetes.NewClientset(cfg)

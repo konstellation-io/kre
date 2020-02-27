@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"os"
 	"time"
 
@@ -11,19 +12,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 
 	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/logging"
 )
 
 type MongoDB struct {
 	cfg          *config.Config
-	logger       *logging.Logger
+	logger       *simplelogger.SimpleLogger
 	client       *mongo.Client
 	TotalInserts int
 }
 
 type InsertsMap map[string][]bson.M
 
-func NewMongoDB(cfg *config.Config, logger *logging.Logger) *MongoDB {
+func NewMongoDB(cfg *config.Config, logger *simplelogger.SimpleLogger) *MongoDB {
 	return &MongoDB{
 		cfg,
 		logger,

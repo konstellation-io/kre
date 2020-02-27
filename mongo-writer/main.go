@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"os"
 	"time"
 
@@ -10,27 +11,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 
 	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/mongodb"
 	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/nats"
 )
 
 func main() {
 	cfg := config.NewConfig()
-	logger := logging.NewLogger(cfg)
+	logger := simplelogger.New(simplelogger.LevelDebug)
 
 	mongoCli := mongodb.NewMongoDB(cfg, logger)
 	natsCli := nats.NewNats(cfg, logger)
 
 	err := mongoCli.Connect()
 	if err != nil {
-		logger.Error("MONGO CONN ERROR:", err.Error())
+		logger.Error("MONGO CONN ERROR:" + err.Error())
 		os.Exit(1)
 	}
 
 	err = natsCli.ConnectNats()
 	if err != nil {
-		logger.Error("NATS CONN ERROR: ", err.Error())
+		logger.Error("NATS CONN ERROR: " + err.Error())
 		os.Exit(1)
 	}
 
@@ -82,7 +82,7 @@ out:
 	}
 }
 
-func shutdownService(mongoCli *mongodb.MongoDB, natsCli *nats.Nats, logger *logging.Logger) {
+func shutdownService(mongoCli *mongodb.MongoDB, natsCli *nats.Nats, logger *simplelogger.SimpleLogger) {
 	fmt.Println("Shutting down Mongo Writer...")
 
 	err := mongoCli.Disconnect()

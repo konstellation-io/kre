@@ -5,10 +5,10 @@ go 1.13
 require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/golang/protobuf v1.3.2
-	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334
 	github.com/imdario/mergo v0.3.8 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/stretchr/testify v1.3.0
+	gitlab.com/konstellation/kre/libs/simplelogger v0.0.0-20200227081713-85cb0ee4e20c
 	google.golang.org/grpc v1.25.1
 	gopkg.in/yaml.v2 v2.2.4
 	k8s.io/api v0.0.0-20191115135540-bbc9463b57e5

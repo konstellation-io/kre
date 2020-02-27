@@ -42,128 +42,138 @@ func assertLoggedMsg(t *testing.T, output, level, msg string) {
 }
 
 func TestLevelDebugLogger(t *testing.T) {
-	level := simplelogger.New(simplelogger.LevelDebug)
+	logger := simplelogger.New(simplelogger.LevelDebug)
 	msg := "test message"
 
 	output := captureOutput(func() {
-		level.Error(msg)
+		logger.Error(msg)
 	})
 	assertLoggedMsg(t, output, "ERROR", msg)
 
 	output = captureOutput(func() {
-		level.Warn(msg)
+		logger.Warn(msg)
 	})
 	assertLoggedMsg(t, output, "WARN", msg)
 
 	output = captureOutput(func() {
-		level.Info(msg)
+		logger.Info(msg)
 	})
 	assertLoggedMsg(t, output, "INFO", msg)
 
 	output = captureOutput(func() {
-		level.Debug(msg)
+		logger.Debug(msg)
 	})
 	assertLoggedMsg(t, output, "DEBUG", msg)
 }
 
 func TestLevelInfoLogger(t *testing.T) {
-	level := simplelogger.New(simplelogger.LevelInfo)
+	logger := simplelogger.New(simplelogger.LevelInfo)
 	msg := "test message"
 
 	output := captureOutput(func() {
-		level.Error(msg)
+		logger.Error(msg)
 	})
 	assertLoggedMsg(t, output, "ERROR", msg)
 
 	output = captureOutput(func() {
-		level.Warn(msg)
+		logger.Warn(msg)
 	})
 	assertLoggedMsg(t, output, "WARN", msg)
 
 	output = captureOutput(func() {
-		level.Info(msg)
+		logger.Info(msg)
 	})
 	assertLoggedMsg(t, output, "INFO", msg)
 
 	output = captureOutput(func() {
-		level.Debug(msg)
+		logger.Debug(msg)
 	})
 	assertEqual(t, output, "")
 }
 
 func TestLevelWarnLogger(t *testing.T) {
-	level := simplelogger.New(simplelogger.LevelWarn)
+	logger := simplelogger.New(simplelogger.LevelWarn)
 	msg := "test message"
 
 	output := captureOutput(func() {
-		level.Error(msg)
+		logger.Error(msg)
 	})
 	assertLoggedMsg(t, output, "ERROR", msg)
 
 	output = captureOutput(func() {
-		level.Warn(msg)
+		logger.Warn(msg)
 	})
 	assertLoggedMsg(t, output, "WARN", msg)
 
 	output = captureOutput(func() {
-		level.Info(msg)
+		logger.Info(msg)
 	})
 	assertEqual(t, output, "")
 
 	output = captureOutput(func() {
-		level.Debug(msg)
+		logger.Debug(msg)
 	})
 	assertEqual(t, output, "")
 }
 
 func TestLevelErrorLogger(t *testing.T) {
-	level := simplelogger.New(simplelogger.LevelError)
+	logger := simplelogger.New(simplelogger.LevelError)
 	msg := "test message"
 
 	output := captureOutput(func() {
-		level.Error(msg)
+		logger.Error(msg)
 	})
 	assertLoggedMsg(t, output, "ERROR", msg)
 
 	output = captureOutput(func() {
-		level.Warn(msg)
+		logger.Warn(msg)
 	})
 	assertEqual(t, output, "")
 
 	output = captureOutput(func() {
-		level.Info(msg)
+		logger.Info(msg)
 	})
 	assertEqual(t, output, "")
 
 	output = captureOutput(func() {
-		level.Debug(msg)
+		logger.Debug(msg)
 	})
 	assertEqual(t, output, "")
 }
 
 func TestLoggerWithFormatters(t *testing.T) {
-	level := simplelogger.New(simplelogger.LevelDebug)
+	logger := simplelogger.New(simplelogger.LevelDebug)
 	msg := "test formatted message: %s %s"
 	arg1 := "some value"
 	arg2 := "another value"
 
 	output := captureOutput(func() {
-		level.Errorf(msg, arg1, arg2)
+		logger.Errorf(msg, arg1, arg2)
 	})
 	assertLoggedMsg(t, output, "ERROR", fmt.Sprintf(msg, arg1, arg2))
 
 	output = captureOutput(func() {
-		level.Warnf(msg, arg1, arg2)
+		logger.Warnf(msg, arg1, arg2)
 	})
 	assertLoggedMsg(t, output, "WARN", fmt.Sprintf(msg, arg1, arg2))
 
 	output = captureOutput(func() {
-		level.Infof(msg, arg1, arg2)
+		logger.Infof(msg, arg1, arg2)
 	})
 	assertLoggedMsg(t, output, "INFO", fmt.Sprintf(msg, arg1, arg2))
 
 	output = captureOutput(func() {
-		level.Debugf(msg, arg1, arg2)
+		logger.Debugf(msg, arg1, arg2)
 	})
 	assertLoggedMsg(t, output, "DEBUG", fmt.Sprintf(msg, arg1, arg2))
+}
+
+func TestLoggerWithLineBreaks(t *testing.T) {
+	logger := simplelogger.New(simplelogger.LevelDebug)
+	msg := "\ntest \nwith line breaks\n message\n"
+
+	output := captureOutput(func() {
+		logger.Info(msg)
+	})
+	assertLoggedMsg(t, output, "INFO", " test  with line breaks  message ")
 }

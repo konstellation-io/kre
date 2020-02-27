@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"log"
 	"net"
 
@@ -8,7 +9,6 @@ import (
 
 	"gitlab.com/konstellation/kre/runtime-api/config"
 	"gitlab.com/konstellation/kre/runtime-api/kubernetes"
-	"gitlab.com/konstellation/kre/runtime-api/logging"
 	"gitlab.com/konstellation/kre/runtime-api/mongo"
 	"gitlab.com/konstellation/kre/runtime-api/proto/monitoringpb"
 	"gitlab.com/konstellation/kre/runtime-api/service"
@@ -16,7 +16,7 @@ import (
 
 func main() {
 	cfg := config.NewConfig()
-	logger := logging.NewLogger()
+	logger := simplelogger.New(simplelogger.LevelDebug)
 
 	port := cfg.Server.Port
 	listener, err := net.Listen("tcp", "0.0.0.0:"+port)

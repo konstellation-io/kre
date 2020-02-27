@@ -1,7 +1,6 @@
 package minio
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -39,8 +38,8 @@ func (m Minio) CreateBucket(name string) error {
 		return fmt.Errorf("error verifying if  Bucket %s exists: %w", name, err)
 	}
 	if exists {
-		m.logger.Error(fmt.Sprintf("Bucket %s already exists", name))
-		return errors.New(fmt.Sprintf("Bucket %s already exists", name))
+		m.logger.Errorf("Bucket %s already exists", name)
+		return fmt.Errorf("bucket %s already exists", name)
 	}
 
 	err = m.client.MakeBucket(name, location)
@@ -48,7 +47,7 @@ func (m Minio) CreateBucket(name string) error {
 		return fmt.Errorf("error Creating Bucket %s: %w", name, err)
 	}
 
-	m.logger.Info(fmt.Sprintf("Bucket %s created", name))
+	m.logger.Infof("Bucket %s created", name)
 
 	return nil
 }
@@ -61,7 +60,7 @@ func (m Minio) CopyDir(dir, bucketName string) error {
 		if info.IsDir() {
 			return nil
 		}
-		m.logger.Info(fmt.Sprintf("Uploading file %s", path))
+		m.logger.Infof("Uploading file %s", path)
 		filePath, _ := filepath.Rel(dir, path)
 		_, err = m.client.FPutObject(bucketName, filePath, path, minio.PutObjectOptions{})
 		if err != nil {
@@ -74,7 +73,7 @@ func (m Minio) CopyDir(dir, bucketName string) error {
 		return fmt.Errorf("error Listing files on dir %s: %w", dir, err)
 	}
 
-	m.logger.Info(fmt.Sprintf("directory %s successfully copied", dir))
+	m.logger.Infof("directory %s successfully copied", dir)
 
 	return nil
 }

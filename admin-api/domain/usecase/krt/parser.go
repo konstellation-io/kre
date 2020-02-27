@@ -49,7 +49,7 @@ func (p *Parser) Parse(krtFile io.Reader) (*Krt, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error on KRT extraction: %w", err)
 	}
-	p.logger.Info(fmt.Sprintf("Extracted files: \n -%s\n", strings.Join(meta.files, "\n -")))
+	p.logger.Infof("Extracted files: %s", strings.Join(meta.files, ", "))
 
 	p.logger.Info("Parsing KRT file")
 	krt, err := generateKrt(meta.yamlFile)
