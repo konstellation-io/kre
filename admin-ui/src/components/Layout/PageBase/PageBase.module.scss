@@ -1,8 +1,7 @@
 .content {
   display: flex;
   flex-direction: row;
-  flex-shrink: 0;
   height: 100%;
-  padding: 0;
+  overflow: hidden;
   transition: padding ease 0.4s;
 }
