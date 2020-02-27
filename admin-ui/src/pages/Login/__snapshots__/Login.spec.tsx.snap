@@ -37,8 +37,6 @@ exports[`Render Login without crashing 1`] = `
               type="text"
               value=""
             />
-            
-            
             <div
               class="helpMessage"
               data-testid="help-message"
