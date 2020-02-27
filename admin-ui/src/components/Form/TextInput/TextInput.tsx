@@ -137,20 +137,17 @@ function TextInput({
     ) : (
       <input {...inputProps} data-testid="input" autoFocus={autoFocus} />
     );
-  const cleanButton =
-    showClearButton && value !== '' ? (
-      <div
-        className={styles.clearButton}
-        onClick={() => updateValue('')}
-        data-testid="clear-button"
-      >
-        x
-      </div>
-    ) : (
-      ''
-    );
+  const cleanButton = showClearButton && value !== '' && (
+    <div
+      className={styles.clearButton}
+      onClick={() => updateValue('')}
+      data-testid="clear-button"
+    >
+      x
+    </div>
+  );
   const VisibilityIcon = isHidden ? IconShow : IconHide;
-  const showEyeButton = hidden ? (
+  const showEyeButton = hidden && (
     <div
       className={cx(styles.eyeButton, {
         [styles.showClearButton]: showClearButton && value !== ''
@@ -159,8 +156,6 @@ function TextInput({
     >
       <VisibilityIcon className="icon-small" />
     </div>
-  ) : (
-    ''
   );
 
   return (
