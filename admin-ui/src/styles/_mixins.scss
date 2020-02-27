@@ -86,6 +86,21 @@
   }
 }
 
+@mixin input-footer($color) {
+  @include font-small;
+
+  height: 16px;
+  margin-top: 8px;
+  letter-spacing: 0.1px;
+  text-align: end;
+  color: transparent;
+  transition: color ease 0.5s;
+
+  &.show {
+    color: $color;
+  }
+}
+
 @mixin list-item-hover {
   transition: color ease 0.4s, background-color ease 0.4s;
 
