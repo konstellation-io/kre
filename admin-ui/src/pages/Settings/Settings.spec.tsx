@@ -131,7 +131,5 @@ test('Security settings works properly', async () => {
   await act(async () => {
     await wait(0);
   });
-
-  expect(getByTestId('error-message').textContent).toBe('');
   expect(getByText('intelygenz.com')).toBeInTheDocument();
 });

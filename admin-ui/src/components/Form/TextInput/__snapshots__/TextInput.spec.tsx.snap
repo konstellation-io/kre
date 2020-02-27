@@ -20,8 +20,8 @@ exports[`render TextInput without crashing 1`] = `
     
     
     <div
-      class="errorMessage"
-      data-testid="error-message"
+      class="helpMessage"
+      data-testid="help-message"
     />
   </div>
 </div>

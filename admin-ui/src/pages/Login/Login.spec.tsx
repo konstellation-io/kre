@@ -80,9 +80,6 @@ it('performs a login request', async () => {
     await fireEvent.click(getByText('SEND ME A LOGIN LINK'));
   });
 
-  let error = getError(container);
-  expect(error.textContent).toBe('');
-
   // @ts-ignore
   axios.mockRejectedValue({
     response: { data: { code: 'error' }, status: 400 }
@@ -93,7 +90,7 @@ it('performs a login request', async () => {
     await fireEvent.click(getByText('SEND ME A LOGIN LINK'));
   });
 
-  error = getError(container);
+  const error = getError(container);
   expect(error.textContent).toBe(
     'Unexpected error. Contact support for more information'
   );
