@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"errors"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"log"
 
 	"k8s.io/client-go/dynamic"
@@ -9,17 +10,16 @@ import (
 
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/logging"
 )
 
 type Manager struct {
 	config    *config.Config
-	logger    *logging.Logger
+	logger    *simplelogger.SimpleLogger
 	clientset *kubernetes.Clientset
 	dynClient dynamic.Interface
 }
 
-func New(config *config.Config, logger *logging.Logger, clientset *kubernetes.Clientset, dynClient dynamic.Interface) *Manager {
+func New(config *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset, dynClient dynamic.Interface) *Manager {
 	return &Manager{
 		config,
 		logger,

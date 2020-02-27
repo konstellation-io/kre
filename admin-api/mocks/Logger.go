@@ -14,12 +14,36 @@ func (_m *Logger) Error(msg string) {
 	_m.Called(msg)
 }
 
+// Errorf provides a mock function with given fields: format, a
+func (_m *Logger) Errorf(format string, a ...interface{}) {
+	var _ca []interface{}
+	_ca = append(_ca, format)
+	_ca = append(_ca, a...)
+	_m.Called(_ca...)
+}
+
 // Info provides a mock function with given fields: msg
 func (_m *Logger) Info(msg string) {
 	_m.Called(msg)
 }
 
+// Infof provides a mock function with given fields: format, a
+func (_m *Logger) Infof(format string, a ...interface{}) {
+	var _ca []interface{}
+	_ca = append(_ca, format)
+	_ca = append(_ca, a...)
+	_m.Called(_ca...)
+}
+
 // Warn provides a mock function with given fields: msg
 func (_m *Logger) Warn(msg string) {
 	_m.Called(msg)
+}
+
+// Warnf provides a mock function with given fields: format, a
+func (_m *Logger) Warnf(format string, a ...interface{}) {
+	var _ca []interface{}
+	_ca = append(_ca, format)
+	_ca = append(_ca, a...)
+	_m.Called(_ca...)
 }

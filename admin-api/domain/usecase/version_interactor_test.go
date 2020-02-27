@@ -57,8 +57,14 @@ func (s *VersionSuite) SetupTest() {
 		createStorage:     CreateStorageMock,
 	}
 
+	// FIXME use another mock lib: https://gitlab.com/konstellation/kre/issues/198
 	s.mocks.logger.On("Info", mock.Anything).Return()
 	s.mocks.logger.On("Warn", mock.Anything).Return()
+	s.mocks.logger.On("Error", mock.Anything).Return()
+	s.mocks.logger.On("Infof", mock.Anything).Return()
+	s.mocks.logger.On("Infof", mock.Anything, mock.Anything).Return()
+	s.mocks.logger.On("Warnf", mock.Anything).Return()
+	s.mocks.logger.On("Errorf", mock.Anything).Return()
 
 	s.userActivityInteractor = usecase.NewUserActivityInteractor(
 

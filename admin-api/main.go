@@ -3,17 +3,17 @@ package main
 import (
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/auth"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/minio"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/repository/mongodb"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/service"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/delivery/http"
 	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 )
 
 func main() {
 	cfg := config.NewConfig()
-	logger := logging.NewLogger()
+	logger := simplelogger.New(simplelogger.LevelDebug)
 
 	db := mongodb.NewMongoDB(cfg, logger)
 	mongodbClient := db.Connect()

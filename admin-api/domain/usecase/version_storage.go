@@ -20,23 +20,23 @@ func (i *VersionInteractor) storeContent(runtime *entity.Runtime, krtYml *krt.Kr
 		return err
 	}
 
-	i.logger.Info(fmt.Sprintf("Bucket Created for Version %s", krtYml.Version))
+	i.logger.Infof("Bucket Created for Version %s", krtYml.Version)
 
 	err = storage.CopyDir(tmpDir, bucketName)
 	if err != nil {
 		return fmt.Errorf("error Copying dir %s: %w", tmpDir, err)
 	}
 
-	i.logger.Info(fmt.Sprintf("Dir %s Copied ", tmpDir))
+	i.logger.Infof("Dir %s Copied ", tmpDir)
 
 	// Remove KRT file and tmpDir
 	err = os.RemoveAll(tmpDir)
 	if err != nil {
-		i.logger.Error(fmt.Sprintf("error Removing dir %s", tmpDir))
+		i.logger.Errorf("error Removing dir %s", tmpDir)
 		return fmt.Errorf("error Removing dir %s: %w", tmpDir, err)
 	}
 
-	i.logger.Info(fmt.Sprintf("Dir %s Removed ", tmpDir))
+	i.logger.Infof("Dir %s Removed ", tmpDir)
 
 	return nil
 }

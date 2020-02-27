@@ -2,12 +2,12 @@ package version
 
 import (
 	"errors"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 
 	"k8s.io/client-go/kubernetes"
 
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/logging"
 )
 
 var (
@@ -19,11 +19,11 @@ var (
 
 type Manager struct {
 	config    *config.Config
-	logger    *logging.Logger
+	logger    *simplelogger.SimpleLogger
 	clientset *kubernetes.Clientset
 }
 
-func New(config *config.Config, logger *logging.Logger, clientset *kubernetes.Clientset) *Manager {
+func New(config *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Manager {
 	return &Manager{
 		config,
 		logger,

@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -91,14 +90,14 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 
 		for _, d := range settings.AuthAllowedDomains {
 			if d == domain {
-				a.logger.Info(fmt.Sprintf("Email domain '%s' is allowed", domain))
+				a.logger.Infof("Email domain '%s' is allowed", domain)
 				isAllowed = true
 				break
 			}
 		}
 
 		if !isAllowed {
-			a.logger.Info(fmt.Sprintf("Email domain '%s' is not in the allowed domain list", domain))
+			a.logger.Infof("Email domain '%s' is not in the allowed domain list", domain)
 		}
 	}
 
@@ -108,7 +107,7 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 
 	// SignUp user creation
 	if isNewUser {
-		a.logger.Info(fmt.Sprintf("The user '%s' doesn't exist, creating in the database...", email))
+		a.logger.Infof("The user '%s' doesn't exist, creating in the database...", email)
 
 		createdUser, err := a.userRepo.Create(email)
 		if err != nil {

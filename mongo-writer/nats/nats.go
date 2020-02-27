@@ -2,19 +2,19 @@ package nats
 
 import (
 	"fmt"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"time"
 
 	nc "github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
 
 	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/logging"
 )
 
 // Connect to a server
 type Nats struct {
 	cfg    *config.Config
-	logger *logging.Logger
+	logger *simplelogger.SimpleLogger
 
 	TotalMsgs int
 
@@ -27,7 +27,7 @@ type Nats struct {
 	ssub stan.Subscription
 }
 
-func NewNats(cfg *config.Config, logger *logging.Logger) *Nats {
+func NewNats(cfg *config.Config, logger *simplelogger.SimpleLogger) *Nats {
 	return &Nats{
 		cfg:    cfg,
 		logger: logger,

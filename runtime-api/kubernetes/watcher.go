@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"context"
 	"fmt"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -12,16 +13,15 @@ import (
 
 	"gitlab.com/konstellation/kre/runtime-api/config"
 	"gitlab.com/konstellation/kre/runtime-api/entity"
-	"gitlab.com/konstellation/kre/runtime-api/logging"
 )
 
 type Watcher struct {
 	config    *config.Config
-	logger    *logging.Logger
+	logger    *simplelogger.SimpleLogger
 	clientset *kubernetes.Clientset
 }
 
-func NewWatcher(config *config.Config, logger *logging.Logger, clientset *kubernetes.Clientset) *Watcher {
+func NewWatcher(config *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Watcher {
 	return &Watcher{
 		config,
 		logger,
@@ -67,7 +67,7 @@ func (w *Watcher) NodeStatus(ctx context.Context, versionName string, statusCh c
 
 type NodeStatusResolver struct {
 	out    chan<- *entity.VersionNodeStatus
-	logger *logging.Logger
+	logger *simplelogger.SimpleLogger
 }
 
 func (n *NodeStatusResolver) OnAdd(obj interface{}) {

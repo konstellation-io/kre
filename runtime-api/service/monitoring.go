@@ -1,10 +1,10 @@
 package service
 
 import (
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"gitlab.com/konstellation/kre/runtime-api/config"
 	"gitlab.com/konstellation/kre/runtime-api/entity"
 	"gitlab.com/konstellation/kre/runtime-api/kubernetes"
-	"gitlab.com/konstellation/kre/runtime-api/logging"
 	"gitlab.com/konstellation/kre/runtime-api/mongo"
 	"gitlab.com/konstellation/kre/runtime-api/proto/monitoringpb"
 )
@@ -12,14 +12,14 @@ import (
 // MonitoringService basic server
 type MonitoringService struct {
 	config *config.Config
-	logger *logging.Logger
+	logger *simplelogger.SimpleLogger
 	// TODO: Change to interfaces
 	status *kubernetes.Watcher
 	logs   *mongo.Watcher
 }
 
 // NewMonitoringService instantiates the GRPC server implementation
-func NewMonitoringService(config *config.Config, logger *logging.Logger, status *kubernetes.Watcher, logs *mongo.Watcher) *MonitoringService {
+func NewMonitoringService(config *config.Config, logger *simplelogger.SimpleLogger, status *kubernetes.Watcher, logs *mongo.Watcher) *MonitoringService {
 	return &MonitoringService{
 		config,
 		logger,

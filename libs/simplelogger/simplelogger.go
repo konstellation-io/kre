@@ -2,6 +2,7 @@ package simplelogger
 
 import (
 	"fmt"
+	"regexp"
 	"time"
 )
 
@@ -21,6 +22,8 @@ var levelNames = []string{
 	"DEBUG",
 }
 
+var lineBreakRE = regexp.MustCompile(`\r?\n`)
+
 type SimpleLogger struct {
 	level LogLevel
 }
@@ -38,7 +41,7 @@ func (l *SimpleLogger) printLog(level LogLevel, msg string) {
 	}
 
 	t := time.Now().Format(time.RFC3339)
-	fmt.Printf("%s %s %s\n", t, levelNames[level], msg)
+	fmt.Printf("%s %s %s\n", t, levelNames[level], lineBreakRE.ReplaceAllLiteralString(msg, " "))
 }
 
 func (l *SimpleLogger) Debug(msg string) {

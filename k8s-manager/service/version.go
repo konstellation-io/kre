@@ -3,23 +3,23 @@ package service
 import (
 	"context"
 	"fmt"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/version"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/versionpb"
 )
 
 // VersionService basic server
 type VersionService struct {
 	config  *config.Config
-	logger  *logging.Logger
+	logger  *simplelogger.SimpleLogger
 	manager *version.Manager
 }
 
 // NewVersionService instantiates the GRPC server implementation
-func NewVersionService(config *config.Config, logger *logging.Logger, manager *version.Manager) *VersionService {
+func NewVersionService(config *config.Config, logger *simplelogger.SimpleLogger, manager *version.Manager) *VersionService {
 	return &VersionService{
 		config,
 		logger,

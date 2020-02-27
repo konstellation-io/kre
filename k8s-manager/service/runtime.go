@@ -3,19 +3,19 @@ package service
 import (
 	"context"
 	"fmt"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/runtime"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/logging"
 	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/runtimepb"
 )
 
 // RuntimeService basic server
 type RuntimeService struct {
 	config  *config.Config
-	logger  *logging.Logger
+	logger  *simplelogger.SimpleLogger
 	manager *runtime.Manager
 	watcher *kubernetes.Watcher
 }
@@ -23,7 +23,7 @@ type RuntimeService struct {
 // NewRuntimeService instantiates the GRPC server implementation
 func NewRuntimeService(
 	config *config.Config,
-	logger *logging.Logger,
+	logger *simplelogger.SimpleLogger,
 	manager *runtime.Manager,
 	watcher *kubernetes.Watcher,
 ) *RuntimeService {

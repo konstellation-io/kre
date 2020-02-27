@@ -14,21 +14,19 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/websocket v1.2.0
-	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334
-	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/minio/minio-go/v6 v6.0.44
-	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
 	github.com/teris-io/shortid v0.0.0-20171029131806-771a37caa5cf
 	github.com/tidwall/pretty v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
+	github.com/vektah/dataloaden v0.2.1-0.20190515034641-a19b9a6e7c9e
 	github.com/vektah/gqlparser v1.2.0
-	github.com/vektra/mockery v0.0.0-20181123154057-e78b021dcbb5 // indirect
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
+	gitlab.com/konstellation/kre/libs/simplelogger v0.0.0-20200226121322-16e44bc30586
 	go.mongodb.org/mongo-driver v1.1.3
 	golang.org/x/net v0.0.0-20190812203447-cdfb69ac37fc // indirect
 	google.golang.org/grpc v1.26.0

@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -63,6 +62,6 @@ func (r *VerificationCodeRepoMongoDB) Delete(code string) error {
 		return err
 	}
 
-	r.logger.Info(fmt.Sprintf("Deleted %v verification code\n", res.DeletedCount))
+	r.logger.Infof("Deleted %v verification code", res.DeletedCount)
 	return nil
 }
