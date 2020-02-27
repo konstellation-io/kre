@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/runtime"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/runtimepb"
+	"gitlab.com/konstellation/kre/k8s-manager/config"
+	"gitlab.com/konstellation/kre/k8s-manager/entity"
+	"gitlab.com/konstellation/kre/k8s-manager/kubernetes"
+	"gitlab.com/konstellation/kre/k8s-manager/kubernetes/runtime"
+	"gitlab.com/konstellation/kre/k8s-manager/proto/runtimepb"
 )
 
 // RuntimeService basic server

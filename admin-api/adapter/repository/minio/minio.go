@@ -7,9 +7,9 @@ import (
 
 	"github.com/minio/minio-go/v6"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/repository"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/kre/admin-api/domain/repository"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
 type Minio struct {

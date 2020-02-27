@@ -10,7 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
+	"gitlab.com/konstellation/kre/k8s-manager/entity"
 )
 
 func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) error {

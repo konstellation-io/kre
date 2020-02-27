@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/99designs/gqlgen/graphql"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 )
 
 type Alert struct {

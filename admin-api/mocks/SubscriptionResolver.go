@@ -3,7 +3,7 @@
 package mocks
 
 import context "context"
-import entity "gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
+import entity "gitlab.com/konstellation/kre/admin-api/domain/entity"
 
 import mock "github.com/stretchr/testify/mock"
 

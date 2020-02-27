@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/kubernetes/version"
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/proto/versionpb"
+	"gitlab.com/konstellation/kre/k8s-manager/config"
+	"gitlab.com/konstellation/kre/k8s-manager/entity"
+	"gitlab.com/konstellation/kre/k8s-manager/kubernetes/version"
+	"gitlab.com/konstellation/kre/k8s-manager/proto/versionpb"
 )
 
 // VersionService basic server

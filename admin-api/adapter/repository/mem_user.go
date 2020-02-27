@@ -3,9 +3,9 @@ package repository
 import (
 	"sync"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/adapter/config"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
 type MemUserRepo struct {

@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/config"
+	"gitlab.com/konstellation/kre/k8s-manager/config"
 )
 
 func NewClientset(cfg *config.Config) *kubernetes.Clientset {

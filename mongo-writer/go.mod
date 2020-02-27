@@ -1,4 +1,4 @@
-module gitlab.com/konstellation/konstellation-ce/kre/mongo-writer
+module gitlab.com/konstellation/kre/mongo-writer
 
 go 1.13
 

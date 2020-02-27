@@ -3,8 +3,8 @@ package usecase
 import (
 	"sort"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/konstellation-ce/kre/admin-api/domain/usecase/krt"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/krt"
 )
 
 func makeConfigMapByKey(list []*entity.ConfigVar) map[string]*entity.ConfigVar {

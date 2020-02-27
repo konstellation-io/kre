@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/k8s-manager/entity"
+	"gitlab.com/konstellation/kre/k8s-manager/entity"
 )
 
 type EntrypointConfig map[string]interface{}

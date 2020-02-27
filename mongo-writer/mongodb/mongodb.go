@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 
-	"gitlab.com/konstellation/konstellation-ce/kre/mongo-writer/config"
+	"gitlab.com/konstellation/kre/mongo-writer/config"
 )
 
 type MongoDB struct {

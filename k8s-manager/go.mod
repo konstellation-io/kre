@@ -1,4 +1,4 @@
-module gitlab.com/konstellation/konstellation-ce/kre/k8s-manager
+module gitlab.com/konstellation/kre/k8s-manager
 
 go 1.13
 
