@@ -142,7 +142,12 @@ function UsersActivity() {
 
   function verifyUser(value: string) {
     return CHECK.getValidationError([
-      CHECK.isFieldInList(value, usersList || [], true)
+      CHECK.isFieldInList(
+        value,
+        usersList || [],
+        true,
+        'The user must be from the list'
+      )
     ]);
   }
 
