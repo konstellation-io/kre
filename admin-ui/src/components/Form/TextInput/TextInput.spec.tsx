@@ -81,6 +81,15 @@ it('shows error messages', () => {
   expect(error.textContent).toBe('Some error');
 });
 
+it('should show help text', () => {
+  const { container } = render(
+    <TextInput label="Label" placeholder="Placeholder" helpText="Help text" />
+  );
+  const helpText = getByTestId(container, 'help-message');
+
+  expect(helpText.textContent).toBe('Help text');
+});
+
 it('text input Handle events', () => {
   const summitMock = jest.fn(() => true);
   const updateMock = jest.fn(() => true);

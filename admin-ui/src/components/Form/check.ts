@@ -37,6 +37,12 @@ export function isFieldNotEmpty(value: string) {
   return value !== '' ? VALID : setInvalid('This field cannot be empty');
 }
 
+export function isLengthAllowed(value: string, maxLength: number) {
+  return value.length > maxLength
+    ? setInvalid(`This field cannot be longer than ${maxLength}`)
+    : VALID;
+}
+
 export function isFieldAnInteger(value: string, positive: boolean = false) {
   const integerValue = parseInt(value);
   const isValid =

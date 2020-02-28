@@ -10,9 +10,10 @@ import React, {
 
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
+import InputHelp from '../InputHelp/InputHelp';
 import IconShow from '@material-ui/icons/RemoveRedEye';
 import IconHide from '@material-ui/icons/RemoveRedEyeOutlined';
-import { isFieldAnInteger } from '../../Form/check';
+import { isFieldAnInteger } from '../check';
 
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
@@ -33,6 +34,7 @@ type Props = {
     maxHeight?: number;
   };
   error?: string;
+  helpText?: string;
   showClearButton?: boolean;
   whiteColor?: boolean;
   onlyNumbers?: boolean;
@@ -41,6 +43,7 @@ type Props = {
   customClassname?: string;
   hidden?: boolean;
   autoFocus?: boolean;
+  maxLength?: number;
 };
 
 function TextInput({
@@ -54,6 +57,7 @@ function TextInput({
   lockHorizontalGrowth = false,
   limits = {},
   error = '',
+  helpText = '',
   showClearButton = false,
   whiteColor = false,
   onlyNumbers = false,
@@ -61,7 +65,8 @@ function TextInput({
   formValue = '',
   customClassname = '',
   hidden = false,
-  autoFocus = false
+  autoFocus = false,
+  maxLength
 }: Props) {
   const [value, setValue] = useState(formValue);
   const [isHidden, setIsHidden] = useState(hidden);
@@ -118,7 +123,8 @@ function TextInput({
     onChange: onType,
     onKeyPress: onKeyPress,
     onBlur: onInputBlur,
-    style: { height }
+    style: { height },
+    maxLength: maxLength
   };
   const inputElement: ReactElement =
     textArea && !isHidden ? (
@@ -131,20 +137,17 @@ function TextInput({
     ) : (
       <input {...inputProps} data-testid="input" autoFocus={autoFocus} />
     );
-  const cleanButton =
-    showClearButton && value !== '' ? (
-      <div
-        className={styles.clearButton}
-        onClick={() => updateValue('')}
-        data-testid="clear-button"
-      >
-        x
-      </div>
-    ) : (
-      ''
-    );
+  const cleanButton = showClearButton && value !== '' && (
+    <div
+      className={styles.clearButton}
+      onClick={() => updateValue('')}
+      data-testid="clear-button"
+    >
+      x
+    </div>
+  );
   const VisibilityIcon = isHidden ? IconShow : IconHide;
-  const showEyeButton = hidden ? (
+  const showEyeButton = hidden && (
     <div
       className={cx(styles.eyeButton, {
         [styles.showClearButton]: showClearButton && value !== ''
@@ -153,8 +156,6 @@ function TextInput({
     >
       <VisibilityIcon className="icon-small" />
     </div>
-  ) : (
-    ''
   );
 
   return (
@@ -169,7 +170,11 @@ function TextInput({
       {inputElement}
       {cleanButton}
       {showEyeButton}
-      <InputError message={error} />
+      {error ? (
+        <InputError message={error} />
+      ) : (
+        <InputHelp message={helpText} />
+      )}
     </div>
   );
 }
