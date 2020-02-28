@@ -3,6 +3,7 @@ import React, { MouseEvent } from 'react';
 import Calendar from '../../../../components/Form/Calendar/Calendar';
 import Select from '../../../../components/Form/Select/Select';
 import Button from '../../../../components/Button/Button';
+import SearchSelect from '../../../../components/Form/SearchSelect/SearchSelect';
 import { Form } from '../../../../hooks/useForm';
 
 import styles from './FiltersBar.module.scss';
@@ -28,6 +29,7 @@ type FormFieldProps = {
   types: string[];
   users: string[];
 };
+
 function FiltersBar({ form, onSubmit, types, users }: FormFieldProps) {
   return (
     <div className={styles.formField}>
@@ -40,13 +42,12 @@ function FiltersBar({ form, onSubmit, types, users }: FormFieldProps) {
         placeholder="Activity type"
         valuesMapper={typeToText}
       />
-      <Select
+      <SearchSelect
         options={users}
         onChange={form.input.userEmail.onChange}
-        error={form.input.userEmail.error}
-        formSelectedOption={form.input.userEmail.value}
-        label="User email"
+        value={form.input.userEmail.value}
         placeholder="User email"
+        error={form.input.userEmail.error}
       />
       <Calendar
         onChangeFromDate={form.input.fromDate.onChange}

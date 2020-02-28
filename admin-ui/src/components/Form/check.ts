@@ -80,11 +80,12 @@ export function isDomainValid(value: string) {
 export function isFieldInList(
   value: string,
   list: string[],
-  optional: boolean = false
+  optional: boolean = false,
+  message?: string
 ) {
   return list.includes(value) || (optional && value === null)
     ? VALID
-    : setInvalid(`Value must be in list: ${list}`);
+    : setInvalid(message || `Value must be in list: ${list}`);
 }
 
 export function isFieldAMomentDate(value: Moment, optional: boolean = false) {
