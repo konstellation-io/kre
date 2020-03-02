@@ -43,7 +43,7 @@
     "typescript": "^3.6.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HOST=dev-admin.kre.local react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "prettier": "prettier --write --single-quote \"src/**/*.ts\"",

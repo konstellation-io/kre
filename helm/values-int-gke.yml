@@ -17,6 +17,7 @@ config:
     verificationCodeDurationInMinutes: 5
     jwtSignSecret: int_jwt_secret
     secureCookie: true
+    cookieDomain: konstellation.io
 
 adminApi:
   image:

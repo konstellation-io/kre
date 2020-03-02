@@ -27,5 +27,6 @@ data:
   # Auth
   KRE_AUTH_VERIFICATION_CODE_DURATION_IN_MINUTES: "{{ .Values.config.auth.verificationCodeDurationInMinutes }}"
   KRE_AUTH_SECURE_COOKIE: "{{ .Values.config.auth.secureCookie }}"
+  KRE_AUTH_COOKIE_DOMAIN: "{{ .Values.config.auth.cookieDomain }}"
   # MongoDB
   KRE_MONGODB_DB_NAME: "{{ .Values.mongodb.mongodbDatabase }}"

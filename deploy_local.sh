@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 if [ "$DEBUG" = "1" ]; then
@@ -12,7 +12,8 @@ export DEVELOPMENT_MODE=true
 export ADMIN_API_IMAGE_TAG="latest"
 export ADMIN_UI_IMAGE_TAG="latest"
 export K8S_MANAGER_IMAGE_TAG="latest"
-export KRE_ADMIN_FRONTEND_BASE_URL="http://admin-kre.local"
+export KRE_ADMIN_FRONTEND_BASE_URL="http://admin.kre.local"
+export KRE_ADMIN_API_BASE_URL="http://api.kre.local"
 
 check_requirements
 
@@ -21,9 +22,13 @@ case $* in
 *--hard* | *--dracarys*)
   . ./scripts/minikube_hard_reset.sh
   ;;
-  # Use it when you want to develop on admin-ui outside k8s
+# Use it when you want to develop on admin-ui outside k8s and using the mock server
+*--local-frontend-mock*)
+  KRE_ADMIN_API_BASE_URL="http://localhost:4000"
+  ;&
+# Use it when you want to develop on admin-ui outside k8s
 *--local-frontend*)
-  KRE_ADMIN_FRONTEND_BASE_URL="http://localhost:3000"
+  KRE_ADMIN_FRONTEND_BASE_URL="http://dev-admin.kre.local:3000"
   export SKIP_FRONTEND_BUILD=1
   ;;
 *--skip-build*)
@@ -61,7 +66,7 @@ HELM_VERSION=3 # Change to 2 if you haven't upgraded yet.
 
 if [ "$HELM_VERSION" = "2" ]; then
   # Helm v2 needs to be initiated first
-  echo "Init helm tiller...\n"
+  printf "Init helm tiller...\n"
   helm init --upgrade --wait
 else
   # Helm v3 needs this the base repo to be added manually
@@ -79,10 +84,10 @@ if [ "$SKIP_BUILD" != "1" ] && [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
   && cd ..
 fi
 
-echo "📚️ Create Namespace if not exist...\n"
+printf "📚️ Create Namespace if not exist...\n"
 kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
 
-echo "📦 Applying helm chart...\n"
+printf "📦 Applying helm chart...\n"
 helm dep update helm/kre
 helm upgrade \
   --wait \
@@ -91,15 +96,15 @@ helm upgrade \
   --set developmentMode=${DEVELOPMENT_MODE} \
   helm/kre
 
-./scripts/show_minikube_etc_hosts.sh "${MINIKUBE_PROFILE}"
+./scripts/show_etc_hosts.sh "${MINIKUBE_PROFILE}"
 
 if [ "$OPERATOR_SDK_INSTALLED" != "1" ]; then
-  echo "\n\n\n"
+  printf "\n\n\n"
   echo_warning "¡¡¡¡¡ Operator SDK not installed. Operator image was not built!!!\n\n\n"
 fi
 
 if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
-  echo "\n\n\n"
+  printf "\n\n\n"
   echo_warning "¡¡¡¡¡ started with local-frontend option. Now run \`yarn start\` inside /admin-ui!!!\n\n\n"
 fi
 

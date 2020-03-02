@@ -14,6 +14,7 @@ config:
     verificationCodeDurationInMinutes: 1
     jwtSignSecret: jwt_secret
     secureCookie: false
+    cookieDomain: kre.local
   runtime:
     sharedStorageClass: standard
     sharedStorageSize: 2Gi
@@ -27,7 +28,7 @@ adminApi:
     port: 4000
   tls:
     enabled: false
-  host: api-kre.local
+  host: api.kre.local
 
 adminUI:
   image:
@@ -38,7 +39,7 @@ adminUI:
     port: 5000
   tls:
     enabled: false
-  host: admin-kre.local
+  host: admin.kre.local
 
 k8sManager:
   image:
