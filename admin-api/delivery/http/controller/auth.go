@@ -115,8 +115,11 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	cookie.Value = jwtToken
 	cookie.Expires = expirationTime
 	cookie.Path = "/"
-	cookie.Secure = a.cfg.Auth.SecureCookie
 	cookie.HttpOnly = true
+	cookie.Secure = a.cfg.Auth.SecureCookie
+	cookie.SameSite = http.SameSiteLaxMode
+	cookie.Domain = a.cfg.Auth.CookieDomain
+
 	c.SetCookie(cookie)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login success"})

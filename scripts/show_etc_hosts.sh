@@ -9,7 +9,8 @@ if [ -z "$MINIKUBE_IP" ]; then
   exit 1
 fi
 
-echo "\n👇 Add the following lines to your /etc/hosts\n"
-echo "$MINIKUBE_IP api-kre.local"
-echo "$MINIKUBE_IP admin-kre.local"
+printf "\n👇 Add the following lines to your /etc/hosts\n"
+echo "$MINIKUBE_IP api.kre.local"
+echo "$MINIKUBE_IP admin.kre.local"
+echo "127.0.0.1 dev-admin.kre.local"
 echo

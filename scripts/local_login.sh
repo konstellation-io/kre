@@ -2,7 +2,7 @@
 
 . ./scripts/functions.sh
 
-HOST="http://api-kre.local"
+HOST="http://api.kre.local"
 SIGNIN_URL="$HOST/api/v1/auth/signin"
 DEV_EMAIL="dev@local.local"
 ADMIN_API_POD=$(kubectl -n kre get pod -l app=kre-local-admin-api -o custom-columns=":metadata.name" --no-headers)
