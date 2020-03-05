@@ -2,13 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { ApolloServer } = require('apollo-server-express');
-const typeDefs = require('./schema');
+const { SubscriptionServer } = require('subscriptions-transport-ws');
+const { execute, subscribe } = require('graphql');
+const { typeDefs, fullSchema } = require('./schema');
+const { makeExecutableSchema } = require('apollo-server');
 const mocks = require('./mock');
 
-const server = new ApolloServer({
-  typeDefs,
-  mocks
-});
 const app = express();
 
 app.use(
@@ -34,20 +33,32 @@ app.post('/api/v1/auth/signin', (req, res) => {
 
 app.post('/api/v1/auth/signin/verify', (req, res) => {
   if (!req.body.verificationCode) {
-    return res
-      .status(400)
-      .send({
-        code: 'invalid_verification_code',
-        message: 'The verification code is invalid.'
-      });
+    return res.status(400).send({
+      code: 'invalid_verification_code',
+      message: 'The verification code is invalid.'
+    });
   }
 
   res.cookie('LOCAL_JWT_TOKEN', 'LOCAL_JWT_TOKEN_VALUE');
   res.json({ message: 'Login success' });
 });
 
+const server = new ApolloServer({ typeDefs, mocks });
+
+const schema = makeExecutableSchema({
+  typeDefs: fullSchema,
+  resolvers: { Subscription: mocks.Subscription() }
+});
+
 server.applyMiddleware({ app, path: '/graphql', cors: false });
+server.installSubscriptionHandlers(app);
+
 const appServer = app.listen(4000, () => {
   const address = appServer.address();
   console.log(`🚀 Server ready at ${address.address}${address.port}`);
 });
+
+new SubscriptionServer(
+  { schema, execute, subscribe },
+  { server: appServer, path: '/graphql' }
+);

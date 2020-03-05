@@ -17,7 +17,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql": "^14.2.1",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.4",
+    "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {
     "jest": "^23.6.0"
