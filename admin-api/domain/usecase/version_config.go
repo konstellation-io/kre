@@ -26,32 +26,30 @@ func (i *VersionInteractor) validateNewConfig(currentConfig, newValues []*entity
 	return nil
 }
 
-func generateNewConfig(currentConfig, newValues []*entity.ConfigVar) ([]*entity.ConfigVar, bool) {
-	isComplete := false
-	cMap := makeConfigMapByKey(currentConfig)
+func generateNewConfig(oldConfig, newConfigVars []*entity.ConfigVar) ([]*entity.ConfigVar, bool) {
+	newConfig := make([]*entity.ConfigVar, len(oldConfig))
+	isComplete := true
+	newConfigVarsMap := makeConfigMapByKey(newConfigVars)
 
-	// Only get values that already exists on currentConfig
-	configToUpdate := make([]*entity.ConfigVar, len(currentConfig))
-	totalValues := 0
-	for x, c := range currentConfig {
-		configToUpdate[x] = c
-		nc := cMap[c.Key]
-		if nc == nil {
-			if configToUpdate[x].Value != "" {
-				totalValues += 1
-			}
-			continue
+	// Only get values that already exists on oldConfig
+	for i, current := range oldConfig {
+		newConfig[i] = &entity.ConfigVar{
+			Key:  current.Key,
+			Type: current.Type,
 		}
-		nc.Type = c.Type
-		configToUpdate[x] = nc
-		if nc.Value != "" {
-			totalValues += 1
+
+		if newVar, ok := newConfigVarsMap[current.Key]; ok {
+			newConfig[i].Value = newVar.Value
+		} else {
+			newConfig[i].Value = current.Value
+		}
+
+		if newConfig[i].Value == "" {
+			isComplete = false
 		}
 	}
-	if len(currentConfig) == totalValues {
-		isComplete = true
-	}
-	return configToUpdate, isComplete
+
+	return newConfig, isComplete
 }
 
 func readExistingConf(versions []*entity.Version) map[string]string {
