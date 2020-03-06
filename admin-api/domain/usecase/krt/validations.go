@@ -28,7 +28,7 @@ func init() {
 	})
 }
 
-func validateYaml(krt *Krt) error {
+func ValidateYaml(krt *Krt) error {
 	err := krtValidator.Struct(krt)
 	if err != nil {
 		if _, ok := err.(*validator.InvalidValidationError); ok {
