@@ -115,7 +115,7 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 		*queryLimit = QueryLimit
 
 		queryOptions := &options.FindOptions{
-			Sort:  bson.D{{"time", -1}},
+			Sort:  bson.D{{"_id", -1}},
 			Limit: queryLimit,
 		}
 
@@ -134,21 +134,10 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 			return
 		}
 
-		operationTime := uint32(time.Now().Unix())
-		if len(results) != 0 {
-			queryId, ok := results[0]["_id"].(primitive.ObjectID)
-			if !ok {
-				w.logger.Error("MongoId to ObjectID conversion error")
-				cancel()
-				return
-			}
-
-			operationTime = uint32(queryId.Timestamp().Unix())
-			w.logger.Info(fmt.Sprintf("-------- OPERATION TIME FROM QUERY: %s  --------", queryId.Timestamp().String()))
-
-			count := len(results)
+		if len(results) > 0 {
+			count := len(results) - 1
 			for i := range results {
-				result := results[count-i-1]
+				result := results[count-i]
 				logsCh <- &entity.NodeLog{
 					Date:      getValueOrDefault(result, "time", ""),
 					Message:   getValueOrDefault(result, "log", ""),
@@ -164,7 +153,7 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 		opts := options.ChangeStream()
 		opts.SetFullDocument(options.UpdateLookup)
 		opts.SetStartAtOperationTime(&primitive.Timestamp{
-			T: operationTime,
+			T: uint32(time.Now().Unix()),
 			I: 0,
 		})
 		stream, err := collection.Watch(ctx, pipeline, opts)
@@ -201,6 +190,7 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 				return
 			}
 
+			w.logger.Infof("  <- doc '%s'\n\n", doc["log"])
 			logsCh <- &entity.NodeLog{
 				Date:      getValueOrDefault(doc, "time", ""),
 				Message:   getValueOrDefault(doc, "log", ""),
