@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,68 +19,59 @@ import (
 type Watcher struct {
 	cfg    *config.Config
 	logger *simplelogger.SimpleLogger
-	client *mongo.Client
 }
 
 func NewWatcher(cfg *config.Config, logger *simplelogger.SimpleLogger) *Watcher {
 	return &Watcher{
 		cfg,
 		logger,
-		nil,
 	}
 }
 
-func (w *Watcher) Connect(ctx context.Context) {
+func (w *Watcher) newMongoClientConnected(ctx context.Context) (*mongo.Client, error) {
 	w.logger.Info("MongoDB connecting...")
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(w.cfg.MongoDB.Address))
 	if err != nil {
-		w.logger.Error(err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 
-	cctx, ccancel := context.WithTimeout(ctx, 20*time.Second)
-	defer ccancel()
+	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+	defer cancel()
 
-	err = client.Connect(cctx)
+	err = client.Connect(ctx)
 	if err != nil {
-		w.logger.Error(err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 
 	// Call Ping to verify that the deployment is up and the Client was configured successfully.
-	pctx, pcancel := context.WithTimeout(ctx, 20*time.Second)
-	defer pcancel()
-
 	w.logger.Info("MongoDB ping...")
-	err = client.Ping(pctx, readpref.Primary())
+	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		w.logger.Error(err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 
-	w.logger.Info("Watcher connected")
-	w.client = client
+	w.logger.Info("MongoDB connected")
+	return client, nil
 }
 
-func (w *Watcher) Disconnect() {
+func (w *Watcher) disconnectMongoClient(client *mongo.Client) error {
 	w.logger.Info("MongoDB disconnecting...")
 
-	if w.client == nil {
-		return
+	if client == nil {
+		return nil
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	err := w.client.Disconnect(ctx)
-
+	err := client.Disconnect(ctx)
 	if err != nil {
-		w.logger.Error(err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	w.logger.Info("Connection to MongoDB closed.")
+	return nil
 }
 
 func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *entity.NodeLog) {
@@ -101,11 +91,20 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 	}
 
 	go func() {
-		ctx, cancel := context.WithCancel(ctx)
-		w.Connect(ctx)
-		defer w.Disconnect()
+		client, err := w.newMongoClientConnected(ctx)
+		if err != nil {
+			w.logger.Errorf("Unexpected error connecting to mongodb: %v", err)
+			return
+		}
 
-		collection := w.client.Database(w.cfg.MongoDB.DBName).Collection("logs")
+		defer func() {
+			err := w.disconnectMongoClient(client)
+			if err != nil {
+				w.logger.Errorf("Unexpected error disconnecting mongodb: %v", err)
+			}
+		}()
+
+		collection := client.Database(w.cfg.MongoDB.DBName).Collection("logs")
 
 		query := bson.D{
 			{"node-id", nodeId},
@@ -119,18 +118,16 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 			Limit: queryLimit,
 		}
 
-		w.logger.Info("-------- RUNNING INITIAL LOGS --------")
+		w.logger.Infof("Getting last %d logs...\n", QueryLimit)
 		cur, err := collection.Find(ctx, query, queryOptions)
 		if err != nil {
 			w.logger.Error(err.Error())
-			cancel()
 			return
 		}
 
 		var results []bson.M
 		if err = cur.All(ctx, &results); err != nil {
 			w.logger.Error(err.Error())
-			cancel()
 			return
 		}
 
@@ -159,38 +156,35 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 		stream, err := collection.Watch(ctx, pipeline, opts)
 		if err != nil {
 			w.logger.Error(err.Error())
-			stream.Close(ctx)
-			cancel()
+
+			err := stream.Close(ctx)
+			if err != nil {
+				w.logger.Errorf("Unexpected error closing stream: %v", err)
+			}
+
 			return
 		}
 		w.logger.Info("waiting for changes")
 
 		var changeDoc bson.M
-		count := 0
 		for {
 			ok := stream.Next(ctx)
 			if !ok {
-				w.logger.Info("Change Stream .Next() return false. Canceling")
-				cancel()
+				w.logger.Infof("Change Stream .Next() return false")
 				return
 			}
 
-			w.logger.Info(fmt.Sprintf("-------------- STREAM ELEMENT COUNT: %d", count))
-			count++
-
 			if e := stream.Decode(&changeDoc); e != nil {
-				w.logger.Info(fmt.Sprintf("error decoding: %s", e))
+				w.logger.Warn(fmt.Sprintf("error decoding: %s", e))
 				continue
 			}
 
 			doc, ok := changeDoc["fullDocument"].(bson.M)
 			if !ok {
-				w.logger.Error("Conversion error")
-				cancel()
-				return
+				w.logger.Warnf("Conversion error: %v", changeDoc)
+				continue
 			}
 
-			w.logger.Infof("  <- doc '%s'\n\n", doc["log"])
 			logsCh <- &entity.NodeLog{
 				Date:      getValueOrDefault(doc, "time", ""),
 				Message:   getValueOrDefault(doc, "log", ""),
