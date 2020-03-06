@@ -1,60 +1,37 @@
 import React from 'react';
 import DomainList from './DomainList';
-import { render, fireEvent, cleanup } from '@testing-library/react';
 
 import { domainMock } from '../../mocks/settings';
+import { shallow } from 'enzyme';
+import { testid } from '../../utils/testUtilsEnzyme';
 
 const mockedDomains = domainMock.result.data.settings.authAllowedDomains;
+const mockOnRemoveDomain = jest.fn();
 
-function renderComponent(params = {}) {
-  return render(
-    <DomainList
-      data={mockedDomains}
-      loading={false}
-      error={undefined}
-      onRemoveDomain={() => {}}
-      {...params}
-    />
-  );
-}
+describe('DomainList', () => {
+  let wrapper;
 
-afterEach(cleanup);
-
-it('Render DomainList without crashing', () => {
-  const { container } = renderComponent();
-
-  expect(container).toMatchSnapshot();
-});
-
-it('Shows right texts', () => {
-  const { queryByTestId } = renderComponent();
-
-  const domainNode0 = queryByTestId('domainListElement0');
-  const domainName0 = queryByTestId('domainListName0');
-  const domainName1 = queryByTestId('domainListName1');
-
-  expect(domainNode0).toBeNull();
-  expect(domainName0).not.toBeNull();
-  expect(domainName0 && domainName0.textContent).toBe('domain.1');
-  expect(domainName1 && domainName1.textContent).toBe('domain.2');
-});
-
-it('Handles events', () => {
-  const clickMock = jest.fn(() => true);
-
-  const { queryByTestId } = renderComponent({ onRemoveDomain: clickMock });
-
-  const domain0 = queryByTestId('domainListRemove0') as HTMLElement;
-  fireEvent.click(domain0);
-
-  expect(clickMock).toHaveBeenCalledTimes(1);
-});
-
-test('default props', () => {
-  const { container } = renderComponent({
-    onRemoveDomain: undefined,
-    domains: undefined
+  beforeEach(() => {
+    wrapper = shallow(
+      <DomainList
+        data={mockedDomains}
+        loading={false}
+        error={undefined}
+        onRemoveDomain={mockOnRemoveDomain}
+      />
+    );
   });
 
-  expect(container).toMatchSnapshot();
+  it('Shows right texts', () => {
+    expect(wrapper.exists(testid('domainListElement0'))).toBeFalsy();
+    expect(wrapper.exists(testid('domainListName0'))).toBeTruthy();
+    expect(wrapper.find(testid('domainListName0')).text()).toBe('domain.1');
+    expect(wrapper.find(testid('domainListName1')).text()).toBe('domain.2');
+  });
+
+  it('Handles events', () => {
+    wrapper.find(testid('domainListRemove0')).simulate('click');
+
+    expect(mockOnRemoveDomain).toHaveBeenCalledTimes(1);
+  });
 });

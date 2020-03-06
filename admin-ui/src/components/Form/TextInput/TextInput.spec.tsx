@@ -1,128 +1,55 @@
 import React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
-import { getByTestId } from '@testing-library/dom';
 import TextInput from './TextInput';
+import { shallow } from 'enzyme';
+import { testid } from '../../../utils/testUtilsEnzyme';
+import InputLabel from '../InputLabel/InputLabel';
+import InputError from '../InputError/InputError';
 
-interface Handler {
-  handler: Function;
-  count: number;
-}
-
-afterEach(cleanup);
-
-const getInput = (c: HTMLElement) =>
-  getByTestId(c, 'input') as HTMLInputElement;
-const getLabel = (c: HTMLElement) =>
-  getByTestId(c, 'label') as HTMLLabelElement;
-const getClear = (c: HTMLElement) => getByTestId(c, 'clear-button');
+const getInput = wrapper => wrapper.find(testid('input'));
+const getLabel = wrapper => wrapper.find(InputLabel);
 
 function checkTexts(
-  container: HTMLElement,
+  wrapper: HTMLElement,
   inputText: string,
   labelText: string,
   placeholderText: string = ''
 ) {
-  const input = getInput(container);
-  const label = getLabel(container);
+  const input = getInput(wrapper);
+  const label = getLabel(wrapper);
 
-  expect(input.textContent).toBe(inputText);
-  expect(label.textContent).toBe(labelText);
+  expect(input.text()).toBe(inputText);
+  expect(label.prop('text')).toBe(labelText);
 
   if (placeholderText) {
-    expect(input.placeholder).toBe(placeholderText);
+    expect(input.prop('placeholder')).toBe(placeholderText);
   }
 }
 
-function testHandlers(container: HTMLElement, handlers: Handler[]) {
-  const input = getInput(container);
+describe('TextInput', () => {
+  let wrapper;
 
-  fireEvent.change(input, { target: { value: 'Typing' } });
-  fireEvent.keyPress(input, { key: 'Enter', keyCode: 13 });
-  fireEvent.keyPress(input, { key: 'a', keyCode: 65, code: 65, charCode: 65 });
+  beforeEach(() => {
+    wrapper = shallow(<TextInput />);
+  });
 
-  handlers.forEach(({ handler, count }: Handler) =>
-    expect(handler).toHaveBeenCalledTimes(count)
-  );
-}
+  it('shows right texts', () => {
+    checkTexts(wrapper, '', '');
 
-it('render TextInput without crashing', () => {
-  const { container } = render(<TextInput />);
-  expect(container).toMatchSnapshot();
-});
+    wrapper.setProps({ label: 'New Text', placeholder: 'New Placeholder' });
+    checkTexts(wrapper, '', 'New Text', 'New Placeholder');
 
-it('shows right texts', () => {
-  let input;
-  const { rerender, container } = render(<TextInput />);
-  checkTexts(container, '', '');
+    wrapper.setProps({
+      label: 'New Text 2',
+      placeholder: 'New Placeholder 2',
+      textArea: true
+    });
 
-  rerender(<TextInput label="New Text" placeholder="New Placeholder" />);
-  checkTexts(container, '', 'NEW TEXT', 'New Placeholder');
+    checkTexts(wrapper, '', 'New Text 2', 'New Placeholder 2');
+  });
 
-  input = getInput(container);
-  fireEvent.change(input, { target: { value: 'Some Typing' } });
-  expect(input.value).toBe('Some Typing');
+  it('shows error messages', () => {
+    wrapper.setProps({ error: 'Some error' });
 
-  rerender(
-    <TextInput label="New Text 2" placeholder="New Placeholder 2" textArea />
-  );
-  checkTexts(container, 'Some Typing', 'NEW TEXT 2', 'New Placeholder 2');
-
-  input = getInput(container);
-  fireEvent.change(input, { target: { value: 'Some Typing 2' } });
-  expect(input.value).toBe('Some Typing 2');
-});
-
-it('shows error messages', () => {
-  const { container } = render(
-    <TextInput label="Label" placeholder="Placeholder" error="Some error" />
-  );
-  const error = getByTestId(container, 'error-message');
-
-  expect(error.textContent).toBe('Some error');
-});
-
-it('should show help text', () => {
-  const { container } = render(
-    <TextInput label="Label" placeholder="Placeholder" helpText="Help text" />
-  );
-  const helpText = getByTestId(container, 'help-message');
-
-  expect(helpText.textContent).toBe('Help text');
-});
-
-it('text input Handle events', () => {
-  const summitMock = jest.fn(() => true);
-  const updateMock = jest.fn(() => true);
-
-  const { container } = render(
-    <TextInput onSubmit={summitMock} onChange={updateMock} showClearButton />
-  );
-
-  const handlers = [
-    { handler: summitMock, count: 1 },
-    { handler: updateMock, count: 1 }
-  ];
-  testHandlers(container, handlers);
-
-  const input = getInput(container);
-  const clearButton = getClear(container);
-  expect(input.value).toBe('Typing');
-
-  fireEvent.click(clearButton);
-  expect(input.value).toBe('');
-});
-
-test('text area Handle events', () => {
-  const summitMock = jest.fn(() => true);
-  const updateMock = jest.fn(() => true);
-
-  const { container } = render(
-    <TextInput onSubmit={summitMock} onChange={updateMock} textArea />
-  );
-
-  const handlers = [
-    { handler: summitMock, count: 0 },
-    { handler: updateMock, count: 1 }
-  ];
-  testHandlers(container, handlers);
+    expect(wrapper.find(InputError).prop('message')).toBe('Some error');
+  });
 });

@@ -1,40 +1,41 @@
 import React from 'react';
-import moment from 'moment-timezone'
+import moment from 'moment-timezone';
 
 import UserActivityList from './UserActivityList';
 import { formatDate } from '../../../../utils/format';
-import { render, cleanup } from '@testing-library/react';
+import { cleanup } from '@testing-library/react';
 
 import { usersActivityMock } from '../../../../mocks/settings';
-import '@testing-library/jest-dom/extend-expect';
+import { shallow } from 'enzyme';
+import { testid } from '../../../../utils/testUtilsEnzyme';
 
 const mockData = usersActivityMock.result.data.userActivityList;
-
-const Component = <UserActivityList data={mockData} />;
 
 moment.tz.setDefault('UTC');
 
 afterEach(cleanup);
 
-it('Render UserActivityList without crashing', () => {
-  const { container } = render(Component);
+describe('UserActivityList', () => {
+  let wrapper;
 
-  expect(container).toMatchSnapshot();
-});
+  beforeEach(() => {
+    wrapper = shallow(<UserActivityList data={mockData} />);
+  });
 
-it('Shows right texts', async () => {
-  const { queryByTestId } = render(Component);
+  it('Shows right texts', async () => {
+    const userActivityNode0 = wrapper.find(testid('userActivityListElement0'));
+    const userActivityNode1 = wrapper.find(testid('userActivityListElement1'));
 
-  const userActivityNode0 = queryByTestId('userActivityListElement0');
-  const userActivityNode1 = queryByTestId('userActivityListElement1');
-  expect(userActivityNode0).not.toBeNull();
+    const dateFormatted = formatDate(
+      new Date('2019-11-27T15:28:01+00:00'),
+      true
+    );
+    const user0 = userActivityNode0.find('.user');
+    const message0 = userActivityNode0.find('.message');
+    const date1 = userActivityNode1.find('.date p');
 
-  const dateFormatted = formatDate(new Date('2019-11-27T15:28:01+00:00'), true);
-  const user0 = userActivityNode0 && userActivityNode0.querySelector('.user');
-  const message0 =
-    userActivityNode0 && userActivityNode0.querySelector('.message');
-  const date1 = userActivityNode1 && userActivityNode1.querySelector('.date p');
-  expect(user0 && user0.textContent).toBe('user1@domain.com');
-  expect(message0 && message0.textContent).toBe('Has logged in');
-  expect(date1 && date1.textContent).toBe(dateFormatted);
+    expect(user0.text()).toBe('user1@domain.com');
+    expect(message0.text()).toBe('Has logged in');
+    expect(date1.text()).toBe(dateFormatted);
+  });
 });

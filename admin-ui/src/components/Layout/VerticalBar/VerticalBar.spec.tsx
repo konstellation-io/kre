@@ -1,31 +1,23 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
 import VerticalBar from './VerticalBar';
-import '@testing-library/jest-dom/extend-expect';
+import { shallow } from 'enzyme';
 
-afterEach(cleanup);
+describe('VerticalBar', () => {
+  let wrapper;
 
-it('Renders VerticalBar without crashing', () => {
-  const { container } = render(
-    <VerticalBar>
-      <div>A</div>
-      <div>B</div>
-      <div>C</div>
-    </VerticalBar>
-  );
-  expect(container).toMatchSnapshot();
-});
+  beforeEach(() => {
+    wrapper = shallow(
+      <VerticalBar>
+        <div className="childrenA">A</div>
+        <div className="childrenB">B</div>
+        <div className="childrenC">C</div>
+      </VerticalBar>
+    );
+  });
 
-it('Shows children components', () => {
-  const { getByText } = render(
-    <VerticalBar>
-      <div>A</div>
-      <div>B</div>
-      <div>C</div>
-    </VerticalBar>
-  );
-
-  expect(getByText('A')).toBeInTheDocument();
-  expect(getByText('B')).toBeInTheDocument();
-  expect(getByText('C')).toBeInTheDocument();
+  it('shows children components', () => {
+    expect(wrapper.exists('.childrenA')).toBeTruthy();
+    expect(wrapper.exists('.childrenB')).toBeTruthy();
+    expect(wrapper.exists('.childrenC')).toBeTruthy();
+  });
 });

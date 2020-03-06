@@ -35,6 +35,7 @@ function HexagonBorder({ to = '', size = 360, text = 'label' }: Props) {
       <Link to={to}>
         <div
           className={styles.hexContent}
+          data-testid="hexagon-border"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         />

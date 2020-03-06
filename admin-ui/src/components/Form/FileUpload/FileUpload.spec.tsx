@@ -1,27 +1,20 @@
 import React from 'react';
-import { renderWithRouter } from '../../../utils/testUtils';
 import FileUpload from './FileUpload';
-import { render, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import { shallow } from 'enzyme';
+import InputLabel from '../InputLabel/InputLabel';
 
-function renderComponent(params = {}) {
-  return renderWithRouter(<FileUpload {...params} />).element;
-}
+describe('FileUpload', () => {
+  let wrapper;
+  const PLACEHOLDER = 'some placeholder';
+  const LABEL = 'some label';
 
-afterEach(cleanup);
-
-it('Render FileUpload without crashing', () => {
-  const { container } = renderComponent();
-
-  expect(container).toMatchSnapshot();
-});
-
-it('show right texts', () => {
-  const { getByText } = renderComponent({
-    placeholder: 'some placeholder',
-    label: 'some label'
+  beforeEach(() => {
+    wrapper = shallow(<FileUpload placeholder={PLACEHOLDER} label={LABEL} />);
   });
 
-  expect(getByText('some placeholder')).toBeInTheDocument();
-  expect(getByText('SOME LABEL')).toBeInTheDocument();
+  it('show right texts', () => {
+    expect(wrapper.find(InputLabel).prop('text')).toBe(LABEL);
+    expect(wrapper.find('.input').text()).toBe(PLACEHOLDER);
+  });
 });

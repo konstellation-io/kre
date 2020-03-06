@@ -77,7 +77,9 @@ function NavigationBar() {
 
   return (
     <VerticalBar>
-      <div className={styles.container}>{buttons}</div>
+      <div className={styles.container} data-testid="navigation-bar">
+        {buttons}
+      </div>
     </VerticalBar>
   );
 }

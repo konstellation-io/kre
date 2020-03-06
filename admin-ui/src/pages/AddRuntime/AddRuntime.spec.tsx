@@ -1,66 +1,54 @@
 import React from 'react';
-import { renderWithRouter } from '../../utils/testUtils';
-import { fireEvent, cleanup, RenderResult } from '@testing-library/react';
-import { Router } from 'react-router-dom';
-import ROUTE from '../../constants/routes';
-import { Routes } from '../../App';
-import { createMemoryHistory } from 'history';
-
+import AddRuntime from './AddRuntime';
 import { MockedProvider } from '@apollo/react-testing';
 import { usernameMock } from '../../mocks/auth';
 import { addRuntimeMock, dashboardMock } from '../../mocks/runtime';
-import wait from 'waait';
-import { act } from 'react-dom/test-utils';
+import {
+  prepareApolloComponent,
+  testid,
+  label
+} from '../../utils/testUtilsEnzyme';
+import TextInput from '../../components/Form/TextInput/TextInput';
+import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 
 const mocks = [addRuntimeMock, dashboardMock, usernameMock];
 
-afterEach(cleanup);
-
-function generateComponent() {
-  const history = createMemoryHistory();
-  history.push(ROUTE.NEW_RUNTIME);
-
-  const wrapper = renderWithRouter(
+function Wrapper() {
+  return (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Router history={history}>
-        <Routes />
-      </Router>
+      <AddRuntime />
     </MockedProvider>
   );
-
-  return [wrapper.element, history];
 }
 
-it('Renders AddRuntime without crashing', () => {
-  const { container } = generateComponent()[0] as RenderResult;
-  expect(container).toMatchSnapshot();
-});
+describe('AddRuntime', () => {
+  test('show right texts', async () => {
+    const { wrapper } = await prepareApolloComponent(<Wrapper />);
 
-test('Show right texts', async () => {
-  const { getByText } = generateComponent()[0] as RenderResult;
-
-  await act(async () => {
-    await wait(0);
+    expect(wrapper.exists('.container h1')).toBeTruthy();
+    expect(wrapper.exists(label('SAVE'))).toBeTruthy();
   });
 
-  expect(getByText('Add Runtime')).toBeInTheDocument();
-  expect(getByText('SAVE')).toBeInTheDocument();
+  it('handles input changes', async () => {
+    const { wrapper } = await prepareApolloComponent(<Wrapper />);
+
+    wrapper
+      .find(TextInput)
+      .find('input')
+      .simulate('change', { target: { value: '' } });
+
+    wrapper.find(label('SAVE')).simulate('click');
+
+    expect(wrapper.exists(SpinnerLinear)).toBeFalsy();
+
+    expect(wrapper.find(testid('error-message')).text()).not.toBe('');
+
+    wrapper
+      .find(TextInput)
+      .find('input')
+      .simulate('change', { target: { value: 'New Runtime' } });
+
+    wrapper.find(label('SAVE')).simulate('click');
+    expect(wrapper.exists(SpinnerLinear)).toBeTruthy();
+  });
 });
-
-// it("Handles input changes", async () => {
-//   const { getByText, getByTestId } = generateComponent()[0] as RenderResult;
-
-//   fireEvent.change(getByTestId("input"), { target: { value: "" } });
-//   fireEvent.click(getByText("SAVE"));
-
-//   expect(getByTestId("error-message").textContent).not.toBe("");
-
-//   fireEvent.change(getByTestId("input"), { target: { value: "New Runtime" } });
-//   fireEvent.click(getByText("SAVE"));
-
-//   await act(async () => {
-//     await wait(0);
-//   });
-
-//   expect(getByTestId("dashboardContainer")).toBeInTheDocument();
-// });

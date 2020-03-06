@@ -1,16 +1,17 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
 import VerifyEmail from './VerifyEmail';
-import '@testing-library/jest-dom/extend-expect';
+import { shallow } from 'enzyme';
+import StateCircle from '../../components/Shape/StateCircle/StateCircle';
 
-afterEach(cleanup);
+describe('VerifyEmail', () => {
+  let wrapper;
 
-it('renders VerifyEmail without crashing', () => {
-  const { container } = render(<VerifyEmail />);
-  expect(container).toMatchSnapshot();
-});
+  beforeEach(() => {
+    wrapper = shallow(<VerifyEmail />);
+  });
 
-it('show correct texts', () => {
-  const { getByText } = render(<VerifyEmail />);
-  expect(getByText('Login link sent')).toBeInTheDocument();
+  it('show correct texts', () => {
+    expect(wrapper.exists(StateCircle)).toBeTruthy();
+    expect(wrapper.exists('p')).toBeTruthy();
+  });
 });

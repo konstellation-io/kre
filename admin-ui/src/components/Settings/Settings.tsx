@@ -80,7 +80,9 @@ function Settings({ label }: Props) {
       data-testid="settingsContainer"
       ref={ref}
     >
-      <div className={styles.label}>{label}</div>
+      <div className={styles.label} data-testid="settings-label">
+        {label}
+      </div>
       <div
         className={styles.options}
         style={{ maxHeight: opened ? optionsHeight : 0 }}

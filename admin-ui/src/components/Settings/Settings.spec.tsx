@@ -1,56 +1,30 @@
 import React from 'react';
-import { renderWithRouter } from '../../utils/testUtils';
-import { fireEvent, cleanup } from '@testing-library/react';
 import Settings from './Settings';
-import { ApolloClient } from 'apollo-client';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { ApolloLink } from 'apollo-link';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { shallow } from 'enzyme';
 
-import { getByTestId } from '@testing-library/dom';
+jest.mock('@apollo/react-hooks');
+jest.mock('react-router');
 
-afterEach(cleanup);
+describe('Settings', () => {
+  let wrapper;
 
-function renderComponent() {
-  return renderWithRouter(
-    <ApolloProvider
-      client={
-        new ApolloClient({
-          cache: new InMemoryCache(),
-          link: new ApolloLink()
-        })
-      }
-    >
-      <Settings />
-    </ApolloProvider>
-  ).element;
-}
+  beforeEach(() => {
+    wrapper = shallow(<Settings />);
+  });
 
-it('Renders Settings without crashing', () => {
-  const { container } = renderComponent();
-  expect(container).toMatchSnapshot();
-});
+  it('Shows logout option', () => {
+    expect(wrapper.exists({ label: 'LOGOUT' })).toBeTruthy();
+  });
 
-it('Shows logout option', () => {
-  const { getByText } = renderComponent();
+  it('Shows options on mouse click', () => {
+    expect(wrapper.find('.options').prop('style').maxHeight).toBe(0);
 
-  expect(getByText('LOGOUT')).toBeInTheDocument();
-});
+    wrapper.find('.container').simulate('click');
+    expect(wrapper.find('.options').prop('style').maxHeight).not.toBe(0);
 
-it('Shows options on mouse click', () => {
-  const { container } = renderComponent();
-
-  const settingsContent = getByTestId(container, 'settingsContent');
-  // @ts-ignore
-  expect(settingsContent.style['max-height']).toBe('0');
-
-  fireEvent.click(getByTestId(container, 'settingsContainer'));
-  // @ts-ignore
-  expect(settingsContent.style['max-height']).not.toBe('0');
-
-  fireEvent.click(getByTestId(container, 'settingsContainer'));
-  // @ts-ignore
-  expect(settingsContent.style['max-height']).toBe('0');
+    wrapper.find('.container').simulate('click');
+    expect(wrapper.find('.options').prop('style').maxHeight).toBe(0);
+  });
 });
 
 //TODO: make logout test

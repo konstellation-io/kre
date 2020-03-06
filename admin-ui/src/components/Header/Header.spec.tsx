@@ -1,34 +1,39 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router';
-import { renderWithRouter } from '../../utils/testUtils';
-import { act } from 'react-dom/test-utils';
+import {
+  mountWithRouter,
+  prepareApolloComponent,
+  testid
+} from '../../utils/testUtilsEnzyme';
 import Header from './Header';
 
-import wait from 'waait';
 import { MockedProvider } from '@apollo/react-testing';
-import { usernameMock } from '../../mocks/auth';
-import '@testing-library/jest-dom/extend-expect';
+import { usernameMock, unauthorizedUsernameMock } from '../../mocks/auth';
 
-function renderComponent() {
-  return renderWithRouter(
-    <MockedProvider mocks={[usernameMock]} addTypename={false}>
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
+const mocks = [usernameMock];
+const errorMocks = [unauthorizedUsernameMock];
+
+function Wrapper({ mocks }: any) {
+  return (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Header />
     </MockedProvider>
-  ).element;
+  );
 }
-it('Render Header without crashing', () => {
-  const { container } = renderComponent();
-  expect(container).toMatchSnapshot();
+const Component = <Wrapper mocks={mocks} />;
+const ComponentError = <Wrapper mocks={errorMocks} />;
+
+it('Shows right structure', async () => {
+  const { wrapper } = await prepareApolloComponent(Component);
+
+  expect(wrapper.exists('header')).toBeTruthy();
+  expect(wrapper.find(testid('settings-label')).text()).toBe(
+    usernameMock.result.data.me.email
+  );
 });
 
-it('Shows right texts', async () => {
-  const { getByText } = renderComponent();
+it('handles loading status', async () => {
+  const { wrapper } = mountWithRouter({ component: ComponentError });
 
-  await act(async () => {
-    await wait(0);
-  });
-
-  expect(getByText('user@konstellation.com')).toBeInTheDocument();
+  expect(wrapper.exists(testid('splashscreen'))).toBeTruthy();
+  expect(wrapper.exists('header')).toBeFalsy();
 });

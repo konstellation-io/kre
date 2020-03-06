@@ -69,6 +69,8 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
       "!<rootDir>/node_modules/",
+      "!<rootDir>/src/graphql/*/types/*.ts",
+      "!<rootDir>/src/graphql/types/globalTypes.ts",
       "!<rootDir>/src/store.ts",
       "!<rootDir>/src/index.tsx",
       "!<rootDir>/src/react-app-env.d.ts",
