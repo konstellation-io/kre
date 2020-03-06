@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"strings"
+	"math/rand"
 	"time"
-
-	"github.com/teris-io/shortid"
 
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
@@ -17,10 +15,9 @@ import (
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
-func init() {
-	sid, _ := shortid.New(1, shortid.DefaultABC, 2342)
-	shortid.SetDefault(sid)
-}
+const idLength = 10
+const idCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const idCharsetLen = len(idCharset)
 
 var (
 	// ErrVersionNotFound error
@@ -68,8 +65,11 @@ func NewVersionInteractor(
 }
 
 func generateId() string {
-	id, _ := shortid.Generate()
-	return strings.ToLower(strings.ReplaceAll(id, "_", "-"))
+	b := make([]byte, idLength)
+	for i := range b {
+		b[i] = idCharset[rand.Intn(idCharsetLen)]
+	}
+	return string(b)
 }
 
 // GetByRuntime returns all Versions of the given Runtime
