@@ -19,7 +19,6 @@ require (
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/minio/minio-go/v6 v6.0.44
 	github.com/stretchr/testify v1.4.0
-	github.com/teris-io/shortid v0.0.0-20171029131806-771a37caa5cf
 	github.com/tidwall/pretty v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	github.com/vektah/dataloaden v0.2.1-0.20190515034641-a19b9a6e7c9e
