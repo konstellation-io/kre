@@ -6,8 +6,8 @@ type Krt struct {
 	Description string     `yaml:"description" validate:"required"`
 	Entrypoint  Entrypoint `yaml:"entrypoint" validate:"required"`
 	Config      Config     `yaml:"config" validate:"required"`
-	Nodes       []Node     `yaml:"nodes" validate:"required,min=1"`
-	Workflows   []Workflow `yaml:"workflows" validate:"required,min=1"`
+	Nodes       []Node     `yaml:"nodes" validate:"required,dive,min=1"`
+	Workflows   []Workflow `yaml:"workflows" validate:"required,dive,min=1"`
 }
 
 // Node contains data about a version's node
