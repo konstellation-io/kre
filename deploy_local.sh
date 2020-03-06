@@ -80,7 +80,7 @@ if [ "$SKIP_BUILD" != "1" ] && [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
   build_header "kre-operator"
   helm dep update operator/helm-charts/kre-chart
   cd operator \
-  && operator-sdk build konstellation/kre-operator:latest --image-build-args "--build-arg DEVELOPMENT_MODE=$DEVELOPMENT_MODE" \
+  && operator-sdk build konstellation/kre-operator:latest \
   && cd ..
 fi
 

@@ -33,7 +33,7 @@ To start the operator for development you need to create all the necessary permi
 
 ### Install operator-sdk
 
-You need to have `operator-sdk` installed on your system to develop this operator. See [operator-sdk helm guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/helm/user-guide.md)
+You need to have `operator-sdk` installed on your system to develop this operator. See [operator-sdk helm guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/install-operator-sdk.md)
 
 ### Prepare Kubernetes cluster
 
