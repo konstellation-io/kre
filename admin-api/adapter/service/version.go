@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"google.golang.org/grpc"
@@ -104,12 +105,12 @@ func (k *K8sVersionClient) Stop(runtime *entity.Runtime, version *entity.Version
 		},
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	_, err := k.client.Stop(ctx, &req)
 	if err != nil {
-		return err
+		return fmt.Errorf("stop version '%s' error: %w", version.Name, err)
 	}
 
 	return nil

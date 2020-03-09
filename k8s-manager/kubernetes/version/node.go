@@ -1,6 +1,7 @@
 package version
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
@@ -320,8 +321,7 @@ func (m *Manager) restartPodsSync(version *entity.Version) error {
 	}
 }
 
-// TODO try to reuse code
-func (m *Manager) deleteDeploymentsSync(version *entity.Version) error {
+func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Version) error {
 	ns := version.Namespace
 	gracePeriod := new(int64)
 	*gracePeriod = 0
@@ -340,65 +340,75 @@ func (m *Manager) deleteDeploymentsSync(version *entity.Version) error {
 	}
 	numDeployments := len(list.Items)
 
+	m.logger.Infof("There are %d deployments to delete", numDeployments)
 	if numDeployments == 0 {
 		return nil
 	}
 
-	startTime := time.Now()
-	timeToWait := 5 * time.Minute
 	w, err := deployments.Watch(listOptions)
 	if err != nil {
 		return err
 	}
 	watchResults := w.ResultChan()
 
-	go func() {
-		deletePolicy := metav1.DeletePropagationForeground
-		deleteOptions := &metav1.DeleteOptions{
-			PropagationPolicy:  &deletePolicy,
-			GracePeriodSeconds: gracePeriod,
-		}
-		for _, d := range list.Items {
-			_ = deployments.Delete(d.Name, deleteOptions)
-		}
+	deletePolicy := metav1.DeletePropagationForeground
+	deleteOptions := &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: gracePeriod,
+	}
 
-		time.Sleep(2 * time.Second)
-		m.logger.Info("Forcing POD deletion")
-		pods := m.clientset.CoreV1().Pods(ns)
-		listOptions := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("version-name=%s", version.Name),
-			TypeMeta: metav1.TypeMeta{
-				Kind: "Pod",
-			},
+	deploymentsToDelete := make(map[string]bool)
+	for _, d := range list.Items {
+		deploymentsToDelete[d.Name] = true
+		m.logger.Infof("Deleting deployment '%s'...", d.Name)
+		err = deployments.Delete(d.Name, deleteOptions)
+		if err != nil {
+			return err
 		}
-		deletePodsPolicy := metav1.DeletePropagationBackground
-		deleteOptions.PropagationPolicy = &deletePodsPolicy
-		list, _ := pods.List(listOptions)
-		for _, p := range list.Items {
-			_ = pods.Delete(p.Name, deleteOptions)
-		}
-	}()
+	}
+
+	// In order to delete the Deployments is mandatory to delete theirs associated PODs because
+	// the "Deleted" event of a deployment is not received until their PODs are deleted.
+	pods := m.clientset.CoreV1().Pods(ns)
+	deletePodsPolicy := metav1.DeletePropagationBackground
+	deleteOptions.PropagationPolicy = &deletePodsPolicy
+	podList, _ := pods.List(metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("version-name=%s", version.Name),
+		TypeMeta: metav1.TypeMeta{
+			Kind: "Pod",
+		},
+	})
+
+	m.logger.Infof("There are %d PODs to delete", len(podList.Items))
+	for _, p := range podList.Items {
+		_ = pods.Delete(p.Name, deleteOptions)
+	}
 
 	for {
 		select {
 		case event := <-watchResults:
 			if event.Type == watch.Deleted {
-				numDeployments = numDeployments - 1
-				if numDeployments == 0 {
-					w.Stop()
-					return nil
+				if d, ok := event.Object.(*appsv1.Deployment); ok {
+					// Check if the deleted object is one of the deployments to delete
+					if _, ok := deploymentsToDelete[d.Name]; ok {
+						m.logger.Infof("Deployment '%s' deleted", d.Name)
+						numDeployments = numDeployments - 1
+						if numDeployments == 0 {
+							w.Stop()
+							return nil
+						}
+					}
 				}
 			}
 
-		case <-time.After(timeToWait - time.Since(startTime)):
+		case <-ctx.Done():
 			w.Stop()
 			return errors.New("timeout deleting deployments")
 		}
 	}
 }
 
-// TODO try to reuse code
-func (m *Manager) deleteConfigMapsSync(version *entity.Version) error {
+func (m *Manager) deleteConfigMapsSync(ctx context.Context, version *entity.Version) error {
 	gracePeriod := new(int64)
 	*gracePeriod = 0
 
@@ -422,39 +432,47 @@ func (m *Manager) deleteConfigMapsSync(version *entity.Version) error {
 	}
 	numConfigMaps := len(list.Items)
 
+	m.logger.Infof("There are %d configmaps to delete", numConfigMaps)
 	if numConfigMaps == 0 {
 		return nil
 	}
 
-	for _, c := range list.Items {
-		fmt.Printf("Deleting %s", c.Name)
-		_ = configMaps.Delete(c.Name, deleteOptions)
-		if err != nil {
-			return err
-		}
-	}
-
-	startTime := time.Now()
-	timeToWait := 2 * time.Minute
 	w, err := configMaps.Watch(listOptions)
 	if err != nil {
 		return err
 	}
 
 	watchResults := w.ResultChan()
+
+	configmapNamesToDelete := make(map[string]bool)
+
+	for _, c := range list.Items {
+		configmapNamesToDelete[c.Name] = true
+		m.logger.Infof("Deleting configmap '%s'...", c.Name)
+		err = configMaps.Delete(c.Name, deleteOptions)
+		if err != nil {
+			return err
+		}
+	}
+
 	for {
 		select {
 		case event := <-watchResults:
 			if event.Type == watch.Deleted {
-				fmt.Printf("Deleted %#v", event.Object)
-				numConfigMaps = numConfigMaps - 1
-				if numConfigMaps == 0 {
-					w.Stop()
-					return nil
+				if c, ok := event.Object.(*apiv1.ConfigMap); ok {
+					// Check if the deleted object is one of the configmaps to delete
+					if _, ok := configmapNamesToDelete[c.Name]; ok {
+						m.logger.Infof("Configmap '%s' deleted", c.Name)
+						numConfigMaps = numConfigMaps - 1
+						if numConfigMaps == 0 {
+							w.Stop()
+							return nil
+						}
+					}
 				}
 			}
 
-		case <-time.After(timeToWait - time.Since(startTime)):
+		case <-ctx.Done():
 			w.Stop()
 			return errors.New("timeout deleting config maps")
 		}
