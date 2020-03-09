@@ -62,9 +62,9 @@ func (v *VersionService) Stop(ctx context.Context, req *versionpb.Request) (*ver
 	fmt.Println("Stop request received")
 	reqVersion := req.GetVersion()
 
-	err := v.manager.Stop(&entity.Version{Version: *req.GetVersion()})
+	err := v.manager.Stop(ctx, &entity.Version{Version: *reqVersion})
 	if err != nil {
-		fmt.Println(err)
+		v.logger.Errorf("Error stopping version: %s", err.Error())
 		return nil, err
 	}
 

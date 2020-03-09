@@ -1,9 +1,9 @@
 package version
 
 import (
+	"context"
 	"errors"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
-
 	"k8s.io/client-go/kubernetes"
 
 	"gitlab.com/konstellation/kre/k8s-manager/config"
@@ -74,13 +74,13 @@ func (m *Manager) Start(version *entity.Version) error {
 }
 
 // Stop calls kubernetes remove all version resources
-func (m *Manager) Stop(version *entity.Version) error {
-	err := m.deleteConfigMapsSync(version)
+func (m *Manager) Stop(ctx context.Context, version *entity.Version) error {
+	err := m.deleteConfigMapsSync(ctx, version)
 	if err != nil {
 		return err
 	}
 
-	return m.deleteDeploymentsSync(version)
+	return m.deleteDeploymentsSync(ctx, version)
 }
 
 // Publish calls kubernetes to create a new Version Object
