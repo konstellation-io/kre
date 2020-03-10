@@ -30,8 +30,7 @@ exports[`FiltersBar matches snapshot 1`] = `
       }
     }
   />
-  <Select
-    label="User email"
+  <SearchSelect
     onChange={[MockFunction]}
     options={
       Array [

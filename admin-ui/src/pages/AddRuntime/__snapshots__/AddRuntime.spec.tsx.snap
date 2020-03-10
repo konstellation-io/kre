@@ -1550,7 +1550,9 @@ exports[`AddRuntime matches snapshot 1`] = `
                 <TextInput
                   autoFocus={true}
                   error=""
+                  helpText="0/20"
                   label="runtime name"
+                  maxLength={20}
                   onChange={[Function]}
                   onSubmit={[Function]}
                   whiteColor={true}
@@ -1572,6 +1574,7 @@ exports[`AddRuntime matches snapshot 1`] = `
                       autoFocus={true}
                       className="input"
                       data-testid="input"
+                      maxLength={20}
                       onBlur={[Function]}
                       onChange={[Function]}
                       onKeyPress={[Function]}
@@ -1584,14 +1587,16 @@ exports[`AddRuntime matches snapshot 1`] = `
                       type="text"
                       value=""
                     />
-                    <InputError
-                      message=""
+                    <InputHelp
+                      message="0/20"
                     >
                       <div
-                        className="errorMessage"
-                        data-testid="error-message"
-                      />
-                    </InputError>
+                        className="helpMessage show"
+                        data-testid="help-message"
+                      >
+                        0/20
+                      </div>
+                    </InputHelp>
                   </div>
                 </TextInput>
                 <div

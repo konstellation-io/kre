@@ -58,6 +58,11 @@ describe('Login', () => {
     });
     wrapper.find(Button).simulate('click');
 
-    expect(getError(wrapper).prop('message')).toBe('');
+    expect(
+      wrapper
+        .find(TextInput)
+        .dive()
+        .exists(InputError)
+    ).toBeFalsy();
   });
 });
