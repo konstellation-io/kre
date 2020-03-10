@@ -34,7 +34,7 @@ func assertEqual(t *testing.T, output, expectedOutput string) {
 }
 
 func assertLoggedMsg(t *testing.T, output, level, msg string) {
-	expectedOutput := fmt.Sprintf("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2} %s %s\n", level, msg)
+	expectedOutput := fmt.Sprintf("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+\\+\\d{2}:\\d{2} %s %s\n", level, msg)
 	match, _ := regexp.MatchString(expectedOutput, output)
 	if !match {
 		t.Fatalf("Output: \"%s\" Does not match: \"%s\"", output, expectedOutput)

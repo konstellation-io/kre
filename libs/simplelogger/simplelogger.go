@@ -40,7 +40,7 @@ func (l *SimpleLogger) printLog(level LogLevel, msg string) {
 		return
 	}
 
-	t := time.Now().Format(time.RFC3339)
+	t := time.Now().Format(time.RFC3339Nano)
 	fmt.Printf("%s %s %s\n", t, levelNames[level], lineBreakRE.ReplaceAllLiteralString(msg, " "))
 }
 
