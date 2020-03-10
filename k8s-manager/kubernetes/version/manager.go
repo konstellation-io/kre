@@ -97,11 +97,11 @@ func (m *Manager) Unpublish(version *entity.Version) error {
 }
 
 // UpdateConfig calls kubernetes to create a new Version Object
-func (m *Manager) UpdateConfig(version *entity.Version) error {
+func (m *Manager) UpdateConfig(ctx context.Context, version *entity.Version) error {
 	_, err := m.updateConfigMap(version)
 	if err != nil {
 		return err
 	}
 
-	return m.restartPodsSync(version)
+	return m.restartPodsSync(ctx, version)
 }
