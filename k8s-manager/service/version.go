@@ -44,11 +44,11 @@ func (v *VersionService) Start(ctx context.Context, req *versionpb.Request) (*ve
 
 // UpdateConfig changes the config on the specified version
 func (v *VersionService) UpdateConfig(ctx context.Context, req *versionpb.Request) (*versionpb.Response, error) {
-	fmt.Println("UpdateConfig request received")
+	v.logger.Info("UpdateConfig request received")
 
-	err := v.manager.UpdateConfig(&entity.Version{Version: *req.GetVersion()})
+	err := v.manager.UpdateConfig(ctx, &entity.Version{Version: *req.GetVersion()})
 	if err != nil {
-		fmt.Println(err)
+		v.logger.Errorf("error updating config: %s", err.Error())
 		return nil, err
 	}
 

@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
-
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -258,8 +256,7 @@ func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.
 	})
 }
 
-// FIXME Restart Pod Sync Is not waiting for ready state of PODs
-func (m *Manager) restartPodsSync(version *entity.Version) error {
+func (m *Manager) restartPodsSync(ctx context.Context, version *entity.Version) error {
 	ns := version.Namespace
 	gracePeriod := new(int64)
 	*gracePeriod = 0
@@ -284,37 +281,44 @@ func (m *Manager) restartPodsSync(version *entity.Version) error {
 	}
 	numPods := len(list.Items)
 
+	m.logger.Infof("There are %d PODs to delete", numPods)
 	if numPods == 0 {
 		return nil
 	}
 
-	err = pods.DeleteCollection(deleteOptions, listOptions)
-	if err != nil {
-		return err
-	}
-
-	startTime := time.Now()
-	timeToWait := 3 * time.Minute
 	w, err := pods.Watch(listOptions)
 	if err != nil {
 		return err
 	}
 
 	watchResults := w.ResultChan()
+
+	err = pods.DeleteCollection(deleteOptions, listOptions)
+	if err != nil {
+		return err
+	}
+
+	// We are going to delete N PODs, so after the deletion N PODs will be recreated again.
+	// This algorithm counts the number of times that we receive a "MODIFIED" event with status phase "Running".
+	// We should received modification events for the current PODs and for the new ones.
+	numOfEvents := 0
+	expectedNumOfEvents := numPods * 2
+
 	for {
 		select {
 		case event := <-watchResults:
 			pod := event.Object.(*apiv1.Pod)
 
-			if pod.Status.Phase == apiv1.PodRunning {
-				numPods = numPods - 1
-				if numPods == 0 {
+			if event.Type == watch.Modified && pod.Status.Phase == apiv1.PodRunning {
+				numOfEvents++
+				if numOfEvents == expectedNumOfEvents {
+					m.logger.Infof("All PODs for version '%s' has been restarted", version.Name)
 					w.Stop()
 					return nil
 				}
 			}
 
-		case <-time.After(timeToWait - time.Since(startTime)):
+		case <-ctx.Done():
 			w.Stop()
 			return errors.New("timeout restarting pods")
 		}
