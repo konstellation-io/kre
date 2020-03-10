@@ -15,6 +15,10 @@ describe('ConditionalLink', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('shows right default values', () => {
     expect(wrapper.exists(Link)).toBeTruthy();
     expect(wrapper.text()).toBe('Sample text');

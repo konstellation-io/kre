@@ -15,7 +15,6 @@ import { MockedProvider } from '@apollo/react-testing';
 import { prepareApolloComponent } from '../../../../utils/testUtilsEnzyme';
 import VersionStatusViewer from '../../../../components/VersionStatusViewer/VersionStatusViewer';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import { shallow } from 'enzyme';
 
 const DATA_WORKFLOWS = workflowsMock.result.data.version.workflows;
 const expectedDefaultResult = [

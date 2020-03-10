@@ -1,0 +1,289 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LogItem matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <div
+    className="row1"
+  >
+    <div
+      className="icon"
+    >
+      <InfoIcon
+        className="icon-small"
+      />
+    </div>
+    <div
+      className="date"
+    >
+      2020-01-01
+    </div>
+    <div
+      className="hour"
+    >
+      12:00:00
+    </div>
+    <div
+      className="message"
+    >
+      some message
+    </div>
+    <div
+      className="expand"
+      onClick={[Function]}
+    >
+      <ArrowDownwardIcon
+        className="icon-regular"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LogsList matches snapshot 1`] = `
+<LogsList
+  node="someNode"
+  onUpdate={
+    [MockFunction] {
+      "calls": Array [
+        Array [],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+>
+  <div
+    className="listContainer"
+    id="VersionLogsListContainer"
+  >
+    <LogItem
+      date="2020-01-01"
+      key="logItem_0"
+      message="some message 1"
+      nodeId="someNode1"
+    >
+      <div
+        className="container"
+      >
+        <div
+          className="row1"
+        >
+          <div
+            className="icon"
+          >
+            <ForwardRef
+              className="icon-small"
+            >
+              <WithStyles(ForwardRef(SvgIcon))
+                className="icon-small"
+              >
+                <ForwardRef(SvgIcon)
+                  className="icon-small"
+                  classes={
+                    Object {
+                      "colorAction": "MuiSvgIcon-colorAction",
+                      "colorDisabled": "MuiSvgIcon-colorDisabled",
+                      "colorError": "MuiSvgIcon-colorError",
+                      "colorPrimary": "MuiSvgIcon-colorPrimary",
+                      "colorSecondary": "MuiSvgIcon-colorSecondary",
+                      "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                      "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                      "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                      "root": "MuiSvgIcon-root",
+                    }
+                  }
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="MuiSvgIcon-root icon-small"
+                    focusable="false"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+                    />
+                  </svg>
+                </ForwardRef(SvgIcon)>
+              </WithStyles(ForwardRef(SvgIcon))>
+            </ForwardRef>
+          </div>
+          <div
+            className="date"
+          >
+            2020-01-01
+          </div>
+          <div
+            className="hour"
+          >
+            12:00:00
+          </div>
+          <div
+            className="message"
+          >
+            some message 1
+          </div>
+          <div
+            className="expand"
+            onClick={[Function]}
+          >
+            <ForwardRef
+              className="icon-regular"
+            >
+              <WithStyles(ForwardRef(SvgIcon))
+                className="icon-regular"
+              >
+                <ForwardRef(SvgIcon)
+                  className="icon-regular"
+                  classes={
+                    Object {
+                      "colorAction": "MuiSvgIcon-colorAction",
+                      "colorDisabled": "MuiSvgIcon-colorDisabled",
+                      "colorError": "MuiSvgIcon-colorError",
+                      "colorPrimary": "MuiSvgIcon-colorPrimary",
+                      "colorSecondary": "MuiSvgIcon-colorSecondary",
+                      "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                      "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                      "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                      "root": "MuiSvgIcon-root",
+                    }
+                  }
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="MuiSvgIcon-root icon-regular"
+                    focusable="false"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                    />
+                  </svg>
+                </ForwardRef(SvgIcon)>
+              </WithStyles(ForwardRef(SvgIcon))>
+            </ForwardRef>
+          </div>
+        </div>
+      </div>
+    </LogItem>
+    <LogItem
+      date="2020-01-01"
+      key="logItem_1"
+      message="some message 2"
+      nodeId="someNode2"
+    >
+      <div
+        className="container"
+      >
+        <div
+          className="row1"
+        >
+          <div
+            className="icon"
+          >
+            <ForwardRef
+              className="icon-small"
+            >
+              <WithStyles(ForwardRef(SvgIcon))
+                className="icon-small"
+              >
+                <ForwardRef(SvgIcon)
+                  className="icon-small"
+                  classes={
+                    Object {
+                      "colorAction": "MuiSvgIcon-colorAction",
+                      "colorDisabled": "MuiSvgIcon-colorDisabled",
+                      "colorError": "MuiSvgIcon-colorError",
+                      "colorPrimary": "MuiSvgIcon-colorPrimary",
+                      "colorSecondary": "MuiSvgIcon-colorSecondary",
+                      "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                      "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                      "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                      "root": "MuiSvgIcon-root",
+                    }
+                  }
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="MuiSvgIcon-root icon-small"
+                    focusable="false"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+                    />
+                  </svg>
+                </ForwardRef(SvgIcon)>
+              </WithStyles(ForwardRef(SvgIcon))>
+            </ForwardRef>
+          </div>
+          <div
+            className="date"
+          >
+            2020-01-01
+          </div>
+          <div
+            className="hour"
+          >
+            12:00:00
+          </div>
+          <div
+            className="message"
+          >
+            some message 2
+          </div>
+          <div
+            className="expand"
+            onClick={[Function]}
+          >
+            <ForwardRef
+              className="icon-regular"
+            >
+              <WithStyles(ForwardRef(SvgIcon))
+                className="icon-regular"
+              >
+                <ForwardRef(SvgIcon)
+                  className="icon-regular"
+                  classes={
+                    Object {
+                      "colorAction": "MuiSvgIcon-colorAction",
+                      "colorDisabled": "MuiSvgIcon-colorDisabled",
+                      "colorError": "MuiSvgIcon-colorError",
+                      "colorPrimary": "MuiSvgIcon-colorPrimary",
+                      "colorSecondary": "MuiSvgIcon-colorSecondary",
+                      "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                      "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                      "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                      "root": "MuiSvgIcon-root",
+                    }
+                  }
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="MuiSvgIcon-root icon-regular"
+                    focusable="false"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                    />
+                  </svg>
+                </ForwardRef(SvgIcon)>
+              </WithStyles(ForwardRef(SvgIcon))>
+            </ForwardRef>
+          </div>
+        </div>
+      </div>
+    </LogItem>
+  </div>
+</LogsList>
+`;

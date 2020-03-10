@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button matches snapshot 1`] = `
+<div
+  className="btn default middle label"
+  onClick={[MockFunction]}
+  style={
+    Object {
+      "height": 40,
+      "lineHeight": "40px",
+    }
+  }
+>
+  <span>
+    Button
+  </span>
+</div>
+`;

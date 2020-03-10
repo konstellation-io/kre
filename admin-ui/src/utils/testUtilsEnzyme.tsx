@@ -2,11 +2,10 @@ import React, { ReactElement } from 'react';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { MemoryRouter } from 'react-router';
-import { render, RenderResult } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 import '@testing-library/jest-dom/extend-expect';
-import { mount, ReactWrapper, shallow, ShallowWrapper } from 'enzyme';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 
 export async function getApolloResponses(
   wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>
@@ -65,6 +64,17 @@ export async function prepareApolloComponent(component: ReactElement) {
   await getApolloResponses(element.wrapper);
 
   return element;
+}
+
+export async function mountApolloComponent(
+  component: ReactElement,
+  wait = true
+) {
+  const wrapper = mount(component);
+
+  if (wait) await getApolloResponses(wrapper);
+
+  return wrapper;
 }
 
 export function testid(testId: string) {

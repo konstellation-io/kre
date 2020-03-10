@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PublishedVersionStatus matches snapshot 1`] = `
+<div
+  className="activeVersion active"
+>
+  <span
+    className="versionTitle"
+  >
+    5 versions published
+  </span>
+  <Button
+    height={30}
+    label="ADD VERSION"
+    primary={true}
+    style={
+      Object {
+        "borderRadius": 2,
+      }
+    }
+    to="/runtimes/runtimeId/new_version"
+  />
+</div>
+`;

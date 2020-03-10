@@ -15,6 +15,10 @@ describe('Button', () => {
     wrapper = shallow(<Button onClick={mockClick} />);
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('Shows right texts', () => {
     expect(wrapper.text()).toBe('Button');
 

@@ -4,9 +4,9 @@ import { MockedProvider } from '@apollo/react-testing';
 import { usernameMock } from '../../mocks/auth';
 import { addRuntimeMock, dashboardMock } from '../../mocks/runtime';
 import {
-  prepareApolloComponent,
   testid,
-  label
+  label,
+  mountApolloComponent
 } from '../../utils/testUtilsEnzyme';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
@@ -21,16 +21,26 @@ function Wrapper() {
   );
 }
 
+jest.mock('react-router', () => ({
+  useHistory: jest.fn()
+}));
+
 describe('AddRuntime', () => {
+  it('matches snapshot', async () => {
+    const wrapper = await mountApolloComponent(<Wrapper />);
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
   test('show right texts', async () => {
-    const { wrapper } = await prepareApolloComponent(<Wrapper />);
+    const wrapper = await mountApolloComponent(<Wrapper />);
 
     expect(wrapper.exists('.container h1')).toBeTruthy();
     expect(wrapper.exists(label('SAVE'))).toBeTruthy();
   });
 
   it('handles input changes', async () => {
-    const { wrapper } = await prepareApolloComponent(<Wrapper />);
+    const wrapper = await mountApolloComponent(<Wrapper />);
 
     wrapper
       .find(TextInput)

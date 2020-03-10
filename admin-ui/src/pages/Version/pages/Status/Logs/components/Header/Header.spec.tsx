@@ -29,6 +29,10 @@ describe('Logs Header', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('show right components', () => {
     expect(wrapper.find('.buttons > div').length).toBe(3);
   });

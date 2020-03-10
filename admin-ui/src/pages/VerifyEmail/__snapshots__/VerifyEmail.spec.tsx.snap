@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VerifyEmail matches snapshot 1`] = `
+<div
+  className="bg"
+>
+  <div
+    className="grid"
+  >
+    <div
+      className="container"
+    >
+      <h1>
+        Login link sent
+      </h1>
+      <StateCircle
+        animation="SUCCESS"
+        label="DONE"
+      />
+      <p
+        className="subtitle"
+      >
+        An email with an access link has been sent to your email address.
+      </p>
+    </div>
+  </div>
+</div>
+`;

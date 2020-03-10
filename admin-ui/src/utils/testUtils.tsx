@@ -2,9 +2,7 @@ import React, { ReactElement } from 'react';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { MemoryRouter } from 'react-router';
-import { render, RenderResult, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
-import wait from 'waait';
+import { render, RenderResult } from '@testing-library/react';
 import { mount } from 'enzyme';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -19,12 +17,6 @@ const TestHook = ({ callback }: TestHookprops) => {
 export const testHook = (callback: Function) => {
   mount(<TestHook callback={callback} />);
 };
-
-export async function getApolloResponses() {
-  await act(async () => {
-    await wait(0);
-  });
-}
 
 interface RenderWithRouterEl extends RenderResult {
   customRerender: Function;

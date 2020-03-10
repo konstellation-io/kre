@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VersionActions matches snapshot 1`] = `
+<div
+  className="wrapper"
+>
+  <Button
+    Icon={
+      Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "displayName": "StopIcon",
+        "muiName": "SvgIcon",
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      }
+    }
+    key="STOP"
+    label="STOP"
+    onClick={[Function]}
+    style={
+      Object {
+        "flexGrow": 1,
+      }
+    }
+    type="default"
+  />
+  <Button
+    Icon={
+      Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "displayName": "PublishIcon",
+        "muiName": "SvgIcon",
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      }
+    }
+    key="PUBLISH"
+    label="PUBLISH"
+    onClick={[Function]}
+    primary={true}
+    style={
+      Object {
+        "flexGrow": 1,
+      }
+    }
+    type="default"
+  />
+</div>
+`;

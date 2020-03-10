@@ -7,6 +7,9 @@ const GetConfigurationVariablesQuery = loader(
 const GetVersionWorkflowsQuery = loader(
   '../graphql/queries/getVersionWorkflows.graphql'
 );
+const GetVersionNodeStatusQuery = loader(
+  '../graphql/subscriptions/versionNodeStatus.graphql'
+);
 const NodeStatusSubscription = loader(
   '../graphql/subscriptions/versionNodeStatus.graphql'
 );
@@ -112,6 +115,37 @@ export const workflowsMock = {
           }
         ]
       }
+    }
+  }
+};
+
+export const errorMorkflowsMock = {
+  request: {
+    query: GetVersionWorkflowsQuery
+  },
+  error: 'Some error'
+};
+
+export const nodeStatus = {
+  request: {
+    query: GetVersionNodeStatusQuery
+  },
+  result: {
+    data: {
+      versionNodeStatus: [
+        {
+          date: '2020-01-01',
+          nodeId: 'nodeId1',
+          status: 'STARTED',
+          message: 'some message 1'
+        },
+        {
+          date: '2020-01-01',
+          nodeId: 'nodeId2',
+          status: 'STARTED',
+          message: 'some message 2'
+        }
+      ]
     }
   }
 };

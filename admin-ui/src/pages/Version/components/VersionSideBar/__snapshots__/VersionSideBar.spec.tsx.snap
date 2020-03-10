@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VersionSideBar matches snapshot 1`] = `
+<div
+  className="wrapper"
+>
+  <Link
+    to="/runtimes/runtimeId"
+  >
+    <div
+      className="backSection"
+    >
+      <KeyboardBackspaceIcon
+        className="icon-regular"
+      />
+      <div
+        className="runtimeHexagon"
+      >
+        <RuntimeHexagon
+          runtime={
+            Object {
+              "__typename": "Runtime",
+              "id": "runtimeId",
+              "name": "runtimeName",
+              "status": "STARTED",
+            }
+          }
+          size={18}
+        />
+      </div>
+      <div
+        className="runtimeName"
+      >
+        runtimeName
+      </div>
+    </div>
+  </Link>
+  <div
+    className="runtimeNameSection"
+  />
+  <VersionInfo
+    version={
+      Object {
+        "__typename": "Version",
+        "configurationCompleted": true,
+        "creationAuthor": Object {
+          "__typename": "User",
+          "email": "user@domain.com",
+          "id": "userId",
+        },
+        "creationDate": "2020/01/01",
+        "description": "versionDescription",
+        "id": "versionId",
+        "name": "versionName",
+        "publicationAuthor": Object {
+          "__typename": "User",
+          "email": "user@domain.com",
+          "id": "userId",
+        },
+        "publicationDate": "2020/01/01",
+        "status": "STARTED",
+      }
+    }
+  />
+  <VersionMenu
+    runtime={
+      Object {
+        "__typename": "Runtime",
+        "id": "runtimeId",
+        "name": "runtimeName",
+        "status": "STARTED",
+      }
+    }
+    version={
+      Object {
+        "__typename": "Version",
+        "configurationCompleted": true,
+        "creationAuthor": Object {
+          "__typename": "User",
+          "email": "user@domain.com",
+          "id": "userId",
+        },
+        "creationDate": "2020/01/01",
+        "description": "versionDescription",
+        "id": "versionId",
+        "name": "versionName",
+        "publicationAuthor": Object {
+          "__typename": "User",
+          "email": "user@domain.com",
+          "id": "userId",
+        },
+        "publicationDate": "2020/01/01",
+        "status": "STARTED",
+      }
+    }
+  />
+  <VersionActions
+    runtime={
+      Object {
+        "__typename": "Runtime",
+        "id": "runtimeId",
+        "name": "runtimeName",
+        "status": "STARTED",
+      }
+    }
+    version={
+      Object {
+        "__typename": "Version",
+        "configurationCompleted": true,
+        "creationAuthor": Object {
+          "__typename": "User",
+          "email": "user@domain.com",
+          "id": "userId",
+        },
+        "creationDate": "2020/01/01",
+        "description": "versionDescription",
+        "id": "versionId",
+        "name": "versionName",
+        "publicationAuthor": Object {
+          "__typename": "User",
+          "email": "user@domain.com",
+          "id": "userId",
+        },
+        "publicationDate": "2020/01/01",
+        "status": "STARTED",
+      }
+    }
+  />
+</div>
+`;

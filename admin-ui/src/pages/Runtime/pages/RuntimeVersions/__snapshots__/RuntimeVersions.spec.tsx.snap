@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RuntimeVersions matches snapshot 1`] = `
+<div
+  className="content"
+>
+  <h2>
+    Versions of runtime 
+    runtimeName
+  </h2>
+  <p
+    className="subtitle"
+  >
+    Here you can see all the versions from the opened runtime. Click on any version to open it or add a new version by clicking on the 'ADD NEW VERSION' button
+  </p>
+  <PublishedVersionStatus
+    nPublishedVersions={0}
+    noVersions={false}
+  />
+  <div
+    className="versionList"
+  >
+    <VersionInfo
+      key="versionId"
+      version={
+        Object {
+          "__typename": "Version",
+          "configurationCompleted": true,
+          "creationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "creationDate": "2020/01/01",
+          "description": "versionDescription",
+          "id": "versionId",
+          "name": "versionName",
+          "publicationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "publicationDate": "2020/01/01",
+          "status": "STARTED",
+        }
+      }
+    />
+    <VersionInfo
+      key="versionId"
+      version={
+        Object {
+          "__typename": "Version",
+          "configurationCompleted": true,
+          "creationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "creationDate": "2020/01/01",
+          "description": "versionDescription",
+          "id": "versionId",
+          "name": "versionName",
+          "publicationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "publicationDate": "2020/01/01",
+          "status": "STARTED",
+        }
+      }
+    />
+  </div>
+</div>
+`;

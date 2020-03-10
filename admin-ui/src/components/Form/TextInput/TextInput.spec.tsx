@@ -32,6 +32,10 @@ describe('TextInput', () => {
     wrapper = shallow(<TextInput />);
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('shows right texts', () => {
     checkTexts(wrapper, '', '');
 

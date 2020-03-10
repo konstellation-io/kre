@@ -17,6 +17,10 @@ describe('VersionSideBar', () => {
     wrapper = shallow(<VersionSideBar version={version} runtime={runtime} />);
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('show right components', async () => {
     expect(wrapper.exists(VersionInfo)).toBeTruthy();
     expect(wrapper.exists(VersionMenu)).toBeTruthy();

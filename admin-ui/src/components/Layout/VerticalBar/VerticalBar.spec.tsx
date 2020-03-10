@@ -15,6 +15,10 @@ describe('VerticalBar', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('shows children components', () => {
     expect(wrapper.exists('.childrenA')).toBeTruthy();
     expect(wrapper.exists('.childrenB')).toBeTruthy();

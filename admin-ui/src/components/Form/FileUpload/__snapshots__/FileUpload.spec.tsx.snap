@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FileUpload matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <InputLabel
+    text="some label"
+  />
+  <div
+    className="inputContainer"
+  >
+    <div
+      className="input placeholder"
+      data-testid="input"
+      style={
+        Object {
+          "height": 40,
+        }
+      }
+      title="some placeholder"
+    >
+      some placeholder
+    </div>
+    <Button
+      border={true}
+      label="BROWSE"
+      onClick={[Function]}
+    />
+  </div>
+  <input
+    hidden={true}
+    onChange={[Function]}
+    type="file"
+  />
+  <InputError
+    message=""
+  />
+</div>
+`;

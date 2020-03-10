@@ -1,0 +1,1649 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddRuntime matches snapshot 1`] = `
+<Wrapper>
+  <MockedProvider
+    addTypename={false}
+    mocks={
+      Array [
+        Object {
+          "request": Object {
+            "query": Object {
+              "definitions": Array [
+                Object {
+                  "directives": Array [],
+                  "kind": "OperationDefinition",
+                  "name": Object {
+                    "kind": "Name",
+                    "value": "CreateRuntime",
+                  },
+                  "operation": "mutation",
+                  "selectionSet": Object {
+                    "kind": "SelectionSet",
+                    "selections": Array [
+                      Object {
+                        "arguments": Array [
+                          Object {
+                            "kind": "Argument",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "input",
+                            },
+                            "value": Object {
+                              "kind": "Variable",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "input",
+                              },
+                            },
+                          },
+                        ],
+                        "directives": Array [],
+                        "kind": "Field",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "createRuntime",
+                        },
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "id",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "name",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "status",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "creationDate",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "creationAuthor",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "id",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "email",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "publishedVersion",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "status",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                  "variableDefinitions": Array [
+                    Object {
+                      "directives": Array [],
+                      "kind": "VariableDefinition",
+                      "type": Object {
+                        "kind": "NonNullType",
+                        "type": Object {
+                          "kind": "NamedType",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "CreateRuntimeInput",
+                          },
+                        },
+                      },
+                      "variable": Object {
+                        "kind": "Variable",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "input",
+                        },
+                      },
+                    },
+                  ],
+                },
+              ],
+              "kind": "Document",
+              "loc": Object {
+                "end": 227,
+                "source": Object {
+                  "body": "mutation CreateRuntime($input: CreateRuntimeInput!) {
+  createRuntime(input: $input) {
+    id
+    name
+    status
+    creationDate
+    creationAuthor {
+      id
+      email
+    }
+    publishedVersion {
+      status
+    }
+  }
+}
+",
+                  "locationOffset": Object {
+                    "column": 1,
+                    "line": 1,
+                  },
+                  "name": "GraphQL request",
+                },
+                "start": 0,
+              },
+            },
+            "variables": Object {
+              "input": Object {
+                "name": "New Runtime",
+              },
+            },
+          },
+          "result": Object {
+            "data": Object {
+              "createRuntime": Object {
+                "name": "some name",
+              },
+            },
+          },
+        },
+        Object {
+          "request": Object {
+            "query": Object {
+              "definitions": Array [
+                Object {
+                  "directives": Array [],
+                  "kind": "OperationDefinition",
+                  "name": Object {
+                    "kind": "Name",
+                    "value": "GetRuntimes",
+                  },
+                  "operation": "query",
+                  "selectionSet": Object {
+                    "kind": "SelectionSet",
+                    "selections": Array [
+                      Object {
+                        "arguments": Array [],
+                        "directives": Array [],
+                        "kind": "Field",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "runtimes",
+                        },
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "id",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "name",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "status",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "creationDate",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "publishedVersion",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "status",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                  "variableDefinitions": Array [],
+                },
+              ],
+              "kind": "Document",
+              "loc": Object {
+                "end": 125,
+                "source": Object {
+                  "body": "query GetRuntimes {
+  runtimes {
+    id
+    name
+    status
+    creationDate
+    publishedVersion {
+      status
+    }
+  }
+}
+",
+                  "locationOffset": Object {
+                    "column": 1,
+                    "line": 1,
+                  },
+                  "name": "GraphQL request",
+                },
+                "start": 0,
+              },
+            },
+          },
+          "result": Object {
+            "data": Object {
+              "runtimes": Array [
+                Object {
+                  "creationDate": "2019-11-28T15:28:01+00:00",
+                  "id": "00001",
+                  "name": "Some Name",
+                  "publishedVersion": Object {
+                    "status": "STARTED",
+                  },
+                  "status": "STARTED",
+                },
+                Object {
+                  "creationDate": "2019-11-27T15:28:01+00:00",
+                  "id": "00002",
+                  "name": "Some Other Name",
+                  "publishedVersion": Object {
+                    "status": "STARTED",
+                  },
+                  "status": "STARTED",
+                },
+                Object {
+                  "creationDate": "2019-11-27T15:28:01+00:00",
+                  "id": "00003",
+                  "name": "Creating runtime",
+                  "publishedVersion": Object {
+                    "status": "CREATING",
+                  },
+                  "status": "CREATING",
+                },
+              ],
+            },
+          },
+        },
+        Object {
+          "request": Object {
+            "query": Object {
+              "definitions": Array [
+                Object {
+                  "directives": Array [],
+                  "kind": "OperationDefinition",
+                  "name": Object {
+                    "kind": "Name",
+                    "value": "GetUserEmail",
+                  },
+                  "operation": "query",
+                  "selectionSet": Object {
+                    "kind": "SelectionSet",
+                    "selections": Array [
+                      Object {
+                        "arguments": Array [],
+                        "directives": Array [],
+                        "kind": "Field",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "me",
+                        },
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "email",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                  "variableDefinitions": Array [],
+                },
+              ],
+              "kind": "Document",
+              "loc": Object {
+                "end": 44,
+                "source": Object {
+                  "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                  "locationOffset": Object {
+                    "column": 1,
+                    "line": 1,
+                  },
+                  "name": "GraphQL request",
+                },
+                "start": 0,
+              },
+            },
+          },
+          "result": Object {
+            "data": Object {
+              "me": Object {
+                "email": "user@konstellation.com",
+              },
+            },
+          },
+        },
+      ]
+    }
+  >
+    <ApolloProvider
+      client={
+        ApolloClient {
+          "cache": InMemoryCache {
+            "addTypename": false,
+            "cacheKeyRoot": KeyTrie {
+              "weakness": true,
+            },
+            "config": Object {
+              "addTypename": false,
+              "dataIdFromObject": [Function],
+              "fragmentMatcher": HeuristicFragmentMatcher {},
+              "freezeResults": false,
+              "resultCaching": true,
+            },
+            "data": DepTrackingCache {
+              "data": Object {},
+              "depend": [Function],
+            },
+            "maybeBroadcastWatch": [Function],
+            "optimisticData": DepTrackingCache {
+              "data": Object {},
+              "depend": [Function],
+            },
+            "silenceBroadcast": false,
+            "storeReader": StoreReader {
+              "executeSelectionSet": [Function],
+              "executeStoreQuery": [Function],
+              "executeSubSelectedArray": [Function],
+              "freezeResults": false,
+            },
+            "storeWriter": StoreWriter {},
+            "typenameDocumentCache": Map {},
+            "watches": Set {},
+          },
+          "clearStoreCallbacks": Array [],
+          "defaultOptions": Object {},
+          "disableNetworkFetches": false,
+          "link": MockLink {
+            "addTypename": false,
+            "mockedResponsesByKey": Object {
+              "{\\"query\\":\\"mutation CreateRuntime($input: CreateRuntimeInput!) {\\\\n  createRuntime(input: $input) {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    creationAuthor {\\\\n      id\\\\n      email\\\\n    }\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+                Object {
+                  "request": Object {
+                    "query": Object {
+                      "definitions": Array [
+                        Object {
+                          "directives": Array [],
+                          "kind": "OperationDefinition",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "CreateRuntime",
+                          },
+                          "operation": "mutation",
+                          "selectionSet": Object {
+                            "kind": "SelectionSet",
+                            "selections": Array [
+                              Object {
+                                "arguments": Array [
+                                  Object {
+                                    "kind": "Argument",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "input",
+                                    },
+                                    "value": Object {
+                                      "kind": "Variable",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "input",
+                                      },
+                                    },
+                                  },
+                                ],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "createRuntime",
+                                },
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "id",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "name",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "status",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "creationDate",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "creationAuthor",
+                                      },
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "id",
+                                            },
+                                          },
+                                          Object {
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "email",
+                                            },
+                                          },
+                                        ],
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "publishedVersion",
+                                      },
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "status",
+                                            },
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          "variableDefinitions": Array [
+                            Object {
+                              "directives": Array [],
+                              "kind": "VariableDefinition",
+                              "type": Object {
+                                "kind": "NonNullType",
+                                "type": Object {
+                                  "kind": "NamedType",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "CreateRuntimeInput",
+                                  },
+                                },
+                              },
+                              "variable": Object {
+                                "kind": "Variable",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "input",
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      ],
+                      "kind": "Document",
+                      "loc": Object {
+                        "end": 227,
+                        "source": Object {
+                          "body": "mutation CreateRuntime($input: CreateRuntimeInput!) {
+  createRuntime(input: $input) {
+    id
+    name
+    status
+    creationDate
+    creationAuthor {
+      id
+      email
+    }
+    publishedVersion {
+      status
+    }
+  }
+}
+",
+                          "locationOffset": Object {
+                            "column": 1,
+                            "line": 1,
+                          },
+                          "name": "GraphQL request",
+                        },
+                        "start": 0,
+                      },
+                    },
+                    "variables": Object {
+                      "input": Object {
+                        "name": "New Runtime",
+                      },
+                    },
+                  },
+                  "result": Object {
+                    "data": Object {
+                      "createRuntime": Object {
+                        "name": "some name",
+                      },
+                    },
+                  },
+                },
+              ],
+              "{\\"query\\":\\"query GetRuntimes {\\\\n  runtimes {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+                Object {
+                  "request": Object {
+                    "query": Object {
+                      "definitions": Array [
+                        Object {
+                          "directives": Array [],
+                          "kind": "OperationDefinition",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "GetRuntimes",
+                          },
+                          "operation": "query",
+                          "selectionSet": Object {
+                            "kind": "SelectionSet",
+                            "selections": Array [
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "runtimes",
+                                },
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "id",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "name",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "status",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "creationDate",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "publishedVersion",
+                                      },
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "status",
+                                            },
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          "variableDefinitions": Array [],
+                        },
+                      ],
+                      "kind": "Document",
+                      "loc": Object {
+                        "end": 125,
+                        "source": Object {
+                          "body": "query GetRuntimes {
+  runtimes {
+    id
+    name
+    status
+    creationDate
+    publishedVersion {
+      status
+    }
+  }
+}
+",
+                          "locationOffset": Object {
+                            "column": 1,
+                            "line": 1,
+                          },
+                          "name": "GraphQL request",
+                        },
+                        "start": 0,
+                      },
+                    },
+                  },
+                  "result": Object {
+                    "data": Object {
+                      "runtimes": Array [
+                        Object {
+                          "creationDate": "2019-11-28T15:28:01+00:00",
+                          "id": "00001",
+                          "name": "Some Name",
+                          "publishedVersion": Object {
+                            "status": "STARTED",
+                          },
+                          "status": "STARTED",
+                        },
+                        Object {
+                          "creationDate": "2019-11-27T15:28:01+00:00",
+                          "id": "00002",
+                          "name": "Some Other Name",
+                          "publishedVersion": Object {
+                            "status": "STARTED",
+                          },
+                          "status": "STARTED",
+                        },
+                        Object {
+                          "creationDate": "2019-11-27T15:28:01+00:00",
+                          "id": "00003",
+                          "name": "Creating runtime",
+                          "publishedVersion": Object {
+                            "status": "CREATING",
+                          },
+                          "status": "CREATING",
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+              "{\\"query\\":\\"query GetUserEmail {\\\\n  me {\\\\n    email\\\\n  }\\\\n}\\\\n\\"}": Array [
+                Object {
+                  "request": Object {
+                    "query": Object {
+                      "definitions": Array [
+                        Object {
+                          "directives": Array [],
+                          "kind": "OperationDefinition",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "GetUserEmail",
+                          },
+                          "operation": "query",
+                          "selectionSet": Object {
+                            "kind": "SelectionSet",
+                            "selections": Array [
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "me",
+                                },
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "email",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          "variableDefinitions": Array [],
+                        },
+                      ],
+                      "kind": "Document",
+                      "loc": Object {
+                        "end": 44,
+                        "source": Object {
+                          "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                          "locationOffset": Object {
+                            "column": 1,
+                            "line": 1,
+                          },
+                          "name": "GraphQL request",
+                        },
+                        "start": 0,
+                      },
+                    },
+                  },
+                  "result": Object {
+                    "data": Object {
+                      "me": Object {
+                        "email": "user@konstellation.com",
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          "localState": LocalState {
+            "cache": InMemoryCache {
+              "addTypename": false,
+              "cacheKeyRoot": KeyTrie {
+                "weakness": true,
+              },
+              "config": Object {
+                "addTypename": false,
+                "dataIdFromObject": [Function],
+                "fragmentMatcher": HeuristicFragmentMatcher {},
+                "freezeResults": false,
+                "resultCaching": true,
+              },
+              "data": DepTrackingCache {
+                "data": Object {},
+                "depend": [Function],
+              },
+              "maybeBroadcastWatch": [Function],
+              "optimisticData": DepTrackingCache {
+                "data": Object {},
+                "depend": [Function],
+              },
+              "silenceBroadcast": false,
+              "storeReader": StoreReader {
+                "executeSelectionSet": [Function],
+                "executeStoreQuery": [Function],
+                "executeSubSelectedArray": [Function],
+                "freezeResults": false,
+              },
+              "storeWriter": StoreWriter {},
+              "typenameDocumentCache": Map {},
+              "watches": Set {},
+            },
+            "client": [Circular],
+          },
+          "mutate": [Function],
+          "query": [Function],
+          "queryDeduplication": true,
+          "queryManager": QueryManager {
+            "assumeImmutableResults": false,
+            "clientAwareness": Object {
+              "name": undefined,
+              "version": undefined,
+            },
+            "dataStore": DataStore {
+              "cache": InMemoryCache {
+                "addTypename": false,
+                "cacheKeyRoot": KeyTrie {
+                  "weakness": true,
+                },
+                "config": Object {
+                  "addTypename": false,
+                  "dataIdFromObject": [Function],
+                  "fragmentMatcher": HeuristicFragmentMatcher {},
+                  "freezeResults": false,
+                  "resultCaching": true,
+                },
+                "data": DepTrackingCache {
+                  "data": Object {},
+                  "depend": [Function],
+                },
+                "maybeBroadcastWatch": [Function],
+                "optimisticData": DepTrackingCache {
+                  "data": Object {},
+                  "depend": [Function],
+                },
+                "silenceBroadcast": false,
+                "storeReader": StoreReader {
+                  "executeSelectionSet": [Function],
+                  "executeStoreQuery": [Function],
+                  "executeSubSelectedArray": [Function],
+                  "freezeResults": false,
+                },
+                "storeWriter": StoreWriter {},
+                "typenameDocumentCache": Map {},
+                "watches": Set {},
+              },
+            },
+            "fetchQueryRejectFns": Map {},
+            "idCounter": 1,
+            "inFlightLinkObservables": Map {},
+            "link": MockLink {
+              "addTypename": false,
+              "mockedResponsesByKey": Object {
+                "{\\"query\\":\\"mutation CreateRuntime($input: CreateRuntimeInput!) {\\\\n  createRuntime(input: $input) {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    creationAuthor {\\\\n      id\\\\n      email\\\\n    }\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+                  Object {
+                    "request": Object {
+                      "query": Object {
+                        "definitions": Array [
+                          Object {
+                            "directives": Array [],
+                            "kind": "OperationDefinition",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "CreateRuntime",
+                            },
+                            "operation": "mutation",
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [
+                                    Object {
+                                      "kind": "Argument",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "input",
+                                      },
+                                      "value": Object {
+                                        "kind": "Variable",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "input",
+                                        },
+                                      },
+                                    },
+                                  ],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "createRuntime",
+                                  },
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "id",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "name",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "status",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "creationDate",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "creationAuthor",
+                                        },
+                                        "selectionSet": Object {
+                                          "kind": "SelectionSet",
+                                          "selections": Array [
+                                            Object {
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "id",
+                                              },
+                                            },
+                                            Object {
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "email",
+                                              },
+                                            },
+                                          ],
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "publishedVersion",
+                                        },
+                                        "selectionSet": Object {
+                                          "kind": "SelectionSet",
+                                          "selections": Array [
+                                            Object {
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "status",
+                                              },
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                            "variableDefinitions": Array [
+                              Object {
+                                "directives": Array [],
+                                "kind": "VariableDefinition",
+                                "type": Object {
+                                  "kind": "NonNullType",
+                                  "type": Object {
+                                    "kind": "NamedType",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "CreateRuntimeInput",
+                                    },
+                                  },
+                                },
+                                "variable": Object {
+                                  "kind": "Variable",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "input",
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        ],
+                        "kind": "Document",
+                        "loc": Object {
+                          "end": 227,
+                          "source": Object {
+                            "body": "mutation CreateRuntime($input: CreateRuntimeInput!) {
+  createRuntime(input: $input) {
+    id
+    name
+    status
+    creationDate
+    creationAuthor {
+      id
+      email
+    }
+    publishedVersion {
+      status
+    }
+  }
+}
+",
+                            "locationOffset": Object {
+                              "column": 1,
+                              "line": 1,
+                            },
+                            "name": "GraphQL request",
+                          },
+                          "start": 0,
+                        },
+                      },
+                      "variables": Object {
+                        "input": Object {
+                          "name": "New Runtime",
+                        },
+                      },
+                    },
+                    "result": Object {
+                      "data": Object {
+                        "createRuntime": Object {
+                          "name": "some name",
+                        },
+                      },
+                    },
+                  },
+                ],
+                "{\\"query\\":\\"query GetRuntimes {\\\\n  runtimes {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+                  Object {
+                    "request": Object {
+                      "query": Object {
+                        "definitions": Array [
+                          Object {
+                            "directives": Array [],
+                            "kind": "OperationDefinition",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "GetRuntimes",
+                            },
+                            "operation": "query",
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "runtimes",
+                                  },
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "id",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "name",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "status",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "creationDate",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "publishedVersion",
+                                        },
+                                        "selectionSet": Object {
+                                          "kind": "SelectionSet",
+                                          "selections": Array [
+                                            Object {
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "status",
+                                              },
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                            "variableDefinitions": Array [],
+                          },
+                        ],
+                        "kind": "Document",
+                        "loc": Object {
+                          "end": 125,
+                          "source": Object {
+                            "body": "query GetRuntimes {
+  runtimes {
+    id
+    name
+    status
+    creationDate
+    publishedVersion {
+      status
+    }
+  }
+}
+",
+                            "locationOffset": Object {
+                              "column": 1,
+                              "line": 1,
+                            },
+                            "name": "GraphQL request",
+                          },
+                          "start": 0,
+                        },
+                      },
+                    },
+                    "result": Object {
+                      "data": Object {
+                        "runtimes": Array [
+                          Object {
+                            "creationDate": "2019-11-28T15:28:01+00:00",
+                            "id": "00001",
+                            "name": "Some Name",
+                            "publishedVersion": Object {
+                              "status": "STARTED",
+                            },
+                            "status": "STARTED",
+                          },
+                          Object {
+                            "creationDate": "2019-11-27T15:28:01+00:00",
+                            "id": "00002",
+                            "name": "Some Other Name",
+                            "publishedVersion": Object {
+                              "status": "STARTED",
+                            },
+                            "status": "STARTED",
+                          },
+                          Object {
+                            "creationDate": "2019-11-27T15:28:01+00:00",
+                            "id": "00003",
+                            "name": "Creating runtime",
+                            "publishedVersion": Object {
+                              "status": "CREATING",
+                            },
+                            "status": "CREATING",
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+                "{\\"query\\":\\"query GetUserEmail {\\\\n  me {\\\\n    email\\\\n  }\\\\n}\\\\n\\"}": Array [
+                  Object {
+                    "request": Object {
+                      "query": Object {
+                        "definitions": Array [
+                          Object {
+                            "directives": Array [],
+                            "kind": "OperationDefinition",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "GetUserEmail",
+                            },
+                            "operation": "query",
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "me",
+                                  },
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "email",
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                            "variableDefinitions": Array [],
+                          },
+                        ],
+                        "kind": "Document",
+                        "loc": Object {
+                          "end": 44,
+                          "source": Object {
+                            "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                            "locationOffset": Object {
+                              "column": 1,
+                              "line": 1,
+                            },
+                            "name": "GraphQL request",
+                          },
+                          "start": 0,
+                        },
+                      },
+                    },
+                    "result": Object {
+                      "data": Object {
+                        "me": Object {
+                          "email": "user@konstellation.com",
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            "localState": LocalState {
+              "cache": InMemoryCache {
+                "addTypename": false,
+                "cacheKeyRoot": KeyTrie {
+                  "weakness": true,
+                },
+                "config": Object {
+                  "addTypename": false,
+                  "dataIdFromObject": [Function],
+                  "fragmentMatcher": HeuristicFragmentMatcher {},
+                  "freezeResults": false,
+                  "resultCaching": true,
+                },
+                "data": DepTrackingCache {
+                  "data": Object {},
+                  "depend": [Function],
+                },
+                "maybeBroadcastWatch": [Function],
+                "optimisticData": DepTrackingCache {
+                  "data": Object {},
+                  "depend": [Function],
+                },
+                "silenceBroadcast": false,
+                "storeReader": StoreReader {
+                  "executeSelectionSet": [Function],
+                  "executeStoreQuery": [Function],
+                  "executeSubSelectedArray": [Function],
+                  "freezeResults": false,
+                },
+                "storeWriter": StoreWriter {},
+                "typenameDocumentCache": Map {},
+                "watches": Set {},
+              },
+              "client": [Circular],
+            },
+            "mutationStore": MutationStore {
+              "store": Object {},
+            },
+            "onBroadcast": [Function],
+            "pollingInfoByQueryId": Map {},
+            "queries": Map {},
+            "queryDeduplication": true,
+            "queryStore": QueryStore {
+              "store": Object {},
+            },
+            "ssrMode": false,
+            "transformCache": WeakMap {},
+          },
+          "reFetchObservableQueries": [Function],
+          "resetStore": [Function],
+          "resetStoreCallbacks": Array [],
+          "store": DataStore {
+            "cache": InMemoryCache {
+              "addTypename": false,
+              "cacheKeyRoot": KeyTrie {
+                "weakness": true,
+              },
+              "config": Object {
+                "addTypename": false,
+                "dataIdFromObject": [Function],
+                "fragmentMatcher": HeuristicFragmentMatcher {},
+                "freezeResults": false,
+                "resultCaching": true,
+              },
+              "data": DepTrackingCache {
+                "data": Object {},
+                "depend": [Function],
+              },
+              "maybeBroadcastWatch": [Function],
+              "optimisticData": DepTrackingCache {
+                "data": Object {},
+                "depend": [Function],
+              },
+              "silenceBroadcast": false,
+              "storeReader": StoreReader {
+                "executeSelectionSet": [Function],
+                "executeStoreQuery": [Function],
+                "executeSubSelectedArray": [Function],
+                "freezeResults": false,
+              },
+              "storeWriter": StoreWriter {},
+              "typenameDocumentCache": Map {},
+              "watches": Set {},
+            },
+          },
+          "typeDefs": undefined,
+          "version": "2.6.8",
+          "watchQuery": [Function],
+        }
+      }
+    >
+      <AddRuntime>
+        <div
+          className="bg"
+        >
+          <div
+            className="grid"
+          >
+            <div
+              className="container"
+            >
+              <h1>
+                Add Runtime
+              </h1>
+              <p
+                className="subtitle"
+              />
+              <div
+                className="content"
+              >
+                <TextInput
+                  autoFocus={true}
+                  error=""
+                  label="runtime name"
+                  onChange={[Function]}
+                  onSubmit={[Function]}
+                  whiteColor={true}
+                >
+                  <div
+                    className="container white"
+                  >
+                    <InputLabel
+                      text="runtime name"
+                    >
+                      <label
+                        className="label"
+                        data-testid="label"
+                      >
+                        RUNTIME NAME
+                      </label>
+                    </InputLabel>
+                    <input
+                      autoFocus={true}
+                      className="input"
+                      data-testid="input"
+                      onBlur={[Function]}
+                      onChange={[Function]}
+                      onKeyPress={[Function]}
+                      placeholder=""
+                      style={
+                        Object {
+                          "height": 40,
+                        }
+                      }
+                      type="text"
+                      value=""
+                    />
+                    <InputError
+                      message=""
+                    >
+                      <div
+                        className="errorMessage"
+                        data-testid="error-message"
+                      />
+                    </InputError>
+                  </div>
+                </TextInput>
+                <div
+                  className="buttons"
+                >
+                  <Button
+                    label="SAVE"
+                    loading={false}
+                    onClick={[Function]}
+                    primary={true}
+                  >
+                    <div
+                      className="btn default middle primary"
+                      onClick={[Function]}
+                      style={
+                        Object {
+                          "height": 40,
+                          "lineHeight": "40px",
+                        }
+                      }
+                    >
+                      <span>
+                        SAVE
+                      </span>
+                    </div>
+                  </Button>
+                  <Button
+                    label="CANCEL"
+                    onClick={[Function]}
+                  >
+                    <div
+                      className="btn default middle label"
+                      onClick={[Function]}
+                      style={
+                        Object {
+                          "height": 40,
+                          "lineHeight": "40px",
+                        }
+                      }
+                    >
+                      <span>
+                        CANCEL
+                      </span>
+                    </div>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </AddRuntime>
+    </ApolloProvider>
+  </MockedProvider>
+</Wrapper>
+`;

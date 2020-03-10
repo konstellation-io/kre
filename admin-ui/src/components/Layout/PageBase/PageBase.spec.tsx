@@ -15,6 +15,10 @@ describe('PageBase', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('contains right components', async () => {
     expect(wrapper.exists(Header)).toBeTruthy();
     expect(wrapper.exists(NavigationBar)).toBeTruthy();

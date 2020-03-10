@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfigurationVariableList matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <div
+    className="header row"
+  >
+    <div
+      className="col1"
+    >
+      TYPE
+    </div>
+    <div
+      className="col2"
+    >
+      KEY
+    </div>
+    <div
+      className="col3"
+    >
+      VALUE
+    </div>
+  </div>
+  <div
+    className="list"
+  >
+    <VariableRow
+      hide={true}
+      key="var1"
+      onType={[MockFunction]}
+      variable={
+        Object {
+          "key": "var1",
+          "type": "VARIABLE",
+          "value": "value2",
+        }
+      }
+    />
+    <VariableRow
+      hide={true}
+      key="var2"
+      onType={[MockFunction]}
+      variable={
+        Object {
+          "key": "var2",
+          "type": "VARIABLE",
+          "value": "value1",
+        }
+      }
+    />
+    <VariableRow
+      hide={true}
+      key="var3"
+      onType={[MockFunction]}
+      variable={
+        Object {
+          "key": "var3",
+          "type": "FILE",
+          "value": "value3",
+        }
+      }
+    />
+  </div>
+</div>
+`;
+
+exports[`VariableRow matches snapshot 1`] = `
+<div
+  className="row"
+>
+  <div
+    className="col1"
+  >
+    <div
+      className="typeCol"
+    >
+      <CodeIcon
+        className="icon-small"
+      />
+      <div
+        className="typeColValue"
+      >
+        Variable
+      </div>
+    </div>
+  </div>
+  <div
+    className="col2"
+  >
+    <div
+      className="variableCol"
+    >
+      <VpnKeyIcon
+        className="icon-small"
+      />
+      <div>
+        var2
+      </div>
+    </div>
+  </div>
+  <div
+    className="col3"
+  >
+    <TextInput
+      customClassname="variableValue"
+      error=""
+      formValue="value1"
+      hidden={true}
+      label=""
+      limits={
+        Object {
+          "maxHeight": 350,
+          "minHeight": 95,
+        }
+      }
+      lockHorizontalGrowth={true}
+      onChange={[Function]}
+      onSubmit={[Function]}
+      showClearButton={true}
+      textArea={false}
+    />
+  </div>
+</div>
+`;

@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logs matches snapshot 1`] = `
+<Fragment>
+  <div
+    className="container"
+  >
+    <Header
+      closeLogs={[Function]}
+      opened={false}
+      stickToBottom={false}
+      toggleStickToBottom={[Function]}
+    />
+    <div
+      className="content"
+    >
+      <Filters
+        filters={
+          Object {
+            "node": "nodeName",
+          }
+        }
+      />
+      <LogsList
+        node={
+          Object {
+            "id": "nodeId",
+            "name": "nodeName",
+          }
+        }
+        onUpdate={[Function]}
+      />
+    </div>
+  </div>
+  <div
+    className="shield"
+    onClick={[Function]}
+  />
+</Fragment>
+`;

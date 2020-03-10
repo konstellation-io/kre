@@ -27,6 +27,10 @@ describe('ConfigurationVariableList', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('show right components', () => {
     expect(wrapper.find(VariableRow).length).toBe(3);
 
@@ -82,6 +86,10 @@ describe('VariableRow', () => {
     wrapper = shallow(
       <VariableRow variable={VARIABLE_DATA} onType={mockOnType} hide={true} />
     );
+  });
+
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('show right components', () => {

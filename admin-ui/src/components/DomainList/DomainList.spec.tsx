@@ -22,6 +22,10 @@ describe('DomainList', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('Shows right texts', () => {
     expect(wrapper.exists(testid('domainListElement0'))).toBeFalsy();
     expect(wrapper.exists(testid('domainListName0'))).toBeTruthy();

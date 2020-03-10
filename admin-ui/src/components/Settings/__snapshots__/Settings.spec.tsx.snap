@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings matches snapshot 1`] = `
+<div
+  className="container"
+  data-testid="settingsContainer"
+  onClick={[Function]}
+>
+  <div
+    className="label"
+    data-testid="settings-label"
+  />
+  <div
+    className="options"
+    data-testid="settingsContent"
+    style={
+      Object {
+        "maxHeight": 0,
+      }
+    }
+  >
+    <Button
+      Icon={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "compare": null,
+          "displayName": "VerifiedUserIcon",
+          "muiName": "SvgIcon",
+          "type": Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "render": [Function],
+          },
+        }
+      }
+      align="left"
+      key="buttonSettings"
+      label="SETTINGS"
+      style={
+        Object {
+          "paddingLeft": "20%",
+        }
+      }
+      to="/settings"
+      type="grey"
+    />
+    <Button
+      Icon={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "compare": null,
+          "displayName": "SupervisorAccountIcon",
+          "muiName": "SvgIcon",
+          "type": Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "render": [Function],
+          },
+        }
+      }
+      align="left"
+      key="buttonAudit"
+      label="AUDIT"
+      style={
+        Object {
+          "paddingLeft": "20%",
+        }
+      }
+      to="/audit"
+      type="grey"
+    />
+    <Button
+      Icon={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "compare": null,
+          "displayName": "ExitToAppIcon",
+          "muiName": "SvgIcon",
+          "type": Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "render": [Function],
+          },
+        }
+      }
+      align="left"
+      key="buttonLogout"
+      label="LOGOUT"
+      onClick={[Function]}
+      style={
+        Object {
+          "paddingLeft": "20%",
+        }
+      }
+      type="grey"
+    />
+  </div>
+</div>
+`;

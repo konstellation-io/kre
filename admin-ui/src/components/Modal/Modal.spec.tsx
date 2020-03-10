@@ -7,7 +7,8 @@ import { shallow } from 'enzyme';
 
 const ACTION_BUTTON_LABEL = 'Action Button';
 
-const mockClick = jest.fn();
+const mockOnAccept = jest.fn();
+const mockOnClose = jest.fn();
 
 describe('Modal', () => {
   let wrapper;
@@ -18,9 +19,14 @@ describe('Modal', () => {
         title="Modal"
         message="Message"
         actionButtonLabel={ACTION_BUTTON_LABEL}
-        onAccept={mockClick}
+        onAccept={mockOnAccept}
+        onClose={mockOnClose}
       />
     );
+  });
+
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('works with default props', () => {
@@ -32,7 +38,14 @@ describe('Modal', () => {
     ).toBeTruthy();
   });
 
+  it('calls onClose when closing', () => {
+    wrapper.find({ label: 'CANCEL' }).simulate('click');
+
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
+  });
+
   it('hides when clicking on Cancel', () => {
+    wrapper.setProps({ onClose: null });
     wrapper.find({ label: 'CANCEL' }).simulate('click');
 
     expect(
@@ -49,6 +62,6 @@ describe('Modal', () => {
   it('handles click event on Accept click', () => {
     wrapper.find({ label: 'Action Button' }).simulate('click');
 
-    expect(mockClick).toHaveBeenCalledTimes(1);
+    expect(mockOnAccept).toHaveBeenCalledTimes(1);
   });
 });

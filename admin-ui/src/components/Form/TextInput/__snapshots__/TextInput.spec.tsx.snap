@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextInput matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <InputLabel
+    text=""
+  />
+  <input
+    autoFocus={false}
+    className="input"
+    data-testid="input"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onKeyPress={[Function]}
+    placeholder=""
+    style={
+      Object {
+        "height": 40,
+      }
+    }
+    type="text"
+    value=""
+  />
+  <InputError
+    message=""
+  />
+</div>
+`;

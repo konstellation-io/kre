@@ -10,6 +10,10 @@ describe('VerifyEmail', () => {
     wrapper = shallow(<VerifyEmail />);
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('show correct texts', () => {
     expect(wrapper.exists(StateCircle)).toBeTruthy();
     expect(wrapper.exists('p')).toBeTruthy();

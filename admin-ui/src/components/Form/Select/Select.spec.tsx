@@ -22,6 +22,10 @@ describe('Select', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('show right components', () => {
     expect(wrapper.find(InputLabel).prop('text')).toBe('Select');
     expect(wrapper.find(InputError).prop('message')).toBe('');

@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FiltersBar matches snapshot 1`] = `
+<div
+  className="formField"
+>
+  <Select
+    label="Activity type"
+    onChange={[MockFunction]}
+    options={
+      Array [
+        "a",
+        "b",
+        "c",
+      ]
+    }
+    placeholder="Activity type"
+    valuesMapper={
+      Object {
+        "CREATE_RUNTIME": "Create Runtime",
+        "CREATE_VERSION": "Create Version",
+        "LOGIN": "Login",
+        "LOGOUT": "Logout",
+        "PUBLISH_VERSION": "Publish Version",
+        "START_VERSION": "Start Version",
+        "STOP_VERSION": "Stop Version",
+        "UNPUBLISH_VERSION": "Unpublish Version",
+        "UPDATE_SETTING": "Update Settings",
+        "UPDATE_VERSION_CONFIGURATION": "Update Version Configuration",
+      }
+    }
+  />
+  <Select
+    label="User email"
+    onChange={[MockFunction]}
+    options={
+      Array [
+        "1",
+        "2",
+        "3",
+      ]
+    }
+    placeholder="User email"
+  />
+  <Calendar
+    onChangeFromDate={[MockFunction]}
+    onChangeToDate={[MockFunction]}
+  />
+  <div
+    className="buttons"
+  >
+    <Button
+      border={true}
+      label="SEARCH"
+      onClick={[MockFunction]}
+      style={
+        Object {
+          "margin": "24px 0",
+        }
+      }
+    />
+    <Button
+      label="CLEAR"
+      onClick={[Function]}
+      style={
+        Object {
+          "margin": "24px 0",
+        }
+      }
+    />
+  </div>
+</div>
+`;

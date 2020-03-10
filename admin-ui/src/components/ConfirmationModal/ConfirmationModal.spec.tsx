@@ -35,6 +35,10 @@ describe('ConfirmationModal', () => {
     );
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('works with default props', () => {
     expect(wrapper.exists(HorizontalBar)).toBeTruthy();
     expect(wrapper.find('.title').text()).toBe('Modal');

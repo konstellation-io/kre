@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VersionInfo matches snapshot 1`] = `
+<Link
+  to="/runtimes/runtimeId/versions/versionId/status"
+>
+  <div
+    className="container"
+    id="versionInfoElement_versionId"
+  >
+    <div
+      className="col1"
+    >
+      <div
+        className="labelContainer"
+      >
+        <div
+          className="label STARTED"
+        >
+          STARTED
+        </div>
+      </div>
+      <div
+        className="actionsContainer"
+      >
+        <div
+          className="creation"
+        >
+          <TodayIcon
+            className="icon-small"
+          />
+          <p
+            className="creationDate"
+          >
+            CREATED: January 1, 2020
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      className="col2"
+    >
+      <p
+        className="version"
+      >
+        VERSION versionName
+      </p>
+      <p
+        className="descriptionTitle"
+      >
+        DESCRIPTION
+      </p>
+      <p
+        className="description"
+      >
+        versionDescription
+      </p>
+    </div>
+  </div>
+</Link>
+`;

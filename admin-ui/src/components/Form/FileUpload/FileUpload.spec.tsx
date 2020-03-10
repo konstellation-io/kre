@@ -13,6 +13,10 @@ describe('FileUpload', () => {
     wrapper = shallow(<FileUpload placeholder={PLACEHOLDER} label={LABEL} />);
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('show right texts', () => {
     expect(wrapper.find(InputLabel).prop('text')).toBe(LABEL);
     expect(wrapper.find('.input').text()).toBe(PLACEHOLDER);

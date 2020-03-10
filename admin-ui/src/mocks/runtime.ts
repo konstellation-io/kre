@@ -1,8 +1,15 @@
 import { loader } from 'graphql.macro';
+import { runtime, version } from './version';
 
 const GetRuntimesQuery = loader('../graphql/queries/getRuntimes.graphql');
+const GetRuntimeAndVersionQuery = loader(
+  '../graphql/queries/getRuntimeAndVersions.graphql'
+);
 const CreateRuntimeMutation = loader(
   '../graphql/mutations/createRuntime.graphql'
+);
+const RuntimeCreatedSubscription = loader(
+  '../graphql/subscriptions/runtimeCreated.graphql'
 );
 
 export const dashboardMock = {
@@ -59,6 +66,36 @@ export const addRuntimeMock = {
   result: {
     data: {
       createRuntime: { name: 'some name' }
+    }
+  }
+};
+
+export const getRuntimeAndVersionsMock = {
+  request: {
+    query: GetRuntimeAndVersionQuery
+  },
+  result: {
+    data: {
+      runtime,
+      version
+    }
+  }
+};
+
+export const getRuntimeAndVersionsErrorMock = {
+  request: {
+    query: GetRuntimeAndVersionQuery
+  },
+  error: new Error('cannot get runtime and versions')
+};
+
+export const runtimeCreatedMock = {
+  request: {
+    query: RuntimeCreatedSubscription
+  },
+  result: {
+    data: {
+      runtimeCreated: { id: 'some id', name: 'some name' }
     }
   }
 };

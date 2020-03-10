@@ -19,6 +19,10 @@ describe('VersionActions', () => {
     wrapper = shallow(<VersionActions runtime={runtime} version={version} />);
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('has right components', async () => {
     expect(wrapper.exists('.wrapper')).toBeTruthy();
     expect(wrapper.find(Button).length).toBe(2);

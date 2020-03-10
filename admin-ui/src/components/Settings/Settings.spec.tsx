@@ -12,6 +12,10 @@ describe('Settings', () => {
     wrapper = shallow(<Settings />);
   });
 
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('Shows logout option', () => {
     expect(wrapper.exists({ label: 'LOGOUT' })).toBeTruthy();
   });
