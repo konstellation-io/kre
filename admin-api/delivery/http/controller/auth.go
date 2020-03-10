@@ -110,16 +110,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	}
 
 	a.logger.Info("Set cookie containing the generated JWT token.")
-	cookie := new(http.Cookie)
-	cookie.Name = "token"
-	cookie.Value = jwtToken
-	cookie.Expires = expirationTime
-	cookie.Path = "/"
-	cookie.HttpOnly = true
-	cookie.Secure = a.cfg.Auth.SecureCookie
-	cookie.SameSite = http.SameSiteLaxMode
-	cookie.Domain = a.cfg.Auth.CookieDomain
-
+	cookie := a.createCookie(jwtToken, expirationTime)
 	c.SetCookie(cookie)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login success"})
@@ -131,17 +122,27 @@ func (a *AuthController) Logout(c echo.Context) error {
 	userID := claims["sub"].(string)
 
 	a.logger.Info("Logout for user " + userID)
-	a.authInteractor.Logout(userID)
+	err := a.authInteractor.Logout(userID)
+	if err != nil {
+		a.logger.Errorf("Unexpected error in logout: %s", err.Error())
+	}
 
 	expirationTime := time.Now()
-	cookie := new(http.Cookie)
-	cookie.Name = "token"
-	cookie.Value = "deleted"
-	cookie.Expires = expirationTime
-	cookie.Path = "/"
-	cookie.Secure = a.cfg.Auth.SecureCookie
-	cookie.HttpOnly = true
+	cookie := a.createCookie("deleted", expirationTime)
 	c.SetCookie(cookie)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Logout success"})
+}
+
+func (a *AuthController) createCookie(jwtToken string, expirationTime time.Time) *http.Cookie {
+	cookie := new(http.Cookie)
+	cookie.Name = "token"
+	cookie.Value = jwtToken
+	cookie.Expires = expirationTime
+	cookie.Path = "/"
+	cookie.HttpOnly = true
+	cookie.Secure = a.cfg.Auth.SecureCookie
+	cookie.SameSite = http.SameSiteLaxMode
+	cookie.Domain = a.cfg.Auth.CookieDomain
+	return cookie
 }
