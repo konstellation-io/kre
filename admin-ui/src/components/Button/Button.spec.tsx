@@ -1,11 +1,8 @@
 import React from 'react';
-import { cleanup } from '@testing-library/react';
 import Button from './Button';
 import { shallow } from 'enzyme';
 import SpinnerLinear from '../LoadingComponents/SpinnerLinear/SpinnerLinear';
 import { Link } from 'react-router-dom';
-
-afterEach(cleanup);
 
 describe('Button', () => {
   let wrapper;
