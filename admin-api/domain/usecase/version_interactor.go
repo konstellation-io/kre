@@ -30,6 +30,14 @@ var (
 	ErrVersionConfigInvalidKey = errors.New("version config contains an unknown key")
 	// ErrUpdatingRunningVersionConfig error
 	ErrUpdatingStartedVersionConfig = errors.New("config can't be incomplete for started version")
+	// ErrInvalidVersionStatusBeforeStarting error
+	ErrInvalidVersionStatusBeforeStarting = errors.New("the version must be stopped before starting")
+	// ErrInvalidVersionStatusBeforeStopping error
+	ErrInvalidVersionStatusBeforeStopping = errors.New("the version must be started before stopping")
+	// ErrInvalidVersionStatusBeforePublishing error
+	ErrInvalidVersionStatusBeforePublishing = errors.New("the version must be started before publishing")
+	// ErrInvalidVersionStatusBeforeUnpublishing error
+	ErrInvalidVersionStatusBeforeUnpublishing = errors.New("the version must be published before unpublishing")
 )
 
 // VersionInteractor contains app logic about Version entities
@@ -158,7 +166,10 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 		return nil, err
 	}
 
-	i.logger.Infof("Checking version config: %#v", version.Config)
+	if version.Status != string(entity.VersionStatusStopped) {
+		return nil, ErrInvalidVersionStatusBeforeStarting
+	}
+
 	if !version.Config.Completed {
 		return nil, ErrVersionConfigIncomplete
 	}
@@ -195,6 +206,10 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 		return nil, err
 	}
 
+	if version.Status != string(entity.VersionStatusStarted) {
+		return nil, ErrInvalidVersionStatusBeforeStopping
+	}
+
 	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
 	if err != nil {
 		return nil, err
@@ -225,6 +240,10 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
+	}
+
+	if version.Status != string(entity.VersionStatusStarted) {
+		return nil, ErrInvalidVersionStatusBeforePublishing
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
@@ -291,6 +310,10 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
+	}
+
+	if version.Status != string(entity.VersionStatusPublished) {
+		return nil, ErrInvalidVersionStatusBeforeUnpublishing
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(version.RuntimeID)
