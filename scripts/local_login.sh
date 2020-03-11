@@ -29,7 +29,7 @@ LINK=$(cat $WATCH_FILE | awk '{print NR" "$0}' | sort -k1 -n -r | sed 's/^[^ ]* 
 
 rm $WATCH_FILE
 
-echo "\n Login done. Open your browser at: \n\n 🌎 $LINK\n"
+printf "\n Login done. Open your browser at: \n\n 🌎 $LINK\n"
 
 # Open browser automacally
 nohup xdg-open $LINK >/dev/null 2>&1 &
