@@ -13,6 +13,8 @@ import (
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
 
+const UserIDContextKey = "userID"
+
 type GraphQLController struct {
 	cfg                    *config.Config
 	logger                 logging.Logger
@@ -60,7 +62,7 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 	)
 
 	r := c.Request()
-	ctx := context.WithValue(r.Context(), "userID", userID)
+	ctx := context.WithValue(r.Context(), UserIDContextKey, userID)
 
 	h.ServeHTTP(c.Response(), r.WithContext(ctx))
 
