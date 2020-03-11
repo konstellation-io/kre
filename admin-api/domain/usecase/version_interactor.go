@@ -16,7 +16,7 @@ import (
 )
 
 const idLength = 10
-const idCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const idCharset = "abcdefghijklmnopqrstuvwxyz"
 const idCharsetLen = len(idCharset)
 
 var (
