@@ -181,7 +181,29 @@ In order to start development on this project you will need these tools:
 Deploy KRE with Helm in Minikube environment
 
 ```
-    ./deploy_local.sh
+$ ./deploy_local.sh
 ```
 
+### Login
 
+First of all remember to edit your `/etc/hosts`, see `./deploy_local.sh` output for more details.
+
+In order to access the admin app, the login process can be done automatically using this script:
+
+```
+$ ./scripts/local_login.sh 
+```
+
+You will see an output like this:
+
+```
+calling api...
+watching /tmp/tmp.c4rBHAglSl
+pod kre-local-admin-api-84b5cd84fb-m64hm
+
+ Login done. Open your browser at: 
+
+ 🌎 http://admin.kre.local/signin/05fba3e9-e394-461d-b92d-e529950da27c
+
+✔️  Done.
+```
