@@ -25,7 +25,9 @@ case $* in
 # Use it when you want to develop on admin-ui outside k8s and using the mock server
 *--local-frontend-mock*)
   KRE_ADMIN_API_BASE_URL="http://localhost:4000"
-  ;&
+  KRE_ADMIN_FRONTEND_BASE_URL="http://dev-admin.kre.local:3000"
+  export SKIP_FRONTEND_BUILD=1
+  ;;
 # Use it when you want to develop on admin-ui outside k8s
 *--local-frontend*)
   KRE_ADMIN_FRONTEND_BASE_URL="http://dev-admin.kre.local:3000"
