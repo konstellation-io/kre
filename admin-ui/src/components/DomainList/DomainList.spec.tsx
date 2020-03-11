@@ -27,9 +27,9 @@ describe('DomainList', () => {
   });
 
   it('Shows right texts', () => {
-    expect(wrapper.exists(testid('domainListElement0'))).toBeFalsy();
-    expect(wrapper.exists(testid('domainListName0'))).toBeTruthy();
+    // Check first domain text
     expect(wrapper.find(testid('domainListName0')).text()).toBe('domain.1');
+    // Check second domain text
     expect(wrapper.find(testid('domainListName1')).text()).toBe('domain.2');
   });
 

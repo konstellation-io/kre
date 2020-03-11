@@ -53,12 +53,13 @@ describe('ConfirmationModal', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onAction callback function', () => {
+  it('do not call onAction callback function when form is invalid', () => {
     wrapper.find({ label: 'YES' }).simulate('click');
 
-    // Form not valid, should not call onAction
     expect(mockOnAction).toHaveBeenCalledTimes(0);
+  });
 
+  it('calls onAction callback function when form is valid', () => {
     wrapper
       .find(TextInput)
       .dive()
