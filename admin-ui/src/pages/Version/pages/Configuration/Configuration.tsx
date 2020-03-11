@@ -52,10 +52,7 @@ function formatConfVars(
   );
 }
 
-type Props = {
-  refetchVersion: Function;
-};
-function Configuration({ refetchVersion }: Props) {
+function Configuration() {
   const [initialConfiguration, setInitialConfiguration] = useState<
     ConfigurationVariable[]
   >([]);
@@ -99,7 +96,6 @@ function Configuration({ refetchVersion }: Props) {
     updateConfigurationVariables(
       data.updateVersionConfiguration.configurationVariables
     );
-    refetchVersion();
   }
 
   function getContent() {
@@ -157,7 +153,7 @@ function Configuration({ refetchVersion }: Props) {
       updateConfiguration({
         variables: {
           input: {
-            versionId: versionId,
+            versionId,
             configurationVariables: formatConfVars(configurationVariables)
           } as UpdateConfigurationInput
         } as UpdateVersionConfigurationVariables

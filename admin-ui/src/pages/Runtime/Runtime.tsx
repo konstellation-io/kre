@@ -27,7 +27,7 @@ const GetRuntimeAndVersionQuery = loader(
 function Runtime() {
   const { runtimeId, versionId } = useParams<VersionRouteParams>();
   const location = useLocation();
-  const { data, loading, error, refetch } = useQuery<
+  const { data, loading, error } = useQuery<
     GetVersionConfStatus,
     GetVersionConfStatusVariables
   >(GetRuntimeAndVersionQuery, {
@@ -60,12 +60,7 @@ function Runtime() {
             />
             <Route
               render={props => (
-                <Version
-                  {...props}
-                  version={version}
-                  runtime={runtime}
-                  refetch={refetch}
-                />
+                <Version {...props} version={version} runtime={runtime} />
               )}
             />
           </Switch>
