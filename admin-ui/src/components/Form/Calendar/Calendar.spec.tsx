@@ -14,4 +14,5 @@ describe('Calendar', () => {
   });
 
   // TODO: add more tests
+  // TODO: Check why Icons are changed to UNDEFINED in snapshots
 });
