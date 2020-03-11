@@ -5,6 +5,7 @@
 
 import {
   UpdateConfigurationInput,
+  VersionStatus,
   ConfigurationVariableType
 } from './../../types/globalTypes';
 
@@ -21,6 +22,9 @@ export interface UpdateVersionConfiguration_updateVersionConfiguration_configura
 
 export interface UpdateVersionConfiguration_updateVersionConfiguration {
   __typename: 'Version';
+  id: string;
+  configurationCompleted: boolean;
+  status: VersionStatus;
   configurationVariables: UpdateVersionConfiguration_updateVersionConfiguration_configurationVariables[];
 }
 

@@ -21,6 +21,7 @@ export interface GetConfigurationVariables_version_configurationVariables {
 
 export interface GetConfigurationVariables_version {
   __typename: 'Version';
+  id: string;
   status: VersionStatus;
   configurationVariables: GetConfigurationVariables_version_configurationVariables[];
 }

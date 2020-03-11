@@ -1,5 +1,6 @@
-query GetConfigurationVariables($versionId: ID!) {
+  query GetConfigurationVariables($versionId: ID!) {
   version(id: $versionId) {
+    id
     status
     configurationVariables {
       key
