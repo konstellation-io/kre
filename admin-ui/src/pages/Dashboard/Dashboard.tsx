@@ -52,7 +52,7 @@ function getVersionStatus(runtime: GetRuntimes_runtimes) {
     : VersionEnvStatus.UNPUBLISHED;
 }
 
-function getDashboardContent({ data, error, loading, history }: Props) {
+function getDashboardContent({ data, error, loading }: Props) {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 

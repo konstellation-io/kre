@@ -3,6 +3,11 @@ import Notification from './Notification';
 import { shallow } from 'enzyme';
 import { label } from '../../utils/testUtilsEnzyme';
 import Button from '../Button/Button';
+import { NotificationType } from '../../graphql/client/typeDefs';
+
+jest.mock('@apollo/react-hooks', () => ({
+  useMutation: jest.fn(() => [jest.fn()])
+}));
 
 describe('Notification', () => {
   let wrapper;
@@ -12,10 +17,11 @@ describe('Notification', () => {
   beforeEach(() => {
     wrapper = shallow(
       <Notification
+        id="some id"
         message="some message"
         buttonLabel="some label"
-        onCloseNotification={mockOnClose}
-        buttonAction={mockOnAction}
+        type={NotificationType.MESSAGE}
+        to="some/other/route"
       />
     );
   });
@@ -29,21 +35,8 @@ describe('Notification', () => {
     expect(wrapper.find('.message').text()).toBe('some message');
   });
 
-  it('handles on close event', () => {
-    wrapper
-      .find(Button)
-      .find(label(''))
-      .simulate('click');
-
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('handles on action event', () => {
-    wrapper
-      .find(Button)
-      .find(label('some label'))
-      .simulate('click');
-
-    expect(mockOnAction).toHaveBeenCalledTimes(1);
+  it('do not show redirection button when there is no "to" prop', () => {
+    wrapper.setProps({ to: '' });
+    expect(wrapper.find(Button).length).toBe(1);
   });
 });

@@ -2,7 +2,13 @@
 
 exports[`Notification matches snapshot 1`] = `
 <div
-  className="container"
+  className="container MESSAGE"
+  style={
+    Object {
+      "height": 0,
+      "maxHeight": 0,
+    }
+  }
 >
   <div
     className="message"
@@ -12,7 +18,7 @@ exports[`Notification matches snapshot 1`] = `
   </div>
   <Button
     label="some label"
-    onClick={[MockFunction]}
+    to="some/other/route"
   />
   <Button
     Icon={
@@ -28,7 +34,7 @@ exports[`Notification matches snapshot 1`] = `
       }
     }
     label=""
-    onClick={[MockFunction]}
+    onClick={[Function]}
   />
 </div>
 `;
