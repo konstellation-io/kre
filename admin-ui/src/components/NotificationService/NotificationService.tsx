@@ -1,8 +1,8 @@
-import React, { ReactElement } from 'react';
-import RuntimeCreated from './Services/RuntimeCreated/RuntimeCreated';
+import React from 'react';
+import onRuntimeCreated from './Services/onRuntimeCreated/onRuntimeCreated';
 import Notification from './Notification';
 
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useApolloClient } from '@apollo/react-hooks';
 import { GET_LOGIN_STATUS } from '../../graphql/client/queries/getLoginStatus.graphql';
 import {
   GET_NOTIFICATIONS,
@@ -13,18 +13,14 @@ import {
 import styles from './Notification.module.scss';
 
 function NotificationService() {
+  const client = useApolloClient();
   const { data } = useQuery(GET_LOGIN_STATUS);
   const { data: notificationsData } = useQuery<GetNotifications>(
     GET_NOTIFICATIONS
   );
 
-  let notificationServices: ReactElement[] = [];
-
   if (data && data.loggedIn) {
-    notificationServices = [
-      ...notificationServices,
-      <RuntimeCreated key="createRuntimeService" />
-    ];
+    onRuntimeCreated(client);
   }
 
   const notificationComponents =
@@ -41,8 +37,7 @@ function NotificationService() {
 
   return (
     <div className={styles.notificationsContainer}>
-      <div className={styles.services}>{notificationServices}</div>
-      <div className={styles.notifications}>{notificationComponents}</div>
+      {notificationComponents}
     </div>
   );
 }

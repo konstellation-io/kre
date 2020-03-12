@@ -1,13 +1,6 @@
 import { get, clone } from 'lodash';
-import React from 'react';
 import { loader } from 'graphql.macro';
 import { runtimeCreated } from '../../../../graphql/subscriptions/types/runtimeCreated';
-import {
-  useSubscription,
-  SubscriptionHookOptions,
-  useMutation,
-  useApolloClient
-} from '@apollo/react-hooks';
 import {
   ADD_NOTIFICATION,
   AddNotification,
@@ -42,37 +35,40 @@ function updateRuntimesCache(
   client.writeQuery({ query: GetRuntimesQuery, data: { runtimes } });
 }
 
-function RuntimeCreated() {
-  const client = useApolloClient();
-  const [addInfoNotification] = useMutation<
-    AddNotification,
-    AddNotificationVariables
-  >(ADD_NOTIFICATION);
-  useSubscription<runtimeCreated>(RuntimeCreatedSubscription, {
-    onSubscriptionData: (msg: SubscriptionHookOptions<runtimeCreated>) => {
-      const runtime: runtimeCreated_runtimeCreated = get(
-        msg,
-        'subscriptionData.data.runtimeCreated'
-      );
-      const runtimePath = ROUTE.RUNTIME.replace(':runtimeId', runtime.id);
+function onRuntimeCreated(client: ApolloClient<object>) {
+  client
+    .subscribe<runtimeCreated>({
+      query: RuntimeCreatedSubscription
+    })
+    .subscribe({
+      next(data) {
+        const runtime: runtimeCreated_runtimeCreated = get(
+          data,
+          'data.runtimeCreated'
+        );
+        const runtimePath = ROUTE.RUNTIME.replace(':runtimeId', runtime.id);
 
-      updateRuntimesCache(client, runtime);
+        updateRuntimesCache(client, runtime);
 
-      addInfoNotification({
-        variables: {
-          input: {
-            id: `runtime-${runtime.id}-created`,
-            message: `The RUNTIME "${runtime.name}" has been successfully created!`,
-            type: NotificationType.MESSAGE,
-            timeout: NOTIFICATION_TIMEOUT,
-            to: runtimePath
+        client.mutate<AddNotification, AddNotificationVariables>({
+          mutation: ADD_NOTIFICATION,
+          variables: {
+            input: {
+              id: `runtime-${runtime.id}-created`,
+              message: `The RUNTIME "${runtime.name}" has been successfully created!`,
+              type: NotificationType.MESSAGE,
+              timeout: NOTIFICATION_TIMEOUT,
+              to: runtimePath
+            }
           }
-        }
-      });
-    }
-  });
-
-  return <div />;
+        });
+      },
+      error(err) {
+        console.error(
+          `Error at onRuntimeCreated subscription: ${err.toString()}`
+        );
+      }
+    });
 }
 
-export default RuntimeCreated;
+export default onRuntimeCreated;
