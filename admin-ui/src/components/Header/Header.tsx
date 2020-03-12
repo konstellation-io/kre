@@ -20,12 +20,12 @@ const Header: FunctionComponent<Props> = ({ children }) => {
   const { data, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
 
   if (loading)
-    return <div className={styles.splash} data-testid={'splashscreen'} />;
+    return <div className={styles.splash} data-testid="splashscreen" />;
 
   const username: string = get(data, 'me.email');
 
   return (
-    <header className={styles.container}>
+    <header className={styles.container} data-testid="app-header">
       <img
         className={styles.konstellationsIcon}
         src={'/img/brand/konstellation.png'}

@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConditionalLink matches snapshot 1`] = `
+<Link
+  to="/some-route/index"
+>
+  <div>
+    Sample text
+  </div>
+</Link>
+`;

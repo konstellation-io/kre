@@ -1,40 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Render FileUpload without crashing 1`] = `
-<div>
+exports[`FileUpload matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <InputLabel
+    text="some label"
+  />
   <div
-    class="container"
+    className="inputContainer"
   >
-    <label
-      class="label"
-      data-testid="label"
-    />
     <div
-      class="inputContainer"
+      className="input placeholder"
+      data-testid="input"
+      style={
+        Object {
+          "height": 40,
+        }
+      }
+      title="some placeholder"
     >
-      <div
-        class="input placeholder"
-        data-testid="input"
-        style="height: 40px;"
-        title=""
-      />
-      <div
-        class="btn default middle border label"
-        style="height: 40px; line-height: 40px;"
-      >
-        <span>
-          BROWSE
-        </span>
-      </div>
+      some placeholder
     </div>
-    <input
-      hidden=""
-      type="file"
-    />
-    <div
-      class="errorMessage"
-      data-testid="error-message"
+    <Button
+      border={true}
+      label="BROWSE"
+      onClick={[Function]}
     />
   </div>
+  <input
+    hidden={true}
+    onChange={[Function]}
+    type="file"
+  />
+  <InputError
+    message=""
+  />
 </div>
 `;

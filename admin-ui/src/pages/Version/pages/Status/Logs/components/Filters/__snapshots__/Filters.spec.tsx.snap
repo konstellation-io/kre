@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Filters matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <div
+    className="title"
+  >
+    Showing logs with the following filters:
+     
+  </div>
+  <div
+    className="filters"
+  >
+    <Filter
+      filter="filter"
+      key="filter"
+      value="value"
+    />
+  </div>
+</div>
+`;

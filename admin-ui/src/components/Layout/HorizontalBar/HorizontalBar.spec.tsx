@@ -1,31 +1,27 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
 import HorizontalBar from './HorizontalBar';
-import '@testing-library/jest-dom/extend-expect';
+import { shallow } from 'enzyme';
 
-afterEach(cleanup);
+describe('HorizontalBar', () => {
+  let wrapper;
 
-it('Renders HorizontalBar without crashing', () => {
-  const { container } = render(
-    <HorizontalBar>
-      <div>A</div>
-      <div>B</div>
-      <div>C</div>
-    </HorizontalBar>
-  );
-  expect(container).toMatchSnapshot();
-});
+  beforeEach(() => {
+    wrapper = shallow(
+      <HorizontalBar>
+        <div className="childrenA">A</div>
+        <div className="childrenB">B</div>
+        <div className="childrenC">C</div>
+      </HorizontalBar>
+    );
+  });
 
-it('Shows children components', () => {
-  const { getByText } = render(
-    <HorizontalBar>
-      <div>A</div>
-      <div>B</div>
-      <div>C</div>
-    </HorizontalBar>
-  );
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
 
-  expect(getByText('A')).toBeInTheDocument();
-  expect(getByText('B')).toBeInTheDocument();
-  expect(getByText('C')).toBeInTheDocument();
+  it('shows children components', () => {
+    expect(wrapper.exists('.childrenA')).toBeTruthy();
+    expect(wrapper.exists('.childrenB')).toBeTruthy();
+    expect(wrapper.exists('.childrenC')).toBeTruthy();
+  });
 });

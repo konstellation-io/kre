@@ -5,7 +5,7 @@ type FilterProps = {
   filter: string;
   value: string;
 };
-function Filter({ filter, value }: FilterProps) {
+export function Filter({ filter, value }: FilterProps) {
   return (
     <div className={styles.filter}>
       <div>{`${filter}: `}</div>

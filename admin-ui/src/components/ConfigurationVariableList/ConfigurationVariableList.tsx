@@ -18,7 +18,7 @@ interface VariableRowProps {
   hide: boolean;
 }
 
-function VariableRow({
+export function VariableRow({
   variable: { type, key, value },
   onType,
   hide

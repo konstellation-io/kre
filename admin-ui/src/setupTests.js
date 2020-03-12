@@ -9,3 +9,10 @@ jest.mock('./config', () => ({
     API_BASE_URL: 'some value'
   })
 }));
+
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+}
+
+window.ResizeObserver = ResizeObserver;

@@ -1,26 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render TextInput without crashing 1`] = `
-<div>
-  <div
-    class="container"
-  >
-    <label
-      class="label"
-      data-testid="label"
-    />
-    <input
-      class="input"
-      data-testid="input"
-      placeholder=""
-      style="height: 40px;"
-      type="text"
-      value=""
-    />
-    <div
-      class="helpMessage"
-      data-testid="help-message"
-    />
-  </div>
+exports[`TextInput matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <InputLabel
+    text=""
+  />
+  <input
+    autoFocus={false}
+    className="input"
+    data-testid="input"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onKeyPress={[Function]}
+    placeholder=""
+    style={
+      Object {
+        "height": 40,
+      }
+    }
+    type="text"
+    value=""
+  />
+  <InputHelp
+    message=""
+  />
 </div>
 `;

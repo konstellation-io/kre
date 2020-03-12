@@ -54,19 +54,6 @@ it('Shows general settings by default', async () => {
   expect(getByText('GENERAL')).toBeInTheDocument();
 });
 
-// test('General settings show right texts', async () => {
-//   const { getByText, getByTestId } = generateComponent()[0] as RenderResult;
-
-//   await act(async () => {
-//     await wait(0);
-//   });
-
-//   expect(getByText('SAVE CHANGES')).toBeInTheDocument();
-//   expect(getByTestId('input')).toBeInTheDocument();
-//   // @ts-ignore
-//   expect(getByTestId('input').value).toBe('45');
-// });
-
 it('can move to other settings', async () => {
   const { container, getByText } = generateComponent()[0] as RenderResult;
 
@@ -80,28 +67,6 @@ it('can move to other settings', async () => {
   fireEvent.click(container, getByText('GENERAL'));
   expect(getByText('GENERAL')).toBeInTheDocument();
 });
-
-// test('General settings handles input changes', async () => {
-//   const { getByText, getByTestId } = generateComponent()[0] as RenderResult;
-
-//   await act(async () => {
-//     await wait(0);
-//   });
-
-//   fireEvent.change(getByTestId('input'), { target: { value: '0' } });
-//   fireEvent.click(getByText('SAVE CHANGES'));
-
-//   expect(getByTestId('error-message').textContent).not.toBe('');
-
-//   fireEvent.change(getByTestId('input'), { target: { value: '10' } });
-//   fireEvent.click(getByText('SAVE CHANGES'));
-
-//   await act(async () => {
-//     await wait(0);
-//   });
-
-//   expect(getByTestId('error-message').textContent).toBe('');
-// });
 
 test('Security settings works properly', async () => {
   const [{ getByText, getByTestId }, history] = generateComponent() as [

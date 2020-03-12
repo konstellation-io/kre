@@ -6,6 +6,7 @@ import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import UnpublishIcon from '@material-ui/icons/Block';
 import { VersionStatus } from '../../../graphql/types/globalTypes';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import VersionActions from '../components/VersionSideBar/VersionActions/VersionActions';
 
 function generateActionButton(
   label: string,
@@ -45,8 +46,7 @@ function getStateToButtons(
   return {
     [VersionStatus.STOPPED]: [buttonStart],
     [VersionStatus.PUBLISHED]: [buttonUnpublish],
-    [VersionStatus.STARTED]: [buttonPublish, buttonStop],
-    [VersionStatus.STOPPED]: [buttonStart]
+    [VersionStatus.STARTED]: [buttonPublish, buttonStop]
   };
 }
 
@@ -64,7 +64,7 @@ export function getVersionActionButtons(
     unpublishAction
   );
 
-  if (status === undefined) {
+  if (status === undefined || !(status in VersionStatus)) {
     return [];
   }
 

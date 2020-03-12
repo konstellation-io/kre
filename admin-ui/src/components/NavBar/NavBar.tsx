@@ -25,7 +25,6 @@ export type Tab = {
 };
 type Props = {
   tabs: Tab[];
-  defaultActive?: number;
   itemSize?: ItemSize;
   showItemArrows?: boolean;
 };

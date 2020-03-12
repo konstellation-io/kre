@@ -39,9 +39,14 @@ function Modal({
         className={cx(styles.container, {
           [styles.visible]: isVisible
         })}
+        data-testid="modal-container"
       >
-        <div className={styles.title}>{title}</div>
-        <div className={styles.message}>{message}</div>
+        <div className={styles.title} data-testid="modal-title">
+          {title}
+        </div>
+        <div className={styles.message} data-testid="modal-message">
+          {message}
+        </div>
         <HorizontalBar>
           <Button
             primary

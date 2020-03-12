@@ -96,6 +96,7 @@ function Hexagon({
         [styles.disabled]: disabled,
         [styles.hovered]: hovered
       })}
+      data-testid="hexagon"
     >
       <div className={styles.bg} style={{ height: size, width: size }}>
         <Lottie
@@ -119,7 +120,9 @@ function Hexagon({
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
         >
-          <div className={styles.title}>{title}</div>
+          <div className={styles.title} data-testid="hexTitle">
+            {title}
+          </div>
           {hexInfo}
         </div>
       </ConditionalLink>

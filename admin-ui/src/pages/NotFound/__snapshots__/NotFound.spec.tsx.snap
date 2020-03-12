@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotFound matches snapshot 1`] = `
+<div
+  className="bg"
+>
+  <div
+    className="grid"
+  >
+    <div
+      className="container"
+    >
+      <h1>
+        Page not found
+      </h1>
+      <StateCircle
+        animation="ERROR"
+        label="NOT FOUND"
+      />
+      ;
+    </div>
+  </div>
+</div>
+`;

@@ -1,62 +1,53 @@
 import React from 'react';
-import { renderWithRouter } from '../../utils/testUtils';
-import { fireEvent, cleanup } from '@testing-library/react';
-import { getByTestId } from '@testing-library/dom';
 import Button from './Button';
+import { shallow } from 'enzyme';
+import SpinnerLinear from '../LoadingComponents/SpinnerLinear/SpinnerLinear';
+import { Link } from 'react-router-dom';
 
-afterEach(cleanup);
+describe('Button', () => {
+  let wrapper;
+  const mockClick = jest.fn(() => true);
 
-it('Renders Button without crashing', () => {
-  const {
-    element: { container }
-  } = renderWithRouter(<Button />);
-  expect(container).toMatchSnapshot();
-});
+  beforeEach(() => {
+    wrapper = shallow(<Button onClick={mockClick} />);
+  });
 
-it('Shows right texts', () => {
-  const {
-    element: { customRerender, container }
-  } = renderWithRouter(<Button />);
-  expect(container.textContent).toBe('Button');
+  it('matches snapshot', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
 
-  customRerender(<Button label="New Text" />);
-  expect(container.textContent).toBe('New Text');
+  it('Shows right texts', () => {
+    expect(wrapper.text()).toBe('Button');
 
-  customRerender(
-    <Button
-      label="Other Text"
-      type="dark"
-      onClick={function() {}}
-      primary
-      disabled
-    />
-  );
-  expect(container.textContent).toBe('Other Text');
-});
+    wrapper.setProps({ label: 'New Text' });
+    expect(wrapper.text()).toBe('New Text');
 
-it('Handles click events', () => {
-  const clickMock = jest.fn(() => true);
+    wrapper.setProps({
+      label: 'Other Text',
+      type: 'dark',
+      onClick: function() {},
+      primary: true,
+      disabled: true
+    });
+    expect(wrapper.text()).toBe('Other Text');
+  });
 
-  const {
-    element: { getByText }
-  } = renderWithRouter(<Button onClick={clickMock} />);
+  it('Handles click events', () => {
+    wrapper.simulate('click');
 
-  fireEvent.click(getByText('Button'));
-  expect(clickMock).toHaveBeenCalledTimes(1);
-});
+    expect(mockClick).toHaveBeenCalledTimes(1);
+  });
 
-it('shows loader when loading', () => {
-  const {
-    element: { container }
-  } = renderWithRouter(<Button loading />);
+  it('shows loader when loading', () => {
+    wrapper.setProps({ loading: true });
 
-  expect(getByTestId(container, 'spinner')).toBeInTheDocument();
-});
+    expect(wrapper.exists(SpinnerLinear)).toBeTruthy();
+  });
 
-it('is a route button when a path is given', () => {
-  const {
-    element: { container }
-  } = renderWithRouter(<Button to="/login/:someParam" />);
+  it('is a route button when a path is given', () => {
+    const route = '/login/:someParam';
 
-  expect(getByTestId(container, 'buttonLink')).toBeInTheDocument();
+    wrapper.setProps({ to: route });
+    expect(wrapper.find(Link).prop('to')).toBe(route);
+  });
 });

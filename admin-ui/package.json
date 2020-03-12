@@ -22,6 +22,7 @@
     "d3-scale": "^3.2.1",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
+    "enzyme-to-json": "^3.4.4",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "graphql.macro": "^1.4.2",
@@ -69,6 +70,8 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
       "!<rootDir>/node_modules/",
+      "!<rootDir>/src/graphql/*/types/*.ts",
+      "!<rootDir>/src/graphql/types/globalTypes.ts",
       "!<rootDir>/src/store.ts",
       "!<rootDir>/src/index.tsx",
       "!<rootDir>/src/react-app-env.d.ts",
@@ -81,7 +84,10 @@
         "lines": 20,
         "statements": 20
       }
-    }
+    },
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   },
   "devDependencies": {
     "@apollo/react-testing": "^3.1.3",

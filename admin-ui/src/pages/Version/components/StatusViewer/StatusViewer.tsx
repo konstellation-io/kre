@@ -29,7 +29,10 @@ const VersionNodeStatusSubscription = loader(
   '../../../../graphql/subscriptions/versionNodeStatus.graphql'
 );
 
-function formatData(workflows: Workflow[], versionStatus?: VersionStatus) {
+export function formatData(
+  workflows: Workflow[],
+  versionStatus?: VersionStatus
+) {
   let formattedData = cloneDeep(workflows);
 
   formattedData = formattedData.map((workflow: Workflow, idx: number) => {
@@ -74,7 +77,10 @@ function formatData(workflows: Workflow[], versionStatus?: VersionStatus) {
   return formattedData;
 }
 
-function updateNodeStatus(workflows: Workflow[], newNode: Node): Workflow[] {
+export function updateNodeStatus(
+  workflows: Workflow[],
+  newNode: Node
+): Workflow[] {
   let workflowsCopy: Workflow[] = cloneDeep(workflows);
 
   workflowsCopy.forEach((workflow: Workflow) => {
@@ -93,7 +99,7 @@ function getInOutStatus(status?: VersionStatus): NodeStatus {
     ? NodeStatus.STARTED
     : NodeStatus.STOPPED;
 }
-function getInOutNode(id: string, status?: VersionStatus): Node {
+export function getInOutNode(id: string, status?: VersionStatus): Node {
   return {
     id,
     status: getInOutStatus(status)

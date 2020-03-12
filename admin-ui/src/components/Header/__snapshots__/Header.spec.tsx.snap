@@ -1,10 +1,1277 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Render Header without crashing 1`] = `
-<div>
-  <div
-    class="splash"
-    data-testid="splashscreen"
-  />
-</div>
+exports[`Header matches snapshot 1`] = `
+<Wrapper
+  mocks={
+    Array [
+      Object {
+        "request": Object {
+          "query": Object {
+            "definitions": Array [
+              Object {
+                "directives": Array [],
+                "kind": "OperationDefinition",
+                "name": Object {
+                  "kind": "Name",
+                  "value": "GetUserEmail",
+                },
+                "operation": "query",
+                "selectionSet": Object {
+                  "kind": "SelectionSet",
+                  "selections": Array [
+                    Object {
+                      "arguments": Array [],
+                      "directives": Array [],
+                      "kind": "Field",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "me",
+                      },
+                      "selectionSet": Object {
+                        "kind": "SelectionSet",
+                        "selections": Array [
+                          Object {
+                            "arguments": Array [],
+                            "directives": Array [],
+                            "kind": "Field",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "email",
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+                "variableDefinitions": Array [],
+              },
+            ],
+            "kind": "Document",
+            "loc": Object {
+              "end": 44,
+              "source": Object {
+                "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                "locationOffset": Object {
+                  "column": 1,
+                  "line": 1,
+                },
+                "name": "GraphQL request",
+              },
+              "start": 0,
+            },
+          },
+        },
+        "result": Object {
+          "data": Object {
+            "me": Object {
+              "email": "user@konstellation.com",
+            },
+          },
+        },
+      },
+    ]
+  }
+>
+  <MockedProvider
+    addTypename={false}
+    mocks={
+      Array [
+        Object {
+          "request": Object {
+            "query": Object {
+              "definitions": Array [
+                Object {
+                  "directives": Array [],
+                  "kind": "OperationDefinition",
+                  "name": Object {
+                    "kind": "Name",
+                    "value": "GetUserEmail",
+                  },
+                  "operation": "query",
+                  "selectionSet": Object {
+                    "kind": "SelectionSet",
+                    "selections": Array [
+                      Object {
+                        "arguments": Array [],
+                        "directives": Array [],
+                        "kind": "Field",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "me",
+                        },
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "email",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                  "variableDefinitions": Array [],
+                },
+              ],
+              "kind": "Document",
+              "loc": Object {
+                "end": 44,
+                "source": Object {
+                  "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                  "locationOffset": Object {
+                    "column": 1,
+                    "line": 1,
+                  },
+                  "name": "GraphQL request",
+                },
+                "start": 0,
+              },
+            },
+          },
+          "result": Object {
+            "data": Object {
+              "me": Object {
+                "email": "user@konstellation.com",
+              },
+            },
+          },
+        },
+      ]
+    }
+  >
+    <ApolloProvider
+      client={
+        ApolloClient {
+          "cache": InMemoryCache {
+            "addTypename": false,
+            "cacheKeyRoot": KeyTrie {
+              "weak": WeakMap {},
+              "weakness": true,
+            },
+            "config": Object {
+              "addTypename": false,
+              "dataIdFromObject": [Function],
+              "fragmentMatcher": HeuristicFragmentMatcher {},
+              "freezeResults": false,
+              "resultCaching": true,
+            },
+            "data": DepTrackingCache {
+              "data": Object {
+                "$ROOT_QUERY.me": Object {
+                  "email": "user@konstellation.com",
+                },
+                "ROOT_QUERY": Object {
+                  "me": Object {
+                    "generated": true,
+                    "id": "$ROOT_QUERY.me",
+                    "type": "id",
+                    "typename": undefined,
+                  },
+                },
+              },
+              "depend": [Function],
+            },
+            "maybeBroadcastWatch": [Function],
+            "optimisticData": DepTrackingCache {
+              "data": Object {
+                "$ROOT_QUERY.me": Object {
+                  "email": "user@konstellation.com",
+                },
+                "ROOT_QUERY": Object {
+                  "me": Object {
+                    "generated": true,
+                    "id": "$ROOT_QUERY.me",
+                    "type": "id",
+                    "typename": undefined,
+                  },
+                },
+              },
+              "depend": [Function],
+            },
+            "silenceBroadcast": false,
+            "storeReader": StoreReader {
+              "executeSelectionSet": [Function],
+              "executeStoreQuery": [Function],
+              "executeSubSelectedArray": [Function],
+              "freezeResults": false,
+            },
+            "storeWriter": StoreWriter {},
+            "typenameDocumentCache": Map {},
+            "watches": Set {
+              Object {
+                "callback": [Function],
+                "optimistic": true,
+                "previousResult": [Function],
+                "query": Object {
+                  "definitions": Array [
+                    Object {
+                      "directives": Array [],
+                      "kind": "OperationDefinition",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "GetUserEmail",
+                      },
+                      "operation": "query",
+                      "selectionSet": Object {
+                        "kind": "SelectionSet",
+                        "selections": Array [
+                          Object {
+                            "arguments": Array [],
+                            "directives": Array [],
+                            "kind": "Field",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "me",
+                            },
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "email",
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                      "variableDefinitions": Array [],
+                    },
+                  ],
+                  "kind": "Document",
+                  "loc": Object {
+                    "end": 44,
+                    "source": Object {
+                      "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                      "locationOffset": Object {
+                        "column": 1,
+                        "line": 1,
+                      },
+                      "name": "GraphQL request",
+                    },
+                    "start": 0,
+                  },
+                },
+                "variables": Object {},
+              },
+            },
+          },
+          "clearStoreCallbacks": Array [],
+          "defaultOptions": Object {},
+          "disableNetworkFetches": false,
+          "link": MockLink {
+            "addTypename": false,
+            "mockedResponsesByKey": Object {
+              "{\\"query\\":\\"query GetUserEmail {\\\\n  me {\\\\n    email\\\\n  }\\\\n}\\\\n\\"}": Array [],
+            },
+          },
+          "localState": LocalState {
+            "cache": InMemoryCache {
+              "addTypename": false,
+              "cacheKeyRoot": KeyTrie {
+                "weak": WeakMap {},
+                "weakness": true,
+              },
+              "config": Object {
+                "addTypename": false,
+                "dataIdFromObject": [Function],
+                "fragmentMatcher": HeuristicFragmentMatcher {},
+                "freezeResults": false,
+                "resultCaching": true,
+              },
+              "data": DepTrackingCache {
+                "data": Object {
+                  "$ROOT_QUERY.me": Object {
+                    "email": "user@konstellation.com",
+                  },
+                  "ROOT_QUERY": Object {
+                    "me": Object {
+                      "generated": true,
+                      "id": "$ROOT_QUERY.me",
+                      "type": "id",
+                      "typename": undefined,
+                    },
+                  },
+                },
+                "depend": [Function],
+              },
+              "maybeBroadcastWatch": [Function],
+              "optimisticData": DepTrackingCache {
+                "data": Object {
+                  "$ROOT_QUERY.me": Object {
+                    "email": "user@konstellation.com",
+                  },
+                  "ROOT_QUERY": Object {
+                    "me": Object {
+                      "generated": true,
+                      "id": "$ROOT_QUERY.me",
+                      "type": "id",
+                      "typename": undefined,
+                    },
+                  },
+                },
+                "depend": [Function],
+              },
+              "silenceBroadcast": false,
+              "storeReader": StoreReader {
+                "executeSelectionSet": [Function],
+                "executeStoreQuery": [Function],
+                "executeSubSelectedArray": [Function],
+                "freezeResults": false,
+              },
+              "storeWriter": StoreWriter {},
+              "typenameDocumentCache": Map {},
+              "watches": Set {
+                Object {
+                  "callback": [Function],
+                  "optimistic": true,
+                  "previousResult": [Function],
+                  "query": Object {
+                    "definitions": Array [
+                      Object {
+                        "directives": Array [],
+                        "kind": "OperationDefinition",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "GetUserEmail",
+                        },
+                        "operation": "query",
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "me",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "email",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                        "variableDefinitions": Array [],
+                      },
+                    ],
+                    "kind": "Document",
+                    "loc": Object {
+                      "end": 44,
+                      "source": Object {
+                        "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                        "locationOffset": Object {
+                          "column": 1,
+                          "line": 1,
+                        },
+                        "name": "GraphQL request",
+                      },
+                      "start": 0,
+                    },
+                  },
+                  "variables": Object {},
+                },
+              },
+            },
+            "client": [Circular],
+          },
+          "mutate": [Function],
+          "query": [Function],
+          "queryDeduplication": true,
+          "queryManager": QueryManager {
+            "assumeImmutableResults": false,
+            "clientAwareness": Object {
+              "name": undefined,
+              "version": undefined,
+            },
+            "dataStore": DataStore {
+              "cache": InMemoryCache {
+                "addTypename": false,
+                "cacheKeyRoot": KeyTrie {
+                  "weak": WeakMap {},
+                  "weakness": true,
+                },
+                "config": Object {
+                  "addTypename": false,
+                  "dataIdFromObject": [Function],
+                  "fragmentMatcher": HeuristicFragmentMatcher {},
+                  "freezeResults": false,
+                  "resultCaching": true,
+                },
+                "data": DepTrackingCache {
+                  "data": Object {
+                    "$ROOT_QUERY.me": Object {
+                      "email": "user@konstellation.com",
+                    },
+                    "ROOT_QUERY": Object {
+                      "me": Object {
+                        "generated": true,
+                        "id": "$ROOT_QUERY.me",
+                        "type": "id",
+                        "typename": undefined,
+                      },
+                    },
+                  },
+                  "depend": [Function],
+                },
+                "maybeBroadcastWatch": [Function],
+                "optimisticData": DepTrackingCache {
+                  "data": Object {
+                    "$ROOT_QUERY.me": Object {
+                      "email": "user@konstellation.com",
+                    },
+                    "ROOT_QUERY": Object {
+                      "me": Object {
+                        "generated": true,
+                        "id": "$ROOT_QUERY.me",
+                        "type": "id",
+                        "typename": undefined,
+                      },
+                    },
+                  },
+                  "depend": [Function],
+                },
+                "silenceBroadcast": false,
+                "storeReader": StoreReader {
+                  "executeSelectionSet": [Function],
+                  "executeStoreQuery": [Function],
+                  "executeSubSelectedArray": [Function],
+                  "freezeResults": false,
+                },
+                "storeWriter": StoreWriter {},
+                "typenameDocumentCache": Map {},
+                "watches": Set {
+                  Object {
+                    "callback": [Function],
+                    "optimistic": true,
+                    "previousResult": [Function],
+                    "query": Object {
+                      "definitions": Array [
+                        Object {
+                          "directives": Array [],
+                          "kind": "OperationDefinition",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "GetUserEmail",
+                          },
+                          "operation": "query",
+                          "selectionSet": Object {
+                            "kind": "SelectionSet",
+                            "selections": Array [
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "me",
+                                },
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "email",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          "variableDefinitions": Array [],
+                        },
+                      ],
+                      "kind": "Document",
+                      "loc": Object {
+                        "end": 44,
+                        "source": Object {
+                          "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                          "locationOffset": Object {
+                            "column": 1,
+                            "line": 1,
+                          },
+                          "name": "GraphQL request",
+                        },
+                        "start": 0,
+                      },
+                    },
+                    "variables": Object {},
+                  },
+                },
+              },
+            },
+            "fetchQueryRejectFns": Map {},
+            "idCounter": 3,
+            "inFlightLinkObservables": Map {},
+            "link": MockLink {
+              "addTypename": false,
+              "mockedResponsesByKey": Object {
+                "{\\"query\\":\\"query GetUserEmail {\\\\n  me {\\\\n    email\\\\n  }\\\\n}\\\\n\\"}": Array [],
+              },
+            },
+            "localState": LocalState {
+              "cache": InMemoryCache {
+                "addTypename": false,
+                "cacheKeyRoot": KeyTrie {
+                  "weak": WeakMap {},
+                  "weakness": true,
+                },
+                "config": Object {
+                  "addTypename": false,
+                  "dataIdFromObject": [Function],
+                  "fragmentMatcher": HeuristicFragmentMatcher {},
+                  "freezeResults": false,
+                  "resultCaching": true,
+                },
+                "data": DepTrackingCache {
+                  "data": Object {
+                    "$ROOT_QUERY.me": Object {
+                      "email": "user@konstellation.com",
+                    },
+                    "ROOT_QUERY": Object {
+                      "me": Object {
+                        "generated": true,
+                        "id": "$ROOT_QUERY.me",
+                        "type": "id",
+                        "typename": undefined,
+                      },
+                    },
+                  },
+                  "depend": [Function],
+                },
+                "maybeBroadcastWatch": [Function],
+                "optimisticData": DepTrackingCache {
+                  "data": Object {
+                    "$ROOT_QUERY.me": Object {
+                      "email": "user@konstellation.com",
+                    },
+                    "ROOT_QUERY": Object {
+                      "me": Object {
+                        "generated": true,
+                        "id": "$ROOT_QUERY.me",
+                        "type": "id",
+                        "typename": undefined,
+                      },
+                    },
+                  },
+                  "depend": [Function],
+                },
+                "silenceBroadcast": false,
+                "storeReader": StoreReader {
+                  "executeSelectionSet": [Function],
+                  "executeStoreQuery": [Function],
+                  "executeSubSelectedArray": [Function],
+                  "freezeResults": false,
+                },
+                "storeWriter": StoreWriter {},
+                "typenameDocumentCache": Map {},
+                "watches": Set {
+                  Object {
+                    "callback": [Function],
+                    "optimistic": true,
+                    "previousResult": [Function],
+                    "query": Object {
+                      "definitions": Array [
+                        Object {
+                          "directives": Array [],
+                          "kind": "OperationDefinition",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "GetUserEmail",
+                          },
+                          "operation": "query",
+                          "selectionSet": Object {
+                            "kind": "SelectionSet",
+                            "selections": Array [
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "me",
+                                },
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "email",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          "variableDefinitions": Array [],
+                        },
+                      ],
+                      "kind": "Document",
+                      "loc": Object {
+                        "end": 44,
+                        "source": Object {
+                          "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                          "locationOffset": Object {
+                            "column": 1,
+                            "line": 1,
+                          },
+                          "name": "GraphQL request",
+                        },
+                        "start": 0,
+                      },
+                    },
+                    "variables": Object {},
+                  },
+                },
+              },
+              "client": [Circular],
+            },
+            "mutationStore": MutationStore {
+              "store": Object {},
+            },
+            "onBroadcast": [Function],
+            "pollingInfoByQueryId": Map {},
+            "queries": Map {
+              "1" => Object {
+                "cancel": [Function],
+                "document": Object {
+                  "definitions": Array [
+                    Object {
+                      "directives": Array [],
+                      "kind": "OperationDefinition",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "GetUserEmail",
+                      },
+                      "operation": "query",
+                      "selectionSet": Object {
+                        "kind": "SelectionSet",
+                        "selections": Array [
+                          Object {
+                            "arguments": Array [],
+                            "directives": Array [],
+                            "kind": "Field",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "me",
+                            },
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "email",
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                      "variableDefinitions": Array [],
+                    },
+                  ],
+                  "kind": "Document",
+                  "loc": Object {
+                    "end": 44,
+                    "source": Object {
+                      "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                      "locationOffset": Object {
+                        "column": 1,
+                        "line": 1,
+                      },
+                      "name": "GraphQL request",
+                    },
+                    "start": 0,
+                  },
+                },
+                "invalidated": false,
+                "lastRequestId": 2,
+                "listeners": Set {
+                  [Function],
+                },
+                "newData": null,
+                "observableQuery": ObservableQuery {
+                  "_subscriber": [Function],
+                  "isTornDown": false,
+                  "lastResult": Object {
+                    "data": Object {
+                      "me": Object {
+                        "email": "user@konstellation.com",
+                      },
+                    },
+                    "loading": false,
+                    "networkStatus": 7,
+                    "stale": false,
+                  },
+                  "lastResultSnapshot": Object {
+                    "data": Object {
+                      "me": Object {
+                        "email": "user@konstellation.com",
+                      },
+                    },
+                    "loading": false,
+                    "networkStatus": 7,
+                    "stale": false,
+                  },
+                  "observers": Set {
+                    SubscriptionObserver {
+                      "_subscription": Subscription {
+                        "_cleanup": [Function],
+                        "_observer": Object {
+                          "error": [Function],
+                          "next": [Function],
+                        },
+                        "_queue": undefined,
+                        "_state": "ready",
+                      },
+                    },
+                  },
+                  "options": Object {
+                    "context": undefined,
+                    "displayName": "Query",
+                    "metadata": Object {
+                      "reactComponent": Object {
+                        "displayName": "Query",
+                      },
+                    },
+                    "notifyOnNetworkStatusChange": false,
+                    "query": Object {
+                      "definitions": Array [
+                        Object {
+                          "directives": Array [],
+                          "kind": "OperationDefinition",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "GetUserEmail",
+                          },
+                          "operation": "query",
+                          "selectionSet": Object {
+                            "kind": "SelectionSet",
+                            "selections": Array [
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "me",
+                                },
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "email",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          "variableDefinitions": Array [],
+                        },
+                      ],
+                      "kind": "Document",
+                      "loc": Object {
+                        "end": 44,
+                        "source": Object {
+                          "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                          "locationOffset": Object {
+                            "column": 1,
+                            "line": 1,
+                          },
+                          "name": "GraphQL request",
+                        },
+                        "start": 0,
+                      },
+                    },
+                    "variables": Object {},
+                  },
+                  "queryId": "1",
+                  "queryManager": [Circular],
+                  "queryName": "GetUserEmail",
+                  "shouldSubscribe": true,
+                  "subscriptions": Set {},
+                  "variables": Object {},
+                },
+                "subscriptions": Set {},
+              },
+            },
+            "queryDeduplication": true,
+            "queryStore": QueryStore {
+              "store": Object {
+                "1": Object {
+                  "document": Object {
+                    "definitions": Array [
+                      Object {
+                        "directives": Array [],
+                        "kind": "OperationDefinition",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "GetUserEmail",
+                        },
+                        "operation": "query",
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "me",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "email",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                        "variableDefinitions": Array [],
+                      },
+                    ],
+                    "kind": "Document",
+                    "loc": Object {
+                      "end": 44,
+                      "source": Object {
+                        "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                        "locationOffset": Object {
+                          "column": 1,
+                          "line": 1,
+                        },
+                        "name": "GraphQL request",
+                      },
+                      "start": 0,
+                    },
+                  },
+                  "graphQLErrors": Array [],
+                  "metadata": Object {
+                    "reactComponent": Object {
+                      "displayName": "Query",
+                    },
+                  },
+                  "networkError": null,
+                  "networkStatus": 7,
+                  "previousVariables": null,
+                  "variables": Object {},
+                },
+              },
+            },
+            "ssrMode": false,
+            "transformCache": WeakMap {},
+          },
+          "reFetchObservableQueries": [Function],
+          "resetStore": [Function],
+          "resetStoreCallbacks": Array [],
+          "store": DataStore {
+            "cache": InMemoryCache {
+              "addTypename": false,
+              "cacheKeyRoot": KeyTrie {
+                "weak": WeakMap {},
+                "weakness": true,
+              },
+              "config": Object {
+                "addTypename": false,
+                "dataIdFromObject": [Function],
+                "fragmentMatcher": HeuristicFragmentMatcher {},
+                "freezeResults": false,
+                "resultCaching": true,
+              },
+              "data": DepTrackingCache {
+                "data": Object {
+                  "$ROOT_QUERY.me": Object {
+                    "email": "user@konstellation.com",
+                  },
+                  "ROOT_QUERY": Object {
+                    "me": Object {
+                      "generated": true,
+                      "id": "$ROOT_QUERY.me",
+                      "type": "id",
+                      "typename": undefined,
+                    },
+                  },
+                },
+                "depend": [Function],
+              },
+              "maybeBroadcastWatch": [Function],
+              "optimisticData": DepTrackingCache {
+                "data": Object {
+                  "$ROOT_QUERY.me": Object {
+                    "email": "user@konstellation.com",
+                  },
+                  "ROOT_QUERY": Object {
+                    "me": Object {
+                      "generated": true,
+                      "id": "$ROOT_QUERY.me",
+                      "type": "id",
+                      "typename": undefined,
+                    },
+                  },
+                },
+                "depend": [Function],
+              },
+              "silenceBroadcast": false,
+              "storeReader": StoreReader {
+                "executeSelectionSet": [Function],
+                "executeStoreQuery": [Function],
+                "executeSubSelectedArray": [Function],
+                "freezeResults": false,
+              },
+              "storeWriter": StoreWriter {},
+              "typenameDocumentCache": Map {},
+              "watches": Set {
+                Object {
+                  "callback": [Function],
+                  "optimistic": true,
+                  "previousResult": [Function],
+                  "query": Object {
+                    "definitions": Array [
+                      Object {
+                        "directives": Array [],
+                        "kind": "OperationDefinition",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "GetUserEmail",
+                        },
+                        "operation": "query",
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "me",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "email",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                        "variableDefinitions": Array [],
+                      },
+                    ],
+                    "kind": "Document",
+                    "loc": Object {
+                      "end": 44,
+                      "source": Object {
+                        "body": "query GetUserEmail {
+  me {
+    email
+  }
+}
+",
+                        "locationOffset": Object {
+                          "column": 1,
+                          "line": 1,
+                        },
+                        "name": "GraphQL request",
+                      },
+                      "start": 0,
+                    },
+                  },
+                  "variables": Object {},
+                },
+              },
+            },
+          },
+          "typeDefs": undefined,
+          "version": "2.6.8",
+          "watchQuery": [Function],
+        }
+      }
+    >
+      <Header>
+        <header
+          className="container"
+          data-testid="app-header"
+        >
+          <img
+            alt="konstellation logo"
+            className="konstellationsIcon"
+            src="/img/brand/konstellation.png"
+          />
+          <div
+            className="customHeaderElements"
+          />
+          <Settings
+            label="user@konstellation.com"
+          >
+            <div
+              className="container"
+              data-testid="settingsContainer"
+              onClick={[Function]}
+            >
+              <div
+                className="label"
+                data-testid="settings-label"
+              >
+                user@konstellation.com
+              </div>
+              <div
+                className="options"
+                data-testid="settingsContent"
+                style={
+                  Object {
+                    "maxHeight": 0,
+                  }
+                }
+              >
+                <Button
+                  Icon={
+                    Object {
+                      "$$typeof": Symbol(react.memo),
+                      "compare": null,
+                      "displayName": "VerifiedUserIcon",
+                      "muiName": "SvgIcon",
+                      "type": Object {
+                        "$$typeof": Symbol(react.forward_ref),
+                        "render": [Function],
+                      },
+                    }
+                  }
+                  align="left"
+                  key="buttonSettings"
+                  label="SETTINGS"
+                  style={
+                    Object {
+                      "paddingLeft": "20%",
+                    }
+                  }
+                  to="/settings"
+                  type="grey"
+                >
+                  <Link
+                    data-testid="buttonLink"
+                    to="/settings"
+                  />
+                </Button>
+                <Button
+                  Icon={
+                    Object {
+                      "$$typeof": Symbol(react.memo),
+                      "compare": null,
+                      "displayName": "SupervisorAccountIcon",
+                      "muiName": "SvgIcon",
+                      "type": Object {
+                        "$$typeof": Symbol(react.forward_ref),
+                        "render": [Function],
+                      },
+                    }
+                  }
+                  align="left"
+                  key="buttonAudit"
+                  label="AUDIT"
+                  style={
+                    Object {
+                      "paddingLeft": "20%",
+                    }
+                  }
+                  to="/audit"
+                  type="grey"
+                >
+                  <Link
+                    data-testid="buttonLink"
+                    to="/audit"
+                  />
+                </Button>
+                <Button
+                  Icon={
+                    Object {
+                      "$$typeof": Symbol(react.memo),
+                      "compare": null,
+                      "displayName": "ExitToAppIcon",
+                      "muiName": "SvgIcon",
+                      "type": Object {
+                        "$$typeof": Symbol(react.forward_ref),
+                        "render": [Function],
+                      },
+                    }
+                  }
+                  align="left"
+                  key="buttonLogout"
+                  label="LOGOUT"
+                  onClick={[Function]}
+                  style={
+                    Object {
+                      "paddingLeft": "20%",
+                    }
+                  }
+                  type="grey"
+                >
+                  <div
+                    className="btn grey left label"
+                    onClick={[Function]}
+                    style={
+                      Object {
+                        "height": 40,
+                        "lineHeight": "40px",
+                        "paddingLeft": "20%",
+                      }
+                    }
+                  >
+                    <ForwardRef
+                      className="icon-regular"
+                    >
+                      <WithStyles(ForwardRef(SvgIcon))
+                        className="icon-regular"
+                      >
+                        <ForwardRef(SvgIcon)
+                          className="icon-regular"
+                          classes={
+                            Object {
+                              "colorAction": "MuiSvgIcon-colorAction",
+                              "colorDisabled": "MuiSvgIcon-colorDisabled",
+                              "colorError": "MuiSvgIcon-colorError",
+                              "colorPrimary": "MuiSvgIcon-colorPrimary",
+                              "colorSecondary": "MuiSvgIcon-colorSecondary",
+                              "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                              "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                              "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                              "root": "MuiSvgIcon-root",
+                            }
+                          }
+                        >
+                          <svg
+                            aria-hidden="true"
+                            className="MuiSvgIcon-root icon-regular"
+                            focusable="false"
+                            role="presentation"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                            />
+                          </svg>
+                        </ForwardRef(SvgIcon)>
+                      </WithStyles(ForwardRef(SvgIcon))>
+                    </ForwardRef>
+                    <span>
+                      LOGOUT
+                    </span>
+                  </div>
+                </Button>
+              </div>
+            </div>
+          </Settings>
+        </header>
+      </Header>
+    </ApolloProvider>
+  </MockedProvider>
+</Wrapper>
 `;

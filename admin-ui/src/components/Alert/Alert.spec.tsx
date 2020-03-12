@@ -1,3 +1,5 @@
+// FIXME: reformat this to new test format
+
 import React from 'react';
 import { renderWithRouter } from '../../utils/testUtils';
 import { fireEvent, cleanup } from '@testing-library/react';

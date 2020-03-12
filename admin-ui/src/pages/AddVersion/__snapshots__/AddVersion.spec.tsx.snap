@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddVersion matches snapshot 1`] = `
+<div
+  className="bg"
+>
+  <div
+    className="grid"
+  >
+    <div
+      className="container"
+    >
+      <h1>
+        Add Version
+      </h1>
+      <p
+        className="subtitle"
+      />
+      <div
+        className="content"
+      >
+        <FileUpload
+          error=""
+          label="upload version file (KRT file)"
+          onChange={[Function]}
+          placeholder=".krt"
+        />
+        <div
+          className="buttons"
+        >
+          <Button
+            disabled={true}
+            label="CREATE"
+            onClick={[Function]}
+            primary={true}
+          />
+          <Button
+            label="CANCEL"
+            onClick={[Function]}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

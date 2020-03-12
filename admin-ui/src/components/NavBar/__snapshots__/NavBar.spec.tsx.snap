@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavBar matches snapshot 1`] = `
+<div>
+  <NavLink
+    activeClassName="active"
+    className=""
+    exact={true}
+    key="TAB 1-/home"
+    onClick={[Function]}
+    replace={true}
+    to="/home"
+  >
+    <div
+      className="item size_m"
+    >
+      <span>
+        TAB 1
+      </span>
+    </div>
+  </NavLink>
+  <NavLink
+    activeClassName="active"
+    className=""
+    exact={true}
+    key="TAB 2-/home"
+    onClick={[Function]}
+    replace={true}
+    to="/home"
+  >
+    <div
+      className="item size_m"
+    >
+      <span>
+        TAB 2
+      </span>
+    </div>
+  </NavLink>
+  <NavLink
+    activeClassName="active"
+    className=""
+    exact={true}
+    key="TAB 3-/home"
+    onClick={[Function]}
+    replace={true}
+    to="/home"
+  >
+    <div
+      className="item size_m"
+    >
+      <span>
+        TAB 3
+      </span>
+    </div>
+  </NavLink>
+</div>
+`;

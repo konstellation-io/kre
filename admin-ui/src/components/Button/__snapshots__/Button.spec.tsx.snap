@@ -1,14 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Renders Button without crashing 1`] = `
-<div>
-  <div
-    class="btn default middle label"
-    style="height: 40px; line-height: 40px;"
-  >
-    <span>
-      Button
-    </span>
-  </div>
+exports[`Button matches snapshot 1`] = `
+<div
+  className="btn default middle label"
+  onClick={[MockFunction]}
+  style={
+    Object {
+      "height": 40,
+      "lineHeight": "40px",
+    }
+  }
+>
+  <span>
+    Button
+  </span>
 </div>
 `;

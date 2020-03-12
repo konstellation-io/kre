@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InfoMessage matches snapshot 1`] = `
+<div
+  className="container"
+>
+  some message
+</div>
+`;

@@ -1,34 +1,45 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router';
-import { renderWithRouter } from '../../utils/testUtils';
-import { act } from 'react-dom/test-utils';
+import { testid, mountApolloComponent } from '../../utils/testUtilsEnzyme';
 import Header from './Header';
 
-import wait from 'waait';
 import { MockedProvider } from '@apollo/react-testing';
-import { usernameMock } from '../../mocks/auth';
-import '@testing-library/jest-dom/extend-expect';
+import { usernameMock, unauthorizedUsernameMock } from '../../mocks/auth';
 
-function renderComponent() {
-  return renderWithRouter(
-    <MockedProvider mocks={[usernameMock]} addTypename={false}>
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
+jest.mock('react-router');
+jest.mock('react-router-dom');
+
+const mocks = [usernameMock];
+const errorMocks = [unauthorizedUsernameMock];
+
+function Wrapper({ mocks }: any) {
+  return (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Header />
     </MockedProvider>
-  ).element;
+  );
 }
-it('Render Header without crashing', () => {
-  const { container } = renderComponent();
-  expect(container).toMatchSnapshot();
-});
+const Component = <Wrapper mocks={mocks} />;
 
-it('Shows right texts', async () => {
-  const { getByText } = renderComponent();
+describe('Header', () => {
+  it('matches snapshot', async () => {
+    const wrapper = await mountApolloComponent(Component);
 
-  await act(async () => {
-    await wait(0);
+    expect(wrapper).toMatchSnapshot();
   });
 
-  expect(getByText('user@konstellation.com')).toBeInTheDocument();
+  it('Shows right structure', async () => {
+    const wrapper = await mountApolloComponent(Component);
+
+    expect(wrapper.exists('header')).toBeTruthy();
+    expect(wrapper.find(testid('settings-label')).text()).toBe(
+      usernameMock.result.data.me.email
+    );
+  });
+
+  it('handles loading status', async () => {
+    const wrapper = await mountApolloComponent(Component, false);
+
+    expect(wrapper.exists(testid('splashscreen'))).toBeTruthy();
+    expect(wrapper.exists('header')).toBeFalsy();
+  });
 });

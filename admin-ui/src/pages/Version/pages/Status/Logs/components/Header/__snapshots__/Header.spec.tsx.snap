@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logs Header matches snapshot 1`] = `
+<div
+  className="container opened"
+>
+  <div
+    className="title"
+  >
+    <ListAltIcon
+      className="icon-regular"
+    />
+    <span>
+      Logs console
+    </span>
+  </div>
+  <div
+    className="buttons"
+  >
+    <div
+      onClick={[Function]}
+    >
+      <DeleteOutlineIcon
+        className="icon-regular"
+      />
+    </div>
+    <div
+      className="stickBottom active"
+      onClick={[MockFunction]}
+    >
+      <VerticalAlignBottomIcon
+        className="icon-regular"
+      />
+    </div>
+    <div
+      onClick={[MockFunction]}
+    >
+      <CloseIcon
+        className="icon-regular"
+      />
+    </div>
+  </div>
+</div>
+`;

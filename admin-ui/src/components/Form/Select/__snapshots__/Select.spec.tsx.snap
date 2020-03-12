@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Select matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <InputLabel
+    hidden={true}
+    text="Select"
+  />
+  <div
+    className="inputContainer"
+  >
+    <div
+      className="input placeholder"
+      onClick={[Function]}
+      style={
+        Object {
+          "height": 40,
+        }
+      }
+    >
+      placeholder
+    </div>
+    <div
+      className="optionsContainer"
+      style={
+        Object {
+          "maxHeight": 0,
+        }
+      }
+    >
+      <div
+        className="optionElement"
+        key="selectOption_empty"
+        onClick={[Function]}
+      >
+        All
+      </div>
+      <div
+        className="optionElement"
+        key="Option A-0"
+        onClick={[Function]}
+      >
+        Option A
+      </div>
+      <div
+        className="optionElement"
+        key="Option B-1"
+        onClick={[Function]}
+      >
+        Option B
+      </div>
+      <div
+        className="optionElement"
+        key="Option C-2"
+        onClick={[Function]}
+      >
+        Option C
+      </div>
+    </div>
+  </div>
+  <InputError
+    message=""
+  />
+</div>
+`;

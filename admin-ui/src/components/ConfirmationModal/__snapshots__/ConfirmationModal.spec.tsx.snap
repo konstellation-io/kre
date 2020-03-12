@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmationModal matches snapshot 1`] = `
+<Fragment>
+  <div
+    className="bg"
+  />
+  <div
+    className="container"
+  >
+    <div
+      className="title"
+    >
+      Modal
+    </div>
+    <div
+      className="message"
+    >
+      Message
+    </div>
+    <div
+      className="comment"
+    >
+      <TextInput
+        error=""
+        label="please, write your comment:  "
+        limits={
+          Object {
+            "maxWidth": 338,
+            "minHeight": 105,
+            "minWidth": 338,
+          }
+        }
+        onChange={[Function]}
+        onSubmit={[Function]}
+        showClearButton={true}
+        textArea={true}
+        whiteColor={true}
+      />
+    </div>
+    <HorizontalBar>
+      <Button
+        height={30}
+        label="YES"
+        onClick={[Function]}
+        primary={true}
+        style={
+          Object {
+            "padding": "0 0",
+            "width": "122px",
+          }
+        }
+      />
+      <Button
+        height={30}
+        label="CANCEL"
+        onClick={[Function]}
+        style={
+          Object {
+            "padding": "0 0",
+            "width": "122px",
+          }
+        }
+      />
+    </HorizontalBar>
+  </div>
+</Fragment>
+`;

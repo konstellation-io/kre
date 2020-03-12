@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Box matches snapshot 1`] = `
+<section
+  className="container"
+>
+  <div
+    className="content"
+  >
+    <div>
+      Some component
+    </div>
+  </div>
+</section>
+`;
+
+exports[`ExpandButton matches snapshot 1`] = `
+<div
+  className="expandIcon"
+  onClick={[MockFunction]}
+>
+  <FullscreenIcon
+    className="icon-regular"
+  />
+</div>
+`;
+
+exports[`InfoNumber matches snapshot 1`] = `
+<p
+  className="infoNumber regular"
+>
+  some text
+</p>
+`;
+
+exports[`Title matches snapshot 1`] = `
+<p
+  className="title"
+>
+  some text
+</p>
+`;
