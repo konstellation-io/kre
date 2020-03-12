@@ -70,7 +70,7 @@ function LogsList({ node, onUpdate }: Props) {
     });
   }
 
-  // FIXME: change key values (maybe by getting an ID from the API?)
+  // From now, logs are incremental, check the key in case this changes
   const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
     <LogItem {...log} key={`logItem_${idx}`} />
   ));

@@ -63,7 +63,7 @@
   transition: color ease 0.4s, background-color ease 0.4s;
 
   &:hover {
-    background-color: rgba(191, 207, 255, 0.15); // TODO: use common color?
+    background-color: $bg-highlighted;
     color: $font-color-white;
   }
 }

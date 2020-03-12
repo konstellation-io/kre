@@ -1,9 +1,13 @@
 import React from 'react';
 import Settings from './Settings';
 import { shallow } from 'enzyme';
+import { label } from '../../utils/testUtilsEnzyme';
+
+const mockDoLogout = jest.fn();
 
 jest.mock('@apollo/react-hooks');
 jest.mock('react-router');
+jest.mock('../../hooks/useEndpoint', () => jest.fn(() => [{}, mockDoLogout]));
 
 describe('Settings', () => {
   let wrapper;
@@ -29,6 +33,9 @@ describe('Settings', () => {
     wrapper.find('.container').simulate('click');
     expect(wrapper.find('.options').prop('style').maxHeight).toBe(0);
   });
-});
 
-//TODO: make logout test
+  it('handles logout action', () => {
+    wrapper.find(label('LOGOUT')).simulate('click');
+    expect(mockDoLogout).toHaveBeenCalledTimes(1);
+  });
+});

@@ -65,7 +65,7 @@
 }
 
 .active .item {
-  background-color: rgba(191, 207, 255, 0.15);
+  background-color: $bg-highlighted;
   color: white;
 
   .arrow {

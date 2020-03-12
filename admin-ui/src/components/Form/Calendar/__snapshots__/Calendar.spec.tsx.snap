@@ -138,8 +138,5 @@ exports[`Calendar matches snapshots 1`] = `
     withFullScreenPortal={false}
     withPortal={false}
   />
-  <InputError
-    message=""
-  />
 </div>
 `;

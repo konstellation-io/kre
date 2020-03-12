@@ -1,34 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Renders Alert without crashing 1`] = `
-<div>
+exports[`App matches snapshot 1`] = `
+<div
+  className="container"
+>
   <div
-    class="container"
+    className="label error"
   >
-    <div
-      class="label error"
-    >
-      error
-    </div>
-    <div
-      class="message"
-      title="Sample message"
-    >
-      Sample message
-    </div>
-    <a
-      data-testid="buttonLink"
-      href="/runtimes/someId"
-    >
-      <div
-        class="btn default middle label"
-        style="height: 40px; line-height: 40px;"
-      >
-        <span>
-          GO TO RUNTIME
-        </span>
-      </div>
-    </a>
+    ERROR
   </div>
+  <div
+    className="message"
+    title="some message"
+  >
+    some message
+  </div>
+  <Button
+    label="GO TO RUNTIME"
+    to="/runtimes/runtimeID"
+  />
 </div>
 `;

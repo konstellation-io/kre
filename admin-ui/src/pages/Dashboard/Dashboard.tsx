@@ -44,7 +44,6 @@ type Props = {
   history: History;
 };
 
-// TODO: Add ERROR state
 // For now this label will only show PUBLISHED for published versions and STARTED otherwise
 function getVersionStatus(runtime: GetRuntimes_runtimes) {
   return runtime.publishedVersion
