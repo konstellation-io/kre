@@ -49,7 +49,7 @@ function Button({
   style = {}
 }: Props) {
   const content = loading ? (
-    <SpinnerLinear size={30} />
+    <SpinnerLinear size={30} dark />
   ) : (
     <>
       {Icon && <Icon className="icon-regular" />}
