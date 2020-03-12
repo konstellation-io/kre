@@ -9,7 +9,7 @@ import {
   useApolloClient,
   SubscriptionHookOptions
 } from '@apollo/react-hooks';
-import { GET_LOGS } from '../../../../../../../graphql/client/getLogs.graphql';
+import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 
 import LogItem from './LogItem';
 import { Node } from '../../../Status';

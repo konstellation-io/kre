@@ -21,7 +21,6 @@ import {
   UpdateDomains,
   UpdateDomainsVariables
 } from '../../graphql/mutations/types/UpdateDomains';
-import { GetRuntimes } from '../../graphql/queries/types/GetRuntimes';
 
 const GetDomainsQuery = loader('../../graphql/queries/getDomains.graphql');
 const UpdateDomainsMutation = loader(

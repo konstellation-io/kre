@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Lottie from '../../Lottie/Lottie';
 import ConditionalLink from '../../ConditionalLink/ConditionalLink';
@@ -58,6 +58,13 @@ function Hexagon({
     : ANIM_SEGMENTS.DEFAULT;
   const [segments, setSegments] = useState<[number, number]>(defaultAnimation);
   const [hovered, setHovered] = useState(false);
+
+  // Update animation when enabling the hexagon
+  useEffect(() => {
+    if (!disabled) {
+      setSegments(ANIM_SEGMENTS.DEFAULT);
+    }
+  }, [disabled]);
 
   const onMouseDown = () => {
     if (!disabled) {
