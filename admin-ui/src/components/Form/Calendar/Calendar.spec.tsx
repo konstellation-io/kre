@@ -9,7 +9,7 @@ describe('Calendar', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<Calendar label="calendar" />);
+    wrapper = shallow(<Calendar label="calendar" hideError />);
   });
 
   it('matches snapshots', () => {
@@ -23,6 +23,7 @@ describe('Calendar', () => {
   });
 
   it('shows error when any', () => {
+    wrapper.setProps({ hideError: false });
     wrapper.setProps({ error: 'some error' });
     expect(wrapper.exists(InputError)).toBeTruthy();
     expect(wrapper.find(InputError).prop('message')).toBe('some error');
