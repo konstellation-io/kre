@@ -78,7 +78,9 @@ function Calendar({
         isOutsideRange={day => !isInclusivelyBeforeDay(day, moment())}
         minimumNights={0}
       />
-      {error !== false && <InputError message={error.toString()} />}
+      {error !== false && error !== '' && (
+        <InputError message={error.toString()} />
+      )}
     </div>
   );
 }
