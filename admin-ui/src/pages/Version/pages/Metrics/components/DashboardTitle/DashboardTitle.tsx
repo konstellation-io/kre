@@ -15,10 +15,7 @@ function DashboardTitle({ runtimeName, versionName }: Props) {
         {`Metrics for ${runtimeName} - ${versionName}`}
       </div>
       <div className={styles.dateFilter}>
-        <Calendar
-          label="filter by dates"
-          // error={ false }
-        />
+        <Calendar label="filter by dates" hideError />
       </div>
     </div>
   );

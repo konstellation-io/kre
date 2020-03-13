@@ -13,6 +13,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
     className="dateFilter"
   >
     <Calendar
+      hideError={true}
       label="filter by dates"
     />
   </div>

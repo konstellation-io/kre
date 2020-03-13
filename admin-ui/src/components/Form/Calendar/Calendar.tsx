@@ -20,11 +20,13 @@ type Props = {
   formToDate?: Moment | null;
   onChangeFromDate?: Function;
   onChangeToDate?: Function;
+  hideError?: boolean;
 };
 
 function Calendar({
   label = '',
   error = '',
+  hideError = false,
   formFromDate = null,
   formToDate = null,
   onChangeFromDate = function() {},
@@ -78,9 +80,7 @@ function Calendar({
         isOutsideRange={day => !isInclusivelyBeforeDay(day, moment())}
         minimumNights={0}
       />
-      {error !== false && error !== '' && (
-        <InputError message={error.toString()} />
-      )}
+      {hideError === false && <InputError message={error.toString()} />}
     </div>
   );
 }
