@@ -11,9 +11,9 @@ import InputError from '../InputError/InputError';
 import useClickOutsideListener from '../../../hooks/useClickOutsideListener';
 import cx from 'classnames';
 
-const ARROW_UP_KEY_CODE = 38;
-const ARROW_DOWN_KEY_CODE = 40;
-const ENTER_KEY_CODE = 13;
+export const ARROW_UP_KEY_CODE = 38;
+export const ARROW_DOWN_KEY_CODE = 40;
+export const ENTER_KEY_CODE = 13;
 
 type Props = {
   options: string[];
