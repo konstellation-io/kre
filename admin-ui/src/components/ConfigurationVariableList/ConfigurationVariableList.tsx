@@ -43,10 +43,7 @@ export function VariableRow({
       </div>
       <div className={styles.col3}>
         <TextInput
-          label=""
-          error={''}
           onChange={onValueUpdate}
-          onSubmit={() => {}}
           customClassname={styles.variableValue}
           formValue={value}
           textArea={type === ConfigurationVariableType.FILE}

@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FiltersBar matches snapshot 1`] = `
-<div
+<form
   className="formField"
 >
   <Select
     label="Activity type"
-    onChange={[MockFunction]}
+    onChange={[Function]}
     options={
       Array [
         "a",
@@ -31,7 +31,8 @@ exports[`FiltersBar matches snapshot 1`] = `
     }
   />
   <SearchSelect
-    onChange={[MockFunction]}
+    name="userEmail"
+    onChange={[Function]}
     options={
       Array [
         "1",
@@ -42,8 +43,8 @@ exports[`FiltersBar matches snapshot 1`] = `
     placeholder="User email"
   />
   <Calendar
-    onChangeFromDate={[MockFunction]}
-    onChangeToDate={[MockFunction]}
+    onChangeFromDate={[Function]}
+    onChangeToDate={[Function]}
   />
   <div
     className="buttons"
@@ -51,7 +52,7 @@ exports[`FiltersBar matches snapshot 1`] = `
     <Button
       border={true}
       label="SEARCH"
-      onClick={[MockFunction]}
+      onClick={[Function]}
       style={
         Object {
           "margin": "24px 0",
@@ -68,5 +69,5 @@ exports[`FiltersBar matches snapshot 1`] = `
       }
     />
   </div>
-</div>
+</form>
 `;

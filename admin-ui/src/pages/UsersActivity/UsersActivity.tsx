@@ -1,12 +1,10 @@
 import React, { useState, useEffect, UIEvent } from 'react';
-import useForm from '../../hooks/useForm';
 
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import SettingsHeader from '../Settings/components/SettingsHeader';
 import FiltersBar, { typeToText } from './components/FiltersBar/FiltersBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
-import * as CHECK from '../../components/Form/check';
 
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
@@ -19,10 +17,10 @@ import { GetUsers } from '../../graphql/queries/types/GetUsers';
 
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
-import { Moment } from 'moment';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import InfoMessage from '../../components/InfoMessage/InfoMessage';
+import { queryPayloadHelper } from '../../utils/formUtils';
 
 const GetUsersQuery = loader('../../graphql/queries/getUsers.graphql');
 const GetUserActivityQuery = loader(
@@ -34,41 +32,6 @@ const ITEM_HEIGHT = 63;
 const LIST_STEP_HEIGHT = N_LIST_ITEMS_STEP * ITEM_HEIGHT;
 const SCROLL_THRESHOLD = LIST_STEP_HEIGHT * 0.8;
 export const ACTION_TYPES = Object.keys(typeToText);
-
-function verifyDate(value: Moment) {
-  return CHECK.getValidationError([CHECK.isFieldAMomentDate(value, true)]);
-}
-
-function verifyActionType(value: string) {
-  return CHECK.getValidationError([
-    CHECK.isFieldInList(value, ACTION_TYPES, true)
-  ]);
-}
-
-function getInputs(actionTypeValidator: Function, userValidator: Function) {
-  return [
-    {
-      defaultValue: null,
-      verifier: actionTypeValidator,
-      id: 'type'
-    },
-    {
-      defaultValue: null,
-      verifier: userValidator,
-      id: 'userEmail'
-    },
-    {
-      defaultValue: null,
-      verifier: verifyDate,
-      id: 'fromDate'
-    },
-    {
-      defaultValue: null,
-      verifier: verifyDate,
-      id: 'toDate'
-    }
-  ];
-}
 
 function UsersActivity() {
   const [nPages, setNPages] = useState(0);
@@ -90,13 +53,7 @@ function UsersActivity() {
     GetUsersActivity_userActivityList[]
   >([]);
 
-  const inputs = getInputs(verifyActionType, verifyUser);
-  const form = useForm({
-    inputElements: inputs,
-    fetchFunction: getUsersActivity,
-    isQuery: true,
-    clearOnSubmit: false
-  });
+  const [filterValues, setFilterValues] = useState({});
 
   // As soon as we get new data, we update users activity
   useEffect(() => {
@@ -116,7 +73,7 @@ function UsersActivity() {
 
       fetchMore({
         query: GetUserActivityQuery,
-        variables: { ...form.getInputVariables(), lastId },
+        variables: { ...filterValues, lastId },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           const prevData = previousResult.userActivityList;
           const newData = fetchMoreResult && fetchMoreResult.userActivityList;
@@ -129,8 +86,9 @@ function UsersActivity() {
     }
   }
 
-  function onSubmit() {
-    form.submit();
+  function onSubmit(data: any) {
+    setFilterValues(data);
+    getUsersActivity(queryPayloadHelper(data));
     setNPages(0);
   }
 
@@ -139,17 +97,6 @@ function UsersActivity() {
     usersData.users.map(
       (user: GetUsersActivity_userActivityList_user) => user.email
     );
-
-  function verifyUser(value: string) {
-    return CHECK.getValidationError([
-      CHECK.isFieldInList(
-        value,
-        usersList || [],
-        true,
-        'The user must be from the list'
-      )
-    ]);
-  }
 
   let content = <UserActivityList data={usersActivityData} />;
   if (loading) content = <SpinnerCircular />;
@@ -167,7 +114,6 @@ function UsersActivity() {
           <SettingsHeader title="User Audit" />
           <FiltersBar
             error={error}
-            form={form}
             onSubmit={onSubmit}
             types={ACTION_TYPES}
             users={usersList || []}

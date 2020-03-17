@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router';
-import useInput from '../../hooks/useInput';
-
+import { get } from 'lodash';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
@@ -19,7 +18,8 @@ import {
   CreateRuntimeVariables
 } from '../../graphql/mutations/types/CreateRuntime';
 import ROUTE from '../../constants/routes';
-import { CreateRuntimeInput } from '../../graphql/types/globalTypes';
+import { useForm } from 'react-hook-form';
+import { mutationPayloadHelper } from '../../utils/formUtils';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 const CreateRuntimeMutation = loader(
@@ -37,10 +37,20 @@ function verifyRuntimeName(value: string) {
 
 function AddRuntime() {
   const history = useHistory();
-  const { value, isValid, onChange, error, setError } = useInput<string>(
-    '',
-    verifyRuntimeName
-  );
+
+  const {
+    handleSubmit,
+    setValue,
+    register,
+    errors,
+    setError,
+    watch
+  } = useForm();
+  useEffect(() => {
+    register('name', { validate: verifyRuntimeName });
+    setValue('name', '');
+  }, [register, setValue]);
+
   const [addRuntime, { loading, error: mutationError }] = useMutation<
     CreateRuntime,
     CreateRuntimeVariables
@@ -67,21 +77,17 @@ function AddRuntime() {
 
   useEffect(() => {
     if (mutationError) {
-      setError(mutationError.toString());
+      setError('name', '', mutationError.toString());
     }
   }, [mutationError, setError]);
 
   function onCompleteAddRuntime(updatedData: CreateRuntime) {
     // TODO: CHECK FOR API ERRORS
-    console.log(`${value} runtime created`);
     history.push(ROUTE.HOME);
   }
 
-  function onSubmit() {
-    if (isValid()) {
-      const input: CreateRuntimeInput = { name: value };
-      addRuntime({ variables: { input } });
-    }
+  function onSubmit(formData: any) {
+    addRuntime(mutationPayloadHelper(formData));
   }
 
   return (
@@ -94,10 +100,10 @@ function AddRuntime() {
             <TextInput
               whiteColor
               label="runtime name"
-              error={error}
-              onChange={onChange}
-              onSubmit={onSubmit}
-              helpText={`${value.length}/${MAX_LENGTH}`}
+              error={get(errors.name, 'message')}
+              onChange={(value: string) => setValue('name', value)}
+              onEnterKeyPress={handleSubmit(onSubmit)}
+              helpText={`${watch('name', '').length}/${MAX_LENGTH}`}
               maxLength={MAX_LENGTH}
               autoFocus
             />
@@ -105,7 +111,7 @@ function AddRuntime() {
               <Button
                 primary
                 label="SAVE"
-                onClick={onSubmit}
+                onClick={handleSubmit(onSubmit)}
                 loading={loading}
               />
               <Button

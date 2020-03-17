@@ -11,24 +11,29 @@ import styles from './FileUpload.module.scss';
 
 type Props = {
   onChange?: Function;
+  name?: string;
   placeholder?: string;
   label?: string;
   height?: number;
   error?: string;
+  inputRef?: React.Ref<any>;
 };
 
 function FileUpload({
   onChange = function() {},
+  name = 'file-upload',
   placeholder = '',
   label = '',
   height = 40,
-  error = ''
+  error = '',
+  inputRef = null
 }: Props) {
   const [selectedFile, setSelectedFile] = useState<File>();
   const fileButton = useRef<HTMLInputElement>(null);
 
   function onFileUpload() {
-    const fileButtonEl = fileButton.current;
+    const fileButtonEl =
+      fileButton.current && fileButton.current.querySelector('input');
     if (fileButtonEl !== null && fileButtonEl.files !== null) {
       const file = fileButtonEl.files[0];
       setSelectedFile(file);
@@ -39,7 +44,7 @@ function FileUpload({
   const inputText = get(selectedFile, 'name', placeholder);
 
   return (
-    <div className={styles.container}>
+    <div ref={fileButton} className={styles.container}>
       <InputLabel text={label} />
       <div className={styles.inputContainer}>
         <div
@@ -56,7 +61,8 @@ function FileUpload({
         <Button
           label="BROWSE"
           onClick={() => {
-            const submitButton = fileButton.current;
+            const submitButton =
+              fileButton.current && fileButton.current.querySelector('input');
             if (submitButton !== null) {
               submitButton.click();
             }
@@ -64,7 +70,13 @@ function FileUpload({
           border
         />
       </div>
-      <input type="file" ref={fileButton} onChange={onFileUpload} hidden />
+      <input
+        name={name}
+        type="file"
+        ref={inputRef}
+        onChange={onFileUpload}
+        hidden
+      />
       <InputError message={error} />
     </div>
   );

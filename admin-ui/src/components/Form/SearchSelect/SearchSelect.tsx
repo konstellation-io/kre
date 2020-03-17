@@ -17,20 +17,24 @@ const ENTER_KEY_CODE = 13;
 
 type Props = {
   options: string[];
-  onChange: Function;
-  value: string;
+  onChange?: Function;
+  value?: string;
   placeholder?: string;
   label?: string;
   error?: string;
+  name?: string;
+  inputRef?: React.Ref<any>;
 };
 
 function SearchSelect({
   options,
-  onChange,
-  value,
+  onChange = () => {},
+  value = '',
   placeholder = '',
   label = '',
-  error = ''
+  error = '',
+  name = 'searchSelect',
+  inputRef = null
 }: Props) {
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState('');
@@ -39,12 +43,14 @@ function SearchSelect({
   const containerRef = useRef<HTMLInputElement>(null);
   useClickOutsideListener({
     ref: containerRef,
-    onClickOutside: () => setFilteredOptions([])
+    onClickOutside: () => {
+      setFilteredOptions([]);
+      onChange(selectedOption);
+    }
   });
 
   function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
     setSelectedOption(event.target.value);
-    onChange(event.target.value);
     if (event.target.value) {
       setFilteredOptions(
         options.filter(option => option.includes(`${event.target.value}`))
@@ -59,6 +65,12 @@ function SearchSelect({
     setSelectedOption(option);
     setFilteredOptions([]);
     setHighlightedOption(-1);
+    if (containerRef.current) {
+      const input = containerRef.current.querySelector('input');
+      if (input) {
+        input.focus();
+      }
+    }
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -91,12 +103,16 @@ function SearchSelect({
     <div className={styles.container} ref={containerRef}>
       <InputLabel text={label} />
       <input
+        name={name}
+        ref={inputRef}
         value={selectedOption}
         className={styles.input}
         type="text"
         placeholder={placeholder}
         onChange={handleOnChange}
         onKeyDown={handleKeyDown}
+        // FIXME: in chrome (MAC OS) it shows selectable options previously typed from the browser
+        autoComplete="new-password"
       />
       <ul className={styles.optionsList}>
         {filteredOptions.map((option, index) => (

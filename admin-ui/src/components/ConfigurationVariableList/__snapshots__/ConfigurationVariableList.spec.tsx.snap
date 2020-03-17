@@ -105,10 +105,8 @@ exports[`VariableRow matches snapshot 1`] = `
   >
     <TextInput
       customClassname="variableValue"
-      error=""
       formValue="value1"
       hidden={true}
-      label=""
       limits={
         Object {
           "maxHeight": 350,
@@ -117,7 +115,6 @@ exports[`VariableRow matches snapshot 1`] = `
       }
       lockHorizontalGrowth={true}
       onChange={[Function]}
-      onSubmit={[Function]}
       showClearButton={true}
       textArea={false}
     />

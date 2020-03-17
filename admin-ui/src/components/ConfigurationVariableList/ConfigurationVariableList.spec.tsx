@@ -9,7 +9,7 @@ import { shallow } from 'enzyme';
 const DATA = confVarsMock.result.data.version.configurationVariables;
 const VARIABLE_DATA = DATA[0];
 
-let wrapper;
+let wrapper: any;
 const mockOnType = jest.fn();
 
 afterEach(() => {

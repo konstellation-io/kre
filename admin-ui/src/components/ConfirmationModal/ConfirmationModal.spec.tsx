@@ -4,25 +4,11 @@ import HorizontalBar from '../Layout/HorizontalBar/HorizontalBar';
 import { shallow } from 'enzyme';
 import TextInput from '../Form/TextInput/TextInput';
 
-jest.mock('../../hooks/useInput', () => {
-  // First time form will not be valid, second time it will be
-  const isValid = jest.fn();
-  isValid.mockReturnValueOnce(false);
-  isValid.mockReturnValueOnce(true);
-
-  return jest.fn(() => ({
-    value: 'someValue',
-    isValid,
-    onChange() {},
-    error: ''
-  }));
-});
-
 const mockOnClose = jest.fn();
 const mockOnAction = jest.fn();
 
 describe('ConfirmationModal', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(

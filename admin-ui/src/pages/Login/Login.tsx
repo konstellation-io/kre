@@ -2,7 +2,6 @@ import { get } from 'lodash';
 
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router';
-import useInput from '../../hooks/useInput';
 import useEndpoint from '../../hooks/useEndpoint';
 
 import TextInput from '../../components/Form/TextInput/TextInput';
@@ -12,8 +11,9 @@ import ROUTE from '../../constants/routes';
 import { ENDPOINT } from '../../constants/application';
 
 import styles from './Login.module.scss';
+import { useForm } from 'react-hook-form';
 
-function verifyEmail(value: string) {
+export function verifyEmail(value: string) {
   return CHECK.getValidationError([
     CHECK.isFieldNotEmpty(value),
     CHECK.isEmailValid(value)
@@ -22,20 +22,21 @@ function verifyEmail(value: string) {
 
 function Login() {
   const history = useHistory();
-  const { value, isValid, onChange, error, setError } = useInput(
-    '',
-    verifyEmail
-  );
+  const { handleSubmit, setValue, register, errors, setError } = useForm();
   const [response, makeRequest] = useEndpoint({
     endpoint: ENDPOINT.SUBMIT_MAGIC_LINK,
     method: 'POST'
   });
 
-  function onSubmit() {
-    if (isValid()) {
-      makeRequest({ email: value });
-    }
+  function onSubmit(data: object) {
+    makeRequest(data);
   }
+  useEffect(() => {
+    register('email', {
+      validate: verifyEmail
+    });
+    setValue('email', '');
+  }, [register, setValue]);
 
   useEffect(
     function() {
@@ -46,17 +47,20 @@ function Login() {
           get(response, 'error') &&
           get(response, 'data.code') === 'validation_error'
         ) {
-          setError('Invalid email');
+          setError('email', '', 'Invalid email');
         } else if (get(response, 'data.code') === 'domain_not_allowed') {
-          setError('Domain not allowed');
+          setError('email', '', 'Domain not allowed');
         } else {
-          setError('Unexpected error. Contact support for more information');
+          setError(
+            'email',
+            '',
+            'Unexpected error. Contact support for more information'
+          );
         }
       }
     },
     [response, history, setError]
   );
-
   return (
     <div className={styles.bg}>
       <div className={styles.grid}>
@@ -67,16 +71,16 @@ function Login() {
             <TextInput
               whiteColor
               label="email"
-              error={error}
-              onChange={onChange}
-              onSubmit={onSubmit}
+              error={get(errors.email, 'message')}
+              onChange={(value: string) => setValue('email', value)}
+              onEnterKeyPress={handleSubmit(onSubmit)}
               showClearButton
             />
             <div className={styles.buttons}>
               <Button
                 primary
                 label="SEND ME A LOGIN LINK"
-                onClick={onSubmit}
+                onClick={handleSubmit(onSubmit)}
                 loading={response.pending}
               />
             </div>

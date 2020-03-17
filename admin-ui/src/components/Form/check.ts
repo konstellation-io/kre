@@ -12,8 +12,8 @@ function setInvalid(message: string) {
   } as Check;
 }
 
-export function getValidationError(validations: Check[]) {
-  let errorMessage: string = '';
+export function getValidationError(validations: Check[]): string | boolean {
+  let errorMessage: string | boolean = true;
 
   for (let idx = 0; idx < validations.length; idx++) {
     const validation = validations[idx];
@@ -83,13 +83,13 @@ export function isFieldInList(
   optional: boolean = false,
   message?: string
 ) {
-  return list.includes(value) || (optional && value === null)
+  return list.includes(value) || (optional && !value)
     ? VALID
     : setInvalid(message || `Value must be in list: ${list}`);
 }
 
 export function isFieldAMomentDate(value: Moment, optional: boolean = false) {
-  return isMoment(value) || (optional && value === null)
+  return isMoment(value) || (optional && !value)
     ? VALID
     : setInvalid(`Value is not a Date`);
 }

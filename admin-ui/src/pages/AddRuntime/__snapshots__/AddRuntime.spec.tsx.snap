@@ -1549,12 +1549,11 @@ exports[`AddRuntime matches snapshot 1`] = `
               >
                 <TextInput
                   autoFocus={true}
-                  error=""
                   helpText="0/20"
                   label="runtime name"
                   maxLength={20}
                   onChange={[Function]}
-                  onSubmit={[Function]}
+                  onEnterKeyPress={[Function]}
                   whiteColor={true}
                 >
                   <div

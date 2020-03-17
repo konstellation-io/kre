@@ -86,7 +86,7 @@ test('if getValidationError returns errors', () => {
   ]);
 
   expect(isFieldNotEmptyError).toBe('This field cannot be empty');
-  expect(isFieldValid).toBe('');
+  expect(isFieldValid).toBe(true);
 });
 
 test('if isDefined makes correct validations', () => {

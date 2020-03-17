@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import InputLabel from '../InputLabel/InputLabel';
 
 describe('FileUpload', () => {
-  let wrapper;
+  let wrapper: any;
   const PLACEHOLDER = 'some placeholder';
   const LABEL = 'some label';
 

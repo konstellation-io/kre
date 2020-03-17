@@ -50,7 +50,7 @@ interface RouteParams {
  */
 function MagicLink() {
   const history = useHistory();
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | boolean>('');
   const [animationPending, setAnimationPending] = useState(true);
   const [status, setStatus] = useState(STATES.INITIALIZING);
   const [response, makeRequest] = useEndpoint({
@@ -64,7 +64,7 @@ function MagicLink() {
   useEffect(function() {
     const err = checkToken(token);
 
-    if (!err) {
+    if (err === true) {
       makeRequest({ verificationCode: token });
     } else {
       setError(err);
