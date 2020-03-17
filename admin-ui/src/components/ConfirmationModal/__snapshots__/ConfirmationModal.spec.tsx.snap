@@ -22,7 +22,6 @@ exports[`ConfirmationModal matches snapshot 1`] = `
       className="comment"
     >
       <TextInput
-        error=""
         label="please, write your comment:  "
         limits={
           Object {
@@ -32,7 +31,7 @@ exports[`ConfirmationModal matches snapshot 1`] = `
           }
         }
         onChange={[Function]}
-        onSubmit={[Function]}
+        onEnterKeyPress={[Function]}
         showClearButton={true}
         textArea={true}
         whiteColor={true}

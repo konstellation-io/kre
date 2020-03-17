@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
-import useInput from '../../hooks/useInput';
+import { useForm } from 'react-hook-form';
+import { get } from 'lodash';
 
 import SettingsHeader from './components/SettingsHeader';
-import TextInput from '../../components/Form/TextInput/TextInput';
+import TextInput, {
+  InputType
+} from '../../components/Form/TextInput/TextInput';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import * as CHECK from '../../components/Form/check';
@@ -17,6 +20,7 @@ import {
   UpdateSettings,
   UpdateSettingsVariables
 } from '../../graphql/mutations/types/UpdateSettings';
+import { mutationPayloadHelper } from '../../utils/formUtils';
 
 const GetExpirationTimeQuery = loader(
   '../../graphql/queries/getExpirationTime.graphql'
@@ -40,8 +44,8 @@ function FormField({ error, onChange, onBlur, formValue }: FormFieldProps) {
       <div className={styles.input}>
         <TextInput
           whiteColor
-          onlyNumbers
-          positive
+          type={InputType.NUMBER}
+          additionalInputProps={{ min: 0 }}
           label="nº days"
           error={error}
           onChange={onChange}
@@ -81,27 +85,24 @@ function GeneralSettings() {
       }
     }
   });
-  const { value, isValid, onChange, setValue, error: inputError } = useInput<
-    string
-  >('', isExpirationInvalid);
+  const { handleSubmit, setValue, register, errors } = useForm();
+  useEffect(() => {
+    register('sessionLifetimeInDays', { validate: isExpirationInvalid });
+    setValue('sessionLifetimeInDays', '');
+  }, [register, setValue]);
 
   // Sets domains data after receiving API response
   useEffect(() => {
     if (data) {
-      setValue(data.settings.sessionLifetimeInDays);
+      setValue('sessionLifetimeInDays', data.settings.sessionLifetimeInDays);
     }
   }, [data, setValue]);
 
   if (loading) return <SpinnerCircular />;
   if (queryError) return <ErrorMessage />;
 
-  function onSubmit() {
-    if (isValid()) {
-      const input = {
-        sessionLifetimeInDays: parseInt(value)
-      };
-      updateExpirationTime({ variables: { input } });
-    }
+  function onSubmit(formData: any) {
+    updateExpirationTime(mutationPayloadHelper(formData));
   }
 
   return (
@@ -109,9 +110,9 @@ function GeneralSettings() {
       <div className={cx(styles.form, styles.generalSettings)}>
         <SettingsHeader title="General settings" />
         <FormField
-          error={inputError}
-          onChange={onChange}
-          onBlur={onSubmit}
+          error={get(errors.sessionLifetimeInDays, 'message')}
+          onChange={(value: string) => setValue('sessionLifetimeInDays', value)}
+          onBlur={handleSubmit(onSubmit)}
           formValue={data && data.settings.sessionLifetimeInDays}
         />
       </div>

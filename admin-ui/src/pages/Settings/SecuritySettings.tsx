@@ -1,8 +1,7 @@
-import { get } from 'lodash';
-
 import React, { useState, useEffect, MouseEvent } from 'react';
-import useInput from '../../hooks/useInput';
 
+import { useForm } from 'react-hook-form';
+import { get } from 'lodash';
 import DomainIcon from '@material-ui/icons/Language';
 
 import SettingsHeader from './components/SettingsHeader';
@@ -45,7 +44,7 @@ function FormField({ value, error, onChange, onSubmit }: FormFieldProps) {
           label="domain name"
           error={error}
           onChange={onChange}
-          onSubmit={onSubmit}
+          onEnterKeyPress={onSubmit}
           formValue={value}
         />
       </div>
@@ -90,21 +89,28 @@ function SecuritySettings() {
     },
     onCompleted: onCompleteUpdateDomain
   });
+
   const {
-    value,
-    isValid,
-    onChange,
-    error: inputError,
-    clear,
+    handleSubmit,
+    setValue,
+    register,
+    errors,
+    watch,
     clearError
-  } = useInput<string>('', (val: string) => validateForm(val, allowedDomains));
+  } = useForm();
 
   // Set domains data after retrieving it from API
   useEffect(() => {
-    if (get(queryData, 'settings')) {
-      setAllowedDomains(get(queryData, 'settings.authAllowedDomains'));
+    const _allowedDomains = get(queryData, 'settings.authAllowedDomains');
+    if (_allowedDomains) {
+      setAllowedDomains(_allowedDomains);
+      register('domain', {
+        validate: value => validateForm(value, _allowedDomains)
+      });
+      setValue('domain', '');
     }
-  }, [queryData]);
+  }, [queryData, register, setValue]);
+
   // Set domains data after making a mutation
   function onCompleteUpdateDomain(updatedData: UpdateDomains) {
     setAllowedDomains(updatedData.updateSettings.authAllowedDomains);
@@ -115,26 +121,19 @@ function SecuritySettings() {
     updateAllowedDomain({ variables: { input } });
     setAllowedDomains(newDomains);
 
-    clear();
+    setValue('domain', '');
   }
 
-  function onSubmit() {
-    if (isValid()) {
-      const domain = value.toLowerCase();
-      console.log(`Domain ${domain} added`);
-
-      const newDomains: string[] = allowedDomains.concat(domain);
-      updateDomains(newDomains);
-      clear();
-      clearError();
-    }
+  function onSubmit(formData: any) {
+    updateDomains([...allowedDomains, formData.domain]);
+    setValue('domain', '');
   }
 
   function onRemoveDomain(domain: string) {
     console.log(`Domain ${domain} removed`, allowedDomains, domain);
     const newDomains = allowedDomains.filter(d => d !== domain);
     updateDomains(newDomains);
-    clearError();
+    clearError('domain');
   }
 
   function getContent() {
@@ -153,10 +152,10 @@ function SecuritySettings() {
       <div className={cx(styles.form, styles.securitySettings)}>
         <SettingsHeader title="Security settings" />
         <FormField
-          error={inputError}
-          onChange={onChange}
-          onSubmit={onSubmit}
-          value={value}
+          error={get(errors.domain, 'message')}
+          onChange={(value: string) => setValue('domain', value)}
+          onSubmit={handleSubmit(onSubmit)}
+          value={watch('domain', '')}
         />
         <div className={styles.domains}>{getContent()}</div>
       </div>

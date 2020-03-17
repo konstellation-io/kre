@@ -1,13 +1,15 @@
-import React, { MouseEvent } from 'react';
+import React, { useEffect } from 'react';
 
+import { get } from 'lodash';
 import Calendar from '../../../../components/Form/Calendar/Calendar';
 import Select from '../../../../components/Form/Select/Select';
 import Button from '../../../../components/Button/Button';
 import SearchSelect from '../../../../components/Form/SearchSelect/SearchSelect';
-import { Form } from '../../../../hooks/useForm';
+import * as CHECK from '../../../../components/Form/check';
 
 import styles from './FiltersBar.module.scss';
 import { ApolloError } from 'apollo-client';
+import { useForm } from 'react-hook-form';
 
 export const typeToText = {
   LOGIN: 'Login',
@@ -24,54 +26,101 @@ export const typeToText = {
 
 type FormFieldProps = {
   error?: ApolloError;
-  form: Form;
-  onSubmit: (e: MouseEvent<HTMLDivElement>) => void;
+  onSubmit: (form: object) => void;
   types: string[];
   users: string[];
 };
 
-function FiltersBar({ form, onSubmit, types, users }: FormFieldProps) {
+function FiltersBar({ onSubmit, types, users }: FormFieldProps) {
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    errors,
+    watch,
+    getValues
+  } = useForm({
+    reValidateMode: 'onBlur'
+  });
+  useEffect(() => {
+    register({ name: 'type' });
+    register(
+      { name: 'userEmail' },
+      {
+        validate: (value: string) => {
+          return CHECK.getValidationError([
+            CHECK.isFieldInList(
+              value,
+              users,
+              true,
+              'The user must be from the list'
+            )
+          ]);
+        }
+      }
+    );
+    register({ name: 'fromDate' });
+    register({ name: 'toDate' });
+  }, [users, register]);
+
+  function clearForm() {
+    setValue(
+      Object.entries(getValues()).reduce((acc: any, next: any) => {
+        return [...acc, { [next[0]]: null }];
+      }, [])
+    );
+  }
+
+  function handleOnSubmit(formData: any) {
+    onSubmit(
+      Object.entries(formData).reduce((acc: object, item: any) => {
+        return { ...acc, [item[0]]: item[1] || null };
+      }, {})
+    );
+  }
+
   return (
-    <div className={styles.formField}>
+    <form className={styles.formField}>
       <Select
         options={types}
-        onChange={form.input.type.onChange}
-        error={form.input.type.error}
-        formSelectedOption={form.input.type.value}
+        onChange={(value: string) => setValue('type', value)}
+        error={get(errors.type, 'message')}
+        formSelectedOption={watch('type')}
         label="Activity type"
         placeholder="Activity type"
         valuesMapper={typeToText}
       />
       <SearchSelect
+        name="userEmail"
         options={users}
-        onChange={form.input.userEmail.onChange}
-        value={form.input.userEmail.value}
+        onChange={(value: string) => setValue('userEmail', value)}
         placeholder="User email"
-        error={form.input.userEmail.error}
+        error={get(errors.userEmail, 'message')}
+        value={watch('userEmail')}
       />
       <Calendar
-        onChangeFromDate={form.input.fromDate.onChange}
-        onChangeToDate={form.input.toDate.onChange}
-        formFromDate={form.input.fromDate.value}
-        formToDate={form.input.toDate.value}
-        error={form.input.fromDate.error || form.input.toDate.error}
+        onChangeFromDate={(value: any) => setValue('fromDate', value)}
+        onChangeToDate={(value: any) => setValue('toDate', value)}
+        formFromDate={watch('fromDate')}
+        formToDate={watch('toDate')}
+        error={get(errors.fromDate, 'message') || get(errors.toDate, 'message')}
       />
       <div className={styles.buttons}>
         <Button
           label={'SEARCH'}
-          onClick={onSubmit}
+          onClick={handleSubmit(handleOnSubmit)}
           border
           style={{ margin: '24px 0' }}
         />
         <Button
           label={'CLEAR'}
           onClick={() => {
-            form.clearInputs(true);
+            clearForm();
           }}
           style={{ margin: '24px 0' }}
         />
       </div>
-    </div>
+    </form>
   );
 }
 

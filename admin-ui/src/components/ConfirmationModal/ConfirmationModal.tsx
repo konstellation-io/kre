@@ -1,10 +1,10 @@
-import React from 'react';
-import useInput from '../../hooks/useInput';
-
+import React, { useEffect } from 'react';
+import { get } from 'lodash';
 import HorizontalBar from '../Layout/HorizontalBar/HorizontalBar';
 import TextInput from '../../components/Form/TextInput/TextInput';
 import * as CHECK from '../../components/Form/check';
 import Button from '../Button/Button';
+import { useForm } from 'react-hook-form';
 
 import styles from './ConfirmationModal.module.scss';
 
@@ -25,12 +25,14 @@ function ConfirmationModal({
   onClose = function() {},
   onAction = function() {}
 }: Props) {
-  const { value, isValid, onChange, error } = useInput('', verifyComment);
+  const { handleSubmit, setValue, register, errors } = useForm();
+  useEffect(() => {
+    register('comment', { validate: verifyComment });
+    setValue('comment', '');
+  }, [register, setValue]);
 
-  function onSubmit() {
-    if (isValid()) {
-      onAction(value);
-    }
+  function onSubmit(formData: any) {
+    onAction(formData.comment);
   }
 
   function onCancelClick() {
@@ -46,9 +48,9 @@ function ConfirmationModal({
         <div className={styles.comment}>
           <TextInput
             label="please, write your comment:  "
-            error={error}
-            onChange={onChange}
-            onSubmit={onSubmit}
+            error={get(errors.comment, 'message')}
+            onChange={(value: string) => setValue('comment', value)}
+            onEnterKeyPress={handleSubmit(onSubmit)}
             limits={{
               minWidth: 338,
               maxWidth: 338,
@@ -63,7 +65,7 @@ function ConfirmationModal({
           <Button
             primary
             label={'YES'}
-            onClick={onSubmit}
+            onClick={handleSubmit(onSubmit)}
             height={30}
             style={{ width: '122px', padding: '0 0' }}
           />

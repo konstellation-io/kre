@@ -30,6 +30,7 @@ exports[`FileUpload matches snapshot 1`] = `
   </div>
   <input
     hidden={true}
+    name="file-upload"
     onChange={[Function]}
     type="file"
   />

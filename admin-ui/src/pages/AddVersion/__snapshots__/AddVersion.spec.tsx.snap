@@ -19,26 +19,30 @@ exports[`AddVersion matches snapshot 1`] = `
       <div
         className="content"
       >
-        <FileUpload
-          error=""
-          label="upload version file (KRT file)"
-          onChange={[Function]}
-          placeholder=".krt"
-        />
-        <div
-          className="buttons"
-        >
-          <Button
-            disabled={true}
-            label="CREATE"
-            onClick={[Function]}
-            primary={true}
+        <form>
+          <FileUpload
+            error=""
+            inputRef={[Function]}
+            label="upload version file (KRT file)"
+            name="addVersionFile"
+            onChange={[Function]}
+            placeholder=".krt"
           />
-          <Button
-            label="CANCEL"
-            onClick={[Function]}
-          />
-        </div>
+          <div
+            className="buttons"
+          >
+            <Button
+              disabled={false}
+              label="CREATE"
+              onClick={[Function]}
+              primary={true}
+            />
+            <Button
+              label="CANCEL"
+              onClick={[Function]}
+            />
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -11,7 +11,7 @@ jest.mock('react-router', () => ({
 }));
 
 describe('AddVersion', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(<AddVersion />);

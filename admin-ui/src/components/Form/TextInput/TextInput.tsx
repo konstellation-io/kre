@@ -13,13 +13,18 @@ import InputError from '../InputError/InputError';
 import InputHelp from '../InputHelp/InputHelp';
 import IconShow from '@material-ui/icons/RemoveRedEye';
 import IconHide from '@material-ui/icons/RemoveRedEyeOutlined';
-import { isFieldAnInteger } from '../check';
 
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
 
+export enum InputType {
+  TEXT = 'text',
+  NUMBER = 'number',
+  PASSWORD = 'password'
+}
+
 type Props = {
-  onSubmit?: Function;
+  onEnterKeyPress?: Function;
   onChange?: Function;
   onBlur?: Function;
   placeholder?: string;
@@ -37,17 +42,17 @@ type Props = {
   helpText?: string;
   showClearButton?: boolean;
   whiteColor?: boolean;
-  onlyNumbers?: boolean;
-  positive?: boolean;
+  type?: InputType;
   formValue?: string | number;
   customClassname?: string;
   hidden?: boolean;
   autoFocus?: boolean;
   maxLength?: number;
+  additionalInputProps?: object;
 };
 
 function TextInput({
-  onSubmit = function() {},
+  onEnterKeyPress = function() {},
   onChange = function() {},
   onBlur = function() {},
   placeholder = '',
@@ -60,13 +65,13 @@ function TextInput({
   helpText = '',
   showClearButton = false,
   whiteColor = false,
-  onlyNumbers = false,
-  positive = false,
+  type = InputType.TEXT,
   formValue = '',
   customClassname = '',
   hidden = false,
   autoFocus = false,
-  maxLength
+  maxLength,
+  additionalInputProps = {}
 }: Props) {
   const [value, setValue] = useState(formValue);
   const [isHidden, setIsHidden] = useState(hidden);
@@ -80,13 +85,8 @@ function TextInput({
   }, [formValue, setValue]);
 
   function updateValue(newValue: string) {
-    if (
-      !onlyNumbers ||
-      (onlyNumbers && isFieldAnInteger(newValue, positive).valid)
-    ) {
-      setValue(newValue);
-      onChange(newValue);
-    }
+    setValue(newValue);
+    onChange(newValue);
   }
 
   function onType(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -100,7 +100,7 @@ function TextInput({
   ) {
     if (e.which === 13 && !textArea) {
       // Enter key
-      onSubmit(value);
+      onEnterKeyPress();
     }
   }
 
@@ -113,15 +113,16 @@ function TextInput({
   }
 
   const inputProps = {
+    ...additionalInputProps,
     className: cx(styles.input, {
       [styles.error]: error !== '',
       [styles.lockHorizontalGrowth]: lockHorizontalGrowth
     }),
     value: value,
-    type: isHidden ? 'password' : 'text',
+    type: isHidden ? InputType.PASSWORD : type,
     placeholder: placeholder,
     onChange: onType,
-    onKeyPress: onKeyPress,
+    onKeyPress,
     onBlur: onInputBlur,
     style: { height },
     maxLength: maxLength
