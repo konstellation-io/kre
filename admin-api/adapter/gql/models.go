@@ -45,6 +45,7 @@ type PublishVersionInput struct {
 
 type SettingsInput struct {
 	AuthAllowedDomains    []string `json:"authAllowedDomains"`
+	AuthAllowedEmails     []string `json:"authAllowedEmails"`
 	SessionLifetimeInDays *int     `json:"sessionLifetimeInDays"`
 }
 
