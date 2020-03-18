@@ -9,7 +9,7 @@ const OPTIONS = ['Option A', 'Option B', 'Option C'];
 const mockOnChange = jest.fn();
 
 describe('Select', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(
