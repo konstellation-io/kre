@@ -1,4 +1,5 @@
 @import './colors';
+@import './variables';
 
 @mixin font-by-size($font-size, $line-height, $font-weight: normal) {
   font-size: $font-size;
@@ -89,8 +90,9 @@
 @mixin input-footer($color) {
   @include font-small;
 
-  height: 16px;
-  margin-top: 8px;
+  height: auto;
+  min-height: $grid-unit * 2;
+  margin-top: $grid-unit;
   letter-spacing: 0.1px;
   text-align: end;
   color: transparent;
