@@ -42,7 +42,7 @@
 .clearButton {
   position: absolute;
   right: 15px;
-  top: 34px;
+  top: $grid-unit * 4.75;
   font-size: 15px;
   line-height: 11px;
   font-weight: 500;
