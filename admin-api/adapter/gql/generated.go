@@ -119,6 +119,7 @@ type ComplexityRoot struct {
 
 	Settings struct {
 		AuthAllowedDomains    func(childComplexity int) int
+		AuthAllowedEmails     func(childComplexity int) int
 		SessionLifetimeInDays func(childComplexity int) int
 	}
 
@@ -613,6 +614,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Settings.AuthAllowedDomains(childComplexity), true
 
+	case "Settings.authAllowedEmails":
+		if e.complexity.Settings.AuthAllowedEmails == nil {
+			break
+		}
+
+		return e.complexity.Settings.AuthAllowedEmails(childComplexity), true
+
 	case "Settings.sessionLifetimeInDays":
 		if e.complexity.Settings.SessionLifetimeInDays == nil {
 			break
@@ -993,6 +1001,7 @@ type VersionNodeStatus {
 
 input SettingsInput {
   authAllowedDomains: [String!]
+  authAllowedEmails: [String!]
   sessionLifetimeInDays: Int
 }
 
@@ -1096,6 +1105,7 @@ enum VersionStatus {
 
 type Settings {
   authAllowedDomains: [String!]!
+  authAllowedEmails: [String!]!
   sessionLifetimeInDays: Int!
 }
 
@@ -3052,6 +3062,40 @@ func (ec *executionContext) _Settings_authAllowedDomains(ctx context.Context, fi
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AuthAllowedDomains, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Settings_authAllowedEmails(ctx context.Context, field graphql.CollectedField, obj *entity.Setting) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Settings",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AuthAllowedEmails, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5317,6 +5361,12 @@ func (ec *executionContext) unmarshalInputSettingsInput(ctx context.Context, obj
 			if err != nil {
 				return it, err
 			}
+		case "authAllowedEmails":
+			var err error
+			it.AuthAllowedEmails, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "sessionLifetimeInDays":
 			var err error
 			it.SessionLifetimeInDays, err = ec.unmarshalOInt2ᚖint(ctx, v)
@@ -5948,6 +5998,11 @@ func (ec *executionContext) _Settings(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = graphql.MarshalString("Settings")
 		case "authAllowedDomains":
 			out.Values[i] = ec._Settings_authAllowedDomains(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "authAllowedEmails":
+			out.Values[i] = ec._Settings_authAllowedEmails(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
