@@ -108,16 +108,16 @@ describe('messageGenerator', () => {
     wrapper = shallow(<div>{component}</div>);
   }
 
+  afterEach(() => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('show right LOGIN message', () => {
     setWrapper({ type: UserActivityType.LOGIN });
-
-    expect(wrapper.text()).toBe('Has logged in');
   });
 
   it('show right LOGOUT message', () => {
     setWrapper({ type: UserActivityType.LOGOUT });
-
-    expect(wrapper.text()).toBe('Has logged out');
   });
 
   it('show right CREATE_RUNTIME message', () => {
@@ -125,8 +125,6 @@ describe('messageGenerator', () => {
       type: UserActivityType.CREATE_RUNTIME,
       vars: [...runtime]
     });
-
-    expect(wrapper.text()).toBe('Has created a new Runtime: runtimeName');
   });
 
   it('show right CREATE_VERSION message', () => {
@@ -134,10 +132,6 @@ describe('messageGenerator', () => {
       type: UserActivityType.CREATE_VERSION,
       vars: [...runtime, ...version]
     });
-
-    expect(wrapper.text()).toBe(
-      'Has created a new Version: runtimeName - versionName'
-    );
   });
 
   it('show right PUBLISH_VERSION message', () => {
@@ -145,10 +139,6 @@ describe('messageGenerator', () => {
       type: UserActivityType.PUBLISH_VERSION,
       vars: [...runtime, ...version, ...oldVersion]
     });
-
-    expect(wrapper.text()).toBe(
-      'Has published version: runtimeName - versionName. Previous published version: oldVersionName'
-    );
   });
 
   it('show right UNPUBLISH_VERSION message', () => {
@@ -156,10 +146,6 @@ describe('messageGenerator', () => {
       type: UserActivityType.UNPUBLISH_VERSION,
       vars: [...runtime, ...version]
     });
-
-    expect(wrapper.text()).toBe(
-      'Has unpublished version runtimeName - versionName'
-    );
   });
 
   it('show right STOP_VERSION message', () => {
@@ -167,10 +153,6 @@ describe('messageGenerator', () => {
       type: UserActivityType.STOP_VERSION,
       vars: [...runtime, ...version]
     });
-
-    expect(wrapper.text()).toBe(
-      'Has stopped version runtimeName - versionName'
-    );
   });
 
   it('show right START_VERSION message', () => {
@@ -178,10 +160,6 @@ describe('messageGenerator', () => {
       type: UserActivityType.START_VERSION,
       vars: [...runtime, ...version]
     });
-
-    expect(wrapper.text()).toBe(
-      'Has started version runtimeName - versionName'
-    );
   });
 
   it('show right UPDATE_SETTING message', () => {
@@ -189,10 +167,6 @@ describe('messageGenerator', () => {
       type: UserActivityType.UPDATE_SETTING,
       vars: [...setting]
     });
-
-    expect(wrapper.text()).toBe(
-      'Has updated setting setting from oldValue to newValue'
-    );
   });
 
   it('show right UPDATE_VERSION_CONFIGURATION message', () => {
@@ -200,9 +174,5 @@ describe('messageGenerator', () => {
       type: UserActivityType.UPDATE_VERSION_CONFIGURATION,
       vars: [...runtime, ...version, ...config]
     });
-
-    expect(wrapper.text()).toBe(
-      'Has changed settings: confA, confB, confC from version runtimeName - versionName'
-    );
   });
 });

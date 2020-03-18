@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`messageGenerator show right CREATE_RUNTIME message 1`] = `
+<div>
+  Has created a new Runtime: 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId"
+    >
+      runtimeName
+    </Link>
+  </strong>
+</div>
+`;
+
+exports[`messageGenerator show right CREATE_VERSION message 1`] = `
+<div>
+  Has created a new Version: 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId/versions/versionId/status"
+    >
+      runtimeName - versionName
+    </Link>
+  </strong>
+</div>
+`;
+
+exports[`messageGenerator show right LOGIN message 1`] = `
+<div>
+  Has logged in
+</div>
+`;
+
+exports[`messageGenerator show right LOGOUT message 1`] = `
+<div>
+  Has logged out
+</div>
+`;
+
+exports[`messageGenerator show right PUBLISH_VERSION message 1`] = `
+<div>
+  Has published version: 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId/versions/versionId/status"
+    >
+      runtimeName - versionName
+    </Link>
+  </strong>
+  . 
+  Previous published version: 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId/versions/oldVersionId/status"
+    >
+      oldVersionName
+    </Link>
+  </strong>
+</div>
+`;
+
+exports[`messageGenerator show right START_VERSION message 1`] = `
+<div>
+  Has started version 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId/versions/versionId/status"
+    >
+      runtimeName - versionName
+    </Link>
+  </strong>
+</div>
+`;
+
+exports[`messageGenerator show right STOP_VERSION message 1`] = `
+<div>
+  Has stopped version 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId/versions/versionId/status"
+    >
+      runtimeName - versionName
+    </Link>
+  </strong>
+</div>
+`;
+
+exports[`messageGenerator show right UNPUBLISH_VERSION message 1`] = `
+<div>
+  Has unpublished version 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId/versions/versionId/status"
+    >
+      runtimeName - versionName
+    </Link>
+  </strong>
+</div>
+`;
+
+exports[`messageGenerator show right UPDATE_SETTING message 1`] = `
+<div>
+  Has updated 
+  <strong>
+    setting
+  </strong>
+   setting from 
+  <strong>
+    oldValue
+  </strong>
+   to 
+  <strong>
+    newValue
+  </strong>
+</div>
+`;
+
+exports[`messageGenerator show right UPDATE_VERSION_CONFIGURATION message 1`] = `
+<div>
+  Has changed settings: 
+  <strong>
+    confA, confB, confC
+  </strong>
+   from version 
+  <strong>
+    <Link
+      to="/runtimes/runtimeId/versions/versionId/status"
+    >
+      runtimeName - versionName
+    </Link>
+  </strong>
+</div>
+`;
