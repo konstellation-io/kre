@@ -1,55 +1,52 @@
 package usecase_test
 
 import (
+	"github.com/golang/mock/gomock"
 	"testing"
 
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
-
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/kre/admin-api/mocks"
 )
 
-type UserSuite struct {
-	suite.Suite
-	mocks      UserSuiteMocks
+type userSuite struct {
+	ctrl       *gomock.Controller
 	interactor *usecase.UserInteractor
+	mocks      userSuiteMocks
 }
 
-type UserSuiteMocks struct {
-	logger   *mocks.Logger
-	userRepo *mocks.UserRepo
+type userSuiteMocks struct {
+	logger   *mocks.MockLogger
+	userRepo *mocks.MockUserRepo
 }
 
-func TestUserSuite(t *testing.T) {
-	suite.Run(t, new(UserSuite))
-}
+func newUserSuite(t *testing.T) *userSuite {
+	ctrl := gomock.NewController(t)
 
-func (s *UserSuite) SetupTest() {
-	s.mocks = UserSuiteMocks{
-		logger:   new(mocks.Logger),
-		userRepo: new(mocks.UserRepo),
-	}
+	logger := mocks.NewMockLogger(ctrl)
+	userRepo := mocks.NewMockUserRepo(ctrl)
 
-	// FIXME use another mock lib: https://gitlab.com/konstellation/kre/issues/198
-	s.mocks.logger.On("Info", mock.Anything).Return()
-	s.mocks.logger.On("Warn", mock.Anything).Return()
-	s.mocks.logger.On("Error", mock.Anything).Return()
-	s.mocks.logger.On("Infof", mock.Anything).Return()
-	s.mocks.logger.On("Infof", mock.Anything, mock.Anything).Return()
-	s.mocks.logger.On("Warnf", mock.Anything).Return()
-	s.mocks.logger.On("Errorf", mock.Anything).Return()
+	mocks.AddLoggerExpects(logger)
 
-	s.interactor = usecase.NewUserInteractor(
-		s.mocks.logger,
-		s.mocks.userRepo,
+	userInteractor := usecase.NewUserInteractor(
+		logger,
+		userRepo,
 	)
+
+	return &userSuite{
+		ctrl:       ctrl,
+		interactor: userInteractor,
+		mocks: userSuiteMocks{
+			logger:   logger,
+			userRepo: userRepo,
+		},
+	}
 }
 
-func (s *UserSuite) TestGetByID() {
-	t := s.T()
+func TestUserGetByID(t *testing.T) {
+	s := newUserSuite(t)
+	defer s.ctrl.Finish()
 
 	userID := "user1"
 
@@ -58,15 +55,16 @@ func (s *UserSuite) TestGetByID() {
 		Email: "test@test.com",
 	}
 
-	s.mocks.userRepo.On("GetByID", userID).Return(userFound, nil)
+	s.mocks.userRepo.EXPECT().GetByID(userID).Return(userFound, nil)
 
 	res, err := s.interactor.GetByID(userID)
 	require.Nil(t, err)
 	require.EqualValues(t, res, userFound)
 }
 
-func (s *UserSuite) TestGetAllUsers() {
-	t := s.T()
+func TestGetAllUsers(t *testing.T) {
+	s := newUserSuite(t)
+	defer s.ctrl.Finish()
 
 	usersFound := []*entity.User{
 		{
@@ -75,7 +73,7 @@ func (s *UserSuite) TestGetAllUsers() {
 		},
 	}
 
-	s.mocks.userRepo.On("GetAll").Return(usersFound, nil)
+	s.mocks.userRepo.EXPECT().GetAll().Return(usersFound, nil)
 
 	res, err := s.interactor.GetAllUsers()
 	require.Nil(t, err)

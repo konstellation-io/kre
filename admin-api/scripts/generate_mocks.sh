@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mockery -all
+go generate ./...

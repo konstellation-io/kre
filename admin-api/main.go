@@ -5,6 +5,7 @@ import (
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/adapter/repository/minio"
 	"gitlab.com/konstellation/kre/admin-api/adapter/repository/mongodb"
+	"gitlab.com/konstellation/kre/admin-api/adapter/runtime"
 	"gitlab.com/konstellation/kre/admin-api/adapter/service"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
@@ -39,11 +40,13 @@ func main() {
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
 
+	paswordGenerator := runtime.NewPasswordGenerator()
+
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo)
 	authInteractor := usecase.NewAuthInteractor(
 		logger, loginLinkTransport, verificationCodeGenerator, verificationCodeRepo, userRepo, settingRepo, userActivityInteractor)
 
-	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, runtimeService, userActivityInteractor)
+	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, runtimeService, userActivityInteractor, paswordGenerator)
 	userInteractor := usecase.NewUserInteractor(logger, userRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
 
