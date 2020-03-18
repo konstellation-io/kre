@@ -8,7 +8,7 @@ import {
 } from '../../../../graphql/queries/types/GetUsersActivity';
 import { UserActivityType } from '../../../../graphql/types/globalTypes';
 
-enum VarTypes {
+export enum VarTypes {
   RUNTIME_ID = 'RUNTIME_ID',
   RUNTIME_NAME = 'RUNTIME_NAME',
   VERSION_ID = 'VERSION_ID',
@@ -123,7 +123,7 @@ export default function getMessage(
     case UserActivityType.PUBLISH_VERSION:
       message = (
         <>
-          {'Has published version '}
+          {'Has published version: '}
           {getVar(versionLink)}
           {'. '}
           {oldVersionLink && (
