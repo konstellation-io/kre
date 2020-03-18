@@ -1,13 +1,12 @@
 package usecase_test
 
 import (
+	"github.com/golang/mock/gomock"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
 
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
@@ -16,76 +15,79 @@ import (
 	"gitlab.com/konstellation/kre/admin-api/mocks"
 )
 
-type VersionSuite struct {
-	suite.Suite
-	mocks                  VersionSuiteMocks
-	versionInteractor      *usecase.VersionInteractor
-	userActivityInteractor *usecase.UserActivityInteractor
+type versionSuite struct {
+	ctrl              *gomock.Controller
+	mocks             versionSuiteMocks
+	versionInteractor *usecase.VersionInteractor
 }
 
-type VersionSuiteMocks struct {
-	logger            *mocks.Logger
-	versionRepo       *mocks.VersionRepo
-	runtimeRepo       *mocks.RuntimeRepo
-	versionService    *mocks.VersionService
-	monitoringService *mocks.MonitoringService
-	userActivityRepo  *mocks.UserActivityRepo
-	userRepo          *mocks.UserRepo
+type versionSuiteMocks struct {
+	logger            *mocks.MockLogger
+	versionRepo       *mocks.MockVersionRepo
+	runtimeRepo       *mocks.MockRuntimeRepo
+	versionService    *mocks.MockVersionService
+	monitoringService *mocks.MockMonitoringService
+	userActivityRepo  *mocks.MockUserActivityRepo
+	userRepo          *mocks.MockUserRepo
 	createStorage     repository.CreateStorage
 }
 
-func TestVersionSuite(t *testing.T) {
-	suite.Run(t, new(VersionSuite))
-}
+func newVersionSuite(t *testing.T) *versionSuite {
+	ctrl := gomock.NewController(t)
 
-func (s *VersionSuite) SetupTest() {
 	CreateStorageMock := func(logger logging.Logger, runtime *entity.Runtime) (repository.Storage, error) {
-		m := new(mocks.Storage)
-		m.On("CreateBucket", mock.Anything).Return(nil)
-		m.On("CopyDir", mock.Anything, mock.Anything).Return(nil)
+		m := mocks.NewMockStorage(ctrl)
+		m.EXPECT().CreateBucket(gomock.Any()).Return(nil)
+		m.EXPECT().CopyDir(gomock.Any(), gomock.Any()).Return(nil)
 		return m, nil
 	}
 
-	s.mocks = VersionSuiteMocks{
-		logger:            new(mocks.Logger),
-		versionRepo:       new(mocks.VersionRepo),
-		runtimeRepo:       new(mocks.RuntimeRepo),
-		monitoringService: new(mocks.MonitoringService),
-		versionService:    new(mocks.VersionService),
-		userActivityRepo:  new(mocks.UserActivityRepo),
-		userRepo:          new(mocks.UserRepo),
-		createStorage:     CreateStorageMock,
+	logger := mocks.NewMockLogger(ctrl)
+	versionRepo := mocks.NewMockVersionRepo(ctrl)
+	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
+	monitoringService := mocks.NewMockMonitoringService(ctrl)
+	versionService := mocks.NewMockVersionService(ctrl)
+	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
+	userRepo := mocks.NewMockUserRepo(ctrl)
+	createStorage := CreateStorageMock
+
+	mocks.AddLoggerExpects(logger)
+
+	userActivityInteractor := usecase.NewUserActivityInteractor(
+		logger,
+		userActivityRepo,
+		userRepo,
+	)
+
+	versionInteractor := usecase.NewVersionInteractor(
+		logger,
+		versionRepo,
+		runtimeRepo,
+		versionService,
+		monitoringService,
+		userActivityInteractor,
+		createStorage,
+	)
+
+	return &versionSuite{
+		ctrl: ctrl,
+		mocks: versionSuiteMocks{
+			logger:            logger,
+			versionRepo:       versionRepo,
+			runtimeRepo:       runtimeRepo,
+			versionService:    versionService,
+			monitoringService: monitoringService,
+			userActivityRepo:  userActivityRepo,
+			userRepo:          userRepo,
+			createStorage:     createStorage,
+		},
+		versionInteractor: versionInteractor,
 	}
-
-	// FIXME use another mock lib: https://gitlab.com/konstellation/kre/issues/198
-	s.mocks.logger.On("Info", mock.Anything).Return()
-	s.mocks.logger.On("Warn", mock.Anything).Return()
-	s.mocks.logger.On("Error", mock.Anything).Return()
-	s.mocks.logger.On("Infof", mock.Anything).Return()
-	s.mocks.logger.On("Infof", mock.Anything, mock.Anything).Return()
-	s.mocks.logger.On("Warnf", mock.Anything).Return()
-	s.mocks.logger.On("Errorf", mock.Anything).Return()
-
-	s.userActivityInteractor = usecase.NewUserActivityInteractor(
-
-		s.mocks.logger,
-		s.mocks.userActivityRepo,
-		s.mocks.userRepo,
-	)
-
-	s.versionInteractor = usecase.NewVersionInteractor(
-		s.mocks.logger,
-		s.mocks.versionRepo,
-		s.mocks.runtimeRepo,
-		s.mocks.versionService,
-		s.mocks.monitoringService,
-		s.userActivityInteractor,
-		s.mocks.createStorage,
-	)
 }
 
-func (s *VersionSuite) TestCreateNewVersion() {
-	t := s.T()
+func TestCreateNewVersion(t *testing.T) {
+	s := newVersionSuite(t)
+	defer s.ctrl.Finish()
 
 	runtimeID := "run-1"
 
@@ -126,12 +128,11 @@ func (s *VersionSuite) TestCreateNewVersion() {
 		t.Error(err)
 	}
 
-	s.mocks.userRepo.On("GetByID", userID).Return(userFound, nil)
-	s.mocks.runtimeRepo.On("GetByID", runtimeID).Return(runtime, nil)
-	s.mocks.versionRepo.On("GetByRuntime", runtimeID).Return([]*entity.Version{version}, nil)
-	s.mocks.versionRepo.On("Create", userID, mock.Anything).Return(version, nil)
+	s.mocks.runtimeRepo.EXPECT().GetByID(runtimeID).Return(runtime, nil)
+	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
 
-	s.mocks.userActivityRepo.On("Create", mock.Anything).Return(nil)
+	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
 	_, err = s.versionInteractor.Create(userFound.ID, runtimeID, file)
 	require.Nil(t, err)

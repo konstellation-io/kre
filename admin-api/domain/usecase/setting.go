@@ -45,7 +45,7 @@ func (i *SettingInteractor) CreateDefaults() error {
 			SessionLifetimeInDays: DefaultSessionLifetimeInDays,
 		}
 
-		i.logger.Info("Creating default values for settings.")
+		i.logger.Infof("Creating default values for settings")
 		return i.settingRepo.Create(s)
 	}
 

@@ -2,14 +2,11 @@ package usecase
 
 import (
 	"errors"
-	"math/rand"
-	"strings"
-	"time"
-
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/kre/admin-api/domain/service"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/runtime"
 )
 
 // RuntimeStatus enumerates all Runtime status
@@ -28,10 +25,11 @@ var (
 
 // RuntimeInteractor contains app logic to handle Runtime entities
 type RuntimeInteractor struct {
-	logger         logging.Logger
-	runtimeRepo    repository.RuntimeRepo
-	runtimeService service.RuntimeService
-	userActivity   *UserActivityInteractor
+	logger            logging.Logger
+	runtimeRepo       repository.RuntimeRepo
+	runtimeService    service.RuntimeService
+	userActivity      *UserActivityInteractor
+	passwordGenerator runtime.PasswordGenerator
 }
 
 // NewRuntimeInteractor creates a new RuntimeInteractor
@@ -40,12 +38,14 @@ func NewRuntimeInteractor(
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.RuntimeService,
 	userActivity *UserActivityInteractor,
+	passwordGenerator runtime.PasswordGenerator,
 ) *RuntimeInteractor {
 	return &RuntimeInteractor{
 		logger,
 		runtimeRepo,
 		runtimeService,
 		userActivity,
+		passwordGenerator,
 	}
 }
 
@@ -56,12 +56,12 @@ func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRu
 		Owner: userID,
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
-			Password:  generateRandomPassword(8),
-			SharedKey: generateRandomPassword(8),
+			Password:  i.passwordGenerator.NewPassword(),
+			SharedKey: i.passwordGenerator.NewPassword(),
 		},
 		Minio: entity.MinioConfig{
 			AccessKey: "admin",
-			SecretKey: generateRandomPassword(8),
+			SecretKey: i.passwordGenerator.NewPassword(),
 		},
 	}
 	createRuntimeInK8sResult, err := i.runtimeService.Create(runtime)
@@ -116,16 +116,4 @@ func (i *RuntimeInteractor) FindAll() ([]*entity.Runtime, error) {
 // GetByID return a Runtime by its ID
 func (i *RuntimeInteractor) GetByID(runtimeID string) (*entity.Runtime, error) {
 	return i.runtimeRepo.GetByID(runtimeID)
-}
-
-func generateRandomPassword(passwordLength int) string {
-	rand.Seed(time.Now().UnixNano())
-	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		"0123456789")
-	var b strings.Builder
-	for i := 0; i < passwordLength; i++ {
-		b.WriteRune(chars[rand.Intn(len(chars))])
-	}
-	return b.String()
 }

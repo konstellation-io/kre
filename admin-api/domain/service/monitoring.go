@@ -1,5 +1,7 @@
 package service
 
+//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/service_${GOFILE} -package=mocks
+
 import "gitlab.com/konstellation/kre/admin-api/domain/entity"
 
 // TODO: Change stop channel to derived context
