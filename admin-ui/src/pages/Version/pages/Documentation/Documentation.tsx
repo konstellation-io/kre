@@ -1,8 +1,13 @@
 import React from 'react';
-// import styles from './Documentation.module.scss';
+import { GetVersionConfStatus_versions } from '../../../../graphql/queries/types/GetVersionConfStatus';
+import styles from './Documentation.module.scss';
 
-function Documentation() {
-  return <>Version Documentation</>;
+type Props = {
+  version?: GetVersionConfStatus_versions;
+};
+
+function Documentation({ version }: Props) {
+  return <>{`Version Documentation: ${version && version.name}`}</>;
 }
 
 export default Documentation;

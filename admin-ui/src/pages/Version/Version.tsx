@@ -5,6 +5,7 @@ import ROUTE from '../../constants/routes';
 import Status from './pages/Status/Status';
 import Configuration from './pages/Configuration/Configuration';
 import Metrics from './pages/Metrics/Metrics';
+import Documentation from './pages/Documentation/Documentation';
 import VersionSideBar from './components/VersionSideBar/VersionSideBar';
 
 import {
@@ -29,6 +30,11 @@ function Version({ version, runtime }: Props) {
             exact
             path={ROUTE.RUNTIME_VERSION_STATUS}
             render={props => <Status {...props} version={version} />}
+          />
+          <Route
+            exact
+            path={ROUTE.RUNTIME_VERSION_DOCUMENTATION}
+            render={props => <Documentation {...props} version={version} />}
           />
           <Route
             exact
