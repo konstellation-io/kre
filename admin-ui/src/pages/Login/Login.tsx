@@ -48,8 +48,8 @@ function Login() {
           get(response, 'data.code') === 'validation_error'
         ) {
           setError('email', '', 'Invalid email');
-        } else if (get(response, 'data.code') === 'domain_not_allowed') {
-          setError('email', '', 'Domain not allowed');
+        } else if (get(response, 'data.code') === 'user_not_allowed') {
+          setError('email', '', 'User not allowed');
         } else {
           setError(
             'email',
