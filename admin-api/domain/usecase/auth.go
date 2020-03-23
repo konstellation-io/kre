@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-playground/validator"
 
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/auth"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
@@ -53,8 +54,8 @@ var (
 	ErrVerificationCodeNotFound = errors.New("error the verification not found")
 	// ErrExpiredVerificationCode error
 	ErrExpiredVerificationCode = errors.New("error the verification code code is expired")
-	// ErrDomainNotAllowed error
-	ErrDomainNotAllowed = errors.New("error domain not allowed")
+	// ErrUserNotAllowed error
+	ErrUserNotAllowed = errors.New("error email address not allowed")
 )
 
 // SignIn creates a temporal on-time-use verification code associated with the user and sends it to the user in the form of a “login link” via email, sms or whatever.
@@ -73,36 +74,34 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 		return err
 	}
 
-	// Get allowed domain list
+	// Get allowed domain/email lists
 	settings, err := a.settingRepo.Get()
 	if err != nil {
 		return err
 	}
 
-	// Check email domain is an allowed domain
 	isAllowed := false
-	if len(settings.AuthAllowedDomains) == 0 {
-		a.logger.Warn("All domains are allowed for sign-up, set allowed domains in the security settings")
+	domainsInWhitelist := len(settings.AuthAllowedDomains) != 0
+	emailsInWhitelist := len(settings.AuthAllowedEmails) != 0
+
+	// Check if there is no emails and domains in the whitelists
+	if !domainsInWhitelist && !emailsInWhitelist {
+		a.logger.Warn("All emails are allowed for sign-up, set allowed domains or email addresses in security settings")
 		isAllowed = true
-	} else {
-		split := strings.Split(email, "@")
-		domain := split[1]
+	}
 
-		for _, d := range settings.AuthAllowedDomains {
-			if d == domain {
-				a.logger.Infof("Email domain '%s' is allowed", domain)
-				isAllowed = true
-				break
-			}
-		}
+	// Check email domain is an allowed domain
+	if !isAllowed && domainsInWhitelist {
+		isAllowed = a.isDomainAllowed(settings, email)
+	}
 
-		if !isAllowed {
-			a.logger.Infof("Email domain '%s' is not in the allowed domain list", domain)
-		}
+	// Check email address is an allowed address
+	if !isAllowed && emailsInWhitelist {
+		isAllowed = a.isEmailAllowed(settings, email)
 	}
 
 	if !isAllowed {
-		return ErrDomainNotAllowed
+		return ErrUserNotAllowed
 	}
 
 	// SignUp user creation
@@ -128,6 +127,35 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 
 	a.logger.Info("Sending login link...")
 	return a.loginLinkTransport.Send(user.Email, verificationCode)
+}
+
+func (a *AuthInteractor) isDomainAllowed(settings *entity.Setting, email string) bool {
+	split := strings.Split(email, "@")
+	domain := split[1]
+
+	for _, d := range settings.AuthAllowedDomains {
+		if d == domain {
+			a.logger.Infof("Email domain '%s' is allowed", domain)
+			return true
+		}
+	}
+
+	a.logger.Infof("Email domain '%s' is not in the allowed domain list", domain)
+
+	return false
+}
+
+func (a *AuthInteractor) isEmailAllowed(settings *entity.Setting, email string) bool {
+	for _, e := range settings.AuthAllowedEmails {
+		if e == email {
+			a.logger.Infof("Email address '%s' is allowed", email)
+			return true
+		}
+	}
+
+	a.logger.Infof("Email address '%s' is not in the allowed email list", email)
+
+	return false
 }
 
 // VerifyCode checks that the given VerificationCode is valid

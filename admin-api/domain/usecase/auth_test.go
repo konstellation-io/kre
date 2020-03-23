@@ -3,9 +3,10 @@ package usecase_test
 import (
 	"errors"
 	"fmt"
-	"github.com/golang/mock/gomock"
 	"testing"
 	"time"
+
+	"github.com/golang/mock/gomock"
 
 	"github.com/stretchr/testify/require"
 
@@ -74,7 +75,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 	}
 }
 
-func TestSignInWithoutDomainValidation(t *testing.T) {
+func TestSignInWithoutDomainAndEmailValidation(t *testing.T) {
 	s := newAuthSuite(t)
 	defer s.ctrl.Finish()
 
@@ -87,6 +88,7 @@ func TestSignInWithoutDomainValidation(t *testing.T) {
 	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{},
+		AuthAllowedEmails:     []string{},
 	}
 
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(user, nil)
@@ -143,7 +145,7 @@ func TestSignInWithInvalidDomain(t *testing.T) {
 	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
 
 	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
-	require.Equal(t, usecase.ErrDomainNotAllowed, err)
+	require.Equal(t, usecase.ErrUserNotAllowed, err)
 }
 
 func TestSignUpWithValidDomain(t *testing.T) {
@@ -160,6 +162,59 @@ func TestSignUpWithValidDomain(t *testing.T) {
 	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{domain},
+	}
+
+	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
+	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
+	s.mocks.verificationCodeGenerator.EXPECT().Generate().Return(verificationCode)
+	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
+	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
+	s.mocks.userRepo.EXPECT().Create(user.Email).Return(user, nil)
+
+	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	require.Nil(t, err)
+}
+
+func TestSignInWithoutDomainValidationAndInvalidEmail(t *testing.T) {
+	s := newAuthSuite(t)
+	defer s.ctrl.Finish()
+
+	verificationCodeDurationInMinutes := 1
+	user := &entity.User{
+		Email: "userA@testdomain.com",
+		ID:    "userA",
+	}
+	settings := &entity.Setting{
+		SessionLifetimeInDays: 0,
+		AuthAllowedDomains:    []string{},
+		AuthAllowedEmails:     []string{"userB@testdomain.com"},
+	}
+
+	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(user, nil)
+	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
+
+	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	require.Equal(t, usecase.ErrUserNotAllowed, err)
+}
+
+func TestSignUpWithValidEmailAddress(t *testing.T) {
+	s := newAuthSuite(t)
+	defer s.ctrl.Finish()
+
+	verificationCode := "test_verification_code"
+	verificationCodeDurationInMinutes := 1
+	userId := "userA"
+	domain := "testdomain.com"
+	email := fmt.Sprintf("%s@%s", userId, domain)
+
+	user := &entity.User{
+		Email: email,
+		ID:    userId,
+	}
+	settings := &entity.Setting{
+		SessionLifetimeInDays: 0,
+		AuthAllowedDomains:    []string{"anotherdomain.com"},
+		AuthAllowedEmails:     []string{email},
 	}
 
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
