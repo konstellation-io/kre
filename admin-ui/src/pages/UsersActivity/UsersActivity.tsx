@@ -2,7 +2,7 @@ import React, { useState, useEffect, UIEvent } from 'react';
 
 import Header from '../../components/Header/Header';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
-import SettingsHeader from '../Settings/components/SettingsHeader';
+import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
 import FiltersBar, { typeToText } from './components/FiltersBar/FiltersBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
 

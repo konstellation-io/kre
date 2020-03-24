@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../Settings.module.scss';
+import styles from '../../Settings.module.scss';
 
 type Props = {
   title: string;

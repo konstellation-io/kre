@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import SettingsHeader from './SettingsHeader';
 
 describe('SettingsHeader', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(<SettingsHeader title="title" subtitle="subtitle" />);

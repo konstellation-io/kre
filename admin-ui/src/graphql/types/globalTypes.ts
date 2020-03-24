@@ -65,6 +65,7 @@ export interface PublishVersionInput {
 
 export interface SettingsInput {
   authAllowedDomains?: string[] | null;
+  authAllowedEmails?: string[] | null;
   sessionLifetimeInDays?: number | null;
 }
 
