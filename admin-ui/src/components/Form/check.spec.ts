@@ -103,14 +103,33 @@ test('if isDefined makes correct validations', () => {
 });
 
 test('if isFieldInList makes correct validations', () => {
-  const fieldInList1 = CHECK.isFieldInList('a', ['a', 'b', 'c']);
-  const fieldInList2 = CHECK.isFieldInList('', ['a', 'b', 'c', '']);
-  const fieldNotInList1 = CHECK.isFieldInList('d', ['a', 'b', 'c']);
-  const fieldNotInList2 = CHECK.isFieldInList('a', []);
+  const fieldInList1 = CHECK.isFieldNotInList('a', ['a', 'b', 'c']);
+  const fieldInList2 = CHECK.isFieldNotInList('', ['a', 'b', 'c', '']);
+  const fieldNotInList1 = CHECK.isFieldNotInList('d', ['a', 'b', 'c']);
+  const fieldNotInList2 = CHECK.isFieldNotInList('a', []);
 
   expect(fieldNotInList1.valid).toBeFalsy();
   expect(fieldNotInList2.valid).toBeFalsy();
 
   expect(fieldInList1.valid).toBeTruthy();
   expect(fieldInList2.valid).toBeTruthy();
+});
+
+describe('isItemDuplicated', () => {
+  it.each`
+    value     | response                                         | items                           | label
+    ${'quux'} | ${{ valid: true, message: '' }}                  | ${['foo', 'bar', 'baz', 'qux']} | ${undefined}
+    ${'foo'}  | ${{ valid: false, message: 'Duplicated item' }}  | ${['foo', 'bar', 'baz', 'qux']} | ${undefined}
+    ${'foo'}  | ${{ valid: false, message: 'Duplicated label' }} | ${['foo', 'bar', 'baz', 'qux']} | ${'label'}
+  `(
+    'should return $response when value is $value and items are $items',
+    ({ value, response, items, label }) => {
+      // Arrange.
+      // Act.
+      const result = CHECK.isItemDuplicated(value, items, label);
+
+      // Assert.
+      expect(result).toEqual(response);
+    }
+  );
 });

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { get } from 'lodash';
 
-import SettingsHeader from './components/SettingsHeader';
+import SettingsHeader from './components/SettingsHeader/SettingsHeader';
 import TextInput, {
   InputType
 } from '../../components/Form/TextInput/TextInput';

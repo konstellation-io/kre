@@ -77,7 +77,7 @@ export function isDomainValid(value: string) {
   return re.test(value) ? VALID : setInvalid('Invalid domain format');
 }
 
-export function isFieldInList(
+export function isFieldNotInList(
   value: string,
   list: string[],
   optional: boolean = false,
@@ -92,4 +92,14 @@ export function isFieldAMomentDate(value: Moment, optional: boolean = false) {
   return isMoment(value) || (optional && !value)
     ? VALID
     : setInvalid(`Value is not a Date`);
+}
+
+export function isItemDuplicated(
+  newItem: string,
+  items: string[],
+  itemName: string = 'item'
+) {
+  const valid = !items.includes(newItem);
+  const msg = valid ? '' : `Duplicated ${itemName}`;
+  return { valid, message: msg };
 }

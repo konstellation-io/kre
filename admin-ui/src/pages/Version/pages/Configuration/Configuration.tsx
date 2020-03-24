@@ -7,7 +7,7 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
 import Button from '../../../../components/Button/Button';
 import Modal from '../../../../components/Modal/Modal';
-import SettingsHeader from '../../../Settings/components/SettingsHeader';
+import SettingsHeader from '../../../Settings/components/SettingsHeader/SettingsHeader';
 import ConfigurationVariableList from '../../../../components/ConfigurationVariableList/ConfigurationVariableList';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';

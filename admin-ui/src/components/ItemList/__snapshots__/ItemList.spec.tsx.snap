@@ -1,25 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DomainList matches snapshot 1`] = `
+exports[`ItemList matches snapshot 1`] = `
 <Fragment>
   <div
     className="row"
     key="domain.1"
   >
     <p
-      className="domainPosition"
+      className="itemPosition"
     >
       1
     </p>
     <p
-      className="domainName"
-      data-testid="domainListName0"
+      className="itemName"
+      data-testid="itemListName0"
     >
       domain.1
     </p>
     <div
       className="removeButton"
-      data-testid="domainListRemove0"
+      data-testid="itemListRemove0"
       onClick={[Function]}
     >
       <DeleteIcon
@@ -32,19 +32,19 @@ exports[`DomainList matches snapshot 1`] = `
     key="domain.2"
   >
     <p
-      className="domainPosition"
+      className="itemPosition"
     >
       2
     </p>
     <p
-      className="domainName"
-      data-testid="domainListName1"
+      className="itemName"
+      data-testid="itemListName1"
     >
       domain.2
     </p>
     <div
       className="removeButton"
-      data-testid="domainListRemove1"
+      data-testid="itemListRemove1"
       onClick={[Function]}
     >
       <DeleteIcon
@@ -57,19 +57,19 @@ exports[`DomainList matches snapshot 1`] = `
     key="domain.3.sample"
   >
     <p
-      className="domainPosition"
+      className="itemPosition"
     >
       3
     </p>
     <p
-      className="domainName"
-      data-testid="domainListName2"
+      className="itemName"
+      data-testid="itemListName2"
     >
       domain.3.sample
     </p>
     <div
       className="removeButton"
-      data-testid="domainListRemove2"
+      data-testid="itemListRemove2"
       onClick={[Function]}
     >
       <DeleteIcon

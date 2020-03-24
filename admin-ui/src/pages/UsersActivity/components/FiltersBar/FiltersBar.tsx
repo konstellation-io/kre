@@ -49,7 +49,7 @@ function FiltersBar({ onSubmit, types, users }: FormFieldProps) {
       {
         validate: (value: string) => {
           return CHECK.getValidationError([
-            CHECK.isFieldInList(
+            CHECK.isFieldNotInList(
               value,
               users,
               true,

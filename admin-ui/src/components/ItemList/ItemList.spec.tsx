@@ -1,5 +1,5 @@
 import React from 'react';
-import DomainList from './DomainList';
+import ItemList from './ItemList';
 
 import { domainMock } from '../../mocks/settings';
 import { shallow } from 'enzyme';
@@ -8,16 +8,16 @@ import { testid } from '../../utils/testUtilsEnzyme';
 const mockedDomains = domainMock.result.data.settings.authAllowedDomains;
 const mockOnRemoveDomain = jest.fn();
 
-describe('DomainList', () => {
-  let wrapper;
+describe('ItemList', () => {
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(
-      <DomainList
+      <ItemList
         data={mockedDomains}
         loading={false}
         error={undefined}
-        onRemoveDomain={mockOnRemoveDomain}
+        onRemoveItem={mockOnRemoveDomain}
       />
     );
   });
@@ -28,13 +28,13 @@ describe('DomainList', () => {
 
   it('Shows right texts', () => {
     // Check first domain text
-    expect(wrapper.find(testid('domainListName0')).text()).toBe('domain.1');
+    expect(wrapper.find(testid('itemListName0')).text()).toBe('domain.1');
     // Check second domain text
-    expect(wrapper.find(testid('domainListName1')).text()).toBe('domain.2');
+    expect(wrapper.find(testid('itemListName1')).text()).toBe('domain.2');
   });
 
   it('Handles events', () => {
-    wrapper.find(testid('domainListRemove0')).simulate('click');
+    wrapper.find(testid('itemListRemove0')).simulate('click');
 
     expect(mockOnRemoveDomain).toHaveBeenCalledTimes(1);
   });
