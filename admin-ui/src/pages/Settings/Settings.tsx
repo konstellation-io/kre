@@ -7,11 +7,10 @@ import SecurityIcon from '@material-ui/icons/Security';
 
 import GeneralSettings from './GeneralSettings';
 import SecuritySettings from './SecuritySettings';
-import Header from '../../components/Header/Header';
-import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 
 import styles from './Settings.module.scss';
+import PageBase from '../../components/Layout/PageBase/PageBase';
 
 const tabs = [
   {
@@ -28,10 +27,8 @@ const tabs = [
 
 function Settings() {
   return (
-    <>
-      <Header />
+    <PageBase>
       <div className={styles.container} data-testid="settingsContainer">
-        <NavigationBar />
         <Sidebar title="Settings" tabs={tabs} />
         <div className={styles.content}>
           <Route
@@ -46,7 +43,7 @@ function Settings() {
           />
         </div>
       </div>
-    </>
+    </PageBase>
   );
 }
 

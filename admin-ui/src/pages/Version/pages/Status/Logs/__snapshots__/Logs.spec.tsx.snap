@@ -6,9 +6,9 @@ exports[`Logs matches snapshot 1`] = `
     className="container"
   >
     <Header
-      closeLogs={[Function]}
       opened={false}
       stickToBottom={false}
+      togglePanel={[Function]}
       toggleStickToBottom={[Function]}
     />
     <div
@@ -17,20 +17,38 @@ exports[`Logs matches snapshot 1`] = `
       <Filters
         filters={
           Object {
-            "node": "nodeName",
+            "node": "nodeNameMock",
           }
         }
       />
       <LogsList
-        node={
-          Object {
-            "id": "nodeId",
-            "name": "nodeName",
-          }
-        }
+        nodeId="nodeIdMock"
         onUpdate={[Function]}
+        runtimeId="runtimeIdMock"
       />
     </div>
+  </div>
+  <div
+    className="shield"
+    onClick={[Function]}
+  />
+</Fragment>
+`;
+
+exports[`Logs should be empty when there is no node 1`] = `
+<Fragment>
+  <div
+    className="container hidden"
+  >
+    <Header
+      opened={false}
+      stickToBottom={false}
+      togglePanel={[Function]}
+      toggleStickToBottom={[Function]}
+    />
+    <div
+      className="content"
+    />
   </div>
   <div
     className="shield"

@@ -3,25 +3,23 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header/Header';
 import Filters from './components/Filters/Filters';
 import LogsList from './components/LogsList/LogsList';
-import { Node } from '../Status';
 
 import cx from 'classnames';
 import styles from './Logs.module.scss';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_CURRENT_LOG_PANEL } from '../../../../../graphql/client/queries/getCurrentLogPanel';
 
-type Props = {
-  node?: Node;
-  setSelectedNode: Function;
-};
-function Logs({ node, setSelectedNode }: Props) {
+function Logs() {
   const [opened, setOpened] = useState<boolean>(false);
   const [stickToBottom, setStickToBottom] = useState<boolean>(false);
+  const { data } = useQuery(GET_CURRENT_LOG_PANEL);
 
   useEffect(() => {
-    setOpened(node !== undefined);
-  }, [node]);
+    setOpened(data && data.logPanel && data.logPanel.nodeId !== undefined);
+  }, [data]);
 
-  function closeLogs() {
-    setSelectedNode(undefined);
+  function togglePanel() {
+    setOpened(!opened);
   }
 
   function scrollToBottom() {
@@ -47,28 +45,38 @@ function Logs({ node, setSelectedNode }: Props) {
       scrollToBottom();
     }
   }
-
+  const logPanel = data && data.logPanel;
+  const hidden = !logPanel;
   return (
     <>
-      <div className={cx(styles.container, { [styles.opened]: opened })}>
+      <div
+        className={cx(styles.container, {
+          [styles.opened]: opened,
+          [styles.hidden]: hidden
+        })}
+      >
         <Header
-          closeLogs={closeLogs}
+          togglePanel={togglePanel}
           opened={opened}
           stickToBottom={stickToBottom}
           toggleStickToBottom={toggleStickToBottom}
         />
-        <div className={styles.content}>
-          {node && (
+        <div className={cx(styles.content, { [styles.opened]: opened })}>
+          {logPanel && (
             <>
-              <Filters filters={{ node: node.name }} />
-              <LogsList node={node} onUpdate={onLogsUpdate} />
+              <Filters filters={{ node: logPanel.nodeName }} />
+              <LogsList
+                nodeId={logPanel.nodeId}
+                runtimeId={logPanel.runtimeId}
+                onUpdate={onLogsUpdate}
+              />
             </>
           )}
         </div>
       </div>
       <div
         className={cx(styles.shield, { [styles.show]: opened })}
-        onClick={closeLogs}
+        onClick={togglePanel}
       />
     </>
   );

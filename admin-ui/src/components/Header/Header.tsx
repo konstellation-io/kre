@@ -27,7 +27,7 @@ const Header: FunctionComponent<Props> = ({ children }) => {
   return (
     <header className={styles.container} data-testid="app-header">
       <img
-        className={styles.konstellationsIcon}
+        className={styles.konstellationIcon}
         src={'/img/brand/konstellation.png'}
         alt="konstellation logo"
       />

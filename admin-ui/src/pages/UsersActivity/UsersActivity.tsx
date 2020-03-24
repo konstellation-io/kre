@@ -1,7 +1,5 @@
 import React, { useState, useEffect, UIEvent } from 'react';
 
-import Header from '../../components/Header/Header';
-import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
 import FiltersBar, { typeToText } from './components/FiltersBar/FiltersBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
@@ -21,6 +19,7 @@ import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import InfoMessage from '../../components/InfoMessage/InfoMessage';
 import { queryPayloadHelper } from '../../utils/formUtils';
+import PageBase from '../../components/Layout/PageBase/PageBase';
 
 const GetUsersQuery = loader('../../graphql/queries/getUsers.graphql');
 const GetUserActivityQuery = loader(
@@ -106,10 +105,8 @@ function UsersActivity() {
   }
 
   return (
-    <>
-      <Header />
+    <PageBase>
       <div className={styles.container} data-testid="settingsContainer">
-        <NavigationBar />
         <div className={cx(styles.form, styles.content)}>
           <SettingsHeader title="User Audit" />
           <FiltersBar
@@ -123,7 +120,7 @@ function UsersActivity() {
           </div>
         </div>
       </div>
-    </>
+    </PageBase>
   );
 }
 

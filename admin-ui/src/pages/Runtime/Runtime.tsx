@@ -15,7 +15,6 @@ import {
   GetVersionConfStatusVariables
 } from '../../graphql/queries/types/GetVersionConfStatus';
 
-import cx from 'classnames';
 import styles from './Runtime.module.scss';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import PageBase from '../../components/Layout/PageBase/PageBase';
@@ -77,18 +76,8 @@ function Runtime() {
   );
   const isUserInRuntimeVersions: boolean = location.pathname === versionsPath;
 
-  const statusPath: string = buildRoute.version(
-    ROUTE.RUNTIME_VERSION_STATUS,
-    runtimeId,
-    versionId
-  );
-  const isUserInVersionStatus: boolean = location.pathname === statusPath;
-
   return (
     <PageBase
-      customClassname={cx({
-        [styles.logsPadding]: isUserInVersionStatus
-      })}
       headerChildren={
         isUserInRuntimeVersions ? (
           <Button label="ADD VERSION" height={40} to={newVersionRoute} />

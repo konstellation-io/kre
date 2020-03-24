@@ -13,6 +13,16 @@ export interface AddNotificationInput {
   to: string;
 }
 
+export interface SetCurrentLogPanelInput {
+  runtimeId: string;
+  nodeId: string;
+  nodeName: string;
+}
+
+export interface LogPanel extends SetCurrentLogPanelInput {
+  __typename: string;
+}
+
 export interface RemoveNotificationInput {
   id: string;
 }

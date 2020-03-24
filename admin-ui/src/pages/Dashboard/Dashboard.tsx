@@ -5,8 +5,6 @@ import { useHistory } from 'react-router';
 import { History } from 'history';
 import ROUTE from '../../constants/routes';
 
-import Header from '../../components/Header/Header';
-import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
 import Hexagon from '../../components/Shape/Hexagon/Hexagon';
 import HexagonBorder from '../../components/Shape/Hexagon/HexagonBorder';
@@ -26,6 +24,7 @@ import {
 import { RuntimeStatus } from '../../graphql/types/globalTypes';
 import { ApolloError } from 'apollo-client';
 import { buildRoute } from '../../utils/routes';
+import PageBase from '../../components/Layout/PageBase/PageBase';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 
@@ -104,20 +103,22 @@ function Dashboard() {
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
 
   return (
-    <>
-      <Header>
-        <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
-        <div>{`${nRuntimes} runtimes shown`}</div>
-      </Header>
+    <PageBase
+      headerChildren={
+        <>
+          <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
+          <div>{`${nRuntimes} runtimes shown`}</div>
+        </>
+      }
+    >
       <div className={styles.container} data-testid="dashboardContainer">
-        <NavigationBar />
         <div className={styles.content}>
           <div className={styles.hexagons}>
             {getDashboardContent({ data: runtimes, error, loading, history })}
           </div>
         </div>
       </div>
-    </>
+    </PageBase>
   );
 }
 

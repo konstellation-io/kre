@@ -35,7 +35,7 @@ exports[`Logs Header matches snapshot 1`] = `
     <div
       onClick={[MockFunction]}
     >
-      <CloseIcon
+      <ExpandMoreIcon
         className="icon-regular"
       />
     </div>

@@ -22,7 +22,7 @@ jest.mock('react-router', () => ({
 const mocks = [workflowsMock, nodeStatus, nodeStatus];
 const errorMocks = [errorMorkflowsMock, nodeStatus, nodeStatus];
 
-function Wrapper(props) {
+function Wrapper(props: any) {
   return (
     <MockedProvider mocks={mocks} addTypename={false} {...props}>
       <Status version={version} />
@@ -37,7 +37,6 @@ describe('Status', () => {
     const wrapper = await mountApolloComponent(Component);
 
     expect(wrapper.exists(StatusViewer)).toBeTruthy();
-    expect(wrapper.exists(Logs)).toBeTruthy();
   });
 
   it('show loading component', async () => {
