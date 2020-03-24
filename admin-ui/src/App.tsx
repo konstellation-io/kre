@@ -2,6 +2,8 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import './styles/react-calendar.scss';
 import './styles/app.global.scss';
+import 'markdown-navbar/dist/navbar.css';
+import './styles/markdown-navbar.scss';
 
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
@@ -70,6 +72,7 @@ function ProtectedRoutes() {
             path={[
               ROUTE.RUNTIME_VERSION_CONFIGURATION,
               ROUTE.RUNTIME_VERSION_METRICS,
+              ROUTE.RUNTIME_VERSION_DOCUMENTATION,
               ROUTE.RUNTIME_VERSION_STATUS
             ]}
             component={Runtime}

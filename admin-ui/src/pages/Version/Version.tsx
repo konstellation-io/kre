@@ -34,7 +34,7 @@ function Version({ version, runtime }: Props) {
           <Route
             exact
             path={ROUTE.RUNTIME_VERSION_DOCUMENTATION}
-            render={props => <Documentation {...props} version={version} />}
+            component={Documentation}
           />
           <Route
             exact

@@ -1,0 +1,54 @@
+@import './colors';
+@import './mixins';
+@import './variables';
+
+$base-left-padding: 3 * $grid-unit;
+$increment-left-padding: 2 * $grid-unit;
+
+.markdown-navigation {
+  padding-top: 32px;
+
+  div {
+    @include font-button;
+    letter-spacing: 0.55px !important;
+    font-weight: 700 !important;
+    color: $font-color-light !important;
+    text-transform: uppercase;
+  }
+
+  .title-level2 {
+    padding-left: $base-left-padding;
+    font-size: 13px !important;
+  }
+  .title-level3 {
+    padding-left: $base-left-padding + $increment-left-padding;
+    font-size: 11px !important;
+  }
+  .title-level4 {
+    padding-left: $base-left-padding + 2 * $increment-left-padding;
+    font-size: 10px !important;
+  }
+  .title-level5 {
+    padding-left: $base-left-padding + 3 * $increment-left-padding;
+    font-size: 9px !important;
+  }
+
+  .title-anchor {
+    transition: color ease 0.4s, background-color ease 0.4s;
+  }
+  .title-anchor.active {
+    color: $font-color-white !important;
+    font-weight: 800 !important;
+  }
+
+  .title-anchor:hover,
+  .title-anchor.active {
+    background-color: transparent;
+  }
+
+  .title-level2:hover,
+  .title-anchor:hover {
+    background-color: $bg-highlighted;
+    color: $font-color-white !important;
+  }
+}
