@@ -5,6 +5,7 @@
   height: 100%;
   display: flex;
   flex-direction: row;
+  width: 100%;
 }
 
 .content {
@@ -30,7 +31,7 @@
     flex-direction: row;
     align-items: center;
     margin-top: 30px;
-    border: solid 2px $bg-color-lighter;
+    border: solid $bg-color-lighter;
     border-width: 2px 0;
 
     .label {

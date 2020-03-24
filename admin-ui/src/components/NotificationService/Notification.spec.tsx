@@ -1,7 +1,6 @@
 import React from 'react';
 import Notification from './Notification';
 import { shallow } from 'enzyme';
-import { label } from '../../utils/testUtilsEnzyme';
 import Button from '../Button/Button';
 import { NotificationType } from '../../graphql/client/typeDefs';
 
@@ -10,10 +9,8 @@ jest.mock('@apollo/react-hooks', () => ({
 }));
 
 describe('Notification', () => {
-  let wrapper;
+  let wrapper: any;
 
-  const mockOnAction = jest.fn();
-  const mockOnClose = jest.fn();
   beforeEach(() => {
     wrapper = shallow(
       <Notification

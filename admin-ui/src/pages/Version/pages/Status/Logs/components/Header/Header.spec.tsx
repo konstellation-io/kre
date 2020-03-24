@@ -1,7 +1,8 @@
 import React from 'react';
 import Header from './Header';
 
-import IconClose from '@material-ui/icons/Close';
+import IconOpen from '@material-ui/icons/ExpandLess';
+import IconClose from '@material-ui/icons/ExpandMore';
 import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
 import IconClear from '@material-ui/icons/DeleteOutline';
 import { shallow, ShallowWrapper } from 'enzyme';
@@ -15,13 +16,13 @@ jest.mock('@apollo/react-hooks', () => ({
 
 describe('Logs Header', () => {
   let wrapper: ShallowWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
-  const closeLogsMock = jest.fn();
+  const togglePanel = jest.fn();
   const toggleStickToBottomMock = jest.fn();
 
   beforeEach(() => {
     wrapper = shallow(
       <Header
-        closeLogs={closeLogsMock}
+        togglePanel={togglePanel}
         opened
         stickToBottom
         toggleStickToBottom={toggleStickToBottomMock}
@@ -51,7 +52,13 @@ describe('Logs Header', () => {
       .parent()
       .simulate('click');
 
-    expect(closeLogsMock).toHaveBeenCalledTimes(1);
+    wrapper.setProps({ opened: false });
+    wrapper
+      .find(IconOpen)
+      .parent()
+      .simulate('click');
+
+    expect(togglePanel).toHaveBeenCalledTimes(2);
     expect(toggleStickToBottomMock).toHaveBeenCalledTimes(1);
     expect(mockWriteData).toHaveBeenCalledTimes(1);
   });

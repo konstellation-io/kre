@@ -1,7 +1,6 @@
 import { get } from 'lodash';
 
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
 import { loader } from 'graphql.macro';
 import {
   useSubscription,
@@ -12,7 +11,6 @@ import {
 import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 
 import LogItem from './LogItem';
-import { Node } from '../../../Status';
 
 import {
   GetLogs,
@@ -22,26 +20,25 @@ import {
 
 import styles from './LogsList.module.scss';
 import { LocalState } from '../../../../../../../index';
-import { RuntimeRouteParams } from '../../../../../../../constants/routes';
 
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
 
 type Props = {
-  node: Node;
+  nodeId: string;
+  runtimeId: string;
   onUpdate: () => void;
 };
-function LogsList({ node, onUpdate }: Props) {
+function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
   const client = useApolloClient();
   const { data } = useQuery<LocalState>(GET_LOGS);
-  const { runtimeId } = useParams<RuntimeRouteParams>();
   const logs = data ? data.logs : [];
 
   useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
     variables: {
       runtimeId,
-      nodeId: node.id
+      nodeId
     },
     onSubscriptionData: (
       msg: SubscriptionHookOptions<GetLogs, GetLogsVariables>

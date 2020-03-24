@@ -1,6 +1,7 @@
 import React from 'react';
 
-import IconClose from '@material-ui/icons/Close';
+import IconOpen from '@material-ui/icons/ExpandLess';
+import IconClose from '@material-ui/icons/ExpandMore';
 import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
 import IconClear from '@material-ui/icons/DeleteOutline';
 import IconLogs from '@material-ui/icons/ListAlt';
@@ -11,13 +12,13 @@ import cx from 'classnames';
 import styles from './Header.module.scss';
 
 type Props = {
-  closeLogs: () => void;
+  togglePanel: () => void;
   opened: boolean;
   stickToBottom: boolean;
   toggleStickToBottom: () => void;
 };
 function Header({
-  closeLogs,
+  togglePanel,
   opened,
   stickToBottom,
   toggleStickToBottom
@@ -27,6 +28,8 @@ function Header({
   function clearLogs(): void {
     client.writeData({ data: { logs: [] } });
   }
+
+  const Icon = opened ? IconClose : IconOpen;
 
   return (
     <div
@@ -48,8 +51,8 @@ function Header({
         >
           <IconStickBottom className="icon-regular" />
         </div>
-        <div onClick={closeLogs}>
-          <IconClose className="icon-regular" />
+        <div onClick={togglePanel}>
+          <Icon className="icon-regular" />
         </div>
       </div>
     </div>

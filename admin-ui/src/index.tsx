@@ -1,4 +1,4 @@
-import { get, findIndex } from 'lodash';
+import { get } from 'lodash';
 import config from './config';
 
 import React from 'react';
@@ -11,7 +11,10 @@ import './styles/d3.scss';
 import ROUTE from './constants/routes';
 import history from './history';
 
-import typeDefs, { NotificationType } from './graphql/client/typeDefs';
+import typeDefs, {
+  LogPanel,
+  NotificationType
+} from './graphql/client/typeDefs';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloLink, split } from 'apollo-link';
@@ -20,11 +23,11 @@ import { onError, ErrorResponse } from 'apollo-link-error';
 import { createUploadLink } from 'apollo-upload-client';
 import { getMainDefinition } from 'apollo-utilities';
 import { GetLogs_nodeLogs } from './graphql/subscriptions/types/GetLogs';
-import {
-  GET_NOTIFICATIONS,
-  GetNotifications_notifications
-} from './graphql/client/queries/getNotification.graphql';
 import { ADD_NOTIFICATION } from './graphql/client/mutations/addNotification.graphql';
+import {
+  addNotificationResolver,
+  removeNotificationResolver
+} from './graphql/client/resolvers';
 
 export let cache: InMemoryCache;
 
@@ -32,6 +35,7 @@ export interface LocalState {
   loggedIn: boolean;
   logs: GetLogs_nodeLogs[];
   notifications: [];
+  logPanel: LogPanel | null;
 }
 interface DefaultCache {
   data: LocalState;
@@ -133,7 +137,8 @@ config
       data: {
         loggedIn: false,
         logs: [],
-        notifications: []
+        notifications: [],
+        logPanel: null
       }
     };
 
@@ -143,50 +148,8 @@ config
       typeDefs,
       resolvers: {
         Mutation: {
-          addNotification: (_root, variables, { cache }) => {
-            const data = cache.readQuery({
-              query: GET_NOTIFICATIONS
-            });
-            const newNotification = {
-              ...variables.input,
-              __typename: 'Notification'
-            };
-
-            const notificationRepeated = findIndex(
-              data.notifications,
-              newNotification
-            );
-
-            if (notificationRepeated === -1) {
-              const notifications = data.notifications.concat([
-                newNotification
-              ]);
-
-              cache.writeQuery({
-                query: GET_NOTIFICATIONS,
-                data: { notifications }
-              });
-            }
-
-            return null;
-          },
-          removeNotification: (_root, variables, { cache }) => {
-            const data = cache.readQuery({
-              query: GET_NOTIFICATIONS
-            });
-
-            const notifications = data.notifications.filter(
-              (notification: GetNotifications_notifications) =>
-                notification.id !== variables.input.id
-            );
-
-            cache.writeQuery({
-              query: GET_NOTIFICATIONS,
-              data: { notifications }
-            });
-
-            return null;
-          }
+          addNotification: addNotificationResolver,
+          removeNotification: removeNotificationResolver
         }
       }
     });

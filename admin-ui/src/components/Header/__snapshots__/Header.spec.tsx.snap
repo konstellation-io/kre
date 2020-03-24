@@ -1103,7 +1103,7 @@ exports[`Header matches snapshot 1`] = `
         >
           <img
             alt="konstellation logo"
-            className="konstellationsIcon"
+            className="konstellationIcon"
             src="/img/brand/konstellation.png"
           />
           <div
