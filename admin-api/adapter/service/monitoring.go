@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"time"
 
 	"google.golang.org/grpc"
 
@@ -70,15 +71,14 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 			m.logger.Infof("------ Message received: %#v -----", msg.String())
 
 			if msg.GetNodeId() != "" {
-
 				ch <- &entity.NodeLog{
 					Date:      msg.Date,
-					Type:      msg.GetType(),
 					VersionId: msg.GetVersionId(),
 					NodeId:    msg.GetNodeId(),
 					PodId:     msg.GetPodId(),
 					Message:   msg.GetMessage(),
 					Level:     msg.GetLevel(),
+					NodeName:  msg.GetNodeName(),
 				}
 			}
 		}
@@ -159,4 +159,48 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 	}()
 
 	return ch, nil
+}
+
+func (m *MonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runtime, options entity.SearchLogsOptions) (entity.SearchLogsResult, error) {
+	var result entity.SearchLogsResult
+	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
+	if err != nil {
+		return result, err
+	}
+
+	c := monitoringpb.NewMonitoringServiceClient(cc)
+	req := monitoringpb.SearchLogsRequest{
+		Search:     options.Search,
+		StartDate:  options.StartDate.Format(time.RFC3339),
+		EndDate:    options.EndDate.Format(time.RFC3339),
+		WorkflowID: options.WorkflowID,
+		NodeID:     options.NodeID,
+		Level:      options.Level,
+		Cursor:     options.Cursor,
+	}
+
+	res, err := c.SearchLogs(ctx, &req)
+	if err != nil {
+		return result, err
+	}
+
+	var logs []*entity.NodeLog
+	if len(res.Logs) > 0 {
+		for _, l := range res.Logs {
+			logs = append(logs, &entity.NodeLog{
+				Date:      l.Date,
+				Level:     l.Level,
+				Message:   l.Message,
+				VersionId: l.VersionId,
+				NodeId:    l.NodeId,
+				PodId:     l.PodId,
+				NodeName:  l.NodeName,
+			})
+		}
+	}
+
+	result.Logs = logs
+	result.Cursor = res.Cursor
+
+	return result, nil
 }

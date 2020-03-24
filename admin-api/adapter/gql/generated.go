@@ -38,6 +38,7 @@ type Config struct {
 type ResolverRoot interface {
 	Mutation() MutationResolver
 	Node() NodeResolver
+	NodeLog() NodeLogResolver
 	Query() QueryResolver
 	Runtime() RuntimeResolver
 	Subscription() SubscriptionResolver
@@ -69,6 +70,11 @@ type ComplexityRoot struct {
 		ToNode   func(childComplexity int) int
 	}
 
+	LogPage struct {
+		Cursor func(childComplexity int) int
+		Logs   func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateRuntime              func(childComplexity int, input CreateRuntimeInput) int
 		CreateVersion              func(childComplexity int, input CreateVersionInput) int
@@ -87,17 +93,15 @@ type ComplexityRoot struct {
 	}
 
 	NodeLog struct {
-		Date      func(childComplexity int) int
-		Level     func(childComplexity int) int
-		Message   func(childComplexity int) int
-		NodeId    func(childComplexity int) int
-		PodId     func(childComplexity int) int
-		Type      func(childComplexity int) int
-		VersionId func(childComplexity int) int
+		Date     func(childComplexity int) int
+		Level    func(childComplexity int) int
+		Message  func(childComplexity int) int
+		NodeName func(childComplexity int) int
 	}
 
 	Query struct {
 		Alerts           func(childComplexity int) int
+		Logs             func(childComplexity int, cursor *string, startDate string, endDate string, runtimeID string, workflowID string, nodeID *string, search *string, level *LogLevel) int
 		Me               func(childComplexity int) int
 		Runtime          func(childComplexity int, id string) int
 		Runtimes         func(childComplexity int) int
@@ -188,6 +192,9 @@ type MutationResolver interface {
 type NodeResolver interface {
 	Status(ctx context.Context, obj *entity.Node) (NodeStatus, error)
 }
+type NodeLogResolver interface {
+	Level(ctx context.Context, obj *entity.NodeLog) (LogLevel, error)
+}
 type QueryResolver interface {
 	Me(ctx context.Context) (*entity.User, error)
 	Users(ctx context.Context) ([]*entity.User, error)
@@ -198,6 +205,7 @@ type QueryResolver interface {
 	Alerts(ctx context.Context) ([]*Alert, error)
 	Settings(ctx context.Context) (*entity.Setting, error)
 	UserActivityList(ctx context.Context, userEmail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
+	Logs(ctx context.Context, cursor *string, startDate string, endDate string, runtimeID string, workflowID string, nodeID *string, search *string, level *LogLevel) (*LogPage, error)
 }
 type RuntimeResolver interface {
 	Status(ctx context.Context, obj *entity.Runtime) (RuntimeStatus, error)
@@ -315,6 +323,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Edge.ToNode(childComplexity), true
+
+	case "LogPage.cursor":
+		if e.complexity.LogPage.Cursor == nil {
+			break
+		}
+
+		return e.complexity.LogPage.Cursor(childComplexity), true
+
+	case "LogPage.logs":
+		if e.complexity.LogPage.Logs == nil {
+			break
+		}
+
+		return e.complexity.LogPage.Logs(childComplexity), true
 
 	case "Mutation.createRuntime":
 		if e.complexity.Mutation.CreateRuntime == nil {
@@ -454,33 +476,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.NodeLog.Message(childComplexity), true
 
-	case "NodeLog.nodeId":
-		if e.complexity.NodeLog.NodeId == nil {
+	case "NodeLog.nodeName":
+		if e.complexity.NodeLog.NodeName == nil {
 			break
 		}
 
-		return e.complexity.NodeLog.NodeId(childComplexity), true
-
-	case "NodeLog.podId":
-		if e.complexity.NodeLog.PodId == nil {
-			break
-		}
-
-		return e.complexity.NodeLog.PodId(childComplexity), true
-
-	case "NodeLog.type":
-		if e.complexity.NodeLog.Type == nil {
-			break
-		}
-
-		return e.complexity.NodeLog.Type(childComplexity), true
-
-	case "NodeLog.versionId":
-		if e.complexity.NodeLog.VersionId == nil {
-			break
-		}
-
-		return e.complexity.NodeLog.VersionId(childComplexity), true
+		return e.complexity.NodeLog.NodeName(childComplexity), true
 
 	case "Query.alerts":
 		if e.complexity.Query.Alerts == nil {
@@ -488,6 +489,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Alerts(childComplexity), true
+
+	case "Query.logs":
+		if e.complexity.Query.Logs == nil {
+			break
+		}
+
+		args, err := ec.field_Query_logs_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Logs(childComplexity, args["cursor"].(*string), args["startDate"].(string), args["endDate"].(string), args["runtimeId"].(string), args["workflowId"].(string), args["nodeId"].(*string), args["search"].(*string), args["level"].(*LogLevel)), true
 
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
@@ -947,6 +960,16 @@ type Query {
     toDate: String
     lastId: String
   ): [UserActivity!]!
+  logs(
+    cursor: String
+    startDate: String!
+    endDate: String!
+    runtimeId: ID!
+    workflowId: ID!
+    nodeId: ID
+    search: String
+    level: LogLevel
+  ): LogPage!
 }
 
 type Mutation {
@@ -1135,14 +1158,23 @@ enum UserActivityType {
   UPDATE_VERSION_CONFIGURATION
 }
 
+enum LogLevel {
+  ERROR
+  WARN
+  INFO
+  DEBUG
+}
+
 type NodeLog {
   date: String!
-  type: String!
-  versionId: ID!
-  nodeId: ID!
-  podId: ID!
+  nodeName: String
   message: String!
-  level: String!
+  level: LogLevel!
+}
+
+type LogPage {
+  cursor: String
+  logs: [NodeLog!]!
 }
 `, BuiltIn: false},
 }
@@ -1275,6 +1307,76 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_logs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["cursor"]; ok {
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["cursor"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["startDate"]; ok {
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["startDate"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["endDate"]; ok {
+		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["endDate"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["runtimeId"]; ok {
+		arg3, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["runtimeId"] = arg3
+	var arg4 string
+	if tmp, ok := rawArgs["workflowId"]; ok {
+		arg4, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["workflowId"] = arg4
+	var arg5 *string
+	if tmp, ok := rawArgs["nodeId"]; ok {
+		arg5, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["nodeId"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["search"]; ok {
+		arg6, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["search"] = arg6
+	var arg7 *LogLevel
+	if tmp, ok := rawArgs["level"]; ok {
+		arg7, err = ec.unmarshalOLogLevel2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["level"] = arg7
 	return args, nil
 }
 
@@ -1778,6 +1880,71 @@ func (ec *executionContext) _Edge_toNode(ctx context.Context, field graphql.Coll
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _LogPage_cursor(ctx context.Context, field graphql.CollectedField, obj *LogPage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "LogPage",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _LogPage_logs(ctx context.Context, field graphql.CollectedField, obj *LogPage) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "LogPage",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Logs, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.NodeLog)
+	fc.Result = res
+	return ec.marshalNNodeLog2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeLogᚄ(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_createRuntime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2242,7 +2409,7 @@ func (ec *executionContext) _NodeLog_date(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NodeLog_type(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
+func (ec *executionContext) _NodeLog_nodeName(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2259,123 +2426,18 @@ func (ec *executionContext) _NodeLog_type(ctx context.Context, field graphql.Col
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
+		return obj.NodeName, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _NodeLog_versionId(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "NodeLog",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.VersionId, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _NodeLog_nodeId(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "NodeLog",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.NodeId, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _NodeLog_podId(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "NodeLog",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PodId, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _NodeLog_message(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
@@ -2423,13 +2485,13 @@ func (ec *executionContext) _NodeLog_level(ctx context.Context, field graphql.Co
 		Object:   "NodeLog",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Level, nil
+		return ec.resolvers.NodeLog().Level(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2441,9 +2503,9 @@ func (ec *executionContext) _NodeLog_level(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(LogLevel)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNLogLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_me(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2772,6 +2834,47 @@ func (ec *executionContext) _Query_userActivityList(ctx context.Context, field g
 	res := resTmp.([]*entity.UserActivity)
 	fc.Result = res
 	return ec.marshalNUserActivity2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐUserActivityᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_logs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_logs_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Logs(rctx, args["cursor"].(*string), args["startDate"].(string), args["endDate"].(string), args["runtimeId"].(string), args["workflowId"].(string), args["nodeId"].(*string), args["search"].(*string), args["level"].(*LogLevel))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*LogPage)
+	fc.Result = res
+	return ec.marshalNLogPage2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogPage(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5581,6 +5684,35 @@ func (ec *executionContext) _Edge(ctx context.Context, sel ast.SelectionSet, obj
 	return out
 }
 
+var logPageImplementors = []string{"LogPage"}
+
+func (ec *executionContext) _LogPage(ctx context.Context, sel ast.SelectionSet, obj *LogPage) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, logPageImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("LogPage")
+		case "cursor":
+			out.Values[i] = ec._LogPage_cursor(ctx, field, obj)
+		case "logs":
+			out.Values[i] = ec._LogPage_logs(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -5707,38 +5839,29 @@ func (ec *executionContext) _NodeLog(ctx context.Context, sel ast.SelectionSet, 
 		case "date":
 			out.Values[i] = ec._NodeLog_date(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
-		case "type":
-			out.Values[i] = ec._NodeLog_type(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "versionId":
-			out.Values[i] = ec._NodeLog_versionId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "nodeId":
-			out.Values[i] = ec._NodeLog_nodeId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "podId":
-			out.Values[i] = ec._NodeLog_podId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+		case "nodeName":
+			out.Values[i] = ec._NodeLog_nodeName(ctx, field, obj)
 		case "message":
 			out.Values[i] = ec._NodeLog_message(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "level":
-			out.Values[i] = ec._NodeLog_level(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._NodeLog_level(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5880,6 +6003,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_userActivityList(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "logs":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_logs(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -6866,6 +7003,29 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) unmarshalNLogLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, v interface{}) (LogLevel, error) {
+	var res LogLevel
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNLogLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, sel ast.SelectionSet, v LogLevel) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) marshalNLogPage2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogPage(ctx context.Context, sel ast.SelectionSet, v LogPage) graphql.Marshaler {
+	return ec._LogPage(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNLogPage2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogPage(ctx context.Context, sel ast.SelectionSet, v *LogPage) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._LogPage(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNNode2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNode(ctx context.Context, sel ast.SelectionSet, v entity.Node) graphql.Marshaler {
 	return ec._Node(ctx, sel, &v)
 }
@@ -6909,6 +7069,43 @@ func (ec *executionContext) marshalNNode2ᚕgitlabᚗcomᚋkonstellationᚋkre�
 
 func (ec *executionContext) marshalNNodeLog2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeLog(ctx context.Context, sel ast.SelectionSet, v entity.NodeLog) graphql.Marshaler {
 	return ec._NodeLog(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNNodeLog2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.NodeLog) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNNodeLog2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeLog(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) marshalNNodeLog2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeLog(ctx context.Context, sel ast.SelectionSet, v *entity.NodeLog) graphql.Marshaler {
@@ -7661,6 +7858,29 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
 }
 
+func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
+	return graphql.UnmarshalID(v)
+}
+
+func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	return graphql.MarshalID(v)
+}
+
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOID2string(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOID2string(ctx, sel, *v)
+}
+
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
 	return graphql.UnmarshalInt(v)
 }
@@ -7682,6 +7902,30 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	return ec.marshalOInt2int(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOLogLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, v interface{}) (LogLevel, error) {
+	var res LogLevel
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalOLogLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, sel ast.SelectionSet, v LogLevel) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOLogLevel2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, v interface{}) (*LogLevel, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOLogLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOLogLevel2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogLevel(ctx context.Context, sel ast.SelectionSet, v *LogLevel) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

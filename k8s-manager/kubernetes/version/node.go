@@ -60,13 +60,13 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 	return wconf
 }
 
-func (m *Manager) createNode(version *entity.Version, node *versionpb.Version_Workflow_Node, nodeConfig NodeConfig) error {
+func (m *Manager) createNode(version *entity.Version, node *versionpb.Version_Workflow_Node, nodeConfig NodeConfig, workflowID string) error {
 	configName, err := m.createNodeConfigMap(version, node, nodeConfig)
 	if err != nil {
 		return err
 	}
 
-	_, err = m.createNodeDeployment(version, node, configName)
+	_, err = m.createNodeDeployment(version, node, configName, workflowID)
 	return err
 }
 
@@ -94,7 +94,7 @@ func (m *Manager) createNodeConfigMap(version *entity.Version, node *versionpb.V
 	return nodeConfig.Name, nil
 }
 
-func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.Version_Workflow_Node, configName string) (*appsv1.Deployment, error) {
+func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.Version_Workflow_Node, configName string, workflowID string) (*appsv1.Deployment, error) {
 	name := fmt.Sprintf("%s-%s-%s", version.Name, node.Name, node.Id)
 	ns := version.Namespace
 	m.logger.Info(fmt.Sprintf("Creating node deployment in %s named %s from image %s", ns, name, node.Image))
@@ -138,6 +138,10 @@ func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.
 								{
 									Name:  "KRE_VERSION_NAME",
 									Value: version.Name,
+								},
+								{
+									Name:  "KRE_WORKFLOW_ID",
+									Value: workflowID,
 								},
 								{
 									Name:  "KRE_NODE_NAME",
@@ -198,6 +202,10 @@ func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.
 								{
 									Name:  "KRE_VERSION_NAME",
 									Value: version.Name,
+								},
+								{
+									Name:  "KRE_WORKFLOW_ID",
+									Value: workflowID,
 								},
 								{
 									Name:  "KRE_NODE_NAME",

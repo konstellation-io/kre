@@ -65,12 +65,12 @@ func (m *NodeLogsRequest) GetNodeId() string {
 
 type NodeLogsResponse struct {
 	Date                 string   `protobuf:"bytes,1,opt,name=date,proto3" json:"date,omitempty"`
-	Type                 string   `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	VersionId            string   `protobuf:"bytes,3,opt,name=versionId,proto3" json:"versionId,omitempty"`
-	NodeId               string   `protobuf:"bytes,4,opt,name=nodeId,proto3" json:"nodeId,omitempty"`
-	PodId                string   `protobuf:"bytes,5,opt,name=podId,proto3" json:"podId,omitempty"`
-	Message              string   `protobuf:"bytes,6,opt,name=message,proto3" json:"message,omitempty"`
-	Level                string   `protobuf:"bytes,7,opt,name=level,proto3" json:"level,omitempty"`
+	VersionId            string   `protobuf:"bytes,2,opt,name=versionId,proto3" json:"versionId,omitempty"`
+	NodeId               string   `protobuf:"bytes,3,opt,name=nodeId,proto3" json:"nodeId,omitempty"`
+	PodId                string   `protobuf:"bytes,4,opt,name=podId,proto3" json:"podId,omitempty"`
+	Message              string   `protobuf:"bytes,5,opt,name=message,proto3" json:"message,omitempty"`
+	Level                string   `protobuf:"bytes,6,opt,name=level,proto3" json:"level,omitempty"`
+	NodeName             string   `protobuf:"bytes,7,opt,name=nodeName,proto3" json:"nodeName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -108,13 +108,6 @@ func (m *NodeLogsResponse) GetDate() string {
 	return ""
 }
 
-func (m *NodeLogsResponse) GetType() string {
-	if m != nil {
-		return m.Type
-	}
-	return ""
-}
-
 func (m *NodeLogsResponse) GetVersionId() string {
 	if m != nil {
 		return m.VersionId
@@ -146,6 +139,13 @@ func (m *NodeLogsResponse) GetMessage() string {
 func (m *NodeLogsResponse) GetLevel() string {
 	if m != nil {
 		return m.Level
+	}
+	return ""
+}
+
+func (m *NodeLogsResponse) GetNodeName() string {
+	if m != nil {
+		return m.NodeName
 	}
 	return ""
 }
@@ -190,9 +190,9 @@ func (m *NodeStatusRequest) GetVersionName() string {
 }
 
 type NodeStatusResponse struct {
-	NodeId               string   `protobuf:"bytes,1,opt,name=NodeId,proto3" json:"NodeId,omitempty"`
-	Status               string   `protobuf:"bytes,2,opt,name=Status,proto3" json:"Status,omitempty"`
-	Message              string   `protobuf:"bytes,3,opt,name=Message,proto3" json:"Message,omitempty"`
+	NodeId               string   `protobuf:"bytes,1,opt,name=nodeId,proto3" json:"nodeId,omitempty"`
+	Status               string   `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	Message              string   `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -244,11 +244,147 @@ func (m *NodeStatusResponse) GetMessage() string {
 	return ""
 }
 
+type SearchLogsRequest struct {
+	Search               string   `protobuf:"bytes,1,opt,name=search,proto3" json:"search,omitempty"`
+	StartDate            string   `protobuf:"bytes,2,opt,name=startDate,proto3" json:"startDate,omitempty"`
+	EndDate              string   `protobuf:"bytes,3,opt,name=endDate,proto3" json:"endDate,omitempty"`
+	WorkflowID           string   `protobuf:"bytes,4,opt,name=workflowID,proto3" json:"workflowID,omitempty"`
+	NodeID               string   `protobuf:"bytes,5,opt,name=nodeID,proto3" json:"nodeID,omitempty"`
+	Level                string   `protobuf:"bytes,6,opt,name=level,proto3" json:"level,omitempty"`
+	Cursor               string   `protobuf:"bytes,7,opt,name=cursor,proto3" json:"cursor,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SearchLogsRequest) Reset()         { *m = SearchLogsRequest{} }
+func (m *SearchLogsRequest) String() string { return proto.CompactTextString(m) }
+func (*SearchLogsRequest) ProtoMessage()    {}
+func (*SearchLogsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd072eb3c57cb8f2, []int{4}
+}
+
+func (m *SearchLogsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SearchLogsRequest.Unmarshal(m, b)
+}
+func (m *SearchLogsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SearchLogsRequest.Marshal(b, m, deterministic)
+}
+func (m *SearchLogsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SearchLogsRequest.Merge(m, src)
+}
+func (m *SearchLogsRequest) XXX_Size() int {
+	return xxx_messageInfo_SearchLogsRequest.Size(m)
+}
+func (m *SearchLogsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SearchLogsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SearchLogsRequest proto.InternalMessageInfo
+
+func (m *SearchLogsRequest) GetSearch() string {
+	if m != nil {
+		return m.Search
+	}
+	return ""
+}
+
+func (m *SearchLogsRequest) GetStartDate() string {
+	if m != nil {
+		return m.StartDate
+	}
+	return ""
+}
+
+func (m *SearchLogsRequest) GetEndDate() string {
+	if m != nil {
+		return m.EndDate
+	}
+	return ""
+}
+
+func (m *SearchLogsRequest) GetWorkflowID() string {
+	if m != nil {
+		return m.WorkflowID
+	}
+	return ""
+}
+
+func (m *SearchLogsRequest) GetNodeID() string {
+	if m != nil {
+		return m.NodeID
+	}
+	return ""
+}
+
+func (m *SearchLogsRequest) GetLevel() string {
+	if m != nil {
+		return m.Level
+	}
+	return ""
+}
+
+func (m *SearchLogsRequest) GetCursor() string {
+	if m != nil {
+		return m.Cursor
+	}
+	return ""
+}
+
+type SearchLogsResponse struct {
+	Cursor               string              `protobuf:"bytes,1,opt,name=cursor,proto3" json:"cursor,omitempty"`
+	Logs                 []*NodeLogsResponse `protobuf:"bytes,2,rep,name=logs,proto3" json:"logs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *SearchLogsResponse) Reset()         { *m = SearchLogsResponse{} }
+func (m *SearchLogsResponse) String() string { return proto.CompactTextString(m) }
+func (*SearchLogsResponse) ProtoMessage()    {}
+func (*SearchLogsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd072eb3c57cb8f2, []int{5}
+}
+
+func (m *SearchLogsResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SearchLogsResponse.Unmarshal(m, b)
+}
+func (m *SearchLogsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SearchLogsResponse.Marshal(b, m, deterministic)
+}
+func (m *SearchLogsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SearchLogsResponse.Merge(m, src)
+}
+func (m *SearchLogsResponse) XXX_Size() int {
+	return xxx_messageInfo_SearchLogsResponse.Size(m)
+}
+func (m *SearchLogsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SearchLogsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SearchLogsResponse proto.InternalMessageInfo
+
+func (m *SearchLogsResponse) GetCursor() string {
+	if m != nil {
+		return m.Cursor
+	}
+	return ""
+}
+
+func (m *SearchLogsResponse) GetLogs() []*NodeLogsResponse {
+	if m != nil {
+		return m.Logs
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*NodeLogsRequest)(nil), "monitoring.NodeLogsRequest")
 	proto.RegisterType((*NodeLogsResponse)(nil), "monitoring.NodeLogsResponse")
 	proto.RegisterType((*NodeStatusRequest)(nil), "monitoring.NodeStatusRequest")
 	proto.RegisterType((*NodeStatusResponse)(nil), "monitoring.NodeStatusResponse")
+	proto.RegisterType((*SearchLogsRequest)(nil), "monitoring.SearchLogsRequest")
+	proto.RegisterType((*SearchLogsResponse)(nil), "monitoring.SearchLogsResponse")
 }
 
 func init() {
@@ -256,27 +392,34 @@ func init() {
 }
 
 var fileDescriptor_fd072eb3c57cb8f2 = []byte{
-	// 314 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x52, 0x4d, 0x4b, 0xc3, 0x40,
-	0x10, 0x35, 0xda, 0xa6, 0x76, 0x14, 0xb5, 0x83, 0x94, 0xa5, 0x56, 0x29, 0xf1, 0xa2, 0x97, 0x2a,
-	0x8a, 0x7f, 0xc0, 0x5b, 0xc0, 0x56, 0x68, 0x6f, 0x1e, 0x84, 0xd4, 0x1d, 0x4a, 0xa0, 0xc9, 0xc6,
-	0xec, 0x36, 0xe0, 0xaf, 0xf2, 0xe6, 0xef, 0x93, 0xfd, 0x48, 0xb3, 0x2d, 0x7a, 0xdb, 0xf7, 0xe6,
-	0xed, 0xce, 0x7b, 0x33, 0x0b, 0xd7, 0x45, 0x29, 0x94, 0xb8, 0xcb, 0x44, 0x9e, 0x2a, 0x51, 0xa6,
-	0xf9, 0xb2, 0x58, 0x78, 0x60, 0x6c, 0xaa, 0x08, 0x0d, 0x13, 0xdd, 0xc2, 0xe9, 0x54, 0x70, 0x7a,
-	0x11, 0x4b, 0x39, 0xa3, 0xcf, 0x35, 0x49, 0x85, 0x7d, 0x08, 0x73, 0xc1, 0x29, 0xe6, 0x2c, 0x18,
-	0x05, 0x37, 0xdd, 0x99, 0x43, 0xd1, 0x4f, 0x00, 0x67, 0x8d, 0x56, 0x16, 0x22, 0x97, 0x84, 0x08,
-	0x2d, 0x9e, 0x28, 0x72, 0x52, 0x73, 0xd6, 0x9c, 0xfa, 0x2a, 0x88, 0xed, 0x5b, 0x4e, 0x9f, 0x71,
-	0x08, 0xdd, 0x8a, 0x4a, 0x99, 0x8a, 0x3c, 0xe6, 0xec, 0xc0, 0x14, 0x1a, 0xc2, 0x6b, 0xd9, 0xf2,
-	0x5b, 0xe2, 0x39, 0xb4, 0x0b, 0xc1, 0x63, 0xce, 0xda, 0x86, 0xb6, 0x00, 0x19, 0x74, 0x32, 0x92,
-	0x32, 0x59, 0x12, 0x0b, 0x0d, 0x5f, 0x43, 0xad, 0x5f, 0x51, 0x45, 0x2b, 0xd6, 0xb1, 0x7a, 0x03,
-	0xa2, 0x27, 0xe8, 0x69, 0xdf, 0x73, 0x95, 0xa8, 0xf5, 0x26, 0xe5, 0x08, 0x8e, 0x5c, 0xff, 0x69,
-	0x92, 0xd5, 0x5e, 0x7d, 0x2a, 0x7a, 0x07, 0xf4, 0xaf, 0xb9, 0xc0, 0x7d, 0x08, 0xa7, 0x5b, 0xd3,
-	0xb1, 0x48, 0xf3, 0x56, 0xe9, 0x9e, 0x72, 0x48, 0x9b, 0x9d, 0x38, 0xb3, 0x36, 0x76, 0x0d, 0x1f,
-	0xbe, 0x03, 0xe8, 0x4d, 0x36, 0x9b, 0x98, 0x53, 0x59, 0xa5, 0x1f, 0x84, 0x31, 0x1c, 0xd6, 0x43,
-	0xc6, 0x8b, 0xb1, 0xb7, 0xbb, 0x9d, 0x35, 0x0d, 0x86, 0x7f, 0x17, 0xad, 0xcd, 0x68, 0xef, 0x3e,
-	0xc0, 0x57, 0x80, 0x26, 0x00, 0x5e, 0xee, 0xea, 0xb7, 0xe6, 0x31, 0xb8, 0xfa, 0xaf, 0xdc, 0x3c,
-	0xf8, 0x7c, 0xf2, 0x76, 0xec, 0xff, 0xac, 0x45, 0x68, 0xfe, 0xd3, 0xe3, 0x6f, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0xbb, 0x5c, 0xe5, 0xbd, 0x76, 0x02, 0x00, 0x00,
+	// 422 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0xc1, 0x8e, 0xda, 0x30,
+	0x14, 0x54, 0x0a, 0x04, 0x78, 0x54, 0x6d, 0xb1, 0x2a, 0x14, 0x51, 0x8a, 0x50, 0x7a, 0xa1, 0x17,
+	0x8a, 0xa8, 0xfa, 0x03, 0x15, 0x52, 0x15, 0xb5, 0x70, 0x80, 0x5b, 0x0f, 0x2b, 0x05, 0xfc, 0x36,
+	0x1b, 0x6d, 0x88, 0xb3, 0xb6, 0x81, 0xbf, 0xdb, 0xfb, 0xfe, 0xd1, 0x1e, 0x57, 0x76, 0x4c, 0xe2,
+	0xc0, 0xb2, 0xb7, 0xcc, 0xbc, 0xc9, 0xd8, 0x33, 0xb6, 0xe1, 0x5b, 0xc6, 0x99, 0x64, 0x3f, 0x76,
+	0x2c, 0x8d, 0x25, 0xe3, 0x71, 0x1a, 0x65, 0x1b, 0x0b, 0x4c, 0xf4, 0x94, 0x40, 0xc9, 0xf8, 0xdf,
+	0xe1, 0xe3, 0x92, 0x51, 0xfc, 0xc7, 0x22, 0xb1, 0xc2, 0x87, 0x3d, 0x0a, 0x49, 0x7a, 0xe0, 0xa6,
+	0x8c, 0x62, 0x40, 0x3d, 0x67, 0xe4, 0x8c, 0xdb, 0x2b, 0x83, 0xfc, 0x47, 0x07, 0x3e, 0x95, 0x5a,
+	0x91, 0xb1, 0x54, 0x20, 0x21, 0x50, 0xa7, 0xa1, 0x44, 0x23, 0xd5, 0xdf, 0x64, 0x00, 0xed, 0x03,
+	0x72, 0x11, 0xb3, 0x34, 0xa0, 0xde, 0x3b, 0x3d, 0x28, 0x09, 0xcb, 0xbe, 0x66, 0xdb, 0x93, 0xcf,
+	0xd0, 0xc8, 0x18, 0x0d, 0xa8, 0x57, 0xd7, 0x74, 0x0e, 0x88, 0x07, 0xcd, 0x1d, 0x0a, 0x11, 0x46,
+	0xe8, 0x35, 0x34, 0x7f, 0x82, 0x4a, 0x9f, 0xe0, 0x01, 0x13, 0xcf, 0xcd, 0xf5, 0x1a, 0x90, 0x3e,
+	0xb4, 0x94, 0xdf, 0x32, 0xdc, 0xa1, 0xd7, 0xd4, 0x83, 0x02, 0xfb, 0xbf, 0xa0, 0xab, 0xf6, 0xbf,
+	0x96, 0xa1, 0xdc, 0x17, 0x69, 0x47, 0xd0, 0x31, 0x7b, 0xd3, 0xff, 0xe4, 0xdb, 0xb5, 0x29, 0xff,
+	0x06, 0x88, 0xfd, 0x9b, 0x09, 0x7e, 0xa5, 0x25, 0xc5, 0x0b, 0xad, 0x34, 0x56, 0x06, 0xd9, 0x41,
+	0x6a, 0x95, 0x20, 0xfe, 0x93, 0x03, 0xdd, 0x35, 0x86, 0x7c, 0x7b, 0x77, 0x76, 0x0a, 0x42, 0x93,
+	0x27, 0xff, 0x1c, 0xa9, 0x72, 0x85, 0x0c, 0xb9, 0x9c, 0xab, 0xd6, 0x4d, 0xb9, 0x05, 0xa1, 0x56,
+	0xc1, 0x94, 0xea, 0x99, 0x59, 0xc5, 0x40, 0x32, 0x04, 0x38, 0x32, 0x7e, 0x7f, 0x9b, 0xb0, 0x63,
+	0x30, 0x37, 0x1d, 0x5b, 0x4c, 0x91, 0x67, 0x6e, 0x7a, 0x36, 0xe8, 0x4a, 0xcd, 0x3d, 0x70, 0xb7,
+	0x7b, 0x2e, 0x18, 0x37, 0x25, 0x1b, 0xa4, 0xba, 0xb2, 0xa3, 0x94, 0x5d, 0x19, 0xb5, 0x63, 0xab,
+	0xc9, 0x14, 0xea, 0x09, 0x8b, 0x54, 0x53, 0xb5, 0x71, 0x67, 0x36, 0x98, 0x58, 0x37, 0xf5, 0xfc,
+	0xa2, 0xad, 0xb4, 0x72, 0xf6, 0xec, 0x40, 0x77, 0x51, 0xa8, 0xd6, 0xc8, 0x0f, 0xf1, 0x16, 0xc9,
+	0x1f, 0x68, 0x9d, 0xf4, 0xe4, 0xcb, 0xeb, 0x2e, 0xba, 0xd4, 0xfe, 0x9b, 0x4b, 0x4c, 0x1d, 0xb2,
+	0x00, 0x28, 0x8f, 0x9a, 0x7c, 0x3d, 0x57, 0x57, 0x6e, 0x4e, 0x7f, 0x78, 0x6d, 0x5c, 0xd8, 0xfd,
+	0x05, 0x28, 0xdb, 0xa8, 0xda, 0x5d, 0x1c, 0x78, 0xd5, 0xee, 0xb2, 0xc4, 0xdf, 0x1f, 0xfe, 0xbf,
+	0xb7, 0x9f, 0xf5, 0xc6, 0xd5, 0x8f, 0xf9, 0xe7, 0x4b, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd0, 0x3d,
+	0xad, 0x01, 0xf3, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -293,6 +436,7 @@ const _ = grpc.SupportPackageIsVersion4
 type MonitoringServiceClient interface {
 	NodeLogs(ctx context.Context, in *NodeLogsRequest, opts ...grpc.CallOption) (MonitoringService_NodeLogsClient, error)
 	NodeStatus(ctx context.Context, in *NodeStatusRequest, opts ...grpc.CallOption) (MonitoringService_NodeStatusClient, error)
+	SearchLogs(ctx context.Context, in *SearchLogsRequest, opts ...grpc.CallOption) (*SearchLogsResponse, error)
 }
 
 type monitoringServiceClient struct {
@@ -367,10 +511,20 @@ func (x *monitoringServiceNodeStatusClient) Recv() (*NodeStatusResponse, error) 
 	return m, nil
 }
 
+func (c *monitoringServiceClient) SearchLogs(ctx context.Context, in *SearchLogsRequest, opts ...grpc.CallOption) (*SearchLogsResponse, error) {
+	out := new(SearchLogsResponse)
+	err := c.cc.Invoke(ctx, "/monitoring.MonitoringService/SearchLogs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MonitoringServiceServer is the server API for MonitoringService service.
 type MonitoringServiceServer interface {
 	NodeLogs(*NodeLogsRequest, MonitoringService_NodeLogsServer) error
 	NodeStatus(*NodeStatusRequest, MonitoringService_NodeStatusServer) error
+	SearchLogs(context.Context, *SearchLogsRequest) (*SearchLogsResponse, error)
 }
 
 // UnimplementedMonitoringServiceServer can be embedded to have forward compatible implementations.
@@ -382,6 +536,9 @@ func (*UnimplementedMonitoringServiceServer) NodeLogs(req *NodeLogsRequest, srv 
 }
 func (*UnimplementedMonitoringServiceServer) NodeStatus(req *NodeStatusRequest, srv MonitoringService_NodeStatusServer) error {
 	return status.Errorf(codes.Unimplemented, "method NodeStatus not implemented")
+}
+func (*UnimplementedMonitoringServiceServer) SearchLogs(ctx context.Context, req *SearchLogsRequest) (*SearchLogsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchLogs not implemented")
 }
 
 func RegisterMonitoringServiceServer(s *grpc.Server, srv MonitoringServiceServer) {
@@ -430,10 +587,33 @@ func (x *monitoringServiceNodeStatusServer) Send(m *NodeStatusResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _MonitoringService_SearchLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchLogsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MonitoringServiceServer).SearchLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/monitoring.MonitoringService/SearchLogs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MonitoringServiceServer).SearchLogs(ctx, req.(*SearchLogsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _MonitoringService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "monitoring.MonitoringService",
 	HandlerType: (*MonitoringServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SearchLogs",
+			Handler:    _MonitoringService_SearchLogs_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "NodeLogs",

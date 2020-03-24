@@ -1,12 +1,15 @@
 package service
 
 import (
+	"context"
+	"fmt"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"gitlab.com/konstellation/kre/runtime-api/config"
 	"gitlab.com/konstellation/kre/runtime-api/entity"
 	"gitlab.com/konstellation/kre/runtime-api/kubernetes"
 	"gitlab.com/konstellation/kre/runtime-api/mongo"
 	"gitlab.com/konstellation/kre/runtime-api/proto/monitoringpb"
+	"time"
 )
 
 // MonitoringService basic server
@@ -78,8 +81,15 @@ func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream m
 	for {
 		select {
 		case log := <-logsCh:
-
-			err := stream.Send(log)
+			err := stream.Send(&monitoringpb.NodeLogsResponse{
+				Date:      log.Date,
+				VersionId: log.VersionName,
+				NodeId:    log.NodeID,
+				PodId:     log.PodID,
+				Message:   log.Message,
+				Level:     log.Level,
+				NodeName:  log.NodeName,
+			})
 
 			if err != nil {
 				w.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
@@ -88,4 +98,49 @@ func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream m
 			}
 		}
 	}
+}
+
+func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.SearchLogsRequest) (*monitoringpb.SearchLogsResponse, error) {
+	var result *monitoringpb.SearchLogsResponse
+	logRepo := mongo.NewLogRepo(w.config, w.logger)
+
+	startDate, err := time.Parse(time.RFC3339, req.StartDate)
+	if err != nil {
+		return result, fmt.Errorf("invalid start date: %w", err)
+	}
+	endDate, err := time.Parse(time.RFC3339, req.EndDate)
+	if err != nil {
+		return result, fmt.Errorf("invalid end date: %w", err)
+	}
+	search, err := logRepo.PaginatedSearch(ctx, mongo.SearchLogsOptions{
+		Cursor:     req.Cursor,
+		StartDate:  startDate,
+		EndDate:    endDate,
+		Search:     req.Search,
+		WorkflowID: req.WorkflowID,
+		NodeID:     req.NodeID,
+		Level:      req.Level,
+	})
+
+	if err != nil {
+		return result, err
+	}
+
+	var logs []*monitoringpb.NodeLogsResponse
+	for _, l := range search.Logs {
+		logs = append(logs, &monitoringpb.NodeLogsResponse{
+			Date:      l.Date,
+			VersionId: l.VersionName,
+			NodeId:    l.NodeID,
+			PodId:     l.PodID,
+			Message:   l.Message,
+			Level:     l.Level,
+			NodeName:  l.NodeName,
+		})
+	}
+
+	return &monitoringpb.SearchLogsResponse{
+		Cursor: search.Cursor,
+		Logs:   logs,
+	}, nil
 }

@@ -50,6 +50,7 @@ func generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
 		}
 
 		workflows = append(workflows, &entity.Workflow{
+			ID:         generateId(),
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,

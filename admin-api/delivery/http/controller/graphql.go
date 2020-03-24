@@ -2,13 +2,12 @@ package controller
 
 import (
 	"context"
-
-	"github.com/99designs/gqlgen/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+	"gitlab.com/konstellation/kre/admin-api/adapter/gql"
 
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/kre/admin-api/adapter/gql"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
@@ -70,7 +69,7 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 }
 
 func (g *GraphQLController) PlaygroundHandler(c echo.Context) error {
-	h := handler.Playground("GraphQL playground", "/graphql")
+	h := playground.Handler("GraphQL playground", "/graphql")
 	h.ServeHTTP(c.Response(), c.Request())
 	return nil
 }

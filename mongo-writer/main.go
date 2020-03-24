@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"os"
+	"regexp"
 	"time"
 
 	nc "github.com/nats-io/nats.go"
@@ -14,6 +15,8 @@ import (
 	"gitlab.com/konstellation/kre/mongo-writer/mongodb"
 	"gitlab.com/konstellation/kre/mongo-writer/nats"
 )
+
+var logRegexp = regexp.MustCompile(`^([^:]+):[^:]+:(.+)$`)
 
 func main() {
 	cfg := config.NewConfig()
@@ -66,6 +69,7 @@ out:
 
 		case msg := <-natsMsgsCh:
 			natsCli.TotalMsgs += 1
+			// FIXME the input messages can be other types than fluentbit message
 			msgs, err := fluentbitMsgParser(msg)
 			if err != nil {
 				logger.Error(fmt.Sprintf("ERROR PARSING MSGS: %s", err.Error()))
@@ -121,7 +125,20 @@ func fluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 
 		coll := msg.Data["coll"].(string)
 		doc := bson.M(msg.Data["doc"].(map[string]interface{}))
-		doc["time"] = time.Unix(0, int64(msg.Time*1000)*int64(time.Millisecond)).Format(time.RFC3339)
+
+		level := "INFO"
+		message := doc["log"].(string)
+		if logRegexp.MatchString(message) {
+			r := logRegexp.FindAllStringSubmatch(message, -1)
+			level = r[0][1]
+			message = r[0][2]
+		}
+
+		doc["level"] = level
+		doc["message"] = message
+		doc["date"] = time.Unix(0, int64(msg.Time*1000)*int64(time.Millisecond)).Format(time.RFC3339)
+
+		delete(doc, "log")
 
 		list[coll] = append(list[coll], doc)
 	}

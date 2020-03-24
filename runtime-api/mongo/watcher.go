@@ -136,13 +136,13 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 			for i := range results {
 				result := results[count-i]
 				logsCh <- &entity.NodeLog{
-					Date:      getValueOrDefault(result, "time", ""),
-					Message:   getValueOrDefault(result, "log", ""),
-					Type:      getValueOrDefault(result, "type", "APP"),
-					VersionId: getValueOrDefault(result, "version-name", ""),
-					NodeId:    getValueOrDefault(result, "node-id", ""),
-					PodId:     getValueOrDefault(result, "pod-id", ""),
-					Level:     getValueOrDefault(result, "level", "INFO"),
+					Date:        getValueOrDefault(result, "time", ""),
+					VersionName: getValueOrDefault(result, "versionName", ""),
+					NodeID:      getValueOrDefault(result, "nodeId", ""),
+					PodID:       getValueOrDefault(result, "podId", ""),
+					Message:     getValueOrDefault(result, "message", ""),
+					Level:       getValueOrDefault(result, "level", "INFO"),
+					WorkflowID:  getValueOrDefault(result, "workflowId", ""),
 				}
 			}
 		}
@@ -186,13 +186,13 @@ func (w *Watcher) NodeLogs(ctx context.Context, nodeId string, logsCh chan<- *en
 			}
 
 			logsCh <- &entity.NodeLog{
-				Date:      getValueOrDefault(doc, "time", ""),
-				Message:   getValueOrDefault(doc, "log", ""),
-				Type:      getValueOrDefault(doc, "type", "APP"),
-				VersionId: getValueOrDefault(doc, "version-name", ""),
-				NodeId:    getValueOrDefault(doc, "node-id", ""),
-				PodId:     getValueOrDefault(doc, "pod-id", ""),
-				Level:     getValueOrDefault(doc, "level", "INFO"),
+				Date:        getValueOrDefault(doc, "time", ""),
+				Message:     getValueOrDefault(doc, "message", ""),
+				VersionName: getValueOrDefault(doc, "versionName", ""),
+				NodeID:      getValueOrDefault(doc, "nodeId", ""),
+				PodID:       getValueOrDefault(doc, "podId", ""),
+				Level:       getValueOrDefault(doc, "level", "INFO"),
+				WorkflowID:  getValueOrDefault(doc, "workflowId", ""),
 			}
 		}
 	}()
