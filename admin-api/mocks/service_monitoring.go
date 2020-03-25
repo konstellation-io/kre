@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	entity "gitlab.com/konstellation/kre/admin-api/domain/entity"
 	reflect "reflect"
@@ -61,4 +62,19 @@ func (m *MockMonitoringService) VersionStatus(runtime *entity.Runtime, versionNa
 func (mr *MockMonitoringServiceMockRecorder) VersionStatus(runtime, versionName, stopCh interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VersionStatus", reflect.TypeOf((*MockMonitoringService)(nil).VersionStatus), runtime, versionName, stopCh)
+}
+
+// SearchLogs mocks base method
+func (m *MockMonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runtime, options entity.SearchLogsOptions) (entity.SearchLogsResult, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SearchLogs", ctx, runtime, options)
+	ret0, _ := ret[0].(entity.SearchLogsResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SearchLogs indicates an expected call of SearchLogs
+func (mr *MockMonitoringServiceMockRecorder) SearchLogs(ctx, runtime, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchLogs", reflect.TypeOf((*MockMonitoringService)(nil).SearchLogs), ctx, runtime, options)
 }

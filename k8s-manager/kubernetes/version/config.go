@@ -101,9 +101,10 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 [FILTER]
     Name record_modifier
     Match *
-    Record version-name ${KRE_VERSION_NAME}
-    Record node-name ${KRE_NODE_NAME}
-    Record node-id ${KRE_NODE_ID}
+    Record versionName ${KRE_VERSION_NAME}
+    Record nodeName ${KRE_NODE_NAME}
+    Record nodeId ${KRE_NODE_ID}
+    Record workflowId ${KRE_WORKFLOW_ID}
 
 [FILTER]
     Name nest

@@ -1,14 +1,14 @@
 package gql
 
 import (
-	"net/http"
-	"time"
-
-	"github.com/99designs/gqlgen/handler"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gorilla/websocket"
-
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"net/http"
+	"time"
 )
 
 func NewHttpHandler(
@@ -29,22 +29,29 @@ func NewHttpHandler(
 	)
 
 	var mb int64 = 1 << 20
+	maxUploadSize := 500 * mb
+	maxMemory := 500 * mb
 
-	h := handler.GraphQL(
-		NewExecutableSchema(Config{Resolvers: graphQLResolver}),
-		handler.WebsocketKeepAliveDuration(10*time.Second),
-		handler.WebsocketUpgrader(websocket.Upgrader{
+	srv := handler.New(NewExecutableSchema(Config{Resolvers: graphQLResolver}))
+	srv.AddTransport(transport.Options{})
+	srv.AddTransport(transport.GET{})
+	srv.AddTransport(transport.POST{})
+
+	srv.Use(extension.Introspection{})
+
+	srv.AddTransport(transport.Websocket{
+		KeepAlivePingInterval: 10 * time.Second,
+		Upgrader: websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
 				return true
 			},
-		}),
-		handler.UploadMaxMemory(500*mb),
-		handler.UploadMaxSize(500*mb),
-	)
+		},
+	})
 
-	return h
-}
+	srv.AddTransport(transport.MultipartForm{
+		MaxUploadSize: maxUploadSize,
+		MaxMemory:     maxMemory,
+	})
 
-func NewPlaygroundHandler() http.HandlerFunc {
-	return handler.Playground("GraphQL playground", "/graphql")
+	return srv
 }

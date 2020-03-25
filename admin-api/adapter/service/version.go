@@ -57,6 +57,7 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 		}
 
 		wf[i] = &versionpb.Version_Workflow{
+			Id:         w.ID,
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,

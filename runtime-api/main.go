@@ -2,16 +2,14 @@ package main
 
 import (
 	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"log"
-	"net"
-
-	"google.golang.org/grpc"
-
 	"gitlab.com/konstellation/kre/runtime-api/config"
 	"gitlab.com/konstellation/kre/runtime-api/kubernetes"
 	"gitlab.com/konstellation/kre/runtime-api/mongo"
 	"gitlab.com/konstellation/kre/runtime-api/proto/monitoringpb"
 	"gitlab.com/konstellation/kre/runtime-api/service"
+	"google.golang.org/grpc"
+	"net"
+	"os"
 )
 
 func main() {
@@ -21,7 +19,8 @@ func main() {
 	port := cfg.Server.Port
 	listener, err := net.Listen("tcp", "0.0.0.0:"+port)
 	if err != nil {
-		log.Fatalf("Failed to listen: %v", err)
+		logger.Errorf("Failed to listen: %v", err)
+		os.Exit(1)
 	}
 
 	s := grpc.NewServer()
@@ -35,8 +34,9 @@ func main() {
 
 	monitoringpb.RegisterMonitoringServiceServer(s, srv)
 
-	log.Printf("Server listenting: %v", port)
+	logger.Infof("Server listenting: %v", port)
 	if err := s.Serve(listener); err != nil {
-		log.Fatalf("Failed to serve: %v", err)
+		logger.Errorf("Failed to serve: %v", err)
+		os.Exit(1)
 	}
 }

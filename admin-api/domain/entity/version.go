@@ -47,6 +47,7 @@ type VersionNodeStatus struct {
 }
 
 type Workflow struct {
+	ID         string `bson:"id"`
 	Name       string `bson:"name"`
 	Entrypoint string `bson:"entrypoint"`
 	Nodes      []Node `bson:"nodes"`
@@ -112,14 +113,4 @@ func (v Version) PublishedOrStarted() bool {
 		return true
 	}
 	return false
-}
-
-type NodeLog struct {
-	Date      string
-	Type      string
-	VersionId string
-	NodeId    string
-	PodId     string
-	Message   string
-	Level     string
 }

@@ -1,7 +1,10 @@
 package gql
 
+//go:generate go run github.com/99designs/gqlgen --verbose
+
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -21,7 +24,7 @@ func init() {
 	runtimeCreatedChannels = map[string]chan *entity.Runtime{}
 }
 
-type GraphQLResolver struct {
+type Resolver struct {
 	logger                 logging.Logger
 	runtimeInteractor      *usecase.RuntimeInteractor
 	userInteractor         *usecase.UserInteractor
@@ -37,8 +40,8 @@ func NewGraphQLResolver(
 	settingInteractor *usecase.SettingInteractor,
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
-) *GraphQLResolver {
-	return &GraphQLResolver{
+) *Resolver {
+	return &Resolver{
 		logger:                 logger,
 		runtimeInteractor:      runtimeInteractor,
 		userInteractor:         userInteractor,
@@ -47,33 +50,6 @@ func NewGraphQLResolver(
 		versionInteractor:      versionInteractor,
 	}
 }
-
-func (r *GraphQLResolver) Mutation() MutationResolver {
-	return &mutationResolver{r}
-}
-func (r *GraphQLResolver) Node() NodeResolver {
-	return &nodeResolver{r}
-}
-func (r *GraphQLResolver) Query() QueryResolver {
-	return &queryResolver{r}
-}
-func (r *GraphQLResolver) Runtime() RuntimeResolver {
-	return &runtimeResolver{r}
-}
-func (r *GraphQLResolver) Subscription() SubscriptionResolver {
-	return &subscriptionResolver{r}
-}
-func (r *GraphQLResolver) UserActivity() UserActivityResolver {
-	return &userActivityResolver{r}
-}
-func (r *GraphQLResolver) Version() VersionResolver {
-	return &versionResolver{r}
-}
-func (r *GraphQLResolver) VersionNodeStatus() VersionNodeStatusResolver {
-	return &versionNodeStatusResolver{r}
-}
-
-type mutationResolver struct{ *GraphQLResolver }
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
 	userID := ctx.Value("userID").(string)
@@ -194,13 +170,13 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 	return r.versionInteractor.UpdateVersionConfig(v, config)
 }
 
-type nodeResolver struct{ *GraphQLResolver }
-
 func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus, error) {
 	return NodeStatus(obj.Status), nil
 }
 
-type queryResolver struct{ *GraphQLResolver }
+func (r *nodeLogResolver) Level(ctx context.Context, obj *entity.NodeLog) (LogLevel, error) {
+	return LogLevel(obj.Level), nil
+}
 
 func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	userID := ctx.Value("userID").(string)
@@ -246,7 +222,64 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 	return r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate, lastID)
 }
 
-type runtimeResolver struct{ *GraphQLResolver }
+func (r *queryResolver) Logs(ctx context.Context, cursor *string,
+	startDate string, endDate string, runtimeID string, workflowID string,
+	nodeID *string, search *string, level *LogLevel,
+) (*LogPage, error) {
+	startDateTime, err := time.Parse(time.RFC3339, startDate)
+	if err != nil {
+		return nil, fmt.Errorf("invalid start date: %w", err)
+	}
+
+	endDateTime, err := time.Parse(time.RFC3339, endDate)
+	if err != nil {
+		return nil, fmt.Errorf("invalid end date: %w", err)
+	}
+
+	levelFilter := ""
+	if level != nil {
+		levelFilter = level.String()
+	}
+
+	cursorValue := ""
+	if cursor != nil {
+		cursorValue = *cursor
+	}
+
+	searchFilter := ""
+	if search != nil {
+		searchFilter = *search
+	}
+
+	nodeIDFilter := ""
+	if nodeID != nil {
+		nodeIDFilter = *nodeID
+	}
+
+	searchOpts := entity.SearchLogsOptions{
+		Cursor:     cursorValue,
+		StartDate:  startDateTime,
+		EndDate:    endDateTime,
+		WorkflowID: workflowID,
+		Level:      levelFilter,
+		Search:     searchFilter,
+		NodeID:     nodeIDFilter,
+	}
+	searchResult, err := r.versionInteractor.SearchLogs(ctx, runtimeID, searchOpts)
+	if err != nil {
+		return nil, err
+	}
+
+	nextCursor := new(string)
+	if searchResult.Cursor != "" {
+		*nextCursor = searchResult.Cursor
+	}
+
+	return &LogPage{
+		Cursor: nextCursor,
+		Logs:   searchResult.Logs,
+	}, nil
+}
 
 func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
 	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
@@ -279,8 +312,6 @@ func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runt
 
 	return publishedVersion, nil
 }
-
-type subscriptionResolver struct{ *GraphQLResolver }
 
 func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
 	id := uuid.New().String()
@@ -339,7 +370,7 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 		return nil, err
 	}
 
-	r.logger.Info("------------ STARTING LOGGER SUBSCRIPTION -------------")
+	r.logger.Info("Starting login subscription...")
 
 	outputChan := make(chan *entity.NodeLog)
 
@@ -348,27 +379,23 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 			select {
 			case nodeLog := <-inputChan:
 				if nodeLog == nil {
-					r.logger.Info("------------ SUBSCRIPTION LOGGER INPUTCHAN CLOSED. CLOSING -------------")
+					r.logger.Info("Subscription logger input channel closed. Closing output channel...")
 					close(outputChan)
 					return
 				}
 				outputChan <- nodeLog
 
 			case <-ctx.Done():
-				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")
+				r.logger.Info("Stopping login subscription...")
 				stopCh <- true
 				close(outputChan)
 				return
 			}
-
 		}
-
 	}()
 
 	return outputChan, nil
 }
-
-type userActivityResolver struct{ *GraphQLResolver }
 
 func (r *userActivityResolver) Type(ctx context.Context, obj *entity.UserActivity) (UserActivityType, error) {
 	return UserActivityType(obj.Type), nil
@@ -382,8 +409,6 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
 	return userLoader.Load(obj.UserID)
 }
-
-type versionResolver struct{ *GraphQLResolver }
 
 func (r *versionResolver) Status(ctx context.Context, obj *entity.Version) (VersionStatus, error) {
 	return VersionStatus(obj.Status), nil
@@ -439,8 +464,6 @@ func (r *versionResolver) ConfigurationCompleted(ctx context.Context, obj *entit
 	return obj.Config.Completed, nil
 }
 
-type versionNodeStatusResolver struct{ *GraphQLResolver }
-
 func (r *versionNodeStatusResolver) Date(ctx context.Context, obj *entity.VersionNodeStatus) (string, error) {
 	return time.Now().Format(time.RFC3339), nil
 }
@@ -448,3 +471,40 @@ func (r *versionNodeStatusResolver) Date(ctx context.Context, obj *entity.Versio
 func (r *versionNodeStatusResolver) Status(ctx context.Context, obj *entity.VersionNodeStatus) (NodeStatus, error) {
 	return NodeStatus(obj.Status), nil
 }
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
+// Node returns NodeResolver implementation.
+func (r *Resolver) Node() NodeResolver { return &nodeResolver{r} }
+
+// NodeLog returns NodeLogResolver implementation.
+func (r *Resolver) NodeLog() NodeLogResolver { return &nodeLogResolver{r} }
+
+// Query returns QueryResolver implementation.
+func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+
+// Runtime returns RuntimeResolver implementation.
+func (r *Resolver) Runtime() RuntimeResolver { return &runtimeResolver{r} }
+
+// Subscription returns SubscriptionResolver implementation.
+func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
+
+// UserActivity returns UserActivityResolver implementation.
+func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityResolver{r} }
+
+// Version returns VersionResolver implementation.
+func (r *Resolver) Version() VersionResolver { return &versionResolver{r} }
+
+// VersionNodeStatus returns VersionNodeStatusResolver implementation.
+func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver { return &versionNodeStatusResolver{r} }
+
+type mutationResolver struct{ *Resolver }
+type nodeResolver struct{ *Resolver }
+type nodeLogResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }
+type runtimeResolver struct{ *Resolver }
+type subscriptionResolver struct{ *Resolver }
+type userActivityResolver struct{ *Resolver }
+type versionResolver struct{ *Resolver }
+type versionNodeStatusResolver struct{ *Resolver }
