@@ -38,6 +38,11 @@ type CreateVersionInput struct {
 	RuntimeID string         `json:"runtimeId"`
 }
 
+type LogPage struct {
+	Cursor *string           `json:"cursor"`
+	Logs   []*entity.NodeLog `json:"logs"`
+}
+
 type PublishVersionInput struct {
 	VersionID string `json:"versionId"`
 	Comment   string `json:"comment"`
@@ -145,6 +150,51 @@ func (e *ConfigurationVariableType) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ConfigurationVariableType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type LogLevel string
+
+const (
+	LogLevelError LogLevel = "ERROR"
+	LogLevelWarn  LogLevel = "WARN"
+	LogLevelInfo  LogLevel = "INFO"
+	LogLevelDebug LogLevel = "DEBUG"
+)
+
+var AllLogLevel = []LogLevel{
+	LogLevelError,
+	LogLevelWarn,
+	LogLevelInfo,
+	LogLevelDebug,
+}
+
+func (e LogLevel) IsValid() bool {
+	switch e {
+	case LogLevelError, LogLevelWarn, LogLevelInfo, LogLevelDebug:
+		return true
+	}
+	return false
+}
+
+func (e LogLevel) String() string {
+	return string(e)
+}
+
+func (e *LogLevel) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = LogLevel(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid LogLevel", str)
+	}
+	return nil
+}
+
+func (e LogLevel) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

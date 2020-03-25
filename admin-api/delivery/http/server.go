@@ -76,7 +76,6 @@ func NewApp(
 	r := e.Group("/graphql")
 	r.Use(jwtMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
-	r.GET("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 
 	return &App{

@@ -16,6 +16,16 @@ type Query {
     toDate: String
     lastId: String
   ): [UserActivity!]!
+  logs(
+    cursor: String
+    startDate: String!
+    endDate: String!
+    runtimeId: ID!
+    workflowId: ID!
+    nodeId: ID
+    search: String
+    level: LogLevel
+  ): LogPage!
 }
 
 type Mutation {
@@ -204,12 +214,21 @@ enum UserActivityType {
   UPDATE_VERSION_CONFIGURATION
 }
 
+enum LogLevel {
+  ERROR
+  WARN
+  INFO
+  DEBUG
+}
+
 type NodeLog {
   date: String!
-  type: String!
-  versionId: ID!
-  nodeId: ID!
-  podId: ID!
+  nodeName: String
   message: String!
-  level: String!
+  level: LogLevel!
+}
+
+type LogPage {
+  cursor: String
+  logs: [NodeLog!]!
 }

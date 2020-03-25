@@ -1,7 +1,9 @@
 #!/bin/sh
 
-./scripts/generate_mocks.sh
-./scripts/generate_graphql.sh
+echo "Generating GraphQL and mocks..."
+go generate ./...
+
+echo "Generating dataloaders..."
 ./scripts/generate_dataloaders.sh
 
 echo "Done"

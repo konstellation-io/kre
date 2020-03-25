@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -72,6 +73,7 @@ func NewVersionInteractor(
 	}
 }
 
+// TODO refactor this in order to use a common id generator
 func generateId() string {
 	b := make([]byte, idLength)
 	for i := range b {
@@ -143,7 +145,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 	if err != nil {
 		return nil, err
 	}
-	i.logger.Info("Version created ")
+	i.logger.Info("Version created")
 
 	err = i.storeContent(runtime, krtYml, tmpDir)
 	if err != nil {
@@ -403,4 +405,13 @@ func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
 	}
 
 	return i.monitoringService.NodeLogs(runtime, nodeID, stopChannel)
+}
+
+func (i *VersionInteractor) SearchLogs(ctx context.Context, runtimeID string, opts entity.SearchLogsOptions) (entity.SearchLogsResult, error) {
+	var result entity.SearchLogsResult
+	runtime, err := i.runtimeRepo.GetByID(runtimeID)
+	if err != nil {
+		return result, err
+	}
+	return i.monitoringService.SearchLogs(ctx, runtime, opts)
 }

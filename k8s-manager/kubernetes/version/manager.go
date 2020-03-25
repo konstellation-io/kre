@@ -49,7 +49,7 @@ func (m *Manager) Start(version *entity.Version) error {
 		versionConfig.Workflows[w.Name] = m.generateNodeConfig(version, w)
 		for _, n := range w.Nodes {
 			nodeConfig := versionConfig.Workflows[w.Name][n.Id]
-			err := m.createNode(version, n, nodeConfig)
+			err := m.createNode(version, n, nodeConfig, w.Id)
 			if err != nil {
 				m.logger.Error(err.Error())
 				return err
