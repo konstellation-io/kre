@@ -25,6 +25,9 @@ function Documentation() {
       scrollIntoHeader(location.hash);
       setLoading(false);
     }, 500);
+    // We want to set this timeout only after rendering the component.
+    // location.hash changes are handled in the next useEffect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -40,7 +43,11 @@ function Documentation() {
           declarative
           source={article}
           ordered={false}
-          onNavItemClick={({}, {}, headerTag: string) => {
+          onNavItemClick={(
+            event: Event,
+            element: HTMLDivElement,
+            headerTag: string
+          ) => {
             getHeader(headerTag).scrollIntoView();
           }}
         />

@@ -20,6 +20,8 @@ body,
   padding: 0;
   box-sizing: border-box;
   .page-with-logs-wrapper {
+    display: flex;
+    flex-direction: column;
     height: 100%;
   }
 }

@@ -6,7 +6,7 @@ $base-left-padding: 3 * $grid-unit;
 $increment-left-padding: 2 * $grid-unit;
 
 .markdown-navigation {
-  padding-top: 32px;
+  padding-top: 4 * $grid-unit;
 
   div {
     @include font-button;
