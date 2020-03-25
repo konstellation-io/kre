@@ -1,5 +1,85 @@
 const casual = require('casual');
 
+const labels = ['labelA', 'labelB', 'labelC', 'labelD'];
+const getPercStr = () => casual.integer((from = 0), (to = 100)).toString();
+
+const metricsData = {
+  DataStrNumber: () => [
+    { x: labels[0], y: getPercStr() },
+    { x: labels[1], y: getPercStr() },
+    { x: labels[2], y: getPercStr() },
+    { x: labels[3], y: getPercStr() }
+  ],
+  DataHourNumber: () => [
+    { x: '0:00', y: getPercStr() },
+    { x: '2:00', y: getPercStr() },
+    { x: '4:00', y: getPercStr() },
+    { x: '6:00', y: getPercStr() },
+    { x: '8:00', y: getPercStr() },
+    { x: '10:00', y: getPercStr() },
+    { x: '12:00', y: getPercStr() },
+    { x: '14:00', y: getPercStr() },
+    { x: '16:00', y: getPercStr() },
+    { x: '18:00', y: getPercStr() },
+    { x: '20:00', y: getPercStr() },
+    { x: '22:00', y: getPercStr() },
+    { x: '24:00', y: getPercStr() }
+  ],
+  DataNumberStr: () => [
+    { x: getPercStr(), y: labels[0] },
+    { x: getPercStr(), y: labels[1] },
+    { x: getPercStr(), y: labels[2] },
+    { x: getPercStr(), y: labels[3] }
+  ],
+  DataMatrix: () => [
+    {
+      x: labels[0],
+      y: labels[0],
+      z: getPercStr()
+    },
+    {
+      x: labels[0],
+      y: labels[1],
+      z: getPercStr()
+    },
+    {
+      x: labels[0],
+      y: labels[2],
+      z: getPercStr()
+    },
+    {
+      x: labels[1],
+      y: labels[0],
+      z: getPercStr()
+    },
+    {
+      x: labels[1],
+      y: labels[1],
+      z: getPercStr()
+    },
+    {
+      x: labels[1],
+      y: labels[2],
+      z: getPercStr()
+    },
+    {
+      x: labels[2],
+      y: labels[0],
+      z: getPercStr()
+    },
+    {
+      x: labels[2],
+      y: labels[1],
+      z: getPercStr()
+    },
+    {
+      x: labels[2],
+      y: labels[2],
+      z: getPercStr()
+    }
+  ]
+};
+
 function getOptions(User) {
   const UserActivityBase = {
     id: casual.id,
@@ -107,5 +187,6 @@ function getOptions(User) {
 }
 
 module.exports = {
-  UserActivityOptions: getOptions
+  UserActivityOptions: getOptions,
+  metricsData
 };

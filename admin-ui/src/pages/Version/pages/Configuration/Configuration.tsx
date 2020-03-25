@@ -30,6 +30,7 @@ import { VersionStatus } from '../../../../graphql/types/globalTypes';
 
 import styles from './Configuration.module.scss';
 import { VersionRouteParams } from '../../../../constants/routes';
+import Message from '../../../../components/Message/Message';
 
 const GetConfVariablesQuery = loader(
   '../../../../graphql/queries/getConfigurationVariables.graphql'
@@ -103,11 +104,7 @@ function Configuration() {
       (data && data.version.configurationVariables.length === 0) || false;
 
     if (noVars) {
-      return (
-        <div className={styles.noConfig}>
-          This version has no configuration variables
-        </div>
-      );
+      return <Message text="This version has no configuration variables" />;
     }
 
     return (
