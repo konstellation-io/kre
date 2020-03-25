@@ -174,6 +174,7 @@ type ComplexityRoot struct {
 
 	Workflow struct {
 		Edges func(childComplexity int) int
+		ID    func(childComplexity int) int
 		Name  func(childComplexity int) int
 		Nodes func(childComplexity int) int
 	}
@@ -847,6 +848,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Workflow.Edges(childComplexity), true
 
+	case "Workflow.id":
+		if e.complexity.Workflow.ID == nil {
+			break
+		}
+
+		return e.complexity.Workflow.ID(childComplexity), true
+
 	case "Workflow.name":
 		if e.complexity.Workflow.Name == nil {
 			break
@@ -1100,6 +1108,7 @@ enum NodeStatus {
 }
 
 type Workflow {
+  id: ID!
   name: String!
   nodes: [Node!]!
   edges: [Edge!]!
@@ -4205,6 +4214,40 @@ func (ec *executionContext) _VersionNodeStatus_message(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Workflow_id(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Workflow",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Workflow_name(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -6526,6 +6569,11 @@ func (ec *executionContext) _Workflow(ctx context.Context, sel ast.SelectionSet,
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Workflow")
+		case "id":
+			out.Values[i] = ec._Workflow_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "name":
 			out.Values[i] = ec._Workflow_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
