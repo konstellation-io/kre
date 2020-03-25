@@ -156,6 +156,7 @@ enum NodeStatus {
 }
 
 type Workflow {
+  id: ID!
   name: String!
   nodes: [Node!]!
   edges: [Edge!]!
