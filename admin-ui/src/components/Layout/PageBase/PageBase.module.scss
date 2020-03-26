@@ -1,13 +1,13 @@
 @import '../../../styles/mixins';
+
 .content {
   display: flex;
   flex-direction: row;
   height: 100%;
-  padding-bottom: $header-height;
   overflow: hidden;
   transition: padding ease 0.4s;
 }
 
 .withLogs {
-  padding-bottom: $logs-height + $header-height;
+  padding-bottom: $logs-height;
 }
