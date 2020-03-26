@@ -7,21 +7,16 @@ import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
 import IconClear from '@material-ui/icons/DeleteOutline';
 import { shallow, ShallowWrapper } from 'enzyme';
 
-const mockWriteData = jest.fn();
-jest.mock('@apollo/react-hooks', () => ({
-  useApolloClient: () => ({
-    writeData: mockWriteData
-  })
-}));
-
 describe('Logs Header', () => {
   let wrapper: ShallowWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
   const togglePanel = jest.fn();
   const toggleStickToBottomMock = jest.fn();
+  const onClearClickMock = jest.fn();
 
   beforeEach(() => {
     wrapper = shallow(
       <Header
+        onClearClick={onClearClickMock}
         togglePanel={togglePanel}
         opened
         stickToBottom
@@ -60,6 +55,6 @@ describe('Logs Header', () => {
 
     expect(togglePanel).toHaveBeenCalledTimes(2);
     expect(toggleStickToBottomMock).toHaveBeenCalledTimes(1);
-    expect(mockWriteData).toHaveBeenCalledTimes(1);
+    expect(onClearClickMock).toHaveBeenCalledTimes(1);
   });
 });

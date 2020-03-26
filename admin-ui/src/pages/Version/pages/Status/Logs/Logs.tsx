@@ -17,7 +17,6 @@ function Logs() {
 
   useEffect(() => {
     clearLogs();
-    // console.log('nodeId', data && data.logPanel && data.logPanel.nodeId);
     setOpened(data && data.logPanel && data.logPanel.nodeId !== undefined);
   }, [data]);
 

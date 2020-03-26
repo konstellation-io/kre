@@ -6,6 +6,7 @@ exports[`Logs matches snapshot 1`] = `
     className="container"
   >
     <Header
+      onClearClick={[Function]}
       opened={false}
       stickToBottom={false}
       togglePanel={[Function]}
@@ -41,6 +42,7 @@ exports[`Logs should be empty when there is no node 1`] = `
     className="container hidden"
   >
     <Header
+      onClearClick={[Function]}
       opened={false}
       stickToBottom={false}
       togglePanel={[Function]}

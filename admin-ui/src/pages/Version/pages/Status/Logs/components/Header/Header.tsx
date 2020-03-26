@@ -6,8 +6,6 @@ import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
 import IconClear from '@material-ui/icons/DeleteOutline';
 import IconLogs from '@material-ui/icons/ListAlt';
 
-import { useApolloClient } from '@apollo/react-hooks';
-
 import cx from 'classnames';
 import styles from './Header.module.scss';
 

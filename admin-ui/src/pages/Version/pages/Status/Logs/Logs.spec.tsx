@@ -16,7 +16,8 @@ const mockLogsPanel = {
 };
 
 jest.mock('@apollo/react-hooks', () => ({
-  useQuery: jest.fn(() => mockLogsPanel)
+  useQuery: jest.fn(() => mockLogsPanel),
+  useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
 }));
 
 describe('Logs', () => {

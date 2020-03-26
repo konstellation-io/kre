@@ -2,13 +2,22 @@ import React from 'react';
 import LogItem from './LogItem';
 import LogsList from './LogsList';
 import IconExpand from '@material-ui/icons/ArrowDownward';
-import { shallow, mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
+import { LogLevel } from '../../../../../../../graphql/types/globalTypes';
 
 describe('LogItem', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
-    wrapper = shallow(<LogItem date={'2020-01-01'} message={'some message'} />);
+    wrapper = shallow(
+      <LogItem
+        __typename="NodeLog"
+        level={LogLevel.DEBUG}
+        nodeName="nodeName"
+        date={'2020-01-01'}
+        message={'some message'}
+      />
+    );
   });
 
   it('matches snapshot', () => {
@@ -48,7 +57,10 @@ const mockData = {
         date: '2020-01-01'
       }
     ]
-  }
+  },
+  refetch: jest.fn(),
+  fetchMore: jest.fn(),
+  subscribeToMore: jest.fn()
 };
 jest.mock('react-router', () => ({
   useParams: jest.fn(() => ({
@@ -65,20 +77,17 @@ jest.mock('@apollo/react-hooks', () => ({
 }));
 
 describe('LogsList', () => {
-  let wrapper;
+  let wrapper: any;
   const mockOnUpdate = jest.fn();
 
   beforeEach(() => {
-    wrapper = mount(<LogsList node="someNode" onUpdate={mockOnUpdate} />);
+    wrapper = mount(
+      <LogsList nodeId="nodeId" runtimeId="runtimeId" onUpdate={mockOnUpdate} />
+    );
   });
 
   it('matches snapshot', () => {
     expect(wrapper).toMatchSnapshot();
-  });
-
-  it('clear logs before closing logs', () => {
-    wrapper.unmount();
-    expect(mockWriteData).toHaveBeenCalledTimes(1);
   });
 
   it('show right components', () => {
