@@ -38,7 +38,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
 
   const SuccessFailsHeight = width / 4;
 
-  const nLabels = Math.sqrt(data.metrics.charts.confussionMatrix.length);
+  const nLabels = Math.sqrt(data.metrics.charts.confusionMatrix.length);
   const confusionMatrixHeight = nLabels * 100;
   const SeriesHeight = nLabels * 100;
 
@@ -74,7 +74,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
           <Row
             initialHeight={confusionMatrixHeight}
             style={{
-              maxHeight: `${confusionMatrixHeight}px`,
+              maxHeight: `${confusionMatrixHeight * 1.33}px`,
               marginTop: '10px'
             }}
             className={cx(styles.row, minimize, {
@@ -85,7 +85,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
             <ConfusionMatrixBox
               toggleExpanded={toggleExpanded}
               nodeId={'r2'}
-              data={data.metrics.charts.confussionMatrix}
+              data={data.metrics.charts.confusionMatrix}
             />
           </Row>
           <Row

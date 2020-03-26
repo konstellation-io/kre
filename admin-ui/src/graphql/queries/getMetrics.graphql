@@ -21,7 +21,7 @@ query GetMetrics(
       newLabels
     }
     charts {
-      confussionMatrix {
+      confusionMatrix {
         x
         y
         z

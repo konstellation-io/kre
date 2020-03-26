@@ -116,7 +116,7 @@ module.exports = {
     weighted: getPercStr()
   }),
   MetricsCharts: () => ({
-    confussionMatrix: metricsData.DataMatrix(),
+    confusionMatrix: metricsData.DataMatrix(),
     seriesAccuracy: metricsData.DataStrNumber(),
     seriesRecall: metricsData.DataStrNumber(),
     seriesSupport: metricsData.DataStrNumber(),

@@ -22,11 +22,11 @@ export interface GetMetrics_metrics_values {
   newLabels: number;
 }
 
-export interface GetMetrics_metrics_charts_confussionMatrix {
+export interface GetMetrics_metrics_charts_confusionMatrix {
   __typename: 'MetricChartData';
   x: string;
   y: string;
-  z: string | null;
+  z: string;
 }
 
 export interface GetMetrics_metrics_charts_seriesAccuracy {
@@ -55,7 +55,7 @@ export interface GetMetrics_metrics_charts_successVsFails {
 
 export interface GetMetrics_metrics_charts {
   __typename: 'MetricsCharts';
-  confussionMatrix: GetMetrics_metrics_charts_confussionMatrix[];
+  confusionMatrix: GetMetrics_metrics_charts_confusionMatrix[];
   seriesAccuracy: GetMetrics_metrics_charts_seriesAccuracy[];
   seriesRecall: GetMetrics_metrics_charts_seriesRecall[];
   seriesSupport: GetMetrics_metrics_charts_seriesSupport[];
