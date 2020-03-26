@@ -7,6 +7,7 @@ import {
 import VersionMenuItem, { VersionMenuItemProps } from './VersionMenuItem';
 import ROUTE from '../../../../../constants/routes';
 import IconDeviceHub from '@material-ui/icons/DeviceHub';
+import IconDoc from '@material-ui/icons/Toc';
 import IconShowChart from '@material-ui/icons/ShowChart';
 import IconSettings from '@material-ui/icons/Settings';
 import { buildRoute } from '../../../../../utils/routes';
@@ -23,6 +24,12 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
       to: ROUTE.RUNTIME_VERSION_STATUS,
       exact: false,
       Icon: IconDeviceHub
+    },
+    {
+      label: 'DOCUMENTATION',
+      to: ROUTE.RUNTIME_VERSION_DOCUMENTATION,
+      exact: false,
+      Icon: IconDoc
     },
     {
       label: 'METRICS',
