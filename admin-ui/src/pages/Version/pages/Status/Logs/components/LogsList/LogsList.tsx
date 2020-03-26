@@ -27,8 +27,8 @@ type Props = {
 };
 
 const yesterday = new Date();
-yesterday.setDate(yesterday.getDate() - 2);
-const now = new Date();
+yesterday.setDate(yesterday.getDate() - 2).toString();
+const now = new Date().toISOString();
 
 function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
   const [nextPage, setNextPage] = useState('');
@@ -47,14 +47,19 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
     });
   }
 
+  const filter = {
+    startDate: yesterday,
+    endDate: now,
+    runtimeId: runtimeId,
+    workflowId: '',
+    nodeId: nodeId,
+    cursor: ''
+  };
+
   function loadPreviousLogs() {
     fetchMore({
       variables: {
-        startDate: yesterday.toISOString(),
-        endDate: now.toISOString(),
-        runtimeId: runtimeId,
-        workflowId: '',
-        nodeId: nodeId,
+        ...filter,
         cursor: nextPage
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
@@ -74,31 +79,18 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
   const { data: serverData, loading, refetch, fetchMore } = useQuery(
     GetLogsFiltered,
     {
-      variables: {
-        startDate: yesterday.toISOString(),
-        endDate: now.toISOString(),
-        runtimeId: runtimeId,
-        workflowId: '',
-        nodeId: nodeId,
-        cursor: ''
-      },
+      variables: filter,
       onCompleted: () => {
         if (unsubscribe && unsubscribe.current) {
-          console.log('UNSUBSCRIBED!');
           unsubscribe.current();
-          unsubscribe.current = null;
         }
         unsubscribe.current = subscribe();
-        console.log('SUBSCRIBED');
       },
       onError: () => {
         if (unsubscribe && unsubscribe.current) {
-          console.log('UNSUBSCRIBED!');
           unsubscribe.current();
-          unsubscribe.current = null;
         }
         unsubscribe.current = subscribe();
-        console.log('SUBSCRIBED ONERROR');
       }
     }
   );
@@ -106,15 +98,14 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
     const logsResponse = serverData;
     const logInfo = get(logsResponse, 'logs.logs', []);
     addLogs(logInfo);
-    const hasNextPage = get(logsResponse, 'logs.cursor', '');
 
-    setNextPage(hasNextPage);
+    setNextPage(get(logsResponse, 'logs.cursor', ''));
   }, [serverData]);
 
   useEffect(() => {
     refetch({
-      startDate: yesterday.toISOString(),
-      endDate: now.toISOString(),
+      startDate: yesterday,
+      endDate: now,
       runtimeId: runtimeId,
       workflowId: '',
       nodeId: nodeId,
@@ -129,9 +120,10 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
       updateQuery: (previousData, { subscriptionData }) => {
         if (!subscriptionData) return previousData;
         const newLog = get(subscriptionData.data, 'nodeLogs');
-        return Object.assign({}, previousData, {
+        return {
+          ...previousData,
           logs: [...previousData.logs, newLog]
-        });
+        };
       }
     });
 
@@ -151,8 +143,11 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
     >
       {loading && <SpinnerLinear />}
       {!loading && !!logs.length && nextPage && (
-        <div className={cx(styles.container, styles.loadPreviousLogs)}>
-          <span onClick={loadPreviousLogs}>... Load previous logs</span>
+        <div
+          className={cx(styles.container, styles.loadPreviousLogs)}
+          onClick={loadPreviousLogs}
+        >
+          <span>... Load previous logs</span>
         </div>
       )}
       {logElements}
