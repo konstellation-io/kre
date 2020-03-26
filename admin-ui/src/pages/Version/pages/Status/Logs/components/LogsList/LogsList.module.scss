@@ -17,6 +17,13 @@
   height: $height-log-item;
   background-color: $bg-color;
 
+  &.loadPreviousLogs {
+    display: flex;
+    align-items: center;
+    padding-left: $grid-unit * 2;
+    cursor: pointer;
+  }
+
   &.opened {
     height: auto;
 
@@ -39,7 +46,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 0 0 20px;
+  padding: 0 0 0 $grid-unit * 2;
 
   div {
     flex-shrink: 0;

@@ -17,6 +17,7 @@ export interface SetCurrentLogPanelInput {
   runtimeId: string;
   nodeId: string;
   nodeName: string;
+  workflowId: string;
 }
 
 export interface LogPanel extends SetCurrentLogPanelInput {

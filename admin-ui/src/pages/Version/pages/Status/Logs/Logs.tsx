@@ -6,15 +6,18 @@ import LogsList from './components/LogsList/LogsList';
 
 import cx from 'classnames';
 import styles from './Logs.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import { GET_CURRENT_LOG_PANEL } from '../../../../../graphql/client/queries/getCurrentLogPanel';
 
 function Logs() {
+  const client = useApolloClient();
   const [opened, setOpened] = useState<boolean>(false);
   const [stickToBottom, setStickToBottom] = useState<boolean>(false);
   const { data } = useQuery(GET_CURRENT_LOG_PANEL);
 
   useEffect(() => {
+    clearLogs();
+    // console.log('nodeId', data && data.logPanel && data.logPanel.nodeId);
     setOpened(data && data.logPanel && data.logPanel.nodeId !== undefined);
   }, [data]);
 
@@ -30,6 +33,10 @@ function Logs() {
         behavior: 'smooth'
       });
     }
+  }
+
+  function clearLogs(): void {
+    client.writeData({ data: { logs: [] } });
   }
 
   function toggleStickToBottom() {
@@ -60,6 +67,7 @@ function Logs() {
           opened={opened}
           stickToBottom={stickToBottom}
           toggleStickToBottom={toggleStickToBottom}
+          onClearClick={clearLogs}
         />
         <div className={cx(styles.content, { [styles.opened]: opened })}>
           {logPanel && (

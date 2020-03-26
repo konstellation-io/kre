@@ -12,6 +12,13 @@ export enum ConfigurationVariableType {
   VARIABLE = 'VARIABLE'
 }
 
+export enum LogLevel {
+  DEBUG = 'DEBUG',
+  ERROR = 'ERROR',
+  INFO = 'INFO',
+  WARN = 'WARN'
+}
+
 export enum NodeStatus {
   ERROR = 'ERROR',
   STARTED = 'STARTED',

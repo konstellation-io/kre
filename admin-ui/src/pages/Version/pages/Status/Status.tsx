@@ -57,12 +57,13 @@ function Status({ version }: Props) {
 
   const versionStatus = version && version.status;
 
-  function setNode(nodeId: string, nodeName: string) {
+  function setNode(nodeId: string, nodeName: string, workflowId: string = '') {
     if (!nodeId.includes('InputNode') && !nodeId.includes('OutputNode')) {
       setCurrentLogPanel({
         runtimeId,
         nodeId,
         nodeName,
+        workflowId,
         __typename: 'logPanel'
       });
     }

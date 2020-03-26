@@ -16,21 +16,20 @@ type Props = {
   opened: boolean;
   stickToBottom: boolean;
   toggleStickToBottom: () => void;
+  onClearClick: Function;
 };
 function Header({
   togglePanel,
   opened,
   stickToBottom,
-  toggleStickToBottom
+  toggleStickToBottom,
+  onClearClick
 }: Props) {
-  const client = useApolloClient();
-
-  function clearLogs(): void {
-    client.writeData({ data: { logs: [] } });
-  }
-
   const Icon = opened ? IconClose : IconOpen;
 
+  function clearLogs(): void {
+    onClearClick();
+  }
   return (
     <div
       className={cx(styles.container, {

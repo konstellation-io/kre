@@ -9,11 +9,11 @@ import { GetLogs_nodeLogs } from '../../../../../../../graphql/subscriptions/typ
 import styles from './LogsList.module.scss';
 import cx from 'classnames';
 
-function LogItem({ date, nodeId, podId, message, level }: GetLogs_nodeLogs) {
+function LogItem({ date, nodeName, message, level }: GetLogs_nodeLogs) {
   const [opened, setOpened] = useState<boolean>(false);
 
   const dateFormatted = moment(date).format('YYYY-MM-DD');
-  const hourFormatted = moment(date).format('hh:mm:ss');
+  const hourFormatted = moment(date).format('HH:mm:ss');
 
   const LevelIcon = IconInfo;
 
@@ -33,7 +33,7 @@ function LogItem({ date, nodeId, podId, message, level }: GetLogs_nodeLogs) {
         </div>
         <div className={styles.date}>{dateFormatted}</div>
         <div className={styles.hour}>{hourFormatted}</div>
-        {/* <div className={styles.nodeId}>{nodeId}</div> */}
+        {/* <div className={styles.nodeName}>{nodeName}</div> */}
         {/* <div className={styles.podId}>{`[${podId}]`}</div> */}
         <div className={styles.message}>{message}</div>
         <div className={styles.expand} onClick={toggleOpenStatus}>

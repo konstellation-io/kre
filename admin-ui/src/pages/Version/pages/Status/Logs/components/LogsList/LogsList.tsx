@@ -1,28 +1,23 @@
 import { get } from 'lodash';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { loader } from 'graphql.macro';
-import {
-  useSubscription,
-  useQuery,
-  useApolloClient,
-  SubscriptionHookOptions
-} from '@apollo/react-hooks';
+import { useQuery, useApolloClient } from '@apollo/react-hooks';
 import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 
 import LogItem from './LogItem';
 
-import {
-  GetLogs,
-  GetLogs_nodeLogs,
-  GetLogsVariables
-} from '../../../../../../../graphql/subscriptions/types/GetLogs';
+import { GetLogs_nodeLogs } from '../../../../../../../graphql/subscriptions/types/GetLogs';
 
 import styles from './LogsList.module.scss';
-import { LocalState } from '../../../../../../../index';
+import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
+import cx from 'classnames';
 
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
+);
+const GetLogsFiltered = loader(
+  '../../../../../../../graphql/queries/getLogsFiltered.graphql'
 );
 
 type Props = {
@@ -30,50 +25,136 @@ type Props = {
   runtimeId: string;
   onUpdate: () => void;
 };
+
+const yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 2);
+const now = new Date();
+
 function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
+  const [nextPage, setNextPage] = useState('');
   const client = useApolloClient();
-  const { data } = useQuery<LocalState>(GET_LOGS);
+  const listRef = useRef(null);
+  const unsubscribe = useRef<Function | null>(null);
+
+  const { data, subscribeToMore } = useQuery(GET_LOGS);
   const logs = data ? data.logs : [];
 
-  useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
-    variables: {
-      runtimeId,
-      nodeId
-    },
-    onSubscriptionData: (
-      msg: SubscriptionHookOptions<GetLogs, GetLogsVariables>
-    ) => {
-      const logInfo = get(msg, 'subscriptionData.data.nodeLogs');
-      addLog(logInfo);
-    }
-  });
+  function addLogs(items: GetLogs_nodeLogs[]) {
+    client.writeData({
+      data: {
+        logs: [...items.reverse(), ...logs]
+      }
+    });
+  }
 
-  // Clear logs before closing the logs panel
+  function loadPreviousLogs() {
+    fetchMore({
+      variables: {
+        startDate: yesterday.toISOString(),
+        endDate: now.toISOString(),
+        runtimeId: runtimeId,
+        workflowId: '',
+        nodeId: nodeId,
+        cursor: nextPage
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        const prevData = previousResult.logs;
+        const newData = fetchMoreResult && fetchMoreResult.logs;
+
+        return {
+          logs: {
+            ...prevData,
+            ...newData
+          }
+        };
+      }
+    });
+  }
+
+  const { data: serverData, loading, refetch, fetchMore } = useQuery(
+    GetLogsFiltered,
+    {
+      variables: {
+        startDate: yesterday.toISOString(),
+        endDate: now.toISOString(),
+        runtimeId: runtimeId,
+        workflowId: '',
+        nodeId: nodeId,
+        cursor: ''
+      },
+      onCompleted: () => {
+        if (unsubscribe && unsubscribe.current) {
+          console.log('UNSUBSCRIBED!');
+          unsubscribe.current();
+          unsubscribe.current = null;
+        }
+        unsubscribe.current = subscribe();
+        console.log('SUBSCRIBED');
+      },
+      onError: () => {
+        if (unsubscribe && unsubscribe.current) {
+          console.log('UNSUBSCRIBED!');
+          unsubscribe.current();
+          unsubscribe.current = null;
+        }
+        unsubscribe.current = subscribe();
+        console.log('SUBSCRIBED ONERROR');
+      }
+    }
+  );
   useEffect(() => {
-    return () => {
-      client.writeData({ data: { logs: [] } });
-    };
-  }, [client]);
+    const logsResponse = serverData;
+    const logInfo = get(logsResponse, 'logs.logs', []);
+    addLogs(logInfo);
+    const hasNextPage = get(logsResponse, 'logs.cursor', '');
+
+    setNextPage(hasNextPage);
+  }, [serverData]);
+
+  useEffect(() => {
+    refetch({
+      startDate: yesterday.toISOString(),
+      endDate: now.toISOString(),
+      runtimeId: runtimeId,
+      workflowId: '',
+      nodeId: nodeId,
+      cursor: ''
+    });
+  }, [nodeId]);
+
+  const subscribe = () =>
+    subscribeToMore({
+      document: GetLogsSubscription,
+      variables: { runtimeId, nodeId },
+      updateQuery: (previousData, { subscriptionData }) => {
+        if (!subscriptionData) return previousData;
+        const newLog = get(subscriptionData.data, 'nodeLogs');
+        return Object.assign({}, previousData, {
+          logs: [...previousData.logs, newLog]
+        });
+      }
+    });
 
   useEffect(() => {
     onUpdate();
   }, [logs, onUpdate]);
 
-  function addLog(item: GetLogs_nodeLogs) {
-    client.writeData({
-      data: {
-        logs: logs.concat([item])
-      }
-    });
-  }
-
   // From now, logs are incremental, check the key in case this changes
   const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
     <LogItem {...log} key={`logItem_${idx}`} />
   ));
-
   return (
-    <div className={styles.listContainer} id="VersionLogsListContainer">
+    <div
+      ref={listRef}
+      className={styles.listContainer}
+      id="VersionLogsListContainer"
+    >
+      {loading && <SpinnerLinear />}
+      {!loading && !!logs.length && nextPage && (
+        <div className={cx(styles.container, styles.loadPreviousLogs)}>
+          <span onClick={loadPreviousLogs}>... Load previous logs</span>
+        </div>
+      )}
       {logElements}
     </div>
   );

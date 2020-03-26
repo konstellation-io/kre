@@ -4,10 +4,7 @@ export const GET_LOGS = gql`
   {
     logs @client {
       date
-      type
-      versionId
-      nodeId
-      podId
+      nodeName
       message
       level
     }

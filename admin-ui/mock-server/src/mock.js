@@ -59,18 +59,15 @@ module.exports = {
           pubsub.publish('nodeLogs', {
             nodeLogs: {
               date: new Date().toUTCString(),
-              type: 'type',
-              versionId: casual.uuid,
-              nodeId: casual.uuid,
-              podId: casual.uuid,
+              nodeName: casual.name,
               message: casual.sentence,
-              level: 'LEVEL'
+              level: casual.random_element(['ERROR', 'WARN', 'INFO', 'DEBUG'])
             }
           });
-        }, 3000);
+        }, casual.integer(1000, 3000));
         setTimeout(() => {
           clearInterval(activeNodeLogsInterval);
-        }, 70000);
+        }, 15000);
         return pubsub.asyncIterator('nodeLogs');
       }
     },
@@ -87,7 +84,8 @@ module.exports = {
     alerts: () => new MockList([1, 4]),
     versions: () => new MockList([18, 28]),
     domains: () => new MockList([2, 6]),
-    userActivityList: () => new MockList([30, 30])
+    userActivityList: () => new MockList([30, 30]),
+    logs: this.LogPage
   }),
   Mutation: () => ({
     createRuntime: () => {
@@ -143,17 +141,31 @@ module.exports = {
   }),
   Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
   Node: () => {
+    const name = casual.name;
     const _id = casual.uuid;
     setTimeout(() => {
       pubsub.publish('versionNodeStatus', {
         versionNodeStatus: {
-          date: new Date().toUTCString(),
           nodeId: _id,
+          date: new Date().toUTCString(),
+          nodeName: name,
           status: casual.random_element(['STARTED', 'ERROR']),
           message: 'message'
         }
       });
     }, casual.integer(2000, 10000));
-    return { id: _id, name: casual.name, status: 'STOPPED' };
-  }
+    return { id: _id, name: name, status: 'STOPPED' };
+  },
+  LogPage: () => ({
+    cursor: casual.uuid,
+    logs: () =>
+      new MockList([7, 20], () => {
+        return {
+          date: new Date().toUTCString(),
+          nodeName: casual.name,
+          message: casual.sentence,
+          level: casual.random_element(['ERROR', 'WARN', 'INFO', 'DEBUG'])
+        };
+      })
+  })
 };

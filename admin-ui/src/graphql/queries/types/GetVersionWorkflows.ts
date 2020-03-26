@@ -25,6 +25,7 @@ export interface GetVersionWorkflows_version_workflows_edges {
 
 export interface GetVersionWorkflows_version_workflows {
   __typename: 'Workflow';
+  id: string;
   name: string;
   nodes: GetVersionWorkflows_version_workflows_nodes[];
   edges: GetVersionWorkflows_version_workflows_edges[];
@@ -34,6 +35,7 @@ export interface GetVersionWorkflows_version {
   __typename: 'Version';
   name: string;
   status: VersionStatus;
+  creationDate: string;
   workflows: GetVersionWorkflows_version_workflows[];
   configurationCompleted: boolean;
 }
