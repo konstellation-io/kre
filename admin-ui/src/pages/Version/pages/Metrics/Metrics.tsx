@@ -101,8 +101,8 @@ function Metrics({ runtime, version }: Props) {
       <DashboardTitle
         runtimeName={runtime && runtime.name}
         versionName={version && version.name}
-        formWatch={watch}
-        formSetValue={setValue}
+        value={watch}
+        onChange={setValue}
       />
       {getContent()}
     </div>

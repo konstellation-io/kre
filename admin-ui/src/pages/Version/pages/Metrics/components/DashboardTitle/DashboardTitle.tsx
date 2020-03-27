@@ -8,15 +8,10 @@ import { Moment } from 'moment';
 type Props = {
   runtimeName?: string;
   versionName?: string;
-  formWatch: Function;
-  formSetValue: Function;
+  value: Function;
+  onChange: Function;
 };
-function DashboardTitle({
-  runtimeName,
-  versionName,
-  formWatch,
-  formSetValue
-}: Props) {
+function DashboardTitle({ runtimeName, versionName, value, onChange }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.title}>
@@ -26,10 +21,10 @@ function DashboardTitle({
         <Calendar
           label="filter by dates"
           hideError
-          onChangeFromDate={(value: Moment) => formSetValue('startDate', value)}
-          onChangeToDate={(value: Moment) => formSetValue('endDate', value)}
-          formFromDate={formWatch('startDate')}
-          formToDate={formWatch('endDate')}
+          onChangeFromDate={(date: Moment) => onChange('startDate', date)}
+          onChangeToDate={(date: Moment) => onChange('endDate', date)}
+          formFromDate={value('startDate')}
+          formToDate={value('endDate')}
         />
       </div>
     </div>

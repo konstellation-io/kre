@@ -12,9 +12,9 @@ import styles from './Accuracy.module.scss';
 import { GetMetrics_metrics_charts_successVsFails } from '../../../../../../graphql/queries/types/GetMetrics';
 
 function formatData(data: GetMetrics_metrics_charts_successVsFails[]): D[] {
-  return data.map((d: GetMetrics_metrics_charts_successVsFails) => ({
-    x: d.x,
-    y: parseInt(d.y)
+  return data.map((chartBar: GetMetrics_metrics_charts_successVsFails) => ({
+    x: chartBar.x,
+    y: parseInt(chartBar.y)
   }));
 }
 

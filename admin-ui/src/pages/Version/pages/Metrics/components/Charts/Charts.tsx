@@ -8,6 +8,9 @@ import LabelStats from '../../boxes/LabelStats/LabelStats';
 import Accuracy from '../../boxes/Accuracy/Accuracy';
 import { GetMetrics } from '../../../../../../graphql/queries/types/GetMetrics';
 
+const PADDING_HEIGHT = 164;
+const PADDING_WIDTH = 310;
+
 type Props = {
   data: GetMetrics;
   expanded: string;
@@ -33,8 +36,8 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
 
   const nodesToExpand = getNodesToExpand();
 
-  const height = expanded ? window.innerHeight - 164 : '100%';
-  const width = window.innerWidth - 310;
+  const height = expanded ? window.innerHeight - PADDING_HEIGHT : '100%';
+  const width = window.innerWidth - PADDING_WIDTH;
 
   const SuccessFailsHeight = width / 4;
 

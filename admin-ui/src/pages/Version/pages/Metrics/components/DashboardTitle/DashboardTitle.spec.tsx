@@ -14,8 +14,8 @@ describe('DashboardTitle', () => {
       <DashboardTitle
         runtimeName="runtimeName"
         versionName="versionName"
-        formSetValue={jest.fn()}
-        formWatch={jest.fn()}
+        onChange={jest.fn()}
+        value={jest.fn()}
       />
     );
   });
