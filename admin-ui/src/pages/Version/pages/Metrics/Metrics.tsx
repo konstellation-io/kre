@@ -30,8 +30,8 @@ type FormData = {
 };
 
 const DEFAULT_DATES: FormData = {
-  startDate: moment(),
-  endDate: moment().subtract(30, 'days')
+  startDate: moment().subtract(30, 'days'),
+  endDate: moment()
 };
 
 type Props = {
@@ -87,8 +87,8 @@ function Metrics({ runtime, version }: Props) {
 
   function getContent() {
     if (loading) return <SpinnerCircular />;
-    if (error) return <ErrorMessage />;
-    if (!data)
+    if (error || !data) return <ErrorMessage />;
+    if (data && data.metrics === null)
       return <Message text="There is no data for the selected dates" />;
 
     return (

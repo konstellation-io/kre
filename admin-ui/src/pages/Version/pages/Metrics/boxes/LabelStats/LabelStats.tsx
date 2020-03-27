@@ -31,8 +31,8 @@ function formatData(data: GetMetricsSeries): Serie[] {
     ([title, values]: [string, MetricData[]]) => ({
       title,
       data: values.map((d: MetricData) => ({
-        x: parseInt(d.y),
-        y: d.x
+        x: parseInt(d.x),
+        y: d.y
       }))
     })
   );
