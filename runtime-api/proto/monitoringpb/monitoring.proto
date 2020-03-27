@@ -42,8 +42,26 @@ message SearchLogsResponse {
   repeated NodeLogsResponse logs = 2;
 }
 
+message GetMetricsRequest {
+  string versionID = 1;
+  string startDate = 2;
+  string endDate = 3;
+}
+
+message MetricRow {
+  string date = 1;
+  string error = 2;
+  string predicted_value = 3;
+  string true_value = 4;
+}
+
+message GetMetricsResponse {
+  repeated MetricRow metrics = 1;
+}
+
 service MonitoringService {
   rpc NodeLogs (NodeLogsRequest) returns (stream NodeLogsResponse);
   rpc NodeStatus (NodeStatusRequest) returns (stream NodeStatusResponse);
   rpc SearchLogs (SearchLogsRequest) returns (SearchLogsResponse);
+  rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
 };

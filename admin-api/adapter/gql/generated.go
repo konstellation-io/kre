@@ -75,6 +75,38 @@ type ComplexityRoot struct {
 		Logs   func(childComplexity int) int
 	}
 
+	MetricChartData struct {
+		X func(childComplexity int) int
+		Y func(childComplexity int) int
+		Z func(childComplexity int) int
+	}
+
+	Metrics struct {
+		Charts func(childComplexity int) int
+		Values func(childComplexity int) int
+	}
+
+	MetricsAccuracy struct {
+		Macro    func(childComplexity int) int
+		Micro    func(childComplexity int) int
+		Total    func(childComplexity int) int
+		Weighted func(childComplexity int) int
+	}
+
+	MetricsCharts struct {
+		ConfusionMatrix func(childComplexity int) int
+		SeriesAccuracy  func(childComplexity int) int
+		SeriesRecall    func(childComplexity int) int
+		SeriesSupport   func(childComplexity int) int
+		SuccessVsFails  func(childComplexity int) int
+	}
+
+	MetricsValues struct {
+		Accuracy  func(childComplexity int) int
+		Missing   func(childComplexity int) int
+		NewLabels func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateRuntime              func(childComplexity int, input CreateRuntimeInput) int
 		CreateVersion              func(childComplexity int, input CreateVersionInput) int
@@ -103,6 +135,7 @@ type ComplexityRoot struct {
 		Alerts           func(childComplexity int) int
 		Logs             func(childComplexity int, cursor *string, startDate string, endDate string, runtimeID string, workflowID string, nodeID *string, search *string, level *LogLevel) int
 		Me               func(childComplexity int) int
+		Metrics          func(childComplexity int, runtimeID string, versionID string, startDate string, endDate string) int
 		Runtime          func(childComplexity int, id string) int
 		Runtimes         func(childComplexity int) int
 		Settings         func(childComplexity int) int
@@ -207,6 +240,7 @@ type QueryResolver interface {
 	Settings(ctx context.Context) (*entity.Setting, error)
 	UserActivityList(ctx context.Context, userEmail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	Logs(ctx context.Context, cursor *string, startDate string, endDate string, runtimeID string, workflowID string, nodeID *string, search *string, level *LogLevel) (*LogPage, error)
+	Metrics(ctx context.Context, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error)
 }
 type RuntimeResolver interface {
 	Status(ctx context.Context, obj *entity.Runtime) (RuntimeStatus, error)
@@ -338,6 +372,125 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.LogPage.Logs(childComplexity), true
+
+	case "MetricChartData.x":
+		if e.complexity.MetricChartData.X == nil {
+			break
+		}
+
+		return e.complexity.MetricChartData.X(childComplexity), true
+
+	case "MetricChartData.y":
+		if e.complexity.MetricChartData.Y == nil {
+			break
+		}
+
+		return e.complexity.MetricChartData.Y(childComplexity), true
+
+	case "MetricChartData.z":
+		if e.complexity.MetricChartData.Z == nil {
+			break
+		}
+
+		return e.complexity.MetricChartData.Z(childComplexity), true
+
+	case "Metrics.charts":
+		if e.complexity.Metrics.Charts == nil {
+			break
+		}
+
+		return e.complexity.Metrics.Charts(childComplexity), true
+
+	case "Metrics.values":
+		if e.complexity.Metrics.Values == nil {
+			break
+		}
+
+		return e.complexity.Metrics.Values(childComplexity), true
+
+	case "MetricsAccuracy.macro":
+		if e.complexity.MetricsAccuracy.Macro == nil {
+			break
+		}
+
+		return e.complexity.MetricsAccuracy.Macro(childComplexity), true
+
+	case "MetricsAccuracy.micro":
+		if e.complexity.MetricsAccuracy.Micro == nil {
+			break
+		}
+
+		return e.complexity.MetricsAccuracy.Micro(childComplexity), true
+
+	case "MetricsAccuracy.total":
+		if e.complexity.MetricsAccuracy.Total == nil {
+			break
+		}
+
+		return e.complexity.MetricsAccuracy.Total(childComplexity), true
+
+	case "MetricsAccuracy.weighted":
+		if e.complexity.MetricsAccuracy.Weighted == nil {
+			break
+		}
+
+		return e.complexity.MetricsAccuracy.Weighted(childComplexity), true
+
+	case "MetricsCharts.confusionMatrix":
+		if e.complexity.MetricsCharts.ConfusionMatrix == nil {
+			break
+		}
+
+		return e.complexity.MetricsCharts.ConfusionMatrix(childComplexity), true
+
+	case "MetricsCharts.seriesAccuracy":
+		if e.complexity.MetricsCharts.SeriesAccuracy == nil {
+			break
+		}
+
+		return e.complexity.MetricsCharts.SeriesAccuracy(childComplexity), true
+
+	case "MetricsCharts.seriesRecall":
+		if e.complexity.MetricsCharts.SeriesRecall == nil {
+			break
+		}
+
+		return e.complexity.MetricsCharts.SeriesRecall(childComplexity), true
+
+	case "MetricsCharts.seriesSupport":
+		if e.complexity.MetricsCharts.SeriesSupport == nil {
+			break
+		}
+
+		return e.complexity.MetricsCharts.SeriesSupport(childComplexity), true
+
+	case "MetricsCharts.successVsFails":
+		if e.complexity.MetricsCharts.SuccessVsFails == nil {
+			break
+		}
+
+		return e.complexity.MetricsCharts.SuccessVsFails(childComplexity), true
+
+	case "MetricsValues.accuracy":
+		if e.complexity.MetricsValues.Accuracy == nil {
+			break
+		}
+
+		return e.complexity.MetricsValues.Accuracy(childComplexity), true
+
+	case "MetricsValues.missing":
+		if e.complexity.MetricsValues.Missing == nil {
+			break
+		}
+
+		return e.complexity.MetricsValues.Missing(childComplexity), true
+
+	case "MetricsValues.newLabels":
+		if e.complexity.MetricsValues.NewLabels == nil {
+			break
+		}
+
+		return e.complexity.MetricsValues.NewLabels(childComplexity), true
 
 	case "Mutation.createRuntime":
 		if e.complexity.Mutation.CreateRuntime == nil {
@@ -509,6 +662,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Me(childComplexity), true
+
+	case "Query.metrics":
+		if e.complexity.Query.Metrics == nil {
+			break
+		}
+
+		args, err := ec.field_Query_metrics_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Metrics(childComplexity, args["runtimeId"].(string), args["versionId"].(string), args["startDate"].(string), args["endDate"].(string)), true
 
 	case "Query.runtime":
 		if e.complexity.Query.Runtime == nil {
@@ -978,6 +1143,12 @@ type Query {
     search: String
     level: LogLevel
   ): LogPage!
+  metrics(
+    runtimeId: ID!
+    versionId: ID!
+    startDate: String!
+    endDate: String!
+  ): Metrics!
 }
 
 type Mutation {
@@ -1185,6 +1356,38 @@ type LogPage {
   cursor: String
   logs: [NodeLog!]!
 }
+
+type Metrics {
+  values: MetricsValues!
+  charts: MetricsCharts!
+}
+
+type MetricsValues {
+  accuracy: MetricsAccuracy!
+  missing: Int!
+  newLabels: Int!
+}
+
+type MetricsAccuracy {
+  total: Int!
+  micro: Int!
+  macro: Int!
+  weighted: Int!
+}
+
+type MetricsCharts {
+  confusionMatrix: [MetricChartData!]!
+  seriesAccuracy: [MetricChartData!]!
+  seriesRecall: [MetricChartData!]!
+  seriesSupport: [MetricChartData!]!
+  successVsFails: [MetricChartData!]!
+}
+
+type MetricChartData {
+  x: String!
+  y: String!
+  z: String!
+}
 `, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -1386,6 +1589,44 @@ func (ec *executionContext) field_Query_logs_args(ctx context.Context, rawArgs m
 		}
 	}
 	args["level"] = arg7
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_metrics_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["runtimeId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["runtimeId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["versionId"]; ok {
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["versionId"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["startDate"]; ok {
+		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["startDate"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["endDate"]; ok {
+		arg3, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["endDate"] = arg3
 	return args, nil
 }
 
@@ -1952,6 +2193,584 @@ func (ec *executionContext) _LogPage_logs(ctx context.Context, field graphql.Col
 	res := resTmp.([]*entity.NodeLog)
 	fc.Result = res
 	return ec.marshalNNodeLog2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeLogᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricChartData_x(ctx context.Context, field graphql.CollectedField, obj *entity.MetricChartData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricChartData",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.X, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricChartData_y(ctx context.Context, field graphql.CollectedField, obj *entity.MetricChartData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricChartData",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Y, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricChartData_z(ctx context.Context, field graphql.CollectedField, obj *entity.MetricChartData) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricChartData",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Z, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Metrics_values(ctx context.Context, field graphql.CollectedField, obj *entity.Metrics) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Metrics",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Values, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.MetricsValues)
+	fc.Result = res
+	return ec.marshalNMetricsValues2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsValues(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Metrics_charts(ctx context.Context, field graphql.CollectedField, obj *entity.Metrics) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Metrics",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Charts, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.MetricsCharts)
+	fc.Result = res
+	return ec.marshalNMetricsCharts2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsCharts(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsAccuracy_total(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsAccuracy) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsAccuracy",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsAccuracy_micro(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsAccuracy) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsAccuracy",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Micro, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsAccuracy_macro(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsAccuracy) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsAccuracy",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Macro, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsAccuracy_weighted(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsAccuracy) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsAccuracy",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Weighted, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsCharts_confusionMatrix(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsCharts) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsCharts",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ConfusionMatrix, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.MetricChartData)
+	fc.Result = res
+	return ec.marshalNMetricChartData2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartDataᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsCharts_seriesAccuracy(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsCharts) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsCharts",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SeriesAccuracy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.MetricChartData)
+	fc.Result = res
+	return ec.marshalNMetricChartData2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartDataᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsCharts_seriesRecall(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsCharts) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsCharts",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SeriesRecall, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.MetricChartData)
+	fc.Result = res
+	return ec.marshalNMetricChartData2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartDataᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsCharts_seriesSupport(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsCharts) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsCharts",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SeriesSupport, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.MetricChartData)
+	fc.Result = res
+	return ec.marshalNMetricChartData2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartDataᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsCharts_successVsFails(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsCharts) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsCharts",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SuccessVsFails, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.MetricChartData)
+	fc.Result = res
+	return ec.marshalNMetricChartData2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartDataᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsValues_accuracy(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsValues) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsValues",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Accuracy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.MetricsAccuracy)
+	fc.Result = res
+	return ec.marshalNMetricsAccuracy2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsAccuracy(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsValues_missing(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsValues) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsValues",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Missing, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _MetricsValues_newLabels(ctx context.Context, field graphql.CollectedField, obj *entity.MetricsValues) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "MetricsValues",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NewLabels, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createRuntime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2884,6 +3703,47 @@ func (ec *executionContext) _Query_logs(ctx context.Context, field graphql.Colle
 	res := resTmp.(*LogPage)
 	fc.Result = res
 	return ec.marshalNLogPage2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐLogPage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_metrics(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_metrics_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Metrics(rctx, args["runtimeId"].(string), args["versionId"].(string), args["startDate"].(string), args["endDate"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Metrics)
+	fc.Result = res
+	return ec.marshalNMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5756,6 +6616,201 @@ func (ec *executionContext) _LogPage(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var metricChartDataImplementors = []string{"MetricChartData"}
+
+func (ec *executionContext) _MetricChartData(ctx context.Context, sel ast.SelectionSet, obj *entity.MetricChartData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, metricChartDataImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MetricChartData")
+		case "x":
+			out.Values[i] = ec._MetricChartData_x(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "y":
+			out.Values[i] = ec._MetricChartData_y(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "z":
+			out.Values[i] = ec._MetricChartData_z(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var metricsImplementors = []string{"Metrics"}
+
+func (ec *executionContext) _Metrics(ctx context.Context, sel ast.SelectionSet, obj *entity.Metrics) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, metricsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Metrics")
+		case "values":
+			out.Values[i] = ec._Metrics_values(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "charts":
+			out.Values[i] = ec._Metrics_charts(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var metricsAccuracyImplementors = []string{"MetricsAccuracy"}
+
+func (ec *executionContext) _MetricsAccuracy(ctx context.Context, sel ast.SelectionSet, obj *entity.MetricsAccuracy) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, metricsAccuracyImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MetricsAccuracy")
+		case "total":
+			out.Values[i] = ec._MetricsAccuracy_total(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "micro":
+			out.Values[i] = ec._MetricsAccuracy_micro(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "macro":
+			out.Values[i] = ec._MetricsAccuracy_macro(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "weighted":
+			out.Values[i] = ec._MetricsAccuracy_weighted(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var metricsChartsImplementors = []string{"MetricsCharts"}
+
+func (ec *executionContext) _MetricsCharts(ctx context.Context, sel ast.SelectionSet, obj *entity.MetricsCharts) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, metricsChartsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MetricsCharts")
+		case "confusionMatrix":
+			out.Values[i] = ec._MetricsCharts_confusionMatrix(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "seriesAccuracy":
+			out.Values[i] = ec._MetricsCharts_seriesAccuracy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "seriesRecall":
+			out.Values[i] = ec._MetricsCharts_seriesRecall(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "seriesSupport":
+			out.Values[i] = ec._MetricsCharts_seriesSupport(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "successVsFails":
+			out.Values[i] = ec._MetricsCharts_successVsFails(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var metricsValuesImplementors = []string{"MetricsValues"}
+
+func (ec *executionContext) _MetricsValues(ctx context.Context, sel ast.SelectionSet, obj *entity.MetricsValues) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, metricsValuesImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MetricsValues")
+		case "accuracy":
+			out.Values[i] = ec._MetricsValues_accuracy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "missing":
+			out.Values[i] = ec._MetricsValues_missing(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "newLabels":
+			out.Values[i] = ec._MetricsValues_newLabels(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -6060,6 +7115,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_logs(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "metrics":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_metrics(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -7072,6 +8141,113 @@ func (ec *executionContext) marshalNLogPage2ᚖgitlabᚗcomᚋkonstellationᚋkr
 		return graphql.Null
 	}
 	return ec._LogPage(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMetricChartData2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartData(ctx context.Context, sel ast.SelectionSet, v entity.MetricChartData) graphql.Marshaler {
+	return ec._MetricChartData(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMetricChartData2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartDataᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.MetricChartData) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNMetricChartData2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartData(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNMetricChartData2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricChartData(ctx context.Context, sel ast.SelectionSet, v *entity.MetricChartData) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._MetricChartData(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMetrics2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx context.Context, sel ast.SelectionSet, v entity.Metrics) graphql.Marshaler {
+	return ec._Metrics(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx context.Context, sel ast.SelectionSet, v *entity.Metrics) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Metrics(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMetricsAccuracy2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsAccuracy(ctx context.Context, sel ast.SelectionSet, v entity.MetricsAccuracy) graphql.Marshaler {
+	return ec._MetricsAccuracy(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMetricsAccuracy2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsAccuracy(ctx context.Context, sel ast.SelectionSet, v *entity.MetricsAccuracy) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._MetricsAccuracy(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMetricsCharts2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsCharts(ctx context.Context, sel ast.SelectionSet, v entity.MetricsCharts) graphql.Marshaler {
+	return ec._MetricsCharts(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMetricsCharts2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsCharts(ctx context.Context, sel ast.SelectionSet, v *entity.MetricsCharts) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._MetricsCharts(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMetricsValues2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsValues(ctx context.Context, sel ast.SelectionSet, v entity.MetricsValues) graphql.Marshaler {
+	return ec._MetricsValues(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMetricsValues2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsValues(ctx context.Context, sel ast.SelectionSet, v *entity.MetricsValues) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._MetricsValues(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNNode2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNode(ctx context.Context, sel ast.SelectionSet, v entity.Node) graphql.Marshaler {
