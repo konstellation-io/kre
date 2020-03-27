@@ -10,6 +10,7 @@ import { GetMetrics } from '../../../../../../graphql/queries/types/GetMetrics';
 
 const PADDING_HEIGHT = 164;
 const PADDING_WIDTH = 310;
+const MIN_HEIGHT_CONFUSION_MATRIX = 300;
 
 type Props = {
   data: GetMetrics;
@@ -42,7 +43,10 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
   const SuccessFailsHeight = width / 4;
 
   const nLabels = Math.sqrt(data.metrics.charts.confusionMatrix.length);
-  const confusionMatrixHeight = nLabels * 100;
+  const confusionMatrixHeight = Math.max(
+    MIN_HEIGHT_CONFUSION_MATRIX,
+    nLabels * 100
+  );
   const SeriesHeight = nLabels * 100;
 
   const separatorRowProps = { className: styles.separatorRow };

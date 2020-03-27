@@ -5,9 +5,9 @@ exports[`Metrics matches snapshot 1`] = `
   className="container"
 >
   <DashboardTitle
-    formSetValue={[Function]}
-    formWatch={[Function]}
+    onChange={[Function]}
     runtimeName="runtimeName"
+    value={[Function]}
     versionName="versionName"
   />
   <Charts
