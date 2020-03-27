@@ -9,12 +9,40 @@ import BarChartSeries, {
 } from '../../../../../../components/Chart/BarChartSeries/BarChartSeries';
 
 import styles from './LabelStats.module.scss';
+import {
+  GetMetrics_metrics_charts_seriesAccuracy,
+  GetMetrics_metrics_charts_seriesRecall,
+  GetMetrics_metrics_charts_seriesSupport
+} from '../../../../../../graphql/queries/types/GetMetrics';
+
+type MetricData =
+  | GetMetrics_metrics_charts_seriesAccuracy
+  | GetMetrics_metrics_charts_seriesRecall
+  | GetMetrics_metrics_charts_seriesSupport;
+
+type GetMetricsSeries = {
+  Accuracy: GetMetrics_metrics_charts_seriesAccuracy[];
+  Recall: GetMetrics_metrics_charts_seriesRecall[];
+  Support: GetMetrics_metrics_charts_seriesSupport[];
+};
+
+function formatData(data: GetMetricsSeries): Serie[] {
+  return Object.entries(data).map(
+    ([title, values]: [string, MetricData[]]) => ({
+      title,
+      data: values.map((d: MetricData) => ({
+        x: parseInt(d.x),
+        y: d.y
+      }))
+    })
+  );
+}
 
 type Props = {
   withBgBars?: boolean;
   toggleExpanded?: Function;
   nodeId?: string;
-  data: Serie[];
+  data: GetMetricsSeries;
 };
 function LabelStats({
   withBgBars = false,
@@ -42,7 +70,7 @@ function LabelStats({
             bottom: 12,
             left: 30
           }}
-          data={data}
+          data={formatData(data)}
           withBgBars={withBgBars}
         />
       </div>

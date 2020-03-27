@@ -31,7 +31,7 @@ type Query {
     versionId: ID!
     startDate: String!
     endDate: String!
-  ): Metrics!
+  ): Metrics
 }
 
 type Mutation {

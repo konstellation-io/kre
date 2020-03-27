@@ -3,6 +3,10 @@ import React from 'react';
 import Box from '../../components/Box/Box';
 import Title from '../../components/Box/Title';
 import InfoNumber, { Sizes } from '../../components/Box/InfoNumber';
+import {
+  GetMetrics_metrics_values,
+  GetMetrics_metrics_values_accuracy
+} from '../../../../../../graphql/queries/types/GetMetrics';
 
 import styles from './GeneralInfo.module.scss';
 
@@ -19,13 +23,12 @@ function Section1InfoRow({ value, label }: Section1InfoRowProps) {
   );
 }
 
-type Section1Props = {
-  total: number;
-  micro: number;
-  macro: number;
-  weighted: number;
-};
-function Section1({ total, micro, macro, weighted }: Section1Props) {
+function Section1({
+  total,
+  micro,
+  macro,
+  weighted
+}: GetMetrics_metrics_values_accuracy) {
   return (
     <div className={styles.section}>
       <div className={styles.accuracy}>
@@ -56,17 +59,7 @@ function Section2({ value, label }: Section2Props) {
 }
 
 type Props = {
-  data: {
-    accuracy: {
-      total: number;
-      micro: number;
-      macro: number;
-      weighted: number;
-    };
-    null: number;
-    labels: number;
-    stdev: number;
-  };
+  data: GetMetrics_metrics_values;
 };
 function GeneralInfo({ data }: Props) {
   return (
@@ -74,9 +67,8 @@ function GeneralInfo({ data }: Props) {
       <Title text="Accuracy" />
       <div className={styles.sections}>
         <Section1 {...data.accuracy} />
-        <Section2 value={`${data.null}%`} label="Missing values" />
-        <Section2 value={`${data.labels}%`} label="New labels" />
-        <Section2 value={data.stdev.toString()} label="Standard deviation" />
+        <Section2 value={`${data.missing}%`} label="Missing values" />
+        <Section2 value={`${data.newLabels}%`} label="New labels" />
       </div>
     </Box>
   );

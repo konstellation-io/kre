@@ -1148,7 +1148,7 @@ type Query {
     versionId: ID!
     startDate: String!
     endDate: String!
-  ): Metrics!
+  ): Metrics
 }
 
 type Mutation {
@@ -3736,14 +3736,11 @@ func (ec *executionContext) _Query_metrics(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Metrics)
 	fc.Result = res
-	return ec.marshalNMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx, field.Selections, res)
+	return ec.marshalOMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7129,9 +7126,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_metrics(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
 				return res
 			})
 		case "__type":
@@ -8194,20 +8188,6 @@ func (ec *executionContext) marshalNMetricChartData2ᚖgitlabᚗcomᚋkonstellat
 	return ec._MetricChartData(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMetrics2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx context.Context, sel ast.SelectionSet, v entity.Metrics) graphql.Marshaler {
-	return ec._Metrics(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx context.Context, sel ast.SelectionSet, v *entity.Metrics) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._Metrics(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalNMetricsAccuracy2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetricsAccuracy(ctx context.Context, sel ast.SelectionSet, v entity.MetricsAccuracy) graphql.Marshaler {
 	return ec._MetricsAccuracy(ctx, sel, &v)
 }
@@ -9150,6 +9130,17 @@ func (ec *executionContext) marshalOLogLevel2ᚖgitlabᚗcomᚋkonstellationᚋk
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalOMetrics2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx context.Context, sel ast.SelectionSet, v entity.Metrics) graphql.Marshaler {
+	return ec._Metrics(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx context.Context, sel ast.SelectionSet, v *entity.Metrics) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Metrics(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

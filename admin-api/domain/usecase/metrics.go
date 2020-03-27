@@ -3,12 +3,13 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"sort"
+	"strconv"
+
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/kre/admin-api/domain/service"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
-	"sort"
-	"strconv"
 )
 
 const MetricsNewLabelsKey = "new_labels"
@@ -37,6 +38,10 @@ func (i *MetricsInteractor) GetMetrics(ctx context.Context, runtimeID string, ve
 	rows, err := i.monitoringService.GetMetrics(ctx, runtime, versionID, startDate, endDate)
 	if err != nil {
 		return result, fmt.Errorf("error getting metrics: %w", err)
+	}
+
+	if len(rows) == 0 {
+		return nil, nil
 	}
 
 	return i.CalculateChartsAndValues(rows)

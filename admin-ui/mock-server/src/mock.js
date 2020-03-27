@@ -1,6 +1,6 @@
 const { MockList } = require('apollo-server');
 const casual = require('casual');
-const { UserActivityOptions } = require('./mockSamples');
+const { UserActivityOptions, metricsData } = require('./mockSamples');
 const { PubSub } = require('apollo-server-express');
 
 const pubsub = new PubSub();
@@ -49,6 +49,8 @@ const generateVersion = () => ({
 });
 
 let activeNodeLogsInterval = null;
+
+const getPercStr = () => casual.integer((from = 0), (to = 100)).toString();
 
 module.exports = {
   Subscription: () => ({
@@ -101,6 +103,24 @@ module.exports = {
     },
     createVersion: () => ({ errors: [], version: version }),
     updateSettings: () => ({ errors: [], settings: this.Settings })
+  }),
+  MetricsValues: () => ({
+    accuracy: this.MetricsAccuracy,
+    missing: getPercStr(),
+    newLabels: getPercStr()
+  }),
+  MetricsAccuracy: () => ({
+    total: getPercStr(),
+    micro: getPercStr(),
+    macro: getPercStr(),
+    weighted: getPercStr()
+  }),
+  MetricsCharts: () => ({
+    confusionMatrix: metricsData.DataMatrix(),
+    seriesAccuracy: metricsData.DataStrNumber(),
+    seriesRecall: metricsData.DataStrNumber(),
+    seriesSupport: metricsData.DataStrNumber(),
+    successVsFails: metricsData.DataHourNumber()
   }),
   User: () => ({
     id: casual.uuid,
@@ -155,5 +175,6 @@ module.exports = {
       });
     }, casual.integer(2000, 10000));
     return { id: _id, name: casual.name, status: 'STOPPED' };
-  }
+  },
+  MetricChartData: () => new MockList([5, 10])
 };
