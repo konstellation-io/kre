@@ -13,6 +13,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
     className="dateFilter"
   >
     <Calendar
+      addExtension={true}
       hideError={true}
       label="filter by dates"
       onChangeFromDate={[Function]}

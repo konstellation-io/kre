@@ -10,8 +10,15 @@ type Props = {
   versionName?: string;
   value: Function;
   onChange: Function;
+  summit: Function;
 };
-function DashboardTitle({ runtimeName, versionName, value, onChange }: Props) {
+function DashboardTitle({
+  runtimeName,
+  versionName,
+  value,
+  onChange,
+  summit
+}: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.title}>
@@ -24,6 +31,7 @@ function DashboardTitle({ runtimeName, versionName, value, onChange }: Props) {
           onChangeToDate={(date: Moment) => onChange('endDate', date)}
           formFromDate={value('startDate')}
           formToDate={value('endDate')}
+          summit={summit}
           addExtension
           hideError
         />

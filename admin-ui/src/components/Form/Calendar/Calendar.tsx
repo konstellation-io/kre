@@ -85,6 +85,7 @@ type Props = {
   formToDate?: Moment | null;
   onChangeFromDate?: Function;
   onChangeToDate?: Function;
+  summit?: Function;
   hideError?: boolean;
   addExtension?: boolean;
 };
@@ -97,7 +98,8 @@ function Calendar({
   formToDate = null,
   onChangeFromDate = function() {},
   onChangeToDate = function() {},
-  addExtension = false
+  addExtension = false,
+  summit = function() {}
 }: Props) {
   const [fromDate, setFromDate] = useState<Moment | null>(null);
   const [toDate, setToDate] = useState<Moment | null>(null);
@@ -177,6 +179,9 @@ function Calendar({
           changeToDate(newToDatetime);
 
           setFocusedInput(focusedInput);
+        }}
+        onClose={() => {
+          if (addExtension) summit();
         }}
         focusedInput={focusedInput}
         onFocusChange={(input: DateKey) => setFocusedInput(input)}
