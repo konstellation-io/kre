@@ -20,11 +20,12 @@ function DashboardTitle({ runtimeName, versionName, value, onChange }: Props) {
       <div className={styles.dateFilter}>
         <Calendar
           label="filter by dates"
-          hideError
           onChangeFromDate={(date: Moment) => onChange('startDate', date)}
           onChangeToDate={(date: Moment) => onChange('endDate', date)}
           formFromDate={value('startDate')}
           formToDate={value('endDate')}
+          addExtension
+          hideError
         />
       </div>
     </div>
