@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"time"
 
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
@@ -14,6 +15,10 @@ import (
 
 const MetricsNewLabelsKey = "new_labels"
 const MetricsMissingValuesKey = "missing_values"
+const metricTimeFormat = time.RFC3339
+const oneHour = 1
+const oneDay = 24
+const oneWeek = 7 * oneDay
 
 type MetricsInteractor struct {
 	logger            logging.Logger
@@ -156,6 +161,11 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.MetricRow)
 		})
 	}
 
+	successVsFail, err := i.GetSuccessVsFailsChart(metrics)
+	if err != nil {
+		return nil, err
+	}
+
 	return &entity.Metrics{
 		Values: &entity.MetricsValues{
 			Accuracy: &entity.MetricsAccuracy{
@@ -172,6 +182,101 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.MetricRow)
 			SeriesAccuracy:  seriesAccuracy,
 			SeriesRecall:    seriesRecall,
 			SeriesSupport:   seriesSupport,
+			SuccessVsFails:  successVsFail,
 		},
 	}, nil
+}
+
+func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.MetricRow) ([]*entity.MetricChartData, error) {
+	var result []*entity.MetricChartData
+
+	firstMetric := metrics[0].Date
+	lastMetric := firstMetric
+	for _, m := range metrics {
+		if m.Date < firstMetric {
+			firstMetric = m.Date
+		}
+
+		if m.Date > lastMetric {
+			lastMetric = m.Date
+		}
+	}
+
+	start, err := i.getMetricTruncatedDate(firstMetric)
+	if err != nil {
+		return nil, err
+	}
+
+	end, err := i.getMetricTruncatedDate(lastMetric)
+	if err != nil {
+		return nil, err
+	}
+
+	hours := end.Sub(start).Hours()
+
+	var interval int
+	var groupTimeFormat string
+	switch {
+	case hours <= oneWeek:
+		interval = oneHour
+		groupTimeFormat = "2 Jan 2006 15:04 MST"
+	default:
+		interval = oneDay
+		groupTimeFormat = "2 Jan 2006"
+	}
+
+	intervalDuration := time.Duration(interval) * time.Hour
+	metricsGroups := make(map[int][]entity.MetricRow)
+
+	var numGroups int
+	for _, m := range metrics {
+		if m.Error != "" {
+			continue
+		}
+
+		d, err := time.Parse(metricTimeFormat, m.Date)
+		if err != nil {
+			i.logger.Errorf("invalid metric date = '%s': %s\n", m.Date, err.Error())
+			continue
+		}
+		group := int(d.Sub(start).Hours()) / interval
+		metricsGroups[group] = append(metricsGroups[group], m)
+
+		if group+1 > numGroups {
+			numGroups = group + 1
+		}
+	}
+
+	for i := 0; i < numGroups; i++ {
+		groupTime := start.Add(time.Duration(i) * intervalDuration).Format(groupTimeFormat)
+		avgPercent := ""
+
+		if mg, ok := metricsGroups[i]; ok {
+			hits := 0
+			for _, m := range mg {
+				if m.TrueValue == m.PredictedValue {
+					hits += 1
+				}
+			}
+
+			avg := int((float64(hits) / float64(len(mg))) * 100)
+			avgPercent = strconv.Itoa(avg)
+		}
+
+		result = append(result, &entity.MetricChartData{
+			X: groupTime,
+			Y: avgPercent,
+		})
+	}
+
+	return result, nil
+}
+
+func (i *MetricsInteractor) getMetricTruncatedDate(date string) (time.Time, error) {
+	d, e := time.Parse(metricTimeFormat, date)
+	if e != nil {
+		return time.Time{}, fmt.Errorf("invalid metric date '%s': %w", date, e)
+	}
+	d = d.Truncate(time.Hour)
+	return d, nil
 }
