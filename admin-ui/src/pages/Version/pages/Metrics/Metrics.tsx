@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import DashboardTitle from './components/DashboardTitle/DashboardTitle';
 import Charts from './components/Charts/Charts';
 import Message from '../../../../components/Message/Message';
@@ -72,7 +72,7 @@ function Metrics({ runtime, version }: Props) {
     register({ name: 'endDate' });
   }, [register]);
 
-  function summit() {
+  const summit = useCallback(() => {
     handleSubmit(({ startDate, endDate }: FormData) => {
       refetch({
         runtimeId,
@@ -81,13 +81,13 @@ function Metrics({ runtime, version }: Props) {
         endDate: endDate.toISOString()
       });
     })();
-  }
+  }, [handleSubmit, refetch, runtimeId, versionId]);
 
   // Submits the form every time 'endDate' is updated
   const endDate = watch('endDate');
   useEffect(() => {
     if (endDate) summit();
-  }, [endDate]);
+  }, [endDate, summit]);
 
   function getContent() {
     if (loading) return <SpinnerCircular />;
