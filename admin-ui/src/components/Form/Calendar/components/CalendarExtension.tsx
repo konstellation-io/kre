@@ -58,8 +58,7 @@ function CalendarExtension({
           <TimePicker
             disableClock
             clockIcon={null}
-            maxDetail="second"
-            value={formFromDate?.format('HH:mm:ss')}
+            value={formFromDate?.format('HH:mm')}
             onChange={(time: string) =>
               updateDate(time, formFromDate, changeFromDate)
             }
@@ -70,8 +69,7 @@ function CalendarExtension({
           <TimePicker
             disableClock
             clockIcon={null}
-            maxDetail="second"
-            value={formToDate?.format('HH:mm:ss')}
+            value={formToDate?.format('HH:mm')}
             onChange={(time: string) =>
               updateDate(time, formToDate, changeToDate)
             }

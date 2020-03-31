@@ -167,7 +167,7 @@ function Calendar({
         endDate={toDate}
         endDateId="calendar_to_date"
         endDatePlaceholderText="To Date"
-        displayFormat={addExtension ? 'MM/DD/YYYY HH:mm:ss' : 'MM/DD/YYYY'}
+        displayFormat={addExtension ? 'MM/DD/YYYY HH:mm' : 'MM/DD/YYYY'}
         onDatesChange={({
           startDate: newFromDate,
           endDate: newToDate
