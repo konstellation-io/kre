@@ -10,7 +10,7 @@ import { GetMetrics } from '../../../../../../graphql/queries/types/GetMetrics';
 
 const PADDING_HEIGHT = 164;
 const PADDING_WIDTH = 310;
-const MIN_HEIGHT_CONFUSION_MATRIX = 300;
+const MIN_HEIGHT_CONFUSION_MATRIX = 350;
 
 type Props = {
   data: GetMetrics;

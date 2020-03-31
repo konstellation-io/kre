@@ -117,9 +117,9 @@ module.exports = {
   }),
   MetricsCharts: () => ({
     confusionMatrix: metricsData.DataMatrix(),
-    seriesAccuracy: metricsData.DataStrNumber(),
-    seriesRecall: metricsData.DataStrNumber(),
-    seriesSupport: metricsData.DataStrNumber(),
+    seriesAccuracy: metricsData.DataNumberStr(),
+    seriesRecall: metricsData.DataNumberStr(),
+    seriesSupport: metricsData.DataNumberStr(),
     successVsFails: metricsData.DataHourNumber()
   }),
   User: () => ({
