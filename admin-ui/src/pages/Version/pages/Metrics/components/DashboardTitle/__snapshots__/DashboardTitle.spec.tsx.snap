@@ -13,11 +13,11 @@ exports[`DashboardTitle matches snapshot 1`] = `
     className="dateFilter"
   >
     <Calendar
-      addExtension={true}
+      addTimeControls={true}
       hideError={true}
       label="filter by dates"
-      onChangeFromDate={[Function]}
-      onChangeToDate={[Function]}
+      onChangeFromDateInput={[Function]}
+      onChangeToDateInput={[Function]}
     />
   </div>
 </div>

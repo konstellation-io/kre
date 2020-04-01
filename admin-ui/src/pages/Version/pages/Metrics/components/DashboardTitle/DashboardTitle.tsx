@@ -10,14 +10,14 @@ type Props = {
   versionName?: string;
   value: Function;
   onChange: Function;
-  summit: Function;
+  submit: Function;
 };
 function DashboardTitle({
   runtimeName,
   versionName,
   value,
   onChange,
-  summit
+  submit
 }: Props) {
   return (
     <div className={styles.container}>
@@ -27,12 +27,12 @@ function DashboardTitle({
       <div className={styles.dateFilter}>
         <Calendar
           label="filter by dates"
-          onChangeFromDate={(date: Moment) => onChange('startDate', date)}
-          onChangeToDate={(date: Moment) => onChange('endDate', date)}
+          onChangeFromDateInput={(date: Moment) => onChange('startDate', date)}
+          onChangeToDateInput={(date: Moment) => onChange('endDate', date)}
           formFromDate={value('startDate')}
           formToDate={value('endDate')}
-          summit={summit}
-          addExtension
+          submit={submit}
+          addTimeControls
           hideError
         />
       </div>

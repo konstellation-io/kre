@@ -43,8 +43,8 @@ exports[`FiltersBar matches snapshot 1`] = `
     placeholder="User email"
   />
   <Calendar
-    onChangeFromDate={[Function]}
-    onChangeToDate={[Function]}
+    onChangeFromDateInput={[Function]}
+    onChangeToDateInput={[Function]}
   />
   <div
     className="buttons"

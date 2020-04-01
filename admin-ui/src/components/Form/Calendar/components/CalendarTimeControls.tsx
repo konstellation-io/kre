@@ -1,6 +1,6 @@
 import React from 'react';
 import TimePicker from 'react-time-picker';
-import styles from './CalendarExtension.module.scss';
+import styles from './CalendarTimeControls.module.scss';
 import InputLabel from '../../InputLabel/InputLabel';
 import { Range } from '../Calendar';
 import { Moment } from 'moment';
@@ -13,7 +13,7 @@ type Props = {
   changeToDate: (date: Moment) => void;
 };
 
-function CalendarExtension({
+function CalendarTimeControls({
   ranges,
   changeFromDate,
   changeToDate,
@@ -30,15 +30,12 @@ function CalendarExtension({
     formField: Moment | null,
     setter: Function
   ) {
-    const [hour, minute, second] = time
-      .split(':')
-      .map((s: string) => parseInt(s));
+    const [hour, minute] = time.split(':').map((s: string) => parseInt(s));
     if (formField) {
       setter(
         formField.set({
           hour,
-          minute,
-          second
+          minute
         })
       );
     }
@@ -84,4 +81,4 @@ function CalendarExtension({
   );
 }
 
-export default CalendarExtension;
+export default CalendarTimeControls;

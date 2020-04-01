@@ -7,7 +7,7 @@ exports[`Metrics matches snapshot 1`] = `
   <DashboardTitle
     onChange={[Function]}
     runtimeName="runtimeName"
-    summit={[Function]}
+    submit={[Function]}
     value={[Function]}
     versionName="versionName"
   />

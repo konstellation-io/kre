@@ -72,7 +72,7 @@ function Metrics({ runtime, version }: Props) {
     register({ name: 'endDate' });
   }, [register]);
 
-  const summit = useCallback(() => {
+  const submit = useCallback(() => {
     handleSubmit(({ startDate, endDate }: FormData) => {
       refetch({
         runtimeId,
@@ -86,8 +86,8 @@ function Metrics({ runtime, version }: Props) {
   // Submits the form every time 'endDate' is updated
   const endDate = watch('endDate');
   useEffect(() => {
-    if (endDate) summit();
-  }, [endDate, summit]);
+    if (endDate) submit();
+  }, [endDate, submit]);
 
   function getContent() {
     if (loading) return <SpinnerCircular />;
@@ -107,7 +107,7 @@ function Metrics({ runtime, version }: Props) {
         versionName={version && version.name}
         value={watch}
         onChange={setValue}
-        summit={summit}
+        submit={submit}
       />
       {getContent()}
     </div>

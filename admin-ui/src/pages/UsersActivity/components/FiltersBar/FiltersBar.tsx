@@ -10,6 +10,7 @@ import * as CHECK from '../../../../components/Form/check';
 import styles from './FiltersBar.module.scss';
 import { ApolloError } from 'apollo-client';
 import { useForm } from 'react-hook-form';
+import { Moment } from 'moment';
 
 export const typeToText = {
   LOGIN: 'Login',
@@ -99,8 +100,8 @@ function FiltersBar({ onSubmit, types, users }: FormFieldProps) {
         value={watch('userEmail')}
       />
       <Calendar
-        onChangeFromDate={(value: any) => setValue('fromDate', value)}
-        onChangeToDate={(value: any) => setValue('toDate', value)}
+        onChangeFromDateInput={(value: Moment) => setValue('fromDate', value)}
+        onChangeToDateInput={(value: Moment) => setValue('toDate', value)}
         formFromDate={watch('fromDate')}
         formToDate={watch('toDate')}
         error={get(errors.fromDate, 'message') || get(errors.toDate, 'message')}
