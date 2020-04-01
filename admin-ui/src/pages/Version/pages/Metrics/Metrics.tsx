@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import DashboardTitle from './components/DashboardTitle/DashboardTitle';
 import Charts from './components/Charts/Charts';
 import Message from '../../../../components/Message/Message';
@@ -30,8 +30,10 @@ type FormData = {
 };
 
 const DEFAULT_DATES: FormData = {
-  startDate: moment().subtract(30, 'days'),
-  endDate: moment()
+  startDate: moment()
+    .subtract(30, 'days')
+    .startOf('day'),
+  endDate: moment().endOf('day')
 };
 
 type Props = {
@@ -70,20 +72,22 @@ function Metrics({ runtime, version }: Props) {
     register({ name: 'endDate' });
   }, [register]);
 
+  const submit = useCallback(() => {
+    handleSubmit(({ startDate, endDate }: FormData) => {
+      refetch({
+        runtimeId,
+        versionId,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      });
+    })();
+  }, [handleSubmit, refetch, runtimeId, versionId]);
+
   // Submits the form every time 'endDate' is updated
   const endDate = watch('endDate');
   useEffect(() => {
-    if (endDate) {
-      handleSubmit(({ startDate, endDate }: FormData) => {
-        refetch({
-          runtimeId,
-          versionId,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString()
-        });
-      })();
-    }
-  }, [endDate, handleSubmit, refetch]);
+    if (endDate) submit();
+  }, [endDate, submit]);
 
   function getContent() {
     if (loading) return <SpinnerCircular />;
@@ -103,6 +107,7 @@ function Metrics({ runtime, version }: Props) {
         versionName={version && version.name}
         value={watch}
         onChange={setValue}
+        submit={submit}
       />
       {getContent()}
     </div>
