@@ -341,7 +341,7 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 		return nil, err
 	}
 
-	r.logger.Info("------------ STARTING SUBSCRIPTION -------------")
+	r.logger.Info("Starting VersionNodeStatus subscription...")
 
 	outputChan := make(chan *entity.VersionNodeStatus)
 
@@ -350,14 +350,14 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 			select {
 			case nodeStatus := <-inputChan:
 				if nodeStatus == nil {
-					r.logger.Info("------------ SUBSCRIPTION INPUTCHAN CLOSED. CLOSING -------------")
+					r.logger.Info("Input channel of VersionNodeStatus subscription closed. Closing output channel...")
 					close(outputChan)
 					return
 				}
 				outputChan <- nodeStatus
 
 			case <-ctx.Done():
-				r.logger.Info("------------ SUBSCRIPTION CTX DONE. STOPPING WATCHER -------------")
+				r.logger.Info("Stopping VersionNodeStatus subscription...")
 				stopCh <- true
 				close(outputChan)
 				return
@@ -377,7 +377,7 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 		return nil, err
 	}
 
-	r.logger.Info("Starting login subscription...")
+	r.logger.Info("Starting NodeLogs subscription...")
 
 	outputChan := make(chan *entity.NodeLog)
 
@@ -386,14 +386,14 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID s
 			select {
 			case nodeLog := <-inputChan:
 				if nodeLog == nil {
-					r.logger.Info("Subscription logger input channel closed. Closing output channel...")
+					r.logger.Info("Input channel of NodeLogs subscription closed. Closing output channel...")
 					close(outputChan)
 					return
 				}
 				outputChan <- nodeLog
 
 			case <-ctx.Done():
-				r.logger.Info("Stopping login subscription...")
+				r.logger.Info("Stopping NodeLogs subscription...")
 				stopCh <- true
 				close(outputChan)
 				return
