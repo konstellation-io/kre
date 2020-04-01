@@ -166,8 +166,8 @@ function Calendar({
           startDate: newFromDate,
           endDate: newToDate
         }: Dates) => {
-          let newFromDatetime = setTime(fromDate, newFromDate);
-          let newToDatetime = setTime(toDate, newToDate, true);
+          const newFromDatetime = setTime(fromDate, newFromDate);
+          const newToDatetime = setTime(toDate, newToDate, true);
 
           changeFromDate(newFromDatetime);
           changeToDate(newToDatetime);
