@@ -17,8 +17,8 @@ describe('Calendar', () => {
       <Calendar
         label="calendar"
         hideError
-        onChangeFromDate={onChangeFromDateMock}
-        onChangeToDate={onChangeToDateMock}
+        onChangeFromDateInput={onChangeFromDateMock}
+        onChangeToDateInput={onChangeToDateMock}
       />
     );
   });

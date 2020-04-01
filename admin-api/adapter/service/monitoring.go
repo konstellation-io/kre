@@ -204,3 +204,34 @@ func (m *MonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runt
 
 	return result, nil
 }
+
+func (m *MonitoringService) GetMetrics(ctx context.Context, runtime *entity.Runtime, versionID string, startDate string, endDate string) ([]entity.MetricRow, error) {
+	var result []entity.MetricRow
+	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
+	if err != nil {
+		return result, err
+	}
+
+	c := monitoringpb.NewMonitoringServiceClient(cc)
+	req := monitoringpb.GetMetricsRequest{
+		VersionID: versionID,
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
+
+	res, err := c.GetMetrics(ctx, &req)
+	if err != nil {
+		return result, err
+	}
+
+	m.logger.Infof("Received %d metrics", len(res.Metrics))
+	for _, m := range res.Metrics {
+		result = append(result, entity.MetricRow{
+			Date:           m.Date,
+			Error:          m.Error,
+			PredictedValue: m.PredictedValue,
+			TrueValue:      m.TrueValue,
+		})
+	}
+	return result, nil
+}

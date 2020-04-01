@@ -63,6 +63,10 @@
   }
 }
 
+.DateRangePicker_picker {
+  z-index: 2;
+}
+
 .DateRangePicker_picker,
 .DayPicker {
   background-color: transparent;

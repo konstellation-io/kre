@@ -9,11 +9,20 @@ import ConfusionMatrix, {
 } from '../../../../../../components/Chart/ConfusionMatrix/ConfusionMatrix';
 
 import styles from './ConfusionMatrixBox.module.scss';
+import { GetMetrics_metrics_charts_confusionMatrix } from '../../../../../../graphql/queries/types/GetMetrics';
+
+function formatData(data: GetMetrics_metrics_charts_confusionMatrix[]): D[] {
+  return data.map((d: GetMetrics_metrics_charts_confusionMatrix) => ({
+    x: d.x,
+    y: d.y,
+    value: parseInt(d.z || '0')
+  }));
+}
 
 type Props = {
   toggleExpanded?: Function;
   nodeId?: string;
-  data: D[];
+  data: GetMetrics_metrics_charts_confusionMatrix[];
 };
 function ConfusionMatrixBox({ toggleExpanded, nodeId, data }: Props) {
   const container = useRef(null);
@@ -36,7 +45,7 @@ function ConfusionMatrixBox({ toggleExpanded, nodeId, data }: Props) {
             bottom: 23,
             left: 14
           }}
-          data={data}
+          data={formatData(data)}
         />
       </div>
     </Box>

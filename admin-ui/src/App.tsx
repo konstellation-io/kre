@@ -4,6 +4,7 @@ import './styles/react-calendar.scss';
 import './styles/app.global.scss';
 import 'markdown-navbar/dist/navbar.css';
 import './styles/markdown-navbar.scss';
+import './styles/react-time-picker.scss';
 
 import React from 'react';
 import { Router, Route } from 'react-router-dom';

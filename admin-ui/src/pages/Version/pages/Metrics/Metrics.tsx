@@ -1,40 +1,40 @@
-import React, { useState } from 'react';
-
-import { Row, RowsWrapper } from 'react-grid-resizable';
+import React, { useEffect, useState, useCallback } from 'react';
 import DashboardTitle from './components/DashboardTitle/DashboardTitle';
-
-import GeneralInfo from './boxes/GeneralInfo/GeneralInfo';
-import Accuracy from './boxes/Accuracy/Accuracy';
-import LabelStats from './boxes/LabelStats/LabelStats';
-import ConfusionMatrixBox from './boxes/ConfusionMatrixBox/ConfusionMatrixBox';
-
-import dataSimple from './data_simple.json';
-import dataComplete from './data_complete.json';
-
-import cx from 'classnames';
+import Charts from './components/Charts/Charts';
+import Message from '../../../../components/Message/Message';
+import { loader } from 'graphql.macro';
 import styles from './Metrics.module.scss';
 import {
   GetVersionConfStatus_versions,
   GetVersionConfStatus_runtime
 } from '../../../../graphql/queries/types/GetVersionConfStatus';
+import { useQuery } from '@apollo/react-hooks';
+import {
+  GetMetrics,
+  GetMetricsVariables
+} from '../../../../graphql/queries/types/GetMetrics';
+import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
+import { useParams } from 'react-router-dom';
+import { VersionRouteParams } from '../../../../constants/routes';
+import { useForm } from 'react-hook-form';
+import moment, { Moment } from 'moment';
 
-const VERSION_SIMPLE = 'price-estimator-v1';
-const VERSION_COMPLETE = 'price-estimator-v2';
+const GetMetricsQuery = loader(
+  '../../../../graphql/queries/getMetrics.graphql'
+);
 
-function getData(versionName?: string) {
-  let data;
+type FormData = {
+  startDate: Moment;
+  endDate: Moment;
+};
 
-  switch (versionName) {
-    case VERSION_SIMPLE:
-      data = dataSimple;
-      break;
-    case VERSION_COMPLETE:
-    default:
-      data = dataComplete;
-  }
-
-  return data;
-}
+const DEFAULT_DATES: FormData = {
+  startDate: moment()
+    .subtract(30, 'days')
+    .startOf('day'),
+  endDate: moment().endOf('day')
+};
 
 type Props = {
   runtime?: GetVersionConfStatus_runtime;
@@ -42,119 +42,74 @@ type Props = {
 };
 
 function Metrics({ runtime, version }: Props) {
-  const separatorRowProps = { className: styles.separatorRow };
+  const { versionId, runtimeId } = useParams<VersionRouteParams>();
+  const { data, loading, error, refetch } = useQuery<
+    GetMetrics,
+    GetMetricsVariables
+  >(GetMetricsQuery, {
+    variables: {
+      versionId,
+      runtimeId,
+      startDate: DEFAULT_DATES.startDate.toISOString(),
+      endDate: DEFAULT_DATES.endDate.toISOString()
+    }
+  });
+
+  const { register, watch, setValue, handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      startDate: DEFAULT_DATES.startDate,
+      endDate: DEFAULT_DATES.endDate
+    }
+  });
 
   const [expanded, setExpanded] = useState<string>('');
-
-  const data = getData(version && version.name);
-
   function toggleExpanded(nodeId: string): void {
-    if (expanded) {
-      setExpanded('');
-    } else {
-      setExpanded(nodeId);
-    }
+    setExpanded(expanded ? '' : nodeId);
   }
 
-  function getNodesToExpand() {
-    const nodes = [expanded];
-    let act = expanded;
+  useEffect(() => {
+    register({ name: 'startDate' });
+    register({ name: 'endDate' });
+  }, [register]);
 
-    while (act.length > 0) {
-      act = act.slice(0, -2);
-      nodes.push(act);
-    }
+  const submit = useCallback(() => {
+    handleSubmit(({ startDate, endDate }: FormData) => {
+      refetch({
+        runtimeId,
+        versionId,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      });
+    })();
+  }, [handleSubmit, refetch, runtimeId, versionId]);
 
-    return nodes;
+  // Submits the form every time 'endDate' is updated
+  const endDate = watch('endDate');
+  useEffect(() => {
+    if (endDate) submit();
+  }, [endDate, submit]);
+
+  function getContent() {
+    if (loading) return <SpinnerCircular />;
+    if (error || !data) return <ErrorMessage />;
+    if (data && data.metrics === null)
+      return <Message text="There is no data for the selected dates" />;
+
+    return (
+      <Charts data={data} expanded={expanded} toggleExpanded={toggleExpanded} />
+    );
   }
-
-  const minimize = {
-    [styles.minimize]: expanded
-  };
-
-  const nodesToExpand = getNodesToExpand();
-
-  const height = expanded ? window.innerHeight - 164 : '100%';
-  const width = window.innerWidth - 310;
-
-  const SuccessFailsHeight = width / 4;
-
-  const nLabels = Math.sqrt(data.confusionMatrix.length);
-  const confusionMatrixHeight = nLabels * 100;
-  const SeriesHeight = nLabels * 100;
 
   return (
     <div className={styles.container}>
       <DashboardTitle
         runtimeName={runtime && runtime.name}
         versionName={version && version.name}
+        value={watch}
+        onChange={setValue}
+        submit={submit}
       />
-      <div className={styles.content}>
-        <div
-          className={cx(styles.wrapper, {
-            [styles.expanded]: expanded
-          })}
-          style={{ height }}
-        >
-          <RowsWrapper separatorProps={separatorRowProps}>
-            <Row
-              initialHeight={165}
-              style={{
-                maxHeight: '165px'
-              }}
-              className={cx(styles.row, minimize, {
-                [styles.maximize]: nodesToExpand.includes('r1')
-              })}
-              disabled
-            >
-              <GeneralInfo data={data.general} />
-            </Row>
-            <Row
-              initialHeight={confusionMatrixHeight}
-              style={{
-                maxHeight: `${confusionMatrixHeight}px`,
-                marginTop: '25px'
-              }}
-              className={cx(styles.row, minimize, {
-                [styles.maximize]: nodesToExpand.includes('r2')
-              })}
-              top={false}
-            >
-              <ConfusionMatrixBox
-                toggleExpanded={toggleExpanded}
-                nodeId={'r2'}
-                data={data.confusionMatrix}
-              />
-            </Row>
-            <Row
-              initialHeight={SeriesHeight}
-              className={cx(styles.row, minimize, {
-                [styles.maximize]: nodesToExpand.includes('r3')
-              })}
-              style={{ maxHeight: 277 + 590 - 160 }}
-            >
-              <LabelStats
-                toggleExpanded={toggleExpanded}
-                nodeId={'r3'}
-                data={data.series}
-              />
-            </Row>
-            <Row
-              initialHeight={SuccessFailsHeight}
-              className={cx(styles.row, minimize, {
-                [styles.maximize]: nodesToExpand.includes('r4')
-              })}
-              style={{ maxHeight: 277 + 590 - 160 }}
-            >
-              <Accuracy
-                toggleExpanded={toggleExpanded}
-                nodeId={'r4'}
-                data={data.successVsFails}
-              />
-            </Row>
-          </RowsWrapper>
-        </div>
-      </div>
+      {getContent()}
     </div>
   );
 }

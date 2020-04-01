@@ -78,3 +78,18 @@ func (mr *MockMonitoringServiceMockRecorder) SearchLogs(ctx, runtime, options in
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchLogs", reflect.TypeOf((*MockMonitoringService)(nil).SearchLogs), ctx, runtime, options)
 }
+
+// GetMetrics mocks base method
+func (m *MockMonitoringService) GetMetrics(ctx context.Context, runtime *entity.Runtime, versionID, startDate, endDate string) ([]entity.MetricRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMetrics", ctx, runtime, versionID, startDate, endDate)
+	ret0, _ := ret[0].([]entity.MetricRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMetrics indicates an expected call of GetMetrics
+func (mr *MockMonitoringServiceMockRecorder) GetMetrics(ctx, runtime, versionID, startDate, endDate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockMonitoringService)(nil).GetMetrics), ctx, runtime, versionID, startDate, endDate)
+}
