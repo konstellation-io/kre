@@ -21,8 +21,8 @@ type MetricsRepo struct {
 
 func NewMetricsRepo(cfg *config.Config, logger *simplelogger.SimpleLogger) *MetricsRepo {
 	return &MetricsRepo{
-		cfg:    cfg,
-		logger: logger,
+		cfg,
+		logger,
 	}
 }
 
@@ -51,13 +51,13 @@ func (r *MetricsRepo) GetMetrics(
 	}
 
 	defer func() {
-		err = disconnectMongoClient(ctx, r.logger, client)
-		if err != nil {
+		if err = disconnectMongoClient(ctx, r.logger, client); err != nil {
 			r.logger.Errorf("error disconnecting from MongoDB: %s", err)
 		}
 	}()
 
 	collection := client.Database(r.cfg.MongoDB.DBName).Collection(metricsCollectionName)
+
 	err = r.ensureIndexes(ctx, collection)
 	if err != nil {
 		return result, err
@@ -80,15 +80,8 @@ func (r *MetricsRepo) GetMetrics(
 		return result, err
 	}
 
-	defer cur.Close(ctx)
-	for cur.Next(ctx) {
-		var m entity.ClassificationMetric
-		err := cur.Decode(&m)
-		if err != nil {
-			r.logger.Errorf("error decoding ClassificationMetric document from mongodb: %s", err)
-		} else {
-			result = append(result, m)
-		}
+	if err = cur.All(ctx, result); err != nil {
+		return nil, fmt.Errorf("error getting metrics from db: %w", err)
 	}
 
 	// Err returns the last error seen by the Cursor, or nil if no error has occurred.

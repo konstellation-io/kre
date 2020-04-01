@@ -17,24 +17,26 @@ type MonitoringService struct {
 	config *config.Config
 	logger *simplelogger.SimpleLogger
 	// TODO: Change to interfaces
-	status *kubernetes.Watcher
-	logs   *mongo.Watcher
+	status  *kubernetes.Watcher
+	logs    *mongo.LogRepo
+	metrics *mongo.MetricsRepo
 }
 
 // NewMonitoringService instantiates the GRPC server implementation
-func NewMonitoringService(config *config.Config, logger *simplelogger.SimpleLogger, status *kubernetes.Watcher, logs *mongo.Watcher) *MonitoringService {
+func NewMonitoringService(config *config.Config, logger *simplelogger.SimpleLogger, status *kubernetes.Watcher, logs *mongo.LogRepo, metrics *mongo.MetricsRepo) *MonitoringService {
 	return &MonitoringService{
 		config,
 		logger,
 		status,
 		logs,
+		metrics,
 	}
 }
 
 func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stream monitoringpb.MonitoringService_NodeStatusServer) error {
 	versionName := req.GetVersionName()
 
-	w.logger.Info("------------ STARTING WATCHER -------------")
+	w.logger.Info("[MonitoringService.NodeStatus] starting watcher...")
 
 	ctx := stream.Context()
 	statusCh := make(chan *entity.VersionNodeStatus, 1)
@@ -43,11 +45,11 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 	for {
 		select {
 		case <-waitCh:
-			w.logger.Info("------------- WATCHER STOPPED. RETURN FROM GRPC FUNCTION ---------")
+			w.logger.Info("[MonitoringService.NodeStatus] watcher stopped")
 			return nil
 
 		case <-ctx.Done():
-			w.logger.Info("------------- CONTEXT CLOSED ---------")
+			w.logger.Info("[MonitoringService.NodeStatus] context closed")
 			close(waitCh)
 			return nil
 
@@ -59,9 +61,8 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 			})
 
 			if err != nil {
-				w.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
+				w.logger.Infof("[MonitoringService.NodeStatus] error sending to client: %s", err)
 				close(waitCh)
-				w.logger.Error(err.Error())
 				return err
 			}
 		}
@@ -72,11 +73,11 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream monitoringpb.MonitoringService_NodeLogsServer) error {
 	versionName := req.GetNodeId()
 
-	w.logger.Info("------------ STARTING WATCHER -------------")
+	w.logger.Info("[MonitoringService.NodeLogs] starting watcher...")
 
 	ctx := stream.Context()
 	logsCh := make(chan *entity.NodeLog, 1)
-	w.logs.NodeLogs(ctx, versionName, logsCh)
+	w.logs.WatchNodeLogs(ctx, versionName, logsCh)
 
 	for {
 		select {
@@ -92,7 +93,7 @@ func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream m
 			})
 
 			if err != nil {
-				w.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
+				w.logger.Info("[MonitoringService.NodeLogs] error sending to client: %s")
 				w.logger.Error(err.Error())
 				return err
 			}
