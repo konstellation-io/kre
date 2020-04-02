@@ -163,7 +163,6 @@ func (r *LogRepo) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<
 			return
 		}
 
-		var changeDoc bson.M
 		for {
 			ok := stream.Next(ctx)
 			if !ok {
@@ -171,33 +170,16 @@ func (r *LogRepo) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<
 				return
 			}
 
+			changeDoc := struct {
+				FullDocument entity.NodeLog `bson:"fullDocument"`
+			}{}
+
 			if e := stream.Decode(&changeDoc); e != nil {
 				r.logger.Warnf("[LogRepo.WatchNodeLogs] error decoding changeDoc: %s", e)
 				continue
 			}
 
-			doc, ok := changeDoc["fullDocument"].(bson.M)
-			if !ok {
-				r.logger.Warnf("[LogRepo.WatchNodeLogs] conversion error: %+v", changeDoc)
-				continue
-			}
-
-			logsCh <- &entity.NodeLog{
-				Date:        getValueOrDefault(doc, "date", ""),
-				Message:     getValueOrDefault(doc, "message", ""),
-				VersionName: getValueOrDefault(doc, "versionName", ""),
-				NodeID:      getValueOrDefault(doc, "nodeId", ""),
-				PodID:       getValueOrDefault(doc, "podId", ""),
-				Level:       getValueOrDefault(doc, "level", "INFO"),
-				WorkflowID:  getValueOrDefault(doc, "workflowId", ""),
-			}
+			logsCh <- &changeDoc.FullDocument
 		}
 	}()
-}
-
-func getValueOrDefault(doc bson.M, key, defVal string) string {
-	if v, ok := doc[key]; ok {
-		return v.(string)
-	}
-	return defVal
 }
