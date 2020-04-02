@@ -8,17 +8,19 @@ import cx from 'classnames';
 import styles from './Logs.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import { GET_CURRENT_LOG_PANEL } from '../../../../../graphql/client/queries/getCurrentLogPanel';
+import { GET_LOGS_OPENED } from '../../../../../graphql/client/queries/getLogsOpened.graphql';
 
 function Logs() {
   const client = useApolloClient();
-  const [opened, setOpened] = useState<boolean>(false);
   const [stickToBottom, setStickToBottom] = useState<boolean>(false);
   const { data } = useQuery(GET_CURRENT_LOG_PANEL);
+  const { data: openedData } = useQuery(GET_LOGS_OPENED);
 
-  useEffect(() => {
-    clearLogs();
-    setOpened(data && data.logPanel && data.logPanel.nodeId !== undefined);
-  }, [data]);
+  const opened = openedData.logsOpened;
+
+  function setOpened(value: boolean) {
+    client.writeData({ data: { logsOpened: value } });
+  }
 
   function togglePanel() {
     setOpened(!opened);

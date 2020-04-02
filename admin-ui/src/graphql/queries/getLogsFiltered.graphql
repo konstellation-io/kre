@@ -1,29 +1,29 @@
 query GetLogsFilter(
-  $cursor: String,
-  $startDate: String!,
-  $endDate: String!,
-  $runtimeId: ID!,
-  $workflowId: ID!,
-  $nodeId: ID,
-  $search: String,
+  $cursor: String
+  $startDate: String!
+  $endDate: String!
+  $runtimeId: ID!
+  $workflowId: ID!
+  $nodeId: ID
+  $search: String
   $level: LogLevel
 ) {
   logs(
-    cursor: $cursor,
-    startDate: $startDate,
-    endDate: $endDate,
-    runtimeId: $runtimeId,
-    workflowId: $workflowId,
-    nodeId: $nodeId,
-    search: $search,
+    cursor: $cursor
+    startDate: $startDate
+    endDate: $endDate
+    runtimeId: $runtimeId
+    workflowId: $workflowId
+    nodeId: $nodeId
+    search: $search
     level: $level
   ) {
-      logs{
-        date
-        nodeName
-        message
-        level
-      }
-      cursor
+    logs {
+      date
+      nodeName
+      message
+      level
+    }
+    cursor
   }
 }

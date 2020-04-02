@@ -48,7 +48,7 @@ function Status({ version }: Props) {
 
   function setCurrentLogPanel(input: LogPanel) {
     client.writeData({
-      data: { logPanel: input }
+      data: { logPanel: input, logsOpened: true }
     });
   }
 

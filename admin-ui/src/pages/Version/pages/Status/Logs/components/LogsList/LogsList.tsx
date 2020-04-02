@@ -1,18 +1,18 @@
 import { get } from 'lodash';
-
 import React, { useEffect, useRef, useState } from 'react';
 import { loader } from 'graphql.macro';
 import { useQuery, useApolloClient } from '@apollo/react-hooks';
 import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
-
 import LogItem from './LogItem';
-
 import { GetLogs_nodeLogs } from '../../../../../../../graphql/subscriptions/types/GetLogs';
-
 import styles from './LogsList.module.scss';
-import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-import cx from 'classnames';
-
+import {
+  GetLogsFilter,
+  GetLogsFilterVariables
+} from '../../../../../../../graphql/queries/types/GetLogsFilter';
+import moment from 'moment';
+import LoadMore from './LoadMore';
+import SpinnerCircular from '../../../../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -20,15 +20,31 @@ const GetLogsFiltered = loader(
   '../../../../../../../graphql/queries/getLogsFiltered.graphql'
 );
 
+const yesterday = moment()
+  .subtract(1, 'day')
+  .startOf('day');
+const now = moment().toISOString();
+
+type GetFiltersParams = {
+  runtimeId: string;
+  nodeId: string;
+};
+function getFilters({ runtimeId, nodeId }: GetFiltersParams) {
+  return {
+    startDate: yesterday.toISOString(),
+    endDate: now,
+    workflowId: '',
+    cursor: '',
+    runtimeId,
+    nodeId
+  };
+}
+
 type Props = {
   nodeId: string;
   runtimeId: string;
   onUpdate: () => void;
 };
-
-const yesterday = new Date();
-yesterday.setDate(yesterday.getDate() - 2).toString();
-const now = new Date().toISOString();
 
 function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
   const [nextPage, setNextPage] = useState('');
@@ -36,104 +52,75 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
   const listRef = useRef(null);
   const unsubscribe = useRef<Function | null>(null);
 
-  const { data, subscribeToMore } = useQuery(GET_LOGS);
-  const logs = data ? data.logs : [];
+  const { data } = useQuery(GET_LOGS);
+  const logs = get(data, 'logs', []);
+  const filter = getFilters({ runtimeId, nodeId });
 
-  function addLogs(items: GetLogs_nodeLogs[]) {
-    client.writeData({
-      data: {
-        logs: [...items.reverse(), ...logs]
-      }
-    });
+  function resubscribe() {
+    unsubscribe.current && unsubscribe.current();
+    unsubscribe.current = subscribe();
   }
 
-  const filter = {
-    startDate: yesterday,
-    endDate: now,
-    runtimeId: runtimeId,
-    workflowId: '',
-    nodeId: nodeId,
-    cursor: ''
-  };
+  const { loading, refetch, fetchMore, subscribeToMore } = useQuery<
+    GetLogsFilter,
+    GetLogsFilterVariables
+  >(GetLogsFiltered, {
+    variables: filter,
+    onCompleted: data => {
+      client.writeData({ data: { logs: [...data.logs.logs.reverse()] } });
+      setNextPage(data.logs.cursor || '');
+      resubscribe();
+    },
+    onError: () => resubscribe()
+  });
 
+  useEffect(() => {
+    refetch(getFilters({ runtimeId, nodeId }));
+  }, [nodeId]);
+
+  useEffect(() => {
+    onUpdate();
+  }, [logs, onUpdate]);
+
+  if (loading) return <SpinnerCircular />;
+
+  // Pagination query
   function loadPreviousLogs() {
     fetchMore({
       variables: {
         ...filter,
         cursor: nextPage
       },
-      updateQuery: (previousResult, { fetchMoreResult }) => {
-        const prevData = previousResult.logs;
+      // @ts-ignore
+      updateQuery: (prev, { fetchMoreResult }) => {
         const newData = fetchMoreResult && fetchMoreResult.logs;
 
-        return {
-          logs: {
-            ...prevData,
-            ...newData
-          }
-        };
+        if (newData) {
+          client.writeData({
+            data: { logs: [...newData.logs.reverse(), ...logs] }
+          });
+          setNextPage(newData.cursor || '');
+        }
       }
     });
   }
 
-  const { data: serverData, loading, refetch, fetchMore } = useQuery(
-    GetLogsFiltered,
-    {
-      variables: filter,
-      onCompleted: () => {
-        if (unsubscribe && unsubscribe.current) {
-          unsubscribe.current();
-        }
-        unsubscribe.current = subscribe();
-      },
-      onError: () => {
-        if (unsubscribe && unsubscribe.current) {
-          unsubscribe.current();
-        }
-        unsubscribe.current = subscribe();
-      }
-    }
-  );
-  useEffect(() => {
-    const logsResponse = serverData;
-    const logInfo = get(logsResponse, 'logs.logs', []);
-    addLogs(logInfo);
-
-    setNextPage(get(logsResponse, 'logs.cursor', ''));
-  }, [serverData]);
-
-  useEffect(() => {
-    refetch({
-      startDate: yesterday,
-      endDate: now,
-      runtimeId: runtimeId,
-      workflowId: '',
-      nodeId: nodeId,
-      cursor: ''
-    });
-  }, [nodeId]);
-
+  // Subscription query
   const subscribe = () =>
     subscribeToMore({
       document: GetLogsSubscription,
       variables: { runtimeId, nodeId },
-      updateQuery: (previousData, { subscriptionData }) => {
-        if (!subscriptionData) return previousData;
+      // @ts-ignore
+      updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'nodeLogs');
-        return {
-          ...previousData,
-          logs: [...previousData.logs, newLog]
-        };
+        const logs = client.readQuery({ query: GET_LOGS });
+
+        client.writeData({ data: { logs: [...logs.logs, newLog] } });
       }
     });
 
-  useEffect(() => {
-    onUpdate();
-  }, [logs, onUpdate]);
-
-  // From now, logs are incremental, check the key in case this changes
   const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
-    <LogItem {...log} key={`logItem_${idx}`} />
+    <LogItem {...log} key={`${idx}-${log.date}`} />
   ));
   return (
     <div
@@ -141,15 +128,7 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
       className={styles.listContainer}
       id="VersionLogsListContainer"
     >
-      {loading && <SpinnerLinear />}
-      {!loading && !!logs.length && nextPage && (
-        <div
-          className={cx(styles.container, styles.loadPreviousLogs)}
-          onClick={loadPreviousLogs}
-        >
-          <span>... Load previous logs</span>
-        </div>
-      )}
+      {nextPage && <LoadMore onClick={loadPreviousLogs} />}
       {logElements}
     </div>
   );

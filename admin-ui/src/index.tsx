@@ -36,6 +36,7 @@ export interface LocalState {
   logs: GetLogs_nodeLogs[];
   notifications: [];
   logPanel: LogPanel | null;
+  logsOpened: boolean;
 }
 interface DefaultCache {
   data: LocalState;
@@ -138,7 +139,8 @@ config
         loggedIn: false,
         logs: [],
         notifications: [],
-        logPanel: null
+        logPanel: null,
+        logsOpened: false
       }
     };
 
