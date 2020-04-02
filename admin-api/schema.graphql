@@ -237,7 +237,7 @@ type NodeLog {
 
 type LogPage {
   cursor: String
-  logs: [NodeLog!]!
+  items: [NodeLog!]!
 }
 
 type Metrics {
