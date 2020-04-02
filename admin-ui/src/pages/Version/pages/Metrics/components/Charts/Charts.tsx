@@ -11,7 +11,7 @@ import { get } from 'lodash';
 
 const PADDING_HEIGHT = 164;
 const PADDING_WIDTH = 310;
-const MIN_HEIGHT_CONFUSION_MATRIX = 350;
+const MIN_HEIGHT_CONFUSION_MATRIX = 400;
 
 type Props = {
   data: GetMetrics;

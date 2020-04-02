@@ -4,13 +4,14 @@
 text {
   @include font-caption;
   color: $font-color-light;
-  font-size: 16px;
 }
 
 .cellText {
   font-weight: 600;
   dominant-baseline: central;
   pointer-events: none;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .axisBoxes {

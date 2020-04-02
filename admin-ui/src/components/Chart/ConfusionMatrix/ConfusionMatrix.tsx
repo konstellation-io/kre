@@ -17,7 +17,7 @@ import { color, RGBColor } from 'd3-color';
 
 import styles from './ConfusionMatrix.module.scss';
 
-const SCALE_PADDING_INNER: number = 0.02;
+const SCALE_PADDING_INNER: number = 0.01;
 const SCALE_PADDING_OUTER: number = 0;
 const AXIS_BOX_HEIGHT_PERC: number = 0.06;
 const AXIS_PADDING: number = 12;
@@ -264,7 +264,6 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .classed(styles.cellText, true)
       .attr('text-anchor', 'middle')
       .attr('transform', `translate(${cellWidth / 2},0)`)
-      .style('font-size', cellHeight / 3)
       .attr('fill', (d: D) => {
         const c: RGBColor = color(colorScale(d.value)) as RGBColor;
         return c.r * 0.299 + c.g * 0.587 + c.b * 0.114 > 90

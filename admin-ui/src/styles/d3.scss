@@ -15,6 +15,10 @@
   opacity: 0;
   transition: opacity ease 0.4s, top ease 0.4s, left ease 0.4s;
 
+  .tooltipContent {
+    padding: 0 8px;
+  }
+
   &::after {
     content: '';
     position: absolute;
