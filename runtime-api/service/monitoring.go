@@ -149,7 +149,6 @@ func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.Se
 
 func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.GetMetricsRequest) (*monitoringpb.GetMetricsResponse, error) {
 	result := &monitoringpb.GetMetricsResponse{}
-	metricsRepo := mongo.NewMetricsRepo(w.config, w.logger, nil)
 
 	startDate, err := time.Parse(time.RFC3339, in.StartDate)
 	if err != nil {
@@ -161,7 +160,7 @@ func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.Get
 		return result, fmt.Errorf("invalid end date: %w", err)
 	}
 
-	getMetricsResult, err := metricsRepo.GetMetrics(ctx, startDate, endDate, in.VersionID)
+	getMetricsResult, err := w.metrics.GetMetrics(ctx, startDate, endDate, in.VersionID)
 	if err != nil {
 		return result, fmt.Errorf("error getting metrics from db: %w", err)
 	}
