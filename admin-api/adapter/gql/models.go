@@ -40,7 +40,7 @@ type CreateVersionInput struct {
 
 type LogPage struct {
 	Cursor *string           `json:"cursor"`
-	Logs   []*entity.NodeLog `json:"logs"`
+	Items  []*entity.NodeLog `json:"items"`
 }
 
 type PublishVersionInput struct {

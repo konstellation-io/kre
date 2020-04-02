@@ -284,7 +284,7 @@ func (r *queryResolver) Logs(ctx context.Context, cursor *string,
 
 	return &LogPage{
 		Cursor: nextCursor,
-		Logs:   searchResult.Logs,
+		Items:  searchResult.Logs,
 	}, nil
 }
 

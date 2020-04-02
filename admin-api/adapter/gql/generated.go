@@ -72,7 +72,7 @@ type ComplexityRoot struct {
 
 	LogPage struct {
 		Cursor func(childComplexity int) int
-		Logs   func(childComplexity int) int
+		Items  func(childComplexity int) int
 	}
 
 	MetricChartData struct {
@@ -366,12 +366,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.LogPage.Cursor(childComplexity), true
 
-	case "LogPage.logs":
-		if e.complexity.LogPage.Logs == nil {
+	case "LogPage.items":
+		if e.complexity.LogPage.Items == nil {
 			break
 		}
 
-		return e.complexity.LogPage.Logs(childComplexity), true
+		return e.complexity.LogPage.Items(childComplexity), true
 
 	case "MetricChartData.x":
 		if e.complexity.MetricChartData.X == nil {
@@ -1354,7 +1354,7 @@ type NodeLog {
 
 type LogPage {
   cursor: String
-  logs: [NodeLog!]!
+  items: [NodeLog!]!
 }
 
 type Metrics {
@@ -2161,7 +2161,7 @@ func (ec *executionContext) _LogPage_cursor(ctx context.Context, field graphql.C
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _LogPage_logs(ctx context.Context, field graphql.CollectedField, obj *LogPage) (ret graphql.Marshaler) {
+func (ec *executionContext) _LogPage_items(ctx context.Context, field graphql.CollectedField, obj *LogPage) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2178,7 +2178,7 @@ func (ec *executionContext) _LogPage_logs(ctx context.Context, field graphql.Col
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Logs, nil
+		return obj.Items, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6597,8 +6597,8 @@ func (ec *executionContext) _LogPage(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = graphql.MarshalString("LogPage")
 		case "cursor":
 			out.Values[i] = ec._LogPage_cursor(ctx, field, obj)
-		case "logs":
-			out.Values[i] = ec._LogPage_logs(ctx, field, obj)
+		case "items":
+			out.Values[i] = ec._LogPage_items(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
