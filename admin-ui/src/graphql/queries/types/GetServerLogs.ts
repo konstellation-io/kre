@@ -9,8 +9,9 @@ import { LogLevel } from './../../types/globalTypes';
 // GraphQL query operation: GetServerLogs
 // ====================================================
 
-export interface GetServerLogs_logs_logs {
+export interface GetServerLogs_logs_items {
   __typename: 'NodeLog';
+  id: string;
   date: string;
   nodeName: string | null;
   message: string;
@@ -19,7 +20,7 @@ export interface GetServerLogs_logs_logs {
 
 export interface GetServerLogs_logs {
   __typename: 'LogPage';
-  logs: GetServerLogs_logs_logs[];
+  items: GetServerLogs_logs_items[];
   cursor: string | null;
 }
 

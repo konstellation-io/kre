@@ -1,10 +1,10 @@
 import { get } from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
 import { useQuery, useApolloClient } from '@apollo/react-hooks';
 import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
-import { GetLogs_nodeLogs } from '../../../../../../../graphql/subscriptions/types/GetLogs';
+import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import styles from './LogsList.module.scss';
 import {
   GetServerLogs,
@@ -13,6 +13,7 @@ import {
 import moment from 'moment';
 import LoadMore from './LoadMore';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
+import { LocalState } from '../../../../../../..';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -20,21 +21,19 @@ const GetServerLogsQuery = loader(
   '../../../../../../../graphql/queries/getServerLogs.graphql'
 );
 
-const yesterday = moment()
-  .subtract(1, 'day')
-  .startOf('day');
-const now = moment()
-  .endOf('day')
-  .toISOString();
-
 type GetFiltersParams = {
   runtimeId: string;
   nodeId: string;
 };
 function getFilters({ runtimeId, nodeId }: GetFiltersParams) {
   return {
-    startDate: yesterday.toISOString(),
-    endDate: now,
+    startDate: moment()
+      .subtract(1, 'day')
+      .startOf('day')
+      .toISOString(),
+    endDate: moment()
+      .endOf('day')
+      .toISOString(),
     workflowId: '',
     cursor: '',
     runtimeId,
@@ -42,34 +41,41 @@ function getFilters({ runtimeId, nodeId }: GetFiltersParams) {
   };
 }
 
+function scrollToBottom(component: HTMLDivElement) {
+  if (component) {
+    component.scrollTo({
+      top: component.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
+}
+
 type Props = {
   nodeId: string;
   runtimeId: string;
-  onUpdate: () => void;
 };
 
-function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
-  const [nextPage, setNextPage] = useState('');
+function LogsList({ nodeId, runtimeId }: Props) {
+  const [nextPage, setNextPage] = useState<string>('');
   const client = useApolloClient();
-  const listRef = useRef(null);
-  const unsubscribe = useRef<Function | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const unsubscribeRef = useRef<Function | null>(null);
 
-  const { data } = useQuery(GET_LOGS);
-  const logs = get(data, 'logs', []);
-  const filter = getFilters({ runtimeId, nodeId });
+  const { data: localData } = useQuery<LocalState>(GET_LOGS);
+  const logs: GetServerLogs_logs_items[] = localData?.logs || [];
 
   function resubscribe() {
-    unsubscribe.current && unsubscribe.current();
-    unsubscribe.current = subscribe();
+    unsubscribeRef.current && unsubscribeRef.current();
+    unsubscribeRef.current = subscribe();
   }
 
   const { loading, refetch, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
     GetServerLogsVariables
   >(GetServerLogsQuery, {
-    variables: filter,
+    variables: getFilters({ runtimeId, nodeId }),
     onCompleted: data => {
-      client.writeData({ data: { logs: [...data.logs.logs.reverse()] } });
+      client.writeData({ data: { logs: [...data.logs.items.reverse()] } });
       setNextPage(data.logs.cursor || '');
       resubscribe();
     },
@@ -77,15 +83,21 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
     fetchPolicy: 'no-cache'
   });
 
+  const handleScroll = useCallback(() => {
+    if (localData?.logsAutoScroll && listRef.current !== null) {
+      scrollToBottom(listRef.current);
+    }
+  }, [localData, listRef]);
+
+  useEffect(() => {
+    handleScroll();
+  }, [logs, localData?.logsAutoScroll]);
+
   useEffect(() => {
     refetch(getFilters({ runtimeId, nodeId }));
     // Ignore refetch dependency, we do not want to refetch when refetch func changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodeId, runtimeId]);
-
-  useEffect(() => {
-    onUpdate();
-  }, [logs, onUpdate]);
 
   if (loading) return <SpinnerLinear />;
 
@@ -93,7 +105,7 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
   function loadPreviousLogs() {
     fetchMore({
       variables: {
-        ...filter,
+        ...getFilters({ runtimeId, nodeId }),
         cursor: nextPage
       },
       // @ts-ignore
@@ -102,7 +114,7 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
 
         if (newData) {
           client.writeData({
-            data: { logs: [...newData.logs.reverse(), ...logs] }
+            data: { logs: [...newData.items.reverse(), ...logs] }
           });
           setNextPage(newData.cursor || '');
         }
@@ -124,8 +136,8 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
       }
     });
 
-  const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
-    <LogItem {...log} key={`${idx}-${log.date}`} />
+  const logElements = logs.map((log: GetServerLogs_logs_items) => (
+    <LogItem {...log} key={log.id} />
   ));
   return (
     <div

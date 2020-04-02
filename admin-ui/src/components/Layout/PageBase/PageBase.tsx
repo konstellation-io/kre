@@ -4,7 +4,7 @@ import Header from '../../Header/Header';
 import NavigationBar from '../../NavigationBar/NavigationBar';
 import cx from 'classnames';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_CURRENT_LOG_PANEL } from '../../../graphql/client/queries/getCurrentLogPanel';
+import { GET_LOGS } from '../../../graphql/client/queries/getLogs.graphql';
 
 type PageBaseProps = {
   children: ReactElement | ReactElement[] | null;
@@ -19,11 +19,13 @@ function PageBase({
 }: PageBaseProps) {
   const [opened, setOpened] = useState<boolean>(false);
 
-  const { data } = useQuery(GET_CURRENT_LOG_PANEL);
+  const { data: localData } = useQuery(GET_LOGS);
 
   useEffect(() => {
-    setOpened(data && data.logPanel && data.logPanel.nodeId !== undefined);
-  }, [data]);
+    setOpened(
+      localData && localData.logPanel && localData.logPanel.nodeId !== undefined
+    );
+  }, [localData]);
   return (
     <>
       <Header>{headerChildren}</Header>

@@ -18,7 +18,8 @@ query GetServerLogs(
     search: $search
     level: $level
   ) {
-    logs {
+    items {
+      id
       date
       nodeName
       message

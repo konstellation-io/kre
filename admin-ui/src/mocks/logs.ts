@@ -1,8 +1,8 @@
-import { GET_CURRENT_LOG_PANEL } from '../graphql/client/queries/getCurrentLogPanel';
+import { GET_LOGS } from '../graphql/client/queries/getLogs.graphql';
 
 export const currentLogPanelMock = {
   request: {
-    query: GET_CURRENT_LOG_PANEL
+    query: GET_LOGS
   },
   result: {
     data: {

@@ -22,21 +22,22 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { onError, ErrorResponse } from 'apollo-link-error';
 import { createUploadLink } from 'apollo-upload-client';
 import { getMainDefinition } from 'apollo-utilities';
-import { GetLogs_nodeLogs } from './graphql/subscriptions/types/GetLogs';
 import { ADD_NOTIFICATION } from './graphql/client/mutations/addNotification.graphql';
 import {
   addNotificationResolver,
   removeNotificationResolver
 } from './graphql/client/resolvers';
+import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
 
 export let cache: InMemoryCache;
 
 export interface LocalState {
   loggedIn: boolean;
-  logs: GetLogs_nodeLogs[];
+  logs: GetServerLogs_logs_items[];
   notifications: [];
   logPanel: LogPanel | null;
   logsOpened: boolean;
+  logsAutoScroll: boolean;
 }
 interface DefaultCache {
   data: LocalState;
@@ -140,7 +141,8 @@ config
         logs: [],
         notifications: [],
         logPanel: null,
-        logsOpened: false
+        logsOpened: false,
+        logsAutoScroll: false
       }
     };
 

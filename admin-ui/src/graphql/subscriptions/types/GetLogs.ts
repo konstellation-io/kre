@@ -11,6 +11,7 @@ import { LogLevel } from './../../types/globalTypes';
 
 export interface GetLogs_nodeLogs {
   __typename: 'NodeLog';
+  id: string;
   date: string;
   nodeName: string | null;
   message: string;

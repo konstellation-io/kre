@@ -7,6 +7,7 @@ import ConfusionMatrixBox from '../../boxes/ConfusionMatrixBox/ConfusionMatrixBo
 import LabelStats from '../../boxes/LabelStats/LabelStats';
 import Accuracy from '../../boxes/Accuracy/Accuracy';
 import { GetMetrics } from '../../../../../../graphql/queries/types/GetMetrics';
+import { get } from 'lodash';
 
 const PADDING_HEIGHT = 164;
 const PADDING_WIDTH = 310;
@@ -42,7 +43,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
   const nodesToExpand = getNodesToExpand();
 
   const height = expanded ? window.innerHeight - PADDING_HEIGHT : '100%';
-  const width = window.innerWidth || 0 - PADDING_WIDTH;
+  const width = get(window, 'innerWidth', 0) - PADDING_WIDTH;
 
   const SuccessFailsHeight = width / 4;
 
