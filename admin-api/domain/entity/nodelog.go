@@ -5,6 +5,7 @@ import (
 )
 
 type NodeLog struct {
+	ID        string
 	Date      string
 	Level     string
 	Message   string

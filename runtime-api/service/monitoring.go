@@ -22,7 +22,7 @@ type MonitoringService struct {
 	metrics *mongo.MetricsRepo
 }
 
-// NewMonitoringService instantiates the GRPC server implementation
+// NewMonitoringService instantiates the gRPC server implementation
 func NewMonitoringService(config *config.Config, logger *simplelogger.SimpleLogger, status *kubernetes.Watcher, logs *mongo.LogRepo, metrics *mongo.MetricsRepo) *MonitoringService {
 	return &MonitoringService{
 		config,
@@ -81,16 +81,8 @@ func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream m
 
 	for {
 		select {
-		case log := <-logsCh:
-			err := stream.Send(&monitoringpb.NodeLogsResponse{
-				Date:      log.Date,
-				VersionId: log.VersionName,
-				NodeId:    log.NodeID,
-				PodId:     log.PodID,
-				Message:   log.Message,
-				Level:     log.Level,
-				NodeName:  log.NodeName,
-			})
+		case l := <-logsCh:
+			err := stream.Send(toNodeLogsResponse(l))
 
 			if err != nil {
 				w.logger.Info("[MonitoringService.NodeLogs] error sending to client: %s")
@@ -130,15 +122,7 @@ func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.Se
 
 	var logs []*monitoringpb.NodeLogsResponse
 	for _, l := range search.Logs {
-		logs = append(logs, &monitoringpb.NodeLogsResponse{
-			Date:      l.Date,
-			VersionId: l.VersionName,
-			NodeId:    l.NodeID,
-			PodId:     l.PodID,
-			Message:   l.Message,
-			Level:     l.Level,
-			NodeName:  l.NodeName,
-		})
+		logs = append(logs, toNodeLogsResponse(l))
 	}
 
 	return &monitoringpb.SearchLogsResponse{
@@ -177,4 +161,17 @@ func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.Get
 	result.Metrics = metrics
 
 	return result, nil
+}
+
+func toNodeLogsResponse(log *entity.NodeLog) *monitoringpb.NodeLogsResponse {
+	return &monitoringpb.NodeLogsResponse{
+		Id:        log.ID,
+		Date:      log.Date,
+		VersionId: log.VersionName,
+		NodeId:    log.NodeID,
+		PodId:     log.PodID,
+		Message:   log.Message,
+		Level:     log.Level,
+		NodeName:  log.NodeName,
+	}
 }

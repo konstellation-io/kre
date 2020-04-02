@@ -229,6 +229,7 @@ enum LogLevel {
 }
 
 type NodeLog {
+  id: ID!
   date: String!
   nodeName: String
   message: String!

@@ -8,13 +8,14 @@ message NodeLogsRequest {
 }
 
 message NodeLogsResponse {
-  string date = 1;
-  string versionId = 2;
-  string nodeId = 3;
-  string podId = 4;
-  string message = 5;
-  string level = 6;
-  string nodeName = 7;
+  string id = 1;
+  string date = 2;
+  string versionId = 3;
+  string nodeId = 4;
+  string podId = 5;
+  string message = 6;
+  string level = 7;
+  string nodeName = 8;
 }
 
 message NodeStatusRequest {
