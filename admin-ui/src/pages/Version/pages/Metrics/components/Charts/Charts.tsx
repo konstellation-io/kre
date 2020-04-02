@@ -19,6 +19,10 @@ type Props = {
 };
 
 function Charts({ data, expanded, toggleExpanded }: Props) {
+  if (data.metrics === null) {
+    return null;
+  }
+
   function getNodesToExpand() {
     const nodes = [expanded];
     let act = expanded;
@@ -38,7 +42,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
   const nodesToExpand = getNodesToExpand();
 
   const height = expanded ? window.innerHeight - PADDING_HEIGHT : '100%';
-  const width = window.innerWidth - PADDING_WIDTH;
+  const width = window.innerWidth || 0 - PADDING_WIDTH;
 
   const SuccessFailsHeight = width / 4;
 

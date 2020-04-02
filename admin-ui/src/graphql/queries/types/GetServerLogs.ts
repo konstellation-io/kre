@@ -6,10 +6,10 @@
 import { LogLevel } from './../../types/globalTypes';
 
 // ====================================================
-// GraphQL query operation: GetLogsFilter
+// GraphQL query operation: GetServerLogs
 // ====================================================
 
-export interface GetLogsFilter_logs_logs {
+export interface GetServerLogs_logs_logs {
   __typename: 'NodeLog';
   date: string;
   nodeName: string | null;
@@ -17,17 +17,17 @@ export interface GetLogsFilter_logs_logs {
   level: LogLevel;
 }
 
-export interface GetLogsFilter_logs {
+export interface GetServerLogs_logs {
   __typename: 'LogPage';
-  logs: GetLogsFilter_logs_logs[];
+  logs: GetServerLogs_logs_logs[];
   cursor: string | null;
 }
 
-export interface GetLogsFilter {
-  logs: GetLogsFilter_logs;
+export interface GetServerLogs {
+  logs: GetServerLogs_logs;
 }
 
-export interface GetLogsFilterVariables {
+export interface GetServerLogsVariables {
   cursor?: string | null;
   startDate: string;
   endDate: string;

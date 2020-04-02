@@ -7,17 +7,17 @@ import LogItem from './LogItem';
 import { GetLogs_nodeLogs } from '../../../../../../../graphql/subscriptions/types/GetLogs';
 import styles from './LogsList.module.scss';
 import {
-  GetLogsFilter,
-  GetLogsFilterVariables
-} from '../../../../../../../graphql/queries/types/GetLogsFilter';
+  GetServerLogs,
+  GetServerLogsVariables
+} from '../../../../../../../graphql/queries/types/GetServerLogs';
 import moment from 'moment';
 import LoadMore from './LoadMore';
 import SpinnerCircular from '../../../../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
-const GetLogsFiltered = loader(
-  '../../../../../../../graphql/queries/getLogsFiltered.graphql'
+const GetServerLogsQuery = loader(
+  '../../../../../../../graphql/queries/getServerLogs.graphql'
 );
 
 const yesterday = moment()
@@ -64,9 +64,9 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
   }
 
   const { loading, refetch, fetchMore, subscribeToMore } = useQuery<
-    GetLogsFilter,
-    GetLogsFilterVariables
-  >(GetLogsFiltered, {
+    GetServerLogs,
+    GetServerLogsVariables
+  >(GetServerLogsQuery, {
     variables: filter,
     onCompleted: data => {
       client.writeData({ data: { logs: [...data.logs.logs.reverse()] } });

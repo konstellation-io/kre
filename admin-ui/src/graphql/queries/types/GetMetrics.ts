@@ -69,7 +69,7 @@ export interface GetMetrics_metrics {
 }
 
 export interface GetMetrics {
-  metrics: GetMetrics_metrics;
+  metrics: GetMetrics_metrics | null;
 }
 
 export interface GetMetricsVariables {
