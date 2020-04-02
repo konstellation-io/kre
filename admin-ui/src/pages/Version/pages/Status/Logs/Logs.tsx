@@ -47,16 +47,10 @@ function Logs() {
           {logPanel && (
             <>
               <Filters filters={{ node: logPanel.nodeName }} />
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <LogsList
-                  nodeId={logPanel.nodeId}
-                  runtimeId={logPanel.runtimeId}
-                />
-                <LogsList
-                  nodeId={logPanel.nodeId}
-                  runtimeId={logPanel.runtimeId}
-                />
-              </div>
+              <LogsList
+                nodeId={logPanel.nodeId}
+                runtimeId={logPanel.runtimeId}
+              />
             </>
           )}
         </div>

@@ -108,7 +108,6 @@ function LogsList({ nodeId, runtimeId }: Props) {
         ...getFilters({ runtimeId, nodeId }),
         cursor: nextPage
       },
-      // @ts-ignore
       updateQuery: (prev, { fetchMoreResult }) => {
         const newData = fetchMoreResult && fetchMoreResult.logs;
 
@@ -118,6 +117,8 @@ function LogsList({ nodeId, runtimeId }: Props) {
           });
           setNextPage(newData.cursor || '');
         }
+
+        return prev;
       }
     });
   }
@@ -127,12 +128,13 @@ function LogsList({ nodeId, runtimeId }: Props) {
     subscribeToMore({
       document: GetLogsSubscription,
       variables: { runtimeId, nodeId },
-      // @ts-ignore
       updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'nodeLogs');
         const logs = client.readQuery({ query: GET_LOGS });
 
         client.writeData({ data: { logs: [...logs.logs, newLog] } });
+
+        return prev;
       }
     });
 
