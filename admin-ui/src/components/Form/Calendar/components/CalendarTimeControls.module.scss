@@ -1,0 +1,48 @@
+@import '../../../../styles/colors';
+@import '../../../../styles/mixins';
+@import '../../../../styles/variables';
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  background-color: $color-sidebar;
+  padding: 0 34px 11px 34px;
+
+  .title {
+    @include font-body;
+    font-weight: 500;
+
+    margin-bottom: 8px;
+  }
+
+  .col1 {
+    width: 32%;
+
+    .timeInput {
+      margin-bottom: $grid-unit * 2;
+    }
+  }
+
+  .col2 {
+    width: 68%;
+
+    .ranges {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      height: $grid-unit * 14;
+      line-height: $grid-unit * 3;
+      padding: $grid-unit / 2 $grid-unit * 2;
+
+      div {
+        cursor: pointer;
+        transition: color ease 0.4s;
+
+        &:hover {
+          color: $font-color-white;
+        }
+      }
+    }
+  }
+}

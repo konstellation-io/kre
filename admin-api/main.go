@@ -53,6 +53,8 @@ func main() {
 	minioCreateStorage := minio.CreateStorage
 	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, versionService, monitoringService, userActivityInteractor, minioCreateStorage)
 
+	metricsInteractor := usecase.NewMetricsInteractor(logger, runtimeRepo, monitoringService)
+
 	err = settingInteractor.CreateDefaults()
 	if err != nil {
 		panic(err)
@@ -67,6 +69,7 @@ func main() {
 		settingInteractor,
 		userActivityInteractor,
 		versionInteractor,
+		metricsInteractor,
 	)
 	app.Start()
 }

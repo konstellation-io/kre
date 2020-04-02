@@ -208,7 +208,6 @@ github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhe
 github.com/xdg/stringprep v0.0.0-20180714160509-73f8eece6fdc/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
 github.com/xdg/stringprep v1.0.0 h1:d9X0esnoa3dFsV0FG35rAT0RIhYFlPq7MiP+DW89La0=
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
-gitlab.com/konstellation/kre v0.0.0-20200318144403-304080a7ebc4 h1:gW2aTHVLoSXRXOo7YuV7ws1JQS84YK+wvq9Q7U/9+10=
 gitlab.com/konstellation/kre/libs/simplelogger v0.0.0-20200310182012-86a4685eea87 h1:AAKt1sFvzRId0ky0Rky9KcHrX0a/Ky9DplIo6JbHR6M=
 gitlab.com/konstellation/kre/libs/simplelogger v0.0.0-20200310182012-86a4685eea87/go.mod h1:wcPYwzobTcs5cf4ALtB93l8t938qYcMMkYPkRjci26Q=
 go.mongodb.org/mongo-driver v1.3.1 h1:op56IfTQiaY2679w922KVWa3qcHdml2K/Io8ayAOUEQ=

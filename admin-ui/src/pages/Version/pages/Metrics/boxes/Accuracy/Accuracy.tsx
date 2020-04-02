@@ -9,12 +9,20 @@ import BarChart, {
 } from '../../../../../../components/Chart/BarChart/BarChart';
 
 import styles from './Accuracy.module.scss';
+import { GetMetrics_metrics_charts_successVsFails } from '../../../../../../graphql/queries/types/GetMetrics';
+
+function formatData(data: GetMetrics_metrics_charts_successVsFails[]): D[] {
+  return data.map((chartBar: GetMetrics_metrics_charts_successVsFails) => ({
+    x: chartBar.x,
+    y: parseInt(chartBar.y)
+  }));
+}
 
 type Props = {
   withBgBars?: boolean;
   toggleExpanded?: Function;
   nodeId?: string;
-  data: D[];
+  data: GetMetrics_metrics_charts_successVsFails[];
 };
 function Accuracy({ toggleExpanded, nodeId, data }: Props) {
   const container = useRef(null);
@@ -37,7 +45,7 @@ function Accuracy({ toggleExpanded, nodeId, data }: Props) {
             bottom: 23,
             left: 14
           }}
-          data={data}
+          data={formatData(data)}
         />
       </div>
     </Box>

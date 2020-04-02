@@ -31,6 +31,7 @@ type Resolver struct {
 	settingInteractor      *usecase.SettingInteractor
 	userActivityInteractor *usecase.UserActivityInteractor
 	versionInteractor      *usecase.VersionInteractor
+	metricsInteractor      *usecase.MetricsInteractor
 }
 
 func NewGraphQLResolver(
@@ -40,6 +41,7 @@ func NewGraphQLResolver(
 	settingInteractor *usecase.SettingInteractor,
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
+	metricsInteractor *usecase.MetricsInteractor,
 ) *Resolver {
 	return &Resolver{
 		logger:                 logger,
@@ -48,6 +50,7 @@ func NewGraphQLResolver(
 		settingInteractor:      settingInteractor,
 		userActivityInteractor: userActivityInteractor,
 		versionInteractor:      versionInteractor,
+		metricsInteractor:      metricsInteractor,
 	}
 }
 
@@ -181,6 +184,10 @@ func (r *nodeLogResolver) Level(ctx context.Context, obj *entity.NodeLog) (LogLe
 func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	userID := ctx.Value("userID").(string)
 	return r.userInteractor.GetByID(userID)
+}
+
+func (r *queryResolver) Metrics(ctx context.Context, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
+	return r.metricsInteractor.GetMetrics(ctx, runtimeID, versionID, startDate, endDate)
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {

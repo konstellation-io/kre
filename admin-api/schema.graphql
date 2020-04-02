@@ -26,6 +26,12 @@ type Query {
     search: String
     level: LogLevel
   ): LogPage!
+  metrics(
+    runtimeId: ID!
+    versionId: ID!
+    startDate: String!
+    endDate: String!
+  ): Metrics
 }
 
 type Mutation {
@@ -232,4 +238,36 @@ type NodeLog {
 type LogPage {
   cursor: String
   logs: [NodeLog!]!
+}
+
+type Metrics {
+  values: MetricsValues!
+  charts: MetricsCharts!
+}
+
+type MetricsValues {
+  accuracy: MetricsAccuracy!
+  missing: Int!
+  newLabels: Int!
+}
+
+type MetricsAccuracy {
+  total: Int!
+  micro: Int!
+  macro: Int!
+  weighted: Int!
+}
+
+type MetricsCharts {
+  confusionMatrix: [MetricChartData!]!
+  seriesAccuracy: [MetricChartData!]!
+  seriesRecall: [MetricChartData!]!
+  seriesSupport: [MetricChartData!]!
+  successVsFails: [MetricChartData!]!
+}
+
+type MetricChartData {
+  x: String!
+  y: String!
+  z: String!
 }

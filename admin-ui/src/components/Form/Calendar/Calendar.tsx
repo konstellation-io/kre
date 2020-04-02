@@ -7,6 +7,68 @@ import InputError from '../InputError/InputError';
 import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import ArrowLeftIcon from '@material-ui/icons/ArrowBack';
 import { DateRangePicker } from 'react-dates';
+import CalendarTimeControls from './components/CalendarTimeControls';
+
+type TimeUnit = 'day' | 'week' | 'month' | 'year';
+export type Range = {
+  label: string;
+  startDate: Moment;
+  endDate: Moment;
+};
+type GenerateActRangeParams = {
+  unit: TimeUnit;
+  date?: Moment;
+  label?: string;
+  prefix?: string;
+};
+function generateRange({
+  unit,
+  date = moment(),
+  label = '',
+  prefix = 'This'
+}: GenerateActRangeParams): Range {
+  return {
+    label: label || `${prefix} ${unit}`,
+    startDate: date.clone().startOf(unit),
+    endDate: date.clone().endOf(unit)
+  };
+}
+function generatePrevRange(unit: TimeUnit, label?: string): Range {
+  return generateRange({
+    date: moment().subtract(1, unit),
+    prefix: 'Previous',
+    label,
+    unit
+  });
+}
+
+// Generate quick ranges for calendar extension
+function getRanges(): Range[] {
+  return [
+    generateRange({ unit: 'day', label: 'Today' }),
+    generateRange({ unit: 'week' }),
+    generateRange({ unit: 'month' }),
+    generateRange({ unit: 'year' }),
+    generatePrevRange('day', 'Yesterday'),
+    generatePrevRange('week'),
+    generatePrevRange('month'),
+    generatePrevRange('year'),
+    {
+      label: 'Last 2 days',
+      startDate: moment()
+        .subtract(1, 'day')
+        .startOf('day'),
+      endDate: moment().endOf('day')
+    },
+    {
+      label: 'Last 6 months',
+      startDate: moment()
+        .subtract(6, 'month')
+        .startOf('day'),
+      endDate: moment().endOf('month')
+    }
+  ];
+}
 
 type DateKey = 'startDate' | 'endDate' | null;
 type Dates = {
@@ -18,9 +80,11 @@ type Props = {
   error?: string | boolean;
   formFromDate?: Moment | null;
   formToDate?: Moment | null;
-  onChangeFromDate?: Function;
-  onChangeToDate?: Function;
+  onChangeFromDateInput?: Function;
+  onChangeToDateInput?: Function;
+  submit?: Function;
   hideError?: boolean;
+  addTimeControls?: boolean;
 };
 
 function Calendar({
@@ -29,8 +93,10 @@ function Calendar({
   hideError = false,
   formFromDate = null,
   formToDate = null,
-  onChangeFromDate = function() {},
-  onChangeToDate = function() {}
+  onChangeFromDateInput = function() {},
+  onChangeToDateInput = function() {},
+  addTimeControls = false,
+  submit = function() {}
 }: Props) {
   const [fromDate, setFromDate] = useState<Moment | null>(null);
   const [toDate, setToDate] = useState<Moment | null>(null);
@@ -44,6 +110,47 @@ function Calendar({
     setToDate(formToDate);
   }, [formToDate]);
 
+  function changeFromDate(date: Moment | null) {
+    setFromDate(date);
+    onChangeFromDateInput(date);
+  }
+
+  function changeToDate(date: Moment | null) {
+    setToDate(date);
+    onChangeToDateInput(date);
+  }
+
+  function getTimeUnits(date: Moment | null) {
+    return {
+      hour: date?.get('hour'),
+      minute: date?.get('minute'),
+      second: date?.get('second')
+    };
+  }
+
+  function initializeTime(date: Moment, isEnd = false) {
+    return isEnd ? date.endOf('day') : date.startOf('day');
+  }
+
+  function preserveTime(newDate: Moment, previousDate: Moment) {
+    return newDate.set(getTimeUnits(previousDate));
+  }
+
+  function setTime(
+    previousDate: Moment | null,
+    newDate: Moment | null,
+    isEnd = false
+  ): Moment | null {
+    if (newDate === null) return null;
+
+    const newDateWithTime =
+      previousDate === null
+        ? initializeTime(newDate, isEnd)
+        : preserveTime(newDate, previousDate);
+
+    return newDateWithTime;
+  }
+
   return (
     <div>
       <InputLabel text={label} />
@@ -54,12 +161,21 @@ function Calendar({
         endDate={toDate}
         endDateId="calendar_to_date"
         endDatePlaceholderText="To Date"
-        onDatesChange={({ startDate, endDate }: Dates) => {
-          setFromDate(startDate);
-          onChangeFromDate(startDate);
-          setToDate(endDate);
-          onChangeToDate(endDate);
+        displayFormat={addTimeControls ? 'MM/DD/YYYY HH:mm' : 'MM/DD/YYYY'}
+        onDatesChange={({
+          startDate: newFromDate,
+          endDate: newToDate
+        }: Dates) => {
+          const newFromDatetime = setTime(fromDate, newFromDate);
+          const newToDatetime = setTime(toDate, newToDate, true);
+
+          changeFromDate(newFromDatetime);
+          changeToDate(newToDatetime);
+
           setFocusedInput(focusedInput);
+        }}
+        onClose={() => {
+          if (addTimeControls) submit();
         }}
         focusedInput={focusedInput}
         onFocusChange={(input: DateKey) => setFocusedInput(input)}
@@ -79,6 +195,19 @@ function Calendar({
         }
         isOutsideRange={day => !isInclusivelyBeforeDay(day, moment())}
         minimumNights={0}
+        renderCalendarInfo={() =>
+          addTimeControls ? (
+            <CalendarTimeControls
+              ranges={getRanges()}
+              changeFromDate={changeFromDate}
+              changeToDate={changeToDate}
+              formFromDate={fromDate}
+              formToDate={toDate}
+            />
+          ) : (
+            <></>
+          )
+        }
       />
       {hideError === false && <InputError message={error.toString()} />}
     </div>

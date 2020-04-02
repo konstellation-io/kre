@@ -71,5 +71,18 @@ models:
     model: gitlab.com/konstellation/kre/admin-api/domain/entity.UserActivityVar
   NodeLog:
     model: gitlab.com/konstellation/kre/admin-api/domain/entity.NodeLog
+    fields:
+      level:
+        resolver: true
   Settings:
     model: gitlab.com/konstellation/kre/admin-api/domain/entity.Setting
+  MetricChartData:
+    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricChartData
+  Metrics:
+    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Metrics
+  MetricsAccuracy:
+    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricsAccuracy
+  MetricsCharts:
+    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricsCharts
+  MetricsValues:
+    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricsValues

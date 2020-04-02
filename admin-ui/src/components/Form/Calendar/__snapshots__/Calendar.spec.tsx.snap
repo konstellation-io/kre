@@ -21,7 +21,7 @@ exports[`Calendar matches snapshots 1`] = `
     daySize={39}
     disableScroll={false}
     disabled={false}
-    displayFormat={[Function]}
+    displayFormat="MM/DD/YYYY"
     enableOutsideDays={false}
     endDate={null}
     endDateId="calendar_to_date"
@@ -116,7 +116,7 @@ exports[`Calendar matches snapshots 1`] = `
     }
     readOnly={false}
     regular={false}
-    renderCalendarInfo={null}
+    renderCalendarInfo={[Function]}
     renderDayContents={null}
     renderMonthElement={null}
     renderMonthText={null}
