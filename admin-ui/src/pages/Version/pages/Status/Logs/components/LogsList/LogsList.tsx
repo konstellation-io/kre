@@ -23,7 +23,9 @@ const GetLogsFiltered = loader(
 const yesterday = moment()
   .subtract(1, 'day')
   .startOf('day');
-const now = moment().toISOString();
+const now = moment()
+  .endOf('day')
+  .toISOString();
 
 type GetFiltersParams = {
   runtimeId: string;
@@ -71,7 +73,8 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
       setNextPage(data.logs.cursor || '');
       resubscribe();
     },
-    onError: () => resubscribe()
+    onError: () => resubscribe(),
+    fetchPolicy: 'no-cache'
   });
 
   useEffect(() => {
