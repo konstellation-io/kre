@@ -12,7 +12,7 @@ import {
 } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import moment from 'moment';
 import LoadMore from './LoadMore';
-import SpinnerCircular from '../../../../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -79,13 +79,15 @@ function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
 
   useEffect(() => {
     refetch(getFilters({ runtimeId, nodeId }));
-  }, [nodeId]);
+    // Ignore refetch dependency, we do not want to refetch when refetch func changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodeId, runtimeId]);
 
   useEffect(() => {
     onUpdate();
   }, [logs, onUpdate]);
 
-  if (loading) return <SpinnerCircular />;
+  if (loading) return <SpinnerLinear />;
 
   // Pagination query
   function loadPreviousLogs() {

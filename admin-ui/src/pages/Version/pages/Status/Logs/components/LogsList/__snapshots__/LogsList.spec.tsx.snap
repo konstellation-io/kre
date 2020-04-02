@@ -65,7 +65,7 @@ exports[`LogsList matches snapshot 1`] = `
   >
     <LogItem
       date="2020-01-01"
-      key="logItem_0"
+      key="0-2020-01-01"
       message="some message 1"
       nodeId="someNode1"
     >
@@ -176,7 +176,7 @@ exports[`LogsList matches snapshot 1`] = `
     </LogItem>
     <LogItem
       date="2020-01-01"
-      key="logItem_1"
+      key="1-2020-01-01"
       message="some message 2"
       nodeId="someNode2"
     >

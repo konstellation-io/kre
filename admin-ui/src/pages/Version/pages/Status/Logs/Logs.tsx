@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import Header from './components/Header/Header';
 import Filters from './components/Filters/Filters';
@@ -9,6 +9,7 @@ import styles from './Logs.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import { GET_CURRENT_LOG_PANEL } from '../../../../../graphql/client/queries/getCurrentLogPanel';
 import { GET_LOGS_OPENED } from '../../../../../graphql/client/queries/getLogsOpened.graphql';
+import { get } from 'lodash';
 
 function Logs() {
   const client = useApolloClient();
@@ -16,7 +17,7 @@ function Logs() {
   const { data } = useQuery(GET_CURRENT_LOG_PANEL);
   const { data: openedData } = useQuery(GET_LOGS_OPENED);
 
-  const opened = openedData.logsOpened;
+  const opened = get(openedData, 'logsOpened', false);
 
   function setOpened(value: boolean) {
     client.writeData({ data: { logsOpened: value } });
