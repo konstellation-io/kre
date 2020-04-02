@@ -15,14 +15,17 @@ import (
 const metricsCollectionName = "classificationMetrics"
 
 type MetricsRepo struct {
-	cfg    *config.Config
-	logger *simplelogger.SimpleLogger
+	cfg        *config.Config
+	logger     *simplelogger.SimpleLogger
+	collection *mongo.Collection
 }
 
-func NewMetricsRepo(cfg *config.Config, logger *simplelogger.SimpleLogger) *MetricsRepo {
+func NewMetricsRepo(cfg *config.Config, logger *simplelogger.SimpleLogger, client *mongo.Client) *MetricsRepo {
+	collection := client.Database(cfg.MongoDB.DBName).Collection(metricsCollectionName)
 	return &MetricsRepo{
 		cfg,
 		logger,
+		collection,
 	}
 }
 
@@ -44,21 +47,7 @@ func (r *MetricsRepo) GetMetrics(
 	versionID string,
 ) ([]entity.ClassificationMetric, error) {
 	var result []entity.ClassificationMetric
-
-	client, err := newMongoClient(ctx, r.cfg, r.logger)
-	if err != nil {
-		return result, err
-	}
-
-	defer func() {
-		if err = disconnectMongoClient(ctx, r.logger, client); err != nil {
-			r.logger.Errorf("error disconnecting from MongoDB: %s", err)
-		}
-	}()
-
-	collection := client.Database(r.cfg.MongoDB.DBName).Collection(metricsCollectionName)
-
-	err = r.ensureIndexes(ctx, collection)
+	err := r.ensureIndexes(ctx, r.collection)
 	if err != nil {
 		return result, err
 	}
@@ -75,7 +64,7 @@ func (r *MetricsRepo) GetMetrics(
 		"versionId": versionID,
 	}
 
-	cur, err := collection.Find(ctx, filter, opts)
+	cur, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return result, err
 	}

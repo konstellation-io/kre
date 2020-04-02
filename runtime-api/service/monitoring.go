@@ -103,17 +103,18 @@ func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream m
 
 func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.SearchLogsRequest) (*monitoringpb.SearchLogsResponse, error) {
 	var result *monitoringpb.SearchLogsResponse
-	logRepo := mongo.NewLogRepo(w.config, w.logger)
 
 	startDate, err := time.Parse(time.RFC3339, req.StartDate)
 	if err != nil {
 		return result, fmt.Errorf("invalid start date: %w", err)
 	}
+
 	endDate, err := time.Parse(time.RFC3339, req.EndDate)
 	if err != nil {
 		return result, fmt.Errorf("invalid end date: %w", err)
 	}
-	search, err := logRepo.PaginatedSearch(ctx, mongo.SearchLogsOptions{
+
+	search, err := w.logs.PaginatedSearch(ctx, mongo.SearchLogsOptions{
 		Cursor:     req.Cursor,
 		StartDate:  startDate,
 		EndDate:    endDate,
@@ -148,7 +149,7 @@ func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.Se
 
 func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.GetMetricsRequest) (*monitoringpb.GetMetricsResponse, error) {
 	result := &monitoringpb.GetMetricsResponse{}
-	metricsRepo := mongo.NewMetricsRepo(w.config, w.logger)
+	metricsRepo := mongo.NewMetricsRepo(w.config, w.logger, nil)
 
 	startDate, err := time.Parse(time.RFC3339, in.StartDate)
 	if err != nil {

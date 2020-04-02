@@ -17,6 +17,7 @@ func main() {
 	logger := simplelogger.New(simplelogger.LevelDebug)
 
 	db := mongodb.NewMongoDB(cfg, logger)
+	defer db.Disconnect()
 	mongodbClient := db.Connect()
 
 	verificationCodeRepo := mongodb.NewVerificationCodeRepoMongoDB(cfg, logger, mongodbClient)
