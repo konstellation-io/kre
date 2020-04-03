@@ -33,12 +33,6 @@ const Component = <Wrapper mocks={mocks} />;
 const ErrorComponent = <Wrapper mocks={errorMocks} />;
 
 describe('Status', () => {
-  it('show right components', async () => {
-    const wrapper = await mountApolloComponent(Component);
-
-    expect(wrapper.exists(StatusViewer)).toBeTruthy();
-  });
-
   it('show loading component', async () => {
     const wrapper = await mountApolloComponent(Component, false);
 

@@ -31,17 +31,20 @@ function getTooltipContent(d: D) {
   );
   return (
     <div>
-      <div style={{ marginBottom: 16, fontSize: 13 }}>{d.x}</div>
+      <div className="title">{d.x}</div>
       {body}
     </div>
   );
 }
 
+function formatTimeLabel(date: string) {
+  const dateHasTime = date.includes('UTC');
+  return dateHasTime ? `${moment(date).format('MM-DD-YY - HH')}h` : date;
+}
+
 function formatXAxis(x: string, idx: number, skipStep: number) {
-  if (!(idx % skipStep)) {
-    return x.includes('UTC') ? `${moment(x).format('MM-DD-YY - HH')}h` : x;
-  }
-  return '';
+  // show 1 label every skip step to reduce total number of labels
+  return !(idx % skipStep) ? formatTimeLabel(x) : '';
 }
 
 export type D = {

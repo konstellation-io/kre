@@ -16,7 +16,12 @@
   transition: opacity ease 0.4s, top ease 0.4s, left ease 0.4s;
 
   .tooltipContent {
-    padding: 0 8px;
+    padding: 0 $grid-unit;
+  }
+
+  .title {
+    margin-bottom: $grid-unit * 2;
+    font-size: 13px;
   }
 
   &::after {

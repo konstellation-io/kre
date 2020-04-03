@@ -12,11 +12,14 @@ import styles from './Accuracy.module.scss';
 import { GetMetrics_metrics_charts_successVsFails } from '../../../../../../graphql/queries/types/GetMetrics';
 
 function formatData(data: GetMetrics_metrics_charts_successVsFails[]): D[] {
-  return data.map((chartBar: GetMetrics_metrics_charts_successVsFails) => ({
-    x: chartBar.x,
-    y: chartBar.y === '' ? 0 : parseInt(chartBar.y),
-    empty: chartBar.y === ''
-  }));
+  return data.map((chartBar: GetMetrics_metrics_charts_successVsFails) => {
+    const noData = chartBar.y === '';
+    return {
+      x: chartBar.x,
+      y: noData ? 0 : parseInt(chartBar.y),
+      empty: noData
+    };
+  });
 }
 
 type Props = {
