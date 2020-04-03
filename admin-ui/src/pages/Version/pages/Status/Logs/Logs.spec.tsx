@@ -59,12 +59,4 @@ describe('Logs', () => {
     expect(mockSetSelectedNode).toHaveBeenCalledTimes(1);
     expect(mockSetSelectedNode).toHaveBeenCalledWith(undefined);
   });
-
-  it('toggleStickToBottom', () => {
-    expect(wrapper.find(Header).prop('stickToBottom')).toBeFalsy();
-
-    wrapper.find(Header).prop('toggleStickToBottom')();
-
-    expect(wrapper.find(Header).prop('stickToBottom')).toBeTruthy();
-  });
 });

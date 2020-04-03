@@ -44,19 +44,7 @@ exports[`LogItem matches snapshot 1`] = `
 exports[`LogsList matches snapshot 1`] = `
 <LogsList
   nodeId="nodeId"
-  onUpdate={
-    [MockFunction] {
-      "calls": Array [
-        Array [],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
-    }
-  }
+  onUpdate={[MockFunction]}
   runtimeId="runtimeId"
 >
   <div
@@ -65,7 +53,6 @@ exports[`LogsList matches snapshot 1`] = `
   >
     <LogItem
       date="2020-01-01"
-      key="0-2020-01-01"
       message="some message 1"
       nodeId="someNode1"
     >
@@ -176,7 +163,6 @@ exports[`LogsList matches snapshot 1`] = `
     </LogItem>
     <LogItem
       date="2020-01-01"
-      key="1-2020-01-01"
       message="some message 2"
       nodeId="someNode2"
     >

@@ -32,7 +32,8 @@ function LogItem({ date, nodeName, message, level }: GetServerLogs_logs_items) {
         </div>
         <div className={styles.date}>{dateFormatted}</div>
         <div className={styles.hour}>{hourFormatted}</div>
-        <div className={styles.nodeName}>{nodeName}</div>
+        {/* Uncomment this when adding workflows and add workflows and toggle logic */}
+        {/* <div className={styles.nodeName}>{nodeName}</div> */}
         <div className={styles.message}>{message}</div>
         <div className={styles.expand} onClick={toggleOpenStatus}>
           <IconExpand className="icon-regular" />

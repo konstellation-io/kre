@@ -74,6 +74,8 @@
 
 .nodeName {
   color: $font-color-white;
+  font-weight: 500;
+  margin-right: $grid-unit * 2;
 }
 
 .message {
