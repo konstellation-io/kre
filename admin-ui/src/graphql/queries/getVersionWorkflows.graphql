@@ -2,7 +2,9 @@ query GetVersionWorkflows($versionId: ID!) {
   version(id: $versionId) {
     name
     status
+    creationDate
     workflows {
+      id
       name
       nodes {
         id

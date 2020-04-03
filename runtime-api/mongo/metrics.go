@@ -15,14 +15,17 @@ import (
 const metricsCollectionName = "classificationMetrics"
 
 type MetricsRepo struct {
-	cfg    *config.Config
-	logger *simplelogger.SimpleLogger
+	cfg        *config.Config
+	logger     *simplelogger.SimpleLogger
+	collection *mongo.Collection
 }
 
-func NewMetricsRepo(cfg *config.Config, logger *simplelogger.SimpleLogger) *MetricsRepo {
+func NewMetricsRepo(cfg *config.Config, logger *simplelogger.SimpleLogger, client *mongo.Client) *MetricsRepo {
+	collection := client.Database(cfg.MongoDB.DBName).Collection(metricsCollectionName)
 	return &MetricsRepo{
-		cfg:    cfg,
-		logger: logger,
+		cfg,
+		logger,
+		collection,
 	}
 }
 
@@ -44,21 +47,7 @@ func (r *MetricsRepo) GetMetrics(
 	versionID string,
 ) ([]entity.ClassificationMetric, error) {
 	var result []entity.ClassificationMetric
-
-	client, err := newMongoClient(ctx, r.cfg, r.logger)
-	if err != nil {
-		return result, err
-	}
-
-	defer func() {
-		err = disconnectMongoClient(ctx, r.logger, client)
-		if err != nil {
-			r.logger.Errorf("error disconnecting from MongoDB: %s", err)
-		}
-	}()
-
-	collection := client.Database(r.cfg.MongoDB.DBName).Collection(metricsCollectionName)
-	err = r.ensureIndexes(ctx, collection)
+	err := r.ensureIndexes(ctx, r.collection)
 	if err != nil {
 		return result, err
 	}
@@ -75,20 +64,13 @@ func (r *MetricsRepo) GetMetrics(
 		"versionId": versionID,
 	}
 
-	cur, err := collection.Find(ctx, filter, opts)
+	cur, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return result, err
 	}
 
-	defer cur.Close(ctx)
-	for cur.Next(ctx) {
-		var m entity.ClassificationMetric
-		err := cur.Decode(&m)
-		if err != nil {
-			r.logger.Errorf("error decoding ClassificationMetric document from mongodb: %s", err)
-		} else {
-			result = append(result, m)
-		}
+	if err = cur.All(ctx, result); err != nil {
+		return nil, fmt.Errorf("error getting metrics from db: %w", err)
 	}
 
 	// Err returns the last error seen by the Cursor, or nil if no error has occurred.

@@ -6,30 +6,28 @@ import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
 import IconClear from '@material-ui/icons/DeleteOutline';
 import IconLogs from '@material-ui/icons/ListAlt';
 
-import { useApolloClient } from '@apollo/react-hooks';
-
 import cx from 'classnames';
 import styles from './Header.module.scss';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import { LocalState } from '../../../../../../..';
 
 type Props = {
   togglePanel: () => void;
   opened: boolean;
-  stickToBottom: boolean;
-  toggleStickToBottom: () => void;
+  onClearClick: Function;
 };
-function Header({
-  togglePanel,
-  opened,
-  stickToBottom,
-  toggleStickToBottom
-}: Props) {
+function Header({ togglePanel, opened, onClearClick }: Props) {
+  const Icon = opened ? IconClose : IconOpen;
   const client = useApolloClient();
+  const { data: localData } = useQuery<LocalState>(GET_LOGS);
 
   function clearLogs(): void {
-    client.writeData({ data: { logs: [] } });
+    onClearClick();
   }
-
-  const Icon = opened ? IconClose : IconOpen;
+  function onToggleAutoScroll() {
+    client.writeData({ data: { logsAutoScroll: !localData?.logsAutoScroll } });
+  }
 
   return (
     <div
@@ -46,8 +44,10 @@ function Header({
           <IconClear className="icon-regular" />
         </div>
         <div
-          className={cx(styles.stickBottom, { [styles.active]: stickToBottom })}
-          onClick={toggleStickToBottom}
+          className={cx(styles.stickBottom, {
+            [styles.active]: localData?.logsAutoScroll
+          })}
+          onClick={onToggleAutoScroll}
         >
           <IconStickBottom className="icon-regular" />
         </div>

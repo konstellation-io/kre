@@ -17,24 +17,26 @@ type MonitoringService struct {
 	config *config.Config
 	logger *simplelogger.SimpleLogger
 	// TODO: Change to interfaces
-	status *kubernetes.Watcher
-	logs   *mongo.Watcher
+	status  *kubernetes.Watcher
+	logs    *mongo.LogRepo
+	metrics *mongo.MetricsRepo
 }
 
-// NewMonitoringService instantiates the GRPC server implementation
-func NewMonitoringService(config *config.Config, logger *simplelogger.SimpleLogger, status *kubernetes.Watcher, logs *mongo.Watcher) *MonitoringService {
+// NewMonitoringService instantiates the gRPC server implementation
+func NewMonitoringService(config *config.Config, logger *simplelogger.SimpleLogger, status *kubernetes.Watcher, logs *mongo.LogRepo, metrics *mongo.MetricsRepo) *MonitoringService {
 	return &MonitoringService{
 		config,
 		logger,
 		status,
 		logs,
+		metrics,
 	}
 }
 
 func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stream monitoringpb.MonitoringService_NodeStatusServer) error {
 	versionName := req.GetVersionName()
 
-	w.logger.Info("------------ STARTING WATCHER -------------")
+	w.logger.Info("[MonitoringService.NodeStatus] starting watcher...")
 
 	ctx := stream.Context()
 	statusCh := make(chan *entity.VersionNodeStatus, 1)
@@ -43,11 +45,11 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 	for {
 		select {
 		case <-waitCh:
-			w.logger.Info("------------- WATCHER STOPPED. RETURN FROM GRPC FUNCTION ---------")
+			w.logger.Info("[MonitoringService.NodeStatus] watcher stopped")
 			return nil
 
 		case <-ctx.Done():
-			w.logger.Info("------------- CONTEXT CLOSED ---------")
+			w.logger.Info("[MonitoringService.NodeStatus] context closed")
 			close(waitCh)
 			return nil
 
@@ -59,9 +61,8 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 			})
 
 			if err != nil {
-				w.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
+				w.logger.Infof("[MonitoringService.NodeStatus] error sending to client: %s", err)
 				close(waitCh)
-				w.logger.Error(err.Error())
 				return err
 			}
 		}
@@ -72,27 +73,19 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream monitoringpb.MonitoringService_NodeLogsServer) error {
 	versionName := req.GetNodeId()
 
-	w.logger.Info("------------ STARTING WATCHER -------------")
+	w.logger.Info("[MonitoringService.NodeLogs] starting watcher...")
 
 	ctx := stream.Context()
 	logsCh := make(chan *entity.NodeLog, 1)
-	w.logs.NodeLogs(ctx, versionName, logsCh)
+	w.logs.WatchNodeLogs(ctx, versionName, logsCh)
 
 	for {
 		select {
-		case log := <-logsCh:
-			err := stream.Send(&monitoringpb.NodeLogsResponse{
-				Date:      log.Date,
-				VersionId: log.VersionName,
-				NodeId:    log.NodeID,
-				PodId:     log.PodID,
-				Message:   log.Message,
-				Level:     log.Level,
-				NodeName:  log.NodeName,
-			})
+		case l := <-logsCh:
+			err := stream.Send(toNodeLogsResponse(l))
 
 			if err != nil {
-				w.logger.Info("---------- ERROR SENDING TO CLIENT. RETURN FROM GRPC FUNCTION -------")
+				w.logger.Info("[MonitoringService.NodeLogs] error sending to client: %s")
 				w.logger.Error(err.Error())
 				return err
 			}
@@ -102,17 +95,18 @@ func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream m
 
 func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.SearchLogsRequest) (*monitoringpb.SearchLogsResponse, error) {
 	var result *monitoringpb.SearchLogsResponse
-	logRepo := mongo.NewLogRepo(w.config, w.logger)
 
 	startDate, err := time.Parse(time.RFC3339, req.StartDate)
 	if err != nil {
 		return result, fmt.Errorf("invalid start date: %w", err)
 	}
+
 	endDate, err := time.Parse(time.RFC3339, req.EndDate)
 	if err != nil {
 		return result, fmt.Errorf("invalid end date: %w", err)
 	}
-	search, err := logRepo.PaginatedSearch(ctx, mongo.SearchLogsOptions{
+
+	search, err := w.logs.PaginatedSearch(ctx, mongo.SearchLogsOptions{
 		Cursor:     req.Cursor,
 		StartDate:  startDate,
 		EndDate:    endDate,
@@ -128,15 +122,7 @@ func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.Se
 
 	var logs []*monitoringpb.NodeLogsResponse
 	for _, l := range search.Logs {
-		logs = append(logs, &monitoringpb.NodeLogsResponse{
-			Date:      l.Date,
-			VersionId: l.VersionName,
-			NodeId:    l.NodeID,
-			PodId:     l.PodID,
-			Message:   l.Message,
-			Level:     l.Level,
-			NodeName:  l.NodeName,
-		})
+		logs = append(logs, toNodeLogsResponse(l))
 	}
 
 	return &monitoringpb.SearchLogsResponse{
@@ -147,7 +133,6 @@ func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.Se
 
 func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.GetMetricsRequest) (*monitoringpb.GetMetricsResponse, error) {
 	result := &monitoringpb.GetMetricsResponse{}
-	metricsRepo := mongo.NewMetricsRepo(w.config, w.logger)
 
 	startDate, err := time.Parse(time.RFC3339, in.StartDate)
 	if err != nil {
@@ -159,7 +144,7 @@ func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.Get
 		return result, fmt.Errorf("invalid end date: %w", err)
 	}
 
-	getMetricsResult, err := metricsRepo.GetMetrics(ctx, startDate, endDate, in.VersionID)
+	getMetricsResult, err := w.metrics.GetMetrics(ctx, startDate, endDate, in.VersionID)
 	if err != nil {
 		return result, fmt.Errorf("error getting metrics from db: %w", err)
 	}
@@ -176,4 +161,17 @@ func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.Get
 	result.Metrics = metrics
 
 	return result, nil
+}
+
+func toNodeLogsResponse(log *entity.NodeLog) *monitoringpb.NodeLogsResponse {
+	return &monitoringpb.NodeLogsResponse{
+		Id:        log.ID,
+		Date:      log.Date,
+		VersionId: log.VersionName,
+		NodeId:    log.NodeID,
+		PodId:     log.PodID,
+		Message:   log.Message,
+		Level:     log.Level,
+		NodeName:  log.NodeName,
+	}
 }

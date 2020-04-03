@@ -16,7 +16,8 @@ const mockLogsPanel = {
 };
 
 jest.mock('@apollo/react-hooks', () => ({
-  useQuery: jest.fn(() => mockLogsPanel)
+  useQuery: jest.fn(() => mockLogsPanel),
+  useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
 }));
 
 describe('Logs', () => {
@@ -57,13 +58,5 @@ describe('Logs', () => {
 
     expect(mockSetSelectedNode).toHaveBeenCalledTimes(1);
     expect(mockSetSelectedNode).toHaveBeenCalledWith(undefined);
-  });
-
-  it('toggleStickToBottom', () => {
-    expect(wrapper.find(Header).prop('stickToBottom')).toBeFalsy();
-
-    wrapper.find(Header).prop('toggleStickToBottom')();
-
-    expect(wrapper.find(Header).prop('stickToBottom')).toBeTruthy();
   });
 });

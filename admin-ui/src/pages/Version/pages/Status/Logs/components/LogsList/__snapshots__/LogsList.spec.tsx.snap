@@ -22,7 +22,7 @@ exports[`LogItem matches snapshot 1`] = `
     <div
       className="hour"
     >
-      12:00:00
+      00:00:00
     </div>
     <div
       className="message"
@@ -43,20 +43,9 @@ exports[`LogItem matches snapshot 1`] = `
 
 exports[`LogsList matches snapshot 1`] = `
 <LogsList
-  node="someNode"
-  onUpdate={
-    [MockFunction] {
-      "calls": Array [
-        Array [],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
-    }
-  }
+  nodeId="nodeId"
+  onUpdate={[MockFunction]}
+  runtimeId="runtimeId"
 >
   <div
     className="listContainer"
@@ -64,7 +53,6 @@ exports[`LogsList matches snapshot 1`] = `
   >
     <LogItem
       date="2020-01-01"
-      key="logItem_0"
       message="some message 1"
       nodeId="someNode1"
     >
@@ -122,7 +110,7 @@ exports[`LogsList matches snapshot 1`] = `
           <div
             className="hour"
           >
-            12:00:00
+            00:00:00
           </div>
           <div
             className="message"
@@ -175,7 +163,6 @@ exports[`LogsList matches snapshot 1`] = `
     </LogItem>
     <LogItem
       date="2020-01-01"
-      key="logItem_1"
       message="some message 2"
       nodeId="someNode2"
     >
@@ -233,7 +220,7 @@ exports[`LogsList matches snapshot 1`] = `
           <div
             className="hour"
           >
-            12:00:00
+            00:00:00
           </div>
           <div
             className="message"

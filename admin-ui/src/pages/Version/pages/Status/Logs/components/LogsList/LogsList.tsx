@@ -1,79 +1,153 @@
 import { get } from 'lodash';
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
-import {
-  useSubscription,
-  useQuery,
-  useApolloClient,
-  SubscriptionHookOptions
-} from '@apollo/react-hooks';
+import { useQuery, useApolloClient } from '@apollo/react-hooks';
 import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
-
 import LogItem from './LogItem';
-
-import {
-  GetLogs,
-  GetLogs_nodeLogs,
-  GetLogsVariables
-} from '../../../../../../../graphql/subscriptions/types/GetLogs';
-
+import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import styles from './LogsList.module.scss';
-import { LocalState } from '../../../../../../../index';
-
+import {
+  GetServerLogs,
+  GetServerLogsVariables
+} from '../../../../../../../graphql/queries/types/GetServerLogs';
+import moment from 'moment';
+import LoadMore from './LoadMore';
+import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
+import { LocalState } from '../../../../../../..';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
+const GetServerLogsQuery = loader(
+  '../../../../../../../graphql/queries/getServerLogs.graphql'
+);
+
+type GetFiltersParams = {
+  runtimeId: string;
+  nodeId: string;
+};
+function getFilters({ runtimeId, nodeId }: GetFiltersParams) {
+  return {
+    startDate: moment()
+      .subtract(1, 'day')
+      .startOf('day')
+      .toISOString(),
+    endDate: moment()
+      .endOf('day')
+      .toISOString(),
+    workflowId: '',
+    cursor: '',
+    runtimeId,
+    nodeId
+  };
+}
+
+function scrollToBottom(component: HTMLDivElement) {
+  if (component) {
+    component.scrollTo({
+      top: component.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
+}
 
 type Props = {
   nodeId: string;
   runtimeId: string;
-  onUpdate: () => void;
 };
-function LogsList({ nodeId, onUpdate, runtimeId }: Props) {
-  const client = useApolloClient();
-  const { data } = useQuery<LocalState>(GET_LOGS);
-  const logs = data ? data.logs : [];
 
-  useSubscription<GetLogs, GetLogsVariables>(GetLogsSubscription, {
-    variables: {
-      runtimeId,
-      nodeId
+function LogsList({ nodeId, runtimeId }: Props) {
+  const [nextPage, setNextPage] = useState<string>('');
+  const client = useApolloClient();
+  const listRef = useRef<HTMLDivElement>(null);
+  const unsubscribeRef = useRef<Function | null>(null);
+
+  const { data: localData } = useQuery<LocalState>(GET_LOGS);
+  const logs: GetServerLogs_logs_items[] = localData?.logs || [];
+
+  function resubscribe() {
+    unsubscribeRef.current && unsubscribeRef.current();
+    unsubscribeRef.current = subscribe();
+  }
+
+  const { loading, refetch, fetchMore, subscribeToMore } = useQuery<
+    GetServerLogs,
+    GetServerLogsVariables
+  >(GetServerLogsQuery, {
+    variables: getFilters({ runtimeId, nodeId }),
+    onCompleted: data => {
+      client.writeData({ data: { logs: [...data.logs.items.reverse()] } });
+      setNextPage(data.logs.cursor || '');
+      resubscribe();
     },
-    onSubscriptionData: (
-      msg: SubscriptionHookOptions<GetLogs, GetLogsVariables>
-    ) => {
-      const logInfo = get(msg, 'subscriptionData.data.nodeLogs');
-      addLog(logInfo);
-    }
+    onError: () => resubscribe(),
+    fetchPolicy: 'no-cache'
   });
 
-  // Clear logs before closing the logs panel
-  useEffect(() => {
-    return () => {
-      client.writeData({ data: { logs: [] } });
-    };
-  }, [client]);
+  const handleScroll = useCallback(() => {
+    if (localData?.logsAutoScroll && listRef.current !== null) {
+      scrollToBottom(listRef.current);
+    }
+  }, [localData, listRef]);
 
   useEffect(() => {
-    onUpdate();
-  }, [logs, onUpdate]);
+    handleScroll();
+  }, [logs, localData?.logsAutoScroll]);
 
-  function addLog(item: GetLogs_nodeLogs) {
-    client.writeData({
-      data: {
-        logs: logs.concat([item])
+  useEffect(() => {
+    refetch(getFilters({ runtimeId, nodeId }));
+    // Ignore refetch dependency, we do not want to refetch when refetch func changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodeId, runtimeId]);
+
+  if (loading) return <SpinnerLinear />;
+
+  // Pagination query
+  function loadPreviousLogs() {
+    fetchMore({
+      variables: {
+        ...getFilters({ runtimeId, nodeId }),
+        cursor: nextPage
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        const newData = fetchMoreResult && fetchMoreResult.logs;
+
+        if (newData) {
+          client.writeData({
+            data: { logs: [...newData.items.reverse(), ...logs] }
+          });
+          setNextPage(newData.cursor || '');
+        }
+
+        return prev;
       }
     });
   }
 
-  // From now, logs are incremental, check the key in case this changes
-  const logElements = logs.map((log: GetLogs_nodeLogs, idx: number) => (
-    <LogItem {...log} key={`logItem_${idx}`} />
-  ));
+  // Subscription query
+  const subscribe = () =>
+    subscribeToMore({
+      document: GetLogsSubscription,
+      variables: { runtimeId, nodeId },
+      updateQuery: (prev, { subscriptionData }) => {
+        const newLog = get(subscriptionData.data, 'nodeLogs');
+        const logs = client.readQuery({ query: GET_LOGS });
 
+        client.writeData({ data: { logs: [...logs.logs, newLog] } });
+
+        return prev;
+      }
+    });
+
+  const logElements = logs.map((log: GetServerLogs_logs_items) => (
+    <LogItem {...log} key={log.id} />
+  ));
   return (
-    <div className={styles.listContainer} id="VersionLogsListContainer">
+    <div
+      ref={listRef}
+      className={styles.listContainer}
+      id="VersionLogsListContainer"
+    >
+      {nextPage && <LoadMore onClick={loadPreviousLogs} />}
       {logElements}
     </div>
   );

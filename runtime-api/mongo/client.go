@@ -4,62 +4,64 @@ import (
 	"context"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"gitlab.com/konstellation/kre/runtime-api/config"
+	"os"
+	"time"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"time"
 )
 
-func newMongoClient(
-	ctx context.Context,
-	cfg *config.Config,
-	logger *simplelogger.SimpleLogger,
-) (*mongo.Client, error) {
-	logger.Info("MongoDB connecting...")
+type MongoDB struct {
+	cfg    *config.Config
+	logger *simplelogger.SimpleLogger
+	client *mongo.Client
+}
 
-	client, err := mongo.NewClient(options.Client().ApplyURI(cfg.MongoDB.Address))
+func NewDB(cfg *config.Config, logger *simplelogger.SimpleLogger) *MongoDB {
+	return &MongoDB{
+		cfg,
+		logger,
+		nil,
+	}
+}
+
+func (m *MongoDB) NewClient() *mongo.Client {
+	client, err := mongo.NewClient(options.Client().ApplyURI(m.cfg.MongoDB.Address))
 	if err != nil {
-		return nil, err
+		m.logger.Error(err.Error())
+		os.Exit(1)
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	err = client.Connect(ctx)
 	if err != nil {
-		return nil, err
+		m.logger.Error(err.Error())
+		os.Exit(1)
 	}
 
-	// Call Ping to verify that the deployment is up and the Client was configured successfully.
-	logger.Info("MongoDB ping...")
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return nil, err
-	}
+	m.logger.Info("The MongoDB client was created")
+	m.client = client
 
-	logger.Info("MongoDB connected")
-	return client, nil
+	return client
 }
 
-func disconnectMongoClient(
-	ctx context.Context,
-	logger *simplelogger.SimpleLogger,
-	client *mongo.Client,
-) error {
-	logger.Info("MongoDB disconnecting...")
+func (m *MongoDB) Disconnect() {
+	m.logger.Info("MongoDB disconnecting...")
 
-	if client == nil {
-		return nil
+	if m.client == nil {
+		return
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	err := client.Disconnect(ctx)
+	err := m.client.Disconnect(ctx)
 	if err != nil {
-		return err
+		m.logger.Errorf("Error disconnecting MongoDB: %s", err)
+		return
 	}
 
-	logger.Info("MongoDB connection closed")
-	return nil
+	m.logger.Info("Connection to MongoDB closed.")
 }

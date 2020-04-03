@@ -3,19 +3,19 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { LogLevel } from './../../types/globalTypes';
+
 // ====================================================
 // GraphQL subscription operation: GetLogs
 // ====================================================
 
 export interface GetLogs_nodeLogs {
   __typename: 'NodeLog';
+  id: string;
   date: string;
-  type: string;
-  versionId: string;
-  nodeId: string;
-  podId: string;
+  nodeName: string | null;
   message: string;
-  level: string;
+  level: LogLevel;
 }
 
 export interface GetLogs {

@@ -21,7 +21,6 @@ type MonitoringService struct {
 }
 
 func NewMonitoringService(cfg *config.Config, logger logging.Logger) *MonitoringService {
-
 	return &MonitoringService{
 		cfg,
 		logger,
@@ -42,7 +41,7 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 
 	ctx := context.Background()
 
-	m.logger.Info("------------ CALLING RUNTIME API -------------")
+	m.logger.Info("[monitoring.NodeLogs] opening stream with runtime-api...")
 
 	stream, err := c.NodeLogs(ctx, &req)
 	if err != nil {
@@ -53,11 +52,11 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 
 	go func() {
 		for {
-			m.logger.Info("------ WAITING FOR stream.Recv() -----")
+			m.logger.Info("[monitoring.NodeLogs] waiting for stream.Recv()...")
 			msg, err := stream.Recv()
 
 			if err == io.EOF {
-				m.logger.Info("------ EOF MSG RECEIVED. STOPPING  -----")
+				m.logger.Info("[monitoring.NodeLogs] EOF msg received. Stopping...")
 				close(ch)
 				return
 			}
@@ -68,10 +67,11 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 				return
 			}
 
-			m.logger.Infof("------ Message received: %#v -----", msg.String())
+			m.logger.Info("[monitoring.NodeLogs] Message received")
 
 			if msg.GetNodeId() != "" {
 				ch <- &entity.NodeLog{
+					ID:        msg.GetId(),
 					Date:      msg.Date,
 					VersionId: msg.GetVersionId(),
 					NodeId:    msg.GetNodeId(),
@@ -86,11 +86,11 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 
 	go func() {
 		<-stopCh
-		m.logger.Info("------ STOP RECEIVED. CLOSING GRPC CONNECTION -----")
 		err := cc.Close()
 		if err != nil {
 			m.logger.Error(err.Error())
 		}
+		m.logger.Info("[monitoring.NodeLogs] Stop received. Connection via gRPC closed")
 	}()
 
 	return ch, nil
@@ -110,7 +110,7 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 
 	ctx := context.Background()
 
-	m.logger.Info("------------ CALLING RUNTIME API -------------")
+	m.logger.Info("[monitoring.VersionStatus] opening stream with runtime-api...")
 
 	stream, err := c.NodeStatus(ctx, &req)
 	if err != nil {
@@ -122,11 +122,11 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 
 	go func() {
 		for {
-			m.logger.Info("------ WAITING FOR stream.Recv() -----")
+			m.logger.Info("[monitoring.VersionStatus] waiting for stream.Recv()...")
 			msg, err := stream.Recv()
 
 			if err == io.EOF {
-				m.logger.Info("------ EOF MSG RECEIVED. STOPPING  -----")
+				m.logger.Info("[monitoring.VersionStatus] EOF msg received. Stopping...")
 				close(ch)
 				return
 			}
@@ -137,7 +137,7 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 				return
 			}
 
-			m.logger.Infof("------ Message received: %#v -----", msg.String())
+			m.logger.Info("[monitoring.VersionStatus] Message received")
 
 			if msg.GetNodeId() != "" {
 				ch <- &entity.VersionNodeStatus{
@@ -151,7 +151,7 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 
 	go func() {
 		<-stopCh
-		m.logger.Info("------ STOP RECEIVED. CLOSING GRPC CONNECTION -----")
+		m.logger.Info("[monitoring.VersionStatus] Stop received. Connection via gRPC closed")
 		err := cc.Close()
 		if err != nil {
 			m.logger.Error(err.Error())
@@ -188,6 +188,7 @@ func (m *MonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runt
 	if len(res.Logs) > 0 {
 		for _, l := range res.Logs {
 			logs = append(logs, &entity.NodeLog{
+				ID:        l.Id,
 				Date:      l.Date,
 				Level:     l.Level,
 				Message:   l.Message,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import Header from './components/Header/Header';
 import Filters from './components/Filters/Filters';
@@ -6,46 +6,29 @@ import LogsList from './components/LogsList/LogsList';
 
 import cx from 'classnames';
 import styles from './Logs.module.scss';
-import { useQuery } from '@apollo/react-hooks';
-import { GET_CURRENT_LOG_PANEL } from '../../../../../graphql/client/queries/getCurrentLogPanel';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import { GET_LOGS } from '../../../../../graphql/client/queries/getLogs.graphql';
+import { get } from 'lodash';
 
 function Logs() {
-  const [opened, setOpened] = useState<boolean>(false);
-  const [stickToBottom, setStickToBottom] = useState<boolean>(false);
-  const { data } = useQuery(GET_CURRENT_LOG_PANEL);
+  const client = useApolloClient();
+  const { data: localData } = useQuery(GET_LOGS);
 
-  useEffect(() => {
-    setOpened(data && data.logPanel && data.logPanel.nodeId !== undefined);
-  }, [data]);
+  const opened = get(localData, 'logsOpened', false);
+
+  function setOpened(value: boolean) {
+    client.writeData({ data: { logsOpened: value } });
+  }
 
   function togglePanel() {
     setOpened(!opened);
   }
 
-  function scrollToBottom() {
-    const listContainer = document.getElementById('VersionLogsListContainer');
-    if (listContainer) {
-      listContainer.scrollTo({
-        top: listContainer.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
+  function clearLogs(): void {
+    client.writeData({ data: { logs: [] } });
   }
 
-  function toggleStickToBottom() {
-    if (!stickToBottom) {
-      scrollToBottom();
-    }
-
-    setStickToBottom(!stickToBottom);
-  }
-
-  function onLogsUpdate() {
-    if (stickToBottom) {
-      scrollToBottom();
-    }
-  }
-  const logPanel = data && data.logPanel;
+  const logPanel = localData && localData.logPanel;
   const hidden = !logPanel;
   return (
     <>
@@ -58,8 +41,7 @@ function Logs() {
         <Header
           togglePanel={togglePanel}
           opened={opened}
-          stickToBottom={stickToBottom}
-          toggleStickToBottom={toggleStickToBottom}
+          onClearClick={clearLogs}
         />
         <div className={cx(styles.content, { [styles.opened]: opened })}>
           {logPanel && (
@@ -68,7 +50,6 @@ function Logs() {
               <LogsList
                 nodeId={logPanel.nodeId}
                 runtimeId={logPanel.runtimeId}
-                onUpdate={onLogsUpdate}
               />
             </>
           )}

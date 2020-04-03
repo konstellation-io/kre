@@ -6,10 +6,9 @@ exports[`Logs matches snapshot 1`] = `
     className="container"
   >
     <Header
+      onClearClick={[Function]}
       opened={false}
-      stickToBottom={false}
       togglePanel={[Function]}
-      toggleStickToBottom={[Function]}
     />
     <div
       className="content"
@@ -23,7 +22,6 @@ exports[`Logs matches snapshot 1`] = `
       />
       <LogsList
         nodeId="nodeIdMock"
-        onUpdate={[Function]}
         runtimeId="runtimeIdMock"
       />
     </div>
@@ -41,10 +39,9 @@ exports[`Logs should be empty when there is no node 1`] = `
     className="container hidden"
   >
     <Header
+      onClearClick={[Function]}
       opened={false}
-      stickToBottom={false}
       togglePanel={[Function]}
-      toggleStickToBottom={[Function]}
     />
     <div
       className="content"
