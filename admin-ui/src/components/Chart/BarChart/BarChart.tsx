@@ -18,25 +18,36 @@ import moment from 'moment';
 
 const X_SCALE_PADDING_INNER: number = 0.3;
 const X_SCALE_PADDING_OUTER: number = 0.4;
-const X_AXIS_STEP_THRESHOLD: number = 20;
+const X_AXIS_STEP_THRESHOLD: number = 25;
 
 function getTooltipContent(d: D) {
+  const body = d.empty ? (
+    <div>No data</div>
+  ) : (
+    <>
+      <div>{`Hits: ${d.y}%`}</div>
+      <div>{`Fails: ${100 - d.y}%`}</div>
+    </>
+  );
   return (
     <div>
       <div style={{ marginBottom: 16, fontSize: 13 }}>{d.x}</div>
-      <div>{`Hits: ${d.y}%`}</div>
-      <div>{`Fails: ${100 - d.y}%`}</div>
+      {body}
     </div>
   );
 }
 
 function formatXAxis(x: string, idx: number, skipStep: number) {
-  return !(idx % skipStep) ? `${moment(x).format('MM-DD-YY - HH')}h` : '';
+  if (!(idx % skipStep)) {
+    return x.includes('UTC') ? `${moment(x).format('MM-DD-YY - HH')}h` : x;
+  }
+  return '';
 }
 
 export type D = {
   x: string;
   y: number;
+  empty: boolean;
 };
 
 type Props = {
@@ -92,11 +103,11 @@ function BarChart({ width, height, margin, data }: Props) {
       .domain(yDomain);
 
     // Initialize axes
-    // const step = parseInt(xDomain.length / X_AXIS_STEP_THRESHOLD);
+    const step = Math.floor(xDomain.length / X_AXIS_STEP_THRESHOLD) + 1;
     xAxis = axisBottom(xScale)
       .tickSize(0)
       .tickPadding(16)
-      .tickFormat((x: string, idx) => formatXAxis(x, idx, 2));
+      .tickFormat((x: string, idx) => formatXAxis(x, idx, step));
     yAxis = axisLeft(yScale)
       .ticks(4)
       .tickFormat(v => `${v}%`);
@@ -189,8 +200,9 @@ function BarChart({ width, height, margin, data }: Props) {
       .classed(styles.eventsBar, true)
       .attr('x', (d: D) => (xScale(d.x) || 0) - barPadding / 2)
       .attr('y', (d: D) => yScale(100))
-      .attr('height', (d: D) => innerHeight - yScale(100))
+      .attr('height', (d: D) => Math.max(0, innerHeight - yScale(100)))
       .attr('width', xScale.step())
+      .attr('fill', 'transparent')
       .on('mouseenter', function(d: D) {
         events.barHighlight(d, this, true);
       })
@@ -204,7 +216,9 @@ function BarChart({ width, height, margin, data }: Props) {
       .classed(styles.bgBar, true)
       .attr('x', (d: D) => xScale(d.x) || 0)
       .attr('y', (d: D) => yScale(100))
-      .attr('height', (d: D) => innerHeight - yScale(100))
+      .attr('height', (d: D) =>
+        d.empty ? 0 : Math.max(0, innerHeight - yScale(100))
+      )
       .attr('width', barWidth);
 
     barsG
@@ -216,7 +230,7 @@ function BarChart({ width, height, margin, data }: Props) {
       .classed(styles.bar, true)
       .attr('x', (d: D) => xScale(d.x) || 0)
       .attr('y', (d: D) => yScale(d.y))
-      .attr('height', (d: D) => innerHeight - yScale(d.y))
+      .attr('height', (d: D) => Math.max(0, innerHeight - yScale(d.y)))
       .attr('width', barWidth);
   }
 

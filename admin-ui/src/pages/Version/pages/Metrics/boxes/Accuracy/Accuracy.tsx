@@ -14,7 +14,8 @@ import { GetMetrics_metrics_charts_successVsFails } from '../../../../../../grap
 function formatData(data: GetMetrics_metrics_charts_successVsFails[]): D[] {
   return data.map((chartBar: GetMetrics_metrics_charts_successVsFails) => ({
     x: chartBar.x,
-    y: parseInt(chartBar.y)
+    y: chartBar.y === '' ? 0 : parseInt(chartBar.y),
+    empty: chartBar.y === ''
   }));
 }
 

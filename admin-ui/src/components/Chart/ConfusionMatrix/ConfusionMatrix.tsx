@@ -177,7 +177,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
 
     xAxisBox
       .append('rect')
-      .attr('width', innerWidth)
+      .attr('width', Math.max(0, innerWidth))
       .attr('height', axisBoxSide)
       .attr('x', 0)
       .attr('y', innerHeight);
@@ -191,7 +191,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
     yAxisBox
       .append('rect')
       .attr('width', axisBoxSide)
-      .attr('height', innerHeight)
+      .attr('height', Math.max(0, innerHeight))
       .attr('x', -axisBoxSide)
       .attr('y', 0);
     yAxisBox
@@ -212,7 +212,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .append('rect')
       .classed(styles.legendRect, true)
       .attr('width', legendWidth)
-      .attr('height', innerHeight)
+      .attr('height', Math.max(0, innerHeight))
       .style('fill', 'url(#verticalGradient)')
       .attr('transform', `translate(${innerWidth + 40},0)`);
 
