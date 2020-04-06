@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { useParams } from 'react-router';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
+import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
 import StatusViewer from '../../components/StatusViewer/StatusViewer';
 
 import { loader } from 'graphql.macro';
@@ -71,11 +72,12 @@ function Status({ version }: Props) {
 
   return (
     <div className={styles.container}>
-      <StatusViewer
+      {/* <StatusViewer
         data={get(data, 'version.workflows', [])}
         status={versionStatus}
         onNodeClick={setNode}
-      />
+      /> */}
+      <WorkflowsManager workflows={get(data, 'version.workflows', [])} />
     </div>
   );
 }

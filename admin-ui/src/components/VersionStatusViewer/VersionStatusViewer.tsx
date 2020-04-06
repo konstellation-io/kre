@@ -12,6 +12,7 @@ import { centerText, wrap, getArrowD } from '../../utils/d3';
 import styles from './VersionStatusViewer.module.scss';
 
 import { NodeStatus } from '../../graphql/types/globalTypes';
+import { rgb } from 'd3-color';
 
 const MARGIN_WORKFLOW_NAMES_PERC = 0.08;
 const DEFAULT_NODE_WIDTH = 120.33;
@@ -174,6 +175,12 @@ function VersionStatusViewer({
 
   function generateBlurFilter() {
     defs = select(svg.current).append('defs');
+    const color = rgb('red');
+    const matrix = '0 0 0 red 0 0 0 0 0 green 0 0 0 0 blue 0 0 0 1 0';
+    const colorMatrix = matrix
+      .replace('red', color.r.toString())
+      .replace('green', color.g.toString())
+      .replace('blue', color.b.toString());
 
     const filter = defs.append('filter').attr('id', 'glow');
     filter
@@ -182,8 +189,12 @@ function VersionStatusViewer({
       .attr('result', 'coloredBlur');
 
     const feMerge = filter.append('feMerge');
-    feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+    // feMerge.append('feMergeNode').attr('in', 'coloredBlur');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+    feMerge
+      .append('feColorMatrix')
+      .attr('type', 'matrix')
+      .attr('values', colorMatrix);
   }
 
   function updateComponent(component: string): void {
@@ -303,6 +314,7 @@ function VersionStatusViewer({
         .html(
           ReactDOMServer.renderToString(
             <VersionNode
+              // @ts-ignore
               type={d.type || TYPES.DEFAULT}
               width={ref.current.nodeWidth}
               height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}
@@ -463,6 +475,7 @@ function VersionStatusViewer({
           .html(
             ReactDOMServer.renderToString(
               <VersionNode
+                // @ts-ignore
                 type={d.type || TYPES.DEFAULT}
                 width={ref.current.nodeWidth}
                 height={DEFAULT_NODE_HEIGHT * ref.current.nodeSizeRatio}

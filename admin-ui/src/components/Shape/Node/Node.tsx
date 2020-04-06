@@ -6,15 +6,15 @@ import { ReactComponent as OutputNodeSVG } from './OutputNode.svg';
 
 import './Node.scss';
 
-export const TYPES = {
-  INPUT: 'INPUT',
-  DEFAULT: 'DEFAULT',
-  DEFAULT_2: 'DEFAULT_2',
-  OUTPUT: 'OUTPUT'
-};
+export enum TYPES {
+  'INPUT' = 'INPUT',
+  'DEFAULT' = 'DEFAULT',
+  'DEFAULT_2' = 'DEFAULT_2',
+  'OUTPUT' = 'OUTPUT'
+}
 
 type Props = {
-  type: string;
+  type: TYPES;
   status: string;
   width?: number;
   height?: number | string;
