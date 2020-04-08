@@ -27,13 +27,6 @@ type GetFiltersParams = {
 };
 function getFilters({ runtimeId, nodeId }: GetFiltersParams) {
   return {
-    startDate: moment()
-      .subtract(1, 'day')
-      .startOf('day')
-      .toISOString(),
-    endDate: moment()
-      .endOf('day')
-      .toISOString(),
     workflowId: '',
     cursor: '',
     runtimeId,
@@ -53,9 +46,14 @@ function scrollToBottom(component: HTMLDivElement) {
 type Props = {
   nodeId: string;
   runtimeId: string;
+  workflowId?: string;
+  filterValues: {
+    startDate: string;
+    endDate: string;
+  };
 };
 
-function LogsList({ nodeId, runtimeId }: Props) {
+function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
   const [nextPage, setNextPage] = useState<string>('');
   const client = useApolloClient();
   const listRef = useRef<HTMLDivElement>(null);
@@ -64,24 +62,42 @@ function LogsList({ nodeId, runtimeId }: Props) {
   const { data: localData } = useQuery<LocalState>(GET_LOGS);
   const logs: GetServerLogs_logs_items[] = localData?.logs || [];
 
-  function resubscribe() {
-    unsubscribeRef.current && unsubscribeRef.current();
-    unsubscribeRef.current = subscribe();
-  }
-
   const { loading, refetch, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
     GetServerLogsVariables
   >(GetServerLogsQuery, {
-    variables: getFilters({ runtimeId, nodeId }),
+    variables: { workflowId, runtimeId, nodeId, ...filterValues },
     onCompleted: data => {
       client.writeData({ data: { logs: [...data.logs.items.reverse()] } });
       setNextPage(data.logs.cursor || '');
-      resubscribe();
+      handleSubscription();
     },
-    onError: () => resubscribe(),
+    onError: handleSubscription,
     fetchPolicy: 'no-cache'
   });
+
+  // Subscription query
+  const subscribe = () =>
+    subscribeToMore({
+      document: GetLogsSubscription,
+      variables: { runtimeId, nodeId },
+      updateQuery: (prev, { subscriptionData }) => {
+        const newLog = get(subscriptionData.data, 'nodeLogs');
+        const logs = client.readQuery({ query: GET_LOGS });
+
+        client.writeData({ data: { logs: [...logs.logs, newLog] } });
+
+        return prev;
+      }
+    });
+
+  function handleSubscription() {
+    const { endDate } = filterValues;
+    if (moment().isBefore(endDate)) {
+      unsubscribeRef.current && unsubscribeRef.current();
+      unsubscribeRef.current = subscribe();
+    }
+  }
 
   const handleScroll = useCallback(() => {
     if (localData?.logsAutoScroll && listRef.current !== null) {
@@ -94,7 +110,7 @@ function LogsList({ nodeId, runtimeId }: Props) {
   }, [logs, localData?.logsAutoScroll]);
 
   useEffect(() => {
-    refetch(getFilters({ runtimeId, nodeId }));
+    refetch({ ...getFilters({ runtimeId, nodeId }), ...filterValues });
     // Ignore refetch dependency, we do not want to refetch when refetch func changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodeId, runtimeId]);
@@ -122,21 +138,6 @@ function LogsList({ nodeId, runtimeId }: Props) {
       }
     });
   }
-
-  // Subscription query
-  const subscribe = () =>
-    subscribeToMore({
-      document: GetLogsSubscription,
-      variables: { runtimeId, nodeId },
-      updateQuery: (prev, { subscriptionData }) => {
-        const newLog = get(subscriptionData.data, 'nodeLogs');
-        const logs = client.readQuery({ query: GET_LOGS });
-
-        client.writeData({ data: { logs: [...logs.logs, newLog] } });
-
-        return prev;
-      }
-    });
 
   const logElements = logs.map((log: GetServerLogs_logs_items) => (
     <LogItem {...log} key={log.id} />

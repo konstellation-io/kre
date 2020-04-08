@@ -13,11 +13,13 @@ type Props = {
   height?: number;
   error?: string;
   whiteColor?: boolean;
+  shouldSort?: boolean;
   placeholder?: string;
   defaultOption?: string;
   options: string[];
   formSelectedOption?: string;
   valuesMapper?: { [key: string]: string };
+  selectMainClass?: string;
 };
 
 function Select({
@@ -27,10 +29,12 @@ function Select({
   height = 40,
   error = '',
   whiteColor = false,
+  shouldSort = true,
   defaultOption,
   placeholder = '',
   formSelectedOption,
-  valuesMapper = {}
+  valuesMapper = {},
+  selectMainClass = ''
 }: Props) {
   const inputEl = useRef<HTMLInputElement>(null);
   const containerEl = useRef<HTMLDivElement>(null);
@@ -89,15 +93,17 @@ function Select({
     onChange(value);
   }
 
-  const optionList = [...options].sort().map((option: string, idx: number) => (
-    <div
-      key={`${option}-${idx}`}
-      className={styles.optionElement}
-      onClick={() => handleOnOptionCLick(option)}
-    >
-      {get(valuesMapper, option, option)}
-    </div>
-  ));
+  const optionList = (shouldSort ? [...options].sort() : [...options]).map(
+    (option: string, idx: number) => (
+      <div
+        key={`${option}-${idx}`}
+        className={styles.optionElement}
+        onClick={() => handleOnOptionCLick(option)}
+      >
+        {get(valuesMapper, option, option)}
+      </div>
+    )
+  );
   if (placeholder) {
     optionList.unshift(
       <div
@@ -113,12 +119,14 @@ function Select({
 
   return (
     <div
-      className={cx(styles.container, {
+      className={cx(styles.container, selectMainClass, {
         [styles.white]: whiteColor
       })}
       ref={containerEl}
     >
-      <InputLabel text={label} hidden={selectedOption === placeholder} />
+      {label && (
+        <InputLabel text={label} hidden={selectedOption === placeholder} />
+      )}
       <div className={styles.inputContainer}>
         <div
           className={cx(styles.input, {
