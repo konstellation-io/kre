@@ -4,7 +4,6 @@ import { useParams } from 'react-router';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
-import StatusViewer from '../../components/StatusViewer/StatusViewer';
 
 import { loader } from 'graphql.macro';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
@@ -77,7 +76,10 @@ function Status({ version }: Props) {
         status={versionStatus}
         onNodeClick={setNode}
       /> */}
-      <WorkflowsManager workflows={get(data, 'version.workflows', [])} />
+      <WorkflowsManager
+        workflows={get(data, 'version.workflows', [])}
+        versionStatus={version?.status}
+      />
     </div>
   );
 }

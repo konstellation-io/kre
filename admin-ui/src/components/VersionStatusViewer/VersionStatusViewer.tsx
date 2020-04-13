@@ -189,7 +189,6 @@ function VersionStatusViewer({
       .attr('result', 'coloredBlur');
 
     const feMerge = filter.append('feMerge');
-    // feMerge.append('feMergeNode').attr('in', 'coloredBlur');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
     feMerge
       .append('feColorMatrix')

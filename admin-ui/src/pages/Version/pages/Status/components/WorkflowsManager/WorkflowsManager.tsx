@@ -1,16 +1,20 @@
 import React from 'react';
 import Workflow from '../Workflow/Workflow';
 import { GetVersionWorkflows_version_workflows } from '../../../../../../graphql/queries/types/GetVersionWorkflows';
-import styles from './WorkflowsManager.module.scss';
+import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 
 type Props = {
   workflows: GetVersionWorkflows_version_workflows[];
+  versionStatus?: VersionStatus;
 };
 
-function WorkflowsManager({ workflows }: Props) {
+function WorkflowsManager({
+  workflows,
+  versionStatus = VersionStatus.STOPPED
+}: Props) {
   const workflowElements = workflows.map(
     (workflow: GetVersionWorkflows_version_workflows, idx: number) => (
-      <Workflow workflow={workflow} idx={idx} />
+      <Workflow workflow={workflow} idx={idx} workflowStatus={versionStatus} />
     )
   );
 

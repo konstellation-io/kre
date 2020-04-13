@@ -3,14 +3,16 @@ import styles from './Workflow.module.scss';
 import StatusCircle from '../../../../../../components/StatusCircle/StatusCircle';
 import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 
-type Props = {};
+type Props = {
+  status: VersionStatus;
+  name?: string;
+};
 
-function WorkflowHeader({}: Props) {
+function WorkflowHeader({ name = 'Workflow', status }: Props) {
   return (
     <div className={styles.workflowHeader}>
-      {/* TODO: Update this */}
-      <StatusCircle status={VersionStatus.STOPPED} />
-      Workflow
+      <StatusCircle status={status} />
+      {name}
     </div>
   );
 }
