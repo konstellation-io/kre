@@ -27,6 +27,9 @@ function DateFilter({ onDateChange }: Props) {
         case dateFilterOptions.lastSixHours:
           hoursToSubtract = 6;
           break;
+        case dateFilterOptions.lastTwentyFourHours:
+          hoursToSubtract = 24;
+          break;
         case dateFilterOptions.lastSevenDays:
           hoursToSubtract = 168;
           break;
