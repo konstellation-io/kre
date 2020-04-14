@@ -14,7 +14,7 @@ function DateFilter({ onDateChange }: Props) {
     lastSevenDays: 'LAST 7 DAYS',
     customDates: 'CUSTOM'
   };
-  const [dateOption, setDateOption] = useState('');
+  const [dateOption, setDateOption] = useState<string>('');
 
   const handleDateOption = (value: string) => {
     setDateOption(value);
