@@ -14,6 +14,7 @@ import moment from 'moment';
 import LoadMore from './LoadMore';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 import { LocalState } from '../../../../../../..';
+import { FilterTypes } from '../LogsTab/LogsTab';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -47,10 +48,7 @@ type Props = {
   nodeId: string;
   runtimeId: string;
   workflowId?: string;
-  filterValues: {
-    startDate: string;
-    endDate: string;
-  };
+  filterValues: FilterTypes;
 };
 
 function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
