@@ -14,15 +14,12 @@ import {
   NodeStatus,
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
-import { TYPES } from '../../../../../../components/Shape/Node/Node';
 import { useApolloClient } from '@apollo/react-hooks';
 import { LogPanel } from '../../../../../../graphql/client/typeDefs';
 import { useParams } from 'react-router-dom';
 import { RuntimeRouteParams } from '../../../../../../constants/routes';
 
-export interface Node extends GetVersionWorkflows_version_workflows_nodes {
-  type?: TYPES;
-}
+export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
   status?: NodeStatus;
 }
