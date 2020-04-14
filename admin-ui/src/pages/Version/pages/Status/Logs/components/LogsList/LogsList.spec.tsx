@@ -1,8 +1,7 @@
 import React from 'react';
 import LogItem from './LogItem';
-import LogsList from './LogsList';
 import IconExpand from '@material-ui/icons/ArrowDownward';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 import { LogLevel } from '../../../../../../../graphql/types/globalTypes';
 
 describe('LogItem', () => {
@@ -75,29 +74,3 @@ jest.mock('@apollo/react-hooks', () => ({
     writeData: mockWriteData
   })
 }));
-
-describe('LogsList', () => {
-  let wrapper: any;
-  const mockOnUpdate = jest.fn();
-
-  beforeEach(() => {
-    wrapper = mount(
-      <LogsList nodeId="nodeId" runtimeId="runtimeId" onUpdate={mockOnUpdate} />
-    );
-  });
-
-  it('matches snapshot', () => {
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('show right components', () => {
-    expect(wrapper.exists('.listContainer')).toBeTruthy();
-    expect(wrapper.find(LogItem).length).toBe(2);
-    expect(
-      wrapper
-        .find(LogItem)
-        .at(1)
-        .prop('nodeId')
-    ).toBe(mockData.data.logs[1].nodeId);
-  });
-});
