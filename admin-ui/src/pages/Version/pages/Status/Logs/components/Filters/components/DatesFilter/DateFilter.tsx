@@ -4,7 +4,7 @@ import styles from './DateFilter.module.scss';
 import Select from '../../../../../../../../../components/Form/Select/Select';
 
 type Props = {
-  onDateChange: any;
+  onDateChange: Function;
 };
 function DateFilter({ onDateChange }: Props) {
   const dateFilterOptions = {
