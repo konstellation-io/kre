@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import WorkflowViz from './WorkflowViz';
-import styles from './Workflow.module.scss';
 import { GetVersionWorkflows_version_workflows } from '../../../../../../graphql/queries/types/GetVersionWorkflows';
 import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 
@@ -9,9 +8,16 @@ type Props = {
   width: number;
   height: number;
   workflowStatus: VersionStatus;
+  onInnerNodeClick: Function;
 };
 
-function WorkflowChart({ data, width, height, workflowStatus }: Props) {
+function WorkflowChart({
+  data,
+  width,
+  height,
+  workflowStatus,
+  onInnerNodeClick
+}: Props) {
   const viz = useRef<WorkflowViz | null>(null);
   const svg = useRef<SVGSVGElement>(null);
 
@@ -19,12 +25,13 @@ function WorkflowChart({ data, width, height, workflowStatus }: Props) {
   useEffect(update, [data]);
 
   function initialize() {
-    if (svg.current !== null) {
+    if (svg.current !== null && width * height !== 0) {
       const vizProps = {
         width,
         height,
         data,
         workflowStatus,
+        onInnerNodeClick,
         margin: {
           right: 20,
           left: 5
@@ -36,7 +43,9 @@ function WorkflowChart({ data, width, height, workflowStatus }: Props) {
 
   function update() {
     if (viz.current !== null) {
-      viz.current.update();
+      viz.current.update(data, workflowStatus);
+    } else {
+      initialize();
     }
   }
 

@@ -7,7 +7,6 @@ import {
   nodeStatus,
   errorMorkflowsMock
 } from '../../../../mocks/version';
-import StatusViewer from '../../components/StatusViewer/StatusViewer';
 import { mountApolloComponent } from '../../../../utils/testUtilsEnzyme';
 import Logs from './Logs/Logs';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
@@ -33,12 +32,6 @@ const Component = <Wrapper mocks={mocks} />;
 const ErrorComponent = <Wrapper mocks={errorMocks} />;
 
 describe('Status', () => {
-  it('show right components', async () => {
-    const wrapper = await mountApolloComponent(Component);
-
-    expect(wrapper.exists(StatusViewer)).toBeTruthy();
-  });
-
   it('show loading component', async () => {
     const wrapper = await mountApolloComponent(Component, false);
 

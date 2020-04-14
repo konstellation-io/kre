@@ -15,6 +15,10 @@ import {
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
 import { TYPES } from '../../../../../../components/Shape/Node/Node';
+import { useApolloClient } from '@apollo/react-hooks';
+import { LogPanel } from '../../../../../../graphql/client/typeDefs';
+import { useParams } from 'react-router-dom';
+import { RuntimeRouteParams } from '../../../../../../constants/routes';
 
 export interface Node extends GetVersionWorkflows_version_workflows_nodes {
   type?: TYPES;
@@ -27,30 +31,18 @@ interface Workflow extends GetVersionWorkflows_version_workflows {
   edges: Edge[];
 }
 
-export function formatData(
-  workflow: GetVersionWorkflows_version_workflows,
-  idx: number,
-  versionStatus?: VersionStatus
-): Workflow {
-  let workflowCopy: Workflow = cloneDeep(workflow);
-  workflowCopy.nodes = workflowCopy.nodes.map((node: Node) => ({
-    ...node,
-    status: NodeStatus.STOPPED
-  }));
-
-  return workflowCopy;
-}
-
 const BASE_WIDTH = 323;
 const NODE_WIDTH = 160;
 
 type Props = {
   workflow: GetVersionWorkflows_version_workflows;
-  idx: number;
   workflowStatus: VersionStatus;
 };
 
-function Workflow({ workflow, idx, workflowStatus }: Props) {
+function Workflow({ workflow, workflowStatus }: Props) {
+  const client = useApolloClient();
+  const { runtimeId } = useParams<RuntimeRouteParams>();
+
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const chartRef = useRef<HTMLDivElement>(null);
   const dimensions = useRenderOnResize({ container: chartRef });
@@ -58,9 +50,29 @@ function Workflow({ workflow, idx, workflowStatus }: Props) {
   // Sets container width.
   useEffect(() => {
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
-  }, []);
+  }, [setContainerWidth, workflow.nodes]);
 
-  const data = formatData(workflow, idx);
+  function setCurrentLogPanel(input: LogPanel) {
+    client.writeData({
+      data: { logPanel: input, logsOpened: true }
+    });
+  }
+
+  function onInnerNodeClick(
+    nodeId: string,
+    nodeName: string,
+    workflowId: string
+  ) {
+    setCurrentLogPanel({
+      runtimeId,
+      nodeId,
+      nodeName,
+      workflowId,
+      __typename: 'logPanel'
+    });
+  }
+
+  const data = cloneDeep(workflow);
   const { width, height } = dimensions;
 
   return (
@@ -72,6 +84,7 @@ function Workflow({ workflow, idx, workflowStatus }: Props) {
           height={height}
           data={data}
           workflowStatus={workflowStatus}
+          onInnerNodeClick={onInnerNodeClick}
         />
       </div>
     </div>

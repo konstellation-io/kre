@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import InputNodeIcon from '@material-ui/icons/ArrowRightAlt';
 import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
-import { GetVersionWorkflows_version_workflows } from '../../../../../../graphql/queries/types/GetVersionWorkflows';
-import { select } from 'd3-selection';
+import {
+  GetVersionWorkflows_version_workflows,
+  GetVersionWorkflows_version_workflows_nodes
+} from '../../../../../../graphql/queries/types/GetVersionWorkflows';
+import { select, Selection } from 'd3-selection';
 import { ScaleBand, scaleBand } from 'd3-scale';
-import { range } from 'd3-array';
-import styles from './Workflow.module.scss';
-import { rgb, color } from 'd3-color';
+import { rgb } from 'd3-color';
 import {
   VersionStatus,
   NodeStatus
 } from '../../../../../../graphql/types/globalTypes';
+import styles from './WorkflowViz.module.scss';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
+
+type D = GetVersionWorkflows_version_workflows_nodes;
 
 const SCALE_PADDING_INNER = 0.6;
 const SCALE_PADDING_OUTER = 0.1;
@@ -34,21 +39,24 @@ type Props = {
   height: number;
   margin: Margin;
   workflowStatus: VersionStatus;
+  onInnerNodeClick: Function;
 };
 
 class WorkflowViz {
   props: Props;
-  svg: any;
+  svg: Selection<SVGElement, unknown, null, undefined>;
   xScale: ScaleBand<string>;
   nodeOuterRadius: number;
   nodeInnerRadius: number;
   nodeCentroidDistance: number;
   yOffset: number;
   edgeWidth: number;
-  nodesG: any;
-  edgesG: any;
-  defs: any;
+  nodesG: Selection<SVGGElement, unknown, null, undefined>;
+  edgesG: Selection<SVGGElement, unknown, null, undefined>;
+  defs: Selection<SVGGElement, unknown, null, undefined>;
   prevNodeLabelRightX: number;
+  inputNode: Selection<SVGGElement, unknown, null, undefined> | null;
+  outputNode: Selection<SVGGElement, unknown, null, undefined> | null;
 
   constructor(svg: SVGElement, props: Props) {
     this.svg = select(svg);
@@ -62,9 +70,20 @@ class WorkflowViz {
     this.prevNodeLabelRightX = 0;
     this.yOffset = props.height * OFFSET_TOP_PERC;
 
+    // Vars initialization
+    this.inputNode = null;
+    this.outputNode = null;
+    this.nodesG = this.svg.select('init');
+    this.edgesG = this.svg.select('init');
+    this.defs = this.svg.select('init');
+
     this.cleanup();
     this.initialize();
   }
+
+  idToSelector = (id: string) => {
+    return `selector_${this.props.data.id}_${id.replace(/-/g, '')}`;
+  };
 
   cleanup = () => {
     this.svg.selectAll('*').remove();
@@ -79,7 +98,7 @@ class WorkflowViz {
     this.edgesG = this.svg.append('g').classed(styles.edgesG, true);
     this.defs = this.svg.append('defs');
 
-    const xDomain = data.nodes.map((n: any) => n.id);
+    const xDomain = data.nodes.map((d: D) => d.id);
     xDomain.unshift('Input');
     xDomain.push('Output');
 
@@ -100,7 +119,13 @@ class WorkflowViz {
 
   resize = () => {};
 
-  update = () => {
+  update = (
+    data: GetVersionWorkflows_version_workflows,
+    workflowStatus: VersionStatus
+  ) => {
+    this.props.data = data;
+    this.props.workflowStatus = workflowStatus;
+
     this.generateInnerNodes();
     this.generateInputNode();
     this.generateOutputNode();
@@ -115,37 +140,50 @@ class WorkflowViz {
       yOffset,
       generateLink,
       generateNodeLabel,
-      props: { data }
+      props: { data, onInnerNodeClick }
     } = this;
     const self = this;
 
-    const circle = nodesG
-      .selectAll(`g.${styles.node}`)
-      .data(data.nodes)
+    const circles = nodesG
+      .selectAll<SVGGElement, null>(`g.${styles.node}`)
+      .data(data.nodes);
+
+    const newCircles = circles
       .enter()
       .append('g')
-      .attr('transform', (d: any) => `translate(${xScale(d.id)}, ${yOffset})`)
-      .attr('class', (d: any) => styles[d.status])
+      .attr('transform', (d: D) => `translate(${xScale(d.id)}, ${yOffset})`)
+      .attr('class', (d: D) => styles[d.status])
       .classed(styles.node, true)
-      .each(function(d: any) {
-        generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status);
+      .on('click', (d: D) => onInnerNodeClick(d.id, d.name, data.id))
+      .each(function(d: D) {
+        generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
         generateNodeLabel(this, d.name, self);
       });
 
-    circle
+    newCircles
       .append('circle')
       .classed(styles.outerCircle, true)
       .attr('r', nodeOuterRadius)
       .attr('cx', nodeOuterRadius);
 
-    circle
+    newCircles
       .append('circle')
       .classed(styles.innerCircle, true)
       .attr('r', nodeInnerRadius)
       .attr('cx', nodeOuterRadius);
+
+    // Old circles
+    circles
+      .attr('class', (d: D) => styles[d.status])
+      .classed(styles.node, true)
+      .each(function(d: D) {
+        generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
+      });
+
+    circles.merge(newCircles);
   };
 
-  generateNodeLabel = (node: any, label: string, self: any) => {
+  generateNodeLabel = (node: SVGGElement, label: string, self: this) => {
     const {
       nodeOuterRadius,
       yOffset,
@@ -168,8 +206,12 @@ class WorkflowViz {
       .attr('dy', 1)
       .text(label);
 
-    // @ts-ignore
-    const bbox = labelEl.node().getBBox();
+    const bbox = labelEl?.node()?.getBBox() || {
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0
+    };
     const rectDims = {
       width: bbox.width + 2 * NODE_LABEL_PADDING.HORIZONTAL,
       height: bbox.height + 2 * NODE_LABEL_PADDING.VERTICAL
@@ -215,47 +257,52 @@ class WorkflowViz {
       yOffset,
       props: { data, workflowStatus }
     } = this;
-
     const side = nodeOuterRadius * 2;
     const x = xScale('Input') || 0;
     const lineOffset = side * 0.1;
     const y = yOffset - side / 2;
-
-    const inputNode = nodesG
-      .append('g')
-      .classed(styles.inputNode, true)
-      .classed(styles[workflowStatus], true);
-    inputNode
-      .append('rect')
-      .attr('rx', 6)
-      .attr('x', x)
-      .attr('y', y)
-      .attr('height', side)
-      .attr('width', side - lineOffset);
-    inputNode
-      .append('path')
-      .attr('stroke', 'transparent')
-      .attr('d', () => {
-        return `
-        M ${x + side - lineOffset - 6} ${y + 2.5}
-        h 5
-        L ${x + side} ${y + side / 2}
-        L ${x + side - lineOffset - 1} ${y + side - 2.5}
-        h -5
-      `;
-      });
-    inputNode.append('path').attr('d', () => {
-      return `
-        M ${x + side - lineOffset - 1} ${y + 2.5}
-        L ${x + side} ${y + side / 2}
-        L ${x + side - lineOffset - 1} ${y + side - 2.5}
-      `;
-    });
-
     const linkStatus = data.nodes[0].status;
 
-    this.addIcon(inputNode, InputNodeIcon, xScale('Input') || 0);
-    this.generateLink(x + side, linkStatus);
+    if (this.inputNode === null) {
+      this.inputNode = nodesG
+        .append('g')
+        .classed(styles.inputNode, true)
+        .classed(styles[workflowStatus], true);
+      this.inputNode
+        .append('rect')
+        .attr('rx', 6)
+        .attr('x', x)
+        .attr('y', y)
+        .attr('height', side)
+        .attr('width', side - lineOffset);
+      this.inputNode
+        .append('path')
+        .attr('stroke', 'transparent')
+        .attr('d', () => {
+          return `
+          M ${x + side - lineOffset - 6} ${y + 2.5}
+          h 5
+          L ${x + side} ${y + side / 2}
+          L ${x + side - lineOffset - 1} ${y + side - 2.5}
+          h -5
+        `;
+        });
+      this.inputNode.append('path').attr('d', () => {
+        return `
+          M ${x + side - lineOffset - 1} ${y + 2.5}
+          L ${x + side} ${y + side / 2}
+          L ${x + side - lineOffset - 1} ${y + side - 2.5}
+        `;
+      });
+
+      this.addIcon(this.inputNode, InputNodeIcon, xScale('Input') || 0);
+    } else {
+      this.inputNode
+        .attr('class', styles.inputNode)
+        .classed(styles[workflowStatus], true);
+    }
+
+    this.generateLink(x + side, linkStatus, 'inputNode');
   };
 
   generateOutputNode = () => {
@@ -267,46 +314,56 @@ class WorkflowViz {
       props: { workflowStatus }
     } = this;
 
-    const side = nodeOuterRadius * 2;
-    const x = xScale('Output') || 0;
-    const lineOffset = side * 0.1;
-    const y = yOffset - side / 2;
+    if (this.outputNode === null) {
+      const side = nodeOuterRadius * 2;
+      const x = xScale('Output') || 0;
+      const lineOffset = side * 0.1;
+      const y = yOffset - side / 2;
 
-    const outputNode = nodesG
-      .append('g')
-      .classed(styles.outputNode, true)
-      .classed(styles[workflowStatus], true);
-    outputNode
-      .append('rect')
-      .attr('rx', 6)
-      .attr('x', x)
-      .attr('y', y)
-      .attr('height', side)
-      .attr('width', side);
-    outputNode
-      .append('path')
-      .attr('stroke', 'transparent')
-      .attr('d', () => {
+      this.outputNode = nodesG
+        .append('g')
+        .classed(styles.outputNode, true)
+        .classed(styles[workflowStatus], true);
+      this.outputNode
+        .append('rect')
+        .attr('rx', 6)
+        .attr('x', x)
+        .attr('y', y)
+        .attr('height', side)
+        .attr('width', side);
+      this.outputNode
+        .append('path')
+        .attr('stroke', 'transparent')
+        .attr('d', () => {
+          return `
+          M ${x - 5.8} ${y + 6}
+          h 5
+          L ${x + lineOffset} ${y + side / 2}
+          L ${x - 0.8} ${y + side - 6}
+          h -5
+        `;
+        });
+      this.outputNode.append('path').attr('d', () => {
         return `
-        M ${x - 5.8} ${y + 6}
-        h 5
-        L ${x + lineOffset} ${y + side / 2}
-        L ${x - 0.8} ${y + side - 6}
-        h -5
-      `;
+          M ${x - 0.8} ${y + 6}
+          L ${x + lineOffset} ${y + side / 2}
+          L ${x - 0.8} ${y + side - 6}
+        `;
       });
-    outputNode.append('path').attr('d', () => {
-      return `
-        M ${x - 0.8} ${y + 6}
-        L ${x + lineOffset} ${y + side / 2}
-        L ${x - 0.8} ${y + side - 6}
-      `;
-    });
 
-    this.addIcon(outputNode, OutputNodeIcon, xScale('Output') || 0);
+      this.addIcon(this.outputNode, OutputNodeIcon, xScale('Output') || 0);
+    } else {
+      this.outputNode
+        .attr('class', styles.outputNode)
+        .classed(styles[workflowStatus], true);
+    }
   };
 
-  addIcon = (parent: any, Icon: any, dx: number) => {
+  addIcon = (
+    parent: Selection<SVGGElement, unknown, null, undefined>,
+    Icon: FunctionComponent<SvgIconProps>,
+    dx: number
+  ) => {
     const { nodeOuterRadius, yOffset } = this;
 
     const icon = ReactDOMServer.renderToString(
@@ -322,40 +379,54 @@ class WorkflowViz {
       .html(icon);
   };
 
-  generateLink = (x1: number, status: VersionStatus | NodeStatus) => {
-    const { edgesG, edgeWidth, yOffset } = this;
+  generateLink = (
+    x1: number,
+    status: VersionStatus | NodeStatus,
+    nodeId: string
+  ) => {
+    const { edgesG, edgeWidth, yOffset, idToSelector } = this;
 
-    const lineG = edgesG
-      .append('g')
-      .classed(styles.lineG, true)
-      .classed(styles[status], true);
-    const y = yOffset;
+    const link = select(`.${idToSelector(nodeId)}`);
 
-    lineG
-      .append('line')
-      .classed(styles.line, true)
-      .attr('x1', x1)
-      .attr('x2', x1 + edgeWidth)
-      .attr('y1', y)
-      .attr('y2', y);
+    if (link.size() === 0) {
+      const lineG = edgesG
+        .append('g')
+        .classed(styles.lineG, true)
+        .classed(idToSelector(nodeId), true)
+        .classed(styles[status], true);
+      const y = yOffset;
 
-    const lineX = 12;
-    const lineY = 6;
-    lineG
-      .append('path')
-      .classed(styles.path, true)
-      .attr('d', () => {
-        return `
-          M ${x1 + edgeWidth} ${y}
-          l ${-lineX} ${-lineY}
-          M ${x1 + edgeWidth} ${y}
-          l ${-lineX} ${lineY}
-        `;
-      })
-      .attr('x1', x1)
-      .attr('x2', x1 + edgeWidth)
-      .attr('y1', y)
-      .attr('y2', y);
+      lineG
+        .append('line')
+        .classed(styles.line, true)
+        .attr('x1', x1)
+        .attr('x2', x1 + edgeWidth)
+        .attr('y1', y)
+        .attr('y2', y);
+
+      const lineX = 12;
+      const lineY = 6;
+      lineG
+        .append('path')
+        .classed(styles.path, true)
+        .attr('d', () => {
+          return `
+            M ${x1 + edgeWidth} ${y}
+            l ${-lineX} ${-lineY}
+            M ${x1 + edgeWidth} ${y}
+            l ${-lineX} ${lineY}
+          `;
+        })
+        .attr('x1', x1)
+        .attr('x2', x1 + edgeWidth)
+        .attr('y1', y)
+        .attr('y2', y);
+    } else {
+      link
+        .attr('class', styles.lineG)
+        .classed(idToSelector(nodeId), true)
+        .classed(styles[status], true);
+    }
   };
 
   generateFilters = () => {

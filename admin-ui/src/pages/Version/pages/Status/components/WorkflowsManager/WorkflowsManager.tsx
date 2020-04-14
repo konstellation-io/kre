@@ -13,8 +13,12 @@ function WorkflowsManager({
   versionStatus = VersionStatus.STOPPED
 }: Props) {
   const workflowElements = workflows.map(
-    (workflow: GetVersionWorkflows_version_workflows, idx: number) => (
-      <Workflow workflow={workflow} idx={idx} workflowStatus={versionStatus} />
+    (workflow: GetVersionWorkflows_version_workflows) => (
+      <Workflow
+        workflow={workflow}
+        workflowStatus={versionStatus}
+        key={workflow.id}
+      />
     )
   );
 

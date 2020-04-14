@@ -1,19 +1,8 @@
 @import '../../../../../../styles/variables';
 @import '../../../../../../styles/colors';
-@import '../../../../../../styles/mixins';
 
 $workflowMargin: 2.5 * $grid-unit;
 $container-height: 210px;
-$color-line: #5d6c76;
-
-$STATUS-ACTIVE: STARTED;
-$STATUS-ACTIVE-2: PUBLISHED;
-$STATUS-STOPPED: STOPPED;
-$STATUS-LOADING: ERROR;
-$STATUS-LOADING-2: STARTING;
-$color-stopped: $font-color-regular;
-$color-loading: $color-blue;
-$color-active: $color-green;
 
 .workflowContainer {
   display: flex;
@@ -30,113 +19,6 @@ $color-active: $color-green;
     position: relative;
     height: 100%;
     overflow: hidden;
-
-    .node {
-      .innerCircle {
-        fill: $color-green;
-        pointer-events: none;
-      }
-      .outerCircle {
-        fill: $bg-box;
-        stroke: $color-green;
-        cursor: pointer;
-
-        &:hover {
-          filter: url('#glow');
-        }
-      }
-
-      &.#{$STATUS-STOPPED} {
-        .innerCircle {
-          fill: $color-stopped;
-        }
-        .outerCircle {
-          stroke: $color-stopped;
-          pointer-events: none;
-        }
-      }
-      &.#{$STATUS-LOADING} {
-        .innerCircle {
-          fill: $color-loading;
-        }
-        .outerCircle {
-          stroke: $color-loading;
-        }
-      }
-    }
-
-    .inputNode,
-    .outputNode {
-      stroke: $color-green;
-      fill: $bg-box;
-
-      &.#{$STATUS-STOPPED},
-      &.#{$STATUS-ACTIVE},
-      &.#{$STATUS-LOADING-2} {
-        stroke: $color-stopped;
-
-        .icon {
-          fill: $color-stopped;
-        }
-      }
-
-      &.#{$STATUS-ACTIVE-2} {
-        stroke: $color-active;
-      }
-
-      .icon {
-        stroke: transparent !important;
-      }
-    }
-
-    .nodeLabel {
-      @include font-body;
-      font-weight: 500;
-
-      fill: $font-color-light;
-      text-anchor: middle;
-    }
-
-    .nodeLabelRect {
-      fill: $color-node-content;
-    }
-    .nodeLabelLine {
-      stroke: $color-line;
-      stroke-dasharray: 2.5;
-    }
-
-    .nodesG,
-    .edgesG,
-    .node,
-    .inputNode,
-    .outputNode,
-    .lineG,
-    .line,
-    .path,
-    .innerCircle {
-      display: block;
-    }
-    .lineG {
-      line {
-        stroke-dasharray: 5;
-      }
-
-      &.#{$STATUS-STOPPED},
-      &.#{$STATUS-LOADING-2},
-      &.#{$STATUS-LOADING} {
-        line,
-        path {
-          stroke: $color-stopped;
-        }
-      }
-      &.#{$STATUS-ACTIVE},
-      &.#{$STATUS-ACTIVE-2} {
-        line,
-        path {
-          stroke: $color-active;
-        }
-      }
-    }
   }
 
   .workflowHeader {
