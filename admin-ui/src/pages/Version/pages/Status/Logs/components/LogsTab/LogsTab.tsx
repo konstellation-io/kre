@@ -5,7 +5,7 @@ import LogsList from '../LogsList/LogsList';
 import { useForm } from 'react-hook-form';
 import moment from 'moment';
 
-interface FilterTypes {
+export interface FilterTypes {
   startDate: string;
   endDate: string;
 }
