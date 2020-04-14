@@ -6,14 +6,14 @@ import Select from '../../../../../../../../../components/Form/Select/Select';
 type Props = {
   onDateChange: Function;
 };
+enum dateFilterOptions {
+  lastHour = 'LAST HOUR',
+  lastSixHours = 'LAST 6 HOURS',
+  lastTwentyFourHours = 'LAST 24 HOURS',
+  lastSevenDays = 'LAST 7 DAYS',
+  customDates = 'CUSTOM'
+}
 function DateFilter({ onDateChange }: Props) {
-  const dateFilterOptions = {
-    lastHour: 'LAST HOUR',
-    lastSixHours: 'LAST 6 HOURS',
-    lastTwentyFourHours: 'LAST 24 HOURS',
-    lastSevenDays: 'LAST 7 DAYS',
-    customDates: 'CUSTOM'
-  };
   const [dateOption, setDateOption] = useState<string>('');
 
   const handleDateOption = (value: string) => {

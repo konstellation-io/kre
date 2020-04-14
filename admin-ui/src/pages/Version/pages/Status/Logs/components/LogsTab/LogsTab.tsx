@@ -3,11 +3,11 @@ import styles from './LogsTab.module.scss';
 import Filters from '../Filters/Filters';
 import LogsList from '../LogsList/LogsList';
 import { useForm } from 'react-hook-form';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
 export interface FilterTypes {
-  startDate: string;
-  endDate: string;
+  startDate: Moment;
+  endDate: Moment;
 }
 type Props = {
   nodeName: string;
@@ -18,13 +18,10 @@ function LogsTab({ nodeName, nodeId, runtimeId }: Props) {
   const [filterValues, setFilterValues] = useState<FilterTypes>({
     startDate: moment()
       .subtract(1, 'day')
-      .startOf('day')
-      .toISOString(true),
-    endDate: moment()
-      .endOf('day')
-      .toISOString(true)
+      .startOf('day'),
+    endDate: moment().endOf('day')
   });
-  const { register, setValue, getValues, watch } = useForm({
+  const { register, setValue, getValues, watch } = useForm<FilterTypes>({
     reValidateMode: 'onBlur'
   });
   const startDateWatch = watch('startDate');
@@ -37,10 +34,10 @@ function LogsTab({ nodeName, nodeId, runtimeId }: Props) {
   useEffect(() => {
     const { startDate, endDate } = getValues();
     if (startDate && endDate) {
-      setFilterValues(actualFilterValue => ({
+      setFilterValues((actualFilterValue: FilterTypes) => ({
         ...actualFilterValue,
-        startDate: startDate.toISOString(true),
-        endDate: endDate.toISOString(true)
+        startDate,
+        endDate
       }));
     }
   }, [startDateWatch, getValues]);

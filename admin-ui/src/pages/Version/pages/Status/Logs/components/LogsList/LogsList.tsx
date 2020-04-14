@@ -22,18 +22,10 @@ const GetServerLogsQuery = loader(
   '../../../../../../../graphql/queries/getServerLogs.graphql'
 );
 
-type GetFiltersParams = {
-  runtimeId: string;
-  nodeId: string;
-};
-function getFilters({ runtimeId, nodeId }: GetFiltersParams) {
-  return {
-    workflowId: '',
-    cursor: '',
-    runtimeId,
-    nodeId
-  };
-}
+const getFilters = ({ startDate, endDate }: FilterTypes) => ({
+  startDate: startDate.toISOString(true),
+  endDate: endDate.toISOString(true)
+});
 
 function scrollToBottom(component: HTMLDivElement) {
   if (component) {
@@ -60,11 +52,11 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
   const { data: localData } = useQuery<LocalState>(GET_LOGS);
   const logs: GetServerLogs_logs_items[] = localData?.logs || [];
 
-  const { loading, refetch, fetchMore, subscribeToMore } = useQuery<
+  const { loading, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
     GetServerLogsVariables
   >(GetServerLogsQuery, {
-    variables: { workflowId, runtimeId, nodeId, ...filterValues },
+    variables: { workflowId, runtimeId, nodeId, ...getFilters(filterValues) },
     onCompleted: data => {
       client.writeData({ data: { logs: [...data.logs.items.reverse()] } });
       setNextPage(data.logs.cursor || '');
@@ -107,19 +99,14 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
     handleScroll();
   }, [logs, localData?.logsAutoScroll]);
 
-  useEffect(() => {
-    refetch({ ...getFilters({ runtimeId, nodeId }), ...filterValues });
-    // Ignore refetch dependency, we do not want to refetch when refetch func changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodeId, runtimeId]);
-
   if (loading) return <SpinnerLinear />;
 
   // Pagination query
   function loadPreviousLogs() {
     fetchMore({
       variables: {
-        ...getFilters({ runtimeId, nodeId }),
+        runtimeId,
+        nodeId,
         cursor: nextPage
       },
       updateQuery: (prev, { fetchMoreResult }) => {
