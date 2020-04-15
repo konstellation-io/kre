@@ -154,11 +154,7 @@ class WorkflowViz {
       .attr('transform', (d: D) => `translate(${xScale(d.id)}, ${yOffset})`)
       .attr('class', (d: D) => styles[d.status])
       .classed(styles.node, true)
-      .on('click', (d: D) => onInnerNodeClick(d.id, d.name, data.id))
-      .each(function(d: D) {
-        generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
-        generateNodeLabel(this, d.name, self);
-      });
+      .on('click', (d: D) => onInnerNodeClick(d.id, d.name, data.id));
 
     newCircles
       .append('circle')
@@ -171,6 +167,11 @@ class WorkflowViz {
       .classed(styles.innerCircle, true)
       .attr('r', nodeInnerRadius)
       .attr('cx', nodeOuterRadius);
+
+    newCircles.each(function(d: D) {
+      generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
+      generateNodeLabel(this, d.name, self);
+    });
 
     // Old circles
     circles
@@ -186,6 +187,7 @@ class WorkflowViz {
   generateNodeLabel = (node: SVGGElement, label: string, self: this) => {
     const {
       nodeOuterRadius,
+      nodeInnerRadius,
       yOffset,
       prevNodeLabelRightX,
       nodeCentroidDistance
@@ -244,7 +246,7 @@ class WorkflowViz {
       .attr('x1', 0)
       .attr('y1', NODE_LABEL_PADDING.VERTICAL)
       .attr('x2', 0)
-      .attr('y2', labelYOffset);
+      .attr('y2', labelYOffset - nodeOuterRadius - nodeInnerRadius);
 
     self.prevNodeLabelRightX = shouldMoveLabel ? 0 : actX;
   };

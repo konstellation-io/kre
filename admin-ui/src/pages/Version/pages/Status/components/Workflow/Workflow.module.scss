@@ -30,6 +30,17 @@ $container-height: 210px;
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 2 * $grid-unit;
+
+    .title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .button {
+      cursor: pointer;
+    }
   }
 }
