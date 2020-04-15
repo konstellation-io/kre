@@ -5,7 +5,8 @@ import useChart, { Margin } from '../../../hooks/useChart';
 import {
   getAxesMargins,
   tooltipAction,
-  getClassFromLabel
+  getClassFromLabel,
+  rotateAxis
 } from '../../../utils/d3';
 
 import { scaleBand, ScaleBand, scaleLinear, ScaleLinear } from 'd3-scale';
@@ -13,22 +14,43 @@ import { axisBottom, axisLeft, Axis } from 'd3-axis';
 import { select, Selection } from 'd3-selection';
 
 import styles from './BarChart.module.scss';
+import moment from 'moment';
 
 const X_SCALE_PADDING_INNER: number = 0.3;
 const X_SCALE_PADDING_OUTER: number = 0.4;
+const X_AXIS_STEP_THRESHOLD: number = 25;
 
 function getTooltipContent(d: D) {
-  return (
-    <div>
+  const body = d.empty ? (
+    <div>No data</div>
+  ) : (
+    <>
       <div>{`Hits: ${d.y}%`}</div>
       <div>{`Fails: ${100 - d.y}%`}</div>
+    </>
+  );
+  return (
+    <div>
+      <div className="title">{d.x}</div>
+      {body}
     </div>
   );
+}
+
+function formatTimeLabel(date: string) {
+  const dateHasTime = date.includes('UTC');
+  return dateHasTime ? `${moment(date).format('MM-DD-YY - HH')}h` : date;
+}
+
+function formatXAxis(x: string, idx: number, skipStep: number) {
+  // show 1 label every skip step to reduce total number of labels
+  return !(idx % skipStep) ? formatTimeLabel(x) : '';
 }
 
 export type D = {
   x: string;
   y: number;
+  empty: boolean;
 };
 
 type Props = {
@@ -84,9 +106,11 @@ function BarChart({ width, height, margin, data }: Props) {
       .domain(yDomain);
 
     // Initialize axes
+    const step = Math.floor(xDomain.length / X_AXIS_STEP_THRESHOLD) + 1;
     xAxis = axisBottom(xScale)
       .tickSize(0)
-      .tickPadding(16);
+      .tickPadding(16)
+      .tickFormat((x: string, idx) => formatXAxis(x, idx, step));
     yAxis = axisLeft(yScale)
       .ticks(4)
       .tickFormat(v => `${v}%`);
@@ -102,7 +126,7 @@ function BarChart({ width, height, margin, data }: Props) {
       .classed(styles.yAxis, true)
       .call(yAxis);
 
-    // rotateAxis(xAxisG, -45);
+    rotateAxis(xAxisG, -45);
 
     const [xAxisHeight, yAxisWidth] = getAxesMargins({ xAxisG, yAxisG });
 
@@ -162,27 +186,43 @@ function BarChart({ width, height, margin, data }: Props) {
 
     // Initialize bars
     const barWidth: number = xScale.bandwidth();
+    const barPadding: number = xScale.step() - xScale.bandwidth();
 
     bgBarsG = g.append('g').classed(styles.bars, true);
     barsG = g.append('g').classed(styles.bars, true);
 
-    bgBarsG
+    const barsContainer = bgBarsG
       .selectAll(`.${styles.bgBar}`)
       .data(data)
-      .enter()
+      .enter();
+
+    // This bars handles pointer events. Are invisible.
+    barsContainer
       .append('rect')
       .attr('class', (d: D) => getClassFromLabel(d.x))
-      .classed(styles.bgBar, true)
-      .attr('x', (d: D) => xScale(d.x) || 0)
+      .classed(styles.eventsBar, true)
+      .attr('x', (d: D) => (xScale(d.x) || 0) - barPadding / 2)
       .attr('y', (d: D) => yScale(100))
-      .attr('height', (d: D) => innerHeight - yScale(100))
-      .attr('width', barWidth)
+      .attr('height', (d: D) => Math.max(0, innerHeight - yScale(100)))
+      .attr('width', xScale.step())
+      .attr('fill', 'transparent')
       .on('mouseenter', function(d: D) {
         events.barHighlight(d, this, true);
       })
       .on('mouseleave', function(d: D) {
         events.barHighlight(d, this, false);
       });
+
+    barsContainer
+      .append('rect')
+      .attr('class', (d: D) => getClassFromLabel(d.x))
+      .classed(styles.bgBar, true)
+      .attr('x', (d: D) => xScale(d.x) || 0)
+      .attr('y', (d: D) => yScale(100))
+      .attr('height', (d: D) =>
+        d.empty ? 0 : Math.max(0, innerHeight - yScale(100))
+      )
+      .attr('width', barWidth);
 
     barsG
       .selectAll(`.${styles.bar}`)
@@ -193,7 +233,7 @@ function BarChart({ width, height, margin, data }: Props) {
       .classed(styles.bar, true)
       .attr('x', (d: D) => xScale(d.x) || 0)
       .attr('y', (d: D) => yScale(d.y))
-      .attr('height', (d: D) => innerHeight - yScale(d.y))
+      .attr('height', (d: D) => Math.max(0, innerHeight - yScale(d.y)))
       .attr('width', barWidth);
   }
 

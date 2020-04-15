@@ -11,7 +11,7 @@ import { get } from 'lodash';
 
 const PADDING_HEIGHT = 164;
 const PADDING_WIDTH = 310;
-const MIN_HEIGHT_CONFUSION_MATRIX = 350;
+const MIN_HEIGHT_CONFUSION_MATRIX = 400;
 
 type Props = {
   data: GetMetrics;
@@ -45,7 +45,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
   const height = expanded ? window.innerHeight - PADDING_HEIGHT : '100%';
   const width = get(window, 'innerWidth', 0) - PADDING_WIDTH;
 
-  const SuccessFailsHeight = width / 4;
+  const SuccessFailsHeight = width / 3;
 
   const nLabels = Math.sqrt(data.metrics.charts.confusionMatrix.length);
   const confusionMatrixHeight = Math.max(
