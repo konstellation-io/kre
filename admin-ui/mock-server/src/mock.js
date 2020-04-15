@@ -60,6 +60,7 @@ module.exports = {
         activeNodeLogsInterval = setInterval(() => {
           pubsub.publish('nodeLogs', {
             nodeLogs: {
+              id: casual.uuid,
               date: new Date().toUTCString(),
               nodeName: casual.name,
               message: casual.sentence,
@@ -87,7 +88,7 @@ module.exports = {
     versions: () => new MockList([18, 28]),
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
-    logs: this.LogPage
+    logs: this.LogPane
   }),
   Mutation: () => ({
     createRuntime: () => {
@@ -130,6 +131,17 @@ module.exports = {
       'user5@intelygenz.com',
       'user6@intelygenz.com'
     ])
+  }),
+  LogPane: () => ({
+    cursor: casual.string,
+    items: new MockList([6, 12]),
+  }),
+  NodeLog: () => ({
+    id: casual.uuid,
+    date: new Date().toUTCString(),
+    nodeName: casual.name,
+    message: casual.sentence,
+    level: casual.random_element(['ERROR', 'WARN', 'INFO', 'DEBUG'])
   }),
   Runtime: generateRuntime,
   Version: generateVersion,
@@ -177,16 +189,4 @@ module.exports = {
     return { id: _id, name: name, status: 'STOPPED' };
   },
   MetricChartData: () => new MockList([5, 10]),
-  LogPage: () => ({
-    cursor: casual.uuid,
-    logs: () =>
-      new MockList([7, 20], () => {
-        return {
-          date: new Date().toUTCString(),
-          nodeName: casual.name,
-          message: casual.sentence,
-          level: casual.random_element(['ERROR', 'WARN', 'INFO', 'DEBUG'])
-        };
-      })
-  })
 };

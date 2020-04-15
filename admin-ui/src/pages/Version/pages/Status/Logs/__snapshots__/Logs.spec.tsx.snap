@@ -13,15 +13,9 @@ exports[`Logs matches snapshot 1`] = `
     <div
       className="content"
     >
-      <Filters
-        filters={
-          Object {
-            "node": "nodeNameMock",
-          }
-        }
-      />
-      <LogsList
+      <LogsTab
         nodeId="nodeIdMock"
+        nodeName="nodeNameMock"
         runtimeId="runtimeIdMock"
       />
     </div>
