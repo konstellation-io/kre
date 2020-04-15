@@ -1,5 +1,6 @@
 @import '../../../../../../styles/variables';
 @import '../../../../../../styles/colors';
+@import '../../../../../../styles/mixins';
 
 $workflowMargin: 2.5 * $grid-unit;
 $container-height: 210px;
@@ -22,6 +23,10 @@ $container-height: 210px;
   }
 
   .workflowHeader {
+    @include font-body;
+    font-weight: 500;
+    color: $font-color-white;
+
     display: flex;
     flex-direction: row;
     align-items: center;
