@@ -6,34 +6,28 @@ import Select from '../../../../../../../../../components/Form/Select/Select';
 type Props = {
   onDateChange: Function;
 };
-enum dateFilterOptions {
-  lastHour = 'LAST HOUR',
-  lastSixHours = 'LAST 6 HOURS',
-  lastTwentyFourHours = 'LAST 24 HOURS',
-  lastSevenDays = 'LAST 7 DAYS',
-  customDates = 'CUSTOM'
-}
+const dateFilterOptions: { [key: string]: string } = {
+  lastHour: 'LAST HOUR',
+  lastSixHours: 'LAST 6 HOURS',
+  lastTwentyFourHours: 'LAST 24 HOURS',
+  lastSevenDays: 'LAST 7 DAYS',
+  customDates: 'CUSTOM'
+};
+
+const dateOptionToHours: { [key: string]: number } = {
+  [dateFilterOptions.lastHour]: 1,
+  [dateFilterOptions.lastSixHours]: 6,
+  [dateFilterOptions.lastTwentyFourHours]: 24,
+  [dateFilterOptions.lastSevenDays]: 168
+};
+
 function DateFilter({ onDateChange }: Props) {
   const [dateOption, setDateOption] = useState<string>('');
 
   const handleDateOption = (value: string) => {
     setDateOption(value);
-    if (value !== dateFilterOptions.customDates) {
-      let hoursToSubtract;
-      switch (value) {
-        case dateFilterOptions.lastHour:
-          hoursToSubtract = 1;
-          break;
-        case dateFilterOptions.lastSixHours:
-          hoursToSubtract = 6;
-          break;
-        case dateFilterOptions.lastTwentyFourHours:
-          hoursToSubtract = 24;
-          break;
-        case dateFilterOptions.lastSevenDays:
-          hoursToSubtract = 168;
-          break;
-      }
+    if (dateFilterOptions[value] !== dateFilterOptions.customDates) {
+      const hoursToSubtract = dateOptionToHours[value] || 1;
       onDateChange([
         { startDate: moment().subtract(hoursToSubtract, 'hour') },
         { endDate: moment().endOf('day') }
