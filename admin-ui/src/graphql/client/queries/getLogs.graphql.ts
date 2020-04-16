@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const GET_LOGS = gql`
+export const GET_LOG_PANEL_CONF = gql`
   {
     logsAutoScroll @client
   }

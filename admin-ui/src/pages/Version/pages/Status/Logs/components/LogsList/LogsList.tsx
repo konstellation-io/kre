@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import { GET_LOG_PANEL_CONF } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
 import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import styles from './LogsList.module.scss';
@@ -57,7 +57,7 @@ function LogsList({
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
 
-  const { data: localData } = useQuery<LocalState>(GET_LOGS);
+  const { data: localData } = useQuery<LocalState>(GET_LOG_PANEL_CONF);
 
   const { loading, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
