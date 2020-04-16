@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styles from './Workflow.module.scss';
 import StatusCircle from '../../../../../../components/StatusCircle/StatusCircle';
 import SvgIcon from '@material-ui/core/SvgIcon';
@@ -8,16 +8,10 @@ import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 type Props = {
   status: VersionStatus;
   onWorkflowClick: Function;
-  id: string;
   name?: string;
 };
 
-function WorkflowHeader({
-  id,
-  name = 'Workflow',
-  status,
-  onWorkflowClick
-}: Props) {
+function WorkflowHeader({ name = 'Workflow', status, onWorkflowClick }: Props) {
   return (
     <div className={styles.workflowHeader}>
       <div className={styles.title}>
@@ -26,7 +20,7 @@ function WorkflowHeader({
       </div>
       <div
         className={styles.button}
-        onClick={() => onWorkflowClick(id)}
+        onClick={() => onWorkflowClick()}
         title="Open logs for this workflow"
       >
         <SvgIcon className="icon-small">

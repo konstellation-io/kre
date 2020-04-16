@@ -69,12 +69,12 @@ function Workflow({ workflow, workflowStatus }: Props) {
     });
   }
 
-  function onWorkflowClick(workflowId: string) {
+  function onWorkflowClick() {
     setCurrentLogPanel({
       runtimeId,
       nodeId: '',
       nodeName: '',
-      workflowId,
+      workflowId: data.id,
       __typename: 'logPanel'
     });
   }
@@ -85,7 +85,6 @@ function Workflow({ workflow, workflowStatus }: Props) {
   return (
     <div className={styles.workflowContainer} style={{ width: containerWidth }}>
       <WorkflowHeader
-        id={data.id}
         name={workflow.name}
         status={workflowStatus}
         onWorkflowClick={onWorkflowClick}
