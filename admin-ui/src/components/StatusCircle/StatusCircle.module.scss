@@ -1,0 +1,18 @@
+@import '../../styles/variables';
+@import '../../styles/colors';
+@import '../../styles/funcs';
+
+.circle {
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: $color-green;
+  flex-shrink: 0;
+
+  @each $state in $version-statuses {
+    &.#{$state} {
+      background-color: get-color-prop($state);
+    }
+  }
+}

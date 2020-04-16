@@ -7,7 +7,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { ENDPOINT } from '../../constants/application';
 import ROUTE from '../../constants/routes';
 import * as CHECK from '../../components/Form/check';
-import StateCircle from '../../components/Shape/StateCircle/StateCircle';
+import Circle from '../../components/Shape/Circle/Circle';
 import { STATES } from '../../constants/application';
 
 import styles from './MagicLink.module.scss';
@@ -115,7 +115,7 @@ function MagicLink() {
         <div className={styles.container}>
           <h1>{getTitle[status]}</h1>
           <p className={styles.subtitle}>{getSubtitle[status]}</p>
-          <StateCircle animation={status} label={getCircleText[status]} />
+          <Circle animation={status} label={getCircleText[status]} />
           {status === STATES.ERROR && (
             <div className={styles.errorText}>{error}</div>
           )}

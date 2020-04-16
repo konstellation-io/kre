@@ -2,10 +2,10 @@ import React from 'react';
 
 import Lottie from '../../Lottie/Lottie';
 import { STATES } from '../../../constants/application';
-import animationData from './StateCircle.json';
+import animationData from './Circle.json';
 
 import cx from 'classnames';
-import styles from './StateCircle.module.scss';
+import styles from './Circle.module.scss';
 
 const ANIM_SEGMENTS: { [key: string]: [number, number] } = {
   [STATES.INITIALIZING]: [0, 119],
@@ -22,7 +22,7 @@ type Props = {
   size?: number;
 };
 
-function StateCircle({
+function Circle({
   animation = STATES.INITIALIZING,
   label = 'LOADING...',
   size = 250
@@ -57,4 +57,4 @@ function StateCircle({
   );
 }
 
-export default StateCircle;
+export default Circle;

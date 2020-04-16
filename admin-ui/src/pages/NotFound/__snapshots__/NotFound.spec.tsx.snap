@@ -13,7 +13,7 @@ exports[`NotFound matches snapshot 1`] = `
       <h1>
         Page not found
       </h1>
-      <StateCircle
+      <Circle
         animation="ERROR"
         label="NOT FOUND"
       />
