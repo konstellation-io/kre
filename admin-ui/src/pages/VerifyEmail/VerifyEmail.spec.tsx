@@ -1,7 +1,7 @@
 import React from 'react';
 import VerifyEmail from './VerifyEmail';
 import { shallow } from 'enzyme';
-import StateCircle from '../../components/Shape/StateCircle/StateCircle';
+import Circle from '../../components/Shape/Circle/Circle';
 
 describe('VerifyEmail', () => {
   let wrapper;
@@ -15,7 +15,7 @@ describe('VerifyEmail', () => {
   });
 
   it('show correct texts', () => {
-    expect(wrapper.exists(StateCircle)).toBeTruthy();
+    expect(wrapper.exists(Circle)).toBeTruthy();
     expect(wrapper.exists('p')).toBeTruthy();
   });
 });

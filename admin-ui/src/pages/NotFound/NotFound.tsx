@@ -1,6 +1,6 @@
 import React from 'react';
 
-import StateCircle from '../../components/Shape/StateCircle/StateCircle';
+import Circle from '../../components/Shape/Circle/Circle';
 import { STATES } from '../../constants/application';
 
 import styles from './NotFound.module.scss';
@@ -11,7 +11,7 @@ function NotFound() {
       <div className={styles.grid}>
         <div className={styles.container}>
           <h1>Page not found</h1>
-          <StateCircle animation={STATES.ERROR} label="NOT FOUND" />;
+          <Circle animation={STATES.ERROR} label="NOT FOUND" />;
         </div>
       </div>
     </div>

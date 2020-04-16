@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetVersionConfStatus_versions } from '../../../../../graphql/queries/types/GetVersionConfStatus';
+import StatusCircle from '../../../../../components/StatusCircle/StatusCircle';
 import cx from 'classnames';
 import styles from './VersionInfo.module.scss';
 
@@ -14,7 +15,7 @@ function VersionInfo({ version }: VersionListItemProps) {
         <div>{version.name}</div>
       </div>
       <div className={styles.labelContainer}>
-        <div className={cx(styles.circle, styles[version.status])}></div>
+        <StatusCircle status={version.status} />
         <div className={cx(styles.label, styles[version.status])}>
           {version.status}
         </div>

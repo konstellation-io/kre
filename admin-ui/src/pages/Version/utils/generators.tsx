@@ -6,7 +6,6 @@ import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import UnpublishIcon from '@material-ui/icons/Block';
 import { VersionStatus } from '../../../graphql/types/globalTypes';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
-import VersionActions from '../components/VersionSideBar/VersionActions/VersionActions';
 
 function generateActionButton(
   label: string,
