@@ -28,7 +28,7 @@ function Logs() {
   }
 
   function clearLogs(): void {
-    // Refactor the clear logs feature
+    //TODO: Refactor the clear logs feature
     client.writeData({ data: { logs: [] } });
   }
 
