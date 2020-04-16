@@ -40,13 +40,13 @@ type FormFieldProps = {
 function FormField({ error, onChange, onBlur, formValue }: FormFieldProps) {
   return (
     <div className={styles.formField}>
-      <p className={styles.label}>Session lifetime in days time</p>
+      <p className={styles.label}>Session expiration time in days</p>
       <div className={styles.input}>
         <TextInput
           whiteColor
           type={InputType.NUMBER}
           additionalInputProps={{ min: 0 }}
-          label="nº days"
+          label="days"
           error={error}
           onChange={onChange}
           onBlur={onBlur}

@@ -69,12 +69,26 @@ function Workflow({ workflow, workflowStatus }: Props) {
     });
   }
 
+  function onWorkflowClick() {
+    setCurrentLogPanel({
+      runtimeId,
+      nodeId: '',
+      nodeName: '',
+      workflowId: data.id,
+      __typename: 'logPanel'
+    });
+  }
+
   const data = cloneDeep(workflow);
   const { width, height } = dimensions;
 
   return (
     <div className={styles.workflowContainer} style={{ width: containerWidth }}>
-      <WorkflowHeader name={workflow.name} status={workflowStatus} />
+      <WorkflowHeader
+        name={workflow.name}
+        status={workflowStatus}
+        onWorkflowClick={onWorkflowClick}
+      />
       <div ref={chartRef} className={styles.chartContainer}>
         <WorkflowChart
           width={width}

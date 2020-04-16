@@ -1,8 +1,9 @@
 @import '../../../../../../styles/variables';
 @import '../../../../../../styles/colors';
+@import '../../../../../../styles/mixins';
 
 $workflowMargin: 2.5 * $grid-unit;
-$container-height: 210px;
+$container-height: 220px;
 
 .workflowContainer {
   display: flex;
@@ -22,9 +23,24 @@ $container-height: 210px;
   }
 
   .workflowHeader {
+    @include font-body;
+    font-weight: 500;
+    color: $font-color-white;
+
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 2 * $grid-unit;
+
+    .title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .button {
+      cursor: pointer;
+    }
   }
 }

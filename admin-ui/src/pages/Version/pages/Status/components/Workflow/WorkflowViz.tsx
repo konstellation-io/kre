@@ -26,6 +26,7 @@ const NODE_LABEL_PADDING = {
   VERTICAL: 4,
   HORIZONTAL: 25
 };
+const MARGIN_TOP_LABELS = 4;
 const ICON_SIZE = 25;
 
 export type Margin = {
@@ -153,24 +154,27 @@ class WorkflowViz {
       .append('g')
       .attr('transform', (d: D) => `translate(${xScale(d.id)}, ${yOffset})`)
       .attr('class', (d: D) => styles[d.status])
-      .classed(styles.node, true)
-      .on('click', (d: D) => onInnerNodeClick(d.id, d.name, data.id))
-      .each(function(d: D) {
-        generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
-        generateNodeLabel(this, d.name, self);
-      });
+      .classed(styles.node, true);
 
-    newCircles
+    const newCirclesG = newCircles.append('g').classed(styles.circlesG, true);
+
+    newCirclesG
       .append('circle')
       .classed(styles.outerCircle, true)
       .attr('r', nodeOuterRadius)
-      .attr('cx', nodeOuterRadius);
+      .attr('cx', nodeOuterRadius)
+      .on('click', (d: D) => onInnerNodeClick(d.id, d.name, data.id));
 
-    newCircles
+    newCirclesG
       .append('circle')
       .classed(styles.innerCircle, true)
       .attr('r', nodeInnerRadius)
       .attr('cx', nodeOuterRadius);
+
+    newCircles.each(function(d: D) {
+      generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
+      generateNodeLabel(this, d.name, self);
+    });
 
     // Old circles
     circles
@@ -186,18 +190,23 @@ class WorkflowViz {
   generateNodeLabel = (node: SVGGElement, label: string, self: this) => {
     const {
       nodeOuterRadius,
+      nodeInnerRadius,
       yOffset,
       prevNodeLabelRightX,
       nodeCentroidDistance
     } = self;
 
-    let labelYOffset = yOffset;
+    const textSize = 16;
+    const labelSeparation = 36;
+
+    let labelYOffset = yOffset - MARGIN_TOP_LABELS;
 
     const box = select(node)
       .append('g')
+      .classed(styles.labelG, true)
       .attr(
         'transform',
-        `translate(${nodeOuterRadius}, ${-labelYOffset + 16})`
+        `translate(${nodeOuterRadius}, ${-labelYOffset + textSize})`
       );
 
     const labelEl = box
@@ -222,11 +231,11 @@ class WorkflowViz {
     const shouldMoveLabel = actX >= prevRightX;
 
     if (shouldMoveLabel) {
-      labelYOffset = yOffset - 35;
+      labelYOffset = yOffset - labelSeparation - MARGIN_TOP_LABELS;
 
       box.attr(
         'transform',
-        `translate(${nodeOuterRadius}, ${-labelYOffset + 16})`
+        `translate(${nodeOuterRadius}, ${-labelYOffset + textSize})`
       );
     }
 
@@ -244,7 +253,7 @@ class WorkflowViz {
       .attr('x1', 0)
       .attr('y1', NODE_LABEL_PADDING.VERTICAL)
       .attr('x2', 0)
-      .attr('y2', labelYOffset);
+      .attr('y2', labelYOffset - nodeOuterRadius - nodeInnerRadius);
 
     self.prevNodeLabelRightX = shouldMoveLabel ? 0 : actX;
   };
@@ -439,9 +448,19 @@ class WorkflowViz {
       .replace('green', color.g.toString())
       .replace('blue', color.b.toString());
 
+    this.generateGlow('glow', 8, defs, colorMatrix);
+    this.generateGlow('glowLow', 2, defs, colorMatrix);
+  };
+
+  generateGlow = (
+    id: string,
+    stdDeviation: number,
+    defs: Selection<SVGGElement, unknown, null, undefined>,
+    colorMatrix: string
+  ) => {
     const glow = defs
       .append('filter')
-      .attr('id', 'glow')
+      .attr('id', id)
       .attr('x', '-20%')
       .attr('y', '-20%')
       .attr('width', '140%')
@@ -452,7 +471,7 @@ class WorkflowViz {
       .attr('values', colorMatrix);
     glow
       .append('feGaussianBlur')
-      .attr('stdDeviation', 8)
+      .attr('stdDeviation', stdDeviation)
       .attr('result', 'coloredBlur');
 
     const feMerge = glow.append('feMerge');
