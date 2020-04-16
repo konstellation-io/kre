@@ -23,6 +23,9 @@ exports[`TextInput matches snapshot 1`] = `
     type="text"
     value=""
   />
+  <InputInfo
+    message=""
+  />
   <InputHelp
     message=""
   />
