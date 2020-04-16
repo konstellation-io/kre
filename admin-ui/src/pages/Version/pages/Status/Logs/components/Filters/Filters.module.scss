@@ -1,18 +1,15 @@
 @import '../../../../../../../styles/colors';
 @import '../../../../../../../styles/mixins';
+@import '../../../../../../../styles/variables';
 
 .container {
   @include border-header;
   @include font-body;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  height: 32px;
+  justify-content: space-between;
+  height: $grid-unit * 6;
   flex-shrink: 0;
-}
-
-.title {
-  margin: 0 20px;
 }
 
 .filter {
@@ -27,4 +24,21 @@
   div:first-child {
     margin-right: 8px;
   }
+}
+
+.leftFilters {
+  display: flex;
+  align-items: center;
+  margin-left: $grid-unit * 2.5;
+}
+.rightFilters {
+  margin-right: $grid-unit * 2.5;
+  display: flex;
+  & > div:not(:last-child) {
+    border-right: 2px solid #1d1e23;
+    border-right-style: inset;
+  }
+}
+.dateFilter {
+  width: $grid-unit * 21.5;
 }

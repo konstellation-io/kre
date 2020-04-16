@@ -5,19 +5,28 @@ exports[`Filters matches snapshot 1`] = `
   className="container"
 >
   <div
-    className="title"
+    className="leftFilters"
   >
-    Showing logs with the following filters:
-     
+    <div
+      className="title"
+    >
+      Showing logs with the following filters:
+       
+    </div>
+    <div
+      className="filters"
+    >
+      <Filter
+        filter="filter"
+        key="filter"
+        value="value"
+      />
+    </div>
   </div>
   <div
-    className="filters"
+    className="rightFilters"
   >
-    <Filter
-      filter="filter"
-      key="filter"
-      value="value"
-    />
+    <DateFilter />
   </div>
 </div>
 `;

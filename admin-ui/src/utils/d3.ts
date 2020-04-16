@@ -100,6 +100,8 @@ export function rotateAxis(
   axisG
     .selectAll('text')
     .style('text-anchor', 'end')
+    .attr('dx', -5)
+    .attr('dy', -3)
     .style('transform', `rotate(${angle}deg)`);
 }
 

@@ -17,7 +17,7 @@ import { color, RGBColor } from 'd3-color';
 
 import styles from './ConfusionMatrix.module.scss';
 
-const SCALE_PADDING_INNER: number = 0.02;
+const SCALE_PADDING_INNER: number = 0.01;
 const SCALE_PADDING_OUTER: number = 0;
 const AXIS_BOX_HEIGHT_PERC: number = 0.06;
 const AXIS_PADDING: number = 12;
@@ -177,7 +177,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
 
     xAxisBox
       .append('rect')
-      .attr('width', innerWidth)
+      .attr('width', Math.max(0, innerWidth))
       .attr('height', axisBoxSide)
       .attr('x', 0)
       .attr('y', innerHeight);
@@ -191,7 +191,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
     yAxisBox
       .append('rect')
       .attr('width', axisBoxSide)
-      .attr('height', innerHeight)
+      .attr('height', Math.max(0, innerHeight))
       .attr('x', -axisBoxSide)
       .attr('y', 0);
     yAxisBox
@@ -212,7 +212,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .append('rect')
       .classed(styles.legendRect, true)
       .attr('width', legendWidth)
-      .attr('height', innerHeight)
+      .attr('height', Math.max(0, innerHeight))
       .style('fill', 'url(#verticalGradient)')
       .attr('transform', `translate(${innerWidth + 40},0)`);
 
@@ -264,7 +264,6 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .classed(styles.cellText, true)
       .attr('text-anchor', 'middle')
       .attr('transform', `translate(${cellWidth / 2},0)`)
-      .style('font-size', cellHeight / 3)
       .attr('fill', (d: D) => {
         const c: RGBColor = color(colorScale(d.value)) as RGBColor;
         return c.r * 0.299 + c.g * 0.587 + c.b * 0.114 > 90

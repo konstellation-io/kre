@@ -35,7 +35,6 @@ describe('Logs', () => {
   it('show right components', () => {
     expect(wrapper.exists('.container')).toBeTruthy();
     expect(wrapper.exists(Header)).toBeTruthy();
-    expect(wrapper.exists(Filters)).toBeTruthy();
   });
 
   it('should be empty when there is no node', () => {

@@ -1,8 +1,7 @@
 import React from 'react';
 
 import Header from './components/Header/Header';
-import Filters from './components/Filters/Filters';
-import LogsList from './components/LogsList/LogsList';
+import LogsTab from './components/LogsTab/LogsTab';
 
 import cx from 'classnames';
 import styles from './Logs.module.scss';
@@ -45,13 +44,11 @@ function Logs() {
         />
         <div className={cx(styles.content, { [styles.opened]: opened })}>
           {logPanel && (
-            <>
-              <Filters filters={{ node: logPanel.nodeName }} />
-              <LogsList
-                nodeId={logPanel.nodeId}
-                runtimeId={logPanel.runtimeId}
-              />
-            </>
+            <LogsTab
+              nodeId={logPanel.nodeId}
+              runtimeId={logPanel.runtimeId}
+              nodeName={logPanel.nodeName}
+            />
           )}
         </div>
       </div>

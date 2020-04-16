@@ -57,14 +57,13 @@ function Status({ version }: Props) {
         const nodeInfo = get(subscriptionData, 'data.versionNodeStatus');
         const newData = cloneDeep(prev);
 
-        newData.version.workflows.forEach((workflow, workflowIdx) => {
-          workflow.nodes.forEach((node, nodeIdx) => {
-            if (node.id === nodeInfo.nodeId) {
-              newData.version.workflows[workflowIdx].nodes[nodeIdx].status =
-                nodeInfo.status;
-            }
-          });
-        });
+        newData.version.workflows = newData.version.workflows.map(workflow => ({
+          ...workflow,
+          nodes: workflow.nodes.map(node => ({
+            ...node,
+            status: node.id === nodeInfo.nodeId ? nodeInfo.status : node.status
+          }))
+        }));
 
         return newData;
       }
