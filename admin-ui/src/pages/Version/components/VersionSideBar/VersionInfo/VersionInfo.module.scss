@@ -28,21 +28,6 @@
   padding: 0 30px;
 }
 
-.circle {
-  width: 8px;
-  height: 8px;
-  margin-right: 10px;
-  border-radius: 50%;
-  background-color: $color-green;
-  flex-shrink: 0;
-
-  @each $state in $version-statuses {
-    &.#{$state} {
-      background-color: get-color-prop($state);
-    }
-  }
-}
-
 .labelContainer {
   display: flex;
   flex-direction: row;

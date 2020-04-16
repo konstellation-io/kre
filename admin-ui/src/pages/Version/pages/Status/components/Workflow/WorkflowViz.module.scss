@@ -1,0 +1,137 @@
+@import '../../../../../../styles/variables';
+@import '../../../../../../styles/colors';
+@import '../../../../../../styles/mixins';
+
+$color-line: #5d6c76;
+
+$STATUS-ACTIVE: STARTED;
+$STATUS-ACTIVE-2: PUBLISHED;
+$STATUS-STOPPED: STOPPED;
+$STATUS-LOADING: ERROR;
+$STATUS-LOADING-2: STARTING;
+$color-stopped: $font-color-regular;
+$color-loading: $color-blue;
+$color-active: $color-green;
+
+$animation-duration: 0.8s;
+@mixin animate($field) {
+  transition: $field ease $animation-duration;
+}
+
+.node {
+  .innerCircle {
+    pointer-events: none;
+    @include animate(fill);
+  }
+  .outerCircle {
+    fill: $bg-box;
+    cursor: pointer;
+    @include animate(stroke);
+
+    &:hover {
+      filter: url('#glow');
+    }
+  }
+
+  &.#{$STATUS-STOPPED} {
+    .innerCircle {
+      fill: $color-stopped;
+    }
+    .outerCircle {
+      stroke: $color-stopped;
+    }
+  }
+  &.#{$STATUS-LOADING} {
+    .innerCircle {
+      fill: $color-loading;
+    }
+    .outerCircle {
+      stroke: $color-loading;
+    }
+  }
+  &.#{$STATUS-ACTIVE} {
+    .innerCircle {
+      fill: $color-active;
+    }
+    .outerCircle {
+      stroke: $color-active;
+    }
+  }
+}
+
+.inputNode,
+.outputNode {
+  @include animate(stroke);
+  fill: $bg-box;
+
+  &.#{$STATUS-STOPPED},
+  &.#{$STATUS-ACTIVE},
+  &.#{$STATUS-LOADING-2} {
+    stroke: $color-stopped;
+
+    .icon {
+      fill: $color-stopped;
+    }
+  }
+
+  &.#{$STATUS-ACTIVE-2} {
+    stroke: $color-active;
+  }
+
+  .icon {
+    stroke: transparent !important;
+  }
+}
+
+.nodeLabel {
+  @include font-body;
+  font-weight: 500;
+
+  fill: $font-color-light;
+  text-anchor: middle;
+}
+
+.nodeLabelRect {
+  fill: $color-node-content;
+}
+.nodeLabelLine {
+  stroke: $color-line;
+  stroke-dasharray: 2.5;
+}
+
+.nodesG,
+.edgesG,
+.node,
+.inputNode,
+.outputNode,
+.lineG,
+.line,
+.path,
+.innerCircle {
+  display: block;
+}
+.lineG {
+  line {
+    stroke-dasharray: 5;
+  }
+  line,
+  path {
+    @include animate(stroke);
+  }
+
+  &.#{$STATUS-STOPPED},
+  &.#{$STATUS-LOADING-2},
+  &.#{$STATUS-LOADING} {
+    line,
+    path {
+      stroke: $color-stopped;
+    }
+  }
+  &.#{$STATUS-ACTIVE},
+  &.#{$STATUS-ACTIVE-2} {
+    line,
+    path {
+      stroke: $color-active;
+    }
+  }
+}

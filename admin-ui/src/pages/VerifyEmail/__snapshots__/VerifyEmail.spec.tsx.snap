@@ -13,7 +13,7 @@ exports[`VerifyEmail matches snapshot 1`] = `
       <h1>
         Login link sent
       </h1>
-      <StateCircle
+      <Circle
         animation="SUCCESS"
         label="DONE"
       />

@@ -7,7 +7,6 @@ import {
   nodeStatus,
   errorMorkflowsMock
 } from '../../../../mocks/version';
-import StatusViewer from '../../components/StatusViewer/StatusViewer';
 import { mountApolloComponent } from '../../../../utils/testUtilsEnzyme';
 import Logs from './Logs/Logs';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
