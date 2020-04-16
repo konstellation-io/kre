@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
-import { useQuery, useApolloClient } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
 import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
@@ -41,16 +41,23 @@ type Props = {
   runtimeId: string;
   workflowId?: string;
   filterValues: FilterTypes;
+  onNewLogs: Function;
+  logs: GetServerLogs_logs_items[];
 };
 
-function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
+function LogsList({
+  nodeId,
+  runtimeId,
+  workflowId = '',
+  filterValues,
+  logs,
+  onNewLogs
+}: Props) {
   const [nextPage, setNextPage] = useState<string>('');
-  const client = useApolloClient();
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
 
   const { data: localData } = useQuery<LocalState>(GET_LOGS);
-  const logs: GetServerLogs_logs_items[] = localData?.logs || [];
 
   const { loading, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
@@ -58,7 +65,7 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
   >(GetServerLogsQuery, {
     variables: { workflowId, runtimeId, nodeId, ...getFilters(filterValues) },
     onCompleted: data => {
-      client.writeData({ data: { logs: [...data.logs.items.reverse()] } });
+      onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');
       handleSubscription();
     },
@@ -73,10 +80,10 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
       variables: { runtimeId, nodeId },
       updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'nodeLogs');
-        const logs = client.readQuery({ query: GET_LOGS });
-
-        client.writeData({ data: { logs: [...logs.logs, newLog] } });
-
+        onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
+          ...oldLogs,
+          newLog
+        ]);
         return prev;
       }
     });
@@ -113,9 +120,10 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
         const newData = fetchMoreResult && fetchMoreResult.logs;
 
         if (newData) {
-          client.writeData({
-            data: { logs: [...newData.items.reverse(), ...logs] }
-          });
+          onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
+            ...newData.items.reverse(),
+            ...oldLogs
+          ]);
           setNextPage(newData.cursor || '');
         }
 

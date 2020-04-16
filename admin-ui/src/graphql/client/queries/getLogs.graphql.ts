@@ -2,19 +2,19 @@ import gql from 'graphql-tag';
 
 export const GET_LOGS = gql`
   {
-    logs @client {
-      id
-      date
-      nodeName
-      message
-      level
-    }
-    logPanel @client {
+    logsAutoScroll @client
+  }
+`;
+
+export const GET_LOG_TABS = gql`
+  {
+    logsOpened @client
+    activeTabId @client
+    logTabs @client {
       runtimeId
       nodeId
       nodeName
+      uniqueId
     }
-    logsAutoScroll @client
-    logsOpened @client
   }
 `;

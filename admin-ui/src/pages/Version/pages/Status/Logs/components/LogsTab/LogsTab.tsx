@@ -4,6 +4,7 @@ import Filters from '../Filters/Filters';
 import LogsList from '../LogsList/LogsList';
 import { useForm } from 'react-hook-form';
 import moment, { Moment } from 'moment';
+import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 
 export interface FilterTypes {
   startDate: Moment;
@@ -15,6 +16,7 @@ type Props = {
   runtimeId: string;
 };
 function LogsTab({ nodeName, nodeId, runtimeId }: Props) {
+  const [logs, setLogs] = useState<GetServerLogs_logs_items[]>([]);
   const [filterValues, setFilterValues] = useState<FilterTypes>({
     startDate: moment()
       .subtract(1, 'day')
@@ -46,6 +48,8 @@ function LogsTab({ nodeName, nodeId, runtimeId }: Props) {
     <div className={styles.container}>
       <Filters filters={{ node: nodeName }} onDateChange={setValue} />
       <LogsList
+        logs={logs}
+        onNewLogs={setLogs}
         nodeId={nodeId}
         runtimeId={runtimeId}
         filterValues={filterValues}

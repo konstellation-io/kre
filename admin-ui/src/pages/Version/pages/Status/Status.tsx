@@ -19,6 +19,7 @@ import {
 } from '../../../../constants/routes';
 import { GetVersionConfStatus_versions } from '../../../../graphql/queries/types/GetVersionConfStatus';
 import { LogPanel } from '../../../../graphql/client/typeDefs';
+import { GET_LOG_TABS } from '../../../../graphql/client/queries/getLogs.graphql';
 
 const GetVersionWorkflowsQuery = loader(
   '../../../../graphql/queries/getVersionWorkflows.graphql'
@@ -47,8 +48,20 @@ function Status({ version }: Props) {
   });
 
   function setCurrentLogPanel(input: LogPanel) {
+    const logTabs = client.readQuery({
+      query: GET_LOG_TABS
+    });
+    const activeTabId = `${Date.now()}`;
+    let newTabs = [...logTabs.logTabs, { ...input, uniqueId: activeTabId }];
+    const tabsObject = {
+      activeTabId,
+      logTabs: newTabs
+    };
     client.writeData({
-      data: { logPanel: input, logsOpened: true }
+      data: {
+        logsOpened: true,
+        ...tabsObject
+      }
     });
   }
 
