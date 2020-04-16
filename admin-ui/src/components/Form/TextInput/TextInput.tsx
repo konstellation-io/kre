@@ -10,6 +10,7 @@ import React, {
 
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
+import InputInfo from '../InputInfo/InputInfo';
 import InputHelp from '../InputHelp/InputHelp';
 import IconShow from '@material-ui/icons/RemoveRedEye';
 import IconHide from '@material-ui/icons/RemoveRedEyeOutlined';
@@ -49,6 +50,7 @@ type Props = {
   autoFocus?: boolean;
   maxLength?: number;
   additionalInputProps?: object;
+  infoMessage?: string | undefined;
 };
 
 function TextInput({
@@ -71,7 +73,8 @@ function TextInput({
   hidden = false,
   autoFocus = false,
   maxLength,
-  additionalInputProps = {}
+  additionalInputProps = {},
+  infoMessage = ''
 }: Props) {
   const [value, setValue] = useState(formValue);
   const [isHidden, setIsHidden] = useState(hidden);
@@ -171,6 +174,7 @@ function TextInput({
       {inputElement}
       {cleanButton}
       {showEyeButton}
+      <InputInfo message={infoMessage} />
       {error ? (
         <InputError message={error} />
       ) : (
