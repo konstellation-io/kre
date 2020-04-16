@@ -11,7 +11,6 @@ exports[`Filters matches snapshot 1`] = `
       className="title"
     >
       Showing logs with the following filters:
-       
     </div>
     <div
       className="filters"
@@ -26,7 +25,9 @@ exports[`Filters matches snapshot 1`] = `
   <div
     className="rightFilters"
   >
-    <DateFilter />
+    <DateFilter
+      onDateChange={[MockFunction]}
+    />
   </div>
 </div>
 `;
