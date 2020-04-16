@@ -29,6 +29,7 @@ function Logs() {
 
   const logPanel = localData && localData.logPanel;
   const hidden = !logPanel;
+
   return (
     <>
       <div
