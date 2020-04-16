@@ -39,7 +39,7 @@ function scrollToBottom(component: HTMLDivElement) {
 type Props = {
   nodeId: string;
   runtimeId: string;
-  workflowId?: string;
+  workflowId: string;
   filterValues: FilterTypes;
   onNewLogs: Function;
   logs: GetServerLogs_logs_items[];
@@ -48,7 +48,7 @@ type Props = {
 function LogsList({
   nodeId,
   runtimeId,
-  workflowId = '',
+  workflowId,
   filterValues,
   logs,
   onNewLogs
@@ -77,7 +77,7 @@ function LogsList({
   const subscribe = () =>
     subscribeToMore({
       document: GetLogsSubscription,
-      variables: { runtimeId, nodeId },
+      variables: { workflowId, runtimeId, nodeId },
       updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'nodeLogs');
         onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
@@ -112,6 +112,7 @@ function LogsList({
   function loadPreviousLogs() {
     fetchMore({
       variables: {
+        workflowId,
         runtimeId,
         nodeId,
         cursor: nextPage
