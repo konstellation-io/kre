@@ -41,20 +41,26 @@ function Logs() {
     index: number
   ): void {
     event.stopPropagation();
-    let newActiveTabId = activeTabId;
-    const newTabs = [...tabs];
-    newTabs.splice(index, 1);
-    const isRemovingSelectedTab = tabs[index].uniqueId === activeTabId;
-    const isFirst = index === 0;
-    if (isRemovingSelectedTab && !isFirst) {
-      newActiveTabId = tabs[index - 1].uniqueId;
-    } else if (isRemovingSelectedTab && isFirst && tabs.length > 1) {
-      newActiveTabId = tabs[1].uniqueId;
-    }
+
+    const newTabs = [...tabs].splice(index, 1);
+    const newActiveTabId = getNewActiveTabId(index, newTabs);
+
     client.writeData({
       data: { activeTabId: newActiveTabId, logTabs: newTabs }
     });
   }
+
+  function getNewActiveTabId(index: number, newTabs: LogPanel[]) {
+    let newActiveTabId = activeTabId;
+    const isRemovingSelectedTab = tabs[index].uniqueId === activeTabId;
+
+    if (isRemovingSelectedTab) {
+      newActiveTabId = newTabs[Math.max(0, index - 1)].uniqueId;
+    }
+
+    return newActiveTabId;
+  }
+
   const hidden = tabs.length === 0;
   return (
     <>
