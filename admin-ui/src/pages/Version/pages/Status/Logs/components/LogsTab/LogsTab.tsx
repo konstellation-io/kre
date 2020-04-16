@@ -14,8 +14,9 @@ type Props = {
   nodeName: string;
   nodeId: string;
   runtimeId: string;
+  workflowId?: string;
 };
-function LogsTab({ nodeName, nodeId, runtimeId }: Props) {
+function LogsTab({ nodeName, nodeId, runtimeId, workflowId = '' }: Props) {
   const [logs, setLogs] = useState<GetServerLogs_logs_items[]>([]);
   const [filterValues, setFilterValues] = useState<FilterTypes>({
     startDate: moment()
@@ -46,12 +47,16 @@ function LogsTab({ nodeName, nodeId, runtimeId }: Props) {
 
   return (
     <div className={styles.container}>
-      <Filters filters={{ node: nodeName }} onDateChange={setValue} />
+      <Filters
+        filters={{ [nodeId ? `node` : `workflow`]: nodeName }}
+        onDateChange={setValue}
+      />
       <LogsList
         logs={logs}
         onNewLogs={setLogs}
         nodeId={nodeId}
         runtimeId={runtimeId}
+        workflowId={workflowId}
         filterValues={filterValues}
       />
     </div>

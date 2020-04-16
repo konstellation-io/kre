@@ -15,6 +15,7 @@ export const GET_LOG_TABS = gql`
       nodeId
       nodeName
       uniqueId
+      workflowId
     }
   }
 `;

@@ -15,13 +15,11 @@ import {
 import styles from './Status.module.scss';
 import { VersionRouteParams } from '../../../../constants/routes';
 import { GetVersionConfStatus_versions } from '../../../../graphql/queries/types/GetVersionConfStatus';
-import { LogPanel } from '../../../../graphql/client/typeDefs';
 import {
   VersionNodeStatus,
   VersionNodeStatusVariables
 } from '../../../../graphql/subscriptions/types/VersionNodeStatus';
 import { NodeStatus } from '../../../../graphql/types/globalTypes';
-import { GET_LOG_TABS } from '../../../../graphql/client/queries/getLogs.graphql';
 
 const GetVersionWorkflowsQuery = loader(
   '../../../../graphql/queries/getVersionWorkflows.graphql'
@@ -43,9 +41,6 @@ type Props = {
 function Status({ version }: Props) {
   const { versionId } = useParams<VersionRouteParams>();
 
-  const client = useApolloClient();
-  const { runtimeId } = useParams<RuntimeRouteParams>();
-
   const { data, loading, error, subscribeToMore } = useQuery<
     GetVersionWorkflows,
     GetVersionWorkflowsVariables
@@ -53,24 +48,6 @@ function Status({ version }: Props) {
     variables: { versionId },
     onCompleted: () => subscribe()
   });
-
-  function setCurrentLogPanel(input: LogPanel) {
-    const logTabs = client.readQuery({
-      query: GET_LOG_TABS
-    });
-    const activeTabId = `${Date.now()}`;
-    let newTabs = [...logTabs.logTabs, { ...input, uniqueId: activeTabId }];
-    const tabsObject = {
-      activeTabId,
-      logTabs: newTabs
-    };
-    client.writeData({
-      data: {
-        logsOpened: true,
-        ...tabsObject
-      }
-    });
-  }
 
   const subscribe = () =>
     subscribeToMore<VersionNodeStatus, VersionNodeStatusVariables>({

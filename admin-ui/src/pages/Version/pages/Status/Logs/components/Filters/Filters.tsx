@@ -28,7 +28,7 @@ function Filters({ filters, onDateChange }: Props) {
     <div className={styles.container}>
       <div className={styles.leftFilters}>
         <div className={styles.title}>
-          Showing logs with the following filters:{' '}
+          Showing logs with the following filters:
         </div>
         <div className={styles.filters}>{filterNodes}</div>
       </div>

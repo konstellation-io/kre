@@ -32,8 +32,8 @@ function Logs() {
     client.writeData({ data: { logs: [] } });
   }
 
-  function handleTabClick(nodeId: string): void {
-    client.writeData({ data: { activeTabId: nodeId } });
+  function handleTabClick(uniqueId: string): void {
+    client.writeData({ data: { activeTabId: uniqueId } });
   }
 
   function handleCloseTabClick(
@@ -45,8 +45,11 @@ function Logs() {
     const newTabs = [...tabs];
     newTabs.splice(index, 1);
     const isRemovingSelectedTab = tabs[index].uniqueId === activeTabId;
-    if (isRemovingSelectedTab && index > 0) {
+    const isFirst = index === 0;
+    if (isRemovingSelectedTab && !isFirst) {
       newActiveTabId = tabs[index - 1].uniqueId;
+    } else if (isRemovingSelectedTab && isFirst && tabs.length > 1) {
+      newActiveTabId = tabs[1].uniqueId;
     }
     client.writeData({
       data: { activeTabId: newActiveTabId, logTabs: newTabs }
@@ -84,12 +87,13 @@ function Logs() {
               nodeId={tab.nodeId}
               runtimeId={tab.runtimeId}
               nodeName={tab.nodeName}
+              workflowId={tab.workflowId}
             />
           </div>
         ))}
       </div>
       <div
-        className={cx(styles.shield, { [styles.show]: opened })}
+        className={cx(styles.shield, { [styles.show]: opened && !hidden })}
         onClick={togglePanel}
       />
     </>
