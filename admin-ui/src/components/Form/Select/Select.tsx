@@ -108,7 +108,9 @@ function Select({
     (option: string, idx: number) => (
       <div
         key={`${option}-${idx}`}
-        className={styles.optionElement}
+        className={cx(styles.optionElement, {
+          [styles.selected]: option === selectedOption
+        })}
         onClick={() => handleOnOptionCLick(option)}
         ref={option === formSelectedOption ? selectedOptionRef : null}
       >
