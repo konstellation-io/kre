@@ -21,6 +21,7 @@
 
     .timeInput {
       margin-bottom: $grid-unit * 2;
+      width: 140px;
     }
   }
 
@@ -45,4 +46,9 @@
       }
     }
   }
+}
+
+$bg-color-time-select: #1a1b1f;
+.select > div > div {
+  background-color: $bg-color-time-select;
 }

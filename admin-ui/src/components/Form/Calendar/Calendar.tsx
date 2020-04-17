@@ -174,9 +174,7 @@ function Calendar({
 
           setFocusedInput(focusedInput);
         }}
-        onClose={() => {
-          if (addTimeControls) submit();
-        }}
+        keepOpenOnDateSelect={addTimeControls}
         focusedInput={focusedInput}
         onFocusChange={(input: DateKey) => setFocusedInput(input)}
         customArrowIcon={<ArrowRightIcon className="icon-small" />}
