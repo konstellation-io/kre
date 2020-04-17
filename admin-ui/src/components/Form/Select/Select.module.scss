@@ -65,6 +65,10 @@
   padding: 11px 16px;
   transition: color ease 0.4s, background-color ease 0.4s;
 
+  &.selected {
+    background-color: $color-grey-light;
+  }
+
   &:hover {
     background-color: $bg-highlighted;
     color: $font-color-white;

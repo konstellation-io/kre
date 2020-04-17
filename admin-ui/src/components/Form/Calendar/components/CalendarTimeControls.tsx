@@ -55,15 +55,18 @@ function CalendarTimeControls({
     const hours = range(0, 24);
     const minutes = range(0, 60, 30);
 
-    const times: string[] = [];
-
-    hours.forEach((hour: number) => {
-      const hourStr = formatTimeUnit(hour);
-      minutes.forEach((minute: number) => {
-        const minuteStr = formatTimeUnit(minute);
-        times.push(`${hourStr}:${minuteStr}`);
-      });
-    });
+    const times = hours.reduce(
+      (acc: string[], hour: number) => [
+        ...minutes.reduce(
+          (minuteAcc: string[], minute: number) => [
+            ...minuteAcc,
+            `${formatTimeUnit(hour)}:${formatTimeUnit(minute)}`
+          ],
+          acc
+        )
+      ],
+      []
+    );
 
     times[times.length - 1] = '23:59';
 
