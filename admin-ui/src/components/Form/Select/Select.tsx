@@ -22,6 +22,7 @@ type Props = {
   formSelectedOption?: string;
   valuesMapper?: { [key: string]: string };
   selectMainClass?: string;
+  hideError?: boolean;
 };
 
 function Select({
@@ -36,7 +37,8 @@ function Select({
   placeholder = '',
   formSelectedOption,
   valuesMapper = {},
-  selectMainClass = ''
+  selectMainClass = '',
+  hideError = false
 }: Props) {
   const inputEl = useRef<HTMLInputElement>(null);
   const containerEl = useRef<HTMLDivElement>(null);
@@ -163,7 +165,7 @@ function Select({
           {optionList}
         </div>
       </div>
-      <InputError message={error} />
+      {!hideError && <InputError message={error} />}
     </div>
   );
 }

@@ -92,6 +92,7 @@ function CalendarTimeControls({
               updateDate(value, formFromDate, changeFromDate)
             }
             formSelectedOption={formFromDate?.format('HH:mm')}
+            hideError
           />
         </div>
         <div className={styles.timeInput}>
@@ -103,6 +104,7 @@ function CalendarTimeControls({
               updateDate(value, formToDate, changeToDate)
             }
             formSelectedOption={formToDate?.format('HH:mm')}
+            hideError
           />
         </div>
       </div>
