@@ -9,7 +9,7 @@ import IconLogs from '@material-ui/icons/ListAlt';
 import cx from 'classnames';
 import styles from './Header.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
-import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import { GET_LOG_PANEL_CONF } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import { LocalState } from '../../../../../../..';
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
 function Header({ togglePanel, opened, onClearClick }: Props) {
   const Icon = opened ? IconClose : IconOpen;
   const client = useApolloClient();
-  const { data: localData } = useQuery<LocalState>(GET_LOGS);
+  const { data: localData } = useQuery<LocalState>(GET_LOG_PANEL_CONF);
 
   function clearLogs(): void {
     onClearClick();

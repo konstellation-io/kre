@@ -10,8 +10,24 @@ exports[`Logs matches snapshot 1`] = `
       opened={false}
       togglePanel={[Function]}
     />
+    <TabContainer
+      activeTabId=""
+      onCloseTabClick={[Function]}
+      onTabClick={[Function]}
+      tabs={
+        Array [
+          Object {
+            "nodeId": "nodeIdMock",
+            "nodeName": "nodeNameMock",
+            "runtimeId": "runtimeIdMock",
+            "uniqueId": "foo",
+          },
+        ]
+      }
+    />
     <div
-      className="content"
+      className="content inactiveTab"
+      key="foo"
     >
       <LogsTab
         nodeId="nodeIdMock"
@@ -37,8 +53,11 @@ exports[`Logs should be empty when there is no node 1`] = `
       opened={false}
       togglePanel={[Function]}
     />
-    <div
-      className="content"
+    <TabContainer
+      activeTabId=""
+      onCloseTabClick={[Function]}
+      onTabClick={[Function]}
+      tabs={Array []}
     />
   </div>
   <div

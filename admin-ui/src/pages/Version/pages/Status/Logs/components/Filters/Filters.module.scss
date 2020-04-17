@@ -16,7 +16,8 @@
   @include font-code;
   display: flex;
   flex-direction: row;
-  padding: 0 16px;
+  padding: 0 $grid-unit;
+  margin: 0 $grid-unit;
 
   background-color: $font-color-dark;
   color: $font-color-white;

@@ -5,18 +5,21 @@ import Filters from './components/Filters/Filters';
 import Header from './components/Header/Header';
 import { useQuery } from '@apollo/react-hooks';
 
-const mockLogsPanel = {
+const mocksLogTabs = {
   data: {
-    logPanel: {
-      runtimeId: 'runtimeIdMock',
-      nodeId: 'nodeIdMock',
-      nodeName: 'nodeNameMock'
-    }
+    logTabs: [
+      {
+        runtimeId: 'runtimeIdMock',
+        nodeId: 'nodeIdMock',
+        nodeName: 'nodeNameMock',
+        uniqueId: 'foo'
+      }
+    ]
   }
 };
 
 jest.mock('@apollo/react-hooks', () => ({
-  useQuery: jest.fn(() => mockLogsPanel),
+  useQuery: jest.fn(() => mocksLogTabs),
   useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
 }));
 

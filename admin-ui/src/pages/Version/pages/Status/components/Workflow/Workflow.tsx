@@ -18,6 +18,7 @@ import { useApolloClient } from '@apollo/react-hooks';
 import { LogPanel } from '../../../../../../graphql/client/typeDefs';
 import { useParams } from 'react-router-dom';
 import { RuntimeRouteParams } from '../../../../../../constants/routes';
+import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -49,9 +50,17 @@ function Workflow({ workflow, workflowStatus }: Props) {
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
   }, [setContainerWidth, workflow.nodes]);
 
-  function setCurrentLogPanel(input: LogPanel) {
+  function addLogTab(input: LogPanel) {
+    const logTabs = client.readQuery({
+      query: GET_LOG_TABS
+    });
+    const activeTabId = `${Date.now()}`;
     client.writeData({
-      data: { logPanel: input, logsOpened: true }
+      data: {
+        logsOpened: true,
+        activeTabId,
+        logTabs: [...logTabs.logTabs, { ...input, uniqueId: activeTabId }]
+      }
     });
   }
 
@@ -60,22 +69,22 @@ function Workflow({ workflow, workflowStatus }: Props) {
     nodeName: string,
     workflowId: string
   ) {
-    setCurrentLogPanel({
+    addLogTab({
       runtimeId,
       nodeId,
       nodeName,
       workflowId,
-      __typename: 'logPanel'
+      __typename: 'logTab'
     });
   }
 
   function onWorkflowClick() {
-    setCurrentLogPanel({
+    addLogTab({
       runtimeId,
       nodeId: '',
-      nodeName: '',
+      nodeName: workflow.name,
       workflowId: data.id,
-      __typename: 'logPanel'
+      __typename: 'logTab'
     });
   }
 

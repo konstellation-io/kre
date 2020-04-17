@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import styles from './Workflow.module.scss';
 import StatusCircle from '../../../../../../components/StatusCircle/StatusCircle';
 import SvgIcon from '@material-ui/core/SvgIcon';

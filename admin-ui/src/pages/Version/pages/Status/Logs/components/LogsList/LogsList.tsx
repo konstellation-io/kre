@@ -1,8 +1,11 @@
 import { get } from 'lodash';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
-import { useQuery, useApolloClient } from '@apollo/react-hooks';
-import { GET_LOGS } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import { useQuery } from '@apollo/react-hooks';
+import {
+  GET_LOG_PANEL_CONF,
+  GetLogPanelConf
+} from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
 import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import styles from './LogsList.module.scss';
@@ -13,7 +16,6 @@ import {
 import moment from 'moment';
 import LoadMore from './LoadMore';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-import { LocalState } from '../../../../../../..';
 import { FilterTypes } from '../LogsTab/LogsTab';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
@@ -39,18 +41,25 @@ function scrollToBottom(component: HTMLDivElement) {
 type Props = {
   nodeId: string;
   runtimeId: string;
-  workflowId?: string;
+  workflowId: string;
   filterValues: FilterTypes;
+  onNewLogs: Function;
+  logs: GetServerLogs_logs_items[];
 };
 
-function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
+function LogsList({
+  nodeId,
+  runtimeId,
+  workflowId,
+  filterValues,
+  logs,
+  onNewLogs
+}: Props) {
   const [nextPage, setNextPage] = useState<string>('');
-  const client = useApolloClient();
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
 
-  const { data: localData } = useQuery<LocalState>(GET_LOGS);
-  const logs: GetServerLogs_logs_items[] = localData?.logs || [];
+  const { data: localData } = useQuery<GetLogPanelConf>(GET_LOG_PANEL_CONF);
 
   const { loading, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
@@ -58,7 +67,7 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
   >(GetServerLogsQuery, {
     variables: { workflowId, runtimeId, nodeId, ...getFilters(filterValues) },
     onCompleted: data => {
-      client.writeData({ data: { logs: [...data.logs.items.reverse()] } });
+      onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');
       handleSubscription();
     },
@@ -70,13 +79,13 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
   const subscribe = () =>
     subscribeToMore({
       document: GetLogsSubscription,
-      variables: { runtimeId, nodeId },
+      variables: { workflowId, runtimeId, nodeId },
       updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'nodeLogs');
-        const logs = client.readQuery({ query: GET_LOGS });
-
-        client.writeData({ data: { logs: [...logs.logs, newLog] } });
-
+        onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
+          ...oldLogs,
+          newLog
+        ]);
         return prev;
       }
     });
@@ -95,9 +104,7 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
     }
   }, [localData, listRef]);
 
-  useEffect(() => {
-    handleScroll();
-  }, [logs, localData?.logsAutoScroll]);
+  useEffect(handleScroll, [logs, localData?.logsAutoScroll]);
 
   if (loading) return <SpinnerLinear />;
 
@@ -105,6 +112,7 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
   function loadPreviousLogs() {
     fetchMore({
       variables: {
+        workflowId,
         runtimeId,
         nodeId,
         cursor: nextPage
@@ -113,9 +121,10 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
         const newData = fetchMoreResult && fetchMoreResult.logs;
 
         if (newData) {
-          client.writeData({
-            data: { logs: [...newData.items.reverse(), ...logs] }
-          });
+          onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
+            ...newData.items.reverse(),
+            ...oldLogs
+          ]);
           setNextPage(newData.cursor || '');
         }
 
@@ -128,11 +137,7 @@ function LogsList({ nodeId, runtimeId, workflowId = '', filterValues }: Props) {
     <LogItem {...log} key={log.id} />
   ));
   return (
-    <div
-      ref={listRef}
-      className={styles.listContainer}
-      id="VersionLogsListContainer"
-    >
+    <div ref={listRef} className={styles.listContainer}>
       {nextPage && <LoadMore onClick={loadPreviousLogs} />}
       {logElements}
     </div>

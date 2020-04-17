@@ -35,7 +35,8 @@ export interface LocalState {
   loggedIn: boolean;
   logs: GetServerLogs_logs_items[];
   notifications: [];
-  logPanel: LogPanel | null;
+  logTabs: LogPanel[];
+  activeTabId: string;
   logsOpened: boolean;
   logsAutoScroll: boolean;
 }
@@ -139,8 +140,9 @@ config
       data: {
         loggedIn: false,
         logs: [],
+        logTabs: [],
+        activeTabId: '',
         notifications: [],
-        logPanel: null,
         logsOpened: false,
         logsAutoScroll: false
       }

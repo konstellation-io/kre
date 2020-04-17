@@ -5,8 +5,12 @@ import { shallow } from 'enzyme';
 describe('Filters', () => {
   let wrapper;
 
+  const onDateChangeMock = jest.fn();
+
   beforeEach(() => {
-    wrapper = shallow(<Filters filters={{ filter: 'value' }} />);
+    wrapper = shallow(
+      <Filters filters={{ filter: 'value' }} onDateChange={onDateChangeMock} />
+    );
   });
 
   it('matches snapshot', () => {
