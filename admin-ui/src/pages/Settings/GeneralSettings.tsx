@@ -123,6 +123,11 @@ function GeneralSettings() {
     setPrevValue(formData.sessionLifetimeInDays);
     setShowModal(false);
   }
+  const fieldEmpty = watch('sessionLifetimeInDays') === '';
+
+  function onEnterKey() {
+    if (!fieldEmpty) openModal();
+  }
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -136,16 +141,21 @@ function GeneralSettings() {
           onChange={(value: string) => setValue('sessionLifetimeInDays', value)}
           formValue={watch('sessionLifetimeInDays')}
           prevValue={prevValue}
-          onSubmit={openModal}
+          onSubmit={onEnterKey}
         />
       </div>
       <HorizontalBar>
-        <Button label={'SAVE CHANGES'} primary onClick={openModal} />
+        <Button
+          label={'SAVE CHANGES'}
+          primary
+          onClick={openModal}
+          disabled={fieldEmpty}
+        />
       </HorizontalBar>
       {showModal && (
         <Modal
           title="Configuration will be updated"
-          message="After updating this configuration, the expiration time of all new sessions will be updated, are ypu sure you want to continue?"
+          message="After updating this configuration, the expiration time of all new sessions will be updated, are you sure you want to continue?"
           actionButtonLabel="CONTINUE"
           onAccept={handleSubmit(onSubmit)}
           onClose={closeModal}
