@@ -22,7 +22,7 @@ function PageBase({
   const { data: localData } = useQuery(GET_LOG_TABS);
 
   useEffect(() => {
-    setOpened(localData.logTabs.length);
+    setOpened(localData?.logTabs?.length);
   }, [localData]);
   return (
     <>

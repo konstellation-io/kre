@@ -6,18 +6,25 @@ import LogsTab from './components/LogsTab/LogsTab';
 import cx from 'classnames';
 import styles from './Logs.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
-import { GET_LOG_TABS } from '../../../../../graphql/client/queries/getLogs.graphql';
+import {
+  GET_LOG_TABS,
+  GetLogTabs_logTabs,
+  GetLogTabs
+} from '../../../../../graphql/client/queries/getLogs.graphql';
 import { get } from 'lodash';
-import { LogPanel } from '../../../../../graphql/client/typeDefs';
 import TabContainer from './components/TabContainer/TabContainer';
 
 function Logs() {
   const client = useApolloClient();
-  const { data: localData } = useQuery(GET_LOG_TABS);
+  const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
 
   const opened = get(localData, 'logsOpened', false);
   const activeTabId = get(localData, 'activeTabId', '');
-  const tabs = get(localData, 'logTabs', []);
+  const tabs = get<GetLogTabs, 'logTabs', GetLogTabs_logTabs[]>(
+    localData,
+    'logTabs',
+    []
+  );
 
   function setOpened(value: boolean) {
     client.writeData({ data: { logsOpened: value } });
@@ -42,7 +49,8 @@ function Logs() {
   ): void {
     event.stopPropagation();
 
-    const newTabs = [...tabs].splice(index, 1);
+    const newTabs = [...tabs];
+    newTabs.splice(index, 1);
     const newActiveTabId = getNewActiveTabId(index, newTabs);
 
     client.writeData({
@@ -50,12 +58,12 @@ function Logs() {
     });
   }
 
-  function getNewActiveTabId(index: number, newTabs: LogPanel[]) {
+  function getNewActiveTabId(index: number, newTabs: GetLogTabs_logTabs[]) {
     let newActiveTabId = activeTabId;
     const isRemovingSelectedTab = tabs[index].uniqueId === activeTabId;
 
     if (isRemovingSelectedTab) {
-      newActiveTabId = newTabs[Math.max(0, index - 1)].uniqueId;
+      newActiveTabId = newTabs[Math.max(0, index - 1)]?.uniqueId || '';
     }
 
     return newActiveTabId;
@@ -81,7 +89,7 @@ function Logs() {
           onTabClick={handleTabClick}
           onCloseTabClick={handleCloseTabClick}
         />
-        {tabs.map((tab: LogPanel) => (
+        {tabs.map((tab: GetLogTabs_logTabs) => (
           <div
             className={cx(styles.content, {
               [styles.opened]: opened,

@@ -1,11 +1,11 @@
 import React from 'react';
 import styles from './TabContainer.module.scss';
-import { LogPanel } from '../../../../../../../graphql/client/typeDefs';
 import cx from 'classnames';
 import IconClose from '@material-ui/icons/Close';
+import { GetLogTabs_logTabs } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 
 type Props = {
-  tabs: LogPanel[];
+  tabs: GetLogTabs_logTabs[];
   activeTabId: string;
   onTabClick: Function;
   onCloseTabClick: Function;
@@ -18,7 +18,7 @@ function TabContainer({
 }: Props) {
   return (
     <div className={styles.tabContainer}>
-      {tabs.map((tab: LogPanel, index: number) => (
+      {tabs.map((tab: GetLogTabs_logTabs, index: number) => (
         <div
           className={cx({ [styles.selected]: activeTabId === tab.uniqueId })}
           onClick={() => onTabClick(tab.uniqueId)}

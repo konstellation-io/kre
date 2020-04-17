@@ -2,7 +2,10 @@ import { get } from 'lodash';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_LOG_PANEL_CONF } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import {
+  GET_LOG_PANEL_CONF,
+  GetLogPanelConf
+} from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
 import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import styles from './LogsList.module.scss';
@@ -13,7 +16,6 @@ import {
 import moment from 'moment';
 import LoadMore from './LoadMore';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-import { LocalState } from '../../../../../../..';
 import { FilterTypes } from '../LogsTab/LogsTab';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
@@ -57,7 +59,7 @@ function LogsList({
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
 
-  const { data: localData } = useQuery<LocalState>(GET_LOG_PANEL_CONF);
+  const { data: localData } = useQuery<GetLogPanelConf>(GET_LOG_PANEL_CONF);
 
   const { loading, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
@@ -102,9 +104,7 @@ function LogsList({
     }
   }, [localData, listRef]);
 
-  useEffect(() => {
-    handleScroll();
-  }, [logs, localData?.logsAutoScroll]);
+  useEffect(handleScroll, [logs, localData?.logsAutoScroll]);
 
   if (loading) return <SpinnerLinear />;
 
@@ -137,11 +137,7 @@ function LogsList({
     <LogItem {...log} key={log.id} />
   ));
   return (
-    <div
-      ref={listRef}
-      className={styles.listContainer}
-      id="VersionLogsListContainer"
-    >
+    <div ref={listRef} className={styles.listContainer}>
       {nextPage && <LoadMore onClick={loadPreviousLogs} />}
       {logElements}
     </div>
