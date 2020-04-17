@@ -53,6 +53,9 @@
   overflow: hidden;
   width: fit-content;
   min-width: 100%;
+  overflow: auto;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .optionElement {
