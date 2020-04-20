@@ -7,6 +7,8 @@ import InputError from '../InputError/InputError';
 import cx from 'classnames';
 import styles from './Select.module.scss';
 
+const MAX_HEIGHT = 200;
+
 type Props = {
   onChange?: Function;
   label?: string;
@@ -20,6 +22,7 @@ type Props = {
   formSelectedOption?: string;
   valuesMapper?: { [key: string]: string };
   selectMainClass?: string;
+  hideError?: boolean;
 };
 
 function Select({
@@ -34,10 +37,12 @@ function Select({
   placeholder = '',
   formSelectedOption,
   valuesMapper = {},
-  selectMainClass = ''
+  selectMainClass = '',
+  hideError = false
 }: Props) {
   const inputEl = useRef<HTMLInputElement>(null);
   const containerEl = useRef<HTMLDivElement>(null);
+  const selectedOptionRef = useRef<HTMLDivElement>(null);
   const [selectedOption, setSelectedOption] = useState<
     string | undefined | null
   >(placeholder || defaultOption);
@@ -53,6 +58,14 @@ function Select({
     formSelectedOption,
     placeholder
   ]);
+
+  useEffect(() => {
+    if (optionsOpened && selectedOptionRef.current !== null) {
+      selectedOptionRef.current?.scrollIntoView({
+        block: 'end'
+      });
+    }
+  }, [optionsOpened]);
 
   /*
    * Adds or removes event listeners and updates options visibility
@@ -97,8 +110,11 @@ function Select({
     (option: string, idx: number) => (
       <div
         key={`${option}-${idx}`}
-        className={styles.optionElement}
+        className={cx(styles.optionElement, {
+          [styles.selected]: option === selectedOption
+        })}
         onClick={() => handleOnOptionCLick(option)}
+        ref={option === formSelectedOption ? selectedOptionRef : null}
       >
         {get(valuesMapper, option, option)}
       </div>
@@ -115,7 +131,7 @@ function Select({
       </div>
     );
   }
-  const optionsHeight = optionList.length * 40;
+  const optionsHeight = Math.min(optionList.length * 40, MAX_HEIGHT);
 
   return (
     <div
@@ -149,7 +165,7 @@ function Select({
           {optionList}
         </div>
       </div>
-      <InputError message={error} />
+      {!hideError && <InputError message={error} />}
     </div>
   );
 }

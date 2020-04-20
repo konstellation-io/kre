@@ -21,6 +21,7 @@
 
     .timeInput {
       margin-bottom: $grid-unit * 2;
+      width: 140px;
     }
   }
 
@@ -31,9 +32,9 @@
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      height: $grid-unit * 14;
+      height: 117px;
       line-height: $grid-unit * 3;
-      padding: $grid-unit / 2 $grid-unit * 2;
+      padding: 10px $grid-unit;
 
       div {
         cursor: pointer;
@@ -45,4 +46,9 @@
       }
     }
   }
+}
+
+$bg-color-time-select: #1a1b1f;
+.select > div > div {
+  background-color: $bg-color-time-select;
 }

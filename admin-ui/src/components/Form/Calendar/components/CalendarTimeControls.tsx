@@ -1,9 +1,9 @@
 import React from 'react';
-import TimePicker from 'react-time-picker';
 import styles from './CalendarTimeControls.module.scss';
-import InputLabel from '../../InputLabel/InputLabel';
 import { Range } from '../Calendar';
 import { Moment } from 'moment';
+import Select from '../../Select/Select';
+import { range } from 'd3-array';
 
 type Props = {
   ranges: Range[];
@@ -47,29 +47,64 @@ function CalendarTimeControls({
     </div>
   ));
 
+  function formatTimeUnit(timeUnit: number) {
+    return `0${timeUnit}`.slice(-2);
+  }
+
+  function getTimeOptions() {
+    const hours = range(0, 24);
+    const minutes = range(0, 60, 30);
+
+    const times = hours.reduce(
+      (acc: string[], hour: number) => [
+        ...minutes.reduce(
+          (minuteAcc: string[], minute: number) => [
+            ...minuteAcc,
+            `${formatTimeUnit(hour)}:${formatTimeUnit(minute)}`
+          ],
+          acc
+        )
+      ],
+      []
+    );
+
+    times[times.length - 1] = '23:59';
+
+    return times;
+  }
+
+  const timeOptions = getTimeOptions();
+  const startTimeOptions = [...timeOptions].slice(0, -1);
+  const initialDatePosition = timeOptions.indexOf(
+    formFromDate?.format('HH:mm') || '00:00'
+  );
+  const endTimeOptions = [...timeOptions].slice(initialDatePosition + 1);
+
   return (
     <div className={styles.container}>
       <div className={styles.col1}>
         <div className={styles.timeInput}>
-          <InputLabel text="From date time" />
-          <TimePicker
-            disableClock
-            clockIcon={null}
-            value={formFromDate?.format('HH:mm')}
-            onChange={(time: string) =>
-              updateDate(time, formFromDate, changeFromDate)
+          <Select
+            selectMainClass={styles.select}
+            label="To date time"
+            options={startTimeOptions}
+            onChange={(value: string) =>
+              updateDate(value, formFromDate, changeFromDate)
             }
+            formSelectedOption={formFromDate?.format('HH:mm')}
+            hideError
           />
         </div>
         <div className={styles.timeInput}>
-          <InputLabel text="To date time" />
-          <TimePicker
-            disableClock
-            clockIcon={null}
-            value={formToDate?.format('HH:mm')}
-            onChange={(time: string) =>
-              updateDate(time, formToDate, changeToDate)
+          <Select
+            selectMainClass={styles.select}
+            label="To date time"
+            options={endTimeOptions}
+            onChange={(value: string) =>
+              updateDate(value, formToDate, changeToDate)
             }
+            formSelectedOption={formToDate?.format('HH:mm')}
+            hideError
           />
         </div>
       </div>
