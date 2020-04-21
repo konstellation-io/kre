@@ -2,11 +2,13 @@
 @import '../../../../styles/mixins';
 @import '../../../../styles/variables';
 
+$color-bg: palette(gray, 800);
+
 .container {
   width: 100%;
   display: flex;
   flex-direction: row;
-  background-color: $color-sidebar;
+  background-color: $color-bg;
   padding: 0 34px 11px 34px;
 
   .title {

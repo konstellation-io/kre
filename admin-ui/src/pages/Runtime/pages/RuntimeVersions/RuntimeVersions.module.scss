@@ -1,6 +1,8 @@
 @import '../../../../styles/mixins';
 @import '../../../../styles/colors';
 
+$color-active-bg: palette(gray, 750);
+
 .container {
   height: 100%;
   display: flex;
@@ -31,7 +33,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  background-color: $color-node-content;
+  background-color: $color-active-bg;
 }
 
 .versionTitle,
@@ -66,7 +68,7 @@
   height: 8px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: $color-green;
+  background-color: $color-ok;
   flex-shrink: 0;
 }
 

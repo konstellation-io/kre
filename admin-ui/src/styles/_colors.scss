@@ -1,44 +1,73 @@
-$bg-color: #0d0e11;
-$bg-color-dark: #000000;
-$bg-color-lighter: #15161a;
+@function palette($palette, $tone) {
+  @return map-get(map-get($palettes, $palette), $tone);
+}
 
-$bg-highlighted: rgba(191, 207, 255, 0.15);
+$palettes: (
+  font: (
+    darker: black,
+    dark: #19191b,
+    regular: #696d70,
+    light: #a0a7ac,
+    white: #f5f8fa
+  ),
+  red: (
+    error: #ea4747,
+    800: #580d17
+  ),
+  orange: (
+    warning: #fc9900,
+    300: #fcbf30
+  ),
+  green: (
+    ok: #7bac1c
+  ),
+  gray: (
+    400: #3e4046,
+    500: #282d33,
+    600: rgba(191, 207, 255, 0.15),
+    700: #212428,
+    750: #1d1e23,
+    775: #1a1b1f,
+    800: #15161a,
+    850: #121317,
+    900: #0d0e11,
+    950: black
+  ),
+  primary: (
+    200: #66e2ff,
+    250: #1ad3ff,
+    300: #00cffc,
+    350: #00cfff,
+    500: #007c99,
+    600: #1c5266,
+    650: #005266,
+    700: #024e61,
+    900: #052933
+  )
+);
 
-$font-color-dark: #19191b;
-$font-color-regular: #696d70;
-$font-color-light: #a0a7ac;
-$font-color-white: #f5f8fa;
+$font-color-dark: palette(font, dark);
+$font-color-regular: palette(font, regular);
+$font-color-light: palette(font, light);
+$font-color-white: palette(font, white);
 
-$color-grey-lighter: #282d33;
-$color-grey-light: #212428;
-$color-grey: #15161a;
-$color-grey-darker: #121317;
-$color-button-blue: #00cffc;
-$color-blue: #00cfff;
-$color-blue-dark: #1c5266;
-$color-bright-blue: #1ad3ff;
-$color-bright-blue-2: #66e2ff;
-$color-red: #ea4747;
-$color-yellow: #fcbf30;
-$color-orange: #fc9900;
-$color-green: #7bac1c;
+$bg-color: palette(gray, 900);
+$bg-color-dark: palette(gray, 950);
+$bg-color-lighter: palette(gray, 800);
+$bg-highlighted: palette(gray, 600);
 
-$color-red-dark: #580d17;
-$color-blue-dark: #024e61;
-$color-blue-dark-2: #052933;
+$color-primary: palette(primary, 350);
+$color-ok: palette(green, ok);
+$color-warn: palette(orange, warning);
+$color-error: palette(red, error);
 
-$color-sidebar: #15161a;
+$color-dashboard: (
+  guide-line: palette(gray, 400),
+  primary: palette(primary, 500),
+  primary-dark: palette(primary, 600),
+  primary-light: palette(primary, 200),
+  tooltip: palette(gray, 850)
+);
 
-$color-dashboard-blue: #007c99;
-$color-dashboard-blue-dark: #005266;
-$color-dashboard-guide-line: #3e4046;
-
-$color-node-content: #1d1e23;
-$color-hexagon: $color-node-content;
-
-$border-color-1: #1a1b1f;
-
-$color-shield: #212428;
+$color-shield: palette(gray, 700);
 $opacity-shield: 0.4;
-$bg-tooltip: #121317;
-$bg-box: #121317;

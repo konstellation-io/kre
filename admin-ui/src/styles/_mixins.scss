@@ -82,8 +82,8 @@
   transition: border ease 0.5s;
 
   &.error {
-    border: solid 1px $color-red;
-    color: $color-red;
+    border: solid 1px $color-error;
+    color: $color-error;
   }
 }
 

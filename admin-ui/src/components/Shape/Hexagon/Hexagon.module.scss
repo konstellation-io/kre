@@ -1,6 +1,8 @@
 @import '../../../styles/colors';
 @import '../../../styles/mixins';
 
+$color-active: palette(primary, 200);
+
 .container {
   color: $font-color-light;
 
@@ -60,10 +62,10 @@
     background-color: $font-color-light;
   }
   &.STARTED {
-    background-color: $color-blue;
+    background-color: $color-primary;
   }
   &.ERROR {
-    background-color: $color-red;
+    background-color: $color-error;
   }
 }
 .bgVersionOverlap {
@@ -79,14 +81,14 @@
   }
 
   &.PUBLISHED {
-    background-color: $color-green;
+    background-color: $color-ok;
   }
 }
 
 .statusText {
   @include font-button;
   line-height: 24px;
-  color: $color-grey;
+  color: palette(gray, 800);
 
   position: absolute;
   width: 100%;
@@ -138,10 +140,10 @@
 }
 
 .container.active {
-  color: $color-bright-blue-2;
+  color: $color-active;
 
   .info_type {
-    color: $color-bright-blue-2;
+    color: $color-active;
     opacity: 0.35;
   }
 }

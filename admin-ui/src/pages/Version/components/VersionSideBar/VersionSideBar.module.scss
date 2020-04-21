@@ -2,12 +2,14 @@
 @import '../../../../styles/colors';
 @import '../../../../styles/mixins';
 
+$color-wrapper-bg: palette(gray, 850);
+
 .wrapper {
   flex-shrink: 0;
   flex-direction: column;
   position: relative;
   width: $lateral-menu-width;
-  background-color: $color-grey-darker;
+  background-color: $color-wrapper-bg;
   display: flex;
 }
 

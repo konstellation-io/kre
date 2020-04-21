@@ -3,6 +3,8 @@
 @import '../../../../../../styles/mixins';
 
 $color-line: #5d6c76;
+$color-label-bg: palette(gray, 750);
+$color-node-bg: palette(gray, 850);
 
 $STATUS-ACTIVE: STARTED;
 $STATUS-ACTIVE-2: PUBLISHED;
@@ -10,8 +12,8 @@ $STATUS-STOPPED: STOPPED;
 $STATUS-LOADING: ERROR;
 $STATUS-LOADING-2: STARTING;
 $color-stopped: $font-color-regular;
-$color-loading: $color-blue;
-$color-active: $color-green;
+$color-loading: $color-primary;
+$color-active: $color-ok;
 
 $animation-duration: 0.8s;
 @mixin animate($field) {
@@ -42,7 +44,7 @@ $animation-duration: 0.8s;
     @include animate(fill);
   }
   .outerCircle {
-    fill: $bg-box;
+    fill: $color-node-bg;
     cursor: pointer;
     @include animate(stroke);
   }
@@ -76,7 +78,7 @@ $animation-duration: 0.8s;
 .inputNode,
 .outputNode {
   @include animate(stroke);
-  fill: $bg-box;
+  fill: $color-node-bg;
 
   &.#{$STATUS-STOPPED},
   &.#{$STATUS-ACTIVE},
@@ -107,7 +109,7 @@ $animation-duration: 0.8s;
 }
 
 .nodeLabelRect {
-  fill: $color-node-content;
+  fill: $color-label-bg;
 }
 .nodeLabelLine {
   stroke: $color-line;

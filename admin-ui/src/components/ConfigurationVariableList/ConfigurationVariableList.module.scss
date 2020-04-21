@@ -1,6 +1,9 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+$color-input-bg: palette(gray, 700);
+$color-border: palette(gray, 800);
+
 .container {
   display: flex;
   flex-direction: column;
@@ -15,13 +18,13 @@
       background-color: $bg-color-lighter;
     }
     input {
-      background-color: $color-grey-light;
+      background-color: $color-input-bg;
     }
   }
 }
 
 .row:last-child {
-  border-bottom: solid 1px $color-grey;
+  border-bottom: solid 1px $color-border;
 }
 
 .row {
@@ -31,7 +34,7 @@
 
   display: flex;
   flex-direction: row;
-  border-top: solid 1px $color-grey;
+  border-top: solid 1px $color-border;
   transition: color ease 0.3s, background-color ease 0.3s;
 
   &:hover {
@@ -48,7 +51,7 @@
   }
 
   > div:not(:last-child) {
-    border-right: solid 1px $color-grey;
+    border-right: solid 1px $color-border;
   }
 
   > div {
@@ -98,7 +101,7 @@
 
     > input,
     > textarea {
-      background-color: $color-grey;
+      background-color: $color-border;
     }
 
     > div {

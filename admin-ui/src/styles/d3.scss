@@ -1,6 +1,8 @@
 @import './colors';
 @import './mixins';
 
+$bg-tooltip: map-get($color-dashboard, tooltip);
+
 .chartTooltip {
   @include font-body;
   color: $font-color-white;

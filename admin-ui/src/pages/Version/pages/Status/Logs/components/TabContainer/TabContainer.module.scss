@@ -1,12 +1,15 @@
 @import '../../../../../../../styles/colors';
 @import '../../../../../../../styles/variables';
 
+$color-tab-bg: palette(gray, 850);
+$color-tab-selected-bg: palette(gray, 500);
+
 .tabContainer {
   height: $grid-unit * 5;
   display: flex;
   align-items: flex-end;
   padding: $grid-unit $grid-unit 0 $grid-unit;
-  background-color: $color-grey-darker;
+  background-color: $color-tab-bg;
   & > div {
     min-width: $grid-unit * 9.5;
     cursor: pointer;
@@ -29,7 +32,7 @@
   }
   & > div.selected {
     height: $grid-unit * 4;
-    background-color: $color-grey-lighter;
+    background-color: $color-tab-selected-bg;
     font-size: $grid-unit * 1.5;
   }
 }

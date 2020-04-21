@@ -2,11 +2,13 @@
 @import '../../styles/mixins';
 @import '../../styles/variables';
 
+$color-bg: palette(gray, 800);
+
 .container {
   width: $lateral-menu-width;
   height: 100%;
   flex-shrink: 0;
-  background-color: $color-sidebar;
+  background-color: $color-bg;
 }
 
 .header {

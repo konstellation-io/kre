@@ -1,9 +1,13 @@
 @import '../../../../../../../../../styles/variables';
 @import '../../../../../../../../../styles/colors';
+
+$color-calendar-bg: palette(gray, 500);
+
 .dateFilter {
   width: $grid-unit * 21.5;
   height: $grid-unit * 5;
+
   & > div:first-child > div:first-child {
-    background-color: $color-grey-lighter;
+    background-color: $color-calendar-bg;
   }
 }

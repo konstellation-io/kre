@@ -4,14 +4,16 @@
 
 $workflowMargin: 2.5 * $grid-unit;
 $container-height: 220px;
+$color-border: palette(gray, 775);
+$color-box-bg: palette(gray, 850);
 
 .workflowContainer {
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 2 * $grid-unit 0 $bg-color-dark;
-  border: 1px solid $border-color-1;
+  border: 1px solid $color-border;
   border-radius: $grid-unit;
-  background-color: $bg-box;
+  background-color: $color-box-bg;
   margin: $workflowMargin $workflowMargin 0 $workflowMargin;
   padding: 2 * $grid-unit;
   height: $container-height;

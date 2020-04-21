@@ -1,6 +1,8 @@
 @import '../../../../styles/colors';
 @import '../../../../styles/mixins';
 
+$color-created: palette(gray, 800);
+
 .container {
   display: flex;
   flex-direction: column;
@@ -22,19 +24,19 @@
   }
 
   &.STARTED {
-    background-color: $color-green;
+    background-color: $color-ok;
   }
 
   &.STARTING {
-    background-color: $color-blue;
+    background-color: $color-primary;
   }
 
   &.STOPPED {
-    background-color: $color-orange;
+    background-color: $color-warn;
   }
 
   &.CREATED {
-    background-color: $color-grey;
+    background-color: $color-created;
 
     div {
       color: $font-color-white;

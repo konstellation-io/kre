@@ -1,6 +1,9 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+$color-error-bg: palette(red, 800);
+$color-alert-bg: palette(primary, 700);
+
 .notificationsContainer {
   position: absolute;
   bottom: 0;
@@ -39,11 +42,11 @@
   }
 
   &.MESSAGE {
-    background-color: $color-blue-dark;
+    background-color: $color-alert-bg;
   }
 
   &.ERROR {
-    background-color: $color-red-dark;
+    background-color: $color-error-bg;
   }
 }
 

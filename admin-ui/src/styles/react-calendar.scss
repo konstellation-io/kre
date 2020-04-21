@@ -1,6 +1,8 @@
 @import './mixins';
 @import './colors';
 
+$color-selected: palette(primary, 700);
+
 .DateRangePicker,
 .DateRangePickerInput {
   width: 100%;
@@ -22,7 +24,7 @@
   color: $font-color-light;
 }
 .DateInput_input__focused {
-  border-bottom: solid 1px $color-blue;
+  border-bottom: solid 1px $color-primary;
 }
 .CalendarDay__blocked_out_of_range {
   opacity: 0.2;
@@ -54,11 +56,11 @@
   border: solid 1px transparent;
 
   &:hover {
-    border: solid 1px $color-blue;
+    border: solid 1px $color-primary;
   }
 
   &:active {
-    background-color: $color-blue;
+    background-color: $color-primary;
     color: $font-color-dark;
   }
 }
@@ -89,17 +91,17 @@
   outline: none;
 
   &:hover {
-    border: solid 1px $color-blue;
+    border: solid 1px $color-primary;
     background-color: inherit;
     color: $font-color-white;
   }
 }
 .CalendarDay__selected {
-  background-color: $color-blue;
+  background-color: $color-primary;
   color: $font-color-dark;
 }
 .CalendarDay__selected_span {
-  background-color: $color-blue-dark;
+  background-color: $color-selected;
 }
 
 .DayPicker_weekHeader_ul {

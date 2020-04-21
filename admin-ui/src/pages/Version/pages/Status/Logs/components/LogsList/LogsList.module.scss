@@ -2,13 +2,15 @@
 @import '../../../../../../../styles/mixins';
 @import '../../../../../../../styles/variables';
 
+$color-border: palette(gray, 775);
+
 .listContainer {
   overflow: auto;
   flex-grow: 1;
 }
 
 .listContainer > div:not(:first-child) {
-  border-top: solid 1px $border-color-1;
+  border-top: solid 1px $color-border;
 }
 
 .container {

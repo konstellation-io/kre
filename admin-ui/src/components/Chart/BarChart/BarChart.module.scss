@@ -1,12 +1,14 @@
 @import '../../../styles/colors';
 
+$color-bar: map-get($color-dashboard, primary);
+
 .bar {
   pointer-events: none;
-  fill: $color-dashboard-blue;
+  fill: $color-bar;
 }
 
 .bgBar {
-  fill: $color-orange;
+  fill: $color-warn;
   pointer-events: none;
 }
 
@@ -26,10 +28,10 @@
     }
 
     & > g:nth-child(1) > rect {
-      fill: $color-dashboard-blue;
+      fill: $color-bar;
     }
     & > g:nth-child(2) > rect {
-      fill: $color-orange;
+      fill: $color-warn;
     }
   }
 

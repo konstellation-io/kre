@@ -1,6 +1,8 @@
 @import '../../../styles/mixins';
 @import '../../../styles/colors';
 
+$color-selected-bg: palette(gray, 700);
+
 .container {
   position: relative;
   cursor: pointer;
@@ -66,7 +68,7 @@
   transition: color ease 0.4s, background-color ease 0.4s;
 
   &.selected {
-    background-color: $color-grey-light;
+    background-color: $color-selected-bg;
   }
 
   &:hover {

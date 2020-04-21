@@ -1,6 +1,9 @@
 @import '../../../../styles/mixins';
 @import '../../../../styles/colors';
 
+$color-doc-bg: palette(gray, 850);
+$color-code-bg: palette(gray, 700);
+
 .container {
   display: flex;
   flex-direction: row;
@@ -14,7 +17,7 @@
   padding: 40px 64px 0 64px;
   overflow: scroll;
   width: 100%;
-  background-color: $color-grey-darker;
+  background-color: $color-doc-bg;
 
   h1 {
     @include font-display;
@@ -59,7 +62,7 @@
   }
 
   pre {
-    background-color: $color-grey-light;
+    background-color: $color-code-bg;
     padding: 9px;
     border-radius: 5px;
 
@@ -71,7 +74,7 @@
     @include font-code;
 
     color: $font-color-white;
-    background-color: $color-grey-light;
+    background-color: $color-code-bg;
     border-radius: 5px;
     padding: 1px 9px;
   }

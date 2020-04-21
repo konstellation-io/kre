@@ -14,10 +14,10 @@
   }
 
   &.STARTED {
-    background-color: $color-blue;
+    background-color: $color-primary;
   }
 
   &.ERROR {
-    background-color: $color-red;
+    background-color: $color-error;
   }
 }

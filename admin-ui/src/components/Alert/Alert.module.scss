@@ -1,6 +1,8 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+$color-bg: palette(red, 800);
+
 .container {
   display: flex;
   flex-direction: row;
@@ -9,7 +11,7 @@
   height: 60px;
   margin-bottom: 3px;
   padding: 0 20px;
-  background-color: $color-red-dark;
+  background-color: $color-bg;
   box-shadow: 0 2px 8px 0 #000000;
   white-space: nowrap;
 }
@@ -25,7 +27,7 @@
   text-align: center;
 
   &.error {
-    background-color: $color-red;
+    background-color: palette(red, error);
   }
 }
 

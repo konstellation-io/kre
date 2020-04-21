@@ -7,7 +7,7 @@
   height: 8px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: $color-green;
+  background-color: $color-ok;
   flex-shrink: 0;
 
   @each $state in $version-statuses {

@@ -2,6 +2,10 @@
 @import '../../styles/mixins';
 @import '../../styles/variables';
 
+$color-primary: palette(primary, 350);
+$color-primary-light: palette(primary, 300);
+$color-gray: palette(gray, 850);
+
 .btn {
   @include font-button;
   color: $font-color-light;
@@ -48,17 +52,17 @@
   }
 
   &.border {
-    border: solid 1px $color-blue;
+    border: solid 1px $color-primary;
   }
 }
 
 a.navLinkSelected .btn,
 .primary {
   color: #1a1b1f;
-  background-color: $color-button-blue;
+  background-color: $color-primary-light;
 
   &:active {
-    box-shadow: 0 0 20px 0 $color-button-blue;
+    box-shadow: 0 0 20px 0 $color-primary-light;
   }
 }
 
@@ -81,7 +85,7 @@ a.navLinkSelected .btn,
 
 .grey {
   color: $font-color-light;
-  background-color: $color-grey-darker;
+  background-color: $color-gray;
 
   &:hover {
     color: $font-color-white;
