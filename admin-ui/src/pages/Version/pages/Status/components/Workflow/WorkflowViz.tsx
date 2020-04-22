@@ -14,7 +14,11 @@ import {
   NodeStatus
 } from '../../../../../../graphql/types/globalTypes';
 import styles from './WorkflowViz.module.scss';
+import { NodeTypes, InputElContent } from '../Tooltip/TooltipContents';
+import { ReactComponent as InputNode } from '../../icons/inputNode.svg';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
+import { get } from 'lodash';
 
 type D = GetVersionWorkflows_version_workflows_nodes;
 
@@ -41,7 +45,38 @@ type Props = {
   margin: Margin;
   workflowStatus: VersionStatus;
   onInnerNodeClick: Function;
+  tooltipRefs: TooltipRefs;
 };
+
+function getTooltipHeader(nodeType: NodeTypes) {
+  let title = '';
+  let Icon;
+
+  switch (nodeType) {
+    case NodeTypes.INPUT:
+      title = 'INPUT PROCESS';
+      Icon = <InputNode />;
+      break;
+    default:
+      title = 'TITLE';
+      Icon = <InputNode />;
+  }
+
+  return { title, Icon };
+}
+function getTooltipContent(nodeType: NodeTypes) {
+  let content;
+
+  switch (nodeType) {
+    case NodeTypes.INPUT:
+      content = <InputElContent nodeType={nodeType} />;
+      break;
+    default:
+      content = <div>CONTENT</div>;
+  }
+
+  return content;
+}
 
 class WorkflowViz {
   props: Props;
@@ -264,7 +299,12 @@ class WorkflowViz {
       nodeOuterRadius,
       xScale,
       yOffset,
-      props: { data, workflowStatus }
+      getTooltipCoords,
+      props: {
+        data,
+        workflowStatus,
+        tooltipRefs: { onShowTooltip, onHideTooltip }
+      }
     } = this;
     const side = nodeOuterRadius * 2;
     const x = xScale('Input') || 0;
@@ -276,9 +316,17 @@ class WorkflowViz {
       this.inputNode = nodesG
         .append('g')
         .classed(styles.inputNode, true)
-        .classed(styles[workflowStatus], true);
+        .classed(styles[workflowStatus], true)
+        .on('mouseenter', () => {
+          const { left, top } = getTooltipCoords(x, y, side);
+          const header = getTooltipHeader(NodeTypes.INPUT);
+          const content = getTooltipContent(NodeTypes.INPUT);
+          onShowTooltip(left, top, workflowStatus, header, content);
+        })
+        .on('mouseleave', () => onHideTooltip());
       this.inputNode
         .append('rect')
+        .classed(styles.shape, true)
         .attr('rx', 6)
         .attr('x', x)
         .attr('y', y)
@@ -286,6 +334,7 @@ class WorkflowViz {
         .attr('width', side - lineOffset);
       this.inputNode
         .append('path')
+        .classed(styles.peakCut, true)
         .attr('stroke', 'transparent')
         .attr('d', () => {
           return `
@@ -296,13 +345,16 @@ class WorkflowViz {
           h -5
         `;
         });
-      this.inputNode.append('path').attr('d', () => {
-        return `
+      this.inputNode
+        .append('path')
+        .classed(styles.nodePeak, true)
+        .attr('d', () => {
+          return `
           M ${x + side - lineOffset - 1} ${y + 2.5}
           L ${x + side} ${y + side / 2}
           L ${x + side - lineOffset - 1} ${y + side - 2.5}
         `;
-      });
+        });
 
       this.addIcon(this.inputNode, InputNodeIcon, xScale('Input') || 0);
     } else {
@@ -312,6 +364,16 @@ class WorkflowViz {
     }
 
     this.generateLink(x + side, linkStatus, 'inputNode');
+  };
+
+  getTooltipCoords = (x: number, y: number, side: number) => {
+    const { svg } = this;
+
+    const svgDims = svg.node()?.getBoundingClientRect();
+    const left = get(svgDims, 'left', 0) + x + side / 2;
+    const top = get(svgDims, 'top', 0) + y;
+
+    return { left, top };
   };
 
   generateOutputNode = () => {
@@ -335,6 +397,7 @@ class WorkflowViz {
         .classed(styles[workflowStatus], true);
       this.outputNode
         .append('rect')
+        .classed(styles.shape, true)
         .attr('rx', 6)
         .attr('x', x)
         .attr('y', y)
@@ -342,6 +405,7 @@ class WorkflowViz {
         .attr('width', side);
       this.outputNode
         .append('path')
+        .classed(styles.peakCut, true)
         .attr('stroke', 'transparent')
         .attr('d', () => {
           return `
@@ -352,13 +416,16 @@ class WorkflowViz {
           h -5
         `;
         });
-      this.outputNode.append('path').attr('d', () => {
-        return `
+      this.outputNode
+        .append('path')
+        .classed(styles.nodePeak, true)
+        .attr('d', () => {
+          return `
           M ${x - 0.8} ${y + 6}
           L ${x + lineOffset} ${y + side / 2}
           L ${x - 0.8} ${y + side - 6}
         `;
-      });
+        });
 
       this.addIcon(this.outputNode, OutputNodeIcon, xScale('Output') || 0);
     } else {

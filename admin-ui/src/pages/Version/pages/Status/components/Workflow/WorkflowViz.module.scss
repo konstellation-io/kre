@@ -73,26 +73,86 @@ $animation-duration: 0.8s;
   }
 }
 
-.inputNode,
-.outputNode {
-  @include animate(stroke);
-  fill: $bg-box;
+.inputNode {
+  &:hover {
+    filter: url('#glow');
+  }
+
+  .shape,
+  .nodePeak,
+  .peakCut {
+    @include animate(fill);
+    fill: $bg-box;
+    stroke: transparent;
+  }
 
   &.#{$STATUS-STOPPED},
   &.#{$STATUS-ACTIVE},
   &.#{$STATUS-LOADING-2} {
-    stroke: $color-stopped;
+    .shape,
+    .nodePeak {
+      stroke: $color-stopped;
+    }
 
-    .icon {
+    .icon > svg > path {
       fill: $color-stopped;
     }
   }
 
+  &.#{$STATUS-ACTIVE-2},
   &.#{$STATUS-ACTIVE-2} {
-    stroke: $color-active;
+    .shape,
+    .nodePeak,
+    .peakCut {
+      fill: $color-active;
+    }
+
+    .icon > svg > path {
+      fill: $font-color-dark;
+    }
   }
 
-  .icon {
+  .icon > svg > path {
+    @include animate(stroke);
+    stroke: transparent !important;
+  }
+}
+
+.outputNode {
+  .shape,
+  .nodePeak,
+  .peakCut {
+    @include animate(fill);
+    fill: $bg-box;
+    stroke: transparent;
+  }
+
+  &.#{$STATUS-STOPPED},
+  &.#{$STATUS-ACTIVE},
+  &.#{$STATUS-LOADING-2} {
+    .shape,
+    .nodePeak {
+      stroke: $color-stopped;
+    }
+
+    .icon > svg > path {
+      fill: $color-stopped;
+    }
+  }
+
+  &.#{$STATUS-ACTIVE-2},
+  &.#{$STATUS-ACTIVE-2} {
+    .shape {
+      fill: $color-active;
+    }
+
+    .icon > svg > path {
+      fill: $font-color-dark;
+    }
+  }
+
+  .icon > svg > path {
+    @include animate(stroke);
     stroke: transparent !important;
   }
 }
