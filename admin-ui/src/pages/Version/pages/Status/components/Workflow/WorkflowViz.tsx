@@ -157,10 +157,12 @@ class WorkflowViz {
 
   update = (
     data: GetVersionWorkflows_version_workflows,
-    workflowStatus: VersionStatus
+    workflowStatus: VersionStatus,
+    tooltipRefs: TooltipRefs
   ) => {
     this.props.data = data;
     this.props.workflowStatus = workflowStatus;
+    this.props.tooltipRefs = tooltipRefs;
 
     this.generateInnerNodes();
     this.generateInputNode();
@@ -303,7 +305,7 @@ class WorkflowViz {
       props: {
         data,
         workflowStatus,
-        tooltipRefs: { onShowTooltip, onHideTooltip }
+        tooltipRefs: { onShowTooltip, onHideTooltip, lastHoveredNode }
       }
     } = this;
     const side = nodeOuterRadius * 2;
@@ -317,11 +319,18 @@ class WorkflowViz {
         .append('g')
         .classed(styles.inputNode, true)
         .classed(styles[workflowStatus], true)
-        .on('mouseenter', () => {
+        .on('mouseenter', function() {
           const { left, top } = getTooltipCoords(x, y, side);
           const header = getTooltipHeader(NodeTypes.INPUT);
           const content = getTooltipContent(NodeTypes.INPUT);
-          onShowTooltip(left, top, workflowStatus, header, content);
+          onShowTooltip({
+            status: workflowStatus,
+            node: this,
+            left,
+            top,
+            header,
+            content
+          });
         })
         .on('mouseleave', () => onHideTooltip());
       this.inputNode
@@ -360,6 +369,9 @@ class WorkflowViz {
     } else {
       this.inputNode
         .attr('class', styles.inputNode)
+        .classed(styles.hovered, function() {
+          return this === lastHoveredNode;
+        })
         .classed(styles[workflowStatus], true);
     }
 

@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { RefObject, FunctionComponent } from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import styles from './Tooltip.module.scss';
 import cx from 'classnames';
@@ -18,11 +18,10 @@ type Props = {
   onTooltipEnter: Function;
   onTooltipLeave: Function;
   tooltipHeader: TooltipHeader;
-  tooltipContent: JSX.Element;
   tooltipStatus: NodeStatus;
 };
 
-function Tooltip({
+const Tooltip: FunctionComponent<Props> = ({
   tooltipRef,
   tooltipHeaderRef,
   tooltipContentRef,
@@ -30,9 +29,9 @@ function Tooltip({
   onTooltipEnter,
   onTooltipLeave,
   tooltipHeader,
-  tooltipContent,
-  tooltipStatus
-}: Props) {
+  tooltipStatus,
+  children
+}) => {
   return (
     <div
       className={cx(styles.wrapper, styles[tooltipStatus], {
@@ -53,12 +52,12 @@ function Tooltip({
           <div className={styles.title}>{tooltipHeader.title}</div>
         </div>
         <div className={styles.content} ref={tooltipContentRef}>
-          {tooltipContent}
+          {children}
         </div>
       </div>
       <div className={styles.separator} />
     </div>
   );
-}
+};
 
 export default Tooltip;

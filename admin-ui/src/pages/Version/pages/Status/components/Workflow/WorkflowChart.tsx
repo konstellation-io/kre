@@ -47,7 +47,7 @@ function WorkflowChart({
 
   function update() {
     if (viz.current !== null) {
-      viz.current.update(data, workflowStatus);
+      viz.current.update(data, workflowStatus, tooltipRefs);
     } else {
       initialize();
     }

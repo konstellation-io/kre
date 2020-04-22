@@ -13,6 +13,16 @@ export type TooltipRefs = {
   content: React.RefObject<HTMLDivElement>;
   onShowTooltip: Function;
   onHideTooltip: Function;
+  lastHoveredNode: SVGGElement | null;
+};
+
+type OnShowTooltipProps = {
+  left: number;
+  top: number;
+  status: NodeStatus;
+  header: TooltipHeader;
+  content: JSX.Element;
+  node: SVGGElement;
 };
 
 type Props = {
@@ -36,6 +46,9 @@ function WorkflowsManager({
     title: ''
   });
   const [tooltipContent, setTooltipContent] = useState(<div />);
+  const [lastHoveredNode, setLastHoveredNode] = useState<SVGGElement | null>(
+    null
+  );
   const [tooltipStatus, setTooltipStatus] = useState<NodeStatus>(
     NodeStatus.STARTED
   );
@@ -45,7 +58,8 @@ function WorkflowsManager({
     header: tooltipHeaderRef,
     content: tooltipContentRef,
     onShowTooltip,
-    onHideTooltip
+    onHideTooltip,
+    lastHoveredNode
   };
 
   function setTooltipCoords(left: number, top: number) {
@@ -62,21 +76,24 @@ function WorkflowsManager({
   }
   function hideTooltip() {
     setTooltipVisible(false);
+    setLastHoveredNode(null);
   }
 
-  function onShowTooltip(
-    left: number,
-    top: number,
-    status: NodeStatus,
-    header: TooltipHeader,
-    content: JSX.Element = <div />
-  ) {
+  function onShowTooltip({
+    left,
+    top,
+    status,
+    node,
+    header,
+    content
+  }: OnShowTooltipProps) {
     insideTooltip.current = true;
 
     setTooltipStatus(status);
     setTooltipHeader(header);
     setTooltipContent(content);
     setTooltipCoords(left, top);
+    setLastHoveredNode(node);
 
     showTooltip();
   }
@@ -87,7 +104,7 @@ function WorkflowsManager({
 
     hideTooltipTimeout.current = window.setTimeout(() => {
       if (!insideTooltip.current) hideTooltip();
-    }, 500);
+    }, 200);
   }
 
   function onTooltipEnter() {
@@ -116,9 +133,10 @@ function WorkflowsManager({
         onTooltipEnter={onTooltipEnter}
         onTooltipLeave={onTooltipLeave}
         tooltipHeader={tooltipHeader}
-        tooltipContent={tooltipContent}
         tooltipStatus={tooltipStatus}
-      ></Tooltip>
+      >
+        {tooltipContent}
+      </Tooltip>
     </div>
   );
 }

@@ -74,7 +74,7 @@ $animation-duration: 0.8s;
 }
 
 .inputNode {
-  &:hover {
+  &.hovered {
     filter: url('#glow');
   }
 
