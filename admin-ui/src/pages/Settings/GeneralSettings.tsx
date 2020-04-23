@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { get } from 'lodash';
 
@@ -21,6 +21,9 @@ import {
   UpdateSettingsVariables
 } from '../../graphql/mutations/types/UpdateSettings';
 import { mutationPayloadHelper } from '../../utils/formUtils';
+import HorizontalBar from '../../components/Layout/HorizontalBar/HorizontalBar';
+import Button from '../../components/Button/Button';
+import Modal from '../../components/Modal/Modal';
 
 const GetExpirationTimeQuery = loader(
   '../../graphql/queries/getExpirationTime.graphql'
@@ -34,10 +37,19 @@ const MIN_EXPIRATION_DAYS = 1;
 type FormFieldProps = {
   error: string;
   onChange: Function;
-  onBlur: Function;
   formValue: string | number | undefined;
+  prevValue: number | undefined;
+  onSubmit: Function;
 };
-function FormField({ error, onChange, onBlur, formValue }: FormFieldProps) {
+function FormField({
+  error,
+  onChange,
+  formValue,
+  prevValue,
+  onSubmit
+}: FormFieldProps) {
+  const showPrevValue =
+    prevValue && formValue && prevValue.toString() !== formValue.toString();
   return (
     <div className={styles.formField}>
       <p className={styles.label}>Session expiration time in days</p>
@@ -49,8 +61,9 @@ function FormField({ error, onChange, onBlur, formValue }: FormFieldProps) {
           label="days"
           error={error}
           onChange={onChange}
-          onBlur={onBlur}
+          onEnterKeyPress={onSubmit}
           formValue={formValue}
+          infoMessage={showPrevValue ? prevValue?.toString() : ''}
         />
       </div>
     </div>
@@ -69,6 +82,8 @@ function isExpirationInvalid(value: string) {
 }
 
 function GeneralSettings() {
+  const [prevValue, setPrevValue] = useState<number | undefined>();
+  const [showModal, setShowModal] = useState<boolean>(false);
   const { data, loading, error: queryError } = useQuery<GetSettings>(
     GetExpirationTimeQuery
   );
@@ -85,7 +100,7 @@ function GeneralSettings() {
       }
     }
   });
-  const { handleSubmit, setValue, register, errors } = useForm();
+  const { handleSubmit, setValue, register, errors, watch } = useForm();
   useEffect(() => {
     register('sessionLifetimeInDays', { validate: isExpirationInvalid });
     setValue('sessionLifetimeInDays', '');
@@ -94,7 +109,9 @@ function GeneralSettings() {
   // Sets domains data after receiving API response
   useEffect(() => {
     if (data) {
-      setValue('sessionLifetimeInDays', data.settings.sessionLifetimeInDays);
+      const value = data.settings.sessionLifetimeInDays;
+      setValue('sessionLifetimeInDays', value);
+      setPrevValue(value);
     }
   }, [data, setValue]);
 
@@ -103,7 +120,17 @@ function GeneralSettings() {
 
   function onSubmit(formData: any) {
     updateExpirationTime(mutationPayloadHelper(formData));
+    setPrevValue(formData.sessionLifetimeInDays);
+    setShowModal(false);
   }
+  const fieldEmpty = watch('sessionLifetimeInDays') === '';
+
+  function onEnterKey() {
+    if (!fieldEmpty) openModal();
+  }
+
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
 
   return (
     <>
@@ -112,13 +139,28 @@ function GeneralSettings() {
         <FormField
           error={get(errors.sessionLifetimeInDays, 'message')}
           onChange={(value: string) => setValue('sessionLifetimeInDays', value)}
-          onBlur={handleSubmit(onSubmit)}
-          formValue={data && data.settings.sessionLifetimeInDays}
+          formValue={watch('sessionLifetimeInDays')}
+          prevValue={prevValue}
+          onSubmit={onEnterKey}
         />
       </div>
-      {/* <HorizontalBar>
-        <Button label={'SAVE CHANGES'} primary onClick={onSubmit} />
-      </HorizontalBar> */}
+      <HorizontalBar>
+        <Button
+          label={'SAVE CHANGES'}
+          primary
+          onClick={openModal}
+          disabled={fieldEmpty}
+        />
+      </HorizontalBar>
+      {showModal && (
+        <Modal
+          title="Configuration will be updated"
+          message="After updating this configuration, the expiration time of all new sessions will be updated, are you sure you want to continue?"
+          actionButtonLabel="CONTINUE"
+          onAccept={handleSubmit(onSubmit)}
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 }
