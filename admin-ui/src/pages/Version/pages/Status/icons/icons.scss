@@ -1,4 +1,5 @@
 @import '../../../../../styles/colors';
+@import '../../../../../styles/variables';
 
 .inputNode {
   path {
@@ -6,7 +7,7 @@
   }
   .body,
   .peak {
-    stroke: $font-color-regular;
+    stroke: $color-status-down;
     stroke-width: 2px;
   }
   .peakCut {
@@ -14,14 +15,14 @@
   }
 }
 
-.PUBLISHED {
+.#{$status-up} {
   .inputNode {
     path {
-      fill: $color-green;
+      fill: $color-status-up;
     }
     .body,
     .peak {
-      stroke: $color-green;
+      stroke: $color-status-up;
     }
   }
 }

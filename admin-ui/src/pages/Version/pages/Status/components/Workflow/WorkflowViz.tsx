@@ -9,15 +9,18 @@ import {
 import { select, Selection } from 'd3-selection';
 import { ScaleBand, scaleBand } from 'd3-scale';
 import { rgb } from 'd3-color';
-import {
-  VersionStatus,
-  NodeStatus
-} from '../../../../../../graphql/types/globalTypes';
+import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 import styles from './WorkflowViz.module.scss';
 import { NodeTypes, InputElContent } from '../Tooltip/TooltipContents';
 import { ReactComponent as InputNode } from '../../icons/inputNode.svg';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
+import {
+  FinalStates,
+  getProcessState,
+  getLinkState,
+  getWorkflowState
+} from '../../states';
 import { get } from 'lodash';
 
 type D = GetVersionWorkflows_version_workflows_nodes;
@@ -190,7 +193,7 @@ class WorkflowViz {
       .enter()
       .append('g')
       .attr('transform', (d: D) => `translate(${xScale(d.id)}, ${yOffset})`)
-      .attr('class', (d: D) => styles[d.status])
+      .attr('class', (d: D) => styles[getProcessState(d.status)])
       .classed(styles.node, true);
 
     const newCirclesG = newCircles.append('g').classed(styles.circlesG, true);
@@ -209,16 +212,24 @@ class WorkflowViz {
       .attr('cx', nodeOuterRadius);
 
     newCircles.each(function(d: D) {
-      generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
+      generateLink(
+        (xScale(d.id) || 0) + nodeOuterRadius * 2,
+        getLinkState(d.status),
+        d.id
+      );
       generateNodeLabel(this, d.name, self);
     });
 
     // Old circles
     circles
-      .attr('class', (d: D) => styles[d.status])
+      .attr('class', (d: D) => styles[getProcessState(d.status)])
       .classed(styles.node, true)
       .each(function(d: D) {
-        generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
+        generateLink(
+          (xScale(d.id) || 0) + nodeOuterRadius * 2,
+          getLinkState(d.status),
+          d.id
+        );
       });
 
     circles.merge(newCircles);
@@ -312,19 +323,19 @@ class WorkflowViz {
     const x = xScale('Input') || 0;
     const lineOffset = side * 0.1;
     const y = yOffset - side / 2;
-    const linkStatus = data.nodes[0].status;
+    const linkStatus = getLinkState(data.nodes[0].status);
 
     if (this.inputNode === null) {
       this.inputNode = nodesG
         .append('g')
         .classed(styles.inputNode, true)
-        .classed(styles[workflowStatus], true)
+        .classed(styles[getWorkflowState(workflowStatus)], true)
         .on('mouseenter', function() {
           const { left, top } = getTooltipCoords(x, y, side);
           const header = getTooltipHeader(NodeTypes.INPUT);
           const content = getTooltipContent(NodeTypes.INPUT);
           onShowTooltip({
-            status: workflowStatus,
+            status: getWorkflowState(workflowStatus),
             node: this,
             left,
             top,
@@ -372,7 +383,7 @@ class WorkflowViz {
         .classed(styles.hovered, function() {
           return this === lastHoveredNode;
         })
-        .classed(styles[workflowStatus], true);
+        .classed(styles[getWorkflowState(workflowStatus)], true);
     }
 
     this.generateLink(x + side, linkStatus, 'inputNode');
@@ -406,7 +417,7 @@ class WorkflowViz {
       this.outputNode = nodesG
         .append('g')
         .classed(styles.outputNode, true)
-        .classed(styles[workflowStatus], true);
+        .classed(styles[getWorkflowState(workflowStatus)], true);
       this.outputNode
         .append('rect')
         .classed(styles.shape, true)
@@ -443,7 +454,7 @@ class WorkflowViz {
     } else {
       this.outputNode
         .attr('class', styles.outputNode)
-        .classed(styles[workflowStatus], true);
+        .classed(styles[getWorkflowState(workflowStatus)], true);
     }
   };
 
@@ -467,11 +478,7 @@ class WorkflowViz {
       .html(icon);
   };
 
-  generateLink = (
-    x1: number,
-    status: VersionStatus | NodeStatus,
-    nodeId: string
-  ) => {
+  generateLink = (x1: number, status: FinalStates, nodeId: string) => {
     const { edgesG, edgeWidth, yOffset, idToSelector } = this;
 
     const link = select(`.${idToSelector(nodeId)}`);
