@@ -43,12 +43,14 @@ type Props = {
   toggleExpanded?: Function;
   nodeId?: string;
   data: GetMetricsSeries;
+  viewAllData: boolean;
 };
 function LabelStats({
   withBgBars = false,
   toggleExpanded,
   nodeId,
-  data
+  data,
+  viewAllData
 }: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
@@ -72,6 +74,7 @@ function LabelStats({
           }}
           data={formatData(data)}
           withBgBars={withBgBars}
+          viewAllData={viewAllData}
         />
       </div>
     </Box>

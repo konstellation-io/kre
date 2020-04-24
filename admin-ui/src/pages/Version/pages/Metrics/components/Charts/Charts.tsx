@@ -17,9 +17,10 @@ type Props = {
   data: GetMetrics;
   expanded: string;
   toggleExpanded: Function;
+  viewAllData: boolean;
 };
 
-function Charts({ data, expanded, toggleExpanded }: Props) {
+function Charts({ data, expanded, toggleExpanded, viewAllData }: Props) {
   if (data.metrics === null) {
     return null;
   }
@@ -111,6 +112,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
               toggleExpanded={toggleExpanded}
               nodeId={'r3'}
               data={series}
+              viewAllData={viewAllData}
             />
           </Row>
           <Row
@@ -124,6 +126,7 @@ function Charts({ data, expanded, toggleExpanded }: Props) {
               toggleExpanded={toggleExpanded}
               nodeId={'r4'}
               data={data.metrics.charts.successVsFails}
+              viewAllData={viewAllData}
             />
           </Row>
         </RowsWrapper>

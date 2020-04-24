@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import DashboardTitle from './components/DashboardTitle/DashboardTitle';
+import DashboardHeader from './components/DashboardHeader/DashboardHeader';
 import Charts from './components/Charts/Charts';
 import Message from '../../../../components/Message/Message';
 import { loader } from 'graphql.macro';
@@ -42,6 +42,8 @@ type Props = {
 };
 
 function Metrics({ runtime, version }: Props) {
+  const [viewAllData, setViewAllData] = useState<boolean>(false);
+
   const { versionId, runtimeId } = useParams<VersionRouteParams>();
   const { data, loading, error, refetch } = useQuery<
     GetMetrics,
@@ -96,18 +98,25 @@ function Metrics({ runtime, version }: Props) {
       return <Message text="There is no data for the selected dates" />;
 
     return (
-      <Charts data={data} expanded={expanded} toggleExpanded={toggleExpanded} />
+      <Charts
+        data={data}
+        expanded={expanded}
+        toggleExpanded={toggleExpanded}
+        viewAllData={viewAllData}
+      />
     );
   }
 
   return (
     <div className={styles.container}>
-      <DashboardTitle
+      <DashboardHeader
         runtimeName={runtime && runtime.name}
         versionName={version && version.name}
         value={watch}
         onChange={setValue}
         submit={submit}
+        viewAllData={viewAllData}
+        setViewAllData={setViewAllData}
       />
       {getContent()}
     </div>
