@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import moment from 'moment';
 import styles from './DateFilter.module.scss';
 import Select from '../../../../../../../../../components/Form/Select/Select';
 
 type Props = {
   onDateChange: Function;
+  selectedOption: string;
 };
-const dateFilterOptions: { [key: string]: string } = {
+export const dateFilterOptions: { [key: string]: string } = {
   lastHour: 'LAST HOUR',
   lastSixHours: 'LAST 6 HOURS',
   lastTwentyFourHours: 'LAST 24 HOURS',
@@ -21,14 +22,12 @@ const dateOptionToHours: { [key: string]: number } = {
   [dateFilterOptions.lastSevenDays]: 168
 };
 
-function DateFilter({ onDateChange }: Props) {
-  const [dateOption, setDateOption] = useState<string>('');
-
+function DateFilter({ onDateChange, selectedOption }: Props) {
   const handleDateOption = (value: string) => {
-    setDateOption(value);
     if (dateFilterOptions[value] !== dateFilterOptions.customDates) {
       const hoursToSubtract = dateOptionToHours[value] || 1;
       onDateChange([
+        { dateOption: value },
         { startDate: moment().subtract(hoursToSubtract, 'hour') },
         { endDate: moment().endOf('day') }
       ]);
@@ -41,7 +40,7 @@ function DateFilter({ onDateChange }: Props) {
       selectMainClass={styles.dateFilter}
       options={Object.values(dateFilterOptions)}
       onChange={handleDateOption}
-      formSelectedOption={dateOption}
+      formSelectedOption={selectedOption}
       defaultOption={dateFilterOptions.lastTwentyFourHours}
     />
   );

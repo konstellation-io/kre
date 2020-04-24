@@ -25,7 +25,8 @@ import { getMainDefinition } from 'apollo-utilities';
 import { ADD_NOTIFICATION } from './graphql/client/mutations/addNotification.graphql';
 import {
   addNotificationResolver,
-  removeNotificationResolver
+  removeNotificationResolver,
+  updateTabFiltersResolver
 } from './graphql/client/resolvers';
 import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
 
@@ -155,7 +156,8 @@ config
       resolvers: {
         Mutation: {
           addNotification: addNotificationResolver,
-          removeNotification: removeNotificationResolver
+          removeNotification: removeNotificationResolver,
+          updateTabFilters: updateTabFiltersResolver
         }
       }
     });

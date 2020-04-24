@@ -1,8 +1,6 @@
 import React from 'react';
-
 import Header from './components/Header/Header';
 import LogsTab from './components/LogsTab/LogsTab';
-
 import cx from 'classnames';
 import styles from './Logs.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
@@ -102,6 +100,8 @@ function Logs() {
               runtimeId={tab.runtimeId}
               nodeName={tab.nodeName}
               workflowId={tab.workflowId}
+              uniqueId={tab.uniqueId}
+              filterValues={tab.filters}
             />
           </div>
         ))}

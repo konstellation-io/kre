@@ -13,12 +13,20 @@ export interface AddNotificationInput {
   to: string;
 }
 
+export interface LogPanelFilters {
+  dateOption: string;
+  startDate: string;
+  endDate: string;
+  __typename: string;
+}
+
 export interface SetCurrentLogPanelInput {
   runtimeId: string;
   nodeId: string;
   nodeName: string;
   workflowId: string;
   uniqueId?: string;
+  filters?: LogPanelFilters;
 }
 
 export interface LogPanel extends SetCurrentLogPanelInput {
