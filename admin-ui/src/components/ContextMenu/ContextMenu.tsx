@@ -9,7 +9,7 @@ type Props = {
 };
 
 export interface MenuCallToAction {
-  iconComponent?: ReactElement;
+  iconComponent?: JSX.Element;
   text: string;
   callToAction: Function;
 }
