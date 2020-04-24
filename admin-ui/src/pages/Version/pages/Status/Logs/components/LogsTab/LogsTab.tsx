@@ -69,9 +69,6 @@ function LogsTab({
 
   return (
     <div className={styles.container}>
-      <ContextMenu>
-        <div>ciaoooooooo</div>
-      </ContextMenu>
       <Filters
         filters={{ [nodeId ? `node` : `workflow`]: nodeName }}
         filterValues={filterValues}

@@ -4,7 +4,15 @@ import useClickOutsideListener from '../../hooks/useClickOutsideListener';
 
 type Props = {
   children: ReactElement;
+  actions: MenuCallToAction[];
+  contextObject: any;
 };
+
+export interface MenuCallToAction {
+  iconComponent?: ReactElement;
+  text: string;
+  callToAction: Function;
+}
 
 interface ContextMenu {
   isVisible: boolean;
@@ -12,8 +20,8 @@ interface ContextMenu {
   y: number;
 }
 
-function ContextMenu({ children }: Props) {
-  const childElement = useRef<any>(null);
+function ContextMenu({ children, actions, contextObject }: Props) {
+  const childElement = useRef<HTMLElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [stateContextMenu, setStateContextMenu] = useState<ContextMenu>({
     isVisible: false,
@@ -21,8 +29,8 @@ function ContextMenu({ children }: Props) {
     y: 0
   });
   function onRightClick(event: any) {
-    console.log('clicked right', event);
     event.preventDefault();
+    event.stopPropagation();
     const clickX = event.clientX;
     const clickY = event.clientY;
     setStateContextMenu({
@@ -45,14 +53,21 @@ function ContextMenu({ children }: Props) {
 
   useClickOutsideListener({
     ref: contextMenuRef,
-    onClickOutside: () => {
-      setStateContextMenu({
-        isVisible: false,
-        x: 0,
-        y: 0
-      });
-    }
+    onClickOutside: hideContextMenu
   });
+
+  function hideContextMenu(): void {
+    setStateContextMenu({
+      isVisible: false,
+      x: 0,
+      y: 0
+    });
+  }
+
+  function handleMenuItemClick(action: MenuCallToAction): void {
+    hideContextMenu();
+    action.callToAction(action, contextObject);
+  }
 
   return (
     <>
@@ -61,11 +76,21 @@ function ContextMenu({ children }: Props) {
           className={styles.contextMenuContainer}
           ref={contextMenuRef}
           style={{
-            position: 'absolute',
-            left: `${stateContextMenu.x + 5}px`
+            top: `${stateContextMenu.y + 7}px`,
+            left: `${stateContextMenu.x + 7}px`
           }}
         >
-          facciamo una prova
+          <ul className={styles.contextMenuList}>
+            {actions.map((action, index) => (
+              <li
+                key={`${action.text}-${index}`}
+                onClick={() => handleMenuItemClick(action)}
+              >
+                {action.iconComponent}
+                <span className={styles.menuText}>{action.text}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
       {React.cloneElement(children, { ref: childElement })}

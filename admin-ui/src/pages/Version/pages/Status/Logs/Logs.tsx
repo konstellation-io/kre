@@ -4,6 +4,8 @@ import LogsTab from './components/LogsTab/LogsTab';
 import cx from 'classnames';
 import styles from './Logs.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import IconClose from '@material-ui/icons/Close';
+import IconDuplicate from '@material-ui/icons/ControlPointDuplicate';
 import {
   GET_LOG_TABS,
   GetLogTabs_logTabs,
@@ -11,6 +13,7 @@ import {
 } from '../../../../../graphql/client/queries/getLogs.graphql';
 import { get } from 'lodash';
 import TabContainer from './components/TabContainer/TabContainer';
+import { MenuCallToAction } from '../../../../../components/ContextMenu/ContextMenu';
 
 function Logs() {
   const client = useApolloClient();
@@ -46,14 +49,7 @@ function Logs() {
     index: number
   ): void {
     event.stopPropagation();
-
-    const newTabs = [...tabs];
-    newTabs.splice(index, 1);
-    const newActiveTabId = getNewActiveTabId(index, newTabs);
-
-    client.writeData({
-      data: { activeTabId: newActiveTabId, logTabs: newTabs }
-    });
+    closeTabByIndex(index);
   }
 
   function getNewActiveTabId(index: number, newTabs: GetLogTabs_logTabs[]) {
@@ -66,6 +62,33 @@ function Logs() {
 
     return newActiveTabId;
   }
+
+  function closeTabByIndex(index: number): void {
+    const newTabs = [...tabs];
+    newTabs.splice(index, 1);
+    const newActiveTabId = getNewActiveTabId(index, newTabs);
+
+    client.writeData({
+      data: { activeTabId: newActiveTabId, logTabs: newTabs }
+    });
+  }
+
+  function duplicateTab(_: any, index: number): void {
+    console.log('duplicateTab', tabs[index].nodeName);
+  }
+
+  const contextMenuActions: MenuCallToAction[] = [
+    {
+      iconComponent: <IconClose className={'icon-small'} />,
+      text: 'close',
+      callToAction: (_: any, index: number) => closeTabByIndex(index)
+    },
+    {
+      iconComponent: <IconDuplicate className={'icon-small'} />,
+      text: 'duplicate',
+      callToAction: duplicateTab
+    }
+  ];
 
   const hidden = tabs.length === 0;
   return (
@@ -84,6 +107,7 @@ function Logs() {
         <TabContainer
           tabs={tabs}
           activeTabId={activeTabId}
+          contextMenuActions={contextMenuActions}
           onTabClick={handleTabClick}
           onCloseTabClick={handleCloseTabClick}
         />

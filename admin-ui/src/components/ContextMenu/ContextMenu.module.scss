@@ -2,8 +2,27 @@
 @import '../../styles/mixins';
 
 .contextMenuContainer {
-  background-color: red;
-  top: 75px;
-  height: 200px;
+  position: fixed;
+  padding: $grid-unit;
+  background-color: $bg-color;
   box-shadow: 0 2px 16px 0 #060606;
+}
+
+.contextMenuList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  & > li {
+    cursor: pointer;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    color: #ababab;
+    font-size: 12px;
+    font-weight: 800;
+    .menuText {
+      padding: 0 $grid-unit;
+    }
+  }
 }
