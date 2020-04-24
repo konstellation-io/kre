@@ -6,7 +6,7 @@ $color-primaryLight: map-get($color-dashboard, primary-light);
 
 text {
   @include font-caption;
-  color: $font-color-light;
+  color: font-color(light);
 }
 
 .cellText {

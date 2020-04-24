@@ -17,7 +17,7 @@ $color-bg: palette(gray, 800);
 
 .back {
   @include font-subheader;
-  color: $font-color-white;
+  color: font-color(light);
 
   padding: 17px 26px 20px 17px;
   cursor: pointer;
@@ -26,7 +26,7 @@ $color-bg: palette(gray, 800);
 
   svg {
     margin-right: 18px;
-    color: $font-color-regular;
+    color: font-color(regular);
     transition: color ease 0.4s;
   }
 

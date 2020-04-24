@@ -11,7 +11,7 @@ $STATUS-ACTIVE-2: PUBLISHED;
 $STATUS-STOPPED: STOPPED;
 $STATUS-LOADING: ERROR;
 $STATUS-LOADING-2: STARTING;
-$color-stopped: $font-color-regular;
+$color-stopped: font-color(regular);
 $color-loading: $color-primary;
 $color-active: $color-ok;
 
@@ -27,7 +27,7 @@ $animation-duration: 0.8s;
 
       + g.labelG {
         .nodeLabel {
-          fill: $font-color-white;
+          fill: font-color(light);
         }
 
         line {
@@ -103,7 +103,7 @@ $animation-duration: 0.8s;
   @include font-body;
   font-weight: 500;
 
-  fill: $font-color-light;
+  fill: font-color(light);
   transition: fill ease 0.4s;
   text-anchor: middle;
 }

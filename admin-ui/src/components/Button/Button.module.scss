@@ -1,6 +1,8 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 @import '../../styles/variables';
+@import '../../styles/borders';
+@import '../../styles/shadows';
 
 $color-primary: palette(primary, 350);
 $color-primary-light: palette(primary, 300);
@@ -8,7 +10,7 @@ $color-gray: palette(gray, 850);
 
 .btn {
   @include font-button;
-  color: $font-color-light;
+  color: font-color(light);
   position: relative;
   text-align: center;
   padding: 0 42px;
@@ -44,15 +46,15 @@ $color-gray: palette(gray, 850);
   }
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
-    color: $font-color-light;
+    color: font-color(light);
   }
 
   &.border {
-    border: solid 1px $color-primary;
+    @include border($color-primary);
   }
 }
 
@@ -62,16 +64,16 @@ a.navLinkSelected .btn,
   background-color: $color-primary-light;
 
   &:active {
-    box-shadow: 0 0 20px 0 $color-primary-light;
+    @include glow(2);
   }
 }
 
 .dark {
-  color: $font-color-light;
+  color: font-color(light);
   background-color: $bg-color-dark;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
@@ -79,16 +81,16 @@ a.navLinkSelected .btn,
   }
 
   &.disabled {
-    color: $font-color-dark;
+    color: font-color(dark);
   }
 }
 
 .grey {
-  color: $font-color-light;
+  color: font-color(light);
   background-color: $color-gray;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
@@ -97,11 +99,11 @@ a.navLinkSelected .btn,
 }
 
 .transparent {
-  color: $font-color-light;
+  color: font-color(light);
   background-color: transparent;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
@@ -115,11 +117,11 @@ a.navLinkSelected .btn,
 }
 
 .label {
-  color: $font-color-light;
+  color: font-color(light);
 }
 
 .disabled {
-  color: $font-color-light;
+  color: font-color(light);
   pointer-events: none;
   opacity: 0.5;
 }

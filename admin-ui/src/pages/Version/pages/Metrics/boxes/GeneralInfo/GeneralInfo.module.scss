@@ -4,7 +4,7 @@
 .sections {
   @include font-body;
   font-weight: 600;
-  color: $font-color-light;
+  color: font-color(light);
 
   width: 100%;
   height: 100%;

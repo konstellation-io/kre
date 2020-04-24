@@ -1,19 +1,22 @@
 @import '../../../styles/mixins';
 @import '../../../styles/colors';
+@import '../../../styles/borders';
 
 .container {
   position: relative;
 }
 
 .input {
+  @include border(transparent);
+  border-radius: 6px;
+
   @include font-body;
+
   background-color: $bg-color-lighter;
-  color: $font-color-light;
+  color: font-color(light);
   width: 100%;
   font-weight: 600;
   padding: 10px;
-  border: solid 1px transparent;
-  border-radius: 6px;
   outline: none;
 }
 .optionsList {
@@ -33,7 +36,7 @@
     &:hover,
     &.isHighlighted {
       background-color: $bg-highlighted;
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 }

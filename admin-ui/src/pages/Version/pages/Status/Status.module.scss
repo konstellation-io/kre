@@ -20,7 +20,7 @@ $color-created: palette(gray, 800);
   flex: 0 0 40px;
 
   div {
-    color: $font-color-dark;
+    color: font-color(dark);
   }
 
   &.STARTED {
@@ -39,14 +39,14 @@ $color-created: palette(gray, 800);
     background-color: $color-created;
 
     div {
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 }
 
 .horizontalBarText {
   @include font-caption;
-  color: $font-color-dark;
+  color: font-color(dark);
 
   display: flex;
   align-items: center;
@@ -57,7 +57,7 @@ $color-created: palette(gray, 800);
   height: 25px;
   width: 1px;
   margin: 0 16px 0 12px;
-  background-color: $font-color-dark;
+  background-color: font-color(dark);
 }
 
 .horizontalText2 {

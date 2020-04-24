@@ -12,5 +12,5 @@
 
 .title {
   @include font-subheader;
-  color: $font-color-white;
+  color: font-color(light);
 }

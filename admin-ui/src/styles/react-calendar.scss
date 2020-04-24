@@ -1,5 +1,7 @@
 @import './mixins';
 @import './colors';
+@import './borders';
+@import './shadows';
 
 $color-selected: palette(primary, 700);
 
@@ -21,7 +23,7 @@ $color-selected: palette(primary, 700);
 
   padding: 7px 9px;
   background-color: $bg-color-lighter;
-  color: $font-color-light;
+  color: font-color(light);
 }
 .DateInput_input__focused {
   border-bottom: solid 1px $color-primary;
@@ -32,7 +34,7 @@ $color-selected: palette(primary, 700);
 
 .DateRangePickerInput_arrow svg {
   margin: 0 8px !important;
-  color: $font-color-white;
+  color: font-color(light);
 }
 
 .DateRangePickerInput {
@@ -42,7 +44,7 @@ $color-selected: palette(primary, 700);
 
 .CalendarMonth_caption > strong {
   @include font-title;
-  color: $font-color-regular;
+  color: font-color(regular);
 }
 
 .DateInput_fang {
@@ -51,17 +53,18 @@ $color-selected: palette(primary, 700);
 
 .DayPickerNavigation_leftButton__horizontalDefault,
 .DayPickerNavigation_rightButton__horizontalDefault {
+  @include border(transparent);
+
   background: #0000;
   color: #fff;
-  border: solid 1px transparent;
 
   &:hover {
-    border: solid 1px $color-primary;
+    @include border($color-primary);
   }
 
   &:active {
     background-color: $color-primary;
-    color: $font-color-dark;
+    color: font-color(dark);
   }
 }
 
@@ -71,34 +74,35 @@ $color-selected: palette(primary, 700);
 
 .DateRangePicker_picker,
 .DayPicker {
+  @include shadow(4);
+
   background-color: transparent;
-  box-shadow: 0 0 12px -2px black;
 }
 
 .CalendarMonth,
 .DayPicker_transitionContainer,
 .CalendarMonthGrid {
   background-color: $bg-color-lighter;
-  color: $font-color-regular;
+  color: font-color(regular);
 }
 
 .CalendarDay {
   @include font-body;
-  color: $font-color-white;
+  color: font-color(light);
 
   background-color: transparent;
   border: 0;
   outline: none;
 
   &:hover {
-    border: solid 1px $color-primary;
+    @include border($color-primary);
     background-color: inherit;
-    color: $font-color-white;
+    color: font-color(light);
   }
 }
 .CalendarDay__selected {
   background-color: $color-primary;
-  color: $font-color-dark;
+  color: font-color(dark);
 }
 .CalendarDay__selected_span {
   background-color: $color-selected;

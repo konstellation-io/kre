@@ -43,7 +43,7 @@ $color-bg: palette(gray, 800);
         transition: color ease 0.4s;
 
         &:hover {
-          color: $font-color-white;
+          color: font-color(light);
         }
       }
     }

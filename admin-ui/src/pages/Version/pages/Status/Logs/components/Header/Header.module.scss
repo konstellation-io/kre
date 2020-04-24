@@ -20,7 +20,7 @@
 
 .title {
   @include font-caption;
-  color: $font-color-light;
+  color: font-color(light);
 
   display: flex;
   align-items: center;
@@ -37,12 +37,12 @@
 
 .runtime {
   @include font-body;
-  color: $font-color-white;
+  color: font-color(light);
 }
 
 .version {
   @include font-body;
-  color: $font-color-light;
+  color: font-color(light);
 
   margin-left: 16px;
 }
@@ -58,7 +58,7 @@
     cursor: pointer;
 
     &:hover {
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 }
@@ -67,11 +67,11 @@
   transition: color ease 0.4s, background-color ease 0.4s;
 
   &.active {
-    color: $font-color-white;
+    color: font-color(light);
     background-color: $bg-color-lighter;
 
     &:hover {
-      color: $font-color-light;
+      color: font-color(light);
     }
   }
 }

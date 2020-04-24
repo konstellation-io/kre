@@ -41,12 +41,12 @@ $color-border: palette(gray, 800);
     &,
     .typeColValue {
       background-color: $bg-color-dark !important;
-      color: $font-color-white;
+      color: font-color(light);
     }
 
     input,
     textarea {
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 

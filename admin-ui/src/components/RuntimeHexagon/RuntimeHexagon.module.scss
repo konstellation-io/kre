@@ -10,7 +10,7 @@
 
   &.STOPPED,
   &.CREATING {
-    background-color: $font-color-regular;
+    background-color: font-color(regular);
   }
 
   &.STARTED {

@@ -1,5 +1,6 @@
 @import './colors';
 @import './variables';
+@import './borders';
 
 @mixin font-by-size($font-size, $line-height, $font-weight: normal) {
   font-size: $font-size;
@@ -8,52 +9,52 @@
 }
 
 @mixin font-mega {
-  @include font-by-size(64px, 77px, 300);
+  @include font-by-size(64px, 78px, 300);
 }
 
 @mixin font-jumbo {
-  @include font-by-size(38px, 45px);
+  @include font-by-size(38px, 47px);
 }
 
 @mixin font-display {
-  @include font-by-size(36px, 43px);
+  @include font-by-size(36px, 44px);
 }
 
 @mixin font-headline {
-  @include font-by-size(28px, 34px, 400);
+  @include font-by-size(28px, 34px, 300);
 }
 
 @mixin font-title {
-  @include font-by-size(21px, 24px);
+  @include font-by-size(20px, 24px);
 }
 
 @mixin font-subheader {
-  @include font-by-size(18px, 19px, 400);
+  @include font-by-size(16px, 19px, 400);
 }
 
 @mixin font-body {
-  @include font-by-size(15px, 20px, 400);
+  @include font-by-size(14px, 20px, 500);
 }
 
 @mixin font-caption {
-  @include font-by-size(13px, 14px, 600);
+  @include font-by-size(11px, 14px, 700);
 }
 
 @mixin font-small {
-  @include font-by-size(13px, 16px, 500);
+  @include font-by-size(12px, 16px, 600);
 }
 
 @mixin font-button {
-  @include font-by-size(13px, 16px, 700);
+  @include font-by-size(12px, 16px, 800);
   letter-spacing: 0.55px;
 }
 
 @mixin font-tabnav {
-  @include font-by-size(15px, 17px, 700);
+  @include font-by-size(13px, 16px, 700);
 }
 
 @mixin font-code {
-  @include font-by-size(15px, 22px);
+  @include font-by-size(13px, 22px);
   font-family: 'Roboto Mono', sans-serif;
 }
 
@@ -65,6 +66,9 @@
 }
 
 @mixin form-input {
+  @include border(transparent);
+  border-radius: 6px;
+
   @include font-body;
   line-height: 16px;
 
@@ -74,15 +78,13 @@
   min-height: 40px;
   max-height: 560px;
   padding: 11px 16px;
-  border: solid 1px transparent;
-  border-radius: 6px;
   background-color: $bg-color-lighter;
   outline: none;
   -webkit-appearance: none;
   transition: border ease 0.5s;
 
   &.error {
-    border: solid 1px $color-error;
+    @include border($color-error);
     color: $color-error;
   }
 }
@@ -108,7 +110,7 @@
 
   &:hover {
     background-color: rgba(191, 207, 255, 0.04);
-    color: $font-color-white;
+    color: font-color(light);
   }
 }
 

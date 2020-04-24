@@ -18,7 +18,7 @@ $color-guide: map-get($color-dashboard, guide-line);
     transition: fill ease 0.5s;
 
     &.highlighted {
-      fill: $font-color-white;
+      fill: font-color(light);
     }
   }
 
@@ -48,7 +48,7 @@ $color-guide: map-get($color-dashboard, guide-line);
   .seriesLabel {
     @include font-body;
 
-    fill: $font-color-white;
+    fill: font-color(light);
   }
 
   .rowBg {

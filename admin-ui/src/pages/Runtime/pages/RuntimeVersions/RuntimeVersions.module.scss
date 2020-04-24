@@ -18,7 +18,7 @@ $color-active-bg: palette(gray, 750);
 
 .subtitle {
   @include font-body;
-  color: $font-color-light;
+  color: font-color(light);
 
   margin-bottom: 60px;
 }
@@ -39,7 +39,7 @@ $color-active-bg: palette(gray, 750);
 .versionTitle,
 .versionName {
   @include font-body;
-  color: $font-color-white;
+  color: font-color(light);
 }
 
 .versionTitle {
@@ -48,7 +48,7 @@ $color-active-bg: palette(gray, 750);
 
 .versionCreation {
   @include font-caption;
-  color: $font-color-light;
+  color: font-color(light);
 
   margin: 5px 25px;
 }

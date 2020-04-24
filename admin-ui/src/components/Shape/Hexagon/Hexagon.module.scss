@@ -4,7 +4,7 @@
 $color-active: palette(primary, 200);
 
 .container {
-  color: $font-color-light;
+  color: font-color(light);
 
   overflow: visible;
   pointer-events: none;
@@ -59,7 +59,7 @@ $color-active: palette(primary, 200);
   transform: translateX(-50%) perspective(47px) rotateX(13deg);
 
   &.CREATING {
-    background-color: $font-color-light;
+    background-color: font-color(light);
   }
   &.STARTED {
     background-color: $color-primary;
@@ -73,11 +73,11 @@ $color-active: palette(primary, 200);
 
   top: 50.5%;
   transform: translateX(-50%) perspective(47px) rotateX(-13deg);
-  background-color: $font-color-regular;
+  background-color: font-color(regular);
 
   &.STARTED,
   &.STOPPED {
-    background-color: $font-color-regular;
+    background-color: font-color(regular);
   }
 
   &.PUBLISHED {
@@ -164,7 +164,7 @@ $color-active: palette(primary, 200);
 .empty {
   svg path {
     fill: transparent;
-    stroke: $font-color-regular;
+    stroke: font-color(regular);
     stroke-dasharray: 5 5;
     stroke-width: 1px;
     transition: stroke ease 0.3s;
@@ -182,10 +182,10 @@ $color-active: palette(primary, 200);
 
   &.hovered {
     svg path {
-      stroke: $font-color-white;
+      stroke: font-color(light);
     }
     .hexagonBorderText {
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 }

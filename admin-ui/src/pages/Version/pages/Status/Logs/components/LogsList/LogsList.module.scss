@@ -60,7 +60,7 @@ $color-border: palette(gray, 775);
 }
 
 .icon {
-  color: $font-color-white;
+  color: font-color(light);
 }
 
 .date {
@@ -75,13 +75,13 @@ $color-border: palette(gray, 775);
 }
 
 .nodeName {
-  color: $font-color-white;
+  color: font-color(light);
   font-weight: 500;
   margin-right: $grid-unit * 2;
 }
 
 .message {
-  color: $font-color-white;
+  color: font-color(light);
 
   height: $height-log-item;
   line-height: $height-log-item;
@@ -104,7 +104,7 @@ $color-border: palette(gray, 775);
   cursor: pointer;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 }
 

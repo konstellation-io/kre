@@ -2,6 +2,70 @@
   @return map-get(map-get($palettes, $palette), $tone);
 }
 
+$scale-to-weight: (
+  50: 80%,
+  100: 60%,
+  200: 40%,
+  300: 20%,
+  400: 10%,
+  500: 0%,
+  600: 20%,
+  700: 40%,
+  800: 60%,
+  900: 80%
+);
+
+@function get-color($color, $value) {
+  $final-color: $color;
+
+  @if map-has-key($scale-to-weight, $value) {
+    @if $value > 500 {
+      $final-color: mix(black, $color, map-get($scale-to-weight, $value));
+    } @else if $value < 500 {
+      $final-color: mix(white, $color, map-get($scale-to-weight, $value));
+    }
+  } @else {
+    @error 'scale value #{$value} is not defined. Check $scale-to-weight map';
+  }
+
+  @return $final-color;
+}
+
+@function foo-palette($color, $value: 500) {
+  $final-color: black;
+
+  @if map-has-key($new-palette, $color) {
+    $final-color: get-color(map-get($new-palette, $color), $value);
+  } @else {
+    @error 'unknown color #{$color}. Check colors in $new-palette';
+  }
+
+  @return $final-color;
+}
+
+@function font-color($color) {
+  @return map-get($color-font, $color);
+}
+
+$new-palette: (
+  base: #101010,
+  highlight: #33ffff,
+  lowlight: #747474,
+  white: #ffffff,
+  success: #6daa48,
+  alert: #fc915f,
+  error: #e52e3d,
+  feedback: #1f82b5
+);
+
+$color-font: (
+  light: foo-palette(white),
+  highlight: foo-palette(highlight),
+  regular: foo-palette(lowlight),
+  grey: foo-palette(base, 200),
+  dark: foo-palette(base)
+);
+
 $palettes: (
   font: (
     darker: black,
@@ -46,20 +110,16 @@ $palettes: (
   )
 );
 
-$font-color-dark: palette(font, dark);
-$font-color-regular: palette(font, regular);
-$font-color-light: palette(font, light);
-$font-color-white: palette(font, white);
+$bg-color: foo-palette(base, 600);
+$bg-color-dark: foo-palette(base, 900);
+$bg-color-lighter: foo-palette(base, 400);
+$bg-highlighted: foo-palette(base, 300);
 
-$bg-color: palette(gray, 900);
-$bg-color-dark: palette(gray, 950);
-$bg-color-lighter: palette(gray, 800);
-$bg-highlighted: palette(gray, 600);
+$color-primary: foo-palette(feedback);
 
-$color-primary: palette(primary, 350);
-$color-ok: palette(green, ok);
-$color-warn: palette(orange, warning);
-$color-error: palette(red, error);
+$color-ok: foo-palette(success);
+$color-warn: foo-palette(alert);
+$color-error: foo-palette(error);
 
 $color-dashboard: (
   guide-line: palette(gray, 400),

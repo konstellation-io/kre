@@ -19,7 +19,7 @@ $color-bar: map-get($color-dashboard, primary);
 
   g.legend {
     text {
-      fill: $font-color-light;
+      fill: font-color(light);
       dominant-baseline: central;
     }
 

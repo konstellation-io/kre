@@ -8,7 +8,7 @@
   } @else if $status == 'STARTED' {
     $color: $color-primary;
   } @else if $status == 'STOPPED' {
-    $color: $font-color-light;
+    $color: font-color(light);
   }
 
   @return $color;

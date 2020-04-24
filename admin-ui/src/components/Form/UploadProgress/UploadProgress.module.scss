@@ -26,7 +26,7 @@ $color-completed: palette(primary, 200);
   height: 2px;
   margin: 12px 0 16px 0;
 
-  background-color: $font-color-regular;
+  background-color: font-color(regular);
 }
 .progress {
   height: 100%;

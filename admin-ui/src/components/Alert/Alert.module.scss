@@ -1,9 +1,12 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
+@import '../../styles/shadows';
 
 $color-bg: palette(red, 800);
 
 .container {
+  @include shadow(4);
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -12,7 +15,6 @@ $color-bg: palette(red, 800);
   margin-bottom: 3px;
   padding: 0 20px;
   background-color: $color-bg;
-  box-shadow: 0 2px 8px 0 #000000;
   white-space: nowrap;
 }
 

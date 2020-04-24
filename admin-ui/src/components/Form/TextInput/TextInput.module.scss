@@ -28,10 +28,10 @@
 .input {
   @include form-input;
 
-  color: $font-color-regular;
+  color: font-color(regular);
 
   &::-webkit-input-placeholder {
-    color: $font-color-regular;
+    color: font-color(regular);
   }
 
   &.lockHorizontalGrowth {
@@ -50,7 +50,7 @@
   transition: color ease 0.3s;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 }
 
@@ -62,7 +62,7 @@
   transition: color ease 0.3s, right ease 0.3s;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &.showClearButton {

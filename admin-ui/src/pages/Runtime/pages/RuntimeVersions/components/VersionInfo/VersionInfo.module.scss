@@ -10,7 +10,7 @@ $color-border: palette(gray, 800);
   flex-direction: row;
   border-bottom: solid 1px $color-border;
   transition: background-color ease 0.3s;
-  color: $font-color-light;
+  color: font-color(light);
 
   &.even {
     background-color: $bg-color-lighter;
@@ -33,7 +33,7 @@ $color-border: palette(gray, 800);
     .name,
     .version,
     .description {
-      color: $font-color-white;
+      color: font-color(light);
     }
 
     .statusLine {
@@ -137,7 +137,7 @@ $color-border: palette(gray, 800);
   .descriptionTitle,
   .activatedTitle {
     @include font-caption;
-    color: $font-color-regular;
+    color: font-color(regular);
 
     margin-bottom: 8px;
   }

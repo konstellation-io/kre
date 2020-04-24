@@ -22,27 +22,27 @@ $color-code-bg: palette(gray, 700);
   h1 {
     @include font-display;
 
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   h2 {
     @include font-title;
     font-weight: 300;
 
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   h3 {
     @include font-subheader;
 
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   p {
     @include font-small;
     line-height: 16px;
 
-    color: $font-color-light;
+    color: font-color(light);
   }
 
   li {
@@ -52,11 +52,11 @@ $color-code-bg: palette(gray, 700);
   blockquote {
     margin: 0;
     padding: 1px 22px;
-    border-left: solid 3px $font-color-light;
+    border-left: solid 3px font-color(light);
   }
 
   a {
-    color: $font-color-white;
+    color: font-color(light);
     font-weight: 400;
     text-decoration: underline !important;
   }
@@ -73,7 +73,7 @@ $color-code-bg: palette(gray, 700);
   code {
     @include font-code;
 
-    color: $font-color-white;
+    color: font-color(light);
     background-color: $color-code-bg;
     border-radius: 5px;
     padding: 1px 9px;

@@ -6,7 +6,7 @@
 $color-info-bg: palette(gray, 700);
 
 .wrapper {
-  color: $font-color-white;
+  color: font-color(light);
   padding: 16px 0;
   padding-left: 16px;
   background-color: $color-info-bg;
@@ -25,7 +25,7 @@ $color-info-bg: palette(gray, 700);
 .desc {
   @include font-small;
   font-weight: 500;
-  color: $font-color-light;
+  color: font-color(light);
 
   padding: 0 30px;
 }
