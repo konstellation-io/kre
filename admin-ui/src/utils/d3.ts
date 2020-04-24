@@ -158,9 +158,8 @@ export const tooltipAction = {
 
 export function generateVerticalGradient(
   g: Selection<SVGGElement, unknown, null, undefined>,
-  colors: [string, string, string, string]
+  colors: { [key: number]: string }
 ): void {
-  const [color10, color30, color60, color90] = colors;
   const gradient = g
     .append('defs')
     .append('svg:linearGradient')
@@ -171,29 +170,13 @@ export function generateVerticalGradient(
     .attr('y2', '0%')
     .attr('spreadMethod', 'pad');
 
-  gradient
-    .append('stop')
-    .attr('offset', '10%')
-    .attr('stop-color', color10)
-    .attr('stop-opacity', 1);
-
-  gradient
-    .append('stop')
-    .attr('offset', '30%')
-    .attr('stop-color', color30)
-    .attr('stop-opacity', 1);
-
-  gradient
-    .append('stop')
-    .attr('offset', '60%')
-    .attr('stop-color', color60)
-    .attr('stop-opacity', 1);
-
-  gradient
-    .append('stop')
-    .attr('offset', '90%')
-    .attr('stop-color', color90)
-    .attr('stop-opacity', 1);
+  Object.entries(colors).forEach(([stop, color]) => {
+    gradient
+      .append('stop')
+      .attr('offset', `${stop}%`)
+      .attr('stop-color', color)
+      .attr('stop-opacity', 1);
+  });
 }
 
 export function getClassFromLabel(label: string) {

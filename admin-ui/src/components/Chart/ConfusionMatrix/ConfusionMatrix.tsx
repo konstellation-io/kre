@@ -23,6 +23,17 @@ const AXIS_BOX_HEIGHT_PERC: number = 0.06;
 const AXIS_PADDING: number = 12;
 const LEGEND_MARGIN_PERC: number = 0.1;
 
+const COLORS = {
+  10: '#00252E',
+  20: '#00303B',
+  30: '#004151',
+  40: '#005266',
+  60: '#47FFFF',
+  80: '#84FFFF',
+  90: '#ADFFFF',
+  100: '#D6FFFF'
+};
+
 function getTooltipContent(d: D) {
   return (
     <div className={styles.tooltipContent}>
@@ -109,12 +120,12 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .paddingInner(SCALE_PADDING_INNER)
       .paddingOuter(SCALE_PADDING_OUTER);
 
-    const colorDomain = [10, 30, 60, 90];
+    const colorDomain = Object.keys(COLORS).map(n => parseInt(n));
     colorScale = scaleLinear()
       .domain(colorDomain)
       // @ts-ignore
       .interpolate(interpolateHcl)
-      .range(['#0D5266', '#0D84A1', '#21D4FF', '#CAF5FF']);
+      .range(Object.values(COLORS));
 
     // Initialize axes
     xAxis = axisBottom(xScale).tickSize(0);
@@ -206,7 +217,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
     legendG = g.append('g').classed(styles.legendG, true);
 
     const legendWidth = Math.min(xScale.bandwidth() / 2, legendMargin * 0.4);
-    generateVerticalGradient(g, ['#0D5266', '#0D84A1', '#21D4FF', '#CAF5FF']);
+    generateVerticalGradient(g, COLORS);
 
     legendG
       .append('rect')
@@ -267,8 +278,8 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .attr('fill', (d: D) => {
         const c: RGBColor = color(colorScale(d.value)) as RGBColor;
         return c.r * 0.299 + c.g * 0.587 + c.b * 0.114 > 90
-          ? '#005266'
-          : '#00A5CC';
+          ? '#00252E'
+          : '#CCF5FF';
       })
       .text((d: D) => `${d.value}%`);
   }

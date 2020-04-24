@@ -124,7 +124,7 @@ $color-error: foo-palette(error);
 $color-dashboard: (
   guide-line: palette(gray, 400),
   primary: palette(primary, 500),
-  primary-dark: palette(primary, 600),
+  primary-dark: foo-palette(highlight, 800),
   primary-light: palette(primary, 200),
   tooltip: palette(gray, 850)
 );
