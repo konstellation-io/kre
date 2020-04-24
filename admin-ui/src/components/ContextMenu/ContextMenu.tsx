@@ -21,6 +21,7 @@ interface ContextMenu {
 }
 
 function ContextMenu({ children, actions, contextObject }: Props) {
+  const windowWidth = window.innerWidth;
   const childElement = useRef<HTMLElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [stateContextMenu, setStateContextMenu] = useState<ContextMenu>({
@@ -31,8 +32,11 @@ function ContextMenu({ children, actions, contextObject }: Props) {
   function onRightClick(event: any) {
     event.preventDefault();
     event.stopPropagation();
-    const clickX = event.clientX;
+    let clickX = event.clientX;
     const clickY = event.clientY;
+    if (clickX + 150 > windowWidth) {
+      clickX = clickX - 130;
+    }
     setStateContextMenu({
       isVisible: true,
       x: clickX,

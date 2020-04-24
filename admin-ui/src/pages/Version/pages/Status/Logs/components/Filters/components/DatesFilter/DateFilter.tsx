@@ -41,7 +41,6 @@ function DateFilter({ onDateChange, selectedOption }: Props) {
       options={Object.values(dateFilterOptions)}
       onChange={handleDateOption}
       formSelectedOption={selectedOption}
-      defaultOption={dateFilterOptions.lastTwentyFourHours}
     />
   );
 }

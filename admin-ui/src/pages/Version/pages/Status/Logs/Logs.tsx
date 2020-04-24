@@ -74,7 +74,20 @@ function Logs() {
   }
 
   function duplicateTab(_: any, index: number): void {
-    console.log('duplicateTab', tabs[index].nodeName);
+    const tabToDuplicate = tabs[index];
+    const activeTabId = `${Date.now()}`;
+    client.writeData({
+      data: {
+        activeTabId,
+        logTabs: [
+          ...tabs,
+          {
+            ...tabToDuplicate,
+            uniqueId: activeTabId
+          }
+        ]
+      }
+    });
   }
 
   const contextMenuActions: MenuCallToAction[] = [
