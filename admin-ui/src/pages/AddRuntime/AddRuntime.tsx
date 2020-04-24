@@ -48,6 +48,7 @@ function AddRuntime() {
   } = useForm();
   useEffect(() => {
     register('name', { validate: verifyRuntimeName });
+    register('description');
     setValue('name', '');
   }, [register, setValue]);
 
@@ -106,6 +107,18 @@ function AddRuntime() {
               helpText={`${watch('name', '').length}/${MAX_LENGTH}`}
               maxLength={MAX_LENGTH}
               autoFocus
+            />
+            <TextInput
+              textArea
+              whiteColor
+              lockHorizontalGrowth
+              limits={{
+                minHeight: 90,
+                maxHeight: 360
+              }}
+              label="runtime description"
+              error={get(errors.description, 'message')}
+              onChange={(value: string) => setValue('description', value)}
             />
             <div className={styles.buttons}>
               <Button
