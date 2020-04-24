@@ -15,9 +15,17 @@ exports[`DashboardTitle matches snapshot 1`] = `
     <Calendar
       addTimeControls={true}
       hideError={true}
-      label="filter by dates"
+      label=""
       onChangeFromDateInput={[Function]}
       onChangeToDateInput={[Function]}
+    />
+  </div>
+  <div
+    className="visibilityIcon"
+    onClick={[Function]}
+  >
+    <VisibilityIcon
+      className="icon-regular"
     />
   </div>
 </div>
