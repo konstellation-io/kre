@@ -24,6 +24,7 @@ import { RuntimeRouteParams } from '../../../../../../constants/routes';
 import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
 import moment from 'moment';
 import { dateFilterOptions } from '../../Logs/components/Filters/components/DatesFilter/DateFilter';
+import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -40,9 +41,10 @@ const NODE_WIDTH = 160;
 type Props = {
   workflow: GetVersionWorkflows_version_workflows;
   workflowStatus: VersionStatus;
+  tooltipRefs: TooltipRefs;
 };
 
-function Workflow({ workflow, workflowStatus }: Props) {
+function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
 
@@ -130,6 +132,7 @@ function Workflow({ workflow, workflowStatus }: Props) {
           data={data}
           workflowStatus={workflowStatus}
           onInnerNodeClick={onInnerNodeClick}
+          tooltipRefs={tooltipRefs}
         />
       </div>
     </div>

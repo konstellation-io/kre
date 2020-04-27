@@ -1,0 +1,99 @@
+@import '../../../../../../styles/variables';
+@import '../../../../../../styles/mixins';
+@import '../../../../../../styles/colors';
+
+$width: $grid-unit * 55;
+$padding-y: 14px;
+$separation: 21px;
+$color-line: #5d6c76;
+
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: top ease 0.2s, left ease 0.2s, opacity ease 0.4s;
+
+  &.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+.container {
+  border-radius: $grid-unit / 2;
+  width: $width;
+  padding: 11px $padding-y;
+  background-color: $bg-box;
+  box-shadow: 0 2px 24px 0 #000000;
+  border-left: solid 3px $color-green;
+}
+
+.separator {
+  pointer-events: none;
+  margin: auto;
+  height: $separation;
+  width: 2px;
+  border-left: dashed 1px $color-line;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: $padding-y;
+  border-bottom: solid 1px $border-color-1;
+
+  .title {
+    @include font-button;
+    line-height: 17px;
+
+    margin-left: $padding-y;
+  }
+}
+
+.content {
+  padding: $padding-y 0;
+}
+
+.wrapper {
+  &.#{$status-down},
+  &.#{$status-loading} {
+    .container {
+      border-left-color: $color-status-down;
+    }
+  }
+
+  &.#{$status-up} {
+    .container {
+      border-left-color: $color-status-up;
+    }
+  }
+}
+
+.tooltipContent {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+
+  &.0 {
+    span {
+      color: $font-color-white;
+      font-weight: 500;
+      margin-right: $grid-unit;
+    }
+    input {
+      @include font-body;
+      color: $font-color-light;
+
+      background: none;
+      border: none;
+      outline: none;
+    }
+    div {
+      margin: 0 (2 * $grid-unit) 0 auto;
+      cursor: pointer;
+    }
+  }
+}
