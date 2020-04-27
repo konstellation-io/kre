@@ -46,9 +46,9 @@ def handler(ctx, data):
   categories = ctx.get_value("categories")
 
   # Saves metrics in MongoDB DB sending a message to the MongoWriter queue
-  ctx.save_metric(date="2020-04-06T09:02:09.277853Z",predicted_value="categoryX",true_value="categoryY")
-  ctx.save_metric(error=ctx.ERR_MISSING_VALUES)
-  ctx.save_metric(error=ctx.ERR_NEW_LABELS)
+  ctx.save_metric(date="2020-04-06T09:02:09.277853Z",predicted_value="class_x",true_value="class_y")
+  ctx.save_metric(error=ctx.ERR_MISSING_VALUES, date="2020-04-07T00:00:00.0Z")
+  ctx.save_metric(error=ctx.ERR_NEW_LABELS) # If the date is not set, the 'date' field value will be now
 
   normalized_data = np.xxx(categories)
   normalized_data = pd.xxx(normalized_data)
