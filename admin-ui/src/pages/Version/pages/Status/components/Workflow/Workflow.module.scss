@@ -6,8 +6,8 @@
 
 $workflowMargin: 2.5 * $grid-unit;
 $container-height: 220px;
-$color-border: palette(gray, 775);
-$color-box-bg: palette(gray, 850);
+$color-border: palette(base, 500);
+$color-box-bg: $bg-box;
 
 .workflowContainer {
   @include shadow(3);

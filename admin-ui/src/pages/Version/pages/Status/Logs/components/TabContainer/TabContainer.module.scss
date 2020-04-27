@@ -1,8 +1,8 @@
 @import '../../../../../../../styles/colors';
 @import '../../../../../../../styles/variables';
 
-$color-tab-bg: palette(gray, 850);
-$color-tab-selected-bg: palette(gray, 500);
+$color-tab-bg: palette(base);
+$color-tab-selected-bg: palette(lowlight, 800);
 
 .tabContainer {
   height: $grid-unit * 5;

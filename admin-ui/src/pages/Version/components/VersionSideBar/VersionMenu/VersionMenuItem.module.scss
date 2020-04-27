@@ -4,7 +4,7 @@
 .item {
   @include font-button;
   font-weight: 700;
-  color: font-color(light);
+  color: font-color(lowlight);
 
   display: flex;
   flex-direction: row;

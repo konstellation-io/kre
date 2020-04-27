@@ -1,8 +1,9 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
-$color-input-bg: palette(gray, 700);
-$color-border: palette(gray, 800);
+$color-input-bg: palette(base, 600);
+$color-border: palette(base);
+$bg-odd: palette(base);
 
 .container {
   display: flex;
@@ -15,10 +16,8 @@ $color-border: palette(gray, 800);
   .row:nth-child(0) {
     &,
     .typeColValue {
-      background-color: $bg-color-lighter;
-    }
-    input {
-      background-color: $color-input-bg;
+      background-color: $bg-odd;
+      color: font-color(light);
     }
   }
 }

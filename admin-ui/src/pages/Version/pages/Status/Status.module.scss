@@ -1,47 +1,12 @@
 @import '../../../../styles/colors';
 @import '../../../../styles/mixins';
 
-$color-created: palette(gray, 800);
-
 .container {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
   overflow: auto;
-}
-
-.horizontalBar {
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 40px 0 20px;
-  height: 40px;
-  transition: background-color ease 0.5s;
-  flex: 0 0 40px;
-
-  div {
-    color: font-color(dark);
-  }
-
-  &.STARTED {
-    background-color: $color-ok;
-  }
-
-  &.STARTING {
-    background-color: $color-primary;
-  }
-
-  &.STOPPED {
-    background-color: $color-warn;
-  }
-
-  &.CREATED {
-    background-color: $color-created;
-
-    div {
-      color: font-color(light);
-    }
-  }
 }
 
 .horizontalBarText {

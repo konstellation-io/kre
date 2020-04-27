@@ -15,8 +15,8 @@ $level-to-size: (
 }
 
 @mixin glow($level) {
-  @include color-shadow(foo-palette(highlight), $level);
+  @include color-shadow(palette(highlight), $level);
 }
 @mixin shadow($level) {
-  @include color-shadow(foo-palette(base, 900), $level);
+  @include color-shadow(palette(base, 900), $level);
 }

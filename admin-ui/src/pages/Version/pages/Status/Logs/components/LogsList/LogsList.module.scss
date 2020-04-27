@@ -2,7 +2,7 @@
 @import '../../../../../../../styles/mixins';
 @import '../../../../../../../styles/variables';
 
-$color-border: palette(gray, 775);
+$color-border: palette(base);
 
 .listContainer {
   overflow: auto;

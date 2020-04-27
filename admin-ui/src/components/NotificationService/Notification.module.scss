@@ -2,8 +2,8 @@
 @import '../../styles/mixins';
 @import '../../styles/shadows';
 
-$color-error-bg: palette(red, 800);
-$color-alert-bg: palette(primary, 700);
+$color-error-bg: palette(error, 900);
+$color-alert-bg: palette(feedback, 900);
 
 .notificationsContainer {
   position: absolute;

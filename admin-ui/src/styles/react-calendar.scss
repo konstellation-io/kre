@@ -3,7 +3,8 @@
 @import './borders';
 @import './shadows';
 
-$color-selected: palette(primary, 700);
+$color-active: $color-primary;
+$color-within-range: palette(highlight, 900);
 
 .DateRangePicker,
 .DateRangePickerInput {
@@ -22,11 +23,10 @@ $color-selected: palette(primary, 700);
   font-weight: 600;
 
   padding: 7px 9px;
-  background-color: $bg-color-lighter;
   color: font-color(light);
 }
 .DateInput_input__focused {
-  border-bottom: solid 1px $color-primary;
+  border-bottom: solid 1px $color-active;
 }
 .CalendarDay__blocked_out_of_range {
   opacity: 0.2;
@@ -44,7 +44,11 @@ $color-selected: palette(primary, 700);
 
 .CalendarMonth_caption > strong {
   @include font-title;
-  color: font-color(regular);
+  color: font-color(lowlight);
+}
+.DayPicker_weekHeader_li small {
+  @include font-small;
+  color: font-color(lowlight);
 }
 
 .DateInput_fang {
@@ -59,11 +63,11 @@ $color-selected: palette(primary, 700);
   color: #fff;
 
   &:hover {
-    @include border($color-primary);
+    @include border($color-active);
   }
 
   &:active {
-    background-color: $color-primary;
+    background-color: $color-active;
     color: font-color(dark);
   }
 }
@@ -95,17 +99,17 @@ $color-selected: palette(primary, 700);
   outline: none;
 
   &:hover {
-    @include border($color-primary);
+    @include border($color-active);
     background-color: inherit;
     color: font-color(light);
   }
 }
 .CalendarDay__selected {
-  background-color: $color-primary;
+  background-color: $color-active;
   color: font-color(dark);
 }
 .CalendarDay__selected_span {
-  background-color: $color-selected;
+  background-color: $color-within-range;
 }
 
 .DayPicker_weekHeader_ul {

@@ -2,7 +2,7 @@
 @import '../../../styles/colors';
 @import '../../../styles/borders';
 
-$color-selected-bg: palette(gray, 700);
+$color-selected-bg: palette(base, 300);
 
 .container {
   position: relative;
@@ -25,7 +25,7 @@ $color-selected-bg: palette(gray, 700);
   font-weight: 600;
 
   &.placeholder {
-    color: font-color(light);
+    color: font-color(lowlight);
   }
 
   &:after {

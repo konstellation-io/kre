@@ -3,17 +3,16 @@
 @import '../../../../../styles/funcs';
 @import '../../../../../styles/variables';
 
-$color-info-bg: palette(gray, 700);
-
 .wrapper {
   color: font-color(light);
   padding: 16px 0;
   padding-left: 16px;
-  background-color: $color-info-bg;
 }
 
 .name {
   @include font-body;
+  color: font-color(light);
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -23,9 +22,9 @@ $color-info-bg: palette(gray, 700);
 }
 
 .desc {
-  @include font-small;
+  @include font-body;
   font-weight: 500;
-  color: font-color(light);
+  color: font-color(lowlight);
 
   padding: 0 30px;
 }

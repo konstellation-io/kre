@@ -2,7 +2,7 @@
 @import '../../../../styles/colors';
 @import '../../../../styles/mixins';
 
-$color-wrapper-bg: palette(gray, 850);
+$color-wrapper-bg: palette(base, 500);
 
 .wrapper {
   flex-shrink: 0;
@@ -42,6 +42,8 @@ $color-wrapper-bg: palette(gray, 850);
 
 .runtimeName {
   @include font-subheader;
+  color: font-color(light);
+
   margin-right: 15px;
 }
 

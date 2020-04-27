@@ -7,17 +7,10 @@
 }
 
 .input {
-  @include border(transparent);
-  border-radius: 6px;
+  @include form-input;
 
-  @include font-body;
-
-  background-color: $bg-color-lighter;
   color: font-color(light);
-  width: 100%;
   font-weight: 600;
-  padding: 10px;
-  outline: none;
 }
 .optionsList {
   list-style: none;

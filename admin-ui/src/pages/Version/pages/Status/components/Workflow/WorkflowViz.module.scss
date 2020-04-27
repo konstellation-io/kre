@@ -3,8 +3,8 @@
 @import '../../../../../../styles/mixins';
 
 $color-line: #5d6c76;
-$color-label-bg: palette(gray, 750);
-$color-node-bg: palette(gray, 850);
+$color-label-bg: palette(base, 400);
+$color-node-bg: palette(base, 600);
 
 $STATUS-ACTIVE: STARTED;
 $STATUS-ACTIVE-2: PUBLISHED;
@@ -12,7 +12,7 @@ $STATUS-STOPPED: STOPPED;
 $STATUS-LOADING: ERROR;
 $STATUS-LOADING-2: STARTING;
 $color-stopped: font-color(regular);
-$color-loading: $color-primary;
+$color-loading: palette(feedback);
 $color-active: $color-ok;
 
 $animation-duration: 0.8s;
@@ -27,7 +27,7 @@ $animation-duration: 0.8s;
 
       + g.labelG {
         .nodeLabel {
-          fill: font-color(light);
+          fill: font-color(white);
         }
 
         line {
@@ -35,6 +35,9 @@ $animation-duration: 0.8s;
         }
         rect {
           filter: url('#glowLow');
+        }
+        text {
+          fill: font-color(white);
         }
       }
     }
@@ -85,7 +88,7 @@ $animation-duration: 0.8s;
   &.#{$STATUS-LOADING-2} {
     stroke: $color-stopped;
 
-    .icon {
+    .icon svg {
       fill: $color-stopped;
     }
   }
@@ -94,16 +97,16 @@ $animation-duration: 0.8s;
     stroke: $color-active;
   }
 
-  .icon {
+  .icon svg {
     stroke: transparent !important;
+    fill: font-color(lowlight);
   }
 }
 
 .nodeLabel {
-  @include font-body;
-  font-weight: 500;
+  @include font-small;
 
-  fill: font-color(light);
+  fill: font-color(lowlight);
   transition: fill ease 0.4s;
   text-anchor: middle;
 }

@@ -4,13 +4,12 @@
 @import '../../styles/borders';
 @import '../../styles/shadows';
 
-$color-primary: palette(primary, 350);
-$color-primary-light: palette(primary, 300);
-$color-gray: palette(gray, 850);
+$color-primary: palette(highlight, 400);
+$color-gray: palette(base, 300);
 
 .btn {
   @include font-button;
-  color: font-color(light);
+  color: font-color(regular);
   position: relative;
   text-align: center;
   padding: 0 42px;
@@ -60,8 +59,8 @@ $color-gray: palette(gray, 850);
 
 a.navLinkSelected .btn,
 .primary {
-  color: #1a1b1f;
-  background-color: $color-primary-light;
+  color: font-color(dark);
+  background-color: palette(highlight, 400);
 
   &:active {
     @include glow(2);
@@ -69,7 +68,7 @@ a.navLinkSelected .btn,
 }
 
 .dark {
-  color: font-color(light);
+  color: font-color(regular);
   background-color: $bg-color-dark;
 
   &:hover {
@@ -99,7 +98,7 @@ a.navLinkSelected .btn,
 }
 
 .transparent {
-  color: font-color(light);
+  color: font-color(regular);
   background-color: transparent;
 
   &:hover {
@@ -117,7 +116,7 @@ a.navLinkSelected .btn,
 }
 
 .label {
-  color: font-color(light);
+  color: font-color(lowlight);
 }
 
 .disabled {

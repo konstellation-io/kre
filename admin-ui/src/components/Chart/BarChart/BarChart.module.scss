@@ -1,6 +1,6 @@
 @import '../../../styles/colors';
 
-$color-bar: map-get($color-dashboard, primary);
+$color-bar: map-get($color-dashboard, primary-darker);
 
 .bar {
   pointer-events: none;

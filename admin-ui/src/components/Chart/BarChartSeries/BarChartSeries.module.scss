@@ -1,9 +1,9 @@
 @import '../../../styles/colors';
 @import '../../../styles/mixins';
 
-$color-primary-light: palette(primary, 300);
-$color-bar: map-get($color-dashboard, primary);
-$color-bar-dark: map-get($color-dashboard, primary-dark);
+$color-primary-light: map-get($color-dashboard, primary-light);
+$color-bar: map-get($color-dashboard, primary-dark);
+$color-bar-dark: map-get($color-dashboard, primary-darker);
 $color-guide: map-get($color-dashboard, guide-line);
 
 .g {

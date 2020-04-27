@@ -61,10 +61,8 @@ button {
 }
 
 h1 {
-  color: #66e2ff;
-  font-size: $font-size-headline;
-  font-weight: 400;
-  line-height: 34px;
+  @include font-headline;
+  color: palette(highlight);
   text-align: center;
   margin: 0;
 }

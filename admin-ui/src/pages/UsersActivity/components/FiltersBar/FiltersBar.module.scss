@@ -10,8 +10,6 @@
   flex-wrap: wrap;
   align-items: center;
   margin-top: 30px;
-  border: solid 2px $bg-color-lighter;
-  border-width: 2px 0;
 
   .label {
     @include font-body;

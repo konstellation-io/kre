@@ -1,10 +1,11 @@
 @import '../../../styles/colors';
 @import '../../../styles/mixins';
 
-$color-active: palette(primary, 200);
+$color-active: palette(highlight);
+$color-inactive: palette(lowlight);
 
 .container {
-  color: font-color(light);
+  color: font-color(lowlight);
 
   overflow: visible;
   pointer-events: none;
@@ -48,7 +49,7 @@ $color-active: palette(primary, 200);
   width: 69%;
   left: 50%;
   height: 7%;
-  background-color: #0000;
+  background-color: black;
   z-index: 9;
 }
 
@@ -59,7 +60,7 @@ $color-active: palette(primary, 200);
   transform: translateX(-50%) perspective(47px) rotateX(13deg);
 
   &.CREATING {
-    background-color: font-color(light);
+    background-color: $color-inactive;
   }
   &.STARTED {
     background-color: $color-primary;
@@ -73,11 +74,11 @@ $color-active: palette(primary, 200);
 
   top: 50.5%;
   transform: translateX(-50%) perspective(47px) rotateX(-13deg);
-  background-color: font-color(regular);
+  background-color: $color-inactive;
 
   &.STARTED,
   &.STOPPED {
-    background-color: font-color(regular);
+    background-color: $color-inactive;
   }
 
   &.PUBLISHED {
@@ -88,7 +89,7 @@ $color-active: palette(primary, 200);
 .statusText {
   @include font-button;
   line-height: 24px;
-  color: palette(gray, 800);
+  color: font-color(dark);
 
   position: absolute;
   width: 100%;

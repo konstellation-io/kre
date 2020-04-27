@@ -2,7 +2,7 @@
 @import '../../styles/mixins';
 @import '../../styles/shadows';
 
-$color-bg: palette(red, 800);
+$color-bg: palette(error, 900);
 
 .container {
   @include shadow(4);
@@ -29,7 +29,7 @@ $color-bg: palette(red, 800);
   text-align: center;
 
   &.error {
-    background-color: palette(red, error);
+    background-color: palette(error);
   }
 }
 

@@ -10,9 +10,8 @@ $increment-left-padding: 2 * $grid-unit;
 
   div {
     @include font-button;
-    letter-spacing: 0.55px !important;
-    font-weight: 700 !important;
-    color: font-color(light) !important;
+    font-weight: 800 !important;
+    color: font-color(lowlight) !important;
     text-transform: uppercase;
   }
 

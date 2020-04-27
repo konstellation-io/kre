@@ -1,8 +1,10 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
-$color-hexagon: palette(gray, 750);
-$color-hexagon-active: palette(primary, 250);
+$color-hexagon: palette(base, 400);
+$color-hexagon-active: $color-primary;
+$color-hexagon-hover: palette(highlight, 700);
+$color-hexagon-disabled: palette(base, 200);
 
 .container {
   padding-top: 16px;
@@ -34,7 +36,7 @@ $color-hexagon-active: palette(primary, 250);
 
   &:hover {
     .button {
-      background-color: #38a7c1;
+      background-color: $color-hexagon-hover;
       box-shadow: -26px -2px 29px -2px rgba($color-hexagon-active, 0.3);
     }
     .buttonText {
@@ -43,7 +45,7 @@ $color-hexagon-active: palette(primary, 250);
   }
   &.disabled {
     .button {
-      background-color: #555555;
+      background-color: $color-hexagon-disabled;
       cursor: not-allowed;
     }
     .buttonText {

@@ -2,7 +2,7 @@
 @import '../../styles/mixins';
 @import '../../styles/variables';
 
-$color-bg: palette(gray, 800);
+$color-bg: palette(base, 600);
 
 .container {
   width: $lateral-menu-width;
@@ -37,12 +37,6 @@ $color-bg: palette(gray, 800);
       color: white;
     }
   }
-}
-
-.description {
-  @include font-body;
-
-  padding: 0 26px 0 17px;
 }
 
 .navButtons {
