@@ -1,4 +1,4 @@
-import React, { RefObject, FunctionComponent } from 'react';
+import React, { RefObject, FunctionComponent, MouseEvent } from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import styles from './Tooltip.module.scss';
 import cx from 'classnames';
@@ -15,8 +15,8 @@ type Props = {
   tooltipHeaderRef: RefObject<HTMLDivElement>;
   tooltipContentRef: RefObject<HTMLDivElement>;
   tooltipVisible: boolean;
-  onTooltipEnter: Function;
-  onTooltipLeave: Function;
+  onTooltipEnter: (event: MouseEvent<HTMLDivElement>) => void;
+  onTooltipLeave: (event: MouseEvent<HTMLDivElement>) => void;
   tooltipHeader: TooltipHeader;
   tooltipStatus: NodeStatus;
 };
@@ -41,8 +41,8 @@ const Tooltip: FunctionComponent<Props> = ({
     >
       <div
         className={styles.container}
-        onMouseEnter={() => onTooltipEnter()}
-        onMouseLeave={() => onTooltipLeave()}
+        onMouseEnter={onTooltipEnter}
+        onMouseLeave={onTooltipLeave}
         ref={tooltipRef}
       >
         <div className={styles.header} ref={tooltipHeaderRef}>

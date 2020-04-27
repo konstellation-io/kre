@@ -4,15 +4,6 @@
 
 $color-line: #5d6c76;
 
-$STATUS-ACTIVE: STARTED;
-$STATUS-ACTIVE-2: PUBLISHED;
-$STATUS-STOPPED: STOPPED;
-$STATUS-LOADING: ERROR;
-$STATUS-LOADING-2: STARTING;
-$color-stopped: $font-color-regular;
-$color-loading: $color-blue;
-$color-active: $color-green;
-
 $animation-duration: 0.8s;
 @mixin animate($field) {
   transition: $field ease $animation-duration;
@@ -47,28 +38,28 @@ $animation-duration: 0.8s;
     @include animate(stroke);
   }
 
-  &.#{$STATUS-STOPPED} {
+  &.#{$status-down} {
     .innerCircle {
-      fill: $color-stopped;
+      fill: $color-status-down;
     }
     .outerCircle {
-      stroke: $color-stopped;
+      stroke: $color-status-down;
     }
   }
-  &.#{$STATUS-LOADING} {
+  &.#{$status-loading} {
     .innerCircle {
-      fill: $color-loading;
+      fill: $color-status-loading;
     }
     .outerCircle {
-      stroke: $color-loading;
+      stroke: $color-status-loading;
     }
   }
-  &.#{$STATUS-ACTIVE} {
+  &.#{$status-up} {
     .innerCircle {
-      fill: $color-active;
+      fill: $color-status-up;
     }
     .outerCircle {
-      stroke: $color-active;
+      stroke: $color-status-up;
     }
   }
 }
@@ -86,25 +77,22 @@ $animation-duration: 0.8s;
     stroke: transparent;
   }
 
-  &.#{$STATUS-STOPPED},
-  &.#{$STATUS-ACTIVE},
-  &.#{$STATUS-LOADING-2} {
+  &.#{$status-down} {
     .shape,
     .nodePeak {
-      stroke: $color-stopped;
+      stroke: $color-status-down;
     }
 
     .icon > svg > path {
-      fill: $color-stopped;
+      fill: $color-status-down;
     }
   }
 
-  &.#{$STATUS-ACTIVE-2},
-  &.#{$STATUS-ACTIVE-2} {
+  &.#{$status-up} {
     .shape,
     .nodePeak,
     .peakCut {
-      fill: $color-active;
+      fill: $color-status-up;
     }
 
     .icon > svg > path {
@@ -127,23 +115,20 @@ $animation-duration: 0.8s;
     stroke: transparent;
   }
 
-  &.#{$STATUS-STOPPED},
-  &.#{$STATUS-ACTIVE},
-  &.#{$STATUS-LOADING-2} {
+  &.#{$status-down} {
     .shape,
     .nodePeak {
-      stroke: $color-stopped;
+      stroke: $color-status-down;
     }
 
     .icon > svg > path {
-      fill: $color-stopped;
+      fill: $color-status-down;
     }
   }
 
-  &.#{$STATUS-ACTIVE-2},
-  &.#{$STATUS-ACTIVE-2} {
+  &.#{$status-up} {
     .shape {
-      fill: $color-active;
+      fill: $color-status-up;
     }
 
     .icon > svg > path {
@@ -194,19 +179,16 @@ $animation-duration: 0.8s;
     @include animate(stroke);
   }
 
-  &.#{$STATUS-STOPPED},
-  &.#{$STATUS-LOADING-2},
-  &.#{$STATUS-LOADING} {
+  &.#{$status-down} {
     line,
     path {
-      stroke: $color-stopped;
+      stroke: $color-status-down;
     }
   }
-  &.#{$STATUS-ACTIVE},
-  &.#{$STATUS-ACTIVE-2} {
+  &.#{$status-up} {
     line,
     path {
-      stroke: $color-active;
+      stroke: $color-status-up;
     }
   }
 }

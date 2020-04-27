@@ -58,17 +58,16 @@ $color-line: #5d6c76;
 }
 
 .wrapper {
-  &.STOPPED,
-  &.STARTING,
-  &.STARTED {
+  &.#{$status-down},
+  &.#{$status-loading} {
     .container {
-      border-left-color: $font-color-regular;
+      border-left-color: $color-status-down;
     }
   }
 
-  &.PUBLISHED {
+  &.#{$status-up} {
     .container {
-      border-left-color: $color-green;
+      border-left-color: $color-status-up;
     }
   }
 }
