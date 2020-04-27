@@ -3,6 +3,8 @@ import os
 import asyncio
 import importlib.util
 import json
+import traceback
+import datetime
 
 from nats.aio.client import Client as NATS
 
@@ -23,12 +25,16 @@ class Config:
 
 
 class HandlerContext:
+    ERR_MISSING_VALUES = "missing_values"
+    ERR_NEW_LABELS = "new_labels"
+
     def __init__(self, config, write_in_mongo):
-        self.__base_path__ = config.base_path
+        self.__config__ = config
         self.__write_in_mongo__ = write_in_mongo
+        self.METRIC_ERRORS = [self.ERR_MISSING_VALUES, self.ERR_NEW_LABELS]
 
     def get_path(self, relative_path):
-        return os.path.join(self.__base_path__, relative_path)
+        return os.path.join(self.__config__.base_path, relative_path)
 
     def set_value(self, key, value):
         setattr(self, key, value)
@@ -36,11 +42,35 @@ class HandlerContext:
     def get_value(self, key):
         return getattr(self, key)
 
-    def save_metric(self, key, value):
-        coll = "metrics"
+    def save_metric(self, predicted_value="", true_value="", date="", error=""):
+        if error != "":
+            if error not in self.METRIC_ERRORS:
+                raise Exception(f"[ctx.save_metric] invalid value for metric error {error} "
+                                f"should be one of '{','.join(self.METRIC_ERRORS)}'")
+        else:
+            if not isinstance(predicted_value, str) or predicted_value == "":
+                raise Exception(f"[ctx.save_metric] invalid 'predicted_value'='{predicted_value}',"
+                                f" must be a nonempty string")
+            if not isinstance(true_value, str) or true_value == "":
+                raise Exception(f"[ctx.save_metric] invalid 'true_value'='{true_value}', must be a nonempty string")
+
+        if date == "":
+            d = datetime.datetime.utcnow()
+            date = d.isoformat("T") + "Z"
+        else:
+            try:
+                datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+            except ValueError:
+                raise Exception(f"[ctx.save_metric] invalid 'date'='{date}', must be a RFC 3339 date like: "
+                                "2020-04-06T09:02:09.277853Z")
+
+        coll = "classificationMetrics"
         doc = {
-            "key": key,
-            "value": value
+            "date": date,
+            "error": error,
+            "predictedValue": predicted_value,
+            "trueValue": true_value,
+            "versionId": self.__config__.krt_version
         }
 
         self.__write_in_mongo__({"coll": coll, "doc": doc})
@@ -164,6 +194,7 @@ class Runner:
                 await self.nc.publish(output_subject, output_result.to_json())
 
             except Exception as err:
+                traceback.print_exc()
                 self.logger.error("error executing handler:" + str(err))
                 output_result = Result(error=f"error in '{self.config.krt_node_name}': {str(err)}")
                 await self.nc.publish(result.reply, output_result.to_json())
