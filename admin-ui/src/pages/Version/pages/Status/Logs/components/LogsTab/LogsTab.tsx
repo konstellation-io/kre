@@ -11,7 +11,6 @@ import {
   UpdateTabFiltersVariables
 } from '../../../../../../../graphql/client/mutations/updateTabFilters.graphql';
 import { useMutation } from '@apollo/react-hooks';
-import ContextMenu from '../../../../../../../components/ContextMenu/ContextMenu';
 
 export interface FilterTypes {
   dateOption: string;

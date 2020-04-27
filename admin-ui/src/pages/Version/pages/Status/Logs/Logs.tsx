@@ -92,14 +92,14 @@ function Logs() {
 
   const contextMenuActions: MenuCallToAction[] = [
     {
-      iconComponent: <IconClose className={'icon-small'} />,
-      text: 'close',
-      callToAction: (_: any, index: number) => closeTabByIndex(index)
-    },
-    {
       iconComponent: <IconDuplicate className={'icon-small'} />,
       text: 'duplicate',
       callToAction: duplicateTab
+    },
+    {
+      iconComponent: <IconClose className={'icon-small'} />,
+      text: 'close',
+      callToAction: (_: any, index: number) => closeTabByIndex(index)
     }
   ];
 
