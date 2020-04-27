@@ -1,0 +1,27 @@
+@import '../../../../../styles/colors';
+
+.inputNode {
+  path {
+    fill: $bg-box;
+  }
+  .body,
+  .peak {
+    stroke: $font-color-regular;
+    stroke-width: 2px;
+  }
+  .peakCut {
+    stroke: transparent;
+  }
+}
+
+.PUBLISHED {
+  .inputNode {
+    path {
+      fill: $color-green;
+    }
+    .body,
+    .peak {
+      stroke: $color-green;
+    }
+  }
+}
