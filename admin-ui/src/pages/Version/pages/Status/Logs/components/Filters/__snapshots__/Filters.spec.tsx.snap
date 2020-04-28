@@ -27,6 +27,7 @@ exports[`Filters matches snapshot 1`] = `
   >
     <DateFilter
       onDateChange={[MockFunction]}
+      selectedOption="2020-01-01"
     />
   </div>
 </div>

@@ -15,10 +15,15 @@ import {
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
 import { useApolloClient } from '@apollo/react-hooks';
-import { LogPanel } from '../../../../../../graphql/client/typeDefs';
+import {
+  LogPanel,
+  LogPanelFilters
+} from '../../../../../../graphql/client/typeDefs';
 import { useParams } from 'react-router-dom';
 import { RuntimeRouteParams } from '../../../../../../constants/routes';
 import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
+import moment from 'moment';
+import { dateFilterOptions } from '../../Logs/components/Filters/components/DatesFilter/DateFilter';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
@@ -52,6 +57,19 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
   }, [setContainerWidth, workflow.nodes]);
 
+  function getDefaultFilters(): LogPanelFilters {
+    return {
+      dateOption: dateFilterOptions.lastTwentyFourHours,
+      startDate: moment()
+        .subtract(1, 'day')
+        .startOf('day')
+        .toISOString(true),
+      endDate: moment()
+        .endOf('day')
+        .toISOString(true),
+      __typename: 'logTabFilters'
+    };
+  }
   function addLogTab(input: LogPanel) {
     const logTabs = client.readQuery({
       query: GET_LOG_TABS
@@ -61,7 +79,14 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
       data: {
         logsOpened: true,
         activeTabId,
-        logTabs: [...logTabs.logTabs, { ...input, uniqueId: activeTabId }]
+        logTabs: [
+          ...logTabs.logTabs,
+          {
+            ...input,
+            uniqueId: activeTabId,
+            filters: getDefaultFilters()
+          }
+        ]
       }
     });
   }
