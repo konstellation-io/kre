@@ -66,7 +66,7 @@ function LogsTab({
         }
       });
     }
-  }, [dateOptionWatch, getValues]);
+  }, [dateOptionWatch, getValues, uniqueId, updateTabFilters]);
 
   return (
     <div className={styles.container}>

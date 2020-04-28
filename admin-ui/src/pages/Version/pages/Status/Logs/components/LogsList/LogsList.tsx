@@ -17,18 +17,12 @@ import {
 import moment from 'moment';
 import LoadMore from './LoadMore';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-import { FilterTypes } from '../LogsTab/LogsTab';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
 const GetServerLogsQuery = loader(
   '../../../../../../../graphql/queries/getServerLogs.graphql'
 );
-
-const getFilters = ({ startDate, endDate }: FilterTypes) => ({
-  startDate,
-  endDate
-});
 
 function scrollToBottom(component: HTMLDivElement) {
   if (component) {
