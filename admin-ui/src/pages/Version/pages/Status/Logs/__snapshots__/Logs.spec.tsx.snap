@@ -12,6 +12,38 @@ exports[`Logs matches snapshot 1`] = `
     />
     <TabContainer
       activeTabId=""
+      contextMenuActions={
+        Array [
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "ControlPointDuplicateIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "duplicate",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "CloseIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "close",
+          },
+        ]
+      }
       onCloseTabClick={[Function]}
       onTabClick={[Function]}
       tabs={
@@ -33,6 +65,7 @@ exports[`Logs matches snapshot 1`] = `
         nodeId="nodeIdMock"
         nodeName="nodeNameMock"
         runtimeId="runtimeIdMock"
+        uniqueId="foo"
       />
     </div>
   </div>
@@ -55,6 +88,38 @@ exports[`Logs should be empty when there is no node 1`] = `
     />
     <TabContainer
       activeTabId=""
+      contextMenuActions={
+        Array [
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "ControlPointDuplicateIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "duplicate",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "CloseIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "close",
+          },
+        ]
+      }
       onCloseTabClick={[Function]}
       onTabClick={[Function]}
       tabs={Array []}
