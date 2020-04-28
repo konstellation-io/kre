@@ -1,5 +1,6 @@
 @import '../../../../../../styles/variables';
 @import '../../../../../../styles/mixins';
+@import '../../../../../../styles/shadows';
 @import '../../../../../../styles/colors';
 
 $width: $grid-unit * 55;
@@ -23,11 +24,12 @@ $color-line: #5d6c76;
   }
 }
 .container {
+  @include shadow(2);
+
   border-radius: $grid-unit / 2;
   width: $width;
   padding: 11px $padding-y;
   background-color: $bg-box;
-  box-shadow: 0 2px 24px 0 #000000;
   border-left: solid 3px $color-ok;
 }
 
