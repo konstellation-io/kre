@@ -31,8 +31,9 @@ type Props = {
   margin: Margin;
   data: Serie[];
   withBgBars?: boolean;
+  viewAllData: boolean;
 };
-function BarChartSeries({ width, height, margin, data }: Props) {
+function BarChartSeries({ width, height, margin, data, viewAllData }: Props) {
   const { svg, chart } = useChart({
     width,
     height,
@@ -67,7 +68,10 @@ function BarChartSeries({ width, height, margin, data }: Props) {
     marginLeft = margin.left;
     marginTop = margin.top + PADDING_SERIE_LABEL;
 
-    g = svgSelection.append('g').classed(styles.g, true);
+    g = svgSelection
+      .append('g')
+      .classed(styles.g, true)
+      .classed(styles.viewAllData, viewAllData);
     rowBgG = g.append('g').classed(styles.rowBgG, true);
 
     const seriesDomain: string[] = data.map((d: Serie) => d.title);
@@ -228,20 +232,19 @@ function BarChartSeries({ width, height, margin, data }: Props) {
       .attr('y', (d: D) => yScale(d.y) || 0)
       .attr('height', barHeight)
       .attr('width', function(d: D) {
-        const parent = get(this, 'parentNode.parentNode') as SVGGElement;
-
-        if (parent) {
-          const title = select<SVGGElement, Serie>(parent).datum().title;
-          const xScale = percCharts.includes(title) ? xScale1 : xScale2;
-          return xScale(d.x);
-        }
-
-        return 0;
+        const xScale = getXScale(this, percCharts);
+        return xScale ? xScale(d.x) : 0;
       });
     bars
       .append('text')
       .classed(styles.barValue, true)
-      .attr('x', seriesScale.bandwidth() + 8)
+      .attr('x', function(d: D) {
+        const xScale = getXScale(this, percCharts);
+
+        return xScale && viewAllData
+          ? xScale(d.x) + 16
+          : seriesScale.bandwidth() + 8;
+      })
       .attr('y', (d: D) => (yScale(d.y) || 0) + barHeight / 2)
       .text(function(d: D) {
         const parent = get(this, 'parentNode.parentNode') as SVGGElement;
@@ -252,6 +255,18 @@ function BarChartSeries({ width, height, margin, data }: Props) {
         }
         return '';
       });
+  }
+
+  function getXScale(item: SVGGElement, percCharts: string[]) {
+    const parent = get(item, 'parentNode.parentNode') as SVGGElement;
+    let xScale;
+
+    if (parent) {
+      const title = select<SVGGElement, Serie>(parent).datum().title;
+      xScale = percCharts.includes(title) ? xScale1 : xScale2;
+    }
+
+    return xScale;
   }
 
   const events = {

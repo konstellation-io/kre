@@ -58,8 +58,9 @@ type Props = {
   height: number;
   margin: Margin;
   data: D[];
+  viewAllData: boolean;
 };
-function BarChart({ width, height, margin, data }: Props) {
+function BarChart({ width, height, margin, data, viewAllData }: Props) {
   const { svg, chart, tooltip } = useChart({
     width,
     height,
@@ -224,10 +225,13 @@ function BarChart({ width, height, margin, data }: Props) {
       )
       .attr('width', barWidth);
 
-    barsG
-      .selectAll(`.${styles.bar}`)
+    const bars = barsG
+      .selectAll(`g`)
       .data(data)
       .enter()
+      .append('g');
+
+    bars
       .append('rect')
       .attr('class', (d: D) => getClassFromLabel(d.x))
       .classed(styles.bar, true)
@@ -235,6 +239,16 @@ function BarChart({ width, height, margin, data }: Props) {
       .attr('y', (d: D) => yScale(d.y))
       .attr('height', (d: D) => Math.max(0, innerHeight - yScale(d.y)))
       .attr('width', barWidth);
+
+    if (viewAllData && barWidth > 16) {
+      bars
+        .filter((d: D) => ![0, 100].includes(d.y))
+        .append('text')
+        .classed(styles.barLabel, true)
+        .attr('x', (d: D) => (xScale(d.x) || 0) + barWidth / 2)
+        .attr('y', (d: D) => yScale(d.y) + (d.y > 80 ? 8 : -12))
+        .text((d: D) => d.y);
+    }
   }
 
   const events = {

@@ -78,6 +78,12 @@
     }
   }
 
+  &.viewAllData {
+    .barValue {
+      fill-opacity: 1;
+    }
+  }
+
   .bars,
   .bar,
   .series,

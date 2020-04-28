@@ -1,8 +1,8 @@
 import React from 'react';
-
 import Calendar from '../../../../../../components/Form/Calendar/Calendar';
-
-import styles from './DashboardTitle.module.scss';
+import ViewIcon from '@material-ui/icons/Visibility';
+import HideIcon from '@material-ui/icons/VisibilityOff';
+import styles from './DashboardHeader.module.scss';
 import { Moment } from 'moment';
 
 type Props = {
@@ -11,14 +11,20 @@ type Props = {
   value: Function;
   onChange: Function;
   submit: Function;
+  viewAllData: boolean;
+  setViewAllData: Function;
 };
-function DashboardTitle({
+function DashboardHeader({
   runtimeName,
   versionName,
   value,
   onChange,
-  submit
+  submit,
+  setViewAllData,
+  viewAllData
 }: Props) {
+  const Icon = viewAllData ? HideIcon : ViewIcon;
+
   return (
     <div className={styles.container}>
       <div className={styles.title}>
@@ -26,7 +32,7 @@ function DashboardTitle({
       </div>
       <div className={styles.dateFilter}>
         <Calendar
-          label="filter by dates"
+          label=""
           onChangeFromDateInput={(date: Moment) => onChange('startDate', date)}
           onChangeToDateInput={(date: Moment) => onChange('endDate', date)}
           formFromDate={value('startDate')}
@@ -36,8 +42,14 @@ function DashboardTitle({
           hideError
         />
       </div>
+      <div
+        className={styles.visibilityIcon}
+        onClick={() => setViewAllData(!viewAllData)}
+      >
+        <Icon className="icon-regular" />
+      </div>
     </div>
   );
 }
 
-export default DashboardTitle;
+export default DashboardHeader;

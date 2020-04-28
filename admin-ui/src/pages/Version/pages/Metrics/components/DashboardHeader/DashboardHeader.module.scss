@@ -4,13 +4,21 @@
 .container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   height: 61px;
-  padding: 0 10px;
+  margin: 10px;
 }
 
 .title {
   @include font-subheader;
   color: $font-color-white;
+}
+
+.dateFilter {
+  margin-left: auto;
+}
+
+.visibilityIcon {
+  cursor: pointer;
+  margin-left: 2 * $grid-unit;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import DashboardTitle from './DashboardTitle';
+import DashboardHeader from './DashboardHeader';
 
 jest.mock('react-router', () => ({
   useParams: jest.fn(() => ({ runtimeId: '', versionId: '' }))
@@ -11,7 +11,7 @@ describe('DashboardTitle', () => {
 
   beforeEach(() => {
     wrapper = shallow(
-      <DashboardTitle
+      <DashboardHeader
         runtimeName="runtimeName"
         versionName="versionName"
         onChange={jest.fn()}
