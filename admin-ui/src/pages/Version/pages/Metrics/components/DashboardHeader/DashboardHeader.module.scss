@@ -1,0 +1,24 @@
+@import '../../../../../../styles/mixins';
+@import '../../../../../../styles/colors';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 61px;
+  margin: 10px;
+}
+
+.title {
+  @include font-subheader;
+  color: $font-color-white;
+}
+
+.dateFilter {
+  margin-left: auto;
+}
+
+.visibilityIcon {
+  cursor: pointer;
+  margin-left: 2 * $grid-unit;
+}

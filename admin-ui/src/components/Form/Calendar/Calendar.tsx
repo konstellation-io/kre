@@ -153,7 +153,7 @@ function Calendar({
 
   return (
     <div>
-      <InputLabel text={label} />
+      {label && <InputLabel text={label} />}
       <DateRangePicker
         startDate={fromDate}
         startDateId="calendar_from_date"
