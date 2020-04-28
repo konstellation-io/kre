@@ -1,0 +1,28 @@
+@import '../../../../../styles/colors';
+@import '../../../../../styles/variables';
+
+.inputNode {
+  path {
+    fill: $bg-box;
+  }
+  .body,
+  .peak {
+    stroke: $color-status-down;
+    stroke-width: 2px;
+  }
+  .peakCut {
+    stroke: transparent;
+  }
+}
+
+.#{$status-up} {
+  .inputNode {
+    path {
+      fill: $color-status-up;
+    }
+    .body,
+    .peak {
+      stroke: $color-status-up;
+    }
+  }
+}

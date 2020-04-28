@@ -3,10 +3,12 @@
 @import '../../../../../../../styles/variables';
 
 $color-border: palette(base);
+$color-bg: palette(base, 700);
 
 .listContainer {
   overflow: auto;
   flex-grow: 1;
+  background-color: palette(base);
 }
 
 .listContainer > div:not(:first-child) {
@@ -17,7 +19,7 @@ $color-border: palette(base);
   @include font-body;
 
   height: $height-log-item;
-  background-color: $bg-color;
+  background-color: $color-bg;
 
   &.loadPreviousLogs {
     display: flex;
@@ -60,7 +62,7 @@ $color-border: palette(base);
 }
 
 .icon {
-  color: font-color(light);
+  color: $color-primary;
 }
 
 .date {

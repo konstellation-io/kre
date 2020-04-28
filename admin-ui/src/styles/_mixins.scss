@@ -89,14 +89,14 @@
   }
 }
 
-@mixin input-footer($color) {
+@mixin input-footer($color, $align: end) {
   @include font-small;
 
   height: auto;
   min-height: $grid-unit * 2;
   margin-top: $grid-unit;
   letter-spacing: 0.1px;
-  text-align: end;
+  text-align: $align;
   color: transparent;
   transition: color ease 0.5s;
 

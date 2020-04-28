@@ -4,7 +4,8 @@ import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 import {
   GET_LOG_PANEL_CONF,
-  GetLogPanelConf
+  GetLogPanelConf,
+  TabFilters
 } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
 import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
@@ -16,18 +17,12 @@ import {
 import moment from 'moment';
 import LoadMore from './LoadMore';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-import { FilterTypes } from '../LogsTab/LogsTab';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
 const GetServerLogsQuery = loader(
   '../../../../../../../graphql/queries/getServerLogs.graphql'
 );
-
-const getFilters = ({ startDate, endDate }: FilterTypes) => ({
-  startDate: startDate.toISOString(true),
-  endDate: endDate.toISOString(true)
-});
 
 function scrollToBottom(component: HTMLDivElement) {
   if (component) {
@@ -42,7 +37,7 @@ type Props = {
   nodeId: string;
   runtimeId: string;
   workflowId: string;
-  filterValues: FilterTypes;
+  filterValues: TabFilters;
   onNewLogs: Function;
   logs: GetServerLogs_logs_items[];
 };
@@ -65,7 +60,7 @@ function LogsList({
     GetServerLogs,
     GetServerLogsVariables
   >(GetServerLogsQuery, {
-    variables: { workflowId, runtimeId, nodeId, ...getFilters(filterValues) },
+    variables: { workflowId, runtimeId, nodeId, ...filterValues },
     onCompleted: data => {
       onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');

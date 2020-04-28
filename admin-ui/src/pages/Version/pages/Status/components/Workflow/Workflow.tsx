@@ -15,10 +15,16 @@ import {
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
 import { useApolloClient } from '@apollo/react-hooks';
-import { LogPanel } from '../../../../../../graphql/client/typeDefs';
+import {
+  LogPanel,
+  LogPanelFilters
+} from '../../../../../../graphql/client/typeDefs';
 import { useParams } from 'react-router-dom';
 import { RuntimeRouteParams } from '../../../../../../constants/routes';
 import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
+import moment from 'moment';
+import { dateFilterOptions } from '../../Logs/components/Filters/components/DatesFilter/DateFilter';
+import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -35,9 +41,10 @@ const NODE_WIDTH = 160;
 type Props = {
   workflow: GetVersionWorkflows_version_workflows;
   workflowStatus: VersionStatus;
+  tooltipRefs: TooltipRefs;
 };
 
-function Workflow({ workflow, workflowStatus }: Props) {
+function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
 
@@ -50,6 +57,19 @@ function Workflow({ workflow, workflowStatus }: Props) {
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
   }, [setContainerWidth, workflow.nodes]);
 
+  function getDefaultFilters(): LogPanelFilters {
+    return {
+      dateOption: dateFilterOptions.lastTwentyFourHours,
+      startDate: moment()
+        .subtract(1, 'day')
+        .startOf('day')
+        .toISOString(true),
+      endDate: moment()
+        .endOf('day')
+        .toISOString(true),
+      __typename: 'logTabFilters'
+    };
+  }
   function addLogTab(input: LogPanel) {
     const logTabs = client.readQuery({
       query: GET_LOG_TABS
@@ -59,7 +79,14 @@ function Workflow({ workflow, workflowStatus }: Props) {
       data: {
         logsOpened: true,
         activeTabId,
-        logTabs: [...logTabs.logTabs, { ...input, uniqueId: activeTabId }]
+        logTabs: [
+          ...logTabs.logTabs,
+          {
+            ...input,
+            uniqueId: activeTabId,
+            filters: getDefaultFilters()
+          }
+        ]
       }
     });
   }
@@ -105,6 +132,7 @@ function Workflow({ workflow, workflowStatus }: Props) {
           data={data}
           workflowStatus={workflowStatus}
           onInnerNodeClick={onInnerNodeClick}
+          tooltipRefs={tooltipRefs}
         />
       </div>
     </div>

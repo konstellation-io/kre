@@ -1,11 +1,11 @@
 import React from 'react';
-
 import Header from './components/Header/Header';
 import LogsTab from './components/LogsTab/LogsTab';
-
 import cx from 'classnames';
 import styles from './Logs.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import IconClose from '@material-ui/icons/Close';
+import IconDuplicate from '@material-ui/icons/ControlPointDuplicate';
 import {
   GET_LOG_TABS,
   GetLogTabs_logTabs,
@@ -13,6 +13,7 @@ import {
 } from '../../../../../graphql/client/queries/getLogs.graphql';
 import { get } from 'lodash';
 import TabContainer from './components/TabContainer/TabContainer';
+import { MenuCallToAction } from '../../../../../components/ContextMenu/ContextMenu';
 
 function Logs() {
   const client = useApolloClient();
@@ -48,14 +49,7 @@ function Logs() {
     index: number
   ): void {
     event.stopPropagation();
-
-    const newTabs = [...tabs];
-    newTabs.splice(index, 1);
-    const newActiveTabId = getNewActiveTabId(index, newTabs);
-
-    client.writeData({
-      data: { activeTabId: newActiveTabId, logTabs: newTabs }
-    });
+    closeTabByIndex(index);
   }
 
   function getNewActiveTabId(index: number, newTabs: GetLogTabs_logTabs[]) {
@@ -68,6 +62,46 @@ function Logs() {
 
     return newActiveTabId;
   }
+
+  function closeTabByIndex(index: number): void {
+    const newTabs = [...tabs];
+    newTabs.splice(index, 1);
+    const newActiveTabId = getNewActiveTabId(index, newTabs);
+
+    client.writeData({
+      data: { activeTabId: newActiveTabId, logTabs: newTabs }
+    });
+  }
+
+  function duplicateTab(_: any, index: number): void {
+    const tabToDuplicate = tabs[index];
+    const activeTabId = `${Date.now()}`;
+    client.writeData({
+      data: {
+        activeTabId,
+        logTabs: [
+          ...tabs,
+          {
+            ...tabToDuplicate,
+            uniqueId: activeTabId
+          }
+        ]
+      }
+    });
+  }
+
+  const contextMenuActions: MenuCallToAction[] = [
+    {
+      Icon: IconDuplicate,
+      text: 'duplicate',
+      callToAction: duplicateTab
+    },
+    {
+      Icon: IconClose,
+      text: 'close',
+      callToAction: (_: any, index: number) => closeTabByIndex(index)
+    }
+  ];
 
   const hidden = tabs.length === 0;
   return (
@@ -86,6 +120,7 @@ function Logs() {
         <TabContainer
           tabs={tabs}
           activeTabId={activeTabId}
+          contextMenuActions={contextMenuActions}
           onTabClick={handleTabClick}
           onCloseTabClick={handleCloseTabClick}
         />
@@ -102,6 +137,8 @@ function Logs() {
               runtimeId={tab.runtimeId}
               nodeName={tab.nodeName}
               workflowId={tab.workflowId}
+              uniqueId={tab.uniqueId}
+              filterValues={tab.filters}
             />
           </div>
         ))}

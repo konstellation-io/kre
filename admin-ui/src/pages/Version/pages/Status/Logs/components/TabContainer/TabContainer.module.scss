@@ -1,6 +1,7 @@
 @import '../../../../../../../styles/colors';
 @import '../../../../../../../styles/variables';
 
+$color-tabs-bg: palette(base, 700);
 $color-tab-bg: palette(base);
 $color-tab-selected-bg: palette(lowlight, 800);
 
@@ -9,30 +10,30 @@ $color-tab-selected-bg: palette(lowlight, 800);
   display: flex;
   align-items: flex-end;
   padding: $grid-unit $grid-unit 0 $grid-unit;
-  background-color: $color-tab-bg;
-  & > div {
-    min-width: $grid-unit * 9.5;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: $grid-unit * 25.5;
-    padding: $grid-unit $grid-unit $grid-unit $grid-unit * 2;
-    height: $grid-unit * 4;
-    background-color: $bg-color;
-    font-size: $grid-unit * 1.5;
-    & > span {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  background-color: $color-tabs-bg;
+}
+.tab {
+  min-width: $grid-unit * 9.5;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: $grid-unit * 25.5;
+  padding: $grid-unit $grid-unit $grid-unit $grid-unit * 2;
+  height: $grid-unit * 4;
+  background-color: $bg-color;
+  font-size: $grid-unit * 1.5;
+  & > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  & > div:not(:last-child) {
-    margin-right: $grid-unit;
-  }
-  & > div.selected {
+  &.selected {
     height: $grid-unit * 4;
     background-color: $color-tab-selected-bg;
     font-size: $grid-unit * 1.5;
+  }
+  &:not(:last-child) {
+    margin-right: $grid-unit;
   }
 }

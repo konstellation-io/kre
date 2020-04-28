@@ -27,8 +27,9 @@ type Props = {
   toggleExpanded?: Function;
   nodeId?: string;
   data: GetMetrics_metrics_charts_successVsFails[];
+  viewAllData: boolean;
 };
-function Accuracy({ toggleExpanded, nodeId, data }: Props) {
+function Accuracy({ toggleExpanded, nodeId, data, viewAllData }: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (
@@ -50,6 +51,7 @@ function Accuracy({ toggleExpanded, nodeId, data }: Props) {
             left: 14
           }}
           data={formatData(data)}
+          viewAllData={viewAllData}
         />
       </div>
     </Box>

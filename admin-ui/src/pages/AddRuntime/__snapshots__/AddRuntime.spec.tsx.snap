@@ -1586,6 +1586,13 @@ exports[`AddRuntime matches snapshot 1`] = `
                       type="text"
                       value=""
                     />
+                    <InputInfo
+                      message=""
+                    >
+                      <div
+                        className="infoMessage"
+                      />
+                    </InputInfo>
                     <InputHelp
                       message="0/20"
                     >

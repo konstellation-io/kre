@@ -74,7 +74,11 @@ $color-primary: palette(highlight);
 $color-ok: palette(success);
 $color-warn: palette(alert);
 $color-error: palette(error);
-$color-other: palette(base, 400);
+$color-other: palette(lowlight);
+
+$color-status-up: $color-ok;
+$color-status-down: $color-other;
+$color-status-loading: $color-primary;
 
 $color-dashboard: (
   guide-line: palette(base, 300),

@@ -4,12 +4,22 @@
   position: relative;
   padding: 10px;
   flex-grow: 1;
+  overflow: auto;
 }
 
 .wrapper {
   height: 100%;
+  overflow: scroll;
+
+  > div {
+    height: auto;
+  }
 
   &.expanded {
+    > div {
+      height: 100%;
+    }
+
     .row,
     .col {
       transition: max-height ease 0.4s, min-height ease 0.4s, height ease 0.4s,
@@ -46,7 +56,6 @@
     max-height: none !important;
     min-height: none !important;
     height: 100% !important;
-    padding-bottom: 25px;
   }
 }
 .col {

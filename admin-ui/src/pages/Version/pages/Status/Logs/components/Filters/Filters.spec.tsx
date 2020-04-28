@@ -9,7 +9,15 @@ describe('Filters', () => {
 
   beforeEach(() => {
     wrapper = shallow(
-      <Filters filters={{ filter: 'value' }} onDateChange={onDateChangeMock} />
+      <Filters
+        filters={{ filter: 'value' }}
+        onDateChange={onDateChangeMock}
+        filterValues={{
+          startDate: '2020-01-01',
+          endDate: '2020-01-01',
+          dateOption: '2020-01-01'
+        }}
+      />
     );
   });
 

@@ -7,6 +7,38 @@ import { AddNotificationVariables } from './mutations/addNotification.graphql';
 import { RemoveNotificationVariables } from './mutations/removeNotification.graphql';
 import ApolloClient from 'apollo-client';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
+import { UpdateTabFiltersVariables } from './mutations/updateTabFilters.graphql';
+import {
+  GET_LOG_TABS,
+  GetLogTabs,
+  GetLogTabs_logTabs
+} from './queries/getLogs.graphql';
+
+export function updateTabFiltersResolver(
+  _: any,
+  variables: UpdateTabFiltersVariables,
+  { cache }: ApolloClient<NormalizedCacheObject>
+) {
+  const { uniqueId, newFilters } = variables.input;
+  const data: any = cache.readQuery<GetLogTabs>({
+    query: GET_LOG_TABS
+  });
+  const updatedTabs = data.logTabs.map((logTab: GetLogTabs_logTabs) => {
+    if (logTab.uniqueId === uniqueId) {
+      return {
+        ...logTab,
+        filters: { ...logTab.filters, ...newFilters }
+      };
+    }
+    return logTab;
+  });
+  cache.writeData({
+    data: {
+      logTabs: updatedTabs
+    }
+  });
+  return null;
+}
 
 export function addNotificationResolver(
   _: any,

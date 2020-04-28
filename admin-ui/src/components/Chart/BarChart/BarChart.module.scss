@@ -1,4 +1,5 @@
 @import '../../../styles/colors';
+@import '../../../styles/mixins';
 
 $color-bar: map-get($color-dashboard, primary-darker);
 
@@ -37,5 +38,11 @@ $color-bar: map-get($color-dashboard, primary-darker);
 
   .yAxis line {
     stroke-opacity: 0.5;
+  }
+
+  .barLabel {
+    font-size: 11px;
+    text-anchor: middle;
+    dominant-baseline: central;
   }
 }

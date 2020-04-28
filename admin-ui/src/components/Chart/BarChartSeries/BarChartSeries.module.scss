@@ -83,6 +83,12 @@ $color-guide: map-get($color-dashboard, guide-line);
     }
   }
 
+  &.viewAllData {
+    .barValue {
+      fill-opacity: 1;
+    }
+  }
+
   .bars,
   .bar,
   .series,

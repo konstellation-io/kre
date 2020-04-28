@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './Filters.module.scss';
 import DateFilter from './components/DatesFilter/DateFilter';
+import { TabFilters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 
 type FilterProps = {
   filter: string;
@@ -18,8 +19,9 @@ export function Filter({ filter, value }: FilterProps) {
 type Props = {
   filters: { [key: string]: string };
   onDateChange: Function;
+  filterValues: TabFilters;
 };
-function Filters({ filters, onDateChange }: Props) {
+function Filters({ filters, onDateChange, filterValues }: Props) {
   const filterNodes = Object.keys(filters).map((filter: string) => (
     <Filter filter={filter} value={filters[filter]} key={filter} />
   ));
@@ -33,7 +35,10 @@ function Filters({ filters, onDateChange }: Props) {
         <div className={styles.filters}>{filterNodes}</div>
       </div>
       <div className={styles.rightFilters}>
-        <DateFilter onDateChange={onDateChange} />
+        <DateFilter
+          selectedOption={filterValues.dateOption}
+          onDateChange={onDateChange}
+        />
       </div>
     </div>
   );
