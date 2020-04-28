@@ -30,9 +30,7 @@ export function updateTabFiltersResolver(
         filters: { ...logTab.filters, ...newFilters }
       };
     }
-    return {
-      ...logTab
-    };
+    return logTab;
   });
   cache.writeData({
     data: {

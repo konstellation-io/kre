@@ -14,16 +14,6 @@
   padding: 0;
   margin: 0;
   & > li {
-    cursor: pointer;
-    height: 40px;
-    display: flex;
-    align-items: center;
     text-transform: uppercase;
-    color: #ababab;
-    font-size: 12px;
-    font-weight: 800;
-    .menuText {
-      padding: 0 $grid-unit;
-    }
   }
 }

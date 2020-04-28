@@ -1,15 +1,23 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, {
+  FunctionComponent,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import styles from './ContextMenu.module.scss';
 import useClickOutsideListener from '../../hooks/useClickOutsideListener';
+import Button, { BUTTON_ALIGN } from '../Button/Button';
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 type Props = {
   children: ReactElement;
   actions: MenuCallToAction[];
-  contextObject: any;
+  contextObject: number;
 };
 
 export interface MenuCallToAction {
-  iconComponent?: JSX.Element;
+  Icon?: FunctionComponent<SvgIconProps>;
   text: string;
   callToAction: Function;
 }
@@ -86,12 +94,13 @@ function ContextMenu({ children, actions, contextObject }: Props) {
         >
           <ul className={styles.contextMenuList}>
             {actions.map((action, index) => (
-              <li
-                key={`${action.text}-${index}`}
-                onClick={() => handleMenuItemClick(action)}
-              >
-                {action.iconComponent}
-                <span className={styles.menuText}>{action.text}</span>
+              <li key={`${action.text}-${index}`}>
+                <Button
+                  label={action.text}
+                  Icon={action.Icon}
+                  onClick={() => handleMenuItemClick(action)}
+                  align={BUTTON_ALIGN.LEFT}
+                />
               </li>
             ))}
           </ul>

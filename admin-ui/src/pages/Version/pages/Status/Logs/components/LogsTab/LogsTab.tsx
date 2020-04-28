@@ -8,6 +8,7 @@ import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/t
 import { TabFilters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import {
   UPDATE_TAB_FILTERS,
+  UpdateTabFilters,
   UpdateTabFiltersVariables
 } from '../../../../../../../graphql/client/mutations/updateTabFilters.graphql';
 import { useMutation } from '@apollo/react-hooks';
@@ -34,9 +35,10 @@ function LogsTab({
   filterValues
 }: Props) {
   const [logs, setLogs] = useState<GetServerLogs_logs_items[]>([]);
-  const [updateTabFilters] = useMutation<any, UpdateTabFiltersVariables>(
-    UPDATE_TAB_FILTERS
-  );
+  const [updateTabFilters] = useMutation<
+    UpdateTabFilters,
+    UpdateTabFiltersVariables
+  >(UPDATE_TAB_FILTERS);
   const { register, setValue, getValues, watch } = useForm<FilterTypes>({
     reValidateMode: 'onBlur'
   });

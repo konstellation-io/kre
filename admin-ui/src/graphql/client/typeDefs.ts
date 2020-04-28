@@ -17,7 +17,7 @@ export interface LogPanelFilters {
   dateOption: string;
   startDate: string;
   endDate: string;
-  __typename: string;
+  __typename: 'logTabFilters';
 }
 
 export interface SetCurrentLogPanelInput {

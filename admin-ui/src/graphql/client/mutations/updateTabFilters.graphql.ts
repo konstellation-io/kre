@@ -9,7 +9,9 @@ export interface UpdateTabFiltersInput {
 export interface UpdateTabFiltersVariables {
   input: UpdateTabFiltersInput;
 }
-
+export interface UpdateTabFilters {
+  updateTabFilters: string[];
+}
 export const UPDATE_TAB_FILTERS = gql`
   mutation UpdateTabFilters($input: UpdateTabFiltersVariables!) {
     updateTabFilters(input: $input) @client {
