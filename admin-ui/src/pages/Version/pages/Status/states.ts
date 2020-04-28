@@ -2,6 +2,7 @@ import {
   NodeStatus,
   VersionStatus
 } from '../../../../graphql/types/globalTypes';
+import { GetVersionWorkflows_version_workflows_nodes } from '../../../../graphql/queries/types/GetVersionWorkflows';
 
 export enum FinalStates {
   UP = 'UP',
@@ -20,18 +21,25 @@ const EdgeToFinal: Map<NodeStatus, FinalStates> = new Map([
   [NodeStatus.STOPPED, FinalStates.DOWN],
   [NodeStatus.ERROR, FinalStates.DOWN]
 ]);
-const WorkflowToFinal: Map<VersionStatus, FinalStates> = new Map([
-  [VersionStatus.PUBLISHED, FinalStates.UP],
-  [VersionStatus.STARTED, FinalStates.DOWN],
-  [VersionStatus.STOPPED, FinalStates.DOWN],
-  [VersionStatus.STARTING, FinalStates.DOWN]
-]);
 
 export function getProcessState(processState: NodeStatus) {
   return ProcessToFinal.get(processState) || defaultState;
 }
-export function getWorkflowState(versionState: VersionStatus) {
-  return WorkflowToFinal.get(versionState) || defaultState;
+
+const nodeLoading = (node: GetVersionWorkflows_version_workflows_nodes) =>
+  node.status === NodeStatus.ERROR;
+export function getWorkflowState(
+  versionState: VersionStatus,
+  nodes: GetVersionWorkflows_version_workflows_nodes[] = []
+) {
+  switch (true) {
+    case versionState === VersionStatus.PUBLISHED:
+      return FinalStates.UP;
+    case nodes.some(nodeLoading):
+      return FinalStates.LOADING;
+    default:
+      return FinalStates.DOWN;
+  }
 }
 export function getLinkState(processState: NodeStatus) {
   return EdgeToFinal.get(processState) || defaultState;

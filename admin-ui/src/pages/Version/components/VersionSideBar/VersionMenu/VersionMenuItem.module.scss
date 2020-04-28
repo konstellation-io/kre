@@ -1,6 +1,9 @@
 @import '../../../../../styles/colors';
 @import '../../../../../styles/mixins';
 
+$color-active: palette(lowlight, 900);
+$color-hover: palette(lowlight, 700);
+
 .item {
   @include font-button;
   font-weight: 700;
@@ -10,8 +13,9 @@
   flex-direction: row;
   align-items: center;
   padding: 16px;
-  height: 40px;
-  border-right: 4px solid transparent;
+  height: $grid-unit * 7;
+
+  transition: background-color ease 0.4s, color ease 0.4s;
 
   .icon {
     margin-right: 16px;
@@ -24,6 +28,7 @@
 
   &:hover {
     color: font-color(light);
+    background-color: $color-hover;
   }
 }
 
@@ -31,10 +36,9 @@
   cursor: default;
   pointer-events: none;
   color: font-color(light);
-}
 
-.active .item {
-  background-color: palette(lowlight, 900);
-  color: font-color(light);
-  border-right: 4px solid $color-primary;
+  .item {
+    background-color: $color-active;
+    color: font-color(light);
+  }
 }

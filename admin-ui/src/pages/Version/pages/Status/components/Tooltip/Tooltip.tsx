@@ -37,14 +37,11 @@ const Tooltip: FunctionComponent<Props> = ({
       className={cx(styles.wrapper, styles[tooltipStatus], {
         [styles.show]: tooltipVisible
       })}
+      onMouseEnter={onTooltipEnter}
+      onMouseLeave={onTooltipLeave}
       ref={tooltipRef}
     >
-      <div
-        className={styles.container}
-        onMouseEnter={onTooltipEnter}
-        onMouseLeave={onTooltipLeave}
-        ref={tooltipRef}
-      >
+      <div className={styles.container} ref={tooltipRef}>
         <div className={styles.header} ref={tooltipHeaderRef}>
           <SvgIcon className={cx('icon-regular', tooltipStatus)}>
             {tooltipHeader.Icon}
