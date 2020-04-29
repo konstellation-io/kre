@@ -18,12 +18,14 @@ import {
 import styles from './Runtime.module.scss';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import PageBase from '../../components/Layout/PageBase/PageBase';
+import useUserAccess from '../../hooks/useUserAccess';
 
 const GetRuntimeAndVersionQuery = loader(
   '../../graphql/queries/getRuntimeAndVersions.graphql'
 );
 
 function Runtime() {
+  const { userHasAllAccesses } = useUserAccess();
   const { runtimeId, versionId } = useParams<VersionRouteParams>();
   const location = useLocation();
   const { data, loading, error } = useQuery<
@@ -33,6 +35,7 @@ function Runtime() {
     fetchPolicy: 'cache-and-network',
     variables: { runtimeId }
   });
+
   function getContent(): ReactElement | null {
     if (loading) return <SpinnerCircular />;
     if (error) return <ErrorMessage />;
@@ -79,9 +82,10 @@ function Runtime() {
   return (
     <PageBase
       headerChildren={
-        isUserInRuntimeVersions ? (
+        (isUserInRuntimeVersions && userHasAllAccesses && (
           <Button label="ADD VERSION" height={40} to={newVersionRoute} />
-        ) : null
+        )) ||
+        null
       }
     >
       {getContent()}

@@ -51,6 +51,7 @@ type Props = {
   maxLength?: number;
   additionalInputProps?: object;
   infoMessage?: string | undefined;
+  disabled?: boolean;
 };
 
 function TextInput({
@@ -74,7 +75,8 @@ function TextInput({
   autoFocus = false,
   maxLength,
   additionalInputProps = {},
-  infoMessage = ''
+  infoMessage = '',
+  disabled = false
 }: Props) {
   const [value, setValue] = useState(formValue);
   const [isHidden, setIsHidden] = useState(hidden);
@@ -137,9 +139,15 @@ function TextInput({
         data-testid="input"
         style={{ ...limits }}
         autoFocus={autoFocus}
+        disabled={disabled}
       />
     ) : (
-      <input {...inputProps} data-testid="input" autoFocus={autoFocus} />
+      <input
+        {...inputProps}
+        data-testid="input"
+        disabled={disabled}
+        autoFocus={autoFocus}
+      />
     );
   const cleanButton = showClearButton && value !== '' && (
     <div

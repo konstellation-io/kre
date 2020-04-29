@@ -25,6 +25,7 @@ import { RuntimeStatus } from '../../graphql/types/globalTypes';
 import { ApolloError } from 'apollo-client';
 import { buildRoute } from '../../utils/routes';
 import PageBase from '../../components/Layout/PageBase/PageBase';
+import useUserAccess from '../../hooks/useUserAccess';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 
@@ -96,6 +97,7 @@ function getDashboardContent({ data, error, loading }: Props) {
 
 function Dashboard() {
   const history = useHistory();
+  const { userHasAllAccesses } = useUserAccess();
   const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery, {
     fetchPolicy: 'cache-and-network'
   });
@@ -106,8 +108,10 @@ function Dashboard() {
     <PageBase
       headerChildren={
         <>
-          <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
-          <div>{`${nRuntimes} runtimes shown`}</div>
+          {userHasAllAccesses && (
+            <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
+          )}
+          <div>{`${nRuntimes} runtime${nRuntimes > 1 ? 's' : ''} shown`}</div>
         </>
       }
     >

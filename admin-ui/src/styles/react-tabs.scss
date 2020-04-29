@@ -1,0 +1,44 @@
+@import './variables';
+@import './colors';
+@import './mixins';
+
+$tab-width: 25 * $grid-unit;
+$tab-height: 5 * $grid-unit;
+
+.react-tabs {
+  ul {
+    @include font-tabnav;
+
+    text-transform: uppercase;
+    margin: 0 0 0 3 * $grid-unit;
+    color: font-color(grey);
+    border: 0;
+
+    & li:not(:first-child) {
+      margin-left: $grid-unit;
+    }
+
+    .react-tabs__tab {
+      width: $tab-width;
+      height: $tab-height;
+      line-height: $tab-height;
+      padding: 0;
+      background-color: $bg-component-default;
+      border: 0;
+      bottom: 0;
+      border-radius: 0;
+      text-align: center;
+      transition: background-color ease 0.4s, color ease 0.4s;
+
+      &--selected {
+        background-color: $bg-component-active;
+        color: font-color(light);
+      }
+
+      &:hover {
+        background-color: $bg-component-hover;
+        color: font-color(light);
+      }
+    }
+  }
+}

@@ -1,11 +1,15 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+$color-bg: palette(base, 800);
+$color-bg-header: palette(base, 600);
+
 .container {
   height: 100%;
   display: flex;
   flex-direction: row;
   width: 100%;
+  background-color: $color-bg;
 }
 
 .content {
@@ -20,7 +24,6 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin: 40px 40px 0 85px;
   min-width: 540px;
   overflow: hidden;
 }
@@ -30,9 +33,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-top: 30px;
-    border: solid $bg-color-lighter;
-    border-width: 2px 0;
 
     .label {
       @include font-body;
@@ -52,12 +52,20 @@
 }
 
 .securitySettings {
-  margin: 40px 40px 75px 85px;
+  .tabs {
+    background-color: $color-bg-header;
+  }
+  background-color: $color-bg;
+}
+
+.header {
+  padding: 3 * $grid-unit;
+  background-color: $color-bg-header;
 }
 
 .formTitle {
-  @include font-subheader;
-  color: font-color(light);
+  @include font-headline;
+  color: font-color(lowlight);
 }
 
 .formDescription {

@@ -24,6 +24,7 @@ import { mutationPayloadHelper } from '../../utils/formUtils';
 import HorizontalBar from '../../components/Layout/HorizontalBar/HorizontalBar';
 import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
+import useUserAccess from '../../hooks/useUserAccess';
 
 const GetExpirationTimeQuery = loader(
   '../../graphql/queries/getExpirationTime.graphql'
@@ -40,13 +41,15 @@ type FormFieldProps = {
   formValue: string | number | undefined;
   prevValue: number | undefined;
   onSubmit: Function;
+  disabled: boolean;
 };
 function FormField({
   error,
   onChange,
   formValue,
   prevValue,
-  onSubmit
+  onSubmit,
+  disabled
 }: FormFieldProps) {
   const showPrevValue =
     prevValue && formValue && prevValue.toString() !== formValue.toString();
@@ -56,6 +59,7 @@ function FormField({
       <div className={styles.input}>
         <TextInput
           whiteColor
+          disabled={disabled}
           type={InputType.NUMBER}
           additionalInputProps={{ min: 0 }}
           label="days"
@@ -82,6 +86,7 @@ function isExpirationInvalid(value: string) {
 }
 
 function GeneralSettings() {
+  const { cannotEdit } = useUserAccess();
   const [prevValue, setPrevValue] = useState<number | undefined>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const { data, loading, error: queryError } = useQuery<GetSettings>(
@@ -142,16 +147,19 @@ function GeneralSettings() {
           formValue={watch('sessionLifetimeInDays')}
           prevValue={prevValue}
           onSubmit={onEnterKey}
+          disabled={cannotEdit}
         />
       </div>
-      <HorizontalBar>
-        <Button
-          label={'SAVE CHANGES'}
-          primary
-          onClick={openModal}
-          disabled={fieldEmpty}
-        />
-      </HorizontalBar>
+      {!cannotEdit && (
+        <HorizontalBar>
+          <Button
+            label={'SAVE CHANGES'}
+            primary
+            onClick={openModal}
+            disabled={fieldEmpty}
+          />
+        </HorizontalBar>
+      )}
       {showModal && (
         <Modal
           title="Configuration will be updated"

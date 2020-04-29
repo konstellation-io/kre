@@ -13,7 +13,8 @@ import history from './history';
 
 import typeDefs, {
   LogPanel,
-  NotificationType
+  NotificationType,
+  AccessLevel
 } from './graphql/client/typeDefs';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
@@ -40,6 +41,7 @@ export interface LocalState {
   activeTabId: string;
   logsOpened: boolean;
   logsAutoScroll: boolean;
+  accessLevel: AccessLevel;
 }
 interface DefaultCache {
   data: LocalState;
@@ -145,7 +147,8 @@ config
         activeTabId: '',
         notifications: [],
         logsOpened: false,
-        logsAutoScroll: false
+        logsAutoScroll: false,
+        accessLevel: AccessLevel.ADMINISTRATOR
       }
     };
 

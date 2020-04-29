@@ -3,18 +3,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router';
 import useEndpoint from '../../hooks/useEndpoint';
 import { useApolloClient } from '@apollo/react-hooks';
-
 import { ENDPOINT } from '../../constants/application';
-
-import Button, { BUTTON_TYPES, BUTTON_ALIGN } from '../Button/Button';
+import Button, { BUTTON_ALIGN } from '../Button/Button';
 import SettingsIcon from '@material-ui/icons/VerifiedUser';
 import AuditIcon from '@material-ui/icons/SupervisorAccount';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
 import cx from 'classnames';
-
 import styles from './Settings.module.scss';
 import ROUTE from '../../constants/routes';
 import useClickOutsideListener from '../../hooks/useClickOutsideListener';
+import useUserAccess from '../../hooks/useUserAccess';
+import { AccessLevel } from '../../graphql/client/typeDefs';
 
 const BUTTON_HEIGHT = 40;
 const buttonStyle = {
@@ -26,6 +25,7 @@ type Props = {
 };
 
 function Settings({ label }: Props) {
+  const { accessLevel } = useUserAccess();
   const client = useApolloClient();
   const history = useHistory();
   const [opened, setOpened] = useState(false);
@@ -51,25 +51,40 @@ function Settings({ label }: Props) {
     return {
       label: label.toUpperCase(),
       key: `button${label}`,
-      type: BUTTON_TYPES.GREY,
       align: BUTTON_ALIGN.LEFT,
       style: buttonStyle
     };
   }
 
-  const buttons = [
+  const settingsButton = (
     <Button
       {...getBaseProps('Settings')}
       to={ROUTE.SETTINGS}
       Icon={SettingsIcon}
-    />,
-    <Button {...getBaseProps('Audit')} to={ROUTE.AUDIT} Icon={AuditIcon} />,
+    />
+  );
+  const auditButton = (
+    <Button {...getBaseProps('Audit')} to={ROUTE.AUDIT} Icon={AuditIcon} />
+  );
+  const logoutButton = (
     <Button
       {...getBaseProps('Logout')}
       onClick={() => doLogout()}
       Icon={LogoutIcon}
     />
-  ];
+  );
+
+  const buttons: JSX.Element[] = [];
+  switch (accessLevel) {
+    case AccessLevel.ADMINISTRATOR:
+    case AccessLevel.MANAGER:
+      buttons.push(settingsButton, auditButton);
+    /* falls through */
+    case AccessLevel.VIEWER:
+    default:
+      buttons.push(logoutButton);
+  }
+
   const nButtons = buttons.length;
   const optionsHeight = nButtons * BUTTON_HEIGHT;
 
