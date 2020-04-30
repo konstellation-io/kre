@@ -94,7 +94,7 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 
 [INPUT]
     Name        tail
-    Tag         mongo_writer
+    Tag         mongo_writer_logs
     Buffer_Chunk_Size 1k
     Path        /var/log/app/*.log
 
