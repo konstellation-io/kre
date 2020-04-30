@@ -15,7 +15,7 @@ describe('AccessDenied', () => {
   });
 
   it('show right components', () => {
-    expect(wrapper.find('h1').text()).toBe('Page not found');
+    expect(wrapper.find('h1').text()).toBe('Higher access level required');
     expect(wrapper.exists(Circle)).toBeTruthy();
   });
 });

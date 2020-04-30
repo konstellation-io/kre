@@ -1154,7 +1154,6 @@ exports[`Header matches snapshot 1`] = `
                     }
                   }
                   to="/settings"
-                  type="grey"
                 >
                   <Link
                     data-testid="buttonLink"
@@ -1183,7 +1182,6 @@ exports[`Header matches snapshot 1`] = `
                     }
                   }
                   to="/audit"
-                  type="grey"
                 >
                   <Link
                     data-testid="buttonLink"
@@ -1212,10 +1210,9 @@ exports[`Header matches snapshot 1`] = `
                       "paddingLeft": "20%",
                     }
                   }
-                  type="grey"
                 >
                   <div
-                    className="btn grey left label"
+                    className="btn default left label"
                     onClick={[Function]}
                     style={
                       Object {

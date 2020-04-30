@@ -15,7 +15,6 @@ import ListItem from '../ListItem/ListItem';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import Message from '../../../../components/Message/Message';
-import useUserAccess from '../../../../hooks/useUserAccess';
 
 const GetAllowedEmailsQuery = loader(
   '../../../../graphql/queries/getAllowedEmails.graphql'

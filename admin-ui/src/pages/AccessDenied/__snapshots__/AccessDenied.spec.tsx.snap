@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NotFound matches snapshot 1`] = `
+exports[`AccessDenied matches snapshot 1`] = `
 <div
   className="bg"
 >
@@ -11,11 +11,11 @@ exports[`NotFound matches snapshot 1`] = `
       className="container"
     >
       <h1>
-        Page not found
+        Higher access level required
       </h1>
       <Circle
         animation="ERROR"
-        label="NOT FOUND"
+        label="ACCESS DENIED"
       />
     </div>
   </div>
