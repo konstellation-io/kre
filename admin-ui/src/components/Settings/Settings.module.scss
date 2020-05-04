@@ -3,6 +3,8 @@
 @import '../../styles/borders';
 @import '../../styles/shadows';
 
+$color-bg: palette(base);
+
 .container {
   @include font-button;
   position: relative;
@@ -58,4 +60,5 @@
 
   transition: max-height ease 0.3s;
   overflow: hidden;
+  background-color: $color-bg;
 }

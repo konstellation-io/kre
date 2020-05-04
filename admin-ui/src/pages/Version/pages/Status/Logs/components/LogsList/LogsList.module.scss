@@ -2,7 +2,7 @@
 @import '../../../../../../../styles/mixins';
 @import '../../../../../../../styles/variables';
 
-$color-border: palette(base);
+$color-border: palette(base, 400);
 $color-bg: palette(base, 700);
 
 .listContainer {
@@ -20,6 +20,7 @@ $color-bg: palette(base, 700);
 
   height: $height-log-item;
   background-color: $color-bg;
+  transition: background-color ease 0.1s;
 
   &.loadPreviousLogs {
     display: flex;

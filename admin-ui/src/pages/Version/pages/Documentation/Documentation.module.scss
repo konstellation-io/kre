@@ -1,6 +1,7 @@
 @import '../../../../styles/mixins';
 @import '../../../../styles/colors';
 
+$color-bg: palette(base, 800);
 $color-doc-bg: palette(base, 500);
 $color-line: palette(base, 400);
 $color-code-bg: palette(base, 800);
@@ -12,6 +13,7 @@ $color-code-bg: palette(base, 800);
   display: flex;
   flex-direction: row;
   overflow: hidden;
+  background-color: $color-bg;
 }
 
 .article {
@@ -131,8 +133,7 @@ $color-code-bg: palette(base, 800);
     }
   }
 
-  table,
-  blockquote {
+  table {
     padding: 12px 0;
   }
 

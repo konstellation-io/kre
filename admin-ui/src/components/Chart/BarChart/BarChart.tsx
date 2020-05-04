@@ -244,6 +244,7 @@ function BarChart({ width, height, margin, data, viewAllData }: Props) {
       bars
         .filter((d: D) => ![0, 100].includes(d.y))
         .append('text')
+        .attr('class', (d: D) => (d.y > 80 ? styles.light : styles.dark))
         .classed(styles.barLabel, true)
         .attr('x', (d: D) => (xScale(d.x) || 0) + barWidth / 2)
         .attr('y', (d: D) => yScale(d.y) + (d.y > 80 ? 8 : -12))

@@ -105,6 +105,7 @@ function FiltersBar({ onSubmit, types, users }: FormFieldProps) {
         formFromDate={watch('fromDate')}
         formToDate={watch('toDate')}
         error={get(errors.fromDate, 'message') || get(errors.toDate, 'message')}
+        hideError
       />
       <div className={styles.buttons}>
         <Button

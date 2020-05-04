@@ -2,13 +2,14 @@
 
 .content {
   position: relative;
-  padding: 10px;
   flex-grow: 1;
   overflow: auto;
+  margin-left: 36px;
 }
 
 .wrapper {
   height: 100%;
+  padding: 10px;
   overflow: scroll;
 
   > div {
