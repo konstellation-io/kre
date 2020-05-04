@@ -2,8 +2,6 @@
 @import '../../styles/mixins';
 @import '../../styles/shadows';
 
-$color-bg: palette(error, 900);
-
 .container {
   @include shadow(4);
 
@@ -14,13 +12,13 @@ $color-bg: palette(error, 900);
   height: 60px;
   margin-bottom: 3px;
   padding: 0 20px;
-  background-color: $color-bg;
+  background-color: palette(error, 900);
   white-space: nowrap;
 }
 
 .label {
   @include font-button;
-  color: black;
+  color: $color-black;
 
   width: 105px;
   height: 24px;

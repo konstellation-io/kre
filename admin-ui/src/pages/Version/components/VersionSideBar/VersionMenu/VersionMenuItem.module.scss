@@ -34,7 +34,7 @@
 }
 
 .active .item {
-  background-color: #151618;
+  background-color: palette(lowlight, 900);
   color: font-color(light);
-  border-right: 4px solid #1ad3ff;
+  border-right: 4px solid $color-primary;
 }

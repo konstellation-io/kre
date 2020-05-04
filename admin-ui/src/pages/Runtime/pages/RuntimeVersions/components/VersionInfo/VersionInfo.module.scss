@@ -26,7 +26,7 @@ $color-border: palette(base, 400);
   }
 
   &:hover {
-    background-color: black;
+    background-color: $color-black;
     cursor: pointer;
 
     .creationDate,

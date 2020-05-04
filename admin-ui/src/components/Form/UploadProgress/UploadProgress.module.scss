@@ -1,8 +1,6 @@
 @import '../../../styles/mixins';
 @import '../../../styles/colors';
 
-$color-completed: $color-primary;
-
 .header {
   @include font-caption;
 
@@ -13,7 +11,7 @@ $color-completed: $color-primary;
 
 .uploaded {
   opacity: 0;
-  color: $color-completed;
+  color: $color-primary;
 
   &.show {
     opacity: 1;
@@ -30,7 +28,7 @@ $color-completed: $color-primary;
 }
 .progress {
   height: 100%;
-  background-color: $color-completed;
+  background-color: $color-primary;
 }
 
 .ack {
