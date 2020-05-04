@@ -3,8 +3,7 @@
 
 .row {
   @include font-body;
-  color: $font-color-light;
-  font-weight: 600;
+  color: font-color(lowlight);
 
   display: flex;
   flex-direction: row;

@@ -11,7 +11,7 @@
 
 .uploaded {
   opacity: 0;
-  color: $color-bright-blue-2;
+  color: $color-primary;
 
   &.show {
     opacity: 1;
@@ -24,17 +24,17 @@
   height: 2px;
   margin: 12px 0 16px 0;
 
-  background-color: $font-color-regular;
+  background-color: font-color(regular);
 }
 .progress {
   height: 100%;
-  background-color: $color-bright-blue-2;
+  background-color: $color-primary;
 }
 
 .ack {
   @include font-small;
   font-weight: 400;
-  color: $color-green;
+  color: $color-ok;
 
   opacity: 0;
 

@@ -10,14 +10,14 @@
 
   &.STOPPED,
   &.CREATING {
-    background-color: $font-color-regular;
+    background-color: font-color(regular);
   }
 
   &.STARTED {
-    background-color: $color-blue;
+    background-color: $color-primary;
   }
 
   &.ERROR {
-    background-color: $color-red;
+    background-color: $color-error;
   }
 }

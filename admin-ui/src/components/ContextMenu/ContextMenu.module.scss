@@ -1,12 +1,14 @@
 @import '../../styles/colors';
+@import '../../styles/shadows';
 @import '../../styles/mixins';
 
 .contextMenuContainer {
+  @include shadow(3);
+
   z-index: 1;
   position: fixed;
   padding: $grid-unit;
   background-color: $bg-color;
-  box-shadow: 0 2px 16px 0 #060606;
 }
 
 .contextMenuList {

@@ -4,7 +4,7 @@
 .item {
   @include font-button;
   font-weight: 700;
-  color: $font-color-light;
+  color: font-color(lowlight);
 
   display: flex;
   flex-direction: row;
@@ -19,22 +19,22 @@
 
   .iconWarning {
     margin-left: auto;
-    color: $color-yellow;
+    color: $color-warn;
   }
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 }
 
 .active {
   cursor: default;
   pointer-events: none;
-  color: $font-color-white;
+  color: font-color(light);
 }
 
 .active .item {
-  background-color: #151618;
-  color: $font-color-white;
-  border-right: 4px solid #1ad3ff;
+  background-color: palette(lowlight, 900);
+  color: font-color(light);
+  border-right: 4px solid $color-primary;
 }

@@ -2,9 +2,9 @@
 @import '../../../../../../styles/mixins';
 
 .sections {
-  @include font-body;
+  @include font-small;
   font-weight: 600;
-  color: $font-color-light;
+  color: font-color(lowlight);
 
   width: 100%;
   height: 100%;
@@ -43,7 +43,7 @@
 }
 
 .totalAccuracy {
-  color: $color-green;
+  color: $color-ok;
 
   position: relative;
   width: 40%;
@@ -64,7 +64,7 @@
   width: 40%;
   margin-right: 30px;
   height: 100%;
-  background-color: black;
+  background-color: $color-black;
   opacity: 0.2;
 }
 

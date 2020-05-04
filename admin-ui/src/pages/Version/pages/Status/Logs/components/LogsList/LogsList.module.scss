@@ -2,20 +2,24 @@
 @import '../../../../../../../styles/mixins';
 @import '../../../../../../../styles/variables';
 
+$color-border: palette(base);
+$color-bg: palette(base, 700);
+
 .listContainer {
   overflow: auto;
   flex-grow: 1;
+  background-color: palette(base);
 }
 
 .listContainer > div:not(:first-child) {
-  border-top: solid 1px $border-color-1;
+  border-top: solid 1px $color-border;
 }
 
 .container {
   @include font-body;
 
   height: $height-log-item;
-  background-color: $bg-color;
+  background-color: $color-bg;
 
   &.loadPreviousLogs {
     display: flex;
@@ -58,7 +62,7 @@
 }
 
 .icon {
-  color: $font-color-white;
+  color: $color-primary;
 }
 
 .date {
@@ -73,13 +77,13 @@
 }
 
 .nodeName {
-  color: $font-color-white;
+  color: font-color(light);
   font-weight: 500;
   margin-right: $grid-unit * 2;
 }
 
 .message {
-  color: $font-color-white;
+  color: font-color(light);
 
   height: $height-log-item;
   line-height: $height-log-item;
@@ -102,7 +106,7 @@
   cursor: pointer;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 }
 

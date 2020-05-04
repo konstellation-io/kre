@@ -12,7 +12,7 @@ Nam dapibus nisl vitae elit fringilla rutrum. Aenean sollicitudin, erat a elemen
 
 In hac habitasse platea dictumst. Vivamus adipiscing fermentum quam volutpat aliquam. Integer et elit eget elit facilisis tristique. Nam vel iaculis mauris. Sed ullamcorper tellus erat, non ultrices sem tincidunt euismod. Fusce rhoncus porttitor.
 
-<center><strong>The derogatory term “scrub” means several different things. One definition is someone (especially a game player) who is not good at something (especially a game). By this definition, we all start out as scrubs, and there is certainly no shame in that. I mean the term differently, though. A scrub is a player who is handicapped by self-imposed rules that the game knows nothing about. A scrub does not play to win.</strong></center>
+The derogatory term “scrub” means several different things. One definition is someone (especially a game player) who is not good at something (especially a game). By this definition, we all start out as scrubs, and there is certainly no shame in that. I mean the term differently, though. A scrub is a player who is handicapped by self-imposed rules that the game knows nothing about. A scrub does not play to win.
 
 ## Development notes
 
@@ -50,6 +50,12 @@ Test emphasis: ~~scratch~~ type.
 [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
 http://www.example.com
+
+---
+
+***
+
+___
 
 \`\`\`javascript
 const sample = 'sample';
@@ -125,7 +131,6 @@ Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken.
 Chicken Chicken Chicken Chicken Chicken.
 
 And some other lines
-
 that can appear
 \`\`\`
 

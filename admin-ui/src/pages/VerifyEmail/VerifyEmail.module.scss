@@ -1,5 +1,6 @@
 @import '../../styles/variables';
 @import '../../styles/colors';
+@import '../../styles/mixins';
 
 .bg {
   width: 100%;
@@ -29,7 +30,9 @@
 }
 
 .subtitle {
+  @include font-body;
+
   text-align: center;
   margin: 50px $form-padding-width;
-  color: white;
+  color: font-color(light);
 }

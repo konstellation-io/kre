@@ -4,14 +4,15 @@
 @import '../../../../../styles/variables';
 
 .wrapper {
-  color: $font-color-white;
+  color: font-color(light);
   padding: 16px 0;
   padding-left: 16px;
-  background-color: $color-grey-light;
 }
 
 .name {
   @include font-body;
+  color: font-color(light);
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -21,9 +22,9 @@
 }
 
 .desc {
-  @include font-small;
+  @include font-body;
   font-weight: 500;
-  color: $font-color-light;
+  color: font-color(lowlight);
 
   padding: 0 30px;
 }

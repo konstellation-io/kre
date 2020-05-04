@@ -1,6 +1,10 @@
 @import '../../../../styles/mixins';
 @import '../../../../styles/colors';
 
+$color-doc-bg: palette(base, 500);
+$color-line: palette(base, 400);
+$color-code-bg: palette(base, 800);
+
 .container {
   display: flex;
   flex-direction: row;
@@ -14,52 +18,73 @@
   padding: 40px 64px 0 64px;
   overflow: scroll;
   width: 100%;
-  background-color: $color-grey-darker;
+  background-color: $color-doc-bg;
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    border-bottom: 1px solid $color-line;
+  }
 
   h1 {
-    @include font-display;
-
-    color: $font-color-white;
+    @include font-mega;
+    color: font-color(light);
   }
 
   h2 {
-    @include font-title;
-    font-weight: 300;
-
-    color: $font-color-white;
+    @include font-jumbo;
+    color: font-color(light);
   }
 
   h3 {
-    @include font-subheader;
+    @include font-display;
+    color: font-color(light);
+  }
 
-    color: $font-color-white;
+  h4 {
+    @include font-headline;
+    color: font-color(light);
+  }
+
+  h5 {
+    @include font-title;
+    color: font-color(light);
+  }
+
+  h6 {
+    @include font-subheader;
+    color: font-color(light);
   }
 
   p {
-    @include font-small;
-    line-height: 16px;
+    @include font-body;
+    line-height: 28px;
 
-    color: $font-color-light;
+    color: font-color(lowlight);
   }
 
   li {
     @include font-body;
+    color: font-color(lowlight);
+    padding-left: $grid-unit;
   }
 
   blockquote {
     margin: 0;
     padding: 1px 22px;
-    border-left: solid 3px $font-color-light;
+    border-left: solid 4px palette(lowlight, 200);
   }
 
   a {
-    color: $font-color-white;
-    font-weight: 400;
-    text-decoration: underline !important;
+    @include font-button;
+    color: font-color(light);
+    text-transform: uppercase;
   }
 
   pre {
-    background-color: $color-grey-light;
+    background-color: $color-code-bg;
     padding: 9px;
     border-radius: 5px;
 
@@ -70,10 +95,52 @@
   code {
     @include font-code;
 
-    color: $font-color-white;
-    background-color: $color-grey-light;
+    color: font-color(lowlight);
+    background-color: $color-code-bg;
     border-radius: 5px;
     padding: 1px 9px;
+  }
+
+  table {
+    thead tr th {
+      border-top: 1px solid palette(lowlight);
+      border-bottom: 1px solid palette(lowlight);
+    }
+
+    tr td:first-child,
+    tr th:first-child {
+      border-left: 1px solid palette(lowlight);
+    }
+
+    td,
+    th {
+      padding: 4px 12px;
+      border-right: 1px solid palette(lowlight);
+    }
+    td {
+      @include font-body;
+      color: font-color(lowlight);
+      border-bottom: 1px solid palette(lowlight);
+    }
+    th {
+      color: font-color(light);
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: palette(lowlight, 900);
+    }
+  }
+
+  table,
+  blockquote {
+    padding: 12px 0;
+  }
+
+  hr {
+    height: 1px;
+    color: $color-line;
+    background-color: $color-line;
+    border: none;
   }
 }
 .navigation {

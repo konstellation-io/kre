@@ -1,5 +1,6 @@
 @import '../../../../../../styles/variables';
 @import '../../../../../../styles/mixins';
+@import '../../../../../../styles/shadows';
 @import '../../../../../../styles/colors';
 
 $width: $grid-unit * 55;
@@ -23,12 +24,13 @@ $color-line: #5d6c76;
   }
 }
 .container {
+  @include shadow(2);
+
   border-radius: $grid-unit / 2;
   width: $width;
   padding: 11px $padding-y;
   background-color: $bg-box;
-  box-shadow: 0 2px 24px 0 #000000;
-  border-left: solid 3px $color-green;
+  border-left: solid 3px $color-ok;
 }
 
 .separator {
@@ -43,7 +45,7 @@ $color-line: #5d6c76;
   display: flex;
   flex-direction: row;
   padding-bottom: $padding-y;
-  border-bottom: solid 1px $border-color-1;
+  border-bottom: solid 1px palette(base, 400);
 
   .title {
     @include font-button;
@@ -79,14 +81,15 @@ $color-line: #5d6c76;
 
   &.0 {
     span {
-      color: $font-color-white;
+      color: font-color(white);
       font-weight: 500;
       margin-right: $grid-unit;
     }
     input {
       @include font-body;
-      color: $font-color-light;
+      color: font-color(light);
 
+      width: -webkit-fill-available;
       background: none;
       border: none;
       outline: none;

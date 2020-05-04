@@ -19,8 +19,8 @@
   padding: 0 $grid-unit;
   margin: 0 $grid-unit;
 
-  background-color: $font-color-dark;
-  color: $font-color-white;
+  background-color: font-color(dark);
+  color: font-color(light);
 
   div:first-child {
     margin-right: 8px;

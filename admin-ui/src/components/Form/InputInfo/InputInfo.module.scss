@@ -2,7 +2,7 @@
 @import '../../../styles/colors';
 
 .infoMessage {
-  @include input-footer($font-color-regular, start);
+  @include input-footer(font-color(lowlight), start);
 
   position: absolute;
   font-size: 11px;

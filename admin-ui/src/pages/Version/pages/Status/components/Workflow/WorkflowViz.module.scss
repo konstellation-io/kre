@@ -3,6 +3,8 @@
 @import '../../../../../../styles/mixins';
 
 $color-line: #5d6c76;
+$color-label-bg: palette(base, 400);
+$color-node-bg: palette(base, 600);
 
 $animation-duration: 0.8s;
 @mixin animate($field) {
@@ -16,7 +18,7 @@ $animation-duration: 0.8s;
 
       + g.labelG {
         .nodeLabel {
-          fill: $font-color-white;
+          fill: font-color(white);
         }
 
         line {
@@ -24,6 +26,9 @@ $animation-duration: 0.8s;
         }
         rect {
           filter: url('#glowLow');
+        }
+        text {
+          fill: font-color(white);
         }
       }
     }
@@ -33,7 +38,7 @@ $animation-duration: 0.8s;
     @include animate(fill);
   }
   .outerCircle {
-    fill: $bg-box;
+    fill: $color-node-bg;
     cursor: pointer;
     @include animate(stroke);
   }
@@ -96,7 +101,7 @@ $animation-duration: 0.8s;
     }
 
     .icon > svg > path {
-      fill: $font-color-dark;
+      fill: font-color(dark);
     }
   }
 
@@ -132,27 +137,27 @@ $animation-duration: 0.8s;
     }
 
     .icon > svg > path {
-      fill: $font-color-dark;
+      fill: font-color(dark);
     }
   }
 
   .icon > svg > path {
     @include animate(stroke);
     stroke: transparent !important;
+    fill: font-color(lowlight);
   }
 }
 
 .nodeLabel {
-  @include font-body;
-  font-weight: 500;
+  @include font-small;
 
-  fill: $font-color-light;
+  fill: font-color(lowlight);
   transition: fill ease 0.4s;
   text-anchor: middle;
 }
 
 .nodeLabelRect {
-  fill: $color-node-content;
+  fill: $color-label-bg;
 }
 .nodeLabelLine {
   stroke: $color-line;

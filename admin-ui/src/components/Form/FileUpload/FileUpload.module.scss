@@ -22,7 +22,7 @@
 .input {
   @include form-input;
 
-  color: $font-color-white;
+  color: font-color(light);
   font-weight: 600;
 
   white-space: nowrap;
@@ -30,6 +30,6 @@
   text-overflow: ellipsis;
 
   &.placeholder {
-    color: $font-color-regular;
+    color: font-color(regular);
   }
 }

@@ -1,0 +1,9 @@
+@mixin border($color) {
+  border: solid 1px $color;
+}
+
+@mixin arrow($color) {
+  @include border(transparent);
+  border-bottom-color: $color;
+  border-right-color: $color;
+}
