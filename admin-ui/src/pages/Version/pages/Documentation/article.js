@@ -58,9 +58,23 @@ http://www.example.com
 ___
 
 \`\`\`javascript
-const sample = 'sample';
+// Javascript
 
-sample.doSomething();
+const sample = {
+  doSomething: () => 'sample'
+};
+
+console.log(sample.doSomething());
+\`\`\`
+
+\`\`\`python
+# Python
+
+sample = {
+  "doSomething": lambda : "sample"
+}
+
+print(sample["doSomething"]())
 \`\`\`
 
 | Tables        | Are           | Cool  |
@@ -112,6 +126,25 @@ Chicken Chicken Chicken Chicken Chicken.
 Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken.
 
 Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken.
+
+\`\`\`tsx
+import React from 'react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { monokai } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+type Props = {
+  value: string;
+  language: string | undefined;
+};
+
+const CodeBlock = ({ value, language = undefined }: Props) => (
+  <SyntaxHighlighter language={language} style={monokai}>
+    {value}
+  </SyntaxHighlighter>
+);
+
+export default CodeBlock;
+\`\`\`
 
 ## Chapter 2
 

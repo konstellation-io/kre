@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import MarkNav from 'markdown-navbar';
 import article from './article';
 import styles from './Documentation.module.scss';
+import CodeBlock from './CodeBlock';
 import { useLocation } from 'react-router-dom';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 
@@ -13,6 +14,7 @@ function getHeader(tag: string) {
 function scrollIntoHeader(headerHash: string): void {
   const headerTag = decodeURIComponent(headerHash).slice(1);
   const header = getHeader(headerTag);
+
   if (header) header.scrollIntoView();
 }
 
@@ -34,10 +36,13 @@ function Documentation() {
     scrollIntoHeader(location.hash);
   }, [location]);
 
-  if (loading) return <SpinnerCircular />;
-
   return (
     <div className={styles.container}>
+      {loading && (
+        <div className={styles.loadingContainer}>
+          <SpinnerCircular />
+        </div>
+      )}
       <div className={styles.navigation}>
         <MarkNav
           declarative
@@ -53,7 +58,7 @@ function Documentation() {
         />
       </div>
       <div className={styles.article}>
-        <ReactMarkdown source={article} />
+        <ReactMarkdown source={article} renderers={{ code: CodeBlock }} />
       </div>
     </div>
   );
