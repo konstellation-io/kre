@@ -4,6 +4,7 @@ import TextInput from '../../../../components/Form/TextInput/TextInput';
 import Button from '../../../../components/Button/Button';
 import { useForm } from 'react-hook-form';
 import styles from './FormRowInput.module.scss';
+import cx from 'classnames';
 import useUserAccess from '../../../../hooks/useUserAccess';
 
 type Props = {
@@ -38,7 +39,7 @@ function FormRowInput({
   }
 
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, { [styles.nonEditable]: cannotEdit })}>
       <Icon className="icon-regular" />
       <div className={styles.field}>{field}</div>
       {!cannotEdit && (

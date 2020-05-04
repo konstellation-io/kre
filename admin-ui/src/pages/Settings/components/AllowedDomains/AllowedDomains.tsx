@@ -15,6 +15,7 @@ import ListItem from '../ListItem/ListItem';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import Message from '../../../../components/Message/Message';
+import useUserAccess from '../../../../hooks/useUserAccess';
 
 const GetDomainsQuery = loader(
   '../../../../graphql/queries/getDomains.graphql'
@@ -24,6 +25,7 @@ const UpdateDomainsMutation = loader(
 );
 
 function AllowedDomains() {
+  const { cannotEdit } = useUserAccess();
   const { data, loading, error } = useQuery<GetDomains>(GetDomainsQuery);
   const domains: string[] = get(data, 'settings.authAllowedDomains', []);
 
@@ -68,8 +70,9 @@ function AllowedDomains() {
     if (!domains.length)
       return <Message text="There are no domains added to the whitelist." />;
 
+    const onDelete = cannotEdit ? null : onRemoveDomain;
     return domains.map((domain: string) => (
-      <ListItem key={domain} value={domain} onDelete={onRemoveDomain} />
+      <ListItem key={domain} value={domain} onDelete={onDelete} />
     ));
   }
 

@@ -10,7 +10,7 @@ export type Action = {
 
 type Props = {
   value: string;
-  onDelete: (value: string) => void;
+  onDelete: null | ((value: string) => void);
   actions?: Action[];
 };
 
@@ -24,9 +24,11 @@ function ListItem({ value, onDelete, actions = [] }: Props) {
             <Button label={label} onClick={onClick} key={label} />
           ))}
         </div>
-        <div className={styles.removeButton} onClick={() => onDelete(value)}>
-          <RemoveIcon className="icon-regular" />
-        </div>
+        {onDelete && (
+          <div className={styles.removeButton} onClick={() => onDelete(value)}>
+            <RemoveIcon className="icon-regular" />
+          </div>
+        )}
       </div>
     </div>
   );

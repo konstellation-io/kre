@@ -39,6 +39,14 @@ $tab-height: 5 * $grid-unit;
         background-color: $bg-component-hover;
         color: font-color(light);
       }
+
+      &:focus {
+        box-shadow: none;
+
+        &:after {
+          display: none;
+        }
+      }
     }
   }
 }
