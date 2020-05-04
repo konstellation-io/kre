@@ -4,6 +4,7 @@
 
 $color-line: #5d6c76;
 $color-label-bg: palette(base, 400);
+$color-label-border: palette(base, 200);
 $color-node-bg: palette(base, 600);
 
 $animation-duration: 0.8s;
@@ -162,6 +163,8 @@ $animation-duration: 0.8s;
 
 .nodeLabelRect {
   fill: $color-label-bg;
+  stroke: $color-label-border;
+  rx: 4px;
 }
 .nodeLabelLine {
   stroke: $color-line;
