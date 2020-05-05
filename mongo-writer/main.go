@@ -18,13 +18,17 @@ import (
 	"gitlab.com/konstellation/kre/mongo-writer/nats"
 )
 
-const channelLogs = "mongo_writer_logs"
-const channelData = "mongo_writer"
+const natsSubjectLogs = "mongo_writer_logs"
+const natsSubjectData = "mongo_writer"
 const showStatsSeconds = 5
 
 type DataMsg struct {
 	Coll string      `json:"coll"`
 	Doc  interface{} `json:"doc"`
+}
+
+type DataMsgResponse struct {
+	Success bool `json:"success"`
 }
 
 func main() {
@@ -39,8 +43,8 @@ func main() {
 	connectClients(mongoM, natsM, logger)
 	defer disconnectClients(mongoM, natsM, logger)
 
-	logsCh := natsM.SubscribeToChannel(channelLogs)
-	dataCh := natsM.SubscribeToChannel(channelData)
+	logsCh := natsM.SubscribeToChannel(natsSubjectLogs)
+	dataCh := natsM.SubscribeToChannel(natsSubjectData)
 
 	startShowingStats(ctx, mongoM, natsM, logger)
 
@@ -129,9 +133,25 @@ func processDataMsgs(ctx context.Context, dataCh chan *nc.Msg, mongoM *mongodb.M
 			return
 		}
 
+		// MongoDB ACK needed to reply to NATS
+		res := DataMsgResponse{
+			Success: true,
+		}
+
 		err = mongoM.InsertOne(ctx, dataMsg.Coll, dataMsg.Doc)
 		if err != nil {
 			logger.Errorf("Error inserting data msg: %s", err)
+			res.Success = false
+		}
+
+		resBytes, err := json.Marshal(res)
+		if err != nil {
+			logger.Errorf("Error marshaling the data msg response: %s", err)
+		}
+
+		err = msg.Respond(resBytes)
+		if err != nil {
+			logger.Errorf("Error replaying to the data msg: %s", err)
 		}
 	}
 }
