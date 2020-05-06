@@ -2,32 +2,18 @@ import React from 'react';
 
 import IconOpen from '@material-ui/icons/ExpandLess';
 import IconClose from '@material-ui/icons/ExpandMore';
-import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
-import IconClear from '@material-ui/icons/DeleteOutline';
-import IconLogs from '@material-ui/icons/ListAlt';
+import * as ICONS from '../../../../../../../constants/icons';
 
 import cx from 'classnames';
 import styles from './Header.module.scss';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
-import { GET_LOG_PANEL_CONF } from '../../../../../../../graphql/client/queries/getLogs.graphql';
-import { LocalState } from '../../../../../../..';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 type Props = {
   togglePanel: () => void;
   opened: boolean;
-  onClearClick: Function;
 };
-function Header({ togglePanel, opened, onClearClick }: Props) {
+function Header({ togglePanel, opened }: Props) {
   const Icon = opened ? IconClose : IconOpen;
-  const client = useApolloClient();
-  const { data: localData } = useQuery<LocalState>(GET_LOG_PANEL_CONF);
-
-  function clearLogs(): void {
-    onClearClick();
-  }
-  function onToggleAutoScroll() {
-    client.writeData({ data: { logsAutoScroll: !localData?.logsAutoScroll } });
-  }
 
   return (
     <div
@@ -36,21 +22,12 @@ function Header({ togglePanel, opened, onClearClick }: Props) {
       })}
     >
       <div className={styles.title}>
-        <IconLogs className="icon-regular" />
-        <span>Logs console</span>
+        <SvgIcon className="icon-small">
+          <path d={ICONS.TERMINAL} />
+        </SvgIcon>
+        <span>LOGS CONSOLE</span>
       </div>
       <div className={styles.buttons}>
-        <div onClick={clearLogs}>
-          <IconClear className="icon-regular" />
-        </div>
-        <div
-          className={cx(styles.stickBottom, {
-            [styles.active]: localData?.logsAutoScroll
-          })}
-          onClick={onToggleAutoScroll}
-        >
-          <IconStickBottom className="icon-regular" />
-        </div>
         <div onClick={togglePanel}>
           <Icon className="icon-regular" />
         </div>

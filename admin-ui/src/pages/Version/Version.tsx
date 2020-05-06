@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import ROUTE from '../../constants/routes';
 
@@ -14,6 +14,7 @@ import {
 } from '../../graphql/queries/types/GetVersionConfStatus';
 
 import styles from './Version.module.scss';
+import { useApolloClient } from '@apollo/react-hooks';
 
 type Props = {
   version?: GetVersionConfStatus_versions;
@@ -21,6 +22,22 @@ type Props = {
 };
 
 function Version({ version, runtime }: Props) {
+  const client = useApolloClient();
+
+  useEffect(() => {
+    if (runtime && version) {
+      client.writeData({
+        data: {
+          openedVersion: {
+            runtimeName: runtime.name,
+            versionName: version.name,
+            __typename: 'OpenedVersion'
+          }
+        }
+      });
+    }
+  }, [version, runtime, client]);
+
   return (
     <div className={styles.container} data-testid="runtimeContainer">
       <VersionSideBar runtime={runtime} version={version} />

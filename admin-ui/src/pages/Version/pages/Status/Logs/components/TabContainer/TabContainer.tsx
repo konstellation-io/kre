@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './TabContainer.module.scss';
 import cx from 'classnames';
-import IconClose from '@material-ui/icons/Close';
+import IconMoreVert from '@material-ui/icons/MoreVert';
 import { GetLogTabs_logTabs } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import ContextMenu, {
   MenuCallToAction
@@ -11,14 +11,12 @@ type Props = {
   tabs: GetLogTabs_logTabs[];
   activeTabId: string;
   onTabClick: Function;
-  onCloseTabClick: Function;
   contextMenuActions: MenuCallToAction[];
 };
 function TabContainer({
   tabs,
   activeTabId,
   onTabClick,
-  onCloseTabClick,
   contextMenuActions
 }: Props) {
   return (
@@ -35,11 +33,16 @@ function TabContainer({
             })}
             onClick={() => onTabClick(tab.uniqueId)}
           >
-            <span>{tab.nodeName}</span>
-            <IconClose
-              className={'icon-small'}
-              onClick={event => onCloseTabClick(event, index)}
-            />
+            <span
+              className={styles.title}
+            >{`${tab.runtimeName} / ${tab.versionName}`}</span>
+            <ContextMenu
+              actions={contextMenuActions}
+              contextObject={index}
+              openOnLeftClick
+            >
+              <IconMoreVert className={cx('icon-small', styles.icon)} />
+            </ContextMenu>
           </div>
         </ContextMenu>
       ))}

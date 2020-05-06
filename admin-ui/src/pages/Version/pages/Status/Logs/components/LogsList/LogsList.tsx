@@ -2,12 +2,9 @@ import { get } from 'lodash';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
-import {
-  GET_LOG_PANEL_CONF,
-  GetLogPanelConf,
-  TabFilters
-} from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import { TabFilters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
+import LogListHeader from './LogListHeader';
 import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import styles from './LogsList.module.scss';
 import {
@@ -15,8 +12,8 @@ import {
   GetServerLogsVariables
 } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import moment from 'moment';
-import LoadMore from './LoadMore';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
+import LogsFooter from '../LogsFooter/LogsFooter';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -40,6 +37,7 @@ type Props = {
   filterValues: TabFilters;
   onNewLogs: Function;
   logs: GetServerLogs_logs_items[];
+  clearLogs: () => void;
 };
 
 function LogsList({
@@ -48,13 +46,13 @@ function LogsList({
   workflowId,
   filterValues,
   logs,
-  onNewLogs
+  onNewLogs,
+  clearLogs
 }: Props) {
+  const [autoScrollActive, setAutoScrollActive] = useState(false);
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
-
-  const { data: localData } = useQuery<GetLogPanelConf>(GET_LOG_PANEL_CONF);
 
   const { loading, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
@@ -69,6 +67,10 @@ function LogsList({
     onError: handleSubscription,
     fetchPolicy: 'no-cache'
   });
+
+  function toggleAutoScrollActive() {
+    setAutoScrollActive(!autoScrollActive);
+  }
 
   // Subscription query
   const subscribe = () =>
@@ -94,12 +96,12 @@ function LogsList({
   }
 
   const handleScroll = useCallback(() => {
-    if (localData?.logsAutoScroll && listRef.current !== null) {
+    if (autoScrollActive && listRef.current !== null) {
       scrollToBottom(listRef.current);
     }
-  }, [localData, listRef]);
+  }, [autoScrollActive, listRef]);
 
-  useEffect(handleScroll, [logs, localData?.logsAutoScroll]);
+  useEffect(handleScroll, [logs, autoScrollActive]);
 
   if (loading) return <SpinnerLinear />;
 
@@ -132,10 +134,18 @@ function LogsList({
     <LogItem {...log} key={log.id} />
   ));
   return (
-    <div ref={listRef} className={styles.listContainer}>
-      {nextPage && <LoadMore onClick={loadPreviousLogs} />}
-      {logElements}
-    </div>
+    <>
+      <LogListHeader />
+      <div ref={listRef} className={styles.listContainer}>
+        {logElements}
+      </div>
+      <LogsFooter
+        clearLogs={clearLogs}
+        loadMore={loadPreviousLogs}
+        toggleAutoScrollActive={toggleAutoScrollActive}
+        autoScrollActive={autoScrollActive}
+      />
+    </>
   );
 }
 

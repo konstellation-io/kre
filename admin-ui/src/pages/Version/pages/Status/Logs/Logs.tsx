@@ -35,21 +35,8 @@ function Logs() {
     setOpened(!opened);
   }
 
-  function clearLogs(): void {
-    //TODO: Refactor the clear logs feature
-    client.writeData({ data: { logs: [] } });
-  }
-
   function handleTabClick(uniqueId: string): void {
     client.writeData({ data: { activeTabId: uniqueId } });
-  }
-
-  function handleCloseTabClick(
-    event: React.MouseEvent<HTMLSpanElement>,
-    index: number
-  ): void {
-    event.stopPropagation();
-    closeTabByIndex(index);
   }
 
   function getNewActiveTabId(index: number, newTabs: GetLogTabs_logTabs[]) {
@@ -112,17 +99,12 @@ function Logs() {
           [styles.hidden]: hidden
         })}
       >
-        <Header
-          togglePanel={togglePanel}
-          opened={opened}
-          onClearClick={clearLogs}
-        />
+        <Header togglePanel={togglePanel} opened={opened} />
         <TabContainer
           tabs={tabs}
           activeTabId={activeTabId}
           contextMenuActions={contextMenuActions}
           onTabClick={handleTabClick}
-          onCloseTabClick={handleCloseTabClick}
         />
         {tabs.map((tab: GetLogTabs_logTabs) => (
           <div

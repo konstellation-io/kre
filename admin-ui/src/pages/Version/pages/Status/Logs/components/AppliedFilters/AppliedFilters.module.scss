@@ -1,0 +1,54 @@
+@import '../../../../../../../styles/colors';
+@import '../../../../../../../styles/mixins';
+@import '../../../../../../../styles/variables';
+
+.container {
+  @include font-body;
+
+  background-color: palette(lowlight, 900);
+  display: flex;
+  align-items: center;
+  height: $grid-unit * 6;
+  flex-shrink: 0;
+}
+
+.title {
+  @include font-body;
+  color: font-color(lowlight);
+
+  margin-right: 2.5 * $grid-unit;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+}
+
+.filter {
+  @include font-small;
+  color: font-color(dark);
+
+  display: flex;
+  flex-direction: row;
+  padding: 0 $grid-unit;
+  margin-right: $grid-unit;
+  height: 3 * $grid-unit;
+  line-height: 3 * $grid-unit;
+  border-radius: 4px;
+
+  background-color: palette(lowlight);
+
+  div:first-child {
+    margin-right: 8px;
+  }
+}
+
+.leftPannel {
+  display: flex;
+  align-items: center;
+  margin-left: $grid-unit * 2.5;
+}
+
+.dateFilter {
+  width: $grid-unit * 21.5;
+}

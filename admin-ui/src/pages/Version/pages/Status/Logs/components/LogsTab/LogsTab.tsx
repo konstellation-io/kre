@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './LogsTab.module.scss';
 import Filters from '../Filters/Filters';
+import AppliedFilters from '../AppliedFilters/AppliedFilters';
 import LogsList from '../LogsList/LogsList';
 import { useForm } from 'react-hook-form';
 import { Moment } from 'moment';
@@ -68,16 +69,23 @@ function LogsTab({
     }
   }, [dateOptionWatch, getValues, uniqueId, updateTabFilters]);
 
+  function clearLogs() {
+    setLogs([]);
+  }
+
   return (
     <div className={styles.container}>
-      <Filters
-        filters={{ [nodeId ? `node` : `workflow`]: nodeName }}
-        filterValues={filterValues}
-        onDateChange={setValue}
+      <Filters filterValues={filterValues} onDateChange={setValue} />
+      <AppliedFilters
+        filters={{
+          [nodeId ? `node` : `workflow`]: nodeName,
+          other: 'otherValue'
+        }}
       />
       <LogsList
         logs={logs}
         onNewLogs={setLogs}
+        clearLogs={clearLogs}
         nodeId={nodeId}
         runtimeId={runtimeId}
         workflowId={workflowId}

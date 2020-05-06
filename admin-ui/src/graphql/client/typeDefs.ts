@@ -22,6 +22,8 @@ export interface LogPanelFilters {
 
 export interface SetCurrentLogPanelInput {
   runtimeId: string;
+  runtimeName: string;
+  versionName: string;
   nodeId: string;
   nodeName: string;
   workflowId: string;
@@ -31,6 +33,12 @@ export interface SetCurrentLogPanelInput {
 
 export interface LogPanel extends SetCurrentLogPanelInput {
   __typename: string;
+}
+
+export interface OpenedVersion {
+  runtimeName: string;
+  versionName: string;
+  __typename: 'OpenedVersion';
 }
 
 export interface RemoveNotificationInput {

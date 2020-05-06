@@ -32,6 +32,7 @@ type Props = {
   height?: number;
   align?: string;
   style?: Object;
+  className?: string;
 };
 
 function Button({
@@ -46,20 +47,21 @@ function Button({
   loading = false,
   height = 40,
   align = BUTTON_ALIGN.MIDDLE,
-  style = {}
+  style = {},
+  className = ''
 }: Props) {
   const content = loading ? (
     <SpinnerLinear size={30} dark />
   ) : (
     <>
-      {Icon && <Icon className="icon-regular" />}
+      {Icon && <Icon className="icon-small" />}
       <span>{label}</span>
     </>
   );
 
   const btn = (
     <div
-      className={cx(styles.btn, styles[type], styles[align], {
+      className={cx(className, styles.btn, styles[type], styles[align], {
         [styles.primary]: primary,
         [styles.border]: border,
         [styles.label]: !primary,

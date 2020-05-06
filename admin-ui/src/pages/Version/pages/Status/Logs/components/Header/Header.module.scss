@@ -9,7 +9,7 @@
   transition: height ease 0.3s;
 
   &.opened {
-    height: 50px;
+    height: 4 * $grid-unit;
     flex-shrink: 0;
 
     .buttons {
@@ -20,18 +20,14 @@
 
 .title {
   @include font-caption;
-  color: font-color(light);
+  color: font-color(lowlight);
 
   display: flex;
   align-items: center;
   margin: 0 20px 0 20px;
 
-  span {
-    font-size: 14px;
-  }
-
   svg {
-    margin-right: 8px;
+    margin: 4px 1.5 * $grid-unit 0 0;
   }
 }
 

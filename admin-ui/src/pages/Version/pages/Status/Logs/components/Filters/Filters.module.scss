@@ -3,8 +3,8 @@
 @import '../../../../../../../styles/variables';
 
 .container {
-  @include border-header;
   @include font-body;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -12,32 +12,11 @@
   flex-shrink: 0;
 }
 
-.filter {
-  @include font-code;
-  display: flex;
-  flex-direction: row;
-  padding: 0 $grid-unit;
-  margin: 0 $grid-unit;
-
-  background-color: font-color(dark);
-  color: font-color(light);
-
-  div:first-child {
-    margin-right: 8px;
-  }
-}
-
-.leftFilters {
-  display: flex;
-  align-items: center;
-  margin-left: $grid-unit * 2.5;
-}
 .rightFilters {
   margin-right: $grid-unit * 2.5;
   display: flex;
   & > div:not(:last-child) {
-    border-right: 2px solid #1d1e23;
-    border-right-style: inset;
+    border-right: 1px solid palette(base, 400);
   }
 }
 .dateFilter {

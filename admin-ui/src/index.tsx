@@ -12,6 +12,7 @@ import ROUTE from './constants/routes';
 import history from './history';
 
 import typeDefs, {
+  OpenedVersion,
   LogPanel,
   NotificationType
 } from './graphql/client/typeDefs';
@@ -40,6 +41,7 @@ export interface LocalState {
   activeTabId: string;
   logsOpened: boolean;
   logsAutoScroll: boolean;
+  openedVersion: OpenedVersion;
 }
 interface DefaultCache {
   data: LocalState;
@@ -145,7 +147,12 @@ config
         activeTabId: '',
         notifications: [],
         logsOpened: false,
-        logsAutoScroll: false
+        logsAutoScroll: false,
+        openedVersion: {
+          runtimeName: '',
+          versionName: '',
+          __typename: 'OpenedVersion'
+        }
       }
     };
 

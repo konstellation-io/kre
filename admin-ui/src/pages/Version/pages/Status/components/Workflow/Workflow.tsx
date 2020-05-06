@@ -14,7 +14,7 @@ import {
   NodeStatus,
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import {
   LogPanel,
   LogPanelFilters
@@ -22,6 +22,7 @@ import {
 import { useParams } from 'react-router-dom';
 import { RuntimeRouteParams } from '../../../../../../constants/routes';
 import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
+import { GET_OPENED_VERSION_INFO } from '../../../../../../graphql/client/queries/getOpenedVersionInfo.graphql';
 import moment from 'moment';
 import { dateFilterOptions } from '../../Logs/components/Filters/components/DatesFilter/DateFilter';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
@@ -50,6 +51,10 @@ type Props = {
 
 function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   const { accessLevel } = useUserAccess();
+  const { data: localData } = useQuery(GET_OPENED_VERSION_INFO);
+  const runtimeName = localData?.openedVersion.runtimeName || '';
+  const versionName = localData?.openedVersion.versionName || '';
+
   const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
 
@@ -106,6 +111,8 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
       nodeId,
       nodeName,
       workflowId,
+      runtimeName,
+      versionName,
       __typename: 'logTab'
     });
   }
@@ -114,6 +121,8 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
     addLogTab({
       runtimeId,
       nodeId: '',
+      runtimeName,
+      versionName,
       nodeName: workflow.name,
       workflowId: data.id,
       __typename: 'logTab'

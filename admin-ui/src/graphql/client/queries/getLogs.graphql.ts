@@ -1,14 +1,5 @@
 import gql from 'graphql-tag';
 
-export interface GetLogPanelConf {
-  logsAutoScroll: boolean;
-}
-export const GET_LOG_PANEL_CONF = gql`
-  {
-    logsAutoScroll @client
-  }
-`;
-
 export interface TabFilters {
   dateOption: string;
   startDate: string;
@@ -17,6 +8,8 @@ export interface TabFilters {
 
 export interface GetLogTabs_logTabs {
   runtimeId: string;
+  runtimeName: string;
+  versionName: string;
   nodeId: string;
   nodeName: string;
   workflowId: string;
@@ -36,6 +29,8 @@ export const GET_LOG_TABS = gql`
     activeTabId @client
     logTabs @client {
       runtimeId
+      runtimeName
+      versionName
       nodeId
       nodeName
       uniqueId
