@@ -26,7 +26,7 @@ func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 		msgTime := msgItemArray[0].(float64)
 		msgData := msgItemArray[1].(map[string]interface{})
 
-		date := time.Unix(0, int64(msgTime*1000)*int64(time.Millisecond)).Format(time.RFC3339)
+		date := time.Unix(0, int64(msgTime)*int64(time.Second)).Format(time.RFC3339)
 		level := "INFO"
 		message := msgData["log"].(string)
 
