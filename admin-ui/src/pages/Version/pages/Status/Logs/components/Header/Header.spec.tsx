@@ -18,13 +18,7 @@ describe('Logs Header', () => {
   const onClearClickMock = jest.fn();
 
   beforeEach(() => {
-    wrapper = shallow(
-      <Header
-        onClearClick={onClearClickMock}
-        togglePanel={togglePanel}
-        opened
-      />
-    );
+    wrapper = shallow(<Header togglePanel={togglePanel} opened />);
   });
 
   it('matches snapshot', () => {
@@ -32,20 +26,12 @@ describe('Logs Header', () => {
   });
 
   it('show right components', () => {
-    expect(wrapper.find('.buttons > div').length).toBe(3);
+    expect(wrapper.find('.buttons > div').length).toBe(1);
   });
 
   it('handles events', () => {
     wrapper
       .find(IconClose)
-      .parent()
-      .simulate('click');
-    wrapper
-      .find(IconStickBottom)
-      .parent()
-      .simulate('click');
-    wrapper
-      .find(IconClear)
       .parent()
       .simulate('click');
 
@@ -56,6 +42,5 @@ describe('Logs Header', () => {
       .simulate('click');
 
     expect(togglePanel).toHaveBeenCalledTimes(2);
-    expect(onClearClickMock).toHaveBeenCalledTimes(1);
   });
 });

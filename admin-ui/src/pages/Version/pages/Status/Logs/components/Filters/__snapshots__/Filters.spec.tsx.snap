@@ -4,31 +4,16 @@ exports[`Filters matches snapshot 1`] = `
 <div
   className="container"
 >
-  <div
-    className="leftFilters"
-  >
-    <div
-      className="title"
-    >
-      Showing logs with the following filters:
-    </div>
-    <div
-      className="filters"
-    >
-      <Filter
-        filter="filter"
-        key="filter"
-        value="value"
-      />
-    </div>
-  </div>
-  <div
-    className="rightFilters"
+  <Right
+    style="rightFilters"
   >
     <DateFilter
       onDateChange={[MockFunction]}
       selectedOption="2020-01-01"
     />
-  </div>
+    <Button
+      label="JUMP TO NOW"
+    />
+  </Right>
 </div>
 `;

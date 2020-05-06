@@ -4,11 +4,15 @@ import VersionSideBar from './components/VersionSideBar/VersionSideBar';
 import { Switch } from 'react-router-dom';
 import { shallow } from 'enzyme';
 
+jest.mock('@apollo/react-hooks', () => ({
+  useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
+}));
+
 describe('Version', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<Version refetch={jest.fn()} />);
+    wrapper = shallow(<Version />);
   });
 
   it('shows right components', () => {
