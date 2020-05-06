@@ -6,24 +6,22 @@ import (
 	"os"
 	"time"
 
+	"gitlab.com/konstellation/kre/mongo-writer/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
-
-	"gitlab.com/konstellation/kre/mongo-writer/config"
 )
 
 type MongoDB struct {
 	cfg          *config.Config
 	logger       *simplelogger.SimpleLogger
 	client       *mongo.Client
-	TotalInserts int
+	TotalInserts int64
 }
 
 type InsertsMap map[string][]bson.M
 
-func NewMongoDB(cfg *config.Config, logger *simplelogger.SimpleLogger) *MongoDB {
+func NewMongoManager(cfg *config.Config, logger *simplelogger.SimpleLogger) *MongoDB {
 	return &MongoDB{
 		cfg,
 		logger,
@@ -79,46 +77,38 @@ func (m *MongoDB) Disconnect() error {
 	return m.client.Disconnect(ctx)
 }
 
-func (m *MongoDB) KeepAlive(waitc chan<- struct{}) {
-	go func() {
-		for {
-			time.Sleep(5 * time.Second)
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-			m.logger.Debug("Mongo keep alive...")
-			err := m.client.Ping(ctx, readpref.Primary())
-			if err != nil {
-				cancel()
-				m.logger.Error(err.Error())
-				waitc <- struct{}{}
-				return
-			}
-			cancel()
-		}
-	}()
-}
-
-func (m *MongoDB) InsertMessages(inserts *InsertsMap) error {
+func (m *MongoDB) InsertMessages(ctx context.Context, inserts *InsertsMap) error {
 	db := m.client.Database(m.cfg.MongoDB.DBName)
-	ctx := context.TODO()
 
 	for colName, list := range *inserts {
 		col := db.Collection(colName)
 
-		var writes []mongo.WriteModel
+		writes := make([]mongo.WriteModel, len(list))
 
-		for _, d := range list {
-			writes = append(writes, mongo.NewInsertOneModel().SetDocument(d))
+		for i, d := range list {
+			writes[i] = mongo.NewInsertOneModel().SetDocument(d)
 		}
 
-		// run bulk write
-		_, err := col.BulkWrite(ctx, writes)
+		r, err := col.BulkWrite(ctx, writes)
 		if err != nil {
 			return err
 		}
 
-		m.TotalInserts += len(writes)
-
+		m.TotalInserts += r.InsertedCount
 	}
+
+	return nil
+}
+
+func (m *MongoDB) InsertOne(ctx context.Context, coll string, doc interface{}) error {
+	db := m.client.Database(m.cfg.MongoDB.DBName)
+
+	_, err := db.Collection(coll).InsertOne(ctx, doc)
+	if err != nil {
+		return err
+	}
+
+	m.TotalInserts++
 
 	return nil
 }

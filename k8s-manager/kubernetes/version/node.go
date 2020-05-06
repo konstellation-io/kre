@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,7 +26,7 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 			"KRT_VERSION":           version.Name,
 			"KRT_NODE_NAME":         n.Name,
 			"KRT_NATS_SERVER":       "kre-nats:4222",
-			"KRT_NATS_MONGO_WRITER": "some_channel",
+			"KRT_NATS_MONGO_WRITER": "mongo_writer",
 			"KRT_BASE_PATH":         "/krt-files",
 			"KRT_HANDLER_PATH":      n.Src,
 		}

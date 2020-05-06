@@ -1,137 +1,66 @@
 package nats
 
 import (
-	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"time"
-
 	nc "github.com/nats-io/nats.go"
-	"github.com/nats-io/stan.go"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
+	"os"
 
 	"gitlab.com/konstellation/kre/mongo-writer/config"
 )
 
-// Connect to a server
-type Nats struct {
-	cfg    *config.Config
-	logger *simplelogger.SimpleLogger
-
-	TotalMsgs int
-
-	// Nats
-	nc   *nc.Conn
-	nsub *nc.Subscription
-
-	// NATS streaming
-	sc   stan.Conn
-	ssub stan.Subscription
+type NATSManager struct {
+	cfg           *config.Config
+	logger        *simplelogger.SimpleLogger
+	nc            *nc.Conn
+	subscriptions []*nc.Subscription
+	TotalMsgs     int
 }
 
-func NewNats(cfg *config.Config, logger *simplelogger.SimpleLogger) *Nats {
-	return &Nats{
+func NewNATSManager(cfg *config.Config, logger *simplelogger.SimpleLogger) *NATSManager {
+	return &NATSManager{
 		cfg:    cfg,
 		logger: logger,
 	}
 }
 
-func (n *Nats) SubscribeToChannel(channel string) (chan *nc.Msg, error) {
-	msgCh := make(chan *nc.Msg, 64)
-	sub, err := n.nc.ChanSubscribe(channel, msgCh)
-	if err != nil {
-		return nil, err
-	}
-
-	n.nsub = sub
-	return msgCh, nil
-}
-
-func (n *Nats) ConnectNats() error {
-	n.logger.Info("Nats connecting...")
-
+func (n *NATSManager) Connect() error {
+	n.logger.Info("NATS connecting...")
 	conn, err := nc.Connect(n.cfg.Nats.Server)
 	if err != nil {
 		return err
 	}
 
+	n.logger.Info("NATS connected")
 	n.nc = conn
 	return nil
 }
 
-func (n *Nats) Disconnect() error {
-	if n.ssub != nil {
-		n.nc.Close()
-		return nil
+func (n *NATSManager) Disconnect() {
+	n.logger.Info("NATS disconnecting...")
+	if n.subscriptions != nil {
+		for _, s := range n.subscriptions {
+			n.logger.Infof("NATS unsubscribe from %s...", s.Subject)
+			if err := s.Unsubscribe(); err != nil {
+				n.logger.Infof("NATS unsubscribe from %s error: %s", s.Subject, err)
+			}
+		}
 	}
 
-	return nil
+	n.nc.Close()
+	n.logger.Info("NATS disconnected")
 }
 
-func (n *Nats) ConnectNatsStreaming() error {
-	n.logger.Info("Nats streaming connecting...")
-	clientID := "mongo-writer"
+func (n *NATSManager) SubscribeToChannel(channel string) chan *nc.Msg {
+	n.logger.Infof("NATS subscribe to channel: %s...", channel)
+	msgCh := make(chan *nc.Msg, 64)
 
-	sc, err := stan.Connect(
-		n.cfg.Nats.ClusterID,
-		clientID,
-		stan.NatsURL(n.cfg.Nats.Server),
-	)
+	sub, err := n.nc.ChanSubscribe(channel, msgCh)
 	if err != nil {
-		return err
+		n.logger.Errorf("Error subscribing to '%s' NATS channel: %s", channel, err)
+		os.Exit(1)
 	}
 
-	n.sc = sc
-	return nil
-}
-
-func (n *Nats) DisconnectNatsStreaming() error {
-	if n.ssub != nil {
-		err := n.ssub.Unsubscribe()
-		if err != nil {
-			return err
-		}
-	}
-	if n.sc != nil {
-		err := n.sc.Close()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-type MsgParserFn func(msg *stan.Msg) error
-
-func (n *Nats) SubscribeToSubject(subject string, fn MsgParserFn) error {
-	durableID := "mongo-writer"
-
-	// Subscribe with manual ack mode, and set AckWait to 20 seconds
-	aw, _ := time.ParseDuration("20s")
-	sub, err := n.sc.Subscribe(subject,
-		n.streamingMsgParser(fn),
-		stan.DurableName(durableID),
-		stan.MaxInflight(25),
-		stan.SetManualAckMode(),
-		stan.AckWait(aw),
-	)
-	if err != nil {
-		return err
-	}
-	n.ssub = sub
-	return nil
-}
-
-func (n *Nats) streamingMsgParser(fn MsgParserFn) func(msg *stan.Msg) {
-	return func(msg *stan.Msg) {
-		err := fn(msg)
-		if err != nil {
-			n.logger.Error(err.Error())
-			return
-		}
-
-		err = msg.Ack() // Manual ACK
-		if err != nil {
-			n.logger.Error(fmt.Sprintf("ACK ERROR: %s", err.Error()))
-			return
-		}
-	}
+	n.logger.Infof("NATS subscribed to channel: %s", channel)
+	n.subscriptions = append(n.subscriptions, sub)
+	return msgCh
 }

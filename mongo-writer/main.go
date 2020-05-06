@@ -1,147 +1,157 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"os"
-	"regexp"
-	"time"
-
 	nc "github.com/nats-io/nats.go"
-	"go.mongodb.org/mongo-driver/bson"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
+	"gitlab.com/konstellation/kre/mongo-writer/logging"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"gitlab.com/konstellation/kre/mongo-writer/config"
 	"gitlab.com/konstellation/kre/mongo-writer/mongodb"
 	"gitlab.com/konstellation/kre/mongo-writer/nats"
 )
 
-var logRegexp = regexp.MustCompile(`^([^:]+):[^:]+:(.+)$`)
+const natsSubjectLogs = "mongo_writer_logs"
+const natsSubjectData = "mongo_writer"
+const showStatsSeconds = 5
+
+type DataMsg struct {
+	Coll string      `json:"coll"`
+	Doc  interface{} `json:"doc"`
+}
+
+type DataMsgResponse struct {
+	Success bool `json:"success"`
+}
 
 func main() {
 	cfg := config.NewConfig()
 	logger := simplelogger.New(simplelogger.LevelDebug)
+	mongoM := mongodb.NewMongoManager(cfg, logger)
+	natsM := nats.NewNATSManager(cfg, logger)
 
-	mongoCli := mongodb.NewMongoDB(cfg, logger)
-	natsCli := nats.NewNats(cfg, logger)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	err := mongoCli.Connect()
+	connectClients(mongoM, natsM, logger)
+	defer disconnectClients(mongoM, natsM, logger)
+
+	logsCh := natsM.SubscribeToChannel(natsSubjectLogs)
+	dataCh := natsM.SubscribeToChannel(natsSubjectData)
+
+	startShowingStats(ctx, mongoM, natsM, logger)
+
+	go processLogsMsgs(ctx, logsCh, mongoM, natsM, logger)
+	go processDataMsgs(ctx, dataCh, mongoM, natsM, logger)
+
+	// Handle sigterm and await termChan signal
+	termChan := make(chan os.Signal)
+	signal.Notify(termChan, syscall.SIGINT, syscall.SIGTERM)
+	<-termChan
+	log.Println("Shutdown signal received")
+}
+
+func connectClients(mongoM *mongodb.MongoDB, natsM *nats.NATSManager, logger *simplelogger.SimpleLogger) {
+	err := mongoM.Connect()
 	if err != nil {
-		logger.Error("MONGO CONN ERROR:" + err.Error())
+		logger.Errorf("Error connecting to MongoDB: %s", err)
 		os.Exit(1)
 	}
 
-	err = natsCli.ConnectNats()
+	err = natsM.Connect()
 	if err != nil {
-		logger.Error("NATS CONN ERROR: " + err.Error())
+		logger.Errorf("Error connecting to NATS: %s", err)
 		os.Exit(1)
 	}
+}
 
-	// Mongo KeepAlive
-	waitc := make(chan struct{})
-	mongoCli.KeepAlive(waitc)
+func disconnectClients(mongoM *mongodb.MongoDB, natsM *nats.NATSManager, logger *simplelogger.SimpleLogger) {
+	fmt.Println("Disconnecting clients...")
 
-	natsMsgsCh, err := natsCli.SubscribeToChannel("mongo_writer")
-
+	err := mongoM.Disconnect()
 	if err != nil {
-		shutdownService(mongoCli, natsCli, logger)
-		return
+		logger.Errorf("Error disconnecting from MongoDB: %s", err)
 	}
 
-	ticker := time.NewTicker(5 * time.Second)
+	natsM.Disconnect()
+}
 
-	msgProcessed := 0
+// startShowingStats logs every N sec the stats.
+func startShowingStats(ctx context.Context, mongoM *mongodb.MongoDB, natsM *nats.NATSManager, logger *simplelogger.SimpleLogger) {
+	go func() {
+		msgProcessed := 0
+		for {
+			select {
+			case <-ctx.Done():
+				break
+			case <-time.Tick(time.Duration(showStatsSeconds) * time.Second):
+				if natsM.TotalMsgs == msgProcessed {
+					continue
+				}
 
-out:
-	for {
-		select {
-		case <-waitc:
-			// Something disconnected
-			shutdownService(mongoCli, natsCli, logger)
-			break out
-
-		case <-ticker.C:
-			if natsCli.TotalMsgs == msgProcessed {
-				continue
+				msgProcessed = natsM.TotalMsgs
+				logger.Debugf("NATS: %6d messages. MongoDB: %6d inserted documents",
+					natsM.TotalMsgs,
+					mongoM.TotalInserts,
+				)
 			}
-			msgProcessed = natsCli.TotalMsgs
-			logger.Info(fmt.Sprintf("NATS MSGS: %6d  MONGO INSERTS: %6d documents", natsCli.TotalMsgs, mongoCli.TotalInserts))
+		}
+	}()
+}
 
-		case msg := <-natsMsgsCh:
-			natsCli.TotalMsgs += 1
-			// FIXME the input messages can be other types than fluentbit message
-			msgs, err := fluentbitMsgParser(msg)
-			if err != nil {
-				logger.Error(fmt.Sprintf("ERROR PARSING MSGS: %s", err.Error()))
-				waitc <- struct{}{}
-			}
+func processLogsMsgs(ctx context.Context, logsCh chan *nc.Msg, mongoM *mongodb.MongoDB, natsM *nats.NATSManager, logger *simplelogger.SimpleLogger) {
+	for msg := range logsCh {
+		natsM.TotalMsgs += 1
 
-			err = mongoCli.InsertMessages(msgs)
-			if err != nil {
-				logger.Error(fmt.Sprintf("ERROR INSERTING MSGS: %s", err.Error()))
-				waitc <- struct{}{}
-			}
+		msgs, err := logging.FluentbitMsgParser(msg)
+		if err != nil {
+			logger.Errorf("Error parsing Fluentbit msg: %s", err)
+		}
 
+		err = mongoM.InsertMessages(ctx, msgs)
+		if err != nil {
+			logger.Errorf("Error inserting msg: %s", err)
 		}
 	}
 }
 
-func shutdownService(mongoCli *mongodb.MongoDB, natsCli *nats.Nats, logger *simplelogger.SimpleLogger) {
-	fmt.Println("Shutting down Mongo Writer...")
+func processDataMsgs(ctx context.Context, dataCh chan *nc.Msg, mongoM *mongodb.MongoDB, natsM *nats.NATSManager, logger *simplelogger.SimpleLogger) {
+	for msg := range dataCh {
+		natsM.TotalMsgs += 1
 
-	err := mongoCli.Disconnect()
-	if err != nil {
-		logger.Error(fmt.Sprintf("Error while disconnecting mongo: %s", err.Error()))
-	}
-
-	err = natsCli.Disconnect()
-	if err != nil {
-		logger.Error(fmt.Sprintf("Error while disconnecting nats: %s", err.Error()))
-	}
-}
-
-type FluentBitNatsMsg struct {
-	Time float64
-	Data bson.M
-}
-
-func fluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
-	var msgList bson.A
-
-	err := json.Unmarshal(msg.Data, &msgList)
-	if err != nil {
-		return nil, err
-	}
-
-	list := mongodb.InsertsMap{}
-
-	for _, raw := range msgList {
-		x := raw.([]interface{})
-
-		msg := FluentBitNatsMsg{
-			x[0].(float64),
-			bson.M(x[1].(map[string]interface{})),
+		dataMsg := DataMsg{}
+		err := json.Unmarshal(msg.Data, &dataMsg)
+		if err != nil {
+			logger.Errorf("Error parsing data msg: %s", err)
+			return
 		}
 
-		coll := msg.Data["coll"].(string)
-		doc := bson.M(msg.Data["doc"].(map[string]interface{}))
-
-		level := "INFO"
-		message := doc["log"].(string)
-		if logRegexp.MatchString(message) {
-			r := logRegexp.FindAllStringSubmatch(message, -1)
-			level = r[0][1]
-			message = r[0][2]
+		// MongoDB ACK needed to reply to NATS
+		res := DataMsgResponse{
+			Success: true,
 		}
 
-		doc["level"] = level
-		doc["message"] = message
-		doc["date"] = time.Unix(0, int64(msg.Time*1000)*int64(time.Millisecond)).Format(time.RFC3339)
+		err = mongoM.InsertOne(ctx, dataMsg.Coll, dataMsg.Doc)
+		if err != nil {
+			logger.Errorf("Error inserting data msg: %s", err)
+			res.Success = false
+		}
 
-		delete(doc, "log")
+		resBytes, err := json.Marshal(res)
+		if err != nil {
+			logger.Errorf("Error marshaling the data msg response: %s", err)
+		}
 
-		list[coll] = append(list[coll], doc)
+		err = msg.Respond(resBytes)
+		if err != nil {
+			logger.Errorf("Error replaying to the data msg: %s", err)
+		}
 	}
-
-	return &list, nil
 }

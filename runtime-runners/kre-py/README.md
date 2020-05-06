@@ -12,7 +12,7 @@ The context object received by theses functions, has the following methods:
 ctx.get_path("relative/path.xxx")
 ctx.set_value("label", value)
 ctx.get_value("label")
-ctx.save_metric("predicted_value", "true_value", "date", "error")
+await ctx.save_metric("predicted_value", "true_value", "date", "error")
 ```
 
 The runner will have the following environment variables:
@@ -41,14 +41,14 @@ def init(ctx):
   ctx.set_value("categories", pickle.load(ctx.get_path("data/categories.pkl")))
 
 # this function will be executed when a message is received
-def handler(ctx, data):
+async def handler(ctx, data):
   # data is the received message from the queue
   categories = ctx.get_value("categories")
 
   # Saves metrics in MongoDB DB sending a message to the MongoWriter queue
-  ctx.save_metric(date="2020-04-06T09:02:09.277853Z",predicted_value="class_x",true_value="class_y")
-  ctx.save_metric(error=ctx.ERR_MISSING_VALUES, date="2020-04-07T00:00:00.0Z")
-  ctx.save_metric(error=ctx.ERR_NEW_LABELS) # If the date is not set, the 'date' field value will be now
+  await ctx.save_metric(date="2020-04-06T09:02:09.277853Z",predicted_value="class_x",true_value="class_y")
+  await ctx.save_metric(error=ctx.ERR_MISSING_VALUES, date="2020-04-07T00:00:00.0Z")
+  await ctx.save_metric(error=ctx.ERR_NEW_LABELS) # If the date is not set, the 'date' field value will be now
 
   normalized_data = np.xxx(categories)
   normalized_data = pd.xxx(normalized_data)
