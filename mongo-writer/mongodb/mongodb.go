@@ -85,8 +85,8 @@ func (m *MongoDB) InsertMessages(ctx context.Context, inserts *InsertsMap) error
 
 		writes := make([]mongo.WriteModel, len(list))
 
-		for idx, d := range list {
-			writes[idx] = mongo.NewInsertOneModel().SetDocument(d)
+		for i, d := range list {
+			writes[i] = mongo.NewInsertOneModel().SetDocument(d)
 		}
 
 		r, err := col.BulkWrite(ctx, writes)
