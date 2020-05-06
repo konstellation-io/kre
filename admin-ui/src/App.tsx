@@ -66,23 +66,20 @@ function ProtectedRoutes() {
         <Switch>
           <Route path={protectedRoutes} component={AccessDenied} />
           <Redirect exact from={ROUTE.SETTINGS} to={ROUTE.SETTINGS_GENERAL} />
-          <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
-          <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
-          <Route
-            path={ROUTE.RUNTIME_VERSION_CONFIGURATION}
-            component={Runtime}
-          />
-          <Route path={ROUTE.SETTINGS} component={Settings} />,
-          <Route path={ROUTE.AUDIT} component={UsersActivity} />
           <Redirect
             exact
             from={ROUTE.RUNTIME_VERSION}
             to={ROUTE.RUNTIME_VERSION_STATUS}
           />
           <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
+
+          <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
+          <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
+
           <Route exact path={ROUTE.HOME} component={Dashboard} />
           <Route
             path={[
+              ROUTE.RUNTIME_VERSION_CONFIGURATION,
               ROUTE.RUNTIME_VERSION_METRICS,
               ROUTE.RUNTIME_VERSION_DOCUMENTATION,
               ROUTE.RUNTIME_VERSION_STATUS
@@ -90,6 +87,9 @@ function ProtectedRoutes() {
             component={Runtime}
           />
           <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
+
+          <Route path={ROUTE.SETTINGS} component={Settings} />
+          <Route path={ROUTE.AUDIT} component={UsersActivity} />
           <Route component={NotFound} />
         </Switch>
         <Logs />
