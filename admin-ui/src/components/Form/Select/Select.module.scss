@@ -1,5 +1,8 @@
 @import '../../../styles/mixins';
 @import '../../../styles/colors';
+@import '../../../styles/borders';
+
+$color-selected-bg: palette(base, 300);
 
 .container {
   position: relative;
@@ -18,14 +21,16 @@
 .input {
   @include form-input;
 
-  color: $font-color-white;
+  color: font-color(light);
   font-weight: 600;
 
   &.placeholder {
-    color: $font-color-light;
+    color: font-color(lowlight);
   }
 
   &:after {
+    @include arrow(white);
+
     position: absolute;
     width: 7px;
     height: 7px;
@@ -33,9 +38,6 @@
     right: 14px;
     top: 14px;
     content: '';
-    border: solid 1px transparent;
-    border-bottom-color: white;
-    border-right-color: white;
     transition: transform ease 0.3s, top ease 0.3s;
   }
 
@@ -59,18 +61,18 @@
 }
 
 .optionElement {
-  color: $font-color-light;
+  color: font-color(light);
   line-height: 16px;
   height: 40px;
   padding: 11px 16px;
   transition: color ease 0.4s, background-color ease 0.4s;
 
   &.selected {
-    background-color: $color-grey-light;
+    background-color: $color-selected-bg;
   }
 
   &:hover {
     background-color: $bg-highlighted;
-    color: $font-color-white;
+    color: font-color(light);
   }
 }

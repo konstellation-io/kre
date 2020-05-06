@@ -1,12 +1,16 @@
 @import '../../../../../../../styles/colors';
 @import '../../../../../../../styles/variables';
 
+$color-tabs-bg: palette(base, 700);
+$color-tab-bg: palette(base);
+$color-tab-selected-bg: palette(lowlight, 800);
+
 .tabContainer {
   height: $grid-unit * 5;
   display: flex;
   align-items: flex-end;
   padding: $grid-unit $grid-unit 0 $grid-unit;
-  background-color: $color-grey-darker;
+  background-color: $color-tabs-bg;
 }
 .tab {
   min-width: $grid-unit * 9.5;
@@ -26,7 +30,7 @@
   }
   &.selected {
     height: $grid-unit * 4;
-    background-color: $color-grey-lighter;
+    background-color: $color-tab-selected-bg;
     font-size: $grid-unit * 1.5;
   }
   &:not(:last-child) {

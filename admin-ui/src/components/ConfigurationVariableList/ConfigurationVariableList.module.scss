@@ -1,6 +1,10 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+$color-input-bg: palette(base, 600);
+$color-border: palette(base);
+$bg-odd: palette(base);
+
 .container {
   display: flex;
   flex-direction: column;
@@ -12,16 +16,14 @@
   .row:nth-child(0) {
     &,
     .typeColValue {
-      background-color: $bg-color-lighter;
-    }
-    input {
-      background-color: $color-grey-light;
+      background-color: $bg-odd;
+      color: font-color(light);
     }
   }
 }
 
 .row:last-child {
-  border-bottom: solid 1px $color-grey;
+  border-bottom: solid 1px $color-border;
 }
 
 .row {
@@ -31,24 +33,24 @@
 
   display: flex;
   flex-direction: row;
-  border-top: solid 1px $color-grey;
+  border-top: solid 1px $color-border;
   transition: color ease 0.3s, background-color ease 0.3s;
 
   &:hover {
     &,
     .typeColValue {
       background-color: $bg-color-dark !important;
-      color: $font-color-white;
+      color: font-color(light);
     }
 
     input,
     textarea {
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 
   > div:not(:last-child) {
-    border-right: solid 1px $color-grey;
+    border-right: solid 1px $color-border;
   }
 
   > div {
@@ -98,7 +100,7 @@
 
     > input,
     > textarea {
-      background-color: $color-grey;
+      background-color: $color-border;
     }
 
     > div {

@@ -4,7 +4,7 @@ This is an implementation in Python for the KRE runner.
 
 ## Usage
 
-The injected code must implement a `handler(ctx, data)` function and optionally a `init(ctx)` data.
+The injected code must implement a `handler(ctx, data)` function and optionally a `init(ctx)` function.
 
 The context object received by theses functions, has the following methods:
 
@@ -12,7 +12,7 @@ The context object received by theses functions, has the following methods:
 ctx.get_path("relative/path.xxx")
 ctx.set_value("label", value)
 ctx.get_value("label")
-await ctx.save_metric("label", value)
+await ctx.save_metric("predicted_value", "true_value", "date", "error")
 ```
 
 The runner will have the following environment variables:

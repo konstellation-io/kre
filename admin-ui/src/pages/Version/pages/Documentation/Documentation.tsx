@@ -53,7 +53,7 @@ function Documentation() {
         />
       </div>
       <div className={styles.article}>
-        <ReactMarkdown source={article} escapeHtml={false} />
+        <ReactMarkdown source={article} />
       </div>
     </div>
   );

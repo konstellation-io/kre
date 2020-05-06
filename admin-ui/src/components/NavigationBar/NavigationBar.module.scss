@@ -1,6 +1,11 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 
+$color-hexagon: palette(base, 400);
+$color-hexagon-active: $color-primary;
+$color-hexagon-hover: palette(highlight, 700);
+$color-hexagon-disabled: palette(base, 200);
+
 .container {
   padding-top: 16px;
 
@@ -31,20 +36,20 @@
 
   &:hover {
     .button {
-      background-color: #38a7c1;
-      box-shadow: -26px -2px 29px -2px rgba($color-bright-blue, 0.3);
+      background-color: $color-hexagon-hover;
+      box-shadow: -26px -2px 29px -2px rgba($color-hexagon-active, 0.3);
     }
     .buttonText {
-      color: $font-color-dark;
+      color: font-color(dark);
     }
   }
   &.disabled {
     .button {
-      background-color: #555555;
+      background-color: $color-hexagon-disabled;
       cursor: not-allowed;
     }
     .buttonText {
-      color: $font-color-dark;
+      color: font-color(dark);
     }
     &:hover {
       .button {
@@ -66,7 +71,7 @@
 
 .button {
   @include font-button;
-  color: $font-color-regular;
+  color: font-color(regular);
 
   @include hexagon;
 
@@ -76,16 +81,16 @@
 
 .active {
   &:after {
-    background-color: $color-bright-blue;
+    background-color: $color-hexagon-active;
   }
 
   .button {
-    background-color: $color-bright-blue;
-    box-shadow: -26px -2px 29px -2px rgba($color-bright-blue, 0.4);
+    background-color: $color-hexagon-active;
+    box-shadow: -26px -2px 29px -2px rgba($color-hexagon-active, 0.4);
   }
 
   .buttonText {
-    color: $font-color-dark;
+    color: font-color(dark);
   }
 }
 
@@ -93,7 +98,7 @@
   @include center;
 
   @include font-button;
-  color: $font-color-light;
+  color: font-color(light);
 
   transition: color ease 0.3s;
 

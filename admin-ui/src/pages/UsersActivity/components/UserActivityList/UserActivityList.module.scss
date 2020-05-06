@@ -28,22 +28,22 @@
 }
 
 .message {
-  color: $font-color-light;
+  color: font-color(light);
   margin: 5px 0 0 25px;
   padding-right: 45px;
 
   a {
-    color: $font-color-regular;
+    color: font-color(regular);
     transition: color ease 0.3s;
 
     &:hover {
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 }
 
 .comment {
-  color: $font-color-regular;
+  color: font-color(regular);
 
   margin: 5px 0 0 25px;
   padding-right: 45px;

@@ -1,5 +1,9 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
+@import '../../styles/shadows';
+
+$color-error-bg: palette(error, 900);
+$color-alert-bg: palette(feedback, 900);
 
 .notificationsContainer {
   position: absolute;
@@ -11,6 +15,8 @@
 }
 
 .container {
+  @include shadow(4);
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -21,14 +27,13 @@
   max-height: 0;
   margin-bottom: 3px;
   padding: 0 20px;
-  box-shadow: 0 2px 8px 0 #000000;
   overflow: hidden;
 
   transition: max-height ease 0.3s;
 
   span,
   svg {
-    color: $font-color-white;
+    color: font-color(light);
     font-size: 13px;
     transition: font-size ease 0.3s;
 
@@ -39,11 +44,11 @@
   }
 
   &.MESSAGE {
-    background-color: $color-blue-dark;
+    background-color: $color-alert-bg;
   }
 
   &.ERROR {
-    background-color: $color-red-dark;
+    background-color: $color-error-bg;
   }
 }
 

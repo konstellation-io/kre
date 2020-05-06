@@ -16,7 +16,7 @@
 
 .subtitle {
   @include font-body;
-  color: $font-color-light;
+  color: font-color(light);
 
   margin-bottom: 60px;
 }
@@ -31,13 +31,13 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  background-color: $color-node-content;
+  background-color: $color-other;
 }
 
 .versionTitle,
 .versionName {
   @include font-body;
-  color: $font-color-white;
+  color: font-color(light);
 }
 
 .versionTitle {
@@ -46,7 +46,7 @@
 
 .versionCreation {
   @include font-caption;
-  color: $font-color-light;
+  color: font-color(light);
 
   margin: 5px 25px;
 }
@@ -66,7 +66,7 @@
   height: 8px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: $color-green;
+  background-color: $color-ok;
   flex-shrink: 0;
 }
 

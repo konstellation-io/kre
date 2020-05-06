@@ -8,7 +8,7 @@
 
 .innerContainer {
   @include font-small;
-  color: $font-color-white;
+  color: font-color(light);
 
   background-color: transparent;
   position: absolute;

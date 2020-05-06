@@ -1,7 +1,7 @@
 @import '../../styles/colors';
 
 .container {
-  color: $font-color-white;
+  color: font-color(light);
   font-weight: 500;
 
   margin: 50px 0 0 20px;

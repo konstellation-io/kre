@@ -10,9 +10,8 @@ $increment-left-padding: 2 * $grid-unit;
 
   div {
     @include font-button;
-    letter-spacing: 0.55px !important;
-    font-weight: 700 !important;
-    color: $font-color-light !important;
+    font-weight: 800 !important;
+    color: font-color(lowlight) !important;
     text-transform: uppercase;
   }
 
@@ -37,7 +36,7 @@ $increment-left-padding: 2 * $grid-unit;
     transition: color ease 0.4s, background-color ease 0.4s;
   }
   .title-anchor.active {
-    color: $font-color-white !important;
+    color: font-color(light) !important;
     font-weight: 800 !important;
   }
 
@@ -49,6 +48,6 @@ $increment-left-padding: 2 * $grid-unit;
   .title-level2:hover,
   .title-anchor:hover {
     background-color: $bg-highlighted;
-    color: $font-color-white !important;
+    color: font-color(light) !important;
   }
 }

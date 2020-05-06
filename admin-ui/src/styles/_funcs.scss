@@ -4,11 +4,11 @@
   $color: red;
 
   @if $status == 'PUBLISHED' {
-    $color: $color-green;
+    $color: $color-ok;
   } @else if $status == 'STARTED' {
-    $color: $color-blue;
+    $color: $color-primary;
   } @else if $status == 'STOPPED' {
-    $color: $font-color-light;
+    $color: font-color(light);
   }
 
   @return $color;

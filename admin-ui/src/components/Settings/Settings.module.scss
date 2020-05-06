@@ -1,5 +1,7 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
+@import '../../styles/borders';
+@import '../../styles/shadows';
 
 .container {
   @include font-button;
@@ -10,12 +12,12 @@
   padding: 0 12px;
   cursor: pointer;
   transition: color ease 0.4s;
-  color: $font-color-light;
+  color: font-color(light);
   background-color: $bg-color-dark;
   z-index: 1;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
 
     .arrow {
       border-color: white;
@@ -27,6 +29,8 @@
   }
 
   &:after {
+    @include arrow(white);
+
     position: absolute;
     width: 7px;
     height: 7px;
@@ -34,9 +38,6 @@
     right: 14px;
     top: 14px;
     content: '';
-    border: solid 1px transparent;
-    border-bottom-color: white;
-    border-right-color: white;
     transition: transform ease 0.3s, top ease 0.3s;
   }
 
@@ -54,7 +55,8 @@
 }
 
 .options {
+  @include shadow(4);
+
   transition: max-height ease 0.3s;
   overflow: hidden;
-  box-shadow: black 0px 4px 7px;
 }

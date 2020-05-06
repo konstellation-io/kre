@@ -2,7 +2,7 @@
 @import '../../../../../styles/mixins';
 
 .wrapper {
-  color: $font-color-light;
+  color: font-color(light);
   display: flex;
   flex-direction: row;
   background-color: #26292c;
@@ -27,7 +27,7 @@
     }
 
     &:hover {
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 }
@@ -35,5 +35,5 @@
 .disabled {
   cursor: default;
   pointer-events: none;
-  color: $font-color-regular;
+  color: font-color(regular);
 }
