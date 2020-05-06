@@ -101,15 +101,8 @@ class Result:
         self.data = data.get("data")
         self.error = data.get("error")
 
-    def to_dict(self):
-        return {
-            "reply": self.reply,
-            "data": self.data,
-            "error": self.error
-        }
-
     def to_json(self):
-        return bytes(json.dumps(self.to_dict()), encoding='utf-8')
+        return bytes(json.dumps(self.__dict__), encoding='utf-8')
 
 
 class Runner:
