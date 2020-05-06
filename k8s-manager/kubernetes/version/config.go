@@ -107,18 +107,6 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
     Record workflowId ${KRE_WORKFLOW_ID}
 
 [FILTER]
-    Name nest
-    Match *
-    Operation nest
-    Wildcard *
-    Nest_under doc
-
-[FILTER]
-    Name record_modifier
-    Match *
-    Record coll logs
-
-[FILTER]
     Name  stdout
     Match *
 

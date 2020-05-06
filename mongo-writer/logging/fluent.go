@@ -9,50 +9,47 @@ import (
 	"time"
 )
 
+const logsCollName = "logs"
+
 var logRegexp = regexp.MustCompile(`^([^:]+):[^:]+:(.+)$`)
 
-type FluentBitNatsMsg struct {
-	Time float64
-	Data bson.M
-}
-
 func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
-	var msgList bson.A
-
+	var msgList []interface{}
 	err := json.Unmarshal(msg.Data, &msgList)
 	if err != nil {
 		return nil, err
 	}
 
-	list := mongodb.InsertsMap{}
+	result := mongodb.InsertsMap{}
+	for _, msgItem := range msgList {
+		msgItemArray := msgItem.([]interface{})
+		msgTime := msgItemArray[0].(float64)
+		msgData := msgItemArray[1].(map[string]interface{})
 
-	for _, raw := range msgList {
-		x := raw.([]interface{})
-
-		msg := FluentBitNatsMsg{
-			x[0].(float64),
-			bson.M(x[1].(map[string]interface{})),
-		}
-
-		coll := msg.Data["coll"].(string)
-		doc := bson.M(msg.Data["doc"].(map[string]interface{}))
-
+		date := time.Unix(0, int64(msgTime*1000)*int64(time.Millisecond)).Format(time.RFC3339)
 		level := "INFO"
-		message := doc["log"].(string)
+		message := msgData["log"].(string)
+
+		// Extract level and message from log text for texts like:
+		//   INFO:kre-runner:connecting to NATS at 'kre-nats:4222'
 		if logRegexp.MatchString(message) {
 			r := logRegexp.FindAllStringSubmatch(message, -1)
 			level = r[0][1]
 			message = r[0][2]
 		}
 
-		doc["level"] = level
-		doc["message"] = message
-		doc["date"] = time.Unix(0, int64(msg.Time*1000)*int64(time.Millisecond)).Format(time.RFC3339)
+		doc := bson.M{
+			"date":        date,
+			"level":       level,
+			"message":     message,
+			"workflowId":  msgData["workflowId"],
+			"nodeId":      msgData["nodeId"],
+			"nodeName":    msgData["nodeName"],
+			"versionName": msgData["versionName"],
+		}
 
-		delete(doc, "log")
-
-		list[coll] = append(list[coll], doc)
+		result[logsCollName] = append(result[logsCollName], doc)
 	}
 
-	return &list, nil
+	return &result, nil
 }
