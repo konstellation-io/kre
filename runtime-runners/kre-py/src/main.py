@@ -6,7 +6,7 @@ import json
 import traceback
 import datetime
 
-from nats.aio.client import Client as NATS
+from nats.aio.client import ErrTimeout, Client as NATS
 
 
 class Config:
@@ -28,9 +28,10 @@ class HandlerContext:
     ERR_MISSING_VALUES = "missing_values"
     ERR_NEW_LABELS = "new_labels"
 
-    def __init__(self, config, write_in_mongo):
+    def __init__(self, config, nc, logger):
         self.__config__ = config
-        self.__write_in_mongo__ = write_in_mongo
+        self.__nc__ = nc
+        self.__logger__ = logger
         self.METRIC_ERRORS = [self.ERR_MISSING_VALUES, self.ERR_NEW_LABELS]
 
     def get_path(self, relative_path):
@@ -42,7 +43,7 @@ class HandlerContext:
     def get_value(self, key):
         return getattr(self, key)
 
-    def save_metric(self, predicted_value="", true_value="", date="", error=""):
+    async def save_metric(self, predicted_value="", true_value="", date="", error=""):
         if error != "":
             if error not in self.METRIC_ERRORS:
                 raise Exception(f"[ctx.save_metric] invalid value for metric error {error} "
@@ -73,7 +74,15 @@ class HandlerContext:
             "versionId": self.__config__.krt_version
         }
 
-        self.__write_in_mongo__({"coll": coll, "doc": doc})
+        try:
+            subject = self.__config__.nats_mongo_writer
+            payload = bytes(json.dumps({"coll": coll, "doc": doc}), encoding='utf-8')
+            response = await self.__nc__.request(subject, payload, timeout=1)
+            res_json = json.loads(response.data.decode())
+            if not res_json['success']:
+                self.__logger__.error("Unexpected error saving metric")
+        except ErrTimeout:
+            self.__logger__.error("Error saving metric: request timed out")
 
 
 class Result:
@@ -160,11 +169,7 @@ class Runner:
         return handler_module
 
     def create_handler_ctx(self, handler_module):
-        def write_in_mongo(msg):
-            coro = self.nc.publish(self.config.nats_mongo_writer, bytes(json.dumps(msg), encoding='utf-8'))
-            self.loop.create_task(coro)
-
-        ctx = HandlerContext(self.config, write_in_mongo)
+        ctx = HandlerContext(self.config, self.nc, self.logger)
         if hasattr(handler_module, "init"):
             handler_module.init(ctx)
 
@@ -184,7 +189,7 @@ class Runner:
                 result.reply = msg.reply
 
             try:
-                handler_result = handler_module.handler(ctx, result.data)
+                handler_result = await handler_module.handler(ctx, result.data)
 
                 is_last_node = self.config.nats_output == ''
                 output_subject = result.reply if is_last_node else self.config.nats_output
