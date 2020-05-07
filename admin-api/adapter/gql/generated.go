@@ -42,6 +42,7 @@ type ResolverRoot interface {
 	Query() QueryResolver
 	Runtime() RuntimeResolver
 	Subscription() SubscriptionResolver
+	User() UserResolver
 	UserActivity() UserActivityResolver
 	Version() VersionResolver
 	VersionNodeStatus() VersionNodeStatusResolver
@@ -168,8 +169,9 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Email func(childComplexity int) int
-		ID    func(childComplexity int) int
+		AccessLevel func(childComplexity int) int
+		Email       func(childComplexity int) int
+		ID          func(childComplexity int) int
 	}
 
 	UserActivity struct {
@@ -253,6 +255,9 @@ type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
 	NodeLogs(ctx context.Context, runtimeID string, nodeID string) (<-chan *entity.NodeLog, error)
 	VersionNodeStatus(ctx context.Context, versionID string) (<-chan *entity.VersionNodeStatus, error)
+}
+type UserResolver interface {
+	AccessLevel(ctx context.Context, obj *entity.User) (AccessLevel, error)
 }
 type UserActivityResolver interface {
 	Type(ctx context.Context, obj *entity.UserActivity) (UserActivityType, error)
@@ -846,6 +851,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.VersionNodeStatus(childComplexity, args["versionId"].(string)), true
 
+	case "User.accessLevel":
+		if e.complexity.User.AccessLevel == nil {
+			break
+		}
+
+		return e.complexity.User.AccessLevel(childComplexity), true
+
 	case "User.email":
 		if e.complexity.User.Email == nil {
 			break
@@ -1218,6 +1230,13 @@ input SettingsInput {
 type User {
   id: ID!
   email: String!
+  accessLevel: AccessLevel!
+}
+
+enum AccessLevel {
+  VIEWER
+  MANAGER
+  ADMINISTRATOR
 }
 
 type Alert {
@@ -4372,6 +4391,40 @@ func (ec *executionContext) _User_email(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _User_accessLevel(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().AccessLevel(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(AccessLevel)
+	fc.Result = res
+	return ec.marshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAccessLevel(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _UserActivity_id(ctx context.Context, field graphql.CollectedField, obj *entity.UserActivity) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -7351,13 +7404,27 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		case "id":
 			out.Values[i] = ec._User_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "email":
 			out.Values[i] = ec._User_email(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
+		case "accessLevel":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_accessLevel(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -7955,6 +8022,15 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) unmarshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAccessLevel(ctx context.Context, v interface{}) (AccessLevel, error) {
+	var res AccessLevel
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAccessLevel(ctx context.Context, sel ast.SelectionSet, v AccessLevel) graphql.Marshaler {
+	return v
+}
 
 func (ec *executionContext) marshalNAlert2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlert(ctx context.Context, sel ast.SelectionSet, v Alert) graphql.Marshaler {
 	return ec._Alert(ctx, sel, &v)

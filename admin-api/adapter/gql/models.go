@@ -71,6 +71,49 @@ type UpdateConfigurationInput struct {
 	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
 }
 
+type AccessLevel string
+
+const (
+	AccessLevelViewer        AccessLevel = "VIEWER"
+	AccessLevelManager       AccessLevel = "MANAGER"
+	AccessLevelAdministrator AccessLevel = "ADMINISTRATOR"
+)
+
+var AllAccessLevel = []AccessLevel{
+	AccessLevelViewer,
+	AccessLevelManager,
+	AccessLevelAdministrator,
+}
+
+func (e AccessLevel) IsValid() bool {
+	switch e {
+	case AccessLevelViewer, AccessLevelManager, AccessLevelAdministrator:
+		return true
+	}
+	return false
+}
+
+func (e AccessLevel) String() string {
+	return string(e)
+}
+
+func (e *AccessLevel) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AccessLevel(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AccessLevel", str)
+	}
+	return nil
+}
+
+func (e AccessLevel) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
 type AlertLevel string
 
 const (
