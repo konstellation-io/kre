@@ -10,7 +10,7 @@ exports[`PublishedVersionStatus matches snapshot 1`] = `
     5 versions published
   </span>
   <Can
-    access={true}
+    requiresManager={true}
   >
     <Button
       height={30}

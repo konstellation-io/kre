@@ -82,7 +82,7 @@ function Runtime() {
     <PageBase
       headerChildren={
         (isUserInRuntimeVersions && (
-          <Can access>
+          <Can requiresManager>
             <Button label="ADD VERSION" height={40} to={newVersionRoute} />
           </Can>
         )) ||

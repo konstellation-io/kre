@@ -35,7 +35,7 @@ function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
       })}
     >
       <span className={styles.versionTitle}>{title}</span>
-      <Can access>
+      <Can requiresManager>
         <Button
           label="ADD VERSION"
           to={newVersionRoute}

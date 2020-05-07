@@ -107,7 +107,7 @@ function Dashboard() {
     <PageBase
       headerChildren={
         <>
-          <Can access>
+          <Can requiresManager>
             <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
           </Can>
           <div>{`${nRuntimes} runtime${nRuntimes > 1 ? 's' : ''} shown`}</div>
