@@ -15,7 +15,6 @@ import ListItem from '../ListItem/ListItem';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import Message from '../../../../components/Message/Message';
-import useUserAccess from '../../../../hooks/useUserAccess';
 
 const GetAllowedEmailsQuery = loader(
   '../../../../graphql/queries/getAllowedEmails.graphql'
@@ -25,7 +24,6 @@ const UpdateAllowedEmailsMutation = loader(
 );
 
 function AllowedEmails() {
-  const { cannotEdit } = useUserAccess();
   const { data, loading, error } = useQuery<GetAllowedEmails>(
     GetAllowedEmailsQuery
   );
@@ -72,10 +70,8 @@ function AllowedEmails() {
     if (!emails.length)
       return <Message text="There are no emails added to the whitelist." />;
 
-    const onDelete = cannotEdit ? null : onRemoveEmail;
-
     return emails.map((email: string) => (
-      <ListItem key={email} value={email} onDelete={onDelete} />
+      <ListItem key={email} value={email} onDelete={onRemoveEmail} />
     ));
   }
 

@@ -18,14 +18,13 @@ import {
 import styles from './Runtime.module.scss';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import PageBase from '../../components/Layout/PageBase/PageBase';
-import useUserAccess from '../../hooks/useUserAccess';
+import Can from '../../components/Can/Can';
 
 const GetRuntimeAndVersionQuery = loader(
   '../../graphql/queries/getRuntimeAndVersions.graphql'
 );
 
 function Runtime() {
-  const { userHasAllAccesses } = useUserAccess();
   const { runtimeId, versionId } = useParams<VersionRouteParams>();
   const location = useLocation();
   const { data, loading, error } = useQuery<
@@ -82,8 +81,10 @@ function Runtime() {
   return (
     <PageBase
       headerChildren={
-        (isUserInRuntimeVersions && userHasAllAccesses && (
-          <Button label="ADD VERSION" height={40} to={newVersionRoute} />
+        (isUserInRuntimeVersions && (
+          <Can access>
+            <Button label="ADD VERSION" height={40} to={newVersionRoute} />
+          </Can>
         )) ||
         null
       }

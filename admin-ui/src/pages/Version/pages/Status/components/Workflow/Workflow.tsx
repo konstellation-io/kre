@@ -12,7 +12,8 @@ import {
 } from '../../../../../../graphql/queries/types/GetVersionWorkflows';
 import {
   NodeStatus,
-  VersionStatus
+  VersionStatus,
+  AccessLevel
 } from '../../../../../../graphql/types/globalTypes';
 import { useApolloClient } from '@apollo/react-hooks';
 import {
@@ -48,7 +49,7 @@ type Props = {
 };
 
 function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
-  const { userHasAllAccesses } = useUserAccess();
+  const { requiredLevel } = useUserAccess();
   const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
 
@@ -137,7 +138,10 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
           workflowStatus={workflowStatus}
           onInnerNodeClick={onInnerNodeClick}
           tooltipRefs={tooltipRefs}
-          disableNodeClicks={!userHasAllAccesses}
+          enableNodeClicks={requiredLevel(
+            AccessLevel.MANAGER,
+            AccessLevel.ADMINISTRATOR
+          )}
         />
       </div>
     </div>

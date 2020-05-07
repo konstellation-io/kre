@@ -4,8 +4,6 @@ import TextInput from '../../../../components/Form/TextInput/TextInput';
 import Button from '../../../../components/Button/Button';
 import { useForm } from 'react-hook-form';
 import styles from './FormRowInput.module.scss';
-import cx from 'classnames';
-import useUserAccess from '../../../../hooks/useUserAccess';
 
 type Props = {
   Icon: any;
@@ -23,7 +21,6 @@ function FormRowInput({
   valueValidator,
   onAction
 }: Props) {
-  const { cannotEdit } = useUserAccess();
   const { handleSubmit, setValue, register, errors, watch } = useForm();
 
   useEffect(() => {
@@ -39,30 +36,26 @@ function FormRowInput({
   }
 
   return (
-    <div className={cx(styles.container, { [styles.nonEditable]: cannotEdit })}>
+    <div className={styles.container}>
       <Icon className="icon-regular" />
       <div className={styles.field}>{field}</div>
-      {!cannotEdit && (
-        <>
-          <div className={styles.input}>
-            <TextInput
-              whiteColor
-              label={inputLabel}
-              onEnterKeyPress={handleSubmit(handleOnSubmit)}
-              error={get(errors.item, 'message')}
-              onChange={(value: string) => setValue('item', value)}
-              formValue={watch('item', '')}
-            />
-          </div>
-          <div className={styles.button}>
-            <Button
-              border
-              label={buttonLabel}
-              onClick={handleSubmit(handleOnSubmit)}
-            />
-          </div>
-        </>
-      )}
+      <div className={styles.input}>
+        <TextInput
+          whiteColor
+          label={inputLabel}
+          onEnterKeyPress={handleSubmit(handleOnSubmit)}
+          error={get(errors.item, 'message')}
+          onChange={(value: string) => setValue('item', value)}
+          formValue={watch('item', '')}
+        />
+      </div>
+      <div className={styles.button}>
+        <Button
+          border
+          label={buttonLabel}
+          onClick={handleSubmit(handleOnSubmit)}
+        />
+      </div>
     </div>
   );
 }

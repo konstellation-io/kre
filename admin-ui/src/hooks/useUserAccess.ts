@@ -1,18 +1,21 @@
 import { useQuery } from '@apollo/react-hooks';
-import {
-  GET_ACCESS_LEVEL,
-  GetAccessLevel
-} from '../graphql/client/queries/getAccessLevel.graphql';
-import { AccessLevel } from '../graphql/client/typeDefs';
+import { loader } from 'graphql.macro';
+import { GetAccessLevel } from '../graphql/queries/types/GetAccessLevel';
 import { get } from 'lodash';
+import { AccessLevel } from '../graphql/types/globalTypes';
+
+const GetAccessLevelQuery = loader('../graphql/queries/getAccessLevel.graphql');
 
 export default function useUserAccess() {
-  const { data: localData } = useQuery<GetAccessLevel>(GET_ACCESS_LEVEL);
-  const accessLevel = get(localData, 'accessLevel', AccessLevel.VIEWER);
-  const userHasAllAccesses = accessLevel !== AccessLevel.VIEWER;
-  const cannotEdit = [AccessLevel.VIEWER, AccessLevel.MANAGER].includes(
-    accessLevel
-  );
+  const { data } = useQuery<GetAccessLevel>(GetAccessLevelQuery);
+  const accessLevel = get(data?.me, 'accessLevel', AccessLevel.VIEWER);
 
-  return { accessLevel, cannotEdit, userHasAllAccesses };
+  function requiredLevel(...levels: AccessLevel[]): boolean {
+    return levels.some(level => accessLevel === level);
+  }
+
+  return {
+    accessLevel,
+    requiredLevel
+  };
 }

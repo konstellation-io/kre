@@ -1,11 +1,5 @@
 import gql from 'graphql-tag';
 
-export enum AccessLevel {
-  VIEWER = 'VIEWER',
-  MANAGER = 'MANAGER',
-  ADMINISTRATOR = 'ADMINISTRATOR'
-}
-
 export enum NotificationType {
   MESSAGE = 'MESSAGE',
   ERROR = 'ERROR'

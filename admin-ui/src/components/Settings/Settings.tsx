@@ -13,7 +13,7 @@ import styles from './Settings.module.scss';
 import ROUTE from '../../constants/routes';
 import useClickOutsideListener from '../../hooks/useClickOutsideListener';
 import useUserAccess from '../../hooks/useUserAccess';
-import { AccessLevel } from '../../graphql/client/typeDefs';
+import { AccessLevel } from '../../graphql/types/globalTypes';
 
 const BUTTON_HEIGHT = 40;
 const buttonStyle = {
@@ -25,7 +25,7 @@ type Props = {
 };
 
 function Settings({ label }: Props) {
-  const { accessLevel } = useUserAccess();
+  const { requiredLevel } = useUserAccess();
   const client = useApolloClient();
   const history = useHistory();
   const [opened, setOpened] = useState(false);
@@ -75,15 +75,10 @@ function Settings({ label }: Props) {
   );
 
   const buttons: JSX.Element[] = [];
-  switch (accessLevel) {
-    case AccessLevel.ADMINISTRATOR:
-    case AccessLevel.MANAGER:
-      buttons.push(settingsButton, auditButton);
-    /* falls through */
-    case AccessLevel.VIEWER:
-    default:
-      buttons.push(logoutButton);
+  if (requiredLevel(AccessLevel.ADMINISTRATOR, AccessLevel.MANAGER)) {
+    buttons.push(settingsButton, auditButton);
   }
+  buttons.push(logoutButton);
 
   const nButtons = buttons.length;
   const optionsHeight = nButtons * BUTTON_HEIGHT;

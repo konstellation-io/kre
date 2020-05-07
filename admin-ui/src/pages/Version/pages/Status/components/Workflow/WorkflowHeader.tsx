@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Workflow.module.scss';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import * as ICONS from '../../../../../../constants/icons';
-import useUserAccess from '../../../../../../hooks/useUserAccess';
+import Can from '../../../../../../components/Can/Can';
 
 type Props = {
   onWorkflowClick: Function;
@@ -10,12 +10,10 @@ type Props = {
 };
 
 function WorkflowHeader({ name = 'Workflow', onWorkflowClick }: Props) {
-  const { userHasAllAccesses } = useUserAccess();
-
   return (
     <div className={styles.workflowHeader}>
       <div className={styles.title}>{name}</div>
-      {userHasAllAccesses && (
+      <Can access>
         <div
           className={styles.button}
           onClick={() => onWorkflowClick()}
@@ -25,7 +23,7 @@ function WorkflowHeader({ name = 'Workflow', onWorkflowClick }: Props) {
             <path d={ICONS.TERMINAL} />
           </SvgIcon>
         </div>
-      )}
+      </Can>
     </div>
   );
 }

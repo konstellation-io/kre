@@ -5,14 +5,13 @@ import { useParams } from 'react-router';
 import Button from '../../../../../../components/Button/Button';
 import cx from 'classnames';
 import styles from '../../RuntimeVersions.module.scss';
-import useUserAccess from '../../../../../../hooks/useUserAccess';
+import Can from '../../../../../../components/Can/Can';
 
 type Props = {
   nPublishedVersions: number;
   noVersions: boolean;
 };
 function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
-  const { userHasAllAccesses } = useUserAccess();
   const { runtimeId } = useParams();
 
   let title;
@@ -36,7 +35,7 @@ function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
       })}
     >
       <span className={styles.versionTitle}>{title}</span>
-      {userHasAllAccesses && (
+      <Can access>
         <Button
           label="ADD VERSION"
           to={newVersionRoute}
@@ -44,7 +43,7 @@ function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
           height={30}
           style={{ borderRadius: 2 }}
         />
-      )}
+      </Can>
     </div>
   );
 }

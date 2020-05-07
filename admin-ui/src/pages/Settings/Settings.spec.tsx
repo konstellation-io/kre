@@ -12,7 +12,6 @@ import { act } from 'react-dom/test-utils';
 
 import * as MOCK from '../../mocks/settings';
 import { usernameMock } from '../../mocks/auth';
-import { AccessLevel } from '../../graphql/client/typeDefs';
 
 const mocks = [
   MOCK.expirationTimeMock,

@@ -1,14 +1,12 @@
 import ROUTE from './constants/routes';
-import { AccessLevel } from './graphql/client/typeDefs';
+import { AccessLevel } from './graphql/types/globalTypes';
 
-const managerProtectedRoutes: string[] = [];
+const managerProtectedRoutes: string[] = [ROUTE.SETTINGS];
 const viewerProtectedRoutes = [
   ...managerProtectedRoutes,
-  ROUTE.SETTINGS,
   ROUTE.NEW_RUNTIME,
   ROUTE.NEW_VERSION,
   ROUTE.RUNTIME_VERSION_CONFIGURATION,
-  ROUTE.SETTINGS,
   ROUTE.AUDIT
 ];
 

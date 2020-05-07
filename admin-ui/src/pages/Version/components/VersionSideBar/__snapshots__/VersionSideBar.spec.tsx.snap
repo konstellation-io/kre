@@ -94,37 +94,41 @@ exports[`VersionSideBar matches snapshot 1`] = `
       }
     }
   />
-  <VersionActions
-    runtime={
-      Object {
-        "__typename": "Runtime",
-        "id": "runtimeId",
-        "name": "runtimeName",
-        "status": "STARTED",
+  <Can
+    access={true}
+  >
+    <VersionActions
+      runtime={
+        Object {
+          "__typename": "Runtime",
+          "id": "runtimeId",
+          "name": "runtimeName",
+          "status": "STARTED",
+        }
       }
-    }
-    version={
-      Object {
-        "__typename": "Version",
-        "configurationCompleted": true,
-        "creationAuthor": Object {
-          "__typename": "User",
-          "email": "user@domain.com",
-          "id": "userId",
-        },
-        "creationDate": "2020/01/01",
-        "description": "versionDescription",
-        "id": "versionId",
-        "name": "versionName",
-        "publicationAuthor": Object {
-          "__typename": "User",
-          "email": "user@domain.com",
-          "id": "userId",
-        },
-        "publicationDate": "2020/01/01",
-        "status": "STARTED",
+      version={
+        Object {
+          "__typename": "Version",
+          "configurationCompleted": true,
+          "creationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "creationDate": "2020/01/01",
+          "description": "versionDescription",
+          "id": "versionId",
+          "name": "versionName",
+          "publicationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "publicationDate": "2020/01/01",
+          "status": "STARTED",
+        }
       }
-    }
-  />
+    />
+  </Can>
 </div>
 `;

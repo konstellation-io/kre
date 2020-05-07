@@ -12,8 +12,7 @@ jest.mock('./config', () => ({
 
 jest.mock('./hooks/useUserAccess', () => () => ({
   accessLevel: 'ADMINISTRATOR',
-  cannotEdit: false,
-  userHasAllAccesses: true
+  requiredLevel: jest.fn(() => true)
 }));
 
 class ResizeObserver {

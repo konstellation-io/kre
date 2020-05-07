@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import ROUTE from '../../../../constants/routes';
 import VersionActions from './VersionActions/VersionActions';
 import { buildRoute } from '../../../../utils/routes';
-import useUserAccess from '../../../../hooks/useUserAccess';
+import Can from '../../../../components/Can/Can';
 
 type VersionSideBarProps = {
   runtime?: GetVersionConfStatus_runtime;
@@ -22,8 +22,6 @@ type VersionSideBarProps = {
 };
 
 function VersionSideBar({ runtime, version }: VersionSideBarProps) {
-  const { userHasAllAccesses } = useUserAccess();
-
   if (runtime === undefined || version === undefined) {
     return null;
   }
@@ -42,9 +40,9 @@ function VersionSideBar({ runtime, version }: VersionSideBarProps) {
       <div className={styles.runtimeNameSection}></div>
       <VersionInfo version={version} />
       <VersionMenu runtime={runtime} version={version} />
-      {userHasAllAccesses && (
+      <Can access>
         <VersionActions runtime={runtime} version={version} />
-      )}
+      </Can>
     </div>
   );
 }

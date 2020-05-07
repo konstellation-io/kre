@@ -49,7 +49,7 @@ type Props = {
   workflowStatus: VersionStatus;
   onInnerNodeClick: Function;
   tooltipRefs: TooltipRefs;
-  disableNodeClicks: boolean;
+  enableNodeClicks: boolean;
 };
 
 function getTooltipHeader(nodeType: NodeTypes) {
@@ -182,7 +182,7 @@ class WorkflowViz {
       yOffset,
       generateLink,
       generateNodeLabel,
-      props: { data, onInnerNodeClick, disableNodeClicks }
+      props: { data, onInnerNodeClick, enableNodeClicks }
     } = this;
     const self = this;
 
@@ -202,12 +202,12 @@ class WorkflowViz {
     newCirclesG
       .append('circle')
       .classed(styles.outerCircle, true)
-      .classed(styles.clicksDisabled, disableNodeClicks)
+      .classed(styles.clicksDisabled, !enableNodeClicks)
       .attr('r', nodeOuterRadius)
       .attr('cx', nodeOuterRadius)
       .on(
         'click',
-        (d: D) => !disableNodeClicks && onInnerNodeClick(d.id, d.name, data.id)
+        (d: D) => enableNodeClicks && onInnerNodeClick(d.id, d.name, data.id)
       );
 
     newCirclesG
