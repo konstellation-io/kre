@@ -10,12 +10,5 @@ export default function useUserAccess() {
   const { data } = useQuery<GetAccessLevel>(GetAccessLevelQuery);
   const accessLevel = get(data?.me, 'accessLevel', AccessLevel.VIEWER);
 
-  function requiredLevel(...levels: AccessLevel[]): boolean {
-    return levels.some(level => accessLevel === level);
-  }
-
-  return {
-    accessLevel,
-    requiredLevel
-  };
+  return accessLevel;
 }

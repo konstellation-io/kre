@@ -12,7 +12,7 @@ import IconShowChart from '@material-ui/icons/ShowChart';
 import IconSettings from '@material-ui/icons/Settings';
 import { buildRoute } from '../../../../../utils/routes';
 import useUserAccess from '../../../../../hooks/useUserAccess';
-import { AccessLevel } from '../../../../../graphql/types/globalTypes';
+import { checkPermission } from '../../../../../rbac-rules';
 
 type VersionDetailsProps = {
   runtime: GetVersionConfStatus_runtime;
@@ -20,7 +20,7 @@ type VersionDetailsProps = {
 };
 
 function VersionMenu({ runtime, version }: VersionDetailsProps) {
-  const { requiredLevel } = useUserAccess();
+  const accessLevel = useUserAccess();
 
   const itemProps: VersionMenuItemProps[] = [
     {
@@ -42,7 +42,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
     }
   ];
 
-  if (requiredLevel(AccessLevel.MANAGER, AccessLevel.ADMINISTRATOR)) {
+  if (checkPermission(accessLevel, 'version:edit')) {
     itemProps.push({
       label: 'CONFIGURATION',
       to: ROUTE.RUNTIME_VERSION_CONFIGURATION,

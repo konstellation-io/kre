@@ -13,7 +13,7 @@ function WorkflowHeader({ name = 'Workflow', onWorkflowClick }: Props) {
   return (
     <div className={styles.workflowHeader}>
       <div className={styles.title}>{name}</div>
-      <Can requiresManager>
+      <Can perform="logs-page:visit">
         <div
           className={styles.button}
           onClick={() => onWorkflowClick()}

@@ -12,8 +12,7 @@ import {
 } from '../../../../../../graphql/queries/types/GetVersionWorkflows';
 import {
   NodeStatus,
-  VersionStatus,
-  AccessLevel
+  VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
 import { useApolloClient } from '@apollo/react-hooks';
 import {
@@ -29,6 +28,7 @@ import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
 import { getWorkflowState } from '../../states';
 import cx from 'classnames';
 import useUserAccess from '../../../../../../hooks/useUserAccess';
+import { checkPermission } from '../../../../../../rbac-rules';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -49,7 +49,7 @@ type Props = {
 };
 
 function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
-  const { requiredLevel } = useUserAccess();
+  const accessLevel = useUserAccess();
   const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
 
@@ -138,10 +138,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
           workflowStatus={workflowStatus}
           onInnerNodeClick={onInnerNodeClick}
           tooltipRefs={tooltipRefs}
-          enableNodeClicks={requiredLevel(
-            AccessLevel.MANAGER,
-            AccessLevel.ADMINISTRATOR
-          )}
+          enableNodeClicks={checkPermission(accessLevel, 'logs-page:visit')}
         />
       </div>
     </div>

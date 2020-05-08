@@ -1,17 +1,14 @@
-import ROUTE from './constants/routes';
 import { AccessLevel } from './graphql/types/globalTypes';
+import { pageToRoute, checkPermission } from './rbac-rules';
 
-const managerProtectedRoutes: string[] = [ROUTE.SETTINGS];
-const viewerProtectedRoutes = [
-  ...managerProtectedRoutes,
-  ROUTE.NEW_RUNTIME,
-  ROUTE.NEW_VERSION,
-  ROUTE.RUNTIME_VERSION_CONFIGURATION,
-  ROUTE.AUDIT
-];
+export function getProtectedRoutes(accessLevel: AccessLevel) {
+  const protectedRoutes: string[] = [];
 
-export const accessLevelToProtectedRoutes = new Map([
-  [AccessLevel.VIEWER, viewerProtectedRoutes],
-  [AccessLevel.MANAGER, managerProtectedRoutes],
-  [AccessLevel.ADMINISTRATOR, []]
-]);
+  Object.entries(pageToRoute).forEach(([page, route]) => {
+    if (!checkPermission(accessLevel, `${page}:visit`)) {
+      protectedRoutes.push(route);
+    }
+  });
+
+  return protectedRoutes;
+}

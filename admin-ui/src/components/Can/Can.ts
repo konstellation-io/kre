@@ -1,24 +1,16 @@
 import useUserAccess from '../../hooks/useUserAccess';
-import { AccessLevel } from '../../graphql/types/globalTypes';
+import { checkPermission } from '../../rbac-rules';
 
 type Props = {
   children: JSX.Element;
-  requiresManager: boolean;
+  perform: string;
+  data?: Object;
 };
 
-function Can({ children, requiresManager = false }: Props) {
-  const { requiredLevel } = useUserAccess();
+function Can({ children, perform, data = {} }: Props) {
+  const accessLevel = useUserAccess();
 
-  let content = null;
-
-  if (
-    requiresManager &&
-    requiredLevel(AccessLevel.MANAGER, AccessLevel.ADMINISTRATOR)
-  ) {
-    content = children;
-  }
-
-  return content;
+  return checkPermission(accessLevel, perform, data) ? children : null;
 }
 
 export default Can;

@@ -13,7 +13,7 @@ import styles from './Settings.module.scss';
 import ROUTE from '../../constants/routes';
 import useClickOutsideListener from '../../hooks/useClickOutsideListener';
 import useUserAccess from '../../hooks/useUserAccess';
-import { AccessLevel } from '../../graphql/types/globalTypes';
+import { checkPermission } from '../../rbac-rules';
 
 const BUTTON_HEIGHT = 40;
 const buttonStyle = {
@@ -25,7 +25,7 @@ type Props = {
 };
 
 function Settings({ label }: Props) {
-  const { requiredLevel } = useUserAccess();
+  const accessLevel = useUserAccess();
   const client = useApolloClient();
   const history = useHistory();
   const [opened, setOpened] = useState(false);
@@ -75,8 +75,11 @@ function Settings({ label }: Props) {
   );
 
   const buttons: JSX.Element[] = [];
-  if (requiredLevel(AccessLevel.ADMINISTRATOR, AccessLevel.MANAGER)) {
-    buttons.push(settingsButton, auditButton);
+  if (checkPermission(accessLevel, 'settings-page:visit')) {
+    buttons.push(settingsButton);
+  }
+  if (checkPermission(accessLevel, 'audit-page:visit')) {
+    buttons.push(auditButton);
   }
   buttons.push(logoutButton);
 

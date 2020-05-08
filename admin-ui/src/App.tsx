@@ -10,7 +10,7 @@ import './styles/react-tabs.scss';
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
 import { Redirect, Switch, useHistory } from 'react-router';
-import { accessLevelToProtectedRoutes } from './accessLevelRoutes';
+import { getProtectedRoutes } from './accessLevelRoutes';
 import history from './history';
 import SpinnerCircular from './components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import NotificationService from './components/NotificationService/NotificationService';
@@ -36,7 +36,7 @@ const GetUserEmailQuery = loader('./graphql/queries/getUserEmail.graphql');
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
-  const { accessLevel } = useUserAccess();
+  const accessLevel = useUserAccess();
 
   const client = useApolloClient();
   const history = useHistory();
@@ -57,8 +57,7 @@ function ProtectedRoutes() {
     client.writeData({ data: { loggedIn: true } });
   }
 
-  const protectedRoutes: string[] =
-    accessLevelToProtectedRoutes.get(accessLevel) || [];
+  const protectedRoutes: string[] = getProtectedRoutes(accessLevel);
 
   return (
     <>
