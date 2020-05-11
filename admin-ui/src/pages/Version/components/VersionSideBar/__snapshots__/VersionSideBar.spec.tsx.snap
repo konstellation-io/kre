@@ -95,7 +95,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
     }
   />
   <Can
-    requiresManager={true}
+    perform="version:edit"
   >
     <VersionActions
       runtime={
