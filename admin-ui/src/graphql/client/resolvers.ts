@@ -32,11 +32,13 @@ export function updateTabFiltersResolver(
     }
     return logTab;
   });
+
   cache.writeData({
     data: {
       logTabs: updatedTabs
     }
   });
+
   return null;
 }
 

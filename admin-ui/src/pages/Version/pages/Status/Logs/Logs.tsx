@@ -115,10 +115,8 @@ function Logs() {
             key={tab.uniqueId}
           >
             <LogsTab
-              nodeId={tab.nodeId}
               runtimeId={tab.runtimeId}
-              nodeName={tab.nodeName}
-              workflowId={tab.workflowId}
+              versionId={tab.versionId}
               uniqueId={tab.uniqueId}
               filterValues={tab.filters}
             />

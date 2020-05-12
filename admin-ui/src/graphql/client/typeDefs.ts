@@ -13,20 +13,30 @@ export interface AddNotificationInput {
   to: string;
 }
 
+export interface ProcessSelection {
+  workflowName: string;
+  processNames: string[];
+  __typename: string;
+}
+
 export interface LogPanelFilters {
-  dateOption: string;
-  startDate: string;
-  endDate: string;
+  dateOption?: string;
+  startDate?: string;
+  endDate?: string;
+  processes?: ProcessSelection[];
+  search?: string;
+  level?: string | null;
+  nodeId?: string;
+  nodeName?: string;
+  workflowId?: string;
   __typename: 'logTabFilters';
 }
 
 export interface SetCurrentLogPanelInput {
   runtimeId: string;
   runtimeName: string;
+  versionId: string;
   versionName: string;
-  nodeId: string;
-  nodeName: string;
-  workflowId: string;
   uniqueId?: string;
   filters?: LogPanelFilters;
 }

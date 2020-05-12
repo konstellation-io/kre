@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
-import { TabFilters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LogItem from './LogItem';
 import LogListHeader from './LogListHeader';
 import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
@@ -31,19 +31,15 @@ function scrollToBottom(component: HTMLDivElement) {
 }
 
 type Props = {
-  nodeId: string;
   runtimeId: string;
-  workflowId: string;
-  filterValues: TabFilters;
+  filterValues: GetLogTabs_logTabs_filters;
   onNewLogs: Function;
   logs: GetServerLogs_logs_items[];
   clearLogs: () => void;
 };
 
 function LogsList({
-  nodeId,
   runtimeId,
-  workflowId,
   filterValues,
   logs,
   onNewLogs,
@@ -58,7 +54,7 @@ function LogsList({
     GetServerLogs,
     GetServerLogsVariables
   >(GetServerLogsQuery, {
-    variables: { workflowId, runtimeId, nodeId, ...filterValues },
+    variables: { runtimeId, ...filterValues },
     onCompleted: data => {
       onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');
@@ -76,7 +72,7 @@ function LogsList({
   const subscribe = () =>
     subscribeToMore({
       document: GetLogsSubscription,
-      variables: { workflowId, runtimeId, nodeId },
+      variables: { runtimeId, ...filterValues },
       updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'nodeLogs');
         onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
@@ -109,9 +105,8 @@ function LogsList({
   function loadPreviousLogs() {
     fetchMore({
       variables: {
-        workflowId,
         runtimeId,
-        nodeId,
+        ...filterValues,
         cursor: nextPage
       },
       updateQuery: (prev, { fetchMoreResult }) => {

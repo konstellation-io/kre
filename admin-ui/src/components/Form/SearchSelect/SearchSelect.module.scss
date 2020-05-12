@@ -9,8 +9,19 @@
 .input {
   @include form-input;
 
-  color: font-color(light);
+  color: font-color(lowlight);
   font-weight: 600;
+
+  &.showSearchIcon {
+    padding-left: 30px;
+  }
+}
+.searchIcon {
+  color: font-color(lowlight);
+  position: absolute;
+  top: calc(50% - 8px);
+  left: $grid-unit;
+  z-index: 1;
 }
 .optionsList {
   list-style: none;

@@ -15,12 +15,12 @@ import {
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
-import {
-  LogPanel,
-  LogPanelFilters
-} from '../../../../../../graphql/client/typeDefs';
+import { LogPanelFilters } from '../../../../../../graphql/client/typeDefs';
 import { useParams } from 'react-router-dom';
-import { RuntimeRouteParams } from '../../../../../../constants/routes';
+import {
+  RuntimeRouteParams,
+  VersionRouteParams
+} from '../../../../../../constants/routes';
 import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
 import { GET_OPENED_VERSION_INFO } from '../../../../../../graphql/client/queries/getOpenedVersionInfo.graphql';
 import moment from 'moment';
@@ -43,6 +43,12 @@ interface Workflow extends GetVersionWorkflows_version_workflows {
 const BASE_WIDTH = 323;
 const NODE_WIDTH = 160;
 
+type logTabMainFilters = {
+  nodeId?: string;
+  nodeName: string;
+  workflowId: string;
+};
+
 type Props = {
   workflow: GetVersionWorkflows_version_workflows;
   workflowStatus: VersionStatus;
@@ -51,6 +57,7 @@ type Props = {
 
 function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   const { accessLevel } = useUserAccess();
+  const { versionId } = useParams<VersionRouteParams>();
   const { data: localData } = useQuery(GET_OPENED_VERSION_INFO);
   const runtimeName = localData?.openedVersion.runtimeName || '';
   const versionName = localData?.openedVersion.versionName || '';
@@ -77,10 +84,14 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
       endDate: moment()
         .endOf('day')
         .toISOString(true),
+      search: '',
+      processes: [],
+      level: null,
       __typename: 'logTabFilters'
     };
   }
-  function addLogTab(input: LogPanel) {
+
+  function addLogTab(filters: logTabMainFilters) {
     const logTabs = client.readQuery({
       query: GET_LOG_TABS
     });
@@ -92,9 +103,16 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
         logTabs: [
           ...logTabs.logTabs,
           {
-            ...input,
+            runtimeId,
+            runtimeName,
+            versionId,
+            versionName,
             uniqueId: activeTabId,
-            filters: getDefaultFilters()
+            filters: {
+              ...getDefaultFilters(),
+              ...filters
+            },
+            __typename: 'logTab'
           }
         ]
       }
@@ -107,25 +125,17 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
     workflowId: string
   ) {
     addLogTab({
-      runtimeId,
       nodeId,
       nodeName,
-      workflowId,
-      runtimeName,
-      versionName,
-      __typename: 'logTab'
+      workflowId
     });
   }
 
   function onWorkflowClick() {
     addLogTab({
-      runtimeId,
       nodeId: '',
-      runtimeName,
-      versionName,
-      nodeName: workflow.name,
-      workflowId: data.id,
-      __typename: 'logTab'
+      nodeName: '',
+      workflowId: data.id
     });
   }
 

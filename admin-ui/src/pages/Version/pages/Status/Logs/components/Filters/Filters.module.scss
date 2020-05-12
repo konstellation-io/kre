@@ -12,13 +12,43 @@
   flex-shrink: 0;
 }
 
+.filterContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  > div {
+    margin-right: $grid-unit;
+  }
+}
 .rightFilters {
   margin-right: $grid-unit * 2.5;
-  display: flex;
   & > div:not(:last-child) {
     border-right: 1px solid palette(base, 400);
   }
 }
+
+.searchFilter {
+  width: 30vw;
+  height: 30px;
+  margin-left: 20px;
+
+  .searchForm {
+    input {
+      height: 30px;
+      min-height: 30px;
+    }
+  }
+}
+
+.selectType {
+  width: 11vw;
+}
+
+.selectProcesses {
+  width: 24vw;
+}
+
 .dateFilter {
   width: $grid-unit * 21.5;
 }
