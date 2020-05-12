@@ -37,17 +37,24 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
     UpdateTabFiltersVariables
   >(UPDATE_TAB_FILTERS);
 
-  function updateFilters(newFilters: UpdateTabFiltersInput_newFilters) {
+  function updateFilters(
+    newFilters: UpdateTabFiltersInput_newFilters,
+    remove: boolean
+  ) {
     updateTabFilters({
       variables: {
         input: {
           uniqueId,
+          remove,
           newFilters: {
             ...newFilters
           }
         }
       }
     });
+  }
+  function removeFilters(newFilters: UpdateTabFiltersInput_newFilters) {
+    updateFilters(newFilters, true);
   }
 
   function clearLogs() {
@@ -61,12 +68,7 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
         filterValues={filterValues}
         versionId={versionId}
       />
-      <AppliedFilters
-        filters={{
-          [filterValues.nodeId ? `node` : `workflow`]: filterValues.nodeName,
-          other: 'otherValue'
-        }}
-      />
+      <AppliedFilters filters={filterValues} removeFilters={removeFilters} />
       <LogsList
         logs={logs}
         onNewLogs={setLogs}

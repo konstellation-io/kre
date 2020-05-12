@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../../Button/Button';
-import IconClose from '@material-ui/icons/Close';
+import Chip from '../../Chip/Chip';
 import { DoubleSelectData } from './DoubleSelect';
 import styles from './DoubleSelect.module.scss';
 
@@ -12,17 +12,7 @@ type SelectionProps = {
 
 function Selection({ group, element, onDeselect }: SelectionProps) {
   const label = `${group}: ${element}`;
-  return (
-    <div className={styles.selection} title={label}>
-      <div className={styles.label}>{label}</div>
-      <div
-        className={styles.selectionIcon}
-        onClick={() => onDeselect(group, element)}
-      >
-        <IconClose className="icon-small" />
-      </div>
-    </div>
-  );
+  return <Chip label={label} onClose={() => onDeselect(group, element)} />;
 }
 
 type Props = {

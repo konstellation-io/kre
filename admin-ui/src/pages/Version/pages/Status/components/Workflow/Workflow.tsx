@@ -23,13 +23,12 @@ import {
 } from '../../../../../../constants/routes';
 import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
 import { GET_OPENED_VERSION_INFO } from '../../../../../../graphql/client/queries/getOpenedVersionInfo.graphql';
-import moment from 'moment';
-import { dateFilterOptions } from '../../Logs/components/Filters/components/DatesFilter/DateFilter';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
 import { getWorkflowState } from '../../states';
 import cx from 'classnames';
 import useUserAccess from '../../../../../../hooks/useUserAccess';
 import { checkPermission } from '../../../../../../rbac-rules';
+import { defaultFilters } from '../../../../../../graphql/client/resolvers/updateTabFilters';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -42,6 +41,13 @@ interface Workflow extends GetVersionWorkflows_version_workflows {
 
 const BASE_WIDTH = 323;
 const NODE_WIDTH = 160;
+
+function getDefaultFilters(): LogPanelFilters {
+  return {
+    ...defaultFilters,
+    __typename: 'logTabFilters'
+  };
+}
 
 type logTabMainFilters = {
   nodeId?: string;
@@ -73,23 +79,6 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   useEffect(() => {
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
   }, [setContainerWidth, workflow.nodes]);
-
-  function getDefaultFilters(): LogPanelFilters {
-    return {
-      dateOption: dateFilterOptions.lastTwentyFourHours,
-      startDate: moment()
-        .subtract(1, 'day')
-        .startOf('day')
-        .toISOString(true),
-      endDate: moment()
-        .endOf('day')
-        .toISOString(true),
-      search: '',
-      processes: [],
-      level: null,
-      __typename: 'logTabFilters'
-    };
-  }
 
   function addLogTab(filters: logTabMainFilters) {
     const logTabs = client.readQuery({

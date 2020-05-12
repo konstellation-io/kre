@@ -96,35 +96,6 @@ $height-input: 30px;
   flex-wrap: wrap;
   padding: 2 * $grid-unit 2 * $grid-unit $grid-unit 2 * $grid-unit;
 
-  .selection {
-    @include font-small;
-    color: font-color(dark);
-
-    display: flex;
-    height: 3 * $grid-unit;
-    background-color: palette(lowlight);
-    padding: 0.5 * $grid-unit 0 0.5 * $grid-unit $grid-unit;
-    border-radius: 0.5 * $grid-unit;
-    margin: 0 15px 8px 0;
-    max-width: 261px;
-
-    .label {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .selectionIcon {
-      margin: 2px $grid-unit 0 $grid-unit;
-      transition: color ease 0.2s;
-      cursor: pointer;
-
-      &:hover {
-        color: font-color(light);
-      }
-    }
-  }
-
   .clear {
     margin-left: auto;
   }

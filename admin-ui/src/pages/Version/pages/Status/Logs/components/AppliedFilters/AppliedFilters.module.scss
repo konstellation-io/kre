@@ -8,8 +8,9 @@
   background-color: palette(lowlight, 900);
   display: flex;
   align-items: center;
-  height: $grid-unit * 6;
   flex-shrink: 0;
+  min-height: 6 * $grid-unit;
+  padding: $grid-unit 0px;
 }
 
 .title {
@@ -22,25 +23,7 @@
 .filters {
   display: flex;
   flex-direction: row;
-}
-
-.filter {
-  @include font-small;
-  color: font-color(dark);
-
-  display: flex;
-  flex-direction: row;
-  padding: 0 $grid-unit;
-  margin-right: $grid-unit;
-  height: 3 * $grid-unit;
-  line-height: 3 * $grid-unit;
-  border-radius: 4px;
-
-  background-color: palette(lowlight);
-
-  div:first-child {
-    margin-right: 8px;
-  }
+  flex-wrap: wrap;
 }
 
 .leftPannel {

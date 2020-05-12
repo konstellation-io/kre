@@ -13,6 +13,7 @@ export interface UpdateTabFiltersInput_newFilters {
 
 export interface UpdateTabFiltersInput {
   uniqueId: string;
+  remove: boolean;
   newFilters: UpdateTabFiltersInput_newFilters;
 }
 
