@@ -112,7 +112,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             )}
             onChange={onProcessSelection}
             label=""
-            placeholder="SelectProcesses"
+            placeholder="Select Processes"
             hideError
           />
         </div>

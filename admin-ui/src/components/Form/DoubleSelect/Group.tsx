@@ -1,31 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Left from '../../Layout/Left/Left';
 import Right from '../../Layout/Right/Right';
+import Check from '../../Form/Check/Check';
 import IconSelectAll from '@material-ui/icons/DoneAll';
 import IconOpen from '@material-ui/icons/KeyboardArrowDown';
 import IconClose from '@material-ui/icons/KeyboardArrowUp';
-import IconCheck from '@material-ui/icons/Check';
 import { DoubleSelectData } from './DoubleSelect';
-import cx from 'classnames';
 import styles from './DoubleSelect.module.scss';
 import { get } from 'lodash';
 
 const HEIGHT_ELEMENT = 45;
-
-type CheckProps = {
-  checked: boolean;
-  onChange: (add: boolean) => void;
-};
-function Check({ checked, onChange }: CheckProps) {
-  return (
-    <div
-      className={cx(styles.check, { [styles.checked]: checked })}
-      onClick={() => onChange(!checked)}
-    >
-      <IconCheck className="icon-regular" />
-    </div>
-  );
-}
 
 type ElementProps = {
   label: string;
