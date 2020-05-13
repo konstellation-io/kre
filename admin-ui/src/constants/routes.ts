@@ -12,6 +12,7 @@ const ROUTE = {
   SETTINGS_GENERAL: `${SETTINGS}/general`,
   SETTINGS_SECURITY: `${SETTINGS}/security`,
   AUDIT: '/audit',
+  LOGS: '/logs/:logId',
   RUNTIMES,
   RUNTIME,
   RUNTIME_VERSIONS,

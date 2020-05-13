@@ -1,5 +1,5 @@
 import React from 'react';
-import Logs from './Logs';
+import LogsPanel from './LogsPanel';
 import { shallow } from 'enzyme';
 import Filters from './components/Filters/Filters';
 import Header from './components/Header/Header';
@@ -28,7 +28,7 @@ describe('Logs', () => {
   const mockSetSelectedNode = jest.fn();
 
   beforeEach(() => {
-    wrapper = shallow(<Logs />);
+    wrapper = shallow(<LogsPanel />);
   });
 
   it('matches snapshot', () => {
@@ -45,7 +45,7 @@ describe('Logs', () => {
     useQuery.mockReturnValueOnce({ data: undefined });
 
     // Act.
-    const wrapper2 = shallow(<Logs />);
+    const wrapper2 = shallow(<LogsPanel />);
 
     // Assert.
     expect(useQuery).toBeCalled();

@@ -10,7 +10,7 @@ import {
   GetLogTabs_logTabs,
   GetLogTabs_logTabs_filters
 } from '../queries/getLogs.graphql';
-import { dateFilterOptions } from '../../../pages/Version/pages/Status/Logs/components/Filters/components/DatesFilter/DateFilter';
+import { dateFilterOptions } from '../../../pages/Version/pages/Status/LogsPanel/components/Filters/components/DatesFilter/DateFilter';
 import moment from 'moment';
 import { ProcessSelection } from '../typeDefs';
 

@@ -40,6 +40,7 @@ export interface LocalState {
   activeTabId: string;
   logsOpened: boolean;
   logsAutoScroll: boolean;
+  logsInFullScreen: boolean;
   openedVersion: OpenedVersion;
 }
 interface DefaultCache {
@@ -147,6 +148,7 @@ config
         notifications: [],
         logsOpened: false,
         logsAutoScroll: false,
+        logsInFullScreen: false,
         openedVersion: {
           runtimeName: '',
           versionName: '',

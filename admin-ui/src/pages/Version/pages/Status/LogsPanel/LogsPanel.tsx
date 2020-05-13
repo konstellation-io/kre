@@ -2,9 +2,10 @@ import React from 'react';
 import Header from './components/Header/Header';
 import LogsTab from './components/LogsTab/LogsTab';
 import cx from 'classnames';
-import styles from './Logs.module.scss';
+import styles from './LogsPanel.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import IconClose from '@material-ui/icons/Close';
+import IconOpenInTab from '@material-ui/icons/Tab';
 import IconDuplicate from '@material-ui/icons/ControlPointDuplicate';
 import {
   GET_LOG_TABS,
@@ -14,12 +15,14 @@ import {
 import { get } from 'lodash';
 import TabContainer from './components/TabContainer/TabContainer';
 import { MenuCallToAction } from '../../../../../components/ContextMenu/ContextMenu';
+import ROUTE from '../../../../../constants/routes';
 
-function Logs() {
+function LogsPanel() {
   const client = useApolloClient();
   const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
 
   const opened = get(localData, 'logsOpened', false);
+  const fullScreen = get(localData, 'logsInFullScreen', false);
   const activeTabId = get(localData, 'activeTabId', '');
   const tabs = get<GetLogTabs, 'logTabs', GetLogTabs_logTabs[]>(
     localData,
@@ -77,11 +80,28 @@ function Logs() {
     });
   }
 
+  function storeTabInformation(tab: GetLogTabs_logTabs, tabId: string) {
+    localStorage.setItem(`KRELogTab-${tabId}`, JSON.stringify(tab));
+  }
+
+  function openInANewTab(index: number) {
+    const tabId = `${Date.now()}`;
+
+    storeTabInformation(tabs[index], tabId);
+
+    window.open(ROUTE.LOGS.replace(':logId', tabId), '_blank')?.focus();
+  }
+
   const contextMenuActions: MenuCallToAction[] = [
     {
       Icon: IconDuplicate,
       text: 'duplicate',
       callToAction: duplicateTab
+    },
+    {
+      Icon: IconOpenInTab,
+      text: 'open in a new tab',
+      callToAction: (_: any, index: number) => openInANewTab(index)
     },
     {
       Icon: IconClose,
@@ -96,10 +116,11 @@ function Logs() {
       <div
         className={cx(styles.container, {
           [styles.opened]: opened,
-          [styles.hidden]: hidden
+          [styles.hidden]: hidden,
+          [styles.fullScreen]: fullScreen
         })}
       >
-        <Header togglePanel={togglePanel} opened={opened} />
+        {!fullScreen && <Header togglePanel={togglePanel} opened={opened} />}
         <TabContainer
           tabs={tabs}
           activeTabId={activeTabId}
@@ -124,11 +145,13 @@ function Logs() {
         ))}
       </div>
       <div
-        className={cx(styles.shield, { [styles.show]: opened && !hidden })}
+        className={cx(styles.shield, {
+          [styles.show]: opened && !hidden && !fullScreen
+        })}
         onClick={togglePanel}
       />
     </>
   );
 }
 
-export default Logs;
+export default LogsPanel;
