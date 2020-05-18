@@ -8,6 +8,7 @@ $color-hexagon-disabled: palette(base, 200);
 
 .container {
   padding-top: 16px;
+  z-index: 2;
 
   .link:last-child:after {
     background-color: transparent;

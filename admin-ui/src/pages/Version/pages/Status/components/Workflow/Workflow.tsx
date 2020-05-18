@@ -25,6 +25,10 @@ import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.g
 import moment from 'moment';
 import { dateFilterOptions } from '../../Logs/components/Filters/components/DatesFilter/DateFilter';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
+import { getWorkflowState } from '../../states';
+import cx from 'classnames';
+import useUserAccess from '../../../../../../hooks/useUserAccess';
+import { checkPermission } from '../../../../../../rbac-rules';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -45,6 +49,7 @@ type Props = {
 };
 
 function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
+  const { accessLevel } = useUserAccess();
   const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
 
@@ -117,14 +122,14 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
 
   const data = cloneDeep(workflow);
   const { width, height } = dimensions;
+  const status = getWorkflowState(workflowStatus, data.nodes);
 
   return (
-    <div className={styles.workflowContainer} style={{ width: containerWidth }}>
-      <WorkflowHeader
-        name={workflow.name}
-        status={workflowStatus}
-        onWorkflowClick={onWorkflowClick}
-      />
+    <div
+      className={cx(styles.workflowContainer, styles[status])}
+      style={{ width: containerWidth }}
+    >
+      <WorkflowHeader name={workflow.name} onWorkflowClick={onWorkflowClick} />
       <div ref={chartRef} className={styles.chartContainer}>
         <WorkflowChart
           width={width}
@@ -133,6 +138,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
           workflowStatus={workflowStatus}
           onInnerNodeClick={onInnerNodeClick}
           tooltipRefs={tooltipRefs}
+          enableNodeClicks={checkPermission(accessLevel, 'logs-page:visit')}
         />
       </div>
     </div>

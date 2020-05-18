@@ -40,6 +40,7 @@
     "react-markdown": "^4.3.1",
     "react-router-dom": "^5.1.0",
     "react-scripts": "3.1.2",
+    "react-tabs": "^3.1.0",
     "style-it": "^2.1.4",
     "subscriptions-transport-ws": "^0.9.16",
     "typeface-montserrat": "^0.0.75",

@@ -123,6 +123,7 @@ module.exports = {
   }),
   User: () => ({
     id: casual.uuid,
+    accessLevel: 'ADMIN',
     email: casual.random_element([
       'user1@intelygenz.com',
       'user2@intelygenz.com',
@@ -134,7 +135,7 @@ module.exports = {
   }),
   LogPane: () => ({
     cursor: casual.string,
-    items: new MockList([6, 12]),
+    items: new MockList([6, 12])
   }),
   NodeLog: () => ({
     id: casual.uuid,
@@ -188,5 +189,5 @@ module.exports = {
     }, casual.integer(2000, 10000));
     return { id: _id, name: name, status: 'STOPPED' };
   },
-  MetricChartData: () => new MockList([5, 10]),
+  MetricChartData: () => new MockList([5, 10])
 };

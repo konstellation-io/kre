@@ -2,11 +2,10 @@ import React from 'react';
 import ROUTE from '../../../../../../constants/routes';
 import { buildRoute } from '../../../../../../utils/routes';
 import { useParams } from 'react-router';
-
 import Button from '../../../../../../components/Button/Button';
-
 import cx from 'classnames';
 import styles from '../../RuntimeVersions.module.scss';
+import Can from '../../../../../../components/Can/Can';
 
 type Props = {
   nPublishedVersions: number;
@@ -36,13 +35,15 @@ function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
       })}
     >
       <span className={styles.versionTitle}>{title}</span>
-      <Button
-        label="ADD VERSION"
-        to={newVersionRoute}
-        primary
-        height={30}
-        style={{ borderRadius: 2 }}
-      />
+      <Can perform="version:edit">
+        <Button
+          label="ADD VERSION"
+          to={newVersionRoute}
+          primary
+          height={30}
+          style={{ borderRadius: 2 }}
+        />
+      </Can>
     </div>
   );
 }

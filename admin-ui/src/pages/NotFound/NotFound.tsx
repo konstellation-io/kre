@@ -11,7 +11,7 @@ function NotFound() {
       <div className={styles.grid}>
         <div className={styles.container}>
           <h1>Page not found</h1>
-          <Circle animation={STATES.ERROR} label="NOT FOUND" />;
+          <Circle animation={STATES.ERROR} label="NOT FOUND" />
         </div>
       </div>
     </div>

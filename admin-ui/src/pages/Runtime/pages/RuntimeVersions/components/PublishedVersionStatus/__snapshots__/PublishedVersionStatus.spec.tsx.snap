@@ -9,16 +9,20 @@ exports[`PublishedVersionStatus matches snapshot 1`] = `
   >
     5 versions published
   </span>
-  <Button
-    height={30}
-    label="ADD VERSION"
-    primary={true}
-    style={
-      Object {
-        "borderRadius": 2,
+  <Can
+    perform="version:edit"
+  >
+    <Button
+      height={30}
+      label="ADD VERSION"
+      primary={true}
+      style={
+        Object {
+          "borderRadius": 2,
+        }
       }
-    }
-    to="/runtimes/runtimeId/new_version"
-  />
+      to="/runtimes/runtimeId/new_version"
+    />
+  </Can>
 </div>
 `;

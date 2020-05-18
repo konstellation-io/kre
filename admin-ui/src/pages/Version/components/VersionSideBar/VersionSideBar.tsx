@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import ROUTE from '../../../../constants/routes';
 import VersionActions from './VersionActions/VersionActions';
 import { buildRoute } from '../../../../utils/routes';
+import Can from '../../../../components/Can/Can';
 
 type VersionSideBarProps = {
   runtime?: GetVersionConfStatus_runtime;
@@ -39,7 +40,9 @@ function VersionSideBar({ runtime, version }: VersionSideBarProps) {
       <div className={styles.runtimeNameSection}></div>
       <VersionInfo version={version} />
       <VersionMenu runtime={runtime} version={version} />
-      <VersionActions runtime={runtime} version={version} />
+      <Can perform="version:edit">
+        <VersionActions runtime={runtime} version={version} />
+      </Can>
     </div>
   );
 }

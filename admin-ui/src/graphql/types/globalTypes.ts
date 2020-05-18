@@ -7,6 +7,12 @@
 // START Enums and Input Objects
 //==============================================================
 
+export enum AccessLevel {
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+  VIEWER = 'VIEWER'
+}
+
 export enum ConfigurationVariableType {
   FILE = 'FILE',
   VARIABLE = 'VARIABLE'

@@ -13,6 +13,8 @@ $color-box-bg: $bg-box;
   @include shadow(3);
   @include border($color-border);
   border-radius: $grid-unit;
+  border-left: $grid-unit solid;
+  transition: border-left-color ease 0.6s;
 
   display: flex;
   flex-direction: column;
@@ -20,6 +22,16 @@ $color-box-bg: $bg-box;
   margin: $workflowMargin $workflowMargin 0 $workflowMargin;
   padding: 2 * $grid-unit;
   height: $container-height;
+
+  &.#{$status-up} {
+    border-left-color: $color-status-up;
+  }
+  &.#{$status-down} {
+    border-left-color: $color-status-down;
+  }
+  &.#{$status-loading} {
+    border-left-color: $color-status-loading;
+  }
 
   .chartContainer {
     position: relative;
@@ -46,6 +58,11 @@ $color-box-bg: $bg-box;
 
     .button {
       cursor: pointer;
+      color: font-color(lowlight);
+
+      &:hover svg {
+        color: font-color(light);
+      }
     }
   }
 }

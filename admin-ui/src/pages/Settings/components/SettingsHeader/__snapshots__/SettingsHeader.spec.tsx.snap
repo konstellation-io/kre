@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SettingsHeader matches snapshot 1`] = `
-<Fragment>
+<div
+  className="header"
+>
   <div
     className="formTitle"
   >
@@ -12,5 +14,5 @@ exports[`SettingsHeader matches snapshot 1`] = `
   >
     subtitle
   </div>
-</Fragment>
+</div>
 `;

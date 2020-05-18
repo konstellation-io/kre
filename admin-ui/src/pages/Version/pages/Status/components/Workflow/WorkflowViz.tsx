@@ -49,6 +49,7 @@ type Props = {
   workflowStatus: VersionStatus;
   onInnerNodeClick: Function;
   tooltipRefs: TooltipRefs;
+  enableNodeClicks: boolean;
 };
 
 function getTooltipHeader(nodeType: NodeTypes) {
@@ -181,7 +182,7 @@ class WorkflowViz {
       yOffset,
       generateLink,
       generateNodeLabel,
-      props: { data, onInnerNodeClick }
+      props: { data, onInnerNodeClick, enableNodeClicks }
     } = this;
     const self = this;
 
@@ -201,9 +202,13 @@ class WorkflowViz {
     newCirclesG
       .append('circle')
       .classed(styles.outerCircle, true)
+      .classed(styles.clicksDisabled, !enableNodeClicks)
       .attr('r', nodeOuterRadius)
       .attr('cx', nodeOuterRadius)
-      .on('click', (d: D) => onInnerNodeClick(d.id, d.name, data.id));
+      .on(
+        'click',
+        (d: D) => enableNodeClicks && onInnerNodeClick(d.id, d.name, data.id)
+      );
 
     newCirclesG
       .append('circle')
@@ -312,11 +317,11 @@ class WorkflowViz {
       nodeOuterRadius,
       xScale,
       yOffset,
-      getTooltipCoords,
+      getTooltip,
       props: {
         data,
         workflowStatus,
-        tooltipRefs: { onShowTooltip, onHideTooltip, lastHoveredNode }
+        tooltipRefs: { onHideTooltip, lastHoveredNode }
       }
     } = this;
     const side = nodeOuterRadius * 2;
@@ -331,16 +336,13 @@ class WorkflowViz {
         .classed(styles.inputNode, true)
         .classed(styles[getWorkflowState(workflowStatus)], true)
         .on('mouseenter', function() {
-          const { left, top } = getTooltipCoords(x, y, side);
-          const header = getTooltipHeader(NodeTypes.INPUT);
-          const content = getTooltipContent(NodeTypes.INPUT);
-          onShowTooltip({
-            status: getWorkflowState(workflowStatus),
-            node: this,
-            left,
-            top,
-            header,
-            content
+          getTooltip({
+            x,
+            y,
+            side,
+            nodeType: NodeTypes.INPUT,
+            status: getWorkflowState(workflowStatus, data.nodes),
+            node: this
           });
         })
         .on('mouseleave', () => onHideTooltip());
@@ -383,10 +385,54 @@ class WorkflowViz {
         .classed(styles.hovered, function() {
           return this === lastHoveredNode;
         })
-        .classed(styles[getWorkflowState(workflowStatus)], true);
+        .classed(styles[getWorkflowState(workflowStatus)], true)
+        .on('mouseenter', function() {
+          getTooltip({
+            x,
+            y,
+            side,
+            nodeType: NodeTypes.INPUT,
+            status: getWorkflowState(workflowStatus, data.nodes),
+            node: this
+          });
+        });
     }
 
     this.generateLink(x + side, linkStatus, 'inputNode');
+  };
+
+  getTooltip = ({
+    x,
+    y,
+    side,
+    nodeType,
+    status,
+    node
+  }: {
+    x: number;
+    y: number;
+    side: number;
+    nodeType: NodeTypes;
+    status: FinalStates;
+    node: any;
+  }) => {
+    const {
+      getTooltipCoords,
+      props: {
+        tooltipRefs: { onShowTooltip }
+      }
+    } = this;
+    const { left, top } = getTooltipCoords(x, y, side);
+    const header = getTooltipHeader(nodeType);
+    const content = getTooltipContent(nodeType);
+    onShowTooltip({
+      status,
+      node,
+      left,
+      top,
+      header,
+      content
+    });
   };
 
   getTooltipCoords = (x: number, y: number, side: number) => {

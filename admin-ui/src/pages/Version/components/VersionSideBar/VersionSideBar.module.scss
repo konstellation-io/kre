@@ -20,6 +20,7 @@ $color-wrapper-bg: palette(base, 500);
   color: font-color(light);
   font-size: 14px;
   padding-left: 8px;
+  border-bottom: solid 1px palette(base, 900);
 
   span {
     padding-left: 8px;

@@ -63,12 +63,19 @@ $color-font: (
   dark: palette(base)
 );
 
-$bg-color: palette(base, 800);
+$bg-color: palette(base, 600);
 $bg-color-dark: palette(base, 900);
 $bg-color-lighter: palette(base, 400);
 $bg-box: palette(base);
 $bg-highlighted: palette(base, 300);
 $bg-form: palette(base, 600);
+
+$bg-component-default: palette(base, 900);
+$bg-component-active: palette(lowlight, 900);
+$bg-component-hover: palette(lowlight, 700);
+$bg-component-pressed: palette(lowlight, 700);
+$bg-component-selected: palette(lowlight, 800);
+$bg-component-inactive: palette(base, 800);
 
 $color-primary: palette(highlight);
 $color-ok: palette(success);

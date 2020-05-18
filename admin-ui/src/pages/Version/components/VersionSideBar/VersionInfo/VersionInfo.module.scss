@@ -7,6 +7,7 @@
   color: font-color(light);
   padding: 16px 0;
   padding-left: 16px;
+  border-bottom: solid 1px palette(base, 900);
 }
 
 .name {
@@ -18,7 +19,7 @@
   align-items: center;
   font-weight: 600;
   font-size: 14px;
-  padding: 0 16px 16px 16px;
+  padding: 0 16px 16px 0;
 }
 
 .desc {
@@ -26,14 +27,13 @@
   font-weight: 500;
   color: font-color(lowlight);
 
-  padding: 0 30px;
+  padding-right: 30px;
 }
 
 .labelContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 32px;
 
   .label {
     @include font-button;

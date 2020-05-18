@@ -11,6 +11,7 @@ type Props = {
   workflowStatus: VersionStatus;
   onInnerNodeClick: Function;
   tooltipRefs: TooltipRefs;
+  enableNodeClicks: boolean;
 };
 
 function WorkflowChart({
@@ -19,7 +20,8 @@ function WorkflowChart({
   height,
   workflowStatus,
   onInnerNodeClick,
-  tooltipRefs
+  tooltipRefs,
+  enableNodeClicks
 }: Props) {
   const viz = useRef<WorkflowViz | null>(null);
   const svg = useRef<SVGSVGElement>(null);
@@ -36,6 +38,7 @@ function WorkflowChart({
         workflowStatus,
         onInnerNodeClick,
         tooltipRefs,
+        enableNodeClicks,
         margin: {
           right: 20,
           left: 5

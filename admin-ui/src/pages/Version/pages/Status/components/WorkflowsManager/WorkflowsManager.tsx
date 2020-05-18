@@ -38,6 +38,7 @@ function WorkflowsManager({
   const tooltipHeaderRef = useRef<HTMLDivElement>(null);
   const tooltipContentRef = useRef<HTMLDivElement>(null);
   const insideTooltip = useRef<boolean>(false);
+  const insideNode = useRef<boolean>(false);
   const hideTooltipTimeout = useRef<number>(0);
 
   const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -87,7 +88,7 @@ function WorkflowsManager({
     header,
     content
   }: OnShowTooltipProps) {
-    insideTooltip.current = true;
+    insideNode.current = true;
 
     setTooltipStatus(status);
     setTooltipHeader(header);
@@ -98,12 +99,12 @@ function WorkflowsManager({
     showTooltip();
   }
   function onHideTooltip() {
-    insideTooltip.current = false;
+    insideNode.current = false;
 
     if (hideTooltipTimeout.current) clearTimeout(hideTooltipTimeout.current);
 
     hideTooltipTimeout.current = window.setTimeout(() => {
-      if (!insideTooltip.current) hideTooltip();
+      if (!insideTooltip.current && !insideNode.current) hideTooltip();
     }, 200);
   }
 

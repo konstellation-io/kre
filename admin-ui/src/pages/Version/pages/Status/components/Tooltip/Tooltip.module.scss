@@ -6,7 +6,8 @@
 $width: $grid-unit * 55;
 $padding-y: 14px;
 $separation: 21px;
-$color-line: #5d6c76;
+$color-line: palette(base, 800);
+$color-bg: $bg-color-dark;
 
 .wrapper {
   position: fixed;
@@ -29,7 +30,7 @@ $color-line: #5d6c76;
   border-radius: $grid-unit / 2;
   width: $width;
   padding: 11px $padding-y;
-  background-color: $bg-box;
+  background-color: $color-bg;
   border-left: solid 3px $color-ok;
 }
 

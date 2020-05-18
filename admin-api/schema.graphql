@@ -93,6 +93,13 @@ input SettingsInput {
 type User {
   id: ID!
   email: String!
+  accessLevel: AccessLevel!
+}
+
+enum AccessLevel {
+  VIEWER
+  MANAGER
+  ADMIN
 }
 
 type Alert {
