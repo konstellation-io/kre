@@ -25,7 +25,7 @@ type Props = {
 };
 
 function Settings({ label }: Props) {
-  const accessLevel = useUserAccess();
+  const { accessLevel } = useUserAccess();
   const client = useApolloClient();
   const history = useHistory();
   const [opened, setOpened] = useState(false);

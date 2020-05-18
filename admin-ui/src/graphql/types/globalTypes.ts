@@ -8,7 +8,7 @@
 //==============================================================
 
 export enum AccessLevel {
-  ADMINISTRATOR = 'ADMINISTRATOR',
+  ADMIN = 'ADMIN',
   MANAGER = 'MANAGER',
   VIEWER = 'VIEWER'
 }

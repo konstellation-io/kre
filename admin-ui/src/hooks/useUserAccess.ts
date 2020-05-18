@@ -7,8 +7,8 @@ import { AccessLevel } from '../graphql/types/globalTypes';
 const GetAccessLevelQuery = loader('../graphql/queries/getAccessLevel.graphql');
 
 export default function useUserAccess() {
-  const { data } = useQuery<GetAccessLevel>(GetAccessLevelQuery);
+  const { data, loading } = useQuery<GetAccessLevel>(GetAccessLevelQuery);
   const accessLevel = get(data?.me, 'accessLevel', AccessLevel.VIEWER);
 
-  return accessLevel;
+  return { accessLevel, loading };
 }

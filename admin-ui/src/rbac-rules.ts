@@ -1,5 +1,4 @@
 import { AccessLevel } from './graphql/types/globalTypes';
-import ROUTE from './constants/routes';
 
 const rules: {
   [key in keyof typeof AccessLevel]: {
@@ -15,34 +14,25 @@ const rules: {
       'audit-page:visit',
       'logs-page:visit',
       'runtime:edit',
-      'runtime-add:visit',
+      'runtime-add-page:visit',
       'version:edit',
-      'version-add:visit',
-      'version-configuration:visit'
+      'version-add-page:visit',
+      'version-config-page:visit'
     ]
   },
-  // TODO: Change this to ADMIN
-  ADMINISTRATOR: {
+  ADMIN: {
     static: [
       'audit-page:visit',
       'logs-page:visit',
       'runtime:edit',
-      'runtime-add:visit',
+      'runtime-add-page:visit',
       'version:edit',
-      'version-add:visit',
-      'version-configuration:visit',
+      'version-add-page:visit',
+      'version-config-page:visit',
       'settings:edit',
       'settings-page:visit'
     ]
   }
-};
-
-export const pageToRoute = {
-  'audit-page': ROUTE.AUDIT,
-  'runtime-add': ROUTE.NEW_RUNTIME,
-  'settings-page': ROUTE.SETTINGS,
-  'version-add': ROUTE.NEW_VERSION,
-  'version-configuration': ROUTE.RUNTIME_VERSION_CONFIGURATION
 };
 
 export function checkPermission(

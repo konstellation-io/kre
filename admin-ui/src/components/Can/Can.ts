@@ -8,7 +8,7 @@ type Props = {
 };
 
 function Can({ children, perform, data = {} }: Props) {
-  const accessLevel = useUserAccess();
+  const { accessLevel } = useUserAccess();
 
   return checkPermission(accessLevel, perform, data) ? children : null;
 }

@@ -20,7 +20,7 @@ type VersionDetailsProps = {
 };
 
 function VersionMenu({ runtime, version }: VersionDetailsProps) {
-  const accessLevel = useUserAccess();
+  const { accessLevel } = useUserAccess();
 
   const itemProps: VersionMenuItemProps[] = [
     {

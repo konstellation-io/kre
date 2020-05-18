@@ -49,7 +49,7 @@ type Props = {
 };
 
 function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
-  const accessLevel = useUserAccess();
+  const { accessLevel } = useUserAccess();
   const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
 

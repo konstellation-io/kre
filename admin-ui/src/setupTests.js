@@ -1,6 +1,7 @@
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import 'jest-canvas-mock';
+import { AccessLevel } from './graphql/types/globalTypes';
 
 configure({ adapter: new Adapter() });
 
@@ -10,7 +11,10 @@ jest.mock('./config', () => ({
   })
 }));
 
-jest.mock('./hooks/useUserAccess', () => () => 'ADMINISTRATOR');
+jest.mock('./hooks/useUserAccess', () => () => ({
+  accessLevel: 'ADMIN',
+  loading: false
+}));
 
 class ResizeObserver {
   observe() {}
