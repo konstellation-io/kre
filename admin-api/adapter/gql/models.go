@@ -74,20 +74,20 @@ type UpdateConfigurationInput struct {
 type AccessLevel string
 
 const (
-	AccessLevelViewer        AccessLevel = "VIEWER"
-	AccessLevelManager       AccessLevel = "MANAGER"
-	AccessLevelAdministrator AccessLevel = "ADMINISTRATOR"
+	AccessLevelViewer  AccessLevel = "VIEWER"
+	AccessLevelManager AccessLevel = "MANAGER"
+	AccessLevelAdmin   AccessLevel = "ADMIN"
 )
 
 var AllAccessLevel = []AccessLevel{
 	AccessLevelViewer,
 	AccessLevelManager,
-	AccessLevelAdministrator,
+	AccessLevelAdmin,
 }
 
 func (e AccessLevel) IsValid() bool {
 	switch e {
-	case AccessLevelViewer, AccessLevelManager, AccessLevelAdministrator:
+	case AccessLevelViewer, AccessLevelManager, AccessLevelAdmin:
 		return true
 	}
 	return false

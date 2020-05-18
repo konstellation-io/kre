@@ -1236,7 +1236,7 @@ type User {
 enum AccessLevel {
   VIEWER
   MANAGER
-  ADMINISTRATOR
+  ADMIN
 }
 
 type Alert {

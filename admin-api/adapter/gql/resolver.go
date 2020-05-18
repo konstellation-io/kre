@@ -419,7 +419,7 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 
 func (r *userResolver) AccessLevel(ctx context.Context, obj *entity.User) (AccessLevel, error) {
 	// TODO return the true user access level value
-	return AccessLevelAdministrator, nil
+	return AccessLevelAdmin, nil
 }
 
 func (r *versionResolver) Status(ctx context.Context, obj *entity.Version) (VersionStatus, error) {
@@ -512,7 +512,9 @@ func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityRes
 func (r *Resolver) Version() VersionResolver { return &versionResolver{r} }
 
 // VersionNodeStatus returns VersionNodeStatusResolver implementation.
-func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver { return &versionNodeStatusResolver{r} }
+func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver {
+	return &versionNodeStatusResolver{r}
+}
 
 type mutationResolver struct{ *Resolver }
 type nodeResolver struct{ *Resolver }
