@@ -24,6 +24,9 @@ function DashboardHeader({
   viewAllData
 }: Props) {
   const Icon = viewAllData ? HideIcon : ViewIcon;
+  const buttonTitle = viewAllData
+    ? 'Disable show all data values'
+    : 'Enable show all data values';
 
   return (
     <div className={styles.container}>
@@ -45,6 +48,7 @@ function DashboardHeader({
       <div
         className={styles.visibilityIcon}
         onClick={() => setViewAllData(!viewAllData)}
+        title={buttonTitle}
       >
         <Icon className="icon-regular" />
       </div>

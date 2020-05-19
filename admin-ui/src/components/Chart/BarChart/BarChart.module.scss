@@ -41,8 +41,15 @@ $color-bar: map-get($color-dashboard, primary-darker);
   }
 
   .barLabel {
-    font-size: 11px;
+    font-size: 12px;
     text-anchor: middle;
     dominant-baseline: central;
+
+    &.light {
+      fill: $color-warn;
+    }
+    &.dark {
+      fill: $color-bar;
+    }
   }
 }

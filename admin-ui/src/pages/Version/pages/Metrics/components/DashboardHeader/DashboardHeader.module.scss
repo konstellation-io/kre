@@ -1,12 +1,16 @@
 @import '../../../../../../styles/mixins';
 @import '../../../../../../styles/colors';
 
+$color-bg: palette(base, 400);
+
 .container {
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 61px;
-  margin: 10px;
+  padding: 10px 18px 10px 46px;
+  background-color: $color-bg;
+  flex-shrink: 0;
 }
 
 .title {

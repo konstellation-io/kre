@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import InputNodeIcon from '@material-ui/icons/ArrowRightAlt';
+import InputNodeIcon from '@material-ui/icons/Public';
 import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
 import {
   GetVersionWorkflows_version_workflows,
@@ -30,11 +30,11 @@ const SCALE_PADDING_OUTER = 0.1;
 const NODE_INNER_CIRCLE_PERC = 0.5;
 const OFFSET_TOP_PERC = 0.7;
 const NODE_LABEL_PADDING = {
-  VERTICAL: 4,
+  VERTICAL: 7,
   HORIZONTAL: 25
 };
 const MARGIN_TOP_LABELS = 4;
-const ICON_SIZE = 25;
+const ICON_SIZE = 20;
 
 export type Margin = {
   right: number;

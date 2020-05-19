@@ -1,3 +1,5 @@
+@import '../../styles/colors';
+
 .container {
   display: flex;
   flex-direction: row;
@@ -14,4 +16,8 @@
 .hexagons {
   overflow: auto;
   height: 100%;
+}
+
+.nRuntimes {
+  color: font-color(lowlight);
 }

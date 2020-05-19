@@ -3,6 +3,7 @@
 @import './borders';
 @import './shadows';
 
+$color-bg: palette(base);
 $color-active: $color-primary;
 $color-within-range: palette(highlight, 900);
 
@@ -86,7 +87,7 @@ $color-within-range: palette(highlight, 900);
 .CalendarMonth,
 .DayPicker_transitionContainer,
 .CalendarMonthGrid {
-  background-color: $bg-color-lighter;
+  background-color: $color-bg;
   color: font-color(regular);
 }
 

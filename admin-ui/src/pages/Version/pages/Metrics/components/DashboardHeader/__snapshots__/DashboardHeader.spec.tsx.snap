@@ -23,6 +23,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
   <div
     className="visibilityIcon"
     onClick={[Function]}
+    title="Enable show all data values"
   >
     <VisibilityIcon
       className="icon-regular"

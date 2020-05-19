@@ -123,8 +123,6 @@ $color-inactive: palette(lowlight);
 
 .title {
   @include font-body;
-  font-weight: 600;
-  letter-spacing: 0.25px;
 
   width: 130px;
 }
