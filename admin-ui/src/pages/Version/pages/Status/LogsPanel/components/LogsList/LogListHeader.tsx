@@ -9,6 +9,8 @@ function LogListHeader() {
         <div className={styles.icon}></div>
         <div className={styles.date}>Date</div>
         <div className={styles.hour}>Time</div>
+        <div className={styles.workflow}>Workflow</div>
+        <div className={styles.node}>Process</div>
         <div className={styles.message}>Message</div>
         <div className={styles.expand}></div>
       </div>

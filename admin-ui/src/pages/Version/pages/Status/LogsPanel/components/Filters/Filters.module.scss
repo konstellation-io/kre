@@ -22,7 +22,6 @@
   }
 }
 .rightFilters {
-  margin-right: $grid-unit * 2.5;
   & > div:not(:last-child) {
     border-right: 1px solid palette(base, 400);
   }
@@ -43,6 +42,7 @@
 
 .selectType {
   width: 11vw;
+  min-width: 130px;
 }
 
 .selectProcesses {

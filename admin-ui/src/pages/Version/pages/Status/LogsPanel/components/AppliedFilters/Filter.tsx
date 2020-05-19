@@ -4,13 +4,13 @@ import { isEditable, ProcessChip } from './AppliedFilters';
 import moment from 'moment';
 
 const filterToLabel = new Map([
+  ['workflowId', 'Workflow'],
+  ['nodeName', 'Process'],
   ['level', 'Level'],
   ['search', 'Search'],
-  ['processes', 'Processes'],
-  ['nodeName', 'Process'],
+  ['processes', 'Process'],
   ['startDate', 'From'],
-  ['endDate', 'To'],
-  ['workflowId', 'Workflow']
+  ['endDate', 'To']
 ]);
 function getFilterLabel(filter: string) {
   return filterToLabel.get(filter);
@@ -23,7 +23,7 @@ function getValueLabel(filter: string, value: string | ProcessChip) {
   }
   if (filter === 'processes') {
     if (typeof value !== 'string')
-      return `${value.workflowName} - ${value.processes.join(', ')}`;
+      return `${value.processName} [${value.workflowName}]`;
   }
 
   return value;

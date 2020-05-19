@@ -3,6 +3,7 @@ import Left from '../../Layout/Left/Left';
 import Right from '../../Layout/Right/Right';
 import Check from '../../Form/Check/Check';
 import IconSelectAll from '@material-ui/icons/DoneAll';
+import IconDeselectAll from '@material-ui/icons/ClearAll';
 import IconOpen from '@material-ui/icons/KeyboardArrowDown';
 import IconClose from '@material-ui/icons/KeyboardArrowUp';
 import { DoubleSelectData } from './DoubleSelect';
@@ -34,6 +35,7 @@ type Props = {
   elements?: string[];
   selections?: DoubleSelectData;
   onSelectGroup: (group: string) => void;
+  onDeselectGroup: (group: string) => void;
   onSelect: (group: string, element: string) => void;
   onDeselect: (group: string, element: string) => void;
 };
@@ -43,6 +45,7 @@ function Group({
   elements = [],
   selections = {},
   onSelectGroup,
+  onDeselectGroup,
   onSelect,
   onDeselect
 }: Props) {
@@ -67,7 +70,18 @@ function Group({
     onSelectGroup(group);
   }
 
+  function onDeselectAll() {
+    onDeselectGroup(group);
+  }
+
   const OpenCloseIcon = opened ? IconClose : IconOpen;
+
+  const allSelected = elements.length === (selections[group] || []).length;
+  const groupSelection = {
+    Icon: allSelected ? IconDeselectAll : IconSelectAll,
+    title: allSelected ? 'Deselect all' : 'Select all',
+    action: allSelected ? onDeselectAll : onSelectAll
+  };
 
   return (
     <div className={styles.group}>
@@ -78,10 +92,10 @@ function Group({
         <Right style={styles.actions}>
           <div
             className={styles.selectAll}
-            onClick={onSelectAll}
-            title="Select all"
+            onClick={groupSelection.action}
+            title={groupSelection.title}
           >
-            <IconSelectAll className="icon-small" />
+            <groupSelection.Icon className="icon-small" />
           </div>
           <div className={styles.toggleVisibility} onClick={toggleOpened}>
             <OpenCloseIcon className="icon-small" />

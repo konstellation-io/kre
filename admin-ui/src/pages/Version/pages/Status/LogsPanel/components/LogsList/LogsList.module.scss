@@ -5,6 +5,7 @@
 $color-border: palette(base, 400);
 $color-bg: palette(base, 700);
 $color-header-bg: palette(base, 500);
+$color-header-border: palette(base, 300);
 
 .listContainer {
   overflow: auto;
@@ -18,6 +19,7 @@ $color-header-bg: palette(base, 500);
 
 .container {
   @include font-body;
+  line-height: 23px;
 
   height: $height-log-item;
   background-color: $color-bg;
@@ -35,20 +37,53 @@ $color-header-bg: palette(base, 500);
 
     .expand {
       transform: scaleY(-1);
-      margin-top: -4px;
     }
   }
 
+  transition: filter 0.15s ease;
   &:hover {
-    background-color: $bg-color-lighter;
+    filter: contrast(0.9) brightness(1.3);
+
     .expand {
       opacity: 1;
+    }
+  }
+
+  &.INFO {
+    .icon {
+      color: $color-primary;
+    }
+  }
+
+  &.DEBUG {
+    background-color: palette(lowlight, 900);
+
+    .icon {
+      color: font-color(light);
+    }
+  }
+
+  &.WARN {
+    background-color: palette(alert, 900);
+
+    .icon {
+      color: $color-warn;
+    }
+  }
+
+  &.ERROR {
+    background-color: palette(error, 900);
+
+    .icon {
+      color: $color-error;
     }
   }
 }
 
 .row1 {
-  height: 100%;
+  @include font-code;
+
+  height: 24px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -56,22 +91,41 @@ $color-header-bg: palette(base, 500);
   div {
     flex-shrink: 0;
   }
-}
 
-.icon {
-  color: $color-primary;
-  padding: 0 8px;
+  .icon {
+    padding: 0 8px;
+    text-align: center;
+    width: 39px;
+    font-weight: 500;
+  }
 }
 
 .date {
+  color: font-color(lowlight);
   width: 100px;
   text-align: center;
 }
 
-.hour {
-  width: 100px;
+.hour,
+.node,
+.workflow {
   text-align: center;
   margin-left: 0 !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.hour {
+  color: font-color(lowlight);
+  width: 100px;
+}
+.node {
+  width: 160px;
+  padding: 0 2 * $grid-unit;
+}
+.workflow {
+  width: 130px;
 }
 
 .nodeName {
@@ -81,9 +135,8 @@ $color-header-bg: palette(base, 500);
 }
 
 .message {
-  color: font-color(light);
+  color: font-color(lowlight);
 
-  line-height: $height-log-item;
   flex-grow: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -95,7 +148,7 @@ $color-header-bg: palette(base, 500);
 .expand {
   height: $height-log-item;
   width: $height-log-item;
-  line-height: 41px;
+  line-height: 30px;
   text-align: center;
 
   transform: rotateX(0);
@@ -109,12 +162,15 @@ $color-header-bg: palette(base, 500);
 }
 
 .messageComplete {
+  @include font-code;
+  color: font-color(lowlight);
+
   padding: 10px 47px 30px 47px;
 }
 
 .container.header {
   height: 3 * $grid-unit;
-  border-bottom: solid 2px $color-border;
+  border-bottom: solid 2px $color-header-border;
   pointer-events: none;
   background-color: $color-header-bg;
 
@@ -122,14 +178,13 @@ $color-header-bg: palette(base, 500);
     div {
       @include font-small;
       color: font-color(lowlight);
-      line-height: 3 * $grid-unit;
       border-right: 1px solid palette(base, 300);
       text-align: left;
       padding-left: $grid-unit;
     }
 
     .icon {
-      width: 28px;
+      width: 39px;
       height: 100%;
     }
   }

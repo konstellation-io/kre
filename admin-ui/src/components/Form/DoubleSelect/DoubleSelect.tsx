@@ -22,6 +22,7 @@ type Props = {
   formSelectedOptions?: DoubleSelectData;
   hideError?: boolean;
   className?: string;
+  hideSelections?: boolean;
 };
 
 function DoubleSelect({
@@ -32,7 +33,8 @@ function DoubleSelect({
   placeholder = '',
   formSelectedOptions,
   hideError = false,
-  className = ''
+  className = '',
+  hideSelections = false
 }: Props) {
   const inputEl = useRef<HTMLInputElement>(null);
   const containerEl = useRef<HTMLDivElement>(null);
@@ -84,6 +86,13 @@ function DoubleSelect({
     onChange(newSelections);
   }
 
+  function onDeselectGroup(group: string) {
+    const newSelections = { ...formSelectedOptions };
+    delete newSelections[group];
+
+    onChange(newSelections);
+  }
+
   function onSelect(group: string, element: string) {
     const newSelections = {
       ...formSelectedOptions,
@@ -115,6 +124,7 @@ function DoubleSelect({
       elements={elements}
       selections={formSelectedOptions}
       onSelectGroup={onSelectGroup}
+      onDeselectGroup={onDeselectGroup}
       onSelect={onSelect}
       onDeselect={onDeselect}
     />
@@ -146,7 +156,7 @@ function DoubleSelect({
           })}
           style={{ maxHeight: optionsOpened ? optionsHeight : 0 }}
         >
-          {thereAreSelectedElements && (
+          {thereAreSelectedElements && !hideSelections && (
             <Selections
               selections={formSelectedOptions}
               onDeselect={onDeselect}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styles from './AppliedFilters.module.scss';
 import Button from '../../../../../../../components/Button/Button';
 import Left from '../../../../../../../components/Layout/Left/Left';
@@ -9,7 +9,7 @@ import { ProcessSelection } from '../../../../../../../graphql/client/typeDefs';
 
 export type ProcessChip = {
   workflowName: string;
-  processes: string[];
+  processName: string;
 };
 
 const filtersToHide = ['dateOption', '__typename', 'nodeId'];
@@ -24,9 +24,9 @@ const isEmpty = (filter: null | string | [string]) =>
 const filtersOrder = [
   'workflowId',
   'nodeName',
-  'processes',
   'startDate',
   'endDate',
+  'processes',
   'search',
   'level'
 ];
@@ -44,14 +44,21 @@ function getActiveFilters(filters: GetLogTabs_logTabs_filters) {
   );
 }
 
-function splitWorkflowSelections(selections: [string, any][]) {
+function splitProcessSelections(selections: [string, any][]) {
   return selections
     .map(([filter, value]) =>
       filter === 'processes'
-        ? value.map(({ workflowName, processNames }: ProcessSelection) => [
-            filter,
-            { workflowName, processes: processNames }
-          ])
+        ? value
+            .map(({ workflowName, processNames }: ProcessSelection) =>
+              processNames.map(processName => [
+                filter,
+                {
+                  workflowName,
+                  processName
+                }
+              ])
+            )
+            .flat()
         : [[filter, value]]
     )
     .flat();
@@ -60,29 +67,21 @@ function splitWorkflowSelections(selections: [string, any][]) {
 type Props = {
   filters: GetLogTabs_logTabs_filters;
   removeFilters: Function;
+  resetFilters: (e: MouseEvent<HTMLDivElement>) => void;
 };
-function AppliedFilters({ filters, removeFilters }: Props) {
+function AppliedFilters({ filters, removeFilters, resetFilters }: Props) {
   const activeFilters = getActiveFilters(filters);
-  const filtersFormatted = splitWorkflowSelections(activeFilters);
+  const filtersFormatted = splitProcessSelections(activeFilters);
   const filtersSortened = filtersFormatted.sort(sortFilters);
 
   const filterNodes = filtersSortened.map(([filter, value]) => (
     <Filter
       filter={filter}
       value={value}
-      key={`${filter}${value?.workflowName}`}
+      key={`${filter}${value?.workflowName}${value?.processName}`}
       removeFilters={removeFilters}
     />
   ));
-
-  function resetFilters() {
-    const removableFilters = Object.entries(filters).filter(
-      ([filter, value]) =>
-        isEditable(filter) && !isHidden(filter) && !isEmpty(value)
-    );
-
-    removeFilters(Object.fromEntries(removableFilters));
-  }
 
   return (
     <div className={styles.container}>
@@ -91,7 +90,7 @@ function AppliedFilters({ filters, removeFilters }: Props) {
         <div className={styles.filters}>{filterNodes}</div>
       </Left>
       <Right>
-        <Button label="RESET FILTERS" onClick={resetFilters} />
+        <Button label="RESET" onClick={resetFilters} />
       </Right>
     </div>
   );

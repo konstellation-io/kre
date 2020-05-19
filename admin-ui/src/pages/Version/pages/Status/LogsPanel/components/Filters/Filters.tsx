@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './Filters.module.scss';
 import DateFilter from './components/DatesFilter/DateFilter';
-import Button from '../../../../../../../components/Button/Button';
 import Right from '../../../../../../../components/Layout/Right/Right';
 import Left from '../../../../../../../components/Layout/Left/Left';
 import SearchSelect from '../../../../../../../components/Form/SearchSelect/SearchSelect';
@@ -114,6 +113,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             label=""
             placeholder="Select Processes"
             hideError
+            hideSelections
           />
         </div>
         <div className={styles.selectType}>
@@ -134,7 +134,6 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
           selectedOption={filterValues.dateOption}
           updateFilters={updateFilters}
         />
-        <Button label="JUMP TO NOW" />
       </Right>
     </div>
   );

@@ -99,8 +99,6 @@ function LogsList({
 
   useEffect(handleScroll, [logs, autoScrollActive]);
 
-  if (loading) return <SpinnerLinear />;
-
   // Pagination query
   function loadPreviousLogs() {
     fetchMore({
@@ -125,12 +123,13 @@ function LogsList({
     });
   }
 
-  const logElements = logs.map((log: GetServerLogs_logs_items) => (
+  const logElements = logs.map((log: GetServerLogs_logs_items, idx: number) => (
     <LogItem {...log} key={log.id} />
   ));
   return (
     <>
       <LogListHeader />
+      {loading && <SpinnerLinear />}
       <div ref={listRef} className={styles.listContainer}>
         {logElements}
       </div>

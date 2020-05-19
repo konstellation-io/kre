@@ -56,6 +56,17 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
   function removeFilters(newFilters: UpdateTabFiltersInput_newFilters) {
     updateFilters(newFilters, true);
   }
+  function resetFilters() {
+    updateTabFilters({
+      variables: {
+        input: {
+          uniqueId,
+          remove: true,
+          newFilters: {}
+        }
+      }
+    });
+  }
 
   function clearLogs() {
     setLogs([]);
@@ -68,7 +79,11 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
         filterValues={filterValues}
         versionId={versionId}
       />
-      <AppliedFilters filters={filterValues} removeFilters={removeFilters} />
+      <AppliedFilters
+        filters={filterValues}
+        removeFilters={removeFilters}
+        resetFilters={resetFilters}
+      />
       <LogsList
         logs={logs}
         onNewLogs={setLogs}

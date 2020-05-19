@@ -13,6 +13,8 @@ import {
 import { dateFilterOptions } from '../../../pages/Version/pages/Status/LogsPanel/components/Filters/components/DatesFilter/DateFilter';
 import moment from 'moment';
 import { ProcessSelection } from '../typeDefs';
+import { ProcessChip } from '../../../pages/Version/pages/Status/LogsPanel/components/AppliedFilters/AppliedFilters';
+import { isEmpty } from 'lodash';
 
 export const defaultFilters: {
   [key: string]: string | ProcessSelection[] | null;
@@ -37,40 +39,44 @@ function addFilters(
   return { ...tabFilters, ...newFilters };
 }
 
-function removeProcesses(
-  selections: ProcessSelection[],
-  selectionToRemove: ProcessSelection | ProcessSelection[]
-) {
-  [selectionToRemove].flat().forEach((selection: ProcessSelection) => {
-    selections = removeWorkflowSelection(selections, selection);
-  });
-
-  return selections;
+function removeProcess(processes: string[], processNameToRemove: string) {
+  return processes.filter(processName => processName !== processNameToRemove);
 }
-function removeWorkflowSelection(
-  filters: ProcessSelection[],
-  selection: ProcessSelection
+
+function getNewProcesses(
+  selections: ProcessSelection[],
+  { workflowName: targetWorkflow, processName: targetProcessName }: ProcessChip
 ) {
-  const workflowToRemove = selection.workflowName;
-  return filters.filter(s => s.workflowName !== workflowToRemove);
+  return selections.map(selection => {
+    if (selection.workflowName !== targetWorkflow) return selection;
+
+    return {
+      ...selection,
+      processNames: removeProcess(selection.processNames, targetProcessName)
+    };
+  });
 }
 
 function removeFilters(
-  tabFilters: GetLogTabs_logTabs_filters,
+  filters: GetLogTabs_logTabs_filters,
   filtersToRemove: UpdateTabFiltersInput_newFilters
 ) {
+  if (isEmpty(filtersToRemove)) {
+    return { ...filters, ...defaultFilters };
+  }
+
   const newFilters: { [key: string]: string | ProcessSelection[] | null } = {};
 
   Object.entries(filtersToRemove).forEach(([filter, value]) => {
     const newValue =
       filter === 'processes'
-        ? removeProcesses(tabFilters.processes || [], value)
+        ? getNewProcesses(filters.processes || [], value)
         : defaultFilters[filter];
 
     newFilters[filter] = newValue;
   });
 
-  return { ...tabFilters, ...newFilters };
+  return { ...filters, ...newFilters };
 }
 
 export default function updateTabFilters(

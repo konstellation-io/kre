@@ -97,8 +97,12 @@ function SearchSelect({
           ? filteredOptions.length - 1
           : highlightedOption - 1;
       setHighlightedOption(value);
-    } else if (e.keyCode === ENTER_KEY_CODE && highlightedOption !== -1) {
-      handleSelectOption(filteredOptions[highlightedOption]);
+    } else if (e.keyCode === ENTER_KEY_CODE) {
+      const option =
+        highlightedOption === -1
+          ? selectedOption
+          : filteredOptions[highlightedOption];
+      handleSelectOption(option);
     } else {
       setHighlightedOption(-1);
     }
