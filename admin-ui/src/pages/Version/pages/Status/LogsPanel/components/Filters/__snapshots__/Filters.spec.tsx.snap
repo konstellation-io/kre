@@ -4,15 +4,61 @@ exports[`Filters matches snapshot 1`] = `
 <div
   className="container"
 >
+  <Left
+    style="filterContainer"
+  >
+    <div
+      className="searchFilter"
+    >
+      <SearchSelect
+        className="searchForm"
+        hideError={true}
+        hideLabel={true}
+        onChange={[Function]}
+        options={Array []}
+        placeholder="Search"
+        showSearchIcon={true}
+      />
+    </div>
+    <div
+      className="selectProcesses"
+    >
+      <DoubleSelect
+        formSelectedOptions={Object {}}
+        hideError={true}
+        hideSelections={true}
+        label=""
+        onChange={[Function]}
+        options={Object {}}
+        placeholder="Select Processes"
+      />
+    </div>
+    <div
+      className="selectType"
+    >
+      <Select
+        className="selectTypeForm"
+        hideError={true}
+        label=""
+        onChange={[Function]}
+        options={
+          Array [
+            "DEBUG",
+            "ERROR",
+            "INFO",
+            "WARN",
+          ]
+        }
+        placeholder="ALL LEVELS"
+        type="light"
+      />
+    </div>
+  </Left>
   <Right
-    style="rightFilters"
+    style="filterContainer rightFilters"
   >
     <DateFilter
-      onDateChange={[MockFunction]}
       selectedOption="2020-01-01"
-    />
-    <Button
-      label="JUMP TO NOW"
     />
   </Right>
 </div>

@@ -2,16 +2,16 @@
 
 exports[`LogItem matches snapshot 1`] = `
 <div
-  className="container"
+  className="container DEBUG"
 >
   <div
-    className="row1"
+    className="row1 DEBUG"
   >
     <div
       className="icon"
     >
-      <InfoIcon
-        className="icon-small"
+      <LevelIcon
+        level="DEBUG"
       />
     </div>
     <div
@@ -23,6 +23,18 @@ exports[`LogItem matches snapshot 1`] = `
       className="hour"
     >
       00:00:00
+    </div>
+    <div
+      className="workflow"
+      title="Workflow X"
+    >
+      Workflow X
+    </div>
+    <div
+      className="node"
+      title="nodeName"
+    >
+      nodeName
     </div>
     <div
       className="message"

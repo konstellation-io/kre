@@ -31,6 +31,20 @@ exports[`Logs matches snapshot 1`] = `
             "Icon": Object {
               "$$typeof": Symbol(react.memo),
               "compare": null,
+              "displayName": "TabIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "open in a new tab",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
               "displayName": "CloseIcon",
               "muiName": "SvgIcon",
               "type": Object {
@@ -60,8 +74,6 @@ exports[`Logs matches snapshot 1`] = `
       key="foo"
     >
       <LogsTab
-        nodeId="nodeIdMock"
-        nodeName="nodeNameMock"
         runtimeId="runtimeIdMock"
         uniqueId="foo"
       />
@@ -100,6 +112,20 @@ exports[`Logs should be empty when there is no node 1`] = `
             },
             "callToAction": [Function],
             "text": "duplicate",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "TabIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "open in a new tab",
           },
           Object {
             "Icon": Object {

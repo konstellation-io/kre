@@ -1,6 +1,10 @@
 import React from 'react';
-import Filters, { Filter } from './Filters';
+import Filters from './Filters';
 import { shallow } from 'enzyme';
+
+jest.mock('@apollo/react-hooks', () => ({
+  useQuery: jest.fn(() => ({}))
+}));
 
 describe('Filters', () => {
   let wrapper;

@@ -31,15 +31,6 @@ describe('LogItem', () => {
   it('closed by default', () => {
     expect(wrapper.exists('.opened')).toBeFalsy();
   });
-
-  it('opens on open log click', () => {
-    wrapper
-      .find(IconExpand)
-      .parent()
-      .simulate('click');
-    expect(wrapper.exists('.opened')).toBeTruthy();
-    expect(wrapper.find('.messageComplete').text()).toBe('some message');
-  });
 });
 
 const mockData = {
