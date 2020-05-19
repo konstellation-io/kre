@@ -4,7 +4,7 @@ MINIKUBE_MEMORY=4096 #Mb
 MINIKUBE_KUBERNETES_VERSION=1.15.4
 MINIKUBE_CPUS=4
 MINIKUBE_DISK_SIZE='40g'
-MINIKUBE_DRIVER=docker
+MINIKUBE_DRIVER=virtualbox
 
 startMinikube() {
   MINIKUBE_RUNNING=$(minikube status -p $MINIKUBE_PROFILE | grep apiserver | cut -d ' ' -f 2)
