@@ -146,6 +146,9 @@ func (c *HandlerContext) SaveMetricError(saveMetricErr SaveMetricErr) {
 			Error:     string(saveMetricErr),
 		},
 	})
+	if err != nil {
+		log.Printf("Error generating SaveMetricMsg JSON: %s", err)
+	}
 
 	_, err = c.nc.Request(c.cfg.NATS.MongoWriterSubject, msg, saveMetricTimeout)
 	if err != nil {
