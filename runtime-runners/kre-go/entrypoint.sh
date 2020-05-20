@@ -1,7 +1,9 @@
 #!/bin/bash
 
-if [ -f "$KRT_HANDLER_PATH" ]; then
-  ./$KRT_HANDLER_PATH
+APP="$KRT_BASE_PATH/$KRT_HANDLER_PATH"
+
+if [ -f "$APP" ]; then
+  ./$APP
 else
-  echo "Error: KRT_HANDLER_PATH='$KRT_HANDLER_PATH' not exist"
+  echo "Error: \$KRT_BASE_PATH/\$KRT_HANDLER_PATH='$APP' not exist"
 fi
