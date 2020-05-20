@@ -1,4 +1,4 @@
-module gitlab.com/konstellation/kre/-/tree/master/runtime-runners/kre-go
+module gitlab.com/konstellation/kre/runtime-runners/kre-go
 
 go 1.14
 
