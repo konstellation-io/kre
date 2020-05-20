@@ -3,11 +3,11 @@ package kre
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"path"
 	"time"
 
 	"github.com/nats-io/nats.go"
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 )
 
 type SaveMetricErr string
@@ -45,13 +45,15 @@ type HandlerContext struct {
 	cfg    Config
 	nc     *nats.Conn
 	values map[string]interface{}
+	Logger *simplelogger.SimpleLogger
 }
 
-func NewHandlerContext(cfg Config, nc *nats.Conn) *HandlerContext {
+func NewHandlerContext(cfg Config, nc *nats.Conn, logger *simplelogger.SimpleLogger) *HandlerContext {
 	return &HandlerContext{
 		cfg:    cfg,
 		nc:     nc,
 		values: map[string]interface{}{},
+		Logger: logger,
 	}
 }
 
@@ -79,7 +81,7 @@ func (c *HandlerContext) GetValue(key string) interface{} {
 	if val, ok := c.values[key]; ok {
 		return val
 	}
-	log.Printf("Error getting value for key '%s' returning nil", key)
+	c.Logger.Infof("Error getting value for key '%s' returning nil", key)
 	return nil
 }
 
@@ -88,7 +90,7 @@ func (c *HandlerContext) GetValueString(key string) string {
 	if val, ok := v.(string); ok {
 		return val
 	}
-	log.Printf("Error getting value for key '%s' is not a string", key)
+	c.Logger.Infof("Error getting value for key '%s' is not a string", key)
 	return ""
 }
 
@@ -97,7 +99,7 @@ func (c *HandlerContext) GetValueInt(key string) int {
 	if val, ok := v.(int); ok {
 		return val
 	}
-	log.Printf("Error getting value for key '%s' is not a int", key)
+	c.Logger.Infof("Error getting value for key '%s' is not a int", key)
 	return -1
 }
 
@@ -106,7 +108,7 @@ func (c *HandlerContext) GetValueFloat(key string) float64 {
 	if val, ok := v.(float64); ok {
 		return val
 	}
-	log.Printf("Error getting value for key '%s' is not a float64", key)
+	c.Logger.Infof("Error getting value for key '%s' is not a float64", key)
 	return -1.0
 }
 
@@ -122,19 +124,19 @@ func (c *HandlerContext) SaveMetric(date time.Time, predictedValue, trueValue st
 	})
 
 	if err != nil {
-		log.Printf("Error marshalling SaveMetricMsgDoc: %s", err)
+		c.Logger.Infof("Error marshalling SaveMetricMsgDoc: %s", err)
 		return
 	}
 
 	_, err = c.nc.Request(c.cfg.NATS.MongoWriterSubject, msg, saveMetricTimeout)
 	if err != nil {
-		log.Printf("Error sending metric to NATS: %s", err)
+		c.Logger.Infof("Error sending metric to NATS: %s", err)
 	}
 }
 
 func (c *HandlerContext) SaveMetricError(saveMetricErr SaveMetricErr) {
 	if err := saveMetricErr.IsValid(); err != nil {
-		log.Println(err)
+		c.Logger.Error(err.Error())
 		return
 	}
 
@@ -147,11 +149,11 @@ func (c *HandlerContext) SaveMetricError(saveMetricErr SaveMetricErr) {
 		},
 	})
 	if err != nil {
-		log.Printf("Error generating SaveMetricMsg JSON: %s", err)
+		c.Logger.Infof("Error generating SaveMetricMsg JSON: %s", err)
 	}
 
 	_, err = c.nc.Request(c.cfg.NATS.MongoWriterSubject, msg, saveMetricTimeout)
 	if err != nil {
-		log.Printf("Error sending error metric to NATS: %s", err)
+		c.Logger.Infof("Error sending error metric to NATS: %s", err)
 	}
 }

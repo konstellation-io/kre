@@ -1,8 +1,9 @@
 package kre
 
 import (
-	"log"
 	"os"
+
+	"gitlab.com/konstellation/kre/libs/simplelogger"
 )
 
 type Config struct {
@@ -19,24 +20,25 @@ type ConfigNATS struct {
 	MongoWriterSubject string
 }
 
-func NewConfig() Config {
+func NewConfig(logger *simplelogger.SimpleLogger) Config {
 	return Config{
-		Version:  getCfgFromEnv("KRT_VERSION"),
-		NodeName: getCfgFromEnv("KRT_NODE_NAME"),
-		BasePath: getCfgFromEnv("KRT_BASE_PATH"),
+		Version:  getCfgFromEnv(logger, "KRT_VERSION"),
+		NodeName: getCfgFromEnv(logger, "KRT_NODE_NAME"),
+		BasePath: getCfgFromEnv(logger, "KRT_BASE_PATH"),
 		NATS: ConfigNATS{
-			Server:             getCfgFromEnv("KRT_NATS_SERVER"),
-			InputSubject:       getCfgFromEnv("KRT_NATS_INPUT"),
-			OutputSubject:      getCfgFromEnv("KRT_NATS_OUTPUT"),
-			MongoWriterSubject: getCfgFromEnv("KRT_NATS_MONGO_WRITER"),
+			Server:             getCfgFromEnv(logger, "KRT_NATS_SERVER"),
+			InputSubject:       getCfgFromEnv(logger, "KRT_NATS_INPUT"),
+			OutputSubject:      getCfgFromEnv(logger, "KRT_NATS_OUTPUT"),
+			MongoWriterSubject: getCfgFromEnv(logger, "KRT_NATS_MONGO_WRITER"),
 		},
 	}
 }
 
-func getCfgFromEnv(name string) string {
+func getCfgFromEnv(logger *simplelogger.SimpleLogger, name string) string {
 	val, ok := os.LookupEnv(name)
 	if !ok {
-		log.Fatalf("Error reading config: the '%s' env var is missing", name)
+		logger.Errorf("Error reading config: the '%s' env var is missing", name)
+		os.Exit(1)
 	}
 	return val
 }

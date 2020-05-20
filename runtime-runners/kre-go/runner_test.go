@@ -20,12 +20,12 @@ type Output struct {
 }
 
 func handlerInit(ctx *HandlerContext) {
-	log.Println("[worker init]")
+	ctx.Logger.Info("[worker init]")
 	ctx.SetValue("greeting", "Hello")
 }
 
 func handler(ctx *HandlerContext, data []byte) (interface{}, error) {
-	log.Println("[worker handler]")
+	ctx.Logger.Info("[worker handler]")
 
 	input := Input{}
 	err := json.Unmarshal(data, &input)
@@ -34,7 +34,7 @@ func handler(ctx *HandlerContext, data []byte) (interface{}, error) {
 	}
 
 	greetingText := fmt.Sprintf("%s %s!", ctx.GetValue("greeting"), input.Name)
-	log.Println(greetingText)
+	ctx.Logger.Info(greetingText)
 
 	// Saves metrics in MongoDB DB sending a message to the MongoWriter queue
 	//ctx.SaveMetric(time.Now(), "class_x", "class_y")
@@ -68,7 +68,7 @@ func TestRunner(t *testing.T) {
 
 	go Start(handlerInit, handler)
 
-	cfg := NewConfig()
+	cfg := NewConfig(nil)
 	nc, err := nats.Connect(cfg.NATS.Server)
 	if err != nil {
 		log.Fatal(err)
