@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"gitlab.com/konstellation/kre/runtime-runners/kre-go"
 )
@@ -17,12 +16,12 @@ type Output struct {
 }
 
 func handlerInit(ctx *kre.HandlerContext) {
-	log.Println("[worker init]")
+	ctx.Logger.Info("[worker init]")
 	ctx.SetValue("greeting", "Hello")
 }
 
 func handler(ctx *kre.HandlerContext, data []byte) (interface{}, error) {
-	log.Println("[worker handler]")
+	ctx.Logger.Info("[worker handler]")
 
 	input := Input{}
 	err := json.Unmarshal(data, &input)
@@ -31,7 +30,7 @@ func handler(ctx *kre.HandlerContext, data []byte) (interface{}, error) {
 	}
 
 	greetingText := fmt.Sprintf("%s %s!", ctx.GetValue("greeting"), input.Name)
-	log.Println(greetingText)
+	ctx.Logger.Info(greetingText)
 
 	out := Output{}
 	out.Greeting = greetingText

@@ -2,17 +2,19 @@
 
 set -e
 
-export VERSION_DIR=greeter
-export VERSION=`cat $VERSION_DIR/krt.yml | yq r - version`
-
+echo "Creating greeter KRT"
 ./build_krt.sh greeter
 
-echo "Compiling go-greeter source code..."
+echo ""
+echo "Compiling go-greeter source code"
+echo ""
 
 cd go-greeter/src/greeter
 go build -o ../../bin/greeter .
 cd ../../../
 
+echo "Creating go-greeter KRT"
 ./build_krt.sh go-greeter
 
+echo ""
 echo "All KRTs generated"

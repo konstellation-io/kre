@@ -54,18 +54,8 @@ class Result:
         self.error = error
 
     def from_nats_msg(self, msg):
-        print("*************")
-        print("*************")
-        print(msg.data.decode())
-        print("*************")
-        print("*************")
         try:
             data = json.loads(msg.data.decode())
-            print("2*************")
-            print("*************")
-            print(data)
-            print("*************")
-            print("*************")
         except Exception as err:
             raise Exception(
                 f"error parsing msg.data because is not a valid JSON: {str(err)}")
