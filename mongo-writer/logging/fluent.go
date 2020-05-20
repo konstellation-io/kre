@@ -11,7 +11,7 @@ import (
 
 const logsCollName = "logs"
 
-var logRegexp = regexp.MustCompile(`^([^:]+):[^:]+:(.+)$`)
+var logRegexp = regexp.MustCompile(`^.+ (ERROR|WARN|INFO|DEBUG) (.+)$`)
 
 func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 	var msgList []interface{}
