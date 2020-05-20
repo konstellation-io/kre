@@ -12,15 +12,17 @@ import (
 )
 
 type Result struct {
-	Reply string
-	Data  string
-	Error string
+	Reply string `json:"reply"`
+	Data  string `json:"data"`
+	Error string `json:"error"`
 }
 
 type HandlerInit func(ctx *HandlerContext)
 type Handler func(ctx *HandlerContext, data []byte) (interface{}, error)
 
 func Start(handlerInit HandlerInit, handler Handler) {
+	log.Println("Starting runner...")
+
 	cfg := NewConfig()
 	nc, err := nats.Connect(cfg.NATS.Server)
 	if err != nil {
