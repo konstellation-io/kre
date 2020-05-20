@@ -4,7 +4,7 @@
 
 ```
 $ pipenv shell
-$ ./generate_krt.sh
+$ ./generate_krts.sh
 ```
 
 This will generate the KRT file inside the `build` folder.

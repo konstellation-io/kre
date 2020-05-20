@@ -1,0 +1,17 @@
+version: go-greeter-v5
+description: Version for testing.
+entrypoint:
+  proto: public_input.proto
+  image: konstellation/kre-runtime-entrypoint:latest
+  src: src/entrypoint/entrypoint.py
+
+nodes:
+  - name: greeter
+    image: konstellation/kre-go:1.0.2
+    src: bin/greeter
+
+workflows:
+  - name: greeting-workflow
+    entrypoint: Greet
+    sequential:
+      - greeter
