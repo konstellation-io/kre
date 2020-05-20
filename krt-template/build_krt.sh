@@ -3,7 +3,7 @@
 set -e
 
 export VERSION_DIR=$1
-export VERSION=`yq r $VERSION_DIR/krt.yml version`
+export VERSION=`cat $VERSION_DIR/krt.yml | yq r - version`
 
 echo "1. Generate proto files..."
 ./build_proto_files.sh $VERSION_DIR

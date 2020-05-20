@@ -1,19 +1,19 @@
-import logging
-import os
 import asyncio
+import datetime
 import importlib.util
 import json
+import logging
+import os
 import traceback
-import datetime
 
 from nats.aio.client import ErrTimeout, Client as NATS
 
 
 class Config:
-    def __init__(self):
-        try:
-            self.krt_version = os.environ['KRT_VERSION']
-            self.krt_node_name = os.environ['KRT_NODE_NAME']
+  def __init__(self):
+    try:
+      self.krt_version = os.environ['KRT_VERSION']
+      self.krt_node_name = os.environ['KRT_NODE_NAME']
             self.nats_server = os.environ['KRT_NATS_SERVER']
             self.nats_input = os.environ['KRT_NATS_INPUT']
             self.nats_output = os.environ['KRT_NATS_OUTPUT']
@@ -31,7 +31,7 @@ class HandlerContext:
     def __init__(self, config, nc, logger):
         self.__config__ = config
         self.__nc__ = nc
-        self.__logger__ = logger
+        self.logger = logger
         self.METRIC_ERRORS = [self.ERR_MISSING_VALUES, self.ERR_NEW_LABELS]
 
     def get_path(self, relative_path):
@@ -80,9 +80,9 @@ class HandlerContext:
             response = await self.__nc__.request(subject, payload, timeout=1)
             res_json = json.loads(response.data.decode())
             if not res_json['success']:
-                self.__logger__.error("Unexpected error saving metric")
+              self.logger.error("Unexpected error saving metric")
         except ErrTimeout:
-            self.__logger__.error("Error saving metric: request timed out")
+          self.logger.error("Error saving metric: request timed out")
 
 
 class Result:
@@ -106,13 +106,17 @@ class Result:
 
 
 class Runner:
-    def __init__(self):
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger("kre-runner")
-        self.config = Config()
-        self.loop = asyncio.get_event_loop()
-        self.nc = NATS()
-        self.subscription_sid = None
+  def __init__(self):
+    logging.basicConfig(
+      level=logging.INFO,
+      format="%(asctime)s %(levelname)s %(message)s",
+      datefmt="%Y-%m-%dT%H:%M:%S%z"
+    )
+    self.logger = logging.getLogger("kre-runner")
+    self.config = Config()
+    self.loop = asyncio.get_event_loop()
+    self.nc = NATS()
+    self.subscription_sid = None
 
     def start(self):
         try:
