@@ -1,0 +1,32 @@
+@import '../../styles/variables';
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.chip {
+  @include font-small;
+  color: font-color(dark);
+
+  display: flex;
+  height: 3 * $grid-unit;
+  background-color: palette(lowlight);
+  padding: 0.5 * $grid-unit $grid-unit 0.5 * $grid-unit $grid-unit;
+  border-radius: 0.5 * $grid-unit;
+  margin: 0.5 * $grid-unit 15px 0.5 * $grid-unit 0;
+  max-width: 30 * $grid-unit;
+
+  .label {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .icon {
+    margin: 2px 0 0 $grid-unit;
+    transition: color ease 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      color: font-color(light);
+    }
+  }
+}

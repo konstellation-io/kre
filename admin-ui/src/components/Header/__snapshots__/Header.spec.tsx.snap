@@ -1223,13 +1223,13 @@ exports[`Header matches snapshot 1`] = `
                     }
                   >
                     <ForwardRef
-                      className="icon-regular"
+                      className="icon-small"
                     >
                       <WithStyles(ForwardRef(SvgIcon))
-                        className="icon-regular"
+                        className="icon-small"
                       >
                         <ForwardRef(SvgIcon)
-                          className="icon-regular"
+                          className="icon-small"
                           classes={
                             Object {
                               "colorAction": "MuiSvgIcon-colorAction",
@@ -1246,7 +1246,7 @@ exports[`Header matches snapshot 1`] = `
                         >
                           <svg
                             aria-hidden="true"
-                            className="MuiSvgIcon-root icon-regular"
+                            className="MuiSvgIcon-root icon-small"
                             focusable="false"
                             role="presentation"
                             viewBox="0 0 24 24"

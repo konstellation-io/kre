@@ -8,7 +8,7 @@ import {
   errorMorkflowsMock
 } from '../../../../mocks/version';
 import { mountApolloComponent } from '../../../../utils/testUtilsEnzyme';
-import Logs from './Logs/Logs';
+import LogsPanel from './LogsPanel/LogsPanel';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 
@@ -36,7 +36,7 @@ describe('Status', () => {
     const wrapper = await mountApolloComponent(Component, false);
 
     expect(wrapper.exists(SpinnerCircular)).toBeTruthy();
-    expect(wrapper.exists(Logs)).toBeFalsy();
+    expect(wrapper.exists(LogsPanel)).toBeFalsy();
   });
 
   it('show error on error response', async () => {

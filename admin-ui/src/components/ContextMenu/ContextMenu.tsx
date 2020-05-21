@@ -10,12 +10,6 @@ import useClickOutsideListener from '../../hooks/useClickOutsideListener';
 import Button, { BUTTON_ALIGN } from '../Button/Button';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-type Props = {
-  children: ReactElement;
-  actions: MenuCallToAction[];
-  contextObject: number;
-};
-
 export interface MenuCallToAction {
   Icon?: FunctionComponent<SvgIconProps>;
   text: string;
@@ -28,7 +22,19 @@ interface ContextMenu {
   y: number;
 }
 
-function ContextMenu({ children, actions, contextObject }: Props) {
+type Props = {
+  children: ReactElement;
+  actions: MenuCallToAction[];
+  contextObject: number;
+  openOnLeftClick?: boolean;
+};
+
+function ContextMenu({
+  children,
+  actions,
+  contextObject,
+  openOnLeftClick = false
+}: Props) {
   const windowWidth = window.innerWidth;
   const childElement = useRef<HTMLElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
@@ -37,7 +43,7 @@ function ContextMenu({ children, actions, contextObject }: Props) {
     x: 0,
     y: 0
   });
-  function onRightClick(event: any) {
+  function onOpenMenu(event: any) {
     event.preventDefault();
     event.stopPropagation();
     let clickX = event.clientX;
@@ -51,16 +57,19 @@ function ContextMenu({ children, actions, contextObject }: Props) {
       y: clickY
     });
   }
+  const event = openOnLeftClick ? 'click' : 'contextmenu';
   function removeListener() {
     if (childElement && childElement.current) {
-      childElement.current.removeEventListener('contextmenu', onRightClick);
+      childElement.current.removeEventListener(event, onOpenMenu);
     }
   }
   useEffect(() => {
     if (childElement && childElement.current) {
-      childElement.current.addEventListener('contextmenu', onRightClick);
+      childElement.current.addEventListener(event, onOpenMenu);
       return removeListener;
     }
+    // This should only be done on mount/unmount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useClickOutsideListener({
@@ -91,6 +100,7 @@ function ContextMenu({ children, actions, contextObject }: Props) {
             top: `${stateContextMenu.y + 7}px`,
             left: `${stateContextMenu.x + 7}px`
           }}
+          onClick={e => e.stopPropagation()}
         >
           <ul className={styles.contextMenuList}>
             {actions.map((action, index) => (

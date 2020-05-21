@@ -8,6 +8,7 @@ import React, {
 import styles from './SearchSelect.module.scss';
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
+import SearchIcon from '@material-ui/icons/Search';
 import useClickOutsideListener from '../../../hooks/useClickOutsideListener';
 import cx from 'classnames';
 
@@ -24,6 +25,10 @@ type Props = {
   error?: string;
   name?: string;
   inputRef?: React.Ref<any>;
+  hideError?: boolean;
+  hideLabel?: boolean;
+  showSearchIcon?: boolean;
+  className?: string;
 };
 
 function SearchSelect({
@@ -34,7 +39,11 @@ function SearchSelect({
   label = '',
   error = '',
   name = 'searchSelect',
-  inputRef = null
+  inputRef = null,
+  hideError = false,
+  hideLabel = false,
+  showSearchIcon = false,
+  className = ''
 }: Props) {
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState('');
@@ -88,8 +97,12 @@ function SearchSelect({
           ? filteredOptions.length - 1
           : highlightedOption - 1;
       setHighlightedOption(value);
-    } else if (e.keyCode === ENTER_KEY_CODE && highlightedOption !== -1) {
-      handleSelectOption(filteredOptions[highlightedOption]);
+    } else if (e.keyCode === ENTER_KEY_CODE) {
+      const option =
+        highlightedOption === -1
+          ? selectedOption
+          : filteredOptions[highlightedOption];
+      handleSelectOption(option);
     } else {
       setHighlightedOption(-1);
     }
@@ -100,13 +113,20 @@ function SearchSelect({
   }, [value]);
 
   return (
-    <div className={styles.container} ref={containerRef}>
-      <InputLabel text={label} />
+    <div className={cx(className, styles.container)} ref={containerRef}>
+      {!hideLabel && <InputLabel text={label} />}
+      {showSearchIcon && (
+        <div className={styles.searchIcon}>
+          <SearchIcon className="icon-regular" />
+        </div>
+      )}
       <input
         name={name}
         ref={inputRef}
         value={selectedOption}
-        className={styles.input}
+        className={cx(styles.input, {
+          [styles.showSearchIcon]: showSearchIcon
+        })}
         type="text"
         placeholder={placeholder}
         onChange={handleOnChange}
@@ -127,7 +147,7 @@ function SearchSelect({
           </li>
         ))}
       </ul>
-      <InputError message={error} />
+      {!hideError && <InputError message={error} />}
     </div>
   );
 }

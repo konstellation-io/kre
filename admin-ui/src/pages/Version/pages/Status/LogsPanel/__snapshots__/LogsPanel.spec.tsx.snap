@@ -1,0 +1,155 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logs matches snapshot 1`] = `
+<Fragment>
+  <div
+    className="container"
+  >
+    <Header
+      opened={false}
+      togglePanel={[Function]}
+    />
+    <TabContainer
+      activeTabId=""
+      contextMenuActions={
+        Array [
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "ControlPointDuplicateIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "duplicate",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "TabIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "open in a new tab",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "CloseIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "close",
+          },
+        ]
+      }
+      onTabClick={[Function]}
+      tabs={
+        Array [
+          Object {
+            "nodeId": "nodeIdMock",
+            "nodeName": "nodeNameMock",
+            "runtimeId": "runtimeIdMock",
+            "uniqueId": "foo",
+          },
+        ]
+      }
+    />
+    <div
+      className="content inactiveTab"
+      key="foo"
+    >
+      <LogsTab
+        runtimeId="runtimeIdMock"
+        uniqueId="foo"
+      />
+    </div>
+  </div>
+  <div
+    className="shield"
+    onClick={[Function]}
+  />
+</Fragment>
+`;
+
+exports[`Logs should be empty when there is no node 1`] = `
+<Fragment>
+  <div
+    className="container hidden"
+  >
+    <Header
+      opened={false}
+      togglePanel={[Function]}
+    />
+    <TabContainer
+      activeTabId=""
+      contextMenuActions={
+        Array [
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "ControlPointDuplicateIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "duplicate",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "TabIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "open in a new tab",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "CloseIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "text": "close",
+          },
+        ]
+      }
+      onTabClick={[Function]}
+      tabs={Array []}
+    />
+  </div>
+  <div
+    className="shield"
+    onClick={[Function]}
+  />
+</Fragment>
+`;

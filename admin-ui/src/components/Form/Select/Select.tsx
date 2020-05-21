@@ -9,6 +9,11 @@ import styles from './Select.module.scss';
 
 const MAX_HEIGHT = 200;
 
+export enum SelectTheme {
+  DEFAULT = 'default',
+  LIGHT = 'light'
+}
+
 type Props = {
   onChange?: Function;
   label?: string;
@@ -23,6 +28,8 @@ type Props = {
   valuesMapper?: { [key: string]: string };
   selectMainClass?: string;
   hideError?: boolean;
+  className?: string;
+  theme?: SelectTheme;
 };
 
 function Select({
@@ -38,7 +45,9 @@ function Select({
   formSelectedOption,
   valuesMapper = {},
   selectMainClass = '',
-  hideError = false
+  hideError = false,
+  className = '',
+  theme = SelectTheme.DEFAULT
 }: Props) {
   const inputEl = useRef<HTMLInputElement>(null);
   const containerEl = useRef<HTMLDivElement>(null);
@@ -135,9 +144,15 @@ function Select({
 
   return (
     <div
-      className={cx(styles.container, selectMainClass, {
-        [styles.white]: whiteColor
-      })}
+      className={cx(
+        className,
+        styles[theme],
+        styles.container,
+        selectMainClass,
+        {
+          [styles.white]: whiteColor
+        }
+      )}
       ref={containerEl}
     >
       {label && (

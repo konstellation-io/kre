@@ -76,3 +76,25 @@ $color-selected-bg: palette(base, 300);
     color: font-color(light);
   }
 }
+
+.container.light {
+  .input {
+    background-color: palette(base, 300);
+    border: 0;
+  }
+
+  .optionsContainer {
+    background-color: palette(base, 300);
+
+    .optionElement {
+      &.selected {
+        background-color: palette(base, 200);
+      }
+
+      &:hover {
+        background-color: palette(base, 400);
+        color: font-color(light);
+      }
+    }
+  }
+}
