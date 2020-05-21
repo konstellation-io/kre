@@ -17,14 +17,10 @@ type Query {
     lastId: String
   ): [UserActivity!]!
   logs(
-    cursor: String
-    startDate: String!
-    endDate: String!
     runtimeId: ID!
-    workflowId: ID!
-    nodeId: ID
-    search: String
-    level: LogLevel
+    versionId: ID!
+    filters: LogFilters!
+    cursor: String
   ): LogPage!
   metrics(
     runtimeId: ID!
@@ -228,6 +224,14 @@ enum UserActivityType {
   UPDATE_VERSION_CONFIGURATION
 }
 
+type LogFilters {
+  startDate: String!
+  endDate: String
+  search: String
+  level: [LogLevel!]
+  nodeIds: [ID!]
+}
+
 enum LogLevel {
   ERROR
   WARN
@@ -238,7 +242,10 @@ enum LogLevel {
 type NodeLog {
   id: ID!
   date: String!
+  nodeId: String
   nodeName: String
+  workflowId: String
+  workflowName: String
   message: String!
   level: LogLevel!
 }
