@@ -7,14 +7,11 @@ import {
 import {
   GET_LOG_TABS,
   GetLogTabs,
-  GetLogTabs_logTabs,
-  GetLogTabs_logTabs_filters
+  GetLogTabs_logTabs
 } from '../queries/getLogs.graphql';
 import { dateFilterOptions } from '../../../pages/Version/pages/Status/LogsPanel/components/Filters/components/DatesFilter/DateFilter';
 import moment from 'moment';
-import { ProcessSelection } from '../typeDefs';
-import { ProcessChip } from '../../../pages/Version/pages/Status/LogsPanel/components/AppliedFilters/AppliedFilters';
-import { isEmpty } from 'lodash';
+import { ProcessSelection, LogPanelFilters } from '../typeDefs';
 
 export const defaultFilters: {
   [key: string]: string | ProcessSelection[] | null;
@@ -32,51 +29,13 @@ export const defaultFilters: {
   level: null
 };
 
-function addFilters(
-  tabFilters: GetLogTabs_logTabs_filters,
-  newFilters: UpdateTabFiltersInput_newFilters
-) {
-  return { ...tabFilters, ...newFilters };
-}
-
-function removeProcess(processes: string[], processNameToRemove: string) {
-  return processes.filter(processName => processName !== processNameToRemove);
-}
-
-function getNewProcesses(
-  selections: ProcessSelection[],
-  { workflowName: targetWorkflow, processName: targetProcessName }: ProcessChip
-) {
-  return selections.map(selection => {
-    if (selection.workflowName !== targetWorkflow) return selection;
-
-    return {
-      ...selection,
-      processNames: removeProcess(selection.processNames, targetProcessName)
-    };
-  });
-}
-
-function removeFilters(
-  filters: GetLogTabs_logTabs_filters,
-  filtersToRemove: UpdateTabFiltersInput_newFilters
-) {
-  if (isEmpty(filtersToRemove)) {
-    return { ...filters, ...defaultFilters };
-  }
-
-  const newFilters: { [key: string]: string | ProcessSelection[] | null } = {};
-
-  Object.entries(filtersToRemove).forEach(([filter, value]) => {
-    const newValue =
-      filter === 'processes'
-        ? getNewProcesses(filters.processes || [], value)
-        : defaultFilters[filter];
-
-    newFilters[filter] = newValue;
-  });
-
-  return { ...filters, ...newFilters };
+export function getDefaultFilters():
+  | LogPanelFilters
+  | UpdateTabFiltersInput_newFilters {
+  return {
+    ...defaultFilters,
+    __typename: 'logTabFilters'
+  };
 }
 
 export default function updateTabFilters(
@@ -84,7 +43,7 @@ export default function updateTabFilters(
   variables: UpdateTabFiltersVariables,
   { cache }: ApolloClient<NormalizedCacheObject>
 ) {
-  const { uniqueId, remove, newFilters } = variables.input;
+  const { tabId, newFilters } = variables.input;
   const data = cache.readQuery<GetLogTabs>({
     query: GET_LOG_TABS
   });
@@ -92,12 +51,10 @@ export default function updateTabFilters(
 
   if (logTabs) {
     const updatedTabs = logTabs.map((logTab: GetLogTabs_logTabs) => {
-      if (logTab.uniqueId === uniqueId) {
+      if (logTab.uniqueId === tabId) {
         return {
           ...logTab,
-          filters: remove
-            ? removeFilters(logTab.filters, newFilters)
-            : addFilters(logTab.filters, newFilters)
+          filters: newFilters
         };
       }
       return logTab;

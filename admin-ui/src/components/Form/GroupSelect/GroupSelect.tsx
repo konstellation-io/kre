@@ -6,26 +6,28 @@ import Selections from './Selections';
 import Group from './Group';
 
 import cx from 'classnames';
-import styles from './DoubleSelect.module.scss';
+import styles from './GroupSelect.module.scss';
 import { get, isEmpty } from 'lodash';
 
 const MAX_HEIGHT = 400;
+const GROUP_HEIGHT = 30;
+const GROUP_ELEMENT_HEIGHT = 45;
 
-export type DoubleSelectData = { [key: string]: string[] };
+export type GroupSelectData = { [key: string]: string[] };
 
 type Props = {
-  onChange?: (selection: DoubleSelectData) => void;
+  onChange?: (selection: GroupSelectData) => void;
   label?: string;
   error?: string;
   placeholder?: string;
-  options: DoubleSelectData;
-  formSelectedOptions?: DoubleSelectData;
+  options: GroupSelectData;
+  formSelectedOptions?: GroupSelectData;
   hideError?: boolean;
   className?: string;
   hideSelections?: boolean;
 };
 
-function DoubleSelect({
+function GroupSelect({
   options,
   onChange = function() {},
   label = '',
@@ -130,10 +132,14 @@ function DoubleSelect({
     />
   ));
 
-  // TODO: Change 10 to nElements + nGroups
-  const optionsHeight = Math.min(10 * 40, MAX_HEIGHT);
+  const nGroups = Object.keys(options).length;
+  const nGroupElements = Object.values(options).flat().length;
+  const optionsHeight = Math.min(
+    nGroups * GROUP_HEIGHT + nGroupElements * GROUP_ELEMENT_HEIGHT,
+    MAX_HEIGHT
+  );
 
-  const thereAreSelectedElements = !isEmpty(formSelectedOptions);
+  const hasSelectedElements = !isEmpty(formSelectedOptions);
 
   return (
     <div className={cx(className, styles.container)} ref={containerEl}>
@@ -156,7 +162,7 @@ function DoubleSelect({
           })}
           style={{ maxHeight: optionsOpened ? optionsHeight : 0 }}
         >
-          {thereAreSelectedElements && !hideSelections && (
+          {hasSelectedElements && !hideSelections && (
             <Selections
               selections={formSelectedOptions}
               onDeselect={onDeselect}
@@ -171,4 +177,4 @@ function DoubleSelect({
   );
 }
 
-export default DoubleSelect;
+export default GroupSelect;

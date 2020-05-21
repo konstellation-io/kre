@@ -1,4 +1,4 @@
-import React, { MouseEvent, memo, useState } from 'react';
+import React, { memo, useState } from 'react';
 import moment from 'moment';
 
 import IconInfo from '@material-ui/icons/Info';

@@ -5,7 +5,7 @@ exports[`Filters matches snapshot 1`] = `
   className="container"
 >
   <Left
-    style="filterContainer"
+    className="filterContainer"
   >
     <div
       className="searchFilter"
@@ -23,7 +23,7 @@ exports[`Filters matches snapshot 1`] = `
     <div
       className="selectProcesses"
     >
-      <DoubleSelect
+      <GroupSelect
         formSelectedOptions={Object {}}
         hideError={true}
         hideSelections={true}
@@ -50,12 +50,12 @@ exports[`Filters matches snapshot 1`] = `
           ]
         }
         placeholder="ALL LEVELS"
-        type="light"
+        theme="light"
       />
     </div>
   </Left>
   <Right
-    style="filterContainer rightFilters"
+    className="filterContainer rightFilters"
   >
     <DateFilter
       selectedOption="2020-01-01"

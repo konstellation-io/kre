@@ -15,7 +15,6 @@ import {
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
-import { LogPanelFilters } from '../../../../../../graphql/client/typeDefs';
 import { useParams } from 'react-router-dom';
 import {
   RuntimeRouteParams,
@@ -28,7 +27,7 @@ import { getWorkflowState } from '../../states';
 import cx from 'classnames';
 import useUserAccess from '../../../../../../hooks/useUserAccess';
 import { checkPermission } from '../../../../../../rbac-rules';
-import { defaultFilters } from '../../../../../../graphql/client/resolvers/updateTabFilters';
+import { getDefaultFilters } from '../../../../../../graphql/client/resolvers/updateTabFilters';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -41,13 +40,6 @@ interface Workflow extends GetVersionWorkflows_version_workflows {
 
 const BASE_WIDTH = 323;
 const NODE_WIDTH = 160;
-
-function getDefaultFilters(): LogPanelFilters {
-  return {
-    ...defaultFilters,
-    __typename: 'logTabFilters'
-  };
-}
 
 type logTabMainFilters = {
   nodeId?: string;

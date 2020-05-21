@@ -7,7 +7,7 @@ import cx from 'classnames';
 import styles from './Button.module.scss';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-export const BUTTON_TYPES = {
+export const BUTTON_THEMES = {
   DEFAULT: 'default',
   DARK: 'dark',
   GREY: 'grey',
@@ -21,7 +21,7 @@ export const BUTTON_ALIGN = {
 
 type Props = {
   label?: string;
-  type?: string;
+  theme?: string;
   border?: boolean;
   Icon?: FunctionComponent<SvgIconProps>;
   to?: string;
@@ -36,7 +36,7 @@ type Props = {
 };
 
 function Button({
-  type = BUTTON_TYPES.DEFAULT,
+  theme = BUTTON_THEMES.DEFAULT,
   border = false,
   label = 'Button',
   Icon = undefined,
@@ -61,7 +61,7 @@ function Button({
 
   const btn = (
     <div
-      className={cx(className, styles.btn, styles[type], styles[align], {
+      className={cx(className, styles.btn, styles[theme], styles[align], {
         [styles.primary]: primary,
         [styles.border]: border,
         [styles.label]: !primary,

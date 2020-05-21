@@ -6,11 +6,11 @@ import Left from '../../../../../../../components/Layout/Left/Left';
 import SearchSelect from '../../../../../../../components/Form/SearchSelect/SearchSelect';
 import { loader } from 'graphql.macro';
 import Select, {
-  SelectorType
+  SelectTheme
 } from '../../../../../../../components/Form/Select/Select';
-import DoubleSelect, {
-  DoubleSelectData
-} from '../../../../../../../components/Form/DoubleSelect/DoubleSelect';
+import GroupSelect, {
+  GroupSelectData
+} from '../../../../../../../components/Form/GroupSelect/GroupSelect';
 import cx from 'classnames';
 import { LogLevel } from '../../../../../../../graphql/types/globalTypes';
 import { useQuery } from '@apollo/react-hooks';
@@ -27,7 +27,7 @@ const GetVersionWorkflowsQuery = loader(
 
 function processSelectionToDoubleSelector(
   selections: ProcessSelection[]
-): DoubleSelectData {
+): GroupSelectData {
   const data: { [key: string]: string[] } = {};
 
   selections.forEach(({ workflowName, processNames }) => {
@@ -38,7 +38,7 @@ function processSelectionToDoubleSelector(
 }
 
 function doubleSelectorToProcessSelection(
-  selections: DoubleSelectData
+  selections: GroupSelectData
 ): ProcessSelection[] {
   const data: ProcessSelection[] = Object.entries(selections).map(
     ([workflowName, processes]) => ({
@@ -74,7 +74,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
 
   const logTypes = Object.values(LogLevel);
 
-  function onProcessSelection(newSelection: DoubleSelectData) {
+  function onProcessSelection(newSelection: GroupSelectData) {
     updateFilters({
       processes: doubleSelectorToProcessSelection(newSelection)
     });
@@ -90,7 +90,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
 
   return (
     <div className={styles.container}>
-      <Left style={styles.filterContainer}>
+      <Left className={styles.filterContainer}>
         <div className={styles.searchFilter}>
           <SearchSelect
             options={[]}
@@ -104,7 +104,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
           />
         </div>
         <div className={styles.selectProcesses}>
-          <DoubleSelect
+          <GroupSelect
             options={workflowsAndProcesses}
             formSelectedOptions={processSelectionToDoubleSelector(
               filterValues.processes || []
@@ -124,12 +124,12 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             onChange={onLevelSelection}
             label=""
             className={styles.selectTypeForm}
-            type={SelectorType.LIGHT}
+            theme={SelectTheme.LIGHT}
             hideError
           />
         </div>
       </Left>
-      <Right style={cx(styles.filterContainer, styles.rightFilters)}>
+      <Right className={cx(styles.filterContainer, styles.rightFilters)}>
         <DateFilter
           selectedOption={filterValues.dateOption}
           updateFilters={updateFilters}

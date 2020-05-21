@@ -1,22 +1,11 @@
 import React from 'react';
 import Button from '../../Button/Button';
 import Chip from '../../Chip/Chip';
-import { DoubleSelectData } from './DoubleSelect';
-import styles from './DoubleSelect.module.scss';
-
-type SelectionProps = {
-  group: string;
-  element: string;
-  onDeselect: (group: string, element: string) => void;
-};
-
-function Selection({ group, element, onDeselect }: SelectionProps) {
-  const label = `${group}: ${element}`;
-  return <Chip label={label} onClose={() => onDeselect(group, element)} />;
-}
+import { GroupSelectData } from './GroupSelect';
+import styles from './GroupSelect.module.scss';
 
 type Props = {
-  selections?: DoubleSelectData;
+  selections?: GroupSelectData;
   onDeselect: (group: string, element: string) => void;
   onClear: () => void;
 };
@@ -26,11 +15,10 @@ function Selections({ selections = {}, onClear, onDeselect }: Props) {
     .map(([group, elements]) => elements.map(element => ({ group, element })))
     .flat();
   const selectionNodes = selectionsArray.map(({ group, element }) => (
-    <Selection
+    <Chip
       key={`${group}${element}`}
-      group={group}
-      element={element}
-      onDeselect={onDeselect}
+      label={`${group}: ${element}`}
+      onClose={() => onDeselect(group, element)}
     />
   ));
 

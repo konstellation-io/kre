@@ -32,19 +32,16 @@ function getValueLabel(filter: string, value: string | ProcessChip) {
 type Props = {
   filter: string;
   value: string;
-  removeFilters: Function;
+  removeFilter: Function;
 };
-export function Filter({ filter, value, removeFilters }: Props) {
+export function Filter({ filter, value, removeFilter }: Props) {
   const label = `${getFilterLabel(filter)}: ${getValueLabel(filter, value)}`;
 
-  function removeFilter() {
-    removeFilters({ [filter]: value });
+  function onClose() {
+    removeFilter(filter, value);
   }
   return (
-    <Chip
-      label={label}
-      onClose={isEditable(filter) ? removeFilter : undefined}
-    />
+    <Chip label={label} onClose={isEditable(filter) ? onClose : undefined} />
   );
 }
 

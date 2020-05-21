@@ -1,39 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Left from '../../Layout/Left/Left';
 import Right from '../../Layout/Right/Right';
-import Check from '../../Form/Check/Check';
+import GroupElement from './GroupElement';
 import IconSelectAll from '@material-ui/icons/DoneAll';
 import IconDeselectAll from '@material-ui/icons/ClearAll';
 import IconOpen from '@material-ui/icons/KeyboardArrowDown';
 import IconClose from '@material-ui/icons/KeyboardArrowUp';
-import { DoubleSelectData } from './DoubleSelect';
-import styles from './DoubleSelect.module.scss';
+import { GroupSelectData } from './GroupSelect';
+import styles from './GroupSelect.module.scss';
 import { get } from 'lodash';
 
 const HEIGHT_ELEMENT = 45;
 
-type ElementProps = {
-  label: string;
-  selected: boolean;
-  onChange: (label: string, add: boolean) => void;
-};
-
-function Element({ label, selected, onChange }: ElementProps) {
-  return (
-    <div className={styles.elementContainer}>
-      <Check
-        checked={selected}
-        onChange={(add: boolean) => onChange(label, add)}
-      />
-      <div className={styles.label}>{label}</div>
-    </div>
-  );
-}
-
 type Props = {
   group: string;
   elements?: string[];
-  selections?: DoubleSelectData;
+  selections?: GroupSelectData;
   onSelectGroup: (group: string) => void;
   onDeselectGroup: (group: string) => void;
   onSelect: (group: string, element: string) => void;
@@ -86,10 +68,10 @@ function Group({
   return (
     <div className={styles.group}>
       <div className={styles.groupHeader}>
-        <Left style={styles.name}>
+        <Left className={styles.name}>
           <>{group}</>
         </Left>
-        <Right style={styles.actions}>
+        <Right className={styles.actions}>
           <div
             className={styles.selectAll}
             onClick={groupSelection.action}
@@ -104,7 +86,7 @@ function Group({
       </div>
       <div className={styles.elements} style={{ height }}>
         {elements.map(element => (
-          <Element
+          <GroupElement
             key={element}
             label={element}
             selected={elementsSelected.includes(element)}

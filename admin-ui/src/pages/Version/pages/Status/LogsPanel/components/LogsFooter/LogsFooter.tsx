@@ -32,7 +32,7 @@ function LogsFooter({
           onClick={clearLogs}
         />
       </Left>
-      <Right style={styles.right}>
+      <Right className={styles.right}>
         <Button
           height={32}
           label={followText}

@@ -3,7 +3,7 @@ import ModalContainer from '../../../../../../../../../components/Layout/ModalCo
 import moment, { Moment } from 'moment';
 import styles from './DateFilter.module.scss';
 import Select, {
-  SelectorType
+  SelectTheme
 } from '../../../../../../../../../components/Form/Select/Select';
 import Calendar from '../../../../../../../../../components/Form/Calendar/Calendar';
 import { useForm } from 'react-hook-form';
@@ -113,7 +113,7 @@ function DateFilter({ updateFilters, selectedOption }: Props) {
         options={Object.values(dateFilterOptions)}
         onChange={handleDateOption}
         formSelectedOption={selectedOption}
-        type={SelectorType.LIGHT}
+        theme={SelectTheme.LIGHT}
       />
     </>
   );

@@ -4,11 +4,11 @@ import cx from 'classnames';
 
 type Props = {
   children: ReactElement | ReactElement[];
-  style?: string;
+  className?: string;
 };
 
-const Left: FunctionComponent<Props> = ({ children, style }) => (
-  <div className={cx(styles.container, style)}>{children}</div>
+const Left: FunctionComponent<Props> = ({ children, className }) => (
+  <div className={cx(styles.container, className)}>{children}</div>
 );
 
 export default Left;

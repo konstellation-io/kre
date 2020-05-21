@@ -9,7 +9,7 @@ import styles from './Select.module.scss';
 
 const MAX_HEIGHT = 200;
 
-export enum SelectorType {
+export enum SelectTheme {
   DEFAULT = 'default',
   LIGHT = 'light'
 }
@@ -29,7 +29,7 @@ type Props = {
   selectMainClass?: string;
   hideError?: boolean;
   className?: string;
-  type?: SelectorType;
+  theme?: SelectTheme;
 };
 
 function Select({
@@ -47,7 +47,7 @@ function Select({
   selectMainClass = '',
   hideError = false,
   className = '',
-  type = SelectorType.DEFAULT
+  theme = SelectTheme.DEFAULT
 }: Props) {
   const inputEl = useRef<HTMLInputElement>(null);
   const containerEl = useRef<HTMLDivElement>(null);
@@ -146,7 +146,7 @@ function Select({
     <div
       className={cx(
         className,
-        styles[type],
+        styles[theme],
         styles.container,
         selectMainClass,
         {

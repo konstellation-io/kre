@@ -2,42 +2,30 @@ import React, { useEffect } from 'react';
 import { useApolloClient } from '@apollo/react-hooks';
 import Header from '../../components/Header/Header';
 import { useParams } from 'react-router-dom';
+import { GetLogTabs_logTabs } from '../../graphql/client/queries/getLogs.graphql';
 
 type URLParams = {
-  logId: string;
+  logTabInfo: string;
 };
 
 function Logs() {
   const client = useApolloClient();
-  const { logId } = useParams<URLParams>();
-  const storageId = `KRELogTab-${logId}`;
-
-  const tabInfo = JSON.parse(localStorage.getItem(storageId) || '');
+  const { logTabInfo } = useParams<URLParams>();
 
   useEffect(() => {
-    // TODO: study how to clean local storage only on tab close, not refresh
-    function clearLocalStorage() {
-      localStorage.removeItem(storageId);
-    }
+    const tabInfo: GetLogTabs_logTabs = JSON.parse(
+      decodeURIComponent(logTabInfo)
+    );
 
     client.writeData({
       data: {
         logsOpened: true,
         logsInFullScreen: true,
-        activeTabId: logId,
-        logTabs: [
-          {
-            ...tabInfo,
-            uniqueId: logId
-          }
-        ]
+        activeTabId: tabInfo.uniqueId,
+        logTabs: [tabInfo]
       }
     });
-
-    window.addEventListener('unload', clearLocalStorage);
-
-    return () => window.removeEventListener('unload', clearLocalStorage);
-  }, []);
+  }, [client, logTabInfo]);
 
   return <Header hideSettings />;
 }

@@ -6,6 +6,7 @@ import Right from '../../../../../../../components/Layout/Right/Right';
 import Filter from './Filter';
 import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import { ProcessSelection } from '../../../../../../../graphql/client/typeDefs';
+import { defaultFilters } from '../../../../../../../graphql/client/resolvers/updateTabFilters';
 
 export type ProcessChip = {
   workflowName: string;
@@ -66,26 +67,47 @@ function splitProcessSelections(selections: [string, any][]) {
 
 type Props = {
   filters: GetLogTabs_logTabs_filters;
-  removeFilters: Function;
+  updateFilters: Function;
   resetFilters: (e: MouseEvent<HTMLDivElement>) => void;
 };
-function AppliedFilters({ filters, removeFilters, resetFilters }: Props) {
+function AppliedFilters({ filters, updateFilters, resetFilters }: Props) {
   const activeFilters = getActiveFilters(filters);
   const filtersFormatted = splitProcessSelections(activeFilters);
   const filtersSortened = filtersFormatted.sort(sortFilters);
+
+  function removeFilter(filter: string, value: ProcessChip | null | string) {
+    let newFilterValue: string | ProcessSelection[] | null = null;
+
+    if (filter === 'processes') {
+      newFilterValue =
+        filters?.processes?.map(workflow => ({
+          ...workflow,
+          processNames: workflow.processNames.filter(
+            process =>
+              !(
+                workflow.workflowName === (value as ProcessChip).workflowName &&
+                process === (value as ProcessChip).processName
+              )
+          )
+        })) || null;
+    } else {
+      newFilterValue = defaultFilters[filter];
+    }
+    updateFilters({ [filter]: newFilterValue });
+  }
 
   const filterNodes = filtersSortened.map(([filter, value]) => (
     <Filter
       filter={filter}
       value={value}
       key={`${filter}${value?.workflowName}${value?.processName}`}
-      removeFilters={removeFilters}
+      removeFilter={removeFilter}
     />
   ));
 
   return (
     <div className={styles.container}>
-      <Left style={styles.leftPannel}>
+      <Left className={styles.leftPannel}>
         <div className={styles.title}>Filtered by</div>
         <div className={styles.filters}>{filterNodes}</div>
       </Left>

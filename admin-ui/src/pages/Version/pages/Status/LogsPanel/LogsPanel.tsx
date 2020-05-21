@@ -80,16 +80,12 @@ function LogsPanel() {
     });
   }
 
-  function storeTabInformation(tab: GetLogTabs_logTabs, tabId: string) {
-    localStorage.setItem(`KRELogTab-${tabId}`, JSON.stringify(tab));
-  }
-
   function openInANewTab(index: number) {
-    const tabId = `${Date.now()}`;
+    const logTabInfo = encodeURIComponent(JSON.stringify(tabs[index]));
 
-    storeTabInformation(tabs[index], tabId);
-
-    window.open(ROUTE.LOGS.replace(':logId', tabId), '_blank')?.focus();
+    window
+      .open(ROUTE.LOGS.replace(':logTabInfo', logTabInfo), '_blank')
+      ?.focus();
   }
 
   const contextMenuActions: MenuCallToAction[] = [

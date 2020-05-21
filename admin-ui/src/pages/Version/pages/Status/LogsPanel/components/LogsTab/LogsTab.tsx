@@ -15,6 +15,7 @@ import {
 import { useMutation } from '@apollo/react-hooks';
 import { LogLevel } from '../../../../../../../graphql/types/globalTypes';
 import { ProcessSelection } from '../../../../../../../graphql/client/typeDefs';
+import { getDefaultFilters } from '../../../../../../../graphql/client/resolvers/updateTabFilters';
 
 export interface FilterTypes {
   dateOption: string;
@@ -37,32 +38,26 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
     UpdateTabFiltersVariables
   >(UPDATE_TAB_FILTERS);
 
-  function updateFilters(
-    newFilters: UpdateTabFiltersInput_newFilters,
-    remove: boolean
-  ) {
+  function updateFilters(newFilters: UpdateTabFiltersInput_newFilters) {
     updateTabFilters({
       variables: {
         input: {
-          uniqueId,
-          remove,
+          tabId: uniqueId,
           newFilters: {
+            ...filterValues,
             ...newFilters
           }
         }
       }
     });
   }
-  function removeFilters(newFilters: UpdateTabFiltersInput_newFilters) {
-    updateFilters(newFilters, true);
-  }
+
   function resetFilters() {
     updateTabFilters({
       variables: {
         input: {
-          uniqueId,
-          remove: true,
-          newFilters: {}
+          tabId: uniqueId,
+          newFilters: getDefaultFilters() as UpdateTabFiltersInput_newFilters
         }
       }
     });
@@ -81,7 +76,7 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
       />
       <AppliedFilters
         filters={filterValues}
-        removeFilters={removeFilters}
+        updateFilters={updateFilters}
         resetFilters={resetFilters}
       />
       <LogsList
