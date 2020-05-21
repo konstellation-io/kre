@@ -18,6 +18,11 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S%z"
 )
+logging.addLevelName(logging.DEBUG, 'DEBUG')
+logging.addLevelName(logging.WARNING, 'WARN')
+logging.addLevelName(logging.FATAL, 'ERROR')
+logging.addLevelName(logging.CRITICAL, 'ERROR')
+
 logger = logging.getLogger("entrypoint")
 
 with open(os.environ['KRT_NATS_SUBJECTS_FILE']) as json_file:

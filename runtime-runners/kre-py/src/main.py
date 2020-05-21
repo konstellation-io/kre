@@ -112,6 +112,11 @@ class Runner:
             format="%(asctime)s %(levelname)s %(message)s",
             datefmt="%Y-%m-%dT%H:%M:%S%z"
         )
+        logging.addLevelName(logging.DEBUG, 'DEBUG')
+        logging.addLevelName(logging.WARNING, 'WARN')
+        logging.addLevelName(logging.FATAL, 'ERROR')
+        logging.addLevelName(logging.CRITICAL, 'ERROR')
+
         self.logger = logging.getLogger("kre-runner")
         self.config = Config()
         self.loop = asyncio.get_event_loop()
