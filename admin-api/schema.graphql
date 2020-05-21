@@ -224,11 +224,11 @@ enum UserActivityType {
   UPDATE_VERSION_CONFIGURATION
 }
 
-type LogFilters {
+input LogFilters {
   startDate: String!
   endDate: String
   search: String
-  level: [LogLevel!]
+  levels: [LogLevel!]
   nodeIds: [ID!]
 }
 
