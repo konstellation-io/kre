@@ -1,17 +1,12 @@
-import logging
-
-logger = logging.getLogger("greeter")
-
-
 def init(ctx):
-    logger.info("[worker init]")
+    ctx.logger.info("[worker init]")
     ctx.set_value("greeting", "Hello")
 
 
 async def handler(ctx, data):
-    logger.info("[worker handler]")
+  ctx.logger.info("[worker handler]")
     result = f"{ctx.get_value('greeting')} {data['name']}!"
-    logger.info(result)
+  ctx.logger.info(result)
 
     # Saves metrics in MongoDB DB sending a message to the MongoWriter queue
     await ctx.save_metric(date="2020-04-06T09:02:09.277853Z",

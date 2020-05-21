@@ -7,7 +7,7 @@ entrypoint:
 
 nodes:
   - name: greeter
-    image: konstellation/kre-py:1.2.0
+    image: konstellation/kre-py:latest
     src: src/greeter/main.py
 
 workflows:

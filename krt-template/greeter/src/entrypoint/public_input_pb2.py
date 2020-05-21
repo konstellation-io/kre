@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='entrypoint',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x12public_input.proto\x12\nentrypoint\"\x17\n\x07Request\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1c\n\x08Response\x12\x10\n\x08greeting\x18\x01 \x01(\t2B\n\nEntrypoint\x12\x34\n\x05Greet\x12\x13.entrypoint.Request\x1a\x14.entrypoint.Response\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x12public_input.proto\x12\nentrypoint\"\x17\n\x07Request\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1c\n\x08Response\x12\x10\n\x08greeting\x18\x01 \x01(\t2y\n\nEntrypoint\x12\x34\n\x05Greet\x12\x13.entrypoint.Request\x1a\x14.entrypoint.Response\"\x00\x12\x35\n\x06Salute\x12\x13.entrypoint.Request\x1a\x14.entrypoint.Response\"\x00\x62\x06proto3'
 )
 
 
@@ -112,18 +112,27 @@ _ENTRYPOINT = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   serialized_start=89,
-  serialized_end=155,
+  serialized_end=210,
   methods=[
-  _descriptor.MethodDescriptor(
-    name='Greet',
-    full_name='entrypoint.Entrypoint.Greet',
-    index=0,
-    containing_service=None,
-    input_type=_REQUEST,
-    output_type=_RESPONSE,
-    serialized_options=None,
-  ),
-])
+    _descriptor.MethodDescriptor(
+      name='Greet',
+      full_name='entrypoint.Entrypoint.Greet',
+      index=0,
+      containing_service=None,
+      input_type=_REQUEST,
+      output_type=_RESPONSE,
+      serialized_options=None,
+    ),
+    _descriptor.MethodDescriptor(
+      name='Salute',
+      full_name='entrypoint.Entrypoint.Salute',
+      index=1,
+      containing_service=None,
+      input_type=_REQUEST,
+      output_type=_RESPONSE,
+      serialized_options=None,
+    ),
+  ])
 _sym_db.RegisterServiceDescriptor(_ENTRYPOINT)
 
 DESCRIPTOR.services_by_name['Entrypoint'] = _ENTRYPOINT
