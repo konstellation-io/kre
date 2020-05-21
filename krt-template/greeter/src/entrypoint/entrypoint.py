@@ -14,21 +14,21 @@ from public_input_pb2 import Request, Response
 nc = NATS()
 
 logging.basicConfig(
-  level=logging.INFO,
-  format="%(asctime)s %(levelname)s %(message)s",
-  datefmt="%Y-%m-%dT%H:%M:%S%z"
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S%z"
 )
 logger = logging.getLogger("entrypoint")
 
 with open(os.environ['KRT_NATS_SUBJECTS_FILE']) as json_file:
-  subjects = json.load(json_file)
-  logger.info(f"Loaded NATS subject file: {subjects}")
+    subjects = json.load(json_file)
+    logger.info(f"Loaded NATS subject file: {subjects}")
 
 
 def MessageToDict(message):
-  messageDict = {}
+    messageDict = {}
 
-  for descriptor in message.DESCRIPTOR.fields:
+    for descriptor in message.DESCRIPTOR.fields:
         key = descriptor.name
         value = getattr(message, descriptor.name)
 
@@ -72,68 +72,50 @@ class Result:
 
 
 class Entrypoint(EntrypointBase):
+    def __init__(self):
+        self.logger = logger
 
-  def __init__(self):
-    self.logger = logger
+    async def Greet(self, stream: Stream[Request, Response]) -> None:
+        return await self.processMessage(stream)
 
-  async def Greet(self, stream: Stream[Request, Response]) -> None:
-    request = await stream.recv_message()
-    assert request is not None
-    try:
-      request_dict = MessageToDict(request)
-      self.logger.info(f'gRPC message received: {json.dumps(request_dict)}')
+    async def Salute(self, stream: Stream[Request, Response]) -> None:
+        return await self.processMessage(stream)
 
-      result = Result(data=request_dict)
+    async def processMessage(self, stream: Stream[Request, Response]) -> None:
+        request = await stream.recv_message()
+        assert request is not None
+        try:
+            request_dict = MessageToDict(request)
+            self.logger.info(f'gRPC message received: {json.dumps(request_dict)}')
 
-      nats_subject = subjects['Greet']
-      self.logger.info(f"Request message to NATS subject {nats_subject}")
-      res = await nc.request(nats_subject, result.to_json(), timeout=60)
-      response = Result()
-      response.from_nats_msg(res)
-      self.logger.info(f"NATS message received: {response.to_json()}")
+            result = Result(data=request_dict)
 
-      await stream.send_message(Response(greeting=response.data['greeting']))
-      self.logger.info(
-        f'gRPC successfully response: {str(response.data)}')
-    except Exception as err:
-      self.logger.error(f'Exception on gRPC call : {err})')
-      await stream.send_message(Response(greeting=f'Exception on gRPC call: {err})'))
+            nats_subject = subjects['Greet']
+            self.logger.info(f"Request message to NATS subject {nats_subject}")
+            res = await nc.request(nats_subject, result.to_json(), timeout=60)
+            response = Result()
+            response.from_nats_msg(res)
+            self.logger.info(f"NATS message received: {response.to_json()}")
 
-  async def Salute(self, stream: Stream[Request, Response]) -> None:
-    request = await stream.recv_message()
-    assert request is not None
-    try:
-      request_dict = MessageToDict(request)
-      self.logger.info(f'gRPC message received: {json.dumps(request_dict)}')
-
-      result = Result(data=request_dict)
-
-      nats_subject = subjects['Greet']
-      self.logger.info(f"Request message to NATS subject {nats_subject}")
-      res = await nc.request(nats_subject, result.to_json(), timeout=60)
-      response = Result()
-      response.from_nats_msg(res)
-      self.logger.info(f"NATS message received: {response.to_json()}")
-
-      await stream.send_message(Response(greeting=response.data['greeting']))
-      self.logger.info(
-        f'gRPC successfully response: {str(response.data)}')
-    except Exception as err:
-      self.logger.error(f'Exception on gRPC call : {err})')
-      await stream.send_message(Response(greeting=f'Exception on gRPC call: {err})'))
+            await stream.send_message(Response(greeting=response.data['greeting']))
+            self.logger.info(
+                f'gRPC successfully response: {str(response.data)}')
+        except Exception as err:
+            self.logger.error(f'Exception on gRPC call : {err})')
+            await stream.send_message(Response(greeting=f'Exception on gRPC call: {err})'))
 
 
 async def run(loop, host: str = '0.0.0.0', port: int = 9000) -> None:
-  logger.info(f"Connecting to NATS {os.environ['KRT_NATS_SERVER']}...")
-  await nc.connect(os.environ['KRT_NATS_SERVER'], loop=loop)
+    logger.info(f"Connecting to NATS {os.environ['KRT_NATS_SERVER']}...")
+    await nc.connect(os.environ['KRT_NATS_SERVER'], loop=loop)
 
     services = ServerReflection.extend([Entrypoint()])
 
     server = Server(services)
     with graceful_exit([server]):
-      await server.start(host, port)
-      logger.info(f'Serving gPRC server on {host}:{port}')
-      await server.wait_closed()
+        await server.start(host, port)
+        logger.info(f'Serving gPRC server on {host}:{port}')
+        await server.wait_closed()
 
 
 if __name__ == '__main__':

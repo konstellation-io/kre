@@ -11,7 +11,12 @@ nodes:
     src: src/greeter/main.py
 
 workflows:
-  - name: greeting-workflow
+  - name: greeting
     entrypoint: Greet
+    sequential:
+      - greeter
+
+  - name: saluting
+    entrypoint: Salute
     sequential:
       - greeter

@@ -10,18 +10,18 @@ from nats.aio.client import ErrTimeout, Client as NATS
 
 
 class Config:
-  def __init__(self):
-    try:
-      self.krt_version = os.environ['KRT_VERSION']
-      self.krt_node_name = os.environ['KRT_NODE_NAME']
-      self.nats_server = os.environ['KRT_NATS_SERVER']
-      self.nats_input = os.environ['KRT_NATS_INPUT']
-      self.nats_output = os.environ['KRT_NATS_OUTPUT']
-      self.nats_mongo_writer = os.environ['KRT_NATS_MONGO_WRITER']
-      self.base_path = os.environ['KRT_BASE_PATH']
-      self.handler_path = os.environ['KRT_HANDLER_PATH']
-    except Exception as err:
-      raise Exception(f"error reading config: the {str(err)} env var is missing")
+    def __init__(self):
+        try:
+            self.krt_version = os.environ['KRT_VERSION']
+            self.krt_node_name = os.environ['KRT_NODE_NAME']
+            self.nats_server = os.environ['KRT_NATS_SERVER']
+            self.nats_input = os.environ['KRT_NATS_INPUT']
+            self.nats_output = os.environ['KRT_NATS_OUTPUT']
+            self.nats_mongo_writer = os.environ['KRT_NATS_MONGO_WRITER']
+            self.base_path = os.environ['KRT_BASE_PATH']
+            self.handler_path = os.environ['KRT_HANDLER_PATH']
+        except Exception as err:
+            raise Exception(f"error reading config: the {str(err)} env var is missing")
 
 
 class HandlerContext:
@@ -80,9 +80,9 @@ class HandlerContext:
             response = await self.__nc__.request(subject, payload, timeout=1)
             res_json = json.loads(response.data.decode())
             if not res_json['success']:
-              self.logger.error("Unexpected error saving metric")
+                self.logger.error("Unexpected error saving metric")
         except ErrTimeout:
-          self.logger.error("Error saving metric: request timed out")
+            self.logger.error("Error saving metric: request timed out")
 
 
 class Result:
@@ -106,27 +106,27 @@ class Result:
 
 
 class Runner:
-  def __init__(self):
-    logging.basicConfig(
-      level=logging.INFO,
-      format="%(asctime)s %(levelname)s %(message)s",
-      datefmt="%Y-%m-%dT%H:%M:%S%z"
-    )
-    self.logger = logging.getLogger("kre-runner")
-    self.config = Config()
-    self.loop = asyncio.get_event_loop()
-    self.nc = NATS()
-    self.subscription_sid = None
+    def __init__(self):
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%S%z"
+        )
+        self.logger = logging.getLogger("kre-runner")
+        self.config = Config()
+        self.loop = asyncio.get_event_loop()
+        self.nc = NATS()
+        self.subscription_sid = None
 
-  def start(self):
-    try:
-      asyncio.ensure_future(self.process_messages())
-      self.loop.run_forever()
-    except KeyboardInterrupt:
-      self.logger.info("process interrupted")
-    finally:
-      self.loop.run_until_complete(self.stop())
-      self.logger.info("closing loop")
+    def start(self):
+        try:
+            asyncio.ensure_future(self.process_messages())
+            self.loop.run_forever()
+        except KeyboardInterrupt:
+            self.logger.info("process interrupted")
+        finally:
+            self.loop.run_until_complete(self.stop())
+            self.logger.info("closing loop")
             self.loop.close()
 
     async def stop(self):

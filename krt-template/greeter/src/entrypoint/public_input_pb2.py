@@ -106,33 +106,33 @@ _sym_db.RegisterMessage(Response)
 
 
 _ENTRYPOINT = _descriptor.ServiceDescriptor(
-  name='Entrypoint',
-  full_name='entrypoint.Entrypoint',
-  file=DESCRIPTOR,
-  index=0,
-  serialized_options=None,
-  serialized_start=89,
-  serialized_end=210,
-  methods=[
-    _descriptor.MethodDescriptor(
-      name='Greet',
-      full_name='entrypoint.Entrypoint.Greet',
-      index=0,
-      containing_service=None,
-      input_type=_REQUEST,
-      output_type=_RESPONSE,
-      serialized_options=None,
-    ),
-    _descriptor.MethodDescriptor(
-      name='Salute',
-      full_name='entrypoint.Entrypoint.Salute',
-      index=1,
-      containing_service=None,
-      input_type=_REQUEST,
-      output_type=_RESPONSE,
-      serialized_options=None,
-    ),
-  ])
+    name='Entrypoint',
+    full_name='entrypoint.Entrypoint',
+    file=DESCRIPTOR,
+    index=0,
+    serialized_options=None,
+    serialized_start=89,
+    serialized_end=210,
+    methods=[
+        _descriptor.MethodDescriptor(
+            name='Greet',
+            full_name='entrypoint.Entrypoint.Greet',
+            index=0,
+            containing_service=None,
+            input_type=_REQUEST,
+            output_type=_RESPONSE,
+            serialized_options=None,
+        ),
+        _descriptor.MethodDescriptor(
+            name='Salute',
+            full_name='entrypoint.Entrypoint.Salute',
+            index=1,
+            containing_service=None,
+            input_type=_REQUEST,
+            output_type=_RESPONSE,
+            serialized_options=None,
+        ),
+    ])
 _sym_db.RegisterServiceDescriptor(_ENTRYPOINT)
 
 DESCRIPTOR.services_by_name['Entrypoint'] = _ENTRYPOINT

@@ -11,5 +11,8 @@ message Response {
 }
 
 service Entrypoint {
-  rpc Greet(Request) returns (Response) {};
+  rpc Greet (Request) returns (Response) {
+  };
+  rpc Salute (Request) returns (Response) {
+  };
 };
