@@ -43,7 +43,7 @@ type Mutation {
 
 type Subscription {
   runtimeCreated: Runtime!
-  nodeLogs(runtimeId: ID!, nodeId: ID!): NodeLog!
+  nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
 }
 
