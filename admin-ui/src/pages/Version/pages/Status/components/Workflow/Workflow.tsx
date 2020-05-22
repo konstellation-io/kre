@@ -28,6 +28,7 @@ import cx from 'classnames';
 import useUserAccess from '../../../../../../hooks/useUserAccess';
 import { checkPermission } from '../../../../../../rbac-rules';
 import { getDefaultFilters } from '../../../../../../graphql/client/resolvers/updateTabFilters';
+import { NodeSelection } from '../../../../../../graphql/client/typeDefs';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -40,12 +41,6 @@ interface Workflow extends GetVersionWorkflows_version_workflows {
 
 const BASE_WIDTH = 323;
 const NODE_WIDTH = 160;
-
-type logTabMainFilters = {
-  nodeId?: string;
-  nodeName: string;
-  workflowId: string;
-};
 
 type Props = {
   workflow: GetVersionWorkflows_version_workflows;
@@ -72,7 +67,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
   }, [setContainerWidth, workflow.nodes]);
 
-  function addLogTab(filters: logTabMainFilters) {
+  function addLogTab(nodes: NodeSelection[]) {
     const logTabs = client.readQuery({
       query: GET_LOG_TABS
     });
@@ -91,7 +86,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
             uniqueId: activeTabId,
             filters: {
               ...getDefaultFilters(),
-              ...filters
+              nodes
             },
             __typename: 'logTab'
           }
@@ -100,24 +95,24 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
     });
   }
 
-  function onInnerNodeClick(
-    nodeId: string,
-    nodeName: string,
-    workflowId: string
-  ) {
-    addLogTab({
-      nodeId,
-      nodeName,
-      workflowId
-    });
+  function onInnerNodeClick(nodeName: string) {
+    addLogTab([
+      {
+        workflowName: workflow.name,
+        nodeNames: [nodeName],
+        __typename: 'NodeSelection'
+      }
+    ]);
   }
 
   function onWorkflowClick() {
-    addLogTab({
-      nodeId: '',
-      nodeName: '',
-      workflowId: data.id
-    });
+    addLogTab([
+      {
+        workflowName: workflow.name,
+        nodeNames: workflow.nodes.map(({ name }) => name),
+        __typename: 'NodeSelection'
+      }
+    ]);
   }
 
   const data = cloneDeep(workflow);

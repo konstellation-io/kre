@@ -14,6 +14,8 @@ import {
 import moment from 'moment';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 import LogsFooter from '../LogsFooter/LogsFooter';
+import { LogFilters } from '../../../../../../../graphql/types/globalTypes';
+import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -30,8 +32,29 @@ function scrollToBottom(component: HTMLDivElement) {
   }
 }
 
+function getLogsQueryFilters(
+  filterValues: GetLogTabs_logTabs_filters,
+  nodeNameToId: Map<string, string>
+) {
+  return {
+    startDate: filterValues.startDate,
+    endDate: filterValues.startDate,
+    search: filterValues.search,
+    levels: filterValues.levels,
+    nodeIds:
+      filterValues?.nodes
+        ?.map(({ workflowName, nodeNames }) =>
+          nodeNames.map(nodeName =>
+            nodeNameToId.get(`${workflowName}${nodeName}`)
+          )
+        )
+        .flat() || []
+  } as LogFilters;
+}
+
 type Props = {
   runtimeId: string;
+  versionId: string;
   filterValues: GetLogTabs_logTabs_filters;
   onNewLogs: Function;
   logs: GetServerLogs_logs_items[];
@@ -40,21 +63,30 @@ type Props = {
 
 function LogsList({
   runtimeId,
+  versionId,
   filterValues,
   logs,
   onNewLogs,
   clearLogs
 }: Props) {
+  const { nodeNameToId } = useWorkflowsAndNodes(versionId);
   const [autoScrollActive, setAutoScrollActive] = useState(false);
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
 
+  const formatFilters = (filters: GetLogTabs_logTabs_filters) =>
+    getLogsQueryFilters(filters, nodeNameToId);
+
   const { loading, fetchMore, subscribeToMore } = useQuery<
     GetServerLogs,
     GetServerLogsVariables
   >(GetServerLogsQuery, {
-    variables: { runtimeId, ...filterValues },
+    variables: {
+      runtimeId,
+      versionId,
+      filters: formatFilters(filterValues)
+    },
     onCompleted: data => {
       onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');
@@ -72,7 +104,11 @@ function LogsList({
   const subscribe = () =>
     subscribeToMore({
       document: GetLogsSubscription,
-      variables: { runtimeId, ...filterValues },
+      variables: {
+        runtimeId,
+        versionId,
+        filters: formatFilters(filterValues)
+      },
       updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'nodeLogs');
         onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
@@ -104,7 +140,8 @@ function LogsList({
     fetchMore({
       variables: {
         runtimeId,
-        ...filterValues,
+        versionId,
+        filters: formatFilters(filterValues),
         cursor: nextPage
       },
       updateQuery: (prev, { fetchMoreResult }) => {

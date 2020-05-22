@@ -1,14 +1,14 @@
 import gql from 'graphql-tag';
 import { LogLevel } from '../../types/globalTypes';
-import { ProcessSelection } from '../typeDefs';
+import { NodeSelection } from '../typeDefs';
 
 export interface UpdateTabFiltersInput_newFilters {
   dateOption?: string;
   startDate?: string;
   endDate?: string;
-  processes?: ProcessSelection[] | null;
+  nodes?: NodeSelection[] | null;
   search?: string;
-  level?: LogLevel;
+  levels?: LogLevel[];
 }
 
 export interface UpdateTabFiltersInput {

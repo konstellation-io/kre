@@ -11,22 +11,19 @@ import {
 } from '../queries/getLogs.graphql';
 import { dateFilterOptions } from '../../../pages/Version/pages/Status/LogsPanel/components/Filters/components/DatesFilter/DateFilter';
 import moment from 'moment';
-import { ProcessSelection, LogPanelFilters } from '../typeDefs';
+import { NodeSelection, LogPanelFilters } from '../typeDefs';
 
 export const defaultFilters: {
-  [key: string]: string | ProcessSelection[] | null;
+  [key: string]: string | NodeSelection[] | null;
 } = {
   dateOption: dateFilterOptions.lastTwentyFourHours,
   startDate: moment()
-    .subtract(1, 'day')
-    .startOf('day')
+    .subtract(24, 'hour')
     .toISOString(true),
-  endDate: moment()
-    .endOf('day')
-    .toISOString(true),
+  endDate: null,
   search: '',
-  processes: [],
-  level: null
+  nodes: [],
+  levels: null
 };
 
 export function getDefaultFilters():

@@ -13,9 +13,9 @@ export interface AddNotificationInput {
   to: string;
 }
 
-export interface ProcessSelection {
+export interface NodeSelection {
   workflowName: string;
-  processNames: string[];
+  nodeNames: string[];
   __typename: string;
 }
 
@@ -23,12 +23,9 @@ export interface LogPanelFilters {
   dateOption?: string;
   startDate?: string;
   endDate?: string;
-  processes?: ProcessSelection[];
+  nodes?: NodeSelection[];
   search?: string;
-  level?: string | null;
-  nodeId?: string;
-  nodeName?: string;
-  workflowId?: string;
+  levels?: string[] | null;
   __typename: 'logTabFilters';
 }
 

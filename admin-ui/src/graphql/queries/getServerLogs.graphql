@@ -1,27 +1,22 @@
 query GetServerLogs(
-  $cursor: String
-  $startDate: String!
-  $endDate: String!
+  $filters: LogFilters!
   $runtimeId: ID!
-  $workflowId: ID!
-  $nodeId: ID
-  $search: String
-  $level: LogLevel
+  $versionId: ID!
+  $cursor: String
 ) {
   logs(
-    cursor: $cursor
-    startDate: $startDate
-    endDate: $endDate
+    filters: $filters
     runtimeId: $runtimeId
-    workflowId: $workflowId
-    nodeId: $nodeId
-    search: $search
-    level: $level
+    versionId: $versionId
+    cursor: $cursor
   ) {
     items {
       id
       date
+      nodeId
       nodeName
+      workflowId
+      workflowName
       message
       level
     }

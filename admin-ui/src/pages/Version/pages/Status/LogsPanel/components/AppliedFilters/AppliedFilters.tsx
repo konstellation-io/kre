@@ -4,111 +4,150 @@ import Button from '../../../../../../../components/Button/Button';
 import Left from '../../../../../../../components/Layout/Left/Left';
 import Right from '../../../../../../../components/Layout/Right/Right';
 import Filter from './Filter';
-import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
-import { ProcessSelection } from '../../../../../../../graphql/client/typeDefs';
+import { NodeSelection } from '../../../../../../../graphql/client/typeDefs';
 import { defaultFilters } from '../../../../../../../graphql/client/resolvers/updateTabFilters';
+import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
 
-export type ProcessChip = {
+export type NodeChip = {
   workflowName: string;
-  processName: string;
+  nodeName: string;
 };
 
-const filtersToHide = ['dateOption', '__typename', 'nodeId'];
-const nonEditableFilters = ['workflowId', 'nodeName', 'startDate', 'endDate'];
-
-const isHidden = (filter: string) => filtersToHide.includes(filter);
-export const isEditable = (filter: string) =>
-  !nonEditableFilters.includes(filter);
-const isEmpty = (filter: null | string | [string]) =>
+const isEmpty = (filter: null | string | NodeSelection[]) =>
   filter === null || filter === '' || (Array.isArray(filter) && !filter.length);
 
-const filtersOrder = [
-  'workflowId',
-  'nodeName',
-  'startDate',
-  'endDate',
-  'processes',
-  'search',
-  'level'
-];
+const filtersOrder = ['workflow', 'nodes', 'search'];
 const filtersOrderDict = Object.fromEntries(
   filtersOrder.map((f, idx) => [f, idx])
 );
 const sortFilters = (
-  [a]: [string, string | ProcessChip],
-  [b]: [string, string | ProcessChip]
+  [a]: [string, string | NodeChip],
+  [b]: [string, string | NodeChip]
 ) => filtersOrderDict[a] - filtersOrderDict[b] || a.localeCompare(b);
 
-function getActiveFilters(filters: GetLogTabs_logTabs_filters) {
-  return Object.entries(filters).filter(
-    ([filter, value]) => !isHidden(filter) && !isEmpty(value)
+function getActiveFilters(filters: Filters) {
+  return Object.entries(filters).filter(([_, value]) => !isEmpty(value));
+}
+
+function extractWorkflowsAndNodes(
+  selections: [string, any][],
+  workflowsAndNodesNames: {
+    [key: string]: string[];
+  }
+) {
+  const newSelections: any = [];
+
+  selections.forEach(([filter, value]) => {
+    if (filter !== 'nodes') newSelections.push([filter, value]);
+    else {
+      value.forEach(({ workflowName, nodeNames }: NodeSelection) => {
+        const allNodesSelected =
+          nodeNames.length === workflowsAndNodesNames[workflowName].length;
+
+        if (allNodesSelected) newSelections.push(['workflow', workflowName]);
+        else {
+          nodeNames.forEach(nodeName =>
+            newSelections.push([
+              filter,
+              {
+                workflowName,
+                nodeName
+              }
+            ])
+          );
+        }
+      });
+    }
+  });
+
+  return newSelections;
+}
+
+function removeNodeFromWorkflow(
+  filters: Filters,
+  { workflowName, nodeName }: NodeChip
+) {
+  return (
+    filters?.nodes?.map(workflow => ({
+      ...workflow,
+      nodeNames: workflow.nodeNames.filter(
+        node => !(workflow.workflowName === workflowName && node === nodeName)
+      )
+    })) || null
   );
 }
 
-function splitProcessSelections(selections: [string, any][]) {
-  return selections
-    .map(([filter, value]) =>
-      filter === 'processes'
-        ? value
-            .map(({ workflowName, processNames }: ProcessSelection) =>
-              processNames.map(processName => [
-                filter,
-                {
-                  workflowName,
-                  processName
-                }
-              ])
-            )
-            .flat()
-        : [[filter, value]]
-    )
-    .flat();
+function removeWorkflow(filters: Filters, targetWorkflowName: string) {
+  return (
+    filters?.nodes?.filter(
+      ({ workflowName }) => workflowName !== targetWorkflowName
+    ) || null
+  );
 }
 
+type Filters = {
+  nodes: NodeSelection[] | null;
+  search: string | null;
+};
+
 type Props = {
-  filters: GetLogTabs_logTabs_filters;
+  filters: Filters;
   updateFilters: Function;
+  versionId: string;
   resetFilters: (e: MouseEvent<HTMLDivElement>) => void;
 };
-function AppliedFilters({ filters, updateFilters, resetFilters }: Props) {
+function AppliedFilters({
+  filters,
+  updateFilters,
+  resetFilters,
+  versionId
+}: Props) {
+  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionId);
   const activeFilters = getActiveFilters(filters);
-  const filtersFormatted = splitProcessSelections(activeFilters);
+  const filtersFormatted = extractWorkflowsAndNodes(
+    activeFilters,
+    workflowsAndNodesNames
+  );
   const filtersSortened = filtersFormatted.sort(sortFilters);
 
-  function removeFilter(filter: string, value: ProcessChip | null | string) {
-    let newFilterValue: string | ProcessSelection[] | null = null;
+  function removeFilter(filter: string, value: NodeChip | null | string) {
+    let newFilterValue: string | NodeSelection[] | null = null;
+    let updatedFilter: string = filter;
 
-    if (filter === 'processes') {
-      newFilterValue =
-        filters?.processes?.map(workflow => ({
-          ...workflow,
-          processNames: workflow.processNames.filter(
-            process =>
-              !(
-                workflow.workflowName === (value as ProcessChip).workflowName &&
-                process === (value as ProcessChip).processName
-              )
-          )
-        })) || null;
-    } else {
-      newFilterValue = defaultFilters[filter];
+    switch (filter) {
+      case 'nodes':
+        newFilterValue = removeNodeFromWorkflow(filters, value as NodeChip);
+        break;
+      case 'workflow':
+        newFilterValue = removeWorkflow(filters, value as string);
+        updatedFilter = 'nodes';
+        break;
+      default:
+        newFilterValue = defaultFilters[filter];
     }
-    updateFilters({ [filter]: newFilterValue });
+
+    updateFilters({ [updatedFilter]: newFilterValue });
   }
 
-  const filterNodes = filtersSortened.map(([filter, value]) => (
+  const filterNodes = filtersSortened.map(([filter, value]: [string, any]) => (
     <Filter
       filter={filter}
       value={value}
-      key={`${filter}${value?.workflowName}${value?.processName}`}
+      key={`${filter}${JSON.stringify(value)}`}
       removeFilter={removeFilter}
     />
   ));
 
+  const hasFiltersToShow =
+    filters.nodes?.length !== 0 || filters.search !== null;
+  const title = hasFiltersToShow
+    ? 'Filtered by'
+    : 'No processes filtered or search performed';
+
   return (
     <div className={styles.container}>
       <Left className={styles.leftPannel}>
-        <div className={styles.title}>Filtered by</div>
+        <div className={styles.title}>{title}</div>
         <div className={styles.filters}>{filterNodes}</div>
       </Left>
       <Right>

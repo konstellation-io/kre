@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import ModalContainer from '../../../../../../../../../components/Layout/ModalContainer/ModalContainer';
 import moment, { Moment } from 'moment';
 import styles from './DateFilter.module.scss';
+import IconTime from '@material-ui/icons/AccessTime';
 import Select, {
   SelectTheme
 } from '../../../../../../../../../components/Form/Select/Select';
 import Calendar from '../../../../../../../../../components/Form/Calendar/Calendar';
+import { formatDate } from '../../../../../../../../../utils/format';
 import { useForm } from 'react-hook-form';
 
 type FormData = {
@@ -23,6 +25,8 @@ const DEFAULT_DATES: FormData = {
 type Props = {
   updateFilters: Function;
   selectedOption: string;
+  formStartDate: string;
+  formEndDate: string;
 };
 export const dateFilterOptions: { [key: string]: string } = {
   lastHour: 'LAST HOUR',
@@ -39,7 +43,12 @@ const dateOptionToHours: { [key: string]: number } = {
   [dateFilterOptions.lastSevenDays]: 168
 };
 
-function DateFilter({ updateFilters, selectedOption }: Props) {
+function DateFilter({
+  updateFilters,
+  selectedOption,
+  formStartDate,
+  formEndDate
+}: Props) {
   const [showCalendar, setShowCalendar] = useState(false);
   const { register, watch, setValue, handleSubmit } = useForm<FormData>({
     defaultValues: {
@@ -72,14 +81,14 @@ function DateFilter({ updateFilters, selectedOption }: Props) {
         startDate: moment()
           .subtract(hoursToSubtract, 'hour')
           .toISOString(true),
-        endDate: moment()
-          .endOf('day')
-          .toISOString(true)
+        endDate: null
       });
     } else {
       setShowCalendar(true);
     }
   };
+
+  const showEndDate = selectedOption === dateFilterOptions.customDates;
 
   return (
     <>
@@ -107,6 +116,9 @@ function DateFilter({ updateFilters, selectedOption }: Props) {
           </ModalContainer>
         </div>
       )}
+      <div className={styles.icon}>
+        <IconTime className="icon-small" />
+      </div>
       <Select
         shouldSort={false}
         selectMainClass={styles.dateFilter}
@@ -114,7 +126,20 @@ function DateFilter({ updateFilters, selectedOption }: Props) {
         onChange={handleDateOption}
         formSelectedOption={selectedOption}
         theme={SelectTheme.LIGHT}
+        hideError
       />
+      <div className={styles.dateValues}>
+        <div className={styles.dateValue}>
+          <div>From</div>
+          <span>{` ${formatDate(new Date(formStartDate), true)}`}</span>
+        </div>
+        {showEndDate && (
+          <div className={styles.dateValue}>
+            <div>To</div>
+            <span>{` ${formatDate(new Date(formEndDate), true)}`}</span>
+          </div>
+        )}
+      </div>
     </>
   );
 }
