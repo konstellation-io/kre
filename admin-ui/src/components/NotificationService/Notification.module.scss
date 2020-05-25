@@ -12,11 +12,13 @@ $color-alert-bg: palette(feedback, 900);
   display: flex;
   flex-direction: column;
   z-index: $z-index-notifications;
+  pointer-events: none;
 }
 
 .container {
   @include shadow(4);
 
+  pointer-events: all;
   display: flex;
   flex-direction: row;
   align-items: center;
