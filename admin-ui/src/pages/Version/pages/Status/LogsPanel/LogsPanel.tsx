@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Header from './components/Header/Header';
 import LogsTab from './components/LogsTab/LogsTab';
 import cx from 'classnames';
@@ -17,6 +17,8 @@ import TabContainer from './components/TabContainer/TabContainer';
 import { MenuCallToAction } from '../../../../../components/ContextMenu/ContextMenu';
 import ROUTE from '../../../../../constants/routes';
 
+export const ESC_KEY_CODE = 27;
+
 function LogsPanel() {
   const client = useApolloClient();
   const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
@@ -29,6 +31,19 @@ function LogsPanel() {
     'logTabs',
     []
   );
+
+  const onKeyDown = useCallback(
+    (e: any) => {
+      if (e.keyCode === ESC_KEY_CODE) {
+        client.writeData({ data: { logsOpened: false } });
+      }
+    },
+    [client]
+  );
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [onKeyDown]);
 
   function setOpened(value: boolean) {
     client.writeData({ data: { logsOpened: value } });
