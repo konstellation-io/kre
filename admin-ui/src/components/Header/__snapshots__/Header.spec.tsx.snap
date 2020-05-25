@@ -1102,8 +1102,13 @@ exports[`Header matches snapshot 1`] = `
           data-testid="app-header"
         >
           <img
-            alt="konstellation logo"
+            alt="konstellation icon"
             className="konstellationIcon"
+            src="/img/brand/favicon-light-128.png"
+          />
+          <img
+            alt="konstellation text"
+            className="konstellationText"
             src="/img/brand/konstellation.png"
           />
           <div
