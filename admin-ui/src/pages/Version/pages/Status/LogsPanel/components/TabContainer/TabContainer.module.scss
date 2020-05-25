@@ -8,10 +8,16 @@ $color-tab-selected-bg: palette(lowlight, 800);
 
 .tabContainer {
   height: $grid-unit * 5;
+  flex-shrink: 0;
   display: flex;
   align-items: flex-end;
   padding: $grid-unit $grid-unit 0 $grid-unit;
   background-color: $color-tabs-bg;
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    height: 2px;
+  }
 }
 .tab {
   @include font-small;
@@ -27,6 +33,7 @@ $color-tab-selected-bg: palette(lowlight, 800);
   padding: $grid-unit $grid-unit $grid-unit $grid-unit * 2;
   height: $grid-unit * 4;
   background-color: $bg-color;
+  transition: background-color ease 0.3s, color ease 0.3s;
 
   .icon {
     cursor: pointer;
@@ -37,6 +44,10 @@ $color-tab-selected-bg: palette(lowlight, 800);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  &:hover {
+    background-color: palette(base, 400);
+    color: font-color(lowlight);
   }
   &.selected {
     color: font-color(light);
