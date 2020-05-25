@@ -13,7 +13,7 @@ import PublishIcon from '@material-ui/icons/Publish';
 import UnpublishIcon from '@material-ui/icons/Block';
 import useVersionAction from '../../../utils/hooks';
 import ConfirmationModal from '../../../../../components/ConfirmationModal/ConfirmationModal';
-import Button, { BUTTON_TYPES } from '../../../../../components/Button/Button';
+import Button, { BUTTON_THEMES } from '../../../../../components/Button/Button';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 type VersionActionsProps = {
@@ -117,7 +117,7 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
           onClick={() => btn.action && btn.action()}
           label={btn.label}
           Icon={btn.Icon}
-          type={BUTTON_TYPES.DEFAULT}
+          theme={BUTTON_THEMES.DEFAULT}
           disabled={btn.disabled}
           primary={btn.primary}
           style={{ flexGrow: 1 }}

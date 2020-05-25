@@ -40,7 +40,6 @@ function DashboardHeader({
           onChangeToDateInput={(date: Moment) => onChange('endDate', date)}
           formFromDate={value('startDate')}
           formToDate={value('endDate')}
-          submit={submit}
           addTimeControls
           hideError
         />

@@ -19,6 +19,7 @@ import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
 import MagicLink from './pages/MagicLink/MagicLink';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Runtime from './pages/Runtime/Runtime';
+import Logs from './pages/Logs/Logs';
 import Settings from './pages/Settings/Settings';
 import UsersActivity from './pages/UsersActivity/UsersActivity';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
@@ -28,9 +29,9 @@ import NotFound from './pages/NotFound/NotFound';
 import ROUTE from './constants/routes';
 import { loader } from 'graphql.macro';
 import { useQuery, useApolloClient } from '@apollo/react-hooks';
-import Logs from './pages/Version/pages/Status/Logs/Logs';
-import { GetUserEmail } from './graphql/queries/types/GetUserEmail';
 import useUserAccess from './hooks/useUserAccess';
+import LogsPanel from './pages/Version/pages/Status/LogsPanel/LogsPanel';
+import { GetUserEmail } from './graphql/queries/types/GetUserEmail';
 
 const GetUserEmailQuery = loader('./graphql/queries/getUserEmail.graphql');
 
@@ -76,6 +77,7 @@ function ProtectedRoutes() {
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
           <Route exact path={ROUTE.HOME} component={Dashboard} />
+          <Route exact path={ROUTE.LOGS} component={Logs} />
           <Route
             path={[
               ROUTE.RUNTIME_VERSION_CONFIGURATION,
@@ -91,7 +93,7 @@ function ProtectedRoutes() {
           <Route path={ROUTE.AUDIT} component={UsersActivity} />
           <Route component={NotFound} />
         </Switch>
-        <Logs />
+        <LogsPanel />
       </div>
     </>
   );

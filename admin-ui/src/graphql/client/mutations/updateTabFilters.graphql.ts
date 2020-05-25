@@ -1,21 +1,30 @@
 import gql from 'graphql-tag';
-import { TabFilters } from '../queries/getLogs.graphql';
+import { LogLevel } from '../../types/globalTypes';
+import { ProcessSelection } from '../typeDefs';
+
+export interface UpdateTabFiltersInput_newFilters {
+  dateOption?: string;
+  startDate?: string;
+  endDate?: string;
+  processes?: ProcessSelection[] | null;
+  search?: string;
+  level?: LogLevel;
+}
 
 export interface UpdateTabFiltersInput {
-  uniqueId: string;
-  newFilters: TabFilters;
+  tabId: string;
+  remove?: boolean;
+  newFilters: UpdateTabFiltersInput_newFilters;
 }
 
 export interface UpdateTabFiltersVariables {
   input: UpdateTabFiltersInput;
 }
 export interface UpdateTabFilters {
-  updateTabFilters: string[];
+  updateTabFilters: UpdateTabFiltersInput_newFilters;
 }
 export const UPDATE_TAB_FILTERS = gql`
   mutation UpdateTabFilters($input: UpdateTabFiltersVariables!) {
-    updateTabFilters(input: $input) @client {
-      filters
-    }
+    updateTabFilters(input: $input) @client
   }
 `;

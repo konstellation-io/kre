@@ -12,6 +12,7 @@ import ROUTE from './constants/routes';
 import history from './history';
 
 import typeDefs, {
+  OpenedVersion,
   LogPanel,
   NotificationType
 } from './graphql/client/typeDefs';
@@ -23,11 +24,10 @@ import { onError, ErrorResponse } from 'apollo-link-error';
 import { createUploadLink } from 'apollo-upload-client';
 import { getMainDefinition } from 'apollo-utilities';
 import { ADD_NOTIFICATION } from './graphql/client/mutations/addNotification.graphql';
-import {
-  addNotificationResolver,
-  removeNotificationResolver,
-  updateTabFiltersResolver
-} from './graphql/client/resolvers';
+import addNotificationResolver from './graphql/client/resolvers/addNotification';
+import removeNotificationResolver from './graphql/client/resolvers/removeNotification';
+import updateTabFiltersResolver from './graphql/client/resolvers/updateTabFilters';
+
 import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
 
 export let cache: InMemoryCache;
@@ -40,6 +40,8 @@ export interface LocalState {
   activeTabId: string;
   logsOpened: boolean;
   logsAutoScroll: boolean;
+  logsInFullScreen: boolean;
+  openedVersion: OpenedVersion;
 }
 interface DefaultCache {
   data: LocalState;
@@ -145,7 +147,13 @@ config
         activeTabId: '',
         notifications: [],
         logsOpened: false,
-        logsAutoScroll: false
+        logsAutoScroll: false,
+        logsInFullScreen: false,
+        openedVersion: {
+          runtimeName: '',
+          versionName: '',
+          __typename: 'OpenedVersion'
+        }
       }
     };
 

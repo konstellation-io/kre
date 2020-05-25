@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LogItem matches snapshot 1`] = `
+<div
+  className="container DEBUG"
+>
+  <div
+    className="row1 DEBUG"
+  >
+    <div
+      className="icon"
+    >
+      <LevelIcon
+        level="DEBUG"
+      />
+    </div>
+    <div
+      className="date"
+    >
+      2020-01-01
+    </div>
+    <div
+      className="hour"
+    >
+      00:00:00
+    </div>
+    <div
+      className="workflow"
+      title="Workflow X"
+    >
+      Workflow X
+    </div>
+    <div
+      className="node"
+      title="nodeName"
+    >
+      nodeName
+    </div>
+    <div
+      className="message"
+    >
+      some message
+    </div>
+    <div
+      className="expand"
+      onClick={[Function]}
+    >
+      <ArrowDownwardIcon
+        className="icon-regular"
+      />
+    </div>
+  </div>
+</div>
+`;

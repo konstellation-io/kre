@@ -1,0 +1,16 @@
+@import '../../../../../../../styles/colors';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  background-color: palette(base, 900);
+}
+
+.right {
+  display: flex;
+  flex-direction: row;
+}
+
+.active {
+  color: font-color(light);
+}

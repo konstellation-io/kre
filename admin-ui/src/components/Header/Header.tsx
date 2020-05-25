@@ -15,8 +15,12 @@ const GetUserEmailQuery = loader('../../graphql/queries/getUserEmail.graphql');
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
+  hideSettings?: boolean;
 };
-const Header: FunctionComponent<Props> = ({ children }) => {
+const Header: FunctionComponent<Props> = ({
+  children,
+  hideSettings = false
+}) => {
   const { data, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
 
   if (loading)
@@ -37,7 +41,7 @@ const Header: FunctionComponent<Props> = ({ children }) => {
         alt="konstellation text"
       />
       <div className={styles.customHeaderElements}>{children}</div>
-      <Settings label={username} />
+      {!hideSettings && <Settings label={username} />}
     </header>
   );
 };

@@ -2,6 +2,7 @@ const { MockList } = require('apollo-server');
 const casual = require('casual');
 const { UserActivityOptions, metricsData } = require('./mockSamples');
 const { PubSub } = require('apollo-server-express');
+const { workflowNames, processNames, emails } = require('./data');
 
 const pubsub = new PubSub();
 
@@ -45,12 +46,37 @@ const generateVersion = () => ({
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
   configurationVariables: () => new MockList([2, 20]),
+  workflows: () => new MockList(3),
   configurationCompleted: true
 });
+
+function getProcessName() {
+  return casual.random_element(processNames);
+}
+
+function getLogLevel() {
+  const rand = Math.random();
+  switch (true) {
+    case rand <= 0.02:
+      return 'DEBUG';
+    case rand <= 0.06:
+      return 'ERROR';
+    case rand <= 0.12:
+      return 'WARN';
+    default:
+      return 'INFO';
+  }
+}
+
+function getLogMessage() {
+  return casual.sentences(casual.integer(1, 4));
+}
 
 let activeNodeLogsInterval = null;
 
 const getPercStr = () => casual.integer((from = 0), (to = 100)).toString();
+
+const FREQUENCY_LOGS = 2000;
 
 module.exports = {
   Subscription: () => ({
@@ -62,15 +88,15 @@ module.exports = {
             nodeLogs: {
               id: casual.uuid,
               date: new Date().toUTCString(),
-              nodeName: casual.name,
-              message: casual.sentence,
-              level: casual.random_element(['ERROR', 'WARN', 'INFO', 'DEBUG'])
+              nodeName: getProcessName(),
+              message: getLogMessage,
+              level: getLogLevel
             }
           });
-        }, casual.integer(1000, 3000));
+        }, FREQUENCY_LOGS);
         setTimeout(() => {
           clearInterval(activeNodeLogsInterval);
-        }, 15000);
+        }, 5 * FREQUENCY_LOGS);
         return pubsub.asyncIterator('nodeLogs');
       }
     },
@@ -88,7 +114,10 @@ module.exports = {
     versions: () => new MockList([18, 28]),
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
-    logs: this.LogPane
+    logs: () => ({
+      cursor: casual.string,
+      items: () => new MockList([20, 30])
+    })
   }),
   Mutation: () => ({
     createRuntime: () => {
@@ -124,14 +153,7 @@ module.exports = {
   User: () => ({
     id: casual.uuid,
     accessLevel: 'ADMIN',
-    email: casual.random_element([
-      'user1@intelygenz.com',
-      'user2@intelygenz.com',
-      'user3@intelygenz.com',
-      'user4@intelygenz.com',
-      'user5@intelygenz.com',
-      'user6@intelygenz.com'
-    ])
+    email: casual.random_element(emails)
   }),
   LogPane: () => ({
     cursor: casual.string,
@@ -140,9 +162,9 @@ module.exports = {
   NodeLog: () => ({
     id: casual.uuid,
     date: new Date().toUTCString(),
-    nodeName: casual.name,
-    message: casual.sentence,
-    level: casual.random_element(['ERROR', 'WARN', 'INFO', 'DEBUG'])
+    nodeName: getProcessName(),
+    message: getLogMessage,
+    level: getLogLevel
   }),
   Runtime: generateRuntime,
   Version: generateVersion,
@@ -165,29 +187,28 @@ module.exports = {
   UserActivity: () => casual.random_element(UserActivityOptions(this.User)),
   Settings: () => ({
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
-    sessionLifetimeInDays: () => casual.integer((from = 1), (to = 99))
+    sessionLifetimeInDays: () => casual.integer(1, 99)
   }),
   Workflow: () => ({
-    name: casual.name,
+    name: casual.random_element(workflowNames),
     nodes: () => new MockList([1, 4]),
     edges: () => new MockList([1, 4])
   }),
   Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
   Node: () => {
-    const name = casual.name;
     const _id = casual.uuid;
     setTimeout(() => {
       pubsub.publish('versionNodeStatus', {
         versionNodeStatus: {
           date: new Date().toUTCString(),
           nodeId: _id,
-          nodeName: name,
+          nodeName: getProcessName(),
           status: casual.random_element(['STARTED', 'ERROR']),
           message: 'message'
         }
       });
     }, casual.integer(2000, 10000));
-    return { id: _id, name: name, status: 'STOPPED' };
+    return { id: _id, name: getProcessName(), status: 'STOPPED' };
   },
   MetricChartData: () => new MockList([5, 10])
 };

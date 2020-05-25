@@ -1,0 +1,50 @@
+@import '../../../../../../../styles/colors';
+@import '../../../../../../../styles/mixins';
+@import '../../../../../../../styles/variables';
+
+$color-tabs-bg: palette(base, 700);
+$color-tab-bg: palette(base);
+$color-tab-selected-bg: palette(lowlight, 800);
+
+.tabContainer {
+  height: $grid-unit * 5;
+  display: flex;
+  align-items: flex-end;
+  padding: $grid-unit $grid-unit 0 $grid-unit;
+  background-color: $color-tabs-bg;
+}
+.tab {
+  @include font-small;
+  color: font-color(grey);
+
+  min-width: 204px;
+  max-width: 280px;
+
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $grid-unit $grid-unit $grid-unit $grid-unit * 2;
+  height: $grid-unit * 4;
+  background-color: $bg-color;
+
+  .icon {
+    cursor: pointer;
+    margin-left: $grid-unit;
+  }
+
+  .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &.selected {
+    color: font-color(light);
+    height: $grid-unit * 4;
+    background-color: $color-tab-selected-bg;
+    cursor: default;
+  }
+  &:not(:last-child) {
+    margin-right: $grid-unit;
+  }
+}
