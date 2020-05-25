@@ -44,6 +44,13 @@ function doubleSelectorToNodesSelection(
   return data;
 }
 
+const levelsOrdered = [
+  LogLevel.INFO,
+  LogLevel.DEBUG,
+  LogLevel.WARN,
+  LogLevel.ERROR
+];
+
 type Props = {
   versionId: string;
   updateFilters: Function;
@@ -52,8 +59,7 @@ type Props = {
 function Filters({ updateFilters, filterValues, versionId }: Props) {
   const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionId);
 
-  const logTypes = Object.values(LogLevel);
-  const levelOptions = logTypes.map(
+  const levelOptions = levelsOrdered.map(
     (level: LogLevel) =>
       ({
         label: level,
