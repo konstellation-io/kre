@@ -1,9 +1,8 @@
 import { get } from 'lodash';
-import React, { useState, useEffect, useRef } from 'react';
-
+import React, { useState, useEffect, useRef, FC } from 'react';
 import InputLabel from '../InputLabel/InputLabel';
+import useClickOutside from '../../../hooks/useClickOutside';
 import InputError from '../InputError/InputError';
-
 import cx from 'classnames';
 import styles from './Select.module.scss';
 
@@ -13,6 +12,10 @@ export enum SelectTheme {
   DEFAULT = 'default',
   LIGHT = 'light'
 }
+
+export type CustomOptionProps = {
+  label: string;
+};
 
 type Props = {
   onChange?: Function;
@@ -30,6 +33,7 @@ type Props = {
   hideError?: boolean;
   className?: string;
   theme?: SelectTheme;
+  CustomOptions?: { [key: string]: FC<CustomOptionProps> };
 };
 
 function Select({
@@ -47,10 +51,14 @@ function Select({
   selectMainClass = '',
   hideError = false,
   className = '',
-  theme = SelectTheme.DEFAULT
+  theme = SelectTheme.DEFAULT,
+  CustomOptions = {}
 }: Props) {
-  const inputEl = useRef<HTMLInputElement>(null);
-  const containerEl = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
+    componentRef: optionsRef,
+    action: closeOptions
+  });
   const selectedOptionRef = useRef<HTMLDivElement>(null);
   const [selectedOption, setSelectedOption] = useState<
     string | undefined | null
@@ -76,43 +84,32 @@ function Select({
     }
   }, [optionsOpened]);
 
-  /*
-   * Adds or removes event listeners and updates options visibility
-   */
-  function changeOptionsState(show: boolean = false) {
-    const listenerAction = show ? 'addEventListener' : 'removeEventListener';
-
-    document[listenerAction]('contextmenu', handleClickOutside);
-    document[listenerAction]('click', closeOptions);
-
-    if (containerEl.current !== null) {
-      containerEl.current[listenerAction]('scroll', closeOptions);
-    }
-
-    setOptionsOpened(show);
-  }
-
   function openOptions() {
-    if (!optionsOpened) changeOptionsState(true);
+    if (!optionsOpened) {
+      addClickOutsideEvents();
+      setOptionsOpened(true);
+    }
   }
 
   function closeOptions() {
-    changeOptionsState(false);
-  }
-
-  function handleClickOutside(e: Event) {
-    const inputNode = inputEl.current;
-    const target = e.target as HTMLElement;
-    // Has the user clicked outside the selector options?
-    if (inputNode !== null && !inputNode.contains(target)) {
-      closeOptions();
-    }
+    removeClickOutsideEvents();
+    setOptionsOpened(false);
   }
 
   function handleOnOptionCLick(value: string | null) {
     closeOptions();
     setSelectedOption(value);
     onChange(value);
+  }
+
+  function renderOption(option: string) {
+    const label = get(valuesMapper, option, option);
+    const CustomOption = CustomOptions[option];
+    return CustomOption ? (
+      <CustomOption label={label} />
+    ) : (
+      <div className={styles.defaultOption}>{label}</div>
+    );
   }
 
   const optionList = (shouldSort ? [...options].sort() : [...options]).map(
@@ -125,7 +122,7 @@ function Select({
         onClick={() => handleOnOptionCLick(option)}
         ref={option === formSelectedOption ? selectedOptionRef : null}
       >
-        {get(valuesMapper, option, option)}
+        {renderOption(option)}
       </div>
     )
   );
@@ -153,7 +150,6 @@ function Select({
           [styles.white]: whiteColor
         }
       )}
-      ref={containerEl}
     >
       {label && (
         <InputLabel text={label} hidden={selectedOption === placeholder} />
@@ -167,7 +163,6 @@ function Select({
           })}
           style={{ height }}
           onClick={openOptions}
-          ref={inputEl}
         >
           {get(valuesMapper, selectedOption || '', selectedOption)}
         </div>
@@ -175,6 +170,7 @@ function Select({
           className={cx(styles.optionsContainer, {
             [styles.opened]: optionsOpened
           })}
+          ref={optionsRef}
           style={{ maxHeight: optionsOpened ? optionsHeight : 0 }}
         >
           {optionList}
