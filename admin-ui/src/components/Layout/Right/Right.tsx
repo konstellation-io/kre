@@ -3,7 +3,7 @@ import styles from './Right.module.scss';
 import cx from 'classnames';
 
 type Props = {
-  children: ReactElement | ReactElement[];
+  children: ReactElement | (ReactElement | false)[];
   className?: string;
 };
 

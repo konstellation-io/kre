@@ -12,7 +12,6 @@ function LogListHeader() {
         <div className={styles.workflow}>Workflow</div>
         <div className={styles.node}>Process</div>
         <div className={styles.message}>Message</div>
-        <div className={styles.expand}></div>
       </div>
     </div>
   );

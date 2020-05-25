@@ -77,6 +77,18 @@ $bg-component-pressed: palette(lowlight, 700);
 $bg-component-selected: palette(lowlight, 800);
 $bg-component-inactive: palette(base, 800);
 
+// Design System - Colors - Shapes
+$bg-shape-default: palette(base, 400);
+$bg-shape-active: palette(base, 400);
+$bg-shape-hover: palette(highlight);
+$bg-shape-pressed: palette(highlight);
+$bg-shape-selected: palette(highlight, 900);
+$bg-shape-inactive: palette(base);
+
+// Design System - Atoms - Tabs
+$bg-tab-default: palette(lowlight);
+$bg-tab-hover: palette(lowlight, 300);
+
 $color-primary: palette(highlight);
 $color-ok: palette(success);
 $color-warn: palette(alert);

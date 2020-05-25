@@ -17,7 +17,7 @@ function LogItem({
 }: GetServerLogs_logs_items) {
   const [opened, setOpened] = useState<boolean>(false);
   const dateFormatted = moment(date).format('YYYY-MM-DD');
-  const hourFormatted = moment(date).format('HH:mm:ss');
+  const hourFormatted = moment(date).format('HH:mm:ss.SSS');
 
   function toggleOpenStatus() {
     setOpened(!opened);

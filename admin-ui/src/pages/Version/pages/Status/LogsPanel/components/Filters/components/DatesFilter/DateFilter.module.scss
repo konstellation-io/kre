@@ -42,3 +42,15 @@
     }
   }
 }
+
+.customRangesOption {
+  display: flex;
+  align-items: center;
+  height: 5 * $grid-unit;
+  padding: 11px 2 * $grid-unit;
+  border-top: solid 1px $color-black;
+
+  div {
+    margin-left: 10px;
+  }
+}

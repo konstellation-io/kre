@@ -122,6 +122,7 @@
   left: 0;
   background-color: $color-shield;
   opacity: $opacity-shield;
+  z-index: 1;
 }
 
 @mixin hexagonWrapper {
