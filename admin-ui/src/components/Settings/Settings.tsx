@@ -11,7 +11,7 @@ import LogoutIcon from '@material-ui/icons/ExitToApp';
 import cx from 'classnames';
 import styles from './Settings.module.scss';
 import ROUTE from '../../constants/routes';
-import useClickOutsideListener from '../../hooks/useClickOutsideListener';
+import useClickOutside from '../../hooks/useClickOutside';
 import useUserAccess from '../../hooks/useUserAccess';
 import { checkPermission } from '../../rbac-rules';
 
@@ -33,8 +33,11 @@ function Settings({ label }: Props) {
     endpoint: ENDPOINT.LOGOUT,
     method: 'POST'
   });
-  const ref = useRef(null);
-  useClickOutsideListener({ ref, onClickOutside: () => setOpened(false) });
+  const settingsRef = useRef(null);
+  const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
+    componentRef: settingsRef,
+    action: close
+  });
 
   useEffect(() => {
     if (logoutResponse.complete) {
@@ -46,6 +49,18 @@ function Settings({ label }: Props) {
       }
     }
   }, [logoutResponse, history, client]);
+
+  function close() {
+    setOpened(false);
+    removeClickOutsideEvents();
+  }
+
+  function open() {
+    if (!opened) {
+      setOpened(true);
+      addClickOutsideEvents();
+    }
+  }
 
   function getBaseProps(label: string) {
     return {
@@ -89,14 +104,14 @@ function Settings({ label }: Props) {
   return (
     <div
       className={cx(styles.container, { [styles['is-open']]: opened })}
-      onClick={() => setOpened(!opened)}
+      onClick={open}
       data-testid="settingsContainer"
-      ref={ref}
     >
       <div className={styles.label} data-testid="settings-label">
         {label}
       </div>
       <div
+        ref={settingsRef}
         className={styles.options}
         style={{ maxHeight: opened ? optionsHeight : 0 }}
         data-testid="settingsContent"

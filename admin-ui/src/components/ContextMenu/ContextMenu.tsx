@@ -6,7 +6,7 @@ import React, {
   useState
 } from 'react';
 import styles from './ContextMenu.module.scss';
-import useClickOutsideListener from '../../hooks/useClickOutsideListener';
+import useClickOutside from '../../hooks/useClickOutside';
 import Button, { BUTTON_ALIGN } from '../Button/Button';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
@@ -43,6 +43,12 @@ function ContextMenu({
     x: 0,
     y: 0
   });
+  const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
+    componentRef: contextMenuRef,
+    action: hideContextMenu,
+    mousedown: true
+  });
+
   function onOpenMenu(event: any) {
     event.preventDefault();
     event.stopPropagation();
@@ -56,6 +62,8 @@ function ContextMenu({
       x: clickX,
       y: clickY
     });
+
+    addClickOutsideEvents();
   }
   const event = openOnLeftClick ? 'click' : 'contextmenu';
   function removeListener() {
@@ -72,17 +80,14 @@ function ContextMenu({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useClickOutsideListener({
-    ref: contextMenuRef,
-    onClickOutside: hideContextMenu
-  });
-
   function hideContextMenu(): void {
     setStateContextMenu({
       isVisible: false,
       x: 0,
       y: 0
     });
+
+    removeClickOutsideEvents();
   }
 
   function handleMenuItemClick(action: MenuCallToAction): void {
@@ -101,6 +106,7 @@ function ContextMenu({
             left: `${stateContextMenu.x + 7}px`
           }}
           onClick={e => e.stopPropagation()}
+          onContextMenu={e => e.preventDefault()}
         >
           <ul className={styles.contextMenuList}>
             {actions.map((action, index) => (
