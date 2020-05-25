@@ -21,7 +21,7 @@ function Header({ togglePanel, opened }: Props) {
         [styles.opened]: opened
       })}
     >
-      <div className={styles.title}>
+      <div className={styles.title} onClick={togglePanel}>
         <SvgIcon className="icon-small">
           <path d={ICONS.TERMINAL} />
         </SvgIcon>
