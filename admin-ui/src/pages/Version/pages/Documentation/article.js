@@ -12,7 +12,7 @@ Nam dapibus nisl vitae elit fringilla rutrum. Aenean sollicitudin, erat a elemen
 
 In hac habitasse platea dictumst. Vivamus adipiscing fermentum quam volutpat aliquam. Integer et elit eget elit facilisis tristique. Nam vel iaculis mauris. Sed ullamcorper tellus erat, non ultrices sem tincidunt euismod. Fusce rhoncus porttitor.
 
-<center><strong>The derogatory term “scrub” means several different things. One definition is someone (especially a game player) who is not good at something (especially a game). By this definition, we all start out as scrubs, and there is certainly no shame in that. I mean the term differently, though. A scrub is a player who is handicapped by self-imposed rules that the game knows nothing about. A scrub does not play to win.</strong></center>
+The derogatory term “scrub” means several different things. One definition is someone (especially a game player) who is not good at something (especially a game). By this definition, we all start out as scrubs, and there is certainly no shame in that. I mean the term differently, though. A scrub is a player who is handicapped by self-imposed rules that the game knows nothing about. A scrub does not play to win.
 
 ## Development notes
 
@@ -51,10 +51,30 @@ Test emphasis: ~~scratch~~ type.
 
 http://www.example.com
 
-\`\`\`javascript
-const sample = 'sample';
+---
 
-sample.doSomething();
+***
+
+___
+
+\`\`\`javascript
+// Javascript
+
+const sample = {
+  doSomething: () => 'sample'
+};
+
+console.log(sample.doSomething());
+\`\`\`
+
+\`\`\`python
+# Python
+
+sample = {
+  "doSomething": lambda : "sample"
+}
+
+print(sample["doSomething"]())
 \`\`\`
 
 | Tables        | Are           | Cool  |
@@ -107,6 +127,25 @@ Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken.
 
 Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken.
 
+\`\`\`tsx
+import React from 'react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { monokai } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+type Props = {
+  value: string;
+  language: string | undefined;
+};
+
+const CodeBlock = ({ value, language = undefined }: Props) => (
+  <SyntaxHighlighter language={language} style={monokai}>
+    {value}
+  </SyntaxHighlighter>
+);
+
+export default CodeBlock;
+\`\`\`
+
 ## Chapter 2
 
 Chicken Chicken Chicken Chicken Chicken.
@@ -125,7 +164,6 @@ Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken Chicken.
 Chicken Chicken Chicken Chicken Chicken.
 
 And some other lines
-
 that can appear
 \`\`\`
 

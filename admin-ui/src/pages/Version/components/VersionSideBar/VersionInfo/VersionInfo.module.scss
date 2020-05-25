@@ -4,35 +4,36 @@
 @import '../../../../../styles/variables';
 
 .wrapper {
-  color: $font-color-white;
+  color: font-color(light);
   padding: 16px 0;
   padding-left: 16px;
-  background-color: $color-grey-light;
+  border-bottom: solid 1px palette(base, 900);
 }
 
 .name {
   @include font-body;
+  color: font-color(light);
+
   display: flex;
   flex-direction: row;
   align-items: center;
   font-weight: 600;
   font-size: 14px;
-  padding: 0 16px 16px 16px;
+  padding: 0 16px 16px 0;
 }
 
 .desc {
-  @include font-small;
+  @include font-body;
   font-weight: 500;
-  color: $font-color-light;
+  color: font-color(lowlight);
 
-  padding: 0 30px;
+  padding-right: 30px;
 }
 
 .labelContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 32px;
 
   .label {
     @include font-button;

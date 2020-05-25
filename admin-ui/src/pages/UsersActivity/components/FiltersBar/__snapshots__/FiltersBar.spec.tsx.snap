@@ -43,6 +43,7 @@ exports[`FiltersBar matches snapshot 1`] = `
     placeholder="User email"
   />
   <Calendar
+    hideError={true}
     onChangeFromDateInput={[Function]}
     onChangeToDateInput={[Function]}
   />

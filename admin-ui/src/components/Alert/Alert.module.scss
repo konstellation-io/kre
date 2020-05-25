@@ -1,7 +1,10 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
+@import '../../styles/shadows';
 
 .container {
+  @include shadow(4);
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -9,14 +12,13 @@
   height: 60px;
   margin-bottom: 3px;
   padding: 0 20px;
-  background-color: $color-red-dark;
-  box-shadow: 0 2px 8px 0 #000000;
+  background-color: palette(error, 900);
   white-space: nowrap;
 }
 
 .label {
   @include font-button;
-  color: black;
+  color: $color-black;
 
   width: 105px;
   height: 24px;
@@ -25,7 +27,7 @@
   text-align: center;
 
   &.error {
-    background-color: $color-red;
+    background-color: palette(error);
   }
 }
 

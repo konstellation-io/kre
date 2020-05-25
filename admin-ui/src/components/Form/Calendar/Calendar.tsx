@@ -82,9 +82,10 @@ type Props = {
   formToDate?: Moment | null;
   onChangeFromDateInput?: Function;
   onChangeToDateInput?: Function;
-  submit?: Function;
   hideError?: boolean;
   addTimeControls?: boolean;
+  keepOpen?: boolean;
+  autoFocus?: boolean;
 };
 
 function Calendar({
@@ -96,11 +97,14 @@ function Calendar({
   onChangeFromDateInput = function() {},
   onChangeToDateInput = function() {},
   addTimeControls = false,
-  submit = function() {}
+  autoFocus = false,
+  keepOpen = false
 }: Props) {
   const [fromDate, setFromDate] = useState<Moment | null>(null);
   const [toDate, setToDate] = useState<Moment | null>(null);
-  const [focusedInput, setFocusedInput] = useState<DateKey>(null);
+  const [focusedInput, setFocusedInput] = useState<DateKey>(
+    autoFocus ? 'startDate' : null
+  );
 
   useEffect(() => {
     setFromDate(formFromDate);
@@ -153,7 +157,7 @@ function Calendar({
 
   return (
     <div>
-      <InputLabel text={label} />
+      {label && <InputLabel text={label} />}
       <DateRangePicker
         startDate={fromDate}
         startDateId="calendar_from_date"
@@ -176,7 +180,11 @@ function Calendar({
         }}
         keepOpenOnDateSelect={addTimeControls}
         focusedInput={focusedInput}
-        onFocusChange={(input: DateKey) => setFocusedInput(input)}
+        onFocusChange={(input: DateKey) => {
+          if (!input && keepOpen) return;
+
+          setFocusedInput(input);
+        }}
         customArrowIcon={<ArrowRightIcon className="icon-small" />}
         navPrev={
           <div className="DayPickerNavigation_button DayPickerNavigation_button_1 DayPickerNavigation_button__default DayPickerNavigation_button__default_2 DayPickerNavigation_button__horizontal DayPickerNavigation_button__horizontal_3 DayPickerNavigation_button__horizontalDefault DayPickerNavigation_button__horizontalDefault_4 DayPickerNavigation_leftButton__horizontalDefault DayPickerNavigation_leftButton__horizontalDefault_5">

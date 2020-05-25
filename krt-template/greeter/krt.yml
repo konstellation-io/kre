@@ -1,0 +1,22 @@
+version: greeter-v1
+description: Version for testing.
+entrypoint:
+  proto: public_input.proto
+  image: konstellation/kre-runtime-entrypoint:latest
+  src: src/entrypoint/entrypoint.py
+
+nodes:
+  - name: greeter
+    image: konstellation/kre-py:latest
+    src: src/greeter/main.py
+
+workflows:
+  - name: greeting
+    entrypoint: Greet
+    sequential:
+      - greeter
+
+  - name: saluting
+    entrypoint: Salute
+    sequential:
+      - greeter

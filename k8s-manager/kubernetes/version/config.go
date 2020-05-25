@@ -94,7 +94,7 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 
 [INPUT]
     Name        tail
-    Tag         mongo_writer
+    Tag         mongo_writer_logs
     Buffer_Chunk_Size 1k
     Path        /var/log/app/*.log
 
@@ -105,18 +105,6 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
     Record nodeName ${KRE_NODE_NAME}
     Record nodeId ${KRE_NODE_ID}
     Record workflowId ${KRE_WORKFLOW_ID}
-
-[FILTER]
-    Name nest
-    Match *
-    Operation nest
-    Wildcard *
-    Nest_under doc
-
-[FILTER]
-    Name record_modifier
-    Match *
-    Record coll logs
 
 [FILTER]
     Name  stdout

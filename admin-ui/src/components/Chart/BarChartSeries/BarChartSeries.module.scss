@@ -1,6 +1,11 @@
 @import '../../../styles/colors';
 @import '../../../styles/mixins';
 
+$color-primary-light: map-get($color-dashboard, primary-light);
+$color-bar: map-get($color-dashboard, primary-dark);
+$color-bar-dark: map-get($color-dashboard, primary-darker);
+$color-guide: map-get($color-dashboard, guide-line);
+
 .g {
   text,
   path,
@@ -13,16 +18,16 @@
     transition: fill ease 0.5s;
 
     &.highlighted {
-      fill: $font-color-white;
+      fill: font-color(light);
     }
   }
 
   .guideLine {
-    stroke: $color-dashboard-guide-line;
+    stroke: $color-guide;
     stroke-width: 2px;
   }
   .innerGuideLine {
-    stroke: $color-dashboard-blue;
+    stroke: $color-bar;
     stroke-dasharray: 3 3;
     stroke-opacity: 0.33;
   }
@@ -43,7 +48,7 @@
   .seriesLabel {
     @include font-body;
 
-    fill: $font-color-white;
+    fill: font-color(light);
   }
 
   .rowBg {
@@ -51,29 +56,35 @@
   }
 
   .bar {
-    fill: $color-dashboard-blue;
+    fill: $color-bar;
     transition: fill ease 0.4s;
 
     &.unhighlighted {
-      fill: $color-dashboard-blue-dark;
+      fill: $color-bar-dark;
     }
     &.highlighted {
-      fill: $color-button-blue;
+      fill: $color-primary-light;
     }
   }
 
   .bgBar {
-    fill: $color-orange;
+    fill: $color-warn;
   }
 
   .barValue {
     dominant-baseline: central;
-    fill: $color-blue;
+    fill: $color-primary;
     font-weight: 600;
     fill-opacity: 0;
     transition: fill-opacity ease 0.4s;
 
     &.highlighted {
+      fill-opacity: 1;
+    }
+  }
+
+  &.viewAllData {
+    .barValue {
       fill-opacity: 1;
     }
   }

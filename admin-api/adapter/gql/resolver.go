@@ -417,6 +417,11 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	return userLoader.Load(obj.UserID)
 }
 
+func (r *userResolver) AccessLevel(ctx context.Context, obj *entity.User) (AccessLevel, error) {
+	// TODO return the true user access level value
+	return AccessLevelAdmin, nil
+}
+
 func (r *versionResolver) Status(ctx context.Context, obj *entity.Version) (VersionStatus, error) {
 	return VersionStatus(obj.Status), nil
 }
@@ -497,6 +502,9 @@ func (r *Resolver) Runtime() RuntimeResolver { return &runtimeResolver{r} }
 // Subscription returns SubscriptionResolver implementation.
 func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
 
+// User returns UserResolver implementation.
+func (r *Resolver) User() UserResolver { return &userResolver{r} }
+
 // UserActivity returns UserActivityResolver implementation.
 func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityResolver{r} }
 
@@ -504,7 +512,9 @@ func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityRes
 func (r *Resolver) Version() VersionResolver { return &versionResolver{r} }
 
 // VersionNodeStatus returns VersionNodeStatusResolver implementation.
-func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver { return &versionNodeStatusResolver{r} }
+func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver {
+	return &versionNodeStatusResolver{r}
+}
 
 type mutationResolver struct{ *Resolver }
 type nodeResolver struct{ *Resolver }
@@ -513,5 +523,6 @@ type queryResolver struct{ *Resolver }
 type runtimeResolver struct{ *Resolver }
 type subscriptionResolver struct{ *Resolver }
 type userActivityResolver struct{ *Resolver }
+type userResolver struct{ *Resolver }
 type versionResolver struct{ *Resolver }
 type versionNodeStatusResolver struct{ *Resolver }

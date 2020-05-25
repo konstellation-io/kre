@@ -62,6 +62,8 @@ if [ "$SKIP_BUILD" != "1" ]; then
   docker build -t konstellation/kre-mongo-writer mongo-writer
   build_header "runner kre-py"
   docker build -t konstellation/kre-py:latest runtime-runners/kre-py
+  build_header "runner kre-go"
+  docker build -t konstellation/kre-go:latest runtime-runners/kre-go
 fi
 
 HELM_VERSION=3 # Change to 2 if you haven't upgraded yet.

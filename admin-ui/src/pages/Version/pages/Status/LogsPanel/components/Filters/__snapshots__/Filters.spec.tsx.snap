@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Filters matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <Left
+    className="filterContainer"
+  >
+    <div
+      className="searchFilter"
+    >
+      <SearchSelect
+        className="searchForm"
+        hideError={true}
+        hideLabel={true}
+        onChange={[Function]}
+        options={Array []}
+        placeholder="Search"
+        showSearchIcon={true}
+      />
+    </div>
+    <div
+      className="selectProcesses"
+    >
+      <GroupSelect
+        formSelectedOptions={Object {}}
+        hideError={true}
+        hideSelections={true}
+        label=""
+        onChange={[Function]}
+        options={Object {}}
+        placeholder="Select Processes"
+      />
+    </div>
+    <div
+      className="selectType"
+    >
+      <Select
+        className="selectTypeForm"
+        hideError={true}
+        label=""
+        onChange={[Function]}
+        options={
+          Array [
+            "DEBUG",
+            "ERROR",
+            "INFO",
+            "WARN",
+          ]
+        }
+        placeholder="ALL LEVELS"
+        theme="light"
+      />
+    </div>
+  </Left>
+  <Right
+    className="filterContainer rightFilters"
+  >
+    <DateFilter
+      selectedOption="2020-01-01"
+    />
+  </Right>
+</div>
+`;

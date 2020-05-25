@@ -1,10 +1,12 @@
-import logging
-import os
 import asyncio
+import datetime
 import importlib.util
 import json
+import logging
+import os
+import traceback
 
-from nats.aio.client import Client as NATS
+from nats.aio.client import ErrTimeout, Client as NATS
 
 
 class Config:
@@ -23,12 +25,17 @@ class Config:
 
 
 class HandlerContext:
-    def __init__(self, config, write_in_mongo):
-        self.__base_path__ = config.base_path
-        self.__write_in_mongo__ = write_in_mongo
+    ERR_MISSING_VALUES = "missing_values"
+    ERR_NEW_LABELS = "new_labels"
+
+    def __init__(self, config, nc, logger):
+        self.__config__ = config
+        self.__nc__ = nc
+        self.logger = logger
+        self.METRIC_ERRORS = [self.ERR_MISSING_VALUES, self.ERR_NEW_LABELS]
 
     def get_path(self, relative_path):
-        return os.path.join(self.__base_path__, relative_path)
+        return os.path.join(self.__config__.base_path, relative_path)
 
     def set_value(self, key, value):
         setattr(self, key, value)
@@ -36,14 +43,46 @@ class HandlerContext:
     def get_value(self, key):
         return getattr(self, key)
 
-    def save_metric(self, key, value):
-        coll = "metrics"
+    async def save_metric(self, predicted_value="", true_value="", date="", error=""):
+        if error != "":
+            if error not in self.METRIC_ERRORS:
+                raise Exception(f"[ctx.save_metric] invalid value for metric error {error} "
+                                f"should be one of '{','.join(self.METRIC_ERRORS)}'")
+        else:
+            if not isinstance(predicted_value, str) or predicted_value == "":
+                raise Exception(f"[ctx.save_metric] invalid 'predicted_value'='{predicted_value}',"
+                                f" must be a nonempty string")
+            if not isinstance(true_value, str) or true_value == "":
+                raise Exception(f"[ctx.save_metric] invalid 'true_value'='{true_value}', must be a nonempty string")
+
+        if date == "":
+            d = datetime.datetime.utcnow()
+            date = d.isoformat("T") + "Z"
+        else:
+            try:
+                datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+            except ValueError:
+                raise Exception(f"[ctx.save_metric] invalid 'date'='{date}', must be a RFC 3339 date like: "
+                                "2020-04-06T09:02:09.277853Z")
+
+        coll = "classificationMetrics"
         doc = {
-            "key": key,
-            "value": value
+            "date": date,
+            "error": error,
+            "predictedValue": predicted_value,
+            "trueValue": true_value,
+            "versionId": self.__config__.krt_version
         }
 
-        self.__write_in_mongo__({"coll": coll, "doc": doc})
+        try:
+            subject = self.__config__.nats_mongo_writer
+            payload = bytes(json.dumps({"coll": coll, "doc": doc}), encoding='utf-8')
+            response = await self.__nc__.request(subject, payload, timeout=1)
+            res_json = json.loads(response.data.decode())
+            if not res_json['success']:
+                self.logger.error("Unexpected error saving metric")
+        except ErrTimeout:
+            self.logger.error("Error saving metric: request timed out")
 
 
 class Result:
@@ -62,20 +101,22 @@ class Result:
         self.data = data.get("data")
         self.error = data.get("error")
 
-    def to_dict(self):
-        return {
-            "reply": self.reply,
-            "data": self.data,
-            "error": self.error
-        }
-
     def to_json(self):
-        return bytes(json.dumps(self.to_dict()), encoding='utf-8')
+        return bytes(json.dumps(self.__dict__), encoding='utf-8')
 
 
 class Runner:
     def __init__(self):
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%S%z"
+        )
+        logging.addLevelName(logging.DEBUG, 'DEBUG')
+        logging.addLevelName(logging.WARNING, 'WARN')
+        logging.addLevelName(logging.FATAL, 'ERROR')
+        logging.addLevelName(logging.CRITICAL, 'ERROR')
+
         self.logger = logging.getLogger("kre-runner")
         self.config = Config()
         self.loop = asyncio.get_event_loop()
@@ -130,11 +171,7 @@ class Runner:
         return handler_module
 
     def create_handler_ctx(self, handler_module):
-        def write_in_mongo(msg):
-            coro = self.nc.publish(self.config.nats_mongo_writer, bytes(json.dumps(msg), encoding='utf-8'))
-            self.loop.create_task(coro)
-
-        ctx = HandlerContext(self.config, write_in_mongo)
+        ctx = HandlerContext(self.config, self.nc, self.logger)
         if hasattr(handler_module, "init"):
             handler_module.init(ctx)
 
@@ -154,7 +191,7 @@ class Runner:
                 result.reply = msg.reply
 
             try:
-                handler_result = handler_module.handler(ctx, result.data)
+                handler_result = await handler_module.handler(ctx, result.data)
 
                 is_last_node = self.config.nats_output == ''
                 output_subject = result.reply if is_last_node else self.config.nats_output
@@ -164,6 +201,7 @@ class Runner:
                 await self.nc.publish(output_subject, output_result.to_json())
 
             except Exception as err:
+                traceback.print_exc()
                 self.logger.error("error executing handler:" + str(err))
                 output_result = Result(error=f"error in '{self.config.krt_node_name}': {str(err)}")
                 await self.nc.publish(result.reply, output_result.to_json())

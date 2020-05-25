@@ -1,7 +1,10 @@
 @import '../../../../styles/colors';
 @import '../../../../styles/mixins';
 
+$color-bg: palette(base, 800);
+
 .container {
+  background-color: $color-bg;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -9,42 +12,9 @@
   overflow: auto;
 }
 
-.horizontalBar {
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 40px 0 20px;
-  height: 40px;
-  transition: background-color ease 0.5s;
-  flex: 0 0 40px;
-
-  div {
-    color: $font-color-dark;
-  }
-
-  &.STARTED {
-    background-color: $color-green;
-  }
-
-  &.STARTING {
-    background-color: $color-blue;
-  }
-
-  &.STOPPED {
-    background-color: $color-orange;
-  }
-
-  &.CREATED {
-    background-color: $color-grey;
-
-    div {
-      color: $font-color-white;
-    }
-  }
-}
-
 .horizontalBarText {
   @include font-caption;
-  color: $font-color-dark;
+  color: font-color(dark);
 
   display: flex;
   align-items: center;
@@ -55,7 +25,7 @@
   height: 25px;
   width: 1px;
   margin: 0 16px 0 12px;
-  background-color: $font-color-dark;
+  background-color: font-color(dark);
 }
 
 .horizontalText2 {

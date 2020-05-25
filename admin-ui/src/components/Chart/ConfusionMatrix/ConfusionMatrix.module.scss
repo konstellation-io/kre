@@ -1,9 +1,12 @@
 @import '../../../styles/colors';
 @import '../../../styles/mixins';
 
+$color-axisCell: map-get($color-dashboard, primary-dark);
+$color-primaryLight: map-get($color-dashboard, primary-light);
+
 text {
   @include font-caption;
-  color: $font-color-light;
+  color: font-color(lowlight);
 }
 
 .cellText {
@@ -16,12 +19,12 @@ text {
 
 .axisBoxes {
   rect {
-    fill: $color-dashboard-blue-dark;
+    fill: $color-axisCell;
     opacity: 0.1;
   }
 
   text {
-    fill: $color-bright-blue-2;
+    fill: $color-primaryLight;
     text-anchor: middle;
     dominant-baseline: central;
   }

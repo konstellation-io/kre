@@ -18,6 +18,7 @@ import {
 import styles from './Runtime.module.scss';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import PageBase from '../../components/Layout/PageBase/PageBase';
+import Can from '../../components/Can/Can';
 
 const GetRuntimeAndVersionQuery = loader(
   '../../graphql/queries/getRuntimeAndVersions.graphql'
@@ -33,6 +34,7 @@ function Runtime() {
     fetchPolicy: 'cache-and-network',
     variables: { runtimeId }
   });
+
   function getContent(): ReactElement | null {
     if (loading) return <SpinnerCircular />;
     if (error) return <ErrorMessage />;
@@ -79,9 +81,12 @@ function Runtime() {
   return (
     <PageBase
       headerChildren={
-        isUserInRuntimeVersions ? (
-          <Button label="ADD VERSION" height={40} to={newVersionRoute} />
-        ) : null
+        (isUserInRuntimeVersions && (
+          <Can perform="version:edit">
+            <Button label="ADD VERSION" height={40} to={newVersionRoute} />
+          </Can>
+        )) ||
+        null
       }
     >
       {getContent()}

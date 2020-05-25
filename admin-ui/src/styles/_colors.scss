@@ -1,44 +1,101 @@
-$bg-color: #0d0e11;
-$bg-color-dark: #000000;
-$bg-color-lighter: #15161a;
+$scale-to-weight: (
+  50: 80%,
+  100: 60%,
+  200: 40%,
+  300: 20%,
+  400: 10%,
+  500: 0%,
+  600: 15%,
+  700: 25%,
+  800: 45%,
+  900: 60%
+);
 
-$bg-highlighted: rgba(191, 207, 255, 0.15);
+@function get-color($color, $value) {
+  $final-color: $color;
 
-$font-color-dark: #19191b;
-$font-color-regular: #696d70;
-$font-color-light: #a0a7ac;
-$font-color-white: #f5f8fa;
+  @if map-has-key($scale-to-weight, $value) {
+    @if $value > 500 {
+      $final-color: mix(black, $color, map-get($scale-to-weight, $value));
+    } @else if $value < 500 {
+      $final-color: mix(white, $color, map-get($scale-to-weight, $value));
+    }
+  } @else {
+    @error 'scale value #{$value} is not defined. Check $scale-to-weight map';
+  }
 
-$color-grey-lighter: #282d33;
-$color-grey-light: #212428;
-$color-grey: #15161a;
-$color-grey-darker: #121317;
-$color-button-blue: #00cffc;
-$color-blue: #00cfff;
-$color-blue-dark: #1c5266;
-$color-bright-blue: #1ad3ff;
-$color-bright-blue-2: #66e2ff;
-$color-red: #ea4747;
-$color-yellow: #fcbf30;
-$color-orange: #fc9900;
-$color-green: #7bac1c;
+  @return $final-color;
+}
 
-$color-red-dark: #580d17;
-$color-blue-dark: #024e61;
-$color-blue-dark-2: #052933;
+@function palette($color, $value: 500) {
+  $final-color: black;
 
-$color-sidebar: #15161a;
+  @if map-has-key($palette-base, $color) {
+    $final-color: get-color(map-get($palette-base, $color), $value);
+  } @else {
+    @error 'unknown color #{$color}. Check colors in $palette-base';
+  }
 
-$color-dashboard-blue: #007c99;
-$color-dashboard-blue-dark: #005266;
-$color-dashboard-guide-line: #3e4046;
+  @return $final-color;
+}
 
-$color-node-content: #1d1e23;
-$color-hexagon: $color-node-content;
+@function font-color($color) {
+  @return map-get($color-font, $color);
+}
 
-$border-color-1: #1a1b1f;
+$palette-base: (
+  base: #101010,
+  highlight: #33ffff,
+  lowlight: #747474,
+  white: #ffffff,
+  success: #6daa48,
+  alert: #fc915f,
+  error: #e52e3d,
+  feedback: #1f82b5
+);
 
-$color-shield: #212428;
-$opacity-shield: 0.4;
-$bg-tooltip: #121317;
-$bg-box: #121317;
+$color-font: (
+  light: palette(white),
+  highlight: palette(highlight),
+  lowlight: palette(lowlight, 200),
+  regular: palette(lowlight),
+  grey: palette(base, 200),
+  dark: palette(base)
+);
+
+$bg-color: palette(base, 600);
+$bg-color-dark: palette(base, 900);
+$bg-color-lighter: palette(base, 400);
+$bg-box: palette(base);
+$bg-highlighted: palette(base, 300);
+$bg-form: palette(base, 600);
+
+$bg-component-default: palette(base, 900);
+$bg-component-active: palette(lowlight, 900);
+$bg-component-hover: palette(lowlight, 700);
+$bg-component-pressed: palette(lowlight, 700);
+$bg-component-selected: palette(lowlight, 800);
+$bg-component-inactive: palette(base, 800);
+
+$color-primary: palette(highlight);
+$color-ok: palette(success);
+$color-warn: palette(alert);
+$color-error: palette(error);
+$color-other: palette(lowlight);
+$color-black: black;
+
+$color-status-up: $color-ok;
+$color-status-down: $color-other;
+$color-status-loading: $color-primary;
+
+$color-dashboard: (
+  guide-line: palette(base, 300),
+  primary: palette(highlight),
+  primary-dark: palette(highlight, 800),
+  primary-darker: palette(highlight, 900),
+  primary-light: palette(highlight, 400),
+  tooltip: palette(base, 700)
+);
+
+$color-shield: white;
+$opacity-shield: 0.1;

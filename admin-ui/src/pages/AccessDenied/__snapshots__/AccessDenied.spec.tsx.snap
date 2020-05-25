@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccessDenied matches snapshot 1`] = `
+<div
+  className="bg"
+>
+  <div
+    className="grid"
+  >
+    <div
+      className="container"
+    >
+      <h1>
+        Higher access level required
+      </h1>
+      <Circle
+        animation="ERROR"
+        label="ACCESS DENIED"
+      />
+    </div>
+  </div>
+</div>
+`;

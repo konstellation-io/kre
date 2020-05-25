@@ -2,14 +2,25 @@
 
 .content {
   position: relative;
-  padding: 10px;
   flex-grow: 1;
+  overflow: auto;
+  margin-left: 36px;
 }
 
 .wrapper {
   height: 100%;
+  padding: 10px 36px 10px 10px;
+  overflow: scroll;
+
+  > div {
+    height: auto;
+  }
 
   &.expanded {
+    > div {
+      height: 100%;
+    }
+
     .row,
     .col {
       transition: max-height ease 0.4s, min-height ease 0.4s, height ease 0.4s,
@@ -46,7 +57,6 @@
     max-height: none !important;
     min-height: none !important;
     height: 100% !important;
-    padding-bottom: 25px;
   }
 }
 .col {
@@ -78,7 +88,7 @@
   }
 
   &:hover::after {
-    background-color: $color-blue;
+    background-color: $color-primary;
   }
 }
 

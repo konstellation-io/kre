@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DashboardTitle matches snapshot 1`] = `
+<div
+  className="container"
+>
+  <div
+    className="title"
+  >
+    Metrics for runtimeName - versionName
+  </div>
+  <div
+    className="dateFilter"
+  >
+    <Calendar
+      addTimeControls={true}
+      hideError={true}
+      label=""
+      onChangeFromDateInput={[Function]}
+      onChangeToDateInput={[Function]}
+    />
+  </div>
+  <div
+    className="visibilityIcon"
+    onClick={[Function]}
+    title="Enable show all data values"
+  >
+    <VisibilityIcon
+      className="icon-regular"
+    />
+  </div>
+</div>
+`;

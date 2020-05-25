@@ -1154,7 +1154,6 @@ exports[`Header matches snapshot 1`] = `
                     }
                   }
                   to="/settings"
-                  type="grey"
                 >
                   <Link
                     data-testid="buttonLink"
@@ -1183,7 +1182,6 @@ exports[`Header matches snapshot 1`] = `
                     }
                   }
                   to="/audit"
-                  type="grey"
                 >
                   <Link
                     data-testid="buttonLink"
@@ -1212,10 +1210,9 @@ exports[`Header matches snapshot 1`] = `
                       "paddingLeft": "20%",
                     }
                   }
-                  type="grey"
                 >
                   <div
-                    className="btn grey left label"
+                    className="btn default left label"
                     onClick={[Function]}
                     style={
                       Object {
@@ -1226,13 +1223,13 @@ exports[`Header matches snapshot 1`] = `
                     }
                   >
                     <ForwardRef
-                      className="icon-regular"
+                      className="icon-small"
                     >
                       <WithStyles(ForwardRef(SvgIcon))
-                        className="icon-regular"
+                        className="icon-small"
                       >
                         <ForwardRef(SvgIcon)
-                          className="icon-regular"
+                          className="icon-small"
                           classes={
                             Object {
                               "colorAction": "MuiSvgIcon-colorAction",
@@ -1249,7 +1246,7 @@ exports[`Header matches snapshot 1`] = `
                         >
                           <svg
                             aria-hidden="true"
-                            className="MuiSvgIcon-root icon-regular"
+                            className="MuiSvgIcon-root icon-small"
                             focusable="false"
                             role="presentation"
                             viewBox="0 0 24 24"

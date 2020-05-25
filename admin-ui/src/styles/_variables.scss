@@ -14,7 +14,7 @@ $header-height: 40px;
 $runtime-menu-width: 70px;
 $lateral-menu-width: 253px;
 
-$height-log-item: 35px;
+$height-log-item: 24px;
 
 $version-statuses: 'PUBLISHED', 'STARTED', 'STOPPED';
 
@@ -25,3 +25,7 @@ $logs-height: 22px;
 $z-index-modal: 99999;
 $z-index-notifications: 99999;
 $z-index-logs: 9;
+
+$status-up: UP;
+$status-down: DOWN;
+$status-loading: LOADING;

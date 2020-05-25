@@ -11,7 +11,7 @@
   @include list-item-hover;
 
   text-align: center;
-  color: $font-color-light;
+  color: font-color(lowlight);
   line-height: 10px;
 
   position: relative;
@@ -27,12 +27,12 @@
   }
 
   .warning {
-    color: $color-orange;
+    color: $color-warn;
   }
 
   &.disabled {
     pointer-events: none;
-    color: $font-color-dark;
+    color: font-color(dark);
   }
 
   &.size_s {

@@ -1,10 +1,15 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
 @import '../../styles/variables';
+@import '../../styles/borders';
+@import '../../styles/shadows';
+
+$color-primary: palette(highlight, 400);
+$color-gray: palette(base, 300);
 
 .btn {
   @include font-button;
-  color: $font-color-light;
+  color: font-color(regular);
   position: relative;
   text-align: center;
   padding: 0 42px;
@@ -40,34 +45,34 @@
   }
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
-    color: $font-color-light;
+    color: font-color(light);
   }
 
   &.border {
-    border: solid 1px $color-blue;
+    @include border($color-primary);
   }
 }
 
 a.navLinkSelected .btn,
 .primary {
-  color: #1a1b1f;
-  background-color: $color-button-blue;
+  color: font-color(dark);
+  background-color: palette(highlight, 400);
 
   &:active {
-    box-shadow: 0 0 20px 0 $color-button-blue;
+    @include glow(2);
   }
 }
 
 .dark {
-  color: $font-color-light;
+  color: font-color(regular);
   background-color: $bg-color-dark;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
@@ -75,16 +80,16 @@ a.navLinkSelected .btn,
   }
 
   &.disabled {
-    color: $font-color-dark;
+    color: font-color(dark);
   }
 }
 
 .grey {
-  color: $font-color-light;
-  background-color: $color-grey-darker;
+  color: font-color(light);
+  background-color: $color-gray;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
@@ -93,11 +98,11 @@ a.navLinkSelected .btn,
 }
 
 .transparent {
-  color: $font-color-light;
+  color: font-color(regular);
   background-color: transparent;
 
   &:hover {
-    color: $font-color-white;
+    color: font-color(light);
   }
 
   &:active {
@@ -111,11 +116,11 @@ a.navLinkSelected .btn,
 }
 
 .label {
-  color: $font-color-light;
+  color: font-color(lowlight);
 }
 
 .disabled {
-  color: $font-color-light;
+  color: font-color(light);
   pointer-events: none;
   opacity: 0.5;
 }

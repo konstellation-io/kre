@@ -41,7 +41,6 @@ exports[`Settings matches snapshot 1`] = `
         }
       }
       to="/settings"
-      type="grey"
     />
     <Button
       Icon={
@@ -65,7 +64,6 @@ exports[`Settings matches snapshot 1`] = `
         }
       }
       to="/audit"
-      type="grey"
     />
     <Button
       Icon={
@@ -89,7 +87,6 @@ exports[`Settings matches snapshot 1`] = `
           "paddingLeft": "20%",
         }
       }
-      type="grey"
     />
   </div>
 </div>

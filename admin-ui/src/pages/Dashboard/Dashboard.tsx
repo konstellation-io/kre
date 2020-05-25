@@ -25,6 +25,7 @@ import { RuntimeStatus } from '../../graphql/types/globalTypes';
 import { ApolloError } from 'apollo-client';
 import { buildRoute } from '../../utils/routes';
 import PageBase from '../../components/Layout/PageBase/PageBase';
+import Can from '../../components/Can/Can';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 
@@ -106,8 +107,10 @@ function Dashboard() {
     <PageBase
       headerChildren={
         <>
-          <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
-          <div>{`${nRuntimes} runtimes shown`}</div>
+          <Can perform="runtime:edit">
+            <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
+          </Can>
+          <div>{`${nRuntimes} runtime${nRuntimes > 1 ? 's' : ''} shown`}</div>
         </>
       }
     >

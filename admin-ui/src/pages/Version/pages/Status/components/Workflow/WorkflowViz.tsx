@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import InputNodeIcon from '@material-ui/icons/ArrowRightAlt';
+import InputNodeIcon from '@material-ui/icons/Public';
 import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
 import {
   GetVersionWorkflows_version_workflows,
@@ -9,12 +9,19 @@ import {
 import { select, Selection } from 'd3-selection';
 import { ScaleBand, scaleBand } from 'd3-scale';
 import { rgb } from 'd3-color';
-import {
-  VersionStatus,
-  NodeStatus
-} from '../../../../../../graphql/types/globalTypes';
+import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
 import styles from './WorkflowViz.module.scss';
+import { NodeTypes, InputElContent } from '../Tooltip/TooltipContents';
+import { ReactComponent as InputNode } from '../../icons/inputNode.svg';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
+import {
+  FinalStates,
+  getProcessState,
+  getLinkState,
+  getWorkflowState
+} from '../../states';
+import { get } from 'lodash';
 
 type D = GetVersionWorkflows_version_workflows_nodes;
 
@@ -23,11 +30,11 @@ const SCALE_PADDING_OUTER = 0.1;
 const NODE_INNER_CIRCLE_PERC = 0.5;
 const OFFSET_TOP_PERC = 0.7;
 const NODE_LABEL_PADDING = {
-  VERTICAL: 4,
+  VERTICAL: 7,
   HORIZONTAL: 25
 };
 const MARGIN_TOP_LABELS = 4;
-const ICON_SIZE = 25;
+const ICON_SIZE = 20;
 
 export type Margin = {
   right: number;
@@ -41,7 +48,39 @@ type Props = {
   margin: Margin;
   workflowStatus: VersionStatus;
   onInnerNodeClick: Function;
+  tooltipRefs: TooltipRefs;
+  enableNodeClicks: boolean;
 };
+
+function getTooltipHeader(nodeType: NodeTypes) {
+  let title = '';
+  let Icon;
+
+  switch (nodeType) {
+    case NodeTypes.INPUT:
+      title = 'INPUT PROCESS';
+      Icon = <InputNode />;
+      break;
+    default:
+      title = 'TITLE';
+      Icon = <InputNode />;
+  }
+
+  return { title, Icon };
+}
+function getTooltipContent(nodeType: NodeTypes) {
+  let content;
+
+  switch (nodeType) {
+    case NodeTypes.INPUT:
+      content = <InputElContent nodeType={nodeType} />;
+      break;
+    default:
+      content = <div>CONTENT</div>;
+  }
+
+  return content;
+}
 
 class WorkflowViz {
   props: Props;
@@ -122,10 +161,12 @@ class WorkflowViz {
 
   update = (
     data: GetVersionWorkflows_version_workflows,
-    workflowStatus: VersionStatus
+    workflowStatus: VersionStatus,
+    tooltipRefs: TooltipRefs
   ) => {
     this.props.data = data;
     this.props.workflowStatus = workflowStatus;
+    this.props.tooltipRefs = tooltipRefs;
 
     this.generateInnerNodes();
     this.generateInputNode();
@@ -141,7 +182,7 @@ class WorkflowViz {
       yOffset,
       generateLink,
       generateNodeLabel,
-      props: { data, onInnerNodeClick }
+      props: { data, onInnerNodeClick, enableNodeClicks }
     } = this;
     const self = this;
 
@@ -153,7 +194,7 @@ class WorkflowViz {
       .enter()
       .append('g')
       .attr('transform', (d: D) => `translate(${xScale(d.id)}, ${yOffset})`)
-      .attr('class', (d: D) => styles[d.status])
+      .attr('class', (d: D) => styles[getProcessState(d.status)])
       .classed(styles.node, true);
 
     const newCirclesG = newCircles.append('g').classed(styles.circlesG, true);
@@ -161,9 +202,13 @@ class WorkflowViz {
     newCirclesG
       .append('circle')
       .classed(styles.outerCircle, true)
+      .classed(styles.clicksDisabled, !enableNodeClicks)
       .attr('r', nodeOuterRadius)
       .attr('cx', nodeOuterRadius)
-      .on('click', (d: D) => onInnerNodeClick(d.id, d.name, data.id));
+      .on(
+        'click',
+        (d: D) => enableNodeClicks && onInnerNodeClick(d.id, d.name, data.id)
+      );
 
     newCirclesG
       .append('circle')
@@ -172,16 +217,24 @@ class WorkflowViz {
       .attr('cx', nodeOuterRadius);
 
     newCircles.each(function(d: D) {
-      generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
+      generateLink(
+        (xScale(d.id) || 0) + nodeOuterRadius * 2,
+        getLinkState(d.status),
+        d.id
+      );
       generateNodeLabel(this, d.name, self);
     });
 
     // Old circles
     circles
-      .attr('class', (d: D) => styles[d.status])
+      .attr('class', (d: D) => styles[getProcessState(d.status)])
       .classed(styles.node, true)
       .each(function(d: D) {
-        generateLink((xScale(d.id) || 0) + nodeOuterRadius * 2, d.status, d.id);
+        generateLink(
+          (xScale(d.id) || 0) + nodeOuterRadius * 2,
+          getLinkState(d.status),
+          d.id
+        );
       });
 
     circles.merge(newCircles);
@@ -264,21 +317,38 @@ class WorkflowViz {
       nodeOuterRadius,
       xScale,
       yOffset,
-      props: { data, workflowStatus }
+      getTooltip,
+      props: {
+        data,
+        workflowStatus,
+        tooltipRefs: { onHideTooltip, lastHoveredNode }
+      }
     } = this;
     const side = nodeOuterRadius * 2;
     const x = xScale('Input') || 0;
     const lineOffset = side * 0.1;
     const y = yOffset - side / 2;
-    const linkStatus = data.nodes[0].status;
+    const linkStatus = getLinkState(data.nodes[0].status);
 
     if (this.inputNode === null) {
       this.inputNode = nodesG
         .append('g')
         .classed(styles.inputNode, true)
-        .classed(styles[workflowStatus], true);
+        .classed(styles[getWorkflowState(workflowStatus)], true)
+        .on('mouseenter', function() {
+          getTooltip({
+            x,
+            y,
+            side,
+            nodeType: NodeTypes.INPUT,
+            status: getWorkflowState(workflowStatus, data.nodes),
+            node: this
+          });
+        })
+        .on('mouseleave', () => onHideTooltip());
       this.inputNode
         .append('rect')
+        .classed(styles.shape, true)
         .attr('rx', 6)
         .attr('x', x)
         .attr('y', y)
@@ -286,6 +356,7 @@ class WorkflowViz {
         .attr('width', side - lineOffset);
       this.inputNode
         .append('path')
+        .classed(styles.peakCut, true)
         .attr('stroke', 'transparent')
         .attr('d', () => {
           return `
@@ -296,22 +367,82 @@ class WorkflowViz {
           h -5
         `;
         });
-      this.inputNode.append('path').attr('d', () => {
-        return `
+      this.inputNode
+        .append('path')
+        .classed(styles.nodePeak, true)
+        .attr('d', () => {
+          return `
           M ${x + side - lineOffset - 1} ${y + 2.5}
           L ${x + side} ${y + side / 2}
           L ${x + side - lineOffset - 1} ${y + side - 2.5}
         `;
-      });
+        });
 
       this.addIcon(this.inputNode, InputNodeIcon, xScale('Input') || 0);
     } else {
       this.inputNode
         .attr('class', styles.inputNode)
-        .classed(styles[workflowStatus], true);
+        .classed(styles.hovered, function() {
+          return this === lastHoveredNode;
+        })
+        .classed(styles[getWorkflowState(workflowStatus)], true)
+        .on('mouseenter', function() {
+          getTooltip({
+            x,
+            y,
+            side,
+            nodeType: NodeTypes.INPUT,
+            status: getWorkflowState(workflowStatus, data.nodes),
+            node: this
+          });
+        });
     }
 
     this.generateLink(x + side, linkStatus, 'inputNode');
+  };
+
+  getTooltip = ({
+    x,
+    y,
+    side,
+    nodeType,
+    status,
+    node
+  }: {
+    x: number;
+    y: number;
+    side: number;
+    nodeType: NodeTypes;
+    status: FinalStates;
+    node: any;
+  }) => {
+    const {
+      getTooltipCoords,
+      props: {
+        tooltipRefs: { onShowTooltip }
+      }
+    } = this;
+    const { left, top } = getTooltipCoords(x, y, side);
+    const header = getTooltipHeader(nodeType);
+    const content = getTooltipContent(nodeType);
+    onShowTooltip({
+      status,
+      node,
+      left,
+      top,
+      header,
+      content
+    });
+  };
+
+  getTooltipCoords = (x: number, y: number, side: number) => {
+    const { svg } = this;
+
+    const svgDims = svg.node()?.getBoundingClientRect();
+    const left = get(svgDims, 'left', 0) + x + side / 2;
+    const top = get(svgDims, 'top', 0) + y;
+
+    return { left, top };
   };
 
   generateOutputNode = () => {
@@ -332,9 +463,10 @@ class WorkflowViz {
       this.outputNode = nodesG
         .append('g')
         .classed(styles.outputNode, true)
-        .classed(styles[workflowStatus], true);
+        .classed(styles[getWorkflowState(workflowStatus)], true);
       this.outputNode
         .append('rect')
+        .classed(styles.shape, true)
         .attr('rx', 6)
         .attr('x', x)
         .attr('y', y)
@@ -342,6 +474,7 @@ class WorkflowViz {
         .attr('width', side);
       this.outputNode
         .append('path')
+        .classed(styles.peakCut, true)
         .attr('stroke', 'transparent')
         .attr('d', () => {
           return `
@@ -352,19 +485,22 @@ class WorkflowViz {
           h -5
         `;
         });
-      this.outputNode.append('path').attr('d', () => {
-        return `
+      this.outputNode
+        .append('path')
+        .classed(styles.nodePeak, true)
+        .attr('d', () => {
+          return `
           M ${x - 0.8} ${y + 6}
           L ${x + lineOffset} ${y + side / 2}
           L ${x - 0.8} ${y + side - 6}
         `;
-      });
+        });
 
       this.addIcon(this.outputNode, OutputNodeIcon, xScale('Output') || 0);
     } else {
       this.outputNode
         .attr('class', styles.outputNode)
-        .classed(styles[workflowStatus], true);
+        .classed(styles[getWorkflowState(workflowStatus)], true);
     }
   };
 
@@ -388,11 +524,7 @@ class WorkflowViz {
       .html(icon);
   };
 
-  generateLink = (
-    x1: number,
-    status: VersionStatus | NodeStatus,
-    nodeId: string
-  ) => {
+  generateLink = (x1: number, status: FinalStates, nodeId: string) => {
     const { edgesG, edgeWidth, yOffset, idToSelector } = this;
 
     const link = select(`.${idToSelector(nodeId)}`);

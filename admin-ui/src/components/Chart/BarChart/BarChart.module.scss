@@ -1,12 +1,15 @@
 @import '../../../styles/colors';
+@import '../../../styles/mixins';
+
+$color-bar: map-get($color-dashboard, primary-darker);
 
 .bar {
   pointer-events: none;
-  fill: $color-dashboard-blue;
+  fill: $color-bar;
 }
 
 .bgBar {
-  fill: $color-orange;
+  fill: $color-warn;
   pointer-events: none;
 }
 
@@ -17,7 +20,7 @@
 
   g.legend {
     text {
-      fill: $font-color-light;
+      fill: font-color(light);
       dominant-baseline: central;
     }
 
@@ -26,14 +29,27 @@
     }
 
     & > g:nth-child(1) > rect {
-      fill: $color-dashboard-blue;
+      fill: $color-bar;
     }
     & > g:nth-child(2) > rect {
-      fill: $color-orange;
+      fill: $color-warn;
     }
   }
 
   .yAxis line {
     stroke-opacity: 0.5;
+  }
+
+  .barLabel {
+    font-size: 12px;
+    text-anchor: middle;
+    dominant-baseline: central;
+
+    &.light {
+      fill: $color-warn;
+    }
+    &.dark {
+      fill: $color-bar;
+    }
   }
 }

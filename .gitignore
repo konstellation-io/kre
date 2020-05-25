@@ -5,4 +5,4 @@ config.dev.yml
 helm/kre/values.yaml
 helm/kre/charts/*
 operator/helm-charts/kre-chart/charts
-*.krt
+runtime-runners/kre-py/test/env_vars.sh

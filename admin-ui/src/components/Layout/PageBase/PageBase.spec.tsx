@@ -3,11 +3,9 @@ import PageBase from './PageBase';
 import Header from '../../Header/Header';
 import NavigationBar from '../../NavigationBar/NavigationBar';
 import { shallow } from 'enzyme';
-import { currentLogPanelMock } from '../../../mocks/logs';
 
-const mockUseQueryResult = currentLogPanelMock;
 jest.mock('@apollo/react-hooks', () => ({
-  useQuery: jest.fn(() => mockUseQueryResult)
+  useQuery: jest.fn(() => ({}))
 }));
 
 describe('PageBase', () => {

@@ -152,6 +152,7 @@ function GeneralSettings() {
           disabled={fieldEmpty}
         />
       </HorizontalBar>
+
       {showModal && (
         <Modal
           title="Configuration will be updated"

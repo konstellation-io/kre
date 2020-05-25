@@ -1,9 +1,0 @@
-@import '../../../../../../../../../styles/variables';
-@import '../../../../../../../../../styles/colors';
-.dateFilter {
-  width: $grid-unit * 21.5;
-  height: $grid-unit * 5;
-  & > div:first-child > div:first-child {
-    background-color: $color-grey-lighter;
-  }
-}

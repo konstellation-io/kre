@@ -4,7 +4,7 @@
 .container {
   @include font-body;
   font-weight: 600;
-  color: $font-color-regular;
+  color: font-color(regular);
 
   width: 100%;
   position: absolute;

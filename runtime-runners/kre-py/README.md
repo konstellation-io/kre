@@ -4,8 +4,7 @@ This is an implementation in Python for the KRE runner.
 
 ## Usage
 
-The injected code must implement a `handler(ctx, data)` function and optionally a `init(ctx)` data.
-
+The injected code must implement a `handler(ctx, data)` function and optionally a `init(ctx)` function.
 
 The context object received by theses functions, has the following methods:
 
@@ -13,10 +12,11 @@ The context object received by theses functions, has the following methods:
 ctx.get_path("relative/path.xxx")
 ctx.set_value("label", value)
 ctx.get_value("label")
-ctx.save_metric("label", value)
+await ctx.save_metric("predicted_value", "true_value", "date", "error")
 ```
 
 The runner will have the following environment variables:
+
 ```
 KRT_VERSION
 KRT_NODE_NAME
@@ -41,18 +41,20 @@ def init(ctx):
   ctx.set_value("categories", pickle.load(ctx.get_path("data/categories.pkl")))
 
 # this function will be executed when a message is received
-def handler(ctx, data):
+async def handler(ctx, data):
   # data is the received message from the queue
   categories = ctx.get_value("categories")
-  
-  ctx.save_metric('elapsedtime', {'ms': 12345}) # Saves in MongoDB DB sending a message to the MongoWriter queue
+
+  # Saves metrics in MongoDB DB sending a message to the MongoWriter queue
+  await ctx.save_metric(date="2020-04-06T09:02:09.277853Z",predicted_value="class_x",true_value="class_y")
+  await ctx.save_metric(error=ctx.ERR_MISSING_VALUES, date="2020-04-07T00:00:00.0Z")
+  await ctx.save_metric(error=ctx.ERR_NEW_LABELS) # If the date is not set, the 'date' field value will be now
 
   normalized_data = np.xxx(categories)
   normalized_data = pd.xxx(normalized_data)
 
   return normalized_data # returned value will be published in the output queue
 ```
-
 
 ## Development
 
@@ -78,24 +80,25 @@ docker-compose up
 ```
 
 2. Start the runner:
+
+You must provide the env vars.
+Inside the `test` folder should be a `env_vars.sh` file.
+If this file doesn't exist, execute the following command in the **root folder** (`/kre`):
+
+```shell script
+./scripts/replace_env_path.sh
+```
+
+To start the runner execute:
+
 ```shell script
 pipenv shell
+source test/env_vars.sh
 python3 src/main.py
 ```
 
-You must provide the env vars, e.g.:
-```shell script
-export KRT_VERSION=testVersion1
-export KRT_NODE_NAME=nodeA
-export KRT_NATS_SERVER=localhost:4222
-export KRT_NATS_INPUT=test-subject-input
-export KRT_NATS_OUTPUT=test-subject-output
-export KRT_NATS_MONGO_WRITER=test-subject-mongo-writer
-export KRT_BASE_PATH=/home/user/projects/kre/runtime-runners/kre-py/test/myvol
-export KRT_HANDLER_PATH=src/node/node_handler.py
-```
-
 3. Send a message using the `test/test_runner.py`:
+
 ```shell script
 pipenv shell
 python3 test/test_runner.py

@@ -1,20 +1,27 @@
 @import '../../../styles/mixins';
 @import '../../../styles/colors';
+@import '../../../styles/borders';
 
 .container {
   position: relative;
 }
 
 .input {
-  @include font-body;
-  background-color: $bg-color-lighter;
-  color: $font-color-light;
-  width: 100%;
+  @include form-input;
+
+  color: font-color(lowlight);
   font-weight: 600;
-  padding: 10px;
-  border: solid 1px transparent;
-  border-radius: 6px;
-  outline: none;
+
+  &.showSearchIcon {
+    padding-left: 30px;
+  }
+}
+.searchIcon {
+  color: font-color(lowlight);
+  position: absolute;
+  top: calc(50% - 8px);
+  left: $grid-unit;
+  z-index: 1;
 }
 .optionsList {
   list-style: none;
@@ -33,7 +40,7 @@
     &:hover,
     &.isHighlighted {
       background-color: $bg-highlighted;
-      color: $font-color-white;
+      color: font-color(light);
     }
   }
 }

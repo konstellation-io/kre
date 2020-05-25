@@ -7,10 +7,10 @@ type Props = {
 };
 function SettingsHeader({ title, subtitle }: Props) {
   return (
-    <>
+    <div className={styles.header}>
       <div className={styles.formTitle}>{title}</div>
       {subtitle && <div className={styles.formDescription}>{subtitle}</div>}
-    </>
+    </div>
   );
 }
 

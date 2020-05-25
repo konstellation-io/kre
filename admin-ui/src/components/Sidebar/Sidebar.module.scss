@@ -1,12 +1,18 @@
 @import '../../styles/colors';
 @import '../../styles/mixins';
+@import '../../styles/shadows';
 @import '../../styles/variables';
 
+$color-bg: palette(base, 600);
+
 .container {
+  @include shadow(3);
+
   width: $lateral-menu-width;
   height: 100%;
   flex-shrink: 0;
-  background-color: $color-sidebar;
+  background-color: $color-bg;
+  z-index: 1;
 }
 
 .header {
@@ -15,7 +21,7 @@
 
 .back {
   @include font-subheader;
-  color: $font-color-white;
+  color: font-color(light);
 
   padding: 17px 26px 20px 17px;
   cursor: pointer;
@@ -24,7 +30,7 @@
 
   svg {
     margin-right: 18px;
-    color: $font-color-regular;
+    color: font-color(regular);
     transition: color ease 0.4s;
   }
 
@@ -35,12 +41,6 @@
       color: white;
     }
   }
-}
-
-.description {
-  @include font-body;
-
-  padding: 0 26px 0 17px;
 }
 
 .navButtons {

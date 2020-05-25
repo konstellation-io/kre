@@ -2,7 +2,7 @@
 
 exports[`Select matches snapshot 1`] = `
 <div
-  className="container"
+  className="default container"
 >
   <InputLabel
     hidden={true}

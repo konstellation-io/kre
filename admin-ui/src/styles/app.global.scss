@@ -39,7 +39,7 @@ body,
 text {
   font-family: $font-family;
   background-color: $bg-color;
-  color: $font-color-light;
+  color: font-color(light);
   font-size: $font-size-body;
   -webkit-font-smoothing: antialiased;
   border-radius: 25px;
@@ -61,17 +61,15 @@ button {
 }
 
 h1 {
-  color: #66e2ff;
-  font-size: $font-size-headline;
-  font-weight: 400;
-  line-height: 34px;
+  @include font-headline;
+  color: palette(highlight);
   text-align: center;
   margin: 0;
 }
 
 h2 {
   @include font-subheader;
-  color: $font-color-white;
+  color: font-color(light);
   font-weight: 400;
 }
 

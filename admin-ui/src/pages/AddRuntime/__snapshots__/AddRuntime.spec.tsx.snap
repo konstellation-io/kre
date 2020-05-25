@@ -1573,6 +1573,7 @@ exports[`AddRuntime matches snapshot 1`] = `
                       autoFocus={true}
                       className="input"
                       data-testid="input"
+                      disabled={false}
                       maxLength={20}
                       onBlur={[Function]}
                       onChange={[Function]}

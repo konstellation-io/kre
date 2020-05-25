@@ -58,3 +58,4 @@ include:
   - local: mongo-writer/.gitlab-ci.yml
   - local: runtime-entrypoint/.gitlab-ci.yml
   - local: runtime-runners/kre-py/.gitlab-ci.yml
+  - local: runtime-runners/kre-go/.gitlab-ci.yml

@@ -1,6 +1,6 @@
 test-admin-ui:
   stage: test
-  image: node:10
+  image: node:14
   before_script:
     - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
     - apt update && apt install yarn -y
@@ -26,9 +26,9 @@ sonar-admin-ui:
   extends: .sonar-scanner
   variables:
     SONAR_TOKEN: $SONAR_TOKEN_ADMIN_UI
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin-ui/.sonar"
+    SONAR_USER_HOME: '${CI_PROJECT_DIR}/admin-ui/.sonar'
     COMPONENT_PATH: admin-ui
-    GIT_DEPTH: "0"
+    GIT_DEPTH: '0'
   only:
     changes:
       - admin-ui/**/*
@@ -52,7 +52,7 @@ publish-admin-ui-image:
   services:
     - docker:18-dind
   variables:
-    IMAGE_PROJECT_NAME: "konstellation/kre-admin-ui"
+    IMAGE_PROJECT_NAME: 'konstellation/kre-admin-ui'
     DOCKER_USER: $DOCKER_USER
     DOCKER_PASS: $DOCKER_PASS
   before_script:

@@ -17,7 +17,6 @@ exports[`NotFound matches snapshot 1`] = `
         animation="ERROR"
         label="NOT FOUND"
       />
-      ;
     </div>
   </div>
 </div>
