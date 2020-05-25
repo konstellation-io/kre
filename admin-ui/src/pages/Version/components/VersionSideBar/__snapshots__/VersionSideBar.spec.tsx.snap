@@ -20,6 +20,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
           runtime={
             Object {
               "__typename": "Runtime",
+              "creationAuthor": Object {
+                "email": "some@user.com",
+              },
+              "description": "Some Description",
               "id": "runtimeId",
               "name": "runtimeName",
               "status": "STARTED",
@@ -66,6 +70,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     runtime={
       Object {
         "__typename": "Runtime",
+        "creationAuthor": Object {
+          "email": "some@user.com",
+        },
+        "description": "Some Description",
         "id": "runtimeId",
         "name": "runtimeName",
         "status": "STARTED",
@@ -101,6 +109,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
       runtime={
         Object {
           "__typename": "Runtime",
+          "creationAuthor": Object {
+            "email": "some@user.com",
+          },
+          "description": "Some Description",
           "id": "runtimeId",
           "name": "runtimeName",
           "status": "STARTED",

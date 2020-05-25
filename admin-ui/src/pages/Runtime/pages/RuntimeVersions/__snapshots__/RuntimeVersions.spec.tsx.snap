@@ -4,15 +4,54 @@ exports[`RuntimeVersions matches snapshot 1`] = `
 <div
   className="content"
 >
-  <h2>
-    Versions of runtime 
-    runtimeName
-  </h2>
-  <p
-    className="subtitle"
+  <Title>
+    Versions of runtime runtimeName
+  </Title>
+  <div
+    className="rutnimeInfo"
   >
-    Here you can see all the versions from the opened runtime. Click on any version to open it or add a new version by clicking on the 'ADD NEW VERSION' button
-  </p>
+    <div
+      className="infoFields"
+    >
+      <InfoField
+        Icon={
+          Object {
+            "$$typeof": Symbol(react.memo),
+            "compare": null,
+            "displayName": "EmailIcon",
+            "muiName": "SvgIcon",
+            "type": Object {
+              "$$typeof": Symbol(react.forward_ref),
+              "render": [Function],
+            },
+          }
+        }
+        field="CREATOR"
+        value="some@user.com"
+      />
+      <InfoField
+        Icon={
+          Object {
+            "$$typeof": Symbol(react.memo),
+            "compare": null,
+            "displayName": "AccessTimeIcon",
+            "muiName": "SvgIcon",
+            "type": Object {
+              "$$typeof": Symbol(react.forward_ref),
+              "render": [Function],
+            },
+          }
+        }
+        field="CREATED"
+        value="Invalid date"
+      />
+    </div>
+    <p
+      className="description"
+    >
+      Some Description
+    </p>
+  </div>
   <PublishedVersionStatus
     nPublishedVersions={0}
     noVersions={false}

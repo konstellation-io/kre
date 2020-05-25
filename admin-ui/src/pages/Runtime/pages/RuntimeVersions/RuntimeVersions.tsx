@@ -1,15 +1,17 @@
 import React from 'react';
-
 import PublishedVersionStatus from './components/PublishedVersionStatus/PublishedVersionStatus';
 import VersionInfo from './components/VersionInfo/VersionInfo';
-
 import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions
 } from '../../../../graphql/queries/types/GetVersionConfStatus';
 import { VersionStatus } from '../../../../graphql/types/globalTypes';
-
+import Title from '../../../../components/Title/Title';
+import InfoField from './components/InfoField/InfoField';
+import IconEmail from '@material-ui/icons/Email';
+import IconTime from '@material-ui/icons/AccessTime';
 import styles from './RuntimeVersions.module.scss';
+import { formatDate } from '../../../../utils/format';
 
 type Props = {
   runtime: GetVersionConfStatus_runtime;
@@ -30,12 +32,22 @@ function RuntimeVersions({ runtime, versions }: Props) {
 
   return (
     <div className={styles.content}>
-      <h2>Versions of runtime {runtime.name}</h2>
-      <p className={styles.subtitle}>
-        Here you can see all the versions from the opened runtime. Click on any
-        version to open it or add a new version by clicking on the 'ADD NEW
-        VERSION' button
-      </p>
+      <Title>{`Versions of runtime ${runtime.name}`}</Title>
+      <div className={styles.rutnimeInfo}>
+        <div className={styles.infoFields}>
+          <InfoField
+            field="CREATOR"
+            Icon={IconEmail}
+            value={runtime.creationAuthor.email}
+          />
+          <InfoField
+            field="CREATED"
+            Icon={IconTime}
+            value={formatDate(new Date(runtime.creationDate))}
+          />
+        </div>
+        <p className={styles.description}>{runtime.description}</p>
+      </div>
       <PublishedVersionStatus
         noVersions={noVersions}
         nPublishedVersions={nPublishedVersions}

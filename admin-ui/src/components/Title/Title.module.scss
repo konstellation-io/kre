@@ -1,0 +1,12 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.header {
+  padding: 3 * $grid-unit;
+  background-color: palette(base, 600);
+}
+
+.title {
+  @include font-headline;
+  color: font-color(lowlight);
+}
