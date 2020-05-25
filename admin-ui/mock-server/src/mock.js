@@ -81,6 +81,10 @@ const getPercStr = () => casual.integer((from = 0), (to = 100)).toString();
 
 const FREQUENCY_LOGS = 2000;
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = {
   Subscription: () => ({
     nodeLogs: {
@@ -120,10 +124,13 @@ module.exports = {
     versions: () => new MockList([18, 28]),
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
-    logs: () => ({
-      cursor: casual.string,
-      items: () => new MockList([20, 30])
-    })
+    logs: async () => {
+      await sleep(2000);
+      return {
+        cursor: casual.string,
+        items: () => new MockList([20, 30])
+      };
+    }
   }),
   Mutation: () => ({
     createRuntime: () => {
