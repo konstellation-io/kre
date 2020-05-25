@@ -7,19 +7,24 @@ import LoadMoreIcon from '@material-ui/icons/SystemUpdateAlt';
 import Left from '../../../../../../../components/Layout/Left/Left';
 import Right from '../../../../../../../components/Layout/Right/Right';
 import cx from 'classnames';
+import SpinnerCircular from '../../../../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 
 type Props = {
   clearLogs: () => void;
   loadMore: () => void;
   toggleAutoScrollActive: () => void;
   autoScrollActive: boolean;
+  loading: boolean;
+  noMoreData: boolean;
 };
 
 function LogsFooter({
   clearLogs,
   loadMore,
   toggleAutoScrollActive,
-  autoScrollActive
+  autoScrollActive,
+  loading = false,
+  noMoreData = false
 }: Props) {
   const followText = `${autoScrollActive ? 'UN' : ''}FOLLOW NEW LOGS`;
   return (
@@ -40,12 +45,20 @@ function LogsFooter({
           onClick={toggleAutoScrollActive}
           className={cx({ [styles.active]: autoScrollActive })}
         />
-        <Button
-          height={32}
-          label="LOAD MORE"
-          Icon={LoadMoreIcon}
-          onClick={loadMore}
-        />
+        <div title={noMoreData ? 'No more data to show' : ''}>
+          <Button
+            height={32}
+            label="LOAD MORE"
+            Icon={LoadMoreIcon}
+            onClick={loadMore}
+            disabled={loading || noMoreData}
+          />
+        </div>
+        {loading && (
+          <div className={styles.loadMoreLoading}>
+            <SpinnerCircular size={40} />
+          </div>
+        )}
       </Right>
     </div>
   );

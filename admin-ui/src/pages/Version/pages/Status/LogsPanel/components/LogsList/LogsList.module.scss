@@ -175,3 +175,9 @@ $color-header-border: palette(base, 300);
     }
   }
 }
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}

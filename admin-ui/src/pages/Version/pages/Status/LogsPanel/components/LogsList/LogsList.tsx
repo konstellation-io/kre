@@ -12,10 +12,10 @@ import {
   GetServerLogsVariables
 } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import moment from 'moment';
-import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 import LogsFooter from '../LogsFooter/LogsFooter';
 import { LogFilters } from '../../../../../../../graphql/types/globalTypes';
 import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
+import SpinnerCircular from '../../../../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -74,6 +74,8 @@ function LogsList({
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
+  const [refetching, setRefetching] = useState(false);
+  const [noMoreData, setNoMoreData] = useState(false);
 
   const formatFilters = (filters: GetLogTabs_logTabs_filters) =>
     getLogsQueryFilters(filters, nodeNameToId);
@@ -90,6 +92,7 @@ function LogsList({
     onCompleted: data => {
       onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');
+      setNoMoreData(false);
       handleSubscription();
     },
     onError: handleSubscription,
@@ -137,6 +140,7 @@ function LogsList({
 
   // Pagination query
   function loadPreviousLogs() {
+    setRefetching(true);
     fetchMore({
       variables: {
         runtimeId,
@@ -153,20 +157,27 @@ function LogsList({
             ...oldLogs
           ]);
           setNextPage(newData.cursor || '');
+        } else {
+          setNoMoreData(true);
         }
 
+        setRefetching(false);
         return prev;
       }
     });
   }
 
-  const logElements = logs.map((log: GetServerLogs_logs_items, idx: number) => (
+  const logElements = logs.map((log: GetServerLogs_logs_items) => (
     <LogItem {...log} key={log.id} />
   ));
   return (
     <>
       <LogListHeader />
-      {loading && <SpinnerLinear />}
+      {loading && (
+        <div className={styles.spinner}>
+          <SpinnerCircular size={100} />
+        </div>
+      )}
       <div ref={listRef} className={styles.listContainer}>
         {logElements}
       </div>
@@ -175,6 +186,8 @@ function LogsList({
         loadMore={loadPreviousLogs}
         toggleAutoScrollActive={toggleAutoScrollActive}
         autoScrollActive={autoScrollActive}
+        loading={refetching}
+        noMoreData={noMoreData}
       />
     </>
   );
