@@ -32,8 +32,8 @@ function RuntimeVersions({ runtime, versions }: Props) {
 
   return (
     <div className={styles.content}>
-      <Title>{`Versions of runtime ${runtime.name}`}</Title>
-      <div className={styles.rutnimeInfo}>
+      <Title>Versions of runtime ${runtime.name}</Title>
+      <div className={styles.runtimeInfo}>
         <div className={styles.infoFields}>
           <InfoField
             field="CREATOR"

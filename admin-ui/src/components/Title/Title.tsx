@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styles from './Title.module.scss';
 
 type Props = {
-  children: string;
+  children: (string | JSX.Element)[];
 };
 const Title: FC<Props> = ({ children }) => (
   <div className={styles.header}>
