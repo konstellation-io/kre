@@ -30,7 +30,8 @@ type ConfigurationVariablesInput struct {
 }
 
 type CreateRuntimeInput struct {
-	Name string `json:"name"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 type CreateVersionInput struct {

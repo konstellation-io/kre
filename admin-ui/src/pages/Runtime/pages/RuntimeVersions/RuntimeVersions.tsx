@@ -32,7 +32,7 @@ function RuntimeVersions({ runtime, versions }: Props) {
 
   return (
     <div className={styles.content}>
-      <Title>Versions of runtime ${runtime.name}</Title>
+      <Title>Versions of runtime {runtime.name}</Title>
       <div className={styles.runtimeInfo}>
         <div className={styles.infoFields}>
           <InfoField
@@ -43,7 +43,7 @@ function RuntimeVersions({ runtime, versions }: Props) {
           <InfoField
             field="CREATED"
             Icon={IconTime}
-            value={formatDate(new Date(runtime.creationDate))}
+            value={formatDate(new Date(runtime.creationDate), true)}
           />
         </div>
         <p className={styles.description}>{runtime.description}</p>

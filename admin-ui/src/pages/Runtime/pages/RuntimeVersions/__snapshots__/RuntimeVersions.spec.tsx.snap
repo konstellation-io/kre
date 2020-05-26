@@ -5,7 +5,7 @@ exports[`RuntimeVersions matches snapshot 1`] = `
   className="content"
 >
   <Title>
-    Versions of runtime $
+    Versions of runtime 
     runtimeName
   </Title>
   <div

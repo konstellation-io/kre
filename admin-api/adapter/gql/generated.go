@@ -150,6 +150,7 @@ type ComplexityRoot struct {
 	Runtime struct {
 		CreationAuthor   func(childComplexity int) int
 		CreationDate     func(childComplexity int) int
+		Description      func(childComplexity int) int
 		ID               func(childComplexity int) int
 		Name             func(childComplexity int) int
 		PublishedVersion func(childComplexity int) int
@@ -771,6 +772,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Runtime.CreationDate(childComplexity), true
 
+	case "Runtime.description":
+		if e.complexity.Runtime.Description == nil {
+			break
+		}
+
+		return e.complexity.Runtime.Description(childComplexity), true
+
 	case "Runtime.id":
 		if e.complexity.Runtime.ID == nil {
 			break
@@ -1190,6 +1198,7 @@ type Subscription {
 
 input CreateRuntimeInput {
   name: String!
+  description: String!
 }
 
 input CreateVersionInput {
@@ -1275,6 +1284,7 @@ input UpdateConfigurationInput {
 type Runtime {
   id: ID!
   name: String!
+  description: String!
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!
@@ -3942,6 +3952,40 @@ func (ec *executionContext) _Runtime_name(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Runtime_description(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Runtime",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Description, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Runtime_status(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -6394,6 +6438,12 @@ func (ec *executionContext) unmarshalInputCreateRuntimeInput(ctx context.Context
 			if err != nil {
 				return it, err
 			}
+		case "description":
+			var err error
+			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -7262,6 +7312,11 @@ func (ec *executionContext) _Runtime(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "name":
 			out.Values[i] = ec._Runtime_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "description":
+			out.Values[i] = ec._Runtime_description(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
