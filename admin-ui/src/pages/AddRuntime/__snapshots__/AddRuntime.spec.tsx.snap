@@ -71,6 +71,15 @@ exports[`AddRuntime matches snapshot 1`] = `
                               "kind": "Field",
                               "name": Object {
                                 "kind": "Name",
+                                "value": "description",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
                                 "value": "status",
                               },
                             },
@@ -170,12 +179,13 @@ exports[`AddRuntime matches snapshot 1`] = `
               ],
               "kind": "Document",
               "loc": Object {
-                "end": 227,
+                "end": 243,
                 "source": Object {
                   "body": "mutation CreateRuntime($input: CreateRuntimeInput!) {
   createRuntime(input: $input) {
     id
     name
+    description
     status
     creationDate
     creationAuthor {
@@ -261,6 +271,15 @@ exports[`AddRuntime matches snapshot 1`] = `
                               "kind": "Field",
                               "name": Object {
                                 "kind": "Name",
+                                "value": "description",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
                                 "value": "status",
                               },
                             },
@@ -306,12 +325,13 @@ exports[`AddRuntime matches snapshot 1`] = `
               ],
               "kind": "Document",
               "loc": Object {
-                "end": 125,
+                "end": 141,
                 "source": Object {
                   "body": "query GetRuntimes {
   runtimes {
     id
     name
+    description
     status
     creationDate
     publishedVersion {
@@ -334,7 +354,11 @@ exports[`AddRuntime matches snapshot 1`] = `
             "data": Object {
               "runtimes": Array [
                 Object {
+                  "creationAuthor": Object {
+                    "email": "some@user.com",
+                  },
                   "creationDate": "2019-11-28T15:28:01+00:00",
+                  "description": "Some Description",
                   "id": "00001",
                   "name": "Some Name",
                   "publishedVersion": Object {
@@ -343,7 +367,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                   "status": "STARTED",
                 },
                 Object {
+                  "creationAuthor": Object {
+                    "email": "some@user.com",
+                  },
                   "creationDate": "2019-11-27T15:28:01+00:00",
+                  "description": "Some Other Description",
                   "id": "00002",
                   "name": "Some Other Name",
                   "publishedVersion": Object {
@@ -352,7 +380,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                   "status": "STARTED",
                 },
                 Object {
+                  "creationAuthor": Object {
+                    "email": "some@user.com",
+                  },
                   "creationDate": "2019-11-27T15:28:01+00:00",
+                  "description": "Some Description",
                   "id": "00003",
                   "name": "Creating runtime",
                   "publishedVersion": Object {
@@ -479,7 +511,7 @@ exports[`AddRuntime matches snapshot 1`] = `
           "link": MockLink {
             "addTypename": false,
             "mockedResponsesByKey": Object {
-              "{\\"query\\":\\"mutation CreateRuntime($input: CreateRuntimeInput!) {\\\\n  createRuntime(input: $input) {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    creationAuthor {\\\\n      id\\\\n      email\\\\n    }\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+              "{\\"query\\":\\"mutation CreateRuntime($input: CreateRuntimeInput!) {\\\\n  createRuntime(input: $input) {\\\\n    id\\\\n    name\\\\n    description\\\\n    status\\\\n    creationDate\\\\n    creationAuthor {\\\\n      id\\\\n      email\\\\n    }\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
                 Object {
                   "request": Object {
                     "query": Object {
@@ -537,6 +569,15 @@ exports[`AddRuntime matches snapshot 1`] = `
                                       "name": Object {
                                         "kind": "Name",
                                         "value": "name",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "description",
                                       },
                                     },
                                     Object {
@@ -644,12 +685,13 @@ exports[`AddRuntime matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 227,
+                        "end": 243,
                         "source": Object {
                           "body": "mutation CreateRuntime($input: CreateRuntimeInput!) {
   createRuntime(input: $input) {
     id
     name
+    description
     status
     creationDate
     creationAuthor {
@@ -686,7 +728,7 @@ exports[`AddRuntime matches snapshot 1`] = `
                   },
                 },
               ],
-              "{\\"query\\":\\"query GetRuntimes {\\\\n  runtimes {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+              "{\\"query\\":\\"query GetRuntimes {\\\\n  runtimes {\\\\n    id\\\\n    name\\\\n    description\\\\n    status\\\\n    creationDate\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
                 Object {
                   "request": Object {
                     "query": Object {
@@ -729,6 +771,15 @@ exports[`AddRuntime matches snapshot 1`] = `
                                       "name": Object {
                                         "kind": "Name",
                                         "value": "name",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "description",
                                       },
                                     },
                                     Object {
@@ -782,12 +833,13 @@ exports[`AddRuntime matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 125,
+                        "end": 141,
                         "source": Object {
                           "body": "query GetRuntimes {
   runtimes {
     id
     name
+    description
     status
     creationDate
     publishedVersion {
@@ -810,7 +862,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                     "data": Object {
                       "runtimes": Array [
                         Object {
+                          "creationAuthor": Object {
+                            "email": "some@user.com",
+                          },
                           "creationDate": "2019-11-28T15:28:01+00:00",
+                          "description": "Some Description",
                           "id": "00001",
                           "name": "Some Name",
                           "publishedVersion": Object {
@@ -819,7 +875,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                           "status": "STARTED",
                         },
                         Object {
+                          "creationAuthor": Object {
+                            "email": "some@user.com",
+                          },
                           "creationDate": "2019-11-27T15:28:01+00:00",
+                          "description": "Some Other Description",
                           "id": "00002",
                           "name": "Some Other Name",
                           "publishedVersion": Object {
@@ -828,7 +888,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                           "status": "STARTED",
                         },
                         Object {
+                          "creationAuthor": Object {
+                            "email": "some@user.com",
+                          },
                           "creationDate": "2019-11-27T15:28:01+00:00",
+                          "description": "Some Description",
                           "id": "00003",
                           "name": "Creating runtime",
                           "publishedVersion": Object {
@@ -1000,7 +1064,7 @@ exports[`AddRuntime matches snapshot 1`] = `
             "link": MockLink {
               "addTypename": false,
               "mockedResponsesByKey": Object {
-                "{\\"query\\":\\"mutation CreateRuntime($input: CreateRuntimeInput!) {\\\\n  createRuntime(input: $input) {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    creationAuthor {\\\\n      id\\\\n      email\\\\n    }\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+                "{\\"query\\":\\"mutation CreateRuntime($input: CreateRuntimeInput!) {\\\\n  createRuntime(input: $input) {\\\\n    id\\\\n    name\\\\n    description\\\\n    status\\\\n    creationDate\\\\n    creationAuthor {\\\\n      id\\\\n      email\\\\n    }\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
                   Object {
                     "request": Object {
                       "query": Object {
@@ -1058,6 +1122,15 @@ exports[`AddRuntime matches snapshot 1`] = `
                                         "name": Object {
                                           "kind": "Name",
                                           "value": "name",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "description",
                                         },
                                       },
                                       Object {
@@ -1165,12 +1238,13 @@ exports[`AddRuntime matches snapshot 1`] = `
                         ],
                         "kind": "Document",
                         "loc": Object {
-                          "end": 227,
+                          "end": 243,
                           "source": Object {
                             "body": "mutation CreateRuntime($input: CreateRuntimeInput!) {
   createRuntime(input: $input) {
     id
     name
+    description
     status
     creationDate
     creationAuthor {
@@ -1207,7 +1281,7 @@ exports[`AddRuntime matches snapshot 1`] = `
                     },
                   },
                 ],
-                "{\\"query\\":\\"query GetRuntimes {\\\\n  runtimes {\\\\n    id\\\\n    name\\\\n    status\\\\n    creationDate\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
+                "{\\"query\\":\\"query GetRuntimes {\\\\n  runtimes {\\\\n    id\\\\n    name\\\\n    description\\\\n    status\\\\n    creationDate\\\\n    publishedVersion {\\\\n      status\\\\n    }\\\\n  }\\\\n}\\\\n\\"}": Array [
                   Object {
                     "request": Object {
                       "query": Object {
@@ -1250,6 +1324,15 @@ exports[`AddRuntime matches snapshot 1`] = `
                                         "name": Object {
                                           "kind": "Name",
                                           "value": "name",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "description",
                                         },
                                       },
                                       Object {
@@ -1303,12 +1386,13 @@ exports[`AddRuntime matches snapshot 1`] = `
                         ],
                         "kind": "Document",
                         "loc": Object {
-                          "end": 125,
+                          "end": 141,
                           "source": Object {
                             "body": "query GetRuntimes {
   runtimes {
     id
     name
+    description
     status
     creationDate
     publishedVersion {
@@ -1331,7 +1415,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                       "data": Object {
                         "runtimes": Array [
                           Object {
+                            "creationAuthor": Object {
+                              "email": "some@user.com",
+                            },
                             "creationDate": "2019-11-28T15:28:01+00:00",
+                            "description": "Some Description",
                             "id": "00001",
                             "name": "Some Name",
                             "publishedVersion": Object {
@@ -1340,7 +1428,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                             "status": "STARTED",
                           },
                           Object {
+                            "creationAuthor": Object {
+                              "email": "some@user.com",
+                            },
                             "creationDate": "2019-11-27T15:28:01+00:00",
+                            "description": "Some Other Description",
                             "id": "00002",
                             "name": "Some Other Name",
                             "publishedVersion": Object {
@@ -1349,7 +1441,11 @@ exports[`AddRuntime matches snapshot 1`] = `
                             "status": "STARTED",
                           },
                           Object {
+                            "creationAuthor": Object {
+                              "email": "some@user.com",
+                            },
                             "creationDate": "2019-11-27T15:28:01+00:00",
+                            "description": "Some Description",
                             "id": "00003",
                             "name": "Creating runtime",
                             "publishedVersion": Object {
@@ -1603,6 +1699,68 @@ exports[`AddRuntime matches snapshot 1`] = `
                       >
                         0/20
                       </div>
+                    </InputHelp>
+                  </div>
+                </TextInput>
+                <TextInput
+                  error=""
+                  label="runtime description"
+                  limits={
+                    Object {
+                      "maxHeight": 360,
+                      "minHeight": 90,
+                    }
+                  }
+                  lockHorizontalGrowth={true}
+                  onChange={[Function]}
+                  textArea={true}
+                  whiteColor={true}
+                >
+                  <div
+                    className="container white"
+                  >
+                    <InputLabel
+                      text="runtime description"
+                    >
+                      <label
+                        className="label"
+                        data-testid="label"
+                      >
+                        RUNTIME DESCRIPTION
+                      </label>
+                    </InputLabel>
+                    <textarea
+                      autoFocus={false}
+                      className="input lockHorizontalGrowth"
+                      data-testid="input"
+                      disabled={false}
+                      onBlur={[Function]}
+                      onChange={[Function]}
+                      onKeyPress={[Function]}
+                      placeholder=""
+                      style={
+                        Object {
+                          "maxHeight": 360,
+                          "minHeight": 90,
+                        }
+                      }
+                      type="text"
+                      value=""
+                    />
+                    <InputInfo
+                      message=""
+                    >
+                      <div
+                        className="infoMessage"
+                      />
+                    </InputInfo>
+                    <InputHelp
+                      message=""
+                    >
+                      <div
+                        className="helpMessage"
+                        data-testid="help-message"
+                      />
                     </InputHelp>
                   </div>
                 </TextInput>

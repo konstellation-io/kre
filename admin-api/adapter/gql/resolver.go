@@ -56,7 +56,7 @@ func NewGraphQLResolver(
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
 	userID := ctx.Value("userID").(string)
-	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
+	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, input.Description, userID)
 
 	go func() {
 		runtime := <-onRuntimeStartedChannel

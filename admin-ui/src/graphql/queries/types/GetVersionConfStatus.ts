@@ -9,11 +9,19 @@ import { RuntimeStatus, VersionStatus } from './../../types/globalTypes';
 // GraphQL query operation: GetVersionConfStatus
 // ====================================================
 
+export interface GetVersionConfStatus_runtime_creationAuthor {
+  __typename: 'User';
+  email: string;
+}
+
 export interface GetVersionConfStatus_runtime {
   __typename: 'Runtime';
   id: string;
   name: string;
+  description: string;
   status: RuntimeStatus;
+  creationDate: string;
+  creationAuthor: GetVersionConfStatus_runtime_creationAuthor;
 }
 
 export interface GetVersionConfStatus_versions_creationAuthor {

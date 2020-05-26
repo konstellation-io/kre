@@ -53,6 +53,7 @@ type Subscription {
 
 input CreateRuntimeInput {
   name: String!
+  description: String!
 }
 
 input CreateVersionInput {
@@ -138,6 +139,7 @@ input UpdateConfigurationInput {
 type Runtime {
   id: ID!
   name: String!
+  description: String!
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!

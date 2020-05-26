@@ -18,6 +18,7 @@ export interface GetRuntimes_runtimes {
   __typename: 'Runtime';
   id: string;
   name: string;
+  description: string;
   status: RuntimeStatus;
   creationDate: string;
   publishedVersion: GetRuntimes_runtimes_publishedVersion | null;
