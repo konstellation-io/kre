@@ -32,8 +32,13 @@ const Header: FunctionComponent<Props> = ({
     <header className={styles.container} data-testid="app-header">
       <img
         className={styles.konstellationIcon}
+        src={'/img/brand/favicon-light-32.png'}
+        alt="konstellation icon"
+      />
+      <img
+        className={styles.konstellationText}
         src={'/img/brand/konstellation.png'}
-        alt="konstellation logo"
+        alt="konstellation"
       />
       <div className={styles.customHeaderElements}>{children}</div>
       {!hideSettings && <Settings label={username} />}
