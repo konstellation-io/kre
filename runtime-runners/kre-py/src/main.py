@@ -4,6 +4,7 @@ import importlib.util
 import json
 import logging
 import os
+import sys
 import traceback
 
 from nats.aio.client import ErrTimeout, Client as NATS
@@ -159,6 +160,8 @@ class Runner:
 
     def load_handler_module(self):
         handler_full_path = os.path.join(self.config.base_path, self.config.handler_path)
+        handler_dirname = os.path.dirname(handler_full_path)
+        sys.path.append(handler_dirname)
         spec = importlib.util.spec_from_file_location("worker", handler_full_path)
         handler_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(handler_module)
