@@ -11,16 +11,20 @@ exports[`VerifyEmail matches snapshot 1`] = `
       className="container"
     >
       <h1>
-        Login link sent
+        Check your email
       </h1>
       <Circle
         animation="SUCCESS"
         label="DONE"
-      />
+      >
+        <EmailIcon
+          className="emailIcon icon-huge"
+        />
+      </Circle>
       <p
         className="subtitle"
       >
-        An email with an access link has been sent to your email address.
+        Please, check your email inbox and open the login link included.
       </p>
     </div>
   </div>
