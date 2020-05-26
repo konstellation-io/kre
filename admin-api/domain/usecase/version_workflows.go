@@ -12,9 +12,9 @@ func generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
 	if len(krtYml.Workflows) == 0 {
 		return workflows, nil
 	}
-	nodesMap := map[string]*krt.Node{}
+	nodesMap := map[string]krt.Node{}
 	for _, n := range krtYml.Nodes {
-		nodesMap[n.Name] = &n
+		nodesMap[n.Name] = n
 	}
 
 	for _, w := range krtYml.Workflows {
