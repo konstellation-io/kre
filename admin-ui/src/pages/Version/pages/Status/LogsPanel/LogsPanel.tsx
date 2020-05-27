@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import Header from './components/Header/Header';
 import LogsTab from './components/LogsTab/LogsTab';
 import cx from 'classnames';
@@ -16,15 +16,23 @@ import { get } from 'lodash';
 import TabContainer from './components/TabContainer/TabContainer';
 import { MenuCallToAction } from '../../../../../components/ContextMenu/ContextMenu';
 import ROUTE from '../../../../../constants/routes';
+import { useLocation } from 'react-router-dom';
+import { Location } from 'history';
 
 export const ESC_KEY_CODE = 27;
 
+function actualPageIsLogs(location: Location) {
+  return location.pathname.startsWith(ROUTE.LOGS.replace(':logTabInfo', ''));
+}
+
 function LogsPanel() {
   const client = useApolloClient();
-  const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
+  const location = useLocation();
+  const onlyShowLogs = actualPageIsLogs(location);
+  const [fullScreen, setFullScreen] = useState(onlyShowLogs);
 
+  const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
   const opened = get(localData, 'logsOpened', false);
-  const fullScreen = get(localData, 'logsInFullScreen', false);
   const activeTabId = get(localData, 'activeTabId', '');
   const tabs = get<GetLogTabs, 'logTabs', GetLogTabs_logTabs[]>(
     localData,
@@ -51,6 +59,9 @@ function LogsPanel() {
 
   function togglePanel() {
     setOpened(!opened);
+  }
+  function toggleFullScreen() {
+    setFullScreen(!fullScreen);
   }
 
   function handleTabClick(uniqueId: string): void {
@@ -131,7 +142,14 @@ function LogsPanel() {
           [styles.fullScreen]: fullScreen
         })}
       >
-        {!fullScreen && <Header togglePanel={togglePanel} opened={opened} />}
+        {!onlyShowLogs && (
+          <Header
+            togglePanel={togglePanel}
+            toggleFullScreen={toggleFullScreen}
+            opened={opened}
+            fullScreen={fullScreen}
+          />
+        )}
         <TabContainer
           tabs={tabs}
           activeTabId={activeTabId}
