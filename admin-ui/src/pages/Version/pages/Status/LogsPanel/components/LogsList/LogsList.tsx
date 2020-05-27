@@ -98,13 +98,17 @@ function LogsList({
     },
     onCompleted: data => {
       onNewLogs(data.logs.items.reverse());
-      setNextPage(data.logs.cursor || '');
-      setNoMoreData(false);
+      updateCursor(data.logs.cursor || '');
       handleSubscription();
     },
     onError: handleSubscription,
     fetchPolicy: 'no-cache'
   });
+
+  function updateCursor(newCursor: string) {
+    setNextPage(newCursor);
+    setNoMoreData(newCursor ? false : true);
+  }
 
   function toggleAutoScrollActive() {
     setAutoScrollActive(!autoScrollActive);
@@ -163,11 +167,9 @@ function LogsList({
             ...newData.items.reverse(),
             ...oldLogs
           ]);
-          setNextPage(newData.cursor || '');
-        } else {
-          setNoMoreData(true);
         }
 
+        updateCursor(newData?.cursor || '');
         setRefetching(false);
         return prev;
       }
@@ -193,7 +195,7 @@ function LogsList({
         loadMore={loadPreviousLogs}
         toggleAutoScrollActive={toggleAutoScrollActive}
         autoScrollActive={autoScrollActive}
-        loading={refetching}
+        loading={loading || refetching}
         noMoreData={noMoreData}
       />
     </>
