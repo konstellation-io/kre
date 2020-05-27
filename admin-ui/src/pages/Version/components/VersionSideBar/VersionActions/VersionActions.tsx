@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent } from 'react';
+import React, { useState, FunctionComponent, useRef } from 'react';
 import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions
@@ -16,6 +16,11 @@ import ConfirmationModal from '../../../../../components/ConfirmationModal/Confi
 import Button, { BUTTON_THEMES } from '../../../../../components/Button/Button';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
+type ModalInfo = {
+  action: (comment: string) => void;
+  label: string;
+};
+
 type VersionActionsProps = {
   runtime: GetVersionConfStatus_runtime;
   version: GetVersionConfStatus_versions;
@@ -30,7 +35,12 @@ type ActionProps = {
 };
 
 function VersionActions({ runtime, version }: VersionActionsProps) {
-  const [showActionConfirmation, setShowPublishModal] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const modalInfo = useRef<ModalInfo>({
+    action: () => {},
+    label: ''
+  });
+
   const {
     publishVersion,
     startVersion,
@@ -39,29 +49,19 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
     getMutationVars
   } = useVersionAction(runtime.id);
 
-  function onPublishVersion(comment: string) {
-    closePublishModal();
-    publishVersion(getMutationVars(version.id, comment));
+  function openModal(label: string, mutation: Function) {
+    modalInfo.current = {
+      action: (comment: string) => {
+        mutation(getMutationVars(version.id, comment));
+        closeModal();
+      },
+      label
+    };
+    setShowConfirmation(true);
   }
 
-  function onUnpublishVersion() {
-    unpublishVersion(getMutationVars(version.id));
-  }
-
-  function onStartVersion() {
-    startVersion(getMutationVars(version.id));
-  }
-
-  function onStopVersion() {
-    stopVersion(getMutationVars(version.id));
-  }
-
-  function openPublishModal() {
-    setShowPublishModal(true);
-  }
-
-  function closePublishModal() {
-    setShowPublishModal(false);
+  function closeModal() {
+    setShowConfirmation(false);
   }
 
   const buttons: ActionProps[] = [];
@@ -71,7 +71,7 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       buttons[0] = {
         Icon: StartIcon,
         label: 'START',
-        action: onStartVersion,
+        action: () => openModal('START', startVersion),
         primary: version.configurationCompleted,
         disabled: !version.configurationCompleted
       };
@@ -85,12 +85,12 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       buttons[0] = {
         Icon: StopIcon,
         label: 'STOP',
-        action: onStopVersion
+        action: () => openModal('STOP', stopVersion)
       };
       buttons[1] = {
         Icon: PublishIcon,
         label: 'PUBLISH',
-        action: openPublishModal,
+        action: () => openModal('PUBLISH', publishVersion),
         primary: true
       };
       break;
@@ -103,7 +103,7 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       buttons[1] = {
         Icon: UnpublishIcon,
         label: 'UNPUBLISH',
-        action: onUnpublishVersion,
+        action: () => openModal('UNPUBLISH', unpublishVersion),
         primary: true
       };
       break;
@@ -123,12 +123,12 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
           style={{ flexGrow: 1 }}
         />
       ))}
-      {showActionConfirmation && (
+      {showConfirmation && (
         <ConfirmationModal
-          title="YOU ARE ABOUT TO PUBLISH A VERSION"
+          title={`YOU ARE ABOUT TO ${modalInfo.current.label} A VERSION`}
           message=""
-          onAction={onPublishVersion}
-          onClose={closePublishModal}
+          onAction={modalInfo.current.action}
+          onClose={closeModal}
         />
       )}
     </div>

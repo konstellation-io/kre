@@ -86,17 +86,17 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 
 func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Start(userID, input.VersionID)
+	return r.versionInteractor.Start(userID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Stop(userID, input.VersionID)
+	return r.versionInteractor.Stop(userID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Unpublish(userID, input.VersionID)
+	return r.versionInteractor.Unpublish(userID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVersionInput) (*entity.Version, error) {

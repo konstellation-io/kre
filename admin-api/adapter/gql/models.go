@@ -57,14 +57,17 @@ type SettingsInput struct {
 
 type StartVersionInput struct {
 	VersionID string `json:"versionId"`
+	Comment   string `json:"comment"`
 }
 
 type StopVersionInput struct {
 	VersionID string `json:"versionId"`
+	Comment   string `json:"comment"`
 }
 
 type UnpublishVersionInput struct {
 	VersionID string `json:"versionId"`
+	Comment   string `json:"comment"`
 }
 
 type UpdateConfigurationInput struct {

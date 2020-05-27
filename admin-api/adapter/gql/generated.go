@@ -1208,10 +1208,12 @@ input CreateVersionInput {
 
 input StartVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 input StopVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 input PublishVersionInput {
@@ -1221,6 +1223,7 @@ input PublishVersionInput {
 
 input UnpublishVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 type VersionNodeStatus {
@@ -6540,6 +6543,12 @@ func (ec *executionContext) unmarshalInputStartVersionInput(ctx context.Context,
 			if err != nil {
 				return it, err
 			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -6558,6 +6567,12 @@ func (ec *executionContext) unmarshalInputStopVersionInput(ctx context.Context, 
 			if err != nil {
 				return it, err
 			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -6573,6 +6588,12 @@ func (ec *executionContext) unmarshalInputUnpublishVersionInput(ctx context.Cont
 		case "versionId":
 			var err error
 			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

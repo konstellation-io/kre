@@ -63,10 +63,12 @@ input CreateVersionInput {
 
 input StartVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 input StopVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 input PublishVersionInput {
@@ -76,6 +78,7 @@ input PublishVersionInput {
 
 input UnpublishVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 type VersionNodeStatus {
