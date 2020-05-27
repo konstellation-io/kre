@@ -22,14 +22,12 @@ exports[`LogItem matches snapshot 1`] = `
     <div
       className="hour"
     >
-      00:00:00
+      00:00:00.000
     </div>
     <div
       className="workflow"
-      title="Workflow X"
-    >
-      Workflow X
-    </div>
+      title=""
+    />
     <div
       className="node"
       title="nodeName"

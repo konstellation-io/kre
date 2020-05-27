@@ -5,7 +5,7 @@ exports[`Filters matches snapshot 1`] = `
   className="container"
 >
   <Left
-    className="filterContainer"
+    className="filterContainer leftContainer"
   >
     <div
       className="searchFilter"
@@ -33,31 +33,56 @@ exports[`Filters matches snapshot 1`] = `
         placeholder="Select Processes"
       />
     </div>
+  </Left>
+  <Right
+    className="filterContainer rightFilters"
+  >
     <div
-      className="selectType"
+      className="filterLevel"
     >
-      <Select
+      <MultiSelect
         className="selectTypeForm"
+        formSelectedOptions={Array []}
         hideError={true}
         label=""
         onChange={[Function]}
         options={
           Array [
-            "DEBUG",
-            "ERROR",
-            "INFO",
-            "WARN",
+            Object {
+              "Icon": <LevelIcon
+                level="INFO"
+              />,
+              "label": "INFO",
+            },
+            Object {
+              "Icon": <LevelIcon
+                level="DEBUG"
+              />,
+              "label": "DEBUG",
+            },
+            Object {
+              "Icon": <LevelIcon
+                level="WARN"
+              />,
+              "label": "WARN",
+            },
+            Object {
+              "Icon": <LevelIcon
+                level="ERROR"
+              />,
+              "label": "ERROR",
+            },
           ]
         }
         placeholder="ALL LEVELS"
+        selectAllText="ALL LEVELS"
+        selectionUnit="LEVEL"
         theme="light"
       />
     </div>
-  </Left>
-  <Right
-    className="filterContainer rightFilters"
-  >
     <DateFilter
+      formEndDate="2020-01-01"
+      formStartDate="2020-01-01"
       selectedOption="2020-01-01"
     />
   </Right>

@@ -6,6 +6,7 @@ exports[`Logs Header matches snapshot 1`] = `
 >
   <div
     className="title"
+    onClick={[MockFunction]}
   >
     <WithStyles(ForwardRef(SvgIcon))
       className="icon-small"
