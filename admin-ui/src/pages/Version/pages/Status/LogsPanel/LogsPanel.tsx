@@ -20,8 +20,6 @@ import ROUTE from '../../../../../constants/routes';
 import { useLocation } from 'react-router-dom';
 import { Location } from 'history';
 
-export const ESC_KEY_CODE = 27;
-
 function actualPageIsLogs(location: Location) {
   return location.pathname.startsWith(ROUTE.LOGS.replace(':logTabInfo', ''));
 }
@@ -40,19 +38,6 @@ function LogsPanel() {
     'logTabs',
     []
   );
-
-  const onKeyDown = useCallback(
-    (e: any) => {
-      if (e.keyCode === ESC_KEY_CODE) {
-        client.writeData({ data: { logsOpened: false } });
-      }
-    },
-    [client]
-  );
-  useEffect(() => {
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [onKeyDown]);
 
   function setOpened(value: boolean) {
     client.writeData({ data: { logsOpened: value } });

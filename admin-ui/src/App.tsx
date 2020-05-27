@@ -8,6 +8,8 @@ import './styles/markdown-navbar.scss';
 import './styles/react-tabs.scss';
 
 import React from 'react';
+import { HotKeys } from 'react-hotkeys';
+import keymaps from './keymaps';
 import { Router, Route } from 'react-router-dom';
 import { Redirect, Switch, useHistory } from 'react-router';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
@@ -112,13 +114,30 @@ export function Routes() {
 }
 
 function App() {
+  const client = useApolloClient();
+
+  function openLogs() {
+    client.writeData({ data: { logsOpened: true } });
+  }
+
+  function closeLogs() {
+    client.writeData({ data: { logsOpened: false } });
+  }
+
+  const handlers = {
+    CLOSE_LOGS: closeLogs,
+    OPEN_LOGS: openLogs
+  };
+
   return (
-    <div className="app">
-      <Router history={history}>
-        <NotificationService />
-        <Routes />
-      </Router>
-    </div>
+    <HotKeys keyMap={keymaps} handlers={handlers}>
+      <div className="app">
+        <Router history={history}>
+          <NotificationService />
+          <Routes />
+        </Router>
+      </div>
+    </HotKeys>
   );
 }
 
