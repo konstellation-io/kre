@@ -16,6 +16,10 @@ import LogsFooter from '../LogsFooter/LogsFooter';
 import { LogFilters } from '../../../../../../../graphql/types/globalTypes';
 import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
 import SpinnerCircular from '../../../../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import {
+  GetLogTabs,
+  GET_LOGS_OPENED
+} from '../../../../../../../graphql/client/queries/getLogsOpened.graphql';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -69,6 +73,9 @@ function LogsList({
   onNewLogs,
   clearLogs
 }: Props) {
+  const { data: localData } = useQuery<GetLogTabs>(GET_LOGS_OPENED);
+  const logsOpened = localData?.logsOpened;
+
   const { nodeNameToId } = useWorkflowsAndNodes(versionId);
   const [autoScrollActive, setAutoScrollActive] = useState(false);
   const [nextPage, setNextPage] = useState<string>('');
@@ -173,7 +180,7 @@ function LogsList({
   return (
     <>
       <LogListHeader />
-      {loading && (
+      {loading && logsOpened && (
         <div className={styles.spinner}>
           <SpinnerCircular size={100} />
         </div>
