@@ -160,7 +160,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 }
 
 // Start create the resources of the given Version
-func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Version, error) {
+func (i *VersionInteractor) Start(userID string, versionID string, comment string) (*entity.Version, error) {
 	i.logger.Infof("The user %s is starting version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
@@ -192,7 +192,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStartAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterStartAction(userID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 }
 
 // Stop removes the resources of the given Version
-func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Version, error) {
+func (i *VersionInteractor) Stop(userID string, versionID string, comment string) (*entity.Version, error) {
 	i.logger.Infof("The user %s is stopping version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
@@ -228,7 +228,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStopAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterStopAction(userID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -306,7 +306,7 @@ func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*
 }
 
 // Unpublish set a Version as not published on DB and K8s
-func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.Version, error) {
+func (i *VersionInteractor) Unpublish(userID string, versionID string, comment string) (*entity.Version, error) {
 	i.logger.Infof("The user %s is unpublishing version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
@@ -336,7 +336,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterUnpublishAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterUnpublishAction(userID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
