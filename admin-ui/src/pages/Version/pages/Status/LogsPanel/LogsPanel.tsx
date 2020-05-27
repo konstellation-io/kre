@@ -5,6 +5,7 @@ import cx from 'classnames';
 import styles from './LogsPanel.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import IconClose from '@material-ui/icons/Close';
+import IconCloseOthers from '@material-ui/icons/ClearAll';
 import IconOpenInTab from '@material-ui/icons/Tab';
 import IconDuplicate from '@material-ui/icons/ControlPointDuplicate';
 import {
@@ -79,6 +80,15 @@ function LogsPanel() {
     return newActiveTabId;
   }
 
+  function closeAllButIndex(index: number): void {
+    const newTabs = [tabs[index]];
+    const newActiveTabId = tabs[index].uniqueId;
+
+    client.writeData({
+      data: { activeTabId: newActiveTabId, logTabs: newTabs }
+    });
+  }
+
   function closeTabByIndex(index: number): void {
     const newTabs = [...tabs];
     newTabs.splice(index, 1);
@@ -124,6 +134,12 @@ function LogsPanel() {
       Icon: IconOpenInTab,
       text: 'open in a new tab',
       callToAction: (_: any, index: number) => openInANewTab(index)
+    },
+    {
+      Icon: IconCloseOthers,
+      text: 'close others',
+      disabled: tabs.length < 2,
+      callToAction: (_: any, index: number) => closeAllButIndex(index)
     },
     {
       Icon: IconClose,

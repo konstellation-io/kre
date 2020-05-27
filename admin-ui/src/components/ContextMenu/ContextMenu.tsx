@@ -12,6 +12,7 @@ import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export interface MenuCallToAction {
   Icon?: FunctionComponent<SvgIconProps>;
+  disabled?: boolean;
   text: string;
   callToAction: Function;
 }
@@ -116,6 +117,7 @@ function ContextMenu({
                   Icon={action.Icon}
                   onClick={() => handleMenuItemClick(action)}
                   align={BUTTON_ALIGN.LEFT}
+                  disabled={action.disabled}
                 />
               </li>
             ))}

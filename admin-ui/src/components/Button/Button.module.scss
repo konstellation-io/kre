@@ -80,7 +80,7 @@ a.navLinkSelected .btn,
   }
 
   &.disabled {
-    color: font-color(dark);
+    color: font-color(disabled);
   }
 }
 
@@ -120,7 +120,7 @@ a.navLinkSelected .btn,
 }
 
 .disabled {
-  color: font-color(light);
+  color: font-color(disabled);
   pointer-events: none;
   opacity: 0.5;
 }
