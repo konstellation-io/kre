@@ -8,6 +8,7 @@ import React, {
 import styles from './ContextMenu.module.scss';
 import useClickOutside from '../../hooks/useClickOutside';
 import Button, { BUTTON_ALIGN } from '../Button/Button';
+import ContextualMenuModal from './ContextualMenuModal';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export interface MenuCallToAction {
@@ -26,7 +27,7 @@ interface ContextMenu {
 type Props = {
   children: ReactElement;
   actions: MenuCallToAction[];
-  contextObject: number;
+  contextObject?: number;
   openOnLeftClick?: boolean;
 };
 
@@ -99,30 +100,32 @@ function ContextMenu({
   return (
     <>
       {stateContextMenu.isVisible && (
-        <div
-          className={styles.contextMenuContainer}
-          ref={contextMenuRef}
-          style={{
-            top: `${stateContextMenu.y + 7}px`,
-            left: `${stateContextMenu.x + 7}px`
-          }}
-          onClick={e => e.stopPropagation()}
-          onContextMenu={e => e.preventDefault()}
-        >
-          <ul className={styles.contextMenuList}>
-            {actions.map((action, index) => (
-              <li key={`${action.text}-${index}`}>
-                <Button
-                  label={action.text}
-                  Icon={action.Icon}
-                  onClick={() => handleMenuItemClick(action)}
-                  align={BUTTON_ALIGN.LEFT}
-                  disabled={action.disabled}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ContextualMenuModal>
+          <div
+            className={styles.contextMenuContainer}
+            ref={contextMenuRef}
+            style={{
+              top: `${stateContextMenu.y + 7}px`,
+              left: `${stateContextMenu.x + 7}px`
+            }}
+            onClick={e => e.stopPropagation()}
+            onContextMenu={e => e.preventDefault()}
+          >
+            <ul className={styles.contextMenuList}>
+              {actions.map((action, index) => (
+                <li key={`${action.text}-${index}`}>
+                  <Button
+                    label={action.text}
+                    Icon={action.Icon}
+                    onClick={() => handleMenuItemClick(action)}
+                    align={BUTTON_ALIGN.LEFT}
+                    disabled={action.disabled}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </ContextualMenuModal>
       )}
       {React.cloneElement(children, { ref: childElement })}
     </>

@@ -148,3 +148,8 @@ a:active {
 .icon-big {
   font-size: 2rem !important;
 }
+
+#contextual-menu {
+  position: relative;
+  z-index: 999;
+}
