@@ -18,6 +18,7 @@ export const defaultFilters: {
 } = {
   dateOption: dateFilterOptions.lastTwentyFourHours,
   startDate: moment()
+    .utc()
     .subtract(24, 'hour')
     .toISOString(true),
   endDate: null,

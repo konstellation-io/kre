@@ -90,6 +90,10 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.MetricRow)
 		}
 	}
 
+	if totalNoErrors == 0 {
+		return nil, nil
+	}
+
 	var allCategories []string
 	for k := range categories {
 		allCategories = append(allCategories, k)
@@ -99,7 +103,10 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.MetricRow)
 	var confusionMatrix []*entity.MetricChartData
 	for _, expectedCat := range allCategories {
 		for _, predictedCat := range allCategories {
-			val := int((float64(confusion[expectedCat][predictedCat]) / float64(totalByCat[expectedCat])) * 100)
+			val := 0
+			if totalByCat[expectedCat] != 0 {
+				val = int((float64(confusion[expectedCat][predictedCat]) / float64(totalByCat[expectedCat])) * 100)
+			}
 
 			confusionMatrix = append(confusionMatrix, &entity.MetricChartData{
 				X: predictedCat,
@@ -116,17 +123,22 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.MetricRow)
 	accuracyByCat := make(map[string]float64)
 	sumAccuracies := float64(0)
 	for _, cat := range allCategories {
+		if totalByCat[cat] == 0 {
+			accuracyByCat[cat] = 0
+			continue
+		}
+
 		accuracyByCat[cat] = float64(hitsByCat[cat]) / float64(totalByCat[cat])
 		sumAccuracies += accuracyByCat[cat]
 	}
 
-	// Accuracy Macro = cat 1 accuracy + cat N accuracy / Number of categories
-	numCategories := float64(len(allCategories))
-	accuracyMacro := int((sumAccuracies / numCategories) * 100)
-
 	// Accuracy = items classified correctly / all items classified
 	// TP_A / (TP_A + FP_A)
 	accuracyTotal := int((float64(hits) / float64(totalNoErrors)) * 100)
+
+	// Accuracy Macro = cat 1 accuracy + cat N accuracy / Number of categories
+	numCategories := float64(len(allCategories))
+	accuracyMacro := int((sumAccuracies / numCategories) * 100)
 
 	// Weighted Accuracy = (Acc Cat 1 * Total Cat 1) + (Acc Cat N * Total Cat N) / Total samples
 	accuracyWeighted := 0.0
