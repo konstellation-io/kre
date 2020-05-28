@@ -93,14 +93,17 @@ export interface SettingsInput {
 
 export interface StartVersionInput {
   versionId: string;
+  comment: string;
 }
 
 export interface StopVersionInput {
   versionId: string;
+  comment: string;
 }
 
 export interface UnpublishVersionInput {
   versionId: string;
+  comment: string;
 }
 
 export interface UpdateConfigurationInput {
