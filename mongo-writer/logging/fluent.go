@@ -39,13 +39,14 @@ func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 		}
 
 		doc := bson.M{
-			"date":        date,
-			"level":       level,
-			"message":     message,
-			"workflowId":  msgData["workflowId"],
-			"nodeId":      msgData["nodeId"],
-			"nodeName":    msgData["nodeName"],
-			"versionName": msgData["versionName"],
+			"date":         date,
+			"level":        level,
+			"message":      message,
+			"workflowId":   msgData["workflowId"],
+			"workflowName": msgData["workflowName"],
+			"nodeId":       msgData["nodeId"],
+			"nodeName":     msgData["nodeName"],
+			"versionName":  msgData["versionName"],
 		}
 
 		result[logsCollName] = append(result[logsCollName], doc)

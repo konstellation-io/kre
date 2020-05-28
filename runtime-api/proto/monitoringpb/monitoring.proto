@@ -4,18 +4,21 @@ package monitoring;
 option go_package = "monitoringpb";
 
 message NodeLogsRequest {
-  string nodeId = 1;
+  string search = 1;
+  string versionID = 2;
+  repeated string nodeIDs = 3;
+  repeated string levels = 4;
 }
 
 message NodeLogsResponse {
   string id = 1;
   string date = 2;
-  string versionId = 3;
-  string nodeId = 4;
-  string podId = 5;
-  string message = 6;
-  string level = 7;
-  string nodeName = 8;
+  string level = 3;
+  string message = 4;
+  string nodeId = 5;
+  string nodeName = 6;
+  string workflowId = 7;
+  string workflowName = 8;
 }
 
 message NodeStatusRequest {
@@ -32,9 +35,9 @@ message SearchLogsRequest {
   string search = 1;
   string startDate = 2;
   string endDate = 3;
-  string workflowID = 4;
-  string nodeID = 5;
-  string level = 6;
+  string versionID = 4;
+  repeated string nodeIDs = 5;
+  repeated string levels = 6;
   string cursor = 7;
 }
 

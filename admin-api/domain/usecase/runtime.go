@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/kre/admin-api/domain/service"
@@ -50,10 +51,11 @@ func NewRuntimeInteractor(
 }
 
 // CreateRuntime adds a new Runtime
-func (i *RuntimeInteractor) CreateRuntime(name string, userID string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
+func (i *RuntimeInteractor) CreateRuntime(name string, description string, userID string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
 	runtime := &entity.Runtime{
-		Name:  name,
-		Owner: userID,
+		Name:        name,
+		Description: description,
+		Owner:       userID,
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
 			Password:  i.passwordGenerator.NewPassword(),

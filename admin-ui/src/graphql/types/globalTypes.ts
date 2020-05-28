@@ -64,6 +64,7 @@ export interface ConfigurationVariablesInput {
 
 export interface CreateRuntimeInput {
   name: string;
+  description: string;
 }
 
 export interface CreateVersionInput {

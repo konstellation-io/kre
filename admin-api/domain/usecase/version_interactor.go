@@ -160,7 +160,7 @@ func (i *VersionInteractor) Create(userID, runtimeID string, krtFile io.Reader) 
 }
 
 // Start create the resources of the given Version
-func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Version, error) {
+func (i *VersionInteractor) Start(userID string, versionID string, comment string) (*entity.Version, error) {
 	i.logger.Infof("The user %s is starting version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
@@ -192,7 +192,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStartAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterStartAction(userID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func (i *VersionInteractor) Start(userID string, versionID string) (*entity.Vers
 }
 
 // Stop removes the resources of the given Version
-func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Version, error) {
+func (i *VersionInteractor) Stop(userID string, versionID string, comment string) (*entity.Version, error) {
 	i.logger.Infof("The user %s is stopping version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
@@ -228,7 +228,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string) (*entity.Versi
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStopAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterStopAction(userID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -306,7 +306,7 @@ func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*
 }
 
 // Unpublish set a Version as not published on DB and K8s
-func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.Version, error) {
+func (i *VersionInteractor) Unpublish(userID string, versionID string, comment string) (*entity.Version, error) {
 	i.logger.Infof("The user %s is unpublishing version %s", userID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
@@ -336,7 +336,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string) (*entity.
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterUnpublishAction(userID, runtime, version)
+	err = i.userActivityInteractor.RegisterUnpublishAction(userID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -396,22 +396,32 @@ func (i *VersionInteractor) WatchVersionStatus(versionId string, stopCh <-chan b
 	return i.monitoringService.VersionStatus(runtime, version.Name, stopCh)
 }
 
-func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
-	stopChannel chan bool) (<-chan *entity.NodeLog, error) {
-
+func (i *VersionInteractor) WatchNodeLogs(
+	runtimeID, versionID string,
+	filters entity.LogFilters,
+	stopChannel chan bool,
+) (<-chan *entity.NodeLog, error) {
 	runtime, err := i.runtimeRepo.GetByID(runtimeID)
 	if err != nil {
 		return nil, err
 	}
 
-	return i.monitoringService.NodeLogs(runtime, nodeID, stopChannel)
+	return i.monitoringService.NodeLogs(runtime, versionID, filters, stopChannel)
 }
 
-func (i *VersionInteractor) SearchLogs(ctx context.Context, runtimeID string, opts entity.SearchLogsOptions) (entity.SearchLogsResult, error) {
+func (i *VersionInteractor) SearchLogs(
+	ctx context.Context,
+	runtimeID string,
+	versionID string,
+	filters entity.LogFilters,
+	cursor *string,
+) (entity.SearchLogsResult, error) {
 	var result entity.SearchLogsResult
+
 	runtime, err := i.runtimeRepo.GetByID(runtimeID)
 	if err != nil {
 		return result, err
 	}
-	return i.monitoringService.SearchLogs(ctx, runtime, opts)
+
+	return i.monitoringService.SearchLogs(ctx, runtime, versionID, filters, cursor)
 }

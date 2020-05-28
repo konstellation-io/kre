@@ -9,7 +9,12 @@ const pubsub = new PubSub();
 const generateRuntime = () => ({
   id: parseInt(casual.array_of_digits(8).join('')),
   name: casual.name,
+  description: casual.sentences(10),
   status: casual.random_element(['CREATING', 'STARTED', 'ERROR']),
+  creationAuthor: () => ({
+    id: casual.uuid,
+    email: casual.random_element(emails)
+  }),
   creationDate: casual.moment.toISOString(),
   versions: () => new MockList([1, 5]),
   publishedVersion: () => {

@@ -6,15 +6,15 @@ type Props = {
   label: string;
   Icon: JSX.Element;
   selected: boolean;
-  onSelection: (label: string, add: boolean) => void;
+  onChange: (label: string, checked: boolean) => void;
 };
 
-function Option({ label, Icon, selected, onSelection }: Props) {
+function Option({ label, Icon, selected, onChange }: Props) {
   return (
     <div className={styles.optionContainer}>
       <Check
         checked={selected}
-        onChange={(add: boolean) => onSelection(label, add)}
+        onChange={(checked: boolean) => onChange(label, checked)}
       />
       <div className={styles.label}>{label}</div>
       <div className={styles.icon}>{Icon}</div>

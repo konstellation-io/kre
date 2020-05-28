@@ -8,9 +8,12 @@ pylint = "*"
 
 [packages]
 asyncio-nats-client = "==0.10.0"
-numpy = "==1.18.1"
-pandas = "==0.25.3"
-scikit-learn = "==0.22.1"
+numpy = "==1.18.4"
+pandas = "==1.0.3"
+scikit-learn = "==0.23.1"
+gensim = "==3.4.0"
+nltk = "==3.3"
+torch= "==1.4.0"
 
 [requires]
-python_version = "3.7"
+python_version = "3"

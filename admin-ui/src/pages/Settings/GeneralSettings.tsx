@@ -160,6 +160,7 @@ function GeneralSettings() {
           actionButtonLabel="CONTINUE"
           onAccept={handleSubmit(onSubmit)}
           onClose={closeModal}
+          blocking
         />
       )}
     </>

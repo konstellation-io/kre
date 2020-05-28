@@ -66,6 +66,29 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 
 	m.logger.Info(fmt.Sprintf("Creating entrypoint deployment in %s named %s from image %s", ns, name, entrypointImage))
 
+	envVars := []apiv1.EnvVar{
+		{
+			Name:  "KRT_VERSION",
+			Value: version.GetName(),
+		},
+		{
+			Name:  "KRT_WORKFLOW_NAME",
+			Value: "entrypoint",
+		},
+		{
+			Name:  "KRT_WORKFLOW_ID",
+			Value: "entrypoint",
+		},
+		{
+			Name:  "KRT_NODE_NAME",
+			Value: "entrypoint",
+		},
+		{
+			Name:  "KRT_NODE_ID",
+			Value: "entrypoint",
+		},
+	}
+
 	return m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("%s-entrypoint", name),
@@ -119,12 +142,7 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 									MountPath: "/var/log/app",
 								},
 							},
-							Env: []apiv1.EnvVar{
-								{
-									Name:  "KRE_VERSION_NAME",
-									Value: name,
-								},
-							},
+							Env: envVars,
 							EnvFrom: []apiv1.EnvFromSource{
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
@@ -145,12 +163,7 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 								"/fluent-bit/etc/fluent-bit.conf",
 								"-v",
 							},
-							Env: []apiv1.EnvVar{
-								{
-									Name:  "KRE_VERSION_NAME",
-									Value: name,
-								},
-							},
+							Env: envVars,
 							VolumeMounts: []apiv1.VolumeMount{
 								{
 									Name:      "version-conf-files",

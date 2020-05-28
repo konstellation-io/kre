@@ -25,6 +25,7 @@ type RuntimeStatus struct {
 type Runtime struct {
 	ID           string      `bson:"_id"`
 	Name         string      `bson:"name"`
+	Description  string      `bson:"description"`
 	CreationDate time.Time   `bson:"creationDate"`
 	Owner        string      `bson:"owner"`
 	Status       string      `bson:"status"` // TODO use enum

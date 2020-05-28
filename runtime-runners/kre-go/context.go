@@ -65,18 +65,6 @@ func (c *HandlerContext) SetValue(key string, value interface{}) {
 	c.values[key] = value
 }
 
-func (c *HandlerContext) SetValueString(key string, value string) {
-	c.values[key] = value
-}
-
-func (c *HandlerContext) SetValueInt(key string, value int) {
-	c.values[key] = value
-}
-
-func (c *HandlerContext) SetValueFloat(key string, value float64) {
-	c.values[key] = value
-}
-
 func (c *HandlerContext) GetValue(key string) interface{} {
 	if val, ok := c.values[key]; ok {
 		return val

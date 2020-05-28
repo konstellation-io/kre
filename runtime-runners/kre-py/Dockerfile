@@ -18,4 +18,6 @@ COPY . .
 RUN python3 -m pip install pipenv && \
     pipenv install --system --deploy
 
+RUN python3 /kre/install_stopwords.py
+
 CMD ["sh","-c","/usr/bin/python3 /kre/src/main.py 2>&1 | tee -a /var/log/app/app.log"]

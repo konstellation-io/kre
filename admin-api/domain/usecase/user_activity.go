@@ -113,7 +113,7 @@ func (i *UserActivityInteractor) RegisterCreateAction(userID string, runtime *en
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *entity.Runtime, version *entity.Version) error {
+func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
 	err := i.Create(
 		userID,
 		UserActivityTypeStartVersion,
@@ -122,12 +122,13 @@ func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *ent
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
+			{Key: "COMMENT", Value: comment},
 		})
 
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *entity.Runtime, version *entity.Version) error {
+func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
 	err := i.Create(
 		userID,
 		UserActivityTypeStopVersion,
@@ -136,6 +137,7 @@ func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *enti
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
+			{Key: "COMMENT", Value: comment},
 		})
 	return checkUserActivityError(i.logger, err)
 }
@@ -156,7 +158,7 @@ func (i *UserActivityInteractor) RegisterPublishAction(userID string, runtime *e
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime *entity.Runtime, version *entity.Version) error {
+func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
 	err := i.Create(
 		userID,
 		UserActivityTypeUnpublishVersion,
@@ -165,6 +167,7 @@ func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime 
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
+			{Key: "COMMENT", Value: comment},
 		})
 	return checkUserActivityError(i.logger, err)
 }

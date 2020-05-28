@@ -42,7 +42,7 @@ function getLogsQueryFilters(
 ) {
   return {
     startDate: filterValues.startDate,
-    endDate: filterValues.startDate,
+    endDate: filterValues.endDate,
     search: filterValues.search,
     levels: filterValues.levels,
     nodeIds:
@@ -135,7 +135,7 @@ function LogsList({
 
   function handleSubscription() {
     const { endDate } = filterValues;
-    if (moment().isBefore(endDate)) {
+    if (endDate === null) {
       unsubscribeRef.current && unsubscribeRef.current();
       unsubscribeRef.current = subscribe();
     }

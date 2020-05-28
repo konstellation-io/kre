@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import Lottie from '../../Lottie/Lottie';
 import { STATES } from '../../../constants/application';
@@ -19,14 +19,16 @@ const ANIM_SEGMENTS: { [key: string]: [number, number] } = {
 type Props = {
   animation?: string;
   label?: string;
+  children?: JSX.Element;
   size?: number;
 };
 
-function Circle({
+const Circle: FC<Props> = ({
   animation = STATES.INITIALIZING,
   label = 'LOADING...',
-  size = 250
-}: Props = {}) {
+  size = 250,
+  children
+}) => {
   const animationSegments = [ANIM_SEGMENTS[animation]];
 
   // Adds loading animation after finishing initiallization animation.
@@ -51,10 +53,10 @@ function Circle({
           [styles.initializing]: animation === STATES.INITIALIZING
         })}
       >
-        {label}
+        {children || label}
       </div>
     </div>
   );
-}
+};
 
 export default Circle;
