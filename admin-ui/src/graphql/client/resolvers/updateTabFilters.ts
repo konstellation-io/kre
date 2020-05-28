@@ -17,9 +17,6 @@ export const defaultFilters: {
   [key: string]: string | NodeSelection[] | null;
 } = {
   dateOption: dateFilterOptions.lastTwentyFourHours,
-  startDate: moment()
-    .subtract(24, 'hour')
-    .toISOString(true),
   endDate: null,
   search: '',
   nodes: [],
@@ -31,6 +28,9 @@ export function getDefaultFilters():
   | UpdateTabFiltersInput_newFilters {
   return {
     ...defaultFilters,
+    startDate: moment()
+      .subtract(24, 'hour')
+      .toISOString(true),
     __typename: 'logTabFilters'
   };
 }
