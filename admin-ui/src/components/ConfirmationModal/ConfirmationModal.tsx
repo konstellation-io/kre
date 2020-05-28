@@ -59,6 +59,7 @@ function ConfirmationModal({
             whiteColor
             showClearButton
             textArea
+            autoFocus
           />
         </div>
         <HorizontalBar>

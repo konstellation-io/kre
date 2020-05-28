@@ -22,6 +22,7 @@ exports[`ConfirmationModal matches snapshot 1`] = `
       className="comment"
     >
       <TextInput
+        autoFocus={true}
         label="please, write your comment:  "
         limits={
           Object {
