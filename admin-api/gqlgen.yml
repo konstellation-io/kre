@@ -74,9 +74,10 @@ models:
     model: gitlab.com/konstellation/kre/admin-api/domain/entity.UserActivityVar
   NodeLog:
     model: gitlab.com/konstellation/kre/admin-api/domain/entity.NodeLog
-    fields:
-      level:
-        resolver: true
+  LogLevel:
+    model: gitlab.com/konstellation/kre/admin-api/domain/entity.LogLevel
+  LogFilters:
+    model: gitlab.com/konstellation/kre/admin-api/domain/entity.LogFilters
   Settings:
     model: gitlab.com/konstellation/kre/admin-api/domain/entity.Setting
   MetricChartData:

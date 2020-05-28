@@ -4,47 +4,40 @@ import DateFilter from './components/DatesFilter/DateFilter';
 import Right from '../../../../../../../components/Layout/Right/Right';
 import Left from '../../../../../../../components/Layout/Left/Left';
 import SearchSelect from '../../../../../../../components/Form/SearchSelect/SearchSelect';
-import { loader } from 'graphql.macro';
-import Select, {
+import MultiSelect, {
+  MultiSelectOption,
   SelectTheme
-} from '../../../../../../../components/Form/Select/Select';
+} from '../../../../../../../components/Form/MultiSelect/MultiSelect';
 import GroupSelect, {
   GroupSelectData
 } from '../../../../../../../components/Form/GroupSelect/GroupSelect';
 import cx from 'classnames';
 import { LogLevel } from '../../../../../../../graphql/types/globalTypes';
-import { useQuery } from '@apollo/react-hooks';
-import {
-  GetVersionWorkflowsVariables,
-  GetVersionWorkflows
-} from '../../../../../../../graphql/queries/types/GetVersionWorkflows';
-import { ProcessSelection } from '../../../../../../../graphql/client/typeDefs';
+import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
+import { NodeSelection } from '../../../../../../../graphql/client/typeDefs';
 import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import LevelIcon from '../../../../../../../components/LevelIcon/LevelIcon';
 
-const GetVersionWorkflowsQuery = loader(
-  '../../../../../../../graphql/queries/getVersionWorkflows.graphql'
-);
-
-function processSelectionToDoubleSelector(
-  selections: ProcessSelection[]
+function nodesSelectionToDoubleSelector(
+  selections: NodeSelection[]
 ): GroupSelectData {
   const data: { [key: string]: string[] } = {};
 
-  selections.forEach(({ workflowName, processNames }) => {
-    data[workflowName] = processNames;
+  selections.forEach(({ workflowName, nodeNames }) => {
+    data[workflowName] = nodeNames;
   });
 
   return data;
 }
 
-function doubleSelectorToProcessSelection(
+function doubleSelectorToNodesSelection(
   selections: GroupSelectData
-): ProcessSelection[] {
-  const data: ProcessSelection[] = Object.entries(selections).map(
-    ([workflowName, processes]) => ({
+): NodeSelection[] {
+  const data: NodeSelection[] = Object.entries(selections).map(
+    ([workflowName, nodeNames]) => ({
       workflowName,
-      processNames: processes,
-      __typename: 'ProcessSelection'
+      nodeNames,
+      __typename: 'NodeSelection'
     })
   );
 
@@ -57,31 +50,25 @@ type Props = {
   filterValues: GetLogTabs_logTabs_filters;
 };
 function Filters({ updateFilters, filterValues, versionId }: Props) {
-  const { data } = useQuery<GetVersionWorkflows, GetVersionWorkflowsVariables>(
-    GetVersionWorkflowsQuery,
-    {
-      variables: { versionId }
-    }
-  );
-
-  const workflowsAndProcesses: { [key: string]: string[] } = {};
-  data?.version.workflows.forEach(
-    workflow =>
-      (workflowsAndProcesses[workflow.name] = workflow.nodes.map(
-        node => node.name
-      ))
-  );
+  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionId);
 
   const logTypes = Object.values(LogLevel);
+  const levelOptions = logTypes.map(
+    (level: LogLevel) =>
+      ({
+        label: level,
+        Icon: <LevelIcon level={level} />
+      } as MultiSelectOption)
+  );
 
-  function onProcessSelection(newSelection: GroupSelectData) {
+  function onNodeSelection(newSelection: GroupSelectData) {
     updateFilters({
-      processes: doubleSelectorToProcessSelection(newSelection)
+      nodes: doubleSelectorToNodesSelection(newSelection)
     });
   }
 
-  function onLevelSelection(newLevel: LogLevel) {
-    updateFilters({ level: newLevel });
+  function onLevelSelection<LogLevel>(newLevels: LogLevel[]) {
+    updateFilters({ levels: newLevels });
   }
 
   function onSearchUpdate(newSearch: string) {
@@ -90,7 +77,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
 
   return (
     <div className={styles.container}>
-      <Left className={styles.filterContainer}>
+      <Left className={cx(styles.filterContainer, styles.leftContainer)}>
         <div className={styles.searchFilter}>
           <SearchSelect
             options={[]}
@@ -105,34 +92,38 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
         </div>
         <div className={styles.selectProcesses}>
           <GroupSelect
-            options={workflowsAndProcesses}
-            formSelectedOptions={processSelectionToDoubleSelector(
-              filterValues.processes || []
+            options={workflowsAndNodesNames}
+            formSelectedOptions={nodesSelectionToDoubleSelector(
+              filterValues.nodes || []
             )}
-            onChange={onProcessSelection}
+            onChange={onNodeSelection}
             label=""
             placeholder="Select Processes"
             hideError
             hideSelections
           />
         </div>
-        <div className={styles.selectType}>
-          <Select
-            placeholder="ALL LEVELS"
-            options={logTypes}
-            formSelectedOption={filterValues.level}
-            onChange={onLevelSelection}
-            label=""
-            className={styles.selectTypeForm}
-            theme={SelectTheme.LIGHT}
-            hideError
-          />
-        </div>
       </Left>
       <Right className={cx(styles.filterContainer, styles.rightFilters)}>
+        <div className={styles.filterLevel}>
+          <MultiSelect
+            onChange={onLevelSelection}
+            label=""
+            hideError
+            placeholder="ALL LEVELS"
+            selectionUnit="LEVEL"
+            selectAllText="ALL LEVELS"
+            options={levelOptions}
+            formSelectedOptions={filterValues.levels || []}
+            className={styles.selectTypeForm}
+            theme={SelectTheme.LIGHT}
+          />
+        </div>
         <DateFilter
           selectedOption={filterValues.dateOption}
           updateFilters={updateFilters}
+          formStartDate={filterValues.startDate}
+          formEndDate={filterValues.endDate}
         />
       </Right>
     </div>

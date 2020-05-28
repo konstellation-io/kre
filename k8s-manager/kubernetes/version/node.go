@@ -61,13 +61,13 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 	return wconf
 }
 
-func (m *Manager) createNode(version *entity.Version, node *versionpb.Version_Workflow_Node, nodeConfig NodeConfig, workflowID string) error {
+func (m *Manager) createNode(version *entity.Version, node *versionpb.Version_Workflow_Node, nodeConfig NodeConfig, workflow *versionpb.Version_Workflow) error {
 	configName, err := m.createNodeConfigMap(version, node, nodeConfig)
 	if err != nil {
 		return err
 	}
 
-	_, err = m.createNodeDeployment(version, node, configName, workflowID)
+	_, err = m.createNodeDeployment(version, node, configName, workflow)
 	return err
 }
 
@@ -95,10 +95,33 @@ func (m *Manager) createNodeConfigMap(version *entity.Version, node *versionpb.V
 	return nodeConfig.Name, nil
 }
 
-func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.Version_Workflow_Node, configName string, workflowID string) (*appsv1.Deployment, error) {
+func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.Version_Workflow_Node, configName string, workflow *versionpb.Version_Workflow) (*appsv1.Deployment, error) {
 	name := fmt.Sprintf("%s-%s-%s", version.Name, node.Name, node.Id)
 	ns := version.Namespace
 	m.logger.Info(fmt.Sprintf("Creating node deployment in %s named %s from image %s", ns, name, node.Image))
+
+	envVars := []apiv1.EnvVar{
+		{
+			Name:  "KRT_VERSION",
+			Value: version.GetName(),
+		},
+		{
+			Name:  "KRT_WORKFLOW_NAME",
+			Value: workflow.GetName(),
+		},
+		{
+			Name:  "KRT_WORKFLOW_ID",
+			Value: workflow.GetId(),
+		},
+		{
+			Name:  "KRT_NODE_NAME",
+			Value: node.GetName(),
+		},
+		{
+			Name:  "KRT_NODE_ID",
+			Value: node.GetId(),
+		},
+	}
 
 	return m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -135,24 +158,7 @@ func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.
 							Name:            name,
 							Image:           node.Image,
 							ImagePullPolicy: apiv1.PullIfNotPresent,
-							Env: []apiv1.EnvVar{
-								{
-									Name:  "KRE_VERSION_NAME",
-									Value: version.Name,
-								},
-								{
-									Name:  "KRE_WORKFLOW_ID",
-									Value: workflowID,
-								},
-								{
-									Name:  "KRE_NODE_NAME",
-									Value: node.Name,
-								},
-								{
-									Name:  "KRE_NODE_ID",
-									Value: node.Id,
-								},
-							},
+							Env:             envVars,
 							EnvFrom: []apiv1.EnvFromSource{
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
@@ -199,24 +205,7 @@ func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.
 								"/fluent-bit/etc/fluent-bit.conf",
 								"-v",
 							},
-							Env: []apiv1.EnvVar{
-								{
-									Name:  "KRE_VERSION_NAME",
-									Value: version.Name,
-								},
-								{
-									Name:  "KRE_WORKFLOW_ID",
-									Value: workflowID,
-								},
-								{
-									Name:  "KRE_NODE_NAME",
-									Value: node.Name,
-								},
-								{
-									Name:  "KRE_NODE_ID",
-									Value: node.Id,
-								},
-							},
+							Env: envVars,
 							VolumeMounts: []apiv1.VolumeMount{
 								{
 									Name:      "version-conf-files",

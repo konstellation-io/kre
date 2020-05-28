@@ -72,6 +72,14 @@ export interface CreateVersionInput {
   runtimeId: string;
 }
 
+export interface LogFilters {
+  startDate: string;
+  endDate?: string | null;
+  search?: string | null;
+  levels?: LogLevel[] | null;
+  nodeIds?: string[] | null;
+}
+
 export interface PublishVersionInput {
   versionId: string;
   comment: string;
