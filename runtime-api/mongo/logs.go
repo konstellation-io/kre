@@ -3,6 +3,8 @@ package mongo
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"gitlab.com/konstellation/kre/runtime-api/config"
 	"gitlab.com/konstellation/kre/runtime-api/entity"
@@ -10,11 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 const logsCollectionName = "logs"
-const logSearchPageSize = 10
+const logSearchPageSize = 40
 
 type LogRepo struct {
 	cfg        *config.Config

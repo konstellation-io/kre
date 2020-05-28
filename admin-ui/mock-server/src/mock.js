@@ -128,7 +128,7 @@ module.exports = {
       await sleep(2000);
       return {
         cursor: casual.string,
-        items: () => new MockList([20, 30])
+        items: () => new MockList(40)
       };
     }
   }),

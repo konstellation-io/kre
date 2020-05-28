@@ -186,3 +186,8 @@ $color-header-border: palette(base, 300);
   position: absolute;
   opacity: 0;
 }
+
+.loadMoreSpinner {
+  position: relative;
+  height: 25px;
+}
