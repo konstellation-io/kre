@@ -396,22 +396,32 @@ func (i *VersionInteractor) WatchVersionStatus(versionId string, stopCh <-chan b
 	return i.monitoringService.VersionStatus(runtime, version.Name, stopCh)
 }
 
-func (i *VersionInteractor) WatchNodeLogs(runtimeID, nodeID string,
-	stopChannel chan bool) (<-chan *entity.NodeLog, error) {
-
+func (i *VersionInteractor) WatchNodeLogs(
+	runtimeID, versionID string,
+	filters entity.LogFilters,
+	stopChannel chan bool,
+) (<-chan *entity.NodeLog, error) {
 	runtime, err := i.runtimeRepo.GetByID(runtimeID)
 	if err != nil {
 		return nil, err
 	}
 
-	return i.monitoringService.NodeLogs(runtime, nodeID, stopChannel)
+	return i.monitoringService.NodeLogs(runtime, versionID, filters, stopChannel)
 }
 
-func (i *VersionInteractor) SearchLogs(ctx context.Context, runtimeID string, opts entity.SearchLogsOptions) (entity.SearchLogsResult, error) {
+func (i *VersionInteractor) SearchLogs(
+	ctx context.Context,
+	runtimeID string,
+	versionID string,
+	filters entity.LogFilters,
+	cursor *string,
+) (entity.SearchLogsResult, error) {
 	var result entity.SearchLogsResult
+
 	runtime, err := i.runtimeRepo.GetByID(runtimeID)
 	if err != nil {
 		return result, err
 	}
-	return i.monitoringService.SearchLogs(ctx, runtime, opts)
+
+	return i.monitoringService.SearchLogs(ctx, runtime, versionID, filters, cursor)
 }

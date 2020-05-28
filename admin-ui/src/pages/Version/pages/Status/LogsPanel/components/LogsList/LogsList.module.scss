@@ -49,34 +49,16 @@ $color-header-border: palette(base, 300);
     }
   }
 
-  &.INFO {
-    .icon {
-      color: $color-primary;
-    }
-  }
-
   &.DEBUG {
     background-color: palette(lowlight, 900);
-
-    .icon {
-      color: font-color(light);
-    }
   }
 
   &.WARN {
     background-color: palette(alert, 900);
-
-    .icon {
-      color: $color-warn;
-    }
   }
 
   &.ERROR {
     background-color: palette(error, 900);
-
-    .icon {
-      color: $color-error;
-    }
   }
 }
 
@@ -103,13 +85,11 @@ $color-header-border: palette(base, 300);
 .date {
   color: font-color(lowlight);
   width: 100px;
-  text-align: center;
 }
 
 .hour,
 .node,
 .workflow {
-  text-align: center;
   margin-left: 0 !important;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -118,7 +98,7 @@ $color-header-border: palette(base, 300);
 
 .hour {
   color: font-color(lowlight);
-  width: 100px;
+  width: 116px;
 }
 .node {
   width: 160px;
@@ -126,6 +106,14 @@ $color-header-border: palette(base, 300);
 }
 .workflow {
   width: 130px;
+}
+
+.date,
+.hour,
+.workflow,
+.node,
+.message {
+  padding: 0 $grid-unit;
 }
 
 .nodeName {
@@ -142,7 +130,6 @@ $color-header-border: palette(base, 300);
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: initial !important;
-  padding-left: 1.5 * $grid-unit;
 }
 
 .expand {
@@ -179,7 +166,6 @@ $color-header-border: palette(base, 300);
       @include font-small;
       color: font-color(lowlight);
       border-right: 1px solid palette(base, 300);
-      text-align: left;
       padding-left: $grid-unit;
     }
 

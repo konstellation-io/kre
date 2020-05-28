@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"time"
 
 	"google.golang.org/grpc"
 
@@ -14,6 +13,34 @@ import (
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
 )
+
+func emptyStringIfNil(val *string) string {
+	if val != nil {
+		return *val
+	}
+	return ""
+}
+
+func levelsToStrings(levels []entity.LogLevel) []string {
+	result := make([]string, len(levels))
+	for i, l := range levels {
+		result[i] = l.String()
+	}
+	return result
+}
+
+func toNodeLogEntity(log *monitoringpb.NodeLogsResponse) *entity.NodeLog {
+	return &entity.NodeLog{
+		ID:           log.GetId(),
+		Date:         log.GetDate(),
+		Level:        entity.LogLevel(log.GetLevel()),
+		Message:      log.GetMessage(),
+		NodeID:       log.GetNodeId(),
+		NodeName:     log.GetNodeName(),
+		WorkflowID:   log.GetWorkflowId(),
+		WorkflowName: log.GetWorkflowName(),
+	}
+}
 
 type MonitoringService struct {
 	cfg    *config.Config
@@ -27,7 +54,7 @@ func NewMonitoringService(cfg *config.Config, logger logging.Logger) *Monitoring
 	}
 }
 
-func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, stopCh <-chan bool) (<-chan *entity.NodeLog, error) {
+func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, versionID string, filters entity.LogFilters, stopCh <-chan bool) (<-chan *entity.NodeLog, error) {
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
 	if err != nil {
 		return nil, err
@@ -36,7 +63,10 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 	c := monitoringpb.NewMonitoringServiceClient(cc)
 
 	req := monitoringpb.NodeLogsRequest{
-		NodeId: nodeId,
+		Search:    emptyStringIfNil(filters.Search),
+		VersionID: versionID,
+		NodeIDs:   filters.NodeIds,
+		Levels:    levelsToStrings(filters.Levels),
 	}
 
 	ctx := context.Background()
@@ -70,16 +100,7 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, nodeId string, sto
 			m.logger.Info("[monitoring.NodeLogs] Message received")
 
 			if msg.GetNodeId() != "" {
-				ch <- &entity.NodeLog{
-					ID:        msg.GetId(),
-					Date:      msg.Date,
-					VersionId: msg.GetVersionId(),
-					NodeId:    msg.GetNodeId(),
-					PodId:     msg.GetPodId(),
-					Message:   msg.GetMessage(),
-					Level:     msg.GetLevel(),
-					NodeName:  msg.GetNodeName(),
-				}
+				ch <- toNodeLogEntity(msg)
 			}
 		}
 	}()
@@ -161,7 +182,13 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 	return ch, nil
 }
 
-func (m *MonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runtime, options entity.SearchLogsOptions) (entity.SearchLogsResult, error) {
+func (m *MonitoringService) SearchLogs(
+	ctx context.Context,
+	runtime *entity.Runtime,
+	versionID string,
+	filters entity.LogFilters,
+	cursor *string,
+) (entity.SearchLogsResult, error) {
 	var result entity.SearchLogsResult
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
 	if err != nil {
@@ -170,13 +197,13 @@ func (m *MonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runt
 
 	c := monitoringpb.NewMonitoringServiceClient(cc)
 	req := monitoringpb.SearchLogsRequest{
-		Search:     options.Search,
-		StartDate:  options.StartDate.Format(time.RFC3339),
-		EndDate:    options.EndDate.Format(time.RFC3339),
-		WorkflowID: options.WorkflowID,
-		NodeID:     options.NodeID,
-		Level:      options.Level,
-		Cursor:     options.Cursor,
+		Search:    emptyStringIfNil(filters.Search),
+		StartDate: filters.StartDate,
+		EndDate:   emptyStringIfNil(filters.EndDate),
+		VersionID: versionID,
+		NodeIDs:   filters.NodeIds,
+		Levels:    levelsToStrings(filters.Levels),
+		Cursor:    emptyStringIfNil(cursor),
 	}
 
 	res, err := c.SearchLogs(ctx, &req)
@@ -187,16 +214,7 @@ func (m *MonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runt
 	var logs []*entity.NodeLog
 	if len(res.Logs) > 0 {
 		for _, l := range res.Logs {
-			logs = append(logs, &entity.NodeLog{
-				ID:        l.Id,
-				Date:      l.Date,
-				Level:     l.Level,
-				Message:   l.Message,
-				VersionId: l.VersionId,
-				NodeId:    l.NodeId,
-				PodId:     l.PodId,
-				NodeName:  l.NodeName,
-			})
+			logs = append(logs, toNodeLogEntity(l))
 		}
 	}
 

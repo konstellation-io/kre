@@ -1,8 +1,11 @@
-subscription GetLogs($runtimeId: ID!, $nodeId: ID!) {
-  nodeLogs(runtimeId: $runtimeId, nodeId: $nodeId) {
+subscription GetLogs($filters: LogFilters!, $runtimeId: ID!, $versionId: ID!) {
+  nodeLogs(filters: $filters, runtimeId: $runtimeId, versionId: $versionId) {
     id
     date
+    nodeId
     nodeName
+    workflowId
+    workflowName
     message
     level
   }

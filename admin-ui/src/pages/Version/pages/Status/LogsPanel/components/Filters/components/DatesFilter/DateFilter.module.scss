@@ -1,8 +1,8 @@
 @import '../../../../../../../../../styles/variables';
 @import '../../../../../../../../../styles/colors';
+@import '../../../../../../../../../styles/mixins';
 
 .dateFilter {
-  width: $grid-unit * 21.5;
   height: $grid-unit * 5;
 
   & > div:first-child > div:first-child {
@@ -17,5 +17,28 @@
   .calendarModal {
     width: 658px;
     height: 685px;
+  }
+}
+
+.icon {
+  margin-right: 0px !important;
+}
+
+.dateValues {
+  @include font-small;
+  color: font-color(lowlight);
+  border-left: 1px solid palette(base, 400);
+  padding: $grid-unit 0 $grid-unit $grid-unit;
+
+  .dateValue {
+    display: flex;
+
+    > div {
+      width: 5 * $grid-unit;
+    }
+
+    > span {
+      color: font-color(light);
+    }
   }
 }

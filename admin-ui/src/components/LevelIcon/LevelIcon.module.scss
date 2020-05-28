@@ -1,0 +1,23 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+.levelIcon {
+  @include font-code;
+  text-align: center;
+
+  &.INFO {
+    color: $color-primary;
+  }
+
+  &.DEBUG {
+    color: font-color(light);
+  }
+
+  &.WARN {
+    color: $color-warn;
+  }
+
+  &.ERROR {
+    color: $color-error;
+  }
+}

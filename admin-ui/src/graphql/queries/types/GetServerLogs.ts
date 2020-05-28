@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { LogLevel } from './../../types/globalTypes';
+import { LogFilters, LogLevel } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetServerLogs
@@ -13,7 +13,10 @@ export interface GetServerLogs_logs_items {
   __typename: 'NodeLog';
   id: string;
   date: string;
+  nodeId: string | null;
   nodeName: string | null;
+  workflowId: string | null;
+  workflowName: string | null;
   message: string;
   level: LogLevel;
 }
@@ -29,12 +32,8 @@ export interface GetServerLogs {
 }
 
 export interface GetServerLogsVariables {
-  cursor?: string | null;
-  startDate: string;
-  endDate: string;
+  filters: LogFilters;
   runtimeId: string;
-  workflowId: string;
-  nodeId?: string | null;
-  search?: string | null;
-  level?: LogLevel | null;
+  versionId: string;
+  cursor?: string | null;
 }

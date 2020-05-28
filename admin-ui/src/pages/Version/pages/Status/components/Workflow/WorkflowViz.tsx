@@ -205,10 +205,7 @@ class WorkflowViz {
       .classed(styles.clicksDisabled, !enableNodeClicks)
       .attr('r', nodeOuterRadius)
       .attr('cx', nodeOuterRadius)
-      .on(
-        'click',
-        (d: D) => enableNodeClicks && onInnerNodeClick(d.id, d.name, data.id)
-      );
+      .on('click', (d: D) => enableNodeClicks && onInnerNodeClick(d.name));
 
     newCirclesG
       .append('circle')

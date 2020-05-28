@@ -58,6 +58,9 @@ const generateVersion = () => ({
 function getProcessName() {
   return casual.random_element(processNames);
 }
+function getWorkflowName() {
+  return casual.random_element(processNames);
+}
 
 function getLogLevel() {
   const rand = Math.random();
@@ -93,7 +96,10 @@ module.exports = {
             nodeLogs: {
               id: casual.uuid,
               date: new Date().toUTCString(),
+              nodeId: casual.uuid,
               nodeName: getProcessName(),
+              workflowId: casual.uuid,
+              workflowName: getWorkflowName(),
               message: getLogMessage,
               level: getLogLevel
             }
@@ -167,7 +173,10 @@ module.exports = {
   NodeLog: () => ({
     id: casual.uuid,
     date: new Date().toUTCString(),
+    nodeId: casual.uuid,
     nodeName: getProcessName(),
+    workflowId: casual.uuid,
+    workflowName: getWorkflowName(),
     message: getLogMessage,
     level: getLogLevel
   }),

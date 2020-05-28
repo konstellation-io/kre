@@ -26,10 +26,8 @@ exports[`LogItem matches snapshot 1`] = `
     </div>
     <div
       className="workflow"
-      title="Workflow X"
-    >
-      Workflow X
-    </div>
+      title=""
+    />
     <div
       className="node"
       title="nodeName"
