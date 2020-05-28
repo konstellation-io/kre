@@ -21,10 +21,9 @@ const getTitle = {
 };
 const getSubtitle = {
   [STATES.INITIALIZING]: 'It will take a moment',
-  [STATES.SUCCESS]:
-    'Cras quis nulla commodo, aliquam lectus sed, blandit augue. Cras ullamcorper bibendum bibendum. ',
+  [STATES.SUCCESS]: 'You will be redirected in a moment.',
   [STATES.ERROR]:
-    'Cras quis nulla commodo, aliquam lectus sed, blandit augue. Cras ullamcorper bibendum bibendum. '
+    'Please, try again later or contact administration for more details.'
 };
 const getCircleText = {
   [STATES.INITIALIZING]: 'LOADING',
