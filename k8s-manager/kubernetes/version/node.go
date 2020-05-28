@@ -102,6 +102,10 @@ func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.
 
 	envVars := []apiv1.EnvVar{
 		{
+			Name:  "KRT_VERSION_ID",
+			Value: version.GetId(),
+		},
+		{
 			Name:  "KRT_VERSION",
 			Value: version.GetName(),
 		},

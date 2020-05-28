@@ -71,9 +71,10 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 
 func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream monitoringpb.MonitoringService_NodeLogsServer) error {
 	options := mongo.WatchLogsOptions{
-		Search:  req.GetSearch(),
-		Levels:  req.GetLevels(),
-		NodeIDs: req.GetNodeIDs(),
+		VersionID: req.GetVersionID(),
+		Search:    req.GetSearch(),
+		Levels:    req.GetLevels(),
+		NodeIDs:   req.GetNodeIDs(),
 	}
 
 	w.logger.Info("[MonitoringService.NodeLogs] starting watcher...")

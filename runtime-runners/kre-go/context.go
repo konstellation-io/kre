@@ -38,7 +38,8 @@ type SaveMetricMsgDoc struct {
 	Error          string `json:"error"`
 	PredictedValue string `json:"predictedValue"`
 	TrueValue      string `json:"trueValue"`
-	VersionId      string `json:"versionId"`
+	VersionID      string `json:"versionId"`
+	VersionName    string `json:"versionName"`
 }
 
 type HandlerContext struct {
@@ -107,7 +108,8 @@ func (c *HandlerContext) SaveMetric(date time.Time, predictedValue, trueValue st
 			Date:           date.Format(time.RFC3339),
 			PredictedValue: predictedValue,
 			TrueValue:      trueValue,
-			VersionId:      c.cfg.Version,
+			VersionID:      c.cfg.VersionID,
+			VersionName:    c.cfg.Version,
 		},
 	})
 
@@ -131,9 +133,9 @@ func (c *HandlerContext) SaveMetricError(saveMetricErr SaveMetricErr) {
 	msg, err := json.Marshal(SaveMetricMsg{
 		Coll: classificationMetricsColl,
 		Doc: SaveMetricMsgDoc{
-			Date:      time.Now().Format(time.RFC3339),
-			VersionId: c.cfg.Version,
-			Error:     string(saveMetricErr),
+			Date:        time.Now().Format(time.RFC3339),
+			VersionName: c.cfg.Version,
+			Error:       string(saveMetricErr),
 		},
 	})
 	if err != nil {
