@@ -49,6 +49,7 @@ type Subscription {
 
 input CreateRuntimeInput {
   name: String!
+  description: String!
 }
 
 input CreateVersionInput {
@@ -58,10 +59,12 @@ input CreateVersionInput {
 
 input StartVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 input StopVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 input PublishVersionInput {
@@ -71,6 +74,7 @@ input PublishVersionInput {
 
 input UnpublishVersionInput {
   versionId: ID!
+  comment: String!
 }
 
 type VersionNodeStatus {
@@ -134,6 +138,7 @@ input UpdateConfigurationInput {
 type Runtime {
   id: ID!
   name: String!
+  description: String!
   status: RuntimeStatus!
   creationDate: String!
   creationAuthor: User!

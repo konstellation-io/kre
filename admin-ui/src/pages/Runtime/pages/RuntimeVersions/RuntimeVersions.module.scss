@@ -11,27 +11,33 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 40px 46px 32px 46px;
 }
 
-.subtitle {
-  @include font-body;
-  color: font-color(light);
+.runtimeInfo {
+  background-color: palette(lowlight, 900);
+  padding: 3.5 * $grid-unit 3 * $grid-unit;
 
-  margin-bottom: 60px;
+  .infoFields {
+    display: flex;
+    flex-direction: horizontal;
+  }
+}
+
+.description {
+  @include font-body;
+  color: font-color(lowlight);
+
+  margin-top: 3 * $grid-unit;
 }
 
 .activeVersion {
-  @include border-header;
-
-  margin-bottom: 32px;
   padding: 8px 24px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  background-color: $color-other;
+  background-color: palette(base, 300);
 }
 
 .versionTitle,

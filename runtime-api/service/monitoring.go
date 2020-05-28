@@ -69,15 +69,18 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 	}
 }
 
-// Node Logs
 func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream monitoringpb.MonitoringService_NodeLogsServer) error {
-	versionName := req.GetNodeId()
+	options := mongo.WatchLogsOptions{
+		Search:  req.GetSearch(),
+		Levels:  req.GetLevels(),
+		NodeIDs: req.GetNodeIDs(),
+	}
 
 	w.logger.Info("[MonitoringService.NodeLogs] starting watcher...")
 
 	ctx := stream.Context()
 	logsCh := make(chan *entity.NodeLog, 1)
-	w.logs.WatchNodeLogs(ctx, versionName, logsCh)
+	w.logs.WatchNodeLogs(ctx, options, logsCh)
 
 	for {
 		select {
@@ -101,19 +104,23 @@ func (w *MonitoringService) SearchLogs(ctx context.Context, req *monitoringpb.Se
 		return result, fmt.Errorf("invalid start date: %w", err)
 	}
 
-	endDate, err := time.Parse(time.RFC3339, req.EndDate)
-	if err != nil {
-		return result, fmt.Errorf("invalid end date: %w", err)
+	var endDate time.Time
+	if req.EndDate == "" {
+		endDate = time.Now()
+	} else {
+		endDate, err = time.Parse(time.RFC3339, req.EndDate)
+		if err != nil {
+			return result, fmt.Errorf("invalid end date: %w", err)
+		}
 	}
 
 	search, err := w.logs.PaginatedSearch(ctx, mongo.SearchLogsOptions{
-		Cursor:     req.Cursor,
-		StartDate:  startDate,
-		EndDate:    endDate,
-		Search:     req.Search,
-		WorkflowID: req.WorkflowID,
-		NodeID:     req.NodeID,
-		Level:      req.Level,
+		Cursor:    req.Cursor,
+		StartDate: startDate,
+		EndDate:   endDate,
+		Search:    req.Search,
+		NodeIDs:   req.NodeIDs,
+		Levels:    req.Levels,
 	})
 
 	if err != nil {
@@ -165,13 +172,13 @@ func (w *MonitoringService) GetMetrics(ctx context.Context, in *monitoringpb.Get
 
 func toNodeLogsResponse(log *entity.NodeLog) *monitoringpb.NodeLogsResponse {
 	return &monitoringpb.NodeLogsResponse{
-		Id:        log.ID,
-		Date:      log.Date,
-		VersionId: log.VersionName,
-		NodeId:    log.NodeID,
-		PodId:     log.PodID,
-		Message:   log.Message,
-		Level:     log.Level,
-		NodeName:  log.NodeName,
+		Id:           log.ID,
+		Date:         log.Date,
+		Level:        log.Level,
+		Message:      log.Message,
+		NodeId:       log.NodeID,
+		NodeName:     log.NodeName,
+		WorkflowId:   log.WorkflowID,
+		WorkflowName: log.WorkflowName,
 	}
 }

@@ -2,7 +2,12 @@ query GetVersionConfStatus($runtimeId: ID!) {
   runtime(id: $runtimeId) {
     id
     name
+    description
     status
+    creationDate
+    creationAuthor {
+      email
+    }
   }
 
   versions(runtimeId: $runtimeId) {

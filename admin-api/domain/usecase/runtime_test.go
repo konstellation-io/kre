@@ -1,12 +1,13 @@
 package usecase_test
 
 import (
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/kre/admin-api/mocks"
-	"testing"
 )
 
 type runtimeSuite struct {
@@ -69,13 +70,15 @@ func TestCreateRuntime(t *testing.T) {
 	defer s.ctrl.Finish()
 
 	name := "runtimeTest1"
+	description := "runtimeDescriptionTest1"
 	userID := "userTest1"
 
 	fakePass := "t3st"
 
 	runtimeBeforeCreation := &entity.Runtime{
-		Name:  name,
-		Owner: userID,
+		Name:        name,
+		Description: description,
+		Owner:       userID,
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
 			Password:  fakePass,
@@ -87,9 +90,10 @@ func TestCreateRuntime(t *testing.T) {
 		},
 	}
 	expectedRuntime := &entity.Runtime{
-		ID:    "runtime1",
-		Name:  name,
-		Owner: userID,
+		ID:          "runtime1",
+		Name:        name,
+		Description: description,
+		Owner:       userID,
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
 			Password:  fakePass,
@@ -101,10 +105,11 @@ func TestCreateRuntime(t *testing.T) {
 		},
 	}
 	updatedRuntime := &entity.Runtime{
-		ID:     "runtime1",
-		Name:   name,
-		Owner:  userID,
-		Status: string(usecase.RuntimeStatusStarted),
+		ID:          "runtime1",
+		Name:        name,
+		Description: description,
+		Owner:       userID,
+		Status:      string(usecase.RuntimeStatusStarted),
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
 			Password:  fakePass,
@@ -124,7 +129,7 @@ func TestCreateRuntime(t *testing.T) {
 	s.mocks.runtimeService.EXPECT().WaitForRuntimeStarted(expectedRuntime).Return(nil, nil)
 	s.mocks.runtimeRepo.EXPECT().Update(updatedRuntime).Return(nil)
 
-	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(name, userID)
+	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(name, description, userID)
 	require.Nil(t, err)
 	require.Equal(t, expectedRuntime, runtime)
 

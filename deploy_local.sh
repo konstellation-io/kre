@@ -77,7 +77,7 @@ else
   helm repo add stable https://kubernetes-charts.storage.googleapis.com
 fi
 
-export SDK_RELEASE_VERSION="v0.13.0"
+export SDK_RELEASE_VERSION="v0.17.0"
 export OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
 
 if [ "$SKIP_BUILD" != "1" ] && [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then

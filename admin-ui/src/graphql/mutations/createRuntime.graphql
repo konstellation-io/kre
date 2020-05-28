@@ -2,6 +2,7 @@ mutation CreateRuntime($input: CreateRuntimeInput!) {
   createRuntime(input: $input) {
     id
     name
+    description
     status
     creationDate
     creationAuthor {

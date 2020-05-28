@@ -27,6 +27,8 @@ const UnpublishVersionMutation = loader(
 export const runtime = {
   id: 'runtimeId',
   name: 'runtimeName',
+  description: 'Some Description',
+  creationAuthor: { email: 'some@user.com' },
   status: RuntimeStatus.STARTED,
   __typename: 'Runtime'
 };

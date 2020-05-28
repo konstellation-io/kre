@@ -32,14 +32,19 @@ func NewLogRepo(cfg *config.Config, logger *simplelogger.SimpleLogger, client *m
 	}
 }
 
+type WatchLogsOptions struct {
+	Search  string
+	Levels  []string
+	NodeIDs []string
+}
+
 type SearchLogsOptions struct {
-	StartDate  time.Time
-	EndDate    time.Time
-	WorkflowID string
-	Search     string
-	NodeID     string
-	Level      string
-	Cursor     string
+	StartDate time.Time
+	EndDate   time.Time
+	Search    string
+	Levels    []string
+	NodeIDs   []string
+	Cursor    string
 }
 
 type SearchLogsResult struct {
@@ -91,16 +96,12 @@ func (r *LogRepo) PaginatedSearch(
 		filter["$text"] = bson.M{"$search": searchOpts.Search}
 	}
 
-	if searchOpts.WorkflowID != "" {
-		filter["workflowId"] = searchOpts.WorkflowID
+	if len(searchOpts.NodeIDs) > 0 {
+		filter["nodeId"] = bson.M{"$in": searchOpts.NodeIDs}
 	}
 
-	if searchOpts.NodeID != "" {
-		filter["nodeId"] = searchOpts.NodeID
-	}
-
-	if searchOpts.Level != "" {
-		filter["level"] = searchOpts.Level
+	if len(searchOpts.Levels) > 0 {
+		filter["level"] = bson.M{"$in": searchOpts.Levels}
 	}
 
 	if searchOpts.Cursor != "" {
@@ -110,6 +111,8 @@ func (r *LogRepo) PaginatedSearch(
 		}
 		filter["_id"] = bson.M{"$lt": nID}
 	}
+
+	r.logger.Debugf("Logs filter = %#v", filter)
 
 	cur, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
@@ -132,7 +135,9 @@ func (r *LogRepo) PaginatedSearch(
 	return result, nil
 }
 
-func (r *LogRepo) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<- *entity.NodeLog) {
+// TODO use the Search filter: https://jira.mongodb.org/browse/NODE-2162
+// you cannot use a $text matcher on a change stream
+func (r *LogRepo) WatchNodeLogs(ctx context.Context, watchLogsOptions WatchLogsOptions, logsCh chan<- *entity.NodeLog) {
 	go func() {
 		opts := options.ChangeStream()
 		opts.SetFullDocument(options.UpdateLookup)
@@ -141,25 +146,30 @@ func (r *LogRepo) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<
 			I: 0,
 		})
 
-		pipeline := mongo.Pipeline{
-			bson.D{
-				{
-					"$match",
-					bson.D{
-						{
-							"$and",
-							bson.A{
-								bson.D{{"fullDocument.nodeId", nodeId}},
-								bson.D{{"operationType", "insert"}}, // Only show insert actions
-							},
-						},
-					},
-				},
-			},
+		conditions := bson.A{
+			bson.D{{"operationType", "insert"}},
 		}
+
+		if len(watchLogsOptions.NodeIDs) > 0 {
+			conditions = append(conditions, bson.D{{"fullDocument.nodeId", bson.M{"$in": watchLogsOptions.NodeIDs}}})
+		}
+
+		if len(watchLogsOptions.Levels) > 0 {
+			conditions = append(conditions, bson.D{{"fullDocument.level", bson.M{"$in": watchLogsOptions.Levels}}})
+		}
+
+		pipeline := mongo.Pipeline{bson.D{
+			{
+				"$match",
+				bson.M{"$and": conditions},
+			},
+		}}
+
+		r.logger.Debugf("Mongo Watch Pipeline = %#v", pipeline)
 
 		stream, err := r.collection.Watch(ctx, pipeline, opts)
 		if err != nil {
+			r.logger.Debugf("Closing Watch with Pipeline = %#v", pipeline)
 			r.logger.Errorf("[LogRepo.WatchNodeLogs] error creating the MongoDB watcher: %s", err)
 			return
 		}
@@ -167,6 +177,7 @@ func (r *LogRepo) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<
 		for {
 			ok := stream.Next(ctx)
 			if !ok {
+				r.logger.Debugf("Closing Watch with Pipeline = %#v", pipeline)
 				r.logger.Infof("[LogRepo.WatchNodeLogs] stream.Next() returns false")
 				return
 			}
@@ -179,6 +190,8 @@ func (r *LogRepo) WatchNodeLogs(ctx context.Context, nodeId string, logsCh chan<
 				r.logger.Warnf("[LogRepo.WatchNodeLogs] error decoding changeDoc: %s", e)
 				continue
 			}
+
+			r.logger.Debugf("Mongo Watch ChangeDoc = %#v", changeDoc)
 
 			logsCh <- &changeDoc.FullDocument
 		}

@@ -4,7 +4,6 @@ package gql
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -56,7 +55,7 @@ func NewGraphQLResolver(
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
 	userID := ctx.Value("userID").(string)
-	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, userID)
+	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, input.Description, userID)
 
 	go func() {
 		runtime := <-onRuntimeStartedChannel
@@ -86,17 +85,17 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 
 func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Start(userID, input.VersionID)
+	return r.versionInteractor.Start(userID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Stop(userID, input.VersionID)
+	return r.versionInteractor.Stop(userID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*entity.Version, error) {
 	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Unpublish(userID, input.VersionID)
+	return r.versionInteractor.Unpublish(userID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVersionInput) (*entity.Version, error) {
@@ -177,10 +176,6 @@ func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus
 	return NodeStatus(obj.Status), nil
 }
 
-func (r *nodeLogResolver) Level(ctx context.Context, obj *entity.NodeLog) (LogLevel, error) {
-	return LogLevel(obj.Level), nil
-}
-
 func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	userID := ctx.Value("userID").(string)
 	return r.userInteractor.GetByID(userID)
@@ -229,50 +224,14 @@ func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, 
 	return r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate, lastID)
 }
 
-func (r *queryResolver) Logs(ctx context.Context, cursor *string,
-	startDate string, endDate string, runtimeID string, workflowID string,
-	nodeID *string, search *string, level *LogLevel,
+func (r *queryResolver) Logs(
+	ctx context.Context,
+	runtimeID string,
+	versionID string,
+	filters entity.LogFilters,
+	cursor *string,
 ) (*LogPage, error) {
-	startDateTime, err := time.Parse(time.RFC3339, startDate)
-	if err != nil {
-		return nil, fmt.Errorf("invalid start date: %w", err)
-	}
-
-	endDateTime, err := time.Parse(time.RFC3339, endDate)
-	if err != nil {
-		return nil, fmt.Errorf("invalid end date: %w", err)
-	}
-
-	levelFilter := ""
-	if level != nil {
-		levelFilter = level.String()
-	}
-
-	cursorValue := ""
-	if cursor != nil {
-		cursorValue = *cursor
-	}
-
-	searchFilter := ""
-	if search != nil {
-		searchFilter = *search
-	}
-
-	nodeIDFilter := ""
-	if nodeID != nil {
-		nodeIDFilter = *nodeID
-	}
-
-	searchOpts := entity.SearchLogsOptions{
-		Cursor:     cursorValue,
-		StartDate:  startDateTime,
-		EndDate:    endDateTime,
-		WorkflowID: workflowID,
-		Level:      levelFilter,
-		Search:     searchFilter,
-		NodeID:     nodeIDFilter,
-	}
-	searchResult, err := r.versionInteractor.SearchLogs(ctx, runtimeID, searchOpts)
+	searchResult, err := r.versionInteractor.SearchLogs(ctx, runtimeID, versionID, filters, cursor)
 	if err != nil {
 		return nil, err
 	}
@@ -370,9 +329,9 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 	return outputChan, nil
 }
 
-func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, nodeID string) (<-chan *entity.NodeLog, error) {
+func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	stopCh := make(chan bool)
-	inputChan, err := r.versionInteractor.WatchNodeLogs(runtimeID, nodeID, stopCh)
+	inputChan, err := r.versionInteractor.WatchNodeLogs(runtimeID, versionID, filters, stopCh)
 	if err != nil {
 		return nil, err
 	}
@@ -490,9 +449,6 @@ func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 // Node returns NodeResolver implementation.
 func (r *Resolver) Node() NodeResolver { return &nodeResolver{r} }
 
-// NodeLog returns NodeLogResolver implementation.
-func (r *Resolver) NodeLog() NodeLogResolver { return &nodeLogResolver{r} }
-
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
@@ -518,7 +474,6 @@ func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver {
 
 type mutationResolver struct{ *Resolver }
 type nodeResolver struct{ *Resolver }
-type nodeLogResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type runtimeResolver struct{ *Resolver }
 type subscriptionResolver struct{ *Resolver }

@@ -28,6 +28,7 @@ export interface CreateRuntime_createRuntime {
   __typename: 'Runtime';
   id: string;
   name: string;
+  description: string;
   status: RuntimeStatus;
   creationDate: string;
   creationAuthor: CreateRuntime_createRuntime_creationAuthor;

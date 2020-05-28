@@ -35,18 +35,18 @@ func (m *MockMonitoringService) EXPECT() *MockMonitoringServiceMockRecorder {
 }
 
 // NodeLogs mocks base method
-func (m *MockMonitoringService) NodeLogs(runtime *entity.Runtime, nodeID string, stopCh <-chan bool) (<-chan *entity.NodeLog, error) {
+func (m *MockMonitoringService) NodeLogs(runtime *entity.Runtime, versionID string, filters entity.LogFilters, stopCh <-chan bool) (<-chan *entity.NodeLog, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "NodeLogs", runtime, nodeID, stopCh)
+	ret := m.ctrl.Call(m, "NodeLogs", runtime, versionID, filters, stopCh)
 	ret0, _ := ret[0].(<-chan *entity.NodeLog)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // NodeLogs indicates an expected call of NodeLogs
-func (mr *MockMonitoringServiceMockRecorder) NodeLogs(runtime, nodeID, stopCh interface{}) *gomock.Call {
+func (mr *MockMonitoringServiceMockRecorder) NodeLogs(runtime, versionID, filters, stopCh interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NodeLogs", reflect.TypeOf((*MockMonitoringService)(nil).NodeLogs), runtime, nodeID, stopCh)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NodeLogs", reflect.TypeOf((*MockMonitoringService)(nil).NodeLogs), runtime, versionID, filters, stopCh)
 }
 
 // VersionStatus mocks base method
@@ -65,18 +65,18 @@ func (mr *MockMonitoringServiceMockRecorder) VersionStatus(runtime, versionName,
 }
 
 // SearchLogs mocks base method
-func (m *MockMonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runtime, options entity.SearchLogsOptions) (entity.SearchLogsResult, error) {
+func (m *MockMonitoringService) SearchLogs(ctx context.Context, runtime *entity.Runtime, versionID string, filters entity.LogFilters, cursor *string) (entity.SearchLogsResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SearchLogs", ctx, runtime, options)
+	ret := m.ctrl.Call(m, "SearchLogs", ctx, runtime, versionID, filters, cursor)
 	ret0, _ := ret[0].(entity.SearchLogsResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // SearchLogs indicates an expected call of SearchLogs
-func (mr *MockMonitoringServiceMockRecorder) SearchLogs(ctx, runtime, options interface{}) *gomock.Call {
+func (mr *MockMonitoringServiceMockRecorder) SearchLogs(ctx, runtime, versionID, filters, cursor interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchLogs", reflect.TypeOf((*MockMonitoringService)(nil).SearchLogs), ctx, runtime, options)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchLogs", reflect.TypeOf((*MockMonitoringService)(nil).SearchLogs), ctx, runtime, versionID, filters, cursor)
 }
 
 // GetMetrics mocks base method

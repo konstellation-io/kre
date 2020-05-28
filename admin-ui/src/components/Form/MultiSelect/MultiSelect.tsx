@@ -75,16 +75,12 @@ function MultiSelect({
   }
 
   function onDeselect(option: string) {
-    const newSelections = [...formSelectedOptions].splice(
-      formSelectedOptions.indexOf(option),
-      1
-    );
-
+    const newSelections = formSelectedOptions.filter(o => o !== option);
     onChange(newSelections);
   }
 
-  function onSelection(option: string, add: boolean) {
-    add ? onSelect(option) : onDeselect(option);
+  function onOptionChange(option: string, checked: boolean) {
+    checked ? onSelect(option) : onDeselect(option);
   }
 
   function onSelectAll() {
@@ -96,13 +92,14 @@ function MultiSelect({
       key={label}
       label={label}
       selected={formSelectedOptions.includes(label)}
-      onSelection={onSelection}
+      onChange={onOptionChange}
       Icon={Icon}
     />
   ));
   if (selectAllText !== '')
     optionList.push(
       <div
+        key={'select_all_row'}
         className={cx(styles.selectAll, {
           [styles.selected]: formSelectedOptions.length === 0
         })}
