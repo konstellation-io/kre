@@ -20,13 +20,17 @@ function onCopyToClipboard(input: RefObject<HTMLInputElement>) {
   }
 }
 
+interface Props extends GetServerLogs_logs_items {
+  alwaysOpened: boolean;
+}
 function LogItem({
   date,
   workflowName,
   nodeName,
   message,
-  level
-}: GetServerLogs_logs_items) {
+  level,
+  alwaysOpened
+}: Props) {
   const [opened, setOpened] = useState<boolean>(false);
   const dateFormatted = moment(date).format('YYYY-MM-DD');
   const hourFormatted = moment(date).format('HH:mm:ss.SSS');
@@ -80,7 +84,7 @@ function LogItem({
         />
         <div
           className={cx(styles.container, styles[level], {
-            [styles.opened]: opened
+            [styles.opened]: opened || alwaysOpened
           })}
         >
           <div className={cx(styles.row1, styles[level])}>
@@ -96,11 +100,15 @@ function LogItem({
               {nodeName}
             </div>
             <div className={styles.message}>{message}</div>
-            <div className={styles.expand} onClick={toggleOpenStatus}>
-              <IconExpand className="icon-regular" />
-            </div>
+            {!alwaysOpened && (
+              <div className={styles.expand} onClick={toggleOpenStatus}>
+                <IconExpand className="icon-regular" />
+              </div>
+            )}
           </div>
-          {opened && <div className={styles.messageComplete}>{message}</div>}
+          {(alwaysOpened || opened) && (
+            <div className={styles.messageComplete}>{message}</div>
+          )}
         </div>
       </div>
     </ContextMenu>

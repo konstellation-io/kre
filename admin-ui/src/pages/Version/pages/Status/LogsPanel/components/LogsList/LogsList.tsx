@@ -88,6 +88,7 @@ function LogsList({
 
   const { nodeNameToId } = useWorkflowsAndNodes(versionId);
   const [autoScrollActive, setAutoScrollActive] = useState(true);
+  const [allLogsOpened, setAllLogsOpened] = useState(false);
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
@@ -116,6 +117,10 @@ function LogsList({
 
   function toggleAutoScrollActive() {
     setAutoScrollActive(!autoScrollActive);
+  }
+
+  function toggleAllLogsOpened() {
+    setAllLogsOpened(!allLogsOpened);
   }
 
   // Subscription query
@@ -200,7 +205,7 @@ function LogsList({
   }
 
   const logElements = logs.map((log: GetServerLogs_logs_items) => (
-    <LogItem {...log} key={log.id} />
+    <LogItem {...log} key={log.id} alwaysOpened={allLogsOpened} />
   ));
 
   return (
@@ -227,6 +232,8 @@ function LogsList({
         clearLogs={clearLogs}
         toggleAutoScrollActive={toggleAutoScrollActive}
         autoScrollActive={autoScrollActive}
+        allLogsOpened={allLogsOpened}
+        toggleAllLogsOpened={toggleAllLogsOpened}
       />
     </>
   );
