@@ -23,7 +23,15 @@ exports[`Logs Header matches snapshot 1`] = `
     className="buttons"
   >
     <div
+      title="Expand"
+    >
+      <FullscreenIcon
+        className="icon-regular"
+      />
+    </div>
+    <div
       onClick={[MockFunction]}
+      title="Close logs panel"
     >
       <ExpandMoreIcon
         className="icon-regular"
