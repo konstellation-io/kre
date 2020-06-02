@@ -25,7 +25,7 @@ function LogsFooter({
   toggleAllLogsOpened
 }: Props) {
   const IconAllLogsOpened = allLogsOpened ? ContractAllIcon : ExpandAllIcon;
-  const allLogsOpenedText = allLogsOpened ? 'CLOSE ALL LOGS' : 'OPEN ALL LOGS';
+  const allLogsOpenedText = allLogsOpened ? 'COLLAPSE LOGS' : 'EXPAND LOGS';
   const followText = `${autoScrollActive ? 'UN' : ''}FOLLOW NEW LOGS`;
   return (
     <div className={styles.container}>
