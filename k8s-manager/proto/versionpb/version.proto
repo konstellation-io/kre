@@ -4,11 +4,12 @@ package version;
 option go_package = "versionpb";
 
 message Version {
-  string name = 1;
-  string namespace = 2;
-  Entrypoint entrypoint = 3;
-  repeated Config config = 4;
-  repeated Workflow workflows = 5;
+  string id = 1;
+  string name = 2;
+  string namespace = 3;
+  Entrypoint entrypoint = 4;
+  repeated Config config = 5;
+  repeated Workflow workflows = 6;
 
   message Config {
     string key = 1;

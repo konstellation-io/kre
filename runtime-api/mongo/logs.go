@@ -33,9 +33,10 @@ func NewLogRepo(cfg *config.Config, logger *simplelogger.SimpleLogger, client *m
 }
 
 type WatchLogsOptions struct {
-	Search  string
-	Levels  []string
-	NodeIDs []string
+	VersionID string
+	Search    string
+	Levels    []string
+	NodeIDs   []string
 }
 
 type SearchLogsOptions struct {
@@ -148,6 +149,7 @@ func (r *LogRepo) WatchNodeLogs(ctx context.Context, watchLogsOptions WatchLogsO
 
 		conditions := bson.A{
 			bson.D{{"operationType", "insert"}},
+			bson.D{{"fullDocument.versionId", watchLogsOptions.VersionID}},
 		}
 
 		if len(watchLogsOptions.NodeIDs) > 0 {

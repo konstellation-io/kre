@@ -11,6 +11,7 @@ import { RuntimeStatus, VersionStatus } from './../../types/globalTypes';
 
 export interface GetVersionConfStatus_runtime_creationAuthor {
   __typename: 'User';
+  id: string;
   email: string;
 }
 

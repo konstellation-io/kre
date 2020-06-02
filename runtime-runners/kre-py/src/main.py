@@ -13,6 +13,7 @@ from nats.aio.client import ErrTimeout, Client as NATS
 class Config:
     def __init__(self):
         try:
+            self.krt_version_id = os.environ['KRT_VERSION_ID']
             self.krt_version = os.environ['KRT_VERSION']
             self.krt_node_name = os.environ['KRT_NODE_NAME']
             self.nats_server = os.environ['KRT_NATS_SERVER']
@@ -72,7 +73,8 @@ class HandlerContext:
             "error": error,
             "predictedValue": predicted_value,
             "trueValue": true_value,
-            "versionId": self.__config__.krt_version
+            "versionId": self.__config__.krt_version_id,
+            "versionName": self.__config__.krt_version
         }
 
         try:

@@ -1,3 +1,4 @@
+export KRT_VERSION_ID=version.1234
 export KRT_VERSION=testVersion1
 export KRT_NODE_NAME=nodeA
 export KRT_NATS_SERVER=localhost:4222

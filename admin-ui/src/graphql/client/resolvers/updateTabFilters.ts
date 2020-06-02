@@ -29,6 +29,7 @@ export function getDefaultFilters():
   return {
     ...defaultFilters,
     startDate: moment()
+      .utc()
       .subtract(24, 'hour')
       .toISOString(true),
     __typename: 'logTabFilters'
