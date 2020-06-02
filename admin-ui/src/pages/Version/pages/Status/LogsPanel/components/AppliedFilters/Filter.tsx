@@ -1,28 +1,31 @@
 import React from 'react';
 import Chip from '../../../../../../../components/Chip/Chip';
 import { NodeChip } from './AppliedFilters';
-import moment from 'moment';
 
-const filterToLabel = new Map([
-  ['search', 'Search'],
-  ['nodes', 'Process'],
-  ['workflow', 'Workflow']
-]);
-function getFilterLabel(filter: string) {
-  return filterToLabel.get(filter);
-}
+function getLabelAndTitle(filter: string, value: string | NodeChip) {
+  let label = '',
+    title = '';
 
-function getValueLabel(filter: string, value: string | NodeChip) {
-  if (filter === 'startDate' || filter === 'endDate') {
-    if (typeof value === 'string')
-      return moment(value).format('MMM DD, YYYY HH:mm');
+  switch (filter) {
+    case 'search':
+      label = `Searched by "${value}"`;
+      title = label;
+      break;
+    case 'workflow':
+      label = value as string;
+      title = label;
+      break;
+    case 'nodes':
+      const node = value as NodeChip;
+      const workflowShort = node.workflowName.substring(0, 2).toUpperCase();
+      label = `${workflowShort}: ${node.nodeName}`;
+      title = `${node.workflowName}: ${node.nodeName}`;
+      break;
+    default:
+      label = 'unknown';
   }
-  if (filter === 'nodes') {
-    if (typeof value !== 'string')
-      return `${value.nodeName} [${value.workflowName}]`;
-  }
 
-  return value;
+  return { label, title };
 }
 
 type Props = {
@@ -31,12 +34,12 @@ type Props = {
   removeFilter: Function;
 };
 export function Filter({ filter, value, removeFilter }: Props) {
-  const label = `${getFilterLabel(filter)}: ${getValueLabel(filter, value)}`;
-
   function onClose() {
     removeFilter(filter, value);
   }
-  return <Chip label={label} onClose={onClose} />;
+
+  const { label, title } = getLabelAndTitle(filter, value);
+  return <Chip label={label} title={title} onClose={onClose} />;
 }
 
 export default Filter;

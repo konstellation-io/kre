@@ -180,7 +180,7 @@ function Calendar({
           changeFromDate(newFromDatetime);
           changeToDate(newToDatetime);
 
-          setFocusedInput(focusedInput);
+          setFocusedInput('startDate');
         }}
         keepOpenOnDateSelect={addTimeControls}
         focusedInput={focusedInput}

@@ -9,7 +9,7 @@ import styles from './SearchSelect.module.scss';
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
 import SearchIcon from '@material-ui/icons/Search';
-import useClickOutsideListener from '../../../hooks/useClickOutsideListener';
+import useClickOutside from '../../../hooks/useClickOutside';
 import cx from 'classnames';
 
 export const ARROW_UP_KEY_CODE = 38;
@@ -49,14 +49,24 @@ function SearchSelect({
   const [selectedOption, setSelectedOption] = useState('');
   const [highlightedOption, setHighlightedOption] = useState<number>(-1);
 
-  const containerRef = useRef<HTMLInputElement>(null);
-  useClickOutsideListener({
-    ref: containerRef,
-    onClickOutside: () => {
-      setFilteredOptions([]);
-      onChange(selectedOption);
-    }
+  const optionsRef = useRef<HTMLInputElement>(null);
+  const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
+    componentRef: optionsRef,
+    action: onClose
   });
+
+  useEffect(() => {
+    if (filteredOptions.length !== 0) {
+      addClickOutsideEvents();
+    } else {
+      removeClickOutsideEvents();
+    }
+  }, [filteredOptions, addClickOutsideEvents, removeClickOutsideEvents]);
+
+  function onClose() {
+    setFilteredOptions([]);
+    onChange(selectedOption);
+  }
 
   function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
     setSelectedOption(event.target.value);
@@ -74,8 +84,8 @@ function SearchSelect({
     setSelectedOption(option);
     setFilteredOptions([]);
     setHighlightedOption(-1);
-    if (containerRef.current) {
-      const input = containerRef.current.querySelector('input');
+    if (optionsRef.current) {
+      const input = optionsRef.current.querySelector('input');
       if (input) {
         input.focus();
       }
@@ -113,7 +123,7 @@ function SearchSelect({
   }, [value]);
 
   return (
-    <div className={cx(className, styles.container)} ref={containerRef}>
+    <div className={cx(className, styles.container)} ref={optionsRef}>
       {!hideLabel && <InputLabel text={label} />}
       {showSearchIcon && (
         <div className={styles.searchIcon}>

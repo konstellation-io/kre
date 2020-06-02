@@ -10,17 +10,20 @@ export default function useClickOutside({
   action = () => {},
   mousedown = false
 }: Params) {
-  const handleClickOutside = useCallback((e: Event) => {
-    const target = e.target as HTMLElement;
+  const handleClickOutside = useCallback(
+    (e: Event) => {
+      const target = e.target as HTMLElement;
 
-    // Has the user clicked outside the component?
-    if (
-      componentRef === null ||
-      (document.contains(target) && !componentRef.current?.contains(target))
-    ) {
-      action();
-    }
-  }, []);
+      // Has the user clicked outside the component?
+      if (
+        componentRef === null ||
+        (document.contains(target) && !componentRef.current?.contains(target))
+      ) {
+        action();
+      }
+    },
+    [componentRef, action]
+  );
 
   const events = mousedown ? ['mousedown'] : ['contextmenu', 'click'];
 

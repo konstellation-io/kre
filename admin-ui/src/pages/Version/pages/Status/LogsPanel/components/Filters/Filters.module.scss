@@ -4,11 +4,14 @@
 
 .container {
   @include font-body;
+  line-height: 0;
 
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  height: $grid-unit * 6;
+  height: auto;
+  padding: 0 20px;
   flex-shrink: 0;
 }
 
@@ -22,33 +25,38 @@
   }
 }
 .rightFilters {
-  & > div:not(:last-child) {
-    border-right: 1px solid palette(base, 400);
+  flex-shrink: 0;
+
+  .filterLevel {
+    width: 142px;
+  }
+
+  .dateFilter {
+    width: $grid-unit * 21.5;
   }
 }
 
-.searchFilter {
-  width: 30vw;
-  height: 30px;
-  margin-left: 20px;
+.leftContainer {
+  flex-grow: 1;
+  flex-basis: 0;
+  max-width: 100 * $grid-unit;
 
-  .searchForm {
-    input {
-      height: 30px;
-      min-height: 30px;
+  .searchFilter {
+    width: 60%;
+    height: 30px;
+    min-width: 100px;
+    margin: $grid-unit $grid-unit $grid-unit 0;
+
+    .searchForm {
+      input {
+        height: 30px;
+        min-height: 30px;
+      }
     }
   }
-}
 
-.selectType {
-  width: 11vw;
-  min-width: 130px;
-}
-
-.selectProcesses {
-  width: 24vw;
-}
-
-.dateFilter {
-  width: $grid-unit * 21.5;
+  .selectProcesses {
+    width: 40%;
+    min-width: 170px;
+  }
 }

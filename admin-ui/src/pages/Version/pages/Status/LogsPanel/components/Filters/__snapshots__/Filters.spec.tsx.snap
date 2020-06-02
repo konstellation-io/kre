@@ -50,27 +50,27 @@ exports[`Filters matches snapshot 1`] = `
           Array [
             Object {
               "Icon": <LevelIcon
-                level="DEBUG"
-              />,
-              "label": "DEBUG",
-            },
-            Object {
-              "Icon": <LevelIcon
-                level="ERROR"
-              />,
-              "label": "ERROR",
-            },
-            Object {
-              "Icon": <LevelIcon
                 level="INFO"
               />,
               "label": "INFO",
             },
             Object {
               "Icon": <LevelIcon
+                level="DEBUG"
+              />,
+              "label": "DEBUG",
+            },
+            Object {
+              "Icon": <LevelIcon
                 level="WARN"
               />,
               "label": "WARN",
+            },
+            Object {
+              "Icon": <LevelIcon
+                level="ERROR"
+              />,
+              "label": "ERROR",
             },
           ]
         }

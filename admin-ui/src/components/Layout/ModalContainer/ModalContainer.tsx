@@ -29,7 +29,7 @@ const ModalContainer: FunctionComponent<Props> = ({
   return (
     <>
       {blocking && <div className={styles.bg} />}
-      <div className={cx(className, styles.container, {})}>
+      <div className={cx(className, styles.container, 'modal', {})}>
         <div className={styles.title}>{title}</div>
         <div className={styles.content}>{children}</div>
         <div className={styles.footer}>

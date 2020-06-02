@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { WheelEvent, useRef } from 'react';
 import styles from './TabContainer.module.scss';
 import cx from 'classnames';
 import IconMoreVert from '@material-ui/icons/MoreVert';
@@ -19,8 +19,18 @@ function TabContainer({
   onTabClick,
   contextMenuActions
 }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  function onMouseWheel(e: WheelEvent<HTMLElement>) {
+    if (containerRef.current) containerRef.current.scrollLeft += e.deltaY;
+  }
+
   return (
-    <div className={styles.tabContainer}>
+    <div
+      className={styles.tabContainer}
+      onWheel={onMouseWheel}
+      ref={containerRef}
+    >
       {tabs.map((tab: GetLogTabs_logTabs, index: number) => (
         <ContextMenu
           key={tab.uniqueId}

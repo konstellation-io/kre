@@ -84,6 +84,11 @@ $color-within-range: palette(highlight, 900);
   background-color: transparent;
 }
 
+.modal .DateRangePicker_picker,
+.modal .DayPicker {
+  box-shadow: 0 0 0 0 $color-black;
+}
+
 .CalendarMonth,
 .DayPicker_transitionContainer,
 .CalendarMonthGrid {

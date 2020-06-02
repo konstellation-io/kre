@@ -1,8 +1,9 @@
 @import '../../../styles/mixins';
 @import '../../../styles/colors';
 @import '../../../styles/borders';
+@import '../../../styles/shadows';
 
-$color-selected-bg: palette(base, 300);
+$height-input: 30px;
 
 .container {
   position: relative;
@@ -20,6 +21,8 @@ $color-selected-bg: palette(base, 300);
 
 .input {
   @include form-input;
+  padding: 11px 40px 11px 16px;
+  line-height: normal;
 
   color: font-color(light);
   font-weight: 600;
@@ -48,53 +51,48 @@ $color-selected-bg: palette(base, 300);
 }
 
 .optionsContainer {
+  @include shadow(3);
+
   position: absolute;
-  background-color: $bg-color-lighter;
+  background-color: $bg-shape-default;
   z-index: 1;
-  transition: max-height ease 0.3s;
+  top: 100%;
+  transition: max-height ease 0.3s, top ease 0.6s;
   overflow: hidden;
-  width: fit-content;
+  width: max-content;
   min-width: 100%;
   overflow: auto;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-radius: 5px;
+
+  &.opened {
+    top: calc(100% + #{$grid-unit});
+  }
+}
+
+.defaultOption {
+  height: 40px;
+  padding: 11px 16px;
 }
 
 .optionElement {
   color: font-color(light);
   line-height: 16px;
-  height: 40px;
-  padding: 11px 16px;
-  transition: color ease 0.4s, background-color ease 0.4s;
 
   &.selected {
-    background-color: $color-selected-bg;
+    background-color: $bg-shape-selected;
   }
 
   &:hover {
-    background-color: $bg-highlighted;
-    color: font-color(light);
+    @include glow(3);
+    background-color: $bg-shape-hover;
+    color: font-color(dark);
   }
 }
 
 .container.light {
   .input {
     background-color: palette(base, 300);
+    color: font-color(lowlight);
     border: 0;
-  }
-
-  .optionsContainer {
-    background-color: palette(base, 300);
-
-    .optionElement {
-      &.selected {
-        background-color: palette(base, 200);
-      }
-
-      &:hover {
-        background-color: palette(base, 400);
-        color: font-color(light);
-      }
-    }
   }
 }

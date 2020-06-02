@@ -3,8 +3,10 @@ import ModalContainer from '../../../../../../../../../components/Layout/ModalCo
 import moment, { Moment } from 'moment';
 import styles from './DateFilter.module.scss';
 import IconTime from '@material-ui/icons/AccessTime';
+import IconOptions from '@material-ui/icons/MoreHoriz';
 import Select, {
-  SelectTheme
+  SelectTheme,
+  CustomOptionProps
 } from '../../../../../../../../../components/Form/Select/Select';
 import Calendar from '../../../../../../../../../components/Form/Calendar/Calendar';
 import { formatDate } from '../../../../../../../../../utils/format';
@@ -25,6 +27,15 @@ const DEFAULT_DATES: FormData = {
     .endOf('day')
 };
 
+function CustomRange({ label }: CustomOptionProps) {
+  return (
+    <div className={styles.customRangesOption}>
+      <IconOptions className="icon-small" />
+      <div>{label}</div>
+    </div>
+  );
+}
+
 type Props = {
   updateFilters: Function;
   selectedOption: string;
@@ -36,7 +47,7 @@ export const dateFilterOptions: { [key: string]: string } = {
   lastSixHours: 'LAST 6 HOURS',
   lastTwentyFourHours: 'LAST 24 HOURS',
   lastSevenDays: 'LAST 7 DAYS',
-  customDates: 'CUSTOM'
+  customDates: 'CUSTOM RANGE'
 };
 
 const dateOptionToHours: { [key: string]: number } = {
@@ -76,8 +87,6 @@ function DateFilter({
   }
 
   const handleDateOption = (value: string) => {
-    updateFilters({ dateOption: value });
-
     if (value !== dateFilterOptions.customDates) {
       const hoursToSubtract = dateOptionToHours[value] || 1;
       updateFilters({
@@ -85,10 +94,12 @@ function DateFilter({
           .utc()
           .subtract(hoursToSubtract, 'hour')
           .toISOString(),
-        endDate: null
+        endDate: null,
+        dateOption: value
       });
     } else {
       setShowCalendar(true);
+      updateFilters({ dateOption: value });
     }
   };
 
@@ -130,6 +141,9 @@ function DateFilter({
         onChange={handleDateOption}
         formSelectedOption={selectedOption}
         theme={SelectTheme.LIGHT}
+        CustomOptions={{
+          [dateFilterOptions.customDates]: CustomRange
+        }}
         hideError
       />
       <div className={styles.dateValues}>

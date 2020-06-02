@@ -31,7 +31,7 @@ describe('Settings', () => {
     expect(wrapper.find('.options').prop('style').maxHeight).not.toBe(0);
 
     wrapper.find('.container').simulate('click');
-    expect(wrapper.find('.options').prop('style').maxHeight).toBe(0);
+    expect(wrapper.find('.options').prop('style').maxHeight).toBe(120);
   });
 
   it('handles logout action', () => {

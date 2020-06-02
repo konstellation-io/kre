@@ -8,11 +8,12 @@
 
   display: flex;
   height: 3 * $grid-unit;
-  background-color: palette(lowlight);
+  background-color: $bg-tab-default;
   padding: 0.5 * $grid-unit $grid-unit 0.5 * $grid-unit $grid-unit;
   border-radius: 0.5 * $grid-unit;
   margin: 0.5 * $grid-unit 15px 0.5 * $grid-unit 0;
   max-width: 30 * $grid-unit;
+  transition: background-color ease 0.3s;
 
   .label {
     text-overflow: ellipsis;
@@ -28,5 +29,9 @@
     &:hover {
       color: font-color(light);
     }
+  }
+
+  &:hover {
+    background-color: $bg-tab-hover;
   }
 }

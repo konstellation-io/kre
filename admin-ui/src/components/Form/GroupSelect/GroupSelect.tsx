@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
-
 import InputLabel from '../InputLabel/InputLabel';
 import InputError from '../InputError/InputError';
+import useClickOutside from '../../../hooks/useClickOutside';
 import Selections from './Selections';
 import Group from './Group';
-
 import cx from 'classnames';
 import styles from './GroupSelect.module.scss';
 import { get, isEmpty } from 'lodash';
@@ -38,41 +37,23 @@ function GroupSelect({
   className = '',
   hideSelections = false
 }: Props) {
-  const inputEl = useRef<HTMLInputElement>(null);
-  const containerEl = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
+    componentRef: optionsRef,
+    action: closeOptions
+  });
   const [optionsOpened, setOptionsOpened] = useState(false);
 
-  /*
-   * Adds or removes event listeners and updates options visibility
-   */
-  function changeOptionsState(show: boolean = false) {
-    const listenerAction = show ? 'addEventListener' : 'removeEventListener';
-
-    document[listenerAction]('contextmenu', handleClickOutside);
-    document[listenerAction]('click', handleClickOutside);
-
-    if (containerEl.current !== null) {
-      containerEl.current[listenerAction]('scroll', closeOptions);
-    }
-
-    setOptionsOpened(show);
-  }
-
   function openOptions() {
-    if (!optionsOpened) changeOptionsState(true);
+    if (!optionsOpened) {
+      addClickOutsideEvents();
+      setOptionsOpened(true);
+    }
   }
 
   function closeOptions() {
-    changeOptionsState(false);
-  }
-
-  function handleClickOutside(e: Event) {
-    const target = e.target as HTMLElement;
-
-    // Has the user clicked outside the selector?
-    if (document.contains(target) && !containerEl.current?.contains(target)) {
-      closeOptions();
-    }
+    removeClickOutsideEvents();
+    setOptionsOpened(false);
   }
 
   function onClear() {
@@ -142,7 +123,7 @@ function GroupSelect({
   const hasSelectedElements = !isEmpty(formSelectedOptions);
 
   return (
-    <div className={cx(className, styles.container)} ref={containerEl}>
+    <div className={cx(className, styles.container)}>
       {label && <InputLabel text={label} />}
       <div className={styles.inputContainer}>
         <div
@@ -152,7 +133,6 @@ function GroupSelect({
             [styles.placeholder]: placeholder !== ''
           })}
           onClick={openOptions}
-          ref={inputEl}
         >
           {placeholder}
         </div>
@@ -160,6 +140,7 @@ function GroupSelect({
           className={cx(styles.optionsContainer, {
             [styles.opened]: optionsOpened
           })}
+          ref={optionsRef}
           style={{ maxHeight: optionsOpened ? optionsHeight : 0 }}
         >
           {hasSelectedElements && !hideSelections && (

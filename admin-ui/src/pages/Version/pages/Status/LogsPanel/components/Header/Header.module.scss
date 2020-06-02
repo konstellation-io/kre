@@ -15,6 +15,10 @@
     .buttons {
       opacity: 1;
     }
+
+    .title {
+      pointer-events: none;
+    }
   }
 }
 
@@ -25,9 +29,15 @@
   display: flex;
   align-items: center;
   margin: 0 20px 0 20px;
+  transition: color ease 0.3s;
+  cursor: pointer;
 
   svg {
     margin: 4px 1.5 * $grid-unit 0 0;
+  }
+
+  &:hover {
+    color: font-color(light);
   }
 }
 
