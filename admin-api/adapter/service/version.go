@@ -75,6 +75,7 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 
 	req := versionpb.Request{
 		Version: &versionpb.Version{
+			Id:        version.ID,
 			Name:      version.Name,
 			Namespace: runtime.GetNamespace(),
 			Config:    configVars,

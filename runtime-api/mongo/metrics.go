@@ -64,13 +64,15 @@ func (r *MetricsRepo) GetMetrics(
 		"versionId": versionID,
 	}
 
+	r.logger.Debugf("Finding metrics with filter = %#v", filter)
+
 	cur, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return result, err
 	}
 
-	if err = cur.All(ctx, result); err != nil {
-		return nil, fmt.Errorf("error getting metrics from db: %w", err)
+	if err = cur.All(ctx, &result); err != nil {
+		return nil, fmt.Errorf("error iterating db cursor: %w", err)
 	}
 
 	// Err returns the last error seen by the Cursor, or nil if no error has occurred.

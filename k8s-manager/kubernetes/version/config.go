@@ -101,6 +101,7 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 [FILTER]
     Name record_modifier
     Match *
+    Record versionId ${KRT_VERSION_ID}
     Record versionName ${KRT_VERSION}
     Record nodeName ${KRT_NODE_NAME}
     Record nodeId ${KRT_NODE_ID}

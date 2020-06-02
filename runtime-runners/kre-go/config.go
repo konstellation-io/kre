@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	Version  string
-	NodeName string
-	BasePath string
-	NATS     ConfigNATS
+	VersionID string
+	Version   string
+	NodeName  string
+	BasePath  string
+	NATS      ConfigNATS
 }
 
 type ConfigNATS struct {
@@ -22,9 +23,10 @@ type ConfigNATS struct {
 
 func NewConfig(logger *simplelogger.SimpleLogger) Config {
 	return Config{
-		Version:  getCfgFromEnv(logger, "KRT_VERSION"),
-		NodeName: getCfgFromEnv(logger, "KRT_NODE_NAME"),
-		BasePath: getCfgFromEnv(logger, "KRT_BASE_PATH"),
+		VersionID: getCfgFromEnv(logger, "KRT_VERSION_ID"),
+		Version:   getCfgFromEnv(logger, "KRT_VERSION"),
+		NodeName:  getCfgFromEnv(logger, "KRT_NODE_NAME"),
+		BasePath:  getCfgFromEnv(logger, "KRT_BASE_PATH"),
 		NATS: ConfigNATS{
 			Server:             getCfgFromEnv(logger, "KRT_NATS_SERVER"),
 			InputSubject:       getCfgFromEnv(logger, "KRT_NATS_INPUT"),

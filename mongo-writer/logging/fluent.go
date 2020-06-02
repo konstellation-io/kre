@@ -46,6 +46,7 @@ func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 			"workflowName": msgData["workflowName"],
 			"nodeId":       msgData["nodeId"],
 			"nodeName":     msgData["nodeName"],
+			"versionId":    msgData["versionId"],
 			"versionName":  msgData["versionName"],
 		}
 

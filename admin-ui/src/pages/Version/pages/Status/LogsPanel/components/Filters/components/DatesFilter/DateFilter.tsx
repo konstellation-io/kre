@@ -19,9 +19,12 @@ type FormData = {
 
 const DEFAULT_DATES: FormData = {
   startDate: moment()
+    .utc()
     .subtract(30, 'days')
     .startOf('day'),
-  endDate: moment().endOf('day')
+  endDate: moment()
+    .utc()
+    .endOf('day')
 };
 
 function CustomRange({ label }: CustomOptionProps) {
@@ -88,8 +91,9 @@ function DateFilter({
       const hoursToSubtract = dateOptionToHours[value] || 1;
       updateFilters({
         startDate: moment()
+          .utc()
           .subtract(hoursToSubtract, 'hour')
-          .toISOString(true),
+          .toISOString(),
         endDate: null,
         dateOption: value
       });

@@ -68,6 +68,10 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 
 	envVars := []apiv1.EnvVar{
 		{
+			Name:  "KRT_VERSION_ID",
+			Value: version.GetId(),
+		},
+		{
 			Name:  "KRT_VERSION",
 			Value: version.GetName(),
 		},

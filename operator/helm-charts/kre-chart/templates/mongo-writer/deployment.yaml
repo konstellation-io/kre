@@ -19,7 +19,7 @@ spec:
         - name: mongo-writer
           # TODO: This version should be fixed and the operator released in-sync with new mongo-writer changes
           image: konstellation/kre-mongo-writer:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ if .Values.developmentMode }}IfNotPresent{{ else }}Always{{ end }}
           envFrom:
             - secretRef:
                 name: {{ .Release.Name }}-secrets
