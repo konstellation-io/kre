@@ -27,6 +27,7 @@ import { ADD_NOTIFICATION } from './graphql/client/mutations/addNotification.gra
 import addNotificationResolver from './graphql/client/resolvers/addNotification';
 import removeNotificationResolver from './graphql/client/resolvers/removeNotification';
 import updateTabFiltersResolver from './graphql/client/resolvers/updateTabFilters';
+import addLogTabResolver from './graphql/client/resolvers/addLogTab';
 
 import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
 
@@ -40,7 +41,6 @@ export interface LocalState {
   activeTabId: string;
   logsOpened: boolean;
   logsAutoScroll: boolean;
-  logsInFullScreen: boolean;
   openedVersion: OpenedVersion;
 }
 interface DefaultCache {
@@ -148,7 +148,6 @@ config
         notifications: [],
         logsOpened: false,
         logsAutoScroll: false,
-        logsInFullScreen: false,
         openedVersion: {
           runtimeName: '',
           versionName: '',
@@ -165,7 +164,8 @@ config
         Mutation: {
           addNotification: addNotificationResolver,
           removeNotification: removeNotificationResolver,
-          updateTabFilters: updateTabFiltersResolver
+          updateTabFilters: updateTabFiltersResolver,
+          addLogTab: addLogTabResolver
         }
       }
     });

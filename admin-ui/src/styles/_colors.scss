@@ -60,7 +60,8 @@ $color-font: (
   lowlight: palette(lowlight, 200),
   regular: palette(lowlight),
   grey: palette(base, 200),
-  dark: palette(base)
+  dark: palette(base),
+  disabled: palette(lowlight, 300)
 );
 
 $bg-color: palette(base, 600);

@@ -6,7 +6,9 @@ exports[`Logs matches snapshot 1`] = `
     className="container"
   >
     <Header
+      fullScreen={false}
       opened={false}
+      toggleFullScreen={[Function]}
       togglePanel={[Function]}
     />
     <TabContainer
@@ -40,6 +42,21 @@ exports[`Logs matches snapshot 1`] = `
             },
             "callToAction": [Function],
             "text": "open in a new tab",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "ClearAllIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "disabled": true,
+            "text": "close others",
           },
           Object {
             "Icon": Object {
@@ -92,7 +109,9 @@ exports[`Logs should be empty when there is no node 1`] = `
     className="container hidden"
   >
     <Header
+      fullScreen={false}
       opened={false}
+      toggleFullScreen={[Function]}
       togglePanel={[Function]}
     />
     <TabContainer
@@ -126,6 +145,21 @@ exports[`Logs should be empty when there is no node 1`] = `
             },
             "callToAction": [Function],
             "text": "open in a new tab",
+          },
+          Object {
+            "Icon": Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "ClearAllIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            },
+            "callToAction": [Function],
+            "disabled": true,
+            "text": "close others",
           },
           Object {
             "Icon": Object {

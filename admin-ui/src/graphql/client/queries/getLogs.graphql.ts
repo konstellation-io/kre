@@ -29,7 +29,6 @@ export interface GetLogTabs {
 export const GET_LOG_TABS = gql`
   {
     logsOpened @client
-    logsInFullScreen @client
     activeTabId @client
     logTabs @client {
       runtimeId

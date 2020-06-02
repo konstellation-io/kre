@@ -1,10 +1,11 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header/Header';
 import LogsTab from './components/LogsTab/LogsTab';
 import cx from 'classnames';
 import styles from './LogsPanel.module.scss';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import IconClose from '@material-ui/icons/Close';
+import IconCloseOthers from '@material-ui/icons/ClearAll';
 import IconOpenInTab from '@material-ui/icons/Tab';
 import IconDuplicate from '@material-ui/icons/ControlPointDuplicate';
 import {
@@ -16,15 +17,21 @@ import { get } from 'lodash';
 import TabContainer from './components/TabContainer/TabContainer';
 import { MenuCallToAction } from '../../../../../components/ContextMenu/ContextMenu';
 import ROUTE from '../../../../../constants/routes';
+import { useLocation } from 'react-router-dom';
+import { Location } from 'history';
 
-export const ESC_KEY_CODE = 27;
+function actualPageIsLogs(location: Location) {
+  return location.pathname.startsWith(ROUTE.LOGS.replace(':logTabInfo', ''));
+}
 
 function LogsPanel() {
   const client = useApolloClient();
-  const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
+  const location = useLocation();
+  const onlyShowLogs = actualPageIsLogs(location);
+  const [fullScreen, setFullScreen] = useState(onlyShowLogs);
 
+  const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
   const opened = get(localData, 'logsOpened', false);
-  const fullScreen = get(localData, 'logsInFullScreen', false);
   const activeTabId = get(localData, 'activeTabId', '');
   const tabs = get<GetLogTabs, 'logTabs', GetLogTabs_logTabs[]>(
     localData,
@@ -32,25 +39,15 @@ function LogsPanel() {
     []
   );
 
-  const onKeyDown = useCallback(
-    (e: any) => {
-      if (e.keyCode === ESC_KEY_CODE) {
-        client.writeData({ data: { logsOpened: false } });
-      }
-    },
-    [client]
-  );
-  useEffect(() => {
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [onKeyDown]);
-
   function setOpened(value: boolean) {
     client.writeData({ data: { logsOpened: value } });
   }
 
   function togglePanel() {
     setOpened(!opened);
+  }
+  function toggleFullScreen() {
+    setFullScreen(!fullScreen);
   }
 
   function handleTabClick(uniqueId: string): void {
@@ -66,6 +63,15 @@ function LogsPanel() {
     }
 
     return newActiveTabId;
+  }
+
+  function closeAllButIndex(index: number): void {
+    const newTabs = [tabs[index]];
+    const newActiveTabId = tabs[index].uniqueId;
+
+    client.writeData({
+      data: { activeTabId: newActiveTabId, logTabs: newTabs }
+    });
   }
 
   function closeTabByIndex(index: number): void {
@@ -115,6 +121,12 @@ function LogsPanel() {
       callToAction: (_: any, index: number) => openInANewTab(index)
     },
     {
+      Icon: IconCloseOthers,
+      text: 'close others',
+      disabled: tabs.length < 2,
+      callToAction: (_: any, index: number) => closeAllButIndex(index)
+    },
+    {
       Icon: IconClose,
       text: 'close',
       callToAction: (_: any, index: number) => closeTabByIndex(index)
@@ -131,7 +143,14 @@ function LogsPanel() {
           [styles.fullScreen]: fullScreen
         })}
       >
-        {!fullScreen && <Header togglePanel={togglePanel} opened={opened} />}
+        {!onlyShowLogs && (
+          <Header
+            togglePanel={togglePanel}
+            toggleFullScreen={toggleFullScreen}
+            opened={opened}
+            fullScreen={fullScreen}
+          />
+        )}
         <TabContainer
           tabs={tabs}
           activeTabId={activeTabId}

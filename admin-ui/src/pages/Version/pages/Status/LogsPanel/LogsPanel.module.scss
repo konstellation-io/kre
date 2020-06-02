@@ -18,15 +18,15 @@
 
   &.opened {
     height: 70%;
+
+    &.fullScreen {
+      height: calc(100% - #{$header-height});
+    }
   }
 
   &.hidden {
     opacity: 0;
     pointer-events: none;
-  }
-
-  &.fullScreen {
-    height: calc(100% - #{$header-height});
   }
 }
 

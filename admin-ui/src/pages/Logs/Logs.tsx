@@ -20,7 +20,6 @@ function Logs() {
     client.writeData({
       data: {
         logsOpened: true,
-        logsInFullScreen: true,
         activeTabId: tabInfo.uniqueId,
         logTabs: [tabInfo]
       }

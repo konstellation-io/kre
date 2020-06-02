@@ -181,3 +181,13 @@ $color-header-border: palette(base, 300);
   top: 50%;
   left: 50%;
 }
+
+.clipboardInput {
+  position: absolute;
+  opacity: 0;
+}
+
+.loadMoreSpinner {
+  position: relative;
+  height: 25px;
+}

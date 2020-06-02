@@ -42,7 +42,7 @@ function extractWorkflowsAndNodes(
     else {
       value.forEach(({ workflowName, nodeNames }: NodeSelection) => {
         const allNodesSelected =
-          nodeNames.length === workflowsAndNodesNames[workflowName].length;
+          nodeNames.length === workflowsAndNodesNames[workflowName]?.length;
 
         if (allNodesSelected) newSelections.push(['workflow', workflowName]);
         else {

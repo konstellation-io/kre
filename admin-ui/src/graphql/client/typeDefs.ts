@@ -13,6 +13,14 @@ export interface AddNotificationInput {
   to: string;
 }
 
+export interface AddLogTabInput {
+  runtimeId: string;
+  runtimeName: string;
+  versionId: string;
+  versionName: string;
+  nodes: NodeSelection[];
+}
+
 export interface NodeSelection {
   workflowName: string;
   nodeNames: string[];

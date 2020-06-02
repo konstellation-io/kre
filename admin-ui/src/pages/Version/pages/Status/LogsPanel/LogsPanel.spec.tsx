@@ -23,6 +23,12 @@ jest.mock('@apollo/react-hooks', () => ({
   useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
 }));
 
+jest.mock('react-router', () => ({
+  useLocation: jest.fn(() => ({
+    pathname: ''
+  }))
+}));
+
 describe('Logs', () => {
   let wrapper: any;
   const mockSetSelectedNode = jest.fn();

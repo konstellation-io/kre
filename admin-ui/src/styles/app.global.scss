@@ -27,6 +27,12 @@ body,
 }
 #root {
   overflow: hidden;
+
+  > div {
+    width: 100%;
+    height: 100%;
+    outline: none;
+  }
 }
 
 *,
@@ -148,6 +154,12 @@ a:active {
 .icon-big {
   font-size: 2rem !important;
 }
+
+#contextual-menu {
+  position: relative;
+  z-index: 999;
+}
+
 .icon-huge {
   font-size: 3rem !important;
 }

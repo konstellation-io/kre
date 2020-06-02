@@ -1,5 +1,11 @@
 import { get } from 'lodash';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  WheelEvent
+} from 'react';
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
@@ -11,7 +17,6 @@ import {
   GetServerLogs,
   GetServerLogsVariables
 } from '../../../../../../../graphql/queries/types/GetServerLogs';
-import moment from 'moment';
 import LogsFooter from '../LogsFooter/LogsFooter';
 import { LogFilters } from '../../../../../../../graphql/types/globalTypes';
 import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
@@ -20,12 +25,16 @@ import {
   GetLogTabs,
   GET_LOGS_OPENED
 } from '../../../../../../../graphql/client/queries/getLogsOpened.graphql';
+import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
 const GetServerLogsQuery = loader(
   '../../../../../../../graphql/queries/getServerLogs.graphql'
 );
+
+const LOG_HEIGHT = 25;
+const SCROLL_THRESHOLD = 12 * LOG_HEIGHT;
 
 function scrollToBottom(component: HTMLDivElement) {
   if (component) {
@@ -77,12 +86,12 @@ function LogsList({
   const logsOpened = localData?.logsOpened;
 
   const { nodeNameToId } = useWorkflowsAndNodes(versionId);
-  const [autoScrollActive, setAutoScrollActive] = useState(false);
+  const [autoScrollActive, setAutoScrollActive] = useState(true);
+  const [allLogsOpened, setAllLogsOpened] = useState(false);
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
   const [refetching, setRefetching] = useState(false);
-  const [noMoreData, setNoMoreData] = useState(false);
 
   const formatFilters = (filters: GetLogTabs_logTabs_filters) =>
     getLogsQueryFilters(filters, nodeNameToId);
@@ -98,20 +107,19 @@ function LogsList({
     },
     onCompleted: data => {
       onNewLogs(data.logs.items.reverse());
-      updateCursor(data.logs.cursor || '');
+      setNextPage(data.logs.cursor || '');
       handleSubscription();
     },
     onError: handleSubscription,
     fetchPolicy: 'no-cache'
   });
 
-  function updateCursor(newCursor: string) {
-    setNextPage(newCursor);
-    setNoMoreData(newCursor ? false : true);
-  }
-
   function toggleAutoScrollActive() {
     setAutoScrollActive(!autoScrollActive);
+  }
+
+  function toggleAllLogsOpened() {
+    setAllLogsOpened(!allLogsOpened);
   }
 
   // Subscription query
@@ -167,18 +175,38 @@ function LogsList({
             ...newData.items.reverse(),
             ...oldLogs
           ]);
+
+          const newLogsHeight = newData.items.length * LOG_HEIGHT;
+          const currentScrollY = listRef?.current?.scrollTop || 0;
+          listRef?.current?.scrollTo({
+            top: newLogsHeight + currentScrollY
+          });
         }
 
-        updateCursor(newData?.cursor || '');
+        setNextPage(newData?.cursor || '');
         setRefetching(false);
         return prev;
       }
     });
   }
 
+  function handleOnScroll({
+    currentTarget,
+    deltaY
+  }: WheelEvent<HTMLDivElement>) {
+    const hasReachedThreshold =
+      currentTarget.scrollTop + deltaY <= SCROLL_THRESHOLD;
+    if (hasReachedThreshold && nextPage !== '' && !(loading || refetching)) {
+      loadPreviousLogs();
+    }
+
+    setAutoScrollActive(false);
+  }
+
   const logElements = logs.map((log: GetServerLogs_logs_items) => (
-    <LogItem {...log} key={log.id} />
+    <LogItem {...log} key={log.id} alwaysOpened={allLogsOpened} />
   ));
+
   return (
     <>
       <LogListHeader />
@@ -187,16 +215,24 @@ function LogsList({
           <SpinnerCircular size={100} />
         </div>
       )}
-      <div ref={listRef} className={styles.listContainer}>
+      <div
+        ref={listRef}
+        className={styles.listContainer}
+        onWheel={handleOnScroll}
+      >
+        {refetching && (
+          <div className={styles.loadMoreSpinner}>
+            <SpinnerLinear size={50} />
+          </div>
+        )}
         {logElements}
       </div>
       <LogsFooter
         clearLogs={clearLogs}
-        loadMore={loadPreviousLogs}
         toggleAutoScrollActive={toggleAutoScrollActive}
         autoScrollActive={autoScrollActive}
-        loading={loading || refetching}
-        noMoreData={noMoreData}
+        allLogsOpened={allLogsOpened}
+        toggleAllLogsOpened={toggleAllLogsOpened}
       />
     </>
   );

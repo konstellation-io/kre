@@ -4,7 +4,6 @@ import WorkflowHeader from './WorkflowHeader';
 import WorkflowChart from './WorkflowChart';
 import useRenderOnResize from '../../../../../../hooks/useRenderOnResize';
 import { cloneDeep } from 'lodash';
-
 import {
   GetVersionWorkflows_version_workflows,
   GetVersionWorkflows_version_workflows_nodes,
@@ -14,21 +13,23 @@ import {
   NodeStatus,
   VersionStatus
 } from '../../../../../../graphql/types/globalTypes';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useParams } from 'react-router-dom';
 import {
   RuntimeRouteParams,
   VersionRouteParams
 } from '../../../../../../constants/routes';
-import { GET_LOG_TABS } from '../../../../../../graphql/client/queries/getLogs.graphql';
 import { GET_OPENED_VERSION_INFO } from '../../../../../../graphql/client/queries/getOpenedVersionInfo.graphql';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
 import { getWorkflowState } from '../../states';
 import cx from 'classnames';
 import useUserAccess from '../../../../../../hooks/useUserAccess';
 import { checkPermission } from '../../../../../../rbac-rules';
-import { getDefaultFilters } from '../../../../../../graphql/client/resolvers/updateTabFilters';
 import { NodeSelection } from '../../../../../../graphql/client/typeDefs';
+import {
+  ADD_LOG_TAB,
+  AddLogTabVariables
+} from '../../../../../../graphql/client/mutations/addLogTab.graphql';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -54,13 +55,14 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   const { data: localData } = useQuery(GET_OPENED_VERSION_INFO);
   const runtimeName = localData?.openedVersion.runtimeName || '';
   const versionName = localData?.openedVersion.versionName || '';
-
-  const client = useApolloClient();
   const { runtimeId } = useParams<RuntimeRouteParams>();
-
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const chartRef = useRef<HTMLDivElement>(null);
   const dimensions = useRenderOnResize({ container: chartRef });
+
+  const [addLogTabMutation] = useMutation<null, AddLogTabVariables>(
+    ADD_LOG_TAB
+  );
 
   // Sets container width.
   useEffect(() => {
@@ -68,29 +70,15 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   }, [setContainerWidth, workflow.nodes]);
 
   function addLogTab(nodes: NodeSelection[]) {
-    const logTabs = client.readQuery({
-      query: GET_LOG_TABS
-    });
-    const activeTabId = `${Date.now()}`;
-    client.writeData({
-      data: {
-        logsOpened: true,
-        activeTabId,
-        logTabs: [
-          ...logTabs.logTabs,
-          {
-            runtimeId,
-            runtimeName,
-            versionId,
-            versionName,
-            uniqueId: activeTabId,
-            filters: {
-              ...getDefaultFilters(),
-              nodes
-            },
-            __typename: 'logTab'
-          }
-        ]
+    addLogTabMutation({
+      variables: {
+        input: {
+          runtimeId,
+          runtimeName,
+          versionId,
+          versionName,
+          nodes
+        }
       }
     });
   }

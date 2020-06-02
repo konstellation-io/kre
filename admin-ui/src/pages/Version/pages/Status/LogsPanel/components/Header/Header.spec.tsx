@@ -26,7 +26,7 @@ describe('Logs Header', () => {
   });
 
   it('show right components', () => {
-    expect(wrapper.find('.buttons > div').length).toBe(1);
+    expect(wrapper.find('.buttons > div').length).toBe(2);
   });
 
   it('handles events', () => {

@@ -1,52 +1,101 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LogItem matches snapshot 1`] = `
-<div
-  className="container DEBUG"
+<ContextMenu
+  actions={
+    Array [
+      Object {
+        "Icon": Object {
+          "$$typeof": Symbol(react.memo),
+          "compare": null,
+          "displayName": "SubjectIcon",
+          "muiName": "SvgIcon",
+          "type": Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "render": [Function],
+          },
+        },
+        "callToAction": [Function],
+        "text": "copy log message",
+      },
+      Object {
+        "Icon": Object {
+          "$$typeof": Symbol(react.memo),
+          "compare": null,
+          "displayName": "FileCopyIcon",
+          "muiName": "SvgIcon",
+          "type": Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "render": [Function],
+          },
+        },
+        "callToAction": [Function],
+        "text": "copy complete log trace",
+      },
+    ]
+  }
 >
-  <div
-    className="row1 DEBUG"
-  >
-    <div
-      className="icon"
-    >
-      <LevelIcon
-        level="DEBUG"
-      />
-    </div>
-    <div
-      className="date"
-    >
-      2020-01-01
-    </div>
-    <div
-      className="hour"
-    >
-      00:00:00.000
-    </div>
-    <div
-      className="workflow"
-      title=""
+  <div>
+    <input
+      className="clipboardInput"
+      readOnly={true}
+      type="text"
+      value="some message"
+    />
+    <input
+      className="clipboardInput"
+      readOnly={true}
+      type="text"
+      value="DEBUG  [2020-01-01] undefined:nodeName - some message"
     />
     <div
-      className="node"
-      title="nodeName"
+      className="container DEBUG"
     >
-      nodeName
-    </div>
-    <div
-      className="message"
-    >
-      some message
-    </div>
-    <div
-      className="expand"
-      onClick={[Function]}
-    >
-      <ArrowDownwardIcon
-        className="icon-regular"
-      />
+      <div
+        className="row1 DEBUG"
+      >
+        <div
+          className="icon"
+        >
+          <LevelIcon
+            level="DEBUG"
+          />
+        </div>
+        <div
+          className="date"
+        >
+          2020-01-01
+        </div>
+        <div
+          className="hour"
+        >
+          00:00:00.000
+        </div>
+        <div
+          className="workflow"
+          title=""
+        />
+        <div
+          className="node"
+          title="nodeName"
+        >
+          nodeName
+        </div>
+        <div
+          className="message"
+        >
+          some message
+        </div>
+        <div
+          className="expand"
+          onClick={[Function]}
+        >
+          <ArrowDownwardIcon
+            className="icon-regular"
+          />
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</ContextMenu>
 `;
