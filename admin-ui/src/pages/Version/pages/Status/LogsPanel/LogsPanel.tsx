@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header/Header';
 import LogsTab from './components/LogsTab/LogsTab';
 import cx from 'classnames';

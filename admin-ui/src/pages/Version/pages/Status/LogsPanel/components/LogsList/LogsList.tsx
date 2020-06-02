@@ -17,7 +17,6 @@ import {
   GetServerLogs,
   GetServerLogsVariables
 } from '../../../../../../../graphql/queries/types/GetServerLogs';
-import moment from 'moment';
 import LogsFooter from '../LogsFooter/LogsFooter';
 import { LogFilters } from '../../../../../../../graphql/types/globalTypes';
 import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
@@ -180,7 +179,7 @@ function LogsList({
           const newLogsHeight = newData.items.length * LOG_HEIGHT;
           const currentScrollY = listRef?.current?.scrollTop || 0;
           listRef?.current?.scrollTo({
-            top: Math.max(newLogsHeight + currentScrollY)
+            top: newLogsHeight + currentScrollY
           });
         }
 
