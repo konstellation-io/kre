@@ -22,7 +22,10 @@ export default function useClickOutside({
         action();
       }
     },
-    [componentRef, action]
+    // 'action' is not added so the reference to this function does not
+    // depends on 'action' parameter.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [componentRef]
   );
 
   const events = mousedown ? ['mousedown'] : ['contextmenu', 'click'];
