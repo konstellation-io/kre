@@ -51,7 +51,7 @@ const generateVersion = () => ({
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
   configurationVariables: () => new MockList([2, 20]),
-  workflows: () => new MockList(3),
+  workflows: () => new MockList(2),
   configurationCompleted: true
 });
 

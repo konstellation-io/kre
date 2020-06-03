@@ -1,20 +1,26 @@
-import React, { useState, FunctionComponent, useRef } from 'react';
+import React, { useState, FunctionComponent, useRef, useEffect } from 'react';
 import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions
 } from '../../../../../graphql/queries/types/GetVersionConfStatus';
 import { VersionStatus } from '../../../../../graphql/types/globalTypes';
 import styles from './VersionActions.module.scss';
-
-// Icons
+import { useForm } from 'react-hook-form';
+import * as CHECK from '../../../../../components/Form/check';
 import StartIcon from '@material-ui/icons/PlayArrowOutlined';
 import StopIcon from '@material-ui/icons/Stop';
 import PublishIcon from '@material-ui/icons/Publish';
 import UnpublishIcon from '@material-ui/icons/Block';
 import useVersionAction from '../../../utils/hooks';
-import ConfirmationModal from '../../../../../components/ConfirmationModal/ConfirmationModal';
+import ModalContainer from '../../../../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutJustify from '../../../../../components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
 import Button, { BUTTON_THEMES } from '../../../../../components/Button/Button';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { get } from 'lodash';
+
+function verifyComment(value: string) {
+  return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
+}
 
 type ModalInfo = {
   action: (comment: string) => void;
@@ -35,11 +41,23 @@ type ActionProps = {
 };
 
 function VersionActions({ runtime, version }: VersionActionsProps) {
+  const { handleSubmit, setValue, register, errors } = useForm();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>({
     action: () => {},
     label: ''
   });
+
+  useEffect(() => {
+    register('comment', { validate: verifyComment });
+    setValue('comment', '');
+  }, [register, setValue]);
+
+  function onSubmit() {
+    handleSubmit((formData: any) =>
+      modalInfo.current.action(formData.comment)
+    )();
+  }
 
   const {
     publishVersion,
@@ -124,12 +142,16 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
         />
       ))}
       {showConfirmation && (
-        <ConfirmationModal
+        <ModalContainer
           title={`YOU ARE ABOUT TO ${modalInfo.current.label} A VERSION`}
-          message=""
-          onAction={modalInfo.current.action}
-          onClose={closeModal}
-        />
+          onAccept={onSubmit}
+          onCancel={closeModal}
+        >
+          <ModalLayoutJustify
+            onUpdate={(value: string) => setValue('comment', value)}
+            error={get(errors.comment, 'message')}
+          />
+        </ModalContainer>
       )}
     </div>
   );

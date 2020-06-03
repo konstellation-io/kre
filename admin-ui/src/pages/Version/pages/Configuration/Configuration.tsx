@@ -6,7 +6,8 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
 import Button from '../../../../components/Button/Button';
-import Modal from '../../../../components/Modal/Modal';
+import ModalContainer from '../../../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutInfo from '../../../../components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
 import SettingsHeader from '../../../Settings/components/SettingsHeader/SettingsHeader';
 import ConfigurationVariableList from '../../../../components/ConfigurationVariableList/ConfigurationVariableList';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
@@ -189,14 +190,18 @@ function Configuration() {
         <SettingsHeader title="Configuration" />
         {getContent()}
         {showConfirmationModal && (
-          <Modal
+          <ModalContainer
             title="VERSION WILL BE RESTARTED"
-            message="After updating this configuration, the version will be restarted (this process may take several seconds)"
             actionButtonLabel="ACCEPT"
             onAccept={makeUpdate}
-            onClose={closeModal}
+            onCancel={closeModal}
             blocking
-          />
+          >
+            <ModalLayoutInfo>
+              After updating this configuration, the version will be restarted
+              (this process may take several seconds)
+            </ModalLayoutInfo>
+          </ModalContainer>
         )}
       </div>
       <HorizontalBar>
