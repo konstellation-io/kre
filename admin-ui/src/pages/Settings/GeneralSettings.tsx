@@ -23,7 +23,8 @@ import {
 import { mutationPayloadHelper } from '../../utils/formUtils';
 import HorizontalBar from '../../components/Layout/HorizontalBar/HorizontalBar';
 import Button from '../../components/Button/Button';
-import Modal from '../../components/Modal/Modal';
+import ModalContainer from '../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutInfo from '../../components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
 
 const GetExpirationTimeQuery = loader(
   '../../graphql/queries/getExpirationTime.graphql'
@@ -154,14 +155,18 @@ function GeneralSettings() {
       </HorizontalBar>
 
       {showModal && (
-        <Modal
+        <ModalContainer
           title="Configuration will be updated"
-          message="After updating this configuration, the expiration time of all new sessions will be updated, are you sure you want to continue?"
           actionButtonLabel="CONTINUE"
           onAccept={handleSubmit(onSubmit)}
-          onClose={closeModal}
+          onCancel={closeModal}
           blocking
-        />
+        >
+          <ModalLayoutInfo>
+            After updating this configuration, the expiration time of all new
+            sessions will be updated, are you sure you want to continue?
+          </ModalLayoutInfo>
+        </ModalContainer>
       )}
     </>
   );

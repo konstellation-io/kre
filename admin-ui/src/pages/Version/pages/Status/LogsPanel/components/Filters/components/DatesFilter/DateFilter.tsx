@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ModalContainer from '../../../../../../../../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutCalendar from '../../../../../../../../../components/Layout/ModalContainer/layouts/ModalLayoutCalendar/ModalLayoutCalendar';
 import moment, { Moment } from 'moment';
 import styles from './DateFilter.module.scss';
 import IconTime from '@material-ui/icons/AccessTime';
@@ -116,18 +117,7 @@ function DateFilter({
             className={styles.calendarModal}
             blocking
           >
-            <Calendar
-              onChangeFromDateInput={(date: Moment) =>
-                setValue('startDate', date)
-              }
-              onChangeToDateInput={(date: Moment) => setValue('endDate', date)}
-              formFromDate={watch('startDate')}
-              formToDate={watch('endDate')}
-              keepOpen
-              autoFocus
-              addTimeControls
-              hideError
-            />
+            <ModalLayoutCalendar setValue={setValue} watch={watch} />
           </ModalContainer>
         </div>
       )}

@@ -5,7 +5,8 @@ import { runtime, version } from '../../../../../mocks/version';
 import Button from '../../../../../components/Button/Button';
 import { clone } from 'lodash';
 import { VersionStatus } from '../../../../../graphql/types/globalTypes';
-import ConfirmationModal from '../../../../../components/ConfirmationModal/ConfirmationModal';
+import ModalLayoutJustify from '../../../../../components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
+import ModalContainer from '../../../../../components/Layout/ModalContainer/ModalContainer';
 import { shallow } from 'enzyme';
 
 jest.mock('@apollo/react-hooks', () => ({
@@ -99,7 +100,7 @@ describe('VersionActions', () => {
       .find(label('PUBLISH'))
       .simulate('click');
 
-    expect(wrapper.exists(ConfirmationModal)).toBeTruthy();
+    expect(wrapper.exists(ModalLayoutJustify)).toBeTruthy();
   });
 
   it('hides confirmation modal on close', async () => {
@@ -109,11 +110,11 @@ describe('VersionActions', () => {
       .simulate('click');
 
     wrapper
-      .find(ConfirmationModal)
+      .find(ModalContainer)
       .dive()
       .find(label('CANCEL'))
       .simulate('click');
 
-    expect(wrapper.exists(ConfirmationModal)).toBeFalsy();
+    expect(wrapper.exists(ModalContainer)).toBeFalsy();
   });
 });

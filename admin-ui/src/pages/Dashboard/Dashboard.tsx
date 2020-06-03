@@ -11,7 +11,8 @@ import HexagonBorder from '../../components/Shape/Hexagon/HexagonBorder';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Button from '../../components/Button/Button';
-import Modal from '../../components/Modal/Modal';
+import ModalContainer from '../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutInfo from '../../components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
 
 import styles from './Dashboard.module.scss';
 
@@ -83,12 +84,15 @@ function getDashboardContent({ data, error, loading }: Props) {
   let runtimesPanel: ReactElement = <HexagonPanel>{runtimes}</HexagonPanel>;
   if (runtimes.length === 0) {
     runtimesPanel = (
-      <Modal
+      <ModalContainer
         title="THERE ARE NO RUNTIMES"
-        message="Please, create a new runtime to start working on this dashboard"
         actionButtonLabel="NEW RUNTIME"
         to={ROUTE.NEW_RUNTIME}
-      />
+      >
+        <ModalLayoutInfo>
+          Please, create a new runtime to start working on this dashboard
+        </ModalLayoutInfo>
+      </ModalContainer>
     );
   }
 
