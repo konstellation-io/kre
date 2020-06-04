@@ -10,18 +10,28 @@ import useClickOutside from '../../hooks/useClickOutside';
 import Button, { BUTTON_ALIGN } from '../Button/Button';
 import ContextualMenuModal from './ContextualMenuModal';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import cx from 'classnames';
+
+const MENU_OFFSET = 7;
 
 export interface MenuCallToAction {
   Icon?: FunctionComponent<SvgIconProps>;
   disabled?: boolean;
   text: string;
-  callToAction: Function;
+  callToAction?: Function;
+  separator?: boolean;
 }
+
+type ContextMenuPosition = {
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+};
 
 interface ContextMenu {
   isVisible: boolean;
-  x: number;
-  y: number;
+  position: ContextMenuPosition;
 }
 
 type Props = {
@@ -42,8 +52,7 @@ function ContextMenu({
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [stateContextMenu, setStateContextMenu] = useState<ContextMenu>({
     isVisible: false,
-    x: 0,
-    y: 0
+    position: {}
   });
   const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
     componentRef: contextMenuRef,
@@ -54,15 +63,20 @@ function ContextMenu({
   function onOpenMenu(event: any) {
     event.preventDefault();
     event.stopPropagation();
-    let clickX = event.clientX;
-    const clickY = event.clientY;
-    if (clickX + 150 > windowWidth) {
-      clickX = clickX - 130;
+
+    const newPosition: ContextMenuPosition = {};
+    let { clientX, clientY } = event;
+
+    if (clientX + 150 > windowWidth) {
+      newPosition.right = `${MENU_OFFSET}px`;
+    } else {
+      newPosition.left = `${clientX + MENU_OFFSET}px`;
     }
+
+    newPosition.top = `${clientY + MENU_OFFSET}px`;
     setStateContextMenu({
       isVisible: true,
-      x: clickX,
-      y: clickY
+      position: newPosition
     });
 
     addClickOutsideEvents();
@@ -85,8 +99,7 @@ function ContextMenu({
   function hideContextMenu(): void {
     setStateContextMenu({
       isVisible: false,
-      x: 0,
-      y: 0
+      position: {}
     });
 
     removeClickOutsideEvents();
@@ -94,7 +107,7 @@ function ContextMenu({
 
   function handleMenuItemClick(action: MenuCallToAction): void {
     hideContextMenu();
-    action.callToAction(action, contextObject);
+    if (action.callToAction) action.callToAction(action, contextObject);
   }
 
   return (
@@ -104,22 +117,22 @@ function ContextMenu({
           <div
             className={styles.contextMenuContainer}
             ref={contextMenuRef}
-            style={{
-              top: `${stateContextMenu.y + 7}px`,
-              left: `${stateContextMenu.x + 7}px`
-            }}
+            style={{ ...stateContextMenu.position }}
             onClick={e => e.stopPropagation()}
             onContextMenu={e => e.preventDefault()}
           >
             <ul className={styles.contextMenuList}>
               {actions.map((action, index) => (
-                <li key={`${action.text}-${index}`}>
+                <li
+                  key={`${action.text}-${index}`}
+                  className={cx({ [styles.separator]: action.separator })}
+                >
                   <Button
                     label={action.text}
                     Icon={action.Icon}
                     onClick={() => handleMenuItemClick(action)}
                     align={BUTTON_ALIGN.LEFT}
-                    disabled={action.disabled}
+                    disabled={action.separator || action.disabled}
                   />
                 </li>
               ))}

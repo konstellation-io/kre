@@ -67,6 +67,11 @@ export interface CreateRuntimeInput {
   description: string;
 }
 
+export interface CreateUserInput {
+  email: string;
+  accessLevel: AccessLevel;
+}
+
 export interface CreateVersionInput {
   file: any;
   runtimeId: string;
@@ -109,6 +114,23 @@ export interface UnpublishVersionInput {
 export interface UpdateConfigurationInput {
   versionId: string;
   configurationVariables: ConfigurationVariablesInput[];
+}
+
+export interface UpdateUsersInput {
+  users: UserInput[];
+  accessLevel: AccessLevel;
+}
+
+export interface UserInput {
+  id: string;
+  email: string;
+  accessLevel: AccessLevel;
+  dateAdded: string;
+  lastAccess: string;
+}
+
+export interface UsersInput {
+  users: UserInput[];
 }
 
 //==============================================================

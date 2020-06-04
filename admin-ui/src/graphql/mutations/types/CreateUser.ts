@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccessLevel } from './../../types/globalTypes';
+import { CreateUserInput, AccessLevel } from './../../types/globalTypes';
 
 // ====================================================
-// GraphQL query operation: GetUsers
+// GraphQL mutation operation: CreateUser
 // ====================================================
 
-export interface GetUsers_users {
+export interface CreateUser_createUser {
   __typename: 'User';
   id: string;
   email: string;
@@ -18,6 +18,10 @@ export interface GetUsers_users {
   lastAccess: string;
 }
 
-export interface GetUsers {
-  users: GetUsers_users[];
+export interface CreateUser {
+  createUser: CreateUser_createUser;
+}
+
+export interface CreateUserVariables {
+  input: CreateUserInput;
 }

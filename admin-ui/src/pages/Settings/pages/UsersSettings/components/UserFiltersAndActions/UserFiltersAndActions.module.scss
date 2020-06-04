@@ -1,0 +1,45 @@
+@import '../../../../../../styles/variables';
+@import '../../../../../../styles/colors';
+@import '../../../../../../styles/mixins';
+
+.container {
+  background-color: palette(lowlight, 900);
+  display: flex;
+  padding: 2 * $grid-unit 3 * $grid-unit 0 3 * $grid-unit;
+}
+
+.filters {
+  display: flex;
+
+  .filterUsers {
+    margin-right: $grid-unit;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+
+  .selectAll {
+    @include font-small;
+    color: font-color(lowlight);
+
+    display: flex;
+
+    span {
+      line-height: 20px;
+      margin-left: 2 * $grid-unit;
+    }
+  }
+
+  .nSelections {
+    @include font-small;
+    color: font-color(regular);
+
+    margin: 0 2 * $grid-unit;
+  }
+
+  .formActions {
+    margin-left: $grid-unit;
+  }
+}

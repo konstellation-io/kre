@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccessLevel } from './../../types/globalTypes';
+import { UsersInput, AccessLevel } from './../../types/globalTypes';
 
 // ====================================================
-// GraphQL query operation: GetUsers
+// GraphQL mutation operation: RemoveUsers
 // ====================================================
 
-export interface GetUsers_users {
+export interface RemoveUsers_removeUsers {
   __typename: 'User';
   id: string;
   email: string;
@@ -18,6 +18,10 @@ export interface GetUsers_users {
   lastAccess: string;
 }
 
-export interface GetUsers {
-  users: GetUsers_users[];
+export interface RemoveUsers {
+  removeUsers: RemoveUsers_removeUsers[];
+}
+
+export interface RemoveUsersVariables {
+  input: UsersInput;
 }

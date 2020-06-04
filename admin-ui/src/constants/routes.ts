@@ -11,6 +11,7 @@ const ROUTE = {
   SETTINGS: '/settings',
   SETTINGS_GENERAL: `${SETTINGS}/general`,
   SETTINGS_SECURITY: `${SETTINGS}/security`,
+  SETTINGS_USERS: `${SETTINGS}/users`,
   AUDIT: '/audit',
   LOGS: '/logs/:logTabInfo',
   RUNTIMES,

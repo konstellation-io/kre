@@ -151,9 +151,7 @@ function Select({
         }
       )}
     >
-      {label && (
-        <InputLabel text={label} hidden={selectedOption === placeholder} />
-      )}
+      {label && <InputLabel text={label} />}
       <div className={styles.inputContainer}>
         <div
           className={cx(styles.input, {

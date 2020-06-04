@@ -108,7 +108,7 @@ function UsersActivity() {
     <PageBase>
       <div className={styles.container} data-testid="settingsContainer">
         <div className={cx(styles.form, styles.content)}>
-          <SettingsHeader title="User Audit" />
+          <SettingsHeader>User Audit</SettingsHeader>
           <FiltersBar
             error={error}
             onSubmit={onSubmit}
