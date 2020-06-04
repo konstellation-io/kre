@@ -73,6 +73,11 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 		}
 	}
 
+	totalMongoReplicas := 3
+	if k.cfg.DevelopmentMode {
+		totalMongoReplicas = 1
+	}
+
 	req := versionpb.Request{
 		Version: &versionpb.Version{
 			Id:        version.ID,
@@ -84,7 +89,9 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 				Image:     version.Entrypoint.Image,
 				Src:       version.Entrypoint.Src,
 			},
-			Workflows: wf,
+			Workflows:   wf,
+			MongoUri:    runtime.GetMongoURI(totalMongoReplicas),
+			MongoDbName: k.cfg.MongoDB.DBName,
 		},
 	}
 

@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/nats-io/nats.go"
+
+	"github.com/konstellation-io/kre/runtime-runners/kre-go/config"
 )
 
 type Input struct {
@@ -17,11 +19,6 @@ type Input struct {
 
 type Output struct {
 	Greeting string `json:"greeting"`
-}
-
-func handlerInit(ctx *HandlerContext) {
-	ctx.Logger.Info("[worker init]")
-	ctx.SetValue("greeting", "Hello")
 }
 
 func handler(ctx *HandlerContext, data []byte) (interface{}, error) {
@@ -37,8 +34,8 @@ func handler(ctx *HandlerContext, data []byte) (interface{}, error) {
 	ctx.Logger.Info(greetingText)
 
 	// Saves metrics in MongoDB DB sending a message to the MongoWriter queue
-	//ctx.SaveMetric(time.Now(), "class_x", "class_y")
-	//ctx.SaveMetricError(ErrNewLabels)
+	// ctx.SaveMetric(time.Now(), "class_x", "class_y")
+	// ctx.SaveMetricError(ErrNewLabels)
 
 	out := Output{}
 	out.Greeting = greetingText
@@ -64,11 +61,11 @@ func TestRunner(t *testing.T) {
 		"KRT_NATS_INPUT":        inputSubject,
 		"KRT_NATS_OUTPUT":       "",
 		"KRT_NATS_MONGO_WRITER": "mongo_writer",
+		"KRT_MONGO_URI":         "mongodb://localhost:27017",
+		"KRT_MONGO_DB_NAME":     "test",
 	})
 
-	go Start(handlerInit, handler)
-
-	cfg := NewConfig(nil)
+	cfg := config.NewConfig(nil)
 	nc, err := nats.Connect(cfg.NATS.Server)
 	if err != nil {
 		log.Fatal(err)
@@ -88,6 +85,27 @@ func TestRunner(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// Subscribe to mongo_writer subject and reply to save_metrics and save_data requests
+	sub, err := nc.Subscribe("mongo_writer", func(msg *nats.Msg) {
+		_ = nc.Publish(msg.Reply, []byte("{\"success\":true}"))
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sub.Unsubscribe()
+
+	doneCh := make(chan struct{})
+
+	handlerInit := func(ctx *HandlerContext) {
+		ctx.Logger.Info("[worker init]")
+		ctx.SetValue("greeting", "Hello")
+		doneCh <- struct{}{}
+	}
+	go Start(handlerInit, handler)
+
+	<-doneCh
+
 	res, err := nc.Request(inputSubject, msg, 1*time.Second)
 	if err != nil {
 		t.Fatal(err)

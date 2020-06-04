@@ -9,8 +9,8 @@ release-kre-go:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - runtime-runners/kre-go/**/*
-      - .gitlab-ci.yml
+        - runtime-runners/kre-go/**/*
+        - .gitlab-ci.yml
 
 publish-kre-go-image:
   stage: publish-image

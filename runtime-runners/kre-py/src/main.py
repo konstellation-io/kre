@@ -1,15 +1,15 @@
 import asyncio
 import datetime
-import time
 import importlib.util
 import json
 import logging
 import os
 import sys
+import time
 import traceback
+import pymongo
 
 from nats.aio.client import ErrTimeout, Client as NATS
-
 
 NATS_FLUSH_TIMEOUT = 0.1
 
@@ -26,6 +26,8 @@ class Config:
             self.nats_mongo_writer = os.environ['KRT_NATS_MONGO_WRITER']
             self.base_path = os.environ['KRT_BASE_PATH']
             self.handler_path = os.environ['KRT_HANDLER_PATH']
+            self.mongo_db_name = os.environ['KRT_MONGO_DB_NAME']
+            self.mongo_uri = os.environ['KRT_MONGO_URI']
         except Exception as err:
             raise Exception(f"error reading config: the {str(err)} env var is missing")
 
@@ -34,9 +36,10 @@ class HandlerContext:
     ERR_MISSING_VALUES = "missing_values"
     ERR_NEW_LABELS = "new_labels"
 
-    def __init__(self, config, nc, logger):
+    def __init__(self, config, nc, mongo_conn, logger):
         self.__config__ = config
         self.__nc__ = nc
+        self.__mongo_conn__ = mongo_conn
         self.logger = logger
         self.METRIC_ERRORS = [self.ERR_MISSING_VALUES, self.ERR_NEW_LABELS]
 
@@ -91,6 +94,36 @@ class HandlerContext:
         except ErrTimeout:
             self.logger.error("Error saving metric: request timed out")
 
+    async def save_data(self, coll, data):
+        if not isinstance(coll, str) or coll == "":
+            raise Exception(f"[ctx.save_data] invalid 'collection'='{coll}', must be a nonempty string")
+
+        try:
+            subject = self.__config__.nats_mongo_writer
+            payload = bytes(json.dumps({"coll": coll, "doc": data}), encoding='utf-8')
+            response = await self.__nc__.request(subject, payload, timeout=1)
+            res_json = json.loads(response.data.decode())
+            if not res_json['success']:
+                self.logger.error("Unexpected error saving data")
+        except ErrTimeout:
+            self.logger.error("Error saving data: request timed out")
+
+    async def get_data(self, coll, query):
+        if not isinstance(coll, str) or coll == "":
+            raise Exception(f"[ctx.save_data] invalid 'collection'='{coll}', must be a nonempty string")
+
+        if not isinstance(query, dict) or not query:
+            raise Exception(f"[ctx.get_data] invalid 'query'='{query}', must be a nonempty dict")
+
+        try:
+            collection = self.__mongo_conn__[self.__config__.mongo_db_name][coll]
+            self.logger.debug(f"call to mongo to get data on{self.__config__.mongo_db_name}.{coll}: {query}")
+            cursor = collection.find(query)
+            return list(cursor)
+
+        except Exception as err:
+            raise Exception(f"[ctx.get_data] error getting data from MongoDB: {err}")
+
 
 class Result:
     def __init__(self, reply='', data=None, error=None):
@@ -129,6 +162,7 @@ class Runner:
         self.loop = asyncio.get_event_loop()
         self.nc = NATS()
         self.subscription_sid = None
+        self.mongo_conn = None
 
     def start(self):
         try:
@@ -159,9 +193,11 @@ class Runner:
                               loop=self.loop,
                               name=self.config.krt_node_name
                               )
+        self.logger.info(f"connecting to MongoDB at '{self.config.mongo_uri}'")
+        self.mongo_conn = pymongo.MongoClient(self.config.mongo_uri, socketTimeoutMS=10000, connectTimeoutMS=10000)
 
         handler_module = self.load_handler_module()
-        ctx = self.create_handler_ctx(handler_module)
+        ctx = await self.create_handler_ctx(handler_module)
 
         queue_name = f"queue_{self.config.nats_input}"
         self.logger.info(f"listening to '{self.config.nats_input}' subject with queue '{queue_name}'")
@@ -187,10 +223,10 @@ class Runner:
 
         return handler_module
 
-    def create_handler_ctx(self, handler_module):
-        ctx = HandlerContext(self.config, self.nc, self.logger)
+    async def create_handler_ctx(self, handler_module):
+        ctx = HandlerContext(self.config, self.nc, self.mongo_conn, self.logger)
         if hasattr(handler_module, "init"):
-            handler_module.init(ctx)
+            await handler_module.init(ctx)
 
         return ctx
 
@@ -213,7 +249,7 @@ class Runner:
 
                 is_last_node = self.config.nats_output == ''
                 output_subject = result.reply if is_last_node else self.config.nats_output
-                output_result = Result(reply=result.reply, data=handler_result)
+                output_result = Result(reply=result.reply, data=json.dumps(handler_result))
 
                 await self.nc.publish(output_subject, output_result.to_json())
                 self.logger.info(f"published response to '{output_subject}' subject with final reply '{result.reply}'")

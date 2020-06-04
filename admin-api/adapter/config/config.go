@@ -10,6 +10,8 @@ import (
 
 // Config holds the configuration values for the application.
 type Config struct {
+	DevelopmentMode bool `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
+
 	Admin struct {
 		APIAddress      string `yaml:"apiAddress" envconfig:"KRE_ADMIN_API_ADDRESS"`
 		FrontEndBaseURL string `yaml:"frontendBaseURL" envconfig:"KRE_ADMIN_FRONTEND_BASE_URL"`

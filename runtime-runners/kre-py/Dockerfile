@@ -14,11 +14,13 @@ RUN apt update && \
 
 WORKDIR /kre
 
-COPY . .
-
+COPY Pipfile* ./
 RUN python3 -m pip install pipenv && \
     pipenv install --system --deploy
 
+COPY install_stopwords.py ./
 RUN python3 /kre/install_stopwords.py
+
+COPY src src
 
 CMD ["sh","-c","/usr/bin/python3 /kre/src/main.py 2>&1 | tee -a /var/log/app/app.log"]

@@ -56,3 +56,13 @@ type Runtime struct {
 func (r *Runtime) GetNamespace() string {
 	return fmt.Sprintf("kre-%s", strings.ToLower(r.Name))
 }
+
+func (r *Runtime) GetMongoURI(replicas int) string {
+	creds := fmt.Sprintf("%s:%s", r.Mongo.Username, r.Mongo.Password)
+
+	address := make([]string, replicas)
+	for i := 0; i < replicas; i++ {
+		address[i] = fmt.Sprintf("%s-mongo-%d.%s-mongo:27017", r.GetNamespace(), i, r.GetNamespace())
+	}
+	return fmt.Sprintf("mongodb://%s@%s/admin?replicaSet=rs0", creds, strings.Join(address, ","))
+}

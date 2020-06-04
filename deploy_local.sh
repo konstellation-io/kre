@@ -89,7 +89,7 @@ if [ "$SKIP_BUILD" != "1" ] && [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
 fi
 
 printf "📚️ Create Namespace if not exist...\n"
-kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
+kubectl create ns kre --dry-run=client -o yaml | kubectl apply -f -
 
 printf "📦 Applying helm chart...\n"
 helm dep update helm/kre
