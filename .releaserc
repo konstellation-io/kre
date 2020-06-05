@@ -1,11 +1,7 @@
+
 {
-  "verifyConditions": [
-    {
-      "path": "@semantic-release/gitlab",
-      "gitlabUrl": "https://gitlab.com",
-      "gitlabApiPathPrefix": "/api/v4"
-    }
-  ],
+  "repositoryUrl": "https://github.com/konstellation-io/kre.git",
+  "verifyConditions": [],
   "analyzeCommits": {
     "format": "angular",
     "preset": "angular",
@@ -33,13 +29,7 @@
     ]
   },
   "prepare": [],
-  "publish": [
-    {
-      "path": "@semantic-release/gitlab",
-      "gitlabUrl": "https://gitlab.com",
-      "gitlabApiPathPrefix": "/api/v4"
-    }
-  ],
+  "publish": [],
   "success": false,
   "fail": false
 }

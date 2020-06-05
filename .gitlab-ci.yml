@@ -23,19 +23,15 @@ variables:
   script:
     - echo "Checking if $BRANCH_NAME is ahead of master"
     - branch-ahead-of-master
-  only:
-    refs:
-      - branches
-  except:
-    refs:
-      - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: always
 
 .sonar-scanner:
   stage: quality
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
-
   cache:
     key: "${CI_JOB_NAME}"
     paths:
@@ -43,10 +39,9 @@ variables:
   script:
     - cd $COMPONENT_PATH
     - sonar-scanner
-  only:
-    refs:
-      - merge_requests
-      - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
 
 include:
   - local: admin-api/.gitlab-ci.yml
