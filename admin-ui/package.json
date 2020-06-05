@@ -1,5 +1,9 @@
 {
   "name": "admin-ui",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/konstellation-io/kre.git"
+  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -105,7 +109,7 @@
     "@semantic-release/changelog": "3.0.3",
     "@semantic-release/commit-analyzer": "6.1.0",
     "@semantic-release/git": "7.0.8",
-    "@semantic-release/gitlab": "3.1.7",
+    "@semantic-release/github": "7.0.4",
     "@semantic-release/release-notes-generator": "7.1.6",
     "@testing-library/jest-dom": "^4.1.0",
     "@testing-library/react": "^9.1.4",
@@ -168,21 +172,9 @@
       }
     },
     "branch": "master",
-    "verifyConditions": [
-      {
-        "path": "@semantic-release/gitlab",
-        "gitlabUrl": "https://gitlab.com",
-        "gitlabApiPathPrefix": "/api/v4"
-      }
-    ],
+    "verifyConditions": [],
     "prepare": [],
-    "publish": [
-      {
-        "path": "@semantic-release/gitlab",
-        "gitlabUrl": "https://gitlab.com",
-        "gitlabApiPathPrefix": "/api/v4"
-      }
-    ],
+    "publish": [],
     "success": false,
     "fail": false
   }
