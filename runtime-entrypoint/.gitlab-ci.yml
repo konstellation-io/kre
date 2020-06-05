@@ -5,10 +5,10 @@ release-runtime-entrypoint:
     - npm install --prefix runtime-entrypoint
   script:
     - cd runtime-entrypoint && npx semantic-release -e semantic-release-monorepo
-  only:
-    refs:
-      - master
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - changes:
       - runtime-entrypoint/**/*
       - .gitlab-ci.yml
 
@@ -29,6 +29,6 @@ publish-runtime-entrypoint-image:
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
-  only:
-    refs:
-      - /^runtime-entrypoint-v\d*.\d*.\d*$/
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^runtime-entrypoint-v\d*.\d*.\d*$/'
+      when: always
