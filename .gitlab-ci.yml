@@ -15,18 +15,6 @@ variables:
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
   GITLAB_ACCESS_TOKEN: $GITLAB_ACCESS_TOKEN
 
-.branch-rebased:
-  stage: test
-  image: igzgustavomarin/branch-ahead-of-master:latest
-  variables:
-    BRANCH_NAME: $CI_COMMIT_REF_NAME
-  script:
-    - echo "Checking if $BRANCH_NAME is ahead of master"
-    - branch-ahead-of-master
-  rules:
-    - if: '$CI_COMMIT_BRANCH != "master"'
-      when: always
-
 .sonar-scanner:
   stage: quality
   image:
@@ -39,9 +27,6 @@ variables:
   script:
     - cd $COMPONENT_PATH
     - sonar-scanner
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: always
 
 include:
   - local: admin-api/.gitlab-ci.yml
