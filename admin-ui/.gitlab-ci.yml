@@ -18,7 +18,7 @@ test-admin-ui:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - admin-ui/**/*
 
 sonar-admin-ui:
@@ -29,7 +29,9 @@ sonar-admin-ui:
     COMPONENT_PATH: admin-ui
     GIT_DEPTH: '0'
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - admin-ui/**/*
 
 release-admin-ui:
@@ -42,7 +44,7 @@ release-admin-ui:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - admin-ui/**/*
 
 publish-admin-ui-image:

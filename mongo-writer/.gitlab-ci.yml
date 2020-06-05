@@ -6,7 +6,9 @@ sonar-mongo-writer:
     COMPONENT_PATH: mongo-writer
     GIT_DEPTH: "0"
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - mongo-writer/**/*
 
 release-mongo-writer:
@@ -19,7 +21,7 @@ release-mongo-writer:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - mongo-writer/**/*
       - .gitlab-ci.yml
 

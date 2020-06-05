@@ -8,7 +8,7 @@ release-helm-chart:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - helm/**/*
 
 release-helm-after-image:

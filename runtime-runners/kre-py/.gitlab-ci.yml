@@ -14,7 +14,7 @@ test-kre-py:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - runtime-runners/kre-py/**/*
 
 sonar-kre-py:
@@ -25,7 +25,9 @@ sonar-kre-py:
     COMPONENT_PATH: runtime-runners/kre-py
     GIT_DEPTH: "0"
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - runtime-runners/kre-py/**/*
 
 release-kre-py:
@@ -38,7 +40,7 @@ release-kre-py:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - runtime-runners/kre-py/**/*
       - .gitlab-ci.yml
 

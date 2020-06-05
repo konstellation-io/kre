@@ -8,7 +8,7 @@ release-runtime-entrypoint:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - runtime-entrypoint/**/*
       - .gitlab-ci.yml
 

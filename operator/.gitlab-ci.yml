@@ -8,7 +8,7 @@ release-operator:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
-    - changes:
+      changes:
       - operator/**/*
       - .gitlab-ci.yml
 
