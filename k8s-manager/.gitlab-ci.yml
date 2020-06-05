@@ -1,24 +1,3 @@
-security-k8s-manager:
-  stage: security
-  image: golang:1.13
-  variables:
-    SNYK_TOKEN: $SNYK_TOKEN
-  before_script:
-    - apt update && apt install nodejs npm -y
-    - npm install -g snyk
-    - snyk auth $SNYK_TOKEN
-  script:
-    - cd k8s-manager
-    - snyk monitor --file=go.mod
-    - snyk test --file=go.mod
-  only:
-    refs:
-      - merge_requests
-      - master
-    changes:
-      - k8s-manager/**/*
-      - .gitlab-ci.yml
-
 release-k8s-manager:
   stage: semantic-release
   image: node:10
@@ -26,10 +5,10 @@ release-k8s-manager:
     - npm install --prefix k8s-manager
   script:
     - cd k8s-manager && npx semantic-release -e semantic-release-monorepo
-  only:
-    refs:
-      - master
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - changes:
       - k8s-manager/**/*
       - .gitlab-ci.yml
 
@@ -43,20 +22,13 @@ publish-k8s-manager-image:
     DOCKER_USER: $DOCKER_USER
     DOCKER_PASS: $DOCKER_PASS
   before_script:
-    - apk add nodejs npm --update
-    - npm i -g snyk
-    - snyk auth $SNYK_TOKEN
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
     - TAG=${CI_COMMIT_TAG#k8s-manager-v}
     - docker build -t $IMAGE_PROJECT_NAME:$TAG k8s-manager
-    # IMAGE SECURITY CHECK
-    - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=k8s-manager/Dockerfile
-    - snyk test --docker $IMAGE_PROJECT_NAME:$TAG --file=k8s-manager/Dockerfile
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
-
-  only:
-    refs:
-      - /^k8s-manager-v\d*.\d*.\d*$/
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^k8s-manager-v\d*.\d*.\d*$/'
+      when: always
