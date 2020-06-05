@@ -21,7 +21,7 @@ const generateRuntime = () => ({
     if (Math.random() > 0.5) {
       return {
         id: parseInt(casual.array_of_digits(8).join('')),
-        name: `v${casual.integer((from = 1), (to = 10))}.${casual.integer(
+        name: `v${casual.integer(1, 10)}.${casual.integer(
           (from = 1),
           (to = 10)
         )}.${casual.integer((from = 1), (to = 10))}`,
@@ -170,8 +170,10 @@ module.exports = {
   }),
   User: () => ({
     id: casual.uuid,
-    accessLevel: 'ADMIN',
-    email: casual.random_element(emails)
+    accessLevel: 'ADMIN', //casual.random_element(['ADMIN']), //, 'VIEWER', 'MANAGER']),
+    email: casual.random_element(emails),
+    dateAdded: new Date().toUTCString(),
+    lastAccess: new Date().toUTCString()
   }),
   LogPane: () => ({
     cursor: casual.string,
