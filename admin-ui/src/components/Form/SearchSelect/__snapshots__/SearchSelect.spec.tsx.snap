@@ -27,9 +27,10 @@ exports[`SearchSelect component should render without crashing 1`] = `
     text=""
   />
   <input
-    autoComplete="new-password"
+    autoComplete="off"
     className="input"
     name="searchSelect"
+    onBlur={[Function]}
     onChange={[Function]}
     onKeyDown={[Function]}
     placeholder=""
