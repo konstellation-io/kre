@@ -34,7 +34,7 @@ generate-helm-chart:
     - apk add --update bash gettext coreutils
     - wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
     - chmod +x /usr/local/bin/helm
-    - wget -q https://github.com/helm/chart-releaser/releases/download/v0.2.3/chart-releaser_0.2.3_linux_amd64.tar.gz -O - | tar -xzO cr > /usr/local/bin/helm-chart-releaser
+    - wget -q https://github.com/helm/chart-releaser/releases/download/v1.0.0-beta.1/chart-releaser_0.2.3_linux_amd64.tar.gz -O - | tar -xzO cr > /usr/local/bin/helm-chart-releaser
     - chmod +x /usr/local/bin/helm-chart-releaser
     - helm repo add stable https://kubernetes-charts.storage.googleapis.com
     - helm plugin install https://github.com/chartmuseum/helm-push
