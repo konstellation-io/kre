@@ -13,9 +13,9 @@ import {
   RemoveUsersVariables
 } from '../../../../graphql/mutations/types/RemoveUsers';
 import {
-  RevokeNUsers,
-  RevokeNUsersVariables
-} from '../../../../graphql/mutations/types/RevokeNUsers';
+  RevokeUsers,
+  RevokeUsersVariables
+} from '../../../../graphql/mutations/types/RevokeUsers';
 import {
   UpdateUsers,
   UpdateUsersVariables
@@ -56,7 +56,7 @@ function UsersSettings() {
   const [removeUsers] = useMutation<RemoveUsers, RemoveUsersVariables>(
     RemoveUsersMutation
   );
-  const [revokeUsers] = useMutation<RevokeNUsers, RevokeNUsersVariables>(
+  const [revokeUsers] = useMutation<RevokeUsers, RevokeUsersVariables>(
     RevokeUsersMutation
   );
   const [updateUsers] = useMutation<UpdateUsers, UpdateUsersVariables>(
@@ -79,74 +79,67 @@ function UsersSettings() {
 
   const selectedUsers = localData?.userSettings.selectedUserIds || [];
 
-  function getUsers(user?: [string]) {
+  function getUsersInfo(user?: [string]) {
     const userIds = user || selectedUsers;
     const nUsers = userIds.length;
     const plural = nUsers > 1;
 
     return { userIds, nUsers, plural };
   }
+
   function onDeleteUsers(user?: [string]) {
-    const { userIds, nUsers, plural } = getUsers(user);
+    const usersInfo = getUsersInfo(user);
 
     openModal();
-    const action = () => {
-      removeUsers(
-        mutationPayloadHelper<UsersInput>({
-          userIds
-        })
-      );
-      closeModal();
-    };
     modalInfo.current = getModalInfo({
       type: 'delete',
-      action,
-      nUsers,
-      userIds,
-      plural
+      action: () => {
+        removeUsers(
+          mutationPayloadHelper<UsersInput>({
+            userIds: usersInfo.userIds
+          })
+        );
+        closeModal();
+      },
+      ...usersInfo
     });
   }
+
   function onRevokeUsers(user?: [string]) {
-    const { userIds, nUsers, plural } = getUsers(user);
+    const usersInfo = getUsersInfo(user);
 
     openModal();
-    const action = () => {
-      revokeUsers(
-        mutationPayloadHelper<UsersInput>({
-          userIds
-        })
-      );
-      closeModal();
-    };
     modalInfo.current = getModalInfo({
       type: 'revoke',
-      action,
-      nUsers,
-      userIds,
-      plural
+      action: () => {
+        revokeUsers(
+          mutationPayloadHelper<UsersInput>({
+            userIds: usersInfo.userIds
+          })
+        );
+        closeModal();
+      },
+      ...usersInfo
     });
   }
+
   function onUpdateUsers(newAccessLevel: AccessLevel, user?: [string]) {
-    const { userIds, nUsers, plural } = getUsers(user);
+    const usersInfo = getUsersInfo(user);
 
     openModal();
-
-    const action = () => {
-      updateUsers(
-        mutationPayloadHelper<UpdateUsersInput>({
-          userIds,
-          accessLevel: newAccessLevel
-        })
-      );
-      closeModal();
-    };
     modalInfo.current = getModalInfo({
       type: 'update',
-      action,
-      nUsers,
-      userIds,
-      plural,
-      accessLevel: newAccessLevel
+      accessLevel: newAccessLevel,
+      action: () => {
+        updateUsers(
+          mutationPayloadHelper<UpdateUsersInput>({
+            userIds: usersInfo.userIds,
+            accessLevel: newAccessLevel
+          })
+        );
+        closeModal();
+      },
+      ...usersInfo
     });
   }
 

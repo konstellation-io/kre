@@ -40,13 +40,13 @@ const ModalContainer: FunctionComponent<Props> = ({
               to={to}
               onClick={onAccept}
               height={30}
-              style={{ width: '150px', padding: '0 0' }}
+              className={styles.acceptButton}
             />
             <Button
               label={'CANCEL'}
               onClick={onCancel}
               height={30}
-              style={{ width: '122px', padding: '0 0' }}
+              className={styles.cancelButton}
             />
           </HorizontalBar>
         </div>

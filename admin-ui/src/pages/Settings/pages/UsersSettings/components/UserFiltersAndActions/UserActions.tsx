@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Select, {
   CustomOptionProps
 } from '../../../../../../components/Form/Select/Select';
@@ -20,45 +20,35 @@ type CheckSelectAllPros = {
   handleCheckClick: (value: boolean) => void;
   userSelection: UserSelection;
 };
-function CheckSelectAll({
+const CheckSelectAll: FC<CheckSelectAllPros> = ({
   handleCheckClick,
   userSelection
-}: CheckSelectAllPros) {
-  return (
-    <div className={styles.selectAll}>
-      <Check
-        onChange={handleCheckClick}
-        checked={userSelection === UserSelection.ALL}
-        indeterminate={userSelection === UserSelection.INDETERMINATE}
-      />
-      <span>Select All</span>
-    </div>
-  );
-}
+}) => (
+  <div className={styles.selectAll}>
+    <Check
+      onChange={handleCheckClick}
+      checked={userSelection === UserSelection.ALL}
+      indeterminate={userSelection === UserSelection.INDETERMINATE}
+    />
+    <span>Select All</span>
+  </div>
+);
 
-function CustomRemove({ label }: CustomOptionProps) {
-  return (
-    <div className={styles.customOption}>
-      <IconDelete className="icon-small" />
-      <div>{label}</div>
-    </div>
-  );
-}
-
-function CustomRevoke({ label }: CustomOptionProps) {
-  return (
-    <div className={styles.customOption}>
-      <IconRevoke className="icon-small" />
-      <div>{label}</div>
-    </div>
-  );
-}
-
-function CustomSeparator({ label }: CustomOptionProps) {
-  return (
-    <div className={cx(styles.customOption, styles.separator)}>{label}</div>
-  );
-}
+const CustomRemove: FC<CustomOptionProps> = ({ label }) => (
+  <div className={styles.customOption}>
+    <IconDelete className="icon-small" />
+    <div>{label}</div>
+  </div>
+);
+const CustomRevoke: FC<CustomOptionProps> = ({ label }) => (
+  <div className={styles.customOption}>
+    <IconRevoke className="icon-small" />
+    <div>{label}</div>
+  </div>
+);
+const CustomSeparator: FC<CustomOptionProps> = ({ label }) => (
+  <div className={cx(styles.customOption, styles.separator)}>{label}</div>
+);
 
 enum Actions {
   DELETE = 'DELETE',

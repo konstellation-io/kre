@@ -44,19 +44,19 @@ function AddUser() {
   const { handleSubmit, setValue, register, errors, setError, watch } = useForm<
     FormData
   >();
-  useEffect(() => {
-    register('email', { validate: verifyEmail });
-    register('accessLevel', { required: true, validate: verifyAccessLevel });
-    setValue('email', '');
-    setValue('accessLevel', AccessLevel.VIEWER);
-  }, [register, setValue]);
-
   const [addUser, { loading, error: mutationError }] = useMutation<
     CreateUser,
     CreateUserVariables
   >(CreateUserMutation, {
     onCompleted: onCompleteAddUser
   });
+
+  useEffect(() => {
+    register('email', { validate: verifyEmail });
+    register('accessLevel', { required: true, validate: verifyAccessLevel });
+    setValue('email', '');
+    setValue('accessLevel', AccessLevel.VIEWER);
+  }, [register, setValue]);
 
   useEffect(() => {
     if (mutationError) {
@@ -70,12 +70,8 @@ function AddUser() {
   }
 
   function onSubmit(formData: FormData) {
-    console.log('AAAA');
-
     addUser(mutationPayloadHelper(formData));
   }
-
-  console.log('errors');
 
   return (
     <div className={styles.bg}>
