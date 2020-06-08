@@ -1,42 +1,53 @@
 import React, { useEffect } from 'react';
-import * as CHECK from '../../../../../../components/Form/check';
 import { useForm } from 'react-hook-form';
 import Select from '../../../../../../components/Form/Select/Select';
 import SearchSelect from '../../../../../../components/Form/SearchSelect/SearchSelect';
 import styles from './UserFiltersAndActions.module.scss';
 import { get } from 'lodash';
+import { useQuery, useApolloClient } from '@apollo/react-hooks';
+import { GetUsers } from '../../../../../../graphql/queries/types/GetUsers';
+import { loader } from 'graphql.macro';
+import { AccessLevel } from '../../../../../../graphql/types/globalTypes';
+
+const GetUsersQuery = loader(
+  '../../../../../../graphql/queries/getUsers.graphql'
+);
+
+type FormData = {
+  userEmail?: string;
+  userType?: AccessLevel;
+};
 
 function UserFilters() {
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    errors,
-    watch,
-    getValues
-  } = useForm();
+  const client = useApolloClient();
+  const { data } = useQuery<GetUsers>(GetUsersQuery);
 
-  const users = ['a', 'b', 'c', 'd', 'e', 'f'];
-  const types = ['1', '2', '3', '4', '5', '6'];
+  const { handleSubmit, register, setValue, errors, watch } = useForm<
+    FormData
+  >();
+
+  const users = [...new Set(data?.users.map(user => user.email))];
+  const types = Object.values(AccessLevel);
 
   useEffect(() => {
-    register(
-      { name: 'userEmail' },
-      {
-        validate: (value: string) => {
-          return CHECK.getValidationError([
-            CHECK.isFieldNotInList(
-              value,
-              users,
-              true,
-              'The user must be from the list'
-            )
-          ]);
-        }
-      }
-    );
+    register({ name: 'userEmail' });
     register({ name: 'userType' });
   }, [users, register]);
+
+  function onSubmit(formData: FormData) {
+    client.writeData({
+      data: {
+        userSettings: {
+          filters: {
+            email: formData.userEmail || null,
+            accessLevel: formData.userType || null,
+            __typename: 'UserSettingsFilters'
+          },
+          __typename: 'UserSettings'
+        }
+      }
+    });
+  }
 
   return (
     <div className={styles.filters}>
@@ -46,6 +57,7 @@ function UserFilters() {
           name="userEmail"
           options={users}
           onChange={(value: string) => setValue('userEmail', value)}
+          onEnter={handleSubmit(onSubmit)}
           placeholder="User email"
           error={get(errors.userEmail, 'message')}
           value={watch('userEmail')}
@@ -55,11 +67,13 @@ function UserFilters() {
         <Select
           label="User type"
           options={types}
-          onChange={(value: string) => setValue('userType', value)}
+          onChange={(value: AccessLevel) => {
+            setValue('userType', value);
+            handleSubmit(onSubmit)();
+          }}
           error={get(errors.userType, 'message')}
           formSelectedOption={watch('userType')}
           placeholder="Activity type"
-          // valuesMapper={typeToText}
         />
       </div>
     </div>

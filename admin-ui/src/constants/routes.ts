@@ -22,6 +22,7 @@ const ROUTE = {
   RUNTIME_VERSION_CONFIGURATION: `${RUNTIME_VERSION}/configuration`,
   RUNTIME_VERSION_METRICS: `${RUNTIME_VERSION}/metrics`,
   RUNTIME_VERSION_DOCUMENTATION: `${RUNTIME_VERSION}/documentation`,
+  NEW_USER: '/new-user',
   NEW_RUNTIME: '/new-runtime',
   NEW_VERSION: `${RUNTIME}/new_version`
 };

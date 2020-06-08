@@ -1,0 +1,11 @@
+@import '../../../../styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.modal {
+  width: 95 * $grid-unit;
+}

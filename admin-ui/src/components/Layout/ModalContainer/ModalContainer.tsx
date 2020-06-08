@@ -40,7 +40,7 @@ const ModalContainer: FunctionComponent<Props> = ({
               to={to}
               onClick={onAccept}
               height={30}
-              style={{ width: '122px', padding: '0 0' }}
+              style={{ width: '150px', padding: '0 0' }}
             />
             <Button
               label={'CANCEL'}

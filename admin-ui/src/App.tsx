@@ -26,6 +26,7 @@ import Settings from './pages/Settings/Settings';
 import UsersActivity from './pages/UsersActivity/UsersActivity';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
 import AddVersion from './pages/AddVersion/AddVersion';
+import AddUser from './pages/AddUser/AddUser';
 import AccessDenied from './pages/AccessDenied/AccessDenied';
 import NotFound from './pages/NotFound/NotFound';
 import ROUTE from './constants/routes';
@@ -76,6 +77,7 @@ function ProtectedRoutes() {
           <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
 
           <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
+          <Route path={ROUTE.NEW_USER} component={AddUser} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
           <Route exact path={ROUTE.HOME} component={Dashboard} />

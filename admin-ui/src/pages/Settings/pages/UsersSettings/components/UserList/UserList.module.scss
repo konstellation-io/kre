@@ -2,6 +2,10 @@
 @import '../../../../../../styles/colors';
 @import '../../../../../../styles/mixins';
 
+.container {
+  overflow: auto;
+}
+
 .table {
   &,
   thead,
@@ -84,6 +88,9 @@
       @include font-body;
       color: font-color(light);
       line-height: inherit;
+    }
+    td:nth-child(5) {
+      width: 165px;
     }
     td:nth-child(6) {
       color: font-color(regular);

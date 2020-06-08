@@ -37,7 +37,7 @@ interface ContextMenu {
 type Props = {
   children: ReactElement;
   actions: MenuCallToAction[];
-  contextObject?: number;
+  contextObject?: number | string;
   openOnLeftClick?: boolean;
 };
 
@@ -47,7 +47,6 @@ function ContextMenu({
   contextObject,
   openOnLeftClick = false
 }: Props) {
-  const windowWidth = window.innerWidth;
   const childElement = useRef<HTMLElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [stateContextMenu, setStateContextMenu] = useState<ContextMenu>({
@@ -65,6 +64,7 @@ function ContextMenu({
     event.stopPropagation();
 
     const newPosition: ContextMenuPosition = {};
+    const windowWidth = window.innerWidth;
     let { clientX, clientY } = event;
 
     if (clientX + 150 > windowWidth) {

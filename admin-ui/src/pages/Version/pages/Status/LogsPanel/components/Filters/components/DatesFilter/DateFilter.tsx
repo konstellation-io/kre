@@ -9,7 +9,6 @@ import Select, {
   SelectTheme,
   CustomOptionProps
 } from '../../../../../../../../../components/Form/Select/Select';
-import Calendar from '../../../../../../../../../components/Form/Calendar/Calendar';
 import { formatDate } from '../../../../../../../../../utils/format';
 import { useForm } from 'react-hook-form';
 

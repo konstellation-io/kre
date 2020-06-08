@@ -86,20 +86,12 @@ input CreateUserInput {
   accessLevel: AccessLevel!
 }
 
-input UserInput {
-  id: ID!
-  email: String!
-  accessLevel: AccessLevel!
-  dateAdded: String!
-  lastAccess: String!
-}
-
 input UsersInput {
-  users: [UserInput!]!
+  userIds: [ID!]!
 }
 
 input UpdateUsersInput {
-  users: [UserInput!]!
+  userIds: [ID!]!
   accessLevel: AccessLevel!
 }
 

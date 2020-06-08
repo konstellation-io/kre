@@ -117,20 +117,12 @@ export interface UpdateConfigurationInput {
 }
 
 export interface UpdateUsersInput {
-  users: UserInput[];
+  userIds: string[];
   accessLevel: AccessLevel;
-}
-
-export interface UserInput {
-  id: string;
-  email: string;
-  accessLevel: AccessLevel;
-  dateAdded: string;
-  lastAccess: string;
 }
 
 export interface UsersInput {
-  users: UserInput[];
+  userIds: string[];
 }
 
 //==============================================================

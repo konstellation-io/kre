@@ -13,8 +13,10 @@ import history from './history';
 
 import typeDefs, {
   OpenedVersion,
+  UserSettings,
   LogPanel,
-  NotificationType
+  NotificationType,
+  UserSelection
 } from './graphql/client/typeDefs';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
@@ -42,6 +44,7 @@ export interface LocalState {
   logsOpened: boolean;
   logsAutoScroll: boolean;
   openedVersion: OpenedVersion;
+  userSettings: UserSettings;
 }
 interface DefaultCache {
   data: LocalState;
@@ -152,6 +155,16 @@ config
           runtimeName: '',
           versionName: '',
           __typename: 'OpenedVersion'
+        },
+        userSettings: {
+          selectedUserIds: [],
+          userSelection: UserSelection.NONE,
+          filters: {
+            email: null,
+            accessLevel: null,
+            __typename: 'UserSettingsFilters'
+          },
+          __typename: 'UserSettings'
         }
       }
     };

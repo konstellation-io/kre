@@ -19,6 +19,7 @@ export const ENTER_KEY_CODE = 13;
 type Props = {
   options: string[];
   onChange?: Function;
+  onEnter?: Function;
   value?: string;
   placeholder?: string;
   label?: string;
@@ -34,6 +35,7 @@ type Props = {
 function SearchSelect({
   options,
   onChange = () => {},
+  onEnter = () => {},
   value = '',
   placeholder = '',
   label = '',
@@ -72,7 +74,9 @@ function SearchSelect({
     setSelectedOption(event.target.value);
     if (event.target.value) {
       setFilteredOptions(
-        options.filter(option => option.includes(`${event.target.value}`))
+        options
+          .filter(option => option.includes(`${event.target.value}`))
+          .sort()
       );
     } else {
       setFilteredOptions([]);
@@ -90,6 +94,14 @@ function SearchSelect({
         input.focus();
       }
     }
+  }
+
+  function handleOnBlur() {
+    const option =
+      highlightedOption === -1
+        ? selectedOption
+        : filteredOptions[highlightedOption];
+    handleSelectOption(option);
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -113,6 +125,7 @@ function SearchSelect({
           ? selectedOption
           : filteredOptions[highlightedOption];
       handleSelectOption(option);
+      onEnter();
     } else {
       setHighlightedOption(-1);
     }
@@ -140,9 +153,9 @@ function SearchSelect({
         type="text"
         placeholder={placeholder}
         onChange={handleOnChange}
+        onBlur={handleOnBlur}
         onKeyDown={handleKeyDown}
-        // FIXME: in chrome (MAC OS) it shows selectable options previously typed from the browser
-        autoComplete="new-password"
+        autoComplete="off"
       />
       <ul className={styles.optionsList}>
         {filteredOptions.map((option, index) => (

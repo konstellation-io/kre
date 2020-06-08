@@ -123,7 +123,12 @@ module.exports = {
     }
   }),
   Query: () => ({
-    users: () => new MockList([4, 6]),
+    me: () => ({
+      id: casual.uuid,
+      accessLevel: 'ADMIN',
+      email: 'admin@intelygenz.com'
+    }),
+    users: () => new MockList([20, 30]),
     runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 4]),
     versions: () => new MockList([18, 28]),
@@ -170,7 +175,7 @@ module.exports = {
   }),
   User: () => ({
     id: casual.uuid,
-    accessLevel: 'ADMIN', //casual.random_element(['ADMIN']), //, 'VIEWER', 'MANAGER']),
+    accessLevel: casual.random_element(['ADMIN', 'VIEWER', 'MANAGER']),
     email: casual.random_element(emails),
     dateAdded: new Date().toUTCString(),
     lastAccess: new Date().toUTCString()
