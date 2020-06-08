@@ -29,9 +29,8 @@ export function getDefaultFilters():
   return {
     ...defaultFilters,
     startDate: moment()
-      .utc()
       .subtract(24, 'hour')
-      .toISOString(true),
+      .toISOString(),
     __typename: 'logTabFilters'
   };
 }
