@@ -31,12 +31,9 @@ type FormData = {
 
 const DEFAULT_DATES: FormData = {
   startDate: moment()
-    .utc()
     .subtract(30, 'days')
     .startOf('day'),
-  endDate: moment()
-    .utc()
-    .endOf('day')
+  endDate: moment().endOf('day')
 };
 
 type Props = {
