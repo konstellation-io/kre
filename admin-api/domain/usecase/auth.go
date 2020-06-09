@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"strings"
 	"time"
@@ -108,7 +109,7 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 	if isNewUser {
 		a.logger.Infof("The user '%s' doesn't exist, creating in the database...", email)
 
-		createdUser, err := a.userRepo.Create(email)
+		createdUser, err := a.userRepo.Create(context.Background(), email, entity.AccessLevelViewer)
 		if err != nil {
 			return err
 		}

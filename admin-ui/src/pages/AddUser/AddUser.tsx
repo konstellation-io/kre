@@ -1,21 +1,24 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router';
+import { useMutation } from '@apollo/react-hooks';
+import { loader } from 'graphql.macro';
 import { get } from 'lodash';
-import TextInput from '../../components/Form/TextInput/TextInput';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
 import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
-import styles from './AddUser.module.scss';
-import { loader } from 'graphql.macro';
-import { useMutation } from '@apollo/react-hooks';
+import Select from '../../components/Form/Select/Select';
+import TextInput from '../../components/Form/TextInput/TextInput';
+import ROUTE from '../../constants/routes';
 import {
   CreateUser,
-  CreateUserVariables
+  CreateUserVariables,
+  CreateUser_createUser
 } from '../../graphql/mutations/types/CreateUser';
-import ROUTE from '../../constants/routes';
-import { useForm } from 'react-hook-form';
-import { mutationPayloadHelper } from '../../utils/formUtils';
+import { GetUsers } from '../../graphql/queries/types/GetUsers';
 import { AccessLevel } from '../../graphql/types/globalTypes';
-import Select from '../../components/Form/Select/Select';
+import { mutationPayloadHelper } from '../../utils/formUtils';
+import styles from './AddUser.module.scss';
+const GetUsersQuery = loader('../../graphql/queries/getUsers.graphql');
 
 const CreateUserMutation = loader('../../graphql/mutations/createUser.graphql');
 
@@ -48,7 +51,21 @@ function AddUser() {
     CreateUser,
     CreateUserVariables
   >(CreateUserMutation, {
-    onCompleted: onCompleteAddUser
+    onCompleted: onCompleteAddUser,
+    update: (cache, { data }) => {
+      const newUser = data?.createUser as CreateUser_createUser;
+      const cacheResult = cache.readQuery<GetUsers>({
+        query: GetUsersQuery
+      });
+
+      if (cacheResult !== null) {
+        const { users } = cacheResult;
+        cache.writeQuery({
+          query: GetUsersQuery,
+          data: { users: users.concat([newUser]) }
+        });
+      }
+    }
   });
 
   useEffect(() => {

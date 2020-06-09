@@ -169,7 +169,7 @@ func TestSignUpWithValidDomain(t *testing.T) {
 	s.mocks.verificationCodeGenerator.EXPECT().Generate().Return(verificationCode)
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
 	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
-	s.mocks.userRepo.EXPECT().Create(user.Email).Return(user, nil)
+	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(user, nil)
 
 	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
 	require.Nil(t, err)
@@ -222,7 +222,7 @@ func TestSignUpWithValidEmailAddress(t *testing.T) {
 	s.mocks.verificationCodeGenerator.EXPECT().Generate().Return(verificationCode)
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
 	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
-	s.mocks.userRepo.EXPECT().Create(user.Email).Return(user, nil)
+	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(user, nil)
 
 	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
 	require.Nil(t, err)
@@ -312,7 +312,7 @@ func TestSignUpErrCreatingUser(t *testing.T) {
 
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
 	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
-	s.mocks.userRepo.EXPECT().Create(user.Email).Return(nil, unexpectedErr)
+	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(nil, unexpectedErr)
 
 	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
 	require.Equal(t, unexpectedErr, err)

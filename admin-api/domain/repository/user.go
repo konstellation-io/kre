@@ -12,7 +12,7 @@ type UserRepo interface {
 	GetByEmail(email string) (*entity.User, error)
 
 	// Create persists a new User into the database.
-	Create(email string) (*entity.User, error)
+	Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error)
 
 	GetByID(userID string) (*entity.User, error)
 

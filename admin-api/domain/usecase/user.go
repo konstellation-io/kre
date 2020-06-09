@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
@@ -55,4 +56,17 @@ func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string
 	}
 
 	return updatedUsers, nil
+}
+
+func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error) {
+	_, err := i.userRepo.GetByEmail(email)
+	if err == nil {
+		return nil, fmt.Errorf("already exists an user with email: %s", email)
+	}
+
+	if err != ErrUserNotFound {
+		return nil, err
+	}
+
+	return i.userRepo.Create(ctx, email, accessLevel)
 }

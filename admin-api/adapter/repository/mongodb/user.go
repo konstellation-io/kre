@@ -29,14 +29,14 @@ func NewUserRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo
 	}
 }
 
-func (r *UserRepoMongoDB) Create(email string) (*entity.User, error) {
+func (r *UserRepoMongoDB) Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error) {
 	user := &entity.User{
-		CreationDate: time.Now(),
-		AccessLevel:  entity.AccessLevelViewer,
 		ID:           primitive.NewObjectID().Hex(),
+		CreationDate: time.Now(),
 		Email:        email,
+		AccessLevel:  accessLevel,
 	}
-	res, err := r.collection.InsertOne(context.Background(), user)
+	res, err := r.collection.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
 	}

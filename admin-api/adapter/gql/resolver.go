@@ -185,7 +185,7 @@ func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersIn
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error) {
-	return nil, nil
+	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel)
 }
 
 func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus, error) {
