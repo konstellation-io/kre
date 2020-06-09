@@ -32,6 +32,10 @@ type Config struct {
 
 		IsInsideCluster bool
 	} `yaml:"kubernetes"`
+
+	Prometheus struct {
+		Url string `yaml:"url" envconfig:"KRE_PROMETHEUS_URL"`
+	}
 }
 
 // NewConfig will read the config.yml file and override values with env vars.
