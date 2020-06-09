@@ -95,18 +95,18 @@ func (mr *MockUserRepoMockRecorder) GetByIDs(keys interface{}) *gomock.Call {
 }
 
 // GetAll mocks base method
-func (m *MockUserRepo) GetAll() ([]*entity.User, error) {
+func (m *MockUserRepo) GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll")
+	ret := m.ctrl.Call(m, "GetAll", ctx, returnDeleted)
 	ret0, _ := ret[0].([]*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAll indicates an expected call of GetAll
-func (mr *MockUserRepoMockRecorder) GetAll() *gomock.Call {
+func (mr *MockUserRepoMockRecorder) GetAll(ctx, returnDeleted interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockUserRepo)(nil).GetAll))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockUserRepo)(nil).GetAll), ctx, returnDeleted)
 }
 
 // UpdateAccessLevel mocks base method
@@ -122,4 +122,19 @@ func (m *MockUserRepo) UpdateAccessLevel(ctx context.Context, userIDs []string, 
 func (mr *MockUserRepoMockRecorder) UpdateAccessLevel(ctx, userIDs, accessLevel interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccessLevel", reflect.TypeOf((*MockUserRepo)(nil).UpdateAccessLevel), ctx, userIDs, accessLevel)
+}
+
+// MarkAsDeleted mocks base method
+func (m *MockUserRepo) MarkAsDeleted(ctx context.Context, userIDs []string) ([]*entity.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkAsDeleted", ctx, userIDs)
+	ret0, _ := ret[0].([]*entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MarkAsDeleted indicates an expected call of MarkAsDeleted
+func (mr *MockUserRepoMockRecorder) MarkAsDeleted(ctx, userIDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkAsDeleted", reflect.TypeOf((*MockUserRepo)(nil).MarkAsDeleted), ctx, userIDs)
 }

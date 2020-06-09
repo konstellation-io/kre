@@ -10,7 +10,8 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GetUsers } from '../../../../graphql/queries/types/GetUsers';
 import {
   RemoveUsers,
-  RemoveUsersVariables
+  RemoveUsersVariables,
+  RemoveUsers_removeUsers
 } from '../../../../graphql/mutations/types/RemoveUsers';
 import {
   RevokeUserSessions,
@@ -54,7 +55,26 @@ function UsersSettings() {
   const { data, loading, error } = useQuery<GetUsers>(GetUsersQuery);
   const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
   const [removeUsers] = useMutation<RemoveUsers, RemoveUsersVariables>(
-    RemoveUsersMutation
+    RemoveUsersMutation,
+    {
+      update: (cache, result) => {
+        if (result.data !== undefined && result.data !== null) {
+          const removedUsers = result.data
+            .removeUsers as RemoveUsers_removeUsers[];
+          const cacheResult = cache.readQuery<GetUsers>({
+            query: GetUsersQuery
+          });
+          if (cacheResult !== null) {
+            const removedUserIds = removedUsers.map(u => u.id);
+            const { users } = cacheResult;
+            cache.writeQuery({
+              query: GetUsersQuery,
+              data: { users: users.filter(u => !removedUserIds.includes(u.id)) }
+            });
+          }
+        }
+      }
+    }
   );
   const [revokeUsers] = useMutation<
     RevokeUserSessions,

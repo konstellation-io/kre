@@ -1,6 +1,7 @@
 package usecase_test
 
 import (
+	"context"
 	"github.com/golang/mock/gomock"
 	"testing"
 
@@ -73,9 +74,9 @@ func TestGetAllUsers(t *testing.T) {
 		},
 	}
 
-	s.mocks.userRepo.EXPECT().GetAll().Return(usersFound, nil)
+	s.mocks.userRepo.EXPECT().GetAll(gomock.Any(), false).Return(usersFound, nil)
 
-	res, err := s.interactor.GetAllUsers()
+	res, err := s.interactor.GetAllUsers(context.Background(), false)
 	require.Nil(t, err)
 	require.EqualValues(t, res, usersFound)
 }

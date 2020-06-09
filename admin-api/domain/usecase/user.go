@@ -34,8 +34,8 @@ func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, error) {
 }
 
 // GetAllUsers returns all existing Users
-func (i *UserInteractor) GetAllUsers() ([]*entity.User, error) {
-	return i.userRepo.GetAll()
+func (i *UserInteractor) GetAllUsers(ctx context.Context, returnDeleted bool) ([]*entity.User, error) {
+	return i.userRepo.GetAll(ctx, returnDeleted)
 }
 
 func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel) ([]*entity.User, error) {
@@ -69,4 +69,8 @@ func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel e
 	}
 
 	return i.userRepo.Create(ctx, email, accessLevel)
+}
+
+func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string) ([]*entity.User, error) {
+	return i.userRepo.MarkAsDeleted(ctx, userIDs)
 }

@@ -173,7 +173,7 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 }
 
 func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {
-	return nil, nil
+	return r.userInteractor.RemoveUsers(ctx, input.UserIds)
 }
 
 func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
@@ -202,7 +202,7 @@ func (r *queryResolver) Metrics(ctx context.Context, runtimeID string, versionID
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
-	return r.userInteractor.GetAllUsers()
+	return r.userInteractor.GetAllUsers(ctx, false)
 }
 
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {

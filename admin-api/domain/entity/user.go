@@ -28,4 +28,5 @@ type User struct {
 	AccessLevel  AccessLevel `bson:"accessLevel"`
 	CreationDate time.Time   `bson:"creationDate"`
 	LastAccess   *time.Time  `bson:"lastAccess"`
+	Deleted      bool        `bson:"deleted"`
 }
