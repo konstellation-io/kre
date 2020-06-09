@@ -28,7 +28,11 @@ type Query {
     startDate: String!
     endDate: String!
   ): Metrics
-  resourceMetrics(versionId: ID!, fromDate: String!, toDate: String!): [ResourceMetrics!]!
+  resourceMetrics(
+    versionId: ID!
+    fromDate: String!
+    toDate: String!
+  ): [ResourceMetrics!]!
 }
 
 type Mutation {
@@ -217,6 +221,12 @@ enum VersionStatus {
   STARTED
   PUBLISHED
   STOPPED
+}
+
+type ResourceMetric {
+  date: String!
+  cpu: Float!
+  ram: Float!
 }
 
 type Settings {
