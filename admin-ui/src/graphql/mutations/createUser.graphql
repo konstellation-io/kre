@@ -3,7 +3,7 @@ mutation CreateUser($input: CreateUserInput!) {
     id
     email
     accessLevel
-    dateAdded
+    creationDate
     lastAccess
   }
 }

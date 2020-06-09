@@ -177,7 +177,7 @@ module.exports = {
     id: casual.uuid,
     accessLevel: casual.random_element(['ADMIN', 'VIEWER', 'MANAGER']),
     email: casual.random_element(emails),
-    dateAdded: new Date().toUTCString(),
+    creationDate: new Date().toUTCString(),
     lastAccess: new Date().toUTCString()
   }),
   LogPane: () => ({

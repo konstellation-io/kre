@@ -14,7 +14,7 @@ export interface CreateUser_createUser {
   id: string;
   email: string;
   accessLevel: AccessLevel;
-  dateAdded: string;
+  creationDate: string;
   lastAccess: string;
 }
 

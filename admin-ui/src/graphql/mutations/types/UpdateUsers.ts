@@ -14,7 +14,7 @@ export interface UpdateUsers_updateUsers {
   id: string;
   email: string;
   accessLevel: AccessLevel;
-  dateAdded: string;
+  creationDate: string;
   lastAccess: string;
 }
 

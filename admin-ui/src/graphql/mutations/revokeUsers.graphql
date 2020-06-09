@@ -1,9 +1,0 @@
-mutation RevokeUsers($input: UsersInput!) {
-  revokeUsers(input: $input) {
-    id
-    email
-    accessLevel
-    dateAdded
-    lastAccess
-  }
-}

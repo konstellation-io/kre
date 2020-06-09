@@ -13,9 +13,9 @@ import {
   RemoveUsersVariables
 } from '../../../../graphql/mutations/types/RemoveUsers';
 import {
-  RevokeUsers,
-  RevokeUsersVariables
-} from '../../../../graphql/mutations/types/RevokeUsers';
+  RevokeUserSessions,
+  RevokeUserSessionsVariables
+} from '../../../../graphql/mutations/types/RevokeUserSessions';
 import {
   UpdateUsers,
   UpdateUsersVariables
@@ -46,8 +46,8 @@ const UpdateUsersMutation = loader(
 const RemoveUsersMutation = loader(
   '../../../../graphql/mutations/removeUsers.graphql'
 );
-const RevokeUsersMutation = loader(
-  '../../../../graphql/mutations/revokeUsers.graphql'
+const RevokeUserSessionsMutation = loader(
+  '../../../../graphql/mutations/revokeUserSessions.graphql'
 );
 
 function UsersSettings() {
@@ -56,9 +56,10 @@ function UsersSettings() {
   const [removeUsers] = useMutation<RemoveUsers, RemoveUsersVariables>(
     RemoveUsersMutation
   );
-  const [revokeUsers] = useMutation<RevokeUsers, RevokeUsersVariables>(
-    RevokeUsersMutation
-  );
+  const [revokeUsers] = useMutation<
+    RevokeUserSessions,
+    RevokeUserSessionsVariables
+  >(RevokeUserSessionsMutation);
   const [updateUsers] = useMutation<UpdateUsers, UpdateUsersVariables>(
     UpdateUsersMutation
   );

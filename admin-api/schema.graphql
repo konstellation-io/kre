@@ -41,7 +41,7 @@ type Mutation {
   updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
   removeUsers(input: UsersInput!): [User!]!
   updateUsers(input: UpdateUsersInput!): [User!]!
-  revokeUsers(input: UsersInput!): [User!]!
+  revokeUserSessions(input: UsersInput!): [User!]!
   createUser(input: CreateUserInput!): User!
 }
 
@@ -112,7 +112,7 @@ type User {
   id: ID!
   email: String!
   accessLevel: AccessLevel!
-  dateAdded: String!
+  creationDate: String!
   lastAccess: String!
 }
 

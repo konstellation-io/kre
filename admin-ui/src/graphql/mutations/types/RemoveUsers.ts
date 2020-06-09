@@ -14,7 +14,7 @@ export interface RemoveUsers_removeUsers {
   id: string;
   email: string;
   accessLevel: AccessLevel;
-  dateAdded: string;
+  creationDate: string;
   lastAccess: string;
 }
 

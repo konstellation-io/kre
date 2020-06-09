@@ -25,7 +25,7 @@ import { get } from 'lodash';
 // TODO: [typescript] Review `any`s used in this file
 
 type Data = {
-  dateAdded: string;
+  creationDate: string;
   email: string;
   accessLevel: AccessLevel;
   lastAccess: string;
@@ -35,7 +35,7 @@ type Data = {
 const columns: Column<Data>[] = [
   {
     Header: 'Date added',
-    accessor: 'dateAdded',
+    accessor: 'creationDate',
     Cell: ({ value }) => formatDate(new Date(value))
   },
   {

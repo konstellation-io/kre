@@ -14,7 +14,7 @@ export interface GetUsers_users {
   id: string;
   email: string;
   accessLevel: AccessLevel;
-  dateAdded: string;
+  creationDate: string;
   lastAccess: string;
 }
 

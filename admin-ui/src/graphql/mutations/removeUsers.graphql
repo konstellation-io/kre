@@ -3,7 +3,7 @@ mutation RemoveUsers($input: UsersInput!) {
     id
     email
     accessLevel
-    dateAdded
+    creationDate
     lastAccess
   }
 }

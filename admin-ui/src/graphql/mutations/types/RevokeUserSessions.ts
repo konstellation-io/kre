@@ -6,22 +6,22 @@
 import { UsersInput, AccessLevel } from './../../types/globalTypes';
 
 // ====================================================
-// GraphQL mutation operation: RevokeUsers
+// GraphQL mutation operation: RevokeUserSessions
 // ====================================================
 
-export interface RevokeUsers_revokeUsers {
+export interface RevokeUserSessions_revokeUserSessions {
   __typename: 'User';
   id: string;
   email: string;
   accessLevel: AccessLevel;
-  dateAdded: string;
+  creationDate: string;
   lastAccess: string;
 }
 
-export interface RevokeUsers {
-  revokeUsers: RevokeUsers_revokeUsers[];
+export interface RevokeUserSessions {
+  revokeUserSessions: RevokeUserSessions_revokeUserSessions[];
 }
 
-export interface RevokeUsersVariables {
+export interface RevokeUserSessionsVariables {
   input: UsersInput;
 }
