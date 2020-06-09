@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+	"errors"
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/repository"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
@@ -26,11 +28,31 @@ func (i *UserInteractor) GetByID(userID string) (*entity.User, error) {
 }
 
 // GetByIDs returns a list of User by IDs
-func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, []error) {
+func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, error) {
 	return i.userRepo.GetByIDs(userIDs)
 }
 
 // GetAllUsers returns all existing Users
 func (i *UserInteractor) GetAllUsers() ([]*entity.User, error) {
 	return i.userRepo.GetAll()
+}
+
+func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel) ([]*entity.User, error) {
+	users, err := i.userRepo.GetByIDs(userIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(userIDs) != len(users) {
+		return nil, errors.New("some user identifiers are not valid")
+	}
+
+	i.logger.Infof("Set access level to %s for %d users", newAccessLevel, len(users))
+
+	updatedUsers, err := i.userRepo.UpdateAccessLevel(ctx, userIDs, newAccessLevel)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUsers, nil
 }

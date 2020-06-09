@@ -23,7 +23,7 @@ func NewUserLoader(userInteractor *usecase.UserInteractor) echo.MiddlewareFunc {
 				Fetch: func(keys []string) ([]*entity.User, []error) {
 					users, err := userInteractor.GetByIDs(keys)
 					if err != nil {
-						return nil, err
+						return nil, []error{err}
 					}
 
 					// The result array must preserve the order of the keys arrays

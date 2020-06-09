@@ -11,12 +11,12 @@ import ROUTE from '../../../../../../constants/routes';
 type Props = {
   onDeleteUsers: () => void;
   onRevokeUsers: () => void;
-  onUpdateUsers: (newAccessLevel: AccessLevel) => void;
+  onUpdateAccessLevel: (newAccessLevel: AccessLevel) => void;
 };
 function UserFiltersAndActions({
   onDeleteUsers,
   onRevokeUsers,
-  onUpdateUsers
+  onUpdateAccessLevel
 }: Props) {
   return (
     <div className={styles.container}>
@@ -25,7 +25,7 @@ function UserFiltersAndActions({
         <UserActions
           onDeleteUsers={onDeleteUsers}
           onRevokeUsers={onRevokeUsers}
-          onUpdateUsers={onUpdateUsers}
+          onUpdateUsers={onUpdateAccessLevel}
         />
       </Left>
       <Right>

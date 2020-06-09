@@ -17,15 +17,15 @@ import {
   RevokeUserSessionsVariables
 } from '../../../../graphql/mutations/types/RevokeUserSessions';
 import {
-  UpdateUsers,
-  UpdateUsersVariables
-} from '../../../../graphql/mutations/types/UpdateUsers';
+  UpdateAccessLevel,
+  UpdateAccessLevelVariables
+} from '../../../../graphql/mutations/types/UpdateAccessLevel';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import {
   AccessLevel,
   UsersInput,
-  UpdateUsersInput
+  UpdateAccessLevelInput
 } from '../../../../graphql/types/globalTypes';
 import { mutationPayloadHelper } from '../../../../utils/formUtils';
 import {
@@ -40,8 +40,8 @@ import {
 } from './confirmationModals';
 
 const GetUsersQuery = loader('../../../../graphql/queries/getUsers.graphql');
-const UpdateUsersMutation = loader(
-  '../../../../graphql/mutations/updateUsers.graphql'
+const UpdateAccessLevelMutation = loader(
+  '../../../../graphql/mutations/updateAccessLevel.graphql'
 );
 const RemoveUsersMutation = loader(
   '../../../../graphql/mutations/removeUsers.graphql'
@@ -60,9 +60,10 @@ function UsersSettings() {
     RevokeUserSessions,
     RevokeUserSessionsVariables
   >(RevokeUserSessionsMutation);
-  const [updateUsers] = useMutation<UpdateUsers, UpdateUsersVariables>(
-    UpdateUsersMutation
-  );
+  const [updateAccessLevel] = useMutation<
+    UpdateAccessLevel,
+    UpdateAccessLevelVariables
+  >(UpdateAccessLevelMutation);
 
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>(defaultModalInfo);
@@ -124,7 +125,7 @@ function UsersSettings() {
     });
   }
 
-  function onUpdateUsers(newAccessLevel: AccessLevel, user?: [string]) {
+  function onUpdateAccessLevel(newAccessLevel: AccessLevel, user?: [string]) {
     const usersInfo = getUsersInfo(user);
 
     openModal();
@@ -132,8 +133,8 @@ function UsersSettings() {
       type: 'update',
       accessLevel: newAccessLevel,
       action: () => {
-        updateUsers(
-          mutationPayloadHelper<UpdateUsersInput>({
+        updateAccessLevel(
+          mutationPayloadHelper<UpdateAccessLevelInput>({
             userIds: usersInfo.userIds,
             accessLevel: newAccessLevel
           })
@@ -153,13 +154,13 @@ function UsersSettings() {
         <UserFiltersAndActions
           onDeleteUsers={onDeleteUsers}
           onRevokeUsers={onRevokeUsers}
-          onUpdateUsers={onUpdateUsers}
+          onUpdateAccessLevel={onUpdateAccessLevel}
         />
         <UserList
           users={data.users}
           onDeleteUsers={onDeleteUsers}
           onRevokeUsers={onRevokeUsers}
-          onUpdateUsers={onUpdateUsers}
+          onUpdateAccessLevel={onUpdateAccessLevel}
         />
       </>
     );

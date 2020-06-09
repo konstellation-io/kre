@@ -172,6 +172,22 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 	return r.versionInteractor.UpdateVersionConfig(v, config)
 }
 
+func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {
+	return nil, nil
+}
+
+func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
+	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel)
+}
+
+func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
+	return nil, nil
+}
+
+func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error) {
+	return nil, nil
+}
+
 func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus, error) {
 	return NodeStatus(obj.Status), nil
 }
@@ -376,9 +392,17 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	return userLoader.Load(obj.UserID)
 }
 
-func (r *userResolver) AccessLevel(ctx context.Context, obj *entity.User) (AccessLevel, error) {
-	// TODO return the true user access level value
-	return AccessLevelAdmin, nil
+func (r *userResolver) LastAccess(ctx context.Context, obj *entity.User) (*string, error) {
+	if obj.LastAccess == nil {
+		return nil, nil
+	}
+
+	date := obj.LastAccess.Format(time.RFC3339)
+	return &date, nil
+}
+
+func (r *userResolver) CreationDate(ctx context.Context, obj *entity.User) (string, error) {
+	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
 func (r *versionResolver) Status(ctx context.Context, obj *entity.Version) (VersionStatus, error) {

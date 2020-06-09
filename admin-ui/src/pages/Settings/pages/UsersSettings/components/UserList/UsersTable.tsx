@@ -28,7 +28,7 @@ type Data = {
   creationDate: string;
   email: string;
   accessLevel: AccessLevel;
-  lastAccess: string;
+  lastAccess: string | null;
   selectedRowIds?: string[];
 };
 
@@ -49,7 +49,12 @@ const columns: Column<Data>[] = [
   {
     Header: 'Last access',
     accessor: 'lastAccess',
-    Cell: ({ value }) => formatDate(new Date(value), true)
+    Cell: ({ value }) => {
+      if (value === null) {
+        return '-';
+      }
+      return formatDate(new Date(value), true);
+    }
   }
 ];
 

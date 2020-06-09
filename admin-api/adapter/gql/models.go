@@ -34,6 +34,11 @@ type CreateRuntimeInput struct {
 	Description string `json:"description"`
 }
 
+type CreateUserInput struct {
+	Email       string             `json:"email"`
+	AccessLevel entity.AccessLevel `json:"accessLevel"`
+}
+
 type CreateVersionInput struct {
 	File      graphql.Upload `json:"file"`
 	RuntimeID string         `json:"runtimeId"`
@@ -70,52 +75,18 @@ type UnpublishVersionInput struct {
 	Comment   string `json:"comment"`
 }
 
+type UpdateAccessLevelInput struct {
+	UserIds     []string           `json:"userIds"`
+	AccessLevel entity.AccessLevel `json:"accessLevel"`
+}
+
 type UpdateConfigurationInput struct {
 	VersionID              string                         `json:"versionId"`
 	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
 }
 
-type AccessLevel string
-
-const (
-	AccessLevelViewer  AccessLevel = "VIEWER"
-	AccessLevelManager AccessLevel = "MANAGER"
-	AccessLevelAdmin   AccessLevel = "ADMIN"
-)
-
-var AllAccessLevel = []AccessLevel{
-	AccessLevelViewer,
-	AccessLevelManager,
-	AccessLevelAdmin,
-}
-
-func (e AccessLevel) IsValid() bool {
-	switch e {
-	case AccessLevelViewer, AccessLevelManager, AccessLevelAdmin:
-		return true
-	}
-	return false
-}
-
-func (e AccessLevel) String() string {
-	return string(e)
-}
-
-func (e *AccessLevel) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = AccessLevel(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid AccessLevel", str)
-	}
-	return nil
-}
-
-func (e AccessLevel) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
+type UsersInput struct {
+	UserIds []string `json:"userIds"`
 }
 
 type AlertLevel string

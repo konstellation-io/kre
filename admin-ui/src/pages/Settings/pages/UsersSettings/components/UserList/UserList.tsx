@@ -11,13 +11,13 @@ type Props = {
   users: GetUsers_users[];
   onDeleteUsers: (user?: [string]) => void;
   onRevokeUsers: (user?: [string]) => void;
-  onUpdateUsers: (accessLevel: AccessLevel, user?: [string]) => void;
+  onUpdateAccessLevel: (accessLevel: AccessLevel, user?: [string]) => void;
 };
 function UserList({
   users,
   onDeleteUsers,
   onRevokeUsers,
-  onUpdateUsers
+  onUpdateAccessLevel
 }: Props) {
   const contextMenuActions: MenuCallToAction[] = [
     {
@@ -37,17 +37,17 @@ function UserList({
     {
       text: 'viewer',
       callToAction: (_: any, userId: string) =>
-        onUpdateUsers(AccessLevel.VIEWER, [userId])
+        onUpdateAccessLevel(AccessLevel.VIEWER, [userId])
     },
     {
       text: 'manager',
       callToAction: (_: any, userId: string) =>
-        onUpdateUsers(AccessLevel.MANAGER, [userId])
+        onUpdateAccessLevel(AccessLevel.MANAGER, [userId])
     },
     {
       text: 'administrator',
       callToAction: (_: any, userId: string) =>
-        onUpdateUsers(AccessLevel.ADMIN, [userId])
+        onUpdateAccessLevel(AccessLevel.ADMIN, [userId])
     }
   ];
 

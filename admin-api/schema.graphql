@@ -40,7 +40,7 @@ type Mutation {
   updateSettings(input: SettingsInput!): Settings!
   updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
   removeUsers(input: UsersInput!): [User!]!
-  updateUsers(input: UpdateUsersInput!): [User!]!
+  updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
   revokeUserSessions(input: UsersInput!): [User!]!
   createUser(input: CreateUserInput!): User!
 }
@@ -90,7 +90,7 @@ input UsersInput {
   userIds: [ID!]!
 }
 
-input UpdateUsersInput {
+input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
 }
@@ -113,7 +113,7 @@ type User {
   email: String!
   accessLevel: AccessLevel!
   creationDate: String!
-  lastAccess: String!
+  lastAccess: String
 }
 
 enum AccessLevel {

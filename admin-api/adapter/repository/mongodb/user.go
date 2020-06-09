@@ -31,8 +31,10 @@ func NewUserRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo
 
 func (r *UserRepoMongoDB) Create(email string) (*entity.User, error) {
 	user := &entity.User{
-		ID:    primitive.NewObjectID().Hex(),
-		Email: email,
+		CreationDate: time.Now(),
+		AccessLevel:  entity.AccessLevelViewer,
+		ID:           primitive.NewObjectID().Hex(),
+		Email:        email,
 	}
 	res, err := r.collection.InsertOne(context.Background(), user)
 	if err != nil {
@@ -67,12 +69,12 @@ func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {
 	return user, err
 }
 
-func (r *UserRepoMongoDB) GetByIDs(keys []string) ([]*entity.User, []error) {
+func (r *UserRepoMongoDB) GetByIDs(keys []string) ([]*entity.User, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var users []*entity.User
 	cur, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": keys}})
 	if err != nil {
-		return users, []error{err}
+		return users, err
 	}
 	defer cur.Close(ctx)
 
@@ -80,7 +82,7 @@ func (r *UserRepoMongoDB) GetByIDs(keys []string) ([]*entity.User, []error) {
 		var user entity.User
 		err = cur.Decode(&user)
 		if err != nil {
-			return users, []error{err}
+			return users, err
 		}
 		users = append(users, &user)
 	}
@@ -107,4 +109,36 @@ func (r *UserRepoMongoDB) GetAll() ([]*entity.User, error) {
 	}
 
 	return users, nil
+}
+
+func (r *UserRepoMongoDB) UpdateAccessLevel(ctx context.Context, userIDs []string, accessLevel entity.AccessLevel) ([]*entity.User, error) {
+	filter := bson.M{
+		"_id": bson.M{
+			"$in": userIDs,
+		},
+	}
+
+	upd := bson.M{
+		"$set": bson.M{
+			"accessLevel": accessLevel.String(),
+		},
+	}
+
+	_, err := r.collection.UpdateMany(ctx, filter, upd)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var updatedUsers []*entity.User
+	err = cursor.All(ctx, &updatedUsers)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUsers, nil
 }

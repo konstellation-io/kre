@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { UsersInput, AccessLevel } from './../../types/globalTypes';
+import { UpdateAccessLevelInput, AccessLevel } from './../../types/globalTypes';
 
 // ====================================================
-// GraphQL mutation operation: RevokeUserSessions
+// GraphQL mutation operation: UpdateAccessLevel
 // ====================================================
 
-export interface RevokeUserSessions_revokeUserSessions {
+export interface UpdateAccessLevel_updateAccessLevel {
   __typename: 'User';
   id: string;
   email: string;
@@ -18,10 +18,10 @@ export interface RevokeUserSessions_revokeUserSessions {
   lastAccess: string | null;
 }
 
-export interface RevokeUserSessions {
-  revokeUserSessions: RevokeUserSessions_revokeUserSessions[];
+export interface UpdateAccessLevel {
+  updateAccessLevel: UpdateAccessLevel_updateAccessLevel[];
 }
 
-export interface RevokeUserSessionsVariables {
-  input: UsersInput;
+export interface UpdateAccessLevelVariables {
+  input: UpdateAccessLevelInput;
 }
