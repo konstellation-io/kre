@@ -10,7 +10,7 @@ message VersionResourceMetrics {
 }
 
 message Response {
-  repeated  VersionResourceMetrics versionResourceMetrics = 1; 
+  repeated VersionResourceMetrics versionResourceMetrics = 1;
 }
 message VersionRequest {
   string versionName = 1;
@@ -20,16 +20,7 @@ message VersionRequest {
   int32 step = 5;
 }
 
-message WatchVersionRequest {
-  string versionName = 1;
-  string namespace = 2;
-  string fromDate = 3;
-  int32 step = 4;
-}
-
 service ResourceMetricsService {
-  rpc GetVersion (VersionRequest) returns (Response) {
-  };
-  rpc WatchVersion (WatchVersionRequest) returns (stream Response) {
-  };
+  rpc GetVersion(VersionRequest) returns (Response) {};
+  rpc WatchVersion(VersionRequest) returns (stream Response) {};
 };

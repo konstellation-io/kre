@@ -109,3 +109,8 @@ func (m *Manager) GetVersionResourceMetrics(input *entity.InputVersionResourceMe
 	return result, nil
 
 }
+
+// WatchVersionResourceMetrics call to Prometheus and return to channel the metrics for gRPC server
+func (m *Manager) WatchVersionResourceMetrics(ctx context.Context, input *entity.InputVersionResourceMetrics, metricsCh chan<- []entity.VersionResourceMetrics) {
+	// TODO add go routine with timer to query Prometheus
+}
