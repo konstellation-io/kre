@@ -3,24 +3,28 @@ syntax = "proto3";
 package resourcemetrics;
 option go_package = "resourcemetricspb";
 
+message VersionResourceMetrics {
+  string date = 1;
+  double cpu = 2;
+  double mem = 3;
+}
+
 message Response {
-  string Date = 1;
-  float CPU = 2;
-  float Mem = 3;
+  repeated  VersionResourceMetrics versionResourceMetrics = 1; 
 }
 message VersionRequest {
-  string VersionName = 1;
-  string Namespace = 2;
-  string FromDate = 3;
-  string ToDate = 4;
-  int32 Step = 5;
+  string versionName = 1;
+  string namespace = 2;
+  string fromDate = 3;
+  string toDate = 4;
+  int32 step = 5;
 }
 
 message WatchVersionRequest {
-  string VersionName = 1;
-  string Namespace = 2;
-  string FromDate = 3;
-  int32 Step = 4;
+  string versionName = 1;
+  string namespace = 2;
+  string fromDate = 3;
+  int32 step = 4;
 }
 
 service ResourceMetricsService {

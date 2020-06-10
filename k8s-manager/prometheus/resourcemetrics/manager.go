@@ -7,6 +7,7 @@ import (
 
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
+	"github.com/prometheus/common/model"
 	"gitlab.com/konstellation/kre/k8s-manager/config"
 	"gitlab.com/konstellation/kre/k8s-manager/entity"
 	"gitlab.com/konstellation/kre/libs/simplelogger"
@@ -93,9 +94,18 @@ func (m *Manager) GetVersionResourceMetrics(input *entity.InputVersionResourceMe
 		m.logger.Infof("Warnings: %v\n", warnings)
 	}
 
-	fmt.Println(cpuResult)
-	fmt.Println(memResult)
+	cpuValues := cpuResult.(model.Matrix)[0]
+	memValues := memResult.(model.Matrix)[0]
 
-	return nil, nil
+	result := make([]entity.VersionResourceMetrics, len(cpuValues.Values))
+	for i, v := range cpuValues.Values {
+		result[i] = entity.VersionResourceMetrics{
+			Date: v.Timestamp.Time(),
+			CPU:  float64(v.Value),
+			Mem:  float64(memValues.Values[i].Value),
+		}
+	}
+
+	return result, nil
 
 }

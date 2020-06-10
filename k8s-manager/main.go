@@ -43,7 +43,7 @@ func main() {
 	versionService := service.NewVersionService(cfg, logger, versionManager)
 
 	resourceMetricsManager := resourcemetrics.New(cfg, logger)
-	resourceMetricsService := service.NewResourceMetricsService(resourceMetricsManager)
+	resourceMetricsService := service.NewResourceMetricsService(logger, resourceMetricsManager)
 
 	runtimepb.RegisterRuntimeServiceServer(s, runtimeService)
 	versionpb.RegisterVersionServiceServer(s, versionService)
