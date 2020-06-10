@@ -4,6 +4,7 @@ package gql
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -176,10 +177,24 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 }
 
 func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {
+	userID := ctx.Value("userID").(string)
+	for _, id := range input.UserIds {
+		if id == userID {
+			return nil, errors.New("you cannot remove yourself")
+		}
+	}
+
 	return r.userInteractor.RemoveUsers(ctx, input.UserIds)
 }
 
 func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
+	userID := ctx.Value("userID").(string)
+	for _, id := range input.UserIds {
+		if id == userID {
+			return nil, errors.New("you cannot change your access level")
+		}
+	}
+
 	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel)
 }
 
