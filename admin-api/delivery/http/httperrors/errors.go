@@ -26,5 +26,7 @@ var (
 
 	HTTPErrUserNotAllowed = newHTTPError(http.StatusForbidden, "user_not_allowed", "Email address or domain not in whitelist")
 
-	HTTPErrInvalidSession = echo.NewHTTPError(http.StatusUnauthorized, map[string]string{"code": "invalid_session", "message": "The session is not valid"})
+	HTTPErrInvalidSession = newHTTPError(http.StatusUnauthorized, "invalid_session", "The session is not valid")
+
+	HTTPErrUnauthorized = newHTTPError(http.StatusUnauthorized, "unauthorized", "Unauthorized")
 )

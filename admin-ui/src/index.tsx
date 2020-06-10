@@ -50,11 +50,11 @@ interface DefaultCache {
   data: LocalState;
 }
 
-const UNAUTHORIZED_MESSAGE = 'missing or malformed jwt';
+const UNAUTHORIZED_CODE = 'unauthorized';
 const INVALID_SESSION_CODE = 'invalid_session';
 
 function userIsUnauthorized(error: ErrorResponse) {
-  return get(error, 'networkError.result.message') === UNAUTHORIZED_MESSAGE;
+  return get(error, 'networkError.result.code') === UNAUTHORIZED_CODE;
 }
 
 function sessionIsInvalid(error: ErrorResponse) {
@@ -67,8 +67,8 @@ function getNotificationIdAndMessage(error: ErrorResponse) {
 
   if (error.networkError) {
     if (sessionIsInvalid(error)) {
-      notificationId = 'Unauthorized';
-      notificationMessage = 'Session is not valid';
+      notificationId = 'ExpiredSession';
+      notificationMessage = 'Your session has expired, please log in again';
     } else if (!userIsUnauthorized(error)) {
       notificationId = 'Network error';
       notificationMessage = `ERROR: ${error.networkError.message}`;
