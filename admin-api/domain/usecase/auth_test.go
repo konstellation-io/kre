@@ -40,6 +40,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 	verificationCodeRepo := mocks.NewMockVerificationCodeRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	settingRepo := mocks.NewMockSettingRepo(ctrl)
+	sessionRepo := mocks.NewMockSessionRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 
 	mocks.AddLoggerExpects(logger)
@@ -58,6 +59,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 		userRepo,
 		settingRepo,
 		userActivityInteractor,
+		sessionRepo,
 	)
 
 	return &authSuite{
