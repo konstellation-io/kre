@@ -31,6 +31,7 @@ type Resolver struct {
 	userActivityInteractor *usecase.UserActivityInteractor
 	versionInteractor      *usecase.VersionInteractor
 	metricsInteractor      *usecase.MetricsInteractor
+	authInteractor         *usecase.AuthInteractor
 }
 
 func NewGraphQLResolver(
@@ -41,6 +42,7 @@ func NewGraphQLResolver(
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
+	authInteractor *usecase.AuthInteractor,
 ) *Resolver {
 	return &Resolver{
 		logger:                 logger,
@@ -50,6 +52,7 @@ func NewGraphQLResolver(
 		userActivityInteractor: userActivityInteractor,
 		versionInteractor:      versionInteractor,
 		metricsInteractor:      metricsInteractor,
+		authInteractor:         authInteractor,
 	}
 }
 
@@ -181,7 +184,17 @@ func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAc
 }
 
 func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
-	return nil, nil
+	users, err := r.userInteractor.GetByIDs(input.UserIds)
+	if err != nil {
+		return nil, err
+	}
+
+	err = r.authInteractor.RevokeUserSessions(input.UserIds)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error) {

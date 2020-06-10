@@ -1,0 +1,7 @@
+query GetMe {
+  me {
+    id
+    email
+    accessLevel
+  }
+}

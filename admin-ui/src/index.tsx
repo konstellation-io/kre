@@ -51,9 +51,14 @@ interface DefaultCache {
 }
 
 const UNAUTHORIZED_MESSAGE = 'missing or malformed jwt';
+const INVALID_SESSION_CODE = 'invalid_session';
 
 function userIsUnauthorized(error: ErrorResponse) {
   return get(error, 'networkError.result.message') === UNAUTHORIZED_MESSAGE;
+}
+
+function sessionIsInvalid(error: ErrorResponse) {
+  return get(error, 'networkError.result.code') === INVALID_SESSION_CODE;
 }
 
 function getNotificationIdAndMessage(error: ErrorResponse) {
@@ -61,7 +66,10 @@ function getNotificationIdAndMessage(error: ErrorResponse) {
   let notificationMessage;
 
   if (error.networkError) {
-    if (!userIsUnauthorized(error)) {
+    if (sessionIsInvalid(error)) {
+      notificationId = 'Unauthorized';
+      notificationMessage = 'Session is not valid';
+    } else if (!userIsUnauthorized(error)) {
       notificationId = 'Network error';
       notificationMessage = `ERROR: ${error.networkError.message}`;
     }
@@ -105,21 +113,29 @@ config
       const [notificationId, notificationMessage] = getNotificationIdAndMessage(
         error
       );
-      addNotification(client, notificationMessage, notificationId);
 
       if (
-        get(error, 'networkError.statusCode') === 400 &&
-        userIsUnauthorized(error) &&
-        history.location.pathname !== ROUTE.LOGIN
+        get(error, 'networkError.statusCode') === 401 ||
+        (get(error, 'networkError.statusCode') === 400 &&
+          userIsUnauthorized(error) &&
+          history.location.pathname !== ROUTE.LOGIN)
       ) {
         history.push(ROUTE.LOGIN);
-        client.resetStore();
+        client.clearStore().then(() => {
+          client.resetStore().then(() => {
+            addNotification(client, notificationMessage, notificationId);
+          });
+        });
+      } else {
+        addNotification(client, notificationMessage, notificationId);
       }
     });
+
     const uploadLink = createUploadLink({
       uri: `${envVariables.API_BASE_URL}/graphql`,
       credentials: 'include'
     });
+
     const wsLink = new WebSocketLink({
       uri: `${API_BASE_URL_WS}/graphql`,
       options: {
@@ -185,10 +201,10 @@ config
 
     // Sets initial cache
     cache.writeData(defaultCache);
-    // onResetStore callback must return a Promise
-    client.onResetStore(() =>
-      Promise.resolve(() => cache.writeData(defaultCache))
-    );
+
+    client.onResetStore(async () => {
+      cache.writeData(defaultCache);
+    });
 
     ReactDOM.render(
       <ApolloProvider client={client}>

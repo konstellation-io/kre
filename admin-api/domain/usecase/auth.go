@@ -23,6 +23,7 @@ type AuthInteractor struct {
 	userRepo                  repository.UserRepo
 	settingRepo               repository.SettingRepo
 	userActivityInteractor    *UserActivityInteractor
+	sessionRepo               repository.SessionRepo
 }
 
 // NewAuthInteractor creates a new AuthInteractor.
@@ -34,6 +35,7 @@ func NewAuthInteractor(
 	userRepo repository.UserRepo,
 	settingRepo repository.SettingRepo,
 	userActivityInteractor *UserActivityInteractor,
+	sessionRepo repository.SessionRepo,
 ) *AuthInteractor {
 	return &AuthInteractor{
 		logger,
@@ -43,6 +45,7 @@ func NewAuthInteractor(
 		userRepo,
 		settingRepo,
 		userActivityInteractor,
+		sessionRepo,
 	}
 }
 
@@ -57,6 +60,12 @@ var (
 	ErrExpiredVerificationCode = errors.New("error the verification code code is expired")
 	// ErrUserNotAllowed error
 	ErrUserNotAllowed = errors.New("error email address not allowed")
+	// ErrInvalidSession error
+	ErrInvalidSession = errors.New("error invalid session")
+	// ErrExpiredSession error
+	ErrExpiredSession = errors.New("error expired session")
+	// ErrSessionNotFound error
+	ErrSessionNotFound = errors.New("error session not found")
 )
 
 // SignIn creates a temporal on-time-use verification code associated with the user and sends it to the user in the form of a “login link” via email, sms or whatever.
@@ -187,7 +196,38 @@ func (a *AuthInteractor) VerifyCode(code string) (string, error) {
 	return verificationCode.UID, nil
 }
 
-// Logout register the User logout request
-func (a *AuthInteractor) Logout(userID string) error {
+// Logout deletes the stored token and registers the User logout request
+func (a *AuthInteractor) Logout(userID, token string) error {
+	err := a.sessionRepo.DeleteByToken(token)
+	if err != nil {
+		return err
+	}
+
 	return a.userActivityInteractor.RegisterLogout(userID)
+}
+
+func (a *AuthInteractor) CreateSession(session entity.Session) error {
+	return a.sessionRepo.Create(session)
+}
+
+func (a *AuthInteractor) CheckSessionIsActive(token string) error {
+	session, err := a.sessionRepo.GetByToken(token)
+	if err != nil {
+		a.logger.Errorf("Error getting session: %s", err)
+		return ErrInvalidSession
+	}
+
+	if time.Now().After(session.ExpirationDate) {
+		err = a.sessionRepo.DeleteByToken(token)
+		if err != nil {
+			a.logger.Errorf("Error deleting session: %s", err)
+		}
+		return ErrExpiredSession
+	}
+
+	return nil
+}
+
+func (a *AuthInteractor) RevokeUserSessions(userIDs []string) error {
+	return a.sessionRepo.DeleteByUserIDs(userIDs)
 }

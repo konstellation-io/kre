@@ -54,7 +54,13 @@ func NewApp(
 		}))
 	}
 
-	authController := controller.NewAuthController(cfg, logger, authInteractor, settingInteractor)
+	authController := controller.NewAuthController(
+		cfg,
+		logger,
+		authInteractor,
+		settingInteractor,
+	)
+
 	graphQLController := controller.NewGraphQLController(
 		cfg,
 		logger,
@@ -64,6 +70,7 @@ func NewApp(
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
+		authInteractor,
 	)
 
 	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
@@ -71,12 +78,15 @@ func NewApp(
 		TokenLookup: "cookie:token",
 	})
 
+	sessionMiddleware := kremiddleware.NewSessionMiddleware(logger, authInteractor)
+
 	e.POST("/api/v1/auth/signin", authController.SignIn)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
 	e.POST("/api/v1/auth/logout", jwtMiddleware(authController.Logout))
 
 	r := e.Group("/graphql")
 	r.Use(jwtMiddleware)
+	r.Use(sessionMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 

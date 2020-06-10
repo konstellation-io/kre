@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"
+	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"net/http"
 	"time"
 
@@ -44,7 +46,7 @@ func NewAuthController(
 func (a *AuthController) SignIn(c echo.Context) error {
 	input := new(signInInput)
 	if err := c.Bind(input); err != nil {
-		return HTTPErrInvalidJSON
+		return httperrors.HTTPErrInvalidJSON
 	}
 
 	if err := c.Validate(input); err != nil {
@@ -55,10 +57,10 @@ func (a *AuthController) SignIn(c echo.Context) error {
 	if err := a.authInteractor.SignIn(input.Email, verificationCodeDurationInMinutes); err != nil {
 		switch err {
 		case usecase.ErrUserNotAllowed:
-			return HTTPErrUserNotAllowed
+			return httperrors.HTTPErrUserNotAllowed
 		default:
 			a.logger.Error(err.Error())
-			return HTTPErrUnexpected
+			return httperrors.HTTPErrUnexpected
 		}
 	}
 
@@ -68,7 +70,7 @@ func (a *AuthController) SignIn(c echo.Context) error {
 func (a *AuthController) SignInVerify(c echo.Context) error {
 	input := new(signinVerifyInput)
 	if err := c.Bind(input); err != nil {
-		return HTTPErrInvalidJSON
+		return httperrors.HTTPErrInvalidJSON
 	}
 
 	if err := c.Validate(input); err != nil {
@@ -81,10 +83,10 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 		switch err {
 		case usecase.ErrExpiredVerificationCode:
 		case usecase.ErrVerificationCodeNotFound:
-			return HTTPErrVerificationCodeNotFound
+			return httperrors.HTTPErrVerificationCodeNotFound
 		default:
 			a.logger.Error(err.Error())
-			return HTTPErrUnexpected
+			return httperrors.HTTPErrUnexpected
 		}
 	}
 
@@ -95,11 +97,11 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	}
 
 	ttl := time.Duration(setting.SessionLifetimeInDays) * 24 * time.Hour
-	expirationTime := time.Now().Add(ttl)
+	expirationDate := time.Now().Add(ttl)
 
 	claims := jwt.StandardClaims{
 		Subject:   userId,
-		ExpiresAt: expirationTime.Unix(),
+		ExpiresAt: expirationDate.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -110,8 +112,19 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	}
 
 	a.logger.Info("Set cookie containing the generated JWT token.")
-	cookie := a.createCookie(jwtToken, expirationTime)
+	cookie := a.createCookie(jwtToken, expirationDate)
 	c.SetCookie(cookie)
+
+	err = a.authInteractor.CreateSession(entity.Session{
+		UserID:         userId,
+		Token:          jwtToken,
+		CreationDate:   time.Now(),
+		ExpirationDate: expirationDate,
+	})
+	if err != nil {
+		a.logger.Errorf("Error creating session: %s", err)
+		return httperrors.HTTPErrUnexpected
+	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login success"})
 }
@@ -122,7 +135,7 @@ func (a *AuthController) Logout(c echo.Context) error {
 	userID := claims["sub"].(string)
 
 	a.logger.Info("Logout for user " + userID)
-	err := a.authInteractor.Logout(userID)
+	err := a.authInteractor.Logout(userID, user.Raw)
 	if err != nil {
 		a.logger.Errorf("Unexpected error in logout: %s", err.Error())
 	}
