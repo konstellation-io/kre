@@ -217,6 +217,16 @@ func (a *AuthInteractor) CheckSessionIsActive(token string) error {
 		return ErrInvalidSession
 	}
 
+	user, err := a.userRepo.GetByID(session.UserID)
+	if err != nil {
+		return err
+	}
+
+	if user.Deleted {
+		a.logger.Infof("The session is not valid because the user %s is deleted", user.ID)
+		return ErrInvalidSession
+	}
+
 	if time.Now().After(session.ExpirationDate) {
 		err = a.sessionRepo.DeleteByToken(token)
 		if err != nil {
@@ -249,4 +259,8 @@ func (a *AuthInteractor) RevokeUserSessions(userIDs []string, loggedUser string)
 	a.userActivityInteractor.RegisterRevokeSessions(loggedUser, foundUserIDs, foundUserEmails)
 
 	return nil
+}
+
+func (a *AuthInteractor) UpdateLastAccess(loggedUserID string) error {
+	return a.userRepo.UpdateLastAccess(loggedUserID)
 }

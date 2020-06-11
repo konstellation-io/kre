@@ -138,3 +138,17 @@ func (mr *MockUserRepoMockRecorder) MarkAsDeleted(ctx, userIDs interface{}) *gom
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkAsDeleted", reflect.TypeOf((*MockUserRepo)(nil).MarkAsDeleted), ctx, userIDs)
 }
+
+// UpdateLastAccess mocks base method
+func (m *MockUserRepo) UpdateLastAccess(userID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateLastAccess", userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateLastAccess indicates an expected call of UpdateLastAccess
+func (mr *MockUserRepoMockRecorder) UpdateLastAccess(userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLastAccess", reflect.TypeOf((*MockUserRepo)(nil).UpdateLastAccess), userID)
+}

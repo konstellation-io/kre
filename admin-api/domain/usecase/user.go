@@ -14,6 +14,7 @@ type UserInteractor struct {
 	logger                 logging.Logger
 	userRepo               repository.UserRepo
 	userActivityInteractor *UserActivityInteractor
+	sessionRepo            repository.SessionRepo
 }
 
 // NewUserInteractor creates a new UserInteractor
@@ -21,11 +22,13 @@ func NewUserInteractor(
 	logger logging.Logger,
 	userRepo repository.UserRepo,
 	userActivityInteractor *UserActivityInteractor,
+	sessionRepo repository.SessionRepo,
 ) *UserInteractor {
 	return &UserInteractor{
 		logger,
 		userRepo,
 		userActivityInteractor,
+		sessionRepo,
 	}
 }
 
@@ -105,6 +108,11 @@ func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, logg
 		deletedUserEmails[i] = u.Email
 	}
 	i.userActivityInteractor.RegisterRemoveUsers(loggedUserID, deletedUserIDs, deletedUserEmails)
+
+	err = i.sessionRepo.DeleteByUserIDs(deletedUserIDs)
+	if err != nil {
+		return nil, err
+	}
 
 	return users, nil
 }
