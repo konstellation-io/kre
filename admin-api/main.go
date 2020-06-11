@@ -57,7 +57,7 @@ func main() {
 	)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, runtimeService, userActivityInteractor, paswordGenerator)
-	userInteractor := usecase.NewUserInteractor(logger, userRepo, userActivityInteractor)
+	userInteractor := usecase.NewUserInteractor(logger, userRepo, userActivityInteractor, sessionRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
 
 	minioCreateStorage := minio.CreateStorage
