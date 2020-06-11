@@ -1,16 +1,13 @@
 import { get } from 'lodash';
 import config from './config';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { ApolloProvider } from '@apollo/react-hooks';
 import './styles/app.global.scss';
 import './styles/d3.scss';
-
 import ROUTE from './constants/routes';
 import history from './history';
-
 import typeDefs, {
   OpenedVersion,
   UserSettings,
@@ -30,7 +27,6 @@ import addNotificationResolver from './graphql/client/resolvers/addNotification'
 import removeNotificationResolver from './graphql/client/resolvers/removeNotification';
 import updateTabFiltersResolver from './graphql/client/resolvers/updateTabFilters';
 import addLogTabResolver from './graphql/client/resolvers/addLogTab';
-
 import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
 
 export let cache: InMemoryCache;
