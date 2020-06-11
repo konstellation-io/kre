@@ -82,7 +82,6 @@ function AddUser() {
   }, [mutationError, setError]);
 
   function onCompleteAddUser(updatedData: CreateUser) {
-    // TODO: CHECK FOR API ERRORS
     history.push(ROUTE.SETTINGS_USERS);
   }
 

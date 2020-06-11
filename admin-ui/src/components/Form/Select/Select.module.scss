@@ -18,6 +18,10 @@ $height-input: 30px;
   }
 }
 
+.inputContainer {
+  position: relative;
+}
+
 .input {
   @include form-input;
   padding: 11px 40px 11px 16px;
@@ -71,7 +75,7 @@ $height-input: 30px;
   border-radius: 5px;
 
   &.opened {
-    top: calc(100% + #{$grid-unit});
+    top: 100%;
     animation: show-overflow 0s ease-in 0.3s forwards;
   }
 }

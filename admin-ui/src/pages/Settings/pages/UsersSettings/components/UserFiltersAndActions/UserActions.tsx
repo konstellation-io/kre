@@ -53,7 +53,7 @@ const CustomSeparator: FC<CustomOptionProps> = ({ label }) => (
 enum Actions {
   DELETE = 'DELETE',
   REVOKE_ACCESS = 'REVOKE ACCESS',
-  CHANGE_USER_TYPE_TO = 'CHANGE USER TYPE TO',
+  CHANGE_ACCESS_LEVEL_TO = 'CHANGE ACCESS LEVEL TO',
   VIEWER = 'VIEWER',
   MANAGER = 'MANAGER',
   ADMIN = 'ADMIN'
@@ -145,7 +145,7 @@ function UserActions({ onDeleteUsers, onRevokeUsers, onUpdateUsers }: Props) {
           CustomOptions={{
             [Actions.DELETE]: CustomRemove,
             [Actions.REVOKE_ACCESS]: CustomRevoke,
-            [Actions.CHANGE_USER_TYPE_TO]: CustomSeparator
+            [Actions.CHANGE_ACCESS_LEVEL_TO]: CustomSeparator
           }}
         />
       </div>

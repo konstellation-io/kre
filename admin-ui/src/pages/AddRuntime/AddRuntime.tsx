@@ -90,7 +90,6 @@ function AddRuntime() {
   }, [mutationError, setError]);
 
   function onCompleteAddRuntime(updatedData: CreateRuntime) {
-    // TODO: CHECK FOR API ERRORS
     history.push(ROUTE.HOME);
   }
 

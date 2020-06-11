@@ -31,7 +31,7 @@ function UserList({
       callToAction: (_: any, userId: string) => onRevokeUsers([userId])
     },
     {
-      text: 'change user type to',
+      text: 'change access level to',
       separator: true
     },
     {
