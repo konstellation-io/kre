@@ -23,4 +23,6 @@ type UserRepo interface {
 	UpdateAccessLevel(ctx context.Context, userIDs []string, accessLevel entity.AccessLevel) ([]*entity.User, error)
 
 	MarkAsDeleted(ctx context.Context, userIDs []string) ([]*entity.User, error)
+
+	UpdateLastAccess(userID string) error
 }

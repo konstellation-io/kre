@@ -168,3 +168,26 @@ func (r *UserRepoMongoDB) MarkAsDeleted(ctx context.Context, userIDs []string) (
 
 	return updatedUsers, nil
 }
+
+func (r *UserRepoMongoDB) UpdateLastAccess(userID string) error {
+	filter := bson.M{
+		"_id": userID,
+	}
+
+	upd := bson.M{
+		"$set": bson.M{
+			"lastAccess": time.Now(),
+		},
+	}
+
+	result, err := r.collection.UpdateOne(context.Background(), filter, upd)
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrUserNotFound
+	}
+
+	return nil
+}

@@ -250,3 +250,7 @@ func (a *AuthInteractor) RevokeUserSessions(userIDs []string, loggedUser string)
 
 	return nil
 }
+
+func (a *AuthInteractor) UpdateLastAccess(loggedUserID string) error {
+	return a.userRepo.UpdateLastAccess(loggedUserID)
+}

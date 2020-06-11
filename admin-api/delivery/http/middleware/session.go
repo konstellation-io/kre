@@ -14,6 +14,8 @@ func NewSessionMiddleware(cfg *config.Config, logger logging.Logger, authInterac
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			user := c.Get("user").(*jwt.Token)
+			claims := user.Claims.(jwt.MapClaims)
+			userID := claims["sub"].(string)
 
 			err := authInteractor.CheckSessionIsActive(user.Raw)
 			if err != nil {
@@ -21,6 +23,11 @@ func NewSessionMiddleware(cfg *config.Config, logger logging.Logger, authInterac
 				auth.DeleteSessionCookie(c, cfg)
 
 				return httperrors.HTTPErrInvalidSession
+			}
+
+			err = authInteractor.UpdateLastAccess(userID)
+			if err != nil {
+				logger.Warnf("Error updating last access: %s", err)
 			}
 
 			return next(c)
