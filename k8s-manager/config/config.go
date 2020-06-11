@@ -8,10 +8,13 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var once sync.Once
-var cfg *Config
+//nolint:gochecknoglobals
+var (
+	once sync.Once
+	cfg  *Config
+)
 
-// Config holds the configuration values for the application
+// Config holds the configuration values for the application.
 type Config struct {
 	DevelopmentMode bool `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
 
@@ -34,7 +37,7 @@ type Config struct {
 	} `yaml:"kubernetes"`
 
 	Prometheus struct {
-		Url string `yaml:"url" envconfig:"KRE_PROMETHEUS_URL"`
+		URL string `yaml:"url" envconfig:"KRE_PROMETHEUS_URL"`
 	}
 }
 

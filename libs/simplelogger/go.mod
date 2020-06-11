@@ -1,3 +1,3 @@
-module gitlab.com/konstellation/kre/libs/simplelogger
+module github.com/konstellation-io/kre/libs/simplelogger
 
-go 1.13
+go 1.15

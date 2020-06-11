@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"gitlab.com/konstellation/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/config"
 )
 
 func NewClientset(cfg *config.Config) *kubernetes.Clientset {
@@ -37,7 +37,7 @@ func NewDynamicClient(cfg *config.Config) dynamic.Interface {
 }
 
 func newKubernetesConfig(config *config.Config) *rest.Config {
-	if config.Kubernetes.IsInsideCluster == true {
+	if config.Kubernetes.IsInsideCluster {
 		log.Printf("Creating K8s config in-cluster")
 
 		kubeConfig, err := rest.InClusterConfig()

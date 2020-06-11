@@ -5,25 +5,26 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/konstellation-io/kre/libs/simplelogger"
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
-	"gitlab.com/konstellation/kre/k8s-manager/config"
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
+
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
-// Manager contains methods to call Prometheus
+// Manager contains methods to call Prometheus.
 type Manager struct {
 	config     *config.Config
 	logger     *simplelogger.SimpleLogger
 	prometheus v1.API
 }
 
-// New returns an instance of the Prometheus manager
+// New returns an instance of the Prometheus manager.
 func New(config *config.Config, logger *simplelogger.SimpleLogger) (*Manager, error) {
 	client, err := api.NewClient(api.Config{
-		Address: config.Prometheus.Url,
+		Address: config.Prometheus.URL,
 	})
 	if err != nil {
 		logger.Errorf("Error creating Prometheus client: %v\n", err.Error())
@@ -39,33 +40,38 @@ func New(config *config.Config, logger *simplelogger.SimpleLogger) (*Manager, er
 	}, nil
 }
 
-// GetVersionResourceMetrics get from Prometheus the resource usage for a specific version
-func (m *Manager) GetVersionResourceMetrics(input *entity.InputVersionResourceMetrics) ([]entity.VersionResourceMetrics, error) {
+// GetVersionResourceMetrics get from Prometheus the resource usage for a specific version.
+func (m *Manager) GetVersionResourceMetrics(
+	input *entity.InputVersionResourceMetrics,
+) ([]entity.VersionResourceMetrics, error) {
 	fromDate, err := time.Parse(time.RFC3339, input.FromDate)
 	if err != nil {
-		return nil, fmt.Errorf("Invalid fromDate: %w", err)
+		return nil, fmt.Errorf("invalid fromDate: %w", err)
 	}
 
 	toDate, err := time.Parse(time.RFC3339, input.ToDate)
 	if err != nil {
-		return nil, fmt.Errorf("Invalid toDate: %w", err)
+		return nil, fmt.Errorf("invalid toDate: %w", err)
 	}
 
 	step := time.Duration(input.Step) * time.Second
 
 	return m.prometheusQuery(fromDate, toDate, step, input.VersionName, input.Namespace)
-
 }
 
 const refreshInterval = 5 * time.Second
 
-// WatchVersionResourceMetrics call to Prometheus and return to channel the metrics for gRPC server
-func (m *Manager) WatchVersionResourceMetrics(ctx context.Context, input *entity.InputVersionResourceMetrics, metricsCh chan<- []entity.VersionResourceMetrics) error {
+// WatchVersionResourceMetrics call to Prometheus and return to channel the metrics for gRPC server.
+func (m *Manager) WatchVersionResourceMetrics(
+	ctx context.Context,
+	input *entity.InputVersionResourceMetrics,
+	metricsCh chan<- []entity.VersionResourceMetrics,
+) error {
 	ticker := time.NewTicker(refreshInterval)
 
 	fromDate, err := time.Parse(time.RFC3339, input.FromDate)
 	if err != nil {
-		return fmt.Errorf("Invalid fromDate: %w", err)
+		return fmt.Errorf("invalid fromDate: %w", err)
 	}
 
 	step := time.Duration(input.Step) * time.Second
@@ -77,9 +83,10 @@ func (m *Manager) WatchVersionResourceMetrics(ctx context.Context, input *entity
 				return
 			case <-ticker.C:
 				toDate := time.Now()
+
 				metrics, err := m.prometheusQuery(fromDate, toDate, step, input.VersionName, input.Namespace)
 				if err != nil {
-					m.logger.Errorf("error performing the Prometheus query: %w", err)
+					m.logger.Errorf("error performing the Prometheus query: %s", err)
 					return
 				}
 
@@ -92,11 +99,14 @@ func (m *Manager) WatchVersionResourceMetrics(ctx context.Context, input *entity
 	return nil
 }
 
-// PrometheusQuery perform a call to Prometheus in order to get CPU and Memory values in a range of timeStamps
-func (m *Manager) prometheusQuery(fromDate, toDate time.Time, step time.Duration, versionName, namespace string) ([]entity.VersionResourceMetrics, error) {
-
+func (m *Manager) prometheusQuery(
+	fromDate, toDate time.Time,
+	step time.Duration,
+	versionName, namespace string,
+) ([]entity.VersionResourceMetrics, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
 	r := v1.Range{
 		Start: fromDate,
 		End:   toDate,
@@ -117,6 +127,7 @@ func (m *Manager) prometheusQuery(fromDate, toDate time.Time, step time.Duration
 		m.logger.Errorf("Error querying Prometheus: %v\n", err.Error())
 		return nil, err
 	}
+
 	if len(warnings) > 0 {
 		m.logger.Infof("Warnings: %v\n", warnings)
 	}
@@ -135,6 +146,7 @@ func (m *Manager) prometheusQuery(fromDate, toDate time.Time, step time.Duration
 		m.logger.Errorf("Error querying Prometheus: %v\n", err.Error())
 		return nil, err
 	}
+
 	if len(warnings) > 0 {
 		m.logger.Infof("Warnings: %v\n", warnings)
 	}
@@ -152,5 +164,4 @@ func (m *Manager) prometheusQuery(fromDate, toDate time.Time, step time.Duration
 	}
 
 	return result, nil
-
 }

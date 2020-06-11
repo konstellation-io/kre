@@ -10,7 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
 func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) error {
@@ -24,6 +24,7 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 	entrypointURL := fmt.Sprintf("%s.%s", runtime.Namespace, domain)
 
 	log.Printf("Creating Runtime object on '%s' with url: %s", runtime.Namespace, entrypointURL)
+
 	_, err := client.Namespace(runtime.Namespace).Create(&unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"kind":       "Runtime",
@@ -64,6 +65,7 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 	}
 
 	log.Print("Runtime Object created")
+
 	return nil
 }
 
@@ -132,6 +134,7 @@ func (m *Manager) createOperator(runtimeName string) error {
 	}
 
 	log.Printf("Creating KRE Operator deployment %s ...", operatorImage)
+
 	result, err := m.clientset.AppsV1().Deployments(runtimeName).Create(deployment)
 	if err != nil {
 		return err

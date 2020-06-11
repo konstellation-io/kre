@@ -21,6 +21,8 @@ message VersionRequest {
 }
 
 service ResourceMetricsService {
-  rpc GetVersion(VersionRequest) returns (Response) {};
-  rpc WatchVersion(VersionRequest) returns (stream Response) {};
+  rpc GetVersion (VersionRequest) returns (Response) {
+  };
+  rpc WatchVersion (VersionRequest) returns (stream Response) {
+  };
 };

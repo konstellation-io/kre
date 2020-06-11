@@ -3,12 +3,13 @@ package service
 import (
 	"context"
 	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
 
-	"gitlab.com/konstellation/kre/k8s-manager/config"
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/kre/k8s-manager/kubernetes/version"
-	"gitlab.com/konstellation/kre/k8s-manager/proto/versionpb"
+	"github.com/konstellation-io/kre/libs/simplelogger"
+
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes/version"
+	"github.com/konstellation-io/kre/k8s-manager/proto/versionpb"
 )
 
 // VersionService basic server
@@ -18,8 +19,12 @@ type VersionService struct {
 	manager *version.Manager
 }
 
-// NewVersionService instantiates the GRPC server implementation
-func NewVersionService(config *config.Config, logger *simplelogger.SimpleLogger, manager *version.Manager) *VersionService {
+// NewVersionService instantiates the GRPC server implementation.
+func NewVersionService(
+	config *config.Config,
+	logger *simplelogger.SimpleLogger,
+	manager *version.Manager,
+) *VersionService {
 	return &VersionService{
 		config,
 		logger,
@@ -27,8 +32,8 @@ func NewVersionService(config *config.Config, logger *simplelogger.SimpleLogger,
 	}
 }
 
-// Start starts a version on Kubernetes
-func (v *VersionService) Start(ctx context.Context, req *versionpb.Request) (*versionpb.Response, error) {
+// Start starts a version on Kubernetes.
+func (v *VersionService) Start(_ context.Context, req *versionpb.Request) (*versionpb.Response, error) {
 	fmt.Println("Start request received")
 
 	err := v.manager.Start(&entity.Version{Version: *req.GetVersion()})
@@ -42,7 +47,6 @@ func (v *VersionService) Start(ctx context.Context, req *versionpb.Request) (*ve
 	}, nil
 }
 
-// UpdateConfig changes the config on the specified version
 func (v *VersionService) UpdateConfig(ctx context.Context, req *versionpb.Request) (*versionpb.Response, error) {
 	v.logger.Info("UpdateConfig request received")
 
@@ -57,9 +61,9 @@ func (v *VersionService) UpdateConfig(ctx context.Context, req *versionpb.Reques
 	}, nil
 }
 
-// Stop remove all resources for the given version
 func (v *VersionService) Stop(ctx context.Context, req *versionpb.Request) (*versionpb.Response, error) {
 	fmt.Println("Stop request received")
+
 	reqVersion := req.GetVersion()
 
 	err := v.manager.Stop(ctx, &entity.Version{Version: *reqVersion})
@@ -73,11 +77,11 @@ func (v *VersionService) Stop(ctx context.Context, req *versionpb.Request) (*ver
 	}, nil
 }
 
-// Publish associates a service with for the given version
-func (v *VersionService) Publish(ctx context.Context, req *versionpb.Request) (*versionpb.Response, error) {
+func (v *VersionService) Publish(_ context.Context, req *versionpb.Request) (*versionpb.Response, error) {
 	fmt.Println("Publish request received")
 
 	ver := &entity.Version{Version: *req.GetVersion()}
+
 	err := v.manager.Publish(ver)
 	if err != nil {
 		fmt.Println(err)
@@ -89,7 +93,7 @@ func (v *VersionService) Publish(ctx context.Context, req *versionpb.Request) (*
 	}, nil
 }
 
-func (v *VersionService) Unpublish(ctx context.Context, req *versionpb.Request) (*versionpb.Response, error) {
+func (v *VersionService) Unpublish(_ context.Context, req *versionpb.Request) (*versionpb.Response, error) {
 	fmt.Println("Unpublish request received")
 
 	err := v.manager.Unpublish(&entity.Version{Version: *req.GetVersion()})
