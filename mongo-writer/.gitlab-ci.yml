@@ -5,8 +5,10 @@ sonar-mongo-writer:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/mongo-writer/.sonar"
     COMPONENT_PATH: mongo-writer
     GIT_DEPTH: "0"
-  only:
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - mongo-writer/**/*
 
 release-mongo-writer:
@@ -16,10 +18,10 @@ release-mongo-writer:
     - npm install --prefix mongo-writer
   script:
     - cd mongo-writer && npx semantic-release -e semantic-release-monorepo
-  only:
-    refs:
-      - master
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - mongo-writer/**/*
       - .gitlab-ci.yml
 
@@ -42,6 +44,6 @@ publish-mongo-writer-image:
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
-  only:
-    refs:
-      - /^mongo-writer-v\d*.\d*.\d*$/
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^mongo-writer-v\d*.\d*.\d*$/'
+      when: always

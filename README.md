@@ -163,6 +163,17 @@ helm repo add konstellation-ce https://charts.konstellation.io
 helm upgrade --install --namespace kre --values ./custom-values.yaml kre-v1.0.0
 ```
 
+## Custom Installation
+KRE allows a custom configuration to use parts that already exist in your infrastructure.
+
+### Prometheus
+
+- Prometheus will be installed by default if you prefer use your own prometheus, use this helm parameter:
+
+|       Param                | Value |
+| -------------------------- | ----- |
+| prometheusOperator.enabled | false |
+
 # Development 
 
 

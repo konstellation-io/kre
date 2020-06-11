@@ -1,23 +1,3 @@
-#security-admin-api:
-#  stage: security
-#  image: golang:1.13
-#  variables:
-#    SNYK_TOKEN: $SNYK_TOKEN
-#  before_script:
-#    - apt update && apt install nodejs npm -y
-#    - npm install -g snyk
-#    - snyk auth $SNYK_TOKEN
-#  script:
-#    - cd admin-api
-#    - snyk monitor --file=go.mod
-#    - snyk test --file=go.mod
-#  only:
-#    refs:
-#      - merge_requests
-#      - master
-#    changes:
-#      - admin-api/**/*
-
 test-admin-api:
   stage: test
   image: golang:1.13
@@ -32,11 +12,10 @@ test-admin-api:
       - admin-api/admin-api-coverage.out
     reports:
       junit: admin-api/admin-api-report.xml
-  only:
-    refs:
-      - merge_requests
-      - master
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - admin-api/**/*
 
 sonar-admin-api:
@@ -46,8 +25,10 @@ sonar-admin-api:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin-api/.sonar"
     COMPONENT_PATH: admin-api
     GIT_DEPTH: "0"
-  only:
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - admin-api/**/*
 
 release-admin-api:
@@ -57,10 +38,10 @@ release-admin-api:
     - npm install --prefix admin-api
   script:
     - cd admin-api && npx semantic-release -e semantic-release-monorepo
-  only:
-    refs:
-      - master
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - admin-api/**/*
       - .gitlab-ci.yml
 
@@ -74,19 +55,13 @@ publish-admin-api-image:
     DOCKER_USER: $DOCKER_USER
     DOCKER_PASS: $DOCKER_PASS
   before_script:
-    - apk add nodejs npm --update
-    - npm i -g snyk
-    - snyk auth $SNYK_TOKEN
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
     - TAG=${CI_COMMIT_TAG#admin-api-v}
     - docker build -t $IMAGE_PROJECT_NAME:$TAG admin-api
-    # IMAGE SECURITY CHECK
-    - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=admin-api/Dockerfile
-    - snyk test --docker $IMAGE_PROJECT_NAME:$TAG --file=admin-api/Dockerfile
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
-  only:
-    refs:
-      - /^admin-api-v\d*.\d*.\d*$/
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^admin-api-v\d*.\d*.\d*$/'
+      when: always

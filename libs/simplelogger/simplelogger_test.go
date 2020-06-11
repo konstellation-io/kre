@@ -2,11 +2,12 @@ package simplelogger_test
 
 import (
 	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"io/ioutil"
 	"os"
 	"regexp"
 	"testing"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
 )
 
 func captureOutput(f func()) string {

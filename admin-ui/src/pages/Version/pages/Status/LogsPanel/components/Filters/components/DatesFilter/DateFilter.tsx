@@ -19,12 +19,9 @@ type FormData = {
 
 const DEFAULT_DATES: FormData = {
   startDate: moment()
-    .utc()
     .subtract(30, 'days')
     .startOf('day'),
-  endDate: moment()
-    .utc()
-    .endOf('day')
+  endDate: moment().endOf('day')
 };
 
 function CustomRange({ label }: CustomOptionProps) {
@@ -79,8 +76,8 @@ function DateFilter({
   function submitCustomDates() {
     handleSubmit(({ startDate, endDate }: FormData) => {
       updateFilters({
-        startDate: startDate.toISOString(true),
-        endDate: endDate.toISOString(true)
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
       });
       setShowCalendar(false);
     })();
@@ -91,7 +88,6 @@ function DateFilter({
       const hoursToSubtract = dateOptionToHours[value] || 1;
       updateFilters({
         startDate: moment()
-          .utc()
           .subtract(hoursToSubtract, 'hour')
           .toISOString(),
         endDate: null,

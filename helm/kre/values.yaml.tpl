@@ -62,3 +62,6 @@ certManager:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: user@email.com
+
+prometheusOperator:
+  enabled: true

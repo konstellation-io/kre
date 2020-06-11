@@ -23,7 +23,7 @@ type GenerateActRangeParams = {
 };
 function generateRange({
   unit,
-  date = moment().utc(),
+  date = moment(),
   label = '',
   prefix = 'This'
 }: GenerateActRangeParams): Range {
@@ -35,9 +35,7 @@ function generateRange({
 }
 function generatePrevRange(unit: TimeUnit, label?: string): Range {
   return generateRange({
-    date: moment()
-      .utc()
-      .subtract(1, unit),
+    date: moment().subtract(1, unit),
     prefix: 'Previous',
     label,
     unit
@@ -58,7 +56,6 @@ function getRanges(): Range[] {
     {
       label: 'Last 2 days',
       startDate: moment()
-        .utc()
         .subtract(1, 'day')
         .startOf('day'),
       endDate: moment().endOf('day')
@@ -66,7 +63,6 @@ function getRanges(): Range[] {
     {
       label: 'Last 6 months',
       startDate: moment()
-        .utc()
         .subtract(6, 'month')
         .startOf('day'),
       endDate: moment().endOf('month')

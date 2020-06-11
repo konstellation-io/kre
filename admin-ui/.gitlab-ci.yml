@@ -15,11 +15,10 @@ test-admin-ui:
       - admin-ui/test-report.xml
     reports:
       junit: admin-ui/junit.xml
-  only:
-    refs:
-      - merge_requests
-      - master
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - admin-ui/**/*
 
 sonar-admin-ui:
@@ -29,8 +28,10 @@ sonar-admin-ui:
     SONAR_USER_HOME: '${CI_PROJECT_DIR}/admin-ui/.sonar'
     COMPONENT_PATH: admin-ui
     GIT_DEPTH: '0'
-  only:
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - admin-ui/**/*
 
 release-admin-ui:
@@ -40,10 +41,10 @@ release-admin-ui:
     - npm install --prefix admin-ui
   script:
     - cd admin-ui && npx semantic-release -e semantic-release-monorepo
-  only:
-    refs:
-      - master
-    changes:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
       - admin-ui/**/*
 
 publish-admin-ui-image:
@@ -56,20 +57,13 @@ publish-admin-ui-image:
     DOCKER_USER: $DOCKER_USER
     DOCKER_PASS: $DOCKER_PASS
   before_script:
-    - apk add nodejs npm --update
-    - npm i -g snyk
-    - snyk auth $SNYK_TOKEN
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
     - TAG=${CI_COMMIT_TAG#admin-ui-v}
     - docker build -t $IMAGE_PROJECT_NAME:$TAG admin-ui
-    # IMAGE SECURITY CHECK
-    - snyk monitor --docker $IMAGE_PROJECT_NAME:$TAG --file=admin-ui/Dockerfile
-    - snyk test --docker $IMAGE_PROJECT_NAME:$TAG --file=admin-ui/Dockerfile
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
-
-  only:
-    refs:
-      - /^admin-ui-v\d*.\d*.\d*$/
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^admin-ui-v\d*.\d*.\d*$/'
+      when: always
