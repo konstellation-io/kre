@@ -53,7 +53,7 @@ const CustomSeparator: FC<CustomOptionProps> = ({ label }) => (
 enum Actions {
   DELETE = 'DELETE',
   REVOKE_ACCESS = 'REVOKE ACTIVE SESSIONS',
-  CHANGE_USER_TYPE_TO = 'CHANGE ACCESS LEVEL TO',
+  CHANGE_ACCESS_LEVEL_TO = 'CHANGE ACCESS LEVEL TO',
   VIEWER = 'VIEWER',
   MANAGER = 'MANAGER',
   ADMIN = 'ADMIN'
