@@ -42,7 +42,10 @@ func main() {
 	versionManager := version.New(cfg, logger, clientset)
 	versionService := service.NewVersionService(cfg, logger, versionManager)
 
-	resourceMetricsManager := resourcemetrics.New(cfg, logger)
+	resourceMetricsManager, err := resourcemetrics.New(cfg, logger)
+	if err != nil {
+		log.Fatalf("error creating metricsmanager: %v", err)
+	}
 	resourceMetricsService := service.NewResourceMetricsService(logger, resourceMetricsManager)
 
 	runtimepb.RegisterRuntimeServiceServer(s, runtimeService)
