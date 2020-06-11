@@ -4,6 +4,7 @@ package gql
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -31,6 +32,7 @@ type Resolver struct {
 	userActivityInteractor *usecase.UserActivityInteractor
 	versionInteractor      *usecase.VersionInteractor
 	metricsInteractor      *usecase.MetricsInteractor
+	authInteractor         *usecase.AuthInteractor
 }
 
 func NewGraphQLResolver(
@@ -41,6 +43,7 @@ func NewGraphQLResolver(
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
+	authInteractor *usecase.AuthInteractor,
 ) *Resolver {
 	return &Resolver{
 		logger:                 logger,
@@ -50,6 +53,7 @@ func NewGraphQLResolver(
 		userActivityInteractor: userActivityInteractor,
 		versionInteractor:      versionInteractor,
 		metricsInteractor:      metricsInteractor,
+		authInteractor:         authInteractor,
 	}
 }
 
@@ -172,6 +176,49 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 	return r.versionInteractor.UpdateVersionConfig(v, config)
 }
 
+func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {
+	userID := ctx.Value("userID").(string)
+	for _, id := range input.UserIds {
+		if id == userID {
+			return nil, errors.New("you cannot remove yourself")
+		}
+	}
+
+	return r.userInteractor.RemoveUsers(ctx, input.UserIds, userID)
+}
+
+func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
+	userID := ctx.Value("userID").(string)
+	for _, id := range input.UserIds {
+		if id == userID {
+			return nil, errors.New("you cannot change your access level")
+		}
+	}
+
+	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, userID)
+}
+
+func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
+	userID := ctx.Value("userID").(string)
+
+	users, err := r.userInteractor.GetByIDs(input.UserIds)
+	if err != nil {
+		return nil, err
+	}
+
+	err = r.authInteractor.RevokeUserSessions(input.UserIds, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error) {
+	userID := ctx.Value("userID").(string)
+	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, userID)
+}
+
 func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus, error) {
 	return NodeStatus(obj.Status), nil
 }
@@ -186,7 +233,7 @@ func (r *queryResolver) Metrics(ctx context.Context, runtimeID string, versionID
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
-	return r.userInteractor.GetAllUsers()
+	return r.userInteractor.GetAllUsers(ctx, false)
 }
 
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
@@ -376,9 +423,17 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	return userLoader.Load(obj.UserID)
 }
 
-func (r *userResolver) AccessLevel(ctx context.Context, obj *entity.User) (AccessLevel, error) {
-	// TODO return the true user access level value
-	return AccessLevelAdmin, nil
+func (r *userResolver) LastAccess(ctx context.Context, obj *entity.User) (*string, error) {
+	if obj.LastAccess == nil {
+		return nil, nil
+	}
+
+	date := obj.LastAccess.Format(time.RFC3339)
+	return &date, nil
+}
+
+func (r *userResolver) CreationDate(ctx context.Context, obj *entity.User) (string, error) {
+	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
 func (r *versionResolver) Status(ctx context.Context, obj *entity.Version) (VersionStatus, error) {

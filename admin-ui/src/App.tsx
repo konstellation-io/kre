@@ -11,7 +11,7 @@ import React from 'react';
 import { HotKeys } from 'react-hotkeys';
 import keymaps from './keymaps';
 import { Router, Route } from 'react-router-dom';
-import { Redirect, Switch, useHistory } from 'react-router';
+import { Redirect, Switch } from 'react-router';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
 import history from './history';
 import SpinnerCircular from './components/LoadingComponents/SpinnerCircular/SpinnerCircular';
@@ -26,41 +26,36 @@ import Settings from './pages/Settings/Settings';
 import UsersActivity from './pages/UsersActivity/UsersActivity';
 import AddRuntime from './pages/AddRuntime/AddRuntime';
 import AddVersion from './pages/AddVersion/AddVersion';
+import AddUser from './pages/AddUser/AddUser';
 import AccessDenied from './pages/AccessDenied/AccessDenied';
 import NotFound from './pages/NotFound/NotFound';
 import ROUTE from './constants/routes';
 import { loader } from 'graphql.macro';
 import { useQuery, useApolloClient } from '@apollo/react-hooks';
-import useUserAccess from './hooks/useUserAccess';
 import LogsPanel from './pages/Version/pages/Status/LogsPanel/LogsPanel';
-import { GetUserEmail } from './graphql/queries/types/GetUserEmail';
+import { GetMe } from './graphql/queries/types/GetMe';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 
-const GetUserEmailQuery = loader('./graphql/queries/getUserEmail.graphql');
+const GetMeQuery = loader('./graphql/queries/getMe.graphql');
 
 function ProtectedRoutes() {
-  const { data, error, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
-  const { accessLevel, loading: accessLevelLoading } = useUserAccess();
-
+  const { data, error, loading } = useQuery<GetMe>(GetMeQuery);
   const client = useApolloClient();
-  const history = useHistory();
 
-  if (loading || accessLevelLoading) {
+  if (loading) {
     return (
       <div className="splash">
         <SpinnerCircular />
       </div>
     );
   }
-  if (error) {
-    history.push(ROUTE.LOGIN);
+
+  if (error || !data || !data.me) {
+    return <ErrorMessage />;
   }
 
-  // Checks if the user is logged in
-  if (data && data.me) {
-    client.writeData({ data: { loggedIn: true } });
-  }
-
-  const protectedRoutes: string[] = getNotAllowedRoutes(accessLevel);
+  client.writeData({ data: { loggedIn: true } });
+  const protectedRoutes: string[] = getNotAllowedRoutes(data.me.accessLevel);
 
   return (
     <>
@@ -76,6 +71,7 @@ function ProtectedRoutes() {
           <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
 
           <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
+          <Route path={ROUTE.NEW_USER} component={AddUser} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
           <Route exact path={ROUTE.HOME} component={Dashboard} />

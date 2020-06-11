@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,15 +16,19 @@ import (
 type UserActivityType string
 
 const (
-	UserActivityTypeLogin            UserActivityType = "LOGIN"
-	UserActivityTypeLogout           UserActivityType = "LOGOUT"
-	UserActivityTypeCreateRuntime    UserActivityType = "CREATE_RUNTIME"
-	UserActivityTypeCreateVersion    UserActivityType = "CREATE_VERSION"
-	UserActivityTypePublishVersion   UserActivityType = "PUBLISH_VERSION"
-	UserActivityTypeUnpublishVersion UserActivityType = "UNPUBLISH_VERSION"
-	UserActivityTypeStopVersion      UserActivityType = "STOP_VERSION"
-	UserActivityTypeStartVersion     UserActivityType = "START_VERSION"
-	UserActivityTypeUpdateSetting    UserActivityType = "UPDATE_SETTING"
+	UserActivityTypeLogin              UserActivityType = "LOGIN"
+	UserActivityTypeLogout             UserActivityType = "LOGOUT"
+	UserActivityTypeCreateRuntime      UserActivityType = "CREATE_RUNTIME"
+	UserActivityTypeCreateVersion      UserActivityType = "CREATE_VERSION"
+	UserActivityTypePublishVersion     UserActivityType = "PUBLISH_VERSION"
+	UserActivityTypeUnpublishVersion   UserActivityType = "UNPUBLISH_VERSION"
+	UserActivityTypeStopVersion        UserActivityType = "STOP_VERSION"
+	UserActivityTypeStartVersion       UserActivityType = "START_VERSION"
+	UserActivityTypeUpdateSetting      UserActivityType = "UPDATE_SETTING"
+	UserActivityTypeCreateUser         UserActivityType = "CREATE_USER"
+	UserActivityTypeRemoveUsers        UserActivityType = "REMOVE_USERS"
+	UserActivityTypeUpdateAccessLevels UserActivityType = "UPDATE_ACCESS_LEVELS"
+	UserActivityTypeRevokeSessions     UserActivityType = "REVOKE_SESSIONS"
 )
 
 // UserActivityInteractor  contains app logic about UserActivity entities
@@ -65,8 +70,9 @@ func (i *UserActivityInteractor) Create(userID string, userActivityType UserActi
 
 func checkUserActivityError(logger logging.Logger, err error) error {
 	if err != nil {
-		logger.Error("error creating userActivity")
-		return fmt.Errorf("error creating userActivity: %w", err)
+		userActivityErr := fmt.Errorf("error creating userActivity: %w", err)
+		logger.Error(userActivityErr.Error())
+		return userActivityErr
 	}
 	return nil
 }
@@ -175,6 +181,52 @@ func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime 
 func (i *UserActivityInteractor) RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error {
 	err := i.Create(userID, UserActivityTypeUpdateSetting, vars)
 	return checkUserActivityError(i.logger, err)
+}
+
+func (i *UserActivityInteractor) RegisterCreateUser(userID string, createdUser *entity.User) {
+	err := i.Create(
+		userID,
+		UserActivityTypeCreateUser,
+		[]*entity.UserActivityVar{
+			{Key: "CREATED_USER_ID", Value: createdUser.ID},
+			{Key: "CREATED_USER_EMAIL", Value: createdUser.Email},
+			{Key: "CREATED_USER_ACCESS_LEVEL", Value: createdUser.AccessLevel.String()},
+		})
+	_ = checkUserActivityError(i.logger, err)
+}
+
+func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, userEmails []string) {
+	err := i.Create(
+		userID,
+		UserActivityTypeRemoveUsers,
+		[]*entity.UserActivityVar{
+			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
+			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
+		})
+	_ = checkUserActivityError(i.logger, err)
+}
+
+func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel) {
+	err := i.Create(
+		userID,
+		UserActivityTypeUpdateAccessLevels,
+		[]*entity.UserActivityVar{
+			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
+			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
+			{Key: "ACCESS_LEVEL", Value: newAccessLevel.String()},
+		})
+	_ = checkUserActivityError(i.logger, err)
+}
+
+func (i *UserActivityInteractor) RegisterRevokeSessions(userID string, userIDs, userEmails []string) {
+	err := i.Create(
+		userID,
+		UserActivityTypeRevokeSessions,
+		[]*entity.UserActivityVar{
+			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
+			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
+		})
+	_ = checkUserActivityError(i.logger, err)
 }
 
 func (i *UserActivityInteractor) NewUpdateSettingVars(settingName, oldValue, newValue string) []*entity.UserActivityVar {

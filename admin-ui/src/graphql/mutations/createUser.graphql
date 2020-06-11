@@ -1,0 +1,9 @@
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    id
+    email
+    accessLevel
+    creationDate
+    lastAccess
+  }
+}

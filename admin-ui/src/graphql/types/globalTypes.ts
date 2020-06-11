@@ -39,13 +39,17 @@ export enum RuntimeStatus {
 
 export enum UserActivityType {
   CREATE_RUNTIME = 'CREATE_RUNTIME',
+  CREATE_USER = 'CREATE_USER',
   CREATE_VERSION = 'CREATE_VERSION',
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
   PUBLISH_VERSION = 'PUBLISH_VERSION',
+  REMOVE_USERS = 'REMOVE_USERS',
+  REVOKE_SESSIONS = 'REVOKE_SESSIONS',
   START_VERSION = 'START_VERSION',
   STOP_VERSION = 'STOP_VERSION',
   UNPUBLISH_VERSION = 'UNPUBLISH_VERSION',
+  UPDATE_ACCESS_LEVELS = 'UPDATE_ACCESS_LEVELS',
   UPDATE_SETTING = 'UPDATE_SETTING',
   UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION'
 }
@@ -65,6 +69,11 @@ export interface ConfigurationVariablesInput {
 export interface CreateRuntimeInput {
   name: string;
   description: string;
+}
+
+export interface CreateUserInput {
+  email: string;
+  accessLevel: AccessLevel;
 }
 
 export interface CreateVersionInput {
@@ -106,9 +115,18 @@ export interface UnpublishVersionInput {
   comment: string;
 }
 
+export interface UpdateAccessLevelInput {
+  userIds: string[];
+  accessLevel: AccessLevel;
+}
+
 export interface UpdateConfigurationInput {
   versionId: string;
   configurationVariables: ConfigurationVariablesInput[];
+}
+
+export interface UsersInput {
+  userIds: string[];
 }
 
 //==============================================================

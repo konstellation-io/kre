@@ -18,6 +18,13 @@
     background-color: palette(base, 300);
   }
 
+  &.checked svg,
+  &.indeterminate svg {
+    @include center;
+
+    opacity: 1;
+  }
+
   &.checked {
     @include glow(4);
 
@@ -27,11 +34,16 @@
     &:hover {
       @include glow(3);
     }
+  }
 
-    svg {
-      @include center;
+  &.indeterminate {
+    position: relative;
+    background-color: palette(lowlight, 600);
+    color: $color-black;
+    font-weight: 600;
 
-      opacity: 1;
+    &:hover {
+      background-color: palette(lowlight, 400);
     }
   }
 }

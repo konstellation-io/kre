@@ -19,6 +19,7 @@ func NewHttpHandler(
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
+	authInteractor *usecase.AuthInteractor,
 ) http.Handler {
 	graphQLResolver := NewGraphQLResolver(
 		logger,
@@ -28,6 +29,7 @@ func NewHttpHandler(
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
+		authInteractor,
 	)
 
 	var mb int64 = 1 << 20

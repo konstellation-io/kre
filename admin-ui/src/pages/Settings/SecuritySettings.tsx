@@ -11,7 +11,7 @@ function SecuritySettings() {
   return (
     <>
       <div className={cx(styles.form, styles.securitySettings)}>
-        <SettingsHeader title="Security settings" />
+        <SettingsHeader>Security settings</SettingsHeader>
         <Tabs>
           <div className={styles.tabs}>
             <TabList>

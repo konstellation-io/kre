@@ -1,17 +1,12 @@
-import { get } from 'lodash';
-
-import React, { FunctionComponent, ReactElement } from 'react';
-
-import Settings from '../../components/Settings/Settings';
-
-import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
-
-import { GetUserEmail } from '../../graphql/queries/types/GetUserEmail';
-
+import { loader } from 'graphql.macro';
+import { get } from 'lodash';
+import React, { FunctionComponent, ReactElement } from 'react';
+import Settings from '../../components/Settings/Settings';
+import { GetMe } from '../../graphql/queries/types/GetMe';
 import styles from './Header.module.scss';
 
-const GetUserEmailQuery = loader('../../graphql/queries/getUserEmail.graphql');
+const GetMeQuery = loader('../../graphql/queries/getMe.graphql');
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -21,7 +16,7 @@ const Header: FunctionComponent<Props> = ({
   children,
   hideSettings = false
 }) => {
-  const { data, loading } = useQuery<GetUserEmail>(GetUserEmailQuery);
+  const { data, loading } = useQuery<GetMe>(GetMeQuery);
 
   if (loading)
     return <div className={styles.splash} data-testid="splashscreen" />;

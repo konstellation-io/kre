@@ -22,7 +22,11 @@ export const typeToText = {
   STOP_VERSION: 'Stop Version',
   START_VERSION: 'Start Version',
   UPDATE_SETTING: 'Update Settings',
-  UPDATE_VERSION_CONFIGURATION: 'Update Version Configuration'
+  UPDATE_VERSION_CONFIGURATION: 'Update Version Configuration',
+  CREATE_USER: 'Create User',
+  REMOVE_USERS: 'Remove Users',
+  UPDATE_ACCESS_LEVELS: 'Update Access Levels',
+  REVOKE_SESSIONS: 'Revoke user sessions'
 };
 
 export type UserActivityFormData = {

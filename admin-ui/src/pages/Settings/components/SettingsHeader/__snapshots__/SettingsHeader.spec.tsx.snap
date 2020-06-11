@@ -6,13 +6,6 @@ exports[`SettingsHeader matches snapshot 1`] = `
 >
   <div
     className="formTitle"
-  >
-    title
-  </div>
-  <div
-    className="formDescription"
-  >
-    subtitle
-  </div>
+  />
 </div>
 `;

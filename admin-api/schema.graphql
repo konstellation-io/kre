@@ -39,6 +39,10 @@ type Mutation {
   unpublishVersion(input: UnpublishVersionInput!): Version!
   updateSettings(input: SettingsInput!): Settings!
   updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
+  removeUsers(input: UsersInput!): [User!]!
+  updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
+  revokeUserSessions(input: UsersInput!): [User!]!
+  createUser(input: CreateUserInput!): User!
 }
 
 type Subscription {
@@ -77,6 +81,20 @@ input UnpublishVersionInput {
   comment: String!
 }
 
+input CreateUserInput {
+  email: String!
+  accessLevel: AccessLevel!
+}
+
+input UsersInput {
+  userIds: [ID!]!
+}
+
+input UpdateAccessLevelInput {
+  userIds: [ID!]!
+  accessLevel: AccessLevel!
+}
+
 type VersionNodeStatus {
   date: String!
   nodeId: String!
@@ -94,6 +112,8 @@ type User {
   id: ID!
   email: String!
   accessLevel: AccessLevel!
+  creationDate: String!
+  lastAccess: String
 }
 
 enum AccessLevel {
@@ -227,6 +247,10 @@ enum UserActivityType {
   STOP_VERSION
   UPDATE_SETTING
   UPDATE_VERSION_CONFIGURATION
+  CREATE_USER
+  REMOVE_USERS
+  UPDATE_ACCESS_LEVELS
+  REVOKE_SESSIONS
 }
 
 input LogFilters {
