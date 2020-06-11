@@ -13,7 +13,7 @@ import (
 	math "math"
 )
 
-// Reference imports to suppress httperrors if they are not otherwise used.
+// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
@@ -623,7 +623,7 @@ var fileDescriptor_fd072eb3c57cb8f2 = []byte{
 	0x00, 0x00, 0xff, 0xff, 0x13, 0x7c, 0x90, 0x08, 0xe3, 0x05, 0x00, 0x00,
 }
 
-// Reference imports to suppress httperrors if they are not otherwise used.
+// Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConnInterface
 
