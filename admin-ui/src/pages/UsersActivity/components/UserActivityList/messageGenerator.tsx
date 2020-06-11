@@ -19,7 +19,11 @@ export enum VarTypes {
   SETTING_NAME = 'SETTING_NAME',
   OLD_VALUE = 'OLD_VALUE',
   NEW_VALUE = 'NEW_VALUE',
-  CONFIG_KEYS = 'CONFIG_KEYS'
+  CONFIG_KEYS = 'CONFIG_KEYS',
+  CREATED_USER_EMAIL = 'CREATED_USER_EMAIL',
+  CREATED_USER_ACCESS_LEVEL = 'CREATED_USER_ACCESS_LEVEL',
+  USER_EMAILS = 'USER_EMAILS',
+  ACCESS_LEVEL = 'ACCESS_LEVEL'
 }
 
 function getVar(text: string | ReactElement | undefined): ReactElement {
@@ -56,7 +60,12 @@ export default function getMessage(
     settingName: string | undefined = vars[VarTypes.SETTING_NAME],
     oldValue: string | undefined = vars[VarTypes.OLD_VALUE],
     newValue: string | undefined = vars[VarTypes.NEW_VALUE],
-    configKeys: string | undefined = vars[VarTypes.CONFIG_KEYS];
+    configKeys: string | undefined = vars[VarTypes.CONFIG_KEYS],
+    createdUserEmail: string | undefined = vars[VarTypes.CREATED_USER_EMAIL],
+    createdUserAccessLevel: string | undefined =
+      vars[VarTypes.CREATED_USER_ACCESS_LEVEL],
+    userEmails: string | undefined = vars[VarTypes.USER_EMAILS],
+    accessLevel: string | undefined = vars[VarTypes.ACCESS_LEVEL];
 
   const runtimeLink =
     userActivity.type === UserActivityType.CREATE_RUNTIME && runtimeId ? (
@@ -178,6 +187,42 @@ export default function getMessage(
           {getVar(configKeys)}
           {' from version '}
           {getVar(versionLink)}
+        </>
+      );
+      break;
+    case UserActivityType.CREATE_USER:
+      message = (
+        <>
+          {'Has created a new user: '}
+          {getVar(createdUserEmail)}
+          {' with access level: '}
+          {getVar(createdUserAccessLevel)}
+        </>
+      );
+      break;
+    case UserActivityType.REMOVE_USERS:
+      message = (
+        <>
+          {'Has removed the following users: '}
+          {getVar(userEmails)}
+        </>
+      );
+      break;
+    case UserActivityType.UPDATE_ACCESS_LEVELS:
+      message = (
+        <>
+          {'Has set the access level to: '}
+          {getVar(accessLevel)}
+          {' for the following users: '}
+          {getVar(userEmails)}
+        </>
+      );
+      break;
+    case UserActivityType.REVOKE_SESSIONS:
+      message = (
+        <>
+          {'Has revoked the sessions of the following users: '}
+          {getVar(userEmails)}
         </>
       );
       break;

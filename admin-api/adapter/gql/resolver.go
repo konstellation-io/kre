@@ -184,7 +184,7 @@ func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([
 		}
 	}
 
-	return r.userInteractor.RemoveUsers(ctx, input.UserIds)
+	return r.userInteractor.RemoveUsers(ctx, input.UserIds, userID)
 }
 
 func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
@@ -195,16 +195,18 @@ func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAc
 		}
 	}
 
-	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel)
+	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, userID)
 }
 
 func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
+	userID := ctx.Value("userID").(string)
+
 	users, err := r.userInteractor.GetByIDs(input.UserIds)
 	if err != nil {
 		return nil, err
 	}
 
-	err = r.authInteractor.RevokeUserSessions(input.UserIds)
+	err = r.authInteractor.RevokeUserSessions(input.UserIds, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -213,7 +215,8 @@ func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersIn
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error) {
-	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel)
+	userID := ctx.Value("userID").(string)
+	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, userID)
 }
 
 func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus, error) {

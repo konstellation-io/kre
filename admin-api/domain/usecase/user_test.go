@@ -27,12 +27,16 @@ func newUserSuite(t *testing.T) *userSuite {
 
 	logger := mocks.NewMockLogger(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
+	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 
 	mocks.AddLoggerExpects(logger)
+
+	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo)
 
 	userInteractor := usecase.NewUserInteractor(
 		logger,
 		userRepo,
+		userActivityInteractor,
 	)
 
 	return &userSuite{

@@ -11,15 +11,21 @@ import (
 
 // UserInteractor contains app logic to handle User entities
 type UserInteractor struct {
-	logger   logging.Logger
-	userRepo repository.UserRepo
+	logger                 logging.Logger
+	userRepo               repository.UserRepo
+	userActivityInteractor *UserActivityInteractor
 }
 
 // NewUserInteractor creates a new UserInteractor
-func NewUserInteractor(logger logging.Logger, userRepo repository.UserRepo) *UserInteractor {
+func NewUserInteractor(
+	logger logging.Logger,
+	userRepo repository.UserRepo,
+	userActivityInteractor *UserActivityInteractor,
+) *UserInteractor {
 	return &UserInteractor{
 		logger,
 		userRepo,
+		userActivityInteractor,
 	}
 }
 
@@ -38,7 +44,7 @@ func (i *UserInteractor) GetAllUsers(ctx context.Context, returnDeleted bool) ([
 	return i.userRepo.GetAll(ctx, returnDeleted)
 }
 
-func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel) ([]*entity.User, error) {
+func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel, loggedUserID string) ([]*entity.User, error) {
 	users, err := i.userRepo.GetByIDs(userIDs)
 	if err != nil {
 		return nil, err
@@ -55,10 +61,18 @@ func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string
 		return nil, err
 	}
 
+	updatedUserIDs := make([]string, len(users))
+	updatedUserEmails := make([]string, len(users))
+	for i, u := range users {
+		updatedUserIDs[i] = u.ID
+		updatedUserEmails[i] = u.Email
+	}
+	i.userActivityInteractor.RegisterUpdateAccessLevels(loggedUserID, updatedUserIDs, updatedUserEmails, newAccessLevel)
+
 	return updatedUsers, nil
 }
 
-func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error) {
+func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel entity.AccessLevel, loggedUserID string) (*entity.User, error) {
 	_, err := i.userRepo.GetByEmail(email)
 	if err == nil {
 		return nil, fmt.Errorf("already exists an user with email: %s", email)
@@ -68,9 +82,29 @@ func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel e
 		return nil, err
 	}
 
-	return i.userRepo.Create(ctx, email, accessLevel)
+	createdUser, err := i.userRepo.Create(ctx, email, accessLevel)
+	if err != nil {
+		return nil, err
+	}
+
+	i.userActivityInteractor.RegisterCreateUser(loggedUserID, createdUser)
+
+	return createdUser, err
 }
 
-func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string) ([]*entity.User, error) {
-	return i.userRepo.MarkAsDeleted(ctx, userIDs)
+func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, loggedUserID string) ([]*entity.User, error) {
+	users, err := i.userRepo.MarkAsDeleted(ctx, userIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	deletedUserIDs := make([]string, len(users))
+	deletedUserEmails := make([]string, len(users))
+	for i, u := range users {
+		deletedUserIDs[i] = u.ID
+		deletedUserEmails[i] = u.Email
+	}
+	i.userActivityInteractor.RegisterRemoveUsers(loggedUserID, deletedUserIDs, deletedUserEmails)
+
+	return users, nil
 }

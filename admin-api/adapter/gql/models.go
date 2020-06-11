@@ -270,6 +270,10 @@ const (
 	UserActivityTypeStopVersion                UserActivityType = "STOP_VERSION"
 	UserActivityTypeUpdateSetting              UserActivityType = "UPDATE_SETTING"
 	UserActivityTypeUpdateVersionConfiguration UserActivityType = "UPDATE_VERSION_CONFIGURATION"
+	UserActivityTypeCreateUser                 UserActivityType = "CREATE_USER"
+	UserActivityTypeRemoveUsers                UserActivityType = "REMOVE_USERS"
+	UserActivityTypeUpdateAccessLevels         UserActivityType = "UPDATE_ACCESS_LEVELS"
+	UserActivityTypeRevokeSessions             UserActivityType = "REVOKE_SESSIONS"
 )
 
 var AllUserActivityType = []UserActivityType{
@@ -283,11 +287,15 @@ var AllUserActivityType = []UserActivityType{
 	UserActivityTypeStopVersion,
 	UserActivityTypeUpdateSetting,
 	UserActivityTypeUpdateVersionConfiguration,
+	UserActivityTypeCreateUser,
+	UserActivityTypeRemoveUsers,
+	UserActivityTypeUpdateAccessLevels,
+	UserActivityTypeRevokeSessions,
 }
 
 func (e UserActivityType) IsValid() bool {
 	switch e {
-	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime, UserActivityTypeCreateVersion, UserActivityTypePublishVersion, UserActivityTypeUnpublishVersion, UserActivityTypeStartVersion, UserActivityTypeStopVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration:
+	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime, UserActivityTypeCreateVersion, UserActivityTypePublishVersion, UserActivityTypeUnpublishVersion, UserActivityTypeStartVersion, UserActivityTypeStopVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration, UserActivityTypeCreateUser, UserActivityTypeRemoveUsers, UserActivityTypeUpdateAccessLevels, UserActivityTypeRevokeSessions:
 		return true
 	}
 	return false

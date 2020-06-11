@@ -228,6 +228,25 @@ func (a *AuthInteractor) CheckSessionIsActive(token string) error {
 	return nil
 }
 
-func (a *AuthInteractor) RevokeUserSessions(userIDs []string) error {
-	return a.sessionRepo.DeleteByUserIDs(userIDs)
+func (a *AuthInteractor) RevokeUserSessions(userIDs []string, loggedUser string) error {
+	users, err := a.userRepo.GetByIDs(userIDs)
+	if err != nil {
+		return err
+	}
+
+	foundUserIDs := make([]string, len(users))
+	foundUserEmails := make([]string, len(users))
+	for i, u := range users {
+		foundUserIDs[i] = u.ID
+		foundUserEmails[i] = u.Email
+	}
+
+	err = a.sessionRepo.DeleteByUserIDs(foundUserIDs)
+	if err != nil {
+		return err
+	}
+
+	a.userActivityInteractor.RegisterRevokeSessions(loggedUser, foundUserIDs, foundUserEmails)
+
+	return nil
 }
