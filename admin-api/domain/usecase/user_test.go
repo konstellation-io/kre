@@ -28,6 +28,7 @@ func newUserSuite(t *testing.T) *userSuite {
 	logger := mocks.NewMockLogger(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
+	sessionRepo := mocks.NewMockSessionRepo(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
@@ -37,6 +38,7 @@ func newUserSuite(t *testing.T) *userSuite {
 		logger,
 		userRepo,
 		userActivityInteractor,
+		sessionRepo,
 	)
 
 	return &userSuite{
