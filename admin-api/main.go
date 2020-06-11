@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/konstellation-io/kre/libs/simplelogger"
 	"gitlab.com/konstellation/kre/admin-api/adapter/auth"
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/adapter/repository/minio"
@@ -9,7 +10,6 @@ import (
 	"gitlab.com/konstellation/kre/admin-api/adapter/service"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
 )
 
 func main() {
@@ -37,6 +37,10 @@ func main() {
 	}
 
 	monitoringService := service.NewMonitoringService(cfg, logger)
+	resourceMetricsService, err := service.NewResourceMetricsService(cfg, logger)
+	if err != nil {
+		panic(err)
+	}
 
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
@@ -55,6 +59,7 @@ func main() {
 	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, versionService, monitoringService, userActivityInteractor, minioCreateStorage)
 
 	metricsInteractor := usecase.NewMetricsInteractor(logger, runtimeRepo, monitoringService)
+	resourceMetricsInteractor := usecase.NewResourceMetricsInteractor(logger, runtimeRepo, versionMongoRepo, resourceMetricsService)
 
 	err = settingInteractor.CreateDefaults()
 	if err != nil {
@@ -71,6 +76,7 @@ func main() {
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
+		resourceMetricsInteractor,
 	)
 	app.Start()
 }

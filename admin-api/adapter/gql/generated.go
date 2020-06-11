@@ -140,6 +140,7 @@ type ComplexityRoot struct {
 		Logs             func(childComplexity int, runtimeID string, versionID string, filters entity.LogFilters, cursor *string) int
 		Me               func(childComplexity int) int
 		Metrics          func(childComplexity int, runtimeID string, versionID string, startDate string, endDate string) int
+		ResourceMetrics  func(childComplexity int, versionID string, fromDate string, toDate string) int
 		Runtime          func(childComplexity int, id string) int
 		Runtimes         func(childComplexity int) int
 		Settings         func(childComplexity int) int
@@ -147,6 +148,12 @@ type ComplexityRoot struct {
 		Users            func(childComplexity int) int
 		Version          func(childComplexity int, id string) int
 		Versions         func(childComplexity int, runtimeID string) int
+	}
+
+	ResourceMetrics struct {
+		Cpu  func(childComplexity int) int
+		Date func(childComplexity int) int
+		Mem  func(childComplexity int) int
 	}
 
 	Runtime struct {
@@ -167,6 +174,7 @@ type ComplexityRoot struct {
 
 	Subscription struct {
 		NodeLogs          func(childComplexity int, runtimeID string, versionID string, filters entity.LogFilters) int
+		ResourceMetrics   func(childComplexity int, versionID string, fromDate string) int
 		RuntimeCreated    func(childComplexity int) int
 		VersionNodeStatus func(childComplexity int, versionID string) int
 	}
@@ -244,6 +252,7 @@ type QueryResolver interface {
 	UserActivityList(ctx context.Context, userEmail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	Logs(ctx context.Context, runtimeID string, versionID string, filters entity.LogFilters, cursor *string) (*LogPage, error)
 	Metrics(ctx context.Context, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error)
+	ResourceMetrics(ctx context.Context, versionID string, fromDate string, toDate string) ([]*entity.ResourceMetrics, error)
 }
 type RuntimeResolver interface {
 	Status(ctx context.Context, obj *entity.Runtime) (RuntimeStatus, error)
@@ -255,6 +264,7 @@ type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
 	NodeLogs(ctx context.Context, runtimeID string, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
 	VersionNodeStatus(ctx context.Context, versionID string) (<-chan *entity.VersionNodeStatus, error)
+	ResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
 }
 type UserResolver interface {
 	AccessLevel(ctx context.Context, obj *entity.User) (AccessLevel, error)
@@ -709,6 +719,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Metrics(childComplexity, args["runtimeId"].(string), args["versionId"].(string), args["startDate"].(string), args["endDate"].(string)), true
 
+	case "Query.resourceMetrics":
+		if e.complexity.Query.ResourceMetrics == nil {
+			break
+		}
+
+		args, err := ec.field_Query_resourceMetrics_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ResourceMetrics(childComplexity, args["versionId"].(string), args["fromDate"].(string), args["toDate"].(string)), true
+
 	case "Query.runtime":
 		if e.complexity.Query.Runtime == nil {
 			break
@@ -777,6 +799,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Versions(childComplexity, args["runtimeId"].(string)), true
+
+	case "ResourceMetrics.cpu":
+		if e.complexity.ResourceMetrics.Cpu == nil {
+			break
+		}
+
+		return e.complexity.ResourceMetrics.Cpu(childComplexity), true
+
+	case "ResourceMetrics.date":
+		if e.complexity.ResourceMetrics.Date == nil {
+			break
+		}
+
+		return e.complexity.ResourceMetrics.Date(childComplexity), true
+
+	case "ResourceMetrics.mem":
+		if e.complexity.ResourceMetrics.Mem == nil {
+			break
+		}
+
+		return e.complexity.ResourceMetrics.Mem(childComplexity), true
 
 	case "Runtime.creationAuthor":
 		if e.complexity.Runtime.CreationAuthor == nil {
@@ -859,6 +902,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Subscription.NodeLogs(childComplexity, args["runtimeId"].(string), args["versionId"].(string), args["filters"].(entity.LogFilters)), true
+
+	case "Subscription.resourceMetrics":
+		if e.complexity.Subscription.ResourceMetrics == nil {
+			break
+		}
+
+		args, err := ec.field_Subscription_resourceMetrics_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.ResourceMetrics(childComplexity, args["versionId"].(string), args["fromDate"].(string)), true
 
 	case "Subscription.runtimeCreated":
 		if e.complexity.Subscription.RuntimeCreated == nil {
@@ -1193,6 +1248,7 @@ type Query {
     startDate: String!
     endDate: String!
   ): Metrics
+  resourceMetrics(versionId: ID!, fromDate: String!,toDate: String!): [ResourceMetrics!]!
 }
 
 type Mutation {
@@ -1210,6 +1266,7 @@ type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
+  resourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateRuntimeInput {
@@ -1456,6 +1513,12 @@ type MetricChartData {
   y: String!
   z: String!
 }
+
+type ResourceMetrics {
+  date: String!
+  cpu: Float!
+  mem: Float!
+}
 `, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -1666,6 +1729,36 @@ func (ec *executionContext) field_Query_metrics_args(ctx context.Context, rawArg
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_resourceMetrics_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["versionId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["versionId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["fromDate"]; ok {
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["fromDate"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["toDate"]; ok {
+		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["toDate"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_runtime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1781,6 +1874,28 @@ func (ec *executionContext) field_Subscription_nodeLogs_args(ctx context.Context
 		}
 	}
 	args["filters"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Subscription_resourceMetrics_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["versionId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["versionId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["fromDate"]; ok {
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["fromDate"] = arg1
 	return args, nil
 }
 
@@ -3914,6 +4029,47 @@ func (ec *executionContext) _Query_metrics(ctx context.Context, field graphql.Co
 	return ec.marshalOMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐMetrics(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_resourceMetrics(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_resourceMetrics_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ResourceMetrics(rctx, args["versionId"].(string), args["fromDate"].(string), args["toDate"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.ResourceMetrics)
+	fc.Result = res
+	return ec.marshalNResourceMetrics2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐResourceMetricsᚄ(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -3981,6 +4137,108 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ResourceMetrics_date(ctx context.Context, field graphql.CollectedField, obj *entity.ResourceMetrics) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ResourceMetrics",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Date, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ResourceMetrics_cpu(ctx context.Context, field graphql.CollectedField, obj *entity.ResourceMetrics) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ResourceMetrics",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cpu, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ResourceMetrics_mem(ctx context.Context, field graphql.CollectedField, obj *entity.ResourceMetrics) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ResourceMetrics",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Mem, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Runtime_id(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
@@ -4461,6 +4719,57 @@ func (ec *executionContext) _Subscription_versionNodeStatus(ctx context.Context,
 			graphql.MarshalString(field.Alias).MarshalGQL(w)
 			w.Write([]byte{':'})
 			ec.marshalNVersionNodeStatus2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionNodeStatus(ctx, field.Selections, res).MarshalGQL(w)
+			w.Write([]byte{'}'})
+		})
+	}
+}
+
+func (ec *executionContext) _Subscription_resourceMetrics(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Subscription",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Subscription_resourceMetrics_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().ResourceMetrics(rctx, args["versionId"].(string), args["fromDate"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-resTmp.(<-chan []*entity.ResourceMetrics)
+		if !ok {
+			return nil
+		}
+		return graphql.WriterFunc(func(w io.Writer) {
+			w.Write([]byte{'{'})
+			graphql.MarshalString(field.Alias).MarshalGQL(w)
+			w.Write([]byte{':'})
+			ec.marshalNResourceMetrics2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐResourceMetricsᚄ(ctx, field.Selections, res).MarshalGQL(w)
 			w.Write([]byte{'}'})
 		})
 	}
@@ -7435,10 +7744,61 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_metrics(ctx, field)
 				return res
 			})
+		case "resourceMetrics":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_resourceMetrics(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var resourceMetricsImplementors = []string{"ResourceMetrics"}
+
+func (ec *executionContext) _ResourceMetrics(ctx context.Context, sel ast.SelectionSet, obj *entity.ResourceMetrics) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, resourceMetricsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ResourceMetrics")
+		case "date":
+			out.Values[i] = ec._ResourceMetrics_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "cpu":
+			out.Values[i] = ec._ResourceMetrics_cpu(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "mem":
+			out.Values[i] = ec._ResourceMetrics_mem(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -7596,6 +7956,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_nodeLogs(ctx, fields[0])
 	case "versionNodeStatus":
 		return ec._Subscription_versionNodeStatus(ctx, fields[0])
+	case "resourceMetrics":
+		return ec._Subscription_resourceMetrics(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}
@@ -8421,6 +8783,20 @@ func (ec *executionContext) marshalNEdge2ᚕgitlabᚗcomᚋkonstellationᚋkre�
 	return ret
 }
 
+func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
+	return graphql.UnmarshalFloat(v)
+}
+
+func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
+	res := graphql.MarshalFloat(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalID(v)
 }
@@ -8678,6 +9054,57 @@ func (ec *executionContext) marshalNNodeStatus2gitlabᚗcomᚋkonstellationᚋkr
 
 func (ec *executionContext) unmarshalNPublishVersionInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐPublishVersionInput(ctx context.Context, v interface{}) (PublishVersionInput, error) {
 	return ec.unmarshalInputPublishVersionInput(ctx, v)
+}
+
+func (ec *executionContext) marshalNResourceMetrics2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐResourceMetrics(ctx context.Context, sel ast.SelectionSet, v entity.ResourceMetrics) graphql.Marshaler {
+	return ec._ResourceMetrics(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNResourceMetrics2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐResourceMetricsᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.ResourceMetrics) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNResourceMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐResourceMetrics(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNResourceMetrics2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐResourceMetrics(ctx context.Context, sel ast.SelectionSet, v *entity.ResourceMetrics) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ResourceMetrics(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNRuntime2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐRuntime(ctx context.Context, sel ast.SelectionSet, v entity.Runtime) graphql.Marshaler {

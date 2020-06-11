@@ -24,13 +24,14 @@ func init() {
 }
 
 type Resolver struct {
-	logger                 logging.Logger
-	runtimeInteractor      *usecase.RuntimeInteractor
-	userInteractor         *usecase.UserInteractor
-	settingInteractor      *usecase.SettingInteractor
-	userActivityInteractor *usecase.UserActivityInteractor
-	versionInteractor      *usecase.VersionInteractor
-	metricsInteractor      *usecase.MetricsInteractor
+	logger                    logging.Logger
+	runtimeInteractor         *usecase.RuntimeInteractor
+	userInteractor            *usecase.UserInteractor
+	settingInteractor         *usecase.SettingInteractor
+	userActivityInteractor    *usecase.UserActivityInteractor
+	versionInteractor         *usecase.VersionInteractor
+	metricsInteractor         *usecase.MetricsInteractor
+	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
 }
 
 func NewGraphQLResolver(
@@ -41,15 +42,17 @@ func NewGraphQLResolver(
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
+	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) *Resolver {
 	return &Resolver{
-		logger:                 logger,
-		runtimeInteractor:      runtimeInteractor,
-		userInteractor:         userInteractor,
-		settingInteractor:      settingInteractor,
-		userActivityInteractor: userActivityInteractor,
-		versionInteractor:      versionInteractor,
-		metricsInteractor:      metricsInteractor,
+		logger,
+		runtimeInteractor,
+		userInteractor,
+		settingInteractor,
+		userActivityInteractor,
+		versionInteractor,
+		metricsInteractor,
+		resourceMetricsInteractor,
 	}
 }
 
@@ -245,6 +248,23 @@ func (r *queryResolver) Logs(
 		Cursor: nextCursor,
 		Items:  searchResult.Logs,
 	}, nil
+}
+
+func (r *queryResolver) ResourceMetrics(
+	ctx context.Context,
+	versionId string,
+	fromDate string,
+	toDate string,
+) ([]*entity.ResourceMetrics, error) {
+	return r.resourceMetricsInteractor.Get(ctx, versionId, fromDate, toDate)
+}
+
+func (r *subscriptionResolver) ResourceMetrics(
+	ctx context.Context,
+	versionId string,
+	fromDate string,
+) (<-chan []*entity.ResourceMetrics, error) {
+	return r.resourceMetricsInteractor.Watch(ctx, versionId, fromDate)
 }
 
 func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {

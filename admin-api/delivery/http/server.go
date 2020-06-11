@@ -32,6 +32,7 @@ func NewApp(
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
+	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) *App {
 	e := echo.New()
 	e.HideBanner = true
@@ -64,6 +65,7 @@ func NewApp(
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
+		resourceMetricsInteractor,
 	)
 
 	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{

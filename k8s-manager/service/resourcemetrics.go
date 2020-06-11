@@ -2,12 +2,10 @@ package service
 
 import (
 	"context"
-
-	"github.com/konstellation-io/kre/libs/simplelogger"
-
 	"github.com/konstellation-io/kre/k8s-manager/entity"
 	"github.com/konstellation-io/kre/k8s-manager/prometheus/resourcemetrics"
 	"github.com/konstellation-io/kre/k8s-manager/proto/resourcemetricspb"
+	"github.com/konstellation-io/kre/libs/simplelogger"
 )
 
 // ResourceMetricsService implements ResourceMetrics gRPC service.
@@ -36,6 +34,7 @@ func (r *ResourceMetricsService) GetVersion(
 		VersionRequest: *req,
 	}
 
+	r.logger.Infof("Getting metrics for version ", input.VersionRequest)
 	metrics, err := r.manager.GetVersionResourceMetrics(input)
 	if err != nil {
 		r.logger.Errorf("Error getting metrics: %v", err)

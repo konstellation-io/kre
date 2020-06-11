@@ -151,15 +151,27 @@ func (m *Manager) prometheusQuery(
 		m.logger.Infof("Warnings: %v\n", warnings)
 	}
 
-	cpuValues := cpuResult.(model.Matrix)[0]
-	memValues := memResult.(model.Matrix)[0]
+	cpuMetric := cpuResult.(model.Matrix)
+	memMetric := memResult.(model.Matrix)
 
+	if len(cpuMetric) == 0 || len(memMetric) == 0 {
+		return []entity.VersionResourceMetrics{}, nil
+	}
+
+	cpuValues := cpuMetric[0]
+	memValues := memMetric[0]
+
+	lenMemValues := len(memValues.Values)
 	result := make([]entity.VersionResourceMetrics, len(cpuValues.Values))
 	for i, v := range cpuValues.Values {
+		var mem float64
+		if i <= lenMemValues {
+			mem = float64(memValues.Values[i].Value)
+		}
 		result[i] = entity.VersionResourceMetrics{
 			Date: v.Timestamp.Time(),
 			CPU:  float64(v.Value),
-			Mem:  float64(memValues.Values[i].Value),
+			Mem:  mem,
 		}
 	}
 

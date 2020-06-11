@@ -65,3 +65,5 @@ certManager:
 
 prometheusOperator:
   enabled: true
+  grafana:
+    enabled: false
