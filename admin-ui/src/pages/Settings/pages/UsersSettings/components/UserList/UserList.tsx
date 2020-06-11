@@ -27,7 +27,7 @@ function UserList({
     },
     {
       Icon: IconRevoke,
-      text: 'revoke access',
+      text: 'revoke active sessions',
       callToAction: (_: any, userId: string) => onRevokeUsers([userId])
     },
     {

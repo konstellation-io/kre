@@ -49,7 +49,7 @@ export function getModalInfo({
         userIds,
         title: 'User revoke',
         message: `The following user${plural ? 's' : ''} will be revoked:`,
-        acceptLabel: `REVOKE ${nUsers} USER${plural ? 'S' : ''}`,
+        acceptLabel: `REVOKE SESSIONS OF ${nUsers} USER${plural ? 'S' : ''}`,
         confirmMessage: 'Are you sure you want to perform this action?'
       };
     case 'update':
