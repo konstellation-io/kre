@@ -1,17 +1,15 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from '../../Settings.module.scss';
 
 type Props = {
-  title: string;
-  subtitle?: string;
+  children: string;
 };
-function SettingsHeader({ title, subtitle }: Props) {
+const SettingsHeader: FC<Props> = ({ children }) => {
   return (
     <div className={styles.header}>
-      <div className={styles.formTitle}>{title}</div>
-      {subtitle && <div className={styles.formDescription}>{subtitle}</div>}
+      <div className={styles.formTitle}>{children}</div>
     </div>
   );
-}
+};
 
 export default SettingsHeader;

@@ -1,0 +1,139 @@
+@import '../../../../../../styles/variables';
+@import '../../../../../../styles/colors';
+@import '../../../../../../styles/mixins';
+
+.container {
+  overflow: auto;
+}
+
+.table {
+  &,
+  thead,
+  tbody,
+  tfoot,
+  tr,
+  th,
+  td {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-collapse: inherit;
+    border-spacing: 0;
+    border-color: inherit;
+    vertical-align: inherit;
+    text-align: left;
+    font-weight: inherit;
+    -webkit-border-horizontal-spacing: 0;
+    -webkit-border-vertical-spacing: 0;
+  }
+
+  width: 100% !important;
+  white-space: nowrap;
+
+  tbody tr td:nth-child(1) {
+    width: 37px;
+  }
+  tbody tr td:nth-child(6) {
+    width: 37px;
+  }
+
+  th,
+  td {
+    padding: 0 $grid-unit;
+    vertical-align: middle;
+  }
+
+  thead tr {
+    @include font-small;
+    color: font-color(lowlight);
+
+    height: 3 * $grid-unit;
+    line-height: 3 * $grid-unit;
+    background-color: palette(base, 400);
+
+    th {
+      border-bottom: solid 1px palette(base, 300);
+    }
+    th:not(:last-child) {
+      border-right: solid 1px palette(base, 300);
+    }
+  }
+
+  tbody tr {
+    height: 5 * $grid-unit;
+    background-color: palette(base, 700);
+    color: font-color(lowlight);
+
+    td {
+      border-bottom: solid 1px palette(base, 400);
+    }
+
+    td:nth-child(2),
+    td:nth-child(5) {
+      @include font-small;
+      color: font-color(regular);
+      line-height: inherit;
+
+      width: 115px;
+      padding-left: 2 * $grid-unit;
+    }
+    td:nth-child(3) {
+      @include font-code;
+
+      width: 50%;
+    }
+    td:nth-child(4) {
+      @include font-body;
+      color: font-color(light);
+      line-height: inherit;
+    }
+    td:nth-child(5) {
+      width: 165px;
+    }
+    td:nth-child(6) {
+      color: font-color(regular);
+      line-height: 0;
+    }
+  }
+}
+
+.check {
+  opacity: 1;
+}
+
+.headerCheck {
+  background-color: palette(base, 300);
+  height: 12px;
+  width: 12px;
+  margin-left: 4px;
+
+  svg {
+    font-size: 0.6rem !important;
+  }
+
+  &:hover {
+    background-color: palette(base, 200);
+  }
+
+  &.checked:hover {
+    background-color: palette(highlight, 300);
+  }
+}
+
+.options {
+  cursor: pointer;
+
+  &:hover {
+    color: font-color(light);
+  }
+}
+
+.sortIcon {
+  margin-left: $grid-unit;
+
+  svg {
+    margin-bottom: -4px;
+  }
+}

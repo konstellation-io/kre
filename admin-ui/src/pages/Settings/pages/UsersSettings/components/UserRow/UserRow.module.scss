@@ -1,0 +1,17 @@
+@import '../../../../../../styles/variables';
+@import '../../../../../../styles/colors';
+@import '../../../../../../styles/mixins';
+
+.container {
+  @include font-small;
+
+  display: flex;
+  height: 5 * $grid-unit;
+  align-items: center;
+  background-color: palette(base, 700);
+  padding: 0 $grid-unit;
+
+  .right {
+    color: font-color(lowlight);
+  }
+}

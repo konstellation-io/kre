@@ -22,25 +22,31 @@ export const typeToText = {
   STOP_VERSION: 'Stop Version',
   START_VERSION: 'Start Version',
   UPDATE_SETTING: 'Update Settings',
-  UPDATE_VERSION_CONFIGURATION: 'Update Version Configuration'
+  UPDATE_VERSION_CONFIGURATION: 'Update Version Configuration',
+  CREATE_USER: 'Create User',
+  REMOVE_USERS: 'Remove Users',
+  UPDATE_ACCESS_LEVELS: 'Update Access Levels',
+  REVOKE_SESSIONS: 'Revoke user sessions'
+};
+
+export type UserActivityFormData = {
+  type: string;
+  userEmail: string;
+  fromDate: Moment;
+  toDate: Moment;
 };
 
 type FormFieldProps = {
   error?: ApolloError;
-  onSubmit: (form: object) => void;
+  onSubmit: (form: UserActivityFormData) => void;
   types: string[];
   users: string[];
 };
 
 function FiltersBar({ onSubmit, types, users }: FormFieldProps) {
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    errors,
-    watch,
-    getValues
-  } = useForm({
+  const { handleSubmit, register, setValue, errors, watch, reset } = useForm<
+    UserActivityFormData
+  >({
     reValidateMode: 'onBlur'
   });
   useEffect(() => {
@@ -64,20 +70,8 @@ function FiltersBar({ onSubmit, types, users }: FormFieldProps) {
     register({ name: 'toDate' });
   }, [users, register]);
 
-  function clearForm() {
-    setValue(
-      Object.entries(getValues()).reduce((acc: any, next: any) => {
-        return [...acc, { [next[0]]: null }];
-      }, [])
-    );
-  }
-
-  function handleOnSubmit(formData: any) {
-    onSubmit(
-      Object.entries(formData).reduce((acc: object, item: any) => {
-        return { ...acc, [item[0]]: item[1] || null };
-      }, {})
-    );
+  function handleOnSubmit(formData: UserActivityFormData) {
+    onSubmit(formData);
   }
 
   return (
@@ -114,13 +108,7 @@ function FiltersBar({ onSubmit, types, users }: FormFieldProps) {
           border
           style={{ margin: '24px 0' }}
         />
-        <Button
-          label={'CLEAR'}
-          onClick={() => {
-            clearForm();
-          }}
-          style={{ margin: '24px 0' }}
-        />
+        <Button label={'CLEAR'} onClick={reset} style={{ margin: '24px 0' }} />
       </div>
     </form>
   );

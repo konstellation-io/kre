@@ -1,20 +1,19 @@
 import { get } from 'lodash';
 import config from './config';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { ApolloProvider } from '@apollo/react-hooks';
 import './styles/app.global.scss';
 import './styles/d3.scss';
-
 import ROUTE from './constants/routes';
 import history from './history';
-
 import typeDefs, {
   OpenedVersion,
+  UserSettings,
   LogPanel,
-  NotificationType
+  NotificationType,
+  UserSelection
 } from './graphql/client/typeDefs';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
@@ -28,7 +27,6 @@ import addNotificationResolver from './graphql/client/resolvers/addNotification'
 import removeNotificationResolver from './graphql/client/resolvers/removeNotification';
 import updateTabFiltersResolver from './graphql/client/resolvers/updateTabFilters';
 import addLogTabResolver from './graphql/client/resolvers/addLogTab';
-
 import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
 
 export let cache: InMemoryCache;
@@ -42,15 +40,21 @@ export interface LocalState {
   logsOpened: boolean;
   logsAutoScroll: boolean;
   openedVersion: OpenedVersion;
+  userSettings: UserSettings;
 }
 interface DefaultCache {
   data: LocalState;
 }
 
-const UNAUTHORIZED_MESSAGE = 'missing or malformed jwt';
+const UNAUTHORIZED_CODE = 'unauthorized';
+const INVALID_SESSION_CODE = 'invalid_session';
 
 function userIsUnauthorized(error: ErrorResponse) {
-  return get(error, 'networkError.result.message') === UNAUTHORIZED_MESSAGE;
+  return get(error, 'networkError.result.code') === UNAUTHORIZED_CODE;
+}
+
+function sessionIsInvalid(error: ErrorResponse) {
+  return get(error, 'networkError.result.code') === INVALID_SESSION_CODE;
 }
 
 function getNotificationIdAndMessage(error: ErrorResponse) {
@@ -58,7 +62,10 @@ function getNotificationIdAndMessage(error: ErrorResponse) {
   let notificationMessage;
 
   if (error.networkError) {
-    if (!userIsUnauthorized(error)) {
+    if (sessionIsInvalid(error)) {
+      notificationId = 'ExpiredSession';
+      notificationMessage = 'Your session has expired, please log in again';
+    } else if (!userIsUnauthorized(error)) {
       notificationId = 'Network error';
       notificationMessage = `ERROR: ${error.networkError.message}`;
     }
@@ -102,21 +109,29 @@ config
       const [notificationId, notificationMessage] = getNotificationIdAndMessage(
         error
       );
-      addNotification(client, notificationMessage, notificationId);
 
       if (
-        get(error, 'networkError.statusCode') === 400 &&
-        userIsUnauthorized(error) &&
-        history.location.pathname !== ROUTE.LOGIN
+        get(error, 'networkError.statusCode') === 401 ||
+        (get(error, 'networkError.statusCode') === 400 &&
+          userIsUnauthorized(error) &&
+          history.location.pathname !== ROUTE.LOGIN)
       ) {
         history.push(ROUTE.LOGIN);
-        client.resetStore();
+        client.clearStore().then(() => {
+          client.resetStore().then(() => {
+            addNotification(client, notificationMessage, notificationId);
+          });
+        });
+      } else {
+        addNotification(client, notificationMessage, notificationId);
       }
     });
+
     const uploadLink = createUploadLink({
       uri: `${envVariables.API_BASE_URL}/graphql`,
       credentials: 'include'
     });
+
     const wsLink = new WebSocketLink({
       uri: `${API_BASE_URL_WS}/graphql`,
       options: {
@@ -152,6 +167,16 @@ config
           runtimeName: '',
           versionName: '',
           __typename: 'OpenedVersion'
+        },
+        userSettings: {
+          selectedUserIds: [],
+          userSelection: UserSelection.NONE,
+          filters: {
+            email: null,
+            accessLevel: null,
+            __typename: 'UserSettingsFilters'
+          },
+          __typename: 'UserSettings'
         }
       }
     };
@@ -172,10 +197,10 @@ config
 
     // Sets initial cache
     cache.writeData(defaultCache);
-    // onResetStore callback must return a Promise
-    client.onResetStore(() =>
-      Promise.resolve(() => cache.writeData(defaultCache))
-    );
+
+    client.onResetStore(async () => {
+      cache.writeData(defaultCache);
+    });
 
     ReactDOM.render(
       <ApolloProvider client={client}>

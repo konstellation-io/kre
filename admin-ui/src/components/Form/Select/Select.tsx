@@ -6,7 +6,7 @@ import InputError from '../InputError/InputError';
 import cx from 'classnames';
 import styles from './Select.module.scss';
 
-const MAX_HEIGHT = 200;
+const MAX_HEIGHT = 240;
 
 export enum SelectTheme {
   DEFAULT = 'default',
@@ -32,8 +32,11 @@ type Props = {
   selectMainClass?: string;
   hideError?: boolean;
   className?: string;
+  disabled?: boolean;
   theme?: SelectTheme;
+  disabledOptions?: string[];
   CustomOptions?: { [key: string]: FC<CustomOptionProps> };
+  showSelectAllOption?: boolean;
 };
 
 function Select({
@@ -44,6 +47,7 @@ function Select({
   error = '',
   whiteColor = false,
   shouldSort = true,
+  disabled = false,
   defaultOption,
   placeholder = '',
   formSelectedOption,
@@ -52,7 +56,9 @@ function Select({
   hideError = false,
   className = '',
   theme = SelectTheme.DEFAULT,
-  CustomOptions = {}
+  CustomOptions = {},
+  disabledOptions = [],
+  showSelectAllOption = true
 }: Props) {
   const optionsRef = useRef<HTMLDivElement>(null);
   const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
@@ -117,7 +123,8 @@ function Select({
       <div
         key={`${option}-${idx}`}
         className={cx(styles.optionElement, {
-          [styles.selected]: option === selectedOption
+          [styles.selected]: option === selectedOption,
+          [styles.disabled]: disabledOptions.includes(option)
         })}
         onClick={() => handleOnOptionCLick(option)}
         ref={option === formSelectedOption ? selectedOptionRef : null}
@@ -126,14 +133,14 @@ function Select({
       </div>
     )
   );
-  if (placeholder) {
+  if (placeholder && showSelectAllOption) {
     optionList.unshift(
       <div
         key={`selectOption_empty`}
         className={styles.optionElement}
         onClick={() => handleOnOptionCLick(null)}
       >
-        All
+        {renderOption('All')}
       </div>
     );
   }
@@ -151,14 +158,13 @@ function Select({
         }
       )}
     >
-      {label && (
-        <InputLabel text={label} hidden={selectedOption === placeholder} />
-      )}
+      {label && <InputLabel text={label} />}
       <div className={styles.inputContainer}>
         <div
           className={cx(styles.input, {
             [styles.error]: error !== '',
             [styles.opened]: optionsOpened,
+            [styles.disabled]: disabled,
             [styles.placeholder]: placeholder === selectedOption
           })}
           style={{ height }}

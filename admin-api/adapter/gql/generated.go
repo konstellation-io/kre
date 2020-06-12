@@ -109,11 +109,15 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateRuntime              func(childComplexity int, input CreateRuntimeInput) int
+		CreateUser                 func(childComplexity int, input CreateUserInput) int
 		CreateVersion              func(childComplexity int, input CreateVersionInput) int
 		PublishVersion             func(childComplexity int, input PublishVersionInput) int
+		RemoveUsers                func(childComplexity int, input UsersInput) int
+		RevokeUserSessions         func(childComplexity int, input UsersInput) int
 		StartVersion               func(childComplexity int, input StartVersionInput) int
 		StopVersion                func(childComplexity int, input StopVersionInput) int
 		UnpublishVersion           func(childComplexity int, input UnpublishVersionInput) int
+		UpdateAccessLevel          func(childComplexity int, input UpdateAccessLevelInput) int
 		UpdateSettings             func(childComplexity int, input SettingsInput) int
 		UpdateVersionConfiguration func(childComplexity int, input UpdateConfigurationInput) int
 	}
@@ -180,9 +184,11 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		AccessLevel func(childComplexity int) int
-		Email       func(childComplexity int) int
-		ID          func(childComplexity int) int
+		AccessLevel  func(childComplexity int) int
+		CreationDate func(childComplexity int) int
+		Email        func(childComplexity int) int
+		ID           func(childComplexity int) int
+		LastAccess   func(childComplexity int) int
 	}
 
 	UserActivity struct {
@@ -236,6 +242,10 @@ type MutationResolver interface {
 	UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*entity.Version, error)
 	UpdateSettings(ctx context.Context, input SettingsInput) (*entity.Setting, error)
 	UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error)
+	RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error)
+	UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error)
+	RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error)
+	CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error)
 }
 type NodeResolver interface {
 	Status(ctx context.Context, obj *entity.Node) (NodeStatus, error)
@@ -267,7 +277,8 @@ type SubscriptionResolver interface {
 	ResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
 }
 type UserResolver interface {
-	AccessLevel(ctx context.Context, obj *entity.User) (AccessLevel, error)
+	CreationDate(ctx context.Context, obj *entity.User) (string, error)
+	LastAccess(ctx context.Context, obj *entity.User) (*string, error)
 }
 type UserActivityResolver interface {
 	Type(ctx context.Context, obj *entity.UserActivity) (UserActivityType, error)
@@ -520,6 +531,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateRuntime(childComplexity, args["input"].(CreateRuntimeInput)), true
 
+	case "Mutation.createUser":
+		if e.complexity.Mutation.CreateUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(CreateUserInput)), true
+
 	case "Mutation.createVersion":
 		if e.complexity.Mutation.CreateVersion == nil {
 			break
@@ -543,6 +566,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.PublishVersion(childComplexity, args["input"].(PublishVersionInput)), true
+
+	case "Mutation.removeUsers":
+		if e.complexity.Mutation.RemoveUsers == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeUsers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveUsers(childComplexity, args["input"].(UsersInput)), true
+
+	case "Mutation.revokeUserSessions":
+		if e.complexity.Mutation.RevokeUserSessions == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_revokeUserSessions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RevokeUserSessions(childComplexity, args["input"].(UsersInput)), true
 
 	case "Mutation.startVersion":
 		if e.complexity.Mutation.StartVersion == nil {
@@ -579,6 +626,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UnpublishVersion(childComplexity, args["input"].(UnpublishVersionInput)), true
+
+	case "Mutation.updateAccessLevel":
+		if e.complexity.Mutation.UpdateAccessLevel == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAccessLevel_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAccessLevel(childComplexity, args["input"].(UpdateAccessLevelInput)), true
 
 	case "Mutation.updateSettings":
 		if e.complexity.Mutation.UpdateSettings == nil {
@@ -941,6 +1000,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.AccessLevel(childComplexity), true
 
+	case "User.creationDate":
+		if e.complexity.User.CreationDate == nil {
+			break
+		}
+
+		return e.complexity.User.CreationDate(childComplexity), true
+
 	case "User.email":
 		if e.complexity.User.Email == nil {
 			break
@@ -954,6 +1020,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.ID(childComplexity), true
+
+	case "User.lastAccess":
+		if e.complexity.User.LastAccess == nil {
+			break
+		}
+
+		return e.complexity.User.LastAccess(childComplexity), true
 
 	case "UserActivity.date":
 		if e.complexity.UserActivity.Date == nil {
@@ -1260,6 +1333,10 @@ type Mutation {
   unpublishVersion(input: UnpublishVersionInput!): Version!
   updateSettings(input: SettingsInput!): Settings!
   updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
+  removeUsers(input: UsersInput!): [User!]!
+  updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
+  revokeUserSessions(input: UsersInput!): [User!]!
+  createUser(input: CreateUserInput!): User!
 }
 
 type Subscription {
@@ -1299,6 +1376,20 @@ input UnpublishVersionInput {
   comment: String!
 }
 
+input CreateUserInput {
+  email: String!
+  accessLevel: AccessLevel!
+}
+
+input UsersInput {
+  userIds: [ID!]!
+}
+
+input UpdateAccessLevelInput {
+  userIds: [ID!]!
+  accessLevel: AccessLevel!
+}
+
 type VersionNodeStatus {
   date: String!
   nodeId: String!
@@ -1316,6 +1407,8 @@ type User {
   id: ID!
   email: String!
   accessLevel: AccessLevel!
+  creationDate: String!
+  lastAccess: String
 }
 
 enum AccessLevel {
@@ -1449,6 +1542,10 @@ enum UserActivityType {
   STOP_VERSION
   UPDATE_SETTING
   UPDATE_VERSION_CONFIGURATION
+  CREATE_USER
+  REMOVE_USERS
+  UPDATE_ACCESS_LEVELS
+  REVOKE_SESSIONS
 }
 
 input LogFilters {
@@ -1541,6 +1638,20 @@ func (ec *executionContext) field_Mutation_createRuntime_args(ctx context.Contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 CreateUserInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNCreateUserInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐCreateUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createVersion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1561,6 +1672,34 @@ func (ec *executionContext) field_Mutation_publishVersion_args(ctx context.Conte
 	var arg0 PublishVersionInput
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNPublishVersionInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐPublishVersionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeUsers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 UsersInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNUsersInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUsersInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_revokeUserSessions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 UsersInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNUsersInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUsersInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1603,6 +1742,20 @@ func (ec *executionContext) field_Mutation_unpublishVersion_args(ctx context.Con
 	var arg0 UnpublishVersionInput
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNUnpublishVersionInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUnpublishVersionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAccessLevel_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 UpdateAccessLevelInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNUpdateAccessLevelInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUpdateAccessLevelInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3260,6 +3413,170 @@ func (ec *executionContext) _Mutation_updateVersionConfiguration(ctx context.Con
 	return ec.marshalNVersion2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_removeUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_removeUsers_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveUsers(rctx, args["input"].(UsersInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐUserᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateAccessLevel(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateAccessLevel_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateAccessLevel(rctx, args["input"].(UpdateAccessLevelInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐUserᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_revokeUserSessions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_revokeUserSessions_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RevokeUserSessions(rctx, args["input"].(UsersInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐUserᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createUser_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(CreateUserInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐUser(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Node_id(ctx context.Context, field graphql.CollectedField, obj *entity.Node) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -4854,13 +5171,13 @@ func (ec *executionContext) _User_accessLevel(ctx context.Context, field graphql
 		Object:   "User",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().AccessLevel(rctx, obj)
+		return obj.AccessLevel, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4872,9 +5189,74 @@ func (ec *executionContext) _User_accessLevel(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(AccessLevel)
+	res := resTmp.(entity.AccessLevel)
 	fc.Result = res
-	return ec.marshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAccessLevel(ctx, field.Selections, res)
+	return ec.marshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐAccessLevel(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_creationDate(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().CreationDate(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_lastAccess(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().LastAccess(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserActivity_id(ctx context.Context, field graphql.CollectedField, obj *entity.UserActivity) (ret graphql.Marshaler) {
@@ -6858,6 +7240,30 @@ func (ec *executionContext) unmarshalInputCreateRuntimeInput(ctx context.Context
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, obj interface{}) (CreateUserInput, error) {
+	var it CreateUserInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "email":
+			var err error
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "accessLevel":
+			var err error
+			it.AccessLevel, err = ec.unmarshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐAccessLevel(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCreateVersionInput(ctx context.Context, obj interface{}) (CreateVersionInput, error) {
 	var it CreateVersionInput
 	var asMap = obj.(map[string]interface{})
@@ -7050,6 +7456,30 @@ func (ec *executionContext) unmarshalInputUnpublishVersionInput(ctx context.Cont
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateAccessLevelInput(ctx context.Context, obj interface{}) (UpdateAccessLevelInput, error) {
+	var it UpdateAccessLevelInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "userIds":
+			var err error
+			it.UserIds, err = ec.unmarshalNID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "accessLevel":
+			var err error
+			it.AccessLevel, err = ec.unmarshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐAccessLevel(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateConfigurationInput(ctx context.Context, obj interface{}) (UpdateConfigurationInput, error) {
 	var it UpdateConfigurationInput
 	var asMap = obj.(map[string]interface{})
@@ -7065,6 +7495,24 @@ func (ec *executionContext) unmarshalInputUpdateConfigurationInput(ctx context.C
 		case "configurationVariables":
 			var err error
 			it.ConfigurationVariables, err = ec.unmarshalNConfigurationVariablesInput2ᚕᚖgitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariablesInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUsersInput(ctx context.Context, obj interface{}) (UsersInput, error) {
+	var it UsersInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "userIds":
+			var err error
+			it.UserIds, err = ec.unmarshalNID2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7474,6 +7922,26 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "updateVersionConfiguration":
 			out.Values[i] = ec._Mutation_updateVersionConfiguration(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "removeUsers":
+			out.Values[i] = ec._Mutation_removeUsers(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateAccessLevel":
+			out.Values[i] = ec._Mutation_updateAccessLevel(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "revokeUserSessions":
+			out.Values[i] = ec._Mutation_revokeUserSessions(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createUser":
+			out.Values[i] = ec._Mutation_createUser(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -7985,6 +8453,11 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accessLevel":
+			out.Values[i] = ec._User_accessLevel(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "creationDate":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -7992,10 +8465,21 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._User_accessLevel(ctx, field, obj)
+				res = ec._User_creationDate(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			})
+		case "lastAccess":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_lastAccess(ctx, field, obj)
 				return res
 			})
 		default:
@@ -8596,13 +9080,19 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAccessLevel(ctx context.Context, v interface{}) (AccessLevel, error) {
-	var res AccessLevel
-	return res, res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐAccessLevel(ctx context.Context, v interface{}) (entity.AccessLevel, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	return entity.AccessLevel(tmp), err
 }
 
-func (ec *executionContext) marshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAccessLevel(ctx context.Context, sel ast.SelectionSet, v AccessLevel) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNAccessLevel2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐAccessLevel(ctx context.Context, sel ast.SelectionSet, v entity.AccessLevel) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) marshalNAlert2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlert(ctx context.Context, sel ast.SelectionSet, v Alert) graphql.Marshaler {
@@ -8738,6 +9228,10 @@ func (ec *executionContext) unmarshalNCreateRuntimeInput2gitlabᚗcomᚋkonstell
 	return ec.unmarshalInputCreateRuntimeInput(ctx, v)
 }
 
+func (ec *executionContext) unmarshalNCreateUserInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐCreateUserInput(ctx context.Context, v interface{}) (CreateUserInput, error) {
+	return ec.unmarshalInputCreateUserInput(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNCreateVersionInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐCreateVersionInput(ctx context.Context, v interface{}) (CreateVersionInput, error) {
 	return ec.unmarshalInputCreateVersionInput(ctx, v)
 }
@@ -8809,6 +9303,35 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
@@ -9240,6 +9763,10 @@ func (ec *executionContext) unmarshalNUnpublishVersionInput2gitlabᚗcomᚋkonst
 	return ec.unmarshalInputUnpublishVersionInput(ctx, v)
 }
 
+func (ec *executionContext) unmarshalNUpdateAccessLevelInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUpdateAccessLevelInput(ctx context.Context, v interface{}) (UpdateAccessLevelInput, error) {
+	return ec.unmarshalInputUpdateAccessLevelInput(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNUpdateConfigurationInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUpdateConfigurationInput(ctx context.Context, v interface{}) (UpdateConfigurationInput, error) {
 	return ec.unmarshalInputUpdateConfigurationInput(ctx, v)
 }
@@ -9418,6 +9945,10 @@ func (ec *executionContext) marshalNUserActivityVar2ᚖgitlabᚗcomᚋkonstellat
 		return graphql.Null
 	}
 	return ec._UserActivityVar(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNUsersInput2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐUsersInput(ctx context.Context, v interface{}) (UsersInput, error) {
+	return ec.unmarshalInputUsersInput(ctx, v)
 }
 
 func (ec *executionContext) marshalNVersion2gitlabᚗcomᚋkonstellationᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx context.Context, sel ast.SelectionSet, v entity.Version) graphql.Marshaler {

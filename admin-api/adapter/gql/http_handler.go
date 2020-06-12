@@ -19,6 +19,7 @@ func NewHttpHandler(
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
+	authInteractor *usecase.AuthInteractor,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) http.Handler {
 	graphQLResolver := NewGraphQLResolver(
@@ -29,6 +30,7 @@ func NewHttpHandler(
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
+		authInteractor,
 		resourceMetricsInteractor,
 	)
 

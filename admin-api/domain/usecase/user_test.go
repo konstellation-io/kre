@@ -1,6 +1,7 @@
 package usecase_test
 
 import (
+	"context"
 	"github.com/golang/mock/gomock"
 	"testing"
 
@@ -26,12 +27,18 @@ func newUserSuite(t *testing.T) *userSuite {
 
 	logger := mocks.NewMockLogger(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
+	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
+	sessionRepo := mocks.NewMockSessionRepo(ctrl)
 
 	mocks.AddLoggerExpects(logger)
+
+	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo)
 
 	userInteractor := usecase.NewUserInteractor(
 		logger,
 		userRepo,
+		userActivityInteractor,
+		sessionRepo,
 	)
 
 	return &userSuite{
@@ -73,9 +80,9 @@ func TestGetAllUsers(t *testing.T) {
 		},
 	}
 
-	s.mocks.userRepo.EXPECT().GetAll().Return(usersFound, nil)
+	s.mocks.userRepo.EXPECT().GetAll(gomock.Any(), false).Return(usersFound, nil)
 
-	res, err := s.interactor.GetAllUsers()
+	res, err := s.interactor.GetAllUsers(context.Background(), false)
 	require.Nil(t, err)
 	require.EqualValues(t, res, usersFound)
 }

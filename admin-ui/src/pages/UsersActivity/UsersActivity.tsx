@@ -1,7 +1,10 @@
 import React, { useState, useEffect, UIEvent } from 'react';
 
 import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
-import FiltersBar, { typeToText } from './components/FiltersBar/FiltersBar';
+import FiltersBar, {
+  typeToText,
+  UserActivityFormData
+} from './components/FiltersBar/FiltersBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
 
 import { loader } from 'graphql.macro';
@@ -85,7 +88,7 @@ function UsersActivity() {
     }
   }
 
-  function onSubmit(data: any) {
+  function onSubmit(data: UserActivityFormData) {
     setFilterValues(data);
     getUsersActivity(queryPayloadHelper(data));
     setNPages(0);
@@ -108,7 +111,7 @@ function UsersActivity() {
     <PageBase>
       <div className={styles.container} data-testid="settingsContainer">
         <div className={cx(styles.form, styles.content)}>
-          <SettingsHeader title="User Audit" />
+          <SettingsHeader>User Audit</SettingsHeader>
           <FiltersBar
             error={error}
             onSubmit={onSubmit}

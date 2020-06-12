@@ -18,13 +18,17 @@ exports[`FiltersBar matches snapshot 1`] = `
     valuesMapper={
       Object {
         "CREATE_RUNTIME": "Create Runtime",
+        "CREATE_USER": "Create User",
         "CREATE_VERSION": "Create Version",
         "LOGIN": "Login",
         "LOGOUT": "Logout",
         "PUBLISH_VERSION": "Publish Version",
+        "REMOVE_USERS": "Remove Users",
+        "REVOKE_SESSIONS": "Revoke user sessions",
         "START_VERSION": "Start Version",
         "STOP_VERSION": "Stop Version",
         "UNPUBLISH_VERSION": "Unpublish Version",
+        "UPDATE_ACCESS_LEVELS": "Update Access Levels",
         "UPDATE_SETTING": "Update Settings",
         "UPDATE_VERSION_CONFIGURATION": "Update Version Configuration",
       }

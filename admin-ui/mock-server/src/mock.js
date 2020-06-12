@@ -21,7 +21,7 @@ const generateRuntime = () => ({
     if (Math.random() > 0.5) {
       return {
         id: parseInt(casual.array_of_digits(8).join('')),
-        name: `v${casual.integer((from = 1), (to = 10))}.${casual.integer(
+        name: `v${casual.integer(1, 10)}.${casual.integer(
           (from = 1),
           (to = 10)
         )}.${casual.integer((from = 1), (to = 10))}`,
@@ -123,7 +123,12 @@ module.exports = {
     }
   }),
   Query: () => ({
-    users: () => new MockList([4, 6]),
+    me: () => ({
+      id: casual.uuid,
+      accessLevel: 'ADMIN',
+      email: 'admin@intelygenz.com'
+    }),
+    users: () => new MockList([20, 30]),
     runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 4]),
     versions: () => new MockList([18, 28]),
@@ -170,8 +175,10 @@ module.exports = {
   }),
   User: () => ({
     id: casual.uuid,
-    accessLevel: 'ADMIN',
-    email: casual.random_element(emails)
+    accessLevel: casual.random_element(['ADMIN', 'VIEWER', 'MANAGER']),
+    email: casual.random_element(emails),
+    creationDate: new Date().toUTCString(),
+    lastAccess: new Date().toUTCString()
   }),
   LogPane: () => ({
     cursor: casual.string,

@@ -187,7 +187,7 @@ function Configuration() {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <SettingsHeader title="Configuration" />
+        <SettingsHeader>Configuration</SettingsHeader>
         {getContent()}
         {showConfirmationModal && (
           <ModalContainer

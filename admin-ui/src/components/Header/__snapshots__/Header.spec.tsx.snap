@@ -13,7 +13,7 @@ exports[`Header matches snapshot 1`] = `
                 "kind": "OperationDefinition",
                 "name": Object {
                   "kind": "Name",
-                  "value": "GetUserEmail",
+                  "value": "GetMe",
                 },
                 "operation": "query",
                 "selectionSet": Object {
@@ -36,7 +36,25 @@ exports[`Header matches snapshot 1`] = `
                             "kind": "Field",
                             "name": Object {
                               "kind": "Name",
+                              "value": "id",
+                            },
+                          },
+                          Object {
+                            "arguments": Array [],
+                            "directives": Array [],
+                            "kind": "Field",
+                            "name": Object {
+                              "kind": "Name",
                               "value": "email",
+                            },
+                          },
+                          Object {
+                            "arguments": Array [],
+                            "directives": Array [],
+                            "kind": "Field",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "accessLevel",
                             },
                           },
                         ],
@@ -49,11 +67,13 @@ exports[`Header matches snapshot 1`] = `
             ],
             "kind": "Document",
             "loc": Object {
-              "end": 44,
+              "end": 60,
               "source": Object {
-                "body": "query GetUserEmail {
+                "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -70,7 +90,9 @@ exports[`Header matches snapshot 1`] = `
         "result": Object {
           "data": Object {
             "me": Object {
+              "accessLevel": "ADMIN",
               "email": "user@konstellation.com",
+              "id": "someId",
             },
           },
         },
@@ -91,7 +113,7 @@ exports[`Header matches snapshot 1`] = `
                   "kind": "OperationDefinition",
                   "name": Object {
                     "kind": "Name",
-                    "value": "GetUserEmail",
+                    "value": "GetMe",
                   },
                   "operation": "query",
                   "selectionSet": Object {
@@ -114,7 +136,25 @@ exports[`Header matches snapshot 1`] = `
                               "kind": "Field",
                               "name": Object {
                                 "kind": "Name",
+                                "value": "id",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
                                 "value": "email",
+                              },
+                            },
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "accessLevel",
                               },
                             },
                           ],
@@ -127,11 +167,13 @@ exports[`Header matches snapshot 1`] = `
               ],
               "kind": "Document",
               "loc": Object {
-                "end": 44,
+                "end": 60,
                 "source": Object {
-                  "body": "query GetUserEmail {
+                  "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -148,7 +190,9 @@ exports[`Header matches snapshot 1`] = `
           "result": Object {
             "data": Object {
               "me": Object {
+                "accessLevel": "ADMIN",
                 "email": "user@konstellation.com",
+                "id": "someId",
               },
             },
           },
@@ -175,7 +219,9 @@ exports[`Header matches snapshot 1`] = `
             "data": DepTrackingCache {
               "data": Object {
                 "$ROOT_QUERY.me": Object {
+                  "accessLevel": "ADMIN",
                   "email": "user@konstellation.com",
+                  "id": "someId",
                 },
                 "ROOT_QUERY": Object {
                   "me": Object {
@@ -192,7 +238,9 @@ exports[`Header matches snapshot 1`] = `
             "optimisticData": DepTrackingCache {
               "data": Object {
                 "$ROOT_QUERY.me": Object {
+                  "accessLevel": "ADMIN",
                   "email": "user@konstellation.com",
+                  "id": "someId",
                 },
                 "ROOT_QUERY": Object {
                   "me": Object {
@@ -226,7 +274,7 @@ exports[`Header matches snapshot 1`] = `
                       "kind": "OperationDefinition",
                       "name": Object {
                         "kind": "Name",
-                        "value": "GetUserEmail",
+                        "value": "GetMe",
                       },
                       "operation": "query",
                       "selectionSet": Object {
@@ -249,7 +297,25 @@ exports[`Header matches snapshot 1`] = `
                                   "kind": "Field",
                                   "name": Object {
                                     "kind": "Name",
+                                    "value": "id",
+                                  },
+                                },
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
                                     "value": "email",
+                                  },
+                                },
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "accessLevel",
                                   },
                                 },
                               ],
@@ -262,11 +328,13 @@ exports[`Header matches snapshot 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 44,
+                    "end": 60,
                     "source": Object {
-                      "body": "query GetUserEmail {
+                      "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -289,7 +357,7 @@ exports[`Header matches snapshot 1`] = `
           "link": MockLink {
             "addTypename": false,
             "mockedResponsesByKey": Object {
-              "{\\"query\\":\\"query GetUserEmail {\\\\n  me {\\\\n    email\\\\n  }\\\\n}\\\\n\\"}": Array [],
+              "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
             },
           },
           "localState": LocalState {
@@ -309,7 +377,9 @@ exports[`Header matches snapshot 1`] = `
               "data": DepTrackingCache {
                 "data": Object {
                   "$ROOT_QUERY.me": Object {
+                    "accessLevel": "ADMIN",
                     "email": "user@konstellation.com",
+                    "id": "someId",
                   },
                   "ROOT_QUERY": Object {
                     "me": Object {
@@ -326,7 +396,9 @@ exports[`Header matches snapshot 1`] = `
               "optimisticData": DepTrackingCache {
                 "data": Object {
                   "$ROOT_QUERY.me": Object {
+                    "accessLevel": "ADMIN",
                     "email": "user@konstellation.com",
+                    "id": "someId",
                   },
                   "ROOT_QUERY": Object {
                     "me": Object {
@@ -360,7 +432,7 @@ exports[`Header matches snapshot 1`] = `
                         "kind": "OperationDefinition",
                         "name": Object {
                           "kind": "Name",
-                          "value": "GetUserEmail",
+                          "value": "GetMe",
                         },
                         "operation": "query",
                         "selectionSet": Object {
@@ -383,7 +455,25 @@ exports[`Header matches snapshot 1`] = `
                                     "kind": "Field",
                                     "name": Object {
                                       "kind": "Name",
+                                      "value": "id",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
                                       "value": "email",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "accessLevel",
                                     },
                                   },
                                 ],
@@ -396,11 +486,13 @@ exports[`Header matches snapshot 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 44,
+                      "end": 60,
                       "source": Object {
-                        "body": "query GetUserEmail {
+                        "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -445,7 +537,9 @@ exports[`Header matches snapshot 1`] = `
                 "data": DepTrackingCache {
                   "data": Object {
                     "$ROOT_QUERY.me": Object {
+                      "accessLevel": "ADMIN",
                       "email": "user@konstellation.com",
+                      "id": "someId",
                     },
                     "ROOT_QUERY": Object {
                       "me": Object {
@@ -462,7 +556,9 @@ exports[`Header matches snapshot 1`] = `
                 "optimisticData": DepTrackingCache {
                   "data": Object {
                     "$ROOT_QUERY.me": Object {
+                      "accessLevel": "ADMIN",
                       "email": "user@konstellation.com",
+                      "id": "someId",
                     },
                     "ROOT_QUERY": Object {
                       "me": Object {
@@ -496,7 +592,7 @@ exports[`Header matches snapshot 1`] = `
                           "kind": "OperationDefinition",
                           "name": Object {
                             "kind": "Name",
-                            "value": "GetUserEmail",
+                            "value": "GetMe",
                           },
                           "operation": "query",
                           "selectionSet": Object {
@@ -519,7 +615,25 @@ exports[`Header matches snapshot 1`] = `
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
+                                        "value": "id",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
                                         "value": "email",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "accessLevel",
                                       },
                                     },
                                   ],
@@ -532,11 +646,13 @@ exports[`Header matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 44,
+                        "end": 60,
                         "source": Object {
-                          "body": "query GetUserEmail {
+                          "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -560,7 +676,7 @@ exports[`Header matches snapshot 1`] = `
             "link": MockLink {
               "addTypename": false,
               "mockedResponsesByKey": Object {
-                "{\\"query\\":\\"query GetUserEmail {\\\\n  me {\\\\n    email\\\\n  }\\\\n}\\\\n\\"}": Array [],
+                "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
               },
             },
             "localState": LocalState {
@@ -580,7 +696,9 @@ exports[`Header matches snapshot 1`] = `
                 "data": DepTrackingCache {
                   "data": Object {
                     "$ROOT_QUERY.me": Object {
+                      "accessLevel": "ADMIN",
                       "email": "user@konstellation.com",
+                      "id": "someId",
                     },
                     "ROOT_QUERY": Object {
                       "me": Object {
@@ -597,7 +715,9 @@ exports[`Header matches snapshot 1`] = `
                 "optimisticData": DepTrackingCache {
                   "data": Object {
                     "$ROOT_QUERY.me": Object {
+                      "accessLevel": "ADMIN",
                       "email": "user@konstellation.com",
+                      "id": "someId",
                     },
                     "ROOT_QUERY": Object {
                       "me": Object {
@@ -631,7 +751,7 @@ exports[`Header matches snapshot 1`] = `
                           "kind": "OperationDefinition",
                           "name": Object {
                             "kind": "Name",
-                            "value": "GetUserEmail",
+                            "value": "GetMe",
                           },
                           "operation": "query",
                           "selectionSet": Object {
@@ -654,7 +774,25 @@ exports[`Header matches snapshot 1`] = `
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
+                                        "value": "id",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
                                         "value": "email",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "accessLevel",
                                       },
                                     },
                                   ],
@@ -667,11 +805,13 @@ exports[`Header matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 44,
+                        "end": 60,
                         "source": Object {
-                          "body": "query GetUserEmail {
+                          "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -705,7 +845,7 @@ exports[`Header matches snapshot 1`] = `
                       "kind": "OperationDefinition",
                       "name": Object {
                         "kind": "Name",
-                        "value": "GetUserEmail",
+                        "value": "GetMe",
                       },
                       "operation": "query",
                       "selectionSet": Object {
@@ -728,7 +868,25 @@ exports[`Header matches snapshot 1`] = `
                                   "kind": "Field",
                                   "name": Object {
                                     "kind": "Name",
+                                    "value": "id",
+                                  },
+                                },
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
                                     "value": "email",
+                                  },
+                                },
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "accessLevel",
                                   },
                                 },
                               ],
@@ -741,11 +899,13 @@ exports[`Header matches snapshot 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 44,
+                    "end": 60,
                     "source": Object {
-                      "body": "query GetUserEmail {
+                      "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -770,7 +930,9 @@ exports[`Header matches snapshot 1`] = `
                   "lastResult": Object {
                     "data": Object {
                       "me": Object {
+                        "accessLevel": "ADMIN",
                         "email": "user@konstellation.com",
+                        "id": "someId",
                       },
                     },
                     "loading": false,
@@ -780,7 +942,9 @@ exports[`Header matches snapshot 1`] = `
                   "lastResultSnapshot": Object {
                     "data": Object {
                       "me": Object {
+                        "accessLevel": "ADMIN",
                         "email": "user@konstellation.com",
+                        "id": "someId",
                       },
                     },
                     "loading": false,
@@ -816,7 +980,7 @@ exports[`Header matches snapshot 1`] = `
                           "kind": "OperationDefinition",
                           "name": Object {
                             "kind": "Name",
-                            "value": "GetUserEmail",
+                            "value": "GetMe",
                           },
                           "operation": "query",
                           "selectionSet": Object {
@@ -839,7 +1003,25 @@ exports[`Header matches snapshot 1`] = `
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
+                                        "value": "id",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
                                         "value": "email",
+                                      },
+                                    },
+                                    Object {
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "accessLevel",
                                       },
                                     },
                                   ],
@@ -852,11 +1034,13 @@ exports[`Header matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 44,
+                        "end": 60,
                         "source": Object {
-                          "body": "query GetUserEmail {
+                          "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -873,7 +1057,7 @@ exports[`Header matches snapshot 1`] = `
                   },
                   "queryId": "1",
                   "queryManager": [Circular],
-                  "queryName": "GetUserEmail",
+                  "queryName": "GetMe",
                   "shouldSubscribe": true,
                   "subscriptions": Set {},
                   "variables": Object {},
@@ -892,7 +1076,7 @@ exports[`Header matches snapshot 1`] = `
                         "kind": "OperationDefinition",
                         "name": Object {
                           "kind": "Name",
-                          "value": "GetUserEmail",
+                          "value": "GetMe",
                         },
                         "operation": "query",
                         "selectionSet": Object {
@@ -915,7 +1099,25 @@ exports[`Header matches snapshot 1`] = `
                                     "kind": "Field",
                                     "name": Object {
                                       "kind": "Name",
+                                      "value": "id",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
                                       "value": "email",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "accessLevel",
                                     },
                                   },
                                 ],
@@ -928,11 +1130,13 @@ exports[`Header matches snapshot 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 44,
+                      "end": 60,
                       "source": Object {
-                        "body": "query GetUserEmail {
+                        "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",
@@ -981,7 +1185,9 @@ exports[`Header matches snapshot 1`] = `
               "data": DepTrackingCache {
                 "data": Object {
                   "$ROOT_QUERY.me": Object {
+                    "accessLevel": "ADMIN",
                     "email": "user@konstellation.com",
+                    "id": "someId",
                   },
                   "ROOT_QUERY": Object {
                     "me": Object {
@@ -998,7 +1204,9 @@ exports[`Header matches snapshot 1`] = `
               "optimisticData": DepTrackingCache {
                 "data": Object {
                   "$ROOT_QUERY.me": Object {
+                    "accessLevel": "ADMIN",
                     "email": "user@konstellation.com",
+                    "id": "someId",
                   },
                   "ROOT_QUERY": Object {
                     "me": Object {
@@ -1032,7 +1240,7 @@ exports[`Header matches snapshot 1`] = `
                         "kind": "OperationDefinition",
                         "name": Object {
                           "kind": "Name",
-                          "value": "GetUserEmail",
+                          "value": "GetMe",
                         },
                         "operation": "query",
                         "selectionSet": Object {
@@ -1055,7 +1263,25 @@ exports[`Header matches snapshot 1`] = `
                                     "kind": "Field",
                                     "name": Object {
                                       "kind": "Name",
+                                      "value": "id",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
                                       "value": "email",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "accessLevel",
                                     },
                                   },
                                 ],
@@ -1068,11 +1294,13 @@ exports[`Header matches snapshot 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 44,
+                      "end": 60,
                       "source": Object {
-                        "body": "query GetUserEmail {
+                        "body": "query GetMe {
   me {
+    id
     email
+    accessLevel
   }
 }
 ",

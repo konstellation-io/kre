@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { AccessLevel } from '../types/globalTypes';
 
 export enum NotificationType {
   MESSAGE = 'MESSAGE',
@@ -54,6 +55,25 @@ export interface OpenedVersion {
   runtimeName: string;
   versionName: string;
   __typename: 'OpenedVersion';
+}
+
+export interface UserSettingsFilters {
+  email: string | null;
+  accessLevel: AccessLevel | null;
+  __typename: 'UserSettingsFilters';
+}
+
+export enum UserSelection {
+  ALL,
+  INDETERMINATE,
+  NONE
+}
+
+export interface UserSettings {
+  selectedUserIds: string[];
+  userSelection: UserSelection;
+  filters: UserSettingsFilters;
+  __typename: 'UserSettings';
 }
 
 export interface RemoveNotificationInput {

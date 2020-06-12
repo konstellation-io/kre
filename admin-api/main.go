@@ -24,6 +24,7 @@ func main() {
 	userRepo := mongodb.NewUserRepoMongoDB(cfg, logger, mongodbClient)
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
+	sessionRepo := mongodb.NewSessionRepoMongoDB(cfg, logger, mongodbClient)
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 
@@ -49,10 +50,18 @@ func main() {
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo)
 	authInteractor := usecase.NewAuthInteractor(
-		logger, loginLinkTransport, verificationCodeGenerator, verificationCodeRepo, userRepo, settingRepo, userActivityInteractor)
+		logger,
+		loginLinkTransport,
+		verificationCodeGenerator,
+		verificationCodeRepo,
+		userRepo,
+		settingRepo,
+		userActivityInteractor,
+		sessionRepo,
+	)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, runtimeService, userActivityInteractor, paswordGenerator)
-	userInteractor := usecase.NewUserInteractor(logger, userRepo)
+	userInteractor := usecase.NewUserInteractor(logger, userRepo, userActivityInteractor, sessionRepo)
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
 
 	minioCreateStorage := minio.CreateStorage

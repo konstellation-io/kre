@@ -29,12 +29,14 @@ func NewUserRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo
 	}
 }
 
-func (r *UserRepoMongoDB) Create(email string) (*entity.User, error) {
+func (r *UserRepoMongoDB) Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error) {
 	user := &entity.User{
-		ID:    primitive.NewObjectID().Hex(),
-		Email: email,
+		ID:           primitive.NewObjectID().Hex(),
+		CreationDate: time.Now(),
+		Email:        email,
+		AccessLevel:  accessLevel,
 	}
-	res, err := r.collection.InsertOne(context.Background(), user)
+	res, err := r.collection.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +47,7 @@ func (r *UserRepoMongoDB) Create(email string) (*entity.User, error) {
 
 func (r *UserRepoMongoDB) GetByEmail(email string) (*entity.User, error) {
 	user := &entity.User{}
-	filter := bson.D{{"email", email}}
+	filter := bson.M{"email": email, "deleted": false}
 
 	err := r.collection.FindOne(context.Background(), filter).Decode(user)
 	if err == mongo.ErrNoDocuments {
@@ -67,44 +69,125 @@ func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {
 	return user, err
 }
 
-func (r *UserRepoMongoDB) GetByIDs(keys []string) ([]*entity.User, []error) {
+func (r *UserRepoMongoDB) GetByIDs(keys []string) ([]*entity.User, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
-	var users []*entity.User
-	cur, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": keys}})
+	cursor, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": keys}})
 	if err != nil {
-		return users, []error{err}
+		return nil, err
 	}
-	defer cur.Close(ctx)
 
-	for cur.Next(ctx) {
-		var user entity.User
-		err = cur.Decode(&user)
-		if err != nil {
-			return users, []error{err}
-		}
-		users = append(users, &user)
+	var users []*entity.User
+	err = cursor.All(ctx, &users)
+	if err != nil {
+		return nil, err
 	}
 
 	return users, nil
 }
 
-func (r *UserRepoMongoDB) GetAll() ([]*entity.User, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
-	var users []*entity.User
-	cur, err := r.collection.Find(ctx, bson.D{})
-	if err != nil {
-		return users, err
+func (r *UserRepoMongoDB) GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error) {
+	filter := bson.M{}
+	if !returnDeleted {
+		filter["deleted"] = false
 	}
-	defer cur.Close(ctx)
 
-	for cur.Next(ctx) {
-		var user entity.User
-		err = cur.Decode(&user)
-		if err != nil {
-			return users, err
-		}
-		users = append(users, &user)
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []*entity.User
+	err = cursor.All(ctx, &users)
+	if err != nil {
+		return nil, err
 	}
 
 	return users, nil
+}
+
+func (r *UserRepoMongoDB) UpdateAccessLevel(ctx context.Context, userIDs []string, accessLevel entity.AccessLevel) ([]*entity.User, error) {
+	filter := bson.M{
+		"_id": bson.M{
+			"$in": userIDs,
+		},
+	}
+
+	upd := bson.M{
+		"$set": bson.M{
+			"accessLevel": accessLevel.String(),
+		},
+	}
+
+	_, err := r.collection.UpdateMany(ctx, filter, upd)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var updatedUsers []*entity.User
+	err = cursor.All(ctx, &updatedUsers)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUsers, nil
+}
+
+func (r *UserRepoMongoDB) MarkAsDeleted(ctx context.Context, userIDs []string) ([]*entity.User, error) {
+	filter := bson.M{
+		"_id": bson.M{
+			"$in": userIDs,
+		},
+	}
+
+	upd := bson.M{
+		"$set": bson.M{
+			"deleted": true,
+		},
+	}
+
+	_, err := r.collection.UpdateMany(ctx, filter, upd)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var updatedUsers []*entity.User
+	err = cursor.All(ctx, &updatedUsers)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUsers, nil
+}
+
+func (r *UserRepoMongoDB) UpdateLastAccess(userID string) error {
+	filter := bson.M{
+		"_id": userID,
+	}
+
+	upd := bson.M{
+		"$set": bson.M{
+			"lastAccess": time.Now(),
+		},
+	}
+
+	result, err := r.collection.UpdateOne(context.Background(), filter, upd)
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrUserNotFound
+	}
+
+	return nil
 }

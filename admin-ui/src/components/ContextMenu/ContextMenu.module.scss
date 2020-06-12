@@ -17,5 +17,9 @@
   margin: 0;
   & > li {
     text-transform: uppercase;
+
+    &.separator {
+      border-top: solid 1px palette(base, 400);
+    }
   }
 }

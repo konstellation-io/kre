@@ -136,7 +136,7 @@ function GeneralSettings() {
   return (
     <>
       <div className={cx(styles.form, styles.generalSettings)}>
-        <SettingsHeader title="General settings" />
+        <SettingsHeader>General settings</SettingsHeader>
         <FormField
           error={get(errors.sessionLifetimeInDays, 'message')}
           onChange={(value: string) => setValue('sessionLifetimeInDays', value)}

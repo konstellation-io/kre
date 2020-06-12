@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	entity "gitlab.com/konstellation/kre/admin-api/domain/entity"
 	reflect "reflect"
@@ -49,18 +50,18 @@ func (mr *MockUserRepoMockRecorder) GetByEmail(email interface{}) *gomock.Call {
 }
 
 // Create mocks base method
-func (m *MockUserRepo) Create(email string) (*entity.User, error) {
+func (m *MockUserRepo) Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", email)
+	ret := m.ctrl.Call(m, "Create", ctx, email, accessLevel)
 	ret0, _ := ret[0].(*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create
-func (mr *MockUserRepoMockRecorder) Create(email interface{}) *gomock.Call {
+func (mr *MockUserRepoMockRecorder) Create(ctx, email, accessLevel interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserRepo)(nil).Create), email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserRepo)(nil).Create), ctx, email, accessLevel)
 }
 
 // GetByID mocks base method
@@ -79,11 +80,11 @@ func (mr *MockUserRepoMockRecorder) GetByID(userID interface{}) *gomock.Call {
 }
 
 // GetByIDs mocks base method
-func (m *MockUserRepo) GetByIDs(keys []string) ([]*entity.User, []error) {
+func (m *MockUserRepo) GetByIDs(keys []string) ([]*entity.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByIDs", keys)
 	ret0, _ := ret[0].([]*entity.User)
-	ret1, _ := ret[1].([]error)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
@@ -94,16 +95,60 @@ func (mr *MockUserRepoMockRecorder) GetByIDs(keys interface{}) *gomock.Call {
 }
 
 // GetAll mocks base method
-func (m *MockUserRepo) GetAll() ([]*entity.User, error) {
+func (m *MockUserRepo) GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll")
+	ret := m.ctrl.Call(m, "GetAll", ctx, returnDeleted)
 	ret0, _ := ret[0].([]*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAll indicates an expected call of GetAll
-func (mr *MockUserRepoMockRecorder) GetAll() *gomock.Call {
+func (mr *MockUserRepoMockRecorder) GetAll(ctx, returnDeleted interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockUserRepo)(nil).GetAll))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockUserRepo)(nil).GetAll), ctx, returnDeleted)
+}
+
+// UpdateAccessLevel mocks base method
+func (m *MockUserRepo) UpdateAccessLevel(ctx context.Context, userIDs []string, accessLevel entity.AccessLevel) ([]*entity.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAccessLevel", ctx, userIDs, accessLevel)
+	ret0, _ := ret[0].([]*entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateAccessLevel indicates an expected call of UpdateAccessLevel
+func (mr *MockUserRepoMockRecorder) UpdateAccessLevel(ctx, userIDs, accessLevel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccessLevel", reflect.TypeOf((*MockUserRepo)(nil).UpdateAccessLevel), ctx, userIDs, accessLevel)
+}
+
+// MarkAsDeleted mocks base method
+func (m *MockUserRepo) MarkAsDeleted(ctx context.Context, userIDs []string) ([]*entity.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkAsDeleted", ctx, userIDs)
+	ret0, _ := ret[0].([]*entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MarkAsDeleted indicates an expected call of MarkAsDeleted
+func (mr *MockUserRepoMockRecorder) MarkAsDeleted(ctx, userIDs interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkAsDeleted", reflect.TypeOf((*MockUserRepo)(nil).MarkAsDeleted), ctx, userIDs)
+}
+
+// UpdateLastAccess mocks base method
+func (m *MockUserRepo) UpdateLastAccess(userID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateLastAccess", userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateLastAccess indicates an expected call of UpdateLastAccess
+func (mr *MockUserRepoMockRecorder) UpdateLastAccess(userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLastAccess", reflect.TypeOf((*MockUserRepo)(nil).UpdateLastAccess), userID)
 }

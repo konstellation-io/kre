@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/controller"
+	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"
 	kremiddleware "gitlab.com/konstellation/kre/admin-api/delivery/http/middleware"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
@@ -55,7 +56,13 @@ func NewApp(
 		}))
 	}
 
-	authController := controller.NewAuthController(cfg, logger, authInteractor, settingInteractor)
+	authController := controller.NewAuthController(
+		cfg,
+		logger,
+		authInteractor,
+		settingInteractor,
+	)
+
 	graphQLController := controller.NewGraphQLController(
 		cfg,
 		logger,
@@ -65,13 +72,20 @@ func NewApp(
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
+		authInteractor,
 		resourceMetricsInteractor,
 	)
 
 	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey:  []byte(cfg.Auth.JWTSignSecret),
 		TokenLookup: "cookie:token",
+		ErrorHandler: func(err error) error {
+			logger.Errorf("Error looking for jwt token: %s", err)
+			return httperrors.HTTPErrUnauthorized
+		},
 	})
+
+	sessionMiddleware := kremiddleware.NewSessionMiddleware(cfg, logger, authInteractor)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
@@ -79,6 +93,7 @@ func NewApp(
 
 	r := e.Group("/graphql")
 	r.Use(jwtMiddleware)
+	r.Use(sessionMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 

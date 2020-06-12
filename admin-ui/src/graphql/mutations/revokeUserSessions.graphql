@@ -1,0 +1,9 @@
+mutation RevokeUserSessions($input: UsersInput!) {
+  revokeUserSessions(input: $input) {
+    id
+    email
+    accessLevel
+    creationDate
+    lastAccess
+  }
+}

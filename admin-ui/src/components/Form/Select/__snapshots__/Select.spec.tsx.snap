@@ -5,7 +5,6 @@ exports[`Select matches snapshot 1`] = `
   className="default container"
 >
   <InputLabel
-    hidden={true}
     text="Select"
   />
   <div
@@ -35,7 +34,11 @@ exports[`Select matches snapshot 1`] = `
         key="selectOption_empty"
         onClick={[Function]}
       >
-        All
+        <div
+          className="defaultOption"
+        >
+          All
+        </div>
       </div>
       <div
         className="optionElement"
