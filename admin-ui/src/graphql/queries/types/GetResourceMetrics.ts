@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetResourceMetrics_resourceMetrics {
-  __typename: 'ResourceMetric';
+  __typename: 'ResourceMetrics';
   date: string;
   cpu: number;
   mem: number;

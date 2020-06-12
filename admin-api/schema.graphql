@@ -32,7 +32,7 @@ type Query {
     versionId: ID!
     fromDate: String!
     toDate: String!
-  ): [ResourceMetric!]!
+  ): [ResourceMetrics!]!
 }
 
 type Mutation {
@@ -50,7 +50,7 @@ type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
-  watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetric!]!
+  watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateRuntimeInput {
@@ -203,7 +203,7 @@ enum VersionStatus {
   STOPPED
 }
 
-type ResourceMetric {
+type ResourceMetrics {
   date: String!
   cpu: Float!
   mem: Float!

@@ -48,7 +48,7 @@ type Props = {
   title: string;
   expanded: boolean;
   toggleExpand: (event: MouseEvent<HTMLDivElement>) => void;
-  // nMaxElements: number;
+  nMaxElements: number;
   formatXAxis?: (value: string) => string;
   formatYAxis?: (value: number) => string;
   highlightLastValue?: boolean;
@@ -60,7 +60,7 @@ function TimeSeriesChart({
   title,
   expanded,
   toggleExpand,
-  // nMaxElements,
+  nMaxElements,
   highlightLastValue,
   color = '#f00',
   formatXAxis = v => v,
@@ -74,8 +74,6 @@ function TimeSeriesChart({
   const ExpandIcon = expanded ? IconShrink : IconExpand;
 
   const formatYWUnit = (v: number) => `${formatYAxis(v)}${unit}`;
-  // const dataToHide = data.length - nMaxElements;
-  // const displayableData = [...data].splice(dataToHide);
 
   useEffect(() => {
     if (chartRef.current !== null) {
@@ -305,7 +303,7 @@ function TimeSeriesChart({
             ...chart.current.options.scales.xAxes[0],
             ticks: {
               display: false,
-              min: data[data.length - 60].x.toISOString(),
+              min: data[data.length - nMaxElements].x.toISOString(),
               max: data[data.length - 1].x.toISOString()
             }
           }
