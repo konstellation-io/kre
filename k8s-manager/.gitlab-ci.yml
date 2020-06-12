@@ -9,8 +9,8 @@ release-k8s-manager:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - k8s-manager/**/*
-      - .gitlab-ci.yml
+        - k8s-manager/**/*
+        - .gitlab-ci.yml
 
 publish-k8s-manager-image:
   stage: publish-image

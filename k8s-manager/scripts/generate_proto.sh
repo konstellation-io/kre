@@ -7,6 +7,7 @@ done
 if [ -d "../admin-api" ]; then
   for PB_FILE in $(find proto -iname "*.pb.go"); do
     DST=$(basename "$(dirname "$PB_FILE")")
+    mkdir -p ../admin-api/adapter/service/proto/${DST}
     cp "$PB_FILE" "../admin-api/adapter/service/proto/${DST}/"
   done
 fi

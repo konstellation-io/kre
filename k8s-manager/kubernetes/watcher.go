@@ -21,11 +21,9 @@ func NewWatcher(clientset *kubernetes.Clientset) *Watcher {
 	}
 }
 
-// WaitForPods watch all resources until everything is running and ready
+const timeout = 5 * time.Minute
+
 func (k *Watcher) WaitForPods(ns string) error {
-
-	timeout := 5 * time.Minute
-
 	minioChan, err := k.waitForPodRunning(ns, []string{"app=kre-minio"}, timeout)
 	if err != nil {
 		return err
@@ -51,13 +49,23 @@ func (k *Watcher) WaitForPods(ns string) error {
 		return err
 	}
 
-	minioRunning, minioReady, mongoRunning, kreOperatorRunning, natsRunning := <-minioChan, <-minioReadyChan, <-mongoChan, <-kreOperatorChan, <-natsChan
+	minioRunning,
+		minioReady,
+		mongoRunning,
+		kreOperatorRunning,
+		natsRunning :=
+		<-minioChan,
+		<-minioReadyChan,
+		<-mongoChan,
+		<-kreOperatorChan,
+		<-natsChan
 
 	var failedPods []string
 
 	if !minioRunning {
 		failedPods = append(failedPods, "Minio")
 	}
+
 	if !minioReady {
 		failedPods = append(failedPods, "MinioReady")
 	}
@@ -75,12 +83,15 @@ func (k *Watcher) WaitForPods(ns string) error {
 	}
 
 	if len(failedPods) > 0 {
-		return fmt.Errorf("the following components %v are not running in the namespace \"%s\" within %s", failedPods, ns, timeout)
+		// nolint:goerr113
+		return fmt.Errorf("the following components '%v' are not running in the namespace '%s' within '%s'",
+			failedPods, ns, timeout)
 	}
 
 	return nil
 }
 
+// nolint:unparam
 func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait time.Duration) (chan bool, error) {
 	waitChan := make(chan bool)
 
@@ -92,13 +103,14 @@ func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to set up watch for pod (error: %v)", err)
+		return nil, fmt.Errorf("failed to set up watch for pod (error: %w)", err)
 	}
 
 	go func() {
 		events := watch.ResultChan()
 
 		startTime := time.Now()
+
 		for {
 			select {
 			case event := <-events:
@@ -109,12 +121,14 @@ func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 					watch.Stop()
 					waitChan <- true
 					close(waitChan)
+
 					return
 				}
 			case <-time.After(timeToWait - time.Since(startTime)):
 				watch.Stop()
 				waitChan <- false
 				close(waitChan)
+
 				return
 			}
 		}
@@ -134,13 +148,14 @@ func (k *Watcher) waitForPodReady(ns string, podLabels []string, timeToWait time
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to set up watch for pod (error: %v)", err)
+		return nil, fmt.Errorf("failed to set up watch for pod (error: %w)", err)
 	}
 
 	go func() {
 		events := watch.ResultChan()
 
 		startTime := time.Now()
+
 		for {
 			select {
 			case event := <-events:
@@ -152,6 +167,7 @@ func (k *Watcher) waitForPodReady(ns string, podLabels []string, timeToWait time
 						watch.Stop()
 						waitChan <- true
 						close(waitChan)
+
 						return
 					}
 				}
@@ -160,11 +176,11 @@ func (k *Watcher) waitForPodReady(ns string, podLabels []string, timeToWait time
 				watch.Stop()
 				waitChan <- false
 				close(waitChan)
+
 				return
 			}
 		}
 	}()
 
 	return waitChan, nil
-
 }

@@ -10,18 +10,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
 type EntrypointConfig map[string]interface{}
 
 func (m *Manager) generateEntrypointConfig(version *entity.Version, wconf map[string]WorkflowConfig) EntrypointConfig {
-
 	natsSubjects := map[string]interface{}{}
 
 	for _, w := range version.Workflows {
-		firstNodeId := w.Nodes[0].Id
-		node := wconf[w.Name][firstNodeId]
+		firstNodeID := w.Nodes[0].Id
+		node := wconf[w.Name][firstNodeID]
 		natsSubjects[w.Entrypoint] = node["KRT_NATS_INPUT"]
 	}
 
@@ -32,7 +31,11 @@ func (m *Manager) generateEntrypointConfig(version *entity.Version, wconf map[st
 
 func (m *Manager) createEntrypoint(version *entity.Version) error {
 	m.logger.Info("Creating entrypoint configmap")
+
 	_, err := m.createEntrypointConfigMap(version)
+	if err != nil {
+		return err
+	}
 
 	m.logger.Info("Creating entrypoint deployment")
 	_, err = m.createEntrypointDeployment(version)
@@ -43,6 +46,7 @@ func (m *Manager) createEntrypoint(version *entity.Version) error {
 func (m *Manager) createEntrypointConfigMap(version *entity.Version) (*apiv1.ConfigMap, error) {
 	name := version.Name
 	ns := version.Namespace
+
 	return m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: fmt.Sprintf("%s-entrypoint-env", name),
@@ -268,6 +272,7 @@ func (m *Manager) createEntrypointService(version *entity.Version) (*apiv1.Servi
 	}
 
 	existingService, err := m.clientset.CoreV1().Services(ns).Get("active-entrypoint", metav1.GetOptions{})
+
 	if errors.IsNotFound(err) {
 		return m.clientset.CoreV1().Services(ns).Create(&apiv1.Service{
 			ObjectMeta: metav1.ObjectMeta{
@@ -293,12 +298,14 @@ func (m *Manager) createEntrypointService(version *entity.Version) (*apiv1.Servi
 				Selector: serviceLabels,
 			},
 		})
-	} else if err != nil {
-		return nil, err
-	} else {
-		existingService.ObjectMeta.Labels = serviceLabels
-		existingService.Spec.Selector = serviceLabels
-
-		return m.clientset.CoreV1().Services(ns).Update(existingService)
 	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	existingService.ObjectMeta.Labels = serviceLabels
+	existingService.Spec.Selector = serviceLabels
+
+	return m.clientset.CoreV1().Services(ns).Update(existingService)
 }

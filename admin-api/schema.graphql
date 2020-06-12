@@ -28,6 +28,7 @@ type Query {
     startDate: String!
     endDate: String!
   ): Metrics
+  resourceMetrics(versionId: ID!, fromDate: String!, toDate: String!): [ResourceMetrics!]!
 }
 
 type Mutation {
@@ -49,6 +50,7 @@ type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
+  resourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateRuntimeInput {
@@ -314,4 +316,10 @@ type MetricChartData {
   x: String!
   y: String!
   z: String!
+}
+
+type ResourceMetrics {
+  date: String!
+  cpu: Float!
+  mem: Float!
 }

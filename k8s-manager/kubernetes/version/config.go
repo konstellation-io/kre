@@ -7,7 +7,7 @@ import (
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
 func (m *Manager) createConfig(version *entity.Version, econf EntrypointConfig) (string, error) {
@@ -27,6 +27,7 @@ func (m *Manager) createConfig(version *entity.Version, econf EntrypointConfig) 
 func (m *Manager) createConfigMap(version *entity.Version) (*apiv1.ConfigMap, error) {
 	ns := version.Namespace
 	config := make(map[string]string)
+
 	for _, c := range version.Config {
 		config[c.Key] = c.Value
 	}
@@ -46,6 +47,7 @@ func (m *Manager) createConfigMap(version *entity.Version) (*apiv1.ConfigMap, er
 
 func (m *Manager) createFilesConfigMap(version *entity.Version, econf EntrypointConfig) (*apiv1.ConfigMap, error) {
 	ns := version.Namespace
+
 	natsSubject, err := json.Marshal(econf["nats-subjects"])
 	if err != nil {
 		return nil, err
@@ -132,6 +134,7 @@ func (m *Manager) updateConfigMap(version *entity.Version) (*apiv1.ConfigMap, er
 	}
 
 	m.logger.Infof("Creating version '%s' on ns: '%s'", name, ns)
+
 	currentConfig, err := m.clientset.CoreV1().ConfigMaps(ns).Get(name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err

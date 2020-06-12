@@ -10,8 +10,19 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/kre/k8s-manager/proto/versionpb"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/proto/versionpb"
+)
+
+var (
+	// ErrDeleteConfigmapTimeout when deleting configmap timeout.
+	ErrDeleteConfigmapTimeout = errors.New("timeout deleting config maps")
+
+	// ErrDeleteDeploymentTimeout when deleting deployment timeout.
+	ErrDeleteDeploymentTimeout = errors.New("timeout deleting deployments")
+
+	// ErrRestartingPodsTimeout  when restarting pods timeout.
+	ErrRestartingPodsTimeout = errors.New("timeout restarting pods")
 )
 
 type WorkflowConfig map[string]NodeConfig
@@ -40,8 +51,11 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 		toNode["KRT_NATS_INPUT"] = e.Id
 	}
 
-	var firstNode NodeConfig
-	var lastNode NodeConfig
+	var (
+		firstNode NodeConfig
+		lastNode  NodeConfig
+	)
+
 	totalEdges := len(workflow.Edges)
 
 	if totalEdges == 0 {
@@ -61,17 +75,27 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 	return wconf
 }
 
-func (m *Manager) createNode(version *entity.Version, node *versionpb.Version_Workflow_Node, nodeConfig NodeConfig, workflow *versionpb.Version_Workflow) error {
+func (m *Manager) createNode(
+	version *entity.Version,
+	node *versionpb.Version_Workflow_Node,
+	nodeConfig NodeConfig,
+	workflow *versionpb.Version_Workflow,
+) error {
 	configName, err := m.createNodeConfigMap(version, node, nodeConfig)
 	if err != nil {
 		return err
 	}
 
 	_, err = m.createNodeDeployment(version, node, configName, workflow)
+
 	return err
 }
 
-func (m *Manager) createNodeConfigMap(version *entity.Version, node *versionpb.Version_Workflow_Node, config NodeConfig) (string, error) {
+func (m *Manager) createNodeConfigMap(
+	version *entity.Version,
+	node *versionpb.Version_Workflow_Node,
+	config NodeConfig,
+) (string, error) {
 	name := fmt.Sprintf("%s-%s-%s", version.Name, node.Name, node.Id)
 	ns := version.Namespace
 	nodeConfig, err := m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
@@ -95,7 +119,12 @@ func (m *Manager) createNodeConfigMap(version *entity.Version, node *versionpb.V
 	return nodeConfig.Name, nil
 }
 
-func (m *Manager) createNodeDeployment(version *entity.Version, node *versionpb.Version_Workflow_Node, configName string, workflow *versionpb.Version_Workflow) (*appsv1.Deployment, error) {
+func (m *Manager) createNodeDeployment(
+	version *entity.Version,
+	node *versionpb.Version_Workflow_Node,
+	configName string,
+	workflow *versionpb.Version_Workflow,
+) (*appsv1.Deployment, error) {
 	name := fmt.Sprintf("%s-%s-%s", version.Name, node.Name, node.Id)
 	ns := version.Namespace
 	m.logger.Info(fmt.Sprintf("Creating node deployment in %s named %s from image %s", ns, name, node.Image))
@@ -277,13 +306,16 @@ func (m *Manager) restartPodsSync(ctx context.Context, version *entity.Version) 
 	}
 
 	pods := m.clientset.CoreV1().Pods(ns)
+
 	list, err := pods.List(listOptions)
 	if err != nil {
 		return err
 	}
+
 	numPods := len(list.Items)
 
 	m.logger.Infof("There are %d PODs to delete", numPods)
+
 	if numPods == 0 {
 		return nil
 	}
@@ -316,13 +348,15 @@ func (m *Manager) restartPodsSync(ctx context.Context, version *entity.Version) 
 				if numOfEvents == expectedNumOfEvents {
 					m.logger.Infof("All PODs for version '%s' has been restarted", version.Name)
 					w.Stop()
+
 					return nil
 				}
 			}
 
 		case <-ctx.Done():
 			w.Stop()
-			return errors.New("timeout restarting pods")
+
+			return ErrRestartingPodsTimeout
 		}
 	}
 }
@@ -340,13 +374,16 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Ver
 	}
 
 	deployments := m.clientset.AppsV1().Deployments(ns)
+
 	list, err := deployments.List(listOptions)
 	if err != nil {
 		return err
 	}
+
 	numDeployments := len(list.Items)
 
 	m.logger.Infof("There are %d deployments to delete", numDeployments)
+
 	if numDeployments == 0 {
 		return nil
 	}
@@ -355,6 +392,7 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Ver
 	if err != nil {
 		return err
 	}
+
 	watchResults := w.ResultChan()
 
 	deletePolicy := metav1.DeletePropagationForeground
@@ -366,7 +404,9 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Ver
 	deploymentsToDelete := make(map[string]bool)
 	for _, d := range list.Items {
 		deploymentsToDelete[d.Name] = true
+
 		m.logger.Infof("Deleting deployment '%s'...", d.Name)
+
 		err = deployments.Delete(d.Name, deleteOptions)
 		if err != nil {
 			return err
@@ -386,6 +426,7 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Ver
 	})
 
 	m.logger.Infof("There are %d PODs to delete", len(podList.Items))
+
 	for _, p := range podList.Items {
 		_ = pods.Delete(p.Name, deleteOptions)
 	}
@@ -398,9 +439,12 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Ver
 					// Check if the deleted object is one of the deployments to delete
 					if _, ok := deploymentsToDelete[d.Name]; ok {
 						m.logger.Infof("Deployment '%s' deleted", d.Name)
-						numDeployments = numDeployments - 1
+
+						numDeployments--
+
 						if numDeployments == 0 {
 							w.Stop()
+
 							return nil
 						}
 					}
@@ -409,7 +453,8 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Ver
 
 		case <-ctx.Done():
 			w.Stop()
-			return errors.New("timeout deleting deployments")
+
+			return ErrDeleteDeploymentTimeout
 		}
 	}
 }
@@ -432,13 +477,16 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, version *entity.Vers
 	}
 
 	configMaps := m.clientset.CoreV1().ConfigMaps(version.Namespace)
+
 	list, err := configMaps.List(listOptions)
 	if err != nil {
 		return err
 	}
+
 	numConfigMaps := len(list.Items)
 
 	m.logger.Infof("There are %d configmaps to delete", numConfigMaps)
+
 	if numConfigMaps == 0 {
 		return nil
 	}
@@ -454,7 +502,9 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, version *entity.Vers
 
 	for _, c := range list.Items {
 		configmapNamesToDelete[c.Name] = true
+
 		m.logger.Infof("Deleting configmap '%s'...", c.Name)
+
 		err = configMaps.Delete(c.Name, deleteOptions)
 		if err != nil {
 			return err
@@ -469,9 +519,12 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, version *entity.Vers
 					// Check if the deleted object is one of the configmaps to delete
 					if _, ok := configmapNamesToDelete[c.Name]; ok {
 						m.logger.Infof("Configmap '%s' deleted", c.Name)
-						numConfigMaps = numConfigMaps - 1
+
+						numConfigMaps--
+
 						if numConfigMaps == 0 {
 							w.Stop()
+
 							return nil
 						}
 					}
@@ -480,7 +533,8 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, version *entity.Vers
 
 		case <-ctx.Done():
 			w.Stop()
-			return errors.New("timeout deleting config maps")
+
+			return ErrDeleteConfigmapTimeout
 		}
 	}
 }

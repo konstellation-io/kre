@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package resourcemetrics;
+option go_package = "resourcemetricspb";
+
+message VersionResourceMetrics {
+  string date = 1;
+  double cpu = 2;
+  double mem = 3;
+}
+
+message Response {
+  repeated VersionResourceMetrics versionResourceMetrics = 1;
+}
+message VersionRequest {
+  string versionName = 1;
+  string namespace = 2;
+  string fromDate = 3;
+  string toDate = 4;
+  int32 step = 5;
+}
+
+service ResourceMetricsService {
+  rpc GetVersion (VersionRequest) returns (Response) {
+  };
+  rpc WatchVersion (VersionRequest) returns (stream Response) {
+  };
+};
