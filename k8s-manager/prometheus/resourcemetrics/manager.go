@@ -163,11 +163,13 @@ func (m *Manager) prometheusQuery(
 
 	lenMemValues := len(memValues.Values)
 	result := make([]entity.VersionResourceMetrics, len(cpuValues.Values))
+
 	for i, v := range cpuValues.Values {
 		var mem float64
 		if i <= lenMemValues {
 			mem = float64(memValues.Values[i].Value)
 		}
+
 		result[i] = entity.VersionResourceMetrics{
 			Date: v.Timestamp.Time(),
 			CPU:  float64(v.Value),
