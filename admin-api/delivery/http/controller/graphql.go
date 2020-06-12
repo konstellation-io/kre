@@ -2,9 +2,11 @@ package controller
 
 import (
 	"context"
+
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+
 	"gitlab.com/konstellation/kre/admin-api/adapter/gql"
 
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
@@ -15,15 +17,15 @@ import (
 const UserIDContextKey = "userID"
 
 type GraphQLController struct {
-	cfg                    *config.Config
-	logger                 logging.Logger
-	runtimeInteractor      *usecase.RuntimeInteractor
-	userInteractor         *usecase.UserInteractor
-	settingInteractor      *usecase.SettingInteractor
-	userActivityInteractor *usecase.UserActivityInteractor
-	versionInteractor      *usecase.VersionInteractor
-	metricsInteractor      *usecase.MetricsInteractor
-	authInteractor         *usecase.AuthInteractor
+	cfg                       *config.Config
+	logger                    logging.Logger
+	runtimeInteractor         *usecase.RuntimeInteractor
+	userInteractor            *usecase.UserInteractor
+	settingInteractor         *usecase.SettingInteractor
+	userActivityInteractor    *usecase.UserActivityInteractor
+	versionInteractor         *usecase.VersionInteractor
+	metricsInteractor         *usecase.MetricsInteractor
+	authInteractor            *usecase.AuthInteractor
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
 }
 

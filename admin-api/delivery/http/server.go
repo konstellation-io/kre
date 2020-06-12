@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/controller"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"

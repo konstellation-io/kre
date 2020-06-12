@@ -16,7 +16,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/klauspost/compress v1.10.2 // indirect
-	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611164048-8f6bdb0bd8ae // indirect
+	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611164048-8f6bdb0bd8ae
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/mattn/go-colorable v0.1.6 // indirect
@@ -28,7 +28,6 @@ require (
 	github.com/vektah/dataloaden v0.3.0
 	github.com/vektah/gqlparser/v2 v2.0.1
 	github.com/xdg/stringprep v1.0.0 // indirect
-	gitlab.com/konstellation/kre/libs/simplelogger v0.0.0-20200310182012-86a4685eea87
 	go.mongodb.org/mongo-driver v1.3.1
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect

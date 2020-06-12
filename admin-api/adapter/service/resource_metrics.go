@@ -3,12 +3,14 @@ package service
 import (
 	"context"
 	"fmt"
+	"io"
+
+	"google.golang.org/grpc"
+
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/adapter/service/proto/resourcemetricspb"
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
-	"google.golang.org/grpc"
-	"io"
 )
 
 type ResourceMetricsService struct {

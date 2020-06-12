@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
 )
 
