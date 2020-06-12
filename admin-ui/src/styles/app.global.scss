@@ -1,3 +1,5 @@
+@import './colors';
+
 /*
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
@@ -162,4 +164,17 @@ a:active {
 
 .icon-huge {
   font-size: 3rem !important;
+}
+
+#chartjs-tooltip {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 2;
+  background-color: palette(base, 800);
+  border-radius: $grid-unit / 2;
+
+  transition: top ease 0.3s, left ease 0.3s, opacity ease 0.3s;
 }

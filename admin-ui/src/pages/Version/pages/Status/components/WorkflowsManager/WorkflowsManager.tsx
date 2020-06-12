@@ -6,6 +6,7 @@ import {
   VersionStatus,
   NodeStatus
 } from '../../../../../../graphql/types/globalTypes';
+import styles from './WorkflowsManager.module.scss';
 
 export type TooltipRefs = {
   body: React.RefObject<HTMLDivElement>;
@@ -117,7 +118,7 @@ function WorkflowsManager({
   }
 
   return (
-    <div>
+    <div className={styles.workflows}>
       {workflows.map((workflow: GetVersionWorkflows_version_workflows) => (
         <Workflow
           workflow={workflow}
