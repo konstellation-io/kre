@@ -1,5 +1,6 @@
 const { MockList } = require('apollo-server');
 const casual = require('casual');
+const moment = require('moment');
 const { UserActivityOptions, metricsData } = require('./mockSamples');
 const { PubSub } = require('apollo-server-express');
 const { workflowNames, processNames, emails } = require('./data');
@@ -54,6 +55,27 @@ const generateVersion = () => ({
   workflows: () => new MockList(2),
   configurationCompleted: true
 });
+
+let datetime = moment();
+
+function getResourceMetrics() {
+  datetime = datetime.add(1, 'minute');
+  return {
+    date: datetime.toISOString(),
+    cpu: casual.double(0.001, 1),
+    mem: casual.double(0, 8 * 1000 * 1000 * 1000)
+  };
+}
+
+function getNResourceMetrics(n) {
+  const result = [];
+
+  for (let i = 0; i < n; i++) {
+    result.push(getResourceMetrics());
+  }
+
+  return result;
+}
 
 function getProcessName() {
   return casual.random_element(processNames);
@@ -120,6 +142,9 @@ module.exports = {
     },
     versionNodeStatus: {
       subscribe: () => pubsub.asyncIterator('versionNodeStatus')
+    },
+    watchResourceMetrics: {
+      subscribe: () => pubsub.asyncIterator('watchResourceMetrics')
     }
   }),
   Query: () => ({
@@ -135,6 +160,16 @@ module.exports = {
         cursor: casual.string,
         items: () => new MockList(40)
       };
+    },
+    resourceMetrics: () => {
+      let interval = 0;
+      interval = setInterval(() => {
+        pubsub.publish('watchResourceMetrics', {
+          watchResourceMetrics: getNResourceMetrics(5)
+        });
+      }, 5000);
+      setTimeout(() => clearInterval(interval), 30000);
+      return getNResourceMetrics(60);
     }
   }),
   Mutation: () => ({

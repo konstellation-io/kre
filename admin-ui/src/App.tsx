@@ -137,6 +137,9 @@ function App() {
           <Routes />
         </Router>
       </div>
+      <div id="chartjs-tooltip">
+        <table />
+      </div>
     </HotKeys>
   );
 }

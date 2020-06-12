@@ -31,7 +31,7 @@ type Query {
   resourceMetrics(
     versionId: ID!
     fromDate: String!
-    toDate: String
+    toDate: String!
   ): [ResourceMetric!]!
 }
 
@@ -50,7 +50,7 @@ type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
-  watchResourceMetrics(versionId: ID!): ResourceMetric!
+  watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetric!]!
 }
 
 input CreateRuntimeInput {
@@ -206,7 +206,7 @@ enum VersionStatus {
 type ResourceMetric {
   date: String!
   cpu: Float!
-  ram: Float!
+  mem: Float!
 }
 
 type Settings {
