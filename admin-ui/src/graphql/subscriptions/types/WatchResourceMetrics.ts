@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface WatchResourceMetrics_watchResourceMetrics {
-  __typename: 'ResourceMetric';
+  __typename: 'ResourceMetrics';
   date: string;
   cpu: number;
   mem: number;

@@ -101,7 +101,7 @@ function ResourceMetrics() {
       <div className={styles.chart}>
         <TimeSeriesChart
           title="CPU"
-          // nMaxElements={MAX_DATA_ELEMENTS + 5}
+          nMaxElements={MAX_DATA_ELEMENTS}
           color={COLORS.HIGHLIGHT}
           data={cpuData}
           unit="Cores"
@@ -115,7 +115,7 @@ function ResourceMetrics() {
       <div className={styles.chart}>
         <TimeSeriesChart
           title="RAM"
-          // nMaxElements={MAX_DATA_ELEMENTS + 5}
+          nMaxElements={MAX_DATA_ELEMENTS}
           color={COLORS.ALERT}
           data={memData}
           unit="B"
