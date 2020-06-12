@@ -226,7 +226,7 @@ enum VersionStatus {
 type ResourceMetric {
   date: String!
   cpu: Float!
-  ram: Float!
+  mem: Float!
 }
 
 type Settings {

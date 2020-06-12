@@ -1,0 +1,8 @@
+@import '../StatusTopInfoBar/StatusTopInfoBar.module.scss';
+
+.workflows {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - #{$bar-height});
+  top: $bar-height;
+}
