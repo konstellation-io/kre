@@ -30,3 +30,5 @@ data:
   KRE_AUTH_COOKIE_DOMAIN: "{{ .Values.config.auth.cookieDomain }}"
   # MongoDB
   KRE_MONGODB_DB_NAME: "{{ .Values.mongodb.mongodbDatabase }}"
+  # Prometheus
+  KRE_PROMETHEUS_URL: "http://prometheus-operated:9090"

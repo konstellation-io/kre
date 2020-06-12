@@ -1,14 +1,16 @@
 package gql
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gorilla/websocket"
+
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
-	"net/http"
-	"time"
 )
 
 func NewHttpHandler(
@@ -20,6 +22,7 @@ func NewHttpHandler(
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor *usecase.AuthInteractor,
+	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) http.Handler {
 	graphQLResolver := NewGraphQLResolver(
 		logger,
@@ -30,6 +33,7 @@ func NewHttpHandler(
 		versionInteractor,
 		metricsInteractor,
 		authInteractor,
+		resourceMetricsInteractor,
 	)
 
 	var mb int64 = 1 << 20

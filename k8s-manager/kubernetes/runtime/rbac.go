@@ -35,8 +35,12 @@ func (m *Manager) createRBAC(ns string) error {
 
 func (m *Manager) createRole(ns string) error {
 	bytes, err := ioutil.ReadFile("assets/role.yaml")
+	if err != nil {
+		return err
+	}
 
 	var role *rbacv1.Role
+
 	err = yaml.Unmarshal(bytes, &role)
 	if err != nil {
 		return err
@@ -49,8 +53,12 @@ func (m *Manager) createRole(ns string) error {
 
 func (m *Manager) createRoleBinding(ns string) error {
 	bytes, err := ioutil.ReadFile("assets/role_binding.yaml")
+	if err != nil {
+		return err
+	}
 
 	var roleBinding *rbacv1.RoleBinding
+
 	err = yaml.Unmarshal(bytes, &roleBinding)
 	if err != nil {
 		return err
@@ -68,6 +76,7 @@ func (m *Manager) createServiceAccount(ns string) error {
 	}
 
 	var serviceAccount *apiv1.ServiceAccount
+
 	err = yaml.Unmarshal(bytes, &serviceAccount)
 	if err != nil {
 		return err

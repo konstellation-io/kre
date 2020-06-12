@@ -16,7 +16,7 @@ test-admin-api:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - admin-api/**/*
+        - admin-api/**/*
 
 sonar-admin-api:
   extends: .sonar-scanner
@@ -29,7 +29,7 @@ sonar-admin-api:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - admin-api/**/*
+        - admin-api/**/*
 
 release-admin-api:
   stage: semantic-release
@@ -42,8 +42,8 @@ release-admin-api:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - admin-api/**/*
-      - .gitlab-ci.yml
+        - admin-api/**/*
+        - .gitlab-ci.yml
 
 publish-admin-api-image:
   stage: publish-image

@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"net/http"
+	"time"
+
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/auth"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"
 	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"net/http"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"

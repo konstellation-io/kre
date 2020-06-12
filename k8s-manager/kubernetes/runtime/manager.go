@@ -2,16 +2,18 @@ package runtime
 
 import (
 	"errors"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"log"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
 
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 
-	"gitlab.com/konstellation/kre/k8s-manager/config"
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
+// Manager expose methods to handle Runtime Objects.
 type Manager struct {
 	config    *config.Config
 	logger    *simplelogger.SimpleLogger
@@ -19,7 +21,13 @@ type Manager struct {
 	dynClient dynamic.Interface
 }
 
-func New(config *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset, dynClient dynamic.Interface) *Manager {
+// New creates a new Runtime Manager.
+func New(
+	config *config.Config,
+	logger *simplelogger.SimpleLogger,
+	clientset *kubernetes.Clientset,
+	dynClient dynamic.Interface,
+) *Manager {
 	return &Manager{
 		config,
 		logger,
@@ -29,15 +37,16 @@ func New(config *config.Config, logger *simplelogger.SimpleLogger, clientset *ku
 }
 
 var (
-	// ErrCreation error
+	// ErrCreation when Runtime Object can't be created.
 	ErrCreation = errors.New("error creating a Runtime resource")
-	// ErrUnexpected error
+	// ErrUnexpected for any unknown error related to Runtime creation.
 	ErrUnexpected = errors.New("unexpected error creating Runtime")
 )
 
-// CreateRuntime calls kubernetes to create a new Runtime Object
+// Create calls kubernetes to create a new Runtime Object.
 func (m *Manager) Create(runtimeInput *entity.Runtime) error {
 	ns := runtimeInput.Namespace
+
 	_, err := m.createNamespace(ns)
 	if err != nil {
 		log.Printf("error creating namespace: %v", err)
@@ -60,6 +69,7 @@ func (m *Manager) Create(runtimeInput *entity.Runtime) error {
 
 	// Create Runtime
 	domain := m.config.BaseDomainName
+
 	err = m.createRuntimeObject(runtimeInput, domain)
 	if err != nil {
 		log.Printf("error creating runtime object: %v", err)
@@ -67,5 +77,6 @@ func (m *Manager) Create(runtimeInput *entity.Runtime) error {
 	}
 
 	log.Printf("all resources created")
+
 	return nil
 }

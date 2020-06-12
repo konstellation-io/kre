@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
 
-	"gitlab.com/konstellation/kre/k8s-manager/config"
-	"gitlab.com/konstellation/kre/k8s-manager/entity"
-	"gitlab.com/konstellation/kre/k8s-manager/kubernetes"
-	"gitlab.com/konstellation/kre/k8s-manager/kubernetes/runtime"
-	"gitlab.com/konstellation/kre/k8s-manager/proto/runtimepb"
+	"github.com/konstellation-io/kre/libs/simplelogger"
+
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes/runtime"
+	"github.com/konstellation-io/kre/k8s-manager/proto/runtimepb"
 )
 
 // RuntimeService basic server
@@ -20,7 +21,6 @@ type RuntimeService struct {
 	watcher *kubernetes.Watcher
 }
 
-// NewRuntimeService instantiates the GRPC server implementation
 func NewRuntimeService(
 	config *config.Config,
 	logger *simplelogger.SimpleLogger,
@@ -35,8 +35,8 @@ func NewRuntimeService(
 	}
 }
 
-// Create creates a new Runtime object
-func (s *RuntimeService) Create(ctx context.Context, req *runtimepb.Request) (*runtimepb.Response, error) {
+// Create creates a new Runtime object.
+func (s *RuntimeService) Create(_ context.Context, req *runtimepb.Request) (*runtimepb.Response, error) {
 	r := req.GetRuntime()
 
 	err := s.manager.Create(&entity.Runtime{Runtime: *r})
@@ -49,8 +49,11 @@ func (s *RuntimeService) Create(ctx context.Context, req *runtimepb.Request) (*r
 	}, nil
 }
 
-// CheckIsCreated check K8s waiting for all the Runtime components to be on running state
-func (s *RuntimeService) RuntimeStatus(ctx context.Context, req *runtimepb.Request) (*runtimepb.RuntimeStatusResponse, error) {
+// RuntimeStatus check K8s waiting for all the Runtime components to be on running state.
+func (s *RuntimeService) RuntimeStatus(
+	_ context.Context,
+	req *runtimepb.Request,
+) (*runtimepb.RuntimeStatusResponse, error) {
 	ns := req.GetRuntime().GetNamespace()
 
 	fmt.Printf("Checking if runtime '%s' pods are created.\n", ns)

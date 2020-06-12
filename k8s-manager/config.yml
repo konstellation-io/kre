@@ -6,3 +6,5 @@ server:
 kubernetes:
   operator:
     version: latest
+prometheus:
+  url: http://localhost:9090

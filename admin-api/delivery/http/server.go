@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/controller"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"
@@ -33,6 +34,7 @@ func NewApp(
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
+	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) *App {
 	e := echo.New()
 	e.HideBanner = true
@@ -72,6 +74,7 @@ func NewApp(
 		versionInteractor,
 		metricsInteractor,
 		authInteractor,
+		resourceMetricsInteractor,
 	)
 
 	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{

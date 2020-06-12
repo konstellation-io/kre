@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"gitlab.com/konstellation/kre/k8s-manager/proto/versionpb"
+	"github.com/konstellation-io/kre/k8s-manager/proto/versionpb"
 )
 
 type Version struct {
