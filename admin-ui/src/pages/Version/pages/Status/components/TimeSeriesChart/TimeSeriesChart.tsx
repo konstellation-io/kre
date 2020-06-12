@@ -303,7 +303,9 @@ function TimeSeriesChart({
             ...chart.current.options.scales.xAxes[0],
             ticks: {
               display: false,
-              min: data[data.length - nMaxElements].x.toISOString(),
+              min: data[
+                Math.max(0, data.length - nMaxElements)
+              ].x.toISOString(),
               max: data[data.length - 1].x.toISOString()
             }
           }
