@@ -98,34 +98,38 @@ function ResourceMetrics() {
 
   return (
     <div className={cx(styles.container, { [styles.expanded]: expanded })}>
-      <div className={styles.chart}>
-        <TimeSeriesChart
-          title="CPU"
-          nMaxElements={MAX_DATA_ELEMENTS}
-          color={COLORS.HIGHLIGHT}
-          data={cpuData}
-          unit="Cores"
-          expanded={expanded}
-          toggleExpand={toggleExpand}
-          formatYAxis={v => format('.0s')(v)}
-          formatXAxis={date => formatDate(new Date(date), true)}
-          highlightLastValue
-        />
-      </div>
-      <div className={styles.chart}>
-        <TimeSeriesChart
-          title="RAM"
-          nMaxElements={MAX_DATA_ELEMENTS}
-          color={COLORS.ALERT}
-          data={memData}
-          unit="B"
-          expanded={expanded}
-          toggleExpand={toggleExpand}
-          formatYAxis={v => format('.0s')(v)}
-          formatXAxis={date => formatDate(new Date(date), true)}
-          highlightLastValue
-        />
-      </div>
+      {data && data.resourceMetrics.length !== 0 && (
+        <>
+          <div className={styles.chart}>
+            <TimeSeriesChart
+              title="CPU"
+              nMaxElements={MAX_DATA_ELEMENTS}
+              color={COLORS.HIGHLIGHT}
+              data={cpuData}
+              unit="Cores"
+              expanded={expanded}
+              toggleExpand={toggleExpand}
+              formatYAxis={v => format('.0s')(v)}
+              formatXAxis={date => formatDate(new Date(date), true)}
+              highlightLastValue
+            />
+          </div>
+          <div className={styles.chart}>
+            <TimeSeriesChart
+              title="RAM"
+              nMaxElements={MAX_DATA_ELEMENTS}
+              color={COLORS.ALERT}
+              data={memData}
+              unit="B"
+              expanded={expanded}
+              toggleExpand={toggleExpand}
+              formatYAxis={v => format('.0s')(v)}
+              formatXAxis={date => formatDate(new Date(date), true)}
+              highlightLastValue
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
