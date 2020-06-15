@@ -443,12 +443,12 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	return userLoader.Load(obj.UserID)
 }
 
-func (r *userResolver) LastAccess(ctx context.Context, obj *entity.User) (*string, error) {
-	if obj.LastAccess == nil {
+func (r *userResolver) LastActivity(ctx context.Context, obj *entity.User) (*string, error) {
+	if obj.LastActivity == nil {
 		return nil, nil
 	}
 
-	date := obj.LastAccess.Format(time.RFC3339)
+	date := obj.LastActivity.Format(time.RFC3339)
 	return &date, nil
 }
 

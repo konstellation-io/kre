@@ -188,7 +188,7 @@ type ComplexityRoot struct {
 		CreationDate func(childComplexity int) int
 		Email        func(childComplexity int) int
 		ID           func(childComplexity int) int
-		LastAccess   func(childComplexity int) int
+		LastActivity func(childComplexity int) int
 	}
 
 	UserActivity struct {
@@ -278,7 +278,7 @@ type SubscriptionResolver interface {
 }
 type UserResolver interface {
 	CreationDate(ctx context.Context, obj *entity.User) (string, error)
-	LastAccess(ctx context.Context, obj *entity.User) (*string, error)
+	LastActivity(ctx context.Context, obj *entity.User) (*string, error)
 }
 type UserActivityResolver interface {
 	Type(ctx context.Context, obj *entity.UserActivity) (UserActivityType, error)
@@ -1021,12 +1021,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.ID(childComplexity), true
 
-	case "User.lastAccess":
-		if e.complexity.User.LastAccess == nil {
+	case "User.lastActivity":
+		if e.complexity.User.LastActivity == nil {
 			break
 		}
 
-		return e.complexity.User.LastAccess(childComplexity), true
+		return e.complexity.User.LastActivity(childComplexity), true
 
 	case "UserActivity.date":
 		if e.complexity.UserActivity.Date == nil {
@@ -1321,7 +1321,11 @@ type Query {
     startDate: String!
     endDate: String!
   ): Metrics
-  resourceMetrics(versionId: ID!, fromDate: String!,toDate: String!): [ResourceMetrics!]!
+  resourceMetrics(
+    versionId: ID!
+    fromDate: String!
+    toDate: String!
+  ): [ResourceMetrics!]!
 }
 
 type Mutation {
@@ -1408,7 +1412,7 @@ type User {
   email: String!
   accessLevel: AccessLevel!
   creationDate: String!
-  lastAccess: String
+  lastActivity: String
 }
 
 enum AccessLevel {
@@ -5228,7 +5232,7 @@ func (ec *executionContext) _User_creationDate(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_lastAccess(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_lastActivity(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5245,7 +5249,7 @@ func (ec *executionContext) _User_lastAccess(ctx context.Context, field graphql.
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().LastAccess(rctx, obj)
+		return ec.resolvers.User().LastActivity(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8471,7 +8475,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				}
 				return res
 			})
-		case "lastAccess":
+		case "lastActivity":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -8479,7 +8483,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._User_lastAccess(ctx, field, obj)
+				res = ec._User_lastActivity(ctx, field, obj)
 				return res
 			})
 		default:

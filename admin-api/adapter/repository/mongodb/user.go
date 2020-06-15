@@ -169,14 +169,14 @@ func (r *UserRepoMongoDB) MarkAsDeleted(ctx context.Context, userIDs []string) (
 	return updatedUsers, nil
 }
 
-func (r *UserRepoMongoDB) UpdateLastAccess(userID string) error {
+func (r *UserRepoMongoDB) UpdateLastActivity(userID string) error {
 	filter := bson.M{
 		"_id": userID,
 	}
 
 	upd := bson.M{
 		"$set": bson.M{
-			"lastAccess": time.Now(),
+			"lastActivity": time.Now(),
 		},
 	}
 

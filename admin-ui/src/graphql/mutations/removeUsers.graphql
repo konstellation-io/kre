@@ -4,6 +4,6 @@ mutation RemoveUsers($input: UsersInput!) {
     email
     accessLevel
     creationDate
-    lastAccess
+    lastActivity
   }
 }

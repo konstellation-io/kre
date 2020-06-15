@@ -15,7 +15,7 @@ export interface RemoveUsers_removeUsers {
   email: string;
   accessLevel: AccessLevel;
   creationDate: string;
-  lastAccess: string | null;
+  lastActivity: string | null;
 }
 
 export interface RemoveUsers {

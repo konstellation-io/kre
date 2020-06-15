@@ -28,7 +28,7 @@ type Data = {
   creationDate: string;
   email: string;
   accessLevel: AccessLevel;
-  lastAccess: string | null;
+  lastActivity: string | null;
   selectedRowIds?: string[];
 };
 
@@ -47,8 +47,8 @@ const columns: Column<Data>[] = [
     accessor: 'accessLevel'
   },
   {
-    Header: 'Last access',
-    accessor: 'lastAccess',
+    Header: 'Last activity',
+    accessor: 'lastActivity',
     Cell: ({ value }) => {
       if (value === null) {
         return '-';

@@ -25,5 +25,5 @@ type UserRepo interface {
 
 	MarkAsDeleted(ctx context.Context, userIDs []string) ([]*entity.User, error)
 
-	UpdateLastAccess(userID string) error
+	UpdateLastActivity(userID string) error
 }
