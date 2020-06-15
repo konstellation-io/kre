@@ -17,6 +17,8 @@ create_user_mongo_script() {
   echo "db.getCollection('users').update({ \"_id\": \"local_login_user\" }, {\"\$set\": { \"email\": \"$DEV_EMAIL\", \"deleted\": false, \"accessLevel\": \"ADMIN\", \"creationDate\": ISODate(\"2020-06-15T10:45:54.528Z\") }}, { \"upsert\": true })"
 }
 
+create_user_mongo_script | kubectl exec -n kre -it $MONGO_POD -- mongo --quiet -u $MONGO_USER -p $MONGO_PASS $MONGO_DB
+
 echo "calling api..."
 curl -s $SIGNIN_URL \
   -H 'pragma: no-cache' -H 'cache-control: no-cache' \
@@ -29,8 +31,6 @@ curl -s $SIGNIN_URL \
 sleep 0.5
 
 WATCH_FILE=$(mktemp)
-
-create_user_mongo_script | kubectl exec -n kre -it $MONGO_POD -- mongo --quiet -u $MONGO_USER -p $MONGO_PASS $MONGO_DB
 
 echo "watching $WATCH_FILE"
 echo "pod $ADMIN_API_POD"
