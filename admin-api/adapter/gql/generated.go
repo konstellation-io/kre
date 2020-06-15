@@ -1321,7 +1321,7 @@ type Query {
     startDate: String!
     endDate: String!
   ): Metrics
-  resourceMetrics(versionId: ID!, fromDate: String!,toDate: String!): [ResourceMetrics!]!
+  resourceMetrics(versionId: ID!, fromDate: String!, toDate: String!): [ResourceMetrics!]!
 }
 
 type Mutation {

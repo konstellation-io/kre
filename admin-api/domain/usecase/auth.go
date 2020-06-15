@@ -84,38 +84,38 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 		return err
 	}
 
-	// Get allowed domain/email lists
-	settings, err := a.settingRepo.Get()
-	if err != nil {
-		return err
-	}
-
-	isAllowed := false
-	domainsInWhitelist := len(settings.AuthAllowedDomains) != 0
-	emailsInWhitelist := len(settings.AuthAllowedEmails) != 0
-
-	// Check if there is no emails and domains in the whitelists
-	if !domainsInWhitelist && !emailsInWhitelist {
-		a.logger.Warn("All emails are allowed for sign-up, set allowed domains or email addresses in security settings")
-		isAllowed = true
-	}
-
-	// Check email domain is an allowed domain
-	if !isAllowed && domainsInWhitelist {
-		isAllowed = a.isDomainAllowed(settings, email)
-	}
-
-	// Check email address is an allowed address
-	if !isAllowed && emailsInWhitelist {
-		isAllowed = a.isEmailAllowed(settings, email)
-	}
-
-	if !isAllowed {
-		return ErrUserNotAllowed
-	}
-
 	// SignUp user creation
 	if isNewUser {
+		// Get allowed domain/email lists
+		settings, err := a.settingRepo.Get()
+		if err != nil {
+			return err
+		}
+
+		isAllowed := false
+		domainsInWhitelist := len(settings.AuthAllowedDomains) != 0
+		emailsInWhitelist := len(settings.AuthAllowedEmails) != 0
+
+		// Check if there is no emails and domains in the whitelists
+		if !domainsInWhitelist && !emailsInWhitelist {
+			a.logger.Warn("All emails are allowed for sign-up, set allowed domains or email addresses in security settings")
+			isAllowed = true
+		}
+
+		// Check email domain is an allowed domain
+		if !isAllowed && domainsInWhitelist {
+			isAllowed = a.isDomainAllowed(settings, email)
+		}
+
+		// Check email address is an allowed address
+		if !isAllowed && emailsInWhitelist {
+			isAllowed = a.isEmailAllowed(settings, email)
+		}
+
+		if !isAllowed {
+			return ErrUserNotAllowed
+		}
+
 		a.logger.Infof("The user '%s' doesn't exist, creating in the database...", email)
 
 		createdUser, err := a.userRepo.Create(context.Background(), email, entity.AccessLevelViewer)
