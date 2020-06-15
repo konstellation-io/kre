@@ -1,37 +1,13 @@
+import '../../../../../../chart.js/defaultProps';
 import React, { useRef, useEffect, MouseEvent } from 'react';
 import { color as c } from 'd3-color';
 import IconExpand from '@material-ui/icons/KeyboardArrowDown';
 import IconShrink from '@material-ui/icons/KeyboardArrowUp';
 import Chart from 'chart.js';
+import { createCustomTooltip } from '../../../../../../chart.js/tooltip';
 import styles from './TimeSeriesChart.module.scss';
 import cx from 'classnames';
-
-Chart.defaults.global.defaultFontFamily = "'Montserrat', sans-serif";
-// @ts-ignore
-Chart.defaults.global.legend.display = false;
-Chart.defaults.timeLine = Chart.defaults.line;
-Chart.controllers.timeLine = Chart.controllers.line.extend({
-  draw: function(ease: string) {
-    Chart.controllers.line.prototype.draw.call(this, ease);
-
-    if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
-      var activePoint = this.chart.tooltip._active[0],
-        ctx = this.chart.ctx,
-        x = activePoint.tooltipPosition().x,
-        topY = 0,
-        bottomY = this.chart.chartArea.bottom;
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x, topY);
-      ctx.lineTo(x, bottomY);
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = '#61646A';
-      ctx.stroke();
-      ctx.restore();
-    }
-  }
-});
+import { get } from 'lodash';
 
 function getRGB(color: string) {
   return c(color)?.rgb() ?? { r: 0, g: 0, b: 0 };
@@ -48,10 +24,10 @@ type Props = {
   title: string;
   expanded: boolean;
   toggleExpand: (event: MouseEvent<HTMLDivElement>) => void;
-  nMaxElements: number;
   formatXAxis?: (value: string) => string;
   formatYAxis?: (value: number) => string;
   highlightLastValue?: boolean;
+  removed?: number;
   color?: string;
 };
 function TimeSeriesChart({
@@ -60,13 +36,13 @@ function TimeSeriesChart({
   title,
   expanded,
   toggleExpand,
-  nMaxElements,
   highlightLastValue,
+  removed = 0,
   color = '#f00',
   formatXAxis = v => v,
   formatYAxis = v => v.toString()
 }: Props) {
-  const chart = useRef<Chart>(null);
+  const chart = useRef<Chart | null>(null);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const { r, g, b } = getRGB(color);
   const colorStyle = useRef({ color });
@@ -75,10 +51,11 @@ function TimeSeriesChart({
 
   const formatYWUnit = (v: number) => `${formatYAxis(v)}${unit}`;
 
+  // Initialize chart
   useEffect(() => {
-    if (chartRef.current !== null) {
-      // @ts-ignore
-      chart.current = new Chart(chartRef.current.getContext('2d'), {
+    const context2D = chartRef?.current?.getContext('2d');
+    if (context2D) {
+      chart.current = new Chart(context2D, {
         type: 'timeLine',
         data: {
           labels: data.map(d => d.x),
@@ -97,118 +74,46 @@ function TimeSeriesChart({
           ]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          layout: {
-            padding: {
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0
-            }
-          },
           tooltips: {
-            enabled: false,
-            intersect: false,
-            xPadding: 6,
-            yPadding: 6,
-            yAlign: true,
-            caretPadding: 8,
             callbacks: {
-              label: (d: any) => formatYWUnit(d.value)
+              label: d => formatYWUnit(d.value ? +d.value : 0)
             },
-            custom: function(tooltipModel: any) {
-              const tooltipMargin = 8;
-              const tooltipEl = document.getElementById('chartjs-tooltip');
-              if (!tooltipEl) return;
-
-              if (tooltipModel.opacity === 0) {
-                tooltipEl.style.opacity = '0';
-                return;
-              }
-
-              function getBody(bodyItem: any) {
-                return bodyItem.lines;
-              }
-
-              if (tooltipModel.body) {
-                const titleLines = tooltipModel.title || [];
-                const bodyLines = tooltipModel.body.map(getBody);
-
-                let innerHtml = '<thead>';
-
-                titleLines.forEach(function(xValue: string) {
-                  innerHtml += '<tr><th>' + formatXAxis(xValue) + '</th></tr>';
-                });
-                innerHtml += '</thead><tbody>';
-
-                bodyLines.forEach(function(body: any, i: any) {
-                  let style = `color:${color};font-weight:500;`;
-                  const titleText = `<span>${title}: </span>`;
-                  const bodyText = `<span style=${style}>${body}</span>`;
-                  innerHtml += '<tr><td>' + titleText + bodyText + '</td></tr>';
-                });
-                innerHtml += '</tbody>';
-
-                const tableRoot = tooltipEl.querySelector('table');
-                // @ts-ignore
-                tableRoot.innerHTML = innerHtml;
-              }
-
-              const chartRect = this._chart.canvas.getBoundingClientRect();
-              const tooltipRect = tooltipEl.getBoundingClientRect();
-
-              const tooltipWidth = tooltipRect.width;
-              const tooltipHeight = tooltipRect.height;
-
-              const chartX = chartRect.left + window.pageXOffset;
-              const chartY = chartRect.top + window.pageYOffset;
-              let tooltipX = chartX + tooltipModel.caretX - tooltipWidth / 2;
-              let tooltipY =
-                chartY + tooltipModel.caretY - tooltipHeight - tooltipMargin;
-
-              if (tooltipX - tooltipWidth / 2 < chartX) {
-                tooltipX += tooltipWidth / 2 + tooltipMargin;
-              }
-              if (
-                tooltipX + tooltipWidth / 2 + tooltipWidth >
-                chartX + chartRect.width
-              ) {
-                tooltipX -= tooltipWidth / 2 + tooltipMargin;
-              }
-              if (tooltipY < chartY) {
-                tooltipY += tooltipHeight + tooltipMargin;
-              }
-
-              tooltipEl.style.opacity = '1';
-              tooltipEl.style.left = `${tooltipX}px`;
-              tooltipEl.style.top = `${tooltipY}px`;
-              tooltipEl.style.padding =
-                tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-            }
+            custom: createCustomTooltip(formatXAxis, color, title)
           },
           scales: {
             xAxes: [
               {
                 type: 'time',
-                time: {
-                  unit: 'second'
-                },
                 display: false,
-                ticks: { display: false },
+                time: {
+                  unit: 'minute'
+                },
+                ticks: {
+                  display: false
+                },
                 gridLines: {
                   display: false,
                   drawBorder: false
-                },
-                bounds: 'ticks'
+                }
               }
             ],
             yAxes: [
               {
                 display: false,
-                ticks: { display: false, beginAtZero: true },
+                ticks: {
+                  display: false,
+                  mirror: true,
+                  maxTicksLimit: 6,
+                  fontStyle: 'bold',
+                  padding: -8,
+                  callback: formatYWUnit,
+                  beginAtZero: true
+                },
                 gridLines: {
                   display: false,
+                  color: '#000',
+                  drawTicks: false,
+                  z: -100,
                   drawBorder: false
                 }
               }
@@ -224,28 +129,21 @@ function TimeSeriesChart({
       if (chart.current.options.scales?.yAxes) {
         chart.current.options.scales.yAxes = [
           {
+            ...chart.current.options.scales.yAxes,
             display: expanded,
             ticks: {
-              display: true,
-              mirror: true,
-              maxTicksLimit: 6,
-              fontStyle: 'bold',
-              padding: -8,
-              beginAtZero: true,
-              callback: formatYWUnit
+              ...chart.current.options.scales.yAxes[0].ticks,
+              display: expanded
             },
-            afterTickToLabelConversion: function(scaleInstance: any) {
+            afterTickToLabelConversion: function(scaleInstance) {
               scaleInstance.ticks[scaleInstance.ticks.length - 1] = null;
               scaleInstance.ticksAsNumbers[
                 scaleInstance.ticksAsNumbers.length - 1
               ] = null;
             },
             gridLines: {
-              display: true,
-              color: '#000',
-              drawTicks: false,
-              z: -100,
-              drawBorder: false
+              ...chart.current.options.scales.yAxes[0].gridLines,
+              display: expanded
             }
           }
         ];
@@ -256,66 +154,37 @@ function TimeSeriesChart({
   }, [expanded]);
 
   useEffect(() => {
-    if (data && chart.current) {
-      chart.current.data.labels = data.map(d => d.x);
-      if (chart.current.data.datasets) {
-        chart.current.data.datasets[0].data = data.map(d => d.y);
-      }
+    function getLabels() {
+      return get(chart, 'current.data.labels', []);
+    }
+    function getDataset() {
+      return get(chart, 'current.data.datasets[0].data', []);
+    }
 
-      // @ts-ignore
-      if (chart.current.options.scales.yAxes) {
-        // @ts-ignore
-        chart.current.options.scales.yAxes = [
-          {
-            display: expanded,
-            ticks: {
-              display: true,
-              mirror: true,
-              maxTicksLimit: 6,
-              fontStyle: 'bold',
-              padding: -8,
-              beginAtZero: true,
-              callback: formatYWUnit
-            },
-            afterTickToLabelConversion: function(scaleInstance: any) {
-              scaleInstance.ticks[scaleInstance.ticks.length - 1] = null;
-              scaleInstance.ticksAsNumbers[
-                scaleInstance.ticksAsNumbers.length - 1
-              ] = null;
-            },
-            gridLines: {
-              display: true,
-              color: '#000',
-              drawTicks: false,
-              z: -100,
-              drawBorder: false
-            }
-          }
-        ];
+    function removeData(n: number) {
+      for (let i = 0; i < n; i++) {
+        getLabels().shift();
+        getDataset().shift();
       }
+    }
 
-      // @ts-ignore
-      if (chart.current.options.scales.xAxes) {
-        // @ts-ignore
-        chart.current.options.scales.xAxes = [
-          {
-            // @ts-ignore
-            ...chart.current.options.scales.xAxes[0],
-            ticks: {
-              display: false,
-              min: data[
-                Math.max(0, data.length - nMaxElements)
-              ].x.toISOString(),
-              max: data[data.length - 1].x.toISOString()
-            }
-          }
-        ];
-      }
-
-      chart.current.update({
-        duration: 300,
-        easing: 'linear'
+    function addData(newData: D[]) {
+      newData.forEach(d => {
+        getLabels().push(d.x);
+        getDataset().push(d.y || 0);
       });
+    }
+
+    if (data && chart.current) {
+      removeData(removed);
+
+      const prevDataLenght = chart.current.data?.labels?.length || 0;
+      const dataToAdd = data.slice(
+        prevDataLenght - (data.length - prevDataLenght) + removed
+      );
+      addData(dataToAdd);
+
+      chart.current.update();
     }
   }, [data]);
 

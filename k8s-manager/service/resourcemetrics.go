@@ -65,7 +65,7 @@ func (r *ResourceMetricsService) WatchVersion(
 		err := stream.Send(toVersionResourceMetricsResponse(m))
 
 		if err != nil {
-			r.logger.Info("[MonitoringService.NodeLogs] error sending to client: %s")
+			r.logger.Info("[ResourceMetricsService.WatchVersion] error sending to client: %s")
 			r.logger.Error(err.Error())
 
 			return err

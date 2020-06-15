@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/auth"
 	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"

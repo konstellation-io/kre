@@ -1,14 +1,16 @@
 package gql
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gorilla/websocket"
+
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
 	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
-	"net/http"
-	"time"
 )
 
 func NewHttpHandler(

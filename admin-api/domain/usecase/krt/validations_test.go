@@ -1,9 +1,10 @@
 package krt_test
 
 import (
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/krt"
 	"strings"
 	"testing"
+
+	"gitlab.com/konstellation/kre/admin-api/domain/usecase/krt"
 )
 
 func TestValidateYaml_InvalidVersionName(t *testing.T) {

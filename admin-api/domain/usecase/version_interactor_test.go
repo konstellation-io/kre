@@ -1,10 +1,11 @@
 package usecase_test
 
 import (
-	"github.com/golang/mock/gomock"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/golang/mock/gomock"
 
 	"github.com/stretchr/testify/require"
 

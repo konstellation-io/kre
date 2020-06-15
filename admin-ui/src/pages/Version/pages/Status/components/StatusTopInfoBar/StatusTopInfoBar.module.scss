@@ -40,4 +40,6 @@ $bar-height: 65px;
 
 .charts {
   flex-grow: 1;
+  height: fit-content;
+  overflow: hidden;
 }

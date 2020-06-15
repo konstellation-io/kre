@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/konstellation-io/kre/libs/simplelogger"
+
 	"gitlab.com/konstellation/kre/admin-api/adapter/auth"
 	"gitlab.com/konstellation/kre/admin-api/adapter/config"
 	"gitlab.com/konstellation/kre/admin-api/adapter/repository/minio"
