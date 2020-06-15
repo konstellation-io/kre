@@ -1,10 +1,11 @@
 import { get, sortBy } from 'lodash';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { VersionRouteParams } from '../../../../../../constants/routes';
 import { useQuery } from '@apollo/react-hooks';
 import { loader } from 'graphql.macro';
 import {
   GetResourceMetrics,
+  GetResourceMetrics_resourceMetrics,
   GetResourceMetricsVariables
 } from '../../../../../../graphql/queries/types/GetResourceMetrics';
 import { useParams } from 'react-router';
@@ -25,13 +26,23 @@ const GetResourceMetricsQuery = loader(
   '../../../../../../graphql/queries/getResourceMetrics.graphql'
 );
 
-const MAX_DATA_ELEMENTS = 60;
+type ChartData = {
+  cpu: D[];
+  mem: D[];
+};
+
+const N_MINUTES_TO_SHOW = 15;
 
 function ResourceMetrics() {
   const [expanded, setExpanded] = useState(false);
   const { versionId } = useParams<VersionRouteParams>();
-  const [fromDate] = useState<Moment>(moment().startOf('month'));
+  const [fromDate] = useState<Moment>(
+    moment().subtract(N_MINUTES_TO_SHOW, 'minute')
+  );
   const toDate = useRef<Moment>(moment());
+  const [chartData, setChartData] = useState<ChartData>({ cpu: [], mem: [] });
+  const nMetricsToRemove = useRef(0);
+  const unsubscribe = useRef<Function | null>(null);
 
   const { data, error, loading, subscribeToMore } = useQuery<
     GetResourceMetrics,
@@ -42,27 +53,33 @@ function ResourceMetrics() {
       fromDate: fromDate.toISOString(),
       toDate: toDate.current.toISOString()
     },
-    onCompleted: data => subscribe()
+    onCompleted: () => (unsubscribe.current = subscribe()),
+    onError: () => unsubscribe.current && unsubscribe.current()
   });
+
+  useEffect(() => {
+    return () => unsubscribe.current && unsubscribe.current();
+  }, [unsubscribe]);
+
+  function removeOutsideRangeData(
+    allData: GetResourceMetrics_resourceMetrics[]
+  ) {
+    nMetricsToRemove.current = Math.max(0, allData.length - N_MINUTES_TO_SHOW);
+    return allData.splice(nMetricsToRemove.current);
+  }
 
   const subscribe = () =>
     subscribeToMore({
       document: WatchResourceMetricsSubscription,
       variables: { versionId, fromDate: toDate.current.toISOString() },
       updateQuery: (prev, { subscriptionData }) => {
-        const newResourceMetric = get(
+        const newResourceMetrics = get(
           subscriptionData.data,
           'watchResourceMetrics'
         );
 
-        let newMetrics = [...prev.resourceMetrics];
-
-        // const nMetricsToRemove = newMetrics.length - MAX_DATA_ELEMENTS;
-        // if (nMetricsToRemove > 0) {
-        //   newMetrics = newMetrics.splice(nMetricsToRemove);
-        // }
-
-        newMetrics = newMetrics.concat(newResourceMetric);
+        let newMetrics = [...prev.resourceMetrics].concat(newResourceMetrics);
+        newMetrics = removeOutsideRangeData(newMetrics);
 
         return {
           resourceMetrics: sortBy(newMetrics, 'date')
@@ -70,27 +87,27 @@ function ResourceMetrics() {
       }
     });
 
+  useEffect(() => {
+    if (data) {
+      const newChartData: ChartData = { cpu: [], mem: [] };
+
+      data.resourceMetrics.forEach(d => {
+        newChartData.cpu.push({
+          x: new Date(d.date),
+          y: d.cpu
+        });
+        newChartData.mem.push({
+          x: new Date(d.date),
+          y: d.mem
+        });
+      });
+
+      setChartData(newChartData);
+    }
+  }, [data]);
+
   function toggleExpand() {
     setExpanded(!expanded);
-  }
-
-  const cpuData: D[] = [],
-    memData: D[] = [];
-
-  if (data) {
-    // const nMetricsToRemove = data.resourceMetrics.length - MAX_DATA_ELEMENTS;
-    data.resourceMetrics.forEach((d, i) => {
-      // const removeDataElement = i < nMetricsToRemove;
-
-      cpuData.push({
-        x: new Date(d.date),
-        y: d.cpu
-      });
-      memData.push({
-        x: new Date(d.date),
-        y: d.mem
-      });
-    });
   }
 
   if (loading) return <SpinnerCircular />;
@@ -98,33 +115,33 @@ function ResourceMetrics() {
 
   return (
     <div className={cx(styles.container, { [styles.expanded]: expanded })}>
-      {data && data.resourceMetrics.length !== 0 && (
+      {chartData.cpu.length !== 0 && (
         <>
           <div className={styles.chart}>
             <TimeSeriesChart
               title="CPU"
-              nMaxElements={MAX_DATA_ELEMENTS}
               color={COLORS.HIGHLIGHT}
-              data={cpuData}
+              data={chartData.cpu}
               unit="Cores"
               expanded={expanded}
               toggleExpand={toggleExpand}
-              formatYAxis={v => format('.0s')(v)}
+              formatYAxis={v => format('.3s')(v)}
               formatXAxis={date => formatDate(new Date(date), true)}
+              removed={nMetricsToRemove.current}
               highlightLastValue
             />
           </div>
           <div className={styles.chart}>
             <TimeSeriesChart
               title="RAM"
-              nMaxElements={MAX_DATA_ELEMENTS}
               color={COLORS.ALERT}
-              data={memData}
+              data={chartData.mem}
               unit="B"
               expanded={expanded}
               toggleExpand={toggleExpand}
-              formatYAxis={v => format('.0s')(v)}
+              formatYAxis={v => format('.3s')(v)}
               formatXAxis={date => formatDate(new Date(date), true)}
+              removed={nMetricsToRemove.current}
               highlightLastValue
             />
           </div>

@@ -327,9 +327,3 @@ type MetricChartData {
   y: String!
   z: String!
 }
-
-type ResourceMetrics {
-  date: String!
-  cpu: Float!
-  mem: Float!
-}

@@ -56,10 +56,10 @@ const generateVersion = () => ({
   configurationCompleted: true
 });
 
-let datetime = moment();
+let datetime = moment().subtract(24, 'hour');
 
-function getResourceMetrics() {
-  datetime = datetime.add(1, 'minute');
+function getResourceMetrics(unit, quantity) {
+  datetime = datetime.add(quantity, unit);
   return {
     date: datetime.toISOString(),
     cpu: casual.double(0.001, 1),
@@ -67,11 +67,11 @@ function getResourceMetrics() {
   };
 }
 
-function getNResourceMetrics(n) {
+function getNResourceMetrics(n, unit, quantity) {
   const result = [];
 
   for (let i = 0; i < n; i++) {
-    result.push(getResourceMetrics());
+    result.push(getResourceMetrics(unit, quantity));
   }
 
   return result;
@@ -160,7 +160,7 @@ module.exports = {
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
     logs: async () => {
-      await sleep(2000);
+      // await sleep(2000);
       return {
         cursor: casual.string,
         items: () => new MockList(40)
@@ -170,11 +170,15 @@ module.exports = {
       let interval = 0;
       interval = setInterval(() => {
         pubsub.publish('watchResourceMetrics', {
-          watchResourceMetrics: getNResourceMetrics(5)
+          watchResourceMetrics: getNResourceMetrics(1, 'minute', 1)
         });
       }, 5000);
       setTimeout(() => clearInterval(interval), 30000);
-      return getNResourceMetrics(60);
+      datetime = moment().subtract(15, 'minute');
+      const response = getNResourceMetrics(15, 'minute', 1);
+      datetime = moment();
+
+      return response;
     }
   }),
   Mutation: () => ({
