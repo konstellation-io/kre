@@ -122,6 +122,8 @@ function TimeSeriesChart({
         }
       });
     }
+    // We only want to execute this after mounting
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -186,7 +188,7 @@ function TimeSeriesChart({
 
       chart.current.update();
     }
-  }, [data]);
+  }, [data, removed]);
 
   return (
     <div className={cx(styles.container, { [styles.expanded]: expanded })}>
