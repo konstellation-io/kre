@@ -3,14 +3,14 @@ package main
 import (
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/auth"
-	"gitlab.com/konstellation/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/kre/admin-api/adapter/repository/minio"
-	"gitlab.com/konstellation/kre/admin-api/adapter/repository/mongodb"
-	"gitlab.com/konstellation/kre/admin-api/adapter/runtime"
-	"gitlab.com/konstellation/kre/admin-api/adapter/service"
-	"gitlab.com/konstellation/kre/admin-api/delivery/http"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/adapter/auth"
+	"github.com/konstellation-io/kre/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin-api/adapter/repository/minio"
+	"github.com/konstellation-io/kre/admin-api/adapter/repository/mongodb"
+	"github.com/konstellation-io/kre/admin-api/adapter/runtime"
+	"github.com/konstellation-io/kre/admin-api/adapter/service"
+	"github.com/konstellation-io/kre/admin-api/delivery/http"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
 )
 
 func main() {

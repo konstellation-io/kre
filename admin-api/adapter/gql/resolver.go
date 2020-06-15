@@ -11,11 +11,11 @@ import (
 
 	"github.com/google/uuid"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/dataloader"
-	"gitlab.com/konstellation/kre/admin-api/delivery/http/middleware"
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/adapter/dataloader"
+	"github.com/konstellation-io/kre/admin-api/delivery/http/middleware"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 var runtimeCreatedChannels map[string]chan *entity.Runtime

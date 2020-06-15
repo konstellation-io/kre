@@ -1,4 +1,4 @@
-module gitlab.com/konstellation/kre/admin-api
+module github.com/konstellation-io/kre/admin-api
 
 go 1.13
 

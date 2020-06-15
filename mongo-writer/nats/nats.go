@@ -1,11 +1,12 @@
 package nats
 
 import (
-	nc "github.com/nats-io/nats.go"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
 	"os"
 
-	"gitlab.com/konstellation/kre/mongo-writer/config"
+	"github.com/konstellation-io/kre/libs/simplelogger"
+	nc "github.com/nats-io/nats.go"
+
+	"github.com/konstellation-io/kre/mongo-writer/config"
 )
 
 type NATSManager struct {

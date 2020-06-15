@@ -3,13 +3,15 @@ package mongo
 import (
 	"context"
 	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"gitlab.com/konstellation/kre/runtime-api/config"
-	"gitlab.com/konstellation/kre/runtime-api/entity"
+	"time"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
+
+	"github.com/konstellation-io/kre/runtime-api/config"
+	"github.com/konstellation-io/kre/runtime-api/entity"
 )
 
 const metricsCollectionName = "classificationMetrics"

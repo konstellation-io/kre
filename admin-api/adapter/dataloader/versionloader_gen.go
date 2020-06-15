@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
 )
 
 // VersionLoaderConfig captures the config to create a new VersionLoader

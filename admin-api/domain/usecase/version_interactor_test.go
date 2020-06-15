@@ -9,11 +9,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/repository"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
-	"gitlab.com/konstellation/kre/admin-api/mocks"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/repository"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/mocks"
 )
 
 type versionSuite struct {

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/krt"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/krt"
 )
 
 func TestValidateYaml_InvalidVersionName(t *testing.T) {

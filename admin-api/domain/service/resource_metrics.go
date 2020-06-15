@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
 )
 
 type ResourceMetricsService interface {
