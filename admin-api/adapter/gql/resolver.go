@@ -25,14 +25,14 @@ func init() {
 }
 
 type Resolver struct {
-	logger                 logging.Logger
-	runtimeInteractor      *usecase.RuntimeInteractor
-	userInteractor         *usecase.UserInteractor
-	settingInteractor      *usecase.SettingInteractor
-	userActivityInteractor *usecase.UserActivityInteractor
-	versionInteractor      *usecase.VersionInteractor
-	metricsInteractor      *usecase.MetricsInteractor
-	authInteractor         *usecase.AuthInteractor
+	logger                    logging.Logger
+	runtimeInteractor         *usecase.RuntimeInteractor
+	userInteractor            *usecase.UserInteractor
+	settingInteractor         *usecase.SettingInteractor
+	userActivityInteractor    *usecase.UserActivityInteractor
+	versionInteractor         *usecase.VersionInteractor
+	metricsInteractor         *usecase.MetricsInteractor
+	authInteractor            *usecase.AuthInteractor
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
 }
 
@@ -306,7 +306,7 @@ func (r *queryResolver) ResourceMetrics(
 	return r.resourceMetricsInteractor.Get(ctx, versionId, fromDate, toDate)
 }
 
-func (r *subscriptionResolver) ResourceMetrics(
+func (r *subscriptionResolver) WatchResourceMetrics(
 	ctx context.Context,
 	versionId string,
 	fromDate string,

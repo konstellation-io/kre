@@ -30,7 +30,7 @@ const MAX_DATA_ELEMENTS = 60;
 function ResourceMetrics() {
   const [expanded, setExpanded] = useState(false);
   const { versionId } = useParams<VersionRouteParams>();
-  const [fromDate] = useState<Moment>(moment().startOf('month'));
+  const [fromDate] = useState<Moment>(moment().startOf('hour'));
   const toDate = useRef<Moment>(moment());
 
   const { data, error, loading, subscribeToMore } = useQuery<

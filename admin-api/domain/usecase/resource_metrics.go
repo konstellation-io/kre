@@ -10,7 +10,10 @@ import (
 	"time"
 )
 
-const graphResolution = 60
+const (
+	graphResolution   = 60
+	watchStepInterval = 1
+)
 
 type ResourceMetricsInteractor struct {
 	logger                 logging.Logger
@@ -39,8 +42,6 @@ func (r *ResourceMetricsInteractor) Get(ctx context.Context, versionId, fromDate
 		return nil, fmt.Errorf("error getting version by id: %w", err)
 	}
 
-	fmt.Println("versionObject ", version)
-
 	runtime, err := r.runtimeRepo.GetByID(version.RuntimeID)
 	if err != nil {
 		return nil, fmt.Errorf("error getting runtime by id: %w", err)
@@ -65,32 +66,21 @@ func (r *ResourceMetricsInteractor) Watch(ctx context.Context, versionId, fromDa
 		return nil, fmt.Errorf("error getting runtime by id: %w", err)
 	}
 
-	step, err := calcResourceMetricsStep(fromDate, "")
-	if err != nil {
-		return nil, err
-	}
-
-	return r.resourceMetricsService.Watch(ctx, runtime.GetNamespace(), version.Name, fromDate, step)
+	return r.resourceMetricsService.Watch(ctx, runtime.GetNamespace(), version.Name, fromDate, watchStepInterval)
 }
 
 func calcResourceMetricsStep(fromDate, toDate string) (int32, error) {
-	fmt.Println("Calling to calcResourceMetricsStep")
 	fromDateParsed, err := time.Parse(time.RFC3339, fromDate)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing fromDate time: %w", err)
 	}
 
-	var toDateParsed time.Time
-	if toDate == "" {
-		toDateParsed = time.Now()
-	} else {
-		toDateParsed, err = time.Parse(time.RFC3339, toDate)
-		if err != nil {
-			return 0, fmt.Errorf("error parsing toDate time: %w", err)
-		}
+	toDateParsed, err := time.Parse(time.RFC3339, toDate)
+	if err != nil {
+		return 0, fmt.Errorf("error parsing toDate time: %w", err)
 	}
 
-	finalStep := int32(toDateParsed.Sub(fromDateParsed).Seconds() / graphResolution)
+	step := int32(toDateParsed.Sub(fromDateParsed).Seconds() / graphResolution)
 
-	return finalStep, nil
+	return step, nil
 }
