@@ -2,11 +2,13 @@ package logging
 
 import (
 	"encoding/json"
-	nc "github.com/nats-io/nats.go"
-	"gitlab.com/konstellation/kre/mongo-writer/mongodb"
-	"go.mongodb.org/mongo-driver/bson"
 	"regexp"
 	"time"
+
+	nc "github.com/nats-io/nats.go"
+	"go.mongodb.org/mongo-driver/bson"
+
+	"github.com/konstellation-io/kre/mongo-writer/mongodb"
 )
 
 const logsCollName = "logs"

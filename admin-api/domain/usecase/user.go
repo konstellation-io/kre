@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/repository"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/repository"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 // UserInteractor contains app logic to handle User entities

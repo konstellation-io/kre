@@ -8,8 +8,8 @@ import (
 
 	"gopkg.in/gomail.v2"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 type VerificationCodeSMTPTransport struct {

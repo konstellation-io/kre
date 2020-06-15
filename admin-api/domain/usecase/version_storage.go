@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/krt"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/krt"
 )
 
 func (i *VersionInteractor) storeContent(runtime *entity.Runtime, krtYml *krt.Krt, tmpDir string) error {

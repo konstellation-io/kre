@@ -1,10 +1,12 @@
 package kubernetes
 
 import (
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"gitlab.com/konstellation/kre/runtime-api/config"
 	"os"
 	"path/filepath"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
+
+	"github.com/konstellation-io/kre/runtime-api/config"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"

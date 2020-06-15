@@ -7,10 +7,10 @@ import (
 
 	"google.golang.org/grpc"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/kre/admin-api/adapter/service/proto/resourcemetricspb"
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin-api/adapter/service/proto/resourcemetricspb"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 type ResourceMetricsService struct {

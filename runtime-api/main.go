@@ -1,15 +1,17 @@
 package main
 
 import (
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"gitlab.com/konstellation/kre/runtime-api/config"
-	"gitlab.com/konstellation/kre/runtime-api/kubernetes"
-	"gitlab.com/konstellation/kre/runtime-api/mongo"
-	"gitlab.com/konstellation/kre/runtime-api/proto/monitoringpb"
-	"gitlab.com/konstellation/kre/runtime-api/service"
-	"google.golang.org/grpc"
 	"net"
 	"os"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
+	"google.golang.org/grpc"
+
+	"github.com/konstellation-io/kre/runtime-api/config"
+	"github.com/konstellation-io/kre/runtime-api/kubernetes"
+	"github.com/konstellation-io/kre/runtime-api/mongo"
+	"github.com/konstellation-io/kre/runtime-api/proto/monitoringpb"
+	"github.com/konstellation-io/kre/runtime-api/service"
 )
 
 func main() {

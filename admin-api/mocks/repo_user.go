@@ -7,7 +7,7 @@ package mocks
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	entity "gitlab.com/konstellation/kre/admin-api/domain/entity"
+	entity "github.com/konstellation-io/kre/admin-api/domain/entity"
 	reflect "reflect"
 )
 
