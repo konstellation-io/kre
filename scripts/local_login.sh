@@ -17,7 +17,7 @@ create_user_mongo_script() {
   echo "db.getCollection('users').update({ \"_id\": \"local_login_user\" }, {\"\$set\": { \"email\": \"$DEV_EMAIL\", \"deleted\": false, \"accessLevel\": \"ADMIN\", \"creationDate\": ISODate(\"2020-06-15T10:45:54.528Z\") }}, { \"upsert\": true })"
 }
 
-create_user_mongo_script | kubectl exec -n kre -it $MONGO_POD -- mongo --quiet -u $MONGO_USER -p $MONGO_PASS $MONGO_DB
+create_user_mongo_script | kubectl exec -n kre -it $MONGO_POD -- mongo --quiet -u $MONGO_USER -p $MONGO_PASS $MONGO_DB >/dev/null 2>&1
 
 echo "calling api..."
 curl -s $SIGNIN_URL \
