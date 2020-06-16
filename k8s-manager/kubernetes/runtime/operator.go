@@ -25,7 +25,12 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 
 	log.Printf("Creating Runtime object on '%s' with url: %s", runtime.Namespace, entrypointURL)
 
-	_, err := client.Namespace(runtime.Namespace).Create(&unstructured.Unstructured{
+	totalMongoReplicas := 3
+	if m.config.DevelopmentMode {
+		totalMongoReplicas = 1
+	}
+
+	definition := &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"kind":       "Runtime",
 			"apiVersion": runtimeGVR.Group + "/v1alpha1",
@@ -42,6 +47,7 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 					"replicas": 1,
 				},
 				"mongo": map[string]interface{}{
+					"replicas": totalMongoReplicas,
 					"auth": map[string]interface{}{
 						"key":           runtime.Mongo.SharedKey,
 						"adminUser":     runtime.Mongo.Username,
@@ -59,7 +65,9 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 				},
 			},
 		},
-	}, metav1.CreateOptions{})
+	}
+
+	_, err := client.Namespace(runtime.Namespace).Create(definition, metav1.CreateOptions{})
 	if err != nil {
 		return err
 	}
