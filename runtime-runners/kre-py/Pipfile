@@ -14,6 +14,7 @@ scikit-learn = "==0.23.1"
 gensim = "==3.4.0"
 nltk = "==3.3"
 torch= "==1.4.0"
+opencv-python = "==4.2.0.34"
 
 [requires]
 python_version = "3"
