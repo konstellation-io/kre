@@ -33,6 +33,13 @@ type ChartData = {
 
 const N_MINUTES_TO_SHOW = 15;
 
+function buildDElement(date: string, value: number): D {
+  return {
+    x: new Date(date),
+    y: value
+  };
+}
+
 function ResourceMetrics() {
   const [expanded, setExpanded] = useState(false);
   const { versionId } = useParams<VersionRouteParams>();
@@ -92,14 +99,8 @@ function ResourceMetrics() {
       const newChartData: ChartData = { cpu: [], mem: [] };
 
       data.resourceMetrics.forEach(d => {
-        newChartData.cpu.push({
-          x: new Date(d.date),
-          y: d.cpu
-        });
-        newChartData.mem.push({
-          x: new Date(d.date),
-          y: d.mem
-        });
+        newChartData.cpu.push(buildDElement(d.date, d.cpu));
+        newChartData.mem.push(buildDElement(d.date, d.mem));
       });
 
       setChartData(newChartData);
