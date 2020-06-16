@@ -122,10 +122,10 @@ function ResourceMetrics() {
               title="CPU"
               color={COLORS.HIGHLIGHT}
               data={chartData.cpu}
-              unit="Cores"
+              unit="mCores"
               expanded={expanded}
               toggleExpand={toggleExpand}
-              formatYAxis={v => format('.3s')(v)}
+              formatYAxis={v => format('.4')(v)}
               formatXAxis={date => formatDate(new Date(date), true)}
               removed={nMetricsToRemove.current}
               highlightLastValue

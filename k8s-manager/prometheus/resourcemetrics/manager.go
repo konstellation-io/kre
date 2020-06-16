@@ -122,7 +122,7 @@ func (m *Manager) prometheusQuery(
 		max(kube_pod_labels{label_version_name='%s'}) by(label_version_name, pod) * on (pod) group_right(label_version_name)
 		label_replace(
 			 sum by (pod_name)(
-				  rate(container_cpu_usage_seconds_total{namespace='%s'}[5m])*1000
+				  rate(container_cpu_usage_seconds_total{namespace='%s', container_name!="POD",container_name!=""}[5m])*1000
 			 ), 'pod', '$1', 'pod_name', '(.+)'
 		)
 	 ) by (label_version_name)`, versionName, namespace)
