@@ -4,6 +4,6 @@ mutation RevokeUserSessions($input: UsersInput!) {
     email
     accessLevel
     creationDate
-    lastAccess
+    lastActivity
   }
 }

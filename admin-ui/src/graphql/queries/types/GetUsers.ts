@@ -15,7 +15,7 @@ export interface GetUsers_users {
   email: string;
   accessLevel: AccessLevel;
   creationDate: string;
-  lastAccess: string | null;
+  lastActivity: string | null;
 }
 
 export interface GetUsers {

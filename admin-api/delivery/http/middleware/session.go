@@ -26,7 +26,7 @@ func NewSessionMiddleware(cfg *config.Config, logger logging.Logger, authInterac
 				return httperrors.HTTPErrInvalidSession
 			}
 
-			err = authInteractor.UpdateLastAccess(userID)
+			err = authInteractor.UpdateLastActivity(userID)
 			if err != nil {
 				logger.Warnf("Error updating last access: %s", err)
 			}

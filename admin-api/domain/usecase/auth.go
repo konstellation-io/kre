@@ -261,6 +261,6 @@ func (a *AuthInteractor) RevokeUserSessions(userIDs []string, loggedUser string)
 	return nil
 }
 
-func (a *AuthInteractor) UpdateLastAccess(loggedUserID string) error {
-	return a.userRepo.UpdateLastAccess(loggedUserID)
+func (a *AuthInteractor) UpdateLastActivity(loggedUserID string) error {
+	return a.userRepo.UpdateLastActivity(loggedUserID)
 }

@@ -15,7 +15,7 @@ export interface UpdateAccessLevel_updateAccessLevel {
   email: string;
   accessLevel: AccessLevel;
   creationDate: string;
-  lastAccess: string | null;
+  lastActivity: string | null;
 }
 
 export interface UpdateAccessLevel {

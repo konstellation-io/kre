@@ -15,7 +15,7 @@ export interface RevokeUserSessions_revokeUserSessions {
   email: string;
   accessLevel: AccessLevel;
   creationDate: string;
-  lastAccess: string | null;
+  lastActivity: string | null;
 }
 
 export interface RevokeUserSessions {

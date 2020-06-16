@@ -4,6 +4,6 @@ mutation UpdateAccessLevel($input: UpdateAccessLevelInput!) {
     email
     accessLevel
     creationDate
-    lastAccess
+    lastActivity
   }
 }
