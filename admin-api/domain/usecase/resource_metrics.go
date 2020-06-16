@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	graphResolution   = 60
-	watchStepInterval = 1
+	graphResolution   = 15
+	watchStepInterval = 59
 )
 
 type ResourceMetricsInteractor struct {
