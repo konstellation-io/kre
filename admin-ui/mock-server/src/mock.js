@@ -62,7 +62,7 @@ function getResourceMetrics(unit, quantity) {
   datetime = datetime.add(quantity, unit);
   return {
     date: datetime.toISOString(),
-    cpu: casual.double(0.001, 1),
+    cpu: casual.double(0.01, 1000),
     mem: casual.double(0, 8 * 1000 * 1000 * 1000)
   };
 }
