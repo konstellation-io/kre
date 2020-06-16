@@ -306,7 +306,7 @@ func (r *queryResolver) ResourceMetrics(
 	return r.resourceMetricsInteractor.Get(ctx, versionId, fromDate, toDate)
 }
 
-func (r *subscriptionResolver) ResourceMetrics(
+func (r *subscriptionResolver) WatchResourceMetrics(
 	ctx context.Context,
 	versionId string,
 	fromDate string,

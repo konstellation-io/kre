@@ -14,6 +14,8 @@ import (
 	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
+const refreshInterval = 60 * time.Second
+
 // Manager contains methods to call Prometheus.
 type Manager struct {
 	config     *config.Config
@@ -59,8 +61,6 @@ func (m *Manager) GetVersionResourceMetrics(
 	return m.prometheusQuery(fromDate, toDate, step, input.VersionName, input.Namespace)
 }
 
-const refreshInterval = 5 * time.Second
-
 // WatchVersionResourceMetrics call to Prometheus and return to channel the metrics for gRPC server.
 func (m *Manager) WatchVersionResourceMetrics(
 	ctx context.Context,
@@ -91,6 +91,11 @@ func (m *Manager) WatchVersionResourceMetrics(
 				}
 
 				fromDate = toDate
+
+				if len(metrics) > 1 {
+					metrics = metrics[1:]
+				}
+
 				metricsCh <- metrics
 			}
 		}
@@ -117,7 +122,7 @@ func (m *Manager) prometheusQuery(
 		max(kube_pod_labels{label_version_name='%s'}) by(label_version_name, pod) * on (pod) group_right(label_version_name)
 		label_replace(
 			 sum by (pod_name)(
-				  rate(container_cpu_usage_seconds_total{namespace='%s'}[5m])
+				  rate(container_cpu_usage_seconds_total{namespace='%s', container_name!="POD",container_name!=""}[5m])*1000
 			 ), 'pod', '$1', 'pod_name', '(.+)'
 		)
 	 ) by (label_version_name)`, versionName, namespace)
@@ -136,7 +141,7 @@ func (m *Manager) prometheusQuery(
 		max(kube_pod_labels{label_version_name='%s'}) by(label_version_name, pod) * on (pod) group_right(label_version_name)
 		label_replace(
 			 sum by (pod_name)(
-				  rate(container_memory_usage_bytes{namespace='%s'}[5m])
+				  container_memory_working_set_bytes{namespace='%s', container_name!="POD",container_name!=""}
 			 ), 'pod', '$1', 'pod_name', '(.+)'
 		)
 	 ) by (label_version_name)`, versionName, namespace)

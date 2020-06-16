@@ -54,7 +54,7 @@ type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
-  resourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
+  watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateRuntimeInput {

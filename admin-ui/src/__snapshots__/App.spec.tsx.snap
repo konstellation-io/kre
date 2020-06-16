@@ -323,6 +323,11 @@ exports[`renders without crashing 1`] = `
         </div>
       </div>
     </div>
+    <div
+      id="chartjs-tooltip"
+    >
+      <table />
+    </div>
   </div>
 </div>
 `;

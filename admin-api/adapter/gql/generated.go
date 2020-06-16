@@ -177,10 +177,10 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
-		NodeLogs          func(childComplexity int, runtimeID string, versionID string, filters entity.LogFilters) int
-		ResourceMetrics   func(childComplexity int, versionID string, fromDate string) int
-		RuntimeCreated    func(childComplexity int) int
-		VersionNodeStatus func(childComplexity int, versionID string) int
+		NodeLogs             func(childComplexity int, runtimeID string, versionID string, filters entity.LogFilters) int
+		RuntimeCreated       func(childComplexity int) int
+		VersionNodeStatus    func(childComplexity int, versionID string) int
+		WatchResourceMetrics func(childComplexity int, versionID string, fromDate string) int
 	}
 
 	User struct {
@@ -274,7 +274,7 @@ type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
 	NodeLogs(ctx context.Context, runtimeID string, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
 	VersionNodeStatus(ctx context.Context, versionID string) (<-chan *entity.VersionNodeStatus, error)
-	ResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
+	WatchResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
 }
 type UserResolver interface {
 	CreationDate(ctx context.Context, obj *entity.User) (string, error)
@@ -962,18 +962,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.NodeLogs(childComplexity, args["runtimeId"].(string), args["versionId"].(string), args["filters"].(entity.LogFilters)), true
 
-	case "Subscription.resourceMetrics":
-		if e.complexity.Subscription.ResourceMetrics == nil {
-			break
-		}
-
-		args, err := ec.field_Subscription_resourceMetrics_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Subscription.ResourceMetrics(childComplexity, args["versionId"].(string), args["fromDate"].(string)), true
-
 	case "Subscription.runtimeCreated":
 		if e.complexity.Subscription.RuntimeCreated == nil {
 			break
@@ -992,6 +980,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Subscription.VersionNodeStatus(childComplexity, args["versionId"].(string)), true
+
+	case "Subscription.watchResourceMetrics":
+		if e.complexity.Subscription.WatchResourceMetrics == nil {
+			break
+		}
+
+		args, err := ec.field_Subscription_watchResourceMetrics_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.WatchResourceMetrics(childComplexity, args["versionId"].(string), args["fromDate"].(string)), true
 
 	case "User.accessLevel":
 		if e.complexity.User.AccessLevel == nil {
@@ -1347,7 +1347,7 @@ type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   versionNodeStatus(versionId: ID!): VersionNodeStatus!
-  resourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
+  watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateRuntimeInput {
@@ -2034,7 +2034,21 @@ func (ec *executionContext) field_Subscription_nodeLogs_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Subscription_resourceMetrics_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Subscription_versionNodeStatus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["versionId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["versionId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Subscription_watchResourceMetrics_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -2053,20 +2067,6 @@ func (ec *executionContext) field_Subscription_resourceMetrics_args(ctx context.
 		}
 	}
 	args["fromDate"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Subscription_versionNodeStatus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["versionId"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["versionId"] = arg0
 	return args, nil
 }
 
@@ -5045,7 +5045,7 @@ func (ec *executionContext) _Subscription_versionNodeStatus(ctx context.Context,
 	}
 }
 
-func (ec *executionContext) _Subscription_resourceMetrics(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+func (ec *executionContext) _Subscription_watchResourceMetrics(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5061,7 +5061,7 @@ func (ec *executionContext) _Subscription_resourceMetrics(ctx context.Context, f
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Subscription_resourceMetrics_args(ctx, rawArgs)
+	args, err := ec.field_Subscription_watchResourceMetrics_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return nil
@@ -5069,7 +5069,7 @@ func (ec *executionContext) _Subscription_resourceMetrics(ctx context.Context, f
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().ResourceMetrics(rctx, args["versionId"].(string), args["fromDate"].(string))
+		return ec.resolvers.Subscription().WatchResourceMetrics(rctx, args["versionId"].(string), args["fromDate"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8428,8 +8428,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_nodeLogs(ctx, fields[0])
 	case "versionNodeStatus":
 		return ec._Subscription_versionNodeStatus(ctx, fields[0])
-	case "resourceMetrics":
-		return ec._Subscription_resourceMetrics(ctx, fields[0])
+	case "watchResourceMetrics":
+		return ec._Subscription_watchResourceMetrics(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}

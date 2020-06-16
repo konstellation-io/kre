@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
-
+import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 import {
@@ -74,6 +74,7 @@ function Status({ version }: Props) {
 
   return (
     <div className={styles.container}>
+      <StatusTopInfoBar />
       <WorkflowsManager
         workflows={get(data, 'version.workflows', [])}
         versionStatus={version?.status}

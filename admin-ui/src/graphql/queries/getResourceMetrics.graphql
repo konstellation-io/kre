@@ -1,0 +1,11 @@
+query GetResourceMetrics(
+  $versionId: ID!
+  $fromDate: String!
+  $toDate: String!
+) {
+  resourceMetrics(versionId: $versionId, fromDate: $fromDate, toDate: $toDate) {
+    date
+    cpu
+    mem
+  }
+}
