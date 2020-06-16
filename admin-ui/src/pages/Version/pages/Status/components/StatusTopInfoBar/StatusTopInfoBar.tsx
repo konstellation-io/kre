@@ -29,7 +29,7 @@ function StatusTopInfoBar() {
         <span>{nWorkflows}</span>
         {` WORKFLOW${nWorkflows > 1 ? 'S' : ''}`}
       </div>
-      <div className={styles.workflowsStatus}>3 ok</div>
+      <div className={styles.workflowsStatus}>{`${nWorkflows} ok`}</div>
       <div className={styles.charts}>{<ResourceMetrics />}</div>
     </div>
   );
