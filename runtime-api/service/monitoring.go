@@ -3,13 +3,15 @@ package service
 import (
 	"context"
 	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"gitlab.com/konstellation/kre/runtime-api/config"
-	"gitlab.com/konstellation/kre/runtime-api/entity"
-	"gitlab.com/konstellation/kre/runtime-api/kubernetes"
-	"gitlab.com/konstellation/kre/runtime-api/mongo"
-	"gitlab.com/konstellation/kre/runtime-api/proto/monitoringpb"
 	"time"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
+
+	"github.com/konstellation-io/kre/runtime-api/config"
+	"github.com/konstellation-io/kre/runtime-api/entity"
+	"github.com/konstellation-io/kre/runtime-api/kubernetes"
+	"github.com/konstellation-io/kre/runtime-api/mongo"
+	"github.com/konstellation-io/kre/runtime-api/proto/monitoringpb"
 )
 
 // MonitoringService basic server

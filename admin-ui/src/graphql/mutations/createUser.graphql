@@ -4,6 +4,6 @@ mutation CreateUser($input: CreateUserInput!) {
     email
     accessLevel
     creationDate
-    lastAccess
+    lastActivity
   }
 }

@@ -4,18 +4,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	nc "github.com/nats-io/nats.go"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"gitlab.com/konstellation/kre/mongo-writer/logging"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"gitlab.com/konstellation/kre/mongo-writer/config"
-	"gitlab.com/konstellation/kre/mongo-writer/mongodb"
-	"gitlab.com/konstellation/kre/mongo-writer/nats"
+	"github.com/konstellation-io/kre/libs/simplelogger"
+	nc "github.com/nats-io/nats.go"
+
+	"github.com/konstellation-io/kre/mongo-writer/logging"
+
+	"github.com/konstellation-io/kre/mongo-writer/config"
+	"github.com/konstellation-io/kre/mongo-writer/mongodb"
+	"github.com/konstellation-io/kre/mongo-writer/nats"
 )
 
 const natsSubjectLogs = "mongo_writer_logs"

@@ -3,7 +3,8 @@ package kubernetes
 import (
 	"context"
 	"fmt"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
 
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -11,8 +12,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 
-	"gitlab.com/konstellation/kre/runtime-api/config"
-	"gitlab.com/konstellation/kre/runtime-api/entity"
+	"github.com/konstellation-io/kre/runtime-api/config"
+	"github.com/konstellation-io/kre/runtime-api/entity"
 )
 
 type Watcher struct {

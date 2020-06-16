@@ -5,7 +5,7 @@ package repository
 import (
 	"context"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
 )
 
 type UserRepo interface {
@@ -25,5 +25,5 @@ type UserRepo interface {
 
 	MarkAsDeleted(ctx context.Context, userIDs []string) ([]*entity.User, error)
 
-	UpdateLastAccess(userID string) error
+	UpdateLastActivity(userID string) error
 }

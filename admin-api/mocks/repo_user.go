@@ -7,7 +7,7 @@ package mocks
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	entity "gitlab.com/konstellation/kre/admin-api/domain/entity"
+	entity "github.com/konstellation-io/kre/admin-api/domain/entity"
 	reflect "reflect"
 )
 
@@ -139,16 +139,16 @@ func (mr *MockUserRepoMockRecorder) MarkAsDeleted(ctx, userIDs interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkAsDeleted", reflect.TypeOf((*MockUserRepo)(nil).MarkAsDeleted), ctx, userIDs)
 }
 
-// UpdateLastAccess mocks base method
-func (m *MockUserRepo) UpdateLastAccess(userID string) error {
+// UpdateLastActivity mocks base method
+func (m *MockUserRepo) UpdateLastActivity(userID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateLastAccess", userID)
+	ret := m.ctrl.Call(m, "UpdateLastActivity", userID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// UpdateLastAccess indicates an expected call of UpdateLastAccess
-func (mr *MockUserRepoMockRecorder) UpdateLastAccess(userID interface{}) *gomock.Call {
+// UpdateLastActivity indicates an expected call of UpdateLastActivity
+func (mr *MockUserRepoMockRecorder) UpdateLastActivity(userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLastAccess", reflect.TypeOf((*MockUserRepo)(nil).UpdateLastAccess), userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLastActivity", reflect.TypeOf((*MockUserRepo)(nil).UpdateLastActivity), userID)
 }

@@ -4,16 +4,16 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.com/konstellation/kre/admin-api/delivery/http/auth"
-	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/delivery/http/auth"
+	"github.com/konstellation-io/kre/admin-api/delivery/http/httperrors"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 type signInInput struct {
