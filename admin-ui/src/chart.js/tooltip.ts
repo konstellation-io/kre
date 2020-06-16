@@ -1,9 +1,11 @@
+import { ChartTooltipModel, ChartTooltipModelBody } from 'chart.js';
+
 export function createCustomTooltip(
   formatXAxis: Function,
   color: string,
   title: string
 ) {
-  return function(tooltipModel: any) {
+  return function(tooltipModel: ChartTooltipModel) {
     const tooltipMargin = 8;
     const tooltipEl = document.getElementById('chartjs-tooltip');
     if (!tooltipEl) return;
@@ -13,7 +15,7 @@ export function createCustomTooltip(
       return;
     }
 
-    function getBody(bodyItem: any) {
+    function getBody(bodyItem: ChartTooltipModelBody) {
       return bodyItem.lines;
     }
 
@@ -28,7 +30,7 @@ export function createCustomTooltip(
       });
       innerHtml += '</thead><tbody>';
 
-      bodyLines.forEach(function(body: any, i: any) {
+      bodyLines.forEach(function(body: string[]) {
         let style = `color:${color};font-weight:500;`;
         const titleText = `<span>${title}: </span>`;
         const bodyText = `<span style=${style}>${body}</span>`;
@@ -37,8 +39,8 @@ export function createCustomTooltip(
       innerHtml += '</tbody>';
 
       const tableRoot = tooltipEl.querySelector('table');
-      // @ts-ignore
-      tableRoot.innerHTML = innerHtml;
+
+      if (tableRoot) tableRoot.innerHTML = innerHtml;
     }
 
     const chartRect = this._chart.canvas.getBoundingClientRect();
