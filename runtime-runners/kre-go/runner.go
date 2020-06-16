@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/konstellation-io/kre/libs/simplelogger"
 	"github.com/nats-io/nats.go"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
 )
 
 type Result struct {

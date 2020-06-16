@@ -8,10 +8,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 type UserRepoMongoDB struct {
@@ -169,14 +169,14 @@ func (r *UserRepoMongoDB) MarkAsDeleted(ctx context.Context, userIDs []string) (
 	return updatedUsers, nil
 }
 
-func (r *UserRepoMongoDB) UpdateLastAccess(userID string) error {
+func (r *UserRepoMongoDB) UpdateLastActivity(userID string) error {
 	filter := bson.M{
 		"_id": userID,
 	}
 
 	upd := bson.M{
 		"$set": bson.M{
-			"lastAccess": time.Now(),
+			"lastActivity": time.Now(),
 		},
 	}
 

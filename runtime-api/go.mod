@@ -1,4 +1,4 @@
-module gitlab.com/konstellation/kre/runtime-api
+module github.com/konstellation-io/kre/runtime-api
 
 go 1.13
 
@@ -6,10 +6,9 @@ require (
 	github.com/gogo/protobuf v1.0.0 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/labstack/gommon v0.3.0
+	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200612125025-86990df312ef
 	github.com/stretchr/testify v1.4.0
 	github.com/xdg/stringprep v1.0.0 // indirect
-	gitlab.com/konstellation/kre/libs/simplelogger v0.0.0-20200227100435-816f3595dc29
 	go.mongodb.org/mongo-driver v1.3.0
 	google.golang.org/grpc v1.27.1
 	gopkg.in/yaml.v2 v2.2.7

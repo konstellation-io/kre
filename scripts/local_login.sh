@@ -7,6 +7,18 @@ SIGNIN_URL="$HOST/api/v1/auth/signin"
 DEV_EMAIL="dev@local.local"
 ADMIN_API_POD=$(kubectl -n kre get pod -l app=kre-local-admin-api -o custom-columns=":metadata.name" --no-headers)
 
+MONGO_POD=$(kubectl -n kre get pod -l app=mongodb -o custom-columns=":metadata.name" --no-headers)
+MONGO_DB=localKRE
+MONGO_USER="admin"
+MONGO_PASS=123456
+
+
+create_user_mongo_script() {
+  echo "db.getCollection('users').update({ \"_id\": \"local_login_user\" }, {\"\$set\": { \"email\": \"$DEV_EMAIL\", \"deleted\": false, \"accessLevel\": \"ADMIN\", \"creationDate\": ISODate(\"2020-06-15T10:45:54.528Z\") }}, { \"upsert\": true })"
+}
+
+create_user_mongo_script | kubectl exec -n kre -it $MONGO_POD -- mongo --quiet -u $MONGO_USER -p $MONGO_PASS $MONGO_DB >/dev/null 2>&1
+
 echo "calling api..."
 curl -s $SIGNIN_URL \
   -H 'pragma: no-cache' -H 'cache-control: no-cache' \

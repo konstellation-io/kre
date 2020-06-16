@@ -4,6 +4,6 @@ query GetUsers {
     email
     accessLevel
     creationDate
-    lastAccess
+    lastActivity
   }
 }

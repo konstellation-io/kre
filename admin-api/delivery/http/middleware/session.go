@@ -4,11 +4,11 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/config"
-	"gitlab.com/konstellation/kre/admin-api/delivery/http/auth"
-	"gitlab.com/konstellation/kre/admin-api/delivery/http/httperrors"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin-api/delivery/http/auth"
+	"github.com/konstellation-io/kre/admin-api/delivery/http/httperrors"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 func NewSessionMiddleware(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor) echo.MiddlewareFunc {
@@ -26,7 +26,7 @@ func NewSessionMiddleware(cfg *config.Config, logger logging.Logger, authInterac
 				return httperrors.HTTPErrInvalidSession
 			}
 
-			err = authInteractor.UpdateLastAccess(userID)
+			err = authInteractor.UpdateLastActivity(userID)
 			if err != nil {
 				logger.Warnf("Error updating last access: %s", err)
 			}

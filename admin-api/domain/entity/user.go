@@ -27,6 +27,6 @@ type User struct {
 	Email        string      `bson:"email"`
 	AccessLevel  AccessLevel `bson:"accessLevel"`
 	CreationDate time.Time   `bson:"creationDate"`
-	LastAccess   *time.Time  `bson:"lastAccess"`
+	LastActivity *time.Time  `bson:"lastActivity"`
 	Deleted      bool        `bson:"deleted"`
 }
