@@ -13,16 +13,16 @@ resolver:
 autobind: []
 models:
   AccessLevel:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.AccessLevel
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.AccessLevel
   User:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.User
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.User
     fields:
       creationDate:
         resolver: true
       lastActivity:
         resolver: true
   Runtime:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Runtime
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.Runtime
     fields:
       creationDate:
         resolver: true
@@ -33,7 +33,7 @@ models:
       publishedVersion:
         resolver: true
   Version:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Version
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.Version
     fields:
       creationDate:
         resolver: true
@@ -50,23 +50,23 @@ models:
       configurationCompleted:
         resolver: true
   Workflow:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Workflow
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.Workflow
   Node:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Node
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.Node
     fields:
       status:
         resolver: true
   Edge:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Edge
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.Edge
   VersionNodeStatus:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.VersionNodeStatus
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.VersionNodeStatus
     fields:
       date:
         resolver: true
       status:
         resolver: true
   UserActivity:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.UserActivity
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.UserActivity
     fields:
       date:
         resolver: true
@@ -75,24 +75,24 @@ models:
       user:
         resolver: true
   UserActivityVar:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.UserActivityVar
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.UserActivityVar
   NodeLog:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.NodeLog
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.NodeLog
   LogLevel:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.LogLevel
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.LogLevel
   LogFilters:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.LogFilters
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.LogFilters
   Settings:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Setting
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.Setting
   MetricChartData:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricChartData
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.MetricChartData
   Metrics:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.Metrics
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.Metrics
   MetricsAccuracy:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricsAccuracy
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.MetricsAccuracy
   MetricsCharts:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricsCharts
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.MetricsCharts
   MetricsValues:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.MetricsValues
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.MetricsValues
   ResourceMetrics:
-    model: gitlab.com/konstellation/kre/admin-api/domain/entity.ResourceMetrics
+    model: github.com/konstellation-io/kre/admin-api/domain/entity.ResourceMetrics

@@ -3,7 +3,7 @@ package kre
 import (
 	"os"
 
-	"gitlab.com/konstellation/kre/libs/simplelogger"
+	"github.com/konstellation-io/kre/libs/simplelogger"
 )
 
 type Config struct {

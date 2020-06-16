@@ -2,10 +2,12 @@ package mongo
 
 import (
 	"context"
-	"gitlab.com/konstellation/kre/libs/simplelogger"
-	"gitlab.com/konstellation/kre/runtime-api/config"
 	"os"
 	"time"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
+
+	"github.com/konstellation-io/kre/runtime-api/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

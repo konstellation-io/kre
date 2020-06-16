@@ -6,9 +6,9 @@ import (
 
 	"github.com/labstack/echo"
 
-	"gitlab.com/konstellation/kre/admin-api/adapter/dataloader"
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/adapter/dataloader"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
 )
 
 const VersionLoaderKey = "versionloader"

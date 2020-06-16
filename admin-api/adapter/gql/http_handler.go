@@ -9,8 +9,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gorilla/websocket"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
 func NewHttpHandler(

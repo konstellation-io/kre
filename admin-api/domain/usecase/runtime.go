@@ -3,11 +3,11 @@ package usecase
 import (
 	"errors"
 
-	"gitlab.com/konstellation/kre/admin-api/domain/entity"
-	"gitlab.com/konstellation/kre/admin-api/domain/repository"
-	"gitlab.com/konstellation/kre/admin-api/domain/service"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/logging"
-	"gitlab.com/konstellation/kre/admin-api/domain/usecase/runtime"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin-api/domain/repository"
+	"github.com/konstellation-io/kre/admin-api/domain/service"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/runtime"
 )
 
 // RuntimeStatus enumerates all Runtime status
