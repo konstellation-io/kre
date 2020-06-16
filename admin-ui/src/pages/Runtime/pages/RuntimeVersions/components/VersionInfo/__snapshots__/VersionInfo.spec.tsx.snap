@@ -32,7 +32,7 @@ exports[`VersionInfo matches snapshot 1`] = `
           <p
             className="creationDate"
           >
-            CREATED: January 1, 2020
+            CREATED: Jan 1, 2020
           </p>
         </div>
       </div>

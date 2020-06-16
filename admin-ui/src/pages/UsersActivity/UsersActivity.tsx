@@ -1,4 +1,4 @@
-import React, { useState, useEffect, UIEvent } from 'react';
+import React, { useState, UIEvent } from 'react';
 
 import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
 import FiltersBar, {
@@ -30,7 +30,7 @@ const GetUserActivityQuery = loader(
 );
 
 const N_LIST_ITEMS_STEP = 30;
-const ITEM_HEIGHT = 63;
+const ITEM_HEIGHT = 76;
 const LIST_STEP_HEIGHT = N_LIST_ITEMS_STEP * ITEM_HEIGHT;
 const SCROLL_THRESHOLD = LIST_STEP_HEIGHT * 0.8;
 export const ACTION_TYPES = Object.keys(typeToText);
@@ -41,13 +41,10 @@ function UsersActivity() {
   const { data: usersData, error: usersError } = useQuery<GetUsers>(
     GetUsersQuery
   );
-  const {
-    loading,
-    data,
-    error,
-    refetch: getUsersActivity,
-    fetchMore
-  } = useQuery<GetUsersActivity>(GetUserActivityQuery, {
+  const { loading, error, refetch: getUsersActivity, fetchMore } = useQuery<
+    GetUsersActivity
+  >(GetUserActivityQuery, {
+    onCompleted: data => setUsersActivityData(data.userActivityList),
     fetchPolicy: 'no-cache'
   });
 
@@ -56,13 +53,6 @@ function UsersActivity() {
   >([]);
 
   const [filterValues, setFilterValues] = useState({});
-
-  // As soon as we get new data, we update users activity
-  useEffect(() => {
-    if (data) {
-      setUsersActivityData(data.userActivityList);
-    }
-  }, [data, setUsersActivityData]);
 
   function handleOnScroll({ currentTarget }: UIEvent<HTMLDivElement>) {
     const actualScroll = currentTarget.scrollTop + currentTarget.clientHeight;
@@ -77,12 +67,11 @@ function UsersActivity() {
         query: GetUserActivityQuery,
         variables: { ...filterValues, lastId },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          const prevData = previousResult.userActivityList;
           const newData = fetchMoreResult && fetchMoreResult.userActivityList;
 
-          return {
-            userActivityList: [...prevData, ...(newData || [])]
-          };
+          setUsersActivityData([...usersActivityData, ...(newData || [])]);
+
+          return previousResult;
         }
       });
     }

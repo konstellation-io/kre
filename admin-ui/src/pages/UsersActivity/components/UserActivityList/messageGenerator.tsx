@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, FC } from 'react';
 import { Link } from 'react-router-dom';
 import ROUTE from '../../../../constants/routes';
 import { buildRoute } from '../../../../utils/routes';
@@ -7,6 +7,8 @@ import {
   GetUsersActivity_userActivityList_vars
 } from '../../../../graphql/queries/types/GetUsersActivity';
 import { UserActivityType } from '../../../../graphql/types/globalTypes';
+import cx from 'classnames';
+import styles from './UserActivityList.module.scss';
 
 export enum VarTypes {
   RUNTIME_ID = 'RUNTIME_ID',
@@ -26,11 +28,15 @@ export enum VarTypes {
   ACCESS_LEVEL = 'ACCESS_LEVEL'
 }
 
-function getVar(text: string | ReactElement | undefined): ReactElement {
-  return <strong>{text}</strong>;
-}
-
 type Message = ReactElement | null;
+
+type HighlightProps = {
+  children: string;
+  type?: string;
+};
+const Highlight: FC<HighlightProps> = ({ children, type }) => (
+  <span className={cx(styles.highlight, styles[type || ''])}>{children}</span>
+);
 
 export default function getMessage(
   userActivity: GetUsersActivity_userActivityList
@@ -48,33 +54,32 @@ export default function getMessage(
     {}
   );
 
-  let runtimeName: string | undefined = vars[VarTypes.RUNTIME_NAME],
-    runtimeId: string | undefined = vars[VarTypes.RUNTIME_ID],
-    versionName: string | undefined = vars[VarTypes.VERSION_NAME],
-    versionId: string | undefined = vars[VarTypes.VERSION_ID],
-    oldPublishedVersionName: string | undefined =
-      vars[VarTypes.OLD_PUBLISHED_VERSION_NAME],
-    oldPublishedVersionId: string | undefined =
-      vars[VarTypes.OLD_PUBLISHED_VERSION_ID],
-    comment: string | undefined = vars[VarTypes.COMMENT],
-    settingName: string | undefined = vars[VarTypes.SETTING_NAME],
-    oldValue: string | undefined = vars[VarTypes.OLD_VALUE],
-    newValue: string | undefined = vars[VarTypes.NEW_VALUE],
-    configKeys: string | undefined = vars[VarTypes.CONFIG_KEYS],
-    createdUserEmail: string | undefined = vars[VarTypes.CREATED_USER_EMAIL],
-    createdUserAccessLevel: string | undefined =
-      vars[VarTypes.CREATED_USER_ACCESS_LEVEL],
-    userEmails: string | undefined = vars[VarTypes.USER_EMAILS],
-    accessLevel: string | undefined = vars[VarTypes.ACCESS_LEVEL];
+  const runtimeName = vars[VarTypes.RUNTIME_NAME];
+  const runtimeId = vars[VarTypes.RUNTIME_ID];
+  const versionName = vars[VarTypes.VERSION_NAME];
+  const versionId = vars[VarTypes.VERSION_ID];
+  const oldPublishedVersionName = vars[VarTypes.OLD_PUBLISHED_VERSION_NAME];
+  const oldPublishedVersionId = vars[VarTypes.OLD_PUBLISHED_VERSION_ID];
+  const comment = vars[VarTypes.COMMENT];
+  const settingName = vars[VarTypes.SETTING_NAME];
+  const oldValue = vars[VarTypes.OLD_VALUE];
+  const newValue = vars[VarTypes.NEW_VALUE];
+  const configKeys = vars[VarTypes.CONFIG_KEYS];
+  const createdUserEmail = vars[VarTypes.CREATED_USER_EMAIL];
+  const createdUserAccessLevel = vars[VarTypes.CREATED_USER_ACCESS_LEVEL];
+  const userEmails = vars[VarTypes.USER_EMAILS];
+  const accessLevel = vars[VarTypes.ACCESS_LEVEL];
 
-  const runtimeLink =
-    userActivity.type === UserActivityType.CREATE_RUNTIME && runtimeId ? (
-      <Link to={buildRoute.runtime(ROUTE.RUNTIME, runtimeId)}>
-        {runtimeName}
-      </Link>
-    ) : (
-      undefined
-    );
+  const runtimeLink = runtimeId ? (
+    <Link
+      to={buildRoute.runtime(ROUTE.RUNTIME, runtimeId)}
+      className={cx(styles.link)}
+    >
+      {runtimeName}
+    </Link>
+  ) : (
+    undefined
+  );
   const versionLink =
     runtimeId && versionId ? (
       <Link
@@ -83,8 +88,9 @@ export default function getMessage(
           runtimeId,
           versionId
         )}
+        className={cx(styles.link)}
       >
-        {`${runtimeName} - ${versionName}`}
+        {versionName}
       </Link>
     ) : (
       undefined
@@ -99,6 +105,7 @@ export default function getMessage(
           runtimeId,
           oldPublishedVersionId
         )}
+        className={cx(styles.link)}
       >
         {oldPublishedVersionName}
       </Link>
@@ -108,37 +115,42 @@ export default function getMessage(
 
   switch (userActivity.type) {
     case UserActivityType.LOGIN:
-      message = <>{'Has logged in'}</>;
+      message = <>Log in</>;
       break;
     case UserActivityType.LOGOUT:
-      message = <>{'Has logged out'}</>;
+      message = <>Log out</>;
       break;
     case UserActivityType.CREATE_RUNTIME:
       message = (
         <>
-          {'Has created a new Runtime: '}
-          {getVar(runtimeLink)}
+          New Runtime created:
+          {runtimeLink}
         </>
       );
       break;
     case UserActivityType.CREATE_VERSION:
       message = (
         <>
-          {'Has created a new Version: '}
-          {getVar(versionLink)}
+          New Version created:
+          {versionLink}
+          at Runtime
+          {runtimeLink}
         </>
       );
       break;
     case UserActivityType.PUBLISH_VERSION:
       message = (
         <>
-          {'Has published version: '}
-          {getVar(versionLink)}
-          {'. '}
+          The version
+          {versionLink}
+          Have been
+          <Highlight type="published">Published</Highlight>
+          at Runtime
+          {runtimeLink}
           {oldVersionLink && (
             <>
-              {'Previous published version: '}
-              {getVar(oldVersionLink)}
+              {'. Previous published version: '}
+              {oldVersionLink}
             </>
           )}
         </>
@@ -147,88 +159,102 @@ export default function getMessage(
     case UserActivityType.UNPUBLISH_VERSION:
       message = (
         <>
-          {'Has unpublished version '}
-          {getVar(versionLink)}
+          The version
+          {versionLink}
+          Have been
+          <Highlight type="unpublished">Unpublished</Highlight>
+          at Runtime
+          {runtimeLink}
         </>
       );
       break;
     case UserActivityType.STOP_VERSION:
       message = (
         <>
-          {'Has stopped version '}
-          {getVar(versionLink)}
+          The version
+          {versionLink}
+          Have been
+          <Highlight type="stopped">Stopped</Highlight>
+          at Runtime
+          {runtimeLink}
         </>
       );
       break;
     case UserActivityType.START_VERSION:
       message = (
         <>
-          {'Has started version '}
-          {getVar(versionLink)}
+          The version
+          {versionLink}
+          Have been
+          <Highlight type="started">Started</Highlight>
+          at Runtime
+          {runtimeLink}
         </>
       );
       break;
     case UserActivityType.UPDATE_SETTING:
       message = (
         <>
-          {'Has updated '}
-          {getVar(settingName)}
-          {' setting from '}
-          {getVar(oldValue)}
-          {' to '}
-          {getVar(newValue)}
+          Has updated
+          <Highlight>{settingName}</Highlight>
+          setting from
+          <Highlight>{oldValue}</Highlight>
+          to
+          <Highlight>{newValue}</Highlight>
         </>
       );
       break;
     case UserActivityType.UPDATE_VERSION_CONFIGURATION:
       message = (
         <>
-          {'Has changed settings: '}
-          {getVar(configKeys)}
-          {' from version '}
-          {getVar(versionLink)}
+          Updated settings
+          <Highlight>{configKeys}</Highlight>
+          from version
+          {versionLink}
         </>
       );
       break;
     case UserActivityType.CREATE_USER:
       message = (
         <>
-          {'Has created a new user: '}
-          {getVar(createdUserEmail)}
-          {' with access level: '}
-          {getVar(createdUserAccessLevel)}
+          New user created
+          <Highlight>{createdUserEmail}</Highlight>
+          with access level
+          <Highlight>{createdUserAccessLevel}</Highlight>
         </>
       );
       break;
     case UserActivityType.REMOVE_USERS:
       message = (
         <>
-          {'Has removed the following users: '}
-          {getVar(userEmails)}
+          Users removed
+          <Highlight>{userEmails}</Highlight>
         </>
       );
       break;
     case UserActivityType.UPDATE_ACCESS_LEVELS:
       message = (
         <>
-          {'Has set the access level to: '}
-          {getVar(accessLevel)}
-          {' for the following users: '}
-          {getVar(userEmails)}
+          Updated access level to
+          <Highlight>{accessLevel}</Highlight>
+          for the following users
+          <Highlight>{userEmails}</Highlight>
         </>
       );
       break;
     case UserActivityType.REVOKE_SESSIONS:
       message = (
         <>
-          {'Has revoked the sessions of the following users: '}
-          {getVar(userEmails)}
+          Revoked the sessions of the following users
+          <Highlight>{userEmails}</Highlight>
         </>
       );
       break;
     default:
       break;
   }
+
+  message = <div className={styles.message}>{message}</div>;
 
   return [message, comment];
 }

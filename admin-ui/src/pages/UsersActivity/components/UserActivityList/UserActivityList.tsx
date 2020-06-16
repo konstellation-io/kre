@@ -1,12 +1,9 @@
 import React from 'react';
 import { formatDate } from '../../../../utils/format';
 import getMessage from './messageGenerator';
-
-import EmailIcon from '@material-ui/icons/Email';
 import TimeIcon from '@material-ui/icons/AccessTime';
-
+import ActivityIcon from '../ActivityIcon/ActivityIcon';
 import styles from './UserActivityList.module.scss';
-
 import { GetUsersActivity_userActivityList } from '../../../../graphql/queries/types/GetUsersActivity';
 
 type Props = {
@@ -20,22 +17,20 @@ function UserActivityList({ data }: Props) {
       const [message, comment] = getMessage(userActivity);
 
       return (
-        <div
-          className={styles.row}
-          key={`${userActivity.date}-${idx}`}
-          data-testid={`userActivityListElement${idx}`}
-        >
-          <div className={styles.userAndMessage}>
-            <span className={styles.userWithIcon}>
-              <EmailIcon className="icon-regular" />
-              <p className={styles.user}>{userActivity.user.email}</p>
-            </span>
-            <p className={styles.message}>{message}</p>
-            {comment && <p className={styles.comment}>{comment}</p>}
-          </div>
+        <div className={styles.row} key={`${userActivity.date}-${idx}`}>
           <div className={styles.date}>
-            <TimeIcon className="icon-regular" />
-            <p>{formatDate(new Date(userActivity.date), true)}</p>
+            <div className={styles.dateIcon}>
+              <TimeIcon className="icon-small" />
+            </div>
+            {formatDate(new Date(userActivity.date), true)}
+          </div>
+          <div className={styles.activityIcon}>
+            <ActivityIcon activityType={userActivity.type} />
+          </div>
+          <div className={styles.info}>
+            <p className={styles.user}>{userActivity.user.email}</p>
+            <div className={styles.message}>{message}</div>
+            {comment && <p className={styles.comment}>{comment}</p>}
           </div>
         </div>
       );

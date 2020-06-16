@@ -25,19 +25,19 @@ describe('UserActivityList', () => {
   });
 
   it('Shows right texts', async () => {
-    const userActivityNode0 = wrapper.find(testid('userActivityListElement0'));
-    const userActivityNode1 = wrapper.find(testid('userActivityListElement1'));
+    const userActivityNode0 = wrapper.find('.row').at(0);
+    const userActivityNode1 = wrapper.find('.row').at(1);
 
     const dateFormatted = formatDate(
       new Date('2019-11-27T15:28:01+00:00'),
       true
     );
     const user0 = userActivityNode0.find('.user');
-    const message0 = userActivityNode0.find('.message');
-    const date1 = userActivityNode1.find('.date p');
+    const message0 = userActivityNode0.find('.message .message');
+    const date1 = userActivityNode1.find('.date');
 
     expect(user0.text()).toBe('user1@domain.com');
-    expect(message0.text()).toBe('Has logged in');
+    expect(message0.text()).toBe('Log in');
     expect(date1.text()).toBe(dateFormatted);
   });
 });
