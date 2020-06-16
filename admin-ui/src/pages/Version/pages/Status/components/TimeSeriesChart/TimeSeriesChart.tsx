@@ -1,5 +1,5 @@
 import '../../../../../../chart.js/defaultProps';
-import React, { useRef, useEffect, MouseEvent } from 'react';
+import React, { useRef, useEffect, MouseEvent, useCallback } from 'react';
 import { color as c } from 'd3-color';
 import IconExpand from '@material-ui/icons/KeyboardArrowDown';
 import IconShrink from '@material-ui/icons/KeyboardArrowUp';
@@ -126,34 +126,35 @@ function TimeSeriesChart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (chart.current !== null) {
-      if (chart.current.options.scales?.yAxes) {
-        chart.current.options.scales.yAxes = [
-          {
-            ...chart.current.options.scales.yAxes,
-            display: expanded,
-            ticks: {
-              ...chart.current.options.scales.yAxes[0].ticks,
-              display: expanded
-            },
-            afterTickToLabelConversion: function(scaleInstance) {
-              scaleInstance.ticks[scaleInstance.ticks.length - 1] = null;
-              scaleInstance.ticksAsNumbers[
-                scaleInstance.ticksAsNumbers.length - 1
-              ] = null;
-            },
-            gridLines: {
-              ...chart.current.options.scales.yAxes[0].gridLines,
-              display: expanded
-            }
+  const updateScales = useCallback(() => {
+    if (chart?.current?.options.scales?.yAxes) {
+      chart.current.options.scales.yAxes = [
+        {
+          ...chart.current.options.scales.yAxes,
+          display: expanded,
+          ticks: {
+            ...chart.current.options.scales.yAxes[0].ticks,
+            display: expanded
+          },
+          afterTickToLabelConversion: function(scaleInstance) {
+            scaleInstance.ticks[scaleInstance.ticks.length - 1] = null;
+            scaleInstance.ticksAsNumbers[
+              scaleInstance.ticksAsNumbers.length - 1
+            ] = null;
+          },
+          gridLines: {
+            ...chart.current.options.scales.yAxes[0].gridLines,
+            display: expanded
           }
-        ];
-      }
-
-      chart.current.update();
+        }
+      ];
     }
   }, [expanded]);
+
+  useEffect(() => {
+    updateScales();
+    chart.current && chart.current.update();
+  }, [updateScales]);
 
   useEffect(() => {
     function getLabels() {
@@ -185,6 +186,8 @@ function TimeSeriesChart({
         prevDataLenght - (data.length - prevDataLenght) + removed
       );
       addData(dataToAdd);
+
+      updateScales();
 
       chart.current.update();
     }
