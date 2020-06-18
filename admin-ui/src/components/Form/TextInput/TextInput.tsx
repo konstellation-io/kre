@@ -18,6 +18,8 @@ import IconHide from '@material-ui/icons/RemoveRedEyeOutlined';
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
 
+const KEY_ENTER = 13;
+
 export enum InputType {
   TEXT = 'text',
   NUMBER = 'number',
@@ -103,8 +105,7 @@ function TextInput({
   function onKeyPress(
     e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
-    if (e.which === 13 && !textArea) {
-      // Enter key
+    if (e.which === KEY_ENTER && (!textArea || (textArea && e.ctrlKey))) {
       onEnterKeyPress();
     }
   }
