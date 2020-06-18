@@ -153,9 +153,9 @@ function GroupSelect({
   const hasSelectedElements = !isEmpty(formSelectedOptions);
 
   return (
-    <div className={cx(className, styles.container)}>
+    <div className={styles.container}>
       {label && <InputLabel text={label} />}
-      <div className={styles.inputContainer}>
+      <div className={cx(className, styles.inputContainer)}>
         <div
           className={cx(styles.input, {
             [styles.error]: error !== '',

@@ -18,7 +18,7 @@ import { NodeSelection } from '../../../../../../../graphql/client/typeDefs';
 import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LevelIcon from '../../../../../../../components/LevelIcon/LevelIcon';
 
-// TODO: use GroupSelectData int he filters instead of [string]
+// TODO: use GroupSelectData in the filters instead of [string]
 function nodesSelectionToDoubleSelector(
   selections: NodeSelection[]
 ): GroupSelectData {
@@ -106,6 +106,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             onChange={onNodeSelection}
             label=""
             placeholder="Select Processes"
+            className={styles.selectProcessForm}
             hideError
             hideSelections
           />
@@ -122,7 +123,6 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             selectAllText="ALL LEVELS"
             options={levelOptions}
             formSelectedOptions={filterValues.levels || []}
-            className={styles.selectTypeForm}
             theme={SelectTheme.LIGHT}
           />
         </div>

@@ -2,6 +2,8 @@
 @import '../../../../../../../styles/mixins';
 @import '../../../../../../../styles/variables';
 
+$input-height: 30px;
+
 .container {
   @include font-body;
   line-height: 0;
@@ -43,20 +45,27 @@
 
   .searchFilter {
     width: 60%;
-    height: 30px;
+    height: $input-height;
     min-width: 100px;
     margin: $grid-unit $grid-unit $grid-unit 0;
 
     .searchForm {
       input {
-        height: 30px;
-        min-height: 30px;
+        height: $input-height;
+        min-height: $input-height;
       }
     }
   }
 
   .selectProcesses {
     width: 40%;
+    height: $input-height;
     min-width: 170px;
+
+    .selectProcessForm > div:first-child {
+      height: $input-height;
+      min-height: $input-height;
+      line-height: $input-height - 1px;
+    }
   }
 }

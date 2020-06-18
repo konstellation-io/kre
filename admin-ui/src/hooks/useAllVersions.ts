@@ -74,5 +74,14 @@ export default function useAllVersions() {
     setError(runtimesError);
   }, [runtimesError]);
 
-  return { data, loading, error };
+  function getVersionId(runtimeName: string, versionName: string) {
+    return (
+      data
+        ?.find(({ runtime }) => runtime.name === runtimeName)
+        ?.versions.find(version => version.name === versionName)?.id ||
+      'unknown'
+    );
+  }
+
+  return { data, loading, error, getVersionId };
 }

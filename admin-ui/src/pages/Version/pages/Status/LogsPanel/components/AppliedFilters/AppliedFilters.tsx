@@ -3,10 +3,10 @@ import styles from './AppliedFilters.module.scss';
 import Button from '../../../../../../../components/Button/Button';
 import Left from '../../../../../../../components/Layout/Left/Left';
 import Right from '../../../../../../../components/Layout/Right/Right';
-import Filter from '../../../../../../../components/Form/Filter';
 import { NodeSelection } from '../../../../../../../graphql/client/typeDefs';
 import { defaultFilters } from '../../../../../../../graphql/client/resolvers/updateTabFilters';
 import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
+import Chip from '../../../../../../../components/Chip/Chip';
 
 export type NodeChip = {
   workflowName: string;
@@ -155,15 +155,17 @@ function AppliedFilters({
     updateFilters({ [updatedFilter]: newFilterValue });
   }
 
-  const filterNodes = filtersSortened.map(([filter, value]: [string, any]) => (
-    <Filter
-      filter={filter}
-      value={value}
-      key={`${filter}${JSON.stringify(value)}`}
-      removeFilter={removeFilter}
-      getLabelAndTitle={getLabelAndTitle}
-    />
-  ));
+  const filterNodes = filtersSortened.map(([filter, value]: [string, any]) => {
+    const { label, title } = getLabelAndTitle(filter, value);
+    return (
+      <Chip
+        key={`${filter}${JSON.stringify(value)}`}
+        label={label}
+        title={title}
+        onClose={() => removeFilter(filter, value)}
+      />
+    );
+  });
 
   const hasFiltersToShow =
     filters.nodes?.length !== 0 || filters.search !== null;

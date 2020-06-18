@@ -5,7 +5,6 @@ import SelectionsBar, {
   VersionChip
 } from './components/SelectionsBar/SelectionsBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
-import { GetUsersActivityVariables } from '../../graphql/queries/types/GetUsersActivity';
 import { UserActivityType } from '../../graphql/types/globalTypes';
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
@@ -25,14 +24,6 @@ export type UserActivityFormData = {
   fromDate: Moment;
   toDate: Moment;
 };
-
-//////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
-
-// DOING: CHECK if vars are correct in all queries/requeries
-
-//////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
 
 function UsersActivity() {
   const [filterValues, setFilterValues] = useState<UserActivityFormData>();
@@ -56,7 +47,8 @@ function UsersActivity() {
   const {
     data: versionsData,
     loading: versionsLoading,
-    error: versionsError
+    error: versionsError,
+    getVersionId
   } = useAllVersions();
 
   function handleReset() {
@@ -74,9 +66,17 @@ function UsersActivity() {
     )();
   }
 
+  function getVersionIds(versionsSelection: GroupSelectData) {
+    return Object.entries(versionsSelection)
+      .map(([runtimeName, versionNames]) =>
+        versionNames.map(versionName => getVersionId(runtimeName, versionName))
+      )
+      .flat();
+  }
+
   function getQueryVariables(data: UserActivityFormData | undefined) {
     if (data?.versionIds)
-      return { ...data, versionIds: Object.values(data.versionIds).flat() };
+      return { ...data, versionIds: getVersionIds(data.versionIds) };
 
     return data ?? {};
   }

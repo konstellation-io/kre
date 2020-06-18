@@ -63,7 +63,7 @@ $height-input: 40px;
   background-color: palette(base);
   z-index: 1;
   overflow: hidden;
-  width: 22 * $grid-unit;
+  width: max-content;
   min-width: 100%;
   overflow: hidden;
   border-radius: 5px;

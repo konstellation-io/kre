@@ -1,25 +1,15 @@
 import React from 'react';
 import styles from './SelectionsBar.module.scss';
 import Left from '../../../../components/Layout/Left/Left';
-import Filter from '../../../../components/Form/Filter';
 import { VersionsData } from '../../../../hooks/useAllVersions';
 import {
   flatSelections,
   GroupSelectData
 } from '../../../../components/Form/GroupSelect/GroupSelect';
 import { isEmpty } from 'lodash';
+import Chip from '../../../../components/Chip/Chip';
 
-type Filter =
-  | string[]
-  | [
-      string,
-      (
-        | string
-        | {
-            [key: string]: string;
-          }
-      )
-    ];
+type Filter = [string, string | { [key: string]: string }];
 export type VersionChip = {
   runtime: string;
   version: string;
@@ -96,15 +86,17 @@ function SelectionsBar({
   filtersFormatted.sort(sortFilters);
   const activeFilters = getActiveFilters(filtersFormatted);
 
-  const filterNodes = activeFilters.map(([filter, value]) => (
-    <Filter
-      filter={filter}
-      value={value as any}
-      key={`${filter}${JSON.stringify(value)}`}
-      removeFilter={onRemoveFilter}
-      getLabelAndTitle={getLabelAndTitle}
-    />
-  ));
+  const filterNodes = activeFilters.map(([filter, value]) => {
+    const { label, title } = getLabelAndTitle(filter, value);
+    return (
+      <Chip
+        key={`${filter}${JSON.stringify(value)}`}
+        label={label}
+        title={title}
+        onClose={() => onRemoveFilter(filter, value as string | VersionChip)}
+      />
+    );
+  });
 
   return (
     <>
