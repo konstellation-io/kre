@@ -149,6 +149,7 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
         >
           <ModalLayoutJustify
             onUpdate={(value: string) => setValue('comment', value)}
+            submit={onSubmit}
             error={get(errors.comment, 'message')}
           />
         </ModalContainer>

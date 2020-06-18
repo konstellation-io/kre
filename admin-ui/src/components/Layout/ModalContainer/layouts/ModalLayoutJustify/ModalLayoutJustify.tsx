@@ -5,9 +5,10 @@ import styles from './ModalLayoutJustify.module.scss';
 
 type Props = {
   onUpdate: (value: string) => void;
+  submit: () => void;
   error: string;
 };
-function ModalLayoutJustify({ onUpdate, error }: Props) {
+function ModalLayoutJustify({ onUpdate, submit, error }: Props) {
   return (
     <>
       <div className={styles.comment}>
@@ -20,6 +21,7 @@ function ModalLayoutJustify({ onUpdate, error }: Props) {
             maxWidth: 338,
             minHeight: 105
           }}
+          onEnterKeyPress={submit}
           whiteColor
           showClearButton
           textArea
