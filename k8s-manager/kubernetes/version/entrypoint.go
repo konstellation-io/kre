@@ -146,6 +146,12 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 									SubPath:   name,
 								},
 								{
+									Name:      "shared-data",
+									ReadOnly:  false,
+									MountPath: "/data",
+									SubPath:   version.Name + "/data",
+								},
+								{
 									Name:      "app-log-volume",
 									MountPath: "/var/log/app",
 								},
@@ -228,7 +234,7 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 							VolumeSource: apiv1.VolumeSource{
 								PersistentVolumeClaim: &apiv1.PersistentVolumeClaimVolumeSource{
 									ClaimName: "kre-minio-pvc-kre-minio-0",
-									ReadOnly:  true,
+									ReadOnly:  false,
 								},
 							},
 						},
