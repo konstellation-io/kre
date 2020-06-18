@@ -48,6 +48,7 @@ type Props = {
   margin: Margin;
   workflowStatus: VersionStatus;
   onInnerNodeClick: Function;
+  onInputNodeClick: Function;
   tooltipRefs: TooltipRefs;
   enableNodeClicks: boolean;
 };
@@ -318,6 +319,7 @@ class WorkflowViz {
       props: {
         data,
         workflowStatus,
+        onInputNodeClick,
         tooltipRefs: { onHideTooltip, lastHoveredNode }
       }
     } = this;
@@ -342,6 +344,7 @@ class WorkflowViz {
             node: this
           });
         })
+        .on('click', () => onInputNodeClick())
         .on('mouseleave', () => onHideTooltip());
       this.inputNode
         .append('rect')
