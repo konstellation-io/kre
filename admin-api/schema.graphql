@@ -11,7 +11,8 @@ type Query {
   settings: Settings!
   userActivityList(
     userEmail: String
-    type: UserActivityType
+    types: [UserActivityType!]
+    versionIds: [ID!]
     fromDate: String
     toDate: String
     lastId: String
