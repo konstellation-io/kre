@@ -97,3 +97,10 @@ $margin-left-list: 10%;
     margin: 0 $grid-unit;
   }
 }
+
+.elements {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  position: relative;
+}

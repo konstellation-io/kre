@@ -15,8 +15,8 @@ import styles from './ActivityIcon.module.scss';
 import cx from 'classnames';
 
 enum IconColors {
-  DARK = 'dark',
-  LIGHT = 'light'
+  DARK = 'font-dark',
+  LIGHT = 'font-light'
 }
 
 enum IconBackgrounds {
@@ -53,7 +53,7 @@ function buildIconProp(
   };
 }
 
-const activityToIconProps = new Map([
+export const activityToIconProps = new Map([
   [
     UserActivityType.CREATE_RUNTIME,
     buildIconProp(IconAdd, IconColors.DARK, IconBackgrounds.LOWLIGHT)
@@ -115,16 +115,24 @@ const activityToIconProps = new Map([
 type Props = {
   activityType: UserActivityType;
   size?: number;
+  invert?: boolean;
 };
-function ActivityIcon({ activityType, size = 24 }: Props) {
+function ActivityIcon({ activityType, invert, size = 24 }: Props) {
   const iconProps = activityToIconProps.get(activityType) || defaultIconProps;
 
   return (
     <div
-      className={cx(styles.container, styles[iconProps.background])}
+      className={cx(styles.container, {
+        [styles[iconProps.background]]: !invert
+      })}
       style={{ width: size, height: size }}
     >
-      <div className={cx(styles.icon, styles[iconProps.color])}>
+      <div
+        className={cx(
+          styles.icon,
+          styles[invert ? iconProps.background : iconProps.color]
+        )}
+      >
         <iconProps.Icon className="icon-regular" />
       </div>
     </div>

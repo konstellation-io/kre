@@ -113,6 +113,13 @@ $height-input: 30px;
     height: 30px;
     padding-left: 3 * $grid-unit;
     border-bottom: solid 1px $color-black;
+    transition: border-left ease 0.3s, padding-left ease 0.3s;
+    border-left: solid 0px palette(highlight);
+
+    &.allSelected {
+      border-left: solid 0.5 * $grid-unit palette(highlight);
+      padding-left: 2.5 * $grid-unit;
+    }
 
     .name {
       @include font-button;

@@ -3,7 +3,7 @@ import styles from './AppliedFilters.module.scss';
 import Button from '../../../../../../../components/Button/Button';
 import Left from '../../../../../../../components/Layout/Left/Left';
 import Right from '../../../../../../../components/Layout/Right/Right';
-import Filter from './Filter';
+import Filter from '../../../../../../../components/Form/Filter';
 import { NodeSelection } from '../../../../../../../graphql/client/typeDefs';
 import { defaultFilters } from '../../../../../../../graphql/client/resolvers/updateTabFilters';
 import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
@@ -24,6 +24,32 @@ const sortFilters = (
   [a]: [string, string | NodeChip],
   [b]: [string, string | NodeChip]
 ) => filtersOrderDict[a] - filtersOrderDict[b] || a.localeCompare(b);
+
+function getLabelAndTitle(filter: string, value: any) {
+  let label = '',
+    title = '';
+
+  switch (filter) {
+    case 'search':
+      label = `Searched by "${value}"`;
+      title = label;
+      break;
+    case 'workflow':
+      label = value as string;
+      title = label;
+      break;
+    case 'nodes':
+      const node = value as NodeChip;
+      const workflowShort = node.workflowName.substring(0, 2).toUpperCase();
+      label = `${workflowShort}: ${node.nodeName}`;
+      title = `${node.workflowName}: ${node.nodeName}`;
+      break;
+    default:
+      label = 'unknown';
+  }
+
+  return { label, title };
+}
 
 function getActiveFilters(filters: Filters) {
   return Object.entries(filters).filter(([_, value]) => !isEmpty(value));
@@ -135,6 +161,7 @@ function AppliedFilters({
       value={value}
       key={`${filter}${JSON.stringify(value)}`}
       removeFilter={removeFilter}
+      getLabelAndTitle={getLabelAndTitle}
     />
   ));
 

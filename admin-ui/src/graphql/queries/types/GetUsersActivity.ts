@@ -37,6 +37,7 @@ export interface GetUsersActivityVariables {
   userEmail?: string | null;
   fromDate?: string | null;
   toDate?: string | null;
-  type?: UserActivityType | null;
+  types?: UserActivityType[] | null;
+  versionIds?: string[] | null;
   lastId?: string | null;
 }

@@ -26,6 +26,36 @@ type Props = {
   hideSelections?: boolean;
 };
 
+// Transforms GroupSelectData into a flat version
+export function flatSelections(
+  options: GroupSelectData,
+  selection: GroupSelectData,
+  groupLabel: string,
+  childrenLabel: string
+) {
+  const flatSelections: [string, string | { [key: string]: string }][] = [];
+
+  Object.entries(selection).forEach(([group, children]) => {
+    const allSelected = options[group]?.length === children.length;
+
+    if (allSelected) {
+      flatSelections.push([groupLabel, group]);
+    } else {
+      children.forEach(child => {
+        flatSelections.push([
+          childrenLabel,
+          {
+            [groupLabel]: group,
+            [childrenLabel]: child
+          }
+        ]);
+      });
+    }
+  });
+
+  return flatSelections;
+}
+
 function GroupSelect({
   options,
   onChange = function() {},

@@ -16,26 +16,28 @@ export enum SelectTheme {
   LIGHT = 'light'
 }
 
-export type MultiSelectOption = {
-  label: string;
+export type MultiSelectOption<T> = {
+  label: T;
   Icon: JSX.Element;
 };
 
-type Props = {
-  onChange?: <T>(selections: T[]) => void;
+type Props<T> = {
+  onChange?: (selections: T[]) => void;
   label?: string;
   selectAllText?: string;
   error?: string;
   placeholder?: string;
-  options: MultiSelectOption[];
-  formSelectedOptions: string[];
+  options: MultiSelectOption<T>[];
+  formSelectedOptions: T[];
   hideError?: boolean;
   className?: string;
   theme?: SelectTheme;
   selectionUnit?: string;
+  iconAtStart?: boolean;
+  customLabels?: Map<T, JSX.Element>;
 };
 
-function MultiSelect({
+function MultiSelect<T>({
   options,
   onChange = function() {},
   label = '',
@@ -46,8 +48,10 @@ function MultiSelect({
   hideError = false,
   className = '',
   theme = SelectTheme.DEFAULT,
-  selectionUnit = ''
-}: Props) {
+  selectionUnit = '',
+  iconAtStart = false,
+  customLabels
+}: Props<T>) {
   const optionsRef = useRef<HTMLDivElement>(null);
   const { addClickOutsideEvents, removeClickOutsideEvents } = useClickOutside({
     componentRef: optionsRef,
@@ -67,19 +71,19 @@ function MultiSelect({
     setOptionsOpened(false);
   }
 
-  function onSelect(option: string) {
+  function onSelect(option: T) {
     const newSelection = [...formSelectedOptions].concat([option]);
 
     if (newSelection.length === options.length) onSelectAll();
     else onChange(newSelection);
   }
 
-  function onDeselect(option: string) {
+  function onDeselect(option: T) {
     const newSelections = formSelectedOptions.filter(o => o !== option);
     onChange(newSelections);
   }
 
-  function onOptionChange(option: string, checked: boolean) {
+  function onOptionChange(option: T, checked: boolean) {
     checked ? onSelect(option) : onDeselect(option);
   }
 
@@ -88,14 +92,17 @@ function MultiSelect({
   }
 
   const optionList = options.map(({ label, Icon }) => (
-    <Option
-      key={label}
+    <Option<T>
+      key={`${label}`}
       label={label}
       selected={formSelectedOptions.includes(label)}
       onChange={onOptionChange}
       Icon={Icon}
+      iconAtStart={iconAtStart}
+      customLabel={customLabels && customLabels.get(label)}
     />
   ));
+
   if (selectAllText !== '')
     optionList.push(
       <div
