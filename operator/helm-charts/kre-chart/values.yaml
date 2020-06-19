@@ -5,11 +5,24 @@ entrypoint:
 
 sharedStorageClass: standard
 
-nats_streaming:
-  replicas: 1
-  storage:
-    className: standard
-    size: 1Gi
+nats:
+  enabled: true
+  replicaCount: 3
+
+  fullnameOverride: kre-nats
+  auth:
+    enabled: false
+  cluster:
+    enabled: true
+
+  clusterAuth:
+    enabled: false
+  debug:
+    enabled: true
+    trace: true
+    logtime: true
+  metrics:
+    enabled: true
 
 mongo:
   replicas: 3

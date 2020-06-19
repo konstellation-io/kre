@@ -33,7 +33,7 @@ func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 		message := msgData["log"].(string)
 
 		// Extract level and message from log text for texts like:
-		//   INFO:kre-runner:connecting to NATS at 'kre-nats:4222'
+		//   INFO:kre-runner:connecting to NATS at 'kre-nats-client:4222'
 		if logRegexp.MatchString(message) {
 			r := logRegexp.FindAllStringSubmatch(message, -1)
 			level = r[0][1]

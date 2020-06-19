@@ -117,7 +117,7 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 [OUTPUT]
     Name  nats
     Match *
-    Host  kre-nats
+    Host  kre-nats-client
     Port  4222
 `,
 		},

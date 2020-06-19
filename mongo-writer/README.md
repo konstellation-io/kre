@@ -40,7 +40,7 @@ Example:
     {
       "tag": "mongo_writer_logs",
       "doc": {
-        "log": "INFO:kre-runner:connecting to NATS at 'kre-nats:4222'",
+        "log": "INFO:kre-runner:connecting to NATS at 'kre-nats-client:4222'",
         "versionName": "greeter-v1",
         "nodeName": "greeter",
         "nodeId": "zyiwccceec",

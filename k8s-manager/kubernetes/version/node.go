@@ -36,7 +36,7 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 		wconf[n.Id] = NodeConfig{
 			"KRT_VERSION":           version.Name,
 			"KRT_NODE_NAME":         n.Name,
-			"KRT_NATS_SERVER":       "kre-nats:4222",
+			"KRT_NATS_SERVER":       "kre-nats-client:4222",
 			"KRT_NATS_MONGO_WRITER": "mongo_writer",
 			"KRT_BASE_PATH":         "/krt-files",
 			"KRT_HANDLER_PATH":      n.Src,

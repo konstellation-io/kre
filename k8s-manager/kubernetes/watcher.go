@@ -39,7 +39,7 @@ func (k *Watcher) WaitForPods(ns string) error {
 		return err
 	}
 
-	natsChan, err := k.waitForPodRunning(ns, []string{"app=kre-nats"}, timeout)
+	natsChan, err := k.waitForPodRunning(ns, []string{"app=nats"}, timeout)
 	if err != nil {
 		return err
 	}
