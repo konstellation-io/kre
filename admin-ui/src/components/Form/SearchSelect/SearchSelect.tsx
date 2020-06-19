@@ -5,12 +5,14 @@ import React, {
   useRef,
   useState
 } from 'react';
-import styles from './SearchSelect.module.scss';
-import InputLabel from '../InputLabel/InputLabel';
+
+import ClearIcon from '@material-ui/icons/Close';
 import InputError from '../InputError/InputError';
+import InputLabel from '../InputLabel/InputLabel';
 import SearchIcon from '@material-ui/icons/Search';
-import useClickOutside from '../../../hooks/useClickOutside';
 import cx from 'classnames';
+import styles from './SearchSelect.module.scss';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 export const ARROW_UP_KEY_CODE = 38;
 export const ARROW_DOWN_KEY_CODE = 40;
@@ -29,6 +31,7 @@ type Props = {
   hideError?: boolean;
   hideLabel?: boolean;
   showSearchIcon?: boolean;
+  showClear?: boolean;
   className?: string;
 };
 
@@ -45,6 +48,7 @@ function SearchSelect({
   hideError = false,
   hideLabel = false,
   showSearchIcon = false,
+  showClear = false,
   className = ''
 }: Props) {
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
@@ -96,14 +100,6 @@ function SearchSelect({
     }
   }
 
-  function handleOnBlur() {
-    const option =
-      highlightedOption === -1
-        ? selectedOption
-        : filteredOptions[highlightedOption];
-    handleSelectOption(option);
-  }
-
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.keyCode === ARROW_DOWN_KEY_CODE) {
       e.preventDefault();
@@ -153,10 +149,18 @@ function SearchSelect({
         type="text"
         placeholder={placeholder}
         onChange={handleOnChange}
-        onBlur={handleOnBlur}
         onKeyDown={handleKeyDown}
         autoComplete="off"
       />
+      <div
+        className={cx(styles.clear, {
+          [styles.show]: showClear && selectedOption
+        })}
+        onClick={() => handleSelectOption('')}
+        title="Clear input"
+      >
+        <ClearIcon className="icon-small" />
+      </div>
       <ul className={styles.optionsList}>
         {filteredOptions.map((option, index) => (
           <li

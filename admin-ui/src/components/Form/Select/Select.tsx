@@ -1,10 +1,11 @@
-import { get } from 'lodash';
-import React, { useState, useEffect, useRef, FC } from 'react';
-import InputLabel from '../InputLabel/InputLabel';
-import useClickOutside from '../../../hooks/useClickOutside';
+import React, { FC, useEffect, useRef, useState } from 'react';
+
 import InputError from '../InputError/InputError';
+import InputLabel from '../InputLabel/InputLabel';
 import cx from 'classnames';
+import { get } from 'lodash';
 import styles from './Select.module.scss';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 const MAX_HEIGHT = 240;
 
@@ -137,7 +138,9 @@ function Select({
     optionList.unshift(
       <div
         key={`selectOption_empty`}
-        className={styles.optionElement}
+        className={cx(styles.optionElement, {
+          [styles.selected]: selectedOption === placeholder
+        })}
         onClick={() => handleOnOptionCLick(null)}
       >
         {renderOption('All')}

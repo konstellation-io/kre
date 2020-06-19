@@ -1,90 +1,64 @@
-import { sortBy, capitalize } from 'lodash';
-
-import React from 'react';
-
-import TextInput from '../../components/Form/TextInput/TextInput';
-import IconKey from '@material-ui/icons/VpnKey';
-import TypeIcon from '@material-ui/icons/Code';
+import {
+  ConfVarPanelInfo,
+  VersionConfigurationFormData
+} from '../../pages/Version/pages/Configuration/Configuration';
 
 import { GetConfigurationVariables_version_configurationVariables as ConfVar } from '../../graphql/queries/types/GetConfigurationVariables';
-import { ConfigurationVariableType } from '../../graphql/types/globalTypes';
-
+import ConfigurationVariableItem from './ConfigurationVariableItem';
+import Message from '../Message/Message';
+import React from 'react';
 import cx from 'classnames';
+import { sortBy } from 'lodash';
 import styles from './ConfigurationVariableList.module.scss';
-
-interface VariableRowProps {
-  variable: ConfVar;
-  onType: Function;
-  hide: boolean;
-}
-
-export function VariableRow({
-  variable: { type, key, value },
-  onType,
-  hide
-}: VariableRowProps) {
-  function onValueUpdate(inputValue: string) {
-    onType(key, inputValue);
-  }
-
-  return (
-    <div className={styles.row}>
-      <div className={styles.col1}>
-        <div className={styles.typeCol}>
-          <TypeIcon className="icon-small" />
-          <div className={styles.typeColValue}>{capitalize(type)}</div>
-        </div>
-      </div>
-      <div className={styles.col2}>
-        <div className={styles.variableCol}>
-          <IconKey className="icon-small" />
-          <div>{key}</div>
-        </div>
-      </div>
-      <div className={styles.col3}>
-        <TextInput
-          onChange={onValueUpdate}
-          customClassname={styles.variableValue}
-          formValue={value}
-          textArea={type === ConfigurationVariableType.FILE}
-          limits={{
-            minHeight: 95,
-            maxHeight: 350
-          }}
-          showClearButton
-          hidden={hide}
-          lockHorizontalGrowth
-        />
-      </div>
-    </div>
-  );
-}
 
 type Props = {
   data: ConfVar[];
   onType: Function;
   hideAll: boolean;
+  filterValues: VersionConfigurationFormData;
+  openVarPanel: (panelInfo: ConfVarPanelInfo) => void;
 };
 
-function ConfigurationVariableList({ data, onType, hideAll }: Props) {
+function ConfigurationVariableList({
+  data,
+  onType,
+  hideAll,
+  filterValues,
+  openVarPanel
+}: Props) {
+  const { varName: filterName, type: filterType } = filterValues;
   const sortedData = sortBy(data, ['key']);
-  const variableRows = sortedData.map((variable: ConfVar) => (
-    <VariableRow
-      onType={onType}
-      key={variable.key}
-      hide={hideAll}
-      variable={variable}
-    />
-  ));
+  const filteredData = sortedData.filter(
+    variable =>
+      !(
+        (filterName && !variable.key.includes(filterName)) ||
+        (filterType && variable.type !== filterType)
+      )
+  );
+
+  function renderContent() {
+    if (filteredData.length === 0)
+      return <Message text="No variables for the actual filters" />;
+
+    return filteredData.map((variable, idx) => (
+      <ConfigurationVariableItem
+        onType={onType}
+        key={`${variable.key}${idx}`}
+        hide={hideAll}
+        variable={variable}
+        openVarPanel={openVarPanel}
+      />
+    ));
+  }
 
   return (
     <div className={styles.container}>
       <div className={cx(styles.header, styles.row)}>
-        <div className={styles.col1}>TYPE</div>
-        <div className={styles.col2}>KEY</div>
-        <div className={styles.col3}>VALUE</div>
+        <div className={styles.col1}>Type</div>
+        <div className={styles.col2}>Key</div>
+        <div className={styles.col3}>Value</div>
       </div>
-      <div className={styles.list}>{variableRows}</div>
+      <div className={styles.list}>{renderContent()}</div>
     </div>
   );
 }

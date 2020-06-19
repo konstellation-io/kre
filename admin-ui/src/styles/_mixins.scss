@@ -122,10 +122,9 @@
   left: 0;
   pointer-events: all;
   cursor: default;
-  z-index: 1;
   background-color: $color-shield;
   opacity: $opacity-shield;
-  z-index: 1;
+  z-index: 999;
 }
 
 @mixin hexagonWrapper {

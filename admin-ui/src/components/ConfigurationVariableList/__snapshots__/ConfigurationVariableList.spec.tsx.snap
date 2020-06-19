@@ -10,25 +10,25 @@ exports[`ConfigurationVariableList matches snapshot 1`] = `
     <div
       className="col1"
     >
-      TYPE
+      Type
     </div>
     <div
       className="col2"
     >
-      KEY
+      Key
     </div>
     <div
       className="col3"
     >
-      VALUE
+      Value
     </div>
   </div>
   <div
     className="list"
   >
-    <VariableRow
+    <ConfigurationVariableItem
       hide={true}
-      key="var1"
+      key="var10"
       onType={[MockFunction]}
       variable={
         Object {
@@ -38,9 +38,9 @@ exports[`ConfigurationVariableList matches snapshot 1`] = `
         }
       }
     />
-    <VariableRow
+    <ConfigurationVariableItem
       hide={true}
-      key="var2"
+      key="var21"
       onType={[MockFunction]}
       variable={
         Object {
@@ -50,9 +50,9 @@ exports[`ConfigurationVariableList matches snapshot 1`] = `
         }
       }
     />
-    <VariableRow
+    <ConfigurationVariableItem
       hide={true}
-      key="var3"
+      key="var32"
       onType={[MockFunction]}
       variable={
         Object {

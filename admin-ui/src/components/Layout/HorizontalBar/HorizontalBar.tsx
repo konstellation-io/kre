@@ -1,14 +1,15 @@
 import React, { FunctionComponent, ReactElement } from 'react';
-import styles from './HorizontalBar.module.scss';
+
 import cx from 'classnames';
+import styles from './HorizontalBar.module.scss';
 
 type Props = {
   children: ReactElement | ReactElement[];
-  style?: string;
+  className?: string;
 };
 
-const HorizontalBar: FunctionComponent<Props> = ({ children, style }) => (
-  <div className={cx(styles.container, style)}>{children}</div>
+const HorizontalBar: FunctionComponent<Props> = ({ children, className }) => (
+  <div className={cx(className, styles.container)}>{children}</div>
 );
 
 export default HorizontalBar;
