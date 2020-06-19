@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	"github.com/nats-io/nats.go"
@@ -36,6 +37,7 @@ func Start(handlerInit HandlerInit, handler Handler) {
 	handlerInit(c)
 
 	s, err := nc.Subscribe(cfg.NATS.InputSubject, func(msg *nats.Msg) {
+		start := time.Now()
 		logger.Infof("Received a message on '%s' with reply '%s'", msg.Subject, msg.Reply)
 
 		r := &Result{}
@@ -100,6 +102,16 @@ func Start(handlerInit HandlerInit, handler Handler) {
 		if err != nil {
 			logger.Errorf("Error publishing output: %s", err)
 		}
+
+		end := time.Now()
+		logger.Infof("version[%s] node[%s] reply[%s] start[%s] end[%s] elapsed[%s]",
+			cfg.Version,
+			cfg.NodeName,
+			r.Reply,
+			start.Format(time.RFC3339Nano),
+			end.Format(time.RFC3339Nano),
+			fmt.Sprintf("%.2f", end.Sub(start).Seconds()),
+		)
 	})
 
 	if err != nil {

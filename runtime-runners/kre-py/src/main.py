@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import time
 import importlib.util
 import json
 import logging
@@ -189,6 +190,7 @@ class Runner:
 
     def create_message_cb(self, handler_module, ctx):
         async def message_cb(msg):
+            start = time.time()
             result = Result()
             result.from_nats_msg(msg)
 
@@ -209,6 +211,15 @@ class Runner:
 
                 await self.nc.publish(output_subject, output_result.to_json())
                 self.logger.info(f"published response to '{output_subject}' subject with final reply '{result.reply}'")
+
+                end = time.time()
+                self.logger.info(f"version[{ctx.__config__.krt_version}] "
+                                 f"node[{ctx.__config__.krt_node_name}] "
+                                 f"reply[{result.reply}] "
+                                 f"start[{datetime.datetime.utcfromtimestamp(start).isoformat()}] "
+                                 f"end[{datetime.datetime.utcfromtimestamp(end).isoformat()}] "
+                                 f"elapsed[{round(end - start, 2)}]"
+                                 )
 
             except Exception as err:
                 traceback.print_exc()
