@@ -1,9 +1,0 @@
-dependencies:
-- name: mongodb
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 7.4.5
-- name: prometheus-operator
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 8.14.0
-digest: sha256:ad15ccbdf198b646f0b433c6c533c6f647c940a54e3a2096e2e9f1d87bd4dcc0
-generated: "2020-06-09T18:19:24.388464617+02:00"
