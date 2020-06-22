@@ -11,6 +11,9 @@ import traceback
 from nats.aio.client import ErrTimeout, Client as NATS
 
 
+NATS_FLUSH_TIMEOUT = 0.1
+
+
 class Config:
     def __init__(self):
         try:
@@ -152,7 +155,10 @@ class Runner:
 
     async def process_messages(self):
         self.logger.info(f"connecting to NATS at '{self.config.nats_server}'")
-        await self.nc.connect(self.config.nats_server, loop=self.loop)
+        await self.nc.connect(self.config.nats_server,
+                              loop=self.loop,
+                              name=self.config.krt_node_name
+                              )
 
         handler_module = self.load_handler_module()
         ctx = self.create_handler_ctx(handler_module)
@@ -211,6 +217,8 @@ class Runner:
 
                 await self.nc.publish(output_subject, output_result.to_json())
                 self.logger.info(f"published response to '{output_subject}' subject with final reply '{result.reply}'")
+
+                await self.nc.flush(timeout=NATS_FLUSH_TIMEOUT)
 
                 end = time.time()
                 self.logger.info(f"version[{ctx.__config__.krt_version}] "
