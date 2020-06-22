@@ -96,14 +96,6 @@ function SearchSelect({
     }
   }
 
-  function handleOnBlur() {
-    const option =
-      highlightedOption === -1
-        ? selectedOption
-        : filteredOptions[highlightedOption];
-    handleSelectOption(option);
-  }
-
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.keyCode === ARROW_DOWN_KEY_CODE) {
       e.preventDefault();
@@ -153,7 +145,6 @@ function SearchSelect({
         type="text"
         placeholder={placeholder}
         onChange={handleOnChange}
-        onBlur={handleOnBlur}
         onKeyDown={handleKeyDown}
         autoComplete="off"
       />
