@@ -30,10 +30,8 @@ function ConfigurationVariableList({
   const sortedData = sortBy(data, ['key']);
   const filteredData = sortedData.filter(
     variable =>
-      !(
-        (filterName && !variable.key.includes(filterName)) ||
-        (filterType && variable.type !== filterType)
-      )
+        (!filterName || variable.key.includes(filterName)) &&
+        (!filterType || variable.type === filterType)  
   );
 
   function renderContent() {
