@@ -12,25 +12,6 @@ import (
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
 
-// UserActivityType enumerate all possible types
-type UserActivityType string
-
-const (
-	UserActivityTypeLogin              UserActivityType = "LOGIN"
-	UserActivityTypeLogout             UserActivityType = "LOGOUT"
-	UserActivityTypeCreateRuntime      UserActivityType = "CREATE_RUNTIME"
-	UserActivityTypeCreateVersion      UserActivityType = "CREATE_VERSION"
-	UserActivityTypePublishVersion     UserActivityType = "PUBLISH_VERSION"
-	UserActivityTypeUnpublishVersion   UserActivityType = "UNPUBLISH_VERSION"
-	UserActivityTypeStopVersion        UserActivityType = "STOP_VERSION"
-	UserActivityTypeStartVersion       UserActivityType = "START_VERSION"
-	UserActivityTypeUpdateSetting      UserActivityType = "UPDATE_SETTING"
-	UserActivityTypeCreateUser         UserActivityType = "CREATE_USER"
-	UserActivityTypeRemoveUsers        UserActivityType = "REMOVE_USERS"
-	UserActivityTypeUpdateAccessLevels UserActivityType = "UPDATE_ACCESS_LEVELS"
-	UserActivityTypeRevokeSessions     UserActivityType = "REVOKE_SESSIONS"
-)
-
 // UserActivityInteractor  contains app logic about UserActivity entities
 type UserActivityInteractor struct {
 	logger           logging.Logger
@@ -57,11 +38,11 @@ func (i *UserActivityInteractor) Get(userEmail *string, activityType *string, fr
 }
 
 // Create add a new UserActivity to the given user
-func (i *UserActivityInteractor) Create(userID string, userActivityType UserActivityType, vars []*entity.UserActivityVar) error {
+func (i *UserActivityInteractor) Create(userID string, userActivityType entity.UserActivityType, vars []*entity.UserActivityVar) error {
 	userActivity := entity.UserActivity{
 		ID:     primitive.NewObjectID().Hex(),
 		UserID: userID,
-		Type:   string(userActivityType),
+		Type:   userActivityType,
 		Date:   time.Now(),
 		Vars:   vars,
 	}
@@ -78,19 +59,19 @@ func checkUserActivityError(logger logging.Logger, err error) error {
 }
 
 func (i *UserActivityInteractor) RegisterLogin(userID string) error {
-	err := i.Create(userID, UserActivityTypeLogin, []*entity.UserActivityVar{})
+	err := i.Create(userID, entity.UserActivityTypeLogin, []*entity.UserActivityVar{})
 	return checkUserActivityError(i.logger, err)
 }
 
 func (i *UserActivityInteractor) RegisterLogout(userID string) error {
-	err := i.Create(userID, UserActivityTypeLogout, []*entity.UserActivityVar{})
+	err := i.Create(userID, entity.UserActivityTypeLogout, []*entity.UserActivityVar{})
 	return checkUserActivityError(i.logger, err)
 }
 
 func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
 	err := i.Create(
 		userID,
-		UserActivityTypeCreateRuntime,
+		entity.UserActivityTypeCreateRuntime,
 		[]*entity.UserActivityVar{
 			{
 				Key:   "RUNTIME_ID",
@@ -108,7 +89,7 @@ func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *e
 func (i *UserActivityInteractor) RegisterCreateAction(userID string, runtime *entity.Runtime, version *entity.Version) error {
 	err := i.Create(
 		userID,
-		UserActivityTypeCreateVersion,
+		entity.UserActivityTypeCreateVersion,
 		[]*entity.UserActivityVar{
 			{Key: "RUNTIME_ID", Value: runtime.ID},
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
@@ -122,7 +103,7 @@ func (i *UserActivityInteractor) RegisterCreateAction(userID string, runtime *en
 func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
 	err := i.Create(
 		userID,
-		UserActivityTypeStartVersion,
+		entity.UserActivityTypeStartVersion,
 		[]*entity.UserActivityVar{
 			{Key: "RUNTIME_ID", Value: runtime.ID},
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
@@ -137,7 +118,7 @@ func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *ent
 func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
 	err := i.Create(
 		userID,
-		UserActivityTypeStopVersion,
+		entity.UserActivityTypeStopVersion,
 		[]*entity.UserActivityVar{
 			{Key: "RUNTIME_ID", Value: runtime.ID},
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
@@ -151,7 +132,7 @@ func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *enti
 func (i *UserActivityInteractor) RegisterPublishAction(userID string, runtime *entity.Runtime, version *entity.Version, prev *entity.Version, comment string) error {
 	err := i.Create(
 		userID,
-		UserActivityTypePublishVersion,
+		entity.UserActivityTypePublishVersion,
 		[]*entity.UserActivityVar{
 			{Key: "RUNTIME_ID", Value: runtime.ID},
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
@@ -167,7 +148,7 @@ func (i *UserActivityInteractor) RegisterPublishAction(userID string, runtime *e
 func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
 	err := i.Create(
 		userID,
-		UserActivityTypeUnpublishVersion,
+		entity.UserActivityTypeUnpublishVersion,
 		[]*entity.UserActivityVar{
 			{Key: "RUNTIME_ID", Value: runtime.ID},
 			{Key: "RUNTIME_NAME", Value: runtime.Name},
@@ -179,14 +160,14 @@ func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime 
 }
 
 func (i *UserActivityInteractor) RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error {
-	err := i.Create(userID, UserActivityTypeUpdateSetting, vars)
+	err := i.Create(userID, entity.UserActivityTypeUpdateSetting, vars)
 	return checkUserActivityError(i.logger, err)
 }
 
 func (i *UserActivityInteractor) RegisterCreateUser(userID string, createdUser *entity.User) {
 	err := i.Create(
 		userID,
-		UserActivityTypeCreateUser,
+		entity.UserActivityTypeCreateUser,
 		[]*entity.UserActivityVar{
 			{Key: "CREATED_USER_ID", Value: createdUser.ID},
 			{Key: "CREATED_USER_EMAIL", Value: createdUser.Email},
@@ -198,7 +179,7 @@ func (i *UserActivityInteractor) RegisterCreateUser(userID string, createdUser *
 func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, userEmails []string) {
 	err := i.Create(
 		userID,
-		UserActivityTypeRemoveUsers,
+		entity.UserActivityTypeRemoveUsers,
 		[]*entity.UserActivityVar{
 			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
 			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
@@ -209,7 +190,7 @@ func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, use
 func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel) {
 	err := i.Create(
 		userID,
-		UserActivityTypeUpdateAccessLevels,
+		entity.UserActivityTypeUpdateAccessLevels,
 		[]*entity.UserActivityVar{
 			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
 			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
@@ -221,7 +202,7 @@ func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userI
 func (i *UserActivityInteractor) RegisterRevokeSessions(userID string, userIDs, userEmails []string) {
 	err := i.Create(
 		userID,
-		UserActivityTypeRevokeSessions,
+		entity.UserActivityTypeRevokeSessions,
 		[]*entity.UserActivityVar{
 			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
 			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},

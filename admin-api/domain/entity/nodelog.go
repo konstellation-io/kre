@@ -1,9 +1,5 @@
 package entity
 
-import (
-	"time"
-)
-
 type NodeLog struct {
 	ID           string
 	Date         string
@@ -13,17 +9,6 @@ type NodeLog struct {
 	NodeName     string
 	WorkflowID   string `gqlgen:"workflowId"`
 	WorkflowName string
-}
-
-type SearchLogsOptions struct {
-	Cursor      string
-	StartDate   time.Time
-	EndDate     time.Time
-	VersionName string
-	WorkflowID  string
-	NodeID      string
-	Level       string
-	Search      string
 }
 
 type SearchLogsResult struct {

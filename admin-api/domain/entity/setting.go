@@ -1,6 +1,6 @@
 package entity
 
-type Setting struct {
+type Settings struct {
 	SessionLifetimeInDays int      `bson:"sessionLifetimeInDays"`
 	AuthAllowedDomains    []string `bson:"authAllowedDomains"`
 }

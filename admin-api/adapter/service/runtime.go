@@ -62,7 +62,7 @@ func (k *K8sRuntimeClient) Create(runtime *entity.Runtime) (string, error) {
 	return res.GetMessage(), nil
 }
 
-func (k *K8sRuntimeClient) WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatus, error) {
+func (k *K8sRuntimeClient) WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error) {
 	cc, err := grpc.Dial(k.cfg.Services.K8sManager, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
@@ -91,7 +91,7 @@ func (k *K8sRuntimeClient) WaitForRuntimeStarted(runtime *entity.Runtime) (*enti
 		return nil, err
 	}
 
-	return &entity.RuntimeStatus{
+	return &entity.RuntimeStatusEntity{
 		Status: res.Status,
 	}, nil
 }

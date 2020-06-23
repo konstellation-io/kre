@@ -63,7 +63,7 @@ func TestCreateDefaults(t *testing.T) {
 	s := newSettingTest(t)
 	defer s.ctrl.Finish()
 
-	expectedSettings := entity.Setting{
+	expectedSettings := entity.Settings{
 		SessionLifetimeInDays: usecase.DefaultSessionLifetimeInDays,
 	}
 

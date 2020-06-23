@@ -163,7 +163,7 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 			if msg.GetNodeId() != "" {
 				ch <- &entity.VersionNodeStatus{
 					NodeID:  msg.GetNodeId(),
-					Status:  st.GetStatus(msg.GetStatus()),
+					Status:  st.FromString(msg.GetStatus()),
 					Message: msg.GetMessage(),
 				}
 			}
