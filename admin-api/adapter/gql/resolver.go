@@ -240,10 +240,6 @@ func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*enti
 	return r.versionInteractor.GetByRuntime(runtimeID)
 }
 
-func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
-	return []*Alert{}, nil
-}
-
 func (r *queryResolver) Settings(ctx context.Context) (*entity.Settings, error) {
 	return r.settingInteractor.Get()
 }

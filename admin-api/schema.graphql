@@ -7,7 +7,6 @@ type Query {
   runtimes: [Runtime!]!
   version(id: ID!): Version!
   versions(runtimeId: ID!): [Version!]!
-  alerts: [Alert!]
   settings: Settings!
   userActivityList(
     userEmail: String
@@ -126,18 +125,6 @@ enum AccessLevel {
   VIEWER
   MANAGER
   ADMIN
-}
-
-type Alert {
-  id: ID!
-  type: AlertLevel!
-  message: String!
-  runtime: Runtime!
-}
-
-enum AlertLevel {
-  ERROR
-  WARNING
 }
 
 type ConfigurationVariable {
