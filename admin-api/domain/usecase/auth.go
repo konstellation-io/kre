@@ -86,34 +86,20 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 
 	// SignUp user creation
 	if isNewUser {
-		// Get allowed domain/email lists
+		// Get allowed domain lists
 		settings, err := a.settingRepo.Get()
 		if err != nil {
 			return err
 		}
 
-		isAllowed := false
-		domainsInWhitelist := len(settings.AuthAllowedDomains) != 0
-		emailsInWhitelist := len(settings.AuthAllowedEmails) != 0
-
-		// Check if there is no emails and domains in the whitelists
-		if !domainsInWhitelist && !emailsInWhitelist {
-			a.logger.Warn("All emails are allowed for sign-up, set allowed domains or email addresses in security settings")
-			isAllowed = true
-		}
-
-		// Check email domain is an allowed domain
-		if !isAllowed && domainsInWhitelist {
-			isAllowed = a.isDomainAllowed(settings, email)
-		}
-
-		// Check email address is an allowed address
-		if !isAllowed && emailsInWhitelist {
-			isAllowed = a.isEmailAllowed(settings, email)
-		}
-
-		if !isAllowed {
-			return ErrUserNotAllowed
+		// Check if there are allowed domains
+		if len(settings.AuthAllowedDomains) != 0 {
+			// Check if the email domain is an allowed domain
+			if !a.isDomainAllowed(settings, email) {
+				return ErrUserNotAllowed
+			}
+		} else {
+			a.logger.Warn("All emails are allowed for sign-up, set allowed domains in security settings")
 		}
 
 		a.logger.Infof("The user '%s' doesn't exist, creating in the database...", email)
@@ -151,19 +137,6 @@ func (a *AuthInteractor) isDomainAllowed(settings *entity.Setting, email string)
 	}
 
 	a.logger.Infof("Email domain '%s' is not in the allowed domain list", domain)
-
-	return false
-}
-
-func (a *AuthInteractor) isEmailAllowed(settings *entity.Setting, email string) bool {
-	for _, e := range settings.AuthAllowedEmails {
-		if e == email {
-			a.logger.Infof("Email address '%s' is allowed", email)
-			return true
-		}
-	}
-
-	a.logger.Infof("Email address '%s' is not in the allowed email list", email)
 
 	return false
 }

@@ -24,7 +24,7 @@ var (
 
 	HTTPErrVerificationCodeNotFound = newHTTPError(http.StatusBadRequest, "invalid_verification_code", "The verification code has expired or is not valid.")
 
-	HTTPErrUserNotAllowed = newHTTPError(http.StatusForbidden, "user_not_allowed", "Email address or domain not in whitelist")
+	HTTPErrUserNotAllowed = newHTTPError(http.StatusForbidden, "user_not_allowed", "Email domain not allowed")
 
 	HTTPErrInvalidSession = newHTTPError(http.StatusUnauthorized, "invalid_session", "The session is not valid")
 
