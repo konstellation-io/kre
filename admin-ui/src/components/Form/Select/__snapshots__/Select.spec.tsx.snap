@@ -30,7 +30,7 @@ exports[`Select matches snapshot 1`] = `
       }
     >
       <div
-        className="optionElement"
+        className="optionElement selected"
         key="selectOption_empty"
         onClick={[Function]}
       >

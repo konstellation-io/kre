@@ -24,6 +24,27 @@
   left: $grid-unit;
   z-index: 1;
 }
+
+.clear {
+  position: absolute;
+  top: calc(50% - 6px);
+  right: -4px;
+  transition: right ease-out 0.3s, opacity ease-out 0.3s;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+
+  &:hover {
+    color: font-color(light);
+  }
+
+  &.show {
+    right: 10px;
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
 .optionsList {
   @include shadow(3);
 

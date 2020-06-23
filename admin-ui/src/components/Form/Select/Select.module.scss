@@ -27,6 +27,7 @@ $height-input: 30px;
   padding: 11px 40px 11px 16px;
   line-height: normal;
   white-space: nowrap;
+  cursor: pointer;
 
   color: font-color(light);
   font-weight: 600;
@@ -114,7 +115,7 @@ $height-input: 30px;
 
 .container.light {
   .input {
-    background-color: palette(base, 300);
+    background-color: transparent;
     color: font-color(lowlight);
     border: 0;
   }

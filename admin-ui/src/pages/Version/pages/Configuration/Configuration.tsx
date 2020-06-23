@@ -1,37 +1,38 @@
-import { cloneDeep, get, isEqual, pick } from 'lodash';
-
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import { useMutation, useQuery } from '@apollo/react-hooks';
-
-import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
-import Button from '../../../../components/Button/Button';
-import ModalContainer from '../../../../components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutInfo from '../../../../components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
-import SettingsHeader from '../../../Settings/components/SettingsHeader/SettingsHeader';
-import ConfigurationVariableList from '../../../../components/ConfigurationVariableList/ConfigurationVariableList';
-import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
-
-import { loader } from 'graphql.macro';
 import {
   GetConfigurationVariables_version_configurationVariables as ConfigurationVariable,
   GetConfigurationVariables,
   GetConfigurationVariablesVariables
 } from '../../../../graphql/queries/types/GetConfigurationVariables';
 import {
+  ConfigurationVariableType,
+  ConfigurationVariablesInput,
+  UpdateConfigurationInput
+} from '../../../../graphql/types/globalTypes';
+import React, { useEffect, useState } from 'react';
+import {
   UpdateVersionConfiguration,
   UpdateVersionConfigurationVariables
 } from '../../../../graphql/mutations/types/UpdateVersionConfiguration';
-import {
-  UpdateConfigurationInput,
-  ConfigurationVariablesInput
-} from '../../../../graphql/types/globalTypes';
-import { VersionStatus } from '../../../../graphql/types/globalTypes';
+import { cloneDeep, get, isEqual, pick } from 'lodash';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 
-import styles from './Configuration.module.scss';
-import { VersionRouteParams } from '../../../../constants/routes';
+import Button from '../../../../components/Button/Button';
+import ConfVarPanel from './components/ConfVarPanel/ConfVarPanel';
+import ConfigurationFilters from './ConfigurationFilters';
+import ConfigurationVariableList from '../../../../components/ConfigurationVariableList/ConfigurationVariableList';
+import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
+import HorizontalBar from '../../../../components/Layout/HorizontalBar/HorizontalBar';
 import Message from '../../../../components/Message/Message';
+import ModalContainer from '../../../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutInfo from '../../../../components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
+import SettingsHeader from '../../../Settings/components/SettingsHeader/SettingsHeader';
+import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import { VersionRouteParams } from '../../../../constants/routes';
+import { VersionStatus } from '../../../../graphql/types/globalTypes';
+import { loader } from 'graphql.macro';
+import styles from './Configuration.module.scss';
+import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router';
 
 const GetConfVariablesQuery = loader(
   '../../../../graphql/queries/getConfigurationVariables.graphql'
@@ -39,6 +40,12 @@ const GetConfVariablesQuery = loader(
 const UpdateVersionConfigurationMutation = loader(
   '../../../../graphql/mutations/updateVersionConfiguration.graphql'
 );
+
+export type ConfVarPanelInfo = {
+  key: string;
+  type: ConfigurationVariableType.FILE;
+  value: string;
+};
 
 const statusWithConfirmationModal = [
   VersionStatus.PUBLISHED,
@@ -54,12 +61,18 @@ function formatConfVars(
   );
 }
 
+export type VersionConfigurationFormData = {
+  type: ConfigurationVariableType;
+  varName: string;
+};
+
 function Configuration() {
+  const [varPanel, setVarPanel] = useState<ConfVarPanelInfo | null>(null);
   const [initialConfiguration, setInitialConfiguration] = useState<
     ConfigurationVariable[]
   >([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [hideAll, setHideAll] = useState(true);
+  const [showAll, setShowAll] = useState(false);
   const [configurationVariables, setConfigurationVariables] = useState<
     ConfigurationVariable[]
   >([]);
@@ -76,6 +89,20 @@ function Configuration() {
   >(UpdateVersionConfigurationMutation, {
     onCompleted: onCompleteUpdate
   });
+
+  const { register, unregister, setValue, watch } = useForm<
+    VersionConfigurationFormData
+  >();
+
+  useEffect(() => {
+    register({ name: 'type' });
+    register({ name: 'varName' });
+
+    return () => {
+      unregister('type');
+      unregister('varName');
+    };
+  }, [register, unregister]);
 
   useEffect(() => {
     if (data) {
@@ -112,8 +139,10 @@ function Configuration() {
       <>
         <ConfigurationVariableList
           data={configurationVariables}
-          hideAll={hideAll}
+          filterValues={watch()}
+          hideAll={!showAll}
           onType={onType}
+          openVarPanel={openPanel}
         />
         {mutationLoading && (
           <div className={styles.spinnerUpdating}>
@@ -161,19 +190,26 @@ function Configuration() {
     }
   }
 
-  function openModal(): void {
+  function openModal() {
     setShowConfirmationModal(true);
   }
 
-  function closeModal(): void {
+  function closeModal() {
     setShowConfirmationModal(false);
   }
 
-  function toggleVariablesVisibility(): void {
-    setHideAll(!hideAll);
+  function openPanel(panelInfo: ConfVarPanelInfo) {
+    setVarPanel(panelInfo);
+  }
+  function closePanel() {
+    setVarPanel(null);
   }
 
-  function onSave(): void {
+  function toggleVariablesVisibility() {
+    setShowAll(!showAll);
+  }
+
+  function onSave() {
     const versionStatus = data && data.version.status;
     const showModal =
       versionStatus && statusWithConfirmationModal.includes(versionStatus);
@@ -188,6 +224,13 @@ function Configuration() {
     <div className={styles.container}>
       <div className={styles.content}>
         <SettingsHeader>Configuration</SettingsHeader>
+        <ConfVarPanel varPanel={varPanel} closePanel={closePanel} />
+        <ConfigurationFilters
+          filterValues={watch()}
+          setValue={setValue}
+          showAll={showAll}
+          toggleShowAll={toggleVariablesVisibility}
+        />
         {getContent()}
         {showConfirmationModal && (
           <ModalContainer
@@ -204,16 +247,12 @@ function Configuration() {
           </ModalContainer>
         )}
       </div>
-      <HorizontalBar>
+      <HorizontalBar className={styles.bottomBar}>
         <Button
           label="SAVE CHANGES"
           onClick={onSave}
           disabled={mutationLoading || loading || !configurationHasChanged()}
           primary
-        />
-        <Button
-          label={`${hideAll ? 'SHOW' : 'HIDE'} ALL`}
-          onClick={toggleVariablesVisibility}
         />
       </HorizontalBar>
     </div>

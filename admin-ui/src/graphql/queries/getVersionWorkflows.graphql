@@ -1,5 +1,6 @@
 query GetVersionWorkflows($versionId: ID!) {
   version(id: $versionId) {
+    id
     name
     status
     creationDate
