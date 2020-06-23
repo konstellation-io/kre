@@ -18,6 +18,16 @@ config:
   runtime:
     sharedStorageClass: standard
     sharedStorageSize: 2Gi
+    nats_streaming:
+      storage:
+        className: standard
+        size: 1Gi
+    mongodb:
+      persistentVolume:
+        enabled: true
+        storageClass: standard
+        size: 5Gi
+
 
 adminApi:
   image:
@@ -56,6 +66,7 @@ mongodb:
   mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
   mongodbPassword: "123456"
+  
 
 certManager:
   enabled: false

@@ -3,6 +3,7 @@
 
 config.dev.yml
 helm/kre/values.yaml
+helm/values-dell.yaml
 helm/kre/charts/*
 operator/helm-charts/kre-chart/charts
 runtime-runners/kre-py/test/env_vars.sh

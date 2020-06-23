@@ -8,3 +8,11 @@ kubernetes:
     version: latest
 prometheus:
   url: http://localhost:9090
+nats_streaming:
+  storage:
+    className: "standard"
+    size: 1G
+mongo:
+  persistentVolume:
+    storageClass: "standard"
+    size: 5G

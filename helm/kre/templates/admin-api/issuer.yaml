@@ -1,5 +1,5 @@
 {{- if .Values.certManager.enabled }}
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha3
 kind: Issuer
 metadata:
   name: {{ template "kre.fullname" . }}-admin-api
@@ -9,5 +9,17 @@ spec:
     email: {{ .Values.certManager.acme.email }}
     privateKeySecretRef:
       name: {{ template "kre.fullname" . }}-admin-api
-    http01: {}
+    solvers:
+      {{ if hasKey .Values.certManager "dns01" -}}
+      - dns01:
+          route53:
+            region: {{ .Values.certManager.dns01.route53.region }}
+            accessKeyID: {{ .Values.certManager.dns01.route53.accessKeyID }}
+            hostedZoneID: {{ .Values.certManager.dns01.route53.hostedZoneID }}
+            secretAccessKeySecretRef:
+              name: aws-secret
+              key: AWS_SECRET_ACCESS_KEY
+    {{ else -}}
+      - http01: {}
+    {{ end -}}
 {{- end }}
