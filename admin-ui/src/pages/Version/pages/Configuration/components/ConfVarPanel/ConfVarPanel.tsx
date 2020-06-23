@@ -50,7 +50,9 @@ function ConfVarPanel({ varPanel, closePanel }: Props) {
         </div>
         <div className={styles.body}>
           <div className={styles.title}>SOURCE CODE</div>
-          <div className={styles.varValue}>{varPanel?.value}</div>
+          <div className={styles.varValue}>
+            <pre>{varPanel?.value}</pre>
+          </div>
         </div>
       </div>
     </HotKeys>
