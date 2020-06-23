@@ -50,13 +50,6 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	Alert struct {
-		ID      func(childComplexity int) int
-		Message func(childComplexity int) int
-		Runtime func(childComplexity int) int
-		Type    func(childComplexity int) int
-	}
-
 	ConfigurationVariable struct {
 		Key   func(childComplexity int) int
 		Type  func(childComplexity int) int
@@ -139,7 +132,6 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Alerts           func(childComplexity int) int
 		Logs             func(childComplexity int, runtimeID string, versionID string, filters entity.LogFilters, cursor *string) int
 		Me               func(childComplexity int) int
 		Metrics          func(childComplexity int, runtimeID string, versionID string, startDate string, endDate string) int
@@ -252,7 +244,6 @@ type QueryResolver interface {
 	Runtimes(ctx context.Context) ([]*entity.Runtime, error)
 	Version(ctx context.Context, id string) (*entity.Version, error)
 	Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error)
-	Alerts(ctx context.Context) ([]*Alert, error)
 	Settings(ctx context.Context) (*entity.Settings, error)
 	UserActivityList(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	Logs(ctx context.Context, runtimeID string, versionID string, filters entity.LogFilters, cursor *string) (*LogPage, error)
@@ -284,7 +275,7 @@ type VersionResolver interface {
 	PublicationDate(ctx context.Context, obj *entity.Version) (*string, error)
 	PublicationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error)
 
-	ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*ConfigurationVariable, error)
+	ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error)
 	ConfigurationCompleted(ctx context.Context, obj *entity.Version) (bool, error)
 }
 type VersionNodeStatusResolver interface {
@@ -305,34 +296,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
-
-	case "Alert.id":
-		if e.complexity.Alert.ID == nil {
-			break
-		}
-
-		return e.complexity.Alert.ID(childComplexity), true
-
-	case "Alert.message":
-		if e.complexity.Alert.Message == nil {
-			break
-		}
-
-		return e.complexity.Alert.Message(childComplexity), true
-
-	case "Alert.runtime":
-		if e.complexity.Alert.Runtime == nil {
-			break
-		}
-
-		return e.complexity.Alert.Runtime(childComplexity), true
-
-	case "Alert.type":
-		if e.complexity.Alert.Type == nil {
-			break
-		}
-
-		return e.complexity.Alert.Type(childComplexity), true
 
 	case "ConfigurationVariable.key":
 		if e.complexity.ConfigurationVariable.Key == nil {
@@ -729,13 +692,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.NodeLog.WorkflowName(childComplexity), true
-
-	case "Query.alerts":
-		if e.complexity.Query.Alerts == nil {
-			break
-		}
-
-		return e.complexity.Query.Alerts(childComplexity), true
 
 	case "Query.logs":
 		if e.complexity.Query.Logs == nil {
@@ -1283,7 +1239,6 @@ type Query {
   runtimes: [Runtime!]!
   version(id: ID!): Version!
   versions(runtimeId: ID!): [Version!]!
-  alerts: [Alert!]
   settings: Settings!
   userActivityList(
     userEmail: String
@@ -1402,18 +1357,6 @@ enum AccessLevel {
   VIEWER
   MANAGER
   ADMIN
-}
-
-type Alert {
-  id: ID!
-  type: AlertLevel!
-  message: String!
-  runtime: Runtime!
-}
-
-enum AlertLevel {
-  ERROR
-  WARNING
 }
 
 type ConfigurationVariable {
@@ -2096,143 +2039,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Alert_id(ctx context.Context, field graphql.CollectedField, obj *Alert) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Alert",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Alert_type(ctx context.Context, field graphql.CollectedField, obj *Alert) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Alert",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(AlertLevel)
-	fc.Result = res
-	return ec.marshalNAlertLevel2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlertLevel(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Alert_message(ctx context.Context, field graphql.CollectedField, obj *Alert) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Alert",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Message, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Alert_runtime(ctx context.Context, field graphql.CollectedField, obj *Alert) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Alert",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Runtime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*entity.Runtime)
-	fc.Result = res
-	return ec.marshalNRuntime2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐRuntime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _ConfigurationVariable_key(ctx context.Context, field graphql.CollectedField, obj *ConfigurationVariable) (ret graphql.Marshaler) {
+func (ec *executionContext) _ConfigurationVariable_key(ctx context.Context, field graphql.CollectedField, obj *entity.ConfigurationVariable) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2266,7 +2073,7 @@ func (ec *executionContext) _ConfigurationVariable_key(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ConfigurationVariable_value(ctx context.Context, field graphql.CollectedField, obj *ConfigurationVariable) (ret graphql.Marshaler) {
+func (ec *executionContext) _ConfigurationVariable_value(ctx context.Context, field graphql.CollectedField, obj *entity.ConfigurationVariable) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2300,7 +2107,7 @@ func (ec *executionContext) _ConfigurationVariable_value(ctx context.Context, fi
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ConfigurationVariable_type(ctx context.Context, field graphql.CollectedField, obj *ConfigurationVariable) (ret graphql.Marshaler) {
+func (ec *executionContext) _ConfigurationVariable_type(ctx context.Context, field graphql.CollectedField, obj *entity.ConfigurationVariable) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2329,9 +2136,9 @@ func (ec *executionContext) _ConfigurationVariable_type(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(ConfigurationVariableType)
+	res := resTmp.(entity.ConfigurationVariableType)
 	fc.Result = res
-	return ec.marshalNConfigurationVariableType2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariableType(ctx, field.Selections, res)
+	return ec.marshalNConfigurationVariableType2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariableType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Edge_id(ctx context.Context, field graphql.CollectedField, obj *entity.Edge) (ret graphql.Marshaler) {
@@ -4155,37 +3962,6 @@ func (ec *executionContext) _Query_versions(ctx context.Context, field graphql.C
 	return ec.marshalNVersion2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_alerts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Alerts(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*Alert)
-	fc.Result = res
-	return ec.marshalOAlert2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlertᚄ(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Query_settings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5786,9 +5562,9 @@ func (ec *executionContext) _Version_configurationVariables(ctx context.Context,
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*ConfigurationVariable)
+	res := resTmp.([]*entity.ConfigurationVariable)
 	fc.Result = res
-	return ec.marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariableᚄ(ctx, field.Selections, res)
+	return ec.marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariableᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Version_configurationCompleted(ctx context.Context, field graphql.CollectedField, obj *entity.Version) (ret graphql.Marshaler) {
@@ -7484,51 +7260,9 @@ func (ec *executionContext) unmarshalInputUsersInput(ctx context.Context, obj in
 
 // region    **************************** object.gotpl ****************************
 
-var alertImplementors = []string{"Alert"}
-
-func (ec *executionContext) _Alert(ctx context.Context, sel ast.SelectionSet, obj *Alert) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, alertImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Alert")
-		case "id":
-			out.Values[i] = ec._Alert_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "type":
-			out.Values[i] = ec._Alert_type(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "message":
-			out.Values[i] = ec._Alert_message(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "runtime":
-			out.Values[i] = ec._Alert_runtime(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var configurationVariableImplementors = []string{"ConfigurationVariable"}
 
-func (ec *executionContext) _ConfigurationVariable(ctx context.Context, sel ast.SelectionSet, obj *ConfigurationVariable) graphql.Marshaler {
+func (ec *executionContext) _ConfigurationVariable(ctx context.Context, sel ast.SelectionSet, obj *entity.ConfigurationVariable) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, configurationVariableImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -8091,17 +7825,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
-				return res
-			})
-		case "alerts":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_alerts(ctx, field)
 				return res
 			})
 		case "settings":
@@ -8999,29 +8722,6 @@ func (ec *executionContext) marshalNAccessLevel2githubᚗcomᚋkonstellationᚑi
 	return res
 }
 
-func (ec *executionContext) marshalNAlert2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlert(ctx context.Context, sel ast.SelectionSet, v Alert) graphql.Marshaler {
-	return ec._Alert(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNAlert2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlert(ctx context.Context, sel ast.SelectionSet, v *Alert) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._Alert(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNAlertLevel2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlertLevel(ctx context.Context, v interface{}) (AlertLevel, error) {
-	var res AlertLevel
-	return res, res.UnmarshalGQL(v)
-}
-
-func (ec *executionContext) marshalNAlertLevel2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlertLevel(ctx context.Context, sel ast.SelectionSet, v AlertLevel) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	return graphql.UnmarshalBoolean(v)
 }
@@ -9036,11 +8736,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNConfigurationVariable2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariable(ctx context.Context, sel ast.SelectionSet, v ConfigurationVariable) graphql.Marshaler {
+func (ec *executionContext) marshalNConfigurationVariable2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariable(ctx context.Context, sel ast.SelectionSet, v entity.ConfigurationVariable) graphql.Marshaler {
 	return ec._ConfigurationVariable(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariableᚄ(ctx context.Context, sel ast.SelectionSet, v []*ConfigurationVariable) graphql.Marshaler {
+func (ec *executionContext) marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariableᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.ConfigurationVariable) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -9064,7 +8764,7 @@ func (ec *executionContext) marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋk
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNConfigurationVariable2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariable(ctx, sel, v[i])
+			ret[i] = ec.marshalNConfigurationVariable2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariable(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -9077,7 +8777,7 @@ func (ec *executionContext) marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋk
 	return ret
 }
 
-func (ec *executionContext) marshalNConfigurationVariable2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariable(ctx context.Context, sel ast.SelectionSet, v *ConfigurationVariable) graphql.Marshaler {
+func (ec *executionContext) marshalNConfigurationVariable2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariable(ctx context.Context, sel ast.SelectionSet, v *entity.ConfigurationVariable) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -9087,13 +8787,19 @@ func (ec *executionContext) marshalNConfigurationVariable2ᚖgithubᚗcomᚋkons
 	return ec._ConfigurationVariable(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNConfigurationVariableType2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariableType(ctx context.Context, v interface{}) (ConfigurationVariableType, error) {
-	var res ConfigurationVariableType
-	return res, res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalNConfigurationVariableType2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariableType(ctx context.Context, v interface{}) (entity.ConfigurationVariableType, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	return entity.ConfigurationVariableType(tmp), err
 }
 
-func (ec *executionContext) marshalNConfigurationVariableType2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariableType(ctx context.Context, sel ast.SelectionSet, v ConfigurationVariableType) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNConfigurationVariableType2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariableType(ctx context.Context, sel ast.SelectionSet, v entity.ConfigurationVariableType) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNConfigurationVariablesInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐConfigurationVariablesInput(ctx context.Context, v interface{}) (ConfigurationVariablesInput, error) {
@@ -10228,46 +9934,6 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalOAlert2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlertᚄ(ctx context.Context, sel ast.SelectionSet, v []*Alert) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNAlert2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋadapterᚋgqlᚐAlert(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

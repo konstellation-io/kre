@@ -34,10 +34,10 @@ func (m *MockSettingRepo) EXPECT() *MockSettingRepoMockRecorder {
 }
 
 // Get mocks base method
-func (m *MockSettingRepo) Get() (*entity.Setting, error) {
+func (m *MockSettingRepo) Get() (*entity.Settings, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get")
-	ret0, _ := ret[0].(*entity.Setting)
+	ret0, _ := ret[0].(*entity.Settings)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -49,7 +49,7 @@ func (mr *MockSettingRepoMockRecorder) Get() *gomock.Call {
 }
 
 // Create mocks base method
-func (m *MockSettingRepo) Create(arg0 entity.Setting) error {
+func (m *MockSettingRepo) Create(arg0 entity.Settings) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0)
 	ret0, _ := ret[0].(error)
@@ -63,7 +63,7 @@ func (mr *MockSettingRepoMockRecorder) Create(arg0 interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockSettingRepo) Update(setting *entity.Setting) error {
+func (m *MockSettingRepo) Update(setting *entity.Settings) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", setting)
 	ret0, _ := ret[0].(error)

@@ -25,6 +25,25 @@ func (e VersionStatus) String() string {
 	return string(e)
 }
 
+type ConfigurationVariableType string
+
+const (
+	ConfigurationVariableTypeVariable ConfigurationVariableType = "VARIABLE"
+	ConfigurationVariableTypeFile     ConfigurationVariableType = "FILE"
+)
+
+func (e ConfigurationVariableType) IsValid() bool {
+	switch e {
+	case ConfigurationVariableTypeVariable, ConfigurationVariableTypeFile:
+		return true
+	}
+	return false
+}
+
+func (e ConfigurationVariableType) String() string {
+	return string(e)
+}
+
 type Edge struct {
 	ID       string `bson:"id"`
 	FromNode string `bson:"fromNode"`
@@ -93,15 +112,15 @@ type Entrypoint struct {
 	Src       string `bson:"src"`
 }
 
-type ConfigVar struct {
-	Key   string `bson:"key"`
-	Value string `bson:"value"`
-	Type  string `bson:"type"`
+type ConfigurationVariable struct {
+	Key   string                    `bson:"key"`
+	Value string                    `bson:"value"`
+	Type  ConfigurationVariableType `bson:"type"`
 }
 
 type VersionConfig struct {
-	Completed bool         `bson:"completed"`
-	Vars      []*ConfigVar `bson:"vars"`
+	Completed bool                     `bson:"completed"`
+	Vars      []*ConfigurationVariable `bson:"vars"`
 }
 
 type Version struct {

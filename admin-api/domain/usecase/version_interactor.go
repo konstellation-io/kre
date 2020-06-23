@@ -344,7 +344,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string, comment s
 	return version, nil
 }
 
-func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config []*entity.ConfigVar) (*entity.Version, error) {
+func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config []*entity.ConfigurationVariable) (*entity.Version, error) {
 	err := i.validateNewConfig(version.Config.Vars, config)
 	if err != nil {
 		return nil, err

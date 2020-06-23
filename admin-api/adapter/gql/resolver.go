@@ -156,10 +156,10 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		return nil, err
 	}
 
-	config := make([]*entity.ConfigVar, len(input.ConfigurationVariables))
+	config := make([]*entity.ConfigurationVariable, len(input.ConfigurationVariables))
 
 	for i, c := range input.ConfigurationVariables {
-		config[i] = &entity.ConfigVar{
+		config[i] = &entity.ConfigurationVariable{
 			Key:   c.Key,
 			Value: c.Value,
 		}
@@ -464,22 +464,8 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 }
 
 // TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*ConfigurationVariable, error) {
-	vars := make([]*ConfigurationVariable, len(obj.Config.Vars))
-	for i, c := range obj.Config.Vars {
-		vars[i] = &ConfigurationVariable{
-			Key:   c.Key,
-			Value: c.Value,
-		}
-
-		switch c.Type {
-		case string(ConfigurationVariableTypeVariable):
-			vars[i].Type = ConfigurationVariableTypeVariable
-		case string(ConfigurationVariableTypeFile):
-			vars[i].Type = ConfigurationVariableTypeFile
-		}
-	}
-	return vars, nil
+func (r *versionResolver) ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error) {
+	return obj.Config.Vars, nil
 }
 
 // TODO change entity struct to match with the gql definition

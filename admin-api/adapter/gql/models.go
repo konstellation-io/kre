@@ -3,26 +3,9 @@
 package gql
 
 import (
-	"fmt"
-	"io"
-	"strconv"
-
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/konstellation-io/kre/admin-api/domain/entity"
 )
-
-type Alert struct {
-	ID      string          `json:"id"`
-	Type    AlertLevel      `json:"type"`
-	Message string          `json:"message"`
-	Runtime *entity.Runtime `json:"runtime"`
-}
-
-type ConfigurationVariable struct {
-	Key   string                    `json:"key"`
-	Value string                    `json:"value"`
-	Type  ConfigurationVariableType `json:"type"`
-}
 
 type ConfigurationVariablesInput struct {
 	Key   string `json:"key"`
@@ -86,86 +69,4 @@ type UpdateConfigurationInput struct {
 
 type UsersInput struct {
 	UserIds []string `json:"userIds"`
-}
-
-type AlertLevel string
-
-const (
-	AlertLevelError   AlertLevel = "ERROR"
-	AlertLevelWarning AlertLevel = "WARNING"
-)
-
-var AllAlertLevel = []AlertLevel{
-	AlertLevelError,
-	AlertLevelWarning,
-}
-
-func (e AlertLevel) IsValid() bool {
-	switch e {
-	case AlertLevelError, AlertLevelWarning:
-		return true
-	}
-	return false
-}
-
-func (e AlertLevel) String() string {
-	return string(e)
-}
-
-func (e *AlertLevel) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = AlertLevel(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid AlertLevel", str)
-	}
-	return nil
-}
-
-func (e AlertLevel) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-type ConfigurationVariableType string
-
-const (
-	ConfigurationVariableTypeVariable ConfigurationVariableType = "VARIABLE"
-	ConfigurationVariableTypeFile     ConfigurationVariableType = "FILE"
-)
-
-var AllConfigurationVariableType = []ConfigurationVariableType{
-	ConfigurationVariableTypeVariable,
-	ConfigurationVariableTypeFile,
-}
-
-func (e ConfigurationVariableType) IsValid() bool {
-	switch e {
-	case ConfigurationVariableTypeVariable, ConfigurationVariableTypeFile:
-		return true
-	}
-	return false
-}
-
-func (e ConfigurationVariableType) String() string {
-	return string(e)
-}
-
-func (e *ConfigurationVariableType) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = ConfigurationVariableType(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid ConfigurationVariableType", str)
-	}
-	return nil
-}
-
-func (e ConfigurationVariableType) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
 }
