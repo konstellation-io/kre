@@ -1,5 +1,6 @@
 const { MockList } = require('apollo-server');
 const casual = require('casual');
+const moment = require('moment');
 const { UserActivityOptions, metricsData } = require('./mockSamples');
 const { PubSub } = require('apollo-server-express');
 const { workflowNames, processNames, emails } = require('./data');
@@ -54,6 +55,27 @@ const generateVersion = () => ({
   workflows: () => new MockList(2),
   configurationCompleted: true
 });
+
+let datetime = moment().subtract(24, 'hour');
+
+function getResourceMetrics(unit, quantity) {
+  datetime = datetime.add(quantity, unit);
+  return {
+    date: datetime.toISOString(),
+    cpu: casual.double(0.01, 1000),
+    mem: casual.double(0, 8 * 1000 * 1000 * 1000)
+  };
+}
+
+function getNResourceMetrics(n, unit, quantity) {
+  const result = [];
+
+  for (let i = 0; i < n; i++) {
+    result.push(getResourceMetrics(unit, quantity));
+  }
+
+  return result;
+}
 
 function getProcessName() {
   return casual.random_element(processNames);
@@ -120,6 +142,9 @@ module.exports = {
     },
     versionNodeStatus: {
       subscribe: () => pubsub.asyncIterator('versionNodeStatus')
+    },
+    watchResourceMetrics: {
+      subscribe: () => pubsub.asyncIterator('watchResourceMetrics')
     }
   }),
   Query: () => ({
@@ -135,11 +160,25 @@ module.exports = {
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
     logs: async () => {
-      await sleep(2000);
+      // await sleep(2000);
       return {
         cursor: casual.string,
         items: () => new MockList(40)
       };
+    },
+    resourceMetrics: () => {
+      let interval = 0;
+      interval = setInterval(() => {
+        pubsub.publish('watchResourceMetrics', {
+          watchResourceMetrics: getNResourceMetrics(1, 'minute', 1)
+        });
+      }, 5000);
+      setTimeout(() => clearInterval(interval), 30000);
+      datetime = moment().subtract(15, 'minute');
+      const response = getNResourceMetrics(15, 'minute', 1);
+      datetime = moment();
+
+      return response;
     }
   }),
   Mutation: () => ({

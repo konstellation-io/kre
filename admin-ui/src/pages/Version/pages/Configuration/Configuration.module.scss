@@ -1,3 +1,4 @@
+@import '../../../../styles/variables';
 @import '../../../../styles/colors';
 
 .container {
@@ -6,6 +7,10 @@
   height: 100%;
   width: 100%;
   min-width: 700px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 .content {
@@ -13,8 +18,7 @@
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
-  height: calc(100% - 40px);
-  padding: 40px 46px 10px 46px;
+  overflow: auto;
 }
 
 .spinnerUpdating {
@@ -30,4 +34,29 @@
   font-weight: 500;
 
   margin: 50px 0 0 20px;
+}
+
+.filters {
+  height: 11 * $grid-unit;
+  padding: 0 3 * $grid-unit;
+  background-color: palette(lowlight, 900);
+  display: flex;
+  align-items: center;
+
+  .filterSearch {
+    width: 40%;
+    max-width: 50 * $grid-unit;
+  }
+  .filterType {
+    margin-left: $grid-unit;
+    width: 133px;
+  }
+  .button {
+    border-left: solid 1px palette(base, 400);
+    margin-left: $grid-unit;
+  }
+}
+
+.bottomBar {
+  z-index: 10;
 }

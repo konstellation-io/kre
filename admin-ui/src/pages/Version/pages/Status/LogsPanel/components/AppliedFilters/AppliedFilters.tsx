@@ -34,8 +34,9 @@ function getLabelAndTitle(filter: string, value: any) {
       label = `Searched by "${value}"`;
       title = label;
       break;
+    case 'global':
     case 'workflow':
-      label = value as string;
+      label = `${value}`;
       title = label;
       break;
     case 'nodes':
@@ -70,17 +71,23 @@ function extractWorkflowsAndNodes(
         const allNodesSelected =
           nodeNames.length === workflowsAndNodesNames[workflowName]?.length;
 
-        if (allNodesSelected) newSelections.push(['workflow', workflowName]);
-        else {
-          nodeNames.forEach(nodeName =>
-            newSelections.push([
-              filter,
-              {
-                workflowName,
-                nodeName
-              }
-            ])
-          );
+        switch (true) {
+          case !workflowName:
+            nodeNames.forEach(name => newSelections.push(['global', name]));
+            break;
+          case allNodesSelected:
+            newSelections.push(['workflow', workflowName]);
+            break;
+          default:
+            nodeNames.forEach(nodeName =>
+              newSelections.push([
+                filter,
+                {
+                  workflowName,
+                  nodeName
+                }
+              ])
+            );
         }
       });
     }
@@ -141,6 +148,13 @@ function AppliedFilters({
     let updatedFilter: string = filter;
 
     switch (filter) {
+      case 'global':
+        newFilterValue = removeNodeFromWorkflow(filters, {
+          workflowName: '',
+          nodeName: `${value}`
+        });
+        updatedFilter = 'nodes';
+        break;
       case 'nodes':
         newFilterValue = removeNodeFromWorkflow(filters, value as NodeChip);
         break;

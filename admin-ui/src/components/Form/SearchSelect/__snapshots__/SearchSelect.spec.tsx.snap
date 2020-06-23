@@ -30,13 +30,21 @@ exports[`SearchSelect component should render without crashing 1`] = `
     autoComplete="off"
     className="input"
     name="searchSelect"
-    onBlur={[Function]}
     onChange={[Function]}
     onKeyDown={[Function]}
     placeholder=""
     type="text"
     value=""
   />
+  <div
+    className="clear"
+    onClick={[Function]}
+    title="Clear input"
+  >
+    <CloseIcon
+      className="icon-small"
+    />
+  </div>
   <ul
     className="optionsList"
   />

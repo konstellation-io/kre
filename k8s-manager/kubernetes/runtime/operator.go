@@ -25,7 +25,12 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 
 	log.Printf("Creating Runtime object on '%s' with url: %s", runtime.Namespace, entrypointURL)
 
-	_, err := client.Namespace(runtime.Namespace).Create(&unstructured.Unstructured{
+	totalMongoReplicas := 3
+	if m.config.DevelopmentMode {
+		totalMongoReplicas = 1
+	}
+
+	definition := &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"kind":       "Runtime",
 			"apiVersion": runtimeGVR.Group + "/v1alpha1",
@@ -40,8 +45,17 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 				"sharedStorageClass": m.config.SharedStorageClass,
 				"nats_streaming": map[string]interface{}{
 					"replicas": 1,
+					"storage": map[string]interface{}{
+						"className": m.config.NatsStreaming.Storage.ClassName,
+						"size":      m.config.NatsStreaming.Storage.Size,
+					},
 				},
 				"mongo": map[string]interface{}{
+					"replicas": totalMongoReplicas,
+					"persistentVolume": map[string]interface{}{
+						"storageClass": m.config.MongoDB.PersistentVolume.StorageClass,
+						"size":         m.config.MongoDB.PersistentVolume.Size,
+					},
 					"auth": map[string]interface{}{
 						"key":           runtime.Mongo.SharedKey,
 						"adminUser":     runtime.Mongo.Username,
@@ -59,7 +73,9 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 				},
 			},
 		},
-	}, metav1.CreateOptions{})
+	}
+
+	_, err := client.Namespace(runtime.Namespace).Create(definition, metav1.CreateOptions{})
 	if err != nil {
 		return err
 	}

@@ -15,7 +15,7 @@ $color-bg: palette(base);
   cursor: pointer;
   transition: color ease 0.4s;
   color: font-color(light);
-  z-index: 1;
+  z-index: 2;
 
   &:hover {
     color: font-color(light);

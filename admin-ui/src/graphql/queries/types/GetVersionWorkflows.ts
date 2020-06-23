@@ -33,6 +33,7 @@ export interface GetVersionWorkflows_version_workflows {
 
 export interface GetVersionWorkflows_version {
   __typename: 'Version';
+  id: string;
   name: string;
   status: VersionStatus;
   creationDate: string;

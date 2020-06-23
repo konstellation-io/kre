@@ -223,6 +223,12 @@ func (m *Manager) createNodeDeployment(
 									SubPath:   version.Name,
 								},
 								{
+									Name:      "shared-data",
+									ReadOnly:  false,
+									MountPath: "/data",
+									SubPath:   version.Name + "/data",
+								},
+								{
 									Name:      "app-log-volume",
 									MountPath: "/var/log/app",
 								},
@@ -270,7 +276,7 @@ func (m *Manager) createNodeDeployment(
 							VolumeSource: apiv1.VolumeSource{
 								PersistentVolumeClaim: &apiv1.PersistentVolumeClaimVolumeSource{
 									ClaimName: "kre-minio-pvc-kre-minio-0",
-									ReadOnly:  true,
+									ReadOnly:  false,
 								},
 							},
 						},

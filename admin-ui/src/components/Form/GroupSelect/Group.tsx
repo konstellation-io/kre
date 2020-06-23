@@ -68,27 +68,29 @@ function Group({
 
   return (
     <div className={styles.group}>
-      <div
-        className={cx(styles.groupHeader, {
-          [styles.allSelected]: allSelected
-        })}
-      >
-        <Left className={styles.name}>
-          <>{group}</>
-        </Left>
-        <Right className={styles.actions}>
-          <div
-            className={styles.selectAll}
-            onClick={groupSelection.action}
-            title={groupSelection.title}
-          >
-            <groupSelection.Icon className="icon-small" />
-          </div>
-          <div className={styles.toggleVisibility} onClick={toggleOpened}>
-            <OpenCloseIcon className="icon-small" />
-          </div>
-        </Right>
-      </div>
+      {group !== '' && (
+        <div
+          className={cx(styles.groupHeader, {
+            [styles.allSelected]: allSelected
+          })}
+        >
+          <Left className={styles.name}>
+            <>{group}</>
+          </Left>
+          <Right className={styles.actions}>
+            <div
+              className={styles.selectAll}
+              onClick={groupSelection.action}
+              title={groupSelection.title}
+            >
+              <groupSelection.Icon className="icon-small" />
+            </div>
+            <div className={styles.toggleVisibility} onClick={toggleOpened}>
+              <OpenCloseIcon className="icon-small" />
+            </div>
+          </Right>
+        </div>
+      )}
       <div className={styles.elements} style={{ height }}>
         {elements.map(element => (
           <GroupElement

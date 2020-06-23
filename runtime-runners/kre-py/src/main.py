@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import time
 import importlib.util
 import json
 import logging
@@ -8,6 +9,9 @@ import sys
 import traceback
 
 from nats.aio.client import ErrTimeout, Client as NATS
+
+
+NATS_FLUSH_TIMEOUT = 0.1
 
 
 class Config:
@@ -151,14 +155,22 @@ class Runner:
 
     async def process_messages(self):
         self.logger.info(f"connecting to NATS at '{self.config.nats_server}'")
-        await self.nc.connect(self.config.nats_server, loop=self.loop)
+        await self.nc.connect(self.config.nats_server,
+                              loop=self.loop,
+                              name=self.config.krt_node_name
+                              )
 
         handler_module = self.load_handler_module()
         ctx = self.create_handler_ctx(handler_module)
 
-        self.logger.info(f"listening to '{self.config.nats_input}' subject")
+        queue_name = f"queue_{self.config.nats_input}"
+        self.logger.info(f"listening to '{self.config.nats_input}' subject with queue '{queue_name}'")
+
         self.subscription_sid = await self.nc.subscribe(
-            self.config.nats_input, cb=self.create_message_cb(handler_module, ctx))
+            self.config.nats_input,
+            cb=self.create_message_cb(handler_module, ctx),
+            queue=queue_name
+        )
 
     def load_handler_module(self):
         handler_full_path = os.path.join(self.config.base_path, self.config.handler_path)
@@ -184,8 +196,7 @@ class Runner:
 
     def create_message_cb(self, handler_module, ctx):
         async def message_cb(msg):
-            self.logger.info(f"received a message on '{msg.subject}' with reply '{msg.reply}'")
-
+            start = time.time()
             result = Result()
             result.from_nats_msg(msg)
 
@@ -195,6 +206,8 @@ class Runner:
             if msg.reply != "":
                 result.reply = msg.reply
 
+            self.logger.info(f"received a message on '{msg.subject}' with final reply '{result.reply}'")
+
             try:
                 handler_result = await handler_module.handler(ctx, result.data)
 
@@ -202,8 +215,19 @@ class Runner:
                 output_subject = result.reply if is_last_node else self.config.nats_output
                 output_result = Result(reply=result.reply, data=handler_result)
 
-                self.logger.info(f"publish response to '{output_subject}' subject")
                 await self.nc.publish(output_subject, output_result.to_json())
+                self.logger.info(f"published response to '{output_subject}' subject with final reply '{result.reply}'")
+
+                await self.nc.flush(timeout=NATS_FLUSH_TIMEOUT)
+
+                end = time.time()
+                self.logger.info(f"version[{ctx.__config__.krt_version}] "
+                                 f"node[{ctx.__config__.krt_node_name}] "
+                                 f"reply[{result.reply}] "
+                                 f"start[{datetime.datetime.utcfromtimestamp(start).isoformat()}] "
+                                 f"end[{datetime.datetime.utcfromtimestamp(end).isoformat()}] "
+                                 f"elapsed[{round(end - start, 2)}]"
+                                 )
 
             except Exception as err:
                 traceback.print_exc()

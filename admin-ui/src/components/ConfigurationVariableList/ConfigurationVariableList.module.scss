@@ -2,44 +2,32 @@
 @import '../../styles/mixins';
 
 $color-input-bg: palette(base, 600);
-$color-border: palette(base);
-$bg-odd: palette(base);
 
 .container {
   display: flex;
   flex-direction: column;
-  margin: 50px 0 20px 0;
   height: 100%;
   overflow: hidden;
-
-  .row:nth-child(odd),
-  .row:nth-child(0) {
-    &,
-    .typeColValue {
-      background-color: $bg-odd;
-      color: font-color(light);
-    }
-  }
+  background-color: palette(base, 700);
+  color: font-color(lowlight);
 }
 
 .row:last-child {
-  border-bottom: solid 1px $color-border;
+  border-bottom: solid 1px palette(base, 400);
 }
 
 .row {
   @include font-body;
   line-height: 13px;
-  font-weight: 600;
 
   display: flex;
   flex-direction: row;
-  border-top: solid 1px $color-border;
+  border-top: solid 1px palette(base, 400);
   transition: color ease 0.3s, background-color ease 0.3s;
 
   &:hover {
     &,
     .typeColValue {
-      background-color: $bg-color-dark !important;
       color: font-color(light);
     }
 
@@ -49,36 +37,39 @@ $bg-odd: palette(base);
     }
   }
 
-  > div:not(:last-child) {
-    border-right: solid 1px $color-border;
-  }
-
   > div {
-    padding: 32px 20px 16px 30px;
+    padding: 4 * $grid-unit 2.5 * $grid-unit 2 * $grid-unit 4 * $grid-unit;
   }
 
   .col1 {
     width: 20%;
     min-width: 140px;
+    flex-shrink: 0;
   }
   .col2 {
     width: 30%;
     min-width: 170px;
+    flex-shrink: 0;
   }
   .col3 {
     width: 50%;
     min-width: 240px;
   }
+  .showMore {
+    padding: 32px 0 0 0;
+
+    > div {
+      padding: 0 16px 0 0;
+    }
+  }
 
   .typeCol {
     display: flex;
     position: relative;
-    padding: 16px 0;
+    padding: 2 * $grid-unit 0;
 
     .typeColValue {
-      padding: 0 8px 0 16px;
-      background-color: $bg-color;
-      transition: background-color ease 0.3s;
+      padding: 0 $grid-unit 0 2 * $grid-unit;
       width: fit-content;
       z-index: 2;
     }
@@ -86,21 +77,16 @@ $bg-odd: palette(base);
 
   .variableCol {
     display: flex;
-    padding: 16px 0;
+    padding: 2 * $grid-unit 0;
 
     > div {
-      margin-left: 8px;
+      margin-left: 2 * $grid-unit;
     }
   }
 
   .variableValue {
     > label {
       display: none;
-    }
-
-    > input,
-    > textarea {
-      background-color: $color-border;
     }
 
     > div {
@@ -110,18 +96,22 @@ $bg-odd: palette(base);
 }
 
 .header {
-  @include border-header;
-
-  @include font-caption;
-  font-weight: 800;
-
-  min-height: 40px;
-  line-height: 40px;
+  height: 3 * $grid-unit;
   border-top-width: 0;
-  border-bottom: 2px solid #4f4f4f;
+  border-bottom: 1px solid palette(base, 300);
+  pointer-events: none;
 
   > div {
-    padding: 0 0 0 20px;
+    @include font-small;
+    color: font-color(lowlight);
+    line-height: 3 * $grid-unit;
+
+    padding: 0 0 0 4 * $grid-unit;
+    background-color: palette(base, 400);
+  }
+
+  > div:not(:last-child) {
+    border-right: 1px solid palette(base, 300);
   }
 }
 

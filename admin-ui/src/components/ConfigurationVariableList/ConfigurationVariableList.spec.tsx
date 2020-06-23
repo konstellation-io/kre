@@ -1,9 +1,9 @@
+import ConfigurationVariableItem from './ConfigurationVariableItem';
+import ConfigurationVariableList from './ConfigurationVariableList';
+import { ConfigurationVariableType } from '../../graphql/types/globalTypes';
 import React from 'react';
-import ConfigurationVariableList, {
-  VariableRow
-} from './ConfigurationVariableList';
-import { confVarsMock } from '../../mocks/version';
 import TextInput from '../Form/TextInput/TextInput';
+import { confVarsMock } from '../../mocks/version';
 import { shallow } from 'enzyme';
 
 const DATA = confVarsMock.result.data.version.configurationVariables;
@@ -21,6 +21,7 @@ describe('ConfigurationVariableList', () => {
     wrapper = shallow(
       <ConfigurationVariableList
         data={DATA}
+        filterValues={{ varName: '', type: undefined }}
         hideAll={true}
         onType={mockOnType}
       />
@@ -32,12 +33,12 @@ describe('ConfigurationVariableList', () => {
   });
 
   it('show right components', () => {
-    expect(wrapper.find(VariableRow).length).toBe(3);
+    expect(wrapper.find(ConfigurationVariableItem).length).toBe(3);
 
     // varaibles should be sorted by default
     expect(
       wrapper
-        .find(VariableRow)
+        .find(ConfigurationVariableItem)
         .at(0)
         .prop('variable').key
     ).toBe('var1');
@@ -45,7 +46,7 @@ describe('ConfigurationVariableList', () => {
 
   it('calls onType properly', () => {
     wrapper
-      .find(VariableRow)
+      .find(ConfigurationVariableItem)
       .at(1)
       .dive()
       .find(TextInput)
@@ -60,7 +61,7 @@ describe('ConfigurationVariableList', () => {
     for (let idx = 0; idx <= 2; idx++) {
       expect(
         wrapper
-          .find(VariableRow)
+          .find(ConfigurationVariableItem)
           .at(idx)
           .prop('hide')
       ).toBeTruthy();
@@ -73,7 +74,7 @@ describe('ConfigurationVariableList', () => {
     for (let idx = 0; idx <= 2; idx++) {
       expect(
         wrapper
-          .find(VariableRow)
+          .find(ConfigurationVariableItem)
           .at(idx)
           .prop('hide')
       ).toBeFalsy();
@@ -84,7 +85,11 @@ describe('ConfigurationVariableList', () => {
 describe('VariableRow', () => {
   beforeEach(() => {
     wrapper = shallow(
-      <VariableRow variable={VARIABLE_DATA} onType={mockOnType} hide={true} />
+      <ConfigurationVariableItem
+        variable={VARIABLE_DATA}
+        onType={mockOnType}
+        hide={true}
+      />
     );
   });
 

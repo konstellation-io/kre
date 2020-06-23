@@ -4,6 +4,7 @@
 $color-bg: palette(base, 800);
 
 .container {
+  position: relative;
   background-color: $color-bg;
   display: flex;
   flex-direction: column;

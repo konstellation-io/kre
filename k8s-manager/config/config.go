@@ -38,7 +38,21 @@ type Config struct {
 
 	Prometheus struct {
 		URL string `yaml:"url" envconfig:"KRE_PROMETHEUS_URL"`
-	}
+	} `yaml:"prometheus"`
+
+	NatsStreaming struct {
+		Storage struct {
+			ClassName string `yaml:"className" envconfig:"KRE_NATS_STORAGECLASS"`
+			Size      string `yaml:"size" envconfig:"KRE_NATS_STORAGE_SIZE"`
+		} `yaml:"storage"`
+	} `yaml:"nats_streaming"`
+
+	MongoDB struct {
+		PersistentVolume struct {
+			StorageClass string `yaml:"storageClass" envconfig:"KRE_MONGODB_STORAGECLASS"`
+			Size         string `yaml:"size" envconfig:"KRE_MONGODB_STORAGE_SIZE"`
+		} `yaml:"persistentVolume"`
+	} `yaml:"mongo"`
 }
 
 // NewConfig will read the config.yml file and override values with env vars.
