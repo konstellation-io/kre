@@ -1,6 +1,7 @@
 import React from 'react';
 import Chip from '../../../../../../../components/Chip/Chip';
 import { NodeChip } from './AppliedFilters';
+import { NODE_NAME_ENTRYPOINT } from '../../../../../../../hooks/useWorkflowsAndNodes';
 
 function getLabelAndTitle(filter: string, value: string | NodeChip) {
   let label = '',
@@ -11,8 +12,9 @@ function getLabelAndTitle(filter: string, value: string | NodeChip) {
       label = `Searched by "${value}"`;
       title = label;
       break;
+    case 'global':
     case 'workflow':
-      label = value as string;
+      label = `${value}`;
       title = label;
       break;
     case 'nodes':

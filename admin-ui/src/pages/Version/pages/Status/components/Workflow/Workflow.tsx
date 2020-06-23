@@ -30,6 +30,7 @@ import {
   ADD_LOG_TAB,
   AddLogTabVariables
 } from '../../../../../../graphql/client/mutations/addLogTab.graphql';
+import { NODE_NAME_ENTRYPOINT } from '../../../../../../hooks/useWorkflowsAndNodes';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
 export interface Edge extends GetVersionWorkflows_version_workflows_edges {
@@ -83,6 +84,16 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
     });
   }
 
+  function onInputNodeClick() {
+    addLogTab([
+      {
+        workflowName: '',
+        nodeNames: [NODE_NAME_ENTRYPOINT],
+        __typename: 'NodeSelection'
+      }
+    ]);
+  }
+
   function onInnerNodeClick(nodeName: string) {
     addLogTab([
       {
@@ -120,6 +131,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
           data={data}
           workflowStatus={workflowStatus}
           onInnerNodeClick={onInnerNodeClick}
+          onInputNodeClick={onInputNodeClick}
           tooltipRefs={tooltipRefs}
           enableNodeClicks={checkPermission(accessLevel, 'logs-page:visit')}
         />
