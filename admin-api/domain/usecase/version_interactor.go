@@ -168,7 +168,7 @@ func (i *VersionInteractor) Start(userID string, versionID string, comment strin
 		return nil, err
 	}
 
-	if version.Status != string(entity.VersionStatusStopped) {
+	if version.Status != entity.VersionStatusStopped {
 		return nil, ErrInvalidVersionStatusBeforeStarting
 	}
 
@@ -186,7 +186,7 @@ func (i *VersionInteractor) Start(userID string, versionID string, comment strin
 		return nil, err
 	}
 
-	version.Status = string(entity.VersionStatusStarted) // TODO: First go to Starting
+	version.Status = entity.VersionStatusStarted // TODO: First go to Starting
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -208,7 +208,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string, comment string
 		return nil, err
 	}
 
-	if version.Status != string(entity.VersionStatusStarted) {
+	if version.Status != entity.VersionStatusStarted {
 		return nil, ErrInvalidVersionStatusBeforeStopping
 	}
 
@@ -222,7 +222,7 @@ func (i *VersionInteractor) Stop(userID string, versionID string, comment string
 		return nil, err
 	}
 
-	version.Status = string(entity.VersionStatusStopped)
+	version.Status = entity.VersionStatusStopped
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -244,7 +244,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 		return nil, err
 	}
 
-	if version.Status != string(entity.VersionStatusStarted) {
+	if version.Status != entity.VersionStatusStarted {
 		return nil, ErrInvalidVersionStatusBeforePublishing
 	}
 
@@ -267,7 +267,7 @@ func (i *VersionInteractor) Publish(userID string, versionID string, comment str
 	now := time.Now()
 	version.PublicationDate = &now
 	version.PublicationUserID = &userID
-	version.Status = string(entity.VersionStatusPublished)
+	version.Status = entity.VersionStatusPublished
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -289,9 +289,9 @@ func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*
 	}
 	if len(versions) > 0 {
 		for _, v := range versions {
-			if v.Status == string(entity.VersionStatusPublished) {
+			if v.Status == entity.VersionStatusPublished {
 				prevVersion = v
-				v.Status = string(entity.VersionStatusStarted)
+				v.Status = entity.VersionStatusStarted
 				v.PublicationUserID = nil
 				v.PublicationDate = nil
 				err = i.versionRepo.Update(v)
@@ -314,7 +314,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string, comment s
 		return nil, err
 	}
 
-	if version.Status != string(entity.VersionStatusPublished) {
+	if version.Status != entity.VersionStatusPublished {
 		return nil, ErrInvalidVersionStatusBeforeUnpublishing
 	}
 
@@ -330,7 +330,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string, comment s
 
 	version.PublicationUserID = nil
 	version.PublicationDate = nil
-	version.Status = string(entity.VersionStatusStarted)
+	version.Status = entity.VersionStatusStarted
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
@@ -344,7 +344,7 @@ func (i *VersionInteractor) Unpublish(userID string, versionID string, comment s
 	return version, nil
 }
 
-func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config []*entity.ConfigVar) (*entity.Version, error) {
+func (i *VersionInteractor) UpdateVersionConfig(version *entity.Version, config []*entity.ConfigurationVariable) (*entity.Version, error) {
 	err := i.validateNewConfig(version.Config.Vars, config)
 	if err != nil {
 		return nil, err

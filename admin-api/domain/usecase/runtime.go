@@ -14,12 +14,6 @@ import (
 type RuntimeStatus string
 
 var (
-	// RuntimeStatusCreating status
-	RuntimeStatusCreating RuntimeStatus = "CREATING"
-	// RuntimeStatusStarted status
-	RuntimeStatusStarted RuntimeStatus = "STARTED"
-	// RuntimeStatusError status
-	RuntimeStatusError RuntimeStatus = "ERROR"
 	// ErrRuntimeNotFound error
 	ErrRuntimeNotFound = errors.New("error runtime not found")
 )
@@ -91,13 +85,13 @@ func (i *RuntimeInteractor) CreateRuntime(name string, description string, userI
 		// If all pods are running, the runtime status should be set to running.
 		// In other case, the runtime status will be set to error
 		if err != nil {
-			createdRuntime.Status = string(RuntimeStatusError)
+			createdRuntime.Status = entity.RuntimeStatusError
 			i.logger.Error(err.Error())
 		} else {
-			createdRuntime.Status = string(RuntimeStatusStarted)
+			createdRuntime.Status = entity.RuntimeStatusStarted
 		}
 
-		i.logger.Info("Set runtime status to " + createdRuntime.Status)
+		i.logger.Infof("Set runtime status to %s", createdRuntime.Status.String())
 		err = i.runtimeRepo.Update(createdRuntime) // TODO improve this using an atomic update operation instead of replace
 		if err != nil {
 			i.logger.Error(err.Error())

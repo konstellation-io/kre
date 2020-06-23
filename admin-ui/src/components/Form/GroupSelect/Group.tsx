@@ -8,6 +8,7 @@ import IconOpen from '@material-ui/icons/KeyboardArrowDown';
 import IconClose from '@material-ui/icons/KeyboardArrowUp';
 import { GroupSelectData } from './GroupSelect';
 import styles from './GroupSelect.module.scss';
+import cx from 'classnames';
 import { get } from 'lodash';
 
 const HEIGHT_ELEMENT = 45;
@@ -68,7 +69,11 @@ function Group({
   return (
     <div className={styles.group}>
       {group !== '' && (
-        <div className={styles.groupHeader}>
+        <div
+          className={cx(styles.groupHeader, {
+            [styles.allSelected]: allSelected
+          })}
+        >
           <Left className={styles.name}>
             <>{group}</>
           </Left>

@@ -18,6 +18,7 @@ import { NodeSelection } from '../../../../../../../graphql/client/typeDefs';
 import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
 import LevelIcon from '../../../../../../../components/LevelIcon/LevelIcon';
 
+// TODO: use GroupSelectData in the filters instead of [string]
 function nodesSelectionToDoubleSelector(
   selections: NodeSelection[]
 ): GroupSelectData {
@@ -64,7 +65,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
       ({
         label: level,
         Icon: <LevelIcon level={level} />
-      } as MultiSelectOption)
+      } as MultiSelectOption<LogLevel>)
   );
 
   function onNodeSelection(newSelection: GroupSelectData) {
@@ -73,7 +74,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
     });
   }
 
-  function onLevelSelection<LogLevel>(newLevels: LogLevel[]) {
+  function onLevelSelection(newLevels: LogLevel[]) {
     updateFilters({ levels: newLevels });
   }
 
@@ -105,6 +106,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             onChange={onNodeSelection}
             label=""
             placeholder="Select Processes"
+            className={styles.selectProcessForm}
             hideError
             hideSelections
           />
@@ -112,7 +114,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
       </Left>
       <Right className={cx(styles.filterContainer, styles.rightFilters)}>
         <div className={styles.filterLevel}>
-          <MultiSelect
+          <MultiSelect<LogLevel>
             onChange={onLevelSelection}
             label=""
             hideError
@@ -121,7 +123,6 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             selectAllText="ALL LEVELS"
             options={levelOptions}
             formSelectedOptions={filterValues.levels || []}
-            className={styles.selectTypeForm}
             theme={SelectTheme.LIGHT}
           />
         </div>

@@ -4,6 +4,46 @@ import (
 	"time"
 )
 
+type VersionStatus string
+
+const (
+	VersionStatusStarting  VersionStatus = "STARTING"
+	VersionStatusStarted   VersionStatus = "STARTED"
+	VersionStatusPublished VersionStatus = "PUBLISHED"
+	VersionStatusStopped   VersionStatus = "STOPPED"
+)
+
+func (e VersionStatus) IsValid() bool {
+	switch e {
+	case VersionStatusStarting, VersionStatusStarted, VersionStatusPublished, VersionStatusStopped:
+		return true
+	}
+	return false
+}
+
+func (e VersionStatus) String() string {
+	return string(e)
+}
+
+type ConfigurationVariableType string
+
+const (
+	ConfigurationVariableTypeVariable ConfigurationVariableType = "VARIABLE"
+	ConfigurationVariableTypeFile     ConfigurationVariableType = "FILE"
+)
+
+func (e ConfigurationVariableType) IsValid() bool {
+	switch e {
+	case ConfigurationVariableTypeVariable, ConfigurationVariableTypeFile:
+		return true
+	}
+	return false
+}
+
+func (e ConfigurationVariableType) String() string {
+	return string(e)
+}
+
 type Edge struct {
 	ID       string `bson:"id"`
 	FromNode string `bson:"fromNode"`
@@ -11,11 +51,11 @@ type Edge struct {
 }
 
 type Node struct {
-	ID     string `bson:"id"`
-	Name   string `bson:"name"`
-	Image  string `bson:"image"`
-	Src    string `bson:"src"`
-	Status string `bson:"status"`
+	ID     string     `bson:"id"`
+	Name   string     `bson:"name"`
+	Image  string     `bson:"image"`
+	Src    string     `bson:"src"`
+	Status NodeStatus `bson:"status"`
 }
 
 type NodeStatus string
@@ -26,7 +66,19 @@ const (
 	NodeStatusError   NodeStatus = "ERROR"
 )
 
-func (n *NodeStatus) GetStatus(key string) NodeStatus {
+func (e NodeStatus) IsValid() bool {
+	switch e {
+	case NodeStatusStarted, NodeStatusStopped, NodeStatusError:
+		return true
+	}
+	return false
+}
+
+func (e NodeStatus) String() string {
+	return string(e)
+}
+
+func (e *NodeStatus) FromString(key string) NodeStatus {
 	var status NodeStatus
 	switch key {
 	case "STARTED":
@@ -60,15 +112,15 @@ type Entrypoint struct {
 	Src       string `bson:"src"`
 }
 
-type ConfigVar struct {
-	Key   string `bson:"key"`
-	Value string `bson:"value"`
-	Type  string `bson:"type"`
+type ConfigurationVariable struct {
+	Key   string                    `bson:"key"`
+	Value string                    `bson:"value"`
+	Type  ConfigurationVariableType `bson:"type"`
 }
 
 type VersionConfig struct {
-	Completed bool         `bson:"completed"`
-	Vars      []*ConfigVar `bson:"vars"`
+	Completed bool                     `bson:"completed"`
+	Vars      []*ConfigurationVariable `bson:"vars"`
 }
 
 type Version struct {
@@ -84,32 +136,17 @@ type Version struct {
 	PublicationDate   *time.Time `bson:"publicationDate"`
 	PublicationUserID *string    `bson:"publicationUserId"`
 
-	Status string `bson:"status"`
+	Status VersionStatus `bson:"status"`
 
 	Config     VersionConfig `bson:"config"`
 	Entrypoint Entrypoint    `bson:"entrypoint"`
 	Workflows  []*Workflow   `bson:"workflows"`
 }
 
-type VersionStatus string
-
-var (
-	// VersionStatusStarting status
-	VersionStatusStarting VersionStatus = "STARTING"
-	// VersionStatusStarting status
-	VersionStatusStopping VersionStatus = "STOPPING"
-	// VersionStatusStarted status
-	VersionStatusStarted VersionStatus = "STARTED"
-	// VersionStatusPublished status
-	VersionStatusPublished VersionStatus = "PUBLISHED"
-	// VersionStatusStopped status
-	VersionStatusStopped VersionStatus = "STOPPED"
-)
-
 func (v Version) PublishedOrStarted() bool {
 	switch v.Status {
-	case string(VersionStatusStarted),
-		string(VersionStatusPublished):
+	case VersionStatusStarted,
+		VersionStatusPublished:
 		return true
 	}
 	return false

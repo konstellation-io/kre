@@ -12,6 +12,8 @@ type UserRepo interface {
 	// GetByEmail returns the user with the given email.
 	GetByEmail(email string) (*entity.User, error)
 
+	GetManyByEmail(ctx context.Context, email string) ([]*entity.User, error)
+
 	// Create persists a new User into the database.
 	Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error)
 

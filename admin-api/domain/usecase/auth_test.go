@@ -111,7 +111,7 @@ func TestSignUpWithValidEmailAddress(t *testing.T) {
 		Email: email,
 		ID:    userId,
 	}
-	settings := &entity.Setting{
+	settings := &entity.Settings{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{"testdomain.com"},
 	}
@@ -136,7 +136,7 @@ func TestSignUpWithInvalidDomain(t *testing.T) {
 		Email: "userA@testdomain.com",
 		ID:    "userA",
 	}
-	settings := &entity.Setting{
+	settings := &entity.Settings{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{"anotherdomain.com"},
 	}
@@ -159,7 +159,7 @@ func TestSignUpWithValidDomain(t *testing.T) {
 		Email: "userA@" + domain,
 		ID:    "userA",
 	}
-	settings := &entity.Setting{
+	settings := &entity.Settings{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{domain},
 	}
@@ -200,7 +200,7 @@ func TestSignUpErrGettingSettings(t *testing.T) {
 	}
 
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
-	s.mocks.settingRepo.EXPECT().Get().Return(&entity.Setting{}, unexpectedErr)
+	s.mocks.settingRepo.EXPECT().Get().Return(&entity.Settings{}, unexpectedErr)
 
 	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
 	require.Equal(t, unexpectedErr, err)
@@ -247,7 +247,7 @@ func TestSignUpErrCreatingUser(t *testing.T) {
 		Email: "userA@" + domain,
 		ID:    "userA",
 	}
-	settings := &entity.Setting{
+	settings := &entity.Settings{
 		SessionLifetimeInDays: 0,
 		AuthAllowedDomains:    []string{domain},
 	}

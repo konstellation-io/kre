@@ -125,7 +125,7 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 	return a.loginLinkTransport.Send(user.Email, verificationCode)
 }
 
-func (a *AuthInteractor) isDomainAllowed(settings *entity.Setting, email string) bool {
+func (a *AuthInteractor) isDomainAllowed(settings *entity.Settings, email string) bool {
 	split := strings.Split(email, "@")
 	domain := split[1]
 

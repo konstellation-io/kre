@@ -110,7 +110,7 @@ func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVers
 	return r.versionInteractor.Publish(userID, input.VersionID, input.Comment)
 }
 
-func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*entity.Setting, error) {
+func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*entity.Settings, error) {
 	userID := ctx.Value("userID").(string)
 	settings, err := r.settingInteractor.Get()
 	if err != nil {
@@ -156,10 +156,10 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		return nil, err
 	}
 
-	config := make([]*entity.ConfigVar, len(input.ConfigurationVariables))
+	config := make([]*entity.ConfigurationVariable, len(input.ConfigurationVariables))
 
 	for i, c := range input.ConfigurationVariables {
-		config[i] = &entity.ConfigVar{
+		config[i] = &entity.ConfigurationVariable{
 			Key:   c.Key,
 			Value: c.Value,
 		}
@@ -211,10 +211,6 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput
 	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, userID)
 }
 
-func (r *nodeResolver) Status(ctx context.Context, obj *entity.Node) (NodeStatus, error) {
-	return NodeStatus(obj.Status), nil
-}
-
 func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	userID := ctx.Value("userID").(string)
 	return r.userInteractor.GetByID(userID)
@@ -244,23 +240,20 @@ func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*enti
 	return r.versionInteractor.GetByRuntime(runtimeID)
 }
 
-func (r *queryResolver) Alerts(ctx context.Context) ([]*Alert, error) {
-	return []*Alert{}, nil
-}
-
-func (r *queryResolver) Settings(ctx context.Context) (*entity.Setting, error) {
+func (r *queryResolver) Settings(ctx context.Context) (*entity.Settings, error) {
 	return r.settingInteractor.Get()
 }
 
-func (r *queryResolver) UserActivityList(ctx context.Context, userMail *string, typeArg *UserActivityType, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
-	activityType := new(string)
-	if typeArg != nil {
-		*activityType = typeArg.String()
-	} else {
-		activityType = nil
-	}
-
-	return r.userActivityInteractor.Get(userMail, activityType, fromDate, toDate, lastID)
+func (r *queryResolver) UserActivityList(
+	ctx context.Context,
+	userEmail *string,
+	types []entity.UserActivityType,
+	versionIds []string,
+	fromDate *string,
+	toDate *string,
+	lastID *string,
+) ([]*entity.UserActivity, error) {
+	return r.userActivityInteractor.Get(ctx, userEmail, types, versionIds, fromDate, toDate, lastID)
 }
 
 func (r *queryResolver) Logs(
@@ -308,11 +301,6 @@ func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Ru
 	return userLoader.Load(runtime.Owner)
 }
 
-func (r *runtimeResolver) Status(ctx context.Context, obj *entity.Runtime) (RuntimeStatus, error) {
-	// TODO enums for custom models
-	return RuntimeStatus(obj.Status), nil
-}
-
 func (r *runtimeResolver) CreationDate(ctx context.Context, obj *entity.Runtime) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
@@ -327,7 +315,7 @@ func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runt
 
 	var publishedVersion *entity.Version
 	for _, v := range versions {
-		if v.Status == string(VersionStatusPublished) {
+		if v.Status == entity.VersionStatusPublished {
 			publishedVersion = v
 		}
 	}
@@ -419,10 +407,6 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, versionI
 	return outputChan, nil
 }
 
-func (r *userActivityResolver) Type(ctx context.Context, obj *entity.UserActivity) (UserActivityType, error) {
-	return UserActivityType(obj.Type), nil
-}
-
 func (r *userActivityResolver) Date(ctx context.Context, obj *entity.UserActivity) (string, error) {
 	return obj.Date.Format(time.RFC3339), nil
 }
@@ -443,10 +427,6 @@ func (r *userResolver) LastActivity(ctx context.Context, obj *entity.User) (*str
 
 func (r *userResolver) CreationDate(ctx context.Context, obj *entity.User) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
-}
-
-func (r *versionResolver) Status(ctx context.Context, obj *entity.Version) (VersionStatus, error) {
-	return VersionStatus(obj.Status), nil
 }
 
 func (r *versionResolver) CreationDate(ctx context.Context, obj *entity.Version) (string, error) {
@@ -476,22 +456,8 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 }
 
 // TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*ConfigurationVariable, error) {
-	vars := make([]*ConfigurationVariable, len(obj.Config.Vars))
-	for i, c := range obj.Config.Vars {
-		vars[i] = &ConfigurationVariable{
-			Key:   c.Key,
-			Value: c.Value,
-		}
-
-		switch c.Type {
-		case string(ConfigurationVariableTypeVariable):
-			vars[i].Type = ConfigurationVariableTypeVariable
-		case string(ConfigurationVariableTypeFile):
-			vars[i].Type = ConfigurationVariableTypeFile
-		}
-	}
-	return vars, nil
+func (r *versionResolver) ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error) {
+	return obj.Config.Vars, nil
 }
 
 // TODO change entity struct to match with the gql definition
@@ -503,15 +469,8 @@ func (r *versionNodeStatusResolver) Date(ctx context.Context, obj *entity.Versio
 	return time.Now().Format(time.RFC3339), nil
 }
 
-func (r *versionNodeStatusResolver) Status(ctx context.Context, obj *entity.VersionNodeStatus) (NodeStatus, error) {
-	return NodeStatus(obj.Status), nil
-}
-
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
-
-// Node returns NodeResolver implementation.
-func (r *Resolver) Node() NodeResolver { return &nodeResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
@@ -537,7 +496,6 @@ func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver {
 }
 
 type mutationResolver struct{ *Resolver }
-type nodeResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type runtimeResolver struct{ *Resolver }
 type subscriptionResolver struct{ *Resolver }

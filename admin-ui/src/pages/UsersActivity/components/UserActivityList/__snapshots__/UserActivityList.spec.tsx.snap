@@ -2,133 +2,223 @@
 
 exports[`messageGenerator show right CREATE_RUNTIME message 1`] = `
 <div>
-  Has created a new Runtime: 
-  <strong>
+  <div
+    className="message"
+  >
+    New Runtime created:
     <Link
+      className="link"
       to="/runtimes/runtimeId"
     >
       runtimeName
     </Link>
-  </strong>
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right CREATE_VERSION message 1`] = `
 <div>
-  Has created a new Version: 
-  <strong>
+  <div
+    className="message"
+  >
+    New Version created:
     <Link
+      className="link"
       to="/runtimes/runtimeId/versions/versionId/status"
     >
-      runtimeName - versionName
+      versionName
     </Link>
-  </strong>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeName
+    </Link>
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right LOGIN message 1`] = `
 <div>
-  Has logged in
+  <div
+    className="message"
+  >
+    Log in
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right LOGOUT message 1`] = `
 <div>
-  Has logged out
+  <div
+    className="message"
+  >
+    Log out
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right PUBLISH_VERSION message 1`] = `
 <div>
-  Has published version: 
-  <strong>
+  <div
+    className="message"
+  >
+    The version
     <Link
+      className="link"
       to="/runtimes/runtimeId/versions/versionId/status"
     >
-      runtimeName - versionName
+      versionName
     </Link>
-  </strong>
-  . 
-  Previous published version: 
-  <strong>
+    Have been
+    <Highlight
+      type="published"
+    >
+      Published
+    </Highlight>
+    at Runtime
     <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeName
+    </Link>
+    . Previous published version: 
+    <Link
+      className="link"
       to="/runtimes/runtimeId/versions/oldVersionId/status"
     >
       oldVersionName
     </Link>
-  </strong>
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right START_VERSION message 1`] = `
 <div>
-  Has started version 
-  <strong>
+  <div
+    className="message"
+  >
+    The version
     <Link
+      className="link"
       to="/runtimes/runtimeId/versions/versionId/status"
     >
-      runtimeName - versionName
+      versionName
     </Link>
-  </strong>
+    Have been
+    <Highlight
+      type="started"
+    >
+      Started
+    </Highlight>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeName
+    </Link>
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right STOP_VERSION message 1`] = `
 <div>
-  Has stopped version 
-  <strong>
+  <div
+    className="message"
+  >
+    The version
     <Link
+      className="link"
       to="/runtimes/runtimeId/versions/versionId/status"
     >
-      runtimeName - versionName
+      versionName
     </Link>
-  </strong>
+    Have been
+    <Highlight
+      type="stopped"
+    >
+      Stopped
+    </Highlight>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeName
+    </Link>
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right UNPUBLISH_VERSION message 1`] = `
 <div>
-  Has unpublished version 
-  <strong>
+  <div
+    className="message"
+  >
+    The version
     <Link
+      className="link"
       to="/runtimes/runtimeId/versions/versionId/status"
     >
-      runtimeName - versionName
+      versionName
     </Link>
-  </strong>
+    Have been
+    <Highlight
+      type="unpublished"
+    >
+      Unpublished
+    </Highlight>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeName
+    </Link>
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right UPDATE_SETTING message 1`] = `
 <div>
-  Has updated 
-  <strong>
-    setting
-  </strong>
-   setting from 
-  <strong>
-    oldValue
-  </strong>
-   to 
-  <strong>
-    newValue
-  </strong>
+  <div
+    className="message"
+  >
+    Has updated
+    <Highlight>
+      setting
+    </Highlight>
+    setting from
+    <Highlight>
+      oldValue
+    </Highlight>
+    to
+    <Highlight>
+      newValue
+    </Highlight>
+  </div>
 </div>
 `;
 
 exports[`messageGenerator show right UPDATE_VERSION_CONFIGURATION message 1`] = `
 <div>
-  Has changed settings: 
-  <strong>
-    confA, confB, confC
-  </strong>
-   from version 
-  <strong>
+  <div
+    className="message"
+  >
+    Updated settings
+    <Highlight>
+      confA, confB, confC
+    </Highlight>
+    from version
     <Link
+      className="link"
       to="/runtimes/runtimeId/versions/versionId/status"
     >
-      runtimeName - versionName
+      versionName
     </Link>
-  </strong>
+  </div>
 </div>
 `;

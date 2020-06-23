@@ -28,23 +28,32 @@ func NewUserActivityRepoMongoDB(cfg *config.Config, logger logging.Logger, clien
 	}
 }
 
-func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
+func (r *UserActivityRepoMongoDB) Get(
+	ctx context.Context,
+	userIDs []string,
+	types []entity.UserActivityType,
+	versionIds []string,
+	fromDate *string,
+	toDate *string,
+	lastID *string,
+) ([]*entity.UserActivity, error) {
 	const limit = 30
-
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
 
 	filter := bson.M{}
 	if lastID != nil {
 		filter["_id"] = bson.M{"$lt": lastID}
 	}
 
-	if activityType != nil {
-		filter["type"] = *activityType
+	if types != nil && len(types) > 0 {
+		filter["type"] = bson.M{"$in": types}
 	}
 
-	if userEmail != nil {
-		filter["user.email"] = *userEmail
+	if userIDs != nil && len(userIDs) > 0 {
+		filter["userId"] = bson.M{"$in": userIDs}
+	}
+
+	if versionIds != nil && len(versionIds) > 0 {
+		filter["vars.value"] = bson.M{"$in": versionIds}
 	}
 
 	if fromDate != nil || toDate != nil {
@@ -72,19 +81,14 @@ func (r *UserActivityRepoMongoDB) Get(userEmail *string, activityType *string, f
 
 	var activities []*entity.UserActivity
 	opts := options.Find().SetSort(bson.D{{"_id", -1}}).SetLimit(limit)
-	cur, err := r.collection.Find(ctx, filter, opts)
+	cursor, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return activities, err
 	}
-	defer cur.Close(ctx)
 
-	for cur.Next(ctx) {
-		var activity entity.UserActivity
-		err = cur.Decode(&activity)
-		if err != nil {
-			return activities, err
-		}
-		activities = append(activities, &activity)
+	err = cursor.All(ctx, &activities)
+	if err != nil {
+		return nil, err
 	}
 
 	return activities, nil

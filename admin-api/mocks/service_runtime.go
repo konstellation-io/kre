@@ -49,10 +49,10 @@ func (mr *MockRuntimeServiceMockRecorder) Create(runtime interface{}) *gomock.Ca
 }
 
 // WaitForRuntimeStarted mocks base method
-func (m *MockRuntimeService) WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatus, error) {
+func (m *MockRuntimeService) WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitForRuntimeStarted", runtime)
-	ret0, _ := ret[0].(*entity.RuntimeStatus)
+	ret0, _ := ret[0].(*entity.RuntimeStatusEntity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

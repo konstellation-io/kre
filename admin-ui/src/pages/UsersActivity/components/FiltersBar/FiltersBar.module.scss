@@ -2,14 +2,14 @@
 @import '../../../../styles/colors';
 
 .formField {
-  min-height: 140px;
   height: auto;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  margin-top: 30px;
+  background-color: palette(lowlight, 900);
+  padding: 11px 25px;
 
   .label {
     @include font-body;
@@ -23,13 +23,40 @@
     min-width: 210px;
     margin-right: 2vw;
   }
-
-  svg {
-    margin-left: 20px;
-  }
 }
 
 .buttons {
   display: flex;
   flex-direction: row;
+}
+
+.customLabel {
+  @include font-button;
+
+  text-transform: uppercase;
+  display: flex;
+
+  span {
+    flex-shrink: 0;
+  }
+
+  .customLabelHighlight {
+    @include font-small;
+
+    text-transform: capitalize;
+    margin-left: $grid-unit;
+
+    &.highlight {
+      color: palette(highlight);
+    }
+    &.feedback {
+      color: palette(feedback);
+    }
+    &.success {
+      color: palette(success);
+    }
+    &.regular {
+      color: font-color(regular);
+    }
+  }
 }

@@ -3,10 +3,10 @@ import styles from './AppliedFilters.module.scss';
 import Button from '../../../../../../../components/Button/Button';
 import Left from '../../../../../../../components/Layout/Left/Left';
 import Right from '../../../../../../../components/Layout/Right/Right';
-import Filter from './Filter';
 import { NodeSelection } from '../../../../../../../graphql/client/typeDefs';
 import { defaultFilters } from '../../../../../../../graphql/client/resolvers/updateTabFilters';
 import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
+import Chip from '../../../../../../../components/Chip/Chip';
 
 export type NodeChip = {
   workflowName: string;
@@ -24,6 +24,33 @@ const sortFilters = (
   [a]: [string, string | NodeChip],
   [b]: [string, string | NodeChip]
 ) => filtersOrderDict[a] - filtersOrderDict[b] || a.localeCompare(b);
+
+function getLabelAndTitle(filter: string, value: any) {
+  let label = '',
+    title = '';
+
+  switch (filter) {
+    case 'search':
+      label = `Searched by "${value}"`;
+      title = label;
+      break;
+    case 'global':
+    case 'workflow':
+      label = `${value}`;
+      title = label;
+      break;
+    case 'nodes':
+      const node = value as NodeChip;
+      const workflowShort = node.workflowName.substring(0, 2).toUpperCase();
+      label = `${workflowShort}: ${node.nodeName}`;
+      title = `${node.workflowName}: ${node.nodeName}`;
+      break;
+    default:
+      label = 'unknown';
+  }
+
+  return { label, title };
+}
 
 function getActiveFilters(filters: Filters) {
   return Object.entries(filters).filter(([_, value]) => !isEmpty(value));
@@ -142,14 +169,17 @@ function AppliedFilters({
     updateFilters({ [updatedFilter]: newFilterValue });
   }
 
-  const filterNodes = filtersSortened.map(([filter, value]: [string, any]) => (
-    <Filter
-      filter={filter}
-      value={value}
-      key={`${filter}${JSON.stringify(value)}`}
-      removeFilter={removeFilter}
-    />
-  ));
+  const filterNodes = filtersSortened.map(([filter, value]: [string, any]) => {
+    const { label, title } = getLabelAndTitle(filter, value);
+    return (
+      <Chip
+        key={`${filter}${JSON.stringify(value)}`}
+        label={label}
+        title={title}
+        onClose={() => removeFilter(filter, value)}
+      />
+    );
+  });
 
   const hasFiltersToShow =
     filters.nodes?.length !== 0 || filters.search !== null;

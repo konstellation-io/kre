@@ -1,110 +1,117 @@
-import React, { useState, useEffect, UIEvent } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
-import FiltersBar, {
-  typeToText,
-  UserActivityFormData
-} from './components/FiltersBar/FiltersBar';
+import FiltersBar from './components/FiltersBar/FiltersBar';
+import SelectionsBar, {
+  VersionChip
+} from './components/SelectionsBar/SelectionsBar';
 import UserActivityList from './components/UserActivityList/UserActivityList';
-
-import { loader } from 'graphql.macro';
-import { useQuery } from '@apollo/react-hooks';
-import {
-  GetUsersActivity,
-  GetUsersActivity_userActivityList,
-  GetUsersActivity_userActivityList_user
-} from '../../graphql/queries/types/GetUsersActivity';
-import { GetUsers } from '../../graphql/queries/types/GetUsers';
-
+import { UserActivityType } from '../../graphql/types/globalTypes';
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
 import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
-import InfoMessage from '../../components/InfoMessage/InfoMessage';
-import { queryPayloadHelper } from '../../utils/formUtils';
 import PageBase from '../../components/Layout/PageBase/PageBase';
+import useAllVersions from '../../hooks/useAllVersions';
+import { GroupSelectData } from '../../components/Form/GroupSelect/GroupSelect';
+import { Moment } from 'moment';
+import { useForm } from 'react-hook-form';
+import { registerMany, unregisterMany } from '../../utils/react-forms';
 
-const GetUsersQuery = loader('../../graphql/queries/getUsers.graphql');
-const GetUserActivityQuery = loader(
-  '../../graphql/queries/getUserActivity.graphql'
-);
-
-const N_LIST_ITEMS_STEP = 30;
-const ITEM_HEIGHT = 63;
-const LIST_STEP_HEIGHT = N_LIST_ITEMS_STEP * ITEM_HEIGHT;
-const SCROLL_THRESHOLD = LIST_STEP_HEIGHT * 0.8;
-export const ACTION_TYPES = Object.keys(typeToText);
+export type UserActivityFormData = {
+  types: UserActivityType[];
+  versionIds: GroupSelectData;
+  userEmail: string;
+  fromDate: Moment;
+  toDate: Moment;
+};
 
 function UsersActivity() {
-  const [nPages, setNPages] = useState(0);
-
-  const { data: usersData, error: usersError } = useQuery<GetUsers>(
-    GetUsersQuery
-  );
+  const [filterValues, setFilterValues] = useState<UserActivityFormData>();
   const {
-    loading,
-    data,
-    error,
-    refetch: getUsersActivity,
-    fetchMore
-  } = useQuery<GetUsersActivity>(GetUserActivityQuery, {
-    fetchPolicy: 'no-cache'
-  });
+    handleSubmit,
+    register,
+    unregister,
+    setValue,
+    errors,
+    watch,
+    reset
+  } = useForm<UserActivityFormData>();
 
-  const [usersActivityData, setUsersActivityData] = useState<
-    GetUsersActivity_userActivityList[]
-  >([]);
-
-  const [filterValues, setFilterValues] = useState({});
-
-  // As soon as we get new data, we update users activity
   useEffect(() => {
-    if (data) {
-      setUsersActivityData(data.userActivityList);
-    }
-  }, [data, setUsersActivityData]);
+    const fields = ['types', 'versionIds', 'userEmail', 'fromDate', 'toDate'];
+    registerMany(register, fields);
 
-  function handleOnScroll({ currentTarget }: UIEvent<HTMLDivElement>) {
-    const actualScroll = currentTarget.scrollTop + currentTarget.clientHeight;
-    const scrollLimit = SCROLL_THRESHOLD + nPages * LIST_STEP_HEIGHT;
+    return () => unregisterMany(unregister, fields);
+  }, [register, unregister]);
 
-    if (actualScroll >= scrollLimit) {
-      setNPages(nPages + 1);
+  const {
+    data: versionsData,
+    loading: versionsLoading,
+    error: versionsError,
+    getVersionId
+  } = useAllVersions();
 
-      const lastId = usersActivityData && usersActivityData.slice(-1)[0].id;
+  function handleReset() {
+    reset();
+    setFilterValues(undefined);
+  }
 
-      fetchMore({
-        query: GetUserActivityQuery,
-        variables: { ...filterValues, lastId },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          const prevData = previousResult.userActivityList;
-          const newData = fetchMoreResult && fetchMoreResult.userActivityList;
+  function setAndSubmit(
+    field: string,
+    newValue: string | GroupSelectData | Moment | UserActivityType[]
+  ) {
+    setValue(field, newValue);
+    handleSubmit((formData: UserActivityFormData) =>
+      setFilterValues(formData)
+    )();
+  }
 
-          return {
-            userActivityList: [...prevData, ...(newData || [])]
-          };
-        }
-      });
+  function getVersionIds(versionsSelection: GroupSelectData) {
+    return Object.entries(versionsSelection)
+      .map(([runtimeName, versionNames]) =>
+        versionNames.map(versionName => getVersionId(runtimeName, versionName))
+      )
+      .flat();
+  }
+
+  function getQueryVariables(data: UserActivityFormData | undefined) {
+    if (data?.versionIds)
+      return { ...data, versionIds: getVersionIds(data.versionIds) };
+
+    return data ?? {};
+  }
+
+  const versionIds = watch('versionIds');
+  function onRemoveFilter(filter: string, value: string | VersionChip) {
+    switch (filter) {
+      case 'userEmail':
+        setAndSubmit('userEmail', '');
+        break;
+      case 'runtime':
+        delete versionIds[value as string];
+        setAndSubmit('versionIds', versionIds);
+        break;
+      case 'version':
+        const runtimeName = (value as VersionChip).runtime;
+        const versionName = (value as VersionChip).version;
+        versionIds[runtimeName].splice(
+          versionIds[runtimeName].indexOf(versionName),
+          1
+        );
+        setAndSubmit('versionIds', versionIds);
+        break;
     }
   }
 
-  function onSubmit(data: UserActivityFormData) {
-    setFilterValues(data);
-    getUsersActivity(queryPayloadHelper(data));
-    setNPages(0);
-  }
+  function renderContent() {
+    if (versionsLoading) return <SpinnerCircular />;
+    if (versionsError) return <ErrorMessage />;
 
-  const usersList =
-    usersData &&
-    usersData.users.map(
-      (user: GetUsersActivity_userActivityList_user) => user.email
+    return (
+      <div className={styles.listContainer}>
+        <UserActivityList variables={getQueryVariables(filterValues)} />
+      </div>
     );
-
-  let content = <UserActivityList data={usersActivityData} />;
-  if (loading) content = <SpinnerCircular />;
-  if (error || usersError) content = <ErrorMessage />;
-  if (usersActivityData.length === 0) {
-    content = <InfoMessage message="No activity with the specified filters" />;
   }
 
   return (
@@ -113,14 +120,21 @@ function UsersActivity() {
         <div className={cx(styles.form, styles.content)}>
           <SettingsHeader>User Audit</SettingsHeader>
           <FiltersBar
-            error={error}
-            onSubmit={onSubmit}
-            types={ACTION_TYPES}
-            users={usersList || []}
+            setAndSubmit={setAndSubmit}
+            runtimesAndVersions={versionsData ?? []}
+            watch={watch}
+            errors={errors}
+            reset={handleReset}
           />
-          <div className={styles.elements} onScroll={handleOnScroll}>
-            {content}
-          </div>
+          <SelectionsBar
+            filterValues={{
+              userEmail: filterValues?.userEmail || '',
+              versionIds: filterValues?.versionIds || {}
+            }}
+            runtimesAndVersions={versionsData ?? []}
+            onRemoveFilter={onRemoveFilter}
+          />
+          {renderContent()}
         </div>
       </div>
     </PageBase>

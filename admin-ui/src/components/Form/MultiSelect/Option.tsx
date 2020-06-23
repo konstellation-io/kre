@@ -1,23 +1,39 @@
 import React from 'react';
 import Check from '../Check/Check';
+import cx from 'classnames';
 import styles from './MultiSelect.module.scss';
 
-type Props = {
-  label: string;
+type Props<T> = {
+  label: T;
   Icon: JSX.Element;
   selected: boolean;
-  onChange: (label: string, checked: boolean) => void;
+  onChange: (label: T, checked: boolean) => void;
+  iconAtStart: boolean;
+  customLabel?: JSX.Element;
 };
 
-function Option({ label, Icon, selected, onChange }: Props) {
+function Option<T>({
+  label,
+  Icon,
+  selected,
+  onChange,
+  iconAtStart,
+  customLabel
+}: Props<T>) {
   return (
-    <div className={styles.optionContainer}>
+    <div className={cx(styles.optionContainer)}>
       <Check
         checked={selected}
         onChange={(checked: boolean) => onChange(label, checked)}
       />
-      <div className={styles.label}>{label}</div>
-      <div className={styles.icon}>{Icon}</div>
+      <div
+        className={cx(styles.body, {
+          [styles.reverse]: iconAtStart
+        })}
+      >
+        <div className={styles.label}>{customLabel || label}</div>
+        <div className={styles.icon}>{Icon}</div>
+      </div>
     </div>
   );
 }

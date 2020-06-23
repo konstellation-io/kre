@@ -33,7 +33,7 @@ func (r *RuntimeRepoMongoDB) Create(runtime *entity.Runtime) (*entity.Runtime, e
 
 	runtime.ID = primitive.NewObjectID().Hex()
 	runtime.CreationDate = time.Now().UTC()
-	runtime.Status = string(usecase.RuntimeStatusCreating)
+	runtime.Status = entity.RuntimeStatusCreating
 
 	res, err := r.collection.InsertOne(context.Background(), runtime)
 	if err != nil {

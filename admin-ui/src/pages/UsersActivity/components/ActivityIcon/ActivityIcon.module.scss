@@ -1,0 +1,50 @@
+@import '../../../../styles/colors';
+@import '../../../../styles/mixins';
+
+.hightlight {
+  background-color: palette(highlight);
+  color: palette(highlight);
+}
+.info {
+  background-color: palette(feedback);
+  color: palette(feedback);
+}
+.success {
+  background-color: palette(success);
+  color: palette(success);
+}
+.error {
+  background-color: palette(error);
+  color: palette(error);
+}
+.light {
+  background-color: palette(white);
+  color: palette(white);
+}
+.lowlight {
+  background-color: palette(lowlight);
+  color: palette(lowlight);
+}
+.regular {
+  background-color: palette(lowlight, 900);
+  color: palette(lowlight, 900);
+}
+.font-dark {
+  background-color: font-color(dark);
+  color: font-color(dark);
+}
+.font-light {
+  background-color: font-color(lowlight);
+  color: font-color(lowlight);
+}
+
+.container {
+  position: relative;
+  border-radius: 50%;
+}
+
+.icon {
+  @include center;
+  line-height: 1px;
+  background-color: transparent;
+}

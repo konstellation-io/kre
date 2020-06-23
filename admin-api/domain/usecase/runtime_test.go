@@ -110,7 +110,7 @@ func TestCreateRuntime(t *testing.T) {
 		Name:        name,
 		Description: description,
 		Owner:       userID,
-		Status:      string(usecase.RuntimeStatusStarted),
+		Status:      entity.RuntimeStatusStarted,
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
 			Password:  fakePass,

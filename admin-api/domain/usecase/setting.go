@@ -11,7 +11,7 @@ import (
 // DefaultSessionLifetimeInDays ttl of the users sessions in days
 const DefaultSessionLifetimeInDays = 30
 
-// SettingInteractor contains app logic about Setting entities
+// SettingInteractor contains app logic about Settings entities
 type SettingInteractor struct {
 	logger       logging.Logger
 	settingRepo  repository.SettingRepo
@@ -36,12 +36,12 @@ var (
 	ErrSettingNotFound = errors.New("setting not found")
 )
 
-// CreateDefaults create a new Setting with defaults values
+// CreateDefaults create a new Settings with defaults values
 func (i *SettingInteractor) CreateDefaults() error {
 	_, err := i.settingRepo.Get()
 
 	if err == ErrSettingNotFound {
-		s := entity.Setting{
+		s := entity.Settings{
 			SessionLifetimeInDays: DefaultSessionLifetimeInDays,
 		}
 
@@ -56,8 +56,8 @@ func (i *SettingInteractor) CreateDefaults() error {
 	return nil
 }
 
-// Update change a given Setting to a new value
-func (i *SettingInteractor) Update(settings *entity.Setting, changes []entity.UserActivity) error {
+// Update change a given Settings to a new value
+func (i *SettingInteractor) Update(settings *entity.Settings, changes []entity.UserActivity) error {
 	for _, c := range changes {
 		err := i.userActivity.RegisterUpdateSettings(c.UserID, c.Vars)
 		if err != nil {
@@ -68,7 +68,7 @@ func (i *SettingInteractor) Update(settings *entity.Setting, changes []entity.Us
 	return i.settingRepo.Update(settings)
 }
 
-// Get returns a Setting
-func (i *SettingInteractor) Get() (*entity.Setting, error) {
+// Get returns a Settings
+func (i *SettingInteractor) Get() (*entity.Settings, error) {
 	return i.settingRepo.Get()
 }

@@ -199,6 +199,46 @@ function getOptions(User) {
         { key: 'VERSION_NAME', value: 'Version Y' },
         { key: 'CONFIG_KEYS', value: 'KEY_A, KEY_B' }
       ]
+    },
+    {
+      ...UserActivityBase,
+      type: 'CREATE_USER',
+      vars: [
+        { key: 'CREATED_USER_EMAIL', value: 'admin@konstellation.io' },
+        { key: 'RUNTIME_NAME', value: 'Runtime X' },
+        { key: 'CREATED_USER_ACCESS_LEVEL', value: 'ADMIN' }
+      ]
+    },
+    {
+      ...UserActivityBase,
+      type: 'REMOVE_USERS',
+      vars: [
+        {
+          key: 'USER_EMAILS',
+          value: 'user1@kre.com, user2@kre.com, user3@kre.com'
+        }
+      ]
+    },
+    {
+      ...UserActivityBase,
+      type: 'UPDATE_ACCESS_LEVELS',
+      vars: [
+        {
+          key: 'USER_EMAILS',
+          value: 'user1@kre.com, user2@kre.com, user3@kre.com'
+        },
+        { key: 'ACCESS_LEVEL', value: 'MANAGER' }
+      ]
+    },
+    {
+      ...UserActivityBase,
+      type: 'REVOKE_SESSIONS',
+      vars: [
+        {
+          key: 'USER_EMAILS',
+          value: 'user1@kre.com, user2@kre.com, user3@kre.com'
+        }
+      ]
     }
   ];
 }

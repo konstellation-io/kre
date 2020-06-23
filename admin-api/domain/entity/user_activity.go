@@ -4,6 +4,37 @@ import (
 	"time"
 )
 
+type UserActivityType string
+
+const (
+	UserActivityTypeLogin                      UserActivityType = "LOGIN"
+	UserActivityTypeLogout                     UserActivityType = "LOGOUT"
+	UserActivityTypeCreateRuntime              UserActivityType = "CREATE_RUNTIME"
+	UserActivityTypeCreateVersion              UserActivityType = "CREATE_VERSION"
+	UserActivityTypePublishVersion             UserActivityType = "PUBLISH_VERSION"
+	UserActivityTypeUnpublishVersion           UserActivityType = "UNPUBLISH_VERSION"
+	UserActivityTypeStartVersion               UserActivityType = "START_VERSION"
+	UserActivityTypeStopVersion                UserActivityType = "STOP_VERSION"
+	UserActivityTypeUpdateSetting              UserActivityType = "UPDATE_SETTING"
+	UserActivityTypeUpdateVersionConfiguration UserActivityType = "UPDATE_VERSION_CONFIGURATION"
+	UserActivityTypeCreateUser                 UserActivityType = "CREATE_USER"
+	UserActivityTypeRemoveUsers                UserActivityType = "REMOVE_USERS"
+	UserActivityTypeUpdateAccessLevels         UserActivityType = "UPDATE_ACCESS_LEVELS"
+	UserActivityTypeRevokeSessions             UserActivityType = "REVOKE_SESSIONS"
+)
+
+func (e UserActivityType) IsValid() bool {
+	switch e {
+	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime, UserActivityTypeCreateVersion, UserActivityTypePublishVersion, UserActivityTypeUnpublishVersion, UserActivityTypeStartVersion, UserActivityTypeStopVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration, UserActivityTypeCreateUser, UserActivityTypeRemoveUsers, UserActivityTypeUpdateAccessLevels, UserActivityTypeRevokeSessions:
+		return true
+	}
+	return false
+}
+
+func (e UserActivityType) String() string {
+	return string(e)
+}
+
 type UserActivityVar struct {
 	Key   string `bson:"key"`
 	Value string `bson:"value"`
@@ -13,6 +44,6 @@ type UserActivity struct {
 	ID     string             `bson:"_id"`
 	Date   time.Time          `bson:"date"`
 	UserID string             `bson:"userId"`
-	Type   string             `bson:"type"`
+	Type   UserActivityType   `bson:"type"`
 	Vars   []*UserActivityVar `bson:"vars"`
 }
