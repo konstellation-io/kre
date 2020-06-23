@@ -45,9 +45,17 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 				"sharedStorageClass": m.config.SharedStorageClass,
 				"nats_streaming": map[string]interface{}{
 					"replicas": 1,
+					"storage": map[string]interface{}{
+						"className": m.config.NatsStreaming.Storage.ClassName,
+						"size":      m.config.NatsStreaming.Storage.Size,
+					},
 				},
 				"mongo": map[string]interface{}{
 					"replicas": totalMongoReplicas,
+					"persistentVolume": map[string]interface{}{
+						"storageClass": m.config.MongoDB.PersistentVolume.StorageClass,
+						"size":         m.config.MongoDB.PersistentVolume.Size,
+					},
 					"auth": map[string]interface{}{
 						"key":           runtime.Mongo.SharedKey,
 						"adminUser":     runtime.Mongo.Username,
