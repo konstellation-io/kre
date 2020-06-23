@@ -253,15 +253,7 @@ func (r *queryResolver) UserActivityList(
 	toDate *string,
 	lastID *string,
 ) ([]*entity.UserActivity, error) {
-	//activityType := new(string)
-	//if typeArg != nil {
-	//	*activityType = typeArg.String()
-	//} else {
-	//	activityType = nil
-	//}
-
-	//return r.userActivityInteractor.Get(userEmail, activityType, fromDate, toDate, lastID)
-	panic("unimplemented")
+	return r.userActivityInteractor.Get(ctx, userEmail, types, versionIds, fromDate, toDate, lastID)
 }
 
 func (r *queryResolver) Logs(

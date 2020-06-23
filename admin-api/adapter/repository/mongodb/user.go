@@ -22,10 +22,34 @@ type UserRepoMongoDB struct {
 
 func NewUserRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo.Client) *UserRepoMongoDB {
 	collection := client.Database(cfg.MongoDB.DBName).Collection("users")
-	return &UserRepoMongoDB{
+	users := &UserRepoMongoDB{
 		cfg,
 		logger,
 		collection,
+	}
+
+	users.createIndexes()
+
+	return users
+}
+
+func (r *UserRepoMongoDB) createIndexes() {
+	indexes := []mongo.IndexModel{
+		{
+			Keys: bson.M{
+				"email": "text",
+			},
+		},
+		{
+			Keys: bson.M{
+				"email": 1,
+			},
+		},
+	}
+
+	_, err := r.collection.Indexes().CreateMany(context.Background(), indexes)
+	if err != nil {
+		r.logger.Errorf("error creating user indexes: %s", err)
 	}
 }
 
@@ -55,6 +79,28 @@ func (r *UserRepoMongoDB) GetByEmail(email string) (*entity.User, error) {
 	}
 
 	return user, err
+}
+
+func (r *UserRepoMongoDB) GetManyByEmail(ctx context.Context, email string) ([]*entity.User, error) {
+	filter := bson.M{
+		"$text": bson.M{
+			"$search": email,
+		},
+		"deleted": false,
+	}
+
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []*entity.User
+	err = cursor.All(ctx, &users)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -33,8 +34,31 @@ func NewUserActivityInteractor(
 }
 
 // Get return a list of UserActivities
-func (i *UserActivityInteractor) Get(userEmail *string, activityType *string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error) {
-	return i.userActivityRepo.Get(userEmail, activityType, fromDate, toDate, lastID)
+func (i *UserActivityInteractor) Get(
+	ctx context.Context,
+	userEmail *string,
+	types []entity.UserActivityType,
+	versionIds []string,
+	fromDate *string,
+	toDate *string,
+	lastID *string,
+) ([]*entity.UserActivity, error) {
+	var userIDs []string
+	if userEmail != nil && *userEmail != "" {
+		users, err := i.userRepo.GetManyByEmail(ctx, *userEmail)
+		if err != nil {
+			return nil, err
+		}
+
+		if len(users) > 0 {
+			userIDs = make([]string, len(users))
+			for i, u := range users {
+				userIDs[i] = u.ID
+			}
+		}
+	}
+
+	return i.userActivityRepo.Get(ctx, userIDs, types, versionIds, fromDate, toDate, lastID)
 }
 
 // Create add a new UserActivity to the given user
