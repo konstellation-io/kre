@@ -1,31 +1,23 @@
-import React from 'react';
-import styles from './LogsFooter.module.scss';
 import Button from '../../../../../../../components/Button/Button';
 import ClearIcon from '@material-ui/icons/Block';
 import FollowIcon from '@material-ui/icons/VerticalAlignBottom';
-import ExpandAllIcon from '@material-ui/icons/UnfoldMore';
-import ContractAllIcon from '@material-ui/icons/UnfoldLess';
 import Left from '../../../../../../../components/Layout/Left/Left';
+import React from 'react';
 import Right from '../../../../../../../components/Layout/Right/Right';
 import cx from 'classnames';
+import styles from './LogsFooter.module.scss';
 
 type Props = {
   clearLogs: () => void;
   toggleAutoScrollActive: () => void;
   autoScrollActive: boolean;
-  allLogsOpened: boolean;
-  toggleAllLogsOpened: () => void;
 };
 
 function LogsFooter({
   clearLogs,
   toggleAutoScrollActive,
-  autoScrollActive,
-  allLogsOpened,
-  toggleAllLogsOpened
+  autoScrollActive
 }: Props) {
-  const IconAllLogsOpened = allLogsOpened ? ContractAllIcon : ExpandAllIcon;
-  const allLogsOpenedText = allLogsOpened ? 'COLLAPSE LOGS' : 'EXPAND LOGS';
   const followText = `${autoScrollActive ? 'UN' : ''}FOLLOW NEW LOGS`;
   return (
     <div className={styles.container}>
@@ -38,13 +30,6 @@ function LogsFooter({
         />
       </Left>
       <Right className={styles.right}>
-        <Button
-          height={32}
-          label={allLogsOpenedText}
-          Icon={IconAllLogsOpened}
-          onClick={toggleAllLogsOpened}
-          className={cx({ [styles.active]: autoScrollActive })}
-        />
         <Button
           height={32}
           label={followText}
