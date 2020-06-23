@@ -107,7 +107,11 @@ function UsersActivity() {
     if (versionsLoading) return <SpinnerCircular />;
     if (versionsError) return <ErrorMessage />;
 
-    return <UserActivityList variables={getQueryVariables(filterValues)} />;
+    return (
+      <div className={styles.listContainer}>
+        <UserActivityList variables={getQueryVariables(filterValues)} />
+      </div>
+    );
   }
 
   return (
