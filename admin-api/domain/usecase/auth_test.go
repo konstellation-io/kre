@@ -113,8 +113,7 @@ func TestSignUpWithValidEmailAddress(t *testing.T) {
 	}
 	settings := &entity.Setting{
 		SessionLifetimeInDays: 0,
-		AuthAllowedDomains:    []string{"anotherdomain.com"},
-		AuthAllowedEmails:     []string{email},
+		AuthAllowedDomains:    []string{"testdomain.com"},
 	}
 
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)

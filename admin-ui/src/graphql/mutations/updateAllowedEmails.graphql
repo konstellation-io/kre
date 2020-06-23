@@ -1,5 +1,0 @@
-mutation UpdateAllowedEmails($input: SettingsInput!) {
-  updateSettings(input: $input) {
-    authAllowedEmails
-  }
-}

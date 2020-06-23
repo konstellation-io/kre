@@ -110,7 +110,6 @@ type VersionNodeStatus {
 
 input SettingsInput {
   authAllowedDomains: [String!]
-  authAllowedEmails: [String!]
   sessionLifetimeInDays: Int
 }
 
@@ -225,7 +224,6 @@ enum VersionStatus {
 
 type Settings {
   authAllowedDomains: [String!]!
-  authAllowedEmails: [String!]!
   sessionLifetimeInDays: Int!
 }
 

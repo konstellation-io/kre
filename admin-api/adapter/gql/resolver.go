@@ -140,17 +140,6 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 		settings.AuthAllowedDomains = input.AuthAllowedDomains
 	}
 
-	if input.AuthAllowedEmails != nil {
-		changes = append(changes, entity.UserActivity{
-			UserID: userID,
-			Vars: r.userActivityInteractor.NewUpdateSettingVars(
-				"AuthAllowedEmails",
-				strings.Join(settings.AuthAllowedEmails, ","),
-				strings.Join(input.AuthAllowedEmails, ",")),
-		})
-		settings.AuthAllowedEmails = input.AuthAllowedEmails
-	}
-
 	if len(changes) > 0 {
 		err = r.settingInteractor.Update(settings, changes)
 		if err != nil {
