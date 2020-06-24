@@ -1,5 +1,5 @@
 const keymaps = {
-  OPEN_LOGS: 'alt+l',
+  OPEN_LOGS: 'l',
   CLOSE_LOGS: 'esc',
   CLOSE_PANEL: 'esc'
 };

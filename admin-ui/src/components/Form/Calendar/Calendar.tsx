@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment, { Moment } from 'moment';
-import { isInclusivelyBeforeDay } from 'react-dates';
 
-import InputLabel from '../InputLabel/InputLabel';
-import InputError from '../InputError/InputError';
-import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import ArrowLeftIcon from '@material-ui/icons/ArrowBack';
-import { DateRangePicker } from 'react-dates';
+import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import CalendarTimeControls from './components/CalendarTimeControls';
+import { DateRangePicker } from 'react-dates';
+import InputError from '../InputError/InputError';
+import InputLabel from '../InputLabel/InputLabel';
+import { isInclusivelyBeforeDay } from 'react-dates';
 
 type TimeUnit = 'day' | 'week' | 'month' | 'year';
 export type Range = {
@@ -82,6 +82,7 @@ type Props = {
   formToDate?: Moment | null;
   onChangeFromDateInput?: Function;
   onChangeToDateInput?: Function;
+  onClose?: (final: { startDate: Moment; endDate: Moment }) => void;
   hideError?: boolean;
   addTimeControls?: boolean;
   keepOpen?: boolean;
@@ -98,7 +99,8 @@ function Calendar({
   onChangeToDateInput = function() {},
   addTimeControls = false,
   autoFocus = false,
-  keepOpen = false
+  keepOpen = false,
+  onClose = () => {}
 }: Props) {
   const [fromDate, setFromDate] = useState<Moment | null>(null);
   const [toDate, setToDate] = useState<Moment | null>(null);
@@ -165,6 +167,7 @@ function Calendar({
         endDate={toDate}
         endDateId="calendar_to_date"
         endDatePlaceholderText="To Date"
+        onClose={onClose}
         displayFormat={addTimeControls ? 'MM/DD/YYYY HH:mm' : 'MM/DD/YYYY'}
         onDatesChange={({
           startDate: newFromDate,

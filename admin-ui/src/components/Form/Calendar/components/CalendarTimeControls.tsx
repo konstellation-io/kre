@@ -1,9 +1,9 @@
-import React from 'react';
-import styles from './CalendarTimeControls.module.scss';
-import { Range } from '../Calendar';
 import { Moment } from 'moment';
+import { Range } from '../Calendar';
+import React from 'react';
 import Select from '../../Select/Select';
 import { range } from 'd3-array';
+import styles from './CalendarTimeControls.module.scss';
 
 type Props = {
   ranges: Range[];
@@ -86,7 +86,7 @@ function CalendarTimeControls({
         <div className={styles.timeInput}>
           <Select
             selectMainClass={styles.select}
-            label="To date time"
+            label="From date time"
             options={startTimeOptions}
             onChange={(value: string) =>
               updateDate(value, formFromDate, changeFromDate)
