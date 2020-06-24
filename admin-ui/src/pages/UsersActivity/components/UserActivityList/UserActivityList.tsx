@@ -76,7 +76,11 @@ function UserActivityList({ variables }: Props) {
     <div className={styles.elements} onScroll={handleOnScroll}>
       {usersActivityData.map(
         (userActivity: GetUsersActivity_userActivityList, idx: number) => (
-          <UserActivityItem userActivity={userActivity} idx={idx} />
+          <UserActivityItem
+            key={userActivity.id}
+            userActivity={userActivity}
+            idx={idx}
+          />
         )
       )}
     </div>
