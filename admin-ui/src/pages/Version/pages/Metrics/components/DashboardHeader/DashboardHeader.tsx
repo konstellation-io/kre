@@ -1,9 +1,9 @@
-import React from 'react';
 import Calendar from '../../../../../../components/Form/Calendar/Calendar';
-import ViewIcon from '@material-ui/icons/Visibility';
 import HideIcon from '@material-ui/icons/VisibilityOff';
-import styles from './DashboardHeader.module.scss';
 import { Moment } from 'moment';
+import React from 'react';
+import ViewIcon from '@material-ui/icons/Visibility';
+import styles from './DashboardHeader.module.scss';
 
 type Props = {
   runtimeName?: string;
@@ -40,6 +40,7 @@ function DashboardHeader({
           onChangeToDateInput={(date: Moment) => onChange('endDate', date)}
           formFromDate={value('startDate')}
           formToDate={value('endDate')}
+          onClose={() => submit()}
           addTimeControls
           hideError
         />

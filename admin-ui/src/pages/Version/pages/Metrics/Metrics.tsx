@@ -1,24 +1,25 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import DashboardHeader from './components/DashboardHeader/DashboardHeader';
-import Charts from './components/Charts/Charts';
-import Message from '../../../../components/Message/Message';
-import { loader } from 'graphql.macro';
-import styles from './Metrics.module.scss';
-import {
-  GetVersionConfStatus_versions,
-  GetVersionConfStatus_runtime
-} from '../../../../graphql/queries/types/GetVersionConfStatus';
-import { useQuery } from '@apollo/react-hooks';
 import {
   GetMetrics,
   GetMetricsVariables
 } from '../../../../graphql/queries/types/GetMetrics';
-import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
-import { useParams } from 'react-router-dom';
-import { VersionRouteParams } from '../../../../constants/routes';
-import { useForm } from 'react-hook-form';
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from '../../../../graphql/queries/types/GetVersionConfStatus';
+import React, { useCallback, useEffect, useState } from 'react';
 import moment, { Moment } from 'moment';
+
+import Charts from './components/Charts/Charts';
+import DashboardHeader from './components/DashboardHeader/DashboardHeader';
+import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
+import Message from '../../../../components/Message/Message';
+import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import { VersionRouteParams } from '../../../../constants/routes';
+import { loader } from 'graphql.macro';
+import styles from './Metrics.module.scss';
+import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/react-hooks';
 
 const GetMetricsQuery = loader(
   '../../../../graphql/queries/getMetrics.graphql'
@@ -84,12 +85,6 @@ function Metrics({ runtime, version }: Props) {
       });
     })();
   }, [handleSubmit, refetch, runtimeId, versionId]);
-
-  // Submits the form every time 'endDate' is updated
-  const endDate = watch('endDate');
-  useEffect(() => {
-    if (endDate) submit();
-  }, [endDate, submit]);
 
   function getContent() {
     if (loading) return <SpinnerCircular />;
