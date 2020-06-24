@@ -49,6 +49,21 @@ func (mr *MockUserRepoMockRecorder) GetByEmail(email interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUserRepo)(nil).GetByEmail), email)
 }
 
+// GetManyByEmail mocks base method
+func (m *MockUserRepo) GetManyByEmail(ctx context.Context, email string) ([]*entity.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetManyByEmail", ctx, email)
+	ret0, _ := ret[0].([]*entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetManyByEmail indicates an expected call of GetManyByEmail
+func (mr *MockUserRepoMockRecorder) GetManyByEmail(ctx, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetManyByEmail", reflect.TypeOf((*MockUserRepo)(nil).GetManyByEmail), ctx, email)
+}
+
 // Create mocks base method
 func (m *MockUserRepo) Create(ctx context.Context, email string, accessLevel entity.AccessLevel) (*entity.User, error) {
 	m.ctrl.T.Helper()
