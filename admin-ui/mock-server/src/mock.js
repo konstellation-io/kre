@@ -217,7 +217,8 @@ module.exports = {
     accessLevel: casual.random_element(['ADMIN', 'VIEWER', 'MANAGER']),
     email: casual.random_element(emails),
     creationDate: new Date().toUTCString(),
-    lastActivity: new Date().toUTCString()
+    lastActivity: new Date().toUTCString(),
+    activeSessions: casual.integer(0, 9)
   }),
   LogPane: () => ({
     cursor: casual.string,

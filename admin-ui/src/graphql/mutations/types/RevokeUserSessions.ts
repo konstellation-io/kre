@@ -16,6 +16,7 @@ export interface RevokeUserSessions_revokeUserSessions {
   accessLevel: AccessLevel;
   creationDate: string;
   lastActivity: string | null;
+  activeSessions: number;
 }
 
 export interface RevokeUserSessions {

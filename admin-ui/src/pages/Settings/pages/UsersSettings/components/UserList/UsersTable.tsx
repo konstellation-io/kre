@@ -1,26 +1,27 @@
-import React, { useEffect, useMemo } from 'react';
-import Check from '../../../../../../components/Form/Check/Check';
-import IconOptions from '@material-ui/icons/MoreVert';
-import IconArrowDown from '@material-ui/icons/ArrowDropDown';
-import IconArrowUp from '@material-ui/icons/ArrowDropUp';
-import { useTable, useSortBy, useRowSelect, Column } from 'react-table';
-import cx from 'classnames';
-import styles from './UserList.module.scss';
+import { Column, useRowSelect, useSortBy, useTable } from 'react-table';
 import ContextMenu, {
   MenuCallToAction
 } from '../../../../../../components/ContextMenu/ContextMenu';
-import { GetUsers_users } from '../../../../../../graphql/queries/types/GetUsers';
-import { formatDate } from '../../../../../../utils/format';
 import {
   GET_USER_SETTINGS,
   GetUserSettings,
   GetUserSettings_filters
 } from '../../../../../../graphql/client/queries/getUserSettings.graphql';
-import { useQuery, useApolloClient } from '@apollo/react-hooks';
-import Message from '../../../../../../components/Message/Message';
+import React, { useEffect, useMemo } from 'react';
+import { capitalize, get } from 'lodash';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
+
 import { AccessLevel } from '../../../../../../graphql/types/globalTypes';
+import Check from '../../../../../../components/Form/Check/Check';
+import { GetUsers_users } from '../../../../../../graphql/queries/types/GetUsers';
+import IconArrowDown from '@material-ui/icons/ArrowDropDown';
+import IconArrowUp from '@material-ui/icons/ArrowDropUp';
+import IconOptions from '@material-ui/icons/MoreVert';
+import Message from '../../../../../../components/Message/Message';
 import { UserSelection } from '../../../../../../graphql/client/typeDefs';
-import { get } from 'lodash';
+import cx from 'classnames';
+import { formatDate } from '../../../../../../utils/format';
+import styles from './UserList.module.scss';
 
 // TODO: [typescript] Review `any`s used in this file
 
@@ -28,6 +29,7 @@ type Data = {
   creationDate: string;
   email: string;
   accessLevel: AccessLevel;
+  activeSessions: number;
   lastActivity: string | null;
   selectedRowIds?: string[];
 };
@@ -44,7 +46,12 @@ const columns: Column<Data>[] = [
   },
   {
     Header: 'Access level',
-    accessor: 'accessLevel'
+    accessor: 'accessLevel',
+    Cell: ({ value }) => capitalize(value)
+  },
+  {
+    Header: 'Active sessions',
+    accessor: 'activeSessions'
   },
   {
     Header: 'Last activity',

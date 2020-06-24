@@ -119,6 +119,7 @@ type User {
   accessLevel: AccessLevel!
   creationDate: String!
   lastActivity: String
+  activeSessions: Int!
 }
 
 enum AccessLevel {
