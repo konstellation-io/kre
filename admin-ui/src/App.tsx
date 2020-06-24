@@ -7,34 +7,35 @@ import 'react-tabs/style/react-tabs.css';
 import './styles/markdown-navbar.scss';
 import './styles/react-tabs.scss';
 
-import React from 'react';
-import { HotKeys } from 'react-hotkeys';
-import keymaps from './keymaps';
-import { Router, Route } from 'react-router-dom';
 import { Redirect, Switch } from 'react-router';
+import { Route, Router } from 'react-router-dom';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
+
+import AccessDenied from './pages/AccessDenied/AccessDenied';
+import AddRuntime from './pages/AddRuntime/AddRuntime';
+import AddUser from './pages/AddUser/AddUser';
+import AddVersion from './pages/AddVersion/AddVersion';
+import Dashboard from './pages/Dashboard/Dashboard';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
+import { GetMe } from './graphql/queries/types/GetMe';
+import { GlobalHotKeys } from 'react-hotkeys';
+import Login from './pages/Login/Login';
+import Logs from './pages/Logs/Logs';
+import LogsPanel from './pages/Version/pages/Status/LogsPanel/LogsPanel';
+import MagicLink from './pages/MagicLink/MagicLink';
+import NotFound from './pages/NotFound/NotFound';
+import NotificationService from './components/NotificationService/NotificationService';
+import ROUTE from './constants/routes';
+import React from 'react';
+import Runtime from './pages/Runtime/Runtime';
+import Settings from './pages/Settings/Settings';
+import SpinnerCircular from './components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import UsersActivity from './pages/UsersActivity/UsersActivity';
+import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
 import history from './history';
-import SpinnerCircular from './components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import NotificationService from './components/NotificationService/NotificationService';
-import Login from './pages/Login/Login';
-import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
-import MagicLink from './pages/MagicLink/MagicLink';
-import Dashboard from './pages/Dashboard/Dashboard';
-import Runtime from './pages/Runtime/Runtime';
-import Logs from './pages/Logs/Logs';
-import Settings from './pages/Settings/Settings';
-import UsersActivity from './pages/UsersActivity/UsersActivity';
-import AddRuntime from './pages/AddRuntime/AddRuntime';
-import AddVersion from './pages/AddVersion/AddVersion';
-import AddUser from './pages/AddUser/AddUser';
-import AccessDenied from './pages/AccessDenied/AccessDenied';
-import NotFound from './pages/NotFound/NotFound';
-import ROUTE from './constants/routes';
+import keymaps from './keymaps';
 import { loader } from 'graphql.macro';
-import { useQuery, useApolloClient } from '@apollo/react-hooks';
-import LogsPanel from './pages/Version/pages/Status/LogsPanel/LogsPanel';
-import { GetMe } from './graphql/queries/types/GetMe';
-import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 
 const GetMeQuery = loader('./graphql/queries/getMe.graphql');
 
@@ -126,7 +127,7 @@ function App() {
   };
 
   return (
-    <HotKeys keyMap={keymaps} handlers={handlers}>
+    <GlobalHotKeys keyMap={keymaps} handlers={handlers}>
       <div className="app">
         <Router history={history}>
           <NotificationService />
@@ -136,7 +137,7 @@ function App() {
       <div id="chartjs-tooltip">
         <table />
       </div>
-    </HotKeys>
+    </GlobalHotKeys>
   );
 }
 
