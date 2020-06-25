@@ -1,12 +1,12 @@
 p, VIEWER, metrics, view
 p, VIEWER, resource-metrics, view
-p, VIEWER, runtime, view
-p, VIEWER, version, view
+p, VIEWER, runtimes, view
+p, VIEWER, versions, view
 
-p, MANAGER, audit, view
+p, MANAGER, audits, view
 p, MANAGER, logs, view
-p, MANAGER, runtime, edit
-p, MANAGER, version, edit
+p, MANAGER, runtimes, edit
+p, MANAGER, versions, edit
 
 p, ADMIN, settings, edit
 p, ADMIN, settings, view

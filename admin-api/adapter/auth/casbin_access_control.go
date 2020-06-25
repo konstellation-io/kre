@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/konstellation-io/kre/admin-api/domain/repository"
@@ -36,7 +37,15 @@ func NewCasbinAccessControl(logger logging.Logger, userRepo repository.UserRepo)
 }
 
 func (a *CasbinAccessControl) CheckPermission(userID string, resource auth.AccessControlResource, action auth.AccessControlAction) error {
-	allowed, err := a.enforcer.Enforce(userID, resource, action)
+	if !resource.IsValid() {
+		return errors.New("invalid AccessControlResource")
+	}
+
+	if !action.IsValid() {
+		return errors.New("invalid AccessControlAction")
+	}
+
+	allowed, err := a.enforcer.Enforce(userID, resource.String(), action.String())
 	if err != nil {
 		a.logger.Errorf("error checking permission: %s", err)
 		return err
