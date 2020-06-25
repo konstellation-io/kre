@@ -50,7 +50,7 @@ func NewRuntimeInteractor(
 }
 
 // CreateRuntime adds a new Runtime
-func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description string, userID string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
+func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
 	if !i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit) {
 		return nil, nil, auth.ErrEditRuntimes
 	}
@@ -58,7 +58,7 @@ func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description
 	r := &entity.Runtime{
 		Name:        name,
 		Description: description,
-		Owner:       userID,
+		Owner:       loggedUserID,
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
 			Password:  i.passwordGenerator.NewPassword(),
@@ -81,7 +81,7 @@ func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description
 	}
 	i.logger.Info("Runtime stored in the database with ID=" + createdRuntime.ID)
 
-	err = i.userActivity.RegisterCreateRuntime(userID, createdRuntime)
+	err = i.userActivity.RegisterCreateRuntime(loggedUserID, createdRuntime)
 	if err != nil {
 		return
 	}
