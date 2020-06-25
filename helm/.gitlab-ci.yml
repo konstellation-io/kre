@@ -25,14 +25,12 @@ release-helm-after-image:
 
 generate-helm-chart:
   stage: build
-  image: docker:18-git
-  services:
-    - docker:18-dind
+  image: alpine:3.11
   variables:
-    HELM_VERSION: v3.0.3
-    CHART_RELEASER: 1.0.0-beta.1
+    HELM_VERSION: v3.2.4
+    CHART_RELEASER: 0.2.3
   before_script:
-    - apk add --update bash gettext coreutils curl
+    - apk add --update bash gettext coreutils curl git
     - wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
     - chmod +x /usr/local/bin/helm
     - wget -q https://github.com/helm/chart-releaser/releases/download/v${CHART_RELEASER}/chart-releaser_${CHART_RELEASER}_linux_amd64.tar.gz -O - | tar -xzO cr > /usr/local/bin/cr
@@ -50,7 +48,13 @@ generate-helm-chart:
     - helm package helm/kre --version $CHART_VERSION -d helm/kre/
     - helm push helm/kre/kre-${CHART_VERSION}.tgz konstellation-ce 
     - /usr/local/bin/cr upload -o konstellation-io -r kre -p ./helm/kre --token $GITHUB_TOKEN
+    - /usr/local/bin/cr index -o konstellation-io -r kre -p ./helm/kre -c https://charts.konstellation.io -i helm/kre/index.yaml -p helm/kre
     - curl --request POST --header $NOTIFY_TOKEN $NOTIFY_URL$CI_COMMIT_TAG
   rules:
     - if: '$CI_COMMIT_TAG =~ /^helm-chart-v\d*.\d*.\d*$/'
       when: always
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - helm/kre/index.yaml
