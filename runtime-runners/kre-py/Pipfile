@@ -8,6 +8,7 @@ pylint = "*"
 
 [packages]
 asyncio-nats-client = "==0.10.0"
+pymongo = "==3.10.1"
 numpy = "==1.18.4"
 pandas = "==1.0.3"
 scikit-learn = "==0.23.1"

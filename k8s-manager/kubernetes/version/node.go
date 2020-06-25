@@ -40,6 +40,8 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 			"KRT_NATS_MONGO_WRITER": "mongo_writer",
 			"KRT_BASE_PATH":         "/krt-files",
 			"KRT_HANDLER_PATH":      n.Src,
+			"KRT_MONGO_URI":         version.MongoUri,
+			"KRT_MONGO_DB_NAME":     version.MongoDbName,
 		}
 	}
 

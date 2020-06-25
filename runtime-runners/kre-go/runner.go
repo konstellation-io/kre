@@ -10,6 +10,9 @@ import (
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	"github.com/nats-io/nats.go"
+
+	"github.com/konstellation-io/kre/runtime-runners/kre-go/config"
+	"github.com/konstellation-io/kre/runtime-runners/kre-go/mongodb"
 )
 
 type Result struct {
@@ -25,16 +28,22 @@ func Start(handlerInit HandlerInit, handler Handler) {
 	logger := simplelogger.New(simplelogger.LevelDebug)
 	logger.Info("Starting runner...")
 
-	cfg := NewConfig(logger)
+	cfg := config.NewConfig(logger)
 	nc, err := nats.Connect(cfg.NATS.Server)
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
 	defer nc.Close()
+	mongoM := mongodb.NewMongoManager(cfg, logger)
 
-	c := NewHandlerContext(cfg, nc, logger)
-	handlerInit(c)
+	err = mongoM.Connect()
+	if err != nil {
+		logger.Errorf("Error connecting to MongoDB: %s", err)
+		os.Exit(1)
+	}
+
+	c := NewHandlerContext(cfg, nc, mongoM, logger)
 
 	s, err := nc.Subscribe(cfg.NATS.InputSubject, func(msg *nats.Msg) {
 		start := time.Now()
@@ -120,6 +129,8 @@ func Start(handlerInit HandlerInit, handler Handler) {
 	}
 
 	logger.Infof("Listening to '%s' subject", cfg.NATS.InputSubject)
+
+	handlerInit(c)
 
 	// Handle sigterm and await termChan signal
 	termChan := make(chan os.Signal, 1)
