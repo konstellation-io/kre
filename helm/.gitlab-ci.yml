@@ -50,7 +50,13 @@ generate-helm-chart:
     - helm package helm/kre --version $CHART_VERSION -d helm/kre/
     - helm push helm/kre/kre-${CHART_VERSION}.tgz konstellation-ce 
     - /usr/local/bin/cr upload -o konstellation-io -r kre -p ./helm/kre --token $GITHUB_TOKEN
+    - /usr/local/bin/cr index -o konstellation-io -r kre -p ./helm/kre -c https://charts.konstellation.io -i helm/kre/index.yaml -p helm/kre
     - curl --request POST --header $NOTIFY_TOKEN $NOTIFY_URL$CI_COMMIT_TAG
   rules:
     - if: '$CI_COMMIT_TAG =~ /^helm-chart-v\d*.\d*.\d*$/'
       when: always
+  artifacts:
+    untracked: false
+    expire_in: 30 days
+    paths:
+      - helm/kre/index.yaml
