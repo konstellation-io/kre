@@ -25,9 +25,7 @@ release-helm-after-image:
 
 generate-helm-chart:
   stage: build
-  image: docker:18-git
-  services:
-    - docker:18-dind
+  image: alpine:3.11
   variables:
     HELM_VERSION: v3.0.3
     CHART_RELEASER: 1.0.0-beta.1
