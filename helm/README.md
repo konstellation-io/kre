@@ -107,4 +107,3 @@ This option needs the following action from user to set-up the staging certifica
 - Enable the first option.
 - Reload the https://admin.<your-domain> page
 - You have a certificate for any kre domain.
-
