@@ -7,9 +7,14 @@ $color-bg: palette(base, 700);
 $color-header-bg: palette(base, 500);
 $color-header-border: palette(base, 300);
 
-.listContainer {
-  overflow: auto;
+.listWrapper {
+  width: 100%;
   flex-grow: 1;
+  position: relative;
+}
+
+.listContainer {
+  height: 100%;
   background-color: palette(base);
 }
 
@@ -23,6 +28,7 @@ $color-header-border: palette(base, 300);
 
   height: $height-log-item;
   background-color: $color-bg;
+  border-bottom: solid 1px palette(base, 400);
   transition: background-color ease 0.1s;
 
   &.loadPreviousLogs {
@@ -162,10 +168,13 @@ $color-header-border: palette(base, 300);
   background-color: $color-header-bg;
 
   .row1 {
+    > div:not(:last-child) {
+      border-right: 1px solid palette(base, 300);
+    }
+
     div {
       @include font-small;
       color: font-color(lowlight);
-      border-right: 1px solid palette(base, 300);
       padding-left: $grid-unit;
     }
 
@@ -176,12 +185,6 @@ $color-header-border: palette(base, 300);
   }
 }
 
-.spinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-}
-
 .clipboardInput {
   position: absolute;
   opacity: 0;
@@ -189,5 +192,17 @@ $color-header-border: palette(base, 300);
 
 .loadMoreSpinner {
   position: relative;
-  height: 25px;
+  height: $height-log-item;
+  background-color: $color-bg;
+  border-bottom: solid 1px palette(base, 400);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .spinner {
+    position: relative;
+    height: 24px;
+    width: 80px;
+  }
 }

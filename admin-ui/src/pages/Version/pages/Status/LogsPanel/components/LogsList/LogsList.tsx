@@ -1,31 +1,28 @@
-import { get } from 'lodash';
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  WheelEvent
-} from 'react';
-import { loader } from 'graphql.macro';
-import { useQuery } from '@apollo/react-hooks';
-import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
-import LogItem from './LogItem';
-import LogListHeader from './LogListHeader';
-import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
-import styles from './LogsList.module.scss';
+import {
+  GET_LOGS_OPENED,
+  GetLogTabs
+} from '../../../../../../../graphql/client/queries/getLogsOpened.graphql';
 import {
   GetServerLogs,
   GetServerLogsVariables
 } from '../../../../../../../graphql/queries/types/GetServerLogs';
-import LogsFooter from '../LogsFooter/LogsFooter';
+import React, { useEffect, useRef, useState } from 'react';
+import { Virtuoso, VirtuosoMethods } from 'react-virtuoso';
+
+import { GetLogTabs_logTabs_filters } from '../../../../../../../graphql/client/queries/getLogs.graphql';
+import { GetServerLogs_logs_items } from '../../../../../../../graphql/queries/types/GetServerLogs';
 import { LogFilters } from '../../../../../../../graphql/types/globalTypes';
-import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
+import LogItem from './LogItem';
+import LogListHeader from './LogListHeader';
+import LogsFooter from '../LogsFooter/LogsFooter';
 import SpinnerCircular from '../../../../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import {
-  GetLogTabs,
-  GET_LOGS_OPENED
-} from '../../../../../../../graphql/client/queries/getLogsOpened.graphql';
 import SpinnerLinear from '../../../../../../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
+import { get } from 'lodash';
+import { loader } from 'graphql.macro';
+import styles from './LogsList.module.scss';
+import { useQuery } from '@apollo/react-hooks';
+import useWorkflowsAndNodes from '../../../../../../../hooks/useWorkflowsAndNodes';
+
 const GetLogsSubscription = loader(
   '../../../../../../../graphql/subscriptions/getLogsSubscription.graphql'
 );
@@ -34,16 +31,7 @@ const GetServerLogsQuery = loader(
 );
 
 const LOG_HEIGHT = 25;
-const SCROLL_THRESHOLD = 12 * LOG_HEIGHT;
-
-function scrollToBottom(component: HTMLDivElement) {
-  if (component) {
-    component.scrollTo({
-      top: component.scrollHeight,
-      behavior: 'smooth'
-    });
-  }
-}
+const SCROLL_THRESHOLD = 8 * LOG_HEIGHT;
 
 function getLogsQueryFilters(
   filterValues: GetLogTabs_logTabs_filters,
@@ -82,12 +70,14 @@ function LogsList({
   onNewLogs,
   clearLogs
 }: Props) {
+  const virtuoso = useRef<VirtuosoMethods>(null);
+  const [openedLogs, setOpenedLogs] = useState<boolean[]>([]);
+
   const { data: localData } = useQuery<GetLogTabs>(GET_LOGS_OPENED);
   const logsOpened = localData?.logsOpened;
 
   const { nodeNameToId } = useWorkflowsAndNodes(versionId);
   const [autoScrollActive, setAutoScrollActive] = useState(true);
-  const [allLogsOpened, setAllLogsOpened] = useState(false);
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
   const unsubscribeRef = useRef<Function | null>(null);
@@ -109,6 +99,7 @@ function LogsList({
       onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');
       handleSubscription();
+      setOpenedLogs(new Array(data.logs.items.length).fill(false));
     },
     onError: handleSubscription,
     fetchPolicy: 'no-cache'
@@ -116,10 +107,6 @@ function LogsList({
 
   function toggleAutoScrollActive() {
     setAutoScrollActive(!autoScrollActive);
-  }
-
-  function toggleAllLogsOpened() {
-    setAllLogsOpened(!allLogsOpened);
   }
 
   // Subscription query
@@ -149,13 +136,18 @@ function LogsList({
     }
   }
 
-  const handleScroll = useCallback(() => {
-    if (autoScrollActive && listRef.current !== null) {
-      scrollToBottom(listRef.current);
+  useEffect(() => {
+    if (autoScrollActive && virtuoso.current && logs.length !== 0) {
+      try {
+        virtuoso.current.scrollToIndex({
+          index: logs.length - 1,
+          align: 'end'
+        });
+      } catch (err) {
+        // virtuoso component not yet prepared
+      }
     }
-  }, [autoScrollActive, listRef]);
-
-  useEffect(handleScroll, [logs, autoScrollActive]);
+  }, [autoScrollActive, logs.length]);
 
   // Pagination query
   function loadPreviousLogs() {
@@ -176,11 +168,12 @@ function LogsList({
             ...oldLogs
           ]);
 
-          const newLogsHeight = newData.items.length * LOG_HEIGHT;
-          const currentScrollY = listRef?.current?.scrollTop || 0;
-          listRef?.current?.scrollTo({
-            top: newLogsHeight + currentScrollY
-          });
+          setOpenedLogs([
+            ...new Array(newData.items.length).fill(false),
+            ...openedLogs
+          ] as boolean[]);
+
+          virtuoso.current?.adjustForPrependedItems(newData.items.length);
         }
 
         setNextPage(newData?.cursor || '');
@@ -190,22 +183,45 @@ function LogsList({
     });
   }
 
-  function handleOnScroll({
-    currentTarget,
-    deltaY
-  }: WheelEvent<HTMLDivElement>) {
-    const hasReachedThreshold =
-      currentTarget.scrollTop + deltaY <= SCROLL_THRESHOLD;
-    if (hasReachedThreshold && nextPage !== '' && !(loading || refetching)) {
-      loadPreviousLogs();
+  function handleOnScroll() {
+    const list = listRef?.current?.childNodes[0] as HTMLDivElement;
+    if (virtuoso.current && list) {
+      const hasReachedThreshold = list.scrollTop <= SCROLL_THRESHOLD;
+      if (hasReachedThreshold && nextPage !== '' && !(loading || refetching)) {
+        loadPreviousLogs();
+      }
     }
-
-    setAutoScrollActive(false);
   }
 
-  const logElements = logs.map((log: GetServerLogs_logs_items) => (
-    <LogItem {...log} key={log.id} alwaysOpened={allLogsOpened} />
-  ));
+  let logElements = null;
+
+  function toggleOpenedLog(index: number) {
+    openedLogs[index] = !openedLogs[index];
+    setOpenedLogs(openedLogs);
+  }
+
+  if (logs.length) {
+    logElements = (
+      <Virtuoso
+        ref={virtuoso}
+        initialTopMostItemIndex={logs.length - 1}
+        totalCount={logs.length}
+        item={index => {
+          const log = logs[index];
+          return (
+            <LogItem
+              {...log}
+              key={log.id}
+              toggleOpen={() => toggleOpenedLog(index)}
+              opened={openedLogs[index]}
+            />
+          );
+        }}
+        style={{ height: '100%', width: '100%' }}
+        followOutput={autoScrollActive}
+      />
+    );
+  }
 
   return (
     <>
@@ -215,24 +231,28 @@ function LogsList({
           <SpinnerCircular size={100} />
         </div>
       )}
-      <div
-        ref={listRef}
-        className={styles.listContainer}
-        onWheel={handleOnScroll}
-      >
-        {refetching && (
-          <div className={styles.loadMoreSpinner}>
+      {refetching && (
+        <div className={styles.loadMoreSpinner}>
+          <div>Loading</div>
+          <div className={styles.spinner}>
             <SpinnerLinear size={50} />
           </div>
-        )}
-        {logElements}
+        </div>
+      )}
+      <div className={styles.listWrapper}>
+        <div
+          ref={listRef}
+          className={styles.listContainer}
+          onScroll={handleOnScroll}
+          onWheel={() => (autoScrollActive ? setAutoScrollActive(false) : null)}
+        >
+          {logElements}
+        </div>
       </div>
       <LogsFooter
         clearLogs={clearLogs}
         toggleAutoScrollActive={toggleAutoScrollActive}
         autoScrollActive={autoScrollActive}
-        allLogsOpened={allLogsOpened}
-        toggleAllLogsOpened={toggleAllLogsOpened}
       />
     </>
   );
