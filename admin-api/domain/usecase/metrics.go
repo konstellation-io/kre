@@ -2,7 +2,9 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"sort"
 	"strconv"
 	"time"
@@ -24,19 +26,30 @@ type MetricsInteractor struct {
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
 	monitoringService service.MonitoringService
+	accessControl     auth.AccessControl
 }
 
-func NewMetricsInteractor(logger logging.Logger, runtimeRepo repository.RuntimeRepo, monitoringService service.MonitoringService) *MetricsInteractor {
+func NewMetricsInteractor(
+	logger logging.Logger,
+	runtimeRepo repository.RuntimeRepo,
+	monitoringService service.MonitoringService,
+	accessControl auth.AccessControl,
+) *MetricsInteractor {
 	return &MetricsInteractor{
-		logger:            logger,
-		runtimeRepo:       runtimeRepo,
-		monitoringService: monitoringService,
+		logger,
+		runtimeRepo,
+		monitoringService,
+		accessControl,
 	}
 }
 
-func (i *MetricsInteractor) GetMetrics(ctx context.Context, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
+func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
+	if !i.accessControl.CheckPermission(loggedUserID, "metrics", "view") {
+		return nil, errors.New("you are not allowed to view metrics")
+	}
+
 	var result *entity.Metrics
-	runtime, err := i.runtimeRepo.GetByID(runtimeID)
+	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
 	if err != nil {
 		return result, err
 	}

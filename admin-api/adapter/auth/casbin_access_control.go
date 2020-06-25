@@ -1,0 +1,69 @@
+package auth
+
+import (
+	"context"
+	"github.com/casbin/casbin/v2"
+	"github.com/konstellation-io/kre/admin-api/domain/repository"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
+)
+
+type CasbinAccessControl struct {
+	logger   logging.Logger
+	enforcer *casbin.Enforcer
+	userRepo repository.UserRepo
+}
+
+func NewCasbinAccessControl(logger logging.Logger, userRepo repository.UserRepo) (*CasbinAccessControl, error) {
+	e, err := casbin.NewEnforcer("casbin_rbac_model.conf", "casbin_rbac_policy.csv")
+	if err != nil {
+		return nil, err
+	}
+
+	accessControl := &CasbinAccessControl{
+		logger,
+		e,
+		userRepo,
+	}
+
+	err = accessControl.ReloadUserRoles()
+	if err != nil {
+		return nil, err
+	}
+
+	return accessControl, nil
+}
+
+func (a *CasbinAccessControl) CheckPermission(sub, obj, act string) bool {
+	allowed, err := a.enforcer.Enforce(sub, obj, act)
+	if err != nil {
+		a.logger.Errorf("error checking permission: %s", err)
+		return false
+	}
+
+	a.logger.Infof("Checking permission userID[%s] resource[%s] action[%s] allowed %t", sub, obj, act, allowed)
+	return allowed
+}
+
+func (a *CasbinAccessControl) ReloadUserRoles() error {
+	a.logger.Infof("[RBAC] Reloading user roles")
+	users, err := a.userRepo.GetAll(context.Background(), false)
+	if err != nil {
+		return err
+	}
+
+	for _, u := range users {
+		a.logger.Infof("[RBAC] Removing roles for user %s (%s)", u.ID, u.Email)
+		_, err := a.enforcer.DeleteRolesForUser(u.ID)
+		if err != nil {
+			return err
+		}
+
+		a.logger.Infof("[RBAC] Adding role %s to user %s (%s)", u.AccessLevel.String(), u.ID, u.Email)
+		_, err = a.enforcer.AddRoleForUser(u.ID, u.AccessLevel.String())
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/99designs/gqlgen v0.11.3
+	github.com/casbin/casbin/v2 v2.7.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
@@ -16,7 +17,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/klauspost/compress v1.10.2 // indirect
-	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611164048-8f6bdb0bd8ae
+	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200624110030-c79a3635ab54
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/mattn/go-colorable v0.1.6 // indirect

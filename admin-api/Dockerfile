@@ -17,6 +17,8 @@ RUN mkdir -p /var/log/app
 
 WORKDIR /app
 COPY --from=builder /app/admin-api .
+COPY --from=builder /app/casbin_rbac_model.conf .
+COPY --from=builder /app/casbin_rbac_policy.csv .
 COPY --from=builder /app/templates ./templates
 COPY config.yml .
 

@@ -61,8 +61,8 @@ func NewGraphQLResolver(
 }
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
-	userID := ctx.Value("userID").(string)
-	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(input.Name, input.Description, userID)
+	loggedUserID := ctx.Value("userID").(string)
+	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(loggedUserID, input.Name, input.Description, loggedUserID)
 
 	go func() {
 		runtime := <-onRuntimeStartedChannel
@@ -81,8 +81,8 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 }
 
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error) {
-	userID := ctx.Value("userID").(string)
-	version, err := r.versionInteractor.Create(userID, input.RuntimeID, input.File.File)
+	loggedUserID := ctx.Value("userID").(string)
+	version, err := r.versionInteractor.Create(ctx, loggedUserID, input.RuntimeID, input.File.File)
 	if err != nil {
 		return nil, err
 	}
@@ -91,28 +91,28 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 }
 
 func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*entity.Version, error) {
-	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Start(userID, input.VersionID, input.Comment)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.versionInteractor.Start(ctx, loggedUserID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInput) (*entity.Version, error) {
-	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Stop(userID, input.VersionID, input.Comment)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.versionInteractor.Stop(ctx, loggedUserID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*entity.Version, error) {
-	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Unpublish(userID, input.VersionID, input.Comment)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.versionInteractor.Unpublish(ctx, loggedUserID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVersionInput) (*entity.Version, error) {
-	userID := ctx.Value("userID").(string)
-	return r.versionInteractor.Publish(userID, input.VersionID, input.Comment)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.versionInteractor.Publish(ctx, loggedUserID, input.VersionID, input.Comment)
 }
 
 func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*entity.Settings, error) {
-	userID := ctx.Value("userID").(string)
-	settings, err := r.settingInteractor.Get()
+	loggedUserID := ctx.Value("userID").(string)
+	settings, err := r.settingInteractor.Get(ctx, loggedUserID)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 	var changes []entity.UserActivity
 	if input.SessionLifetimeInDays != nil && settings.SessionLifetimeInDays != *input.SessionLifetimeInDays {
 		changes = append(changes, entity.UserActivity{
-			UserID: userID,
+			UserID: loggedUserID,
 			Vars: r.userActivityInteractor.NewUpdateSettingVars(
 				"SessionLifetimeInDays",
 				strconv.Itoa(settings.SessionLifetimeInDays),
@@ -131,7 +131,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 
 	if input.AuthAllowedDomains != nil {
 		changes = append(changes, entity.UserActivity{
-			UserID: userID,
+			UserID: loggedUserID,
 			Vars: r.userActivityInteractor.NewUpdateSettingVars(
 				"AuthAllowedDomains",
 				strings.Join(settings.AuthAllowedDomains, ","),
@@ -141,7 +141,7 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 	}
 
 	if len(changes) > 0 {
-		err = r.settingInteractor.Update(settings, changes)
+		err = r.settingInteractor.Update(loggedUserID, settings, changes)
 		if err != nil {
 			return nil, err
 		}
@@ -151,7 +151,8 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 }
 
 func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error) {
-	v, err := r.versionInteractor.GetByID(input.VersionID)
+	loggedUserID := ctx.Value("userID").(string)
+	v, err := r.versionInteractor.GetByID(loggedUserID, input.VersionID)
 	if err != nil {
 		return nil, err
 	}
@@ -165,40 +166,40 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		}
 	}
 
-	return r.versionInteractor.UpdateVersionConfig(v, config)
+	return r.versionInteractor.UpdateVersionConfig(ctx, loggedUserID, v, config)
 }
 
 func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {
-	userID := ctx.Value("userID").(string)
+	loggedUserID := ctx.Value("userID").(string)
 	for _, id := range input.UserIds {
-		if id == userID {
+		if id == loggedUserID {
 			return nil, errors.New("you cannot remove yourself")
 		}
 	}
 
-	return r.userInteractor.RemoveUsers(ctx, input.UserIds, userID)
+	return r.userInteractor.RemoveUsers(ctx, input.UserIds, loggedUserID)
 }
 
 func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
-	userID := ctx.Value("userID").(string)
+	loggedUserID := ctx.Value("userID").(string)
 	for _, id := range input.UserIds {
-		if id == userID {
+		if id == loggedUserID {
 			return nil, errors.New("you cannot change your access level")
 		}
 	}
 
-	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, userID)
+	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, loggedUserID)
 }
 
 func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
-	userID := ctx.Value("userID").(string)
+	loggedUserID := ctx.Value("userID").(string)
 
 	users, err := r.userInteractor.GetByIDs(input.UserIds)
 	if err != nil {
 		return nil, err
 	}
 
-	err = r.authInteractor.RevokeUserSessions(input.UserIds, userID)
+	err = r.authInteractor.RevokeUserSessions(input.UserIds, loggedUserID)
 	if err != nil {
 		return nil, err
 	}
@@ -207,41 +208,48 @@ func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersIn
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error) {
-	userID := ctx.Value("userID").(string)
-	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, userID)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, loggedUserID)
 }
 
 func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
-	userID := ctx.Value("userID").(string)
-	return r.userInteractor.GetByID(userID)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.userInteractor.GetByID(loggedUserID)
 }
 
 func (r *queryResolver) Metrics(ctx context.Context, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
-	return r.metricsInteractor.GetMetrics(ctx, runtimeID, versionID, startDate, endDate)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, runtimeID, versionID, startDate, endDate)
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
-	return r.userInteractor.GetAllUsers(ctx, false)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.userInteractor.GetAllUsers(ctx, loggedUserID, false)
 }
 
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
-	return r.runtimeInteractor.GetByID(id)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.runtimeInteractor.GetByID(ctx, loggedUserID, id)
 }
 
 func (r *queryResolver) Runtimes(ctx context.Context) ([]*entity.Runtime, error) {
-	return r.runtimeInteractor.FindAll()
+	loggedUserID := ctx.Value("userID").(string)
+	return r.runtimeInteractor.FindAll(ctx, loggedUserID)
 }
 
 func (r *queryResolver) Version(ctx context.Context, id string) (*entity.Version, error) {
-	return r.versionInteractor.GetByID(id)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.versionInteractor.GetByID(loggedUserID, id)
 }
 
 func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error) {
-	return r.versionInteractor.GetByRuntime(runtimeID)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.versionInteractor.GetByRuntime(loggedUserID, runtimeID)
 }
 
 func (r *queryResolver) Settings(ctx context.Context) (*entity.Settings, error) {
-	return r.settingInteractor.Get()
+	loggedUserID := ctx.Value("userID").(string)
+	return r.settingInteractor.Get(ctx, loggedUserID)
 }
 
 func (r *queryResolver) UserActivityList(
@@ -253,7 +261,8 @@ func (r *queryResolver) UserActivityList(
 	toDate *string,
 	lastID *string,
 ) ([]*entity.UserActivity, error) {
-	return r.userActivityInteractor.Get(ctx, userEmail, types, versionIds, fromDate, toDate, lastID)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.userActivityInteractor.Get(ctx, loggedUserID, userEmail, types, versionIds, fromDate, toDate, lastID)
 }
 
 func (r *queryResolver) Logs(
@@ -263,7 +272,9 @@ func (r *queryResolver) Logs(
 	filters entity.LogFilters,
 	cursor *string,
 ) (*LogPage, error) {
-	searchResult, err := r.versionInteractor.SearchLogs(ctx, runtimeID, versionID, filters, cursor)
+	loggedUserID := ctx.Value("userID").(string)
+
+	searchResult, err := r.versionInteractor.SearchLogs(ctx, loggedUserID, runtimeID, versionID, filters, cursor)
 	if err != nil {
 		return nil, err
 	}
@@ -285,7 +296,8 @@ func (r *queryResolver) ResourceMetrics(
 	fromDate string,
 	toDate string,
 ) ([]*entity.ResourceMetrics, error) {
-	return r.resourceMetricsInteractor.Get(ctx, versionId, fromDate, toDate)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.resourceMetricsInteractor.Get(ctx, loggedUserID, versionId, fromDate, toDate)
 }
 
 func (r *subscriptionResolver) WatchResourceMetrics(
@@ -293,7 +305,8 @@ func (r *subscriptionResolver) WatchResourceMetrics(
 	versionId string,
 	fromDate string,
 ) (<-chan []*entity.ResourceMetrics, error) {
-	return r.resourceMetricsInteractor.Watch(ctx, versionId, fromDate)
+	loggedUserID := ctx.Value("userID").(string)
+	return r.resourceMetricsInteractor.Watch(ctx, loggedUserID, versionId, fromDate)
 }
 
 func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
@@ -301,14 +314,16 @@ func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Ru
 	return userLoader.Load(runtime.Owner)
 }
 
-func (r *runtimeResolver) CreationDate(ctx context.Context, obj *entity.Runtime) (string, error) {
+func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
 func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
 	// TODO Get Runtime Published Version from a property stored in the Runtime entity instead of get all runtime versions.
 	// TODO use the version loader to get the published version
-	versions, err := r.versionInteractor.GetByRuntime(obj.ID)
+	loggedUserID := ctx.Value("userID").(string)
+
+	versions, err := r.versionInteractor.GetByRuntime(loggedUserID, obj.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -338,8 +353,10 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *enti
 }
 
 func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId string) (<-chan *entity.VersionNodeStatus, error) {
+	loggedUserID := ctx.Value("userID").(string)
+
 	stopCh := make(chan bool)
-	inputChan, err := r.versionInteractor.WatchVersionStatus(versionId, stopCh)
+	inputChan, err := r.versionInteractor.WatchVersionStatus(ctx, loggedUserID, versionId, stopCh)
 	if err != nil {
 		return nil, err
 	}
@@ -374,8 +391,10 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 }
 
 func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+	loggedUserID := ctx.Value("userID").(string)
+
 	stopCh := make(chan bool)
-	inputChan, err := r.versionInteractor.WatchNodeLogs(runtimeID, versionID, filters, stopCh)
+	inputChan, err := r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeID, versionID, filters, stopCh)
 	if err != nil {
 		return nil, err
 	}
@@ -407,7 +426,7 @@ func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, versionI
 	return outputChan, nil
 }
 
-func (r *userActivityResolver) Date(ctx context.Context, obj *entity.UserActivity) (string, error) {
+func (r *userActivityResolver) Date(_ context.Context, obj *entity.UserActivity) (string, error) {
 	return obj.Date.Format(time.RFC3339), nil
 }
 
@@ -416,7 +435,7 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	return userLoader.Load(obj.UserID)
 }
 
-func (r *userResolver) LastActivity(ctx context.Context, obj *entity.User) (*string, error) {
+func (r *userResolver) LastActivity(_ context.Context, obj *entity.User) (*string, error) {
 	if obj.LastActivity == nil {
 		return nil, nil
 	}
@@ -425,11 +444,11 @@ func (r *userResolver) LastActivity(ctx context.Context, obj *entity.User) (*str
 	return &date, nil
 }
 
-func (r *userResolver) CreationDate(ctx context.Context, obj *entity.User) (string, error) {
+func (r *userResolver) CreationDate(_ context.Context, obj *entity.User) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
-func (r *versionResolver) CreationDate(ctx context.Context, obj *entity.Version) (string, error) {
+func (r *versionResolver) CreationDate(_ context.Context, obj *entity.Version) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
@@ -438,7 +457,7 @@ func (r *versionResolver) CreationAuthor(ctx context.Context, obj *entity.Versio
 	return userLoader.Load(obj.CreationAuthor)
 }
 
-func (r *versionResolver) PublicationDate(ctx context.Context, obj *entity.Version) (*string, error) {
+func (r *versionResolver) PublicationDate(_ context.Context, obj *entity.Version) (*string, error) {
 	if obj.PublicationDate == nil {
 		return nil, nil
 	}
@@ -456,16 +475,16 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 }
 
 // TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error) {
+func (r *versionResolver) ConfigurationVariables(_ context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error) {
 	return obj.Config.Vars, nil
 }
 
 // TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationCompleted(ctx context.Context, obj *entity.Version) (bool, error) {
+func (r *versionResolver) ConfigurationCompleted(_ context.Context, obj *entity.Version) (bool, error) {
 	return obj.Config.Completed, nil
 }
 
-func (r *versionNodeStatusResolver) Date(ctx context.Context, obj *entity.VersionNodeStatus) (string, error) {
+func (r *versionNodeStatusResolver) Date(_ context.Context, _ *entity.VersionNodeStatus) (string, error) {
 	return time.Now().Format(time.RFC3339), nil
 }
 

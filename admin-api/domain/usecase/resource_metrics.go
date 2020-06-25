@@ -2,7 +2,9 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"time"
 
 	"github.com/konstellation-io/kre/admin-api/domain/entity"
@@ -21,6 +23,7 @@ type ResourceMetricsInteractor struct {
 	runtimeRepo            repository.RuntimeRepo
 	versionRepo            repository.VersionRepo
 	resourceMetricsService service.ResourceMetricsService
+	accessControl          auth.AccessControl
 }
 
 func NewResourceMetricsInteractor(
@@ -28,22 +31,28 @@ func NewResourceMetricsInteractor(
 	runtimeRepo repository.RuntimeRepo,
 	versionRepo repository.VersionRepo,
 	resourceMetricsService service.ResourceMetricsService,
+	accessControl auth.AccessControl,
 ) *ResourceMetricsInteractor {
 	return &ResourceMetricsInteractor{
-		logger:                 logger,
-		runtimeRepo:            runtimeRepo,
-		versionRepo:            versionRepo,
-		resourceMetricsService: resourceMetricsService,
+		logger,
+		runtimeRepo,
+		versionRepo,
+		resourceMetricsService,
+		accessControl,
 	}
 }
 
-func (r *ResourceMetricsInteractor) Get(ctx context.Context, versionId, fromDate, toDate string) ([]*entity.ResourceMetrics, error) {
+func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versionId, fromDate, toDate string) ([]*entity.ResourceMetrics, error) {
+	if !r.accessControl.CheckPermission(loggedUserID, "resource-metrics", "view") {
+		return nil, errors.New("you are not allowed to view resource-metrics")
+	}
+
 	version, err := r.versionRepo.GetByID(versionId)
 	if err != nil {
 		return nil, fmt.Errorf("error getting version by id: %w", err)
 	}
 
-	runtime, err := r.runtimeRepo.GetByID(version.RuntimeID)
+	runtime, err := r.runtimeRepo.GetByID(ctx, version.RuntimeID)
 	if err != nil {
 		return nil, fmt.Errorf("error getting runtime by id: %w", err)
 	}
@@ -56,13 +65,17 @@ func (r *ResourceMetricsInteractor) Get(ctx context.Context, versionId, fromDate
 	return r.resourceMetricsService.Get(ctx, runtime.GetNamespace(), version.Name, fromDate, toDate, step)
 }
 
-func (r *ResourceMetricsInteractor) Watch(ctx context.Context, versionId, fromDate string) (<-chan []*entity.ResourceMetrics, error) {
+func (r *ResourceMetricsInteractor) Watch(ctx context.Context, loggedUserID, versionId, fromDate string) (<-chan []*entity.ResourceMetrics, error) {
+	if !r.accessControl.CheckPermission(loggedUserID, "resource-metrics", "view") {
+		return nil, errors.New("you are not allowed to view resource-metrics")
+	}
+
 	version, err := r.versionRepo.GetByID(versionId)
 	if err != nil {
 		return nil, fmt.Errorf("error getting version by id: %w", err)
 	}
 
-	runtime, err := r.runtimeRepo.GetByID(version.RuntimeID)
+	runtime, err := r.runtimeRepo.GetByID(ctx, version.RuntimeID)
 	if err != nil {
 		return nil, fmt.Errorf("error getting runtime by id: %w", err)
 	}
