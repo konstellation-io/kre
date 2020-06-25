@@ -1,11 +1,10 @@
 import React, { FunctionComponent, MouseEvent } from 'react';
+
 import { Link } from 'react-router-dom';
-
 import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import cx from 'classnames';
 import styles from './Button.module.scss';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export const BUTTON_THEMES = {
   DEFAULT: 'default',
@@ -21,9 +20,11 @@ export const BUTTON_ALIGN = {
 
 type Props = {
   label?: string;
+  title?: string;
   theme?: string;
   border?: boolean;
   Icon?: FunctionComponent<SvgIconProps>;
+  iconSize?: 'icon-regular' | 'icon-small' | 'icon-big';
   to?: string;
   onClick?: (e: MouseEvent<HTMLDivElement>) => void;
   primary?: boolean;
@@ -39,7 +40,9 @@ function Button({
   theme = BUTTON_THEMES.DEFAULT,
   border = false,
   label = 'Button',
+  title = '',
   Icon = undefined,
+  iconSize = 'icon-small',
   to = '',
   onClick = function() {},
   primary = false,
@@ -54,7 +57,7 @@ function Button({
     <SpinnerLinear size={30} dark />
   ) : (
     <>
-      {Icon && <Icon className="icon-small" />}
+      {Icon && <Icon className={iconSize} />}
       <span>{label}</span>
     </>
   );
@@ -69,6 +72,7 @@ function Button({
       })}
       style={{ ...style, height, lineHeight: `${height}px` }}
       onClick={onClick}
+      title={title}
     >
       {content}
     </div>
