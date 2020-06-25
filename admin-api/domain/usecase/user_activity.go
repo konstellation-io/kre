@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"strings"
@@ -49,8 +48,8 @@ func (i *UserActivityInteractor) Get(
 	toDate *string,
 	lastID *string,
 ) ([]*entity.UserActivity, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "audit", "view") {
-		return nil, errors.New("you are not allowed to view audit")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResAudit, auth.ActView) {
+		return nil, auth.ErrViewAudit
 	}
 
 	var userIDs []string

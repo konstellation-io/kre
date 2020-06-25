@@ -63,8 +63,8 @@ func (i *SettingInteractor) CreateDefaults(ctx context.Context) error {
 
 // Update change a given Settings to a new value
 func (i *SettingInteractor) Update(loggedUserID string, settings *entity.Settings, changes []entity.UserActivity) error {
-	if !i.accessControl.CheckPermission(loggedUserID, "settings", "edit") {
-		return errors.New("you are not allowed to edit settings")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResSettings, auth.ActEdit) {
+		return auth.ErrEditSettings
 	}
 
 	for _, c := range changes {
@@ -84,8 +84,8 @@ func (i *SettingInteractor) GetUnprotected(ctx context.Context) (*entity.Setting
 
 // Get returns a Settings
 func (i *SettingInteractor) Get(ctx context.Context, loggedUserID string) (*entity.Settings, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "settings", "view") {
-		return nil, errors.New("you are not allowed to view settings")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResSettings, auth.ActView) {
+		return nil, auth.ErrViewSettings
 	}
 
 	return i.settingRepo.Get(ctx)

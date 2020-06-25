@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"sort"
@@ -44,8 +43,8 @@ func NewMetricsInteractor(
 }
 
 func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "metrics", "view") {
-		return nil, errors.New("you are not allowed to view metrics")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResMetrics, auth.ActView) {
+		return nil, auth.ErrViewMetrics
 	}
 
 	var result *entity.Metrics

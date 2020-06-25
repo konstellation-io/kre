@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"time"
@@ -43,8 +42,8 @@ func NewResourceMetricsInteractor(
 }
 
 func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versionId, fromDate, toDate string) ([]*entity.ResourceMetrics, error) {
-	if !r.accessControl.CheckPermission(loggedUserID, "resource-metrics", "view") {
-		return nil, errors.New("you are not allowed to view resource-metrics")
+	if !r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView) {
+		return nil, auth.ErrViewResourceMetrics
 	}
 
 	version, err := r.versionRepo.GetByID(versionId)
@@ -66,8 +65,8 @@ func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versi
 }
 
 func (r *ResourceMetricsInteractor) Watch(ctx context.Context, loggedUserID, versionId, fromDate string) (<-chan []*entity.ResourceMetrics, error) {
-	if !r.accessControl.CheckPermission(loggedUserID, "resource-metrics", "view") {
-		return nil, errors.New("you are not allowed to view resource-metrics")
+	if !r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView) {
+		return nil, auth.ErrViewResourceMetrics
 	}
 
 	version, err := r.versionRepo.GetByID(versionId)

@@ -87,7 +87,7 @@ func generateId() string {
 }
 
 func (i *VersionInteractor) filterConfigVars(loggedUserID string, version *entity.Version) {
-	if !i.accessControl.CheckPermission(loggedUserID, "version", "edit") {
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
 		version.Config.Vars = nil
 	}
 }
@@ -124,8 +124,8 @@ func (i *VersionInteractor) GetByIDs(ids []string) ([]*entity.Version, []error) 
 
 // Create creates a Version on the DB based on the content of a KRT file
 func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "version", "edit") {
-		return nil, errors.New("you are not allowed to edit versions")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
+		return nil, auth.ErrEditVersions
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
@@ -190,12 +190,12 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 }
 
 // Start create the resources of the given Version
-func (i *VersionInteractor) Start(ctx context.Context, userID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(userID, "version", "edit") {
-		return nil, errors.New("you are not allowed to edit versions")
+func (i *VersionInteractor) Start(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
+		return nil, auth.ErrEditVersions
 	}
 
-	i.logger.Infof("The user %s is starting version %s", userID, versionID)
+	i.logger.Infof("The user %s is starting version %s", loggedUserID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -226,7 +226,7 @@ func (i *VersionInteractor) Start(ctx context.Context, userID string, versionID 
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStartAction(userID, runtime, version, comment)
+	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -234,12 +234,12 @@ func (i *VersionInteractor) Start(ctx context.Context, userID string, versionID 
 }
 
 // Stop removes the resources of the given Version
-func (i *VersionInteractor) Stop(ctx context.Context, userID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(userID, "version", "edit") {
-		return nil, errors.New("you are not allowed to edit versions")
+func (i *VersionInteractor) Stop(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
+		return nil, auth.ErrEditVersions
 	}
 
-	i.logger.Infof("The user %s is stopping version %s", userID, versionID)
+	i.logger.Infof("The user %s is stopping version %s", loggedUserID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -266,7 +266,7 @@ func (i *VersionInteractor) Stop(ctx context.Context, userID string, versionID s
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStopAction(userID, runtime, version, comment)
+	err = i.userActivityInteractor.RegisterStopAction(loggedUserID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -274,12 +274,12 @@ func (i *VersionInteractor) Stop(ctx context.Context, userID string, versionID s
 }
 
 // Publish set a Version as published on DB and K8s
-func (i *VersionInteractor) Publish(ctx context.Context, userID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(userID, "version", "edit") {
-		return nil, errors.New("you are not allowed to edit versions")
+func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
+		return nil, auth.ErrEditVersions
 	}
 
-	i.logger.Infof("The user %s is publishing version %s", userID, versionID)
+	i.logger.Infof("The user %s is publishing version %s", loggedUserID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -308,14 +308,14 @@ func (i *VersionInteractor) Publish(ctx context.Context, userID string, versionI
 
 	now := time.Now()
 	version.PublicationDate = &now
-	version.PublicationUserID = &userID
+	version.PublicationUserID = &loggedUserID
 	version.Status = entity.VersionStatusPublished
 	err = i.versionRepo.Update(version)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterPublishAction(userID, runtime, version, previousPublishedVersion, comment)
+	err = i.userActivityInteractor.RegisterPublishAction(loggedUserID, runtime, version, previousPublishedVersion, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -348,12 +348,12 @@ func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*
 }
 
 // Unpublish set a Version as not published on DB and K8s
-func (i *VersionInteractor) Unpublish(ctx context.Context, userID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(userID, "version", "edit") {
-		return nil, errors.New("you are not allowed to edit versions")
+func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
+		return nil, auth.ErrEditVersions
 	}
 
-	i.logger.Infof("The user %s is unpublishing version %s", userID, versionID)
+	i.logger.Infof("The user %s is unpublishing version %s", loggedUserID, versionID)
 
 	version, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
@@ -382,7 +382,7 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, userID string, versio
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterUnpublishAction(userID, runtime, version, comment)
+	err = i.userActivityInteractor.RegisterUnpublishAction(loggedUserID, runtime, version, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -391,8 +391,8 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, userID string, versio
 }
 
 func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserID string, version *entity.Version, config []*entity.ConfigurationVariable) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "version", "edit") {
-		return nil, errors.New("you are not allowed to edit versions")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
+		return nil, auth.ErrEditVersions
 	}
 
 	err := i.validateNewConfig(version.Config.Vars, config)
@@ -433,8 +433,8 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 }
 
 func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID, versionId string, stopCh <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "version", "view") {
-		return nil, errors.New("you are not allowed to view versions")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView) {
+		return nil, auth.ErrViewVersions
 	}
 
 	version, err := i.versionRepo.GetByID(versionId)
@@ -456,8 +456,8 @@ func (i *VersionInteractor) WatchNodeLogs(
 	filters entity.LogFilters,
 	stopChannel chan bool,
 ) (<-chan *entity.NodeLog, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "logs", "view") {
-		return nil, errors.New("you are not allowed to view logs")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView) {
+		return nil, auth.ErrViewLogs
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
@@ -478,8 +478,8 @@ func (i *VersionInteractor) SearchLogs(
 ) (entity.SearchLogsResult, error) {
 	var result entity.SearchLogsResult
 
-	if !i.accessControl.CheckPermission(loggedUserID, "logs", "view") {
-		return result, errors.New("you are not allowed to view logs")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView) {
+		return result, auth.ErrViewLogs
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)

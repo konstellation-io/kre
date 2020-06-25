@@ -49,16 +49,16 @@ func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, error) {
 
 // GetAllUsers returns all existing Users
 func (i *UserInteractor) GetAllUsers(ctx context.Context, loggedUserID string, returnDeleted bool) ([]*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "users", "view") {
-		return nil, errors.New("you are not allowed to view users")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActView) {
+		return nil, auth.ErrViewUsers
 	}
 
 	return i.userRepo.GetAll(ctx, returnDeleted)
 }
 
 func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel, loggedUserID string) ([]*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "users", "edit") {
-		return nil, errors.New("you are not allowed to update users")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit) {
+		return nil, auth.ErrEditUsers
 	}
 
 	users, err := i.userRepo.GetByIDs(userIDs)
@@ -94,8 +94,8 @@ func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string
 }
 
 func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel entity.AccessLevel, loggedUserID string) (*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "users", "edit") {
-		return nil, errors.New("you are not allowed to create users")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit) {
+		return nil, auth.ErrEditUsers
 	}
 
 	_, err := i.userRepo.GetByEmail(email)
@@ -123,8 +123,8 @@ func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel e
 }
 
 func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, loggedUserID string) ([]*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, "users", "edit") {
-		return nil, errors.New("you are not allowed to remove users")
+	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit) {
+		return nil, auth.ErrEditUsers
 	}
 
 	users, err := i.userRepo.MarkAsDeleted(ctx, userIDs)
