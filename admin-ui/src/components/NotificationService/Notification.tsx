@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import CloseIcon from '@material-ui/icons/Close';
-import { useMutation } from '@apollo/react-hooks';
 import {
   REMOVE_NOTIFICATION,
   RemoveNotification,
   RemoveNotificationVariables
 } from '../../graphql/client/mutations/removeNotification.graphql';
-import Button from '../Button/Button';
+import React, { useEffect, useRef, useState } from 'react';
 
+import Button from '../Button/Button';
+import CloseIcon from '@material-ui/icons/Close';
+import { NotificationType } from '../../graphql/client/typeDefs';
 import cx from 'classnames';
 import styles from './Notification.module.scss';
-import { NotificationType } from '../../graphql/client/typeDefs';
+import { useMutation } from '@apollo/react-hooks';
 
 const MESSAGE_MARGIN = 30;
 const MESSAGE_MIN_HEIGHT = 60;
@@ -23,6 +23,7 @@ export type Props = {
   id: string;
   message: string;
   buttonLabel: string;
+  typeLabel?: string;
   timeout?: number;
   type?: NotificationType;
   to?: string;
@@ -32,6 +33,7 @@ function Notification({
   id,
   message,
   buttonLabel,
+  typeLabel = '',
   timeout = 0,
   type = NotificationType.MESSAGE,
   to = ''
@@ -76,8 +78,12 @@ function Notification({
     style.height = contentHeight;
   }
 
+  const typeText =
+    typeLabel || (type === NotificationType.ERROR && NotificationType.ERROR);
+
   return (
     <div className={cx(styles.container, styles[type])} style={style}>
+      {typeText && <div className={styles.typeLabel}>{typeText}</div>}
       <div className={styles.message} title={message} ref={content}>
         {message}
       </div>

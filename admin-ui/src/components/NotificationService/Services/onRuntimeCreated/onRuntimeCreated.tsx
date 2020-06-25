@@ -1,16 +1,17 @@
-import { get, clone } from 'lodash';
-import { loader } from 'graphql.macro';
-import { runtimeCreated } from '../../../../graphql/subscriptions/types/runtimeCreated';
 import {
   ADD_NOTIFICATION,
   AddNotification,
   AddNotificationVariables
 } from '../../../../graphql/client/mutations/addNotification.graphql';
-import { GetRuntimes_runtimes } from '../../../../graphql/queries/types/GetRuntimes';
-import { runtimeCreated_runtimeCreated } from '../../../../graphql/subscriptions/types/runtimeCreated';
-import ROUTE from '../../../../constants/routes';
+import { clone, get } from 'lodash';
+
 import ApolloClient from 'apollo-client';
+import { GetRuntimes_runtimes } from '../../../../graphql/queries/types/GetRuntimes';
 import { NotificationType } from '../../../../graphql/client/typeDefs';
+import ROUTE from '../../../../constants/routes';
+import { loader } from 'graphql.macro';
+import { runtimeCreated } from '../../../../graphql/subscriptions/types/runtimeCreated';
+import { runtimeCreated_runtimeCreated } from '../../../../graphql/subscriptions/types/runtimeCreated';
 
 const RuntimeCreatedSubscription = loader(
   '../../../../graphql/subscriptions/runtimeCreated.graphql'
@@ -57,6 +58,7 @@ function onRuntimeCreated(client: ApolloClient<object>) {
               id: `runtime-${runtime.id}-created`,
               message: `The RUNTIME "${runtime.name}" has been successfully created!`,
               type: NotificationType.MESSAGE,
+              typeLabel: 'CREATED',
               timeout: NOTIFICATION_TIMEOUT,
               to: runtimePath
             }

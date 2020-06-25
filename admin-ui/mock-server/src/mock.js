@@ -186,7 +186,12 @@ module.exports = {
       setTimeout(() => {
         const _runtime = generateRuntime();
         pubsub.publish('runtimeCreated', {
-          runtimeCreated: { id: _runtime.id, name: _runtime.name }
+          runtimeCreated: {
+            id: _runtime.id,
+            name: _runtime.name,
+            status: 'STARTED',
+            creationDate: moment()
+          }
         });
       }, 4000);
       return { errors: [], runtime: this.Runtime };

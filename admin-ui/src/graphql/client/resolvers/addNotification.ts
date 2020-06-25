@@ -1,8 +1,12 @@
-import { GET_NOTIFICATIONS } from '../queries/getNotification.graphql';
-import { findIndex } from 'lodash';
 import { AddNotificationVariables } from '../mutations/addNotification.graphql';
 import ApolloClient from 'apollo-client';
+import { GET_NOTIFICATIONS } from '../queries/getNotification.graphql';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
+import { findIndex } from 'lodash';
+
+const defaultVariables = {
+  typeLabel: ''
+};
 
 export default function addNotification(
   _: any,
@@ -13,6 +17,7 @@ export default function addNotification(
     query: GET_NOTIFICATIONS
   });
   const newNotification = {
+    ...defaultVariables,
     ...variables.input,
     __typename: 'Notification'
   };
