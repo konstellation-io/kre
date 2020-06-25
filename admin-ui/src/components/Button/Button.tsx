@@ -68,7 +68,8 @@ function Button({
         [styles.primary]: primary,
         [styles.border]: border,
         [styles.label]: !primary,
-        [styles.disabled]: disabled
+        [styles.disabled]: disabled,
+        [styles.noLabel]: label === ''
       })}
       style={{ ...style, height, lineHeight: `${height}px` }}
       onClick={onClick}

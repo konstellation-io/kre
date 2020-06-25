@@ -145,7 +145,6 @@ function VersionActions({ runtime, version, quickActions = false }: Props) {
           onClick={() => btn.action && btn.action()}
           label={quickActions ? '' : btn.label}
           title={quickActions ? btn.label : ''}
-          className={cx({ [styles.quickActionButton]: quickActions })}
           Icon={btn.Icon}
           iconSize="icon-regular"
           theme={

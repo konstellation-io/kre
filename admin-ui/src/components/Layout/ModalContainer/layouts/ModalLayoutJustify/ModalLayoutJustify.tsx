@@ -1,6 +1,5 @@
 import React from 'react';
 import TextInput from '../../../../Form/TextInput/TextInput';
-
 import styles from './ModalLayoutJustify.module.scss';
 
 type Props = {
@@ -13,7 +12,7 @@ function ModalLayoutJustify({ onUpdate, submit, error }: Props) {
     <>
       <div className={styles.comment}>
         <TextInput
-          label="please, write your comment:  "
+          label="why are you doing that?  "
           error={error}
           onChange={onUpdate}
           limits={{

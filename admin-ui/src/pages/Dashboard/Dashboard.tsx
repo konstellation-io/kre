@@ -1,33 +1,30 @@
-import { get } from 'lodash';
-
-import React, { ReactElement } from 'react';
-import { useHistory } from 'react-router';
-import { History } from 'history';
-import ROUTE from '../../constants/routes';
-
-import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
-import Hexagon from '../../components/Shape/Hexagon/Hexagon';
-import HexagonBorder from '../../components/Shape/Hexagon/HexagonBorder';
-import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
-import Button from '../../components/Button/Button';
-import ModalContainer from '../../components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutInfo from '../../components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
-
-import styles from './Dashboard.module.scss';
-
-import { loader } from 'graphql.macro';
-import { useQuery } from '@apollo/react-hooks';
+import { AccessLevel, RuntimeStatus } from '../../graphql/types/globalTypes';
 import {
   GetRuntimes,
   GetRuntimes_runtimes
 } from '../../graphql/queries/types/GetRuntimes';
-import { AccessLevel, RuntimeStatus } from '../../graphql/types/globalTypes';
+import React, { ReactElement } from 'react';
+
 import { ApolloError } from 'apollo-client';
-import { buildRoute } from '../../utils/routes';
-import PageBase from '../../components/Layout/PageBase/PageBase';
+import Button from '../../components/Button/Button';
 import Can from '../../components/Can/Can';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import Hexagon from '../../components/Shape/Hexagon/Hexagon';
+import HexagonBorder from '../../components/Shape/Hexagon/HexagonBorder';
+import HexagonPanel from '../../components/Layout/HexagonPanel/HexagonPanel';
+import { History } from 'history';
+import ModalContainer from '../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutInfo from '../../components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
+import PageBase from '../../components/Layout/PageBase/PageBase';
+import ROUTE from '../../constants/routes';
+import SpinnerCircular from '../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import { buildRoute } from '../../utils/routes';
 import { checkPermission } from '../../rbac-rules';
+import { get } from 'lodash';
+import { loader } from 'graphql.macro';
+import styles from './Dashboard.module.scss';
+import { useHistory } from 'react-router';
+import { useQuery } from '@apollo/react-hooks';
 import useUserAccess from '../../hooks/useUserAccess';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
@@ -119,7 +116,12 @@ function Dashboard() {
       headerChildren={
         <>
           <Can perform="runtime:edit">
-            <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
+            <Button
+              label="ADD RUNTIME"
+              to={ROUTE.NEW_RUNTIME}
+              height={40}
+              className={styles.addRuntime}
+            />
           </Can>
           <div>{`${nRuntimes} runtime${nRuntimes > 1 ? 's' : ''} shown`}</div>
         </>

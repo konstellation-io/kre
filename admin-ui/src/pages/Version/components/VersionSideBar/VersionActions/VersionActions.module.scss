@@ -13,14 +13,6 @@
     background-color: transparent;
   }
 
-  .quickActionButton {
-    padding: 0 14px;
-
-    svg {
-      margin-right: 0;
-    }
-  }
-
   .item {
     @include font-body;
     font-weight: 600;

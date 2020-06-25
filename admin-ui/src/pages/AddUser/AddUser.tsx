@@ -1,23 +1,25 @@
-import { useMutation } from '@apollo/react-hooks';
-import { loader } from 'graphql.macro';
-import { get } from 'lodash';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router';
-import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
-import Select from '../../components/Form/Select/Select';
-import TextInput from '../../components/Form/TextInput/TextInput';
-import ROUTE from '../../constants/routes';
+
 import {
   CreateUser,
   CreateUserVariables,
   CreateUser_createUser
 } from '../../graphql/mutations/types/CreateUser';
-import { GetUsers } from '../../graphql/queries/types/GetUsers';
+import React, { useEffect } from 'react';
+
 import { AccessLevel } from '../../graphql/types/globalTypes';
+import Button from '../../components/Button/Button';
+import { GetUsers } from '../../graphql/queries/types/GetUsers';
+import ROUTE from '../../constants/routes';
+import Select from '../../components/Form/Select/Select';
+import TextInput from '../../components/Form/TextInput/TextInput';
+import { get } from 'lodash';
+import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from '../../utils/formUtils';
 import styles from './AddUser.module.scss';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
+import { useMutation } from '@apollo/react-hooks';
 const GetUsersQuery = loader('../../graphql/queries/getUsers.graphql');
 
 const CreateUserMutation = loader('../../graphql/mutations/createUser.graphql');
@@ -119,6 +121,7 @@ function AddUser() {
                 label="SAVE"
                 onClick={handleSubmit(onSubmit)}
                 loading={loading}
+                className={styles.buttonSave}
               />
               <Button
                 label="CANCEL"
