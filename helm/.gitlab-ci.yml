@@ -28,7 +28,7 @@ generate-helm-chart:
   image: alpine:3.11
   variables:
     HELM_VERSION: v3.2.4
-    CHART_RELEASER: 1.0.0-beta.1
+    CHART_RELEASER: 0.2.3
   before_script:
     - apk add --update bash gettext coreutils curl git
     - wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
