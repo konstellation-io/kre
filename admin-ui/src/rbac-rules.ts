@@ -1,5 +1,14 @@
 import { AccessLevel } from './graphql/types/globalTypes';
 
+const MANAGER_RULES = [
+  'audit:view',
+  'logs:view',
+  'runtime:edit',
+  'version:edit'
+];
+
+const ADMIN_RULES = [...MANAGER_RULES, 'settings:edit'];
+
 const rules: {
   [key in keyof typeof AccessLevel]: {
     static: string[];
@@ -10,28 +19,10 @@ const rules: {
     static: []
   },
   MANAGER: {
-    static: [
-      'audit-page:visit',
-      'logs-page:visit',
-      'runtime:edit',
-      'runtime-add-page:visit',
-      'version:edit',
-      'version-add-page:visit',
-      'version-config-page:visit'
-    ]
+    static: MANAGER_RULES
   },
   ADMIN: {
-    static: [
-      'audit-page:visit',
-      'logs-page:visit',
-      'runtime:edit',
-      'runtime-add-page:visit',
-      'version:edit',
-      'version-add-page:visit',
-      'version-config-page:visit',
-      'settings:edit',
-      'settings-page:visit'
-    ]
+    static: ADMIN_RULES
   }
 };
 

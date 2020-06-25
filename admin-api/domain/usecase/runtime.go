@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"context"
 	"errors"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 
 	"github.com/konstellation-io/kre/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin-api/domain/repository"
@@ -25,6 +27,7 @@ type RuntimeInteractor struct {
 	runtimeService    service.RuntimeService
 	userActivity      *UserActivityInteractor
 	passwordGenerator runtime.PasswordGenerator
+	accessControl     auth.AccessControl
 }
 
 // NewRuntimeInteractor creates a new RuntimeInteractor
@@ -34,6 +37,7 @@ func NewRuntimeInteractor(
 	runtimeService service.RuntimeService,
 	userActivity *UserActivityInteractor,
 	passwordGenerator runtime.PasswordGenerator,
+	accessControl auth.AccessControl,
 ) *RuntimeInteractor {
 	return &RuntimeInteractor{
 		logger,
@@ -41,15 +45,20 @@ func NewRuntimeInteractor(
 		runtimeService,
 		userActivity,
 		passwordGenerator,
+		accessControl,
 	}
 }
 
 // CreateRuntime adds a new Runtime
-func (i *RuntimeInteractor) CreateRuntime(name string, description string, userID string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
-	runtime := &entity.Runtime{
+func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit); err != nil {
+		return nil, nil, err
+	}
+
+	r := &entity.Runtime{
 		Name:        name,
 		Description: description,
-		Owner:       userID,
+		Owner:       loggedUserID,
 		Mongo: entity.MongoConfig{
 			Username:  "admin",
 			Password:  i.passwordGenerator.NewPassword(),
@@ -60,19 +69,19 @@ func (i *RuntimeInteractor) CreateRuntime(name string, description string, userI
 			SecretKey: i.passwordGenerator.NewPassword(),
 		},
 	}
-	createRuntimeInK8sResult, err := i.runtimeService.Create(runtime)
+	createRuntimeInK8sResult, err := i.runtimeService.Create(r)
 	if err != nil {
 		return
 	}
 	i.logger.Info("K8sManagerService create result: " + createRuntimeInK8sResult)
 
-	createdRuntime, err = i.runtimeRepo.Create(runtime)
+	createdRuntime, err = i.runtimeRepo.Create(r)
 	if err != nil {
 		return
 	}
 	i.logger.Info("Runtime stored in the database with ID=" + createdRuntime.ID)
 
-	err = i.userActivity.RegisterCreateRuntime(userID, createdRuntime)
+	err = i.userActivity.RegisterCreateRuntime(loggedUserID, createdRuntime)
 	if err != nil {
 		return
 	}
@@ -105,11 +114,19 @@ func (i *RuntimeInteractor) CreateRuntime(name string, description string, userI
 }
 
 // FindAll returns a list of all Runtimes
-func (i *RuntimeInteractor) FindAll() ([]*entity.Runtime, error) {
-	return i.runtimeRepo.FindAll()
+func (i *RuntimeInteractor) FindAll(ctx context.Context, loggedUserID string) ([]*entity.Runtime, error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView); err != nil {
+		return nil, err
+	}
+
+	return i.runtimeRepo.FindAll(ctx)
 }
 
 // GetByID return a Runtime by its ID
-func (i *RuntimeInteractor) GetByID(runtimeID string) (*entity.Runtime, error) {
-	return i.runtimeRepo.GetByID(runtimeID)
+func (i *RuntimeInteractor) GetByID(ctx context.Context, loggedUserID string, runtimeID string) (*entity.Runtime, error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView); err != nil {
+		return nil, err
+	}
+
+	return i.runtimeRepo.GetByID(ctx, runtimeID)
 }

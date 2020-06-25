@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"strings"
 	"time"
 
@@ -18,6 +19,7 @@ type UserActivityInteractor struct {
 	logger           logging.Logger
 	userActivityRepo repository.UserActivityRepo
 	userRepo         repository.UserRepo
+	accessControl    auth.AccessControl
 }
 
 // NewUserActivityInteractor creates a new UserActivityInteractor
@@ -25,17 +27,20 @@ func NewUserActivityInteractor(
 	logger logging.Logger,
 	userActivityRepo repository.UserActivityRepo,
 	userRepo repository.UserRepo,
+	accessControl auth.AccessControl,
 ) *UserActivityInteractor {
 	return &UserActivityInteractor{
 		logger,
 		userActivityRepo,
 		userRepo,
+		accessControl,
 	}
 }
 
 // Get return a list of UserActivities
 func (i *UserActivityInteractor) Get(
 	ctx context.Context,
+	loggedUserID string,
 	userEmail *string,
 	types []entity.UserActivityType,
 	versionIds []string,
@@ -43,6 +48,10 @@ func (i *UserActivityInteractor) Get(
 	toDate *string,
 	lastID *string,
 ) ([]*entity.UserActivity, error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResAudit, auth.ActView); err != nil {
+		return nil, err
+	}
+
 	var userIDs []string
 	if userEmail != nil && *userEmail != "" {
 		users, err := i.userRepo.GetManyByEmail(ctx, *userEmail)

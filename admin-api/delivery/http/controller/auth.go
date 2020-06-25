@@ -56,7 +56,7 @@ func (a *AuthController) SignIn(c echo.Context) error {
 	}
 
 	verificationCodeDurationInMinutes := a.cfg.Auth.VerificationCodeDurationInMinutes
-	if err := a.authInteractor.SignIn(input.Email, verificationCodeDurationInMinutes); err != nil {
+	if err := a.authInteractor.SignIn(c.Request().Context(), input.Email, verificationCodeDurationInMinutes); err != nil {
 		switch err {
 		case usecase.ErrUserNotAllowed:
 			return httperrors.HTTPErrUserNotAllowed
@@ -93,7 +93,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	}
 
 	a.logger.Info("Generating JWT token.")
-	setting, err := a.settingInteractor.Get()
+	setting, err := a.settingInteractor.GetUnprotected(c.Request().Context())
 	if err != nil {
 		return err
 	}
