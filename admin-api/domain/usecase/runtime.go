@@ -51,8 +51,8 @@ func NewRuntimeInteractor(
 
 // CreateRuntime adds a new Runtime
 func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit) {
-		return nil, nil, auth.ErrEditRuntimes
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit); err != nil {
+		return nil, nil, err
 	}
 
 	r := &entity.Runtime{
@@ -115,8 +115,8 @@ func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description
 
 // FindAll returns a list of all Runtimes
 func (i *RuntimeInteractor) FindAll(ctx context.Context, loggedUserID string) ([]*entity.Runtime, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView) {
-		return nil, auth.ErrViewRuntimes
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	return i.runtimeRepo.FindAll(ctx)
@@ -124,8 +124,8 @@ func (i *RuntimeInteractor) FindAll(ctx context.Context, loggedUserID string) ([
 
 // GetByID return a Runtime by its ID
 func (i *RuntimeInteractor) GetByID(ctx context.Context, loggedUserID string, runtimeID string) (*entity.Runtime, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView) {
-		return nil, auth.ErrViewRuntimes
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	return i.runtimeRepo.GetByID(ctx, runtimeID)

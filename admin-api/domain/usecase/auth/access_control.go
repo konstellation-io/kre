@@ -1,7 +1,5 @@
 package auth
 
-import "errors"
-
 type AccessControlResource string
 
 const ResMetrics AccessControlResource = "metrics"
@@ -18,22 +16,7 @@ type AccessControlAction string
 const ActView AccessControlAction = "view"
 const ActEdit AccessControlAction = "edit"
 
-var (
-	ErrViewMetrics         = errors.New("you are not allowed to view metrics")
-	ErrViewResourceMetrics = errors.New("you are not allowed to view resource-metrics")
-	ErrEditRuntimes        = errors.New("you are not allowed to edit runtimes")
-	ErrViewRuntimes        = errors.New("you are not allowed to view runtimes")
-	ErrEditSettings        = errors.New("you are not allowed to edit settings")
-	ErrViewSettings        = errors.New("you are not allowed to view settings")
-	ErrViewUsers           = errors.New("you are not allowed to view users")
-	ErrEditUsers           = errors.New("you are not allowed to edit users")
-	ErrViewAudit           = errors.New("you are not allowed to view audit")
-	ErrEditVersions        = errors.New("you are not allowed to edit versions")
-	ErrViewVersions        = errors.New("you are not allowed to view versions")
-	ErrViewLogs            = errors.New("you are not allowed to view logs")
-)
-
 type AccessControl interface {
-	CheckPermission(userID string, resource AccessControlResource, action AccessControlAction) bool
+	CheckPermission(userID string, resource AccessControlResource, action AccessControlAction) error
 	ReloadUserRoles() error
 }

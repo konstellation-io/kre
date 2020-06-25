@@ -49,16 +49,16 @@ func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, error) {
 
 // GetAllUsers returns all existing Users
 func (i *UserInteractor) GetAllUsers(ctx context.Context, loggedUserID string, returnDeleted bool) ([]*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActView) {
-		return nil, auth.ErrViewUsers
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	return i.userRepo.GetAll(ctx, returnDeleted)
 }
 
 func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel, loggedUserID string) ([]*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit) {
-		return nil, auth.ErrEditUsers
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	users, err := i.userRepo.GetByIDs(userIDs)
@@ -94,8 +94,8 @@ func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string
 }
 
 func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel entity.AccessLevel, loggedUserID string) (*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit) {
-		return nil, auth.ErrEditUsers
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	_, err := i.userRepo.GetByEmail(email)
@@ -123,8 +123,8 @@ func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel e
 }
 
 func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, loggedUserID string) ([]*entity.User, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit) {
-		return nil, auth.ErrEditUsers
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	users, err := i.userRepo.MarkAsDeleted(ctx, userIDs)

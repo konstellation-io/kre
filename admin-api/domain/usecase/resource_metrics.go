@@ -42,8 +42,8 @@ func NewResourceMetricsInteractor(
 }
 
 func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versionId, fromDate, toDate string) ([]*entity.ResourceMetrics, error) {
-	if !r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView) {
-		return nil, auth.ErrViewResourceMetrics
+	if err := r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	version, err := r.versionRepo.GetByID(versionId)
@@ -65,8 +65,8 @@ func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versi
 }
 
 func (r *ResourceMetricsInteractor) Watch(ctx context.Context, loggedUserID, versionId, fromDate string) (<-chan []*entity.ResourceMetrics, error) {
-	if !r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView) {
-		return nil, auth.ErrViewResourceMetrics
+	if err := r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	version, err := r.versionRepo.GetByID(versionId)

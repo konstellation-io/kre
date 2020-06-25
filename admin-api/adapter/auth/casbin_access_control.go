@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/konstellation-io/kre/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
@@ -34,15 +35,19 @@ func NewCasbinAccessControl(logger logging.Logger, userRepo repository.UserRepo)
 	return accessControl, nil
 }
 
-func (a *CasbinAccessControl) CheckPermission(userID string, resource auth.AccessControlResource, action auth.AccessControlAction) bool {
+func (a *CasbinAccessControl) CheckPermission(userID string, resource auth.AccessControlResource, action auth.AccessControlAction) error {
 	allowed, err := a.enforcer.Enforce(userID, resource, action)
 	if err != nil {
 		a.logger.Errorf("error checking permission: %s", err)
-		return false
+		return err
 	}
 
 	a.logger.Infof("Checking permission userID[%s] resource[%s] action[%s] allowed[%t]", userID, resource, action, allowed)
-	return allowed
+	if !allowed {
+		return fmt.Errorf("you are not allowed to %s %s", action, resource)
+	}
+
+	return nil
 }
 
 func (a *CasbinAccessControl) ReloadUserRoles() error {

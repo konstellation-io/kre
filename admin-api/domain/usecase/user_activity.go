@@ -48,8 +48,8 @@ func (i *UserActivityInteractor) Get(
 	toDate *string,
 	lastID *string,
 ) ([]*entity.UserActivity, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResAudit, auth.ActView) {
-		return nil, auth.ErrViewAudit
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResAudit, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	var userIDs []string

@@ -87,7 +87,7 @@ func generateId() string {
 }
 
 func (i *VersionInteractor) filterConfigVars(loggedUserID string, version *entity.Version) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
 		version.Config.Vars = nil
 	}
 }
@@ -124,8 +124,8 @@ func (i *VersionInteractor) GetByIDs(ids []string) ([]*entity.Version, []error) 
 
 // Create creates a Version on the DB based on the content of a KRT file
 func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
-		return nil, auth.ErrEditVersions
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
@@ -191,8 +191,8 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 
 // Start create the resources of the given Version
 func (i *VersionInteractor) Start(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
-		return nil, auth.ErrEditVersions
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	i.logger.Infof("The user %s is starting version %s", loggedUserID, versionID)
@@ -235,8 +235,8 @@ func (i *VersionInteractor) Start(ctx context.Context, loggedUserID string, vers
 
 // Stop removes the resources of the given Version
 func (i *VersionInteractor) Stop(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
-		return nil, auth.ErrEditVersions
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	i.logger.Infof("The user %s is stopping version %s", loggedUserID, versionID)
@@ -275,8 +275,8 @@ func (i *VersionInteractor) Stop(ctx context.Context, loggedUserID string, versi
 
 // Publish set a Version as published on DB and K8s
 func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
-		return nil, auth.ErrEditVersions
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	i.logger.Infof("The user %s is publishing version %s", loggedUserID, versionID)
@@ -349,8 +349,8 @@ func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*
 
 // Unpublish set a Version as not published on DB and K8s
 func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
-		return nil, auth.ErrEditVersions
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	i.logger.Infof("The user %s is unpublishing version %s", loggedUserID, versionID)
@@ -391,8 +391,8 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, 
 }
 
 func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserID string, version *entity.Version, config []*entity.ConfigurationVariable) (*entity.Version, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit) {
-		return nil, auth.ErrEditVersions
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+		return nil, err
 	}
 
 	err := i.validateNewConfig(version.Config.Vars, config)
@@ -433,8 +433,8 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 }
 
 func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID, versionId string, stopCh <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView) {
-		return nil, auth.ErrViewVersions
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	version, err := i.versionRepo.GetByID(versionId)
@@ -456,8 +456,8 @@ func (i *VersionInteractor) WatchNodeLogs(
 	filters entity.LogFilters,
 	stopChannel chan bool,
 ) (<-chan *entity.NodeLog, error) {
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView) {
-		return nil, auth.ErrViewLogs
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView); err != nil {
+		return nil, err
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
@@ -478,8 +478,8 @@ func (i *VersionInteractor) SearchLogs(
 ) (entity.SearchLogsResult, error) {
 	var result entity.SearchLogsResult
 
-	if !i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView) {
-		return result, auth.ErrViewLogs
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView); err != nil {
+		return result, err
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
