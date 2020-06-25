@@ -29,12 +29,6 @@ body,
 }
 #root {
   overflow: hidden;
-
-  > div {
-    width: 100%;
-    height: 100%;
-    outline: none;
-  }
 }
 
 *,
@@ -175,6 +169,8 @@ a:active {
   z-index: 2;
   background-color: palette(base, 800);
   border-radius: $grid-unit / 2;
+  width: fit-content;
+  height: fit-content;
 
   transition: top ease 0.3s, left ease 0.3s, opacity ease 0.3s;
 }
