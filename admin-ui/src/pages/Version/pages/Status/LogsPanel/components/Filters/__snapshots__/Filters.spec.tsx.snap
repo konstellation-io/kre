@@ -24,12 +24,19 @@ exports[`Filters matches snapshot 1`] = `
       className="selectProcesses"
     >
       <GroupSelect
+        className="selectProcessForm"
         formSelectedOptions={Object {}}
         hideError={true}
         hideSelections={true}
         label=""
         onChange={[Function]}
-        options={Object {}}
+        options={
+          Object {
+            "": Array [
+              "Entry points",
+            ],
+          }
+        }
         placeholder="Select Processes"
       />
     </div>
@@ -41,7 +48,6 @@ exports[`Filters matches snapshot 1`] = `
       className="filterLevel"
     >
       <MultiSelect
-        className="selectTypeForm"
         formSelectedOptions={Array []}
         hideError={true}
         label=""

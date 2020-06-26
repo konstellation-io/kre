@@ -36,18 +36,6 @@ exports[`LogItem matches snapshot 1`] = `
   }
 >
   <div>
-    <input
-      className="clipboardInput"
-      readOnly={true}
-      type="text"
-      value="some message"
-    />
-    <input
-      className="clipboardInput"
-      readOnly={true}
-      type="text"
-      value="DEBUG  [2020-01-01] undefined:nodeName - some message"
-    />
     <div
       className="container DEBUG"
     >
