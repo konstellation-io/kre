@@ -3,6 +3,23 @@ entries:
   kre:
   - apiVersion: v2
     appVersion: "0.1"
+    created: "2020-06-26T12:25:07.574717942Z"
+    dependencies:
+    - name: mongodb
+      repository: https://kubernetes-charts.storage.googleapis.com
+      version: 7.4.5
+    - condition: prometheusOperator.enabled
+      name: prometheus-operator
+      repository: https://kubernetes-charts.storage.googleapis.com
+      version: 8.14.0
+    description: Konstellation Runtime Environment Chart
+    digest: 01170bcc75789c79d4ecf7e282ced1af5d249b214aea0ec1aa96a14ab7d353d2
+    name: kre
+    urls:
+    - https://github.com/konstellation-io/kre/releases/download/kre-1.1.147/kre-1.1.147.tgz
+    version: 1.1.147
+  - apiVersion: v2
+    appVersion: "0.1"
     created: "2020-06-26T09:38:43.476241679Z"
     dependencies:
     - name: mongodb
