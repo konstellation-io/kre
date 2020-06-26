@@ -5,7 +5,7 @@
     - [KRT](#krt)
 - [Install](#install)
 - [Development](#development)
-  - [Deploy local](#deploy-local)
+  - [Local Environment](#local-environment)
 
 # KRE (Konstellataion Runtime Engine)
 
@@ -187,34 +187,66 @@ In order to start development on this project you will need these tools:
 
 *NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `deploy_local.sh`. 
 
-## Deploy local
 
-Deploy KRE with Helm in Minikube environment
+## Local Environment
 
-```
-$ ./deploy_local.sh
-```
+This repo contains a tool called `./krectl.sh` to handle common actions you need during development.
+
+All the configuration needed to run  KRE locally can be found in `.krectl.conf` file. Usually you'd be ok with the default values.
+Check Minikube parameters if you need to tweak the resources assigned to it.
+
+
+This are all the commands avaliable:
+
+  * `dev` single command to start local dev environment
+    - `./krectl.sh dev [-v] [--dracarys|--hard] [--frontend-mock|--local-frontend]`
+      - `-v` more verbose output
+      - `--dracarys` remove all contents of the minikube profile.
+      - `--local-frontend` starts a local server outside from kubernetes to accelerate development.
+      - `--frontend-mock` starts a local mock server to avoid calling the actual API during Frontend development.
+
+  * `login` run a login flow and open KRE on your browser automatically
+    - `./krectl.sh login [-v] [--new]`
+      - `-v` more verbose output
+      - `--new` creates a new admin user before running login.
+
+  * `build`: generate new docker images
+    - krectl.sh build [--clean]
+      - `--clean` would send a prune command to remove old docker images and containers
+
+  * `deploy`: deploy a new helm release on minikube
+    - krectl.sh deploy [--build]
+      - `--build` rebuild docker images before deploy (same as build command).
+
+  * `start|stop` handle minikube profile
+    - `./krectl.sh start` restart minikube profile
+    - `./krectl.sh stop` stops minikube profile
+
+  * `delete runtime` removes a runtime namespace and all resources
+    - `./krectl.sh delete runtime <runtime-name> [<runtime-name2> ... <runtime-name-N>]` remove all runtimes
+
+  * `delete version` removes a version from inside a runtime
+    - `./krectl.sh delete version <runtime-name> <version-name>` removes one version from `<runtime-name>`
+
 
 ### Login
 
-First of all remember to edit your `/etc/hosts`, see `./deploy_local.sh` output for more details.
+First of all remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
 
 In order to access the admin app, the login process can be done automatically using this script:
 
 ```
-$ ./scripts/local_login.sh 
+$ ./krectl.sh login [--new]
 ```
 
 You will see an output like this:
 
 ```
-calling api...
-watching /tmp/tmp.c4rBHAglSl
-pod kre-local-admin-api-84b5cd84fb-m64hm
+⏳ Calling Admin API...
 
- Login done. Open your browser at: 
+ Login done. Open your browser at:
 
- 🌎 http://admin.kre.local/signin/05fba3e9-e394-461d-b92d-e529950da27c
+ 🌎 http://admin.kre.local/signin/c7d024eb-ce35-4328-961a-7d2b79ee8988
 
 ✔️  Done.
 ```
