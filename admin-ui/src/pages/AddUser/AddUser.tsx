@@ -20,6 +20,7 @@ import styles from './AddUser.module.scss';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/react-hooks';
+
 const GetUsersQuery = loader('../../graphql/queries/getUsers.graphql');
 
 const CreateUserMutation = loader('../../graphql/mutations/createUser.graphql');
@@ -122,12 +123,14 @@ function AddUser() {
                 onClick={handleSubmit(onSubmit)}
                 loading={loading}
                 className={styles.buttonSave}
+                tabIndex={0}
               />
               <Button
                 label="CANCEL"
                 onClick={() => {
                   history.goBack();
                 }}
+                tabIndex={0}
               />
             </div>
           </div>

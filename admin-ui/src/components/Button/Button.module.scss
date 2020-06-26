@@ -27,6 +27,8 @@ $color-gray: palette(base, 300);
   box-shadow: 0;
   text-shadow: 0;
 
+  outline-color: palette(highlight);
+
   span {
     width: 100%;
   }
@@ -64,6 +66,8 @@ $color-gray: palette(base, 300);
   &.border {
     @include border($color-primary);
 
+    outline-color: palette(error);
+
     &:hover {
       @include text-glow(3);
       color: palette(highlight);
@@ -74,6 +78,10 @@ $color-gray: palette(base, 300);
       color: font-color(lowlight);
     }
   }
+
+  &.notFocussable {
+    outline-color: transparent;
+  }
 }
 
 a.navLinkSelected .btn,
@@ -82,6 +90,8 @@ a.navLinkSelected .btn,
 
   color: font-color(dark);
   background-color: palette(highlight, 400);
+
+  outline-color: palette(error);
 
   &:hover {
     @include glow(3);

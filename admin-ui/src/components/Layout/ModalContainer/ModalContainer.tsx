@@ -1,8 +1,7 @@
-import React, { MouseEvent, FunctionComponent } from 'react';
+import React, { FunctionComponent, MouseEvent } from 'react';
 
-import HorizontalBar from '../../Layout/HorizontalBar/HorizontalBar';
 import Button from '../../Button/Button';
-
+import HorizontalBar from '../../Layout/HorizontalBar/HorizontalBar';
 import cx from 'classnames';
 import styles from './ModalContainer.module.scss';
 
@@ -41,12 +40,14 @@ const ModalContainer: FunctionComponent<Props> = ({
               onClick={onAccept}
               height={30}
               className={styles.acceptButton}
+              tabIndex={0}
             />
             <Button
               label={'CANCEL'}
               onClick={onCancel}
               height={30}
               className={styles.cancelButton}
+              tabIndex={0}
             />
           </HorizontalBar>
         </div>

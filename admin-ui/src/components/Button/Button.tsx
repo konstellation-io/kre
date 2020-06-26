@@ -1,4 +1,9 @@
-import React, { FunctionComponent, MouseEvent } from 'react';
+import React, {
+  FunctionComponent,
+  KeyboardEvent,
+  useEffect,
+  useRef
+} from 'react';
 
 import { Link } from 'react-router-dom';
 import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
@@ -26,7 +31,7 @@ type Props = {
   Icon?: FunctionComponent<SvgIconProps>;
   iconSize?: 'icon-regular' | 'icon-small' | 'icon-big';
   to?: string;
-  onClick?: (e: MouseEvent<HTMLDivElement>) => void;
+  onClick?: Function;
   primary?: boolean;
   disabled?: boolean;
   loading?: boolean;
@@ -34,6 +39,8 @@ type Props = {
   align?: string;
   style?: Object;
   className?: string;
+  tabIndex?: number;
+  autofocus?: boolean;
 };
 
 function Button({
@@ -51,8 +58,18 @@ function Button({
   height = 40,
   align = BUTTON_ALIGN.MIDDLE,
   style = {},
-  className = ''
+  className = '',
+  autofocus = false,
+  tabIndex = -1
 }: Props) {
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (autofocus && buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, [autofocus]);
+
   const content = loading ? (
     <SpinnerLinear size={30} dark />
   ) : (
@@ -62,6 +79,12 @@ function Button({
     </>
   );
 
+  function handleKeyPress(e: KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Enter') {
+      onClick();
+    }
+  }
+
   const btn = (
     <div
       className={cx(className, styles.btn, styles[theme], styles[align], {
@@ -69,11 +92,15 @@ function Button({
         [styles.border]: border,
         [styles.label]: !primary,
         [styles.disabled]: disabled,
-        [styles.noLabel]: label === ''
+        [styles.noLabel]: label === '',
+        [styles.notFocussable]: tabIndex === -1
       })}
       style={{ ...style, height, lineHeight: `${height}px` }}
-      onClick={onClick}
+      onClick={() => onClick()}
+      onKeyPress={handleKeyPress}
       title={title}
+      tabIndex={tabIndex}
+      ref={buttonRef}
     >
       {content}
     </div>
