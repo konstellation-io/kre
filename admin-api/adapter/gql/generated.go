@@ -174,11 +174,12 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		AccessLevel  func(childComplexity int) int
-		CreationDate func(childComplexity int) int
-		Email        func(childComplexity int) int
-		ID           func(childComplexity int) int
-		LastActivity func(childComplexity int) int
+		AccessLevel    func(childComplexity int) int
+		ActiveSessions func(childComplexity int) int
+		CreationDate   func(childComplexity int) int
+		Email          func(childComplexity int) int
+		ID             func(childComplexity int) int
+		LastActivity   func(childComplexity int) int
 	}
 
 	UserActivity struct {
@@ -264,6 +265,7 @@ type SubscriptionResolver interface {
 type UserResolver interface {
 	CreationDate(ctx context.Context, obj *entity.User) (string, error)
 	LastActivity(ctx context.Context, obj *entity.User) (*string, error)
+	ActiveSessions(ctx context.Context, obj *entity.User) (int, error)
 }
 type UserActivityResolver interface {
 	User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error)
@@ -939,6 +941,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.AccessLevel(childComplexity), true
 
+	case "User.activeSessions":
+		if e.complexity.User.ActiveSessions == nil {
+			break
+		}
+
+		return e.complexity.User.ActiveSessions(childComplexity), true
+
 	case "User.creationDate":
 		if e.complexity.User.CreationDate == nil {
 			break
@@ -1326,11 +1335,13 @@ input CreateUserInput {
 
 input UsersInput {
   userIds: [ID!]!
+  comment: String!
 }
 
 input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
+  comment: String!
 }
 
 type VersionNodeStatus {
@@ -1351,6 +1362,7 @@ type User {
   accessLevel: AccessLevel!
   creationDate: String!
   lastActivity: String
+  activeSessions: Int!
 }
 
 enum AccessLevel {
@@ -4995,6 +5007,40 @@ func (ec *executionContext) _User_lastActivity(ctx context.Context, field graphq
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _User_activeSessions(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().ActiveSessions(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _UserActivity_id(ctx context.Context, field graphql.CollectedField, obj *entity.UserActivity) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -7204,6 +7250,12 @@ func (ec *executionContext) unmarshalInputUpdateAccessLevelInput(ctx context.Con
 			if err != nil {
 				return it, err
 			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -7243,6 +7295,12 @@ func (ec *executionContext) unmarshalInputUsersInput(ctx context.Context, obj in
 		case "userIds":
 			var err error
 			it.UserIds, err = ec.unmarshalNID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8134,6 +8192,20 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 					}
 				}()
 				res = ec._User_lastActivity(ctx, field, obj)
+				return res
+			})
+		case "activeSessions":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_activeSessions(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		default:
