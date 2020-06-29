@@ -2,9 +2,12 @@ FROM node:14 as front-builder
 
 ARG VERSION
 WORKDIR /app
-COPY . .
+COPY package.* ./
+COPY yarn* ./
+RUN yarn install
 RUN npm version $VERSION
-RUN yarn install && yarn run build
+COPY . .
+RUN yarn run build
 FROM nginx:alpine
 
 COPY --from=front-builder /app/build /usr/share/nginx/html
