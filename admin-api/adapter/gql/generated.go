@@ -1326,11 +1326,13 @@ input CreateUserInput {
 
 input UsersInput {
   userIds: [ID!]!
+  comment: String!
 }
 
 input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
+  comment: String!
 }
 
 type VersionNodeStatus {
@@ -7204,6 +7206,12 @@ func (ec *executionContext) unmarshalInputUpdateAccessLevelInput(ctx context.Con
 			if err != nil {
 				return it, err
 			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -7243,6 +7251,12 @@ func (ec *executionContext) unmarshalInputUsersInput(ctx context.Context, obj in
 		case "userIds":
 			var err error
 			it.UserIds, err = ec.unmarshalNID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

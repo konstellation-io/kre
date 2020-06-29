@@ -177,7 +177,7 @@ func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([
 		}
 	}
 
-	return r.userInteractor.RemoveUsers(ctx, input.UserIds, loggedUserID)
+	return r.userInteractor.RemoveUsers(ctx, input.UserIds, loggedUserID, input.Comment)
 }
 
 func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
@@ -188,7 +188,7 @@ func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAc
 		}
 	}
 
-	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, loggedUserID)
+	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, loggedUserID, input.Comment)
 }
 
 func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
@@ -199,7 +199,7 @@ func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersIn
 		return nil, err
 	}
 
-	err = r.authInteractor.RevokeUserSessions(input.UserIds, loggedUserID)
+	err = r.authInteractor.RevokeUserSessions(input.UserIds, loggedUserID, input.Comment)
 	if err != nil {
 		return nil, err
 	}

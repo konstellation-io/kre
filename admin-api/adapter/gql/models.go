@@ -60,6 +60,7 @@ type UnpublishVersionInput struct {
 type UpdateAccessLevelInput struct {
 	UserIds     []string           `json:"userIds"`
 	AccessLevel entity.AccessLevel `json:"accessLevel"`
+	Comment     string             `json:"comment"`
 }
 
 type UpdateConfigurationInput struct {
@@ -69,4 +70,5 @@ type UpdateConfigurationInput struct {
 
 type UsersInput struct {
 	UserIds []string `json:"userIds"`
+	Comment string   `json:"comment"`
 }
