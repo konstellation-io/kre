@@ -1,46 +1,27 @@
-import React from 'react';
-import moment from 'moment-timezone';
-
-import UserActivityList from './UserActivityList';
 import getMessage, { VarTypes } from './messageGenerator';
-import { formatDate } from '../../../../utils/format';
-import { cleanup } from '@testing-library/react';
 
-import { usersActivityMock } from '../../../../mocks/settings';
+import React from 'react';
+import UserActivityList from './UserActivityList';
+import { UserActivityType } from '../../../../graphql/types/globalTypes';
+import { cleanup } from '@testing-library/react';
+import { formatDate } from '../../../../utils/format';
+import moment from 'moment-timezone';
 import { shallow } from 'enzyme';
 import { testid } from '../../../../utils/testUtilsEnzyme';
-import { UserActivityType } from '../../../../graphql/types/globalTypes';
+import { usersActivityMock } from '../../../../mocks/settings';
 
 const mockData = usersActivityMock.result.data.userActivityList;
 
 moment.tz.setDefault('UTC');
 
+const mockmockusersActivity = usersActivityMock.result.data.userActivityList;
+jest.mock('@apollo/react-hooks', () => ({
+  useQuery: jest.fn(() => ({
+    data: { userActivityList: mockmockusersActivity }
+  }))
+}));
+
 afterEach(cleanup);
-
-describe('UserActivityList', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = shallow(<UserActivityList data={mockData} />);
-  });
-
-  it('Shows right texts', async () => {
-    const userActivityNode0 = wrapper.find('.row').at(0);
-    const userActivityNode1 = wrapper.find('.row').at(1);
-
-    const dateFormatted = formatDate(
-      new Date('2019-11-27T15:28:01+00:00'),
-      true
-    );
-    const user0 = userActivityNode0.find('.user');
-    const message0 = userActivityNode0.find('.message .message');
-    const date1 = userActivityNode1.find('.date');
-
-    expect(user0.text()).toBe('user1@domain.com');
-    expect(message0.text()).toBe('Log in');
-    expect(date1.text()).toBe(dateFormatted);
-  });
-});
 
 describe('messageGenerator', () => {
   let wrapper;

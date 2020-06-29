@@ -25,21 +25,20 @@ release-helm-after-image:
 
 generate-helm-chart:
   stage: build
-  image: docker:18-git
-  services:
-    - docker:18-dind
+  image: alpine:3.12.0
   variables:
-    HELM_VERSION: v3.0.3
+    HELM_VERSION: v3.2.4
     CHART_RELEASER: 1.0.0-beta.1
+    GITHUB_TOKEN: $GITHUB_TOKEN
+    GITLAB_USER_NAME: $GITLAB_USER_NAME
+    GITLAB_USER_EMAIL: $GITLAB_USER_EMAIL
   before_script:
-    - apk add --update bash gettext coreutils
+    - apk add --update bash gettext coreutils curl git
     - wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
     - chmod +x /usr/local/bin/helm
     - wget -q https://github.com/helm/chart-releaser/releases/download/v${CHART_RELEASER}/chart-releaser_${CHART_RELEASER}_linux_amd64.tar.gz -O - | tar -xzO cr > /usr/local/bin/cr
     - chmod +x /usr/local/bin/cr
     - helm repo add stable https://kubernetes-charts.storage.googleapis.com
-    - helm plugin install https://github.com/chartmuseum/helm-push
-    - helm repo add konstellation-ce https://${HELM_USER}:${HELM_PASSWD}@charts.konstellation.io
     - export ADMIN_API_IMAGE_TAG=$(./scripts/git_latest_tag.sh "admin-api")
     - export ADMIN_UI_IMAGE_TAG=$(./scripts/git_latest_tag.sh "admin-ui")
     - export K8S_MANAGER_IMAGE_TAG=$(./scripts/git_latest_tag.sh "k8s-manager")
@@ -47,43 +46,18 @@ generate-helm-chart:
   script:
     - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}
     - helm dep update helm/kre
-    - helm package helm/kre --version $CHART_VERSION -d helm/kre/
-    - helm push helm/kre/kre-${CHART_VERSION}.tgz konstellation-ce 
-    - /usr/local/bin/cr upload -o konstellation-io -r kre -p ./helm/kre --token $GITHUB_TOKEN
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^helm-chart-v\d*.\d*.\d*$/'
-      when: always
-
-deploy-helm-int:
-  stage: deploy
-  environment:
-    name: int
-  variables:
-    HELM_VERSION: v3.0.3
-  image: google/cloud-sdk:266.0.0
-  before_script:
-    - apt-get update
-    - apt-get install -y gettext wget
-    # Use Google Cloud Credentials to get a kubeconfig file
-    - echo "$GCP_SERVICE_ACCOUNT" | base64 -d > service-account.json
-    - gcloud auth activate-service-account terraform@konstellation.iam.gserviceaccount.com --key-file=./service-account.json --project=konstellation
-    - gcloud container clusters get-credentials konstellation-int --zone=europe-west1-b --user-output-enabled
-    # Install Helm
-    - wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
-    - chmod +x /usr/local/bin/helm
-    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
-  script:
-    - kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
-    - export CHART_VERSION=${CI_COMMIT_TAG#helm-chart-v}
-    - helm repo add konstellation-ce https://charts.konstellation.io
-    - helm upgrade
-      --wait
-      --install kre
-      --namespace kre
-      --values helm/values-int-gke.yml
-      --values $SMTP_CONFIG
-      --version $CHART_VERSION
-      konstellation-ce/kre
+    - mkdir /tmp/helm-chart
+    - helm package helm/kre --version $CHART_VERSION -d /tmp/kre/
+    - /usr/local/bin/cr upload -o konstellation-io -r kre -p /tmp/kre --token $GITHUB_TOKEN
+    - git remote add upstream https://${GITHUB_PUBLISH_USERNAME}:${GITHUB_PUBLISH_TOKEN}@github.com/konstellation-io/kre.git
+    - git fetch upstream
+    - git checkout gh-pages
+    - /usr/local/bin/cr index -o konstellation-io -r kre -p /tmp/kre -c https://charts.konstellation.io -i index.yaml
+    - git add index.yaml
+    - git config --global user.email "${GITLAB_USER_EMAIL}" && git config --global user.name "${GITLAB_USER_NAME}"
+    - git commit -m "add chart version $CHART_VERSION"
+    - git push upstream
+    - curl --request POST --header $NOTIFY_TOKEN `echo -n $NOTIFY_URL | base64 -d`$CHART_VERSION >/dev/null 2>&1
   rules:
     - if: '$CI_COMMIT_TAG =~ /^helm-chart-v\d*.\d*.\d*$/'
       when: always

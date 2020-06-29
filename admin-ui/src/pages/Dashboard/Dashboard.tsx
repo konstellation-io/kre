@@ -22,11 +22,13 @@ import {
   GetRuntimes,
   GetRuntimes_runtimes
 } from '../../graphql/queries/types/GetRuntimes';
-import { RuntimeStatus } from '../../graphql/types/globalTypes';
+import { AccessLevel, RuntimeStatus } from '../../graphql/types/globalTypes';
 import { ApolloError } from 'apollo-client';
 import { buildRoute } from '../../utils/routes';
 import PageBase from '../../components/Layout/PageBase/PageBase';
 import Can from '../../components/Can/Can';
+import { checkPermission } from '../../rbac-rules';
+import useUserAccess from '../../hooks/useUserAccess';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 
@@ -43,6 +45,7 @@ type Props = {
   error?: ApolloError;
   loading: boolean;
   history: History;
+  accessLevel: AccessLevel;
 };
 
 // For now this label will only show PUBLISHED for published versions and STARTED otherwise
@@ -52,7 +55,7 @@ function getVersionStatus(runtime: GetRuntimes_runtimes) {
     : VersionEnvStatus.UNPUBLISHED;
 }
 
-function getDashboardContent({ data, error, loading }: Props) {
+function getDashboardContent({ data, error, loading, accessLevel }: Props) {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
@@ -73,13 +76,16 @@ function getDashboardContent({ data, error, loading }: Props) {
       disabled={disabledRuntimeStatus.includes(runtime.status)}
     />
   ));
-  runtimes.push(
-    <HexagonBorder
-      text="+ ADD RUNTIME"
-      key="add_runtime"
-      to={ROUTE.NEW_RUNTIME}
-    />
-  );
+
+  if (checkPermission(accessLevel, 'runtime:edit')) {
+    runtimes.push(
+      <HexagonBorder
+        text="+ ADD RUNTIME"
+        key="add_runtime"
+        to={ROUTE.NEW_RUNTIME}
+      />
+    );
+  }
 
   let runtimesPanel: ReactElement = <HexagonPanel>{runtimes}</HexagonPanel>;
   if (runtimes.length === 0) {
@@ -100,6 +106,7 @@ function getDashboardContent({ data, error, loading }: Props) {
 }
 
 function Dashboard() {
+  const { accessLevel } = useUserAccess();
   const history = useHistory();
   const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery, {
     fetchPolicy: 'cache-and-network'
@@ -121,7 +128,13 @@ function Dashboard() {
       <div className={styles.container} data-testid="dashboardContainer">
         <div className={styles.content}>
           <div className={styles.hexagons}>
-            {getDashboardContent({ data: runtimes, error, loading, history })}
+            {getDashboardContent({
+              data: runtimes,
+              error,
+              loading,
+              history,
+              accessLevel
+            })}
           </div>
         </div>
       </div>

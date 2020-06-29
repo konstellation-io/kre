@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 
 	"github.com/konstellation-io/kre/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin-api/domain/repository"
@@ -16,6 +17,7 @@ type UserInteractor struct {
 	userRepo               repository.UserRepo
 	userActivityInteractor *UserActivityInteractor
 	sessionRepo            repository.SessionRepo
+	accessControl          auth.AccessControl
 }
 
 // NewUserInteractor creates a new UserInteractor
@@ -24,12 +26,14 @@ func NewUserInteractor(
 	userRepo repository.UserRepo,
 	userActivityInteractor *UserActivityInteractor,
 	sessionRepo repository.SessionRepo,
+	accessControl auth.AccessControl,
 ) *UserInteractor {
 	return &UserInteractor{
 		logger,
 		userRepo,
 		userActivityInteractor,
 		sessionRepo,
+		accessControl,
 	}
 }
 
@@ -44,11 +48,19 @@ func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, error) {
 }
 
 // GetAllUsers returns all existing Users
-func (i *UserInteractor) GetAllUsers(ctx context.Context, returnDeleted bool) ([]*entity.User, error) {
+func (i *UserInteractor) GetAllUsers(ctx context.Context, loggedUserID string, returnDeleted bool) ([]*entity.User, error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActView); err != nil {
+		return nil, err
+	}
+
 	return i.userRepo.GetAll(ctx, returnDeleted)
 }
 
 func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel, loggedUserID string) ([]*entity.User, error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
+		return nil, err
+	}
+
 	users, err := i.userRepo.GetByIDs(userIDs)
 	if err != nil {
 		return nil, err
@@ -73,10 +85,19 @@ func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string
 	}
 	i.userActivityInteractor.RegisterUpdateAccessLevels(loggedUserID, updatedUserIDs, updatedUserEmails, newAccessLevel)
 
+	err = i.accessControl.ReloadUserRoles()
+	if err != nil {
+		return nil, err
+	}
+
 	return updatedUsers, nil
 }
 
 func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel entity.AccessLevel, loggedUserID string) (*entity.User, error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
+		return nil, err
+	}
+
 	_, err := i.userRepo.GetByEmail(email)
 	if err == nil {
 		return nil, fmt.Errorf("already exists an user with email: %s", email)
@@ -93,10 +114,19 @@ func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel e
 
 	i.userActivityInteractor.RegisterCreateUser(loggedUserID, createdUser)
 
+	err = i.accessControl.ReloadUserRoles()
+	if err != nil {
+		return nil, err
+	}
+
 	return createdUser, err
 }
 
 func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, loggedUserID string) ([]*entity.User, error) {
+	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
+		return nil, err
+	}
+
 	users, err := i.userRepo.MarkAsDeleted(ctx, userIDs)
 	if err != nil {
 		return nil, err
@@ -111,6 +141,11 @@ func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, logg
 	i.userActivityInteractor.RegisterRemoveUsers(loggedUserID, deletedUserIDs, deletedUserEmails)
 
 	err = i.sessionRepo.DeleteByUserIDs(deletedUserIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.accessControl.ReloadUserRoles()
 	if err != nil {
 		return nil, err
 	}

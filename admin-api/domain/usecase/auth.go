@@ -69,7 +69,7 @@ var (
 )
 
 // SignIn creates a temporal on-time-use verification code associated with the user and sends it to the user in the form of a “login link” via email, sms or whatever.
-func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes int) error {
+func (a *AuthInteractor) SignIn(ctx context.Context, email string, verificationCodeDurationInMinutes int) error {
 	validate := validator.New()
 	err := validate.Var(email, "required,email")
 	if err != nil {
@@ -87,7 +87,7 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 	// SignUp user creation
 	if isNewUser {
 		// Get allowed domain lists
-		settings, err := a.settingRepo.Get()
+		settings, err := a.settingRepo.Get(ctx)
 		if err != nil {
 			return err
 		}
@@ -110,6 +110,10 @@ func (a *AuthInteractor) SignIn(email string, verificationCodeDurationInMinutes 
 		}
 
 		user = createdUser
+	}
+
+	if user == nil {
+		return ErrUserNotFound
 	}
 
 	a.logger.Info("Creating a new verification code...")

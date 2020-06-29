@@ -1,6 +1,10 @@
+import FiltersBar from './FiltersBar';
 import React from 'react';
 import { shallow } from 'enzyme';
-import FiltersBar from './FiltersBar';
+
+jest.mock('@apollo/react-hooks', () => ({
+  useQuery: jest.fn(() => ({}))
+}));
 
 describe('FiltersBar', () => {
   let wrapper: any;
@@ -11,6 +15,9 @@ describe('FiltersBar', () => {
         onSubmit={jest.fn()}
         types={['a', 'b', 'c']}
         users={['1', '2', '3']}
+        runtimesAndVersions={[]}
+        errors={{}}
+        watch={jest.fn()}
       />
     );
   });

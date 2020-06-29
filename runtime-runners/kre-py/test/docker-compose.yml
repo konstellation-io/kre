@@ -5,3 +5,7 @@ services:
     ports:
       - "4222:4222"
       - "8222:8222"
+  mongo:
+    image: "mongo:4.2"
+    ports:
+      - "27017:27017"

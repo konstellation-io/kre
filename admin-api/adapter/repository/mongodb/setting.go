@@ -31,11 +31,8 @@ func NewSettingRepoMongoDB(cfg *config.Config,
 	}
 }
 
-func (r *SettingRepoMongoDB) Get() (*entity.Settings, error) {
+func (r *SettingRepoMongoDB) Get(ctx context.Context) (*entity.Settings, error) {
 	setting := &entity.Settings{}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
 
 	err := r.collection.FindOne(ctx, bson.D{}).Decode(&setting)
 	if err == mongo.ErrNoDocuments {

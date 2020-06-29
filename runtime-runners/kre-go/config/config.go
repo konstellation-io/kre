@@ -1,4 +1,4 @@
-package kre
+package config
 
 import (
 	"os"
@@ -12,6 +12,13 @@ type Config struct {
 	NodeName  string
 	BasePath  string
 	NATS      ConfigNATS
+	MongoDB   MongoDB
+}
+
+type MongoDB struct {
+	Address     string
+	DBName      string
+	ConnTimeout int
 }
 
 type ConfigNATS struct {
@@ -32,6 +39,11 @@ func NewConfig(logger *simplelogger.SimpleLogger) Config {
 			InputSubject:       getCfgFromEnv(logger, "KRT_NATS_INPUT"),
 			OutputSubject:      getCfgFromEnv(logger, "KRT_NATS_OUTPUT"),
 			MongoWriterSubject: getCfgFromEnv(logger, "KRT_NATS_MONGO_WRITER"),
+		},
+		MongoDB: MongoDB{
+			Address:     getCfgFromEnv(logger, "KRT_MONGO_URI"),
+			DBName:      getCfgFromEnv(logger, "KRT_MONGO_DB_NAME"),
+			ConnTimeout: 120,
 		},
 	}
 }

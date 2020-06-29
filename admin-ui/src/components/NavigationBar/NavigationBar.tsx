@@ -23,10 +23,13 @@ import {
 
 import styles from './NavigationBar.module.scss';
 import { RuntimeStatus } from '../../graphql/types/globalTypes';
+import { checkPermission } from '../../rbac-rules';
+import useUserAccess from '../../hooks/useUserAccess';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 
 function NavigationBar() {
+  const { accessLevel } = useUserAccess();
   const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery);
 
   if (loading) return <SpinnerCircular />;
@@ -64,16 +67,18 @@ function NavigationBar() {
     </NavLink>
   );
 
-  buttons.push(
-    <NavLink
-      key={`NavBarItem_AddRuntime`}
-      to={ROUTE.NEW_RUNTIME}
-      activeClassName={styles.active}
-      className={styles.link}
-    >
-      <AddHexButton />
-    </NavLink>
-  );
+  if (checkPermission(accessLevel, 'runtime:edit')) {
+    buttons.push(
+      <NavLink
+        key={`NavBarItem_AddRuntime`}
+        to={ROUTE.NEW_RUNTIME}
+        activeClassName={styles.active}
+        className={styles.link}
+      >
+        <AddHexButton />
+      </NavLink>
+    );
+  }
 
   return (
     <VerticalBar>

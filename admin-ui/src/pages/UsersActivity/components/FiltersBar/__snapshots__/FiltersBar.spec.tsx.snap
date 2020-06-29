@@ -4,66 +4,204 @@ exports[`FiltersBar matches snapshot 1`] = `
 <form
   className="formField"
 >
-  <Select
-    label="Activity type"
-    onChange={[Function]}
-    options={
-      Array [
-        "a",
-        "b",
-        "c",
-      ]
-    }
-    placeholder="Activity type"
-    valuesMapper={
-      Object {
-        "CREATE_RUNTIME": "Create Runtime",
-        "CREATE_USER": "Create User",
-        "CREATE_VERSION": "Create Version",
-        "LOGIN": "Login",
-        "LOGOUT": "Logout",
-        "PUBLISH_VERSION": "Publish Version",
-        "REMOVE_USERS": "Remove Users",
-        "REVOKE_SESSIONS": "Revoke user sessions",
-        "START_VERSION": "Start Version",
-        "STOP_VERSION": "Stop Version",
-        "UNPUBLISH_VERSION": "Unpublish Version",
-        "UPDATE_ACCESS_LEVELS": "Update Access Levels",
-        "UPDATE_SETTING": "Update Settings",
-        "UPDATE_VERSION_CONFIGURATION": "Update Version Configuration",
+  <div>
+    <SearchSelect
+      label="search a user"
+      name="userEmail"
+      onChange={[Function]}
+      options={Array []}
+      placeholder="User email"
+    />
+  </div>
+  <div>
+    <GroupSelect
+      hideSelections={true}
+      label="filter by versions"
+      onChange={[Function]}
+      options={Object {}}
+      placeholder="Select Versions"
+    />
+  </div>
+  <div>
+    <MultiSelect
+      customLabels={
+        Map {
+          "LOGIN" => <CustomLabel>
+            Login
+          </CustomLabel>,
+          "LOGOUT" => <CustomLabel>
+            Logout
+          </CustomLabel>,
+          "CREATE_RUNTIME" => <CustomLabel>
+            Runtime created
+          </CustomLabel>,
+          "CREATE_VERSION" => <CustomLabel>
+            Version Created
+          </CustomLabel>,
+          "PUBLISH_VERSION" => <CustomLabel
+            color="highlight"
+            highlight="published"
+          >
+            Version published
+          </CustomLabel>,
+          "UNPUBLISH_VERSION" => <CustomLabel
+            color="feedback"
+            highlight="unpublished"
+          >
+            Version unpublished
+          </CustomLabel>,
+          "STOP_VERSION" => <CustomLabel
+            color="regular"
+            highlight="stopped"
+          >
+            Version stopped
+          </CustomLabel>,
+          "START_VERSION" => <CustomLabel
+            color="success"
+            highlight="started"
+          >
+            Version started
+          </CustomLabel>,
+          "UPDATE_SETTING" => <CustomLabel>
+            Settings updated
+          </CustomLabel>,
+          "UPDATE_VERSION_CONFIGURATION" => <CustomLabel>
+            Version conf. changed
+          </CustomLabel>,
+          "CREATE_USER" => <CustomLabel>
+            User created
+          </CustomLabel>,
+          "REMOVE_USERS" => <CustomLabel>
+            Users removed
+          </CustomLabel>,
+          "UPDATE_ACCESS_LEVELS" => <CustomLabel>
+            Users updated
+          </CustomLabel>,
+          "REVOKE_SESSIONS" => <CustomLabel>
+            Session revoked
+          </CustomLabel>,
+        }
       }
-    }
-  />
-  <SearchSelect
-    name="userEmail"
-    onChange={[Function]}
-    options={
-      Array [
-        "1",
-        "2",
-        "3",
-      ]
-    }
-    placeholder="User email"
-  />
-  <Calendar
-    hideError={true}
-    onChangeFromDateInput={[Function]}
-    onChangeToDateInput={[Function]}
-  />
+      iconAtStart={true}
+      label="Activity type"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "Icon": <UNDEFINED
+              activityType="CREATE_RUNTIME"
+              invert={true}
+            />,
+            "label": "CREATE_RUNTIME",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="CREATE_USER"
+              invert={true}
+            />,
+            "label": "CREATE_USER",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="CREATE_VERSION"
+              invert={true}
+            />,
+            "label": "CREATE_VERSION",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="LOGIN"
+              invert={true}
+            />,
+            "label": "LOGIN",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="LOGOUT"
+              invert={true}
+            />,
+            "label": "LOGOUT",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="PUBLISH_VERSION"
+              invert={true}
+            />,
+            "label": "PUBLISH_VERSION",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="REMOVE_USERS"
+              invert={true}
+            />,
+            "label": "REMOVE_USERS",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="REVOKE_SESSIONS"
+              invert={true}
+            />,
+            "label": "REVOKE_SESSIONS",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="START_VERSION"
+              invert={true}
+            />,
+            "label": "START_VERSION",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="STOP_VERSION"
+              invert={true}
+            />,
+            "label": "STOP_VERSION",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="UNPUBLISH_VERSION"
+              invert={true}
+            />,
+            "label": "UNPUBLISH_VERSION",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="UPDATE_ACCESS_LEVELS"
+              invert={true}
+            />,
+            "label": "UPDATE_ACCESS_LEVELS",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="UPDATE_SETTING"
+              invert={true}
+            />,
+            "label": "UPDATE_SETTING",
+          },
+          Object {
+            "Icon": <UNDEFINED
+              activityType="UPDATE_VERSION_CONFIGURATION"
+              invert={true}
+            />,
+            "label": "UPDATE_VERSION_CONFIGURATION",
+          },
+        ]
+      }
+      placeholder="ALL TYPES"
+      selectAllText="ALL TYPES"
+      selectionUnit="TYPE"
+    />
+  </div>
+  <div>
+    <Calendar
+      label="dates selection"
+      onChangeFromDateInput={[Function]}
+      onChangeToDateInput={[Function]}
+    />
+  </div>
   <div
     className="buttons"
   >
-    <Button
-      border={true}
-      label="SEARCH"
-      onClick={[Function]}
-      style={
-        Object {
-          "margin": "24px 0",
-        }
-      }
-    />
     <Button
       label="CLEAR"
       onClick={[Function]}

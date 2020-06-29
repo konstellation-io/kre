@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"github.com/konstellation-io/kre/libs/simplelogger"
+	"log"
 
 	"github.com/konstellation-io/kre/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/admin-api/adapter/config"
@@ -31,25 +33,29 @@ func main() {
 
 	runtimeService, err := service.NewK8sRuntimeClient(cfg, logger)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	versionService, err := service.NewK8sVersionClient(cfg, logger)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	monitoringService := service.NewMonitoringService(cfg, logger)
 	resourceMetricsService, err := service.NewResourceMetricsService(cfg, logger)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
+	accessControl, err := auth.NewCasbinAccessControl(logger, userRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	paswordGenerator := runtime.NewPasswordGenerator()
 
-	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo)
+	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 	authInteractor := usecase.NewAuthInteractor(
 		logger,
 		loginLinkTransport,
@@ -61,17 +67,53 @@ func main() {
 		sessionRepo,
 	)
 
-	runtimeInteractor := usecase.NewRuntimeInteractor(logger, runtimeRepo, runtimeService, userActivityInteractor, paswordGenerator)
-	userInteractor := usecase.NewUserInteractor(logger, userRepo, userActivityInteractor, sessionRepo)
-	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor)
+	runtimeInteractor := usecase.NewRuntimeInteractor(
+		logger,
+		runtimeRepo,
+		runtimeService,
+		userActivityInteractor,
+		paswordGenerator,
+		accessControl,
+	)
+
+	userInteractor := usecase.NewUserInteractor(
+		logger,
+		userRepo,
+		userActivityInteractor,
+		sessionRepo,
+		accessControl,
+	)
+
+	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor, accessControl)
 
 	minioCreateStorage := minio.CreateStorage
-	versionInteractor := usecase.NewVersionInteractor(logger, versionMongoRepo, runtimeRepo, versionService, monitoringService, userActivityInteractor, minioCreateStorage)
+	versionInteractor := usecase.NewVersionInteractor(
+		logger,
+		versionMongoRepo,
+		runtimeRepo,
+		versionService,
+		monitoringService,
+		userActivityInteractor,
+		minioCreateStorage,
+		accessControl,
+	)
 
-	metricsInteractor := usecase.NewMetricsInteractor(logger, runtimeRepo, monitoringService)
-	resourceMetricsInteractor := usecase.NewResourceMetricsInteractor(logger, runtimeRepo, versionMongoRepo, resourceMetricsService)
+	metricsInteractor := usecase.NewMetricsInteractor(
+		logger,
+		runtimeRepo,
+		monitoringService,
+		accessControl,
+	)
 
-	err = settingInteractor.CreateDefaults()
+	resourceMetricsInteractor := usecase.NewResourceMetricsInteractor(
+		logger,
+		runtimeRepo,
+		versionMongoRepo,
+		resourceMetricsService,
+		accessControl,
+	)
+
+	err = settingInteractor.CreateDefaults(context.Background())
 	if err != nil {
 		panic(err)
 	}
