@@ -99,6 +99,7 @@ $color-black: black;
 
 $color-status-up: $color-ok;
 $color-status-down: $color-other;
+$color-status-changing: palette(feedback);
 $color-status-loading: $color-primary;
 
 $color-dashboard: (

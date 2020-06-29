@@ -54,15 +54,20 @@ $animation-duration: 0.8s;
   }
   &.#{$status-loading} {
     .innerCircle {
-      fill: $color-status-loading;
+      fill: $color-status-changing;
+
+      animation: ok-to-changing 0.6s linear 0s,
+        changing 2.5s linear 0.6s infinite;
     }
     .outerCircle {
-      stroke: $color-status-loading;
+      stroke: $color-status-changing;
     }
   }
   &.#{$status-up} {
     .innerCircle {
       fill: $color-status-up;
+
+      animation: ok 0.6s ease;
     }
     .outerCircle {
       stroke: $color-status-up;
@@ -205,4 +210,40 @@ $animation-duration: 0.8s;
 
 .clicksDisabled {
   cursor: default !important;
+}
+
+@keyframes ok {
+  0% {
+    r: 16px;
+  }
+  50% {
+    r: 18px;
+  }
+  100% {
+    r: 16px;
+  }
+}
+
+@keyframes ok-to-changing {
+  0% {
+    r: 16px;
+  }
+  100% {
+    r: 10px;
+  }
+}
+
+@keyframes changing {
+  0% {
+    r: 10px;
+    fill-opacity: 1;
+  }
+  50% {
+    r: 6px;
+    fill-opacity: 0.6;
+  }
+  100% {
+    r: 10px;
+    fill-opacity: 1;
+  }
 }
