@@ -3,7 +3,7 @@ import {
   VersionConfigurationFormData
 } from '../../pages/Version/pages/Configuration/Configuration';
 
-import { GetConfigurationVariables_version_configurationVariables as ConfVar } from '../../graphql/queries/types/GetConfigurationVariables';
+import { GetConfigurationVariables_version_config_vars as ConfVar } from '../../graphql/queries/types/GetConfigurationVariables';
 import ConfigurationVariableItem from './ConfigurationVariableItem';
 import Message from '../Message/Message';
 import React from 'react';

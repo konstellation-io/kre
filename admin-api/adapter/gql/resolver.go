@@ -478,16 +478,6 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 	return userLoader.Load(*obj.PublicationUserID)
 }
 
-// TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationVariables(_ context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error) {
-	return obj.Config.Vars, nil
-}
-
-// TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationCompleted(_ context.Context, obj *entity.Version) (bool, error) {
-	return obj.Config.Completed, nil
-}
-
 func (r *versionNodeStatusResolver) Date(_ context.Context, _ *entity.VersionNodeStatus) (string, error) {
 	return time.Now().Format(time.RFC3339), nil
 }

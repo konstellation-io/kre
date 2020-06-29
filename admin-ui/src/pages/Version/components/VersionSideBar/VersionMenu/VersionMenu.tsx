@@ -47,9 +47,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
       label: 'CONFIGURATION',
       to: ROUTE.RUNTIME_VERSION_CONFIGURATION,
       Icon: IconSettings,
-      warning: version.configurationCompleted
-        ? ''
-        : 'Configuration is not completed'
+      warning: version.config.completed ? '' : 'Configuration is not completed'
     });
   }
 

@@ -90,8 +90,8 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
         Icon: StartIcon,
         label: 'START',
         action: () => openModal('START', startVersion),
-        primary: version.configurationCompleted,
-        disabled: !version.configurationCompleted
+        primary: version.config.completed,
+        disabled: !version.config.completed
       };
       buttons[1] = {
         Icon: PublishIcon,
