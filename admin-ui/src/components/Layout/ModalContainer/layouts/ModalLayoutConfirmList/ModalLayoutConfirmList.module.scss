@@ -10,7 +10,7 @@
 }
 
 .list {
-  max-height: 9 * 5 * $grid-unit;
+  max-height: 32vh;
   overflow: auto;
 
   & > div:not(:last-child) {

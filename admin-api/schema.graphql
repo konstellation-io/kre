@@ -94,11 +94,13 @@ input CreateUserInput {
 
 input UsersInput {
   userIds: [ID!]!
+  comment: String!
 }
 
 input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
+  comment: String!
 }
 
 type VersionNodeStatus {

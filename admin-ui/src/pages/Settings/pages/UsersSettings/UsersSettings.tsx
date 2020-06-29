@@ -1,13 +1,20 @@
-import React, { useRef, useState } from 'react';
-import SettingsHeader from '../../components/SettingsHeader/SettingsHeader';
-import UserFiltersAndActions from './components/UserFiltersAndActions/UserFiltersAndActions';
-import UserList from './components/UserList/UserList';
-import ModalContainer from '../../../../components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutConfirmList from '../../../../components/Layout/ModalContainer/layouts/ModalLayoutConfirmList/ModalLayoutConfirmList';
-import styles from './UsersSettings.module.scss';
-import { loader } from 'graphql.macro';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import { GetUsers } from '../../../../graphql/queries/types/GetUsers';
+import * as CHECK from '../../../../components/Form/check';
+
+import {
+  AccessLevel,
+  UpdateAccessLevelInput,
+  UsersInput
+} from '../../../../graphql/types/globalTypes';
+import {
+  GET_USER_SETTINGS,
+  GetUserSettings
+} from '../../../../graphql/client/queries/getUserSettings.graphql';
+import {
+  ModalInfo,
+  defaultModalInfo,
+  getModalInfo
+} from './confirmationModals';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   RemoveUsers,
   RemoveUsersVariables,
@@ -21,24 +28,23 @@ import {
   UpdateAccessLevel,
   UpdateAccessLevelVariables
 } from '../../../../graphql/mutations/types/UpdateAccessLevel';
-import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+
 import ErrorMessage from '../../../../components/ErrorMessage/ErrorMessage';
-import {
-  AccessLevel,
-  UsersInput,
-  UpdateAccessLevelInput
-} from '../../../../graphql/types/globalTypes';
-import { mutationPayloadHelper } from '../../../../utils/formUtils';
-import {
-  GET_USER_SETTINGS,
-  GetUserSettings
-} from '../../../../graphql/client/queries/getUserSettings.graphql';
+import { GetUsers } from '../../../../graphql/queries/types/GetUsers';
+import ModalContainer from '../../../../components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutConfirmList from '../../../../components/Layout/ModalContainer/layouts/ModalLayoutConfirmList/ModalLayoutConfirmList';
+import ModalLayoutJustify from '../../../../components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
+import SettingsHeader from '../../components/SettingsHeader/SettingsHeader';
+import SpinnerCircular from '../../../../components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import UserFiltersAndActions from './components/UserFiltersAndActions/UserFiltersAndActions';
+import UserList from './components/UserList/UserList';
 import UserRow from './components/UserRow/UserRow';
-import {
-  ModalInfo,
-  defaultModalInfo,
-  getModalInfo
-} from './confirmationModals';
+import { get } from 'lodash';
+import { loader } from 'graphql.macro';
+import { mutationPayloadHelper } from '../../../../utils/formUtils';
+import styles from './UsersSettings.module.scss';
+import { useForm } from 'react-hook-form';
 
 const GetUsersQuery = loader('../../../../graphql/queries/getUsers.graphql');
 const UpdateAccessLevelMutation = loader(
@@ -51,7 +57,16 @@ const RevokeUserSessionsMutation = loader(
   '../../../../graphql/mutations/revokeUserSessions.graphql'
 );
 
+function verifyComment(value: string) {
+  return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
+}
+
+type FormData = {
+  comment: string;
+};
+
 function UsersSettings() {
+  const { handleSubmit, setValue, register, errors } = useForm<FormData>();
   const { data, loading, error } = useQuery<GetUsers>(GetUsersQuery);
   const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
   const [removeUsers] = useMutation<RemoveUsers, RemoveUsersVariables>(
@@ -88,6 +103,11 @@ function UsersSettings() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>(defaultModalInfo);
 
+  useEffect(() => {
+    register('comment', { validate: verifyComment });
+    setValue('comment', '');
+  }, [register, setValue]);
+
   function openModal() {
     setShowConfirmation(true);
   }
@@ -96,7 +116,9 @@ function UsersSettings() {
   }
 
   function onSubmit() {
-    modalInfo.current.action();
+    handleSubmit(({ comment }: FormData) =>
+      modalInfo.current.action(comment)
+    )();
   }
 
   const selectedUsers = localData?.userSettings.selectedUserIds || [];
@@ -115,10 +137,11 @@ function UsersSettings() {
     openModal();
     modalInfo.current = getModalInfo({
       type: 'delete',
-      action: () => {
+      action: (comment: string) => {
         removeUsers(
           mutationPayloadHelper<UsersInput>({
-            userIds: usersInfo.userIds
+            userIds: usersInfo.userIds,
+            comment
           })
         );
         closeModal();
@@ -133,10 +156,11 @@ function UsersSettings() {
     openModal();
     modalInfo.current = getModalInfo({
       type: 'revoke',
-      action: () => {
+      action: (comment: string) => {
         revokeUsers(
           mutationPayloadHelper<UsersInput>({
-            userIds: usersInfo.userIds
+            userIds: usersInfo.userIds,
+            comment
           })
         );
         closeModal();
@@ -152,11 +176,12 @@ function UsersSettings() {
     modalInfo.current = getModalInfo({
       type: 'update',
       accessLevel: newAccessLevel,
-      action: () => {
+      action: (comment: string) => {
         updateAccessLevel(
           mutationPayloadHelper<UpdateAccessLevelInput>({
             userIds: usersInfo.userIds,
-            accessLevel: newAccessLevel
+            accessLevel: newAccessLevel,
+            comment
           })
         );
         closeModal();
@@ -199,10 +224,7 @@ function UsersSettings() {
           className={styles.modal}
           blocking
         >
-          <ModalLayoutConfirmList
-            message={modalInfo.current.message}
-            confirmMessage={modalInfo.current.confirmMessage}
-          >
+          <ModalLayoutConfirmList message={modalInfo.current.message}>
             {modalInfo.current.userIds.map(userId => {
               const user = data?.users.find(u => u.id === userId);
               return (
@@ -214,6 +236,13 @@ function UsersSettings() {
               );
             })}
           </ModalLayoutConfirmList>
+          <ModalLayoutJustify
+            onUpdate={(value: string) => setValue('comment', value)}
+            error={get(errors.comment, 'message', '')}
+            label={modalInfo.current.commentLabel}
+            className={styles.justify}
+            submit={onSubmit}
+          />
         </ModalContainer>
       )}
     </div>

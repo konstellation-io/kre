@@ -1,25 +1,25 @@
 import { AccessLevel } from './../../../../graphql/types/globalTypes';
 export type ModalInfo = {
-  action: () => void;
+  action: (comment: string) => void;
   title: string;
   userIds: string[];
   message: string;
   acceptLabel: string;
-  confirmMessage: string;
+  commentLabel: string;
 };
 
-export const defaultModalInfo = {
+export const defaultModalInfo: ModalInfo = {
   action: () => {},
   title: '',
   userIds: [],
   message: '',
   acceptLabel: '',
-  confirmMessage: ''
+  commentLabel: ''
 };
 
 type setModalInfoParams = {
   type: 'delete' | 'revoke' | 'update';
-  action: () => void;
+  action: (comment: string) => void;
   nUsers: number;
   userIds: string[];
   plural: boolean;
@@ -41,7 +41,9 @@ export function getModalInfo({
         title: 'User deletion',
         message: `The following user${plural ? 's' : ''} will be deleted:`,
         acceptLabel: `REMOVE ${nUsers} USER${plural ? 'S' : ''}`,
-        confirmMessage: 'Are you sure you want to perform this action?'
+        commentLabel: `Why do you need to ${type} ${
+          plural ? 'these' : 'this'
+        } user${plural ? 's' : ''}`
       };
     case 'revoke':
       return {
@@ -50,7 +52,9 @@ export function getModalInfo({
         title: 'User revoke',
         message: `The following user${plural ? 's' : ''} will be revoked:`,
         acceptLabel: `REVOKE SESSIONS OF ${nUsers} USER${plural ? 'S' : ''}`,
-        confirmMessage: 'Are you sure you want to perform this action?'
+        commentLabel: `Why do you need to ${type} ${
+          plural ? 'these' : 'this'
+        } user${plural ? 's' : ''}`
       };
     case 'update':
       return {
@@ -59,7 +63,9 @@ export function getModalInfo({
         title: 'User access level update',
         message: `The following user${plural ? 's' : ''} will be updated:`,
         acceptLabel: `UPDATE ${nUsers} USER${plural ? 'S' : ''}`,
-        confirmMessage: `Access level will be changed to ${accessLevel}. Are you sure you want to perform this action?`
+        commentLabel: `Why do you need to change access level to ${accessLevel} to ${
+          plural ? 'these' : 'this'
+        } user${plural ? 's' : ''}`
       };
     default:
       return defaultModalInfo;
