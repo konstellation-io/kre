@@ -1,40 +1,43 @@
 #!/bin/sh
 
+# Supress warning for echo functions
+# shellcheck disable=SC2028 # https://github.com/koalaman/shellcheck/wiki/SC2028
+# shellcheck disable=SC2034 # https://github.com/koalaman/shellcheck/wiki/SC2034
+
 replace_env_vars() {
   echo_wait "replacing env vars"
-  ./scripts/replace_env_path.sh  2>&1 > /dev/null
+  ./scripts/replace_env_path.sh > /dev/null 2>&1
 }
 
-
 run() {
+  # shellcheck disable=SC2048
   if [ "$VERBOSE" = "1" ]; then
-    echo_info "🏃 $*\n"
+    echo_run "$*"
     $*
-
   else
-    $* 2>&1 > /dev/null
+    $* > /dev/null 2>&1
   fi
 }
 
 check_requirements() {
   REQUIREMENTS_OK=1
 
-  export OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
+  OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
 
   MINIKUBE_INSTALLED=$(cmd_installed minikube)
-  [ "$MINIKUBE_INSTALLED" = "1" ] || (export REQUIREMENTS_OK=0 && echo_warning "Missing Minikube installation")
+  [ "$MINIKUBE_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing Minikube installation"; }
 
   ENVSUBT_INSTALLED=$(cmd_installed envsubst)
-  [ "$ENVSUBT_INSTALLED" = "1" ] || (export REQUIREMENTS_OK=0 && echo_warning "Missing gettext installation")
+  [ "$ENVSUBT_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing gettext installation"; }
 
   DOCKER_INSTALLED=$(cmd_installed docker)
-  [ "$DOCKER_INSTALLED" = "1" ] || (export REQUIREMENTS_OK=0 && echo_warning "Missing docker command")
+  [ "$DOCKER_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing docker command"; }
 
   KUBECTL_INSTALLED=$(cmd_installed helm)
-  [ "$KUBECTL_INSTALLED" = "1" ] || (export REQUIREMENTS_OK=0 && echo_warning "Missing kubectl command")
+  [ "$KUBECTL_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing kubectl command"; }
 
   HELM_INSTALLED=$(cmd_installed helm)
-  [ "$HELM_INSTALLED" = "1" ] || (export REQUIREMENTS_OK=0 && echo_warning "Missing helm command")
+  [ "$HELM_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing helm command"; }
 
   if [ "$REQUIREMENTS_OK" = "0" ]; then
     exit 1
@@ -42,7 +45,7 @@ check_requirements() {
 }
 
 cmd_installed() {
-  if command -v $1 >/dev/null 2>&1; then
+  if command -v "$1" >/dev/null 2>&1; then
     echo 1
   else
     echo 0
@@ -52,7 +55,8 @@ cmd_installed() {
 check_not_empty() {
   VARNAME=$1
   ERR=${2:-"Missing variable $VARNAME"}
-  eval VALUE=\${$VARNAME}
+  # shellcheck disable=SC1083
+  eval VALUE=\${"$VARNAME"}
 
   # If value is empty exit execution
   [ "$VALUE" != "" ] || { echo_fatal "$ERR" && exit 1; }
@@ -60,51 +64,64 @@ check_not_empty() {
   return 0
 }
 
-echo_build_header() {
-  if [ "$VERBOSE" = "1" ]; then
-    printf "\n\n#########################################\n"
-    printf "##  🏭  %-36s   ##\n" `echo_yellow "$@"`
-    printf "#########################################\n\n"
-  else
-    echo_yellow "🏭 $@\n"
-  fi
+
+## Print lines helpers (NO DIRECT COLORING, call echo_<color> instead)
+echo_run() {
+  echo_info "  🏃 $*"
 }
 
 echo_warning() {
-  printf "\033[31m⚠️️  $@\033[m"
+  echo "⚠️️  $(echo_yellow "$*") ⚠️️"
 }
 
 echo_fatal() {
-  echo_warning "$@\n"
+  echo "⚠️️  $(echo_red "$*")"
   exit 1
 }
 
-echo_green() {
-  printf "\033[92m$@\033[m"
-}
-
-echo_yellow() {
-  printf "\033[33m$@\033[m"
-}
-
-echo_red() {
-  printf "\033[31m$@\033[m"
-}
-
 echo_wait() {
-  printf "⏳ $@\n"
+  echo "⏳ $*"
 }
 
 echo_info() {
-  printf " $@\n"
+  echo_yellow "$*"
+}
+
+echo_check() {
+  echo_light_green "✔ $*"
 }
 
 echo_done() {
-  echo_green "\n✔️  Done.\n\n"
+  MSG=${1:-"Done"}
+  echo
+  echo_green "✔ ${MSG}."
+  echo
 }
 
 echo_debug() {
   if [ "$DEBUG" = "1" ]; then
-      printf "%s %s\n" `echo_red "[DEBUG]"` "$@"
+      echo "$* $*\n" "$(echo_red "[DEBUG]")" "$@"
   fi
+}
+
+# Coloring echo strings (NO NEW LINES HERE, use helpers instead)
+
+echo_red() {
+  echo "\033[31m$*\033[m\n"
+}
+
+echo_green() {
+  echo "\033[92m$*\033[m"
+}
+
+echo_light_green() {
+  echo "\033[32m$*\033[m"
+}
+
+echo_yellow() {
+  echo "\033[33m$*\033[m"
+}
+
+echo_red() {
+  echo "\033[31m$*\033[m"
 }

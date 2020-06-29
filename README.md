@@ -195,39 +195,30 @@ This repo contains a tool called `./krectl.sh` to handle common actions you need
 All the configuration needed to run  KRE locally can be found in `.krectl.conf` file. Usually you'd be ok with the default values.
 Check Minikube parameters if you need to tweak the resources assigned to it.
 
+Run help to get info for each command:
 
-This are all the commands avaliable:
+```
+$> krectl.sh [command] --help
 
-  * `dev` single command to start local dev environment
-    - `./krectl.sh dev [-v] [--dracarys|--hard] [--frontend-mock|--local-frontend]`
-      - `-v` more verbose output
-      - `--dracarys` remove all contents of the minikube profile.
-      - `--local-frontend` starts a local server outside from kubernetes to accelerate development.
-      - `--frontend-mock` starts a local mock server to avoid calling the actual API during Frontend development.
+// Outputs:
 
-  * `login` run a login flow and open KRE on your browser automatically
-    - `./krectl.sh login [-v] [--new]`
-      - `-v` more verbose output
-      - `--new` creates a new admin user before running login.
+  krectl.sh -- a tool to manage KRE environment during development.
 
-  * `build`: generate new docker images
-    - krectl.sh build [--clean]
-      - `--clean` would send a prune command to remove old docker images and containers
+  syntax: krectl.sh <command> [options]
 
-  * `deploy`: deploy a new helm release on minikube
-    - krectl.sh deploy [--build]
-      - `--build` rebuild docker images before deploy (same as build command).
+    commands:
+      dev     creates a complete local environment and auto-login to frontend.
+      start   starts minikube kre profile.
+      stop    stops minikube kre profile.
+      login   creates a login URL and open your browser automatically on the admin page.
+      build   calls docker to build all images inside minikube.
+      deploy  calls helm to create install/upgrade a kre release on minikube.
+      delete  calls kubectl to remove runtimes or versions.
 
-  * `start|stop` handle minikube profile
-    - `./krectl.sh start` restart minikube profile
-    - `./krectl.sh stop` stops minikube profile
-
-  * `delete runtime` removes a runtime namespace and all resources
-    - `./krectl.sh delete runtime <runtime-name> [<runtime-name2> ... <runtime-name-N>]` remove all runtimes
-
-  * `delete version` removes a version from inside a runtime
-    - `./krectl.sh delete version <runtime-name> <version-name>` removes one version from `<runtime-name>`
-
+    global options:
+      h     prints this help.
+      v     verbose mode.
+```
 
 ### Login
 
