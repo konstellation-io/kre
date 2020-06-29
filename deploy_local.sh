@@ -1,115 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 
-set -e
-if [ "$DEBUG" = "1" ]; then
-  set -x
-fi
+# SHOW DEPRECATION NOTICE
 
-. ./config.sh
-. ./scripts/functions.sh
+. ./scripts/krectl/common_functions.sh
 
-export DEVELOPMENT_MODE=true
-export ADMIN_API_IMAGE_TAG="latest"
-export ADMIN_UI_IMAGE_TAG="latest"
-export K8S_MANAGER_IMAGE_TAG="latest"
-export KRE_ADMIN_FRONTEND_BASE_URL="http://admin.kre.local"
-export KRE_ADMIN_API_BASE_URL="http://api.kre.local"
+OLD=`echo_yellow "deploy_local.sh"`
+NEW=`echo_green "krectl.sh"`
 
-check_requirements
+echo "\n"
+echo_warning "NOTICE:"
+echo "\n\t$OLD IS DEPRECATED. \n\tUse $NEW."
 
-case $* in
-# WARNING: Doing a hard reset before deploying
-*--hard* | *--dracarys*)
-  . ./scripts/minikube_hard_reset.sh
-  ;;
-# Use it when you want to develop on admin-ui outside k8s and using the mock server
-*--local-frontend-mock*)
-  KRE_ADMIN_API_BASE_URL="http://localhost:4000"
-  KRE_ADMIN_FRONTEND_BASE_URL="http://dev-admin.kre.local:3000"
-  export SKIP_FRONTEND_BUILD=1
-  ;;
-# Use it when you want to develop on admin-ui outside k8s
-*--local-frontend*)
-  KRE_ADMIN_FRONTEND_BASE_URL="http://dev-admin.kre.local:3000"
-  export SKIP_FRONTEND_BUILD=1
-  ;;
-*--skip-build*)
-  export SKIP_BUILD=1
-  ;;
-esac
-
-./scripts/replace_env_path.sh
-. ./scripts/minikube_start.sh
-
-# Setup environment to build images inside minikube
-eval "$(minikube docker-env -p "$MINIKUBE_PROFILE")"
-
-if [ "$SKIP_BUILD" != "1" ]; then
-  if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
-    build_header "kre-admin-ui"
-    docker build -t konstellation/kre-admin-ui:latest admin-ui
-  fi
-
-  build_header "kre-admin-api"
-  docker build -t konstellation/kre-admin-api:latest admin-api
-  build_header "kre-k8s-manager"
-  docker build -t konstellation/kre-k8s-manager:latest k8s-manager
-  build_header "kre-runtime-api"
-  docker build -t konstellation/kre-runtime-api:latest runtime-api
-  build_header "kre-runtime-entrypoint"
-  docker build -t konstellation/kre-runtime-entrypoint runtime-entrypoint
-  build_header "kre-mongo-writer"
-  docker build -t konstellation/kre-mongo-writer mongo-writer
-  build_header "runner kre-py"
-  docker build -t konstellation/kre-py:latest runtime-runners/kre-py
-  build_header "runner kre-go"
-  docker build -t konstellation/kre-go:latest runtime-runners/kre-go
-fi
-
-HELM_VERSION=3 # Change to 2 if you haven't upgraded yet.
-
-if [ "$HELM_VERSION" = "2" ]; then
-  # Helm v2 needs to be initiated first
-  printf "Init helm tiller...\n"
-  helm init --upgrade --wait
-else
-  # Helm v3 needs this the base repo to be added manually
-  helm repo add stable https://kubernetes-charts.storage.googleapis.com
-fi
-
-export SDK_RELEASE_VERSION="v0.17.0"
-export OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
-
-if [ "$SKIP_BUILD" != "1" ] && [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
-  build_header "kre-operator"
-  helm dep update operator/helm-charts/kre-chart
-  cd operator \
-  && operator-sdk build konstellation/kre-operator:latest \
-  && cd ..
-fi
-
-printf "📚️ Create Namespace if not exist...\n"
-kubectl create ns kre --dry-run -o yaml | kubectl apply -f -
-
-printf "📦 Applying helm chart...\n"
-helm dep update helm/kre
-helm upgrade \
-  --wait \
-  --install "${DEPLOY_NAME}" \
-  --namespace "${NAMESPACE}" \
-  --set developmentMode=${DEVELOPMENT_MODE} \
-  helm/kre
-
-./scripts/show_etc_hosts.sh "${MINIKUBE_PROFILE}"
-
-if [ "$OPERATOR_SDK_INSTALLED" != "1" ]; then
-  printf "\n\n\n"
-  echo_warning "¡¡¡¡¡ Operator SDK not installed. Operator image was not built!!!\n\n\n"
-fi
-
-if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
-  printf "\n\n\n"
-  echo_warning "¡¡¡¡¡ started with local-frontend option. Now run \`yarn start\` inside /admin-ui!!!\n\n\n"
-fi
-
-echo_green "\n✔️  Done.\n\n"
+echo "\n"

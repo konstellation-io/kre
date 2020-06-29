@@ -44,22 +44,16 @@ func (r *RuntimeRepoMongoDB) Create(runtime *entity.Runtime) (*entity.Runtime, e
 	return runtime, nil
 }
 
-func (r *RuntimeRepoMongoDB) FindAll() ([]*entity.Runtime, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+func (r *RuntimeRepoMongoDB) FindAll(ctx context.Context) ([]*entity.Runtime, error) {
 	var runtimes []*entity.Runtime
-	cur, err := r.collection.Find(ctx, bson.D{})
+	cursor, err := r.collection.Find(ctx, bson.D{})
 	if err != nil {
 		return runtimes, err
 	}
-	defer cur.Close(ctx)
 
-	for cur.Next(ctx) {
-		var runtime entity.Runtime
-		err = cur.Decode(&runtime)
-		if err != nil {
-			return runtimes, err
-		}
-		runtimes = append(runtimes, &runtime)
+	err = cursor.All(ctx, &runtimes)
+	if err != nil {
+		return nil, err
 	}
 
 	return runtimes, nil
@@ -74,11 +68,11 @@ func (r *RuntimeRepoMongoDB) Update(runtime *entity.Runtime) error {
 	return nil
 }
 
-func (r *RuntimeRepoMongoDB) GetByID(runtimeID string) (*entity.Runtime, error) {
+func (r *RuntimeRepoMongoDB) GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error) {
 	runtime := &entity.Runtime{}
 	filter := bson.D{{"_id", runtimeID}}
 
-	err := r.collection.FindOne(context.Background(), filter).Decode(runtime)
+	err := r.collection.FindOne(ctx, filter).Decode(runtime)
 	if err == mongo.ErrNoDocuments {
 		return runtime, usecase.ErrRuntimeNotFound
 	}

@@ -18,6 +18,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
       label=""
       onChangeFromDateInput={[Function]}
       onChangeToDateInput={[Function]}
+      onClose={[Function]}
     />
   </div>
   <div

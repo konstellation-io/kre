@@ -117,6 +117,7 @@ export interface UnpublishVersionInput {
 export interface UpdateAccessLevelInput {
   userIds: string[];
   accessLevel: AccessLevel;
+  comment: string;
 }
 
 export interface UpdateConfigurationInput {
@@ -126,6 +127,7 @@ export interface UpdateConfigurationInput {
 
 export interface UsersInput {
   userIds: string[];
+  comment: string;
 }
 
 //==============================================================

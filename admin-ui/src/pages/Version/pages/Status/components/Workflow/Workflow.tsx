@@ -133,7 +133,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
           onInnerNodeClick={onInnerNodeClick}
           onInputNodeClick={onInputNodeClick}
           tooltipRefs={tooltipRefs}
-          enableNodeClicks={checkPermission(accessLevel, 'logs-page:visit')}
+          enableNodeClicks={checkPermission(accessLevel, 'logs:view')}
         />
       </div>
     </div>
