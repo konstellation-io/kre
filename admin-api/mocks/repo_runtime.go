@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/admin-api/domain/entity"
 	reflect "reflect"
@@ -63,31 +64,31 @@ func (mr *MockRuntimeRepoMockRecorder) Update(arg0 interface{}) *gomock.Call {
 }
 
 // FindAll mocks base method
-func (m *MockRuntimeRepo) FindAll() ([]*entity.Runtime, error) {
+func (m *MockRuntimeRepo) FindAll(ctx context.Context) ([]*entity.Runtime, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindAll")
+	ret := m.ctrl.Call(m, "FindAll", ctx)
 	ret0, _ := ret[0].([]*entity.Runtime)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindAll indicates an expected call of FindAll
-func (mr *MockRuntimeRepoMockRecorder) FindAll() *gomock.Call {
+func (mr *MockRuntimeRepoMockRecorder) FindAll(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockRuntimeRepo)(nil).FindAll))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockRuntimeRepo)(nil).FindAll), ctx)
 }
 
 // GetByID mocks base method
-func (m *MockRuntimeRepo) GetByID(runtimeID string) (*entity.Runtime, error) {
+func (m *MockRuntimeRepo) GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", runtimeID)
+	ret := m.ctrl.Call(m, "GetByID", ctx, runtimeID)
 	ret0, _ := ret[0].(*entity.Runtime)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByID indicates an expected call of GetByID
-func (mr *MockRuntimeRepoMockRecorder) GetByID(runtimeID interface{}) *gomock.Call {
+func (mr *MockRuntimeRepoMockRecorder) GetByID(ctx, runtimeID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockRuntimeRepo)(nil).GetByID), runtimeID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockRuntimeRepo)(nil).GetByID), ctx, runtimeID)
 }

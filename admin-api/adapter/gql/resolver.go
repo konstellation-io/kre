@@ -448,6 +448,10 @@ func (r *userResolver) CreationDate(_ context.Context, obj *entity.User) (string
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
+func (r *userResolver) ActiveSessions(ctx context.Context, obj *entity.User) (int, error) {
+	return r.authInteractor.CountUserSessions(ctx, obj.ID)
+}
+
 func (r *versionResolver) CreationDate(_ context.Context, obj *entity.Version) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }

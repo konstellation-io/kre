@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -85,4 +86,24 @@ func (r *SessionRepoMongoDB) DeleteByToken(token string) error {
 	}
 
 	return nil
+}
+
+func (r *SessionRepoMongoDB) GetUserSessions(ctx context.Context, userID string) ([]entity.Session, error) {
+	var sessions []entity.Session
+	filter := bson.M{
+		"userId":         userID,
+		"expirationDate": bson.M{"$gt": time.Now()},
+	}
+
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	err = cursor.All(ctx, &sessions)
+	if err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
 }
