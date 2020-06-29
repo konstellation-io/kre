@@ -51,9 +51,7 @@ const generateVersion = () => ({
   ]),
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
-  configurationVariables: () => new MockList([2, 20]),
-  workflows: () => new MockList(2),
-  configurationCompleted: true
+  workflows: () => new MockList(2)
 });
 
 let datetime = moment().subtract(24, 'hour');
@@ -236,6 +234,10 @@ module.exports = {
   }),
   Runtime: generateRuntime,
   Version: generateVersion,
+  VersionConfig: () => ({
+    completed: true,
+    vars: () => new MockList([2, 20])
+  }),
   ConfigurationVariable: () => ({
     key: casual.word.toUpperCase(),
     value: () => {

@@ -202,8 +202,12 @@ type Version {
   publicationDate: String
   publicationAuthor: User
   workflows: [Workflow!]!
-  configurationVariables: [ConfigurationVariable!]!
-  configurationCompleted: Boolean!
+  config: VersionConfig!
+}
+
+type VersionConfig {
+  vars: [ConfigurationVariable!]!
+  completed: Boolean!
 }
 
 enum VersionStatus {

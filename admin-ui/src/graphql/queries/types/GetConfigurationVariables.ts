@@ -12,18 +12,23 @@ import {
 // GraphQL query operation: GetConfigurationVariables
 // ====================================================
 
-export interface GetConfigurationVariables_version_configurationVariables {
+export interface GetConfigurationVariables_version_config_vars {
   __typename: 'ConfigurationVariable';
   key: string;
   value: string;
   type: ConfigurationVariableType;
 }
 
+export interface GetConfigurationVariables_version_config {
+  __typename: 'VersionConfig';
+  vars: GetConfigurationVariables_version_config_vars[];
+}
+
 export interface GetConfigurationVariables_version {
   __typename: 'Version';
   id: string;
   status: VersionStatus;
-  configurationVariables: GetConfigurationVariables_version_configurationVariables[];
+  config: GetConfigurationVariables_version_config;
 }
 
 export interface GetConfigurationVariables {
