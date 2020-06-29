@@ -39,7 +39,7 @@ function VersionSideBar({ runtime, version }: VersionSideBarProps) {
         </div>
       </Link>
       <div className={styles.runtimeNameSection}></div>
-      <VersionInfo runtime={runtime} version={version} />
+      <VersionInfo version={version} />
       <VersionMenu runtime={runtime} version={version} />
       <Can perform="version:edit">
         <VersionActions runtime={runtime} version={version} />
