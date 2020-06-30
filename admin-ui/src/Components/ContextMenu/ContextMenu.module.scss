@@ -1,0 +1,25 @@
+@import 'Styles/colors';
+@import 'Styles/shadows';
+@import 'Styles/mixins';
+
+.contextMenuContainer {
+  @include shadow(3);
+
+  z-index: 1;
+  position: fixed;
+  padding: $grid-unit;
+  background-color: $bg-color;
+}
+
+.contextMenuList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  & > li {
+    text-transform: uppercase;
+
+    &.separator {
+      border-top: solid 1px palette(base, 400);
+    }
+  }
+}

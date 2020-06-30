@@ -1,0 +1,10 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.message {
+  @include font-body;
+  font-weight: 500;
+  color: font-color(lowlight);
+
+  margin: 20px 21px 65px 0;
+}

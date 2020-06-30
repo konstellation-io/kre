@@ -1,0 +1,56 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.dateFilter {
+  height: $grid-unit * 5;
+
+  & > div:first-child > div:first-child {
+    background-color: transparent;
+    border: 0;
+  }
+}
+
+.modal {
+  border: 0;
+
+  .calendarModal {
+    width: 658px;
+    height: 685px;
+  }
+}
+
+.icon {
+  margin-right: 0px !important;
+}
+
+.dateValues {
+  @include font-small;
+  color: font-color(lowlight);
+  border-left: 1px solid palette(base, 400);
+  padding: $grid-unit 0 $grid-unit $grid-unit;
+
+  .dateValue {
+    display: flex;
+
+    > div {
+      width: 5 * $grid-unit;
+    }
+
+    > span {
+      color: font-color(light);
+    }
+  }
+}
+
+.customRangesOption {
+  display: flex;
+  align-items: center;
+  height: 5 * $grid-unit;
+  padding: 11px 2 * $grid-unit;
+  border-top: solid 1px $color-black;
+
+  div {
+    margin-left: 10px;
+  }
+}

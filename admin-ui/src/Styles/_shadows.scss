@@ -1,0 +1,31 @@
+@import './colors';
+@import './variables';
+
+$level-to-size: (
+  1: 6 * $grid-unit,
+  2: 3 * $grid-unit,
+  3: 2 * $grid-unit,
+  4: $grid-unit
+);
+
+@mixin color-shadow($color, $level) {
+  $size: map-get($level-to-size, $level);
+
+  box-shadow: 0 2px $size 0 $color;
+}
+
+@mixin color-text-shadow($color, $level) {
+  $size: map-get($level-to-size, $level);
+
+  text-shadow: 0px 0px $size $color;
+}
+
+@mixin glow($level) {
+  @include color-shadow(palette(highlight), $level);
+}
+@mixin text-glow($level) {
+  @include color-text-shadow(palette(highlight), $level);
+}
+@mixin shadow($level) {
+  @include color-shadow(palette(base, 900), $level);
+}

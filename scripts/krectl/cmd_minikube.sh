@@ -13,27 +13,40 @@ minikube_hard_reset() {
   done
 }
 
+MINIKUBE_CHECK=0
 minikube_start() {
-  MINIKUBE_RUNNING=$(minikube status -p $MINIKUBE_PROFILE | grep apiserver | cut -d ' ' -f 2)
-
-  if [ "$MINIKUBE_RUNNING" = "Running" ]; then
-    echo_green "✔"
-    echo_info "Minikube already running\n"
-  else
-    minikube start -p $MINIKUBE_PROFILE \
-      --cpus=$MINIKUBE_CPUS \
-      --memory=$MINIKUBE_MEMORY \
-      --kubernetes-version=$MINIKUBE_KUBERNETES_VERSION \
-      --disk-size=$MINIKUBE_DISK_SIZE \
-      --driver=$MINIKUBE_DRIVER \
-      --extra-config=apiserver.authorization-mode=RBAC
-
-    run minikube addons enable ingress
-    run minikube addons enable dashboard
-    run minikube addons enable registry
-    run minikube addons enable storage-provisioner
-    run minikube addons enable metrics-server
+  if [ "$MINIKUBE_CHECK" = "1" ]; then
+    return
   fi
+
+  MINIKUBE_STATUS=$(minikube status -p "$MINIKUBE_PROFILE" | grep apiserver | cut -d ' ' -f 2)
+
+  case $MINIKUBE_STATUS in
+    Running)
+      echo_check "Minikube already running"
+    ;;
+    Stopped)
+      echo_check "Restarting minikube profile"
+      minikube start -p "$MINIKUBE_PROFILE"
+    ;;
+    *)
+      echo_wait "Creating new minikube profile"
+      minikube start -p "$MINIKUBE_PROFILE" \
+        --cpus="$MINIKUBE_CPUS" \
+        --memory="$MINIKUBE_MEMORY" \
+        --kubernetes-version="$MINIKUBE_KUBERNETES_VERSION" \
+        --disk-size="$MINIKUBE_DISK_SIZE" \
+        --driver="$MINIKUBE_DRIVER" \
+        --extra-config=apiserver.authorization-mode=RBAC
+
+      run minikube addons enable ingress
+      run minikube addons enable dashboard
+      run minikube addons enable registry
+      run minikube addons enable storage-provisioner
+      run minikube addons enable metrics-server
+    ;;
+  esac
+  MINIKUBE_CHECK=1
 }
 
 get_admin_api_pod() {
@@ -45,7 +58,7 @@ get_mongo_pod() {
 }
 
 minikube_stop() {
-  minikube -p $MINIKUBE_PROFILE stop
+  minikube -p "$MINIKUBE_PROFILE" stop
 }
 
 minikube_clean() {

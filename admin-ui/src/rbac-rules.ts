@@ -1,4 +1,4 @@
-import { AccessLevel } from './graphql/types/globalTypes';
+import { AccessLevel } from 'Graphql/types/globalTypes';
 
 const MANAGER_RULES = [
   'audit:view',

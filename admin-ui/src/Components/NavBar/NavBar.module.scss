@@ -1,0 +1,75 @@
+@import 'Styles/colors';
+@import 'Styles/mixins';
+@import 'Styles/variables';
+
+.disabled {
+  cursor: default;
+}
+
+.item {
+  @include font-button;
+  @include list-item-hover;
+
+  text-align: center;
+  color: font-color(lowlight);
+  line-height: 10px;
+
+  position: relative;
+  white-space: nowrap;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  span {
+    margin: 0 15px;
+  }
+
+  .warning {
+    color: $color-warn;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    color: font-color(dark);
+  }
+
+  &.size_s {
+    height: 32px;
+    padding: 0 16px;
+  }
+
+  &.size_m {
+    height: 56px;
+    padding: 0 28px;
+  }
+
+  &:hover {
+    .arrow {
+      opacity: 1;
+      margin-left: auto;
+    }
+  }
+
+  .arrow {
+    opacity: 0;
+    margin-left: auto;
+    transition: opacity ease 0.2s;
+  }
+}
+
+.active {
+  cursor: default;
+  pointer-events: none;
+}
+
+.active .item {
+  background-color: $bg-highlighted;
+  color: white;
+
+  .arrow {
+    opacity: 1;
+    margin-left: auto;
+  }
+}

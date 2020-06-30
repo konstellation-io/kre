@@ -1,0 +1,56 @@
+@import 'Styles/variables';
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.container {
+  position: relative;
+  background-color: palette(base, 800);
+  width: 100%;
+  height: 100%;
+}
+
+.topPannel {
+  position: absolute;
+  top: $grid-unit;
+  right: 2 * $grid-unit;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+
+  .lastValue {
+    @include font-small;
+
+    background-color: palette(base, 800);
+    margin-right: 2 * $grid-unit;
+    padding: $grid-unit/2 $grid-unit;
+    line-height: 13px;
+  }
+
+  .legend {
+    @include font-caption;
+    color: font-color(lowlight);
+
+    display: flex;
+
+    .legendCircle {
+      width: $grid-unit;
+      height: $grid-unit;
+      border-radius: $grid-unit;
+      margin: 3px $grid-unit / 2 0 0;
+    }
+  }
+
+  .expandButton {
+    cursor: pointer;
+    color: font-color(lowlight);
+    width: 3 * $grid-unit;
+    height: 3 * $grid-unit;
+    padding: $grid-unit / 2;
+    margin-left: $grid-unit;
+    pointer-events: all;
+
+    &:hover {
+      color: font-color(light);
+    }
+  }
+}
