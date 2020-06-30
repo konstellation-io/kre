@@ -1,0 +1,28 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+$color-bg: palette(base, 400);
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 61px;
+  padding: 10px 18px 10px 46px;
+  background-color: $color-bg;
+  flex-shrink: 0;
+}
+
+.title {
+  @include font-subheader;
+  color: font-color(light);
+}
+
+.dateFilter {
+  margin-left: auto;
+}
+
+.visibilityIcon {
+  cursor: pointer;
+  margin-left: 2 * $grid-unit;
+}

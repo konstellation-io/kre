@@ -1,0 +1,13 @@
+@import 'Styles/mixins';
+@import 'Styles/funcs';
+@import 'Styles/colors';
+
+$color-tabs-bg: palette(lowlight, 800);
+
+.container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  background-color: $color-tabs-bg;
+}

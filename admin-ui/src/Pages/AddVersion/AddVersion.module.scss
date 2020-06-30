@@ -1,0 +1,53 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.bg {
+  width: 100%;
+  height: 100%;
+  background-color: $bg-color-dark;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(56px, 1fr));
+  grid-gap: 24px;
+  width: 100%;
+  height: 100%;
+  max-width: $container-max-width-add-element;
+  margin: 0 auto;
+}
+
+.container {
+  grid-area: 1 / 3 / 2 / 11;
+  height: 100%;
+  padding: $form-padding-height 0;
+  background-color: $bg-color;
+}
+
+.subtitle {
+  @include font-small;
+
+  text-align: center;
+  padding: 0 $form-padding-width;
+  margin-top: 20px;
+}
+
+.content {
+  padding: 0 $form-padding-width;
+  margin-top: 80px;
+}
+
+.buttons {
+  margin-top: $grid-unit * 3;
+}
+
+.spinner {
+  position: relative;
+}
+
+.ack {
+  @include font-small;
+  font-weight: 400;
+  color: $color-ok;
+}

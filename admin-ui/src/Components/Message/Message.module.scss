@@ -1,0 +1,10 @@
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.container {
+  @include font-body;
+  color: font-color(lowlight);
+  font-weight: 500;
+
+  margin: 50px 0 0 20px;
+}

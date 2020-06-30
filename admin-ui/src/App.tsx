@@ -1,43 +1,43 @@
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
-import './styles/react-calendar.scss';
-import './styles/app.global.scss';
+import 'Styles/react-calendar.scss';
+import 'Styles/app.global.scss';
 import 'markdown-navbar/dist/navbar.css';
 import 'react-tabs/style/react-tabs.css';
-import './styles/markdown-navbar.scss';
-import './styles/react-tabs.scss';
+import 'Styles/markdown-navbar.scss';
+import 'Styles/react-tabs.scss';
 
 import { Redirect, Switch } from 'react-router';
 import { Route, Router } from 'react-router-dom';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
-import AccessDenied from './pages/AccessDenied/AccessDenied';
-import AddRuntime from './pages/AddRuntime/AddRuntime';
-import AddUser from './pages/AddUser/AddUser';
-import AddVersion from './pages/AddVersion/AddVersion';
-import Dashboard from './pages/Dashboard/Dashboard';
-import ErrorMessage from './components/ErrorMessage/ErrorMessage';
-import { GetMe } from './graphql/queries/types/GetMe';
+import AccessDenied from 'Pages/AccessDenied/AccessDenied';
+import AddRuntime from 'Pages/AddRuntime/AddRuntime';
+import AddUser from 'Pages/AddUser/AddUser';
+import AddVersion from 'Pages/AddVersion/AddVersion';
+import Dashboard from 'Pages/Dashboard/Dashboard';
+import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
+import { GetMe } from 'Graphql/queries/types/GetMe';
 import { GlobalHotKeys } from 'react-hotkeys';
-import Login from './pages/Login/Login';
-import Logs from './pages/Logs/Logs';
-import LogsPanel from './pages/Version/pages/Status/LogsPanel/LogsPanel';
-import MagicLink from './pages/MagicLink/MagicLink';
-import NotFound from './pages/NotFound/NotFound';
-import NotificationService from './components/NotificationService/NotificationService';
-import ROUTE from './constants/routes';
+import Login from 'Pages/Login/Login';
+import Logs from 'Pages/Logs/Logs';
+import LogsPanel from 'Pages/Version/pages/Status/LogsPanel/LogsPanel';
+import MagicLink from 'Pages/MagicLink/MagicLink';
+import NotFound from 'Pages/NotFound/NotFound';
+import NotificationService from 'Components/NotificationService/NotificationService';
+import ROUTE from 'Constants/routes';
 import React from 'react';
-import Runtime from './pages/Runtime/Runtime';
-import Settings from './pages/Settings/Settings';
-import SpinnerCircular from './components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import UsersActivity from './pages/UsersActivity/UsersActivity';
-import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
+import Runtime from 'Pages/Runtime/Runtime';
+import Settings from 'Pages/Settings/Settings';
+import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
+import UsersActivity from 'Pages/UsersActivity/UsersActivity';
+import VerifyEmail from 'Pages/VerifyEmail/VerifyEmail';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
-import history from './history';
+import history from './browserHistory';
 import keymaps from './keymaps';
 import { loader } from 'graphql.macro';
 
-const GetMeQuery = loader('./graphql/queries/getMe.graphql');
+const GetMeQuery = loader('./Graphql/queries/getMe.graphql');
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);

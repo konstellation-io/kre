@@ -1,0 +1,31 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.container {
+  @include font-body;
+
+  background-color: palette(lowlight, 800);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 6 * $grid-unit;
+  padding: $grid-unit 0px;
+}
+
+.title {
+  @include font-body;
+  color: font-color(lowlight);
+
+  margin-right: 2.5 * $grid-unit;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.leftPannel {
+  display: flex;
+  align-items: center;
+  margin-left: $grid-unit * 2.5;
+}

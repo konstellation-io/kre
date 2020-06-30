@@ -1,0 +1,170 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+@import 'Styles/shadows';
+@import 'Styles/borders';
+
+$color-selected-bg: palette(base, 300);
+$height-input: 40px;
+
+.container {
+  position: relative;
+
+  &.hasClearButton .input {
+    padding-right: 30px;
+  }
+}
+
+.input {
+  @include font-small;
+  @include form-input;
+  height: $height-input;
+  min-height: $height-input;
+  padding: 0 2 * $grid-unit;
+  line-height: $height-input;
+  cursor: pointer;
+
+  color: font-color(light);
+  font-weight: 600;
+
+  &.placeholder {
+    color: font-color(regular);
+  }
+
+  &:after {
+    @include arrow(white);
+
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    right: 14px;
+    top: calc(50% - 5px);
+    content: '';
+    transition: transform ease 0.3s, top ease 0.3s;
+  }
+
+  &.opened:after {
+    transform: rotate(45deg) scale(-1);
+    top: 50%;
+  }
+}
+
+.optionsContainer {
+  @include shadow(3);
+
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  background-color: $bg-color-lighter;
+  z-index: 1;
+  overflow: hidden;
+  width: 65 * $grid-unit;
+  min-width: 100%;
+  overflow: hidden;
+  border-radius: 5px;
+
+  transition: max-height ease 0.3s, top ease 0.6s;
+
+  &.opened {
+    top: calc(100% + #{$grid-unit});
+  }
+}
+
+.optionElement {
+  color: font-color(light);
+  line-height: 16px;
+  height: 40px;
+  padding: 11px 16px;
+  transition: color ease 0.4s, background-color ease 0.4s;
+
+  &.selected {
+    background-color: $color-selected-bg;
+  }
+
+  &:hover {
+    background-color: $bg-highlighted;
+    color: font-color(light);
+  }
+}
+
+.selectionsContainer {
+  background-color: palette(lowlight, 900);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 2 * $grid-unit 2 * $grid-unit $grid-unit 2 * $grid-unit;
+
+  .clear {
+    margin-left: auto;
+  }
+}
+
+.options {
+  overflow: auto;
+}
+
+.group {
+  .groupHeader {
+    display: flex;
+    align-items: center;
+    background-color: palette(base, 400);
+    height: 30px;
+    padding-left: 3 * $grid-unit;
+    border-bottom: solid 1px $color-black;
+    transition: border-left ease 0.3s, padding-left ease 0.3s;
+    border-left: solid 0px palette(highlight);
+
+    &.allSelected {
+      border-left: solid 0.5 * $grid-unit palette(highlight);
+      padding-left: 2.5 * $grid-unit;
+    }
+
+    .name {
+      @include font-button;
+      color: font-color(light);
+      text-transform: uppercase;
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+
+      .selectAll,
+      .toggleVisibility {
+        padding: 0 0.5 * $grid-unit;
+        color: font-color(lowlight);
+        cursor: pointer;
+
+        &:hover {
+          color: font-color(light);
+        }
+      }
+    }
+  }
+}
+
+.elements {
+  overflow: hidden;
+  transition: height ease 0.3s;
+
+  .elementContainer:not(:last-child) {
+    border-bottom: solid 1px $color-black;
+  }
+
+  .elementContainer {
+    display: flex;
+    align-items: center;
+    background-color: palette(base);
+    height: 45px;
+    padding-left: 3 * $grid-unit;
+
+    .label {
+      margin-left: 2 * $grid-unit;
+    }
+  }
+}
+
+.inputContainer {
+  position: relative;
+}

@@ -1,0 +1,208 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+$color-line: #5d6c76;
+$color-label-bg: palette(base, 400);
+$color-label-border: palette(base, 200);
+$color-node-bg: palette(base, 600);
+
+$animation-duration: 0.8s;
+@mixin animate($field) {
+  transition: $field ease $animation-duration;
+}
+
+.node {
+  .circlesG {
+    &:hover {
+      filter: url('#glow');
+
+      + g.labelG {
+        .nodeLabel {
+          fill: font-color(white);
+        }
+
+        line {
+          stroke: white;
+        }
+        rect {
+          filter: url('#glowLow');
+        }
+        text {
+          fill: font-color(white);
+        }
+      }
+    }
+  }
+  .innerCircle {
+    pointer-events: none;
+    @include animate(fill);
+  }
+  .outerCircle {
+    fill: $color-node-bg;
+    cursor: pointer;
+    @include animate(stroke);
+
+    &.clicksDisabled {
+      cursor: default;
+    }
+  }
+
+  &.#{$status-down} {
+    .innerCircle {
+      fill: $color-status-down;
+    }
+    .outerCircle {
+      stroke: $color-status-down;
+    }
+  }
+  &.#{$status-loading} {
+    .innerCircle {
+      fill: $color-status-loading;
+    }
+    .outerCircle {
+      stroke: $color-status-loading;
+    }
+  }
+  &.#{$status-up} {
+    .innerCircle {
+      fill: $color-status-up;
+    }
+    .outerCircle {
+      stroke: $color-status-up;
+    }
+  }
+}
+
+.inputNode {
+  cursor: pointer;
+
+  &.hovered {
+    filter: url('#glow');
+  }
+
+  .shape,
+  .nodePeak,
+  .peakCut {
+    @include animate(fill);
+    fill: $bg-box;
+    stroke: transparent;
+  }
+
+  &.#{$status-down} {
+    .shape,
+    .nodePeak {
+      stroke: $color-status-down;
+    }
+
+    .icon > svg > path {
+      fill: $color-status-down;
+    }
+  }
+
+  &.#{$status-up} {
+    .shape,
+    .nodePeak,
+    .peakCut {
+      fill: $color-status-up;
+    }
+
+    .icon > svg > path {
+      fill: font-color(dark);
+    }
+  }
+
+  .icon > svg > path {
+    @include animate(stroke);
+    stroke: transparent !important;
+  }
+}
+
+.outputNode {
+  .shape,
+  .nodePeak,
+  .peakCut {
+    @include animate(fill);
+    fill: $bg-box;
+    stroke: transparent;
+  }
+
+  &.#{$status-down} {
+    .shape,
+    .nodePeak {
+      stroke: $color-status-down;
+    }
+
+    .icon > svg > path {
+      fill: $color-status-down;
+    }
+  }
+
+  &.#{$status-up} {
+    .shape {
+      fill: $color-status-up;
+    }
+
+    .icon > svg > path {
+      fill: font-color(dark);
+    }
+  }
+
+  .icon > svg > path {
+    @include animate(stroke);
+    stroke: transparent !important;
+    fill: font-color(lowlight);
+  }
+}
+
+.nodeLabel {
+  @include font-small;
+
+  fill: font-color(lowlight);
+  transition: fill ease 0.4s;
+  text-anchor: middle;
+}
+
+.nodeLabelRect {
+  fill: $color-label-bg;
+  stroke: $color-label-border;
+  rx: 4px;
+}
+.nodeLabelLine {
+  stroke: $color-line;
+  stroke-dasharray: 2.5;
+}
+
+.nodesG,
+.edgesG,
+.node,
+.inputNode,
+.outputNode,
+.lineG,
+.line,
+.path,
+.innerCircle {
+  display: block;
+}
+.lineG {
+  line {
+    stroke-dasharray: 5;
+  }
+  line,
+  path {
+    @include animate(stroke);
+  }
+
+  &.#{$status-down} {
+    line,
+    path {
+      stroke: $color-status-down;
+    }
+  }
+  &.#{$status-up} {
+    line,
+    path {
+      stroke: $color-status-up;
+    }
+  }
+}

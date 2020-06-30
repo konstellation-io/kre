@@ -1,17 +1,16 @@
 // FIXME: reformat this to new test format
 
-import React from 'react';
-import { renderWithRouter } from './utils/testUtils';
-import { cleanup } from '@testing-library/react';
-import ROUTE from './constants/routes';
-import App, { Routes } from './App';
+import App, { Routes } from 'App';
 
 import { MockedProvider } from '@apollo/react-testing';
-import { dashboardMock } from './mocks/runtime';
-import { usernameMock } from './mocks/auth';
-
-import wait from 'waait';
+import ROUTE from 'Constants/routes';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
+import { cleanup } from '@testing-library/react';
+import { dashboardMock } from 'Mocks/runtime';
+import { renderWithRouter } from 'Utils/testUtils';
+import { usernameMock } from 'Mocks/auth';
+import wait from 'waait';
 
 const mocks = [dashboardMock, usernameMock];
 

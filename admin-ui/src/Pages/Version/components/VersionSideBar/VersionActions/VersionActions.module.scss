@@ -1,0 +1,39 @@
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.wrapper {
+  color: font-color(light);
+  display: flex;
+  flex-direction: row;
+  background-color: #26292c;
+  align-items: center;
+  margin-top: auto;
+
+  .item {
+    @include font-body;
+    font-weight: 600;
+
+    height: 48px;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    cursor: pointer;
+
+    .icon {
+      margin-right: 8px;
+      line-height: 0;
+    }
+
+    &:hover {
+      color: font-color(light);
+    }
+  }
+}
+
+.disabled {
+  cursor: default;
+  pointer-events: none;
+  color: font-color(regular);
+}

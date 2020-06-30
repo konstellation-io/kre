@@ -1,0 +1,126 @@
+@import 'Styles/colors';
+@import 'Styles/mixins';
+@import 'Styles/variables';
+@import 'Styles/borders';
+@import 'Styles/shadows';
+
+$color-primary: palette(highlight, 400);
+$color-gray: palette(base, 300);
+
+.btn {
+  @include font-button;
+  color: font-color(regular);
+  position: relative;
+  text-align: center;
+  padding: 0 42px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color ease 0.4s, background-color ease 0.4s;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  user-select: none;
+
+  span {
+    width: 100%;
+  }
+
+  svg {
+    margin-right: 8px;
+  }
+
+  &.middle {
+    text-align: center;
+    padding: 0 20px;
+  }
+  &.left {
+    text-align: left;
+    padding: 0 20px;
+  }
+  &.right {
+    text-align: right;
+    padding: 0 20px;
+  }
+
+  &:hover {
+    color: font-color(light);
+  }
+
+  &:active {
+    color: font-color(light);
+  }
+
+  &.border {
+    @include border($color-primary);
+  }
+}
+
+a.navLinkSelected .btn,
+.primary {
+  color: font-color(dark);
+  background-color: palette(highlight, 400);
+
+  &:active {
+    @include glow(2);
+  }
+}
+
+.dark {
+  color: font-color(regular);
+  background-color: $bg-color-dark;
+
+  &:hover {
+    color: font-color(light);
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+
+  &.disabled {
+    color: font-color(disabled);
+  }
+}
+
+.grey {
+  color: font-color(light);
+  background-color: $color-gray;
+
+  &:hover {
+    color: font-color(light);
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+}
+
+.transparent {
+  color: font-color(regular);
+  background-color: transparent;
+
+  &:hover {
+    color: font-color(light);
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+
+  &.primary {
+    background-color: $bg-highlighted;
+    color: white;
+  }
+}
+
+.label {
+  color: font-color(lowlight);
+}
+
+.disabled {
+  color: font-color(disabled);
+  pointer-events: none;
+  opacity: 0.5;
+}
