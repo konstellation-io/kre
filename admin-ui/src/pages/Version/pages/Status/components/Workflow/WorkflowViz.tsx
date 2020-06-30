@@ -96,7 +96,6 @@ class WorkflowViz {
   nodesG: Selection<SVGGElement, unknown, null, undefined>;
   edgesG: Selection<SVGGElement, unknown, null, undefined>;
   defs: Selection<SVGGElement, unknown, null, undefined>;
-  prevNodeLabelRightX: number;
   inputNode: Selection<SVGGElement, unknown, null, undefined> | null;
   outputNode: Selection<SVGGElement, unknown, null, undefined> | null;
 
@@ -109,7 +108,6 @@ class WorkflowViz {
     this.nodeInnerRadius = 0;
     this.nodeCentroidDistance = 0;
     this.edgeWidth = 0;
-    this.prevNodeLabelRightX = 0;
     this.yOffset = props.height * OFFSET_TOP_PERC;
 
     // Vars initialization
@@ -215,13 +213,13 @@ class WorkflowViz {
       .attr('r', nodeInnerRadius)
       .attr('cx', nodeOuterRadius);
 
-    newCircles.each(function(d: D) {
+    newCircles.each(function(d: D, idx: number) {
       generateLink(
         (xScale(d.id) || 0) + nodeOuterRadius * 2,
         getLinkState(d.status),
         d.id
       );
-      generateNodeLabel(this, d.name, self);
+      generateNodeLabel(this, d.name, self, idx);
     });
 
     // Old circles
@@ -239,14 +237,13 @@ class WorkflowViz {
     circles.merge(newCircles);
   };
 
-  generateNodeLabel = (node: SVGGElement, label: string, self: this) => {
-    const {
-      nodeOuterRadius,
-      nodeInnerRadius,
-      yOffset,
-      prevNodeLabelRightX,
-      nodeCentroidDistance
-    } = self;
+  generateNodeLabel = (
+    node: SVGGElement,
+    label: string,
+    self: this,
+    idx: number
+  ) => {
+    const { nodeOuterRadius, nodeInnerRadius, yOffset } = self;
 
     const textSize = 16;
     const labelSeparation = 36;
@@ -278,9 +275,8 @@ class WorkflowViz {
       height: bbox.height + 2 * NODE_LABEL_PADDING.VERTICAL
     };
 
-    const actX = rectDims.width / 2;
-    const prevRightX = nodeCentroidDistance - prevNodeLabelRightX;
-    const shouldMoveLabel = actX >= prevRightX;
+    const labelIsOdd = idx % 2;
+    const shouldMoveLabel = labelIsOdd;
 
     if (shouldMoveLabel) {
       labelYOffset = yOffset - labelSeparation - MARGIN_TOP_LABELS;
@@ -306,8 +302,6 @@ class WorkflowViz {
       .attr('y1', NODE_LABEL_PADDING.VERTICAL)
       .attr('x2', 0)
       .attr('y2', labelYOffset - nodeOuterRadius - nodeInnerRadius);
-
-    self.prevNodeLabelRightX = shouldMoveLabel ? 0 : actX;
   };
 
   generateInputNode = () => {
