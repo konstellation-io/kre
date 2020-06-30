@@ -117,7 +117,7 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, versionID string, 
 	return ch, nil
 }
 
-func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName string, stopCh <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
+func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName string, stopCh <-chan bool) (<-chan *entity.Node, error) {
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
 	if err != nil {
 		return nil, err
@@ -138,8 +138,7 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 		return nil, err
 	}
 
-	ch := make(chan *entity.VersionNodeStatus, 1)
-	var st *entity.NodeStatus
+	ch := make(chan *entity.Node, 1)
 
 	go func() {
 		for {
@@ -160,11 +159,18 @@ func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName s
 
 			m.logger.Info("[monitoring.VersionStatus] Message received")
 
+			status := entity.NodeStatus(msg.GetStatus())
+			if !status.IsValid() {
+				m.logger.Errorf("Invalid node status: %s", status)
+				close(ch)
+				return
+			}
+
 			if msg.GetNodeId() != "" {
-				ch <- &entity.VersionNodeStatus{
-					NodeID:  msg.GetNodeId(),
-					Status:  st.FromString(msg.GetStatus()),
-					Message: msg.GetMessage(),
+				ch <- &entity.Node{
+					ID:     msg.GetNodeId(),
+					Name:   msg.GetName(),
+					Status: status,
 				}
 			}
 		}

@@ -28,7 +28,7 @@ message NodeStatusRequest {
 message NodeStatusResponse {
   string nodeId = 1;
   string status = 2;
-  string message = 3;
+  string name = 3;
 }
 
 message SearchLogsRequest {

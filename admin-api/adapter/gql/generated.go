@@ -43,7 +43,6 @@ type ResolverRoot interface {
 	User() UserResolver
 	UserActivity() UserActivityResolver
 	Version() VersionResolver
-	VersionNodeStatus() VersionNodeStatusResolver
 }
 
 type DirectiveRoot struct {
@@ -169,7 +168,7 @@ type ComplexityRoot struct {
 	Subscription struct {
 		NodeLogs             func(childComplexity int, runtimeID string, versionID string, filters entity.LogFilters) int
 		RuntimeCreated       func(childComplexity int) int
-		VersionNodeStatus    func(childComplexity int, versionID string) int
+		WatchNodeStatus      func(childComplexity int, versionID string) int
 		WatchResourceMetrics func(childComplexity int, versionID string, fromDate string) int
 	}
 
@@ -211,13 +210,6 @@ type ComplexityRoot struct {
 	VersionConfig struct {
 		Completed func(childComplexity int) int
 		Vars      func(childComplexity int) int
-	}
-
-	VersionNodeStatus struct {
-		Date    func(childComplexity int) int
-		Message func(childComplexity int) int
-		NodeID  func(childComplexity int) int
-		Status  func(childComplexity int) int
 	}
 
 	Workflow struct {
@@ -263,7 +255,7 @@ type RuntimeResolver interface {
 type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
 	NodeLogs(ctx context.Context, runtimeID string, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
-	VersionNodeStatus(ctx context.Context, versionID string) (<-chan *entity.VersionNodeStatus, error)
+	WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error)
 	WatchResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
 }
 type UserResolver interface {
@@ -280,9 +272,6 @@ type VersionResolver interface {
 	CreationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error)
 	PublicationDate(ctx context.Context, obj *entity.Version) (*string, error)
 	PublicationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error)
-}
-type VersionNodeStatusResolver interface {
-	Date(ctx context.Context, obj *entity.VersionNodeStatus) (string, error)
 }
 
 type executableSchema struct {
@@ -911,17 +900,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.RuntimeCreated(childComplexity), true
 
-	case "Subscription.versionNodeStatus":
-		if e.complexity.Subscription.VersionNodeStatus == nil {
+	case "Subscription.watchNodeStatus":
+		if e.complexity.Subscription.WatchNodeStatus == nil {
 			break
 		}
 
-		args, err := ec.field_Subscription_versionNodeStatus_args(context.TODO(), rawArgs)
+		args, err := ec.field_Subscription_watchNodeStatus_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Subscription.VersionNodeStatus(childComplexity, args["versionId"].(string)), true
+		return e.complexity.Subscription.WatchNodeStatus(childComplexity, args["versionId"].(string)), true
 
 	case "Subscription.watchResourceMetrics":
 		if e.complexity.Subscription.WatchResourceMetrics == nil {
@@ -1110,34 +1099,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.VersionConfig.Vars(childComplexity), true
 
-	case "VersionNodeStatus.date":
-		if e.complexity.VersionNodeStatus.Date == nil {
-			break
-		}
-
-		return e.complexity.VersionNodeStatus.Date(childComplexity), true
-
-	case "VersionNodeStatus.message":
-		if e.complexity.VersionNodeStatus.Message == nil {
-			break
-		}
-
-		return e.complexity.VersionNodeStatus.Message(childComplexity), true
-
-	case "VersionNodeStatus.nodeId":
-		if e.complexity.VersionNodeStatus.NodeID == nil {
-			break
-		}
-
-		return e.complexity.VersionNodeStatus.NodeID(childComplexity), true
-
-	case "VersionNodeStatus.status":
-		if e.complexity.VersionNodeStatus.Status == nil {
-			break
-		}
-
-		return e.complexity.VersionNodeStatus.Status(childComplexity), true
-
 	case "Workflow.edges":
 		if e.complexity.Workflow.Edges == nil {
 			break
@@ -1302,7 +1263,7 @@ type Mutation {
 type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
-  versionNodeStatus(versionId: ID!): VersionNodeStatus!
+  watchNodeStatus(versionId: ID!): Node!
   watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
@@ -1350,13 +1311,6 @@ input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
   comment: String!
-}
-
-type VersionNodeStatus {
-  date: String!
-  nodeId: String!
-  status: NodeStatus!
-  message: String!
 }
 
 input SettingsInput {
@@ -1991,7 +1945,7 @@ func (ec *executionContext) field_Subscription_nodeLogs_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Subscription_versionNodeStatus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Subscription_watchNodeStatus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -4750,7 +4704,7 @@ func (ec *executionContext) _Subscription_nodeLogs(ctx context.Context, field gr
 	}
 }
 
-func (ec *executionContext) _Subscription_versionNodeStatus(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+func (ec *executionContext) _Subscription_watchNodeStatus(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4766,7 +4720,7 @@ func (ec *executionContext) _Subscription_versionNodeStatus(ctx context.Context,
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Subscription_versionNodeStatus_args(ctx, rawArgs)
+	args, err := ec.field_Subscription_watchNodeStatus_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return nil
@@ -4774,7 +4728,7 @@ func (ec *executionContext) _Subscription_versionNodeStatus(ctx context.Context,
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().VersionNodeStatus(rctx, args["versionId"].(string))
+		return ec.resolvers.Subscription().WatchNodeStatus(rctx, args["versionId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4787,7 +4741,7 @@ func (ec *executionContext) _Subscription_versionNodeStatus(ctx context.Context,
 		return nil
 	}
 	return func() graphql.Marshaler {
-		res, ok := <-resTmp.(<-chan *entity.VersionNodeStatus)
+		res, ok := <-resTmp.(<-chan *entity.Node)
 		if !ok {
 			return nil
 		}
@@ -4795,7 +4749,7 @@ func (ec *executionContext) _Subscription_versionNodeStatus(ctx context.Context,
 			w.Write([]byte{'{'})
 			graphql.MarshalString(field.Alias).MarshalGQL(w)
 			w.Write([]byte{':'})
-			ec.marshalNVersionNodeStatus2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionNodeStatus(ctx, field.Selections, res).MarshalGQL(w)
+			ec.marshalNNode2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNode(ctx, field.Selections, res).MarshalGQL(w)
 			w.Write([]byte{'}'})
 		})
 	}
@@ -5691,142 +5645,6 @@ func (ec *executionContext) _VersionConfig_completed(ctx context.Context, field 
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _VersionNodeStatus_date(ctx context.Context, field graphql.CollectedField, obj *entity.VersionNodeStatus) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "VersionNodeStatus",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.VersionNodeStatus().Date(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _VersionNodeStatus_nodeId(ctx context.Context, field graphql.CollectedField, obj *entity.VersionNodeStatus) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "VersionNodeStatus",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.NodeID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _VersionNodeStatus_status(ctx context.Context, field graphql.CollectedField, obj *entity.VersionNodeStatus) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "VersionNodeStatus",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Status, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(entity.NodeStatus)
-	fc.Result = res
-	return ec.marshalNNodeStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeStatus(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _VersionNodeStatus_message(ctx context.Context, field graphql.CollectedField, obj *entity.VersionNodeStatus) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "VersionNodeStatus",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Message, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Workflow_id(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
@@ -8180,8 +7998,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_runtimeCreated(ctx, fields[0])
 	case "nodeLogs":
 		return ec._Subscription_nodeLogs(ctx, fields[0])
-	case "versionNodeStatus":
-		return ec._Subscription_versionNodeStatus(ctx, fields[0])
+	case "watchNodeStatus":
+		return ec._Subscription_watchNodeStatus(ctx, fields[0])
 	case "watchResourceMetrics":
 		return ec._Subscription_watchResourceMetrics(ctx, fields[0])
 	default:
@@ -8484,57 +8302,6 @@ func (ec *executionContext) _VersionConfig(ctx context.Context, sel ast.Selectio
 			out.Values[i] = ec._VersionConfig_completed(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var versionNodeStatusImplementors = []string{"VersionNodeStatus"}
-
-func (ec *executionContext) _VersionNodeStatus(ctx context.Context, sel ast.SelectionSet, obj *entity.VersionNodeStatus) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, versionNodeStatusImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("VersionNodeStatus")
-		case "date":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._VersionNodeStatus_date(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "nodeId":
-			out.Values[i] = ec._VersionNodeStatus_nodeId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
-		case "status":
-			out.Values[i] = ec._VersionNodeStatus_status(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
-		case "message":
-			out.Values[i] = ec._VersionNodeStatus_message(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -9252,6 +9019,16 @@ func (ec *executionContext) marshalNNode2ᚕgithubᚗcomᚋkonstellationᚑioᚋ
 	return ret
 }
 
+func (ec *executionContext) marshalNNode2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNode(ctx context.Context, sel ast.SelectionSet, v *entity.Node) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Node(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNNodeLog2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐNodeLog(ctx context.Context, sel ast.SelectionSet, v entity.NodeLog) graphql.Marshaler {
 	return ec._NodeLog(ctx, sel, &v)
 }
@@ -9759,20 +9536,6 @@ func (ec *executionContext) marshalNVersion2ᚖgithubᚗcomᚋkonstellationᚑio
 
 func (ec *executionContext) marshalNVersionConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionConfig(ctx context.Context, sel ast.SelectionSet, v entity.VersionConfig) graphql.Marshaler {
 	return ec._VersionConfig(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNVersionNodeStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionNodeStatus(ctx context.Context, sel ast.SelectionSet, v entity.VersionNodeStatus) graphql.Marshaler {
-	return ec._VersionNodeStatus(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNVersionNodeStatus2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionNodeStatus(ctx context.Context, sel ast.SelectionSet, v *entity.VersionNodeStatus) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._VersionNodeStatus(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNVersionStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionStatus(ctx context.Context, v interface{}) (entity.VersionStatus, error) {

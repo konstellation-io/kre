@@ -1,8 +1,6 @@
 subscription VersionNodeStatus($versionId: ID!) {
-  versionNodeStatus(versionId: $versionId) {
-    date
-    nodeId
+  watchNodeStatus(versionId: $versionId) {
+    id
     status
-    message
   }
 }

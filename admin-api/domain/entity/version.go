@@ -55,7 +55,7 @@ type Node struct {
 	Name   string     `bson:"name"`
 	Image  string     `bson:"image"`
 	Src    string     `bson:"src"`
-	Status NodeStatus `bson:"status"`
+	Status NodeStatus `bson:"-"` // This field value is calculated in k8s
 }
 
 type NodeStatus string
@@ -76,26 +76,6 @@ func (e NodeStatus) IsValid() bool {
 
 func (e NodeStatus) String() string {
 	return string(e)
-}
-
-func (e *NodeStatus) FromString(key string) NodeStatus {
-	var status NodeStatus
-	switch key {
-	case "STARTED":
-		status = NodeStatusStarted
-	case "STOPPED":
-		status = NodeStatusStopped
-	case "ERROR":
-		status = NodeStatusError
-	}
-
-	return status
-}
-
-type VersionNodeStatus struct {
-	NodeID  string
-	Status  NodeStatus
-	Message string
 }
 
 type Workflow struct {
