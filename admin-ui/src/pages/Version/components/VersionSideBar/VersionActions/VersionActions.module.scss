@@ -9,6 +9,10 @@
   align-items: center;
   margin-top: auto;
 
+  &.quickActions {
+    background-color: transparent;
+  }
+
   .item {
     @include font-body;
     font-weight: 600;

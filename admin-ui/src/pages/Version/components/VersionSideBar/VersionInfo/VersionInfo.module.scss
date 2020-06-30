@@ -14,12 +14,15 @@
   @include font-body;
   color: font-color(light);
 
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   font-weight: 600;
   font-size: 14px;
   padding: 0 16px 16px 0;
+  justify-content: space-between;
 }
 
 .desc {

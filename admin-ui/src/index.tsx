@@ -1,40 +1,43 @@
-import { get } from 'lodash';
-import config from './config';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import { ApolloProvider } from '@apollo/react-hooks';
 import './styles/app.global.scss';
 import './styles/d3.scss';
-import ROUTE from './constants/routes';
-import history from './history';
+
+import { ApolloLink, split } from 'apollo-link';
+import { ErrorResponse, onError } from 'apollo-link-error';
+import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import typeDefs, {
-  OpenedVersion,
-  UserSettings,
   LogPanel,
   NotificationType,
-  UserSelection
+  OpenedVersion,
+  UserSelection,
+  UserSettings
 } from './graphql/client/typeDefs';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
-import { ApolloLink, split } from 'apollo-link';
-import { WebSocketLink } from 'apollo-link-ws';
-import { onError, ErrorResponse } from 'apollo-link-error';
-import { createUploadLink } from 'apollo-upload-client';
-import { getMainDefinition } from 'apollo-utilities';
+
 import { ADD_NOTIFICATION } from './graphql/client/mutations/addNotification.graphql';
+import { ApolloClient } from 'apollo-client';
+import { ApolloProvider } from '@apollo/react-hooks';
+import App from './App';
+import { GetNotifications_notifications } from './graphql/client/queries/getNotification.graphql';
+import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
+import ROUTE from './constants/routes';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { WebSocketLink } from 'apollo-link-ws';
+import addLogTabResolver from './graphql/client/resolvers/addLogTab';
 import addNotificationResolver from './graphql/client/resolvers/addNotification';
+import config from './config';
+import { createUploadLink } from 'apollo-upload-client';
+import { get } from 'lodash';
+import { getMainDefinition } from 'apollo-utilities';
+import history from './history';
 import removeNotificationResolver from './graphql/client/resolvers/removeNotification';
 import updateTabFiltersResolver from './graphql/client/resolvers/updateTabFilters';
-import addLogTabResolver from './graphql/client/resolvers/addLogTab';
-import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
 
 export let cache: InMemoryCache;
 
 export interface LocalState {
   loggedIn: boolean;
   logs: GetServerLogs_logs_items[];
-  notifications: [];
+  notifications: GetNotifications_notifications[];
   logTabs: LogPanel[];
   activeTabId: string;
   logsOpened: boolean;
@@ -67,13 +70,13 @@ function getNotificationIdAndMessage(error: ErrorResponse) {
       notificationMessage = 'Your session has expired, please log in again';
     } else if (!userIsUnauthorized(error)) {
       notificationId = 'Network error';
-      notificationMessage = `ERROR: ${error.networkError.message}`;
+      notificationMessage = `${error.networkError.message}`;
     }
   } else if (error.graphQLErrors) {
     notificationId = error.operation.operationName;
     notificationMessage = error.response
-      ? `ERROR: ${get(error, 'response.errors')[0].message}`
-      : 'ERROR: unknown graphQL error';
+      ? `${get(error, 'response.errors')[0].message}`
+      : 'unknown graphQL error';
   }
 
   return [notificationId, notificationMessage];

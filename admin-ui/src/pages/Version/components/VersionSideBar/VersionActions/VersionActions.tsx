@@ -1,22 +1,25 @@
-import React, { useState, FunctionComponent, useRef, useEffect } from 'react';
+import * as CHECK from '../../../../../components/Form/check';
+
+import Button, { BUTTON_THEMES } from '../../../../../components/Button/Button';
 import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions
 } from '../../../../../graphql/queries/types/GetVersionConfStatus';
-import { VersionStatus } from '../../../../../graphql/types/globalTypes';
-import styles from './VersionActions.module.scss';
-import { useForm } from 'react-hook-form';
-import * as CHECK from '../../../../../components/Form/check';
-import StartIcon from '@material-ui/icons/PlayArrowOutlined';
-import StopIcon from '@material-ui/icons/Stop';
-import PublishIcon from '@material-ui/icons/Publish';
-import UnpublishIcon from '@material-ui/icons/Block';
-import useVersionAction from '../../../utils/hooks';
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+
 import ModalContainer from '../../../../../components/Layout/ModalContainer/ModalContainer';
 import ModalLayoutJustify from '../../../../../components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
-import Button, { BUTTON_THEMES } from '../../../../../components/Button/Button';
+import PublishIcon from '@material-ui/icons/Publish';
+import StartIcon from '@material-ui/icons/PlayCircleOutline';
+import StopIcon from '@material-ui/icons/PauseCircleFilled';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import UnpublishIcon from '@material-ui/icons/GetApp';
+import { VersionStatus } from '../../../../../graphql/types/globalTypes';
+import cx from 'classnames';
 import { get } from 'lodash';
+import styles from './VersionActions.module.scss';
+import { useForm } from 'react-hook-form';
+import useVersionAction from '../../../utils/hooks';
 
 function verifyComment(value: string) {
   return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
@@ -27,11 +30,6 @@ type ModalInfo = {
   label: string;
 };
 
-type VersionActionsProps = {
-  runtime: GetVersionConfStatus_runtime;
-  version: GetVersionConfStatus_versions;
-};
-
 type ActionProps = {
   Icon: FunctionComponent<SvgIconProps>;
   label: string;
@@ -40,7 +38,13 @@ type ActionProps = {
   primary?: boolean;
 };
 
-function VersionActions({ runtime, version }: VersionActionsProps) {
+type Props = {
+  runtime: GetVersionConfStatus_runtime;
+  version: GetVersionConfStatus_versions;
+  quickActions?: boolean;
+};
+
+function VersionActions({ runtime, version, quickActions = false }: Props) {
   const { handleSubmit, setValue, register, errors } = useForm();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>({
@@ -82,7 +86,7 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
     setShowConfirmation(false);
   }
 
-  const buttons: ActionProps[] = [];
+  let buttons: ActionProps[] = [];
 
   switch (version.status) {
     case VersionStatus.STOPPED:
@@ -127,17 +131,27 @@ function VersionActions({ runtime, version }: VersionActionsProps) {
       break;
   }
 
+  if (quickActions) {
+    buttons = buttons.filter(button => !button.disabled);
+  }
+
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={cx(styles.wrapper, { [styles.quickActions]: quickActions })}
+    >
       {buttons.map(btn => (
         <Button
           key={btn.label}
           onClick={() => btn.action && btn.action()}
-          label={btn.label}
+          label={quickActions ? '' : btn.label}
+          title={quickActions ? btn.label : ''}
           Icon={btn.Icon}
-          theme={BUTTON_THEMES.DEFAULT}
+          iconSize="icon-regular"
+          theme={
+            quickActions ? BUTTON_THEMES.TRANSPARENT : BUTTON_THEMES.DEFAULT
+          }
           disabled={btn.disabled}
-          primary={btn.primary}
+          primary={quickActions ? false : btn.primary}
           style={{ flexGrow: 1 }}
         />
       ))}

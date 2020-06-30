@@ -1,5 +1,5 @@
-import React from 'react';
 import { GetVersionConfStatus_versions } from '../../../../../graphql/queries/types/GetVersionConfStatus';
+import React from 'react';
 import StatusCircle from '../../../../../components/StatusCircle/StatusCircle';
 import cx from 'classnames';
 import styles from './VersionInfo.module.scss';

@@ -21,6 +21,7 @@ $color-wrapper-bg: palette(base, 500);
   font-size: 14px;
   padding-left: 8px;
   border-bottom: solid 1px palette(base, 900);
+  transition: color ease 0.4s, background-color ease 0.4s;
 
   span {
     padding-left: 8px;
@@ -28,6 +29,7 @@ $color-wrapper-bg: palette(base, 500);
 
   &:hover {
     color: font-color(light);
+    background-color: palette(base, 400);
   }
 }
 

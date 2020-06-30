@@ -44,7 +44,7 @@
   }
 
   .head {
-    padding: $grid-unit 0 0 4 * $grid-unit;
+    padding-left: 4 * $grid-unit;
 
     .header {
       @include font-body;
@@ -52,6 +52,10 @@
 
       margin-bottom: $grid-unit;
       justify-content: space-between;
+
+      .title {
+        margin-top: $grid-unit;
+      }
     }
     .varType,
     .varKey {

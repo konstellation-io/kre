@@ -1,25 +1,21 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useMutation } from '@apollo/react-hooks';
-import { useHistory, useParams } from 'react-router';
-
-import { get } from 'lodash';
-
-import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-import FileUpload from '../../components/Form/FileUpload/FileUpload';
-import Button from '../../components/Button/Button';
-import ROUTE, { RuntimeRouteParams } from '../../constants/routes';
-
-import styles from './AddVersion.module.scss';
-
-import { loader } from 'graphql.macro';
 import {
   CreateVersion,
   CreateVersionVariables
 } from '../../graphql/mutations/types/CreateVersion';
-import { buildRoute } from '../../utils/routes';
+import ROUTE, { RuntimeRouteParams } from '../../constants/routes';
+import React, { useEffect } from 'react';
+import { useHistory, useParams } from 'react-router';
 
+import Button from '../../components/Button/Button';
+import FileUpload from '../../components/Form/FileUpload/FileUpload';
+import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
+import { buildRoute } from '../../utils/routes';
+import { get } from 'lodash';
+import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from '../../utils/formUtils';
+import styles from './AddVersion.module.scss';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@apollo/react-hooks';
 
 const AddVersionMutation = loader('../../graphql/mutations/addVersion.graphql');
 
@@ -88,6 +84,7 @@ function AddVersion() {
                 placeholder=".krt"
                 error={get(errors.addVersionFile, 'message', '')}
                 onChange={onChange}
+                autofocus
               />
               {loading && (
                 <div className={styles.spinner}>
@@ -100,8 +97,10 @@ function AddVersion() {
                   disabled={!!errors.addVersionFile || loading}
                   label={'CREATE'}
                   onClick={handleSubmit(onSubmit)}
+                  className={styles.buttonSave}
+                  tabIndex={0}
                 />
-                <Button label="CANCEL" onClick={onCancelClick} />
+                <Button label="CANCEL" onClick={onCancelClick} tabIndex={0} />
               </div>
             </form>
           </div>

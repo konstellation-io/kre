@@ -1,11 +1,15 @@
-import React, { FunctionComponent, MouseEvent } from 'react';
+import React, {
+  FunctionComponent,
+  KeyboardEvent,
+  useEffect,
+  useRef
+} from 'react';
+
 import { Link } from 'react-router-dom';
-
 import SpinnerLinear from '../../components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-
+import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import cx from 'classnames';
 import styles from './Button.module.scss';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 export const BUTTON_THEMES = {
   DEFAULT: 'default',
@@ -21,11 +25,13 @@ export const BUTTON_ALIGN = {
 
 type Props = {
   label?: string;
+  title?: string;
   theme?: string;
   border?: boolean;
   Icon?: FunctionComponent<SvgIconProps>;
+  iconSize?: 'icon-regular' | 'icon-small' | 'icon-big';
   to?: string;
-  onClick?: (e: MouseEvent<HTMLDivElement>) => void;
+  onClick?: Function;
   primary?: boolean;
   disabled?: boolean;
   loading?: boolean;
@@ -33,13 +39,17 @@ type Props = {
   align?: string;
   style?: Object;
   className?: string;
+  tabIndex?: number;
+  autofocus?: boolean;
 };
 
 function Button({
   theme = BUTTON_THEMES.DEFAULT,
   border = false,
   label = 'Button',
+  title = '',
   Icon = undefined,
+  iconSize = 'icon-small',
   to = '',
   onClick = function() {},
   primary = false,
@@ -48,16 +58,32 @@ function Button({
   height = 40,
   align = BUTTON_ALIGN.MIDDLE,
   style = {},
-  className = ''
+  className = '',
+  autofocus = false,
+  tabIndex = -1
 }: Props) {
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (autofocus && buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, [autofocus]);
+
   const content = loading ? (
     <SpinnerLinear size={30} dark />
   ) : (
     <>
-      {Icon && <Icon className="icon-small" />}
+      {Icon && <Icon className={iconSize} />}
       <span>{label}</span>
     </>
   );
+
+  function handleKeyPress(e: KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Enter') {
+      onClick();
+    }
+  }
 
   const btn = (
     <div
@@ -65,10 +91,16 @@ function Button({
         [styles.primary]: primary,
         [styles.border]: border,
         [styles.label]: !primary,
-        [styles.disabled]: disabled
+        [styles.disabled]: disabled,
+        [styles.noLabel]: label === '',
+        [styles.notFocussable]: tabIndex === -1
       })}
       style={{ ...style, height, lineHeight: `${height}px` }}
-      onClick={onClick}
+      onClick={() => onClick()}
+      onKeyPress={handleKeyPress}
+      title={title}
+      tabIndex={tabIndex}
+      ref={buttonRef}
     >
       {content}
     </div>

@@ -1,23 +1,25 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router';
-import { get } from 'lodash';
-import TextInput from '../../components/Form/TextInput/TextInput';
-import Button from '../../components/Button/Button';
 import * as CHECK from '../../components/Form/check';
-import styles from './AddRuntime.module.scss';
-import { loader } from 'graphql.macro';
-import { useMutation } from '@apollo/react-hooks';
-import {
-  GetRuntimes,
-  GetRuntimes_runtimes
-} from '../../graphql/queries/types/GetRuntimes';
+
 import {
   CreateRuntime,
   CreateRuntimeVariables
 } from '../../graphql/mutations/types/CreateRuntime';
+import { FieldError, useForm } from 'react-hook-form';
+import {
+  GetRuntimes,
+  GetRuntimes_runtimes
+} from '../../graphql/queries/types/GetRuntimes';
+import React, { useEffect } from 'react';
+
+import Button from '../../components/Button/Button';
 import ROUTE from '../../constants/routes';
-import { useForm, FieldError } from 'react-hook-form';
+import TextInput from '../../components/Form/TextInput/TextInput';
+import { get } from 'lodash';
+import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from '../../utils/formUtils';
+import styles from './AddRuntime.module.scss';
+import { useHistory } from 'react-router';
+import { useMutation } from '@apollo/react-hooks';
 
 const GetRuntimesQuery = loader('../../graphql/queries/getRuntimes.graphql');
 const CreateRuntimeMutation = loader(
@@ -132,12 +134,15 @@ function AddRuntime() {
                 label="SAVE"
                 onClick={handleSubmit(onSubmit)}
                 loading={loading}
+                className={styles.buttonSave}
+                tabIndex={0}
               />
               <Button
                 label="CANCEL"
                 onClick={() => {
                   history.goBack();
                 }}
+                tabIndex={0}
               />
             </div>
           </div>

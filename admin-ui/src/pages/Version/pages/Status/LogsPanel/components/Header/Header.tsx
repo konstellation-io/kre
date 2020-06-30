@@ -1,14 +1,13 @@
-import React from 'react';
+import * as ICONS from '../../../../../../../constants/icons';
 
-import IconOpen from '@material-ui/icons/ExpandLess';
 import IconClose from '@material-ui/icons/ExpandMore';
 import IconExpand from '@material-ui/icons/Fullscreen';
 import IconExpandExit from '@material-ui/icons/FullscreenExit';
-import * as ICONS from '../../../../../../../constants/icons';
-
+import IconOpen from '@material-ui/icons/ExpandLess';
+import React from 'react';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import cx from 'classnames';
 import styles from './Header.module.scss';
-import SvgIcon from '@material-ui/core/SvgIcon';
 
 type Props = {
   togglePanel: () => void;
@@ -27,8 +26,10 @@ function Header({ togglePanel, toggleFullScreen, opened, fullScreen }: Props) {
       className={cx(styles.container, {
         [styles.opened]: opened
       })}
+      onClick={() => !opened && togglePanel()}
+      title="Open logs"
     >
-      <div className={styles.title} onClick={togglePanel}>
+      <div className={styles.title}>
         <SvgIcon className="icon-small">
           <path d={ICONS.TERMINAL} />
         </SvgIcon>

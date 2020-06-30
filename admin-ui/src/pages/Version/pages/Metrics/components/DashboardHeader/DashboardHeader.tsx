@@ -1,3 +1,4 @@
+import Button from '../../../../../../components/Button/Button';
 import Calendar from '../../../../../../components/Form/Calendar/Calendar';
 import HideIcon from '@material-ui/icons/VisibilityOff';
 import { Moment } from 'moment';
@@ -45,13 +46,14 @@ function DashboardHeader({
           hideError
         />
       </div>
-      <div
+      <Button
+        label=""
         className={styles.visibilityIcon}
         onClick={() => setViewAllData(!viewAllData)}
         title={buttonTitle}
-      >
-        <Icon className="icon-regular" />
-      </div>
+        Icon={Icon}
+        iconSize="icon-regular"
+      />
     </div>
   );
 }

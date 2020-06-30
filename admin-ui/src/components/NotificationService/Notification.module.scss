@@ -2,9 +2,6 @@
 @import '../../styles/mixins';
 @import '../../styles/shadows';
 
-$color-error-bg: palette(error, 900);
-$color-alert-bg: palette(feedback, 900);
-
 .notificationsContainer {
   position: absolute;
   bottom: 0;
@@ -13,6 +10,10 @@ $color-alert-bg: palette(feedback, 900);
   flex-direction: column;
   z-index: $z-index-notifications;
   pointer-events: none;
+
+  .container:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .container {
@@ -23,13 +24,14 @@ $color-alert-bg: palette(feedback, 900);
   flex-direction: row;
   align-items: center;
   width: 60%;
-  max-width: 700px;
+  max-width: 1000px;
   margin: 0 auto;
   height: 60px;
   max-height: 0;
   margin-bottom: 3px;
   padding: 0 20px;
   overflow: hidden;
+  background-color: palette(base, 400);
 
   transition: max-height ease 0.3s;
 
@@ -45,12 +47,26 @@ $color-alert-bg: palette(feedback, 900);
     }
   }
 
+  .typeLabel {
+    @include font-button;
+    color: font-color(dark);
+
+    height: 3 * $grid-unit;
+    line-height: 3 * $grid-unit;
+    border-radius: 1.5 * $grid-unit;
+    padding: 0 3 * $grid-unit;
+  }
+
   &.MESSAGE {
-    background-color: $color-alert-bg;
+    .typeLabel {
+      background-color: palette(highlight);
+    }
   }
 
   &.ERROR {
-    background-color: $color-error-bg;
+    .typeLabel {
+      background-color: palette(error);
+    }
   }
 }
 
@@ -59,9 +75,8 @@ $color-alert-bg: palette(feedback, 900);
 }
 
 .message {
-  @include font-small;
-  font-weight: 600;
-  color: white;
+  @include font-body;
+  color: font-color(light);
 
   padding: 0 20px;
   margin-right: auto;

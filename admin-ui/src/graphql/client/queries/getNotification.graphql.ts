@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
 import { NotificationType } from '../typeDefs';
+import gql from 'graphql-tag';
 
 export interface GetNotifications_notifications {
   __typename: 'Notification';
@@ -7,6 +7,7 @@ export interface GetNotifications_notifications {
   message: string;
   timeout: number;
   type: NotificationType;
+  typeLabel?: string;
   to: string;
 }
 
@@ -21,6 +22,7 @@ export const GET_NOTIFICATIONS = gql`
       message
       timeout
       type
+      typeLabel
       to
     }
   }

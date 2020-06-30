@@ -1,23 +1,31 @@
 @import '../../../../../../../styles/mixins';
 @import '../../../../../../../styles/funcs';
+@import '../../../../../../../styles/shadows';
 @import '../../../../../../../styles/colors';
 
 .container {
   display: flex;
   align-items: center;
-
-  transition: height ease 0.3s;
+  cursor: pointer;
+  transition: height ease 0.3s, box-shadow linear 0.2s;
+  box-shadow: 0;
+  min-height: 3 * $grid-unit;
 
   &.opened {
     height: 4 * $grid-unit;
     flex-shrink: 0;
+    pointer-events: none;
 
     .buttons {
       opacity: 1;
     }
+  }
+
+  &:not(.opened):hover {
+    @include glow(4);
 
     .title {
-      pointer-events: none;
+      color: font-color(light);
     }
   }
 }
@@ -30,14 +38,9 @@
   align-items: center;
   margin: 0 20px 0 20px;
   transition: color ease 0.3s;
-  cursor: pointer;
 
   svg {
     margin: 4px 1.5 * $grid-unit 0 0;
-  }
-
-  &:hover {
-    color: font-color(light);
   }
 }
 
@@ -58,6 +61,7 @@
   flex-direction: row;
   transition: opacity ease 0.4s;
   margin: 4px 8px 0 auto;
+  pointer-events: all;
 
   div {
     margin-left: 8px;

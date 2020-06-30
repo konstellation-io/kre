@@ -1,12 +1,10 @@
-import { get } from 'lodash';
+import React, { useRef, useState } from 'react';
 
-import React, { useState, useRef } from 'react';
-
-import InputLabel from '../InputLabel/InputLabel';
-import InputError from '../InputError/InputError';
 import Button from '../../Button/Button';
-
+import InputError from '../InputError/InputError';
+import InputLabel from '../InputLabel/InputLabel';
 import cx from 'classnames';
+import { get } from 'lodash';
 import styles from './FileUpload.module.scss';
 
 type Props = {
@@ -17,6 +15,7 @@ type Props = {
   height?: number;
   error?: string;
   inputRef?: React.Ref<any>;
+  autofocus?: boolean;
 };
 
 function FileUpload({
@@ -26,7 +25,8 @@ function FileUpload({
   label = '',
   height = 40,
   error = '',
-  inputRef = null
+  inputRef = null,
+  autofocus = false
 }: Props) {
   const [selectedFile, setSelectedFile] = useState<File>();
   const fileButton = useRef<HTMLInputElement>(null);
@@ -67,7 +67,9 @@ function FileUpload({
               submitButton.click();
             }
           }}
+          tabIndex={0}
           border
+          autofocus={autofocus}
         />
       </div>
       <input

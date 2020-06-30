@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Left from '../../Layout/Left/Left';
-import Right from '../../Layout/Right/Right';
+import React, { useEffect, useState } from 'react';
+
 import GroupElement from './GroupElement';
-import IconSelectAll from '@material-ui/icons/DoneAll';
+import { GroupSelectData } from './GroupSelect';
+import IconClose from '@material-ui/icons/KeyboardArrowUp';
 import IconDeselectAll from '@material-ui/icons/ClearAll';
 import IconOpen from '@material-ui/icons/KeyboardArrowDown';
-import IconClose from '@material-ui/icons/KeyboardArrowUp';
-import { GroupSelectData } from './GroupSelect';
-import styles from './GroupSelect.module.scss';
+import IconSelectAll from '@material-ui/icons/DoneAll';
+import Left from '../../Layout/Left/Left';
+import Right from '../../Layout/Right/Right';
 import cx from 'classnames';
 import { get } from 'lodash';
+import styles from './GroupSelect.module.scss';
 
 const HEIGHT_ELEMENT = 45;
 
@@ -59,7 +60,8 @@ function Group({
 
   const OpenCloseIcon = opened ? IconClose : IconOpen;
 
-  const allSelected = elements.length === (selections[group] || []).length;
+  const nSelections = (selections[group] || []).length;
+  const allSelected = elements.length === nSelections;
   const groupSelection = {
     Icon: allSelected ? IconDeselectAll : IconSelectAll,
     title: allSelected ? 'Deselect all' : 'Select all',
@@ -78,8 +80,13 @@ function Group({
             <>{group}</>
           </Left>
           <Right className={styles.actions}>
+            {nSelections !== 0 && (
+              <div className={styles.nSelections}>( {nSelections} )</div>
+            )}
             <div
-              className={styles.selectAll}
+              className={cx(styles.selectAll, {
+                [styles.allSelected]: allSelected
+              })}
               onClick={groupSelection.action}
               title={groupSelection.title}
             >

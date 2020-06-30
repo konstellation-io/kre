@@ -1,12 +1,13 @@
-import React, { useState, useRef } from 'react';
-import InputLabel from '../InputLabel/InputLabel';
-import InputError from '../InputError/InputError';
-import useClickOutside from '../../../hooks/useClickOutside';
-import Selections from './Selections';
+import React, { useRef, useState } from 'react';
+import { get, isEmpty } from 'lodash';
+
 import Group from './Group';
+import InputError from '../InputError/InputError';
+import InputLabel from '../InputLabel/InputLabel';
+import Selections from './Selections';
 import cx from 'classnames';
 import styles from './GroupSelect.module.scss';
-import { get, isEmpty } from 'lodash';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 const MAX_HEIGHT = 400;
 const GROUP_HEIGHT = 30;
