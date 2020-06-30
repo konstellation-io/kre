@@ -69,9 +69,10 @@ delete_version() {
   [ -n "$DEPLOYMENT_NAMES" ] && echo_info "Deleting deployments" && kubectl -n "$NAMESPACE" delete deployment "$DEPLOYMENT_NAMES" --grace-period=0 --force
   [ -n "$POD_NAMES" ] && echo_info "Deleting pods" && kubectl -n "$NAMESPACE" delete pod "$POD_NAMES" --grace-period=0 --force
   [ -n "$CONFIG_NAMES" ] && echo_info "Deleting configs" && kubectl -n "$NAMESPACE" delete configmap "$CONFIG_NAMES" --grace-period=0 --force
-  mongo_script "$VERSION" | execute_mongo_script "$@"
+  mongo_script "$VERSION" | execute_mongo_script
 }
 
+# shellcheck disable=SC2120
 execute_mongo_script() {
   if [ "$MONGO_POD" = "" ]; then
     MONGO_POD=$(get_mongo_pod)

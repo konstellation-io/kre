@@ -62,7 +62,7 @@ fi
 # Split command and sub-command args and remove global flags
 COMMAND=$1
 shift
-COMMAND_ARGS=$(echo "$*" | sed -e 's/ *-v//g')
+COMMAND_ARGS=$(echo "$*" | sed -e 's/ +-v//g')
 
 # Check which command is requested
 case $COMMAND in
