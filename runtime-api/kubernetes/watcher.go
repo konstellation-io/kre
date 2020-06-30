@@ -1,7 +1,6 @@
 package kubernetes
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
@@ -30,10 +29,10 @@ func NewWatcher(config *config.Config, logger *simplelogger.SimpleLogger, client
 	}
 }
 
-func (w *Watcher) NodeStatus(ctx context.Context, versionName string, statusCh chan<- *entity.VersionNodeStatus) chan struct{} {
+func (w *Watcher) NodeStatus(versionName string, statusCh chan<- entity.Node) chan struct{} {
 	ns := w.config.Kubernetes.Namespace
 
-	w.logger.Info(fmt.Sprintf("--------------- WATCHING %s -----------", versionName))
+	w.logger.Debugf("Watching node status of version: %s", versionName)
 
 	factory := informers.NewSharedInformerFactoryWithOptions(w.clientset, 0,
 		informers.WithNamespace(ns),
@@ -56,19 +55,26 @@ func (w *Watcher) NodeStatus(ctx context.Context, versionName string, statusCh c
 			DeleteFunc: resolver.OnDelete,
 		}
 
-		w.logger.Info("------------ STARTING INFORMER -------------")
+		w.logger.Debugf("Starting informer for version watcher: %s", versionName)
 
 		informer.AddEventHandler(handlers)
 		informer.Run(stopCh)
-
 	}()
 
 	return stopCh
 }
 
 type NodeStatusResolver struct {
-	out    chan<- *entity.VersionNodeStatus
+	out    chan<- entity.Node
 	logger *simplelogger.SimpleLogger
+}
+
+func newNode(labels map[string]string, status entity.NodeStatus) entity.Node {
+	return entity.Node{
+		ID:     labels["node-id"],
+		Name:   labels["node-name"],
+		Status: status,
+	}
 }
 
 func (n *NodeStatusResolver) OnAdd(obj interface{}) {
@@ -81,22 +87,12 @@ func (n *NodeStatusResolver) OnAdd(obj interface{}) {
 	total := d.Status.Replicas
 
 	if ready == total && total > 0 {
-		n.logger.Info("----- STATUS: STARTED ------")
-		n.out <- &entity.VersionNodeStatus{
-			NodeID:  d.Labels["node-id"],
-			Status:  entity.NodeStatusStarted,
-			Message: "",
-		}
+		n.out <- newNode(d.Labels, entity.NodeStatusStarted)
 	} else {
-		n.logger.Info("----- STATUS: ERROR ------")
-		n.out <- &entity.VersionNodeStatus{
-			NodeID:  d.Labels["node-id"],
-			Status:  entity.NodeStatusError,
-			Message: "",
-		}
+		n.out <- newNode(d.Labels, entity.NodeStatusError)
 	}
 
-	n.logger.Info(fmt.Sprintf("\n[ADD] DEPLOYMENT: %63s  ready/total: %d/%d\n", d.Name, ready, total))
+	n.logger.Infof("\n[NodeStatusResolver.OnAdd] Deployment: %63s  ready/total: %d/%d\n", d.Name, ready, total)
 }
 
 func (n *NodeStatusResolver) OnUpdate(_, obj interface{}) {
@@ -109,21 +105,11 @@ func (n *NodeStatusResolver) OnUpdate(_, obj interface{}) {
 	total := d.Status.Replicas
 
 	if d.Status.UnavailableReplicas != 0 {
-		n.logger.Info("----- STATUS: ERROR ------")
-		n.out <- &entity.VersionNodeStatus{
-			NodeID:  d.Labels["node-id"],
-			Status:  entity.NodeStatusError,
-			Message: "",
-		}
+		n.out <- newNode(d.Labels, entity.NodeStatusError)
 	} else if ready == total && total > 0 {
-		n.logger.Info("----- STATUS: STARTED ------")
-		n.out <- &entity.VersionNodeStatus{
-			NodeID:  d.Labels["node-id"],
-			Status:  entity.NodeStatusStarted,
-			Message: "",
-		}
+		n.out <- newNode(d.Labels, entity.NodeStatusStarted)
 	}
-	n.logger.Info(fmt.Sprintf("\n[UPD] DEPLOYMENT: %63s  ready/total: %d/%d\n", d.Name, ready, total))
+	n.logger.Debugf("\n[NodeStatusResolver.OnUpdate] Deployment: %63s  ready/total: %d/%d\n", d.Name, ready, total)
 }
 
 func (n *NodeStatusResolver) OnDelete(obj interface{}) {
@@ -135,12 +121,7 @@ func (n *NodeStatusResolver) OnDelete(obj interface{}) {
 	ready := d.Status.ReadyReplicas
 	total := d.Status.Replicas
 	if total == 0 && ready == 0 {
-		n.logger.Info("----- STATUS: STOPPED ------")
-		n.out <- &entity.VersionNodeStatus{
-			NodeID:  d.Labels["node-id"],
-			Status:  entity.NodeStatusStopped,
-			Message: "",
-		}
+		n.out <- newNode(d.Labels, entity.NodeStatusStopped)
 	}
-	n.logger.Info(fmt.Sprintf("\n[DEL] DEPLOYMENT: %63s  ready/total: %d/%d\n", d.Name, ready, total))
+	n.logger.Infof("\n[NodeStatusResolver.OnDelete] Deployment: %63s  ready/total: %d/%d\n", d.Name, ready, total)
 }

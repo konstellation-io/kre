@@ -50,10 +50,10 @@ func (mr *MockMonitoringServiceMockRecorder) NodeLogs(runtime, versionID, filter
 }
 
 // VersionStatus mocks base method
-func (m *MockMonitoringService) VersionStatus(runtime *entity.Runtime, versionName string, stopCh <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
+func (m *MockMonitoringService) VersionStatus(runtime *entity.Runtime, versionName string, stopCh <-chan bool) (<-chan *entity.Node, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VersionStatus", runtime, versionName, stopCh)
-	ret0, _ := ret[0].(<-chan *entity.VersionNodeStatus)
+	ret0, _ := ret[0].(<-chan *entity.Node)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

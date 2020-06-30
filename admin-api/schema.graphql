@@ -53,7 +53,7 @@ type Mutation {
 type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
-  versionNodeStatus(versionId: ID!): VersionNodeStatus!
+  watchNodeStatus(versionId: ID!): Node!
   watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
@@ -101,13 +101,6 @@ input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
   comment: String!
-}
-
-type VersionNodeStatus {
-  date: String!
-  nodeId: String!
-  status: NodeStatus!
-  message: String!
 }
 
 input SettingsInput {

@@ -8,8 +8,8 @@ const (
 	NodeStatusError   NodeStatus = "ERROR"
 )
 
-type VersionNodeStatus struct {
-	NodeID  string
-	Status  NodeStatus
-	Message string
+type Node struct {
+	ID     string
+	Status NodeStatus
+	Name   string
 }

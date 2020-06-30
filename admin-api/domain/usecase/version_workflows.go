@@ -29,11 +29,10 @@ func generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
 			}
 
 			node := &entity.Node{
-				ID:     generateId(),
-				Name:   name,
-				Image:  nodeInfo.Image,
-				Src:    nodeInfo.Src,
-				Status: "STOPPED", // TODO get status using runtime-api or k8s
+				ID:    generateId(),
+				Name:  name,
+				Image: nodeInfo.Image,
+				Src:   nodeInfo.Src,
 			}
 
 			if previousN != nil {

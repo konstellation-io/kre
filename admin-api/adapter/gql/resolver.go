@@ -352,18 +352,18 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *enti
 	return runtimeCreatedChan, nil
 }
 
-func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId string) (<-chan *entity.VersionNodeStatus, error) {
+func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error) {
 	loggedUserID := ctx.Value("userID").(string)
 
 	stopCh := make(chan bool)
-	inputChan, err := r.versionInteractor.WatchVersionStatus(ctx, loggedUserID, versionId, stopCh)
+	inputChan, err := r.versionInteractor.WatchVersionStatus(ctx, loggedUserID, versionID, stopCh)
 	if err != nil {
 		return nil, err
 	}
 
 	r.logger.Info("Starting VersionNodeStatus subscription...")
 
-	outputChan := make(chan *entity.VersionNodeStatus)
+	outputChan := make(chan *entity.Node)
 
 	go func() {
 		for {
@@ -382,9 +382,7 @@ func (r *subscriptionResolver) VersionNodeStatus(ctx context.Context, versionId 
 				close(outputChan)
 				return
 			}
-
 		}
-
 	}()
 
 	return outputChan, nil
@@ -478,10 +476,6 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 	return userLoader.Load(*obj.PublicationUserID)
 }
 
-func (r *versionNodeStatusResolver) Date(_ context.Context, _ *entity.VersionNodeStatus) (string, error) {
-	return time.Now().Format(time.RFC3339), nil
-}
-
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
@@ -503,11 +497,6 @@ func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityRes
 // Version returns VersionResolver implementation.
 func (r *Resolver) Version() VersionResolver { return &versionResolver{r} }
 
-// VersionNodeStatus returns VersionNodeStatusResolver implementation.
-func (r *Resolver) VersionNodeStatus() VersionNodeStatusResolver {
-	return &versionNodeStatusResolver{r}
-}
-
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type runtimeResolver struct{ *Resolver }
@@ -515,4 +504,3 @@ type subscriptionResolver struct{ *Resolver }
 type userActivityResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
 type versionResolver struct{ *Resolver }
-type versionNodeStatusResolver struct{ *Resolver }
