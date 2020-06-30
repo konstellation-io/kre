@@ -1,7 +1,7 @@
+import { GetVersionConfStatus_runtime } from 'Graphql/queries/types/GetVersionConfStatus';
 import React from 'react';
-import styles from './RuntimeHexagon.module.scss';
 import cx from 'classnames';
-import { GetVersionConfStatus_runtime } from '../../graphql/queries/types/GetVersionConfStatus';
+import styles from './RuntimeHexagon.module.scss';
 
 export enum RuntimeHexagonSize {
   SMALL = 18,

@@ -2,10 +2,12 @@
   version(id: $versionId) {
     id
     status
-    configurationVariables {
-      key
-      value
-      type
+    config {
+      vars {
+        key
+        value
+        type
+      }
     }
   }
 }

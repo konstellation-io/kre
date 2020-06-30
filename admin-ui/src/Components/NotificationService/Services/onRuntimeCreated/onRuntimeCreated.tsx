@@ -58,6 +58,7 @@ function onRuntimeCreated(client: ApolloClient<object>) {
               id: `runtime-${runtime.id}-created`,
               message: `The RUNTIME "${runtime.name}" has been successfully created!`,
               type: NotificationType.MESSAGE,
+              typeLabel: 'CREATED',
               timeout: NOTIFICATION_TIMEOUT,
               to: runtimePath
             }

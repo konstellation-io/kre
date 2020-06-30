@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 cmd_login() {
   case $* in
@@ -7,16 +7,27 @@ cmd_login() {
     ;;
   esac
 
+  minikube_start
   local_login
+}
+
+show_login_help() {
+  echo "$(help_global_header "login")
+
+    options:
+      --new  creates a new user and reset admin pod before performing a login.
+
+    $(help_global_options)
+"
 }
 
 new_admin_user() {
   echo_wait "Collecting pods info..."
 
-  ADMIN_API_POD=`get_admin_api_pod`
+  ADMIN_API_POD=$(get_admin_api_pod)
   check_not_empty "ADMIN_API_POD" "error getting Admin API pod"
 
-  MONGO_POD=`get_mongo_pod`
+  MONGO_POD=$(get_mongo_pod)
   check_not_empty "MONGO_POD" "error getting MongoDB pod"
 
   MONGO_CREATE_USER_SCRIPT="db.getCollection('users').update(
@@ -34,16 +45,16 @@ new_admin_user() {
   )"
 
   echo_wait "Creating '$ADMIN_DEV_EMAIL' user..."
-  echo $MONGO_CREATE_USER_SCRIPT | run kubectl exec -n kre -it $MONGO_POD \
-    -- mongo --quiet -u $MONGO_USER -p $MONGO_PASS $MONGO_DB
+  echo "$MONGO_CREATE_USER_SCRIPT" | run kubectl exec -n kre -it "$MONGO_POD" \
+    -- mongo --quiet -u "$MONGO_USER" -p "$MONGO_PASS" "$MONGO_DB"
 
   # Reset AdminAPI to load permissions
   echo_wait "Resetting admin pod to reload permissions..."
-  run kubectl delete pod $ADMIN_API_POD -n kre --grace-period 0
+  run kubectl delete pod "$ADMIN_API_POD" -n kre --grace-period 0
 }
 
 local_login() {
-  ADMIN_API_POD=`get_admin_api_pod`
+  ADMIN_API_POD=$(get_admin_api_pod)
   check_not_empty "ADMIN_API_POD" "error getting Admin API pod"
 
   HOST="http://api.kre.local"
@@ -65,17 +76,22 @@ local_login() {
   echo_debug "watching $WATCH_FILE"
   echo_debug "waiting link log on pod: $ADMIN_API_POD"
 
-  kubectl -n kre logs $ADMIN_API_POD | tail -n 100 > $WATCH_FILE
+  kubectl -n kre logs "$ADMIN_API_POD" | tail -n 100 > "$WATCH_FILE"
 
+  FILE=$(cat "$WATCH_FILE")
   # Read the file in reverse order and capture the first signin link
-  LINK=$(cat $WATCH_FILE | awk '{print NR" "$0}' | sort -k1 -n -r | sed 's/^[^ ]* //g' | egrep -oh "http://.*/signin/([^\"]*)" | head -n 1)
+  LINK=$($FILE | awk '{print NR" "$0}' | sort -k1 -n -r | sed 's/^[^ ]* //g' | egrep -oh "http://.*/signin/([^\"]*)" | head -n 1)
 
-  rm $WATCH_FILE
+  rm "$WATCH_FILE"
 
   check_not_empty "LINK" "error watching for login link"
 
-  printf "\n Login done. Open your browser at: \n\n 🌎 $LINK\n"
+  echo
+  echo "Login done. Open your browser at:"
+  echo
+  echo "   🌎 ${LINK}"
+  echo
 
   # Open browser automatically
-  nohup xdg-open $LINK >/dev/null 2>&1 &
+  nohup xdg-open "$LINK" >/dev/null 2>&1 &
 }

@@ -1,6 +1,8 @@
 package usecase_test
 
 import (
+	"context"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -24,6 +26,7 @@ type runtimeSuiteMocks struct {
 	userActivityRepo  *mocks.MockUserActivityRepo
 	userRepo          *mocks.MockUserRepo
 	passwordGenerator *mocks.MockPasswordGenerator
+	accessControl     *mocks.MockAccessControl
 }
 
 func newRuntimeSuite(t *testing.T) *runtimeSuite {
@@ -35,6 +38,7 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	passwordGenerator := mocks.NewMockPasswordGenerator(ctrl)
+	accessControl := mocks.NewMockAccessControl(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
@@ -42,6 +46,7 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		logger,
 		userActivityRepo,
 		userRepo,
+		accessControl,
 	)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(
@@ -50,18 +55,20 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		runtimeService,
 		userActivity,
 		passwordGenerator,
+		accessControl,
 	)
 
 	return &runtimeSuite{
 		ctrl:              ctrl,
 		runtimeInteractor: runtimeInteractor,
 		mocks: &runtimeSuiteMocks{
-			logger:            logger,
-			runtimeService:    runtimeService,
-			runtimeRepo:       runtimeRepo,
-			userActivityRepo:  userActivityRepo,
-			userRepo:          userRepo,
-			passwordGenerator: passwordGenerator,
+			logger,
+			runtimeService,
+			runtimeRepo,
+			userActivityRepo,
+			userRepo,
+			passwordGenerator,
+			accessControl,
 		},
 	}
 }
@@ -122,15 +129,19 @@ func TestCreateRuntime(t *testing.T) {
 		},
 	}
 
-	s.mocks.runtimeService.EXPECT().Create(runtimeBeforeCreation).Return("OK", nil)
+	ctx := context.Background()
+
+	s.mocks.runtimeService.EXPECT().Create(ctx, runtimeBeforeCreation).Return("OK", nil)
 	s.mocks.passwordGenerator.EXPECT().NewPassword().Return(fakePass).Times(3)
-	s.mocks.runtimeRepo.EXPECT().Create(runtimeBeforeCreation).Return(expectedRuntime, nil)
+	s.mocks.runtimeRepo.EXPECT().Create(ctx, runtimeBeforeCreation).Return(expectedRuntime, nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
-	s.mocks.runtimeService.EXPECT().WaitForRuntimeStarted(expectedRuntime).Return(nil, nil)
-	s.mocks.runtimeRepo.EXPECT().Update(updatedRuntime).Return(nil)
+	s.mocks.runtimeService.EXPECT().WaitForRuntimeStarted(gomock.Any(), expectedRuntime).Return(nil, nil)
+	s.mocks.runtimeRepo.EXPECT().UpdateStatus(gomock.Any(), updatedRuntime.ID, updatedRuntime.Status).Return(nil)
 
-	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(name, description, userID)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
+
+	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(ctx, userID, name, description)
 	require.Nil(t, err)
 	require.Equal(t, expectedRuntime, runtime)
 
@@ -150,8 +161,13 @@ func TestFindAll(t *testing.T) {
 			ID: "runtime2",
 		},
 	}
-	s.mocks.runtimeRepo.EXPECT().FindAll().Return(expectedRuntimes, nil)
-	runtimes, err := s.runtimeInteractor.FindAll()
+	userID := "user1234"
+
+	ctx := context.Background()
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActView)
+	s.mocks.runtimeRepo.EXPECT().FindAll(ctx).Return(expectedRuntimes, nil)
+
+	runtimes, err := s.runtimeInteractor.FindAll(ctx, userID)
 	require.Nil(t, err)
 	require.Equal(t, expectedRuntimes, runtimes)
 }
@@ -164,8 +180,14 @@ func TestGetByID(t *testing.T) {
 	expectedRuntime := &entity.Runtime{
 		ID: runtimeID,
 	}
-	s.mocks.runtimeRepo.EXPECT().GetByID(runtimeID).Return(expectedRuntime, nil)
-	runtime, err := s.runtimeInteractor.GetByID(runtimeID)
+
+	userID := "user1234"
+	ctx := context.Background()
+
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActView)
+	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(expectedRuntime, nil)
+
+	runtime, err := s.runtimeInteractor.GetByID(ctx, userID, runtimeID)
 	require.Nil(t, err)
 	require.Equal(t, expectedRuntime, runtime)
 }

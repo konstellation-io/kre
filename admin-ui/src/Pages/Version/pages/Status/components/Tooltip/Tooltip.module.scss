@@ -101,3 +101,7 @@ $color-bg: $bg-color-dark;
     }
   }
 }
+
+.copyButton svg {
+  margin-right: -$grid-unit;
+}

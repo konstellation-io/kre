@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/admin-api/domain/entity"
 	reflect "reflect"
@@ -88,4 +89,19 @@ func (m *MockSessionRepo) DeleteByUserIDs(userIDs []string) error {
 func (mr *MockSessionRepoMockRecorder) DeleteByUserIDs(userIDs interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByUserIDs", reflect.TypeOf((*MockSessionRepo)(nil).DeleteByUserIDs), userIDs)
+}
+
+// GetUserSessions mocks base method
+func (m *MockSessionRepo) GetUserSessions(ctx context.Context, userID string) ([]entity.Session, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserSessions", ctx, userID)
+	ret0, _ := ret[0].([]entity.Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserSessions indicates an expected call of GetUserSessions
+func (mr *MockSessionRepoMockRecorder) GetUserSessions(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserSessions", reflect.TypeOf((*MockSessionRepo)(nil).GetUserSessions), ctx, userID)
 }

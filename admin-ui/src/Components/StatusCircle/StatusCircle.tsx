@@ -1,5 +1,5 @@
 import React from 'react';
-import { VersionStatus } from '../../graphql/types/globalTypes';
+import { VersionStatus } from 'Graphql/types/globalTypes';
 import cx from 'classnames';
 import styles from './StatusCircle.module.scss';
 

@@ -37,6 +37,11 @@ export interface GetVersionConfStatus_versions_publicationAuthor {
   email: string;
 }
 
+export interface GetVersionConfStatus_versions_config {
+  __typename: 'VersionConfig';
+  completed: boolean;
+}
+
 export interface GetVersionConfStatus_versions {
   __typename: 'Version';
   id: string;
@@ -47,7 +52,7 @@ export interface GetVersionConfStatus_versions {
   creationAuthor: GetVersionConfStatus_versions_creationAuthor;
   publicationDate: string | null;
   publicationAuthor: GetVersionConfStatus_versions_publicationAuthor | null;
-  configurationCompleted: boolean;
+  config: GetVersionConfStatus_versions_config;
 }
 
 export interface GetVersionConfStatus {

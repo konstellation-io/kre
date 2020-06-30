@@ -1,12 +1,14 @@
 mutation UpdateVersionConfiguration($input: UpdateConfigurationInput!) {
   updateVersionConfiguration(input: $input) {
     id
-    configurationCompleted
-    status
-    configurationVariables {
-      key
-      value
-      type
+    config {
+      completed
+      vars {
+        key
+        value
+        type
+      }
     }
+    status
   }
 }

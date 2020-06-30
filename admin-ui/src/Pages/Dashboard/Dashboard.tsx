@@ -116,7 +116,12 @@ function Dashboard() {
       headerChildren={
         <>
           <Can perform="runtime:edit">
-            <Button label="ADD RUNTIME" to={ROUTE.NEW_RUNTIME} height={40} />
+            <Button
+              label="ADD RUNTIME"
+              to={ROUTE.NEW_RUNTIME}
+              height={40}
+              className={styles.addRuntime}
+            />
           </Can>
           <div>{`${nRuntimes} runtime${nRuntimes > 1 ? 's' : ''} shown`}</div>
         </>

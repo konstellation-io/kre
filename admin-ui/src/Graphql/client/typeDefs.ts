@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
 import { AccessLevel } from '../types/globalTypes';
+import gql from 'graphql-tag';
 
 export enum NotificationType {
   MESSAGE = 'MESSAGE',
@@ -12,6 +12,7 @@ export interface AddNotificationInput {
   type: NotificationType;
   timeout: number;
   to: string;
+  typeLabel?: string;
 }
 
 export interface AddLogTabInput {

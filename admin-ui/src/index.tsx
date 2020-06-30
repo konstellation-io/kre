@@ -16,6 +16,7 @@ import { ADD_NOTIFICATION } from 'Graphql/client/mutations/addNotification.graph
 import { ApolloClient } from 'apollo-client';
 import { ApolloProvider } from '@apollo/react-hooks';
 import App from './App';
+import { GetNotifications_notifications } from 'Graphql/client/queries/getNotification.graphql';
 import { GetServerLogs_logs_items } from 'Graphql/queries/types/GetServerLogs';
 import ROUTE from 'Constants/routes';
 import React from 'react';
@@ -36,7 +37,7 @@ export let cache: InMemoryCache;
 export interface LocalState {
   loggedIn: boolean;
   logs: GetServerLogs_logs_items[];
-  notifications: [];
+  notifications: GetNotifications_notifications[];
   logTabs: LogPanel[];
   activeTabId: string;
   logsOpened: boolean;
@@ -69,13 +70,13 @@ function getNotificationIdAndMessage(error: ErrorResponse) {
       notificationMessage = 'Your session has expired, please log in again';
     } else if (!userIsUnauthorized(error)) {
       notificationId = 'Network error';
-      notificationMessage = `ERROR: ${error.networkError.message}`;
+      notificationMessage = `${error.networkError.message}`;
     }
   } else if (error.graphQLErrors) {
     notificationId = error.operation.operationName;
     notificationMessage = error.response
-      ? `ERROR: ${get(error, 'response.errors')[0].message}`
-      : 'ERROR: unknown graphQL error';
+      ? `${get(error, 'response.errors')[0].message}`
+      : 'unknown graphQL error';
   }
 
   return [notificationId, notificationMessage];

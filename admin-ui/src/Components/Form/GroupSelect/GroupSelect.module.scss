@@ -140,6 +140,17 @@ $height-input: 40px;
           color: font-color(light);
         }
       }
+
+      .selectAll.allSelected {
+        color: palette(highlight);
+        text-shadow: 0 0 red;
+      }
+
+      .nSelections {
+        @include font-small;
+        color: font-color(lowlight);
+        font-size: 10px;
+      }
     }
   }
 }

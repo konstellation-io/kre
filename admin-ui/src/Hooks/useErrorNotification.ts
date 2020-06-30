@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { ADD_NOTIFICATION } from 'Graphql/client/mutations/addNotification.graphql';
 import { ApolloError } from 'apollo-client';
+import { NotificationType } from 'Graphql/client/typeDefs';
+import { useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { NotificationType } from '../graphql/client/typeDefs';
-import { ADD_NOTIFICATION } from '../graphql/client/mutations/addNotification.graphql';
 
 type Props = {
   id: string;

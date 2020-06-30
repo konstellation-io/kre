@@ -1,4 +1,4 @@
-import '../../../../../../Chart.js/defaultProps';
+import 'Chart.js/defaultProps';
 
 import React, { MouseEvent, useCallback, useEffect, useRef } from 'react';
 
@@ -6,7 +6,7 @@ import Chart from 'chart.js';
 import IconExpand from '@material-ui/icons/KeyboardArrowDown';
 import IconShrink from '@material-ui/icons/KeyboardArrowUp';
 import { color as c } from 'd3-color';
-import { createCustomTooltip } from '../../../../../../Chart.js/tooltip';
+import { createCustomTooltip } from 'Chart.js/tooltip';
 import cx from 'classnames';
 import { get } from 'lodash';
 import styles from './TimeSeriesChart.module.scss';

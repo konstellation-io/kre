@@ -14,7 +14,7 @@ function ModalLayoutJustify({
   onUpdate,
   submit,
   error,
-  label = 'please, write your comment:  ',
+  label = 'why are you doing that?',
   className = ''
 }: Props) {
   return (

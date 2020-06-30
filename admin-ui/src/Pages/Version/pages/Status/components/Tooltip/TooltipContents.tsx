@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+
+import Button from 'Components/Button/Button';
 import IconCopy from '@material-ui/icons/FileCopy';
 import cx from 'classnames';
 import styles from './Tooltip.module.scss';
@@ -29,9 +31,12 @@ export function InputElContent({ nodeType }: InputProps) {
     <div className={cx(styles.tooltipContent, styles[nodeType])}>
       <span>HTTPS</span>
       <input type="text" value={url} ref={inputRef} readOnly />
-      <div onClick={onCopyToClipboard}>
-        <IconCopy className="icon-small" />
-      </div>
+      <Button
+        label=""
+        onClick={onCopyToClipboard}
+        Icon={IconCopy}
+        className={styles.copyButton}
+      />
     </div>
   );
 }

@@ -29,6 +29,7 @@ func newMetricsSuite(t *testing.T) *metricsSuite {
 	logger := mocks.NewMockLogger(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	monitoringService := mocks.NewMockMonitoringService(ctrl)
+	accessControl := mocks.NewMockAccessControl(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
@@ -36,6 +37,7 @@ func newMetricsSuite(t *testing.T) *metricsSuite {
 		logger,
 		runtimeRepo,
 		monitoringService,
+		accessControl,
 	)
 
 	return &metricsSuite{

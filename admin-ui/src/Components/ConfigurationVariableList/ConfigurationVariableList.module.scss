@@ -1,4 +1,5 @@
 @import 'Styles/colors';
+@import 'Styles/variables';
 @import 'Styles/mixins';
 
 $color-input-bg: palette(base, 600);
@@ -59,7 +60,7 @@ $color-input-bg: palette(base, 600);
     padding: 32px 0 0 0;
 
     > div {
-      padding: 0 16px 0 0;
+      margin: 0 2 * $grid-unit 0 0;
     }
   }
 

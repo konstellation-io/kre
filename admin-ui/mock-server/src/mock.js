@@ -51,9 +51,7 @@ const generateVersion = () => ({
   ]),
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
-  configurationVariables: () => new MockList([2, 20]),
-  workflows: () => new MockList(2),
-  configurationCompleted: true
+  workflows: () => new MockList(2)
 });
 
 let datetime = moment().subtract(24, 'hour');
@@ -186,7 +184,12 @@ module.exports = {
       setTimeout(() => {
         const _runtime = generateRuntime();
         pubsub.publish('runtimeCreated', {
-          runtimeCreated: { id: _runtime.id, name: _runtime.name }
+          runtimeCreated: {
+            id: _runtime.id,
+            name: _runtime.name,
+            status: 'STARTED',
+            creationDate: moment()
+          }
         });
       }, 4000);
       return { errors: [], runtime: this.Runtime };
@@ -236,6 +239,10 @@ module.exports = {
   }),
   Runtime: generateRuntime,
   Version: generateVersion,
+  VersionConfig: () => ({
+    completed: true,
+    vars: () => new MockList([2, 20])
+  }),
   ConfigurationVariable: () => ({
     key: casual.word.toUpperCase(),
     value: () => {

@@ -121,12 +121,15 @@ function AddUser() {
                 label="SAVE"
                 onClick={handleSubmit(onSubmit)}
                 loading={loading}
+                className={styles.buttonSave}
+                tabIndex={0}
               />
               <Button
                 label="CANCEL"
                 onClick={() => {
                   history.goBack();
                 }}
+                tabIndex={0}
               />
             </div>
           </div>

@@ -42,10 +42,6 @@ $animation-duration: 0.8s;
     fill: $color-node-bg;
     cursor: pointer;
     @include animate(stroke);
-
-    &.clicksDisabled {
-      cursor: default;
-    }
   }
 
   &.#{$status-down} {
@@ -205,4 +201,8 @@ $animation-duration: 0.8s;
       stroke: $color-status-up;
     }
   }
+}
+
+.clicksDisabled {
+  cursor: default !important;
 }

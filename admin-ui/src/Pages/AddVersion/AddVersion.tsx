@@ -84,6 +84,7 @@ function AddVersion() {
                 placeholder=".krt"
                 error={get(errors.addVersionFile, 'message', '')}
                 onChange={onChange}
+                autofocus
               />
               {loading && (
                 <div className={styles.spinner}>
@@ -96,8 +97,10 @@ function AddVersion() {
                   disabled={!!errors.addVersionFile || loading}
                   label={'CREATE'}
                   onClick={handleSubmit(onSubmit)}
+                  className={styles.buttonSave}
+                  tabIndex={0}
                 />
-                <Button label="CANCEL" onClick={onCancelClick} />
+                <Button label="CANCEL" onClick={onCancelClick} tabIndex={0} />
               </div>
             </form>
           </div>

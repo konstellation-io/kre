@@ -1,4 +1,4 @@
-import { AccessLevel } from './../../../../graphql/types/globalTypes';
+import { AccessLevel } from 'Graphql/types/globalTypes';
 export type ModalInfo = {
   action: (comment: string) => void;
   title: string;

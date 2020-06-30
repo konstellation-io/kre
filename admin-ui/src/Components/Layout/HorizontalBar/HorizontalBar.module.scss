@@ -1,8 +1,13 @@
 @import 'Styles/colors';
+@import 'Styles/variables';
 
 .container {
   width: 100%;
   display: flex;
   flex-direction: row-reverse;
   background-color: $bg-color-dark;
+
+  > div:not(:last-child) {
+    margin-left: $grid-unit;
+  }
 }

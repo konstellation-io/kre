@@ -1,27 +1,28 @@
-import React, { FunctionComponent } from 'react';
-import ReactDOMServer from 'react-dom/server';
-import InputNodeIcon from '@material-ui/icons/Public';
-import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
+import {
+  FinalStates,
+  getLinkState,
+  getProcessState,
+  getWorkflowState
+} from '../../states';
 import {
   GetVersionWorkflows_version_workflows,
   GetVersionWorkflows_version_workflows_nodes
-} from '../../../../../../graphql/queries/types/GetVersionWorkflows';
-import { select, Selection } from 'd3-selection';
+} from 'Graphql/queries/types/GetVersionWorkflows';
+import { InputElContent, NodeTypes } from '../Tooltip/TooltipContents';
+import React, { FunctionComponent } from 'react';
 import { ScaleBand, scaleBand } from 'd3-scale';
-import { rgb } from 'd3-color';
-import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
-import styles from './WorkflowViz.module.scss';
-import { NodeTypes, InputElContent } from '../Tooltip/TooltipContents';
+import { Selection, select } from 'd3-selection';
+
 import { ReactComponent as InputNode } from '../../icons/inputNode.svg';
+import InputNodeIcon from '@material-ui/icons/Public';
+import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
+import ReactDOMServer from 'react-dom/server';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
-import {
-  FinalStates,
-  getProcessState,
-  getLinkState,
-  getWorkflowState
-} from '../../states';
+import { VersionStatus } from 'Graphql/types/globalTypes';
 import { get } from 'lodash';
+import { rgb } from 'd3-color';
+import styles from './WorkflowViz.module.scss';
 
 type D = GetVersionWorkflows_version_workflows_nodes;
 
@@ -95,7 +96,6 @@ class WorkflowViz {
   nodesG: Selection<SVGGElement, unknown, null, undefined>;
   edgesG: Selection<SVGGElement, unknown, null, undefined>;
   defs: Selection<SVGGElement, unknown, null, undefined>;
-  prevNodeLabelRightX: number;
   inputNode: Selection<SVGGElement, unknown, null, undefined> | null;
   outputNode: Selection<SVGGElement, unknown, null, undefined> | null;
 
@@ -108,7 +108,6 @@ class WorkflowViz {
     this.nodeInnerRadius = 0;
     this.nodeCentroidDistance = 0;
     this.edgeWidth = 0;
-    this.prevNodeLabelRightX = 0;
     this.yOffset = props.height * OFFSET_TOP_PERC;
 
     // Vars initialization
@@ -214,13 +213,13 @@ class WorkflowViz {
       .attr('r', nodeInnerRadius)
       .attr('cx', nodeOuterRadius);
 
-    newCircles.each(function(d: D) {
+    newCircles.each(function(d: D, idx: number) {
       generateLink(
         (xScale(d.id) || 0) + nodeOuterRadius * 2,
         getLinkState(d.status),
         d.id
       );
-      generateNodeLabel(this, d.name, self);
+      generateNodeLabel(this, d.name, self, idx);
     });
 
     // Old circles
@@ -238,14 +237,13 @@ class WorkflowViz {
     circles.merge(newCircles);
   };
 
-  generateNodeLabel = (node: SVGGElement, label: string, self: this) => {
-    const {
-      nodeOuterRadius,
-      nodeInnerRadius,
-      yOffset,
-      prevNodeLabelRightX,
-      nodeCentroidDistance
-    } = self;
+  generateNodeLabel = (
+    node: SVGGElement,
+    label: string,
+    self: this,
+    idx: number
+  ) => {
+    const { nodeOuterRadius, nodeInnerRadius, yOffset } = self;
 
     const textSize = 16;
     const labelSeparation = 36;
@@ -277,9 +275,8 @@ class WorkflowViz {
       height: bbox.height + 2 * NODE_LABEL_PADDING.VERTICAL
     };
 
-    const actX = rectDims.width / 2;
-    const prevRightX = nodeCentroidDistance - prevNodeLabelRightX;
-    const shouldMoveLabel = actX >= prevRightX;
+    const labelIsOdd = idx % 2;
+    const shouldMoveLabel = labelIsOdd;
 
     if (shouldMoveLabel) {
       labelYOffset = yOffset - labelSeparation - MARGIN_TOP_LABELS;
@@ -305,8 +302,6 @@ class WorkflowViz {
       .attr('y1', NODE_LABEL_PADDING.VERTICAL)
       .attr('x2', 0)
       .attr('y2', labelYOffset - nodeOuterRadius - nodeInnerRadius);
-
-    self.prevNodeLabelRightX = shouldMoveLabel ? 0 : actX;
   };
 
   generateInputNode = () => {
@@ -317,6 +312,7 @@ class WorkflowViz {
       yOffset,
       getTooltip,
       props: {
+        enableNodeClicks,
         data,
         workflowStatus,
         onInputNodeClick,
@@ -334,6 +330,7 @@ class WorkflowViz {
         .append('g')
         .classed(styles.inputNode, true)
         .classed(styles[getWorkflowState(workflowStatus)], true)
+        .classed(styles.clicksDisabled, !enableNodeClicks)
         .on('mouseenter', function() {
           getTooltip({
             x,
@@ -344,7 +341,7 @@ class WorkflowViz {
             node: this
           });
         })
-        .on('click', () => onInputNodeClick())
+        .on('click', () => enableNodeClicks && onInputNodeClick())
         .on('mouseleave', () => onHideTooltip());
       this.inputNode
         .append('rect')
@@ -382,6 +379,7 @@ class WorkflowViz {
     } else {
       this.inputNode
         .attr('class', styles.inputNode)
+        .classed(styles.clicksDisabled, !enableNodeClicks)
         .classed(styles.hovered, function() {
           return this === lastHoveredNode;
         })

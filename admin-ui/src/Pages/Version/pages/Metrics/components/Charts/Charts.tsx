@@ -1,13 +1,14 @@
+import { Row, RowsWrapper } from 'react-grid-resizable';
+
+import Accuracy from '../../boxes/Accuracy/Accuracy';
+import ConfusionMatrixBox from '../../boxes/ConfusionMatrixBox/ConfusionMatrixBox';
+import GeneralInfo from '../../boxes/GeneralInfo/GeneralInfo';
+import { GetMetrics } from 'Graphql/queries/types/GetMetrics';
+import LabelStats from '../../boxes/LabelStats/LabelStats';
 import React from 'react';
 import cx from 'classnames';
-import styles from './Charts.module.scss';
-import { RowsWrapper, Row } from 'react-grid-resizable';
-import GeneralInfo from '../../boxes/GeneralInfo/GeneralInfo';
-import ConfusionMatrixBox from '../../boxes/ConfusionMatrixBox/ConfusionMatrixBox';
-import LabelStats from '../../boxes/LabelStats/LabelStats';
-import Accuracy from '../../boxes/Accuracy/Accuracy';
-import { GetMetrics } from '../../../../../../graphql/queries/types/GetMetrics';
 import { get } from 'lodash';
+import styles from './Charts.module.scss';
 
 const PADDING_HEIGHT = 164;
 const PADDING_WIDTH = 310;

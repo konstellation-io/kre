@@ -2,6 +2,7 @@ package usecase_test
 
 import (
 	"context"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -20,8 +21,9 @@ type userSuite struct {
 }
 
 type userSuiteMocks struct {
-	logger   *mocks.MockLogger
-	userRepo *mocks.MockUserRepo
+	logger        *mocks.MockLogger
+	userRepo      *mocks.MockUserRepo
+	accessControl *mocks.MockAccessControl
 }
 
 func newUserSuite(t *testing.T) *userSuite {
@@ -31,24 +33,27 @@ func newUserSuite(t *testing.T) *userSuite {
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	sessionRepo := mocks.NewMockSessionRepo(ctrl)
+	accessControl := mocks.NewMockAccessControl(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
-	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo)
+	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 
 	userInteractor := usecase.NewUserInteractor(
 		logger,
 		userRepo,
 		userActivityInteractor,
 		sessionRepo,
+		accessControl,
 	)
 
 	return &userSuite{
 		ctrl:       ctrl,
 		interactor: userInteractor,
 		mocks: userSuiteMocks{
-			logger:   logger,
-			userRepo: userRepo,
+			logger,
+			userRepo,
+			accessControl,
 		},
 	}
 }
@@ -82,9 +87,13 @@ func TestGetAllUsers(t *testing.T) {
 		},
 	}
 
-	s.mocks.userRepo.EXPECT().GetAll(gomock.Any(), false).Return(usersFound, nil)
+	ctx := context.Background()
+	userID := "user1234"
 
-	res, err := s.interactor.GetAllUsers(context.Background(), false)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResUsers, auth.ActView)
+	s.mocks.userRepo.EXPECT().GetAll(ctx, false).Return(usersFound, nil)
+
+	res, err := s.interactor.GetAllUsers(ctx, userID, false)
 	require.Nil(t, err)
 	require.EqualValues(t, res, usersFound)
 }

@@ -1,20 +1,19 @@
 import React, {
-  useState,
-  useEffect,
-  MouseEvent,
-  KeyboardEvent,
-  FocusEvent,
   ChangeEvent,
-  ReactElement
+  FocusEvent,
+  KeyboardEvent,
+  MouseEvent,
+  ReactElement,
+  useEffect,
+  useState
 } from 'react';
 
-import InputLabel from '../InputLabel/InputLabel';
-import InputError from '../InputError/InputError';
-import InputInfo from '../InputInfo/InputInfo';
-import InputHelp from '../InputHelp/InputHelp';
-import IconShow from '@material-ui/icons/RemoveRedEye';
 import IconHide from '@material-ui/icons/RemoveRedEyeOutlined';
-
+import IconShow from '@material-ui/icons/RemoveRedEye';
+import InputError from '../InputError/InputError';
+import InputHelp from '../InputHelp/InputHelp';
+import InputInfo from '../InputInfo/InputInfo';
+import InputLabel from '../InputLabel/InputLabel';
 import cx from 'classnames';
 import styles from './TextInput.module.scss';
 
@@ -105,7 +104,9 @@ function TextInput({
   function onKeyPress(
     e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
-    if (e.which === KEY_ENTER && (!textArea || (textArea && e.ctrlKey))) {
+    if (e.which === KEY_ENTER) {
+      if (textArea && e.shiftKey) return;
+
       onEnterKeyPress();
     }
   }

@@ -1,13 +1,12 @@
-import React from 'react';
-
-import Box from '../../components/Box/Box';
-import Title from '../../components/Box/Title';
-import InfoNumber, { Sizes } from '../../components/Box/InfoNumber';
 import {
   GetMetrics_metrics_values,
   GetMetrics_metrics_values_accuracy
-} from '../../../../../../graphql/queries/types/GetMetrics';
+} from 'Graphql/queries/types/GetMetrics';
+import InfoNumber, { Sizes } from '../../components/Box/InfoNumber';
 
+import Box from '../../components/Box/Box';
+import React from 'react';
+import Title from '../../components/Box/Title';
 import styles from './GeneralInfo.module.scss';
 
 type Section1InfoRowProps = {

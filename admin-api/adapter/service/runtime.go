@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"time"
-
 	"google.golang.org/grpc"
 
 	"github.com/konstellation-io/kre/admin-api/adapter/service/proto/runtimepb"
@@ -34,7 +32,7 @@ func NewK8sRuntimeClient(cfg *config.Config, logger logging.Logger) (*K8sRuntime
 	}, nil
 }
 
-func (k *K8sRuntimeClient) Create(runtime *entity.Runtime) (string, error) {
+func (k *K8sRuntimeClient) Create(ctx context.Context, runtime *entity.Runtime) (string, error) {
 	req := runtimepb.Request{
 		Runtime: &runtimepb.Runtime{
 			Name:      runtime.Name,
@@ -51,9 +49,6 @@ func (k *K8sRuntimeClient) Create(runtime *entity.Runtime) (string, error) {
 		},
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-	defer cancel()
-
 	res, err := k.client.Create(ctx, &req)
 	if err != nil {
 		return "", err
@@ -62,7 +57,7 @@ func (k *K8sRuntimeClient) Create(runtime *entity.Runtime) (string, error) {
 	return res.GetMessage(), nil
 }
 
-func (k *K8sRuntimeClient) WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error) {
+func (k *K8sRuntimeClient) WaitForRuntimeStarted(ctx context.Context, runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error) {
 	cc, err := grpc.Dial(k.cfg.Services.K8sManager, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
@@ -82,9 +77,6 @@ func (k *K8sRuntimeClient) WaitForRuntimeStarted(runtime *entity.Runtime) (*enti
 			Namespace: runtime.GetNamespace(),
 		},
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
-	defer cancel()
 
 	res, err := c.RuntimeStatus(ctx, req)
 	if err != nil {

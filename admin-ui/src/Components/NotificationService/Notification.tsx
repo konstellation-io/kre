@@ -23,6 +23,7 @@ export type Props = {
   id: string;
   message: string;
   buttonLabel: string;
+  typeLabel?: string;
   timeout?: number;
   type?: NotificationType;
   to?: string;
@@ -32,6 +33,7 @@ function Notification({
   id,
   message,
   buttonLabel,
+  typeLabel = '',
   timeout = 0,
   type = NotificationType.MESSAGE,
   to = ''
@@ -76,8 +78,12 @@ function Notification({
     style.height = contentHeight;
   }
 
+  const typeText =
+    typeLabel || (type === NotificationType.ERROR && NotificationType.ERROR);
+
   return (
     <div className={cx(styles.container, styles[type])} style={style}>
+      {typeText && <div className={styles.typeLabel}>{typeText}</div>}
       <div className={styles.message} title={message} ref={content}>
         {message}
       </div>

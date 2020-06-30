@@ -26,8 +26,10 @@ function Header({ togglePanel, toggleFullScreen, opened, fullScreen }: Props) {
       className={cx(styles.container, {
         [styles.opened]: opened
       })}
+      onClick={() => !opened && togglePanel()}
+      title="Open logs"
     >
-      <div className={styles.title} onClick={togglePanel}>
+      <div className={styles.title}>
         <SvgIcon className="icon-small">
           <path d={ICONS.TERMINAL} />
         </SvgIcon>

@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
-import WorkflowViz from './WorkflowViz';
-import { GetVersionWorkflows_version_workflows } from '../../../../../../graphql/queries/types/GetVersionWorkflows';
-import { VersionStatus } from '../../../../../../graphql/types/globalTypes';
+import React, { useEffect, useRef } from 'react';
+
+import { GetVersionWorkflows_version_workflows } from 'Graphql/queries/types/GetVersionWorkflows';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
+import { VersionStatus } from 'Graphql/types/globalTypes';
+import WorkflowViz from './WorkflowViz';
 
 type Props = {
   data: GetVersionWorkflows_version_workflows;

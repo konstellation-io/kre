@@ -18,6 +18,8 @@ query GetVersionWorkflows($versionId: ID!) {
         toNode
       }
     }
-    configurationCompleted
+    config {
+      completed
+    }
   }
 }

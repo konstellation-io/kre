@@ -1,9 +1,11 @@
-import React, { RefObject, FunctionComponent, MouseEvent } from 'react';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import styles from './Tooltip.module.scss';
-import cx from 'classnames';
 import '../../icons/icons.scss';
-import { NodeStatus } from '../../../../../../graphql/types/globalTypes';
+
+import React, { FunctionComponent, MouseEvent, RefObject } from 'react';
+
+import { NodeStatus } from 'Graphql/types/globalTypes';
+import SvgIcon from '@material-ui/core/SvgIcon';
+import cx from 'classnames';
+import styles from './Tooltip.module.scss';
 
 export type TooltipHeader = {
   Icon: JSX.Element | null;
