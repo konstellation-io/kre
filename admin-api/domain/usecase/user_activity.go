@@ -209,18 +209,19 @@ func (i *UserActivityInteractor) RegisterCreateUser(userID string, createdUser *
 	_ = checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, userEmails []string) {
+func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string) {
 	err := i.Create(
 		userID,
 		entity.UserActivityTypeRemoveUsers,
 		[]*entity.UserActivityVar{
 			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
 			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
+			{Key: "COMMENT", Value: comment},
 		})
 	_ = checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel) {
+func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel, comment string) {
 	err := i.Create(
 		userID,
 		entity.UserActivityTypeUpdateAccessLevels,
@@ -228,17 +229,19 @@ func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userI
 			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
 			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
 			{Key: "ACCESS_LEVEL", Value: newAccessLevel.String()},
+			{Key: "COMMENT", Value: comment},
 		})
 	_ = checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterRevokeSessions(userID string, userIDs, userEmails []string) {
+func (i *UserActivityInteractor) RegisterRevokeSessions(userID string, userIDs, userEmails []string, comment string) {
 	err := i.Create(
 		userID,
 		entity.UserActivityTypeRevokeSessions,
 		[]*entity.UserActivityVar{
 			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
 			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
+			{Key: "COMMENT", Value: comment},
 		})
 	_ = checkUserActivityError(i.logger, err)
 }

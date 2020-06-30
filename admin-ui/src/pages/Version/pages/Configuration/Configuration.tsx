@@ -1,5 +1,5 @@
 import {
-  GetConfigurationVariables_version_configurationVariables as ConfigurationVariable,
+  GetConfigurationVariables_version_config_vars as ConfigurationVariable,
   GetConfigurationVariables,
   GetConfigurationVariablesVariables
 } from '../../../../graphql/queries/types/GetConfigurationVariables';
@@ -13,7 +13,7 @@ import {
   UpdateVersionConfiguration,
   UpdateVersionConfigurationVariables
 } from '../../../../graphql/mutations/types/UpdateVersionConfiguration';
-import { cloneDeep, get, isEqual, pick } from 'lodash';
+import { cloneDeep, isEqual, pick } from 'lodash';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import Button from '../../../../components/Button/Button';
@@ -106,9 +106,7 @@ function Configuration() {
 
   useEffect(() => {
     if (data) {
-      updateConfigurationVariables(
-        get(data, 'version.configurationVariables', [])
-      );
+      updateConfigurationVariables(data.version.config.vars);
     }
   }, [data]);
 
@@ -122,14 +120,12 @@ function Configuration() {
 
   // TODO: CHECK FOR ERRORS
   function onCompleteUpdate(data: UpdateVersionConfiguration) {
-    updateConfigurationVariables(
-      data.updateVersionConfiguration.configurationVariables
-    );
+    updateConfigurationVariables(data.updateVersionConfiguration.config.vars);
   }
 
   function getContent() {
     const noVars: boolean =
-      (data && data.version.configurationVariables.length === 0) || false;
+      (data && data.version.config.vars.length === 0) || false;
 
     if (noVars) {
       return <Message text="This version has no configuration variables" />;

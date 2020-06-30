@@ -1,6 +1,7 @@
 package usecase_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -32,6 +33,7 @@ func newSettingTest(t *testing.T) *settingTest {
 	settingRepo := mocks.NewMockSettingRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
+	accessControl := mocks.NewMockAccessControl(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
@@ -39,12 +41,14 @@ func newSettingTest(t *testing.T) *settingTest {
 		logger,
 		userActivityRepo,
 		userRepo,
+		accessControl,
 	)
 
 	settingInteractor := usecase.NewSettingInteractor(
 		logger,
 		settingRepo,
 		userActivity,
+		accessControl,
 	)
 
 	return &settingTest{
@@ -67,10 +71,12 @@ func TestCreateDefaults(t *testing.T) {
 		SessionLifetimeInDays: usecase.DefaultSessionLifetimeInDays,
 	}
 
-	s.mocks.settingRepo.EXPECT().Get().Return(nil, usecase.ErrSettingNotFound)
+	ctx := context.Background()
+
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(nil, usecase.ErrSettingNotFound)
 	s.mocks.settingRepo.EXPECT().Create(expectedSettings).Return(nil)
 
-	err := s.settingInteractor.CreateDefaults()
+	err := s.settingInteractor.CreateDefaults(ctx)
 	require.Nil(t, err)
 }
 
@@ -78,9 +84,11 @@ func TestCreateDefaultsNoOverridesCurrentValues(t *testing.T) {
 	s := newSettingTest(t)
 	defer s.ctrl.Finish()
 
-	s.mocks.settingRepo.EXPECT().Get().Return(nil, nil)
+	ctx := context.Background()
 
-	err := s.settingInteractor.CreateDefaults()
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(nil, nil)
+
+	err := s.settingInteractor.CreateDefaults(ctx)
 	require.Nil(t, err)
 }
 
@@ -88,9 +96,11 @@ func TestCreateDefaultsReturnsAnError(t *testing.T) {
 	s := newSettingTest(t)
 	defer s.ctrl.Finish()
 
-	expectedErr := errors.New("some error")
-	s.mocks.settingRepo.EXPECT().Get().Return(nil, expectedErr)
+	ctx := context.Background()
 
-	err := s.settingInteractor.CreateDefaults()
+	expectedErr := errors.New("some error")
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(nil, expectedErr)
+
+	err := s.settingInteractor.CreateDefaults(ctx)
 	require.Equal(t, expectedErr, err)
 }

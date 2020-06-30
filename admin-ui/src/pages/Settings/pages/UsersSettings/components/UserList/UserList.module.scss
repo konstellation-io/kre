@@ -32,10 +32,8 @@
   width: 100% !important;
   white-space: nowrap;
 
-  tbody tr td:nth-child(1) {
-    width: 37px;
-  }
-  tbody tr td:nth-child(6) {
+  tbody tr td:nth-child(1),
+  tbody tr td:nth-child(7) {
     width: 37px;
   }
 
@@ -71,7 +69,7 @@
     }
 
     td:nth-child(2),
-    td:nth-child(5) {
+    td:nth-child(6) {
       @include font-small;
       color: font-color(regular);
       line-height: inherit;
@@ -90,9 +88,15 @@
       line-height: inherit;
     }
     td:nth-child(5) {
-      width: 165px;
+      @include font-small;
+      color: font-color(highlight);
+      line-height: inherit;
+      text-align: center;
     }
     td:nth-child(6) {
+      width: 165px;
+    }
+    td:nth-child(7) {
       color: font-color(regular);
       line-height: 0;
     }

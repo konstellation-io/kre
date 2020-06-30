@@ -1,6 +1,8 @@
 package usecase_test
 
 import (
+	"context"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
 	"os"
 	"testing"
 	"time"
@@ -31,6 +33,7 @@ type versionSuiteMocks struct {
 	userActivityRepo  *mocks.MockUserActivityRepo
 	userRepo          *mocks.MockUserRepo
 	createStorage     repository.CreateStorage
+	accessControl     *mocks.MockAccessControl
 }
 
 func newVersionSuite(t *testing.T) *versionSuite {
@@ -50,6 +53,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	versionService := mocks.NewMockVersionService(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
+	accessControl := mocks.NewMockAccessControl(ctrl)
 	createStorage := CreateStorageMock
 
 	mocks.AddLoggerExpects(logger)
@@ -58,6 +62,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		logger,
 		userActivityRepo,
 		userRepo,
+		accessControl,
 	)
 
 	versionInteractor := usecase.NewVersionInteractor(
@@ -68,19 +73,21 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		monitoringService,
 		userActivityInteractor,
 		createStorage,
+		accessControl,
 	)
 
 	return &versionSuite{
 		ctrl: ctrl,
 		mocks: versionSuiteMocks{
-			logger:            logger,
-			versionRepo:       versionRepo,
-			runtimeRepo:       runtimeRepo,
-			versionService:    versionService,
-			monitoringService: monitoringService,
-			userActivityRepo:  userActivityRepo,
-			userRepo:          userRepo,
-			createStorage:     createStorage,
+			logger,
+			versionRepo,
+			runtimeRepo,
+			versionService,
+			monitoringService,
+			userActivityRepo,
+			userRepo,
+			createStorage,
+			accessControl,
 		},
 		versionInteractor: versionInteractor,
 	}
@@ -129,13 +136,15 @@ func TestCreateNewVersion(t *testing.T) {
 		t.Error(err)
 	}
 
-	s.mocks.runtimeRepo.EXPECT().GetByID(runtimeID).Return(runtime, nil)
+	ctx := context.Background()
+
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
+	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(runtime, nil)
 	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
 
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
-	_, err = s.versionInteractor.Create(userFound.ID, runtimeID, file)
+	_, err = s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
 	require.Nil(t, err)
-
 }

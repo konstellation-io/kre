@@ -57,7 +57,7 @@ generate-helm-chart:
     - git config --global user.email "${GITLAB_USER_EMAIL}" && git config --global user.name "${GITLAB_USER_NAME}"
     - git commit -m "add chart version $CHART_VERSION"
     - git push upstream
-    - curl --request POST --header $NOTIFY_TOKEN `echo -n $NOTIFY_URL | base64 -d`$CHART_VERSION
+    - curl --request POST --header $NOTIFY_TOKEN `echo -n $NOTIFY_URL | base64 -d`$CHART_VERSION >/dev/null 2>&1
   rules:
     - if: '$CI_COMMIT_TAG =~ /^helm-chart-v\d*.\d*.\d*$/'
       when: always

@@ -5,7 +5,7 @@
     - [KRT](#krt)
 - [Install](#install)
 - [Development](#development)
-  - [Deploy local](#deploy-local)
+  - [Local Environment](#local-environment)
 
 # KRE (Konstellataion Runtime Engine)
 
@@ -187,34 +187,57 @@ In order to start development on this project you will need these tools:
 
 *NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `deploy_local.sh`. 
 
-## Deploy local
 
-Deploy KRE with Helm in Minikube environment
+## Local Environment
+
+This repo contains a tool called `./krectl.sh` to handle common actions you need during development.
+
+All the configuration needed to run  KRE locally can be found in `.krectl.conf` file. Usually you'd be ok with the default values.
+Check Minikube parameters if you need to tweak the resources assigned to it.
+
+Run help to get info for each command:
 
 ```
-$ ./deploy_local.sh
+$> krectl.sh [command] --help
+
+// Outputs:
+
+  krectl.sh -- a tool to manage KRE environment during development.
+
+  syntax: krectl.sh <command> [options]
+
+    commands:
+      dev     creates a complete local environment and auto-login to frontend.
+      start   starts minikube kre profile.
+      stop    stops minikube kre profile.
+      login   creates a login URL and open your browser automatically on the admin page.
+      build   calls docker to build all images inside minikube.
+      deploy  calls helm to create install/upgrade a kre release on minikube.
+      delete  calls kubectl to remove runtimes or versions.
+
+    global options:
+      h     prints this help.
+      v     verbose mode.
 ```
 
 ### Login
 
-First of all remember to edit your `/etc/hosts`, see `./deploy_local.sh` output for more details.
+First of all remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
 
 In order to access the admin app, the login process can be done automatically using this script:
 
 ```
-$ ./scripts/local_login.sh 
+$ ./krectl.sh login [--new]
 ```
 
 You will see an output like this:
 
 ```
-calling api...
-watching /tmp/tmp.c4rBHAglSl
-pod kre-local-admin-api-84b5cd84fb-m64hm
+⏳ Calling Admin API...
 
- Login done. Open your browser at: 
+ Login done. Open your browser at:
 
- 🌎 http://admin.kre.local/signin/05fba3e9-e394-461d-b92d-e529950da27c
+ 🌎 http://admin.kre.local/signin/c7d024eb-ce35-4328-961a-7d2b79ee8988
 
 ✔️  Done.
 ```

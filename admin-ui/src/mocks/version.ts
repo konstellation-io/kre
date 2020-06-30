@@ -60,23 +60,26 @@ export const confVarsMock = {
     data: {
       version: {
         status: 'STARTED',
-        configurationVariables: [
-          {
-            key: 'var2',
-            value: 'value1',
-            type: 'VARIABLE'
-          },
-          {
-            key: 'var1',
-            value: 'value2',
-            type: 'VARIABLE'
-          },
-          {
-            key: 'var3',
-            value: 'value3',
-            type: 'FILE'
-          }
-        ]
+        config: {
+          completed: true,
+          vars: [
+            {
+              key: 'var2',
+              value: 'value1',
+              type: 'VARIABLE'
+            },
+            {
+              key: 'var1',
+              value: 'value2',
+              type: 'VARIABLE'
+            },
+            {
+              key: 'var3',
+              value: 'value3',
+              type: 'FILE'
+            }
+          ]
+        }
       }
     }
   }

@@ -16,6 +16,7 @@ export interface GetUsers_users {
   accessLevel: AccessLevel;
   creationDate: string;
   lastActivity: string | null;
+  activeSessions: number;
 }
 
 export interface GetUsers {

@@ -51,9 +51,7 @@ const generateVersion = () => ({
   ]),
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
-  configurationVariables: () => new MockList([2, 20]),
-  workflows: () => new MockList(2),
-  configurationCompleted: true
+  workflows: () => new MockList(2)
 });
 
 let datetime = moment().subtract(24, 'hour');
@@ -222,7 +220,8 @@ module.exports = {
     accessLevel: casual.random_element(['ADMIN', 'VIEWER', 'MANAGER']),
     email: casual.random_element(emails),
     creationDate: new Date().toUTCString(),
-    lastActivity: new Date().toUTCString()
+    lastActivity: new Date().toUTCString(),
+    activeSessions: casual.integer(0, 9)
   }),
   LogPane: () => ({
     cursor: casual.string,
@@ -240,6 +239,10 @@ module.exports = {
   }),
   Runtime: generateRuntime,
   Version: generateVersion,
+  VersionConfig: () => ({
+    completed: true,
+    vars: () => new MockList([2, 20])
+  }),
   ConfigurationVariable: () => ({
     key: casual.word.toUpperCase(),
     value: () => {

@@ -94,11 +94,13 @@ input CreateUserInput {
 
 input UsersInput {
   userIds: [ID!]!
+  comment: String!
 }
 
 input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
+  comment: String!
 }
 
 type VersionNodeStatus {
@@ -119,6 +121,7 @@ type User {
   accessLevel: AccessLevel!
   creationDate: String!
   lastActivity: String
+  activeSessions: Int!
 }
 
 enum AccessLevel {
@@ -199,8 +202,12 @@ type Version {
   publicationDate: String
   publicationAuthor: User
   workflows: [Workflow!]!
-  configurationVariables: [ConfigurationVariable!]!
-  configurationCompleted: Boolean!
+  config: VersionConfig!
+}
+
+type VersionConfig {
+  vars: [ConfigurationVariable!]!
+  completed: Boolean!
 }
 
 enum VersionStatus {

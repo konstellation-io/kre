@@ -56,7 +56,7 @@ func (i *UserInteractor) GetAllUsers(ctx context.Context, loggedUserID string, r
 	return i.userRepo.GetAll(ctx, returnDeleted)
 }
 
-func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel, loggedUserID string) ([]*entity.User, error) {
+func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string, newAccessLevel entity.AccessLevel, loggedUserID string, comment string) ([]*entity.User, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (i *UserInteractor) UpdateAccessLevel(ctx context.Context, userIDs []string
 		updatedUserIDs[i] = u.ID
 		updatedUserEmails[i] = u.Email
 	}
-	i.userActivityInteractor.RegisterUpdateAccessLevels(loggedUserID, updatedUserIDs, updatedUserEmails, newAccessLevel)
+	i.userActivityInteractor.RegisterUpdateAccessLevels(loggedUserID, updatedUserIDs, updatedUserEmails, newAccessLevel, comment)
 
 	err = i.accessControl.ReloadUserRoles()
 	if err != nil {
@@ -122,7 +122,7 @@ func (i *UserInteractor) Create(ctx context.Context, email string, accessLevel e
 	return createdUser, err
 }
 
-func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, loggedUserID string) ([]*entity.User, error) {
+func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, loggedUserID, comment string) ([]*entity.User, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActEdit); err != nil {
 		return nil, err
 	}
@@ -138,7 +138,7 @@ func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, logg
 		deletedUserIDs[i] = u.ID
 		deletedUserEmails[i] = u.Email
 	}
-	i.userActivityInteractor.RegisterRemoveUsers(loggedUserID, deletedUserIDs, deletedUserEmails)
+	i.userActivityInteractor.RegisterRemoveUsers(loggedUserID, deletedUserIDs, deletedUserEmails, comment)
 
 	err = i.sessionRepo.DeleteByUserIDs(deletedUserIDs)
 	if err != nil {

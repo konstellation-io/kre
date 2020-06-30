@@ -1,5 +1,5 @@
 import Button from '../Button/Button';
-import { GetConfigurationVariables_version_configurationVariables as ConfVar } from '../../graphql/queries/types/GetConfigurationVariables';
+import { GetConfigurationVariables_version_config_vars as ConfVar } from '../../graphql/queries/types/GetConfigurationVariables';
 import { ConfVarPanelInfo } from '../../pages/Version/pages/Configuration/Configuration';
 import { ConfigurationVariableType } from '../../graphql/types/globalTypes';
 import IconKey from '@material-ui/icons/VpnKey';

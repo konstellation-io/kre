@@ -62,7 +62,7 @@ func NewGraphQLResolver(
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(loggedUserID, input.Name, input.Description)
+	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(ctx, loggedUserID, input.Name, input.Description)
 
 	go func() {
 		runtime := <-onRuntimeStartedChannel
@@ -177,7 +177,7 @@ func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([
 		}
 	}
 
-	return r.userInteractor.RemoveUsers(ctx, input.UserIds, loggedUserID)
+	return r.userInteractor.RemoveUsers(ctx, input.UserIds, loggedUserID, input.Comment)
 }
 
 func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
@@ -188,7 +188,7 @@ func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAc
 		}
 	}
 
-	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, loggedUserID)
+	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, loggedUserID, input.Comment)
 }
 
 func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
@@ -199,7 +199,7 @@ func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersIn
 		return nil, err
 	}
 
-	err = r.authInteractor.RevokeUserSessions(input.UserIds, loggedUserID)
+	err = r.authInteractor.RevokeUserSessions(input.UserIds, loggedUserID, input.Comment)
 	if err != nil {
 		return nil, err
 	}
@@ -448,6 +448,10 @@ func (r *userResolver) CreationDate(_ context.Context, obj *entity.User) (string
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
+func (r *userResolver) ActiveSessions(ctx context.Context, obj *entity.User) (int, error) {
+	return r.authInteractor.CountUserSessions(ctx, obj.ID)
+}
+
 func (r *versionResolver) CreationDate(_ context.Context, obj *entity.Version) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
@@ -472,16 +476,6 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 
 	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
 	return userLoader.Load(*obj.PublicationUserID)
-}
-
-// TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationVariables(_ context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error) {
-	return obj.Config.Vars, nil
-}
-
-// TODO change entity struct to match with the gql definition
-func (r *versionResolver) ConfigurationCompleted(_ context.Context, obj *entity.Version) (bool, error) {
-	return obj.Config.Completed, nil
 }
 
 func (r *versionNodeStatusResolver) Date(_ context.Context, _ *entity.VersionNodeStatus) (string, error) {

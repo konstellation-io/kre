@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/admin-api/domain/entity"
 	reflect "reflect"
@@ -34,18 +35,18 @@ func (m *MockSettingRepo) EXPECT() *MockSettingRepoMockRecorder {
 }
 
 // Get mocks base method
-func (m *MockSettingRepo) Get() (*entity.Settings, error) {
+func (m *MockSettingRepo) Get(ctx context.Context) (*entity.Settings, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get")
+	ret := m.ctrl.Call(m, "Get", ctx)
 	ret0, _ := ret[0].(*entity.Settings)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get
-func (mr *MockSettingRepoMockRecorder) Get() *gomock.Call {
+func (mr *MockSettingRepoMockRecorder) Get(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSettingRepo)(nil).Get))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSettingRepo)(nil).Get), ctx)
 }
 
 // Create mocks base method

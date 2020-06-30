@@ -29,13 +29,12 @@ func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mo
 	}
 }
 
-func (r *RuntimeRepoMongoDB) Create(runtime *entity.Runtime) (*entity.Runtime, error) {
-
+func (r *RuntimeRepoMongoDB) Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error) {
 	runtime.ID = primitive.NewObjectID().Hex()
 	runtime.CreationDate = time.Now().UTC()
 	runtime.Status = entity.RuntimeStatusCreating
 
-	res, err := r.collection.InsertOne(context.Background(), runtime)
+	res, err := r.collection.InsertOne(ctx, runtime)
 	if err != nil {
 		return nil, err
 	}
@@ -59,10 +58,20 @@ func (r *RuntimeRepoMongoDB) FindAll(ctx context.Context) ([]*entity.Runtime, er
 	return runtimes, nil
 }
 
-func (r *RuntimeRepoMongoDB) Update(runtime *entity.Runtime) error {
-	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": runtime.ID}, runtime)
+func (r *RuntimeRepoMongoDB) UpdateStatus(ctx context.Context, runtimeID string, newStatus entity.RuntimeStatus) error {
+	filter := bson.M{"_id": runtimeID}
+	upd := bson.M{
+		"$set": bson.M{
+			"status": newStatus.String(),
+		},
+	}
+	result, err := r.collection.UpdateOne(ctx, filter, upd)
 	if err != nil {
 		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrRuntimeNotFound
 	}
 
 	return nil

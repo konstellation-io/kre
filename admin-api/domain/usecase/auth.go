@@ -215,7 +215,7 @@ func (a *AuthInteractor) CheckSessionIsActive(token string) error {
 	return nil
 }
 
-func (a *AuthInteractor) RevokeUserSessions(userIDs []string, loggedUser string) error {
+func (a *AuthInteractor) RevokeUserSessions(userIDs []string, loggedUser, comment string) error {
 	users, err := a.userRepo.GetByIDs(userIDs)
 	if err != nil {
 		return err
@@ -233,11 +233,19 @@ func (a *AuthInteractor) RevokeUserSessions(userIDs []string, loggedUser string)
 		return err
 	}
 
-	a.userActivityInteractor.RegisterRevokeSessions(loggedUser, foundUserIDs, foundUserEmails)
+	a.userActivityInteractor.RegisterRevokeSessions(loggedUser, foundUserIDs, foundUserEmails, comment)
 
 	return nil
 }
 
 func (a *AuthInteractor) UpdateLastActivity(loggedUserID string) error {
 	return a.userRepo.UpdateLastActivity(loggedUserID)
+}
+
+func (a *AuthInteractor) CountUserSessions(ctx context.Context, userID string) (int, error) {
+	sessions, err := a.sessionRepo.GetUserSessions(ctx, userID)
+	if err != nil {
+		return -1, err
+	}
+	return len(sessions), nil
 }

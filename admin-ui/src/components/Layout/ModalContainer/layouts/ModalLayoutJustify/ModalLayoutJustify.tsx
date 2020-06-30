@@ -1,18 +1,27 @@
 import React from 'react';
 import TextInput from '../../../../Form/TextInput/TextInput';
+import cx from 'classnames';
 import styles from './ModalLayoutJustify.module.scss';
 
 type Props = {
   onUpdate: (value: string) => void;
   submit: () => void;
   error: string;
+  className?: string;
+  label?: string;
 };
-function ModalLayoutJustify({ onUpdate, submit, error }: Props) {
+function ModalLayoutJustify({
+  onUpdate,
+  submit,
+  error,
+  label = 'why are you doing that?',
+  className = ''
+}: Props) {
   return (
     <>
-      <div className={styles.comment}>
+      <div className={cx(className, styles.comment)}>
         <TextInput
-          label="why are you doing that?  "
+          label={label}
           error={error}
           onChange={onUpdate}
           limits={{

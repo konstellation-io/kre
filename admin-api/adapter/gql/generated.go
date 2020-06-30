@@ -174,11 +174,12 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		AccessLevel  func(childComplexity int) int
-		CreationDate func(childComplexity int) int
-		Email        func(childComplexity int) int
-		ID           func(childComplexity int) int
-		LastActivity func(childComplexity int) int
+		AccessLevel    func(childComplexity int) int
+		ActiveSessions func(childComplexity int) int
+		CreationDate   func(childComplexity int) int
+		Email          func(childComplexity int) int
+		ID             func(childComplexity int) int
+		LastActivity   func(childComplexity int) int
 	}
 
 	UserActivity struct {
@@ -195,17 +196,21 @@ type ComplexityRoot struct {
 	}
 
 	Version struct {
-		ConfigurationCompleted func(childComplexity int) int
-		ConfigurationVariables func(childComplexity int) int
-		CreationAuthor         func(childComplexity int) int
-		CreationDate           func(childComplexity int) int
-		Description            func(childComplexity int) int
-		ID                     func(childComplexity int) int
-		Name                   func(childComplexity int) int
-		PublicationAuthor      func(childComplexity int) int
-		PublicationDate        func(childComplexity int) int
-		Status                 func(childComplexity int) int
-		Workflows              func(childComplexity int) int
+		Config            func(childComplexity int) int
+		CreationAuthor    func(childComplexity int) int
+		CreationDate      func(childComplexity int) int
+		Description       func(childComplexity int) int
+		ID                func(childComplexity int) int
+		Name              func(childComplexity int) int
+		PublicationAuthor func(childComplexity int) int
+		PublicationDate   func(childComplexity int) int
+		Status            func(childComplexity int) int
+		Workflows         func(childComplexity int) int
+	}
+
+	VersionConfig struct {
+		Completed func(childComplexity int) int
+		Vars      func(childComplexity int) int
 	}
 
 	VersionNodeStatus struct {
@@ -264,6 +269,7 @@ type SubscriptionResolver interface {
 type UserResolver interface {
 	CreationDate(ctx context.Context, obj *entity.User) (string, error)
 	LastActivity(ctx context.Context, obj *entity.User) (*string, error)
+	ActiveSessions(ctx context.Context, obj *entity.User) (int, error)
 }
 type UserActivityResolver interface {
 	User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error)
@@ -274,9 +280,6 @@ type VersionResolver interface {
 	CreationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error)
 	PublicationDate(ctx context.Context, obj *entity.Version) (*string, error)
 	PublicationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error)
-
-	ConfigurationVariables(ctx context.Context, obj *entity.Version) ([]*entity.ConfigurationVariable, error)
-	ConfigurationCompleted(ctx context.Context, obj *entity.Version) (bool, error)
 }
 type VersionNodeStatusResolver interface {
 	Date(ctx context.Context, obj *entity.VersionNodeStatus) (string, error)
@@ -939,6 +942,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.AccessLevel(childComplexity), true
 
+	case "User.activeSessions":
+		if e.complexity.User.ActiveSessions == nil {
+			break
+		}
+
+		return e.complexity.User.ActiveSessions(childComplexity), true
+
 	case "User.creationDate":
 		if e.complexity.User.CreationDate == nil {
 			break
@@ -1016,19 +1026,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserActivityVar.Value(childComplexity), true
 
-	case "Version.configurationCompleted":
-		if e.complexity.Version.ConfigurationCompleted == nil {
+	case "Version.config":
+		if e.complexity.Version.Config == nil {
 			break
 		}
 
-		return e.complexity.Version.ConfigurationCompleted(childComplexity), true
-
-	case "Version.configurationVariables":
-		if e.complexity.Version.ConfigurationVariables == nil {
-			break
-		}
-
-		return e.complexity.Version.ConfigurationVariables(childComplexity), true
+		return e.complexity.Version.Config(childComplexity), true
 
 	case "Version.creationAuthor":
 		if e.complexity.Version.CreationAuthor == nil {
@@ -1092,6 +1095,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Version.Workflows(childComplexity), true
+
+	case "VersionConfig.completed":
+		if e.complexity.VersionConfig.Completed == nil {
+			break
+		}
+
+		return e.complexity.VersionConfig.Completed(childComplexity), true
+
+	case "VersionConfig.vars":
+		if e.complexity.VersionConfig.Vars == nil {
+			break
+		}
+
+		return e.complexity.VersionConfig.Vars(childComplexity), true
 
 	case "VersionNodeStatus.date":
 		if e.complexity.VersionNodeStatus.Date == nil {
@@ -1326,11 +1343,13 @@ input CreateUserInput {
 
 input UsersInput {
   userIds: [ID!]!
+  comment: String!
 }
 
 input UpdateAccessLevelInput {
   userIds: [ID!]!
   accessLevel: AccessLevel!
+  comment: String!
 }
 
 type VersionNodeStatus {
@@ -1351,6 +1370,7 @@ type User {
   accessLevel: AccessLevel!
   creationDate: String!
   lastActivity: String
+  activeSessions: Int!
 }
 
 enum AccessLevel {
@@ -1431,8 +1451,12 @@ type Version {
   publicationDate: String
   publicationAuthor: User
   workflows: [Workflow!]!
-  configurationVariables: [ConfigurationVariable!]!
-  configurationCompleted: Boolean!
+  config: VersionConfig!
+}
+
+type VersionConfig {
+  vars: [ConfigurationVariable!]!
+  completed: Boolean!
 }
 
 enum VersionStatus {
@@ -4995,6 +5019,40 @@ func (ec *executionContext) _User_lastActivity(ctx context.Context, field graphq
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _User_activeSessions(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().ActiveSessions(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _UserActivity_id(ctx context.Context, field graphql.CollectedField, obj *entity.UserActivity) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5533,7 +5591,7 @@ func (ec *executionContext) _Version_workflows(ctx context.Context, field graphq
 	return ec.marshalNWorkflow2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐWorkflowᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Version_configurationVariables(ctx context.Context, field graphql.CollectedField, obj *entity.Version) (ret graphql.Marshaler) {
+func (ec *executionContext) _Version_config(ctx context.Context, field graphql.CollectedField, obj *entity.Version) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5544,13 +5602,47 @@ func (ec *executionContext) _Version_configurationVariables(ctx context.Context,
 		Object:   "Version",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Version().ConfigurationVariables(rctx, obj)
+		return obj.Config, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entity.VersionConfig)
+	fc.Result = res
+	return ec.marshalNVersionConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionConfig(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _VersionConfig_vars(ctx context.Context, field graphql.CollectedField, obj *entity.VersionConfig) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "VersionConfig",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Vars, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5567,7 +5659,7 @@ func (ec *executionContext) _Version_configurationVariables(ctx context.Context,
 	return ec.marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariableᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Version_configurationCompleted(ctx context.Context, field graphql.CollectedField, obj *entity.Version) (ret graphql.Marshaler) {
+func (ec *executionContext) _VersionConfig_completed(ctx context.Context, field graphql.CollectedField, obj *entity.VersionConfig) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5575,16 +5667,16 @@ func (ec *executionContext) _Version_configurationCompleted(ctx context.Context,
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Version",
+		Object:   "VersionConfig",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Version().ConfigurationCompleted(rctx, obj)
+		return obj.Completed, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7204,6 +7296,12 @@ func (ec *executionContext) unmarshalInputUpdateAccessLevelInput(ctx context.Con
 			if err != nil {
 				return it, err
 			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -7243,6 +7341,12 @@ func (ec *executionContext) unmarshalInputUsersInput(ctx context.Context, obj in
 		case "userIds":
 			var err error
 			it.UserIds, err = ec.unmarshalNID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8136,6 +8240,20 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				res = ec._User_lastActivity(ctx, field, obj)
 				return res
 			})
+		case "activeSessions":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_activeSessions(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8330,34 +8448,43 @@ func (ec *executionContext) _Version(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
-		case "configurationVariables":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Version_configurationVariables(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "configurationCompleted":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Version_configurationCompleted(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+		case "config":
+			out.Values[i] = ec._Version_config(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var versionConfigImplementors = []string{"VersionConfig"}
+
+func (ec *executionContext) _VersionConfig(ctx context.Context, sel ast.SelectionSet, obj *entity.VersionConfig) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, versionConfigImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("VersionConfig")
+		case "vars":
+			out.Values[i] = ec._VersionConfig_vars(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "completed":
+			out.Values[i] = ec._VersionConfig_completed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -9628,6 +9755,10 @@ func (ec *executionContext) marshalNVersion2ᚖgithubᚗcomᚋkonstellationᚑio
 		return graphql.Null
 	}
 	return ec._Version(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNVersionConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionConfig(ctx context.Context, sel ast.SelectionSet, v entity.VersionConfig) graphql.Marshaler {
+	return ec._VersionConfig(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNVersionNodeStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚑapiᚋdomainᚋentityᚐVersionNodeStatus(ctx context.Context, sel ast.SelectionSet, v entity.VersionNodeStatus) graphql.Marshaler {

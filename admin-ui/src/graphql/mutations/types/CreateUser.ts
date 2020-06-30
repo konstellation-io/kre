@@ -16,6 +16,7 @@ export interface CreateUser_createUser {
   accessLevel: AccessLevel;
   creationDate: string;
   lastActivity: string | null;
+  activeSessions: number;
 }
 
 export interface CreateUser {
