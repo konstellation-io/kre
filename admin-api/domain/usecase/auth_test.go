@@ -1,6 +1,7 @@
 package usecase_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"testing"
@@ -42,6 +43,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 	settingRepo := mocks.NewMockSettingRepo(ctrl)
 	sessionRepo := mocks.NewMockSessionRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
+	accessControl := mocks.NewMockAccessControl(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
@@ -49,6 +51,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 		logger,
 		userActivityRepo,
 		userRepo,
+		accessControl,
 	)
 
 	authInteractor := usecase.NewAuthInteractor(
@@ -93,7 +96,7 @@ func TestSignInWithValidUser(t *testing.T) {
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
 	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
 
-	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	err := s.authInteractor.SignIn(context.Background(), user.Email, verificationCodeDurationInMinutes)
 	require.Nil(t, err)
 }
 
@@ -116,14 +119,16 @@ func TestSignUpWithValidEmailAddress(t *testing.T) {
 		AuthAllowedDomains:    []string{"testdomain.com"},
 	}
 
+	ctx := context.Background()
+
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
-	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(settings, nil)
 	s.mocks.verificationCodeGenerator.EXPECT().Generate().Return(verificationCode)
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
 	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
 	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(user, nil)
 
-	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	err := s.authInteractor.SignIn(ctx, user.Email, verificationCodeDurationInMinutes)
 	require.Nil(t, err)
 }
 
@@ -141,10 +146,11 @@ func TestSignUpWithInvalidDomain(t *testing.T) {
 		AuthAllowedDomains:    []string{"anotherdomain.com"},
 	}
 
+	ctx := context.Background()
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
-	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(settings, nil)
 
-	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	err := s.authInteractor.SignIn(ctx, user.Email, verificationCodeDurationInMinutes)
 	require.Equal(t, usecase.ErrUserNotAllowed, err)
 }
 
@@ -164,14 +170,16 @@ func TestSignUpWithValidDomain(t *testing.T) {
 		AuthAllowedDomains:    []string{domain},
 	}
 
+	ctx := context.Background()
+
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
-	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(settings, nil)
 	s.mocks.verificationCodeGenerator.EXPECT().Generate().Return(verificationCode)
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
 	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
 	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(user, nil)
 
-	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	err := s.authInteractor.SignIn(ctx, user.Email, verificationCodeDurationInMinutes)
 	require.Nil(t, err)
 }
 
@@ -182,9 +190,11 @@ func TestSignInErrGettingUser(t *testing.T) {
 	email := "userA@testdomain.com"
 	unexpectedErr := errors.New("unexpected error")
 
+	ctx := context.Background()
+
 	s.mocks.userRepo.EXPECT().GetByEmail(email).Return(nil, unexpectedErr)
 
-	err := s.authInteractor.SignIn(email, 1)
+	err := s.authInteractor.SignIn(ctx, email, 1)
 	require.Equal(t, unexpectedErr, err)
 }
 
@@ -199,10 +209,12 @@ func TestSignUpErrGettingSettings(t *testing.T) {
 		ID:    "userA",
 	}
 
-	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
-	s.mocks.settingRepo.EXPECT().Get().Return(&entity.Settings{}, unexpectedErr)
+	ctx := context.Background()
 
-	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(&entity.Settings{}, unexpectedErr)
+
+	err := s.authInteractor.SignIn(ctx, user.Email, verificationCodeDurationInMinutes)
 	require.Equal(t, unexpectedErr, err)
 }
 
@@ -212,7 +224,7 @@ func TestSignInErrInvalidEmail(t *testing.T) {
 
 	email := "invalidemailaddress"
 
-	err := s.authInteractor.SignIn(email, 1)
+	err := s.authInteractor.SignIn(context.Background(), email, 1)
 	require.Equal(t, usecase.ErrUserEmailInvalid, err)
 }
 
@@ -232,13 +244,15 @@ func TestSignInErrStoringValidationCode(t *testing.T) {
 	s.mocks.verificationCodeGenerator.EXPECT().Generate().Return(verificationCode)
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(unexpectedErr)
 
-	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	err := s.authInteractor.SignIn(context.Background(), user.Email, verificationCodeDurationInMinutes)
 	require.Equal(t, unexpectedErr, err)
 }
 
 func TestSignUpErrCreatingUser(t *testing.T) {
 	s := newAuthSuite(t)
 	defer s.ctrl.Finish()
+
+	ctx := context.Background()
 
 	unexpectedErr := errors.New("unexpected error")
 	verificationCodeDurationInMinutes := 1
@@ -253,10 +267,10 @@ func TestSignUpErrCreatingUser(t *testing.T) {
 	}
 
 	s.mocks.userRepo.EXPECT().GetByEmail(user.Email).Return(nil, usecase.ErrUserNotFound)
-	s.mocks.settingRepo.EXPECT().Get().Return(settings, nil)
+	s.mocks.settingRepo.EXPECT().Get(ctx).Return(settings, nil)
 	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(nil, unexpectedErr)
 
-	err := s.authInteractor.SignIn(user.Email, verificationCodeDurationInMinutes)
+	err := s.authInteractor.SignIn(ctx, user.Email, verificationCodeDurationInMinutes)
 	require.Equal(t, unexpectedErr, err)
 }
 

@@ -35,32 +35,32 @@ func (m *MockRuntimeRepo) EXPECT() *MockRuntimeRepoMockRecorder {
 }
 
 // Create mocks base method
-func (m *MockRuntimeRepo) Create(arg0 *entity.Runtime) (*entity.Runtime, error) {
+func (m *MockRuntimeRepo) Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0)
+	ret := m.ctrl.Call(m, "Create", ctx, runtime)
 	ret0, _ := ret[0].(*entity.Runtime)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create
-func (mr *MockRuntimeRepoMockRecorder) Create(arg0 interface{}) *gomock.Call {
+func (mr *MockRuntimeRepoMockRecorder) Create(ctx, runtime interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRuntimeRepo)(nil).Create), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRuntimeRepo)(nil).Create), ctx, runtime)
 }
 
-// Update mocks base method
-func (m *MockRuntimeRepo) Update(arg0 *entity.Runtime) error {
+// UpdateStatus mocks base method
+func (m *MockRuntimeRepo) UpdateStatus(ctx context.Context, runtimeID string, newStatus entity.RuntimeStatus) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", arg0)
+	ret := m.ctrl.Call(m, "UpdateStatus", ctx, runtimeID, newStatus)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Update indicates an expected call of Update
-func (mr *MockRuntimeRepoMockRecorder) Update(arg0 interface{}) *gomock.Call {
+// UpdateStatus indicates an expected call of UpdateStatus
+func (mr *MockRuntimeRepoMockRecorder) UpdateStatus(ctx, runtimeID, newStatus interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRuntimeRepo)(nil).Update), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStatus", reflect.TypeOf((*MockRuntimeRepo)(nil).UpdateStatus), ctx, runtimeID, newStatus)
 }
 
 // FindAll mocks base method

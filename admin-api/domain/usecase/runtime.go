@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
+	"time"
 
 	"github.com/konstellation-io/kre/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin-api/domain/repository"
@@ -50,7 +51,7 @@ func NewRuntimeInteractor(
 }
 
 // CreateRuntime adds a new Runtime
-func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
+func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, name string, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit); err != nil {
 		return nil, nil, err
 	}
@@ -69,13 +70,13 @@ func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description
 			SecretKey: i.passwordGenerator.NewPassword(),
 		},
 	}
-	createRuntimeInK8sResult, err := i.runtimeService.Create(r)
+	createRuntimeInK8sResult, err := i.runtimeService.Create(ctx, r)
 	if err != nil {
 		return
 	}
 	i.logger.Info("K8sManagerService create result: " + createRuntimeInK8sResult)
 
-	createdRuntime, err = i.runtimeRepo.Create(r)
+	createdRuntime, err = i.runtimeRepo.Create(ctx, r)
 	if err != nil {
 		return
 	}
@@ -89,21 +90,24 @@ func (i *RuntimeInteractor) CreateRuntime(loggedUserID, name string, description
 	onRuntimeStartedChannel = make(chan *entity.Runtime, 1)
 
 	go func() {
-		_, err := i.runtimeService.WaitForRuntimeStarted(createdRuntime)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+		defer cancel()
+
+		_, err := i.runtimeService.WaitForRuntimeStarted(ctx, createdRuntime)
 
 		// If all pods are running, the runtime status should be set to running.
 		// In other case, the runtime status will be set to error
 		if err != nil {
 			createdRuntime.Status = entity.RuntimeStatusError
-			i.logger.Error(err.Error())
+			i.logger.Errorf("Error creating runtime: %s", err)
 		} else {
 			createdRuntime.Status = entity.RuntimeStatusStarted
 		}
 
 		i.logger.Infof("Set runtime status to %s", createdRuntime.Status.String())
-		err = i.runtimeRepo.Update(createdRuntime) // TODO improve this using an atomic update operation instead of replace
+		err = i.runtimeRepo.UpdateStatus(ctx, createdRuntime.ID, createdRuntime.Status)
 		if err != nil {
-			i.logger.Error(err.Error())
+			i.logger.Errorf("Error updating runtime: %s", err)
 		}
 
 		onRuntimeStartedChannel <- createdRuntime

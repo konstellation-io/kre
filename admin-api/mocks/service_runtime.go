@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/admin-api/domain/entity"
 	reflect "reflect"
@@ -34,31 +35,31 @@ func (m *MockRuntimeService) EXPECT() *MockRuntimeServiceMockRecorder {
 }
 
 // Create mocks base method
-func (m *MockRuntimeService) Create(runtime *entity.Runtime) (string, error) {
+func (m *MockRuntimeService) Create(ctx context.Context, runtime *entity.Runtime) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", runtime)
+	ret := m.ctrl.Call(m, "Create", ctx, runtime)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create
-func (mr *MockRuntimeServiceMockRecorder) Create(runtime interface{}) *gomock.Call {
+func (mr *MockRuntimeServiceMockRecorder) Create(ctx, runtime interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRuntimeService)(nil).Create), runtime)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRuntimeService)(nil).Create), ctx, runtime)
 }
 
 // WaitForRuntimeStarted mocks base method
-func (m *MockRuntimeService) WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error) {
+func (m *MockRuntimeService) WaitForRuntimeStarted(ctx context.Context, runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WaitForRuntimeStarted", runtime)
+	ret := m.ctrl.Call(m, "WaitForRuntimeStarted", ctx, runtime)
 	ret0, _ := ret[0].(*entity.RuntimeStatusEntity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // WaitForRuntimeStarted indicates an expected call of WaitForRuntimeStarted
-func (mr *MockRuntimeServiceMockRecorder) WaitForRuntimeStarted(runtime interface{}) *gomock.Call {
+func (mr *MockRuntimeServiceMockRecorder) WaitForRuntimeStarted(ctx, runtime interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitForRuntimeStarted", reflect.TypeOf((*MockRuntimeService)(nil).WaitForRuntimeStarted), runtime)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitForRuntimeStarted", reflect.TypeOf((*MockRuntimeService)(nil).WaitForRuntimeStarted), ctx, runtime)
 }
