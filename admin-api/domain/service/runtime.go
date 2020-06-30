@@ -2,9 +2,12 @@ package service
 
 //go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/service_${GOFILE} -package=mocks
 
-import "github.com/konstellation-io/kre/admin-api/domain/entity"
+import (
+	"context"
+	"github.com/konstellation-io/kre/admin-api/domain/entity"
+)
 
 type RuntimeService interface {
-	Create(runtime *entity.Runtime) (string, error)
-	WaitForRuntimeStarted(runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error)
+	Create(ctx context.Context, runtime *entity.Runtime) (string, error)
+	WaitForRuntimeStarted(ctx context.Context, runtime *entity.Runtime) (*entity.RuntimeStatusEntity, error)
 }
