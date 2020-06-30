@@ -1,0 +1,15 @@
+@import 'Styles/colors';
+
+$color-bg: palette(base, 800);
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 700px;
+  overflow: hidden;
+  padding-bottom: 10px;
+  background-color: $color-bg;
+}

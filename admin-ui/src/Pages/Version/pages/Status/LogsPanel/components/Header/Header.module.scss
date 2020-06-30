@@ -1,0 +1,87 @@
+@import 'Styles/mixins';
+@import 'Styles/funcs';
+@import 'Styles/shadows';
+@import 'Styles/colors';
+
+.container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: height ease 0.3s, box-shadow linear 0.2s;
+  box-shadow: 0;
+  min-height: 3 * $grid-unit;
+
+  &.opened {
+    height: 4 * $grid-unit;
+    flex-shrink: 0;
+    pointer-events: none;
+
+    .buttons {
+      opacity: 1;
+    }
+  }
+
+  &:not(.opened):hover {
+    @include glow(4);
+
+    .title {
+      color: font-color(light);
+    }
+  }
+}
+
+.title {
+  @include font-caption;
+  color: font-color(lowlight);
+
+  display: flex;
+  align-items: center;
+  margin: 0 20px 0 20px;
+  transition: color ease 0.3s;
+
+  svg {
+    margin: 4px 1.5 * $grid-unit 0 0;
+  }
+}
+
+.runtime {
+  @include font-body;
+  color: font-color(light);
+}
+
+.version {
+  @include font-body;
+  color: font-color(light);
+
+  margin-left: 16px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  transition: opacity ease 0.4s;
+  margin: 4px 8px 0 auto;
+  pointer-events: all;
+
+  div {
+    margin-left: 8px;
+    cursor: pointer;
+
+    &:hover {
+      color: font-color(light);
+    }
+  }
+}
+
+.stickBottom {
+  transition: color ease 0.4s, background-color ease 0.4s;
+
+  &.active {
+    color: font-color(light);
+    background-color: $bg-color-lighter;
+
+    &:hover {
+      color: font-color(light);
+    }
+  }
+}

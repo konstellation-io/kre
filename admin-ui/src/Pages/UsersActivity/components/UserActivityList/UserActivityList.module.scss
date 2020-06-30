@@ -1,0 +1,107 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+$width-date: 23.5 * $grid-unit;
+$margin-left-list: 10%;
+
+.row {
+  position: relative;
+  display: flex;
+  background-color: palette(base, 800);
+
+  .date {
+    @include font-small;
+    color: font-color(regular);
+
+    display: flex;
+    flex-shrink: 0;
+    width: $width-date;
+    margin-top: 5px;
+    line-height: 5 * $grid-unit;
+    margin-left: $margin-left-list;
+    text-align: center;
+
+    .dateIcon {
+      padding-right: 6px;
+      margin-top: 2px;
+    }
+  }
+
+  .activityIcon {
+    position: absolute;
+    top: 12px;
+    left: calc(#{$margin-left-list} + #{$width-date} - 12px);
+  }
+
+  .info {
+    flex-grow: 1;
+    padding: 13px 3.5 * $grid-unit 2.25 * $grid-unit 3.5 * $grid-unit;
+    background-color: palette(base);
+    border-bottom: solid 1px palette(base, 400);
+    border-left: solid 1px palette(base, 400);
+    transition: background-color ease 0.3s;
+
+    &:hover {
+      background-color: palette(base, 400);
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .user {
+      @include font-body;
+      color: font-color(light);
+    }
+
+    .message {
+      margin-top: $grid-unit;
+    }
+
+    .comment {
+      @include font-small;
+      color: font-color(grey);
+
+      margin-top: 11px;
+    }
+  }
+}
+
+.message {
+  @include font-small;
+  color: font-color(lowlight);
+
+  .highlight {
+    margin: 0 $grid-unit;
+    color: font-color(light);
+
+    &.started {
+      color: palette(success);
+    }
+    &.stopped {
+      color: palette(lowlight);
+    }
+    &.unpublished {
+      color: palette(feedback);
+    }
+    &.published {
+      color: palette(highlight);
+    }
+  }
+
+  .link {
+    @include font-button;
+    color: font-color(light);
+    text-transform: uppercase;
+
+    margin: 0 $grid-unit;
+  }
+}
+
+.elements {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow: auto;
+  position: relative;
+  height: 100%;
+}

@@ -1,0 +1,23 @@
+@import 'Styles/colors';
+
+.container {
+  display: flex;
+  position: relative;
+  border: solid 1px palette(base, 400);
+  border-top-width: 0;
+  height: 65px;
+  transition: height ease 0.3s;
+
+  .chart {
+    width: 50%;
+    height: 100%;
+  }
+
+  .chart:first-child {
+    border-right: solid 1px palette(base, 400);
+  }
+
+  &.expanded {
+    height: 196px;
+  }
+}

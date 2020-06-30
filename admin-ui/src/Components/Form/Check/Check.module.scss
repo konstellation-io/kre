@@ -1,0 +1,49 @@
+@import 'Styles/colors';
+@import 'Styles/shadows';
+@import 'Styles/mixins';
+
+.check {
+  background-color: palette(base, 400);
+  color: palette(base, 400);
+  width: 20px;
+  height: 20px;
+  transition: box-shadow ease 0.2s, background-color ease 0.2s;
+  cursor: pointer;
+
+  svg {
+    opacity: 0;
+  }
+
+  &:hover {
+    background-color: palette(base, 300);
+  }
+
+  &.checked svg,
+  &.indeterminate svg {
+    @include center;
+
+    opacity: 1;
+  }
+
+  &.checked {
+    @include glow(4);
+
+    position: relative;
+    background-color: $color-primary;
+
+    &:hover {
+      @include glow(3);
+    }
+  }
+
+  &.indeterminate {
+    position: relative;
+    background-color: palette(lowlight, 600);
+    color: $color-black;
+    font-weight: 600;
+
+    &:hover {
+      background-color: palette(lowlight, 400);
+    }
+  }
+}

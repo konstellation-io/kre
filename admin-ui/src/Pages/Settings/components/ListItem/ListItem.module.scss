@@ -1,0 +1,44 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+$item-height: 5 * $grid-unit;
+$color-border: palette(base, 400);
+$color-bg: palette(base);
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: $item-height;
+  justify-content: space-between;
+  background-color: $color-bg;
+  border-bottom: 1px solid $color-border;
+  padding: 0 3 * $grid-unit;
+}
+
+.value {
+  @include font-body;
+  color: font-color(light);
+}
+
+.actionsContainer {
+  display: flex;
+  flex-direction: row;
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .removeButton {
+    color: font-color(lowlight);
+    cursor: pointer;
+    transition: color ease 0.4s;
+
+    &:hover {
+      color: font-color(light);
+    }
+  }
+}

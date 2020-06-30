@@ -1,6 +1,6 @@
-import { AccessLevel } from './graphql/types/globalTypes';
-import ROUTE from './constants/routes';
-import { checkPermission } from './rbac-rules';
+import { AccessLevel } from 'Graphql/types/globalTypes';
+import ROUTE from 'Constants/routes';
+import { checkPermission } from 'rbac-rules';
 
 export const ruleToRoute = {
   'audit:view': [ROUTE.AUDIT],

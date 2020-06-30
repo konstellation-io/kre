@@ -1,7 +1,7 @@
-import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import 'jest-canvas-mock';
-import { AccessLevel } from './graphql/types/globalTypes';
+
+import Adapter from 'enzyme-adapter-react-16';
+import { configure } from 'enzyme';
 
 configure({ adapter: new Adapter() });
 
@@ -11,7 +11,7 @@ jest.mock('./config', () => ({
   })
 }));
 
-jest.mock('./hooks/useUserAccess', () => () => ({
+jest.mock('Hooks/useUserAccess', () => () => ({
   accessLevel: 'ADMIN',
   loading: false
 }));

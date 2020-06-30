@@ -1,0 +1,55 @@
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+$color-axisCell: map-get($color-dashboard, primary-dark);
+$color-primaryLight: map-get($color-dashboard, primary-light);
+
+text {
+  @include font-caption;
+  color: font-color(lowlight);
+}
+
+.cellText {
+  font-weight: 600;
+  dominant-baseline: central;
+  pointer-events: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.axisBoxes {
+  rect {
+    fill: $color-axisCell;
+    opacity: 0.1;
+  }
+
+  text {
+    fill: $color-primaryLight;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+}
+
+.legendRect {
+  rx: 5px;
+}
+
+.legendG {
+  line {
+    stroke: $bg-color;
+    opacity: 0.4;
+  }
+  text {
+    transform: translateX(8px);
+  }
+}
+
+.tooltipContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > div:first-child {
+    margin-bottom: 8px;
+  }
+}

@@ -1,0 +1,6 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.helpMessage {
+  @include input-footer(font-color(regular));
+}

@@ -1,0 +1,15 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.container {
+  @include font-body;
+  font-weight: 600;
+  color: font-color(regular);
+
+  width: 100%;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}

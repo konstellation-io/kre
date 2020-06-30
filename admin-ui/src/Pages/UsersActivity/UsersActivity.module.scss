@@ -1,0 +1,24 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: visible;
+  background-color: palette(base, 800);
+}
+
+.listContainer {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}

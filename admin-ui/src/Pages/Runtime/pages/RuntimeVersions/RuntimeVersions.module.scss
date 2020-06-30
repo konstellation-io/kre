@@ -1,0 +1,93 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.runtimeInfo {
+  background-color: palette(lowlight, 900);
+  padding: 3.5 * $grid-unit 3 * $grid-unit;
+
+  .infoFields {
+    display: flex;
+    flex-direction: horizontal;
+  }
+}
+
+.description {
+  @include font-body;
+  color: font-color(lowlight);
+
+  margin-top: 3 * $grid-unit;
+}
+
+.activeVersion {
+  padding: 8px 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: palette(base, 300);
+}
+
+.versionTitle,
+.versionName {
+  @include font-body;
+  color: font-color(light);
+}
+
+.versionTitle {
+  line-height: 40px;
+}
+
+.versionCreation {
+  @include font-caption;
+  color: font-color(light);
+
+  margin: 5px 25px;
+}
+
+.versionStatus {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 25px auto 25px 29px;
+}
+.versionName {
+  margin-right: 25px;
+}
+
+.greenCircle {
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: $color-ok;
+  flex-shrink: 0;
+}
+
+.secondRow {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+  padding-right: 16px;
+}
+
+.versionList {
+  @include listItems;
+
+  display: relative;
+  padding: 0 0 30px 0;
+  overflow: overlay;
+}

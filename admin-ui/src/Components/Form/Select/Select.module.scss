@@ -1,0 +1,122 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+@import 'Styles/borders';
+@import 'Styles/shadows';
+
+$height-input: 30px;
+
+.container {
+  position: relative;
+
+  &.white,
+  &.white .input {
+    color: white;
+  }
+
+  &.hasClearButton .input {
+    padding-right: 30px;
+  }
+}
+
+.inputContainer {
+  position: relative;
+}
+
+.input {
+  @include form-input;
+  padding: 11px 40px 11px 16px;
+  line-height: normal;
+  white-space: nowrap;
+  cursor: pointer;
+
+  color: font-color(light);
+  font-weight: 600;
+
+  &.placeholder {
+    color: font-color(lowlight);
+  }
+
+  &:after {
+    @include arrow(white);
+
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    right: 14px;
+    top: 14px;
+    content: '';
+    transition: transform ease 0.3s, top ease 0.3s;
+  }
+
+  &.opened:after {
+    transform: rotate(45deg) scale(-1);
+    top: 17px;
+  }
+
+  &.disabled {
+    color: font-color(regular);
+    background-color: palette(base, 400);
+    pointer-events: none;
+  }
+}
+
+.optionsContainer {
+  @include shadow(3);
+
+  position: absolute;
+  background-color: $bg-shape-default;
+  z-index: 1;
+  top: 100%;
+  right: 0;
+  transition: max-height ease 0.3s, top ease 0.6s, overflow ease 0.6s;
+  overflow: hidden;
+  width: max-content;
+  min-width: 100%;
+  border-radius: 5px;
+
+  &.opened {
+    top: 100%;
+    animation: show-overflow 0s ease-in 0.3s forwards;
+  }
+}
+
+@keyframes show-overflow {
+  to {
+    overflow: auto;
+  }
+}
+
+.defaultOption {
+  height: 40px;
+  padding: 11px 16px;
+}
+
+.optionElement {
+  color: font-color(light);
+  line-height: 16px;
+  cursor: pointer;
+
+  &.selected {
+    background-color: $bg-shape-selected;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  &:hover {
+    @include glow(3);
+    background-color: $bg-shape-hover;
+    color: font-color(dark);
+  }
+}
+
+.container.light {
+  .input {
+    background-color: transparent;
+    color: font-color(lowlight);
+    border: 0;
+  }
+}

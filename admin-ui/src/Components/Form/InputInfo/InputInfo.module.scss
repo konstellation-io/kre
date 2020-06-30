@@ -1,0 +1,10 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.infoMessage {
+  @include input-footer(font-color(regular), start);
+
+  position: absolute;
+  font-size: 11px;
+  margin-top: 2px;
+}

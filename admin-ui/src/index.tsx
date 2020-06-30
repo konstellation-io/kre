@@ -1,5 +1,5 @@
-import './styles/app.global.scss';
-import './styles/d3.scss';
+import 'Styles/app.global.scss';
+import 'Styles/d3.scss';
 
 import { ApolloLink, split } from 'apollo-link';
 import { ErrorResponse, onError } from 'apollo-link-error';
@@ -10,27 +10,27 @@ import typeDefs, {
   OpenedVersion,
   UserSelection,
   UserSettings
-} from './graphql/client/typeDefs';
+} from 'Graphql/client/typeDefs';
 
-import { ADD_NOTIFICATION } from './graphql/client/mutations/addNotification.graphql';
+import { ADD_NOTIFICATION } from 'Graphql/client/mutations/addNotification.graphql';
 import { ApolloClient } from 'apollo-client';
 import { ApolloProvider } from '@apollo/react-hooks';
 import App from './App';
-import { GetNotifications_notifications } from './graphql/client/queries/getNotification.graphql';
-import { GetServerLogs_logs_items } from './graphql/queries/types/GetServerLogs';
-import ROUTE from './constants/routes';
+import { GetNotifications_notifications } from 'Graphql/client/queries/getNotification.graphql';
+import { GetServerLogs_logs_items } from 'Graphql/queries/types/GetServerLogs';
+import ROUTE from 'Constants/routes';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { WebSocketLink } from 'apollo-link-ws';
-import addLogTabResolver from './graphql/client/resolvers/addLogTab';
-import addNotificationResolver from './graphql/client/resolvers/addNotification';
+import addLogTabResolver from 'Graphql/client/resolvers/addLogTab';
+import addNotificationResolver from 'Graphql/client/resolvers/addNotification';
 import config from './config';
 import { createUploadLink } from 'apollo-upload-client';
 import { get } from 'lodash';
 import { getMainDefinition } from 'apollo-utilities';
-import history from './history';
-import removeNotificationResolver from './graphql/client/resolvers/removeNotification';
-import updateTabFiltersResolver from './graphql/client/resolvers/updateTabFilters';
+import history from './browserHistory';
+import removeNotificationResolver from 'Graphql/client/resolvers/removeNotification';
+import updateTabFiltersResolver from 'Graphql/client/resolvers/updateTabFilters';
 
 export let cache: InMemoryCache;
 

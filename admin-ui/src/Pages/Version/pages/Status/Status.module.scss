@@ -1,0 +1,50 @@
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+$color-bg: palette(base, 800);
+
+.container {
+  position: relative;
+  background-color: $color-bg;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.horizontalBarText {
+  @include font-caption;
+  color: font-color(dark);
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.horizontalBarSeparator {
+  height: 25px;
+  width: 1px;
+  margin: 0 16px 0 12px;
+  background-color: font-color(dark);
+}
+
+.horizontalText2 {
+  font-weight: 500;
+  margin-right: 5px;
+}
+
+.horizontalBarButtons {
+  display: flex;
+  flex-direction: row;
+
+  > div:not(:last-child) {
+    margin-right: 16px;
+  }
+}
+
+.loadingAction {
+  position: relative;
+  height: 100%;
+  width: 100px;
+}

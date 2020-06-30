@@ -1,0 +1,26 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.container {
+  margin-right: 5 * $grid-unit;
+}
+
+.field {
+  @include font-caption;
+  color: font-color(regular);
+
+  margin-bottom: $grid-unit;
+}
+
+.valueContainer {
+  @include font-body;
+  color: font-color(lowlight);
+
+  display: flex;
+  flex-direction: horizontal;
+  align-items: center;
+}
+
+.value {
+  margin-left: $grid-unit;
+}

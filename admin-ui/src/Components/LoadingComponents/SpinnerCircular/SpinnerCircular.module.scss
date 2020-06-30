@@ -1,0 +1,37 @@
+@import 'Styles/colors';
+
+.loaderContainer {
+  margin: auto;
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, -50%);
+}
+
+.innerContainer {
+  background-color: transparent;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: font-color(light);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.initializing {
+  opacity: 0;
+  animation-name: showText;
+  animation-duration: 1s;
+  animation-delay: 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes showText {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

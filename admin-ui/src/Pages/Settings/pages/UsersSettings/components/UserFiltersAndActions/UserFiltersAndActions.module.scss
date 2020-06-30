@@ -1,0 +1,72 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.container {
+  background-color: palette(lowlight, 900);
+  display: flex;
+  align-items: center;
+  padding: 2 * $grid-unit 3 * $grid-unit 0 3 * $grid-unit;
+
+  .left {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.filters {
+  display: flex;
+
+  .filterUsers {
+    margin-right: $grid-unit;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+
+  .selectAll {
+    @include font-small;
+    color: font-color(lowlight);
+
+    display: flex;
+
+    span {
+      line-height: 20px;
+      margin-left: 2 * $grid-unit;
+    }
+  }
+
+  .nSelections {
+    @include font-small;
+    color: font-color(regular);
+
+    width: 10 * $grid-unit;
+    margin: 0 2 * $grid-unit;
+  }
+
+  .formActions {
+    margin-left: $grid-unit;
+  }
+}
+
+.customOption {
+  display: flex;
+  align-items: center;
+  height: 5 * $grid-unit;
+  padding: 11px 2 * $grid-unit;
+
+  div {
+    margin-left: 10px;
+  }
+
+  &.separator {
+    color: font-color(regular);
+    border-top: solid 1px palette(base, 500);
+  }
+}
+
+.filterTypes {
+  margin-right: 2 * $grid-unit;
+}
