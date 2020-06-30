@@ -1,21 +1,46 @@
 #!/bin/sh
 
-cmd_build() {
-  case $* in
-  *--clean*)
-      CLEAN_DOCKER=1
-    ;;
-  *--skip-frontend*)
-      SKIP_FRONTEND_BUILD=1
-    ;;
-  esac
+CLEAN_DOCKER=0
 
+cmd_build() {
+  # NOTE: Use this loop to capture multiple unsorted args
+  while test $# -gt 0; do
+    case "$1" in
+     --clean)
+      CLEAN_DOCKER=1
+      shift
+    ;;
+    --skip-frontend)
+      SKIP_FRONTEND_BUILD=1
+      shift
+    ;;
+
+     *)
+      shift
+      ;;
+    esac
+  done
+
+  if [ "$CLEAN_DOCKER" = "1" ]; then
+    minikube_clean
+  fi
   build_docker_images
+}
+
+show_build_help() {
+  echo "$(help_global_header "build")
+
+    options:
+      --clean          sends a prune command to remove old docker images and containers. (will keep last 24h).
+      --skip-frontend  skip docker build for admin-ui component.
+
+    $(help_global_options)
+"
 }
 
 build_docker_images() {
   # Setup environment to build images inside minikube
-  echo_info "setting minikube docker-env"
+  echo_wait "Setting minikube docker-env\n"
   eval "$(minikube docker-env -p "$MINIKUBE_PROFILE")"
 
   build_image kre-admin-api admin-api
@@ -34,27 +59,42 @@ build_docker_images() {
     prepare_helm
 
     echo_build_header "kre-operator"
-    cd operator
-    run helm dep update helm-charts/kre-chart \
-    && run operator-sdk build konstellation/kre-operator:latest
-    cd ..
+    {
+      cd operator || return
+      run helm dep update helm-charts/kre-chart \
+        && run operator-sdk build konstellation/kre-operator:latest
+      cd ..
+    }
   else
-    echo_warning "¡¡¡¡¡ Operator SDK not installed. Operator image was not built!!!\n\n\n"
+    echo
+    echo_warning "¡¡¡¡¡ Operator SDK not installed. Operator image was not built!!!"
+    echo
   fi
 
   if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
-    echo_warning "¡¡¡¡¡ started with local-frontend option. Now run \`yarn start\` inside /admin-ui!!!\n\n\n"
-  fi
+    echo_warning "¡¡¡¡¡ started with option $(echo_white "--local-frontend or --skip-frontend")."
+    echo "  Now run \`$(echo_light_green "yarn start")\` inside admin-ui"
 
-  if [ "$CLEAN_DOCKER" = "1" ]; then
-    minikube_clean
   fi
 }
 
 build_image() {
   NAME=$1
   FOLDER=$2
-  echo_build_header $NAME
+  echo_build_header "$NAME"
 
-  run docker build -t konstellation/${NAME}:latest $FOLDER
+  run docker build -t konstellation/"${NAME}":latest "$FOLDER"
+}
+
+echo_build_header() {
+  if [ "$VERBOSE" = "1" ]; then
+    BORDER="$(echo_light_green "##")"
+    echo
+    echo_light_green "#########################################"
+    printf "%s 🏭  %-37s   %s\n" "$BORDER" "$(echo_yellow "$*")" "$BORDER"
+    echo_light_green "#########################################"
+    echo
+  else
+    echo_info "  🏭 $*"
+  fi
 }
