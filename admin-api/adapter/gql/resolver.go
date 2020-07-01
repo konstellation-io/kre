@@ -319,10 +319,9 @@ func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (
 }
 
 func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
-	// TODO use the version loader to get the published version
 	if obj.PublishedVersion != "" {
-		loggedUserID := ctx.Value("userID").(string)
-		return r.versionInteractor.GetByID(loggedUserID, obj.PublishedVersion)
+		versionLoader := ctx.Value(middleware.VersionLoaderKey).(*dataloader.VersionLoader)
+		return versionLoader.Load(obj.PublishedVersion)
 	}
 	return nil, nil
 }
