@@ -1,4 +1,8 @@
+{{ if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{ else if .Capabilities.APIVersions.Has "apps/v1beta1" }}
 apiVersion: apps/v1beta1
+{{ end }}
 kind: StatefulSet
 metadata:
   name: kre-minio
@@ -8,6 +12,10 @@ metadata:
 spec:
   replicas: 1
   serviceName: kre-minio
+  selector:
+    matchLabels:
+      {{- include "runtime.labels" . | nindent 6 }}
+      app: kre-minio
   template:
     metadata:
       labels:
