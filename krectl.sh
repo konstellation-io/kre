@@ -14,6 +14,7 @@ fi
 # Default values
 VERBOSE=0
 SKIP_FRONTEND_BUILD=0
+SKIP_OPERATOR_BUILD=0
 OPERATOR_SDK_INSTALLED=0
 MINIKUBE_RESET=0
 MONGO_POD=""
@@ -35,6 +36,7 @@ ADMIN_DEV_EMAIL="dev@local.local"
 . ./scripts/krectl/cmd_deploy.sh
 . ./scripts/krectl/cmd_login.sh
 . ./scripts/krectl/cmd_delete.sh
+. ./scripts/krectl/cmd_restart.sh
 
 check_requirements
 
@@ -42,7 +44,7 @@ echo
 
 # Parse global arguments
 case $* in
-  *-v*)
+  *\ -v*)
     VERBOSE=1
   ;;
   *--help|-h*)
@@ -102,6 +104,12 @@ case $COMMAND in
      # shellcheck disable=SC2116 # https://github.com/koalaman/shellcheck/wiki/SC2116
      cmd_delete $(echo "$COMMAND_ARGS")
     echo_done "Delete done"
+    exit 0
+  ;;
+
+  restart)
+    cmd_restart "$@"
+    echo_done "Restart done"
     exit 0
   ;;
 

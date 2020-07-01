@@ -12,4 +12,5 @@ type RuntimeRepo interface {
 	UpdateStatus(ctx context.Context, runtimeID string, newStatus entity.RuntimeStatus) error
 	FindAll(ctx context.Context) ([]*entity.Runtime, error)
 	GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error)
+	UpdatePublishedVersion(ctx context.Context, runtimeID string, versionID string) error
 }
