@@ -14,6 +14,10 @@ cmd_build() {
       SKIP_FRONTEND_BUILD=1
       shift
     ;;
+    --skip-operator)
+      SKIP_OPERATOR_BUILD=1
+      shift
+    ;;
 
      *)
       shift
@@ -54,21 +58,23 @@ build_docker_images() {
     build_image kre-admin-ui admin-ui
   fi
 
-  if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
-    # Init helm and basic dependencies
-    prepare_helm
+  if  [ "$SKIP_OPERATOR_BUILD" != "1" ]; then
+    if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
+      # Init helm and basic dependencies
+      prepare_helm
 
-    echo_build_header "kre-operator"
-    {
-      cd operator || return
-      run helm dep update helm-charts/kre-chart \
-        && run operator-sdk build konstellation/kre-operator:latest
-      cd ..
-    }
-  else
-    echo
-    echo_warning "¡¡¡¡¡ Operator SDK not installed. Operator image was not built!!!"
-    echo
+      echo_build_header "kre-operator"
+      {
+        cd operator || return
+        run helm dep update helm-charts/kre-chart \
+          && run operator-sdk build konstellation/kre-operator:latest
+        cd ..
+      }
+    else
+      echo
+      echo_warning "¡¡¡¡¡ Operator SDK not installed. Operator image was not built!!!"
+      echo
+    fi
   fi
 
   if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then

@@ -19,6 +19,9 @@ show_help() {
     *delete*)
       show_delete_help
     ;;
+    *restart*)
+      show_restart_help
+    ;;
     *)
       show_root_help
     ;;
@@ -51,6 +54,7 @@ show_root_help() {
       build   calls docker to build all images inside minikube.
       deploy  calls helm to create install/upgrade a kre release on minikube.
       delete  calls kubectl to remove runtimes or versions.
+      restart restarts kre or versions, useful after build command.
 
     $(help_global_options)
 "
