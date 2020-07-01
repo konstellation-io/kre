@@ -34,6 +34,7 @@ type versionSuiteMocks struct {
 	userRepo          *mocks.MockUserRepo
 	createStorage     repository.CreateStorage
 	accessControl     *mocks.MockAccessControl
+	idGenerator       *mocks.MockIDGenerator
 }
 
 func newVersionSuite(t *testing.T) *versionSuite {
@@ -54,6 +55,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
+	idGenerator := mocks.NewMockIDGenerator(ctrl)
 	createStorage := CreateStorageMock
 
 	mocks.AddLoggerExpects(logger)
@@ -74,6 +76,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		userActivityInteractor,
 		createStorage,
 		accessControl,
+		idGenerator,
 	)
 
 	return &versionSuite{
@@ -88,6 +91,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 			userRepo,
 			createStorage,
 			accessControl,
+			idGenerator,
 		},
 		versionInteractor: versionInteractor,
 	}
@@ -139,6 +143,7 @@ func TestCreateNewVersion(t *testing.T) {
 	ctx := context.Background()
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
+	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(4)
 	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(runtime, nil)
 	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
