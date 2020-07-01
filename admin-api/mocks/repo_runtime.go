@@ -92,3 +92,17 @@ func (mr *MockRuntimeRepoMockRecorder) GetByID(ctx, runtimeID interface{}) *gomo
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockRuntimeRepo)(nil).GetByID), ctx, runtimeID)
 }
+
+// UpdatePublishedVersion mocks base method
+func (m *MockRuntimeRepo) UpdatePublishedVersion(ctx context.Context, runtimeID, versionID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePublishedVersion", ctx, runtimeID, versionID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdatePublishedVersion indicates an expected call of UpdatePublishedVersion
+func (mr *MockRuntimeRepoMockRecorder) UpdatePublishedVersion(ctx, runtimeID, versionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePublishedVersion", reflect.TypeOf((*MockRuntimeRepo)(nil).UpdatePublishedVersion), ctx, runtimeID, versionID)
+}

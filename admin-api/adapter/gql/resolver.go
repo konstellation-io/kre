@@ -319,23 +319,11 @@ func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (
 }
 
 func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
-	// TODO Get Runtime Published Version from a property stored in the Runtime entity instead of get all runtime versions.
-	// TODO use the version loader to get the published version
-	loggedUserID := ctx.Value("userID").(string)
-
-	versions, err := r.versionInteractor.GetByRuntime(loggedUserID, obj.ID)
-	if err != nil {
-		return nil, err
+	if obj.PublishedVersion != "" {
+		versionLoader := ctx.Value(middleware.VersionLoaderKey).(*dataloader.VersionLoader)
+		return versionLoader.Load(obj.PublishedVersion)
 	}
-
-	var publishedVersion *entity.Version
-	for _, v := range versions {
-		if v.Status == entity.VersionStatusPublished {
-			publishedVersion = v
-		}
-	}
-
-	return publishedVersion, nil
+	return nil, nil
 }
 
 func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
