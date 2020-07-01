@@ -13,6 +13,7 @@ type Props = {
   onAccept?: (e: MouseEvent<HTMLDivElement>) => void;
   onCancel?: (e: MouseEvent<HTMLDivElement>) => void;
   className?: string;
+  autofocusOnAccept?: boolean;
 };
 
 const ModalContainer: FunctionComponent<Props> = ({
@@ -23,7 +24,8 @@ const ModalContainer: FunctionComponent<Props> = ({
   blocking = false,
   onAccept = function() {},
   onCancel = function() {},
-  className = ''
+  className = '',
+  autofocusOnAccept = false
 }) => {
   return (
     <>
@@ -41,6 +43,7 @@ const ModalContainer: FunctionComponent<Props> = ({
               height={30}
               className={styles.acceptButton}
               tabIndex={0}
+              autofocus={autofocusOnAccept}
             />
             <Button
               label={'CANCEL'}
