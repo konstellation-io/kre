@@ -43,14 +43,15 @@ type RuntimeStatusEntity struct {
 }
 
 type Runtime struct {
-	ID           string        `bson:"_id"`
-	Name         string        `bson:"name"`
-	Description  string        `bson:"description"`
-	CreationDate time.Time     `bson:"creationDate"`
-	Owner        string        `bson:"owner"`
-	Status       RuntimeStatus `bson:"status"`
-	Minio        MinioConfig   `bson:"minio"`
-	Mongo        MongoConfig
+	ID               string        `bson:"_id"`
+	Name             string        `bson:"name"`
+	Description      string        `bson:"description"`
+	CreationDate     time.Time     `bson:"creationDate"`
+	Owner            string        `bson:"owner"`
+	Status           RuntimeStatus `bson:"status"`
+	Minio            MinioConfig   `bson:"minio"`
+	PublishedVersion string        `bson:"publishedVersion"`
+	Mongo            MongoConfig
 }
 
 func (r *Runtime) GetNamespace() string {

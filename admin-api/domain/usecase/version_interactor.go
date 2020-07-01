@@ -338,9 +338,12 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ve
 	}
 
 	// Unpublish previous published version
-	previousPublishedVersion, err := i.unpublishPreviousVersion(runtime)
-	if err != nil {
-		return nil, fmt.Errorf("error unpublishing previous version: %w", err)
+	previousPublishedVersion := &entity.Version{}
+	if runtime.PublishedVersion != "" {
+		previousPublishedVersion, err = i.unpublishPreviousVersion(runtime)
+		if err != nil {
+			return nil, fmt.Errorf("error unpublishing previous version: %w", err)
+		}
 	}
 
 	err = i.versionService.Publish(runtime, v)
@@ -357,6 +360,11 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ve
 		return nil, err
 	}
 
+	err = i.runtimeRepo.UpdatePublishedVersion(ctx, runtime.ID, v.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	err = i.userActivityInteractor.RegisterPublishAction(loggedUserID, runtime, v, previousPublishedVersion, comment)
 	if err != nil {
 		return nil, err
@@ -366,27 +374,21 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ve
 }
 
 func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*entity.Version, error) {
-	prevVersion := &entity.Version{}
-	versions, err := i.versionRepo.GetByRuntime(runtime.ID)
+	v, err := i.versionRepo.GetByID(runtime.PublishedVersion)
 	if err != nil {
 		return nil, err
 	}
-	if len(versions) > 0 {
-		for _, v := range versions {
-			if v.Status == entity.VersionStatusPublished {
-				prevVersion = v
-				v.Status = entity.VersionStatusStarted
-				v.PublicationUserID = nil
-				v.PublicationDate = nil
-				err = i.versionRepo.Update(v)
-				if err != nil {
-					return nil, err
-				}
-				break
-			}
-		}
+
+	v.Status = entity.VersionStatusStarted
+	v.PublicationUserID = nil
+	v.PublicationDate = nil
+
+	err = i.versionRepo.Update(v)
+	if err != nil {
+		return nil, err
 	}
-	return prevVersion, nil
+
+	return v, nil
 }
 
 // Unpublish set a Version as not published on DB and K8s
@@ -420,6 +422,11 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, 
 	v.PublicationDate = nil
 	v.Status = entity.VersionStatusStarted
 	err = i.versionRepo.Update(v)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.runtimeRepo.UpdatePublishedVersion(ctx, runtime.ID, "")
 	if err != nil {
 		return nil, err
 	}
