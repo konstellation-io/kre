@@ -239,40 +239,40 @@ func (i *VersionInteractor) Start(ctx context.Context, loggedUserID string, vers
 
 	i.logger.Infof("The user %s is starting version %s", loggedUserID, versionID)
 
-	version, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
 	}
 
-	if version.Status != entity.VersionStatusStopped {
+	if v.Status != entity.VersionStatusStopped {
 		return nil, ErrInvalidVersionStatusBeforeStarting
 	}
 
-	if !version.Config.Completed {
+	if !v.Config.Completed {
 		return nil, ErrVersionConfigIncomplete
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, version.RuntimeID)
+	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.versionService.Start(runtime, version)
+	err = i.versionService.Start(runtime, v)
 	if err != nil {
 		return nil, err
 	}
 
-	version.Status = entity.VersionStatusStarted // TODO: First go to Starting
-	err = i.versionRepo.Update(version)
+	v.Status = entity.VersionStatusStarted // TODO: First go to Starting
+	err = i.versionRepo.Update(v)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, runtime, version, comment)
+	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, runtime, v, comment)
 	if err != nil {
 		return nil, err
 	}
-	return version, nil
+	return v, nil
 }
 
 // Stop removes the resources of the given Version
@@ -283,36 +283,36 @@ func (i *VersionInteractor) Stop(ctx context.Context, loggedUserID string, versi
 
 	i.logger.Infof("The user %s is stopping version %s", loggedUserID, versionID)
 
-	version, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
 	}
 
-	if version.Status != entity.VersionStatusStarted {
+	if v.Status != entity.VersionStatusStarted {
 		return nil, ErrInvalidVersionStatusBeforeStopping
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, version.RuntimeID)
+	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.versionService.Stop(runtime, version)
+	err = i.versionService.Stop(runtime, v)
 	if err != nil {
 		return nil, err
 	}
 
-	version.Status = entity.VersionStatusStopped
-	err = i.versionRepo.Update(version)
+	v.Status = entity.VersionStatusStopped
+	err = i.versionRepo.Update(v)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterStopAction(loggedUserID, runtime, version, comment)
+	err = i.userActivityInteractor.RegisterStopAction(loggedUserID, runtime, v, comment)
 	if err != nil {
 		return nil, err
 	}
-	return version, nil
+	return v, nil
 }
 
 // Publish set a Version as published on DB and K8s
@@ -323,16 +323,16 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ve
 
 	i.logger.Infof("The user %s is publishing version %s", loggedUserID, versionID)
 
-	version, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
 	}
 
-	if version.Status != entity.VersionStatusStarted {
+	if v.Status != entity.VersionStatusStarted {
 		return nil, ErrInvalidVersionStatusBeforePublishing
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, version.RuntimeID)
+	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
 	if err != nil {
 		return nil, err
 	}
@@ -343,26 +343,26 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ve
 		return nil, fmt.Errorf("error unpublishing previous version: %w", err)
 	}
 
-	err = i.versionService.Publish(runtime, version)
+	err = i.versionService.Publish(runtime, v)
 	if err != nil {
 		return nil, err
 	}
 
 	now := time.Now()
-	version.PublicationDate = &now
-	version.PublicationUserID = &loggedUserID
-	version.Status = entity.VersionStatusPublished
-	err = i.versionRepo.Update(version)
+	v.PublicationDate = &now
+	v.PublicationUserID = &loggedUserID
+	v.Status = entity.VersionStatusPublished
+	err = i.versionRepo.Update(v)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterPublishAction(loggedUserID, runtime, version, previousPublishedVersion, comment)
+	err = i.userActivityInteractor.RegisterPublishAction(loggedUserID, runtime, v, previousPublishedVersion, comment)
 	if err != nil {
 		return nil, err
 	}
 
-	return version, nil
+	return v, nil
 }
 
 func (i *VersionInteractor) unpublishPreviousVersion(runtime *entity.Runtime) (*entity.Version, error) {
@@ -397,39 +397,39 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, 
 
 	i.logger.Infof("The user %s is unpublishing version %s", loggedUserID, versionID)
 
-	version, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
 		return nil, err
 	}
 
-	if version.Status != entity.VersionStatusPublished {
+	if v.Status != entity.VersionStatusPublished {
 		return nil, ErrInvalidVersionStatusBeforeUnpublishing
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, version.RuntimeID)
+	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.versionService.Unpublish(runtime, version)
+	err = i.versionService.Unpublish(runtime, v)
 	if err != nil {
 		return nil, err
 	}
 
-	version.PublicationUserID = nil
-	version.PublicationDate = nil
-	version.Status = entity.VersionStatusStarted
-	err = i.versionRepo.Update(version)
+	v.PublicationUserID = nil
+	v.PublicationDate = nil
+	v.Status = entity.VersionStatusStarted
+	err = i.versionRepo.Update(v)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterUnpublishAction(loggedUserID, runtime, version, comment)
+	err = i.userActivityInteractor.RegisterUnpublishAction(loggedUserID, runtime, v, comment)
 	if err != nil {
 		return nil, err
 	}
 
-	return version, nil
+	return v, nil
 }
 
 func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserID string, version *entity.Version, config []*entity.ConfigurationVariable) (*entity.Version, error) {
@@ -479,17 +479,17 @@ func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID
 		return nil, err
 	}
 
-	version, err := i.versionRepo.GetByID(versionId)
+	v, err := i.versionRepo.GetByID(versionId)
 	if err != nil {
 		return nil, err
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, version.RuntimeID)
+	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
 	if err != nil {
 		return nil, err
 	}
 
-	return i.monitoringService.VersionStatus(runtime, version.Name, stopCh)
+	return i.monitoringService.VersionStatus(runtime, v.Name, stopCh)
 }
 
 func (i *VersionInteractor) WatchNodeLogs(
