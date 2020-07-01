@@ -1,4 +1,5 @@
 import CustomLabel, { HIGHLIGHT_COLORS } from './CustomLabel';
+import { FieldError, NestDataObject } from 'react-hook-form';
 import GroupSelect, {
   GroupSelectData
 } from 'Components/Form/GroupSelect/GroupSelect';
@@ -11,7 +12,6 @@ import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import { GetUsersActivity_userActivityList_user } from 'Graphql/queries/types/GetUsersActivity';
 import { Moment } from 'moment';
 import MultiSelect from 'Components/Form/MultiSelect/MultiSelect';
-import { NestDataObject } from 'react-hook-form';
 import React from 'react';
 import SearchSelect from 'Components/Form/SearchSelect/SearchSelect';
 import { UserActivityFormData } from '../../UsersActivity';
@@ -82,7 +82,7 @@ type FormFieldProps = {
   ) => void;
   runtimesAndVersions: VersionsData[];
   watch: Function;
-  errors: NestDataObject<UserActivityFormData>;
+  errors: NestDataObject<UserActivityFormData, FieldError>;
   reset: Function;
 };
 function FiltersBar({
@@ -124,7 +124,7 @@ function FiltersBar({
           options={users}
           onChange={(value: string) => setAndSubmit('userEmail', value)}
           placeholder="User email"
-          error={get(errors.userEmail, 'message')}
+          error={get(errors.userEmail, 'message') as string}
           value={watch('userEmail')}
         />
       </div>

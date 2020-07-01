@@ -101,7 +101,7 @@ function AddUser() {
             <TextInput
               whiteColor
               label="email"
-              error={get(errors.email, 'message')}
+              error={get(errors.email, 'message') as string}
               onChange={(value: string) => setValue('email', value)}
               onEnterKeyPress={handleSubmit(onSubmit)}
               autoFocus
@@ -111,7 +111,7 @@ function AddUser() {
               showSelectAllOption={false}
               options={Object.values(AccessLevel)}
               onChange={(value: AccessLevel) => setValue('accessLevel', value)}
-              error={get(errors.accessLevel, 'message')}
+              error={get(errors.accessLevel, 'message') as string}
               formSelectedOption={watch('accessLevel')}
               placeholder="Access level"
             />

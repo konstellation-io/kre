@@ -5,7 +5,7 @@ import TextInput from '../Form/TextInput/TextInput';
 import { confVarsMock } from 'Mocks/version';
 import { shallow } from 'enzyme';
 
-const DATA = confVarsMock.result.data.version.configurationVariables;
+const DATA = confVarsMock.result.data.version.config.vars;
 const VARIABLE_DATA = DATA[0];
 
 let wrapper: any;

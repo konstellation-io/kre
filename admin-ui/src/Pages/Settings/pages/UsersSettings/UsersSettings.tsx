@@ -238,7 +238,7 @@ function UsersSettings() {
           </ModalLayoutConfirmList>
           <ModalLayoutJustify
             onUpdate={(value: string) => setValue('comment', value)}
-            error={get(errors.comment, 'message', '')}
+            error={get(errors.comment, 'message', '') as string}
             label={modalInfo.current.commentLabel}
             className={styles.justify}
             submit={onSubmit}

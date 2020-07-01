@@ -2,14 +2,17 @@
 
 exports[`Button matches snapshot 1`] = `
 <div
-  className="btn default middle label"
-  onClick={[MockFunction]}
+  className="btn default middle label notFocussable"
+  onClick={[Function]}
+  onKeyPress={[Function]}
   style={
     Object {
       "height": 40,
       "lineHeight": "40px",
     }
   }
+  tabIndex={-1}
+  title=""
 >
   <span>
     Button

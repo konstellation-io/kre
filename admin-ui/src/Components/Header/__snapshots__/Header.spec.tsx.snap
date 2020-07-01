@@ -1319,7 +1319,7 @@ exports[`Header matches snapshot 1`] = `
             },
           },
           "typeDefs": undefined,
-          "version": "2.6.8",
+          "version": "2.6.10",
           "watchQuery": [Function],
         }
       }
@@ -1440,8 +1440,9 @@ exports[`Header matches snapshot 1`] = `
                   }
                 >
                   <div
-                    className="btn default left label"
+                    className="btn default left label notFocussable"
                     onClick={[Function]}
+                    onKeyPress={[Function]}
                     style={
                       Object {
                         "height": 40,
@@ -1449,6 +1450,8 @@ exports[`Header matches snapshot 1`] = `
                         "paddingLeft": "20%",
                       }
                     }
+                    tabIndex={-1}
+                    title=""
                   >
                     <ForwardRef
                       className="icon-small"
@@ -1473,10 +1476,9 @@ exports[`Header matches snapshot 1`] = `
                           }
                         >
                           <svg
-                            aria-hidden="true"
+                            aria-hidden={true}
                             className="MuiSvgIcon-root icon-small"
                             focusable="false"
-                            role="presentation"
                             viewBox="0 0 24 24"
                           >
                             <path

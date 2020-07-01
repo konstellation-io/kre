@@ -118,10 +118,15 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
       .paddingOuter(SCALE_PADDING_OUTER);
 
     const colorDomain = Object.keys(COLORS).map(n => parseInt(n));
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // TODO: FIX THIS
+    // @ts-ignore
     colorScale = scaleLinear()
       .domain(colorDomain)
       // @ts-ignore
       .interpolate(interpolateHcl)
+      // @ts-ignore
       .range(Object.values(COLORS));
 
     // Initialize axes

@@ -1685,7 +1685,7 @@ exports[`AddRuntime matches snapshot 1`] = `
             },
           },
           "typeDefs": undefined,
-          "version": "2.6.8",
+          "version": "2.6.10",
           "watchQuery": [Function],
         }
       }
@@ -1834,20 +1834,25 @@ exports[`AddRuntime matches snapshot 1`] = `
                   className="buttons"
                 >
                   <Button
+                    className="buttonSave"
                     label="SAVE"
                     loading={false}
                     onClick={[Function]}
                     primary={true}
+                    tabIndex={0}
                   >
                     <div
-                      className="btn default middle primary"
+                      className="buttonSave btn default middle primary"
                       onClick={[Function]}
+                      onKeyPress={[Function]}
                       style={
                         Object {
                           "height": 40,
                           "lineHeight": "40px",
                         }
                       }
+                      tabIndex={0}
+                      title=""
                     >
                       <span>
                         SAVE
@@ -1857,16 +1862,20 @@ exports[`AddRuntime matches snapshot 1`] = `
                   <Button
                     label="CANCEL"
                     onClick={[Function]}
+                    tabIndex={0}
                   >
                     <div
                       className="btn default middle label"
                       onClick={[Function]}
+                      onKeyPress={[Function]}
                       style={
                         Object {
                           "height": 40,
                           "lineHeight": "40px",
                         }
                       }
+                      tabIndex={0}
+                      title=""
                     >
                       <span>
                         CANCEL

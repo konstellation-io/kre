@@ -60,7 +60,7 @@ function UserFilters() {
           onChange={(value: string) => setValue('userEmail', value)}
           onEnter={handleSubmit(onSubmit)}
           placeholder="User email"
-          error={get(errors.userEmail, 'message')}
+          error={get(errors.userEmail, 'message') as string}
           value={watch('userEmail')}
         />
       </div>
@@ -72,7 +72,7 @@ function UserFilters() {
             setValue('userType', value);
             handleSubmit(onSubmit)();
           }}
-          error={get(errors.userType, 'message')}
+          error={get(errors.userType, 'message') as string}
           formSelectedOption={watch('userType')}
           placeholder="Activity type"
         />

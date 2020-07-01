@@ -9,7 +9,7 @@ exports[`VersionActions matches snapshot 1`] = `
       Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
-        "displayName": "StopIcon",
+        "displayName": "PauseCircleFilledIcon",
         "muiName": "SvgIcon",
         "type": Object {
           "$$typeof": Symbol(react.forward_ref),
@@ -17,6 +17,7 @@ exports[`VersionActions matches snapshot 1`] = `
         },
       }
     }
+    iconSize="icon-regular"
     key="STOP"
     label="STOP"
     onClick={[Function]}
@@ -26,6 +27,7 @@ exports[`VersionActions matches snapshot 1`] = `
       }
     }
     theme="default"
+    title=""
   />
   <Button
     Icon={
@@ -40,6 +42,7 @@ exports[`VersionActions matches snapshot 1`] = `
         },
       }
     }
+    iconSize="icon-regular"
     key="PUBLISH"
     label="PUBLISH"
     onClick={[Function]}
@@ -50,6 +53,7 @@ exports[`VersionActions matches snapshot 1`] = `
       }
     }
     theme="default"
+    title=""
   />
 </div>
 `;

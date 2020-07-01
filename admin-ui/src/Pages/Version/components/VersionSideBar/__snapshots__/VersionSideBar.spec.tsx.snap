@@ -46,7 +46,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     version={
       Object {
         "__typename": "Version",
-        "configurationCompleted": true,
+        "config": Object {
+          "completed": false,
+          "vars": Array [],
+        },
         "creationAuthor": Object {
           "__typename": "User",
           "email": "user@domain.com",
@@ -82,7 +85,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     version={
       Object {
         "__typename": "Version",
-        "configurationCompleted": true,
+        "config": Object {
+          "completed": false,
+          "vars": Array [],
+        },
         "creationAuthor": Object {
           "__typename": "User",
           "email": "user@domain.com",
@@ -121,7 +127,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
       version={
         Object {
           "__typename": "Version",
-          "configurationCompleted": true,
+          "config": Object {
+            "completed": false,
+            "vars": Array [],
+          },
           "creationAuthor": Object {
             "__typename": "User",
             "email": "user@domain.com",

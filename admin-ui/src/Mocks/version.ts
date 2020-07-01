@@ -51,7 +51,10 @@ export const version = {
     id: 'userId',
     email: 'user@domain.com'
   },
-  configurationCompleted: true
+  config: {
+    vars: [],
+    completed: false
+  }
 };
 export const confVarsMock = {
   request: {
