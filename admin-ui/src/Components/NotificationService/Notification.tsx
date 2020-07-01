@@ -43,7 +43,9 @@ function Notification({
   const [removeNotification] = useMutation<
     RemoveNotification,
     RemoveNotificationVariables
-  >(REMOVE_NOTIFICATION);
+  >(REMOVE_NOTIFICATION, {
+    onError: () => console.error('Could not remove notification')
+  });
 
   useEffect(() => {
     let ttl: number;

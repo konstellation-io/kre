@@ -88,17 +88,22 @@ function UsersSettings() {
             });
           }
         }
-      }
+      },
+      onError: () => console.error('You cannot delete your own user')
     }
   );
   const [revokeUsers] = useMutation<
     RevokeUserSessions,
     RevokeUserSessionsVariables
-  >(RevokeUserSessionsMutation);
+  >(RevokeUserSessionsMutation, {
+    onError: () => console.error('You cannot revoke your own sessions')
+  });
   const [updateAccessLevel] = useMutation<
     UpdateAccessLevel,
     UpdateAccessLevelVariables
-  >(UpdateAccessLevelMutation);
+  >(UpdateAccessLevelMutation, {
+    onError: () => console.error('You cannot change your own user')
+  });
 
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>(defaultModalInfo);

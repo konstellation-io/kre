@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/konstellation-io/kre/admin-api/adapter/version"
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	"log"
 
@@ -55,6 +56,8 @@ func main() {
 
 	paswordGenerator := runtime.NewPasswordGenerator()
 
+	idGenerator := version.NewIDGenerator()
+
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 	authInteractor := usecase.NewAuthInteractor(
 		logger,
@@ -96,6 +99,7 @@ func main() {
 		userActivityInteractor,
 		minioCreateStorage,
 		accessControl,
+		idGenerator,
 	)
 
 	metricsInteractor := usecase.NewMetricsInteractor(

@@ -6,7 +6,7 @@ import {
   VersionNodeStatus,
   VersionNodeStatusVariables
 } from 'Graphql/subscriptions/types/VersionNodeStatus';
-import { cloneDeep, get } from 'lodash';
+import { get } from 'lodash';
 
 import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
@@ -52,21 +52,7 @@ function Status({ version }: Props) {
   const subscribe = () =>
     subscribeToMore<VersionNodeStatus, VersionNodeStatusVariables>({
       document: VersionNodeStatusSubscription,
-      variables: { versionId },
-      updateQuery: (prev, { subscriptionData }) => {
-        const nodeInfo = get(subscriptionData, 'data.versionNodeStatus');
-        const newData = cloneDeep(prev);
-
-        newData.version.workflows = newData.version.workflows.map(workflow => ({
-          ...workflow,
-          nodes: workflow.nodes.map(node => ({
-            ...node,
-            status: node.id === nodeInfo.nodeId ? nodeInfo.status : node.status
-          }))
-        }));
-
-        return newData;
-      }
+      variables: { versionId }
     });
 
   if (error) return <ErrorMessage />;

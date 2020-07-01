@@ -138,8 +138,8 @@ module.exports = {
     runtimeCreated: {
       subscribe: () => pubsub.asyncIterator('runtimeCreated')
     },
-    versionNodeStatus: {
-      subscribe: () => pubsub.asyncIterator('versionNodeStatus')
+    watchNodeStatus: {
+      subscribe: () => pubsub.asyncIterator('watchNodeStatus')
     },
     watchResourceMetrics: {
       subscribe: () => pubsub.asyncIterator('watchResourceMetrics')
@@ -273,8 +273,8 @@ module.exports = {
   Node: () => {
     const _id = casual.uuid;
     setTimeout(() => {
-      pubsub.publish('versionNodeStatus', {
-        versionNodeStatus: {
+      pubsub.publish('watchNodeStatus', {
+        watchNodeStatus: {
           date: new Date().toUTCString(),
           nodeId: _id,
           nodeName: getProcessName(),

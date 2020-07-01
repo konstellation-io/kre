@@ -41,30 +41,31 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 	w.logger.Info("[MonitoringService.NodeStatus] starting watcher...")
 
 	ctx := stream.Context()
-	statusCh := make(chan *entity.VersionNodeStatus, 1)
-	waitCh := w.status.NodeStatus(ctx, versionName, statusCh)
+	nodeCh := make(chan entity.Node, 1)
+	stopCh := w.status.NodeStatus(versionName, nodeCh)
 
 	for {
 		select {
-		case <-waitCh:
+		case <-stopCh:
 			w.logger.Info("[MonitoringService.NodeStatus] watcher stopped")
 			return nil
 
 		case <-ctx.Done():
 			w.logger.Info("[MonitoringService.NodeStatus] context closed")
-			close(waitCh)
+			close(stopCh)
 			return nil
 
-		case nodeStatus := <-statusCh:
+		case node := <-nodeCh:
+			w.logger.Debugf("New node status: %#v", node)
 			err := stream.Send(&monitoringpb.NodeStatusResponse{
-				Status:  string(nodeStatus.Status),
-				NodeId:  nodeStatus.NodeID,
-				Message: nodeStatus.Message,
+				Status: string(node.Status),
+				NodeId: node.ID,
+				Name:   node.Name,
 			})
 
 			if err != nil {
 				w.logger.Infof("[MonitoringService.NodeStatus] error sending to client: %s", err)
-				close(waitCh)
+				close(stopCh)
 				return err
 			}
 		}

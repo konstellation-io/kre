@@ -51,6 +51,7 @@ export default function useVersionAction(runtimeId: string) {
     PublishVersion,
     PublishVersionVariables
   >(PublishVersionMutation, {
+    onError: () => console.error('Version could not be published'),
     update(cache, updateResult) {
       // TODO: This update the previous one activated version.
       // We should remove this when multi activation feature is implemented.
@@ -92,15 +93,21 @@ export default function useVersionAction(runtimeId: string) {
   const [unpublishMutation, { loading: loadingM2 }] = useMutation<
     UnpublishVersion,
     UnpublishVersionVariables
-  >(UnpublishVersionMutation);
+  >(UnpublishVersionMutation, {
+    onError: () => console.error('Version could not be unpublished')
+  });
   const [startMutation, { loading: loadingM3 }] = useMutation<
     StartVersion,
     StartVersionVariables
-  >(StartVersionMutation);
+  >(StartVersionMutation, {
+    onError: () => console.error('Version could not be started')
+  });
   const [stopMutation, { loading: loadingM4 }] = useMutation<
     StopVersion,
     StopVersionVariables
-  >(StopVersionMutation);
+  >(StopVersionMutation, {
+    onError: () => console.error('Version could not be stopped')
+  });
 
   const mutationLoading = [loadingM1, loadingM2, loadingM3, loadingM4].some(
     el => el

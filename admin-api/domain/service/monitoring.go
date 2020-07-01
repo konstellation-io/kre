@@ -11,7 +11,7 @@ import (
 // TODO: Change stop channel to derived context
 type MonitoringService interface {
 	NodeLogs(runtime *entity.Runtime, versionID string, filters entity.LogFilters, stopCh <-chan bool) (<-chan *entity.NodeLog, error)
-	VersionStatus(runtime *entity.Runtime, versionName string, stopCh <-chan bool) (<-chan *entity.VersionNodeStatus, error)
+	VersionStatus(runtime *entity.Runtime, versionName string, stopCh <-chan bool) (<-chan *entity.Node, error)
 	SearchLogs(ctx context.Context, runtime *entity.Runtime, versionID string, filters entity.LogFilters, cursor *string) (entity.SearchLogsResult, error)
 	GetMetrics(ctx context.Context, runtime *entity.Runtime, versionID string, startDate string, endDate string) ([]entity.MetricRow, error)
 }

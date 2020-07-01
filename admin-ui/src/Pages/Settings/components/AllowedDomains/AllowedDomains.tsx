@@ -33,6 +33,7 @@ function AllowedDomains() {
     UpdateDomains,
     UpdateDomainsVariables
   >(UpdateDomainsMutation, {
+    onError: () => console.error('Allowed domains could not be updated'),
     update: (cache, { data }) => {
       if (data && data.updateSettings) {
         cache.writeQuery({

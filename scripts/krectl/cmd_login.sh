@@ -78,9 +78,8 @@ local_login() {
 
   kubectl -n kre logs "$ADMIN_API_POD" | tail -n 100 > "$WATCH_FILE"
 
-  FILE=$(cat "$WATCH_FILE")
   # Read the file in reverse order and capture the first signin link
-  LINK=$($FILE | awk '{print NR" "$0}' | sort -k1 -n -r | sed 's/^[^ ]* //g' | egrep -oh "http://.*/signin/([^\"]*)" | head -n 1)
+  LINK=$(awk '{print NR" "$0}' < "$WATCH_FILE" | sort -k1 -n -r | sed 's/^[^ ]* //g' | egrep -oh "http://.*/signin/([^\"]*)" | head -n 1)
 
   rm "$WATCH_FILE"
 

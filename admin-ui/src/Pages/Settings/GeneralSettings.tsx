@@ -89,6 +89,7 @@ function GeneralSettings() {
     UpdateSettings,
     UpdateSettingsVariables
   >(updateSessionLifetimeMutation, {
+    onError: () => console.error('Expiration time could not be updated'),
     update(cache, { data }) {
       if (data && data.updateSettings) {
         cache.writeQuery({

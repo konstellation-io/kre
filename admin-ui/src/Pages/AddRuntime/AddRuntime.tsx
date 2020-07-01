@@ -66,6 +66,7 @@ function AddRuntime() {
     CreateRuntimeVariables
   >(CreateRuntimeMutation, {
     onCompleted: onCompleteAddRuntime,
+    onError: () => console.error('Runtime could not be created'),
     update(cache, updateResult) {
       if (updateResult.data !== undefined && updateResult.data !== null) {
         const newRuntime = updateResult.data

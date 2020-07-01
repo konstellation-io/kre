@@ -65,7 +65,7 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
   let g: Selection<SVGGElement, unknown, null, undefined>;
   let xScale: ScaleBand<string>;
   let yScale: ScaleBand<string>;
-  let colorScale: ScaleLinear<number, string>;
+  let colorScale: ScaleLinear<string, string>;
   let legendScale: ScaleBand<string>;
   let axes: Selection<SVGGElement, unknown, null, undefined>;
   let xAxis: Axis<string>;
@@ -119,14 +119,9 @@ function ConfusionMatrix({ width, height, margin, data }: Props) {
 
     const colorDomain = Object.keys(COLORS).map(n => parseInt(n));
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // TODO: FIX THIS
-    // @ts-ignore
-    colorScale = scaleLinear()
+    colorScale = scaleLinear<string, number>()
       .domain(colorDomain)
-      // @ts-ignore
       .interpolate(interpolateHcl)
-      // @ts-ignore
       .range(Object.values(COLORS));
 
     // Initialize axes

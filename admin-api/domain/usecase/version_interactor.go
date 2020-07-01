@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/auth"
+	"github.com/konstellation-io/kre/admin-api/domain/usecase/version"
 	"io"
 	"io/ioutil"
-	"math/rand"
 	"time"
 
 	"github.com/konstellation-io/kre/admin-api/domain/entity"
@@ -16,10 +16,6 @@ import (
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/krt"
 	"github.com/konstellation-io/kre/admin-api/domain/usecase/logging"
 )
-
-const idLength = 10
-const idCharset = "abcdefghijklmnopqrstuvwxyz"
-const idCharsetLen = len(idCharset)
 
 var (
 	// ErrVersionNotFound error
@@ -52,6 +48,7 @@ type VersionInteractor struct {
 	userActivityInteractor *UserActivityInteractor
 	createStorage          repository.CreateStorage
 	accessControl          auth.AccessControl
+	idGenerator            version.IDGenerator
 }
 
 // NewVersionInteractor creates a new interactor
@@ -64,6 +61,7 @@ func NewVersionInteractor(
 	userActivityInteractor *UserActivityInteractor,
 	createStorage repository.CreateStorage,
 	accessControl auth.AccessControl,
+	idGenerator version.IDGenerator,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		logger,
@@ -74,16 +72,8 @@ func NewVersionInteractor(
 		userActivityInteractor,
 		createStorage,
 		accessControl,
+		idGenerator,
 	}
-}
-
-// TODO refactor this in order to use a common id generator
-func generateId() string {
-	b := make([]byte, idLength)
-	for i := range b {
-		b[i] = idCharset[rand.Intn(idCharsetLen)]
-	}
-	return string(b)
 }
 
 func (i *VersionInteractor) filterConfigVars(loggedUserID string, version *entity.Version) {
@@ -152,7 +142,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		}
 	}
 
-	workflows, err := generateWorkflows(krtYml)
+	workflows, err := i.generateWorkflows(krtYml)
 	if err != nil {
 		return nil, fmt.Errorf("error generating workflows: %w", err)
 	}
@@ -187,6 +177,58 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		return nil, fmt.Errorf("error registering activity: %w", err)
 	}
 	return versionCreated, nil
+}
+
+func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
+	var workflows []*entity.Workflow
+	if len(krtYml.Workflows) == 0 {
+		return workflows, nil
+	}
+	nodesMap := map[string]krt.Node{}
+	for _, n := range krtYml.Nodes {
+		nodesMap[n.Name] = n
+	}
+
+	for _, w := range krtYml.Workflows {
+		var nodes []entity.Node
+		var edges []entity.Edge
+
+		var previousN *entity.Node
+		for _, name := range w.Sequential {
+			nodeInfo, ok := nodesMap[name]
+			if !ok {
+				return nil, fmt.Errorf("error creating workflows. Node '%s' not found", name)
+			}
+
+			node := &entity.Node{
+				ID:    i.idGenerator.NewID(),
+				Name:  name,
+				Image: nodeInfo.Image,
+				Src:   nodeInfo.Src,
+			}
+
+			if previousN != nil {
+				e := entity.Edge{
+					ID:       i.idGenerator.NewID(),
+					FromNode: previousN.ID,
+					ToNode:   node.ID,
+				}
+				edges = append(edges, e)
+			}
+
+			nodes = append(nodes, *node)
+			previousN = node
+		}
+
+		workflows = append(workflows, &entity.Workflow{
+			ID:         i.idGenerator.NewID(),
+			Name:       w.Name,
+			Entrypoint: w.Entrypoint,
+			Nodes:      nodes,
+			Edges:      edges,
+		})
+	}
+	return workflows, nil
 }
 
 // Start create the resources of the given Version
@@ -432,7 +474,7 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 	return version, nil
 }
 
-func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID, versionId string, stopCh <-chan bool) (<-chan *entity.VersionNodeStatus, error) {
+func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID, versionId string, stopCh <-chan bool) (<-chan *entity.Node, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView); err != nil {
 		return nil, err
 	}
