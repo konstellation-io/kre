@@ -4,9 +4,11 @@ package logging
 
 // Logger defines how to logging in the application.
 type Logger interface {
+	Debug(msg string)
 	Info(msg string)
 	Warn(msg string)
 	Error(msg string)
+	Debugf(format string, a ...interface{})
 	Infof(format string, a ...interface{})
 	Warnf(format string, a ...interface{})
 	Errorf(format string, a ...interface{})

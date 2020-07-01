@@ -300,15 +300,6 @@ func (r *queryResolver) ResourceMetrics(
 	return r.resourceMetricsInteractor.Get(ctx, loggedUserID, versionId, fromDate, toDate)
 }
 
-func (r *subscriptionResolver) WatchResourceMetrics(
-	ctx context.Context,
-	versionId string,
-	fromDate string,
-) (<-chan []*entity.ResourceMetrics, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.resourceMetricsInteractor.Watch(ctx, loggedUserID, versionId, fromDate)
-}
-
 func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
 	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
 	return userLoader.Load(runtime.Owner)
@@ -342,74 +333,21 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *enti
 
 func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error) {
 	loggedUserID := ctx.Value("userID").(string)
-
-	stopCh := make(chan bool)
-	inputChan, err := r.versionInteractor.WatchVersionStatus(ctx, loggedUserID, versionID, stopCh)
-	if err != nil {
-		return nil, err
-	}
-
-	r.logger.Info("Starting VersionNodeStatus subscription...")
-
-	outputChan := make(chan *entity.Node)
-
-	go func() {
-		for {
-			select {
-			case nodeStatus := <-inputChan:
-				if nodeStatus == nil {
-					r.logger.Info("Input channel of VersionNodeStatus subscription closed. Closing output channel...")
-					close(outputChan)
-					return
-				}
-				outputChan <- nodeStatus
-
-			case <-ctx.Done():
-				r.logger.Info("Stopping VersionNodeStatus subscription...")
-				stopCh <- true
-				close(outputChan)
-				return
-			}
-		}
-	}()
-
-	return outputChan, nil
+	return r.versionInteractor.WatchVersionStatus(ctx, loggedUserID, versionID)
 }
 
 func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
+	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeID, versionID, filters)
+}
 
-	stopCh := make(chan bool)
-	inputChan, err := r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeID, versionID, filters, stopCh)
-	if err != nil {
-		return nil, err
-	}
-
-	r.logger.Info("Starting NodeLogs subscription...")
-
-	outputChan := make(chan *entity.NodeLog)
-
-	go func() {
-		for {
-			select {
-			case nodeLog := <-inputChan:
-				if nodeLog == nil {
-					r.logger.Info("Input channel of NodeLogs subscription closed. Closing output channel...")
-					close(outputChan)
-					return
-				}
-				outputChan <- nodeLog
-
-			case <-ctx.Done():
-				r.logger.Info("Stopping NodeLogs subscription...")
-				stopCh <- true
-				close(outputChan)
-				return
-			}
-		}
-	}()
-
-	return outputChan, nil
+func (r *subscriptionResolver) WatchResourceMetrics(
+	ctx context.Context,
+	versionId string,
+	fromDate string,
+) (<-chan []*entity.ResourceMetrics, error) {
+	loggedUserID := ctx.Value("userID").(string)
+	return r.resourceMetricsInteractor.Watch(ctx, loggedUserID, versionId, fromDate)
 }
 
 func (r *userActivityResolver) Date(_ context.Context, obj *entity.UserActivity) (string, error) {
