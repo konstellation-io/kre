@@ -37,9 +37,10 @@ RUN python3 -m pip install pipenv && \
 COPY src src
 COPY entrypoint.sh ./
 
+RUN mkdir src/entrypoint
+
 COPY --from=builder /build/entrypoint-gen .
 COPY --from=builder /build/entrypoint.py.tmpl .
-
 
 ENV PYTHONPATH="/app/src/entrypoint"
 
