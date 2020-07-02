@@ -44,7 +44,7 @@ function Notification({
     RemoveNotification,
     RemoveNotificationVariables
   >(REMOVE_NOTIFICATION, {
-    onError: () => console.error('Could not remove notification')
+    onError: e => console.error(`removeNotification: ${e}`)
   });
 
   useEffect(() => {

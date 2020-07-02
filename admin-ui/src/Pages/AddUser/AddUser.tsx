@@ -54,7 +54,7 @@ function AddUser() {
     CreateUserVariables
   >(CreateUserMutation, {
     onCompleted: onCompleteAddUser,
-    onError: () => console.error('User could not be created'),
+    onError: e => console.error(`addUser: ${e}`),
     update: (cache, { data }) => {
       const newUser = data?.createUser as CreateUser_createUser;
       const cacheResult = cache.readQuery<GetUsers>({

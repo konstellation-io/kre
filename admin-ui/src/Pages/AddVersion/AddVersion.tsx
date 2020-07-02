@@ -27,7 +27,7 @@ function AddVersion() {
     CreateVersion,
     CreateVersionVariables
   >(AddVersionMutation, {
-    onError: () => console.error('Version could not be added'),
+    onError: e => console.error(`addVersion: ${e}`),
     onCompleted
   });
 

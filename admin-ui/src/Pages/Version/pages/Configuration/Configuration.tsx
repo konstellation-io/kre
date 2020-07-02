@@ -87,7 +87,7 @@ function Configuration() {
     UpdateVersionConfiguration,
     UpdateVersionConfigurationVariables
   >(UpdateVersionConfigurationMutation, {
-    onError: () => console.error('Configuration could not be updated'),
+    onError: e => console.error(`updateConfiguration: ${e}`),
     onCompleted: onCompleteUpdate
   });
 

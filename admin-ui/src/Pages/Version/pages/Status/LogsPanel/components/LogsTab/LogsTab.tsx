@@ -38,7 +38,7 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
     UpdateTabFilters,
     UpdateTabFiltersVariables
   >(UPDATE_TAB_FILTERS, {
-    onError: () => console.error('Logs filters could not be updated')
+    onError: e => console.error(`updateTabFilters: ${e}`)
   });
 
   function updateFilters(newFilters: UpdateTabFiltersInput_newFilters) {

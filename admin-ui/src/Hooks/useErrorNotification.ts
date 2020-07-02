@@ -10,7 +10,7 @@ type Props = {
 };
 function useErrorNotification({ id, error }: Props) {
   const [addErrorNotification] = useMutation(ADD_NOTIFICATION, {
-    onError: () => console.error('Could not add error notification')
+    onError: e => console.error(`addErrorNotification: ${e}`)
   });
 
   useEffect(() => {

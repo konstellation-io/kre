@@ -59,7 +59,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   const [addLogTabMutation] = useMutation<null, AddLogTabVariables>(
     ADD_LOG_TAB,
     {
-      onError: () => console.error('Log tab could not be added')
+      onError: e => console.error(`addLogTabMutation: ${e}`)
     }
   );
 

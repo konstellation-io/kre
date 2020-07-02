@@ -87,20 +87,20 @@ function UsersSettings() {
           }
         }
       },
-      onError: () => console.error('You cannot delete your own user')
+      onError: e => console.error(`removeUsers: ${e}`)
     }
   );
   const [revokeUsers] = useMutation<
     RevokeUserSessions,
     RevokeUserSessionsVariables
   >(RevokeUserSessionsMutation, {
-    onError: () => console.error('You cannot revoke your own sessions')
+    onError: e => console.error(`revokeUsers: ${e}`)
   });
   const [updateAccessLevel] = useMutation<
     UpdateAccessLevel,
     UpdateAccessLevelVariables
   >(UpdateAccessLevelMutation, {
-    onError: () => console.error('You cannot change your own user')
+    onError: e => console.error(`updateAccessLevel: ${e}`)
   });
 
   const [showConfirmation, setShowConfirmation] = useState(false);
