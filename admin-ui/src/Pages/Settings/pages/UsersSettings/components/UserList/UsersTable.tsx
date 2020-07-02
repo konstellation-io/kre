@@ -106,13 +106,13 @@ type Props = {
 function UsersTable({ users, contextMenuActions }: Props) {
   const client = useApolloClient();
   const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
-  const filters = get(localData, 'userSettings.filters', {
+  const filters = localData?.userSettings.filters || {
     email: null,
     accessLevel: null
-  });
-  const userSelection: UserSelection = get(
-    localData,
-    'userSettings.userSelection',
+  };
+  const userSelection = get(
+    localData?.userSettings,
+    'userSelection',
     UserSelection.NONE
   );
 
