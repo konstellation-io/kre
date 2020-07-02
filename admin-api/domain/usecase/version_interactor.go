@@ -481,7 +481,7 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 	return version, nil
 }
 
-func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID, versionId string, stopCh <-chan bool) (<-chan *entity.Node, error) {
+func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID, versionId string) (<-chan *entity.Node, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView); err != nil {
 		return nil, err
 	}
@@ -496,14 +496,13 @@ func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID
 		return nil, err
 	}
 
-	return i.monitoringService.VersionStatus(runtime, v.Name, stopCh)
+	return i.monitoringService.VersionStatus(ctx, runtime, v.Name)
 }
 
 func (i *VersionInteractor) WatchNodeLogs(
 	ctx context.Context,
 	loggedUserID, runtimeID, versionID string,
 	filters entity.LogFilters,
-	stopChannel chan bool,
 ) (<-chan *entity.NodeLog, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView); err != nil {
 		return nil, err
@@ -514,7 +513,7 @@ func (i *VersionInteractor) WatchNodeLogs(
 		return nil, err
 	}
 
-	return i.monitoringService.NodeLogs(runtime, versionID, filters, stopChannel)
+	return i.monitoringService.NodeLogs(ctx, runtime, versionID, filters)
 }
 
 func (i *VersionInteractor) SearchLogs(

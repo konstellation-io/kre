@@ -53,39 +53,41 @@ func (c *ResourceMetricsService) Get(ctx context.Context, runtimeName, versionNa
 
 // Watch watch resources metrics from K8s Manager
 func (c *ResourceMetricsService) Watch(ctx context.Context, runtimeName, versionName, fromDate string, step int32) (<-chan []*entity.ResourceMetrics, error) {
-	req := resourcemetricspb.VersionRequest{
+	c.logger.Info("[ResourceMetricsService.Watch] opening stream with runtime-api...")
+	stream, err := c.client.WatchVersion(ctx, &resourcemetricspb.VersionRequest{
 		Namespace:   runtimeName,
 		VersionName: versionName,
 		FromDate:    fromDate,
 		Step:        step,
-	}
-
-	stream, err := c.client.WatchVersion(ctx, &req)
+	})
 	if err != nil {
-		if err != nil {
-			return nil, fmt.Errorf("error calling grpc get version resource metrics: %w", err)
-		}
+		return nil, fmt.Errorf("calling watch version resources: %w", err)
 	}
 
 	ch := make(chan []*entity.ResourceMetrics, 1)
 	go func() {
+		defer close(ch)
+
 		for {
-			c.logger.Info("[resource_monitoring.VersionResourceMetrics] waiting for stream.Recv()...")
+			c.logger.Debug("[ResourceMetricsService.Watch] waiting for stream.Recv()...")
 			msg, err := stream.Recv()
 
+			if stream.Context().Err() == context.Canceled {
+				c.logger.Debug("[ResourceMetricsService.Watch] Context canceled")
+				return
+			}
+
 			if err == io.EOF {
-				c.logger.Info("[resource_monitoring.VersionResourceMetrics] EOF msg received. Stopping...")
-				close(ch)
+				c.logger.Debug("[ResourceMetricsService.Watch] EOF msg received. Stopping...")
 				return
 			}
 
 			if err != nil {
-				c.logger.Error(err.Error())
-				close(ch)
+				c.logger.Errorf("[ResourceMetricsService.Watch] stream.Recv error: %s", err)
 				return
 			}
 
-			c.logger.Info("[resource_monitoring.VersionResourceMetrics] Message received")
+			c.logger.Debug("[ResourceMetricsService.Watch] Message received")
 
 			ch <- toResourceMetrics(msg.GetVersionResourceMetrics())
 		}
