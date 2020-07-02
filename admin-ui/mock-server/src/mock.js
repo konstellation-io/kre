@@ -275,11 +275,8 @@ module.exports = {
     setTimeout(() => {
       pubsub.publish('watchNodeStatus', {
         watchNodeStatus: {
-          date: new Date().toUTCString(),
-          nodeId: _id,
-          nodeName: getProcessName(),
-          status: casual.random_element(['STARTED', 'ERROR']),
-          message: 'message'
+          id: _id,
+          status: casual.random_element(['STARTED', 'ERROR'])
         }
       });
     }, casual.integer(2000, 10000));
