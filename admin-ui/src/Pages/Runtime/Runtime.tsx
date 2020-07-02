@@ -59,7 +59,12 @@ function Runtime() {
             />
             <Route
               render={props => (
-                <Version {...props} version={version} runtime={runtime} />
+                <Version
+                  {...props}
+                  version={version}
+                  versions={versions}
+                  runtime={runtime}
+                />
               )}
             />
           </Switch>
