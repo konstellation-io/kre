@@ -20,6 +20,8 @@ spec:
               name: aws-secret
               key: AWS_SECRET_ACCESS_KEY
     {{ else -}}
-      - http01: {}
+      - http01:
+          ingress:
+            class: nginx
     {{ end -}}
 {{- end }}
