@@ -21,7 +21,6 @@ message Version {
   message Entrypoint {
     string proto_file = 1;
     string image = 2;
-    string src = 3;
   }
 
   message Workflow {

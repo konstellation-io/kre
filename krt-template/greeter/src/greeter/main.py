@@ -1,4 +1,4 @@
-def init(ctx):
+async def init(ctx):
     ctx.logger.info("[worker init]")
     ctx.set_value("greeting", "Hello")
 

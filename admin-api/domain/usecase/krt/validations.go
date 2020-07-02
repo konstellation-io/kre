@@ -46,11 +46,6 @@ func ValidateYaml(krt *Krt) error {
 }
 
 func validateSrcPaths(krt *Krt, dstDir string) error {
-	entrypointFile := path.Join(dstDir, krt.Entrypoint.Src)
-	if !fileExists(entrypointFile) {
-		return fmt.Errorf("error entrypointFile %s not exists", entrypointFile)
-	}
-
 	for _, node := range krt.Nodes {
 		nodeFile := path.Join(dstDir, node.Src)
 		if !fileExists(nodeFile) {

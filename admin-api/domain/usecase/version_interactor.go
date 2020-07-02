@@ -158,7 +158,6 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		Entrypoint: entity.Entrypoint{
 			ProtoFile: krtYml.Entrypoint.Proto,
 			Image:     krtYml.Entrypoint.Image,
-			Src:       krtYml.Entrypoint.Src,
 		},
 		Workflows: workflows,
 	})

@@ -140,6 +140,10 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 									SubPath:   "nats_subject.json",
 								},
 								{
+									Name:      "entrypoint-code",
+									MountPath: "/kre/src/entrypoint",
+								},
+								{
 									Name:      "shared-data",
 									ReadOnly:  true,
 									MountPath: "/krt-files",
@@ -240,6 +244,12 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 						},
 						{
 							Name: "app-log-volume",
+							VolumeSource: apiv1.VolumeSource{
+								EmptyDir: &apiv1.EmptyDirVolumeSource{},
+							},
+						},
+						{
+							Name: "entrypoint-code",
 							VolumeSource: apiv1.VolumeSource{
 								EmptyDir: &apiv1.EmptyDirVolumeSource{},
 							},
