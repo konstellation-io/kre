@@ -24,10 +24,10 @@ import styles from './Settings.module.scss';
 import { useForm } from 'react-hook-form';
 
 const GetExpirationTimeQuery = loader(
-  '../../Graphql/queries/getExpirationTime.graphql'
+  'Graphql/queries/getExpirationTime.graphql'
 );
 const updateSessionLifetimeMutation = loader(
-  '../../Graphql/mutations/updateSettings.graphql'
+  'Graphql/mutations/updateSettings.graphql'
 );
 
 const MIN_EXPIRATION_DAYS = 1;

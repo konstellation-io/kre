@@ -21,9 +21,7 @@ import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 
-const GetMetricsQuery = loader(
-  '../../../../Graphql/queries/getMetrics.graphql'
-);
+const GetMetricsQuery = loader('Graphql/queries/getMetrics.graphql');
 
 type FormData = {
   startDate: Moment;

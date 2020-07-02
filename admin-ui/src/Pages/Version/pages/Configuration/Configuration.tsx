@@ -35,10 +35,10 @@ import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 
 const GetConfVariablesQuery = loader(
-  '../../../../Graphql/queries/getConfigurationVariables.graphql'
+  'Graphql/queries/getConfigurationVariables.graphql'
 );
 const UpdateVersionConfigurationMutation = loader(
-  '../../../../Graphql/mutations/updateVersionConfiguration.graphql'
+  'Graphql/mutations/updateVersionConfiguration.graphql'
 );
 
 export type ConfVarPanelInfo = {

@@ -12,7 +12,7 @@ import { useParams } from 'react-router';
 import { useQuery } from '@apollo/react-hooks';
 
 const GetVersionWorkflowsQuery = loader(
-  '../../../../../../Graphql/queries/getVersionWorkflows.graphql'
+  'Graphql/queries/getVersionWorkflows.graphql'
 );
 
 function StatusTopInfoBar() {

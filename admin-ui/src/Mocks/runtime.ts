@@ -2,15 +2,13 @@ import { runtime, version } from './version';
 
 import { loader } from 'graphql.macro';
 
-const GetRuntimesQuery = loader('../Graphql/queries/getRuntimes.graphql');
+const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
 const GetRuntimeAndVersionQuery = loader(
-  '../Graphql/queries/getRuntimeAndVersions.graphql'
+  'Graphql/queries/getRuntimeAndVersions.graphql'
 );
-const CreateRuntimeMutation = loader(
-  '../Graphql/mutations/createRuntime.graphql'
-);
+const CreateRuntimeMutation = loader('Graphql/mutations/createRuntime.graphql');
 const RuntimeCreatedSubscription = loader(
-  '../Graphql/subscriptions/runtimeCreated.graphql'
+  'Graphql/subscriptions/runtimeCreated.graphql'
 );
 
 export const dashboardMock = {

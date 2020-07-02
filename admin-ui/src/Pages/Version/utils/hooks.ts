@@ -24,19 +24,15 @@ import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/react-hooks';
 
 const PublishVersionMutation = loader(
-  '../../../Graphql/mutations/publishVersion.graphql'
+  'Graphql/mutations/publishVersion.graphql'
 );
 const UnpublishVersionMutation = loader(
-  '../../../Graphql/mutations/unpublishVersion.graphql'
+  'Graphql/mutations/unpublishVersion.graphql'
 );
-const StartVersionMutation = loader(
-  '../../../Graphql/mutations/startVersion.graphql'
-);
-const StopVersionMutation = loader(
-  '../../../Graphql/mutations/stopVersion.graphql'
-);
+const StartVersionMutation = loader('Graphql/mutations/startVersion.graphql');
+const StopVersionMutation = loader('Graphql/mutations/stopVersion.graphql');
 const GetRuntimeAndVersionsQuery = loader(
-  '../../../Graphql/queries/getRuntimeAndVersions.graphql'
+  'Graphql/queries/getRuntimeAndVersions.graphql'
 );
 
 export enum versionActions {

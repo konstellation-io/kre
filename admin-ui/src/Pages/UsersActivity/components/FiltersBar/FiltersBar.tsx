@@ -22,7 +22,7 @@ import { loader } from 'graphql.macro';
 import styles from './FiltersBar.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 
-const GetUsersQuery = loader('../../../../Graphql/queries/getUsers.graphql');
+const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 
 const customLabels = new Map([
   [UserActivityType.LOGIN, <CustomLabel>Login</CustomLabel>],

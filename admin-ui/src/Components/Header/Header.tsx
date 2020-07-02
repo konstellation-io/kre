@@ -7,7 +7,7 @@ import { loader } from 'graphql.macro';
 import styles from './Header.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 
-const GetMeQuery = loader('../../Graphql/queries/getMe.graphql');
+const GetMeQuery = loader('Graphql/queries/getMe.graphql');
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;

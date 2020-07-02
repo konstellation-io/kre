@@ -6,7 +6,6 @@ import {
   VersionNodeStatus,
   VersionNodeStatusVariables
 } from 'Graphql/subscriptions/types/VersionNodeStatus';
-import { get } from 'lodash';
 
 import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
@@ -16,16 +15,17 @@ import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/Spinne
 import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { VersionRouteParams } from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
+import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './Status.module.scss';
 import { useParams } from 'react-router';
 import { useQuery } from '@apollo/react-hooks';
 
 const GetVersionWorkflowsQuery = loader(
-  '../../../../Graphql/queries/getVersionWorkflows.graphql'
+  'Graphql/queries/getVersionWorkflows.graphql'
 );
 const VersionNodeStatusSubscription = loader(
-  '../../../../Graphql/subscriptions/versionNodeStatus.graphql'
+  'Graphql/subscriptions/versionNodeStatus.graphql'
 );
 
 export type Node = {

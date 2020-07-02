@@ -14,9 +14,7 @@ import { queryPayloadHelper } from 'Utils/formUtils';
 import styles from './UserActivityList.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 
-const GetUserActivityQuery = loader(
-  '../../../../Graphql/queries/getUserActivity.graphql'
-);
+const GetUserActivityQuery = loader('Graphql/queries/getUserActivity.graphql');
 
 const N_LIST_ITEMS_STEP = 30;
 const ITEM_HEIGHT = 76;

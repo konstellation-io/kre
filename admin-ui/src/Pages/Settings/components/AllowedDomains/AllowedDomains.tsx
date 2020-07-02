@@ -18,12 +18,8 @@ import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 
-const GetDomainsQuery = loader(
-  '../../../../Graphql/queries/getDomains.graphql'
-);
-const UpdateDomainsMutation = loader(
-  '../../../../Graphql/mutations/updateDomains.graphql'
-);
+const GetDomainsQuery = loader('Graphql/queries/getDomains.graphql');
+const UpdateDomainsMutation = loader('Graphql/mutations/updateDomains.graphql');
 
 function AllowedDomains() {
   const { data, loading, error } = useQuery<GetDomains>(GetDomainsQuery);

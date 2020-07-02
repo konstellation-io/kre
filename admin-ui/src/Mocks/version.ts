@@ -3,26 +3,24 @@ import { RuntimeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import { loader } from 'graphql.macro';
 
 const GetConfigurationVariablesQuery = loader(
-  '../Graphql/queries/getConfigurationVariables.graphql'
+  'Graphql/queries/getConfigurationVariables.graphql'
 );
 const GetVersionWorkflowsQuery = loader(
-  '../Graphql/queries/getVersionWorkflows.graphql'
+  'Graphql/queries/getVersionWorkflows.graphql'
 );
 const GetVersionNodeStatusQuery = loader(
-  '../Graphql/subscriptions/versionNodeStatus.graphql'
+  'Graphql/subscriptions/versionNodeStatus.graphql'
 );
 const NodeStatusSubscription = loader(
-  '../Graphql/subscriptions/versionNodeStatus.graphql'
+  'Graphql/subscriptions/versionNodeStatus.graphql'
 );
 const PublishVersionMutation = loader(
-  '../Graphql/mutations/publishVersion.graphql'
+  'Graphql/mutations/publishVersion.graphql'
 );
-const StartVersionMutation = loader(
-  '../Graphql/mutations/startVersion.graphql'
-);
-const StopVersionMutation = loader('../Graphql/mutations/stopVersion.graphql');
+const StartVersionMutation = loader('Graphql/mutations/startVersion.graphql');
+const StopVersionMutation = loader('Graphql/mutations/stopVersion.graphql');
 const UnpublishVersionMutation = loader(
-  '../Graphql/mutations/unpublishVersion.graphql'
+  'Graphql/mutations/unpublishVersion.graphql'
 );
 
 export const runtime = {

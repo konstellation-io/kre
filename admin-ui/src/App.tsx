@@ -37,7 +37,7 @@ import history from './browserHistory';
 import keymaps from './keymaps';
 import { loader } from 'graphql.macro';
 
-const GetMeQuery = loader('./Graphql/queries/getMe.graphql');
+const GetMeQuery = loader('Graphql/queries/getMe.graphql');
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);

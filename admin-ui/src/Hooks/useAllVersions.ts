@@ -9,8 +9,8 @@ import { ApolloError } from 'apollo-client/errors/ApolloError';
 import { GetRuntimes } from 'Graphql/queries/types/GetRuntimes';
 import { loader } from 'graphql.macro';
 
-const GetRuntimesQuery = loader('../Graphql/queries/getRuntimes.graphql');
-const GetVersionsQuery = loader('../Graphql/queries/getVersions.graphql');
+const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
+const GetVersionsQuery = loader('Graphql/queries/getVersions.graphql');
 
 type Runtime = {
   id: string;

@@ -7,7 +7,7 @@ import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 
 const GetVersionWorkflowsQuery = loader(
-  '../Graphql/queries/getVersionWorkflows.graphql'
+  'Graphql/queries/getVersionWorkflows.graphql'
 );
 
 export const NODE_NAME_ENTRYPOINT = 'Entry points';

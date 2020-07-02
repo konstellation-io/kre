@@ -21,8 +21,8 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/react-hooks';
 
-const GetUsersQuery = loader('../../Graphql/queries/getUsers.graphql');
-const CreateUserMutation = loader('../../Graphql/mutations/createUser.graphql');
+const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
+const CreateUserMutation = loader('Graphql/mutations/createUser.graphql');
 
 function verifyEmail(value: string) {
   return CHECK.getValidationError([

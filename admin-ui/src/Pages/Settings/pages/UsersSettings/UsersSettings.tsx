@@ -46,15 +46,13 @@ import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './UsersSettings.module.scss';
 import { useForm } from 'react-hook-form';
 
-const GetUsersQuery = loader('../../../../Graphql/queries/getUsers.graphql');
+const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 const UpdateAccessLevelMutation = loader(
-  '../../../../Graphql/mutations/updateAccessLevel.graphql'
+  'Graphql/mutations/updateAccessLevel.graphql'
 );
-const RemoveUsersMutation = loader(
-  '../../../../Graphql/mutations/removeUsers.graphql'
-);
+const RemoveUsersMutation = loader('Graphql/mutations/removeUsers.graphql');
 const RevokeUserSessionsMutation = loader(
-  '../../../../Graphql/mutations/revokeUserSessions.graphql'
+  'Graphql/mutations/revokeUserSessions.graphql'
 );
 
 function verifyComment(value: string) {

@@ -24,11 +24,9 @@ import { useQuery } from '@apollo/react-hooks';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';
 
 const GetLogsSubscription = loader(
-  '../../../../../../../Graphql/subscriptions/getLogsSubscription.graphql'
+  'Graphql/subscriptions/getLogsSubscription.graphql'
 );
-const GetServerLogsQuery = loader(
-  '../../../../../../../Graphql/queries/getServerLogs.graphql'
-);
+const GetServerLogsQuery = loader('Graphql/queries/getServerLogs.graphql');
 
 const LOG_HEIGHT = 25;
 const SCROLL_THRESHOLD = 8 * LOG_HEIGHT;

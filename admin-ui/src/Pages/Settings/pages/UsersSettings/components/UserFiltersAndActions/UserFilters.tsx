@@ -10,9 +10,7 @@ import { loader } from 'graphql.macro';
 import styles from './UserFiltersAndActions.module.scss';
 import { useForm } from 'react-hook-form';
 
-const GetUsersQuery = loader(
-  '../../../../../../Graphql/queries/getUsers.graphql'
-);
+const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 
 type FormData = {
   userEmail?: string;
