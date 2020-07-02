@@ -157,6 +157,7 @@ function GeneralSettings() {
           actionButtonLabel="CONTINUE"
           onAccept={handleSubmit(onSubmit)}
           onCancel={closeModal}
+          autofocusOnAccept
           blocking
         >
           <ModalLayoutInfo>

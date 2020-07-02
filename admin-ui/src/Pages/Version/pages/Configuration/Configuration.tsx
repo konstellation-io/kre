@@ -234,6 +234,7 @@ function Configuration() {
             actionButtonLabel="ACCEPT"
             onAccept={makeUpdate}
             onCancel={closeModal}
+            autofocusOnAccept
             blocking
           >
             <ModalLayoutInfo>
