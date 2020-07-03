@@ -22,42 +22,6 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 |  Runner Python  | [![coverage][runner-python-coverage]][runner-python-coverage-link] | [![bugs][runner-python-bugs]][runner-python-bugs-link] | [![loc][runner-python-loc]][runner-python-loc-link] | [![mr][runner-python-mr]][runner-python-mr-link] |
 
 
-[admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=coverage 
-[admin-ui-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Coverage 
-[admin-ui-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=bugs
-[admin-ui-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Reliability
-[admin-ui-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=ncloc
-[admin-ui-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Coverage
-[admin-ui-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=sqale_rating
-[admin-ui-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Maintainability
-
-[admin-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=coverage 
-[admin-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_api&metric=Coverage 
-[admin-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=bugs
-[admin-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_api&metric=Security
-[admin-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=ncloc
-[admin-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_api&metric=Coverage
-[admin-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=sqale_rating
-[admin-api-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_admin_api
-
-[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=coverage 
-[runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Coverage 
-[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=bugs
-[runtime-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Security&view=list
-[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=ncloc
-[runtime-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Coverage&view=list
-[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=sqale_rating
-[runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=alert_status&view=list
-
-[runner-python-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=coverage 
-[runner-python-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Coverage 
-[runner-python-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=bugs
-[runner-python-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Security&view=list
-[runner-python-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=ncloc
-[runner-python-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Coverage&view=list
-[runner-python-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=sqale_rating
-[runner-python-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=alert_status&view=list
-
 
 
 # Architecture
@@ -113,7 +77,6 @@ description: This is the new version that solves some problems.
 entrypoint: 
   proto: public_input.proto
   image: konstellation/kre-runtime-entrypoint:latest
-  src: src/entrypoint.py
 
 config:
   variables:
@@ -185,7 +148,7 @@ In order to start development on this project you will need these tools:
 - **minikube**: the local version of Kubernetes to deploy KRE
 - **helm**: K8s package manager. Make sure you have v3+
 
-*NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `deploy_local.sh`. 
+*NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `.krectl.conf`. 
 
 
 ## Local Environment
@@ -241,3 +204,45 @@ You will see an output like this:
 
 ✔️  Done.
 ```
+
+
+
+
+
+[admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=coverage 
+[admin-ui-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Coverage 
+[admin-ui-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=bugs
+[admin-ui-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Reliability
+[admin-ui-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=ncloc
+[admin-ui-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Coverage
+[admin-ui-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=sqale_rating
+[admin-ui-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Maintainability
+
+[admin-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=coverage 
+[admin-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_api&metric=Coverage 
+[admin-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=bugs
+[admin-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_api&metric=Security
+[admin-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=ncloc
+[admin-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_api&metric=Coverage
+[admin-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=sqale_rating
+[admin-api-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_admin_api
+
+[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=coverage 
+[runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Coverage 
+[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=bugs
+[runtime-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Security&view=list
+[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=ncloc
+[runtime-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Coverage&view=list
+[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=sqale_rating
+[runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=alert_status&view=list
+
+[runner-python-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=coverage 
+[runner-python-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Coverage 
+[runner-python-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=bugs
+[runner-python-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Security&view=list
+[runner-python-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=ncloc
+[runner-python-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Coverage&view=list
+[runner-python-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=sqale_rating
+[runner-python-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=alert_status&view=list
+
+

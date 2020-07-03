@@ -5,7 +5,7 @@
 Use the script that is on the root of the repo:
 
 ```bash
-</path/kre/root> ./deploy_local.sh
+</path/kre/root> ./krectl.sh
 ```
 
 ## Chart values
