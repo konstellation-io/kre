@@ -99,11 +99,20 @@ function GeneralSettings() {
       }
     }
   });
-  const { handleSubmit, setValue, register, errors, watch } = useForm();
+  const {
+    handleSubmit,
+    setValue,
+    register,
+    unregister,
+    errors,
+    watch
+  } = useForm();
   useEffect(() => {
     register('sessionLifetimeInDays', { validate: isExpirationInvalid });
     setValue('sessionLifetimeInDays', '');
-  }, [register, setValue]);
+
+    return () => unregister('sessionLifetimeInDays');
+  }, [register, unregister, setValue]);
 
   // Sets domains data after receiving API response
   useEffect(() => {

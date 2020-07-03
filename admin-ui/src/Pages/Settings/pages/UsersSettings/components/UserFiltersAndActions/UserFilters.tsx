@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { registerMany, unregisterMany } from 'Utils/react-forms';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
@@ -21,17 +22,24 @@ function UserFilters() {
   const client = useApolloClient();
   const { data } = useQuery<GetUsers>(GetUsersQuery);
 
-  const { handleSubmit, register, setValue, errors, watch } = useForm<
-    FormData
-  >();
+  const {
+    handleSubmit,
+    register,
+    unregister,
+    setValue,
+    errors,
+    watch
+  } = useForm<FormData>();
 
   const users = [...new Set(data?.users.map(user => user.email))];
   const types = Object.values(AccessLevel);
 
   useEffect(() => {
-    register({ name: 'userEmail' });
-    register({ name: 'userType' });
-  }, [users, register]);
+    const fields = ['userEmail', 'userType'];
+    registerMany(register, fields);
+
+    return () => unregisterMany(unregister, fields);
+  }, [register, unregister]);
 
   function onSubmit(formData: FormData) {
     client.writeData({

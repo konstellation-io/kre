@@ -38,6 +38,10 @@ type ActionProps = {
   primary?: boolean;
 };
 
+type FormData = {
+  comment: string;
+};
+
 type Props = {
   runtime: GetVersionConfStatus_runtime;
   version: GetVersionConfStatus_versions;
@@ -45,7 +49,13 @@ type Props = {
 };
 
 function VersionActions({ runtime, version, quickActions = false }: Props) {
-  const { handleSubmit, setValue, register, errors } = useForm();
+  const { handleSubmit, setValue, unregister, register, errors } = useForm<
+    FormData
+  >({
+    defaultValues: {
+      comment: ''
+    }
+  });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>({
     action: () => {},
@@ -54,11 +64,12 @@ function VersionActions({ runtime, version, quickActions = false }: Props) {
 
   useEffect(() => {
     register('comment', { validate: verifyComment });
-    setValue('comment', '');
-  }, [register, setValue]);
+
+    return () => unregister('comment');
+  }, [register, unregister, setValue]);
 
   function onSubmit() {
-    handleSubmit((formData: any) =>
+    handleSubmit((formData: FormData) =>
       modalInfo.current.action(formData.comment)
     )();
   }
@@ -164,7 +175,7 @@ function VersionActions({ runtime, version, quickActions = false }: Props) {
           <ModalLayoutJustify
             onUpdate={(value: string) => setValue('comment', value)}
             submit={onSubmit}
-            error={get(errors.comment, 'message')}
+            error={get(errors.comment, 'message', '')}
           />
         </ModalContainer>
       )}

@@ -4,6 +4,7 @@ import Select, {
   SelectTheme
 } from 'Components/Form/Select/Select';
 import moment, { Moment } from 'moment';
+import { registerMany, unregisterMany } from 'Utils/react-forms';
 
 import IconOptions from '@material-ui/icons/MoreHoriz';
 import IconTime from '@material-ui/icons/AccessTime';
@@ -62,7 +63,9 @@ function DateFilter({
   formEndDate
 }: Props) {
   const [showCalendar, setShowCalendar] = useState(false);
-  const { register, watch, setValue, handleSubmit } = useForm<FormData>({
+  const { unregister, register, watch, setValue, handleSubmit } = useForm<
+    FormData
+  >({
     defaultValues: {
       startDate: DEFAULT_DATES.startDate,
       endDate: DEFAULT_DATES.endDate
@@ -70,9 +73,11 @@ function DateFilter({
   });
 
   useEffect(() => {
-    register({ name: 'startDate' });
-    register({ name: 'endDate' });
-  }, [register]);
+    const fields = ['startDate', 'endDate'];
+    registerMany(register, fields);
+
+    return () => unregisterMany(unregister, fields);
+  }, [register, unregister]);
 
   function submitCustomDates() {
     handleSubmit(({ startDate, endDate }: FormData) => {
