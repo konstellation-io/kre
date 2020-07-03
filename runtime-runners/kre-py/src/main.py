@@ -12,6 +12,8 @@ from kre_nats import KreNatsMessage
 from kre_context import HandlerContext
 from kre_runner import Runner
 
+NATS_FLUSH_TIMEOUT = 10
+
 
 class Config:
     def __init__(self):
@@ -28,6 +30,8 @@ class Config:
             self.handler_path = os.environ['KRT_HANDLER_PATH']
             self.mongo_db_name = os.environ['KRT_MONGO_DB_NAME']
             self.mongo_uri = os.environ['KRT_MONGO_URI']
+            self.nats_flush_timeout = NATS_FLUSH_TIMEOUT
+
         except Exception as err:
             raise Exception(f"error reading config: the {str(err)} env var is missing")
 
