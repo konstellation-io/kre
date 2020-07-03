@@ -23,7 +23,7 @@ run_test() {
 
   echo_info_header "sending ${TOTAL_MESSAGES} images"
 
-  ## CALL ENTRYPOINT FOR EACH IMAGE
+  ## CALL ENTRYPOINT FOR EACH MESSAGE
   for i in $(seq 1 $TOTAL_MESSAGES); do
     if [ "$SEND_CONCURRENT" = "1" ]; then
       call_to_entrypoint $i &
