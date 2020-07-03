@@ -27,7 +27,6 @@ type Workflow struct {
 type Entrypoint struct {
 	Proto string `yaml:"proto" validate:"required,endswith=.proto"`
 	Image string `yaml:"image" validate:"required"`
-	Src   string `yaml:"src" validate:"required"`
 }
 
 type Config struct {

@@ -1,0 +1,30 @@
+import os
+from grpclib.server import Stream
+
+from kre_grpc import EntrypointKRE
+
+from public_input_grpc import EntrypointBase
+from public_input_pb2 import Request, Response
+
+class Entrypoint(EntrypointBase, EntrypointKRE):
+    def __init__(self, logger, nc, subjects):
+        logger.info(f"Entrypoint for '{os.environ['KRT_VERSION']}' initialized. ")
+        EntrypointKRE.__init__(self, logger, nc, subjects)
+
+    {{ range .Methods }}
+    async def {{ .Name }}(self, stream: Stream[{{ .RequestType }}, {{ .ReturnsType }}]) -> None:
+        return await self.process_message(stream, "{{ .Name }}")
+    {{ end }}
+
+    def make_response_object(self, subject, kre_nats_msg):
+        {{- range .Methods }}
+        if subject == '{{ .Name }}':
+            self.logger.info(f"call to {{ .Name }}({{ .RequestType }})"
+                             f" responses with '{{ .ReturnsType }}'. Data: {kre_nats_msg.data}")
+
+            if kre_nats_msg.error:
+                return {{ .ReturnsType }}(error=kre_nats_msg.error)
+            else:
+                return {{ .ReturnsType }}(**kre_nats_msg.data)
+        {{ end }}
+        raise Exception(f"unable to create a response from unknown subject '{subject}' ")
