@@ -17,7 +17,7 @@ class EntrypointKRE:
         self.nc = nc
 
         # FIXME: make timeout a config variable
-        self.request_timeout = 1000
+        self.request_timeout = 30
 
     @abc.abstractmethod
     async def make_response_object(self, subject, response):
@@ -35,7 +35,7 @@ class EntrypointKRE:
             request_msg = KreNatsMessage(data=request_dict)
 
             nats_subject = self.subjects[subject]
-            self.logger.info(f"Sending msg to NATS '{nats_subject}'. {request_msg}")
+            self.logger.info(f"Starting request/reply on NATS subject: '{nats_subject}'")
 
             nats_reply = await self.nc.request(nats_subject, request_msg.marshal(), timeout=self.request_timeout)
 
@@ -44,12 +44,9 @@ class EntrypointKRE:
 
             if response_msg.error:
                 self.logger.error(f"received message: {response_msg}")
-            else:
-                self.logger.info(f"received message: {response_msg}")
 
             response = self.make_response_object(subject, response_msg)
 
-            self.logger.info(f"RESPONSE BUILD: {response}")
             await stream.send_message(response)
 
             self.logger.info(f'gRPC successfully response')

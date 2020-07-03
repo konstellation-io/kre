@@ -38,12 +38,14 @@ class Config:
 
 class NodeRunner(Runner):
     def __init__(self):
-        Runner.__init__(self, "kre-runner", Config())
+        config = Config()
+        name = f"{config.krt_version}-{config.krt_node_name}"
+        Runner.__init__(self, name, config)
         self.handler_ctx = None
         self.handler_fn = None
 
     async def process_messages(self):
-        self.logger.info(f"connecting to MongoDB '{self.config.mongo_uri}'")
+        self.logger.info(f"connecting to MongoDB...")
         self.mongo_conn = pymongo.MongoClient(self.config.mongo_uri, socketTimeoutMS=10000, connectTimeoutMS=10000)
 
         queue_name = f"queue_{self.config.nats_input}"
@@ -83,22 +85,20 @@ class NodeRunner(Runner):
     def create_message_cb(self):
         async def message_cb(msg):
             start = time.time()
-            request_msg = KreNatsMessage(msg=msg)
-
-            self.logger.info(f"received message. length: {len(msg)}. wrapped data type: {type(request_msg.data)}.")
-
-            if msg.reply == "" and request_msg.reply == "":
-                raise Exception("the reply subject was not found")
-
-            if msg.data is None:
-                raise Exception("message data can't be null")
-
-            if msg.reply != "":
-                request_msg.reply = msg.reply
-
-            self.logger.info(f"received message on '{msg.subject}' with final reply '{request_msg.reply}'")
-
             try:
+                request_msg = KreNatsMessage(msg=msg)
+
+                if msg.reply == "" and request_msg.reply == "":
+                    raise Exception("the reply subject was not found")
+
+                if msg.data is None:
+                    raise Exception("message data can't be null")
+
+                if msg.reply != "":
+                    request_msg.reply = msg.reply
+
+                self.logger.info(f"received message on '{msg.subject}' with final reply '{request_msg.reply}'")
+
                 handler_result = await self.handler_fn(self.handler_ctx, request_msg.data)
 
                 is_last_node = self.config.nats_output == ''

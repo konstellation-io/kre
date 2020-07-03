@@ -29,12 +29,11 @@ echo "Generating $VERSION.krt..."
 mkdir -p build/${VERSION_DIR}
 rm ./build/${VERSION_DIR}/{src,assets,models,*.proto,*.yml} -rf
 
-cp ${VERSION_DIR}/krt.yml build/${VERSION_DIR}
-yq write --inplace -- ./build/${VERSION_DIR}/krt.yml 'version' "${VERSION}"
-
 cd build/${VERSION_DIR}
 
 cp  -r ../../${VERSION_DIR}/* .
+
+yq write --inplace -- ./krt.yml 'version' "${VERSION}"
 
 tar -zcf ../${VERSION}.krt  --exclude=*.krt --exclude=*.tar.gz *
 cd ../../
