@@ -15,7 +15,7 @@ DEFAULT_MESSAGES=1
 TOTAL_MESSAGES=${3:-$DEFAULT_MESSAGES}
 SEND_CONCURRENT=1
 
-NAMESPACE="kre-$RUNTIME" # NOTE: Runtime on KRE must be called 'broadcom'
+NAMESPACE="kre-$RUNTIME"
 
 
 run_test() {
