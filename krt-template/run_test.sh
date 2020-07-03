@@ -21,7 +21,7 @@ NAMESPACE="kre-$RUNTIME"
 run_test() {
   check_not_empty "VERSION" "missing version name"
 
-  echo_info_header "sending ${TOTAL_MESSAGES} images"
+  echo_info_header "sending ${TOTAL_MESSAGES} messages"
 
   ## CALL ENTRYPOINT FOR EACH MESSAGE
   for i in $(seq 1 $TOTAL_MESSAGES); do
