@@ -85,8 +85,7 @@ class NodeRunner(Runner):
             start = time.time()
             request_msg = KreNatsMessage(msg=msg)
 
-            self.logger.info(f"received message '{request_msg}'")
-            self.logger.info(f"message wrapped data '{request_msg.data}'. type: {type(request_msg.data)}")
+            self.logger.info(f"received message. length: {len(msg)}. wrapped data type: {type(request_msg.data)}.")
 
             if msg.reply == "" and request_msg.reply == "":
                 raise Exception("the reply subject was not found")
