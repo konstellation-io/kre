@@ -9,7 +9,7 @@ release-k8s-runtime-operator:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-        - runtime/k8s-runtime-operator/**/*
+      - runtime/k8s-runtime-operator/**/*
       - .gitlab-ci.yml
 
 publish-k8s-runtime-operator-image:
