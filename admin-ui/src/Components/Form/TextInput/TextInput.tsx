@@ -5,6 +5,7 @@ import React, {
   MouseEvent,
   ReactElement,
   useEffect,
+  useRef,
   useState
 } from 'react';
 
@@ -79,6 +80,7 @@ function TextInput({
   infoMessage = '',
   disabled = false
 }: Props) {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [value, setValue] = useState(formValue);
   const [isHidden, setIsHidden] = useState(hidden);
 
@@ -108,6 +110,7 @@ function TextInput({
       if (textArea && e.shiftKey) return;
 
       onEnterKeyPress();
+      textAreaRef?.current && textAreaRef.current.blur();
     }
   }
 
@@ -142,6 +145,7 @@ function TextInput({
         style={{ ...limits }}
         autoFocus={autoFocus}
         disabled={disabled}
+        ref={textAreaRef}
       />
     ) : (
       <input

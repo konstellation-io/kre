@@ -22,7 +22,7 @@ const Header: FunctionComponent<Props> = ({
   if (loading)
     return <div className={styles.splash} data-testid="splashscreen" />;
 
-  const username: string = get(data, 'me.email');
+  const username = get(data?.me, 'email', '');
 
   return (
     <header className={styles.container} data-testid="app-header">

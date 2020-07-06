@@ -2,6 +2,7 @@ import {
   GET_LOGS_OPENED,
   GetLogTabs
 } from 'Graphql/client/queries/getLogsOpened.graphql';
+import { GetLogs, GetLogsVariables } from 'Graphql/subscriptions/types/GetLogs';
 import {
   GetServerLogs,
   GetServerLogsVariables
@@ -109,7 +110,7 @@ function LogsList({
 
   // Subscription query
   const subscribe = () =>
-    subscribeToMore({
+    subscribeToMore<GetLogs, GetLogsVariables>({
       document: GetLogsSubscription,
       variables: {
         runtimeId,

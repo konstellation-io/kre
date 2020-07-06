@@ -69,11 +69,10 @@ function UserActions({ onDeleteUsers, onRevokeUsers, onUpdateUsers }: Props) {
 
   const types = Object.values(Actions);
 
-  const nSelections: number = get(localData, 'userSettings.selectedUserIds', [])
-    .length;
-  const userSelection: UserSelection = get(
-    localData,
-    'userSettings.userSelection',
+  const nSelections = localData?.userSettings.selectedUserIds.length || 0;
+  const userSelection = get(
+    localData?.userSettings,
+    'userSelection',
     UserSelection.NONE
   );
 

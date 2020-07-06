@@ -15,7 +15,6 @@ import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/Spinne
 import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { VersionRouteParams } from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
-import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './Status.module.scss';
 import { useParams } from 'react-router';
@@ -62,7 +61,7 @@ function Status({ version }: Props) {
     <div className={styles.container}>
       <StatusTopInfoBar />
       <WorkflowsManager
-        workflows={get(data, 'version.workflows', [])}
+        workflows={data?.version.workflows || []}
         versionStatus={version?.status}
       />
     </div>
