@@ -88,7 +88,6 @@ function VersionActions({
       comment: ''
     }
   });
-
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>({
     action: () => {},
