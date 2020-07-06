@@ -1,6 +1,6 @@
-import React from 'react';
-import cx from 'classnames';
+import React, { memo } from 'react';
 
+import cx from 'classnames';
 import styles from './NavigationBar.module.scss';
 
 type Props = {
@@ -25,4 +25,4 @@ function HexButton({ label = 'DF', disabled = false }: Props) {
   );
 }
 
-export default HexButton;
+export default memo(HexButton);

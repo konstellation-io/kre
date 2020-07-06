@@ -2,6 +2,7 @@ import {
   GetRuntimes,
   GetRuntimes_runtimes
 } from 'Graphql/queries/types/GetRuntimes';
+import React, { memo } from 'react';
 
 import AddHexButton from './AddHexButton';
 import ConditionalLink from '../ConditionalLink/ConditionalLink';
@@ -10,7 +11,6 @@ import HexButton from './HexButton';
 import MultiHexButton from './MultiHexButton';
 import { NavLink } from 'react-router-dom';
 import ROUTE from 'Constants/routes';
-import React from 'react';
 import { RuntimeStatus } from 'Graphql/types/globalTypes';
 import SpinnerCircular from '../LoadingComponents/SpinnerCircular/SpinnerCircular';
 import VerticalBar from '../Layout/VerticalBar/VerticalBar';
@@ -85,4 +85,4 @@ function NavigationBar() {
   );
 }
 
-export default NavigationBar;
+export default memo(NavigationBar);

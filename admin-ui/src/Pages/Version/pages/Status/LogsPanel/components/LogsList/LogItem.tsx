@@ -14,7 +14,8 @@ import moment from 'moment';
 import styles from './LogsList.module.scss';
 
 interface Props extends GetServerLogs_logs_items {
-  toggleOpen: () => void;
+  toggleOpen: (index: number) => void;
+  index: number;
   opened: boolean;
 }
 function LogItem({
@@ -24,7 +25,8 @@ function LogItem({
   message,
   level,
   toggleOpen,
-  opened
+  opened,
+  index
 }: Props) {
   const [localOpened, setLocalOpened] = useState<boolean>(opened);
   const dateFormatted = moment(date).format('YYYY-MM-DD');
@@ -36,7 +38,7 @@ function LogItem({
 
   function toggleOpenStatus() {
     setLocalOpened(!localOpened);
-    toggleOpen();
+    toggleOpen(index);
   }
 
   function copyMessage() {

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, memo } from 'react';
 
 import { GetMe } from 'Graphql/queries/types/GetMe';
 import Settings from 'Components/Settings/Settings';
@@ -37,4 +37,4 @@ const Header: FunctionComponent<Props> = ({
   );
 };
 
-export default Header;
+export default memo(Header);

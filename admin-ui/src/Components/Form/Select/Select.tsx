@@ -182,7 +182,7 @@ function Select({
           ref={optionsRef}
           style={{ maxHeight: optionsOpened ? optionsHeight : 0 }}
         >
-          {optionList}
+          {optionsOpened && optionList}
         </div>
       </div>
       {!hideError && <InputError message={error} />}
