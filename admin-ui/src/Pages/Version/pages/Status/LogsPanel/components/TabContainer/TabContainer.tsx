@@ -22,7 +22,7 @@ function TabContainer({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  function onMouseWheel(e: WheelEvent<HTMLElement>) {
+  function onMouseWheel(e: WheelEvent<HTMLDivElement>) {
     if (containerRef.current) containerRef.current.scrollLeft += e.deltaY;
   }
 

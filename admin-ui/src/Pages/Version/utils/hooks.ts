@@ -24,19 +24,15 @@ import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/react-hooks';
 
 const PublishVersionMutation = loader(
-  '../../../Graphql/mutations/publishVersion.graphql'
+  'Graphql/mutations/publishVersion.graphql'
 );
 const UnpublishVersionMutation = loader(
-  '../../../Graphql/mutations/unpublishVersion.graphql'
+  'Graphql/mutations/unpublishVersion.graphql'
 );
-const StartVersionMutation = loader(
-  '../../../Graphql/mutations/startVersion.graphql'
-);
-const StopVersionMutation = loader(
-  '../../../Graphql/mutations/stopVersion.graphql'
-);
+const StartVersionMutation = loader('Graphql/mutations/startVersion.graphql');
+const StopVersionMutation = loader('Graphql/mutations/stopVersion.graphql');
 const GetRuntimeAndVersionsQuery = loader(
-  '../../../Graphql/queries/getRuntimeAndVersions.graphql'
+  'Graphql/queries/getRuntimeAndVersions.graphql'
 );
 
 export enum versionActions {
@@ -51,6 +47,7 @@ export default function useVersionAction(runtimeId: string) {
     PublishVersion,
     PublishVersionVariables
   >(PublishVersionMutation, {
+    onError: e => console.error(`publishMutation: ${e}`),
     update(cache, updateResult) {
       // TODO: This update the previous one activated version.
       // We should remove this when multi activation feature is implemented.
@@ -92,15 +89,21 @@ export default function useVersionAction(runtimeId: string) {
   const [unpublishMutation, { loading: loadingM2 }] = useMutation<
     UnpublishVersion,
     UnpublishVersionVariables
-  >(UnpublishVersionMutation);
+  >(UnpublishVersionMutation, {
+    onError: e => console.error(`unpublishMutation: ${e}`)
+  });
   const [startMutation, { loading: loadingM3 }] = useMutation<
     StartVersion,
     StartVersionVariables
-  >(StartVersionMutation);
+  >(StartVersionMutation, {
+    onError: e => console.error(`startMutation: ${e}`)
+  });
   const [stopMutation, { loading: loadingM4 }] = useMutation<
     StopVersion,
     StopVersionVariables
-  >(StopVersionMutation);
+  >(StopVersionMutation, {
+    onError: e => console.error(`stopMutation: ${e}`)
+  });
 
   const mutationLoading = [loadingM1, loadingM2, loadingM3, loadingM4].some(
     el => el

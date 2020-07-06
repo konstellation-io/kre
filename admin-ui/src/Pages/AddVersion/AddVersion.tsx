@@ -17,7 +17,7 @@ import styles from './AddVersion.module.scss';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/react-hooks';
 
-const AddVersionMutation = loader('../../Graphql/mutations/addVersion.graphql');
+const AddVersionMutation = loader('Graphql/mutations/addVersion.graphql');
 
 function AddVersion() {
   const history = useHistory();
@@ -27,6 +27,7 @@ function AddVersion() {
     CreateVersion,
     CreateVersionVariables
   >(AddVersionMutation, {
+    onError: e => console.error(`addVersion: ${e}`),
     onCompleted
   });
 

@@ -10,9 +10,7 @@ import { loader } from 'graphql.macro';
 import styles from './UserFiltersAndActions.module.scss';
 import { useForm } from 'react-hook-form';
 
-const GetUsersQuery = loader(
-  '../../../../../../Graphql/queries/getUsers.graphql'
-);
+const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 
 type FormData = {
   userEmail?: string;
@@ -60,7 +58,7 @@ function UserFilters() {
           onChange={(value: string) => setValue('userEmail', value)}
           onEnter={handleSubmit(onSubmit)}
           placeholder="User email"
-          error={get(errors.userEmail, 'message')}
+          error={get(errors.userEmail, 'message') as string}
           value={watch('userEmail')}
         />
       </div>
@@ -72,7 +70,7 @@ function UserFilters() {
             setValue('userType', value);
             handleSubmit(onSubmit)();
           }}
-          error={get(errors.userType, 'message')}
+          error={get(errors.userType, 'message') as string}
           formSelectedOption={watch('userType')}
           placeholder="Activity type"
         />

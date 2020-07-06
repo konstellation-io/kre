@@ -139,7 +139,7 @@ module.exports = {
       subscribe: () => pubsub.asyncIterator('runtimeCreated')
     },
     watchNodeStatus: {
-      subscribe: () => pubsub.asyncIterator('versionNodeStatus')
+      subscribe: () => pubsub.asyncIterator('watchNodeStatus')
     },
     watchResourceMetrics: {
       subscribe: () => pubsub.asyncIterator('watchResourceMetrics')
@@ -273,13 +273,10 @@ module.exports = {
   Node: () => {
     const _id = casual.uuid;
     setTimeout(() => {
-      pubsub.publish('versionNodeStatus', {
-        versionNodeStatus: {
-          date: new Date().toUTCString(),
-          nodeId: _id,
-          nodeName: getProcessName(),
-          status: casual.random_element(['STARTED', 'ERROR']),
-          message: 'message'
+      pubsub.publish('watchNodeStatus', {
+        watchNodeStatus: {
+          id: _id,
+          status: casual.random_element(['STARTED', 'ERROR'])
         }
       });
     }, casual.integer(2000, 10000));

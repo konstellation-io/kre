@@ -37,7 +37,9 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
   const [updateTabFilters] = useMutation<
     UpdateTabFilters,
     UpdateTabFiltersVariables
-  >(UPDATE_TAB_FILTERS);
+  >(UPDATE_TAB_FILTERS, {
+    onError: e => console.error(`updateTabFilters: ${e}`)
+  });
 
   function updateFilters(newFilters: UpdateTabFiltersInput_newFilters) {
     updateTabFilters({

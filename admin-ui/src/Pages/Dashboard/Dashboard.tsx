@@ -27,7 +27,7 @@ import { useHistory } from 'react-router';
 import { useQuery } from '@apollo/react-hooks';
 import useUserAccess from 'Hooks/useUserAccess';
 
-const GetRuntimesQuery = loader('../../Graphql/queries/getRuntimes.graphql');
+const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
 
 export enum VersionEnvStatus {
   PUBLISHED = 'PUBLISHED',

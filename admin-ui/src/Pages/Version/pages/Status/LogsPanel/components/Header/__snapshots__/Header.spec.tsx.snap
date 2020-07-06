@@ -3,10 +3,11 @@
 exports[`Logs Header matches snapshot 1`] = `
 <div
   className="container opened"
+  onClick={[Function]}
+  title="Open logs"
 >
   <div
     className="title"
-    onClick={[MockFunction]}
   >
     <WithStyles(ForwardRef(SvgIcon))
       className="icon-small"

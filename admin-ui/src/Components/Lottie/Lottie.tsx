@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import lottie, {
-  AnimationConfigWithPath,
   AnimationConfigWithData,
+  AnimationConfigWithPath,
   AnimationDirection,
   AnimationItem
 } from 'lottie-web/build/player/lottie_light';
@@ -36,7 +36,7 @@ function Lottie({
   direction = 1,
   style
 }: Props) {
-  const { loop, autoplay, animationData } = options;
+  const { loop, autoplay } = options;
 
   let el = useRef<HTMLDivElement>(null);
   let animRef = useRef<AnimationItem | null>(null);
@@ -54,7 +54,6 @@ function Lottie({
         renderer: 'svg',
         loop: loop !== false,
         autoplay: autoPlaySegments ? false : autoplay,
-        animationData,
         ...options
       };
 

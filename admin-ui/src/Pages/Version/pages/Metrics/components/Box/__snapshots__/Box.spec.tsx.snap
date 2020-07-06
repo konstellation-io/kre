@@ -15,14 +15,24 @@ exports[`Box matches snapshot 1`] = `
 `;
 
 exports[`ExpandButton matches snapshot 1`] = `
-<div
+<Button
+  Icon={
+    Object {
+      "$$typeof": Symbol(react.memo),
+      "compare": null,
+      "displayName": "FullscreenIcon",
+      "muiName": "SvgIcon",
+      "type": Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "render": [Function],
+      },
+    }
+  }
   className="expandIcon"
+  iconSize="icon-regular"
+  label=""
   onClick={[MockFunction]}
->
-  <FullscreenIcon
-    className="icon-regular"
-  />
-</div>
+/>
 `;
 
 exports[`InfoNumber matches snapshot 1`] = `

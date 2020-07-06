@@ -14,11 +14,9 @@ import { runtimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
 import { runtimeCreated_runtimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
 
 const RuntimeCreatedSubscription = loader(
-  '../../../../Graphql/subscriptions/runtimeCreated.graphql'
+  'Graphql/subscriptions/runtimeCreated.graphql'
 );
-const GetRuntimesQuery = loader(
-  '../../../../Graphql/queries/getRuntimes.graphql'
-);
+const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
 
 const NOTIFICATION_TIMEOUT = 15 * 1000;
 

@@ -21,8 +21,8 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/react-hooks';
 
-const GetUsersQuery = loader('../../Graphql/queries/getUsers.graphql');
-const CreateUserMutation = loader('../../Graphql/mutations/createUser.graphql');
+const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
+const CreateUserMutation = loader('Graphql/mutations/createUser.graphql');
 
 function verifyEmail(value: string) {
   return CHECK.getValidationError([
@@ -54,6 +54,7 @@ function AddUser() {
     CreateUserVariables
   >(CreateUserMutation, {
     onCompleted: onCompleteAddUser,
+    onError: e => console.error(`addUser: ${e}`),
     update: (cache, { data }) => {
       const newUser = data?.createUser as CreateUser_createUser;
       const cacheResult = cache.readQuery<GetUsers>({
@@ -101,7 +102,7 @@ function AddUser() {
             <TextInput
               whiteColor
               label="email"
-              error={get(errors.email, 'message')}
+              error={get(errors.email, 'message') as string}
               onChange={(value: string) => setValue('email', value)}
               onEnterKeyPress={handleSubmit(onSubmit)}
               autoFocus
@@ -111,7 +112,7 @@ function AddUser() {
               showSelectAllOption={false}
               options={Object.values(AccessLevel)}
               onChange={(value: AccessLevel) => setValue('accessLevel', value)}
-              error={get(errors.accessLevel, 'message')}
+              error={get(errors.accessLevel, 'message') as string}
               formSelectedOption={watch('accessLevel')}
               placeholder="Access level"
             />

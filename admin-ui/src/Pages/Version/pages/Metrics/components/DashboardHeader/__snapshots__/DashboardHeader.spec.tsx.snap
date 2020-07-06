@@ -21,14 +21,24 @@ exports[`DashboardTitle matches snapshot 1`] = `
       onClose={[Function]}
     />
   </div>
-  <div
+  <Button
+    Icon={
+      Object {
+        "$$typeof": Symbol(react.memo),
+        "compare": null,
+        "displayName": "VisibilityIcon",
+        "muiName": "SvgIcon",
+        "type": Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        },
+      }
+    }
     className="visibilityIcon"
+    iconSize="icon-regular"
+    label=""
     onClick={[Function]}
     title="Enable show all data values"
-  >
-    <VisibilityIcon
-      className="icon-regular"
-    />
-  </div>
+  />
 </div>
 `;

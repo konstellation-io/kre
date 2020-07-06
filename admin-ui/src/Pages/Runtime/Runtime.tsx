@@ -19,7 +19,7 @@ import styles from './Runtime.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 
 const GetRuntimeAndVersionQuery = loader(
-  '../../Graphql/queries/getRuntimeAndVersions.graphql'
+  'Graphql/queries/getRuntimeAndVersions.graphql'
 );
 
 function Runtime() {

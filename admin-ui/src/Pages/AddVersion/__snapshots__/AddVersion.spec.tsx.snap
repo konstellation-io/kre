@@ -21,6 +21,7 @@ exports[`AddVersion matches snapshot 1`] = `
       >
         <form>
           <FileUpload
+            autofocus={true}
             error=""
             inputRef={[Function]}
             label="upload version file (KRT file)"
@@ -32,14 +33,17 @@ exports[`AddVersion matches snapshot 1`] = `
             className="buttons"
           >
             <Button
+              className="buttonSave"
               disabled={false}
               label="CREATE"
               onClick={[Function]}
               primary={true}
+              tabIndex={0}
             />
             <Button
               label="CANCEL"
               onClick={[Function]}
+              tabIndex={0}
             />
           </div>
         </form>

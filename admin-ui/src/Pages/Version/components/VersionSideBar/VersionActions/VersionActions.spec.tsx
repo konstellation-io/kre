@@ -1,4 +1,4 @@
-import { runtime, version } from '../../../../../Mocks/version';
+import { runtime, version } from 'Mocks/version';
 
 import Button from 'Components/Button/Button';
 import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';

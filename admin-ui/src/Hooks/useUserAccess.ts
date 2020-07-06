@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/react-hooks';
 
-const GetAccessLevelQuery = loader('../Graphql/queries/getAccessLevel.graphql');
+const GetAccessLevelQuery = loader('Graphql/queries/getAccessLevel.graphql');
 
 export default function useUserAccess() {
   const { data, loading } = useQuery<GetAccessLevel>(GetAccessLevelQuery);

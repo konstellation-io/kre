@@ -46,15 +46,13 @@ import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './UsersSettings.module.scss';
 import { useForm } from 'react-hook-form';
 
-const GetUsersQuery = loader('../../../../Graphql/queries/getUsers.graphql');
+const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 const UpdateAccessLevelMutation = loader(
-  '../../../../Graphql/mutations/updateAccessLevel.graphql'
+  'Graphql/mutations/updateAccessLevel.graphql'
 );
-const RemoveUsersMutation = loader(
-  '../../../../Graphql/mutations/removeUsers.graphql'
-);
+const RemoveUsersMutation = loader('Graphql/mutations/removeUsers.graphql');
 const RevokeUserSessionsMutation = loader(
-  '../../../../Graphql/mutations/revokeUserSessions.graphql'
+  'Graphql/mutations/revokeUserSessions.graphql'
 );
 
 function verifyComment(value: string) {
@@ -88,17 +86,22 @@ function UsersSettings() {
             });
           }
         }
-      }
+      },
+      onError: e => console.error(`removeUsers: ${e}`)
     }
   );
   const [revokeUsers] = useMutation<
     RevokeUserSessions,
     RevokeUserSessionsVariables
-  >(RevokeUserSessionsMutation);
+  >(RevokeUserSessionsMutation, {
+    onError: e => console.error(`revokeUsers: ${e}`)
+  });
   const [updateAccessLevel] = useMutation<
     UpdateAccessLevel,
     UpdateAccessLevelVariables
-  >(UpdateAccessLevelMutation);
+  >(UpdateAccessLevelMutation, {
+    onError: e => console.error(`updateAccessLevel: ${e}`)
+  });
 
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>(defaultModalInfo);
@@ -238,7 +241,7 @@ function UsersSettings() {
           </ModalLayoutConfirmList>
           <ModalLayoutJustify
             onUpdate={(value: string) => setValue('comment', value)}
-            error={get(errors.comment, 'message', '')}
+            error={get(errors.comment, 'message', '') as string}
             label={modalInfo.current.commentLabel}
             className={styles.justify}
             submit={onSubmit}

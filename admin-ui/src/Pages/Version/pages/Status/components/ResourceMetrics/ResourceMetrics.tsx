@@ -22,10 +22,10 @@ import { useParams } from 'react-router';
 import { useQuery } from '@apollo/react-hooks';
 
 const WatchResourceMetricsSubscription = loader(
-  '../../../../../../Graphql/subscriptions/watchResourceMetrics.graphql'
+  'Graphql/subscriptions/watchResourceMetrics.graphql'
 );
 const GetResourceMetricsQuery = loader(
-  '../../../../../../Graphql/queries/getResourceMetrics.graphql'
+  'Graphql/queries/getResourceMetrics.graphql'
 );
 
 type ChartData = {

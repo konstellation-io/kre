@@ -21,10 +21,8 @@ import styles from './AddRuntime.module.scss';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/react-hooks';
 
-const GetRuntimesQuery = loader('../../Graphql/queries/getRuntimes.graphql');
-const CreateRuntimeMutation = loader(
-  '../../Graphql/mutations/createRuntime.graphql'
-);
+const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
+const CreateRuntimeMutation = loader('Graphql/mutations/createRuntime.graphql');
 
 const MAX_LENGTH = 20;
 
@@ -66,6 +64,9 @@ function AddRuntime() {
     CreateRuntimeVariables
   >(CreateRuntimeMutation, {
     onCompleted: onCompleteAddRuntime,
+    onError: e => {
+      console.error(`addRuntime: ${e}`);
+    },
     update(cache, updateResult) {
       if (updateResult.data !== undefined && updateResult.data !== null) {
         const newRuntime = updateResult.data

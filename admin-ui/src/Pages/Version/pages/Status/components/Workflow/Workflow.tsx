@@ -57,7 +57,10 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
   const dimensions = useRenderOnResize({ container: chartRef });
 
   const [addLogTabMutation] = useMutation<null, AddLogTabVariables>(
-    ADD_LOG_TAB
+    ADD_LOG_TAB,
+    {
+      onError: e => console.error(`addLogTabMutation: ${e}`)
+    }
   );
 
   // Sets container width.

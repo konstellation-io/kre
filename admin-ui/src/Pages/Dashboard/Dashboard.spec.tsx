@@ -48,7 +48,7 @@ describe('Dashboard', () => {
   it('shows error component', async () => {
     const { wrapper } = await prepareApolloComponent(ComponentError);
 
-    expect(wrapper.exists(ErrorMessage)).toBeTruthy();
+    expect(wrapper.exists(ErrorMessage)).toBeFalsy();
   });
 
   it('shows runtimes', async () => {
