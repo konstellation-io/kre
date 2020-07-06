@@ -21,9 +21,12 @@ require (
 	github.com/minio/minio-go/v6 v6.0.57
 	github.com/stretchr/testify v1.4.0
 	github.com/valyala/fasttemplate v1.1.1 // indirect
+	github.com/vektah/dataloaden v0.2.1-0.20190515034641-a19b9a6e7c9e
 	github.com/vektah/gqlparser/v2 v2.0.1
 	go.mongodb.org/mongo-driver v1.3.4
 	google.golang.org/grpc v1.30.0
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v2 v2.3.0
 )

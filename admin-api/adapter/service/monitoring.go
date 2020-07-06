@@ -54,26 +54,20 @@ func NewMonitoringService(cfg *config.Config, logger logging.Logger) *Monitoring
 	}
 }
 
-func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, versionID string, filters entity.LogFilters, stopCh <-chan bool) (<-chan *entity.NodeLog, error) {
+func (m *MonitoringService) NodeLogs(ctx context.Context, runtime *entity.Runtime, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("node logs connecting: %w", err)
 	}
 
+	m.logger.Info("[MonitoringService.NodeLogs] opening stream with runtime-api...")
 	c := monitoringpb.NewMonitoringServiceClient(cc)
-
-	req := monitoringpb.NodeLogsRequest{
+	stream, err := c.NodeLogs(ctx, &monitoringpb.NodeLogsRequest{
 		Search:    emptyStringIfNil(filters.Search),
 		VersionID: versionID,
 		NodeIDs:   filters.NodeIds,
 		Levels:    levelsToStrings(filters.Levels),
-	}
-
-	ctx := context.Background()
-
-	m.logger.Info("[monitoring.NodeLogs] opening stream with runtime-api...")
-
-	stream, err := c.NodeLogs(ctx, &req)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -81,107 +75,99 @@ func (m *MonitoringService) NodeLogs(runtime *entity.Runtime, versionID string, 
 	ch := make(chan *entity.NodeLog, 1)
 
 	go func() {
+		defer close(ch)
+		defer func() {
+			err := cc.Close()
+			if err != nil {
+				m.logger.Errorf("[MonitoringService.NodeLogs] closing gRPC: %s", err)
+			}
+		}()
+
 		for {
-			m.logger.Info("[monitoring.NodeLogs] waiting for stream.Recv()...")
+			m.logger.Debug("[MonitoringService.NodeLogs] waiting for stream.Recv()...")
 			msg, err := stream.Recv()
 
+			if stream.Context().Err() == context.Canceled {
+				m.logger.Debug("[MonitoringService.NodeLogs] Context canceled")
+				return
+			}
+
 			if err == io.EOF {
-				m.logger.Info("[monitoring.NodeLogs] EOF msg received. Stopping...")
-				close(ch)
+				m.logger.Debug("[MonitoringService.NodeLogs] EOF msg received")
 				return
 			}
 
 			if err != nil {
-				m.logger.Error(err.Error())
-				close(ch)
+				m.logger.Errorf("[MonitoringService.NodeLogs] Unexpected error: %s", err)
 				return
 			}
 
-			m.logger.Info("[monitoring.NodeLogs] Message received")
-
-			if msg.GetNodeId() != "" {
-				ch <- toNodeLogEntity(msg)
-			}
+			m.logger.Debug("[MonitoringService.NodeLogs] Message received")
+			ch <- toNodeLogEntity(msg)
 		}
-	}()
-
-	go func() {
-		<-stopCh
-		err := cc.Close()
-		if err != nil {
-			m.logger.Error(err.Error())
-		}
-		m.logger.Info("[monitoring.NodeLogs] Stop received. Connection via gRPC closed")
 	}()
 
 	return ch, nil
 }
 
-func (m *MonitoringService) VersionStatus(runtime *entity.Runtime, versionName string, stopCh <-chan bool) (<-chan *entity.Node, error) {
+func (m *MonitoringService) VersionStatus(ctx context.Context, runtime *entity.Runtime, versionName string) (<-chan *entity.Node, error) {
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("version status connecting: %w", err)
 	}
 
+	m.logger.Debug("[MonitoringService.VersionStatus] opening stream with runtime-api...")
 	c := monitoringpb.NewMonitoringServiceClient(cc)
-
-	req := monitoringpb.NodeStatusRequest{
+	stream, err := c.NodeStatus(ctx, &monitoringpb.NodeStatusRequest{
 		VersionName: versionName,
-	}
-
-	ctx := context.Background()
-
-	m.logger.Info("[monitoring.VersionStatus] opening stream with runtime-api...")
-
-	stream, err := c.NodeStatus(ctx, &req)
+	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("version status opening stream: %w", err)
 	}
 
 	ch := make(chan *entity.Node, 1)
 
 	go func() {
+		defer close(ch)
+		defer func() {
+			err := cc.Close()
+			if err != nil {
+				m.logger.Errorf("[MonitoringService.VersionStatus] closing gRPC: %s", err)
+			}
+		}()
+
 		for {
-			m.logger.Info("[monitoring.VersionStatus] waiting for stream.Recv()...")
+			m.logger.Debug("[MonitoringService.VersionStatus] waiting for stream.Recv()...")
 			msg, err := stream.Recv()
 
+			if stream.Context().Err() == context.Canceled {
+				m.logger.Debug("[MonitoringService.VersionStatus] Context canceled.")
+				return
+			}
+
 			if err == io.EOF {
-				m.logger.Info("[monitoring.VersionStatus] EOF msg received. Stopping...")
-				close(ch)
+				m.logger.Debug("[MonitoringService.VersionStatus] EOF msg received.")
 				return
 			}
 
 			if err != nil {
-				m.logger.Error(err.Error())
-				close(ch)
+				m.logger.Errorf("[MonitoringService.VersionStatus] Unexpected error: %s", err)
 				return
 			}
 
-			m.logger.Info("[monitoring.VersionStatus] Message received")
+			m.logger.Debug("[MonitoringService.VersionStatus] Message received")
 
 			status := entity.NodeStatus(msg.GetStatus())
 			if !status.IsValid() {
-				m.logger.Errorf("Invalid node status: %s", status)
-				close(ch)
-				return
+				m.logger.Errorf("[MonitoringService.VersionStatus] Invalid node status: %s", status)
+				continue
 			}
 
-			if msg.GetNodeId() != "" {
-				ch <- &entity.Node{
-					ID:     msg.GetNodeId(),
-					Name:   msg.GetName(),
-					Status: status,
-				}
+			ch <- &entity.Node{
+				ID:     msg.GetNodeId(),
+				Name:   msg.GetName(),
+				Status: status,
 			}
-		}
-	}()
-
-	go func() {
-		<-stopCh
-		m.logger.Info("[monitoring.VersionStatus] Stop received. Connection via gRPC closed")
-		err := cc.Close()
-		if err != nil {
-			m.logger.Error(err.Error())
 		}
 	}()
 

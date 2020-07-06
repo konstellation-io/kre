@@ -87,7 +87,6 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 			Entrypoint: &versionpb.Version_Entrypoint{
 				ProtoFile: version.Entrypoint.ProtoFile,
 				Image:     version.Entrypoint.Image,
-				Src:       version.Entrypoint.Src,
 			},
 			Workflows:   wf,
 			MongoUri:    runtime.GetMongoURI(totalMongoReplicas),

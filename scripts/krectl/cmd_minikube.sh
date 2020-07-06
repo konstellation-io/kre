@@ -62,11 +62,12 @@ minikube_stop() {
 }
 
 minikube_clean() {
+  KEEP_THRESHOLD_HOURS="12"
   # Clean unused containers and images inside minikube
   echo_wait "Clean unused containers and images inside minikube"
   docker run --rm -it \
     -v /var/run/docker.sock:/var/run/docker.sock docker:stable \
-    /bin/sh -c 'docker system prune --filter "until=24h" -f'
+    /bin/sh -c "docker system prune --filter \"until=${KEEP_THRESHOLD_HOURS}h\" -f"
 }
 
 dracarys_header() {

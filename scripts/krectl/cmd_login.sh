@@ -30,14 +30,15 @@ new_admin_user() {
   MONGO_POD=$(get_mongo_pod)
   check_not_empty "MONGO_POD" "error getting MongoDB pod"
 
-  MONGO_CREATE_USER_SCRIPT="db.getCollection('users').update(
+  MONGO_CREATE_USER_SCRIPT="
+  db.getCollection('users').remove({ \"email\": \"$ADMIN_DEV_EMAIL\" });
+  db.getCollection('users').update(
     { \"_id\": \"local_login_user\" },
     {
       \"\$set\": {
         \"email\": \"$ADMIN_DEV_EMAIL\",
         \"deleted\": false,
-        \"accessLevel\":
-        \"ADMIN\",
+        \"accessLevel\": \"ADMIN\",
         \"creationDate\": ISODate(\"2020-06-15T10:45:54.528Z\")
       }
     },

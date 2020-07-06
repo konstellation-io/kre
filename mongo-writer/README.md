@@ -70,7 +70,7 @@ Example:
 
 ### Connect with the deployed local environment
 
-- Execute `./deploy_local.sh`
+- Execute `./krectl.sh dev` and `./krectl.sh login --new` 
 - Create a Runtime (use http://admin.kre.local)
 - Get the user/password for the created runtime MongoDB. It is stored in the KRE MongoDB database.
 - Create a port-forward for the runtime MongoDB instance.

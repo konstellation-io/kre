@@ -27,7 +27,7 @@ $color-gray: palette(base, 300);
   box-shadow: 0;
   text-shadow: 0;
 
-  outline-color: palette(highlight);
+  outline: none;
 
   span {
     width: 100%;
@@ -63,10 +63,12 @@ $color-gray: palette(base, 300);
     color: font-color(light);
   }
 
+  &:focus {
+    @extend .btn:hover;
+  }
+
   &.border {
     @include border($color-primary);
-
-    outline-color: palette(error);
 
     &:hover {
       @include text-glow(3);
@@ -77,10 +79,10 @@ $color-gray: palette(base, 300);
       @include text-glow(3);
       color: font-color(lowlight);
     }
-  }
 
-  &.notFocussable {
-    outline-color: transparent;
+    &:focus {
+      @extend .border:hover;
+    }
   }
 }
 
@@ -91,8 +93,6 @@ a.navLinkSelected .btn,
   color: font-color(dark);
   background-color: palette(highlight, 400);
 
-  outline-color: palette(error);
-
   &:hover {
     @include glow(3);
     color: font-color(dark);
@@ -101,6 +101,10 @@ a.navLinkSelected .btn,
 
   &:active {
     @include glow(4);
+  }
+
+  &:focus {
+    @extend .primary:hover;
   }
 }
 

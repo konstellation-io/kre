@@ -36,23 +36,17 @@ func NewMonitoringService(config *config.Config, logger *simplelogger.SimpleLogg
 }
 
 func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stream monitoringpb.MonitoringService_NodeStatusServer) error {
-	versionName := req.GetVersionName()
-
 	w.logger.Info("[MonitoringService.NodeStatus] starting watcher...")
 
-	ctx := stream.Context()
+	versionName := req.GetVersionName()
 	nodeCh := make(chan entity.Node, 1)
 	stopCh := w.status.NodeStatus(versionName, nodeCh)
+	defer close(stopCh) // The k8s informer opened in NodeStatus will be stopped when stopCh is closed.
 
 	for {
 		select {
-		case <-stopCh:
-			w.logger.Info("[MonitoringService.NodeStatus] watcher stopped")
-			return nil
-
-		case <-ctx.Done():
+		case <-stream.Context().Done():
 			w.logger.Info("[MonitoringService.NodeStatus] context closed")
-			close(stopCh)
 			return nil
 
 		case node := <-nodeCh:
@@ -65,7 +59,6 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 
 			if err != nil {
 				w.logger.Infof("[MonitoringService.NodeStatus] error sending to client: %s", err)
-				close(stopCh)
 				return err
 			}
 		}
@@ -84,10 +77,15 @@ func (w *MonitoringService) NodeLogs(req *monitoringpb.NodeLogsRequest, stream m
 
 	ctx := stream.Context()
 	logsCh := make(chan *entity.NodeLog, 1)
+	defer close(logsCh)
+
 	w.logs.WatchNodeLogs(ctx, options, logsCh)
 
 	for {
 		select {
+		case <-ctx.Done():
+			w.logger.Info("[MonitoringService.NodeLogs] context closed")
+			return nil
 		case l := <-logsCh:
 			err := stream.Send(toNodeLogsResponse(l))
 
