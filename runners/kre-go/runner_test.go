@@ -10,7 +10,7 @@ import (
 
 	"github.com/nats-io/nats.go"
 
-	"github.com/konstellation-io/kre/runtime-runners/kre-go/config"
+	"github.com/konstellation-io/kre/runners/kre-go/config"
 )
 
 type Input struct {

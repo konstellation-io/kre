@@ -50,10 +50,10 @@ build_docker_images() {
   build_image kre-admin-api admin-api
   build_image kre-k8s-manager k8s-manager
   build_image kre-runtime-api runtime-api
-  build_image kre-runtime-entrypoint runtime-entrypoint
   build_image kre-mongo-writer mongo-writer
-  build_image kre-py runtime-runners/kre-py
-  build_image kre-go runtime-runners/kre-go
+  build_image kre-entrypoint runners/kre-entrypoint
+  build_image kre-py runners/kre-py
+  build_image kre-go runners/kre-go
   if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
     build_image kre-admin-ui admin-ui
   fi

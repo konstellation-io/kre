@@ -11,8 +11,8 @@ import (
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	"github.com/nats-io/nats.go"
 
-	"github.com/konstellation-io/kre/runtime-runners/kre-go/config"
-	"github.com/konstellation-io/kre/runtime-runners/kre-go/mongodb"
+	"github.com/konstellation-io/kre/runners/kre-go/config"
+	"github.com/konstellation-io/kre/runners/kre-go/mongodb"
 )
 
 type Result struct {

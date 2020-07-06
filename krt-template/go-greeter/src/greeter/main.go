@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/konstellation-io/kre/runtime-runners/kre-go"
+	"github.com/konstellation-io/kre/runners/kre-go"
 )
 
 type Input struct {

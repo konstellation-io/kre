@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM  nvidia/cuda:10.2-devel-ubuntu18.04
 
 # Fix error installing pipenv:
 #   RuntimeError: Click will abort further execution because

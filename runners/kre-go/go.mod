@@ -1,4 +1,4 @@
-module github.com/konstellation-io/kre/runtime-runners/kre-go
+module github.com/konstellation-io/kre/runners/kre-go
 
 go 1.14
 
