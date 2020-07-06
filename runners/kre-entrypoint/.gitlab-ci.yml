@@ -10,7 +10,7 @@ release-kre-entrypoint:
       when: always
       changes:
         - runners/kre-entrypoint/**/*
-      - .gitlab-ci.yml
+        - .gitlab-ci.yml
 
 publish-kre-entrypoint-image:
   stage: publish-image
