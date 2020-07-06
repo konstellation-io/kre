@@ -42,7 +42,7 @@ release-kre-py:
       when: always
       changes:
         - runners/kre-py/**/*
-      - .gitlab-ci.yml
+        - .gitlab-ci.yml
 
 publish-kre-py-image:
   stage: publish-image
