@@ -2,6 +2,11 @@
 
 This is an implementation in Python for the KRE runner.
 
+## CUDA 10.2 Support
+
+This image is built on top of `nvidia/cuda-10.2-devel` to add GPU support on the runner.
+
+
 ## Usage
 
 The injected code must implement a `handler(ctx, data)` function and optionally a `init(ctx)` function.
