@@ -1,4 +1,4 @@
-import { Column, useRowSelect, useSortBy, useTable } from 'react-table';
+import { Column, Row, useRowSelect, useSortBy, useTable } from 'react-table';
 import ContextMenu, {
   MenuCallToAction
 } from 'Components/ContextMenu/ContextMenu';
@@ -22,8 +22,6 @@ import { UserSelection } from 'Graphql/client/typeDefs';
 import cx from 'classnames';
 import { formatDate } from 'Utils/format';
 import styles from './UserList.module.scss';
-
-// TODO: [typescript] Review `any`s used in this file
 
 type Data = {
   creationDate: string;
@@ -66,22 +64,22 @@ const columns: Column<Data>[] = [
 ];
 
 type TableColCheckProps = {
-  indeterminate: boolean;
-  checked: boolean;
-  onChange: Function;
-  className: string;
+  indeterminate?: boolean;
+  checked?: boolean;
+  onChange?: (arg: { target: { checked: boolean } }) => void;
+  className?: string;
 };
 function TableColCheck({
   indeterminate,
   checked,
   onChange,
-  className
+  className = ''
 }: TableColCheckProps) {
   return (
     <div className={styles.check}>
       <Check
-        onChange={() => onChange({ target: { checked: !checked } })}
-        checked={checked}
+        onChange={() => onChange && onChange({ target: { checked: !checked } })}
+        checked={checked || false}
         indeterminate={indeterminate}
         className={cx(className, { [styles.checked]: checked })}
       />
@@ -106,13 +104,13 @@ type Props = {
 function UsersTable({ users, contextMenuActions }: Props) {
   const client = useApolloClient();
   const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
-  const filters = get(localData, 'userSettings.filters', {
+  const filters = localData?.userSettings.filters || {
     email: null,
     accessLevel: null
-  });
-  const userSelection: UserSelection = get(
-    localData,
-    'userSettings.userSelection',
+  };
+  const userSelection = get(
+    localData?.userSettings,
+    'userSelection',
     UserSelection.NONE
   );
 
@@ -127,9 +125,7 @@ function UsersTable({ users, contextMenuActions }: Props) {
     headerGroups,
     rows,
     prepareRow,
-    // @ts-ignore  // TODO: [typescript] Fix this
     toggleAllRowsSelected,
-    // @ts-ignore  // TODO: [typescript] Fix this
     state: { selectedRowIds }
   } = useTable<Data>(
     {
@@ -142,23 +138,23 @@ function UsersTable({ users, contextMenuActions }: Props) {
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
-          Header: ({ getToggleAllRowsSelectedProps }: any) => (
+          Header: ({ getToggleAllRowsSelectedProps }) => (
             <TableColCheck
               {...getToggleAllRowsSelectedProps()}
               className={styles.headerCheck}
             />
           ),
-          Cell: ({ row }: any) => (
+          Cell: ({ row }: { row: Row }) => (
             <TableColCheck {...row.getToggleRowSelectedProps()} />
           )
         },
         ...columns,
         {
           id: 'options',
-          Cell: ({ row }: any) => (
+          Cell: ({ row }: { row: Row }) => (
             <ContextMenu
               actions={contextMenuActions}
-              contextObject={row.original.id}
+              contextObject={(row.original as Row).id}
               openOnLeftClick
             >
               <div className={styles.options}>
@@ -226,7 +222,7 @@ function UsersTable({ users, contextMenuActions }: Props) {
       <thead>
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column: any) => (
+            {headerGroup.headers.map(column => (
               <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                 {column.render('Header')}
                 <span>

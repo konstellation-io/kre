@@ -41,3 +41,15 @@
   pointer-events: none;
   color: font-color(regular);
 }
+
+.warning {
+  @include font-small;
+  color: palette(alert);
+
+  margin-bottom: $grid-unit;
+
+  .publishedVersion {
+    text-transform: uppercase;
+    color: font-color(light);
+  }
+}

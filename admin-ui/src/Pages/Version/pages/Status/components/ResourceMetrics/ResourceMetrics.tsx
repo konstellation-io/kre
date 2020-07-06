@@ -13,6 +13,7 @@ import moment, { Moment } from 'moment';
 import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { VersionRouteParams } from 'Constants/routes';
+import { WatchResourceMetrics } from 'Graphql/subscriptions/types/WatchResourceMetrics';
 import cx from 'classnames';
 import { format } from 'd3-format';
 import { formatDate } from 'Utils/format';
@@ -27,6 +28,12 @@ const WatchResourceMetricsSubscription = loader(
 const GetResourceMetricsQuery = loader(
   'Graphql/queries/getResourceMetrics.graphql'
 );
+
+type SubscriptionData = {
+  subscriptionData: {
+    data: WatchResourceMetrics;
+  };
+};
 
 type ChartData = {
   cpu: D[];
@@ -81,7 +88,7 @@ function ResourceMetrics() {
     subscribeToMore({
       document: WatchResourceMetricsSubscription,
       variables: { versionId, fromDate: toDate.current.toISOString() },
-      updateQuery: (prev, { subscriptionData }) => {
+      updateQuery: (prev, { subscriptionData }: SubscriptionData) => {
         const newResourceMetrics = get(
           subscriptionData.data,
           'watchResourceMetrics'

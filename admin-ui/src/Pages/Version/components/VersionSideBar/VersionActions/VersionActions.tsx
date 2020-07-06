@@ -7,14 +7,18 @@ import {
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
+import { Link } from 'react-router-dom';
 import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
+import ModalLayoutInfo from 'Components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
 import ModalLayoutJustify from 'Components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
 import PublishIcon from '@material-ui/icons/Publish';
+import ROUTE from 'Constants/routes';
 import StartIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/PauseCircleFilled';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import UnpublishIcon from '@material-ui/icons/GetApp';
 import { VersionStatus } from 'Graphql/types/globalTypes';
+import { buildRoute } from 'Utils/routes';
 import cx from 'classnames';
 import { get } from 'lodash';
 import styles from './VersionActions.module.scss';
@@ -23,6 +27,28 @@ import useVersionAction from '../../../utils/hooks';
 
 function verifyComment(value: string) {
   return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
+}
+
+type WarningProps = {
+  runtime: GetVersionConfStatus_runtime;
+  publishedVersion: GetVersionConfStatus_versions;
+};
+function Warning({ runtime, publishedVersion }: WarningProps) {
+  return (
+    <>
+      WARNING: A published version already exists, publishing this version will
+      unpublish the following version:{' '}
+      <Link
+        to={buildRoute.version(
+          ROUTE.RUNTIME_VERSION,
+          runtime.id,
+          publishedVersion.id
+        )}
+      >
+        <span className={styles.publishedVersion}>{publishedVersion.name}</span>
+      </Link>
+    </>
+  );
 }
 
 type ModalInfo = {
@@ -44,18 +70,23 @@ type FormData = {
 
 type Props = {
   runtime: GetVersionConfStatus_runtime;
+  versions: GetVersionConfStatus_versions[];
   version: GetVersionConfStatus_versions;
   quickActions?: boolean;
 };
 
-function VersionActions({ runtime, version, quickActions = false }: Props) {
-  const { handleSubmit, setValue, unregister, register, errors } = useForm<
-    FormData
-  >({
+function VersionActions({
+  runtime,
+  versions,
+  version,
+  quickActions = false
+}: Props) {
+  const { handleSubmit, setValue, register, unregister, errors } = useForm({
     defaultValues: {
       comment: ''
     }
   });
+  
   const [showConfirmation, setShowConfirmation] = useState(false);
   const modalInfo = useRef<ModalInfo>({
     action: () => {},
@@ -146,6 +177,10 @@ function VersionActions({ runtime, version, quickActions = false }: Props) {
     buttons = buttons.filter(button => !button.disabled);
   }
 
+  const publishedVersion = versions.filter(
+    v => v.status === VersionStatus.PUBLISHED
+  )[0];
+
   return (
     <div
       className={cx(styles.wrapper, { [styles.quickActions]: quickActions })}
@@ -177,6 +212,11 @@ function VersionActions({ runtime, version, quickActions = false }: Props) {
             submit={onSubmit}
             error={get(errors.comment, 'message', '')}
           />
+          {publishedVersion && modalInfo.current.label === 'PUBLISH' && (
+            <ModalLayoutInfo className={styles.warning}>
+              <Warning runtime={runtime} publishedVersion={publishedVersion} />
+            </ModalLayoutInfo>
+          )}
         </ModalContainer>
       )}
     </div>

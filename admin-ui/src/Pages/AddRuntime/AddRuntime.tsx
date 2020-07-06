@@ -133,6 +133,7 @@ function AddRuntime() {
               textArea
               whiteColor
               lockHorizontalGrowth
+              onEnterKeyPress={handleSubmit(onSubmit)}
               limits={{
                 minHeight: 90,
                 maxHeight: 360

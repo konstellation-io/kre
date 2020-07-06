@@ -8,7 +8,6 @@ import IconShrink from '@material-ui/icons/KeyboardArrowUp';
 import { color as c } from 'd3-color';
 import { createCustomTooltip } from 'Chart.js/tooltip';
 import cx from 'classnames';
-import { get } from 'lodash';
 import styles from './TimeSeriesChart.module.scss';
 
 function getRGB(color: string) {
@@ -160,10 +159,13 @@ function TimeSeriesChart({
 
   useEffect(() => {
     function getLabels() {
-      return get(chart, 'current.data.labels', []);
+      return chart.current?.data.labels || [];
     }
     function getDataset() {
-      return get(chart, 'current.data.datasets[0].data', []);
+      return (
+        (chart.current?.data.datasets && chart.current.data.datasets[0].data) ||
+        []
+      );
     }
 
     function removeData(n: number) {
