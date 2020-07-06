@@ -4,7 +4,7 @@ from grpclib.server import Stream
 from kre_grpc import EntrypointKRE
 
 from public_input_grpc import EntrypointBase
-from public_input_pb2 import Request, Response
+import public_input_pb2
 
 class Entrypoint(EntrypointBase, EntrypointKRE):
     def __init__(self, logger, nc, subjects):
@@ -12,7 +12,7 @@ class Entrypoint(EntrypointBase, EntrypointKRE):
         EntrypointKRE.__init__(self, logger, nc, subjects)
 
     {{ range .Methods }}
-    async def {{ .Name }}(self, stream: Stream[{{ .RequestType }}, {{ .ReturnsType }}]) -> None:
+    async def {{ .Name }}(self, stream: Stream[public_input_pb2.{{ .RequestType }}, public_input_pb2.{{ .ReturnsType }}]) -> None:
         return await self.process_message(stream, "{{ .Name }}")
     {{ end }}
 
@@ -23,8 +23,8 @@ class Entrypoint(EntrypointBase, EntrypointKRE):
                              f" responses with '{{ .ReturnsType }}'. Data: {kre_nats_msg.data}")
 
             if kre_nats_msg.error:
-                return {{ .ReturnsType }}(error=kre_nats_msg.error)
+                return public_input_pb2.{{ .ReturnsType }}(error=kre_nats_msg.error)
             else:
-                return {{ .ReturnsType }}(**kre_nats_msg.data)
+                return public_input_pb2.{{ .ReturnsType }}(**kre_nats_msg.data)
         {{ end }}
         raise Exception(f"unable to create a response from unknown subject '{subject}' ")
