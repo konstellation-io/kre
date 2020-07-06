@@ -15,11 +15,12 @@ import styles from './Version.module.scss';
 import { useApolloClient } from '@apollo/react-hooks';
 
 type Props = {
+  versions?: GetVersionConfStatus_versions[];
   version?: GetVersionConfStatus_versions;
   runtime?: GetVersionConfStatus_runtime;
 };
 
-function Version({ version, runtime }: Props) {
+function Version({ versions, version, runtime }: Props) {
   const client = useApolloClient();
 
   useEffect(() => {
@@ -38,7 +39,7 @@ function Version({ version, runtime }: Props) {
 
   return (
     <div className={styles.container} data-testid="runtimeContainer">
-      <VersionSideBar runtime={runtime} version={version} />
+      <VersionSideBar runtime={runtime} versions={versions} version={version} />
       <div className={styles.content}>
         <Switch>
           <Route

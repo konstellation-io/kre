@@ -19,11 +19,16 @@ import styles from './VersionSideBar.module.scss';
 
 type VersionSideBarProps = {
   runtime?: GetVersionConfStatus_runtime;
+  versions?: GetVersionConfStatus_versions[];
   version?: GetVersionConfStatus_versions;
 };
 
-function VersionSideBar({ runtime, version }: VersionSideBarProps) {
-  if (runtime === undefined || version === undefined) {
+function VersionSideBar({ runtime, versions, version }: VersionSideBarProps) {
+  if (
+    runtime === undefined ||
+    version === undefined ||
+    versions === undefined
+  ) {
     return null;
   }
 
@@ -42,7 +47,11 @@ function VersionSideBar({ runtime, version }: VersionSideBarProps) {
       <VersionInfo version={version} />
       <VersionMenu runtime={runtime} version={version} />
       <Can perform="version:edit">
-        <VersionActions runtime={runtime} version={version} />
+        <VersionActions
+          runtime={runtime}
+          versions={versions}
+          version={version}
+        />
       </Can>
     </div>
   );
