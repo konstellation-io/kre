@@ -6,10 +6,10 @@ import (
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
-	"github.com/konstellation-io/kre/k8s-manager/config"
-	"github.com/konstellation-io/kre/k8s-manager/entity"
-	"github.com/konstellation-io/kre/k8s-manager/kubernetes/version"
-	"github.com/konstellation-io/kre/k8s-manager/proto/versionpb"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/config"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/kubernetes/version"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/versionpb"
 )
 
 // VersionService basic server

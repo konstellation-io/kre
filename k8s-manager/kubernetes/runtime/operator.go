@@ -10,7 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
 )
 
 func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) error {
@@ -85,39 +85,39 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 	return nil
 }
 
-func (m *Manager) createOperator(runtimeName string) error {
+func (m *Manager) createK8sRuntimeOperator(runtimeName string) error {
 	pullPolicyOption := apiv1.PullAlways
 	if m.config.DevelopmentMode {
 		pullPolicyOption = apiv1.PullIfNotPresent
 	}
 
-	operatorImage := "konstellation/kre-operator:" + m.config.Kubernetes.Operator.Version
+	operatorImage := "konstellation/k8s-runtime-operator:" + m.config.Kubernetes.K8sRuntimeOperator.Version
 
 	numReplicas := new(int32)
 	*numReplicas = 1
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "kre-operator",
+			Name: "runtime-operator",
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: numReplicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"name": "kre-operator",
+					"name": "runtime-operator",
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"name": "kre-operator",
+						"name": "runtime-operator",
 					},
 				},
 				Spec: apiv1.PodSpec{
-					ServiceAccountName: "kre-operator",
+					ServiceAccountName: "runtime-operator",
 					Containers: []apiv1.Container{
 						{
-							Name:            "kre-operator",
+							Name:            "runtime-operator",
 							Image:           operatorImage,
 							ImagePullPolicy: pullPolicyOption,
 							Env: []apiv1.EnvVar{
@@ -139,7 +139,7 @@ func (m *Manager) createOperator(runtimeName string) error {
 								},
 								{
 									Name:  "OPERATOR_NAME",
-									Value: "kre-operator",
+									Value: "runtime-operator",
 								},
 							},
 						},

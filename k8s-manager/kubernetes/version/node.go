@@ -10,8 +10,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 
-	"github.com/konstellation-io/kre/k8s-manager/entity"
-	"github.com/konstellation-io/kre/k8s-manager/proto/versionpb"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/versionpb"
 )
 
 var (

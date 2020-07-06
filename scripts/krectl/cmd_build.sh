@@ -47,27 +47,33 @@ build_docker_images() {
   echo_wait "Setting minikube docker-env\n"
   eval "$(minikube docker-env -p "$MINIKUBE_PROFILE")"
 
-  build_image kre-admin-api admin-api
-  build_image kre-k8s-manager k8s-manager
-  build_image kre-runtime-api runtime-api
-  build_image kre-mongo-writer mongo-writer
-  build_image kre-entrypoint runners/kre-entrypoint
+  # Runners
+  build_image kre-runtime-entrypoint runners/kre-entrypoint
   build_image kre-py runners/kre-py
   build_image kre-go runners/kre-go
+
+  # Admin
+  build_image kre-admin-api admin-api
+  build_image kre-k8s-manager k8s-manager
+
   if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
     build_image kre-admin-ui admin-ui
   fi
+
+  # Runtime
+  build_image kre-runtime-api runtime/runtime-api
+  build_image kre-mongo-writer runtime/mongo-writer
 
   if  [ "$SKIP_OPERATOR_BUILD" != "1" ]; then
     if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
       # Init helm and basic dependencies
       prepare_helm
 
-      echo_build_header "kre-operator"
+      echo_build_header "k8s-runtime-operator"
       {
-        cd operator || return
+        cd runtime/k8s-runtime-operator || return
         run helm dep update helm-charts/kre-chart \
-          && run operator-sdk build konstellation/kre-operator:latest
+          && run operator-sdk build konstellation/k8s-runtime-operator:latest
         cd ..
       }
     else
@@ -80,7 +86,6 @@ build_docker_images() {
   if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
     echo_warning "¡¡¡¡¡ started with option $(echo_white "--local-frontend or --skip-frontend")."
     echo "  Now run \`$(echo_light_green "yarn start")\` inside admin-ui"
-
   fi
 }
 

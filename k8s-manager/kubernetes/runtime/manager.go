@@ -9,8 +9,8 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 
-	"github.com/konstellation-io/kre/k8s-manager/config"
-	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/config"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
 )
 
 // Manager expose methods to handle Runtime Objects.
@@ -60,10 +60,10 @@ func (m *Manager) Create(runtimeInput *entity.Runtime) error {
 		return ErrCreation
 	}
 
-	// Create operator
-	err = m.createOperator(ns)
+	// Create K8s Runtime Operator
+	err = m.createK8sRuntimeOperator(ns)
 	if err != nil {
-		log.Printf("error creating operator: %v", err)
+		log.Printf("error creating k8s runtime operator: %v", err)
 		return ErrCreation
 	}
 

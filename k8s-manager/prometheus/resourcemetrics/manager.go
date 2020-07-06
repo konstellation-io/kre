@@ -10,8 +10,8 @@ import (
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
 
-	"github.com/konstellation-io/kre/k8s-manager/config"
-	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/config"
+	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
 )
 
 const refreshInterval = 60 * time.Second

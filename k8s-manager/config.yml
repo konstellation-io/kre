@@ -4,7 +4,7 @@ sharedStorageSize: "1Gi"
 server:
   port: "50051"
 kubernetes:
-  operator:
+  k8sRuntimeOperator:
     version: latest
 prometheus:
   url: http://localhost:9090

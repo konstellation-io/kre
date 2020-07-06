@@ -1,4 +1,4 @@
-module github.com/konstellation-io/kre/k8s-manager
+module github.com/konstellation-io/kre/runtime/k8s-manager
 
 go 1.13
 
