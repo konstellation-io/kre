@@ -122,7 +122,7 @@ function AddRuntime() {
             <TextInput
               whiteColor
               label="runtime name"
-              error={get(errors.name, 'message')}
+              error={get(errors.name, 'message') as string}
               onChange={(value: string) => setValue('name', value)}
               onEnterKeyPress={handleSubmit(onSubmit)}
               helpText={`${watch('name', '').length}/${MAX_LENGTH}`}

@@ -211,7 +211,7 @@ function VersionActions({
           <ModalLayoutJustify
             onUpdate={(value: string) => setValue('comment', value)}
             submit={onSubmit}
-            error={get(errors.comment, 'message', '')}
+            error={get(errors.comment, 'message', '') as string}
           />
           {publishedVersion && modalInfo.current.label === 'PUBLISH' && (
             <ModalLayoutInfo className={styles.warning}>
