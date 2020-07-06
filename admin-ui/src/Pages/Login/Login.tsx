@@ -86,7 +86,7 @@ function Login() {
             <TextInput
               whiteColor
               label="email"
-              error={get(errors.email, 'message')}
+              error={get(errors.email, 'message') as string}
               onChange={(value: string) => setValue('email', value)}
               onEnterKeyPress={handleSubmit(onSubmit)}
               showClearButton

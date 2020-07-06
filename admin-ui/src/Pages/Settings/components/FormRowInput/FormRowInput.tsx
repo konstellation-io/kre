@@ -61,7 +61,7 @@ function FormRowInput({
           whiteColor
           label={inputLabel}
           onEnterKeyPress={handleSubmit(handleOnSubmit)}
-          error={get(errors.item, 'message')}
+          error={get(errors.item, 'message') as string}
           onChange={(value: string) => setValue('item', value)}
           formValue={watch('item', '')}
         />
