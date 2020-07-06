@@ -7,6 +7,9 @@ $color-label-bg: palette(base, 400);
 $color-label-border: palette(base, 200);
 $color-node-bg: palette(base, 600);
 
+$small-radius: 2 * $grid-unit;
+$big-radius: 2 * $small-radius;
+
 $animation-duration: 0.8s;
 @mixin animate($field) {
   transition: $field ease $animation-duration;
@@ -47,17 +50,23 @@ $animation-duration: 0.8s;
   &.#{$status-down} {
     .innerCircle {
       fill: $color-status-down;
+
+      animation: anim-down 0.4s ease;
     }
     .outerCircle {
       stroke: $color-status-down;
+    }
+
+    .animOuterCircle {
+      fill: $color-status-down;
+      animation: anim-bg 0.6s ease;
     }
   }
   &.#{$status-loading} {
     .innerCircle {
       fill: $color-status-changing;
 
-      animation: ok-to-changing 0.6s linear 0s,
-        changing 2.5s linear 0.6s infinite;
+      animation: anim-state-change 2.5s linear 0s infinite;
     }
     .outerCircle {
       stroke: $color-status-changing;
@@ -67,10 +76,15 @@ $animation-duration: 0.8s;
     .innerCircle {
       fill: $color-status-up;
 
-      animation: ok 0.6s ease;
+      animation: anim-up 0.6s ease;
     }
     .outerCircle {
       stroke: $color-status-up;
+    }
+
+    .animOuterCircle {
+      fill: $color-status-up;
+      animation: anim-bg 0.6s ease;
     }
   }
 }
@@ -212,38 +226,49 @@ $animation-duration: 0.8s;
   cursor: default !important;
 }
 
-@keyframes ok {
+@keyframes anim-up {
   0% {
-    r: 16px;
+    r: $small-radius;
   }
   50% {
-    r: 18px;
+    r: $small-radius + 2px;
   }
   100% {
-    r: 16px;
+    r: $small-radius;
   }
 }
 
-@keyframes ok-to-changing {
+@keyframes anim-bg {
   0% {
-    r: 16px;
+    r: $big-radius;
+    fill-opacity: 0.4;
   }
   100% {
-    r: 10px;
+    r: $big-radius + $grid-unit;
+    fill-opacity: 0;
   }
 }
 
-@keyframes changing {
+@keyframes anim-down {
   0% {
-    r: 10px;
-    fill-opacity: 1;
+    r: $small-radius;
   }
   50% {
-    r: 6px;
-    fill-opacity: 0.6;
+    r: $small-radius - 1px;
   }
   100% {
-    r: 10px;
-    fill-opacity: 1;
+    r: $small-radius;
+  }
+}
+
+@keyframes anim-state-change {
+  0% {
+    fill-opacity: 0.8;
+  }
+  50% {
+    fill-opacity: 0.3;
+  }
+  100% {
+    fill-opacity: 0.8;
   }
 }
