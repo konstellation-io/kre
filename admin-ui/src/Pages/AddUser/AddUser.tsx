@@ -17,6 +17,7 @@ import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddUser.module.scss';
+import { unregisterMany } from 'Utils/react-forms';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/react-hooks';
@@ -46,9 +47,20 @@ type FormData = {
 function AddUser() {
   const history = useHistory();
 
-  const { handleSubmit, setValue, register, errors, setError, watch } = useForm<
-    FormData
-  >();
+  const {
+    handleSubmit,
+    setValue,
+    register,
+    unregister,
+    errors,
+    setError,
+    watch
+  } = useForm<FormData>({
+    defaultValues: {
+      email: '',
+      accessLevel: AccessLevel.VIEWER
+    }
+  });
   const [addUser, { loading, error: mutationError }] = useMutation<
     CreateUser,
     CreateUserVariables
@@ -74,9 +86,9 @@ function AddUser() {
   useEffect(() => {
     register('email', { validate: verifyEmail });
     register('accessLevel', { required: true, validate: verifyAccessLevel });
-    setValue('email', '');
-    setValue('accessLevel', AccessLevel.VIEWER);
-  }, [register, setValue]);
+
+    return () => unregisterMany(unregister, ['email', 'accessLevel']);
+  }, [register, unregister, setValue]);
 
   useEffect(() => {
     if (mutationError) {

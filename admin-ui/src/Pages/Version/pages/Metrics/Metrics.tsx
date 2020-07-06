@@ -8,6 +8,7 @@ import {
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { useCallback, useEffect, useState } from 'react';
 import moment, { Moment } from 'moment';
+import { registerMany, unregisterMany } from 'Utils/react-forms';
 
 import Charts from './components/Charts/Charts';
 import DashboardHeader from './components/DashboardHeader/DashboardHeader';
@@ -56,7 +57,9 @@ function Metrics({ runtime, version }: Props) {
     }
   });
 
-  const { register, watch, setValue, handleSubmit } = useForm<FormData>({
+  const { register, unregister, watch, setValue, handleSubmit } = useForm<
+    FormData
+  >({
     defaultValues: {
       startDate: DEFAULT_DATES.startDate,
       endDate: DEFAULT_DATES.endDate
@@ -69,9 +72,11 @@ function Metrics({ runtime, version }: Props) {
   }
 
   useEffect(() => {
-    register({ name: 'startDate' });
-    register({ name: 'endDate' });
-  }, [register]);
+    const fields = ['startDate', 'endDate'];
+    registerMany(register, fields);
+
+    return () => unregisterMany(unregister, fields);
+  }, [register, unregister]);
 
   const submit = useCallback(() => {
     handleSubmit(({ startDate, endDate }: FormData) => {

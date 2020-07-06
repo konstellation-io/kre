@@ -1,5 +1,6 @@
 import * as CHECK from 'Components/Form/check';
 
+import FormRowInput, { FormData } from '../FormRowInput/FormRowInput';
 import {
   UpdateDomains,
   UpdateDomainsVariables
@@ -8,7 +9,6 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import DomainIcon from '@material-ui/icons/Language';
 import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
-import FormRowInput from '../FormRowInput/FormRowInput';
 import { GetDomains } from 'Graphql/queries/types/GetDomains';
 import ListItem from '../ListItem/ListItem';
 import Message from 'Components/Message/Message';
@@ -44,7 +44,7 @@ function AllowedDomains() {
     updateAllowedDomain(mutationPayloadHelper({ authAllowedDomains: domains }));
   }
 
-  function onSubmitDomain(formData: any) {
+  function onSubmitDomain(formData: FormData) {
     updateDomains([...domains, formData.item]);
   }
 

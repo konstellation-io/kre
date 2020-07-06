@@ -18,6 +18,7 @@ import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddRuntime.module.scss';
+import { unregisterMany } from 'Utils/react-forms';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/react-hooks';
 
@@ -42,6 +43,11 @@ function getErrorText(errorType: FieldError | undefined) {
   }
 }
 
+type FormData = {
+  name: string;
+  description: string;
+};
+
 function AddRuntime() {
   const history = useHistory();
 
@@ -49,15 +55,21 @@ function AddRuntime() {
     handleSubmit,
     setValue,
     register,
+    unregister,
     errors,
     setError,
     watch
-  } = useForm();
+  } = useForm<FormData>({
+    defaultValues: {
+      name: ''
+    }
+  });
   useEffect(() => {
     register('name', { validate: verifyRuntimeName });
     register('description', { required: true });
-    setValue('name', '');
-  }, [register, setValue]);
+
+    return () => unregisterMany(unregister, ['name', 'description']);
+  }, [register, unregister, setValue]);
 
   const [addRuntime, { loading, error: mutationError }] = useMutation<
     CreateRuntime,

@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import Button from 'Components/Button/Button';
 import TextInput from 'Components/Form/TextInput/TextInput';
@@ -6,13 +6,17 @@ import { get } from 'lodash';
 import styles from './FormRowInput.module.scss';
 import { useForm } from 'react-hook-form';
 
+export type FormData = {
+  item: string;
+};
+
 type Props = {
   Icon: any;
   field: string;
   inputLabel: string;
   buttonLabel: string;
   valueValidator: Function;
-  onAction: (e: MouseEvent<HTMLDivElement>) => void;
+  onAction: (formData: FormData) => void;
 };
 function FormRowInput({
   Icon,
@@ -22,16 +26,28 @@ function FormRowInput({
   valueValidator,
   onAction
 }: Props) {
-  const { handleSubmit, setValue, register, errors, watch } = useForm();
+  const {
+    handleSubmit,
+    setValue,
+    unregister,
+    register,
+    errors,
+    watch
+  } = useForm<FormData>({
+    defaultValues: {
+      item: ''
+    }
+  });
 
   useEffect(() => {
     register('item', {
       validate: value => valueValidator(value)
     });
-    setValue('item', '');
-  }, [register, setValue, valueValidator]);
 
-  function handleOnSubmit(formData: any) {
+    return () => unregister('item');
+  }, [register, unregister, setValue, valueValidator]);
+
+  function handleOnSubmit(formData: FormData) {
     onAction(formData);
     setValue('item', '');
   }

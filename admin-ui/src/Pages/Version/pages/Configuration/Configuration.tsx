@@ -14,6 +14,7 @@ import {
   UpdateVersionConfigurationVariables
 } from 'Graphql/mutations/types/UpdateVersionConfiguration';
 import { cloneDeep, isEqual, pick } from 'lodash';
+import { registerMany, unregisterMany } from 'Utils/react-forms';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import Button from 'Components/Button/Button';
@@ -96,13 +97,10 @@ function Configuration() {
   >();
 
   useEffect(() => {
-    register({ name: 'type' });
-    register({ name: 'varName' });
+    const fields = ['type', 'varName'];
+    registerMany(register, fields);
 
-    return () => {
-      unregister('type');
-      unregister('varName');
-    };
+    return () => unregisterMany(unregister, fields);
   }, [register, unregister]);
 
   useEffect(() => {

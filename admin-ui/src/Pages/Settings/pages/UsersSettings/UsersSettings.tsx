@@ -64,7 +64,13 @@ type FormData = {
 };
 
 function UsersSettings() {
-  const { handleSubmit, setValue, register, errors } = useForm<FormData>();
+  const { handleSubmit, setValue, register, unregister, errors } = useForm<
+    FormData
+  >({
+    defaultValues: {
+      comment: ''
+    }
+  });
   const { data, loading, error } = useQuery<GetUsers>(GetUsersQuery);
   const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
   const [removeUsers] = useMutation<RemoveUsers, RemoveUsersVariables>(
@@ -108,8 +114,9 @@ function UsersSettings() {
 
   useEffect(() => {
     register('comment', { validate: verifyComment });
-    setValue('comment', '');
-  }, [register, setValue]);
+
+    return () => unregister('comment');
+  }, [register, unregister, setValue]);
 
   function openModal() {
     setShowConfirmation(true);

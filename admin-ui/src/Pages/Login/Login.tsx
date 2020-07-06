@@ -19,9 +19,24 @@ export function verifyEmail(value: string) {
   ]);
 }
 
+type FormData = {
+  email: string;
+};
+
 function Login() {
   const history = useHistory();
-  const { handleSubmit, setValue, register, errors, setError } = useForm();
+  const {
+    handleSubmit,
+    setValue,
+    unregister,
+    register,
+    errors,
+    setError
+  } = useForm<FormData>({
+    defaultValues: {
+      email: ''
+    }
+  });
   const [response, makeRequest] = useEndpoint({
     endpoint: ENDPOINT.SUBMIT_MAGIC_LINK,
     method: 'POST'
@@ -34,8 +49,9 @@ function Login() {
     register('email', {
       validate: verifyEmail
     });
-    setValue('email', '');
-  }, [register, setValue]);
+
+    return () => unregister('email');
+  }, [register, unregister, setValue]);
 
   useEffect(
     function() {
