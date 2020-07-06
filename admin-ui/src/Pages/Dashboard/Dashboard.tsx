@@ -13,8 +13,7 @@ import Hexagon from 'Components/Shape/Hexagon/Hexagon';
 import HexagonBorder from 'Components/Shape/Hexagon/HexagonBorder';
 import HexagonPanel from 'Components/Layout/HexagonPanel/HexagonPanel';
 import { History } from 'history';
-import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutInfo from 'Components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
+import Message from 'Components/Message/Message';
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import ROUTE from 'Constants/routes';
 import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
@@ -87,15 +86,7 @@ function getDashboardContent({ data, error, loading, accessLevel }: Props) {
   let runtimesPanel: ReactElement = <HexagonPanel>{runtimes}</HexagonPanel>;
   if (runtimes.length === 0) {
     runtimesPanel = (
-      <ModalContainer
-        title="THERE ARE NO RUNTIMES"
-        actionButtonLabel="NEW RUNTIME"
-        to={ROUTE.NEW_RUNTIME}
-      >
-        <ModalLayoutInfo>
-          Please, create a new runtime to start working on this dashboard
-        </ModalLayoutInfo>
-      </ModalContainer>
+      <Message text="There are no created runtimes and you cannot create a new one. Wait for a Manager or Administrator to create one" />
     );
   }
 
