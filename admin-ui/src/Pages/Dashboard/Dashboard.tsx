@@ -108,7 +108,7 @@ function Dashboard() {
   const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery, {
     fetchPolicy: 'cache-and-network'
   });
-  const runtimes = get(data, 'runtimes', []);
+  const runtimes: GetRuntimes_runtimes[] = get(data, 'runtimes', []);
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
 
   return (
