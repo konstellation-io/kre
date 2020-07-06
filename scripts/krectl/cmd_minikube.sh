@@ -62,6 +62,7 @@ minikube_stop() {
 }
 
 minikube_clean() {
+  eval "$(minikube docker-env -p "$MINIKUBE_PROFILE")"
   KEEP_THRESHOLD_HOURS="12"
   # Clean unused containers and images inside minikube
   echo_wait "Clean unused containers and images inside minikube"

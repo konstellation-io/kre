@@ -46,7 +46,7 @@ cmd_dev() {
   # Automatic login after hard reset
   if [ "$MINIKUBE_RESET" = "1" ]; then
 
-    if [ "$HOSTCTL_INSTALLED" != "1" ] ; then
+    if [ "$HOSTCTL_INSTALLED" = "1" ] ; then
       # Automatic update of /etc/hosts
       update_etc_hosts
       cmd_login "--new"
