@@ -23,6 +23,7 @@ check_requirements() {
   REQUIREMENTS_OK=1
 
   OPERATOR_SDK_INSTALLED=$(cmd_installed operator-sdk)
+  HOSTCTL_INSTALLED=$(cmd_installed hostctl)
 
   MINIKUBE_INSTALLED=$(cmd_installed minikube)
   [ "$MINIKUBE_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing Minikube installation"; }

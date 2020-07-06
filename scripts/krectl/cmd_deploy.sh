@@ -33,7 +33,6 @@ deploy() {
   replace_env_vars
   create_namespace
   deploy_helm_chart
-  show_etc_hosts
 }
 
 HELM_READY=""
@@ -76,20 +75,4 @@ deploy_helm_chart() {
     --namespace "${NAMESPACE}" \
     --set developmentMode="${DEVELOPMENT_MODE}" \
     helm/kre
-}
-
-show_etc_hosts() {
-  MINIKUBE_IP=$(minikube ip -p "$MINIKUBE_PROFILE")
-
-  if [ -z "$MINIKUBE_IP" ]; then
-    echo_warning "If you are using a different profile run the script with the profile name."
-    return
-  fi
-  echo
-  echo_info "👇 Add the following lines to your /etc/hosts"
-  echo
-  echo "$MINIKUBE_IP api.kre.local"
-  echo "$MINIKUBE_IP admin.kre.local"
-  echo "127.0.0.1 dev-admin.kre.local # If you are using local frontend"
-  echo
 }
