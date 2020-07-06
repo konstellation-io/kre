@@ -2,7 +2,6 @@ package version
 
 import (
 	"fmt"
-	"path"
 
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
@@ -56,7 +55,6 @@ func (m *Manager) createEntrypointConfigMap(version *entity.Version) (*apiv1.Con
 			},
 		},
 		Data: map[string]string{
-			"KRT_ENTRYPOINT":         path.Join("/krt-files", version.Entrypoint.Src),
 			"KRT_NATS_SERVER":        "kre-nats:4222",
 			"KRT_NATS_SUBJECTS_FILE": "/src/conf/nats_subject.json",
 		},
