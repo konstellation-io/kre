@@ -17,5 +17,11 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["src", "apollo.config.js", "markdown-navbar.d.ts", "./decs.d.ts"]
+  "include": [
+    "src",
+    "apollo.config.js",
+    "markdown-navbar.d.ts",
+    "./decs.d.ts",
+    "./types"
+  ]
 }
