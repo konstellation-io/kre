@@ -11,8 +11,8 @@ import (
 	"github.com/nats-io/nats.go"
 	"go.mongodb.org/mongo-driver/bson"
 
-	"github.com/konstellation-io/kre/runtime-runners/kre-go/config"
-	"github.com/konstellation-io/kre/runtime-runners/kre-go/mongodb"
+	"github.com/konstellation-io/kre/runners/kre-go/config"
+	"github.com/konstellation-io/kre/runners/kre-go/mongodb"
 )
 
 type SaveMetricErr string

@@ -3,46 +3,46 @@ test-kre-py:
   image: python:3.7
   script:
     - echo "HERE PASS PYTHON TESTS"
-    - touch runtime-runners/kre-py/kre-py-coverage.out
-    - touch runtime-runners/kre-py/kre-py-report.xml
+    - touch runners/kre-py/kre-py-coverage.out
+    - touch runners/kre-py/kre-py-report.xml
   coverage: /^TOTAL.+?(\d+\%)$/
   artifacts:
     paths:
-      - runtime-runners/kre-py/kre-py-coverage.out
+      - runners/kre-py/kre-py-coverage.out
     reports:
-      junit: runtime-runners/kre-py/kre-py-report.xml
+      junit: runners/kre-py/kre-py-report.xml
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - runtime-runners/kre-py/**/*
+        - runners/kre-py/**/*
 
 sonar-kre-py:
   extends: .sonar-scanner
   variables:
     SONAR_TOKEN: $SONAR_TOKEN_KRE_PY
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/runtime-runnerskre-py/.sonar"
-    COMPONENT_PATH: runtime-runners/kre-py
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/runners/kre-py/.sonar"
+    COMPONENT_PATH: runners/kre-py
     GIT_DEPTH: "0"
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - runtime-runners/kre-py/**/*
+        - runners/kre-py/**/*
 
 release-kre-py:
   stage: semantic-release
   image: node:10
   before_script:
-    - npm install --prefix runtime-runners/kre-py
+    - npm install --prefix runners/kre-py
   script:
-    - cd runtime-runners/kre-py && npx semantic-release -e semantic-release-monorepo
+    - cd runners/kre-py && npx semantic-release -e semantic-release-monorepo
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - runtime-runners/kre-py/**/*
-      - .gitlab-ci.yml
+        - runners/kre-py/**/*
+        - .gitlab-ci.yml
 
 publish-kre-py-image:
   stage: publish-image
@@ -57,7 +57,7 @@ publish-kre-py-image:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
     - TAG=${CI_COMMIT_TAG#kre-py-v}
-    - docker build -t $IMAGE_PROJECT_NAME:$TAG runtime-runners/kre-py
+    - docker build -t $IMAGE_PROJECT_NAME:$TAG runners/kre-py
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest

@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/konstellation-io/kre/runtime-runners/kre-go/config"
+	"github.com/konstellation-io/kre/runners/kre-go/config"
 )
 
 type MongoDB struct {
