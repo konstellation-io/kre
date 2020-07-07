@@ -10,7 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
 func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) error {
@@ -98,26 +98,26 @@ func (m *Manager) createK8sRuntimeOperator(runtimeName string) error {
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "runtime-operator",
+			Name: "k8s-runtime-operator",
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: numReplicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"name": "runtime-operator",
+					"name": "k8s-runtime-operator",
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"name": "runtime-operator",
+						"name": "k8s-runtime-operator",
 					},
 				},
 				Spec: apiv1.PodSpec{
-					ServiceAccountName: "runtime-operator",
+					ServiceAccountName: "k8s-runtime-operator",
 					Containers: []apiv1.Container{
 						{
-							Name:            "runtime-operator",
+							Name:            "k8s-runtime-operator",
 							Image:           operatorImage,
 							ImagePullPolicy: pullPolicyOption,
 							Env: []apiv1.EnvVar{
@@ -139,7 +139,7 @@ func (m *Manager) createK8sRuntimeOperator(runtimeName string) error {
 								},
 								{
 									Name:  "OPERATOR_NAME",
-									Value: "runtime-operator",
+									Value: "k8s-runtime-operator",
 								},
 							},
 						},

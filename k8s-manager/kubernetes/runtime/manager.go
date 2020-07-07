@@ -9,8 +9,8 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 
-	"github.com/konstellation-io/kre/runtime/k8s-manager/config"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
 // Manager expose methods to handle Runtime Objects.

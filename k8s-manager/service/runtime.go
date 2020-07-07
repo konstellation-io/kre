@@ -6,11 +6,11 @@ import (
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
-	"github.com/konstellation-io/kre/runtime/k8s-manager/config"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/kubernetes"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/kubernetes/runtime"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/runtimepb"
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes/runtime"
+	"github.com/konstellation-io/kre/k8s-manager/proto/runtimepb"
 )
 
 // RuntimeService basic server

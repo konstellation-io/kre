@@ -3,7 +3,7 @@ package entity
 import (
 	"time"
 
-	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/resourcemetricspb"
+	"github.com/konstellation-io/kre/k8s-manager/proto/resourcemetricspb"
 )
 
 // InputVersionResourceMetrics export as entity.

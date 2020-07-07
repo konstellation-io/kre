@@ -6,8 +6,8 @@ import (
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	"k8s.io/client-go/kubernetes"
 
-	"github.com/konstellation-io/kre/runtime/k8s-manager/config"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
 )
 
 type Manager struct {

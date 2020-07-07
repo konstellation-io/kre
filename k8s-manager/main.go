@@ -9,15 +9,15 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/konstellation-io/kre/runtime/k8s-manager/config"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/kubernetes"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/kubernetes/runtime"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/kubernetes/version"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/prometheus/resourcemetrics"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/resourcemetricspb"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/runtimepb"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/versionpb"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/service"
+	"github.com/konstellation-io/kre/k8s-manager/config"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes/runtime"
+	"github.com/konstellation-io/kre/k8s-manager/kubernetes/version"
+	"github.com/konstellation-io/kre/k8s-manager/prometheus/resourcemetrics"
+	"github.com/konstellation-io/kre/k8s-manager/proto/resourcemetricspb"
+	"github.com/konstellation-io/kre/k8s-manager/proto/runtimepb"
+	"github.com/konstellation-io/kre/k8s-manager/proto/versionpb"
+	"github.com/konstellation-io/kre/k8s-manager/service"
 )
 
 func main() {

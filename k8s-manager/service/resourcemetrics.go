@@ -6,9 +6,9 @@ import (
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
-	"github.com/konstellation-io/kre/runtime/k8s-manager/entity"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/prometheus/resourcemetrics"
-	"github.com/konstellation-io/kre/runtime/k8s-manager/proto/resourcemetricspb"
+	"github.com/konstellation-io/kre/k8s-manager/entity"
+	"github.com/konstellation-io/kre/k8s-manager/prometheus/resourcemetrics"
+	"github.com/konstellation-io/kre/k8s-manager/proto/resourcemetricspb"
 )
 
 // ResourceMetricsService implements ResourceMetrics gRPC service.
