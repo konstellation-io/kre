@@ -16,7 +16,7 @@
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-        - runtime-api/**/*
+        - runtime/runtime-api/**/*
 
 sonar-runtime-api:
   extends: .sonar-scanner
