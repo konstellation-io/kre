@@ -201,6 +201,12 @@ class WorkflowViz {
 
     newCirclesG
       .append('circle')
+      .classed(styles.animOuterCircle, true)
+      .attr('r', nodeOuterRadius)
+      .attr('cx', nodeOuterRadius);
+
+    newCirclesG
+      .append('circle')
       .classed(styles.outerCircle, true)
       .classed(styles.clicksDisabled, !enableNodeClicks)
       .attr('r', nodeOuterRadius)

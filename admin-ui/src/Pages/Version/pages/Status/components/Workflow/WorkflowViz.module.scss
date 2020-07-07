@@ -7,6 +7,9 @@ $color-label-bg: palette(base, 400);
 $color-label-border: palette(base, 200);
 $color-node-bg: palette(base, 600);
 
+$small-radius: 2 * $grid-unit;
+$big-radius: 2 * $small-radius;
+
 $animation-duration: 0.8s;
 @mixin animate($field) {
   transition: $field ease $animation-duration;
@@ -47,25 +50,41 @@ $animation-duration: 0.8s;
   &.#{$status-down} {
     .innerCircle {
       fill: $color-status-down;
+
+      animation: anim-down 0.4s ease;
     }
     .outerCircle {
       stroke: $color-status-down;
     }
+
+    .animOuterCircle {
+      fill: $color-status-down;
+      animation: anim-bg 0.6s ease;
+    }
   }
   &.#{$status-loading} {
     .innerCircle {
-      fill: $color-status-loading;
+      fill: $color-status-changing;
+
+      animation: anim-state-change 2.5s linear 0s infinite;
     }
     .outerCircle {
-      stroke: $color-status-loading;
+      stroke: $color-status-changing;
     }
   }
   &.#{$status-up} {
     .innerCircle {
       fill: $color-status-up;
+
+      animation: anim-up 0.6s ease;
     }
     .outerCircle {
       stroke: $color-status-up;
+    }
+
+    .animOuterCircle {
+      fill: $color-status-up;
+      animation: anim-bg 0.6s ease;
     }
   }
 }
@@ -205,4 +224,51 @@ $animation-duration: 0.8s;
 
 .clicksDisabled {
   cursor: default !important;
+}
+
+@keyframes anim-up {
+  0% {
+    r: $small-radius;
+  }
+  50% {
+    r: $small-radius + 2px;
+  }
+  100% {
+    r: $small-radius;
+  }
+}
+
+@keyframes anim-bg {
+  0% {
+    r: $big-radius;
+    fill-opacity: 0.4;
+  }
+  100% {
+    r: $big-radius + $grid-unit;
+    fill-opacity: 0;
+  }
+}
+
+@keyframes anim-down {
+  0% {
+    r: $small-radius;
+  }
+  50% {
+    r: $small-radius - 1px;
+  }
+  100% {
+    r: $small-radius;
+  }
+}
+
+@keyframes anim-state-change {
+  0% {
+    fill-opacity: 0.8;
+  }
+  50% {
+    fill-opacity: 0.3;
+  }
+  100% {
+    fill-opacity: 0.8;
+  }
 }
