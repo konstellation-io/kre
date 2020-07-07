@@ -25,8 +25,8 @@ sonar-admin-ui:
   extends: .sonar-scanner
   variables:
     SONAR_TOKEN: $SONAR_TOKEN_ADMIN_UI
-    SONAR_USER_HOME: '${CI_PROJECT_DIR}/admin-ui/.sonar'
-    COMPONENT_PATH: admin-ui
+    SONAR_USER_HOME: '${CI_PROJECT_DIR}/admin/admin-ui/.sonar'
+    COMPONENT_PATH: admin/admin-ui
     GIT_DEPTH: '0'
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
