@@ -16,7 +16,7 @@
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-      - runtime-api/**/*
+        - runtime-api/**/*
 
 sonar-runtime-api:
   extends: .sonar-scanner
@@ -43,7 +43,7 @@ release-runtime-api:
       when: always
       changes:
         - runtime/runtime-api/**/*
-      - .gitlab-ci.yml
+        - .gitlab-ci.yml
 
 publish-runtime-api-image:
   stage: publish-image

@@ -1,4 +1,4 @@
-import Chart from 'Chart.js';
+import Chart from 'chart.js';
 
 export function lineChartWHoverLine(ease: string) {
   Chart.controllers.line.prototype.draw.call(this, ease);

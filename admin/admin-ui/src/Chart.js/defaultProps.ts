@@ -1,4 +1,4 @@
-import Chart from 'Chart.js';
+import Chart from 'chart.js';
 import {lineChartWHoverLine} from './lineChartWHoverLine';
 
 Chart.defaults.global.defaultFontFamily = "'Montserrat', sans-serif";
