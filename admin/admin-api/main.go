@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/version"
-	"github.com/konstellation-io/kre/libs/simplelogger"
 	"log"
+
+	"github.com/konstellation-io/kre/libs/simplelogger"
 
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
@@ -12,6 +12,7 @@ import (
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/repository/mongodb"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/runtime"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/service"
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/version"
 	"github.com/konstellation-io/kre/admin/admin-api/delivery/http"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 )

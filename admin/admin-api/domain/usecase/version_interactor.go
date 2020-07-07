@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/version"
 	"io"
 	"io/ioutil"
 	"time"
+
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/version"
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"

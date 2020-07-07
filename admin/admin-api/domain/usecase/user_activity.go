@@ -3,9 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"strings"
 	"time"
+
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 

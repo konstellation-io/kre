@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 )
 

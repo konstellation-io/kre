@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"sort"
 	"strconv"
 	"time"
@@ -11,6 +10,7 @@ import (
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/service"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
 

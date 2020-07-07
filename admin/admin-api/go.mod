@@ -15,7 +15,6 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/konstellation-io/kre/admin-api v0.0.0-20200707074752-f8d904c08703
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200629122818-909cb6999a35
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect

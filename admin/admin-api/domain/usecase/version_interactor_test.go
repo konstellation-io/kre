@@ -2,11 +2,12 @@ package usecase_test
 
 import (
 	"context"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 
 	"github.com/golang/mock/gomock"
 

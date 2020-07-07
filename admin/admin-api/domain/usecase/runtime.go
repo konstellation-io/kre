@@ -3,8 +3,9 @@ package usecase
 import (
 	"context"
 	"errors"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"time"
+
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"

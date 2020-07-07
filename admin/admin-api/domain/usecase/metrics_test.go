@@ -1,8 +1,9 @@
 package usecase_test
 
 import (
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"testing"
+
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
