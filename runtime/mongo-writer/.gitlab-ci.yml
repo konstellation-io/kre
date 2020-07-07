@@ -3,7 +3,7 @@ sonar-mongo-writer:
   variables:
     SONAR_TOKEN: $SONAR_TOKEN_MONGO_WRITER
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/runtime/mongo-writer/.sonar"
-    COMPONENT_PATH: mongo-writer
+    COMPONENT_PATH: runtime/mongo-writer
     GIT_DEPTH: "0"
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
