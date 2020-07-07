@@ -1,11 +1,11 @@
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: runtime-operator
+  name: k8s-runtime-operator
 subjects:
   - kind: ServiceAccount
-    name: runtime-operator
+    name: k8s-runtime-operator
 roleRef:
   kind: Role
-  name: runtime-operator
+  name: k8s-runtime-operator
   apiGroup: rbac.authorization.k8s.io

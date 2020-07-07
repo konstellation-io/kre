@@ -18,7 +18,7 @@ spec:
               {{- include "runtime.labels" . | nindent 8 }}
         app: mongo-writer
     spec:
-      serviceAccountName: runtime-operator
+      serviceAccountName: k8s-runtime-operator
       containers:
         - name: mongo-writer
           # TODO: This version should be fixed and the operator released in-sync with new mongo-writer changes

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: runtime-operator
+  name: k8s-runtime-operator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: runtime-operator
+      name: k8s-runtime-operator
   template:
     metadata:
       labels:
-        name: runtime-operator
+        name: k8s-runtime-operator
     spec:
-      serviceAccountName: runtime-operator
+      serviceAccountName: k8s-runtime-operator
       containers:
-        - name: runtime-operator
+        - name: k8s-runtime-operator
           # Replace this with the built image name
-          image: runtime-operator:v0.0.1
+          image: k8s-runtime-operator:v0.0.1
           imagePullPolicy: IfNotPresent
           env:
             - name: WATCH_NAMESPACE
@@ -28,4 +28,4 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
-              value: "runtime-operator"
+              value: "k8s-runtime-operator"
