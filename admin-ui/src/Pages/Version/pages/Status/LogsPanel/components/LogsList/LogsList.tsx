@@ -7,7 +7,7 @@ import {
   GetServerLogs,
   GetServerLogsVariables
 } from 'Graphql/queries/types/GetServerLogs';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Virtuoso, VirtuosoMethods } from 'react-virtuoso';
 
 import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';
@@ -194,10 +194,13 @@ function LogsList({
 
   let logElements = null;
 
-  function toggleOpenedLog(index: number) {
-    openedLogs[index] = !openedLogs[index];
-    setOpenedLogs(openedLogs);
-  }
+  const toggleOpenedLog = useCallback(
+    (index: number) => {
+      openedLogs[index] = !openedLogs[index];
+      setOpenedLogs(openedLogs);
+    },
+    [openedLogs, setOpenedLogs]
+  );
 
   if (logs.length) {
     logElements = (
@@ -211,7 +214,8 @@ function LogsList({
             <LogItem
               {...log}
               key={log.id}
-              toggleOpen={() => toggleOpenedLog(index)}
+              index={index}
+              toggleOpen={toggleOpenedLog}
               opened={openedLogs[index]}
             />
           );

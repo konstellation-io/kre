@@ -1,5 +1,5 @@
 import Button, { BUTTON_ALIGN } from '../Button/Button';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
 import AuditIcon from '@material-ui/icons/SupervisorAccount';
 import { ENDPOINT } from 'Constants/application';
@@ -123,4 +123,4 @@ function Settings({ label }: Props) {
   );
 }
 
-export default Settings;
+export default memo(Settings);

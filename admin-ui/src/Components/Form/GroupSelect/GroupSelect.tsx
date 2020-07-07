@@ -181,7 +181,7 @@ function GroupSelect({
               onClear={onClear}
             />
           )}
-          <div className={styles.options}>{optionList}</div>
+          {optionsOpened && <div className={styles.options}>{optionList}</div>}
         </div>
       </div>
       {!hideError && <InputError message={error} />}

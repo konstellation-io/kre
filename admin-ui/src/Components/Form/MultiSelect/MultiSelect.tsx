@@ -147,7 +147,7 @@ function MultiSelect<T>({
           style={{ maxHeight: optionsOpened ? optionsHeight : 0 }}
         >
           <div className={styles.options} ref={optionsRef}>
-            {optionList}
+            {optionsOpened && optionList}
           </div>
         </div>
       </div>
