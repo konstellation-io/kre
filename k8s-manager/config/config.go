@@ -29,9 +29,9 @@ type Config struct {
 	} `yaml:"server"`
 
 	Kubernetes struct {
-		Operator struct {
+		K8sRuntimeOperator struct {
 			Version string `yaml:"version" envconfig:"KRE_KUBERNETES_OPERATOR_VERSION"`
-		} `yaml:"operator"`
+		} `yaml:"k8sRuntimeOperator"`
 
 		IsInsideCluster bool
 	} `yaml:"kubernetes"`

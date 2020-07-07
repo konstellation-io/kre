@@ -18,7 +18,7 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 |  Admin API  | [![coverage][admin-api-coverage]][admin-api-coverage-link] | [![bugs][admin-api-bugs]][admin-api-bugs-link] | [![loc][admin-api-loc]][admin-api-loc-link] | [![mr][admin-api-mr]][admin-api-mr-link] |
 | K8s Manager |  |  |  |  |
 |  Runtime API  | [![coverage][runtime-api-coverage]][runtime-api-coverage-link] | [![bugs][runtime-api-bugs]][runtime-api-bugs-link] | [![loc][runtime-api-loc]][runtime-api-loc-link] | [![mr][runtime-api-mr]][runtime-api-mr-link] |
-|  Operator   |  |  |  |  |
+|  K8s Runtime Operator   |  |  |  |  |
 |  Runner Python  | [![coverage][runner-python-coverage]][runner-python-coverage-link] | [![bugs][runner-python-bugs]][runner-python-bugs-link] | [![loc][runner-python-loc]][runner-python-loc-link] | [![mr][runner-python-mr]][runner-python-mr-link] |
 
 
@@ -58,7 +58,7 @@ The goal of a Runtimme is to run the designed services within the `.krt` file to
 
 Each Runtime is composed by the following components:
 
-* [Operator](operator/README.md)
+* [K8s Runtime Operator](k8s-runtime-operator/README.md)
 * [Runtime API](runtime-api/README.md)
 * MongoDB
 * Minio

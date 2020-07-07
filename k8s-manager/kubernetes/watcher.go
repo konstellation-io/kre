@@ -44,7 +44,7 @@ func (k *Watcher) WaitForPods(ns string) error {
 		return err
 	}
 
-	kreOperatorChan, err := k.waitForPodRunning(ns, []string{"name=kre-operator"}, timeout)
+	kreOperatorChan, err := k.waitForPodRunning(ns, []string{"name=k8s-runtime-operator"}, timeout)
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func (k *Watcher) WaitForPods(ns string) error {
 	}
 
 	if !kreOperatorRunning {
-		failedPods = append(failedPods, "KREOperator")
+		failedPods = append(failedPods, "K8sRuntimeOperator")
 	}
 
 	if len(failedPods) > 0 {

@@ -27,13 +27,21 @@ variables:
     - sonar-scanner
 
 include:
+
+  # Admin
   - local: admin-api/.gitlab-ci.yml
   - local: admin-ui/.gitlab-ci.yml
-  - local: helm/.gitlab-ci.yml
-  - local: operator/.gitlab-ci.yml
   - local: k8s-manager/.gitlab-ci.yml
-  - local: runtime-api/.gitlab-ci.yml
-  - local: mongo-writer/.gitlab-ci.yml
+
+  # Runtime
+  - local: runtime/k8s-runtime-operator/.gitlab-ci.yml
+  - local: runtime/runtime-api/.gitlab-ci.yml
+  - local: runtime/mongo-writer/.gitlab-ci.yml
+
+  # Runners
   - local: runners/kre-entrypoint/.gitlab-ci.yml
   - local: runners/kre-py/.gitlab-ci.yml
   - local: runners/kre-go/.gitlab-ci.yml
+
+  # Helm
+  - local: helm/.gitlab-ci.yml

@@ -85,39 +85,39 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 	return nil
 }
 
-func (m *Manager) createOperator(runtimeName string) error {
+func (m *Manager) createK8sRuntimeOperator(runtimeName string) error {
 	pullPolicyOption := apiv1.PullAlways
 	if m.config.DevelopmentMode {
 		pullPolicyOption = apiv1.PullIfNotPresent
 	}
 
-	operatorImage := "konstellation/kre-operator:" + m.config.Kubernetes.Operator.Version
+	operatorImage := "konstellation/kre-k8s-runtime-operator:" + m.config.Kubernetes.K8sRuntimeOperator.Version
 
 	numReplicas := new(int32)
 	*numReplicas = 1
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "kre-operator",
+			Name: "k8s-runtime-operator",
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: numReplicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"name": "kre-operator",
+					"name": "k8s-runtime-operator",
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"name": "kre-operator",
+						"name": "k8s-runtime-operator",
 					},
 				},
 				Spec: apiv1.PodSpec{
-					ServiceAccountName: "kre-operator",
+					ServiceAccountName: "k8s-runtime-operator",
 					Containers: []apiv1.Container{
 						{
-							Name:            "kre-operator",
+							Name:            "k8s-runtime-operator",
 							Image:           operatorImage,
 							ImagePullPolicy: pullPolicyOption,
 							Env: []apiv1.EnvVar{
@@ -139,7 +139,7 @@ func (m *Manager) createOperator(runtimeName string) error {
 								},
 								{
 									Name:  "OPERATOR_NAME",
-									Value: "kre-operator",
+									Value: "k8s-runtime-operator",
 								},
 							},
 						},
