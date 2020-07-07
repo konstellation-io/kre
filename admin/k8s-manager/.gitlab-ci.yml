@@ -1,0 +1,34 @@
+release-k8s-manager:
+  stage: semantic-release
+  image: node:10
+  before_script:
+    - npm install --prefix admin/k8s-manager
+  script:
+    - cd admin/k8s-manager && npx semantic-release -e semantic-release-monorepo
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
+        - admin/k8s-manager/**/*
+        - .gitlab-ci.yml
+
+publish-k8s-manager-image:
+  stage: publish-image
+  image: docker:18-git
+  services:
+    - docker:18-dind
+  variables:
+    IMAGE_PROJECT_NAME: "konstellation/kre-k8s-manager"
+    DOCKER_USER: $DOCKER_USER
+    DOCKER_PASS: $DOCKER_PASS
+  before_script:
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  script:
+    - TAG=${CI_COMMIT_TAG#k8s-manager-v}
+    - docker build -t $IMAGE_PROJECT_NAME:$TAG admin/k8s-manager
+    - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
+    - docker push $IMAGE_PROJECT_NAME:$TAG
+    - docker push $IMAGE_PROJECT_NAME:latest
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^k8s-manager-v\d*.\d*.\d*$/'
+      when: always

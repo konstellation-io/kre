@@ -29,9 +29,9 @@ variables:
 include:
 
   # Admin
-  - local: admin-api/.gitlab-ci.yml
-  - local: admin-ui/.gitlab-ci.yml
-  - local: k8s-manager/.gitlab-ci.yml
+  - local: admin/admin-api/.gitlab-ci.yml
+  - local: admin/admin-ui/.gitlab-ci.yml
+  - local: admin/k8s-manager/.gitlab-ci.yml
 
   # Runtime
   - local: runtime/k8s-runtime-operator/.gitlab-ci.yml

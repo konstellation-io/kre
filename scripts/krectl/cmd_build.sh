@@ -53,11 +53,11 @@ build_docker_images() {
   build_image kre-go runners/kre-go
 
   # Admin
-  build_image kre-admin-api admin-api
-  build_image kre-k8s-manager k8s-manager
+  build_image kre-admin-api admin/admin-api
+  build_image kre-k8s-manager admin/k8s-manager
 
   if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
-    build_image kre-admin-ui admin-ui
+    build_image kre-admin-ui admin/admin-ui
   fi
 
   # Runtime

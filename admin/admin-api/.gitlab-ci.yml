@@ -1,67 +1,67 @@
-ºtest-runtime-api:
+test-admin-api:
   stage: test
   image: golang:1.13
   script:
-    - cd runtime-api
+    - cd admin-api
     - go get -u github.com/jstemmer/go-junit-report
-    - go test ./... -cover -v -coverprofile=runtime-api-coverage.out 2>&1 | tee -a report.out
-    - cat report.out | go-junit-report > runtime-api-report.xml
+    - go test ./... -cover -v -coverprofile=admin-api-coverage.out 2>&1 | tee -a report.out
+    - cat report.out | go-junit-report > admin-api-report.xml
   coverage: /coverage:\s(\d+(?:\.\d+)?%)/
   artifacts:
     paths:
-      - runtime/runtime-api/runtime-api-coverage.out
+      - admin/admin-api/admin-api-coverage.out
     reports:
-      junit: runtime/runtime-api/runtime-api-report.xml
+      junit: admin/admin-api/admin-api-report.xml
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-        - runtime/runtime-api/**/*
+        - admin/admin-api/**/*
 
-sonar-runtime-api:
+sonar-admin-api:
   extends: .sonar-scanner
   variables:
-    SONAR_TOKEN: $SONAR_TOKEN_RUNTIME_API
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/runtime/runtime-api/.sonar"
-    COMPONENT_PATH: runtime/runtime-api
+    SONAR_TOKEN: $SONAR_TOKEN_ADMIN_API
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin/admin-api/.sonar"
+    COMPONENT_PATH: admin/admin-api
     GIT_DEPTH: "0"
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-        - runtime/runtime-api/**/*
+        - admin/admin-api/**/*
 
-release-runtime-api:
+release-admin-api:
   stage: semantic-release
   image: node:10
   before_script:
-    - npm install --prefix runtime/runtime-api
+    - npm install --prefix admin/admin-api
   script:
-    - cd runtime/runtime-api && npx semantic-release -e semantic-release-monorepo
+    - cd admin/admin-api && npx semantic-release -e semantic-release-monorepo
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
       changes:
-        - runtime/runtime-api/**/*
+        - admin/admin-api/**/*
         - .gitlab-ci.yml
 
-publish-runtime-api-image:
+publish-admin-api-image:
   stage: publish-image
   image: docker:18-git
   services:
     - docker:18-dind
   variables:
-    IMAGE_PROJECT_NAME: "konstellation/kre-runtime-api"
+    IMAGE_PROJECT_NAME: "konstellation/kre-admin-api"
     DOCKER_USER: $DOCKER_USER
     DOCKER_PASS: $DOCKER_PASS
   before_script:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
-    - TAG=${CI_COMMIT_TAG#runtime-api-v}
-    - docker build -t $IMAGE_PROJECT_NAME:$TAG runtime/runtime-api
+    - TAG=${CI_COMMIT_TAG#admin-api-v}
+    - docker build -t $IMAGE_PROJECT_NAME:$TAG admin/admin-api
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:$TAG
     - docker push $IMAGE_PROJECT_NAME:latest
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^runtime-api-v\d*.\d*.\d*$/'
+    - if: '$CI_COMMIT_TAG =~ /^admin-api-v\d*.\d*.\d*$/'
       when: always

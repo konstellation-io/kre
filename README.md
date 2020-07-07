@@ -1,4 +1,4 @@
-- [KRE (Konstellataion Runtime Engine)](#kre-konstellataion-runtime-engine)
+- [KRE (Konstellation Runtime Engine)](#kre-konstellation-runtime-engine)
 - [Architecture](#archiecture)
   - [Engine](#engine)
   - [Runtime](#runtime)
@@ -7,7 +7,7 @@
 - [Development](#development)
   - [Local Environment](#local-environment)
 
-# KRE (Konstellataion Runtime Engine)
+# KRE (Konstellation Runtime Engine)
 
 Konstellation Runtime Engine is an application that allow to run AI/ML models for inference based on the content of a
  `.krt` file. 
@@ -43,23 +43,23 @@ Admin UI.
 
 The Engine is composed by the following components:
 
-* [Admin UI](./admin-ui/README.md)
-* [Admin API](./admin-api/README.md)
-* [K8s Manager](./k8s-manager/README.md)
+* [Admin UI](./admin/admin-ui/README.md)
+* [Admin API](./admin/admin-api/README.md)
+* [K8s Manager](./admin/k8s-manager/README.md)
 * MongoDB
 
 ## Runtime
 
 When you create what is called a `runtime`, the Engine create a new Namespace within the Kubernetes cluster with the 
-name setted by the user from the Admin UI, and deploy on this Namespace all the base components that are described 
+name set by the user from the Admin UI, and deploy on this Namespace all the base components that are described
 below.
 
-The goal of a Runtimme is to run the designed services within the `.krt` file to perform the inference of a AI/ML model.
+The goal of a Runtime is to run the designed services within the `.krt` file to perform the inference of a AI/ML model.
 
 Each Runtime is composed by the following components:
 
-* [K8s Runtime Operator](k8s-runtime-operator/README.md)
-* [Runtime API](runtime-api/README.md)
+* [K8s Runtime Operator](runtime/k8s-runtime-operator/README.md)
+* [Runtime API](runtime/runtime-api/README.md)
 * MongoDB
 * Minio
 * NATS-Streaming
@@ -67,7 +67,7 @@ Each Runtime is composed by the following components:
 ### KRT
 
 Konstellation Runtime Transport is a compressed file with the definition of a runtime version, included the code to 
-run and a YAML file called `kre.yaml` with the desired workflows deffinitions.
+run and a YAML file called `kre.yaml` with the desired workflows definitions.
 
 The base structure of a `kre.yaml` is as follow:
 
@@ -186,6 +186,8 @@ $> krectl.sh [command] --help
 ### Login
 
 First of all remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
+
+NOTE: If you have [hostctl](https://github.com/guumaster/hostctl) installed, updating `/etc/hosts` will be done automatically too.
 
 In order to access the admin app, the login process can be done automatically using this script:
 
