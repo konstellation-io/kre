@@ -39,11 +39,11 @@ minikube_start() {
         --driver="$MINIKUBE_DRIVER" \
         --extra-config=apiserver.authorization-mode=RBAC
 
-      run minikube addons enable ingress
-      run minikube addons enable dashboard
-      run minikube addons enable registry
-      run minikube addons enable storage-provisioner
-      run minikube addons enable metrics-server
+      run minikube addons enable ingress -p "$MINIKUBE_PROFILE"
+      run minikube addons enable dashboard -p "$MINIKUBE_PROFILE"
+      run minikube addons enable registry -p "$MINIKUBE_PROFILE"
+      run minikube addons enable storage-provisioner -p "$MINIKUBE_PROFILE"
+      run minikube addons enable metrics-server -p "$MINIKUBE_PROFILE"
     ;;
   esac
   MINIKUBE_CHECK=1

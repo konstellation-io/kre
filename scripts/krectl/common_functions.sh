@@ -10,6 +10,7 @@ replace_env_vars() {
 }
 
 run() {
+  set -e
   # shellcheck disable=SC2048
   if [ "$VERBOSE" = "1" ]; then
     echo_run "$*"

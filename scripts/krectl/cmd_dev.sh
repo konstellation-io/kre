@@ -27,6 +27,11 @@ cmd_dev() {
         SKIP_FRONTEND_BUILD=1
         shift
       ;;
+      --etchost)
+        # Automatic update of /etc/hosts
+        update_etc_hosts
+        exit 0
+      ;;
 
       *)
         shift
@@ -96,6 +101,7 @@ show_dev_help() {
       --hard, --dracarys  remove all contents of minikube kre profile. $(echo_yellow "(WARNING: will re-build all docker images again)").
       --frontend-mock     starts a local mock server to avoid calling the actual API during Frontend development.
       --local-frontend    starts a local server outside from kubernetes for faster development.
+      --etchost           update /etc/hosts only (will ask for sudo password).
 
     $(help_global_options)
 "
