@@ -91,7 +91,7 @@ func (m *Manager) createK8sRuntimeOperator(runtimeName string) error {
 		pullPolicyOption = apiv1.PullIfNotPresent
 	}
 
-	operatorImage := "konstellation/k8s-runtime-operator:" + m.config.Kubernetes.K8sRuntimeOperator.Version
+	operatorImage := "konstellation/kre-k8s-runtime-operator:" + m.config.Kubernetes.K8sRuntimeOperator.Version
 
 	numReplicas := new(int32)
 	*numReplicas = 1

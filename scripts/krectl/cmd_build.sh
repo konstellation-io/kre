@@ -73,7 +73,7 @@ build_docker_images() {
       {
         cd runtime/k8s-runtime-operator || return
         run helm dep update helm-charts/kre-chart \
-          && run operator-sdk build konstellation/k8s-runtime-operator:latest
+          && run operator-sdk build konstellation/kre-k8s-runtime-operator:latest
         cd ..
       }
     else
