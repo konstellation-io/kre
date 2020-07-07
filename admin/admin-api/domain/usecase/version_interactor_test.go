@@ -6,15 +6,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
-
 	"github.com/golang/mock/gomock"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 	"github.com/konstellation-io/kre/admin/admin-api/mocks"
 )
