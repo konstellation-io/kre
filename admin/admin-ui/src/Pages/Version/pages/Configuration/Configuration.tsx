@@ -230,15 +230,20 @@ function Configuration() {
         {showConfirmationModal && (
           <ModalContainer
             title="VERSION WILL BE RESTARTED"
-            actionButtonLabel="ACCEPT"
+            actionButtonLabel="RESTART"
             onAccept={makeUpdate}
             onCancel={closeModal}
+            confirmationTimer={5}
             autofocusOnAccept
             blocking
+            warning
           >
             <ModalLayoutInfo>
-              After updating this configuration, the version will be restarted
-              (this process may take several seconds)
+              <>
+                <span className={styles.warnPrefix}>WARNING: </span>
+                After updating this configuration, the version will be restarted
+                (this process may take several seconds)
+              </>
             </ModalLayoutInfo>
           </ModalContainer>
         )}
