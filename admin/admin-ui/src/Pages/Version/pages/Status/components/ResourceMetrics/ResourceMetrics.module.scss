@@ -20,4 +20,9 @@
   &.expanded {
     height: 196px;
   }
+
+  .notEnoughtData {
+    color: font-color(lowlight);
+    margin: auto;
+  }
 }

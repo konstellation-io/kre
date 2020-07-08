@@ -186,9 +186,7 @@ function TimeSeriesChart({
       removeData(removed);
 
       const prevDataLenght = chart.current.data?.labels?.length || 0;
-      const dataToAdd = data.slice(
-        prevDataLenght - (data.length - prevDataLenght) + removed
-      );
+      const dataToAdd = data.slice(prevDataLenght + removed);
       addData(dataToAdd);
 
       updateScales();
