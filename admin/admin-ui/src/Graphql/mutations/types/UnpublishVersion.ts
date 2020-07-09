@@ -6,7 +6,7 @@
 import {
   UnpublishVersionInput,
   VersionStatus
-} from '../../types/globalTypes';
+} from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: UnpublishVersion

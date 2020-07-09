@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {SettingsInput} from '../../types/globalTypes';
+import { SettingsInput } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: UpdateDomains

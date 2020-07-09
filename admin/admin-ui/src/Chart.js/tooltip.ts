@@ -1,4 +1,4 @@
-import {ChartTooltipModel, ChartTooltipModelBody} from 'chart.js';
+import { ChartTooltipModel, ChartTooltipModelBody } from 'chart.js';
 
 export function createCustomTooltip(
   formatXAxis: Function,

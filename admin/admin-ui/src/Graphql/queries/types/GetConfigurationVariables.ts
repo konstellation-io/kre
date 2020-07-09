@@ -6,7 +6,7 @@
 import {
   VersionStatus,
   ConfigurationVariableType
-} from '../../types/globalTypes';
+} from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetConfigurationVariables

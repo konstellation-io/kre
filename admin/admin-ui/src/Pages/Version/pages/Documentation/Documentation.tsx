@@ -4,7 +4,6 @@ import CodeBlock from './CodeBlock';
 import MarkNav from 'markdown-navbar';
 import ReactMarkdown from 'react-markdown';
 import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import article from './article';
 import styles from './Documentation.module.scss';
 import { useLocation } from 'react-router-dom';
 
@@ -19,9 +18,33 @@ function scrollIntoHeader(headerHash: string): void {
   if (header) header.scrollIntoView();
 }
 
-function Documentation() {
+function useDocFile(fileUrl?: string | null) {
+  const [file, setFile] = useState<string>('');
+
+  if (fileUrl) {
+    fetch(fileUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+            `Unexpected status code: ${response.status} getting documentation file`
+          );
+        }
+
+        return response.text();
+      })
+      .then(text => setFile(text));
+  }
+
+  return file;
+}
+
+type Props = {
+  docUrl?: string | null;
+};
+function Documentation({ docUrl }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const location = useLocation();
+  const file = useDocFile(docUrl);
 
   useEffect(() => {
     setTimeout(() => {
@@ -47,7 +70,7 @@ function Documentation() {
       <div className={styles.navigation}>
         <MarkNav
           declarative
-          source={article}
+          source={file}
           ordered={false}
           onNavItemClick={(
             event: Event,
@@ -59,7 +82,7 @@ function Documentation() {
         />
       </div>
       <div className={styles.article}>
-        <ReactMarkdown source={article} renderers={{ code: CodeBlock }} />
+        <ReactMarkdown source={file} renderers={{ code: CodeBlock }} />
       </div>
     </div>
   );

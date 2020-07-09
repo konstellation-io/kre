@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {NodeStatus} from '../../types/globalTypes';
+import { NodeStatus } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL subscription operation: VersionNodeStatus

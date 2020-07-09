@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {PublishVersionInput, VersionStatus} from '../../types/globalTypes';
+import { PublishVersionInput, VersionStatus } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: PublishVersion

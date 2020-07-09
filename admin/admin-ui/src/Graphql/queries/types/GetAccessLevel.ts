@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {AccessLevel} from '../../types/globalTypes';
+import { AccessLevel } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetAccessLevel

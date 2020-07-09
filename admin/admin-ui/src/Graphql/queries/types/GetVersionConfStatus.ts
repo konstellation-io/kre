@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {RuntimeStatus, VersionStatus} from '../../types/globalTypes';
+import { RuntimeStatus, VersionStatus } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetVersionConfStatus
@@ -53,6 +53,7 @@ export interface GetVersionConfStatus_versions {
   publicationDate: string | null;
   publicationAuthor: GetVersionConfStatus_versions_publicationAuthor | null;
   config: GetVersionConfStatus_versions_config;
+  docUrl: string | null;
 }
 
 export interface GetVersionConfStatus {

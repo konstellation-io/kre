@@ -30,7 +30,7 @@
     "d3-selection": "1.4.1",
     "d3-zoom": "1.8.3",
     "enzyme-to-json": "3.5.0",
-    "graphql": "15.2.0",
+    "graphql": "14.6.0",
     "graphql-tag": "2.10.1",
     "graphql.macro": "github:mgs95/graphql.macro#build",
     "lodash": "4.17.15",

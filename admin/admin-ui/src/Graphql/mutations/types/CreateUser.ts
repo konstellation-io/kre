@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {CreateUserInput, AccessLevel} from '../../types/globalTypes';
+import { CreateUserInput, AccessLevel } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: CreateUser
