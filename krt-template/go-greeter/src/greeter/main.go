@@ -17,7 +17,7 @@ type Output struct {
 
 func handlerInit(ctx *kre.HandlerContext) {
 	ctx.Logger.Info("[worker init]")
-	ctx.SetValue("greeting", "Hello")
+	ctx.Set("greeting", "Hello")
 }
 
 func handler(ctx *kre.HandlerContext, data []byte) (interface{}, error) {
@@ -29,7 +29,7 @@ func handler(ctx *kre.HandlerContext, data []byte) (interface{}, error) {
 		return nil, err
 	}
 
-	greetingText := fmt.Sprintf("%s %s!", ctx.GetValue("greeting"), input.Name)
+	greetingText := fmt.Sprintf("%s %s!", ctx.Get("greeting"), input.Name)
 	ctx.Logger.Info(greetingText)
 
 	out := Output{}
