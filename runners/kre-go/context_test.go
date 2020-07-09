@@ -99,7 +99,7 @@ func TestHandlerContext_GetData(t *testing.T) {
 			})
 		})
 
-	err = ctx.GetData("test_predictions", q, results)
+	err = ctx.DB.Find("test_predictions", q, results)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -162,7 +162,7 @@ func TestHandlerContext_SaveData(t *testing.T) {
 	c, cancel := context.WithCancel(context.Background())
 
 	go func() {
-		err = ctx.SaveData("test_predictions", sentMsg)
+		err = ctx.DB.Save("test_predictions", sentMsg)
 		if err != nil {
 			t.Fatal(err)
 		}

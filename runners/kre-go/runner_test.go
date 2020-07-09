@@ -30,12 +30,12 @@ func handler(ctx *HandlerContext, data []byte) (interface{}, error) {
 		return nil, err
 	}
 
-	greetingText := fmt.Sprintf("%s %s!", ctx.GetValue("greeting"), input.Name)
+	greetingText := fmt.Sprintf("%s %s!", ctx.Get("greeting"), input.Name)
 	ctx.Logger.Info(greetingText)
 
 	// Saves metrics in MongoDB DB sending a message to the MongoWriter queue
-	// ctx.SaveMetric(time.Now(), "class_x", "class_y")
-	// ctx.SaveMetricError(ErrNewLabels)
+	// ctx.Metrics.Save(time.Now(), "class_x", "class_y")
+	// ctx.Metric.SaveError(ErrNewLabels)
 
 	out := Output{}
 	out.Greeting = greetingText
@@ -99,7 +99,7 @@ func TestRunner(t *testing.T) {
 
 	handlerInit := func(ctx *HandlerContext) {
 		ctx.Logger.Info("[worker init]")
-		ctx.SetValue("greeting", "Hello")
+		ctx.Set("greeting", "Hello")
 		doneCh <- struct{}{}
 	}
 	go Start(handlerInit, handler)
