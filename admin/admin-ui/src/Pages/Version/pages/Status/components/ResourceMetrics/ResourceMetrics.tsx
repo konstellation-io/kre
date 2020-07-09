@@ -11,6 +11,7 @@ import { get, sortBy } from 'lodash';
 import moment, { Moment } from 'moment';
 
 import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
+import Message from 'Components/Message/Message';
 import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { VersionRouteParams } from 'Constants/routes';
 import { WatchResourceMetrics } from 'Graphql/subscriptions/types/WatchResourceMetrics';
@@ -123,40 +124,45 @@ function ResourceMetrics() {
   if (loading) return <SpinnerCircular />;
   if (error) return <ErrorMessage />;
 
+  if (chartData.cpu.length <= 1)
+    return (
+      <div className={styles.container}>
+        <div className={styles.notEnoughtData}>
+          Not enought data to represent resource metrics
+        </div>
+      </div>
+    );
+
   return (
     <div className={cx(styles.container, { [styles.expanded]: expanded })}>
-      {chartData.cpu.length !== 0 && (
-        <>
-          <div className={styles.chart}>
-            <TimeSeriesChart
-              title="CPU"
-              color={COLORS.HIGHLIGHT}
-              data={chartData.cpu}
-              unit="mCores"
-              expanded={expanded}
-              toggleExpand={toggleExpand}
-              formatYAxis={v => format('.4')(v)}
-              formatXAxis={date => formatDate(new Date(date), true)}
-              removed={nMetricsToRemove.current}
-              highlightLastValue
-            />
-          </div>
-          <div className={styles.chart}>
-            <TimeSeriesChart
-              title="RAM"
-              color={COLORS.ALERT}
-              data={chartData.mem}
-              unit="B"
-              expanded={expanded}
-              toggleExpand={toggleExpand}
-              formatYAxis={v => format('.3s')(v)}
-              formatXAxis={date => formatDate(new Date(date), true)}
-              removed={nMetricsToRemove.current}
-              highlightLastValue
-            />
-          </div>
-        </>
-      )}
+      <div className={styles.chart}>
+        <TimeSeriesChart
+          title="CPU"
+          color={COLORS.HIGHLIGHT}
+          data={chartData.cpu}
+          unit="mCores"
+          expanded={expanded}
+          toggleExpand={toggleExpand}
+          formatYAxis={v => format('.4')(v)}
+          formatXAxis={date => formatDate(new Date(date), true)}
+          removed={nMetricsToRemove.current}
+          highlightLastValue
+        />
+      </div>
+      <div className={styles.chart}>
+        <TimeSeriesChart
+          title="RAM"
+          color={COLORS.ALERT}
+          data={chartData.mem}
+          unit="B"
+          expanded={expanded}
+          toggleExpand={toggleExpand}
+          formatYAxis={v => format('.3s')(v)}
+          formatXAxis={date => formatDate(new Date(date), true)}
+          removed={nMetricsToRemove.current}
+          highlightLastValue
+        />
+      </div>
     </div>
   );
 }
