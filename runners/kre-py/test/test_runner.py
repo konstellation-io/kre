@@ -30,11 +30,12 @@ async def run(loop):
         sid = await nc.subscribe("mongo_writer", cb=message_handler)
         print("Waiting for a metrics message...")
 
-        # Stop receiving after 3 calls to save_metrics() and 1 call to save_data().
+        # Stop receiving after 3 calls to metrics.save() and 1 call to db.save().
         await nc.auto_unsubscribe(sid, 4)
 
         print(f"Sending a test message to {input_subject}...")
-        msg = await nc.request(input_subject, bytes(json.dumps(payload), encoding='utf-8'), timeout=120)
+        payload["data"] = json.dumps(payload["data"])
+        msg = await nc.request(input_subject, bytes(json.dumps(payload), encoding='utf-8'), timeout=10)
         res = json.loads(msg.data.decode())
         print("error -> ", res['error'])
         print("data -> ", res['data'])
