@@ -12,7 +12,10 @@ import Title from 'Components/Title/Title';
 import VersionInfo from './components/VersionInfo/VersionInfo';
 import { VersionStatus } from 'Graphql/types/globalTypes';
 import { formatDate } from 'Utils/format';
+import { sortBy } from 'lodash';
 import styles from './RuntimeVersions.module.scss';
+
+const VERSION_SORT_FIELD: keyof GetVersionConfStatus_versions = 'creationDate';
 
 type Props = {
   runtime: GetVersionConfStatus_runtime;
@@ -25,11 +28,11 @@ function RuntimeVersions({ runtime, versions }: Props) {
     version => version.status === VersionStatus.PUBLISHED
   ).length;
 
-  const versionsComponents = versions.map(
-    (version: GetVersionConfStatus_versions) => (
+  const versionsComponents = sortBy(versions, VERSION_SORT_FIELD)
+    .reverse()
+    .map((version: GetVersionConfStatus_versions) => (
       <VersionInfo key={version.id} version={version} />
-    )
-  );
+    ));
 
   return (
     <div className={styles.content}>
