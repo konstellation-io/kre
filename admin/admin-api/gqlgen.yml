@@ -42,6 +42,8 @@ models:
         resolver: true
       publicationAuthor:
         resolver: true
+      docUrl:
+        resolver: true
   VersionNodeStatus:
     model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.VersionNodeStatus
     fields:

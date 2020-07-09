@@ -58,6 +58,7 @@ func main() {
 	paswordGenerator := runtime.NewPasswordGenerator()
 
 	idGenerator := version.NewIDGenerator()
+	docGenerator := version.NewHTTPStaticDocGenerator(cfg, logger)
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 	authInteractor := usecase.NewAuthInteractor(
@@ -101,6 +102,7 @@ func main() {
 		minioCreateStorage,
 		accessControl,
 		idGenerator,
+		docGenerator,
 	)
 
 	metricsInteractor := usecase.NewMetricsInteractor(

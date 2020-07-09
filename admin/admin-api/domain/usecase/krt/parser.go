@@ -45,7 +45,7 @@ type Metadata struct {
 
 func (p *Parser) Parse(krtFile io.Reader) (*Krt, error) {
 	p.logger.Info("Decompressing KRT file...")
-	meta, err := extractKrtFile(krtFile, p.dstDir)
+	meta, err := p.extractKrtFile(krtFile, p.dstDir)
 	if err != nil {
 		return nil, fmt.Errorf("error on KRT extraction: %w", err)
 	}
@@ -97,7 +97,7 @@ func generateKrt(yamlFile string) (*Krt, error) {
 	return &krt, nil
 }
 
-func extractKrtFile(krtFile io.Reader, dstDir string) (*Metadata, error) {
+func (p *Parser) extractKrtFile(krtFile io.Reader, dstDir string) (*Metadata, error) {
 	meta := &Metadata{}
 	uncompressed, err := gzip.NewReader(krtFile)
 	if err != nil {
@@ -118,7 +118,7 @@ func extractKrtFile(krtFile io.Reader, dstDir string) (*Metadata, error) {
 
 		filePath := filepath.Join(dstDir, tarFile.Name)
 
-		err = processFile(tarReader, filePath, tarFile.Typeflag)
+		err = p.processFile(tarReader, filePath, tarFile.Typeflag)
 		if err != nil {
 			return nil, err
 		}
@@ -132,28 +132,36 @@ func extractKrtFile(krtFile io.Reader, dstDir string) (*Metadata, error) {
 	return meta, nil
 }
 
-func processFile(tarReader *tar.Reader, filePath string, fileType byte) error {
+func (p *Parser) processFile(tarReader *tar.Reader, filePath string, fileType byte) error {
 	switch fileType {
 	case tar.TypeDir:
 		if err := os.Mkdir(filePath, 0755); err != nil {
-			return fmt.Errorf("error set permissions for krt.yaml: %w", err)
+			return fmt.Errorf("error creating krt dir %s: %w", filePath, err)
 		}
+
+		p.logger.Debugf("Creating folder: %s", filePath)
+
 	case tar.TypeReg:
 		outFile, err := os.Create(filePath)
+
+		p.logger.Debugf("Extracting file: %s", filePath)
+
 		if err != nil {
-			return fmt.Errorf("error creating path %s: %w", filePath, err)
+			return fmt.Errorf("error creating krt file %s: %w", filePath, err)
 		}
+
 		if _, err := io.Copy(outFile, tarReader); err != nil {
-			return fmt.Errorf("error copying file: %w", err)
+			return fmt.Errorf("error copying krt file %s: %w", filePath, err)
 		}
 
 		err = outFile.Close()
 		if err != nil {
-			return fmt.Errorf("error closing file %s: %w", filePath, err)
+			return fmt.Errorf("error closing krt file %s: %w", filePath, err)
 		}
 
 	default:
-		return fmt.Errorf("error extracting tar.gz, uknown type: %v in %s", fileType, filePath)
+		return fmt.Errorf("error extracting krt files: uknown type [%v] in [%s]", fileType, filePath)
 	}
+
 	return nil
 }

@@ -5,6 +5,9 @@ package gql
 import (
 	"context"
 	"errors"
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
+	"net/url"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -34,6 +37,7 @@ type Resolver struct {
 	metricsInteractor         *usecase.MetricsInteractor
 	authInteractor            *usecase.AuthInteractor
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
+	cfg                       *config.Config
 }
 
 func NewGraphQLResolver(
@@ -46,6 +50,7 @@ func NewGraphQLResolver(
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor *usecase.AuthInteractor,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
+	cfg *config.Config,
 ) *Resolver {
 	return &Resolver{
 		logger,
@@ -57,6 +62,7 @@ func NewGraphQLResolver(
 		metricsInteractor,
 		authInteractor,
 		resourceMetricsInteractor,
+		cfg,
 	}
 }
 
@@ -400,6 +406,17 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 
 	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
 	return userLoader.Load(*obj.PublicationUserID)
+}
+
+func (r *versionResolver) DocURL(_ context.Context, obj *entity.Version) (*string, error) {
+	u, err := url.Parse(r.cfg.Admin.BaseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	u.Path = path.Join(u.Path, "static", "version", obj.ID, "doc", "README.md")
+	docURL := u.String()
+	return &docURL, nil
 }
 
 // Mutation returns MutationResolver implementation.

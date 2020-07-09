@@ -1,7 +1,9 @@
 admin:
   apiAddress: ":4000"
-  frontendBaseURL: "http://localhost:3000"
+  baseURL: "http://api.kre.local"
+  frontendBaseURL: "http://admin.kre.local"
   corsEnabled: true
+  storagePath: /admin-api-files
 smtp:
   enabled: false
 auth:

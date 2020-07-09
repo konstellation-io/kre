@@ -21,6 +21,10 @@ spec:
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
+      volumes:
+        - name: admin-api-pv-storage
+          persistentVolumeClaim:
+            claimName: admin-api-pv-claim
       containers:
         - name: {{ template "kre.fullname" . }}-admin-api
           image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
@@ -30,6 +34,12 @@ spec:
                 name: {{ .Release.Name }}-configmap
             - secretRef:
                 name: {{ .Release.Name }}-secrets
+          env:
+            - name: KRE_ADMIN_STORAGE_PATH
+              value: {{ .Values.adminApi.storage.path }}
           ports:
             - containerPort: {{ .Values.adminApi.service.port }}
               protocol: TCP
+          volumeMounts:
+            - name: admin-api-pv-storage
+              mountPath: {{ .Values.adminApi.storage.path }}

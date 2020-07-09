@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
+	"path"
 	"time"
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
@@ -49,6 +51,7 @@ type VersionInteractor struct {
 	createStorage          repository.CreateStorage
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
+	docGenerator           version.DocGenerator
 }
 
 // NewVersionInteractor creates a new interactor
@@ -62,6 +65,7 @@ func NewVersionInteractor(
 	createStorage repository.CreateStorage,
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
+	docGenerator version.DocGenerator,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		logger,
@@ -73,6 +77,7 @@ func NewVersionInteractor(
 		createStorage,
 		accessControl,
 		idGenerator,
+		docGenerator,
 	}
 }
 
@@ -165,6 +170,14 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		return nil, err
 	}
 	i.logger.Info("Version created")
+
+	docFolder := path.Join(tmpDir, "doc")
+	if _, err := os.Stat(docFolder); err == nil {
+		err = i.docGenerator.Generate(versionCreated.ID, docFolder)
+		if err != nil {
+			return nil, fmt.Errorf("error generating version doc: %w", err)
+		}
+	}
 
 	err = i.storeContent(runtime, krtYml, tmpDir)
 	if err != nil {
