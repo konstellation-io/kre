@@ -62,7 +62,7 @@ publish-admin-api-image:
     DOCKER_CLI_EXPERIMENTAL: enabled
     BUILDX_URL: https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
     BUILDX_BUILDER: multiarch
-    BUILDX_PLATFORM: linux/amd64,linux/arm64
+    BUILDX_PLATFORM: "linux/amd64,linux/arm64"
 
   before_script:
     - mkdir -p $HOME/.docker/cli-plugins/
@@ -76,7 +76,7 @@ publish-admin-api-image:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
     - TAG=${CI_COMMIT_TAG#admin-api-v}
-    - docker buildx build --push --platform=${BUILDX_PLATFORM} -t $IMAGE_PROJECT_NAME:$TAG admin/admin-api .
+    - docker buildx build --push --platform ${BUILDX_PLATFORM} --tag $IMAGE_PROJECT_NAME:$TAG admin/admin-api .
     - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
     - docker push $IMAGE_PROJECT_NAME:latest
   # rules:
