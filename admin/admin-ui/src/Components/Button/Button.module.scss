@@ -7,12 +7,42 @@
 $color-primary: palette(highlight, 400);
 $color-gray: palette(base, 300);
 
+@mixin solid($color) {
+  border: 0;
+  background-color: palette($color);
+  color: font-color(dark);
+
+  &:hover,
+  &:focus {
+    @include glow(3, palette($color));
+    background-color: palette($color, 400);
+    color: font-color(dark);
+  }
+
+  &:active {
+    @include glow(4, palette($color));
+  }
+}
+@mixin only-border($color) {
+  @include border(palette($color));
+
+  &:hover,
+  &:focus {
+    @include text-glow(3, palette($color));
+    color: palette($color);
+  }
+
+  &:active {
+    @include text-glow(3, palette($color));
+    color: font-color(lowlight);
+  }
+}
+
 .btn {
   @include font-button;
-  color: font-color(regular);
   position: relative;
   text-align: center;
-  padding: 0 42px;
+  padding: 0 $grid-unit * 2.5;
   white-space: nowrap;
   cursor: pointer;
   transition: color ease 0.4s, background-color ease 0.4s, box-shadow ease 0.2s,
@@ -34,125 +64,56 @@ $color-gray: palette(base, 300);
   }
 
   &:not(.noLabel) svg {
-    margin-right: 8px;
+    margin-right: $grid-unit;
   }
 
   &.middle {
     text-align: center;
-    padding: 0 20px;
   }
   &.left {
     text-align: left;
-    padding: 0 20px;
   }
   &.right {
     text-align: right;
-    padding: 0 20px;
   }
+
   &.noLabel {
     padding: 0 14px;
   }
 
-  &:hover {
-    color: font-color(light);
+  @extend .transparent;
 
-    background-color: palette(base, 400);
-  }
+  &.primary {
+    @include solid(highlight);
 
-  &:active {
-    color: font-color(light);
-  }
-
-  &:focus {
-    @extend .btn:hover;
+    &.warn {
+      @include solid(alert);
+    }
   }
 
   &.border {
-    @include border($color-primary);
+    @include only-border(highlight);
 
-    &:hover {
-      @include text-glow(3);
-      color: palette(highlight);
-    }
-
-    &:active {
-      @include text-glow(3);
-      color: font-color(lowlight);
-    }
-
-    &:focus {
-      @extend .border:hover;
+    &.warn {
+      @include only-border(alert);
+      color: palette(alert);
     }
   }
 }
 
-a.navLinkSelected .btn,
-.primary {
-  border: 0;
-
-  color: font-color(dark);
-  background-color: palette(highlight, 400);
-
-  &:hover {
-    @include glow(3);
-    color: font-color(dark);
-    background-color: palette(highlight, 400);
-  }
-
-  &:active {
-    @include glow(4);
-  }
-
-  &:focus {
-    @extend .primary:hover;
-  }
-}
-
-.dark {
-  color: font-color(regular);
-  background-color: $bg-color-dark;
-
-  &:hover {
-    color: font-color(light);
-  }
-
-  &:active {
-    box-shadow: none;
-  }
-
-  &.disabled {
-    color: font-color(disabled);
-  }
-}
-
-.grey {
-  color: font-color(light);
-  background-color: $color-gray;
-
-  &:hover {
-    color: font-color(light);
-  }
-
-  &:active {
-    box-shadow: none;
-  }
+a.navLinkSelected .btn {
+  @extend .primary;
 }
 
 .transparent {
-  color: font-color(regular);
+  @include solid(base);
   background-color: transparent;
+  color: font-color(lowlight);
 
-  &:hover {
-    color: font-color(light);
-  }
-
-  &:active {
+  &:hover,
+  &:focus {
     box-shadow: none;
-  }
-
-  &.primary {
-    background-color: $bg-highlighted;
-    color: white;
+    color: font-color(light);
   }
 }
 
@@ -161,7 +122,6 @@ a.navLinkSelected .btn,
 }
 
 .disabled {
-  color: font-color(disabled);
   pointer-events: none;
   opacity: 0.5;
 }

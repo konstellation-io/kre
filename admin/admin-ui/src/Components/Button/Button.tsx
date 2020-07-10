@@ -2,7 +2,8 @@ import React, {
   FunctionComponent,
   KeyboardEvent,
   useEffect,
-  useRef
+  useRef,
+  useState
 } from 'react';
 
 import { Link } from 'react-router-dom';
@@ -13,9 +14,8 @@ import styles from './Button.module.scss';
 
 export const BUTTON_THEMES = {
   DEFAULT: 'default',
-  DARK: 'dark',
-  GREY: 'grey',
-  TRANSPARENT: 'transparent'
+  TRANSPARENT: 'transparent',
+  WARN: 'warn'
 };
 export const BUTTON_ALIGN = {
   LEFT: 'left',
@@ -41,6 +41,7 @@ type Props = {
   className?: string;
   tabIndex?: number;
   autofocus?: boolean;
+  timeToEnable?: number;
 };
 
 function Button({
@@ -60,22 +61,39 @@ function Button({
   style = {},
   className = '',
   autofocus = false,
-  tabIndex = -1
+  tabIndex = -1,
+  timeToEnable = 0
 }: Props) {
   const buttonRef = useRef<HTMLDivElement>(null);
+  const [timerRemainingTime, setTimerRemainingTime] = useState(timeToEnable);
 
   useEffect(() => {
-    if (autofocus && buttonRef.current) {
+    let timerInterval: number;
+
+    if (timeToEnable && timerRemainingTime) {
+      timerInterval = window.setInterval(() => {
+        setTimerRemainingTime(timerRemainingTime - 1);
+        if (timerRemainingTime === 0) clearInterval(timerInterval);
+      }, 1000);
+    }
+
+    return () => clearInterval(timerInterval);
+  }, [timeToEnable, timerRemainingTime]);
+
+  useEffect(() => {
+    if (autofocus && buttonRef.current && !timerRemainingTime) {
       buttonRef.current.focus();
     }
-  }, [autofocus]);
+  }, [autofocus, timerRemainingTime]);
+
+  const remainingTimeTxt = timerRemainingTime && `(${timerRemainingTime}) `;
 
   const content = loading ? (
     <SpinnerLinear size={30} dark />
   ) : (
     <>
       {Icon && <Icon className={iconSize} />}
-      <span>{label}</span>
+      <span>{`${remainingTimeTxt || ''}${label}`}</span>
     </>
   );
 
@@ -91,7 +109,7 @@ function Button({
         [styles.primary]: primary,
         [styles.border]: border,
         [styles.label]: !primary,
-        [styles.disabled]: disabled,
+        [styles.disabled]: disabled || timerRemainingTime,
         [styles.noLabel]: label === '',
         [styles.notFocussable]: tabIndex === -1
       })}
@@ -99,7 +117,7 @@ function Button({
       onClick={() => onClick()}
       onKeyPress={handleKeyPress}
       title={title}
-      tabIndex={tabIndex}
+      tabIndex={timerRemainingTime ? -1 : tabIndex}
       ref={buttonRef}
     >
       {content}

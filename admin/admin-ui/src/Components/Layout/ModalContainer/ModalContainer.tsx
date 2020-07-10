@@ -1,6 +1,6 @@
+import Button, { BUTTON_THEMES } from '../../Button/Button';
 import React, { FunctionComponent, MouseEvent } from 'react';
 
-import Button from '../../Button/Button';
 import HorizontalBar from '../HorizontalBar/HorizontalBar';
 import cx from 'classnames';
 import styles from './ModalContainer.module.scss';
@@ -10,10 +10,12 @@ type Props = {
   actionButtonLabel?: string;
   to?: string;
   blocking?: boolean;
+  warning?: boolean;
   onAccept?: (e: MouseEvent<HTMLDivElement>) => void;
   onCancel?: (e: MouseEvent<HTMLDivElement>) => void;
   className?: string;
   autofocusOnAccept?: boolean;
+  confirmationTimer?: number;
 };
 
 const ModalContainer: FunctionComponent<Props> = ({
@@ -22,10 +24,12 @@ const ModalContainer: FunctionComponent<Props> = ({
   actionButtonLabel = 'ACCEPT',
   to = '',
   blocking = false,
+  warning = false,
   onAccept = function() {},
   onCancel = function() {},
   className = '',
-  autofocusOnAccept = false
+  autofocusOnAccept = false,
+  confirmationTimer
 }) => {
   return (
     <>
@@ -41,15 +45,15 @@ const ModalContainer: FunctionComponent<Props> = ({
               to={to}
               onClick={onAccept}
               height={30}
-              className={styles.acceptButton}
               tabIndex={0}
               autofocus={autofocusOnAccept}
+              theme={warning ? BUTTON_THEMES.WARN : BUTTON_THEMES.DEFAULT}
+              timeToEnable={confirmationTimer}
             />
             <Button
               label={'CANCEL'}
               onClick={onCancel}
               height={30}
-              className={styles.cancelButton}
               tabIndex={0}
             />
           </HorizontalBar>
