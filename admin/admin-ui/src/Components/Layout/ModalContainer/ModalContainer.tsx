@@ -48,7 +48,7 @@ const ModalContainer: FunctionComponent<Props> = ({
               tabIndex={0}
               autofocus={autofocusOnAccept}
               theme={warning ? BUTTON_THEMES.WARN : BUTTON_THEMES.DEFAULT}
-              disableTimer={confirmationTimer}
+              timeToEnable={confirmationTimer}
             />
             <Button
               label={'CANCEL'}

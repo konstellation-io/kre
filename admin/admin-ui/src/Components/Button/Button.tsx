@@ -41,7 +41,7 @@ type Props = {
   className?: string;
   tabIndex?: number;
   autofocus?: boolean;
-  disableTimer?: number;
+  timeToEnable?: number;
 };
 
 function Button({
@@ -62,15 +62,15 @@ function Button({
   className = '',
   autofocus = false,
   tabIndex = -1,
-  disableTimer = 0
+  timeToEnable = 0
 }: Props) {
   const buttonRef = useRef<HTMLDivElement>(null);
-  const [timerRemainingTime, setTimerRemainingTime] = useState(disableTimer);
+  const [timerRemainingTime, setTimerRemainingTime] = useState(timeToEnable);
 
   useEffect(() => {
     let timerInterval: number;
 
-    if (disableTimer && timerRemainingTime) {
+    if (timeToEnable && timerRemainingTime) {
       timerInterval = window.setInterval(() => {
         setTimerRemainingTime(timerRemainingTime - 1);
         if (timerRemainingTime === 0) clearInterval(timerInterval);
@@ -78,7 +78,7 @@ function Button({
     }
 
     return () => clearInterval(timerInterval);
-  }, [disableTimer, timerRemainingTime]);
+  }, [timeToEnable, timerRemainingTime]);
 
   useEffect(() => {
     if (autofocus && buttonRef.current && !timerRemainingTime) {
@@ -86,14 +86,14 @@ function Button({
     }
   }, [autofocus, timerRemainingTime]);
 
-  const timeToEnable = timerRemainingTime && `(${timerRemainingTime}) `;
+  const remainingTimeTxt = timerRemainingTime && `(${timerRemainingTime}) `;
 
   const content = loading ? (
     <SpinnerLinear size={30} dark />
   ) : (
     <>
       {Icon && <Icon className={iconSize} />}
-      <span>{`${timeToEnable || ''}${label}`}</span>
+      <span>{`${remainingTimeTxt || ''}${label}`}</span>
     </>
   );
 
