@@ -177,6 +177,10 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		if err != nil {
 			return nil, fmt.Errorf("error generating version doc: %w", err)
 		}
+		err = i.versionRepo.UpdateHasDoc(ctx, versionCreated.ID, true)
+		if err != nil {
+			return nil, fmt.Errorf("error updating has doc field: %w", err)
+		}
 	}
 
 	err = i.storeContent(runtime, krtYml, tmpDir)

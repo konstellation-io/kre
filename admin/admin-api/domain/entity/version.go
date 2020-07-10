@@ -121,6 +121,8 @@ type Version struct {
 	Config     VersionConfig `bson:"config"`
 	Entrypoint Entrypoint    `bson:"entrypoint"`
 	Workflows  []*Workflow   `bson:"workflows"`
+
+	HasDoc bool `bson:"hasDoc"`
 }
 
 func (v Version) PublishedOrStarted() bool {

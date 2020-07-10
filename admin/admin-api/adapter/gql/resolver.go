@@ -409,6 +409,10 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 }
 
 func (r *versionResolver) DocURL(_ context.Context, obj *entity.Version) (*string, error) {
+	if !obj.HasDoc {
+		return nil, nil
+	}
+
 	u, err := url.Parse(r.cfg.Admin.BaseURL)
 	if err != nil {
 		return nil, err

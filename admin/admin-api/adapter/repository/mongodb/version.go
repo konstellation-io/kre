@@ -109,3 +109,16 @@ func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]*entity.Version, 
 
 	return versions, nil
 }
+
+func (r *VersionRepoMongoDB) UpdateHasDoc(ctx context.Context, versionID string, hasDoc bool) error {
+	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"hasDoc": hasDoc}})
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrVersionNotFound
+	}
+
+	return nil
+}

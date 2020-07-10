@@ -29,19 +29,23 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
       to: ROUTE.RUNTIME_VERSION_STATUS,
       exact: false,
       Icon: IconDeviceHub
-    },
-    {
+    }
+  ];
+
+  if (version.docUrl !== null) {
+    itemProps.push({
       label: 'DOCUMENTATION',
       to: ROUTE.RUNTIME_VERSION_DOCUMENTATION,
       exact: false,
       Icon: IconDoc
-    },
-    {
-      label: 'METRICS',
-      to: ROUTE.RUNTIME_VERSION_METRICS,
-      Icon: IconShowChart
-    }
-  ];
+    });
+  }
+
+  itemProps.push({
+    label: 'METRICS',
+    to: ROUTE.RUNTIME_VERSION_METRICS,
+    Icon: IconShowChart
+  });
 
   if (checkPermission(accessLevel, 'version:edit')) {
     itemProps.push({
