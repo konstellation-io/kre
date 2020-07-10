@@ -8,6 +8,7 @@ config:
     apiAddress: ":80"
     frontendBaseURL: ${KRE_ADMIN_FRONTEND_BASE_URL}
     corsEnabled: true
+    userEmail: dev@local.local
   smtp:
     enabled: false
   auth:
@@ -66,7 +67,10 @@ mongodb:
   mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
   mongodbPassword: "123456"
-  
+  volumePermissions:
+    enabled: true
+  initConfigMap:
+    name: kre-mongo-init-script
 
 certManager:
   enabled: false
