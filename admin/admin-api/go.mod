@@ -19,6 +19,7 @@ require (
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/minio/minio-go/v6 v6.0.57
+	github.com/otiai10/copy v1.2.0
 	github.com/stretchr/testify v1.4.0
 	github.com/valyala/fasttemplate v1.1.1 // indirect
 	github.com/vektah/dataloaden v0.2.1-0.20190515034641-a19b9a6e7c9e

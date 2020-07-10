@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {LogFilters, LogLevel} from '../../types/globalTypes';
+import { LogFilters, LogLevel } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetServerLogs

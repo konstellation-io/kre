@@ -40,6 +40,10 @@ adminApi:
   tls:
     enabled: false
   host: api.kre.local
+  storage:
+    class: standard
+    size: 1Gi
+    path: /admin-api-files
 
 adminUI:
   image:

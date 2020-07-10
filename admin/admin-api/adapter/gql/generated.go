@@ -199,6 +199,7 @@ type ComplexityRoot struct {
 		CreationAuthor    func(childComplexity int) int
 		CreationDate      func(childComplexity int) int
 		Description       func(childComplexity int) int
+		HasDoc            func(childComplexity int) int
 		ID                func(childComplexity int) int
 		Name              func(childComplexity int) int
 		PublicationAuthor func(childComplexity int) int
@@ -1043,6 +1044,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Version.Description(childComplexity), true
 
+	case "Version.hasDoc":
+		if e.complexity.Version.HasDoc == nil {
+			break
+		}
+
+		return e.complexity.Version.HasDoc(childComplexity), true
+
 	case "Version.id":
 		if e.complexity.Version.ID == nil {
 			break
@@ -1406,6 +1414,7 @@ type Version {
   publicationAuthor: User
   workflows: [Workflow!]!
   config: VersionConfig!
+  hasDoc: Boolean
 }
 
 type VersionConfig {
@@ -5579,6 +5588,37 @@ func (ec *executionContext) _Version_config(ctx context.Context, field graphql.C
 	return ec.marshalNVersionConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐVersionConfig(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Version_hasDoc(ctx context.Context, field graphql.CollectedField, obj *entity.Version) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Version",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasDoc, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _VersionConfig_vars(ctx context.Context, field graphql.CollectedField, obj *entity.VersionConfig) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -8271,6 +8311,8 @@ func (ec *executionContext) _Version(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "hasDoc":
+			out.Values[i] = ec._Version_hasDoc(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

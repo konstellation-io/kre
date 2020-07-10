@@ -1,15 +1,14 @@
 package http
 
 import (
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/delivery/http/controller"
 	"github.com/konstellation-io/kre/admin/admin-api/delivery/http/httperrors"
 	kremiddleware "github.com/konstellation-io/kre/admin/admin-api/delivery/http/middleware"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 // App is the top-level struct.
@@ -40,6 +39,8 @@ func NewApp(
 	e.HideBanner = true
 	e.HidePort = true
 	e.Validator = newCustomValidator()
+
+	e.Static("/static", cfg.Admin.StoragePath)
 
 	e.Use(
 		middleware.RequestID(),

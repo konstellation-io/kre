@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	reflect "reflect"
@@ -90,6 +91,20 @@ func (m *MockVersionRepo) Update(version *entity.Version) error {
 func (mr *MockVersionRepoMockRecorder) Update(version interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockVersionRepo)(nil).Update), version)
+}
+
+// SetHasDoc mocks base method
+func (m *MockVersionRepo) SetHasDoc(ctx context.Context, versionID string, hasDoc bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetHasDoc", ctx, versionID, hasDoc)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetHasDoc indicates an expected call of SetHasDoc
+func (mr *MockVersionRepoMockRecorder) SetHasDoc(ctx, versionID, hasDoc interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHasDoc", reflect.TypeOf((*MockVersionRepo)(nil).SetHasDoc), ctx, versionID, hasDoc)
 }
 
 // GetByRuntime mocks base method

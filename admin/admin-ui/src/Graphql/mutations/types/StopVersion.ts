@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {StopVersionInput, VersionStatus} from '../../types/globalTypes';
+import { StopVersionInput, VersionStatus } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: StopVersion

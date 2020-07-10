@@ -7,7 +7,7 @@ import {
   UpdateConfigurationInput,
   ConfigurationVariableType,
   VersionStatus
-} from '../../types/globalTypes';
+} from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: UpdateVersionConfiguration

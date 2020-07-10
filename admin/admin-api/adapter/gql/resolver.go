@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
+
 	"github.com/google/uuid"
 
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/dataloader"
@@ -34,6 +36,7 @@ type Resolver struct {
 	metricsInteractor         *usecase.MetricsInteractor
 	authInteractor            *usecase.AuthInteractor
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
+	cfg                       *config.Config
 }
 
 func NewGraphQLResolver(
@@ -46,6 +49,7 @@ func NewGraphQLResolver(
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor *usecase.AuthInteractor,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
+	cfg *config.Config,
 ) *Resolver {
 	return &Resolver{
 		logger,
@@ -57,6 +61,7 @@ func NewGraphQLResolver(
 		metricsInteractor,
 		authInteractor,
 		resourceMetricsInteractor,
+		cfg,
 	}
 }
 

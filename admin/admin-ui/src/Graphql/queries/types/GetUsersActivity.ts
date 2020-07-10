@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {UserActivityType} from '../../types/globalTypes';
+import { UserActivityType } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetUsersActivity

@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {VersionStatus, NodeStatus} from '../../types/globalTypes';
+import { VersionStatus, NodeStatus } from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetVersionWorkflows

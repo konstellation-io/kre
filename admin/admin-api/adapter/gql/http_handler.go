@@ -1,6 +1,7 @@
 package gql
 
 import (
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"net/http"
 	"time"
 
@@ -23,6 +24,7 @@ func NewHttpHandler(
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor *usecase.AuthInteractor,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
+	cfg *config.Config,
 ) http.Handler {
 	graphQLResolver := NewGraphQLResolver(
 		logger,
@@ -34,6 +36,7 @@ func NewHttpHandler(
 		metricsInteractor,
 		authInteractor,
 		resourceMetricsInteractor,
+		cfg,
 	)
 
 	var mb int64 = 1 << 20

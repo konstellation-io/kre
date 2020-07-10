@@ -7,7 +7,7 @@ import {
   CreateRuntimeInput,
   RuntimeStatus,
   VersionStatus
-} from '../../types/globalTypes';
+} from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL mutation operation: CreateRuntime

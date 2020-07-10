@@ -34,6 +34,7 @@ import removeNotificationResolver from 'Graphql/client/resolvers/removeNotificat
 import updateTabFiltersResolver from 'Graphql/client/resolvers/updateTabFilters';
 
 export let cache: InMemoryCache;
+export let API_BASE_URL: string;
 
 export interface LocalState {
   loggedIn: boolean;
@@ -106,6 +107,7 @@ function addNotification(
 
 config
   .then(envVariables => {
+    API_BASE_URL = envVariables.API_BASE_URL;
     const API_BASE_URL_WS = envVariables.API_BASE_URL.replace('http', 'ws');
 
     cache = new InMemoryCache();

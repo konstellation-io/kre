@@ -72,6 +72,7 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 		g.metricsInteractor,
 		g.authInteractor,
 		g.resourceMetricsInteractor,
+		g.cfg,
 	)
 
 	r := c.Request()

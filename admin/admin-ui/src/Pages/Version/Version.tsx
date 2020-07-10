@@ -3,7 +3,7 @@ import {
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import Configuration from './pages/Configuration/Configuration';
 import Documentation from './pages/Documentation/Documentation';
@@ -47,8 +47,12 @@ function Version({ versions, version, runtime }: Props) {
             path={ROUTE.RUNTIME_VERSION_STATUS}
             render={props => <Status {...props} version={version} />}
           />
-          <Route
+          <Redirect
             exact
+            from={ROUTE.RUNTIME_VERSION_DOCUMENTATION}
+            to={ROUTE.RUNTIME_VERSION_DOCUMENTATION + '/README.md'}
+          />
+          <Route
             path={ROUTE.RUNTIME_VERSION_DOCUMENTATION}
             component={Documentation}
           />

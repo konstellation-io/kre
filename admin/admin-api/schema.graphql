@@ -196,6 +196,7 @@ type Version {
   publicationAuthor: User
   workflows: [Workflow!]!
   config: VersionConfig!
+  hasDoc: Boolean
 }
 
 type VersionConfig {
