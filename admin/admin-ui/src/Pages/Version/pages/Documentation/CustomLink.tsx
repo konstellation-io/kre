@@ -6,8 +6,6 @@ type CustomLinkProps = {
   children: JSX.Element[];
 };
 
-const CustomLink = (props: CustomLinkProps) => {
-  return <Link to={props.href}>{props.children}</Link>;
-};
+const CustomLink = ({href, children}: CustomLinkProps) => <Link to={href}>{children}</Link>;
 
 export default CustomLink;
