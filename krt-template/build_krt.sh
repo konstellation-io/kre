@@ -27,7 +27,7 @@ fi
 echo "Generating $VERSION.krt..."
 
 mkdir -p build/${VERSION_DIR}
-rm ./build/${VERSION_DIR}/{doc,src,assets,models,*.proto,*.yml} -rf
+rm ./build/${VERSION_DIR}/{docs,src,assets,models,*.proto,*.yml} -rf
 
 cd build/${VERSION_DIR}
 
