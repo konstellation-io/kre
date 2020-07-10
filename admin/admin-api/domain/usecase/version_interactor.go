@@ -171,8 +171,8 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 	}
 	i.logger.Info("Version created")
 
-	docFolder := path.Join(tmpDir, "doc")
-	if _, err := os.Stat(docFolder); err == nil {
+	docFolder := path.Join(tmpDir, "docs")
+	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
 		err = i.docGenerator.Generate(versionCreated.ID, docFolder)
 		if err != nil {
 			return nil, fmt.Errorf("error generating version doc: %w", err)
@@ -181,6 +181,8 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		if err != nil {
 			return nil, fmt.Errorf("error updating has doc field: %w", err)
 		}
+	} else {
+		i.logger.Infof("No documentation found inside the krt files")
 	}
 
 	err = i.storeContent(runtime, krtYml, tmpDir)

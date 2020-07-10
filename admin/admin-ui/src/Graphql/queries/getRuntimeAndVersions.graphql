@@ -29,6 +29,6 @@ query GetVersionConfStatus($runtimeId: ID!) {
     config {
       completed
     }
-    docUrl
+    hasDoc
   }
 }

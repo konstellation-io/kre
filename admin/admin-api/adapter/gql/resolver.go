@@ -5,12 +5,11 @@ package gql
 import (
 	"context"
 	"errors"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-	"net/url"
-	"path"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 
 	"github.com/google/uuid"
 
@@ -406,21 +405,6 @@ func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Ver
 
 	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
 	return userLoader.Load(*obj.PublicationUserID)
-}
-
-func (r *versionResolver) DocURL(_ context.Context, obj *entity.Version) (*string, error) {
-	if !obj.HasDoc {
-		return nil, nil
-	}
-
-	u, err := url.Parse(r.cfg.Admin.BaseURL)
-	if err != nil {
-		return nil, err
-	}
-
-	u.Path = path.Join(u.Path, "static", "version", obj.ID, "doc", "README.md")
-	docURL := u.String()
-	return &docURL, nil
 }
 
 // Mutation returns MutationResolver implementation.

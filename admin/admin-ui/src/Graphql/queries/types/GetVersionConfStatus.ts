@@ -53,7 +53,7 @@ export interface GetVersionConfStatus_versions {
   publicationDate: string | null;
   publicationAuthor: GetVersionConfStatus_versions_publicationAuthor | null;
   config: GetVersionConfStatus_versions_config;
-  docUrl: string | null;
+  hasDoc: boolean | null;
 }
 
 export interface GetVersionConfStatus {

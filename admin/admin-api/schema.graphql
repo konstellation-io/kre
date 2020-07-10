@@ -196,7 +196,7 @@ type Version {
   publicationAuthor: User
   workflows: [Workflow!]!
   config: VersionConfig!
-  docUrl: String
+  hasDoc: Boolean
 }
 
 type VersionConfig {

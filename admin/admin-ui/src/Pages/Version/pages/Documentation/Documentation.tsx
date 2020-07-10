@@ -5,7 +5,11 @@ import MarkNav from 'markdown-navbar';
 import ReactMarkdown from 'react-markdown';
 import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import styles from './Documentation.module.scss';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { buildRoute } from 'Utils/routes';
+import ROUTES, { VersionRouteParams } from 'Constants/routes';
+import CustomLink from './CustomLink';
+import { API_BASE_URL } from 'index';
 
 function getHeader(tag: string) {
   return document.querySelectorAll(`[data-id="${tag}"]`)[0];
@@ -38,13 +42,19 @@ function useDocFile(fileUrl?: string | null) {
   return file;
 }
 
-type Props = {
-  docUrl?: string | null;
-};
-function Documentation({ docUrl }: Props) {
+function Documentation() {
   const [loading, setLoading] = useState<boolean>(true);
   const location = useLocation();
-  const file = useDocFile(docUrl);
+  const params = useParams<VersionRouteParams>();
+
+  const baseUrl = buildRoute.version(
+    ROUTES.RUNTIME_VERSION_DOCUMENTATION,
+    params.runtimeId,
+    params.versionId
+  );
+  const docPath = location.pathname.replace(baseUrl, '');
+  const apiDocUrl = `${API_BASE_URL}/static/version/${params.versionId}/docs/${docPath}`;
+  const file = useDocFile(apiDocUrl);
 
   useEffect(() => {
     setTimeout(() => {
@@ -82,7 +92,10 @@ function Documentation({ docUrl }: Props) {
         />
       </div>
       <div className={styles.article}>
-        <ReactMarkdown source={file} renderers={{ code: CodeBlock }} />
+        <ReactMarkdown
+          source={file}
+          renderers={{ code: CodeBlock, link: CustomLink }}
+        />
       </div>
     </div>
   );

@@ -32,7 +32,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
     }
   ];
 
-  if (version.docUrl !== null) {
+  if (version.hasDoc) {
     itemProps.push({
       label: 'DOCUMENTATION',
       to: ROUTE.RUNTIME_VERSION_DOCUMENTATION,

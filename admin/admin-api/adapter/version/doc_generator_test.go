@@ -1,16 +1,17 @@
 package version_test
 
 import (
-	"github.com/golang/mock/gomock"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/version"
-	"github.com/konstellation-io/kre/admin/admin-api/mocks"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/version"
+	"github.com/konstellation-io/kre/admin/admin-api/mocks"
+	"github.com/stretchr/testify/require"
 )
 
 func TestHTTPStaticDocGenerator_Generate(t *testing.T) {
@@ -64,7 +65,7 @@ This is an example:
 
 This is an example:
 
-![relative path image](http://api.local/static/version/version1234/doc/img/test.png)
+![relative path image](http://api.local/static/version/version1234/docs/img/test.png)
 
 ## Image absolute
 
@@ -78,7 +79,7 @@ This is an example:
 	err = generator.Generate(versionID, docFolder)
 	require.Nil(t, err)
 
-	generatedReadme, err := ioutil.ReadFile(path.Join(cfg.Admin.StoragePath, "version/version1234/doc/README.md"))
+	generatedReadme, err := ioutil.ReadFile(path.Join(cfg.Admin.StoragePath, "version/version1234/docs/README.md"))
 	if err != nil {
 		t.Fatal(err)
 	}
