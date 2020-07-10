@@ -7,6 +7,9 @@ show_help() {
     *dev*)
       show_dev_help
     ;;
+    *etchost*)
+      show_etchost_help
+    ;;
     *login*)
       show_login_help
     ;;
@@ -55,6 +58,7 @@ show_root_help() {
       deploy  calls helm to create install/upgrade a kre release on minikube.
       delete  calls kubectl to remove runtimes or versions.
       restart restarts kre or versions, useful after build command.
+      etchost updates /etc/hosts with minikube IP for all kre domains. (needs hostctl binary and it will ask for sudo password)
 
     $(help_global_options)
 "

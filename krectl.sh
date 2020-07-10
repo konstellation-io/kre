@@ -3,7 +3,7 @@
 # disable unused vars check, vars are used on functions inside subscripts
 # shellcheck disable=SC2034 # https://github.com/koalaman/shellcheck/wiki/SC2034
 
-set -u
+set -eu
 
 DEBUG=${DEBUG:-0}
 
@@ -32,6 +32,7 @@ ADMIN_DEV_EMAIL="dev@local.local"
 . ./scripts/krectl/common_functions.sh
 . ./scripts/krectl/cmd_help.sh
 . ./scripts/krectl/cmd_minikube.sh
+. ./scripts/krectl/cmd_etchost.sh
 . ./scripts/krectl/cmd_dev.sh
 . ./scripts/krectl/cmd_build.sh
 . ./scripts/krectl/cmd_deploy.sh
@@ -72,6 +73,12 @@ case $COMMAND in
   start)
     minikube_start
     echo_done "Start done"
+    exit 0
+  ;;
+
+  etchost)
+    cmd_etchost
+    echo_done "Done"
     exit 0
   ;;
 

@@ -16,6 +16,15 @@ local_login() {
   ADMIN_API_POD=$(get_admin_api_pod)
   check_not_empty "ADMIN_API_POD" "error getting Admin API pod"
 
+  TOTAL_PODS=$(echo "$ADMIN_API_POD" | wc -l)
+
+  if [ "${TOTAL_PODS}" -ne 1 ]; then
+    echo "more than one pods exists. waiting...(you can kill the pod manually if this takes long)"
+    sleep 5
+    local_login
+    return
+  fi
+
   HOST="http://api.kre.local"
   SIGNIN_URL="$HOST/api/v1/auth/signin"
 
@@ -42,7 +51,7 @@ local_login() {
 
   rm "$WATCH_FILE"
 
-  check_not_empty "LINK" "error watching for login link"
+  check_not_empty "LINK" "error watching for login link.  Usually this means that you forgot to update /etc/hosts"
 
   echo
   echo "Login done. Open your browser at:"
