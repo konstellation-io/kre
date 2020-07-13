@@ -77,9 +77,9 @@ publish-admin-api-image:
   script:
     - TAG=buildx-test
     # - TAG=${CI_COMMIT_TAG#admin-api-v}
-    - docker buildx build --push --platform ${BUILDX_PLATFORM} --tag $IMAGE_PROJECT_NAME:$TAG --tag $IMAGE_PROJECT_NAME:$TAG-latest admin/admin-api
-    - docker tag $IMAGE_PROJECT_NAME:$TAG $IMAGE_PROJECT_NAME:latest
-    - docker push $IMAGE_PROJECT_NAME:latest
+    - docker buildx build --push --platform ${BUILDX_PLATFORM} \
+      --tag $IMAGE_PROJECT_NAME:$TAG \
+      admin/admin-api
 #   rules:
 #     - if: '$CI_COMMIT_TAG =~ /^admin-api-v\d*.\d*.\d*$/'
 #       when: always
