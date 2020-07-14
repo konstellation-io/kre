@@ -57,6 +57,7 @@ build_docker_images() {
   build_image kre-k8s-manager admin/k8s-manager
 
   if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
+    docker run --rm -v `pwd`/admin/admin-ui:/app -w /app node:14 sh -c 'yarn install && yarn run build'
     build_image kre-admin-ui admin/admin-ui
   fi
 

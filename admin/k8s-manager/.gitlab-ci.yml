@@ -42,7 +42,7 @@ publish-k8s-manager-image:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
 
   script:
-    - TAG=buildx-test
+    - TAG=buildx
     # - TAG=${CI_COMMIT_TAG#k8s-manager-v}
     - docker buildx build --push --platform ${BUILDX_PLATFORM}
       --tag $IMAGE_PROJECT_NAME:$TAG
