@@ -1,8 +1,8 @@
-ºtest-runtime-api:
+test-runtime-api:
   stage: test
   image: golang:1.13
   script:
-    - cd runtime-api
+    - cd runtime/runtime-api
     - go get -u github.com/jstemmer/go-junit-report
     - go test ./... -cover -v -coverprofile=runtime-api-coverage.out 2>&1 | tee -a report.out
     - cat report.out | go-junit-report > runtime-api-report.xml
