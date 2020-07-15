@@ -99,4 +99,3 @@ To start development of the operator follow this steps:
 
 * [Writing Your First Kubernetes Operator](https://medium.com/faun/writing-your-first-kubernetes-operator-8f3df4453234)
 * [Operators based on Helm charts | Operators](https://docs.okd.io/latest/operators/osdk-helm.html)
-

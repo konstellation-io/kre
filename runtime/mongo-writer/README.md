@@ -90,3 +90,4 @@ Then you can execute the workflow using gcurl:
 ```
 grpcurl -plaintext -d '{"name": "John"}' localhost:9001 entrypoint.Entrypoint/Greet
 ``` 
+
