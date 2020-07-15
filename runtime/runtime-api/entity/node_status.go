@@ -3,9 +3,10 @@ package entity
 type NodeStatus string
 
 const (
-	NodeStatusStarted NodeStatus = "STARTED"
-	NodeStatusStopped NodeStatus = "STOPPED"
-	NodeStatusError   NodeStatus = "ERROR"
+	NodeStatusStarting NodeStatus = "STARTING"
+	NodeStatusStarted  NodeStatus = "STARTED"
+	NodeStatusStopped  NodeStatus = "STOPPED"
+	NodeStatusError    NodeStatus = "ERROR"
 )
 
 type Node struct {

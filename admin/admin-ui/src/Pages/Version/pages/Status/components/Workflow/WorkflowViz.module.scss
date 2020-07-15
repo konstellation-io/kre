@@ -87,6 +87,21 @@ $animation-duration: 0.8s;
       animation: anim-bg 0.6s ease;
     }
   }
+  &.#{$status-error} {
+    .innerCircle {
+      fill: $color-status-error;
+
+      animation: anim-up 0.6s ease;
+    }
+    .outerCircle {
+      stroke: $color-status-error;
+    }
+
+    .animOuterCircle {
+      fill: $color-status-error;
+      animation: anim-bg 0.6s ease;
+    }
+  }
 }
 
 .inputNode {
@@ -218,6 +233,12 @@ $animation-duration: 0.8s;
     line,
     path {
       stroke: $color-status-up;
+    }
+  }
+  &.#{$status-error} {
+    line,
+    path {
+      stroke: $color-status-error;
     }
   }
 }

@@ -1391,6 +1391,7 @@ type Node {
 }
 
 enum NodeStatus {
+  STARTING
   STARTED
   STOPPED
   ERROR

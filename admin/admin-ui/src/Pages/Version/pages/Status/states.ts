@@ -5,19 +5,22 @@ import { GetVersionWorkflows_version_workflows_nodes } from 'Graphql/queries/typ
 export enum FinalStates {
   UP = 'UP',
   DOWN = 'DOWN',
-  LOADING = 'LOADING'
+  LOADING = 'LOADING',
+  ERROR = 'ERROR'
 }
 const defaultState = FinalStates.DOWN;
 
 const ProcessToFinal: Map<NodeStatus, FinalStates> = new Map([
+  [NodeStatus.STARTING, FinalStates.LOADING],
   [NodeStatus.STARTED, FinalStates.UP],
   [NodeStatus.STOPPED, FinalStates.DOWN],
-  [NodeStatus.ERROR, FinalStates.LOADING]
+  [NodeStatus.ERROR, FinalStates.ERROR]
 ]);
 const EdgeToFinal: Map<NodeStatus, FinalStates> = new Map([
+  [NodeStatus.STARTING, FinalStates.DOWN],
   [NodeStatus.STARTED, FinalStates.UP],
   [NodeStatus.STOPPED, FinalStates.DOWN],
-  [NodeStatus.ERROR, FinalStates.DOWN]
+  [NodeStatus.ERROR, FinalStates.ERROR]
 ]);
 
 export function getProcessState(processState: NodeStatus) {
