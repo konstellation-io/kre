@@ -41,8 +41,13 @@ class NodeRunner(Runner):
         config = Config()
         name = f"{config.krt_version}-{config.krt_node_name}"
         Runner.__init__(self, name, config)
-        self.handler_ctx = None
-        self.handler_fn = None
+
+        try:
+            self.load_handler()
+        except SyntaxError as err:
+            traceback.print_exc()
+            self.logger.error(f"syntax error loading handler script: {err}")
+            sys.exit(1)
 
     async def process_messages(self):
         self.logger.info(f"connecting to MongoDB...")
@@ -56,16 +61,18 @@ class NodeRunner(Runner):
             cb=self.create_message_cb(),
             queue=queue_name
         )
-        await self.prepare_handler()
 
-    async def prepare_handler(self):
+        self.execute_handler_init()
+
+    def load_handler(self):
         handler_full_path = os.path.join(self.config.base_path, self.config.handler_path)
         handler_dirname = os.path.dirname(handler_full_path)
         sys.path.append(handler_dirname)
+
         spec = importlib.util.spec_from_file_location("worker", handler_full_path)
         handler_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(handler_module)
-
+        
         if not hasattr(handler_module, "handler"):
             raise Exception(f"handler module '{handler_full_path}' must implement a function 'handler(ctx, data)'")
         else:
@@ -74,13 +81,17 @@ class NodeRunner(Runner):
         self.handler_fn = handler_module.handler
         self.handler_ctx = HandlerContext(self.config, self.nc, self.mongo_conn, self.logger)
 
-        if not hasattr(handler_module, "init"):
+        if hasattr(handler_module, "init"):
+            self.handler_init_fn = handler_module.init
+
+    async def execute_handler_init(self):
+        if not self.handler_init_fn:
             return
 
-        if inspect.iscoroutinefunction(handler_module.init):
-            await asyncio.create_task(handler_module.init(self.handler_ctx))
+        if inspect.iscoroutinefunction(self.handler_init_fn):
+            await asyncio.create_task(self.handler_init_fn(self.handler_ctx))
         else:
-            handler_module.init(self.handler_ctx)
+            self.handler_init_fn(self.handler_ctx)
 
     def create_message_cb(self):
         async def message_cb(msg):
