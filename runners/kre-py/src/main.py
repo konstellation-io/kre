@@ -79,12 +79,13 @@ class NodeRunner(Runner):
             self.logger.info(f"handler script was loaded from '{handler_full_path}'")
 
         self.handler_fn = handler_module.handler
-        self.handler_ctx = HandlerContext(self.config, self.nc, self.mongo_conn, self.logger)
 
         if hasattr(handler_module, "init"):
             self.handler_init_fn = handler_module.init
 
     async def execute_handler_init(self):
+        self.handler_ctx = HandlerContext(self.config, self.nc, self.mongo_conn, self.logger)
+
         if not self.handler_init_fn:
             return
 

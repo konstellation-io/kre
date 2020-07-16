@@ -81,7 +81,9 @@ function LogItem({
             <div className={styles.node} title={nodeName || ''}>
               {nodeName}
             </div>
-            <div className={styles.message}>{message}</div>
+            <div className={styles.message}>
+              <pre>{message}</pre>
+            </div>
             <div className={styles.expand} onClick={toggleOpenStatus}>
               <IconExpand className="icon-regular" />
             </div>
