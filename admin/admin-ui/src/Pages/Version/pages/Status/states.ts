@@ -28,16 +28,20 @@ export function getProcessState(processState: NodeStatus) {
 }
 
 const nodeLoading = (node: GetVersionWorkflows_version_workflows_nodes) =>
+  node.status === NodeStatus.STARTING;
+const nodeError = (node: GetVersionWorkflows_version_workflows_nodes) =>
   node.status === NodeStatus.ERROR;
 export function getWorkflowState(
   versionState: VersionStatus,
   nodes: GetVersionWorkflows_version_workflows_nodes[] = []
 ) {
   switch (true) {
-    case versionState === VersionStatus.PUBLISHED:
-      return FinalStates.UP;
     case nodes.some(nodeLoading):
       return FinalStates.LOADING;
+    case nodes.some(nodeError):
+      return FinalStates.ERROR;
+    case versionState === VersionStatus.PUBLISHED:
+      return FinalStates.UP;
     default:
       return FinalStates.DOWN;
   }
