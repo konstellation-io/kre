@@ -63,19 +63,17 @@ function sessionIsInvalid(error: ErrorResponse) {
 }
 
 function getNotificationIdAndMessage(error: ErrorResponse) {
-  let notificationId;
+  let notificationId = Date.now().toString();
+
   let notificationMessage;
 
   if (error.networkError) {
     if (sessionIsInvalid(error)) {
-      notificationId = 'ExpiredSession';
       notificationMessage = 'Your session has expired, please log in again';
     } else if (!userIsUnauthorized(error)) {
-      notificationId = 'Network error';
       notificationMessage = `${error.networkError.message}`;
     }
   } else if (error.graphQLErrors) {
-    notificationId = error.operation.operationName;
     notificationMessage = error.response
       ? `${get(error, 'response.errors')[0].message}`
       : 'unknown graphQL error';
