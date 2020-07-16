@@ -66,6 +66,9 @@ k8sManager:
 
 
 mongodb:
+  image:
+    repository: mongo
+    tag: 4.0.19
   service:
     name: "mongodb"
   mongodbDatabase: "localKRE"
@@ -75,6 +78,12 @@ mongodb:
     enabled: true
   initConfigMap:
     name: kre-mongo-init-script
+  volumePermissions:
+    enabled: false
+    image:
+      registry: docker.io
+      repository: debian
+      tag: buster-slim
 
 certManager:
   enabled: false
