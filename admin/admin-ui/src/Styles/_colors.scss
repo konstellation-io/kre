@@ -97,6 +97,7 @@ $color-error: palette(error);
 $color-other: palette(lowlight);
 $color-black: black;
 
+$color-status-error: $color-error;
 $color-status-up: $color-ok;
 $color-status-down: $color-other;
 $color-status-changing: palette(feedback);

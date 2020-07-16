@@ -23,14 +23,16 @@ $color-box-bg: $bg-box;
   padding: 2 * $grid-unit;
   height: $container-height;
 
-  &.#{$status-up} {
-    border-left-color: $color-status-up;
-  }
-  &.#{$status-down} {
-    border-left-color: $color-status-down;
-  }
-  &.#{$status-loading} {
-    border-left-color: $color-status-loading;
+  $workflow-status: (
+    $status-up: $color-status-up,
+    $status-down: $color-status-down,
+    $status-loading: $color-status-changing,
+    $status-error: $color-status-error
+  );
+  @each $status, $color in $workflow-status {
+    &.#{$status} {
+      border-left-color: $color;
+    }
   }
 
   .chartContainer {

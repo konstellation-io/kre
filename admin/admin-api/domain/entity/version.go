@@ -61,14 +61,15 @@ type Node struct {
 type NodeStatus string
 
 const (
-	NodeStatusStarted NodeStatus = "STARTED"
-	NodeStatusStopped NodeStatus = "STOPPED"
-	NodeStatusError   NodeStatus = "ERROR"
+	NodeStatusStarting NodeStatus = "STARTING"
+	NodeStatusStarted  NodeStatus = "STARTED"
+	NodeStatusStopped  NodeStatus = "STOPPED"
+	NodeStatusError    NodeStatus = "ERROR"
 )
 
 func (e NodeStatus) IsValid() bool {
 	switch e {
-	case NodeStatusStarted, NodeStatusStopped, NodeStatusError:
+	case NodeStatusStarting, NodeStatusStarted, NodeStatusStopped, NodeStatusError:
 		return true
 	}
 	return false

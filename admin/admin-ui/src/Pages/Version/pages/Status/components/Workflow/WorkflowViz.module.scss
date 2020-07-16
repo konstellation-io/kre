@@ -87,6 +87,21 @@ $animation-duration: 0.8s;
       animation: anim-bg 0.6s ease;
     }
   }
+  &.#{$status-error} {
+    .innerCircle {
+      fill: $color-status-error;
+
+      animation: anim-error 0.4s ease;
+    }
+    .outerCircle {
+      stroke: $color-status-error;
+    }
+
+    .animOuterCircle {
+      fill: $color-status-error;
+      animation: anim-bg-err 0.3s ease, anim-bg-err 0.3s ease 0.15s;
+    }
+  }
 }
 
 .inputNode {
@@ -220,44 +235,48 @@ $animation-duration: 0.8s;
       stroke: $color-status-up;
     }
   }
+  &.#{$status-error} {
+    line,
+    path {
+      stroke: $color-status-error;
+    }
+  }
 }
 
 .clicksDisabled {
   cursor: default !important;
 }
 
-@keyframes anim-up {
-  0% {
-    r: $small-radius;
-  }
-  50% {
-    r: $small-radius + 2px;
-  }
-  100% {
-    r: $small-radius;
-  }
-}
-
-@keyframes anim-bg {
-  0% {
-    r: $big-radius;
-    fill-opacity: 0.4;
-  }
-  100% {
-    r: $big-radius + $grid-unit;
-    fill-opacity: 0;
+$bg-animations: anim-bg, anim-bg-err;
+@each $bg-animation in $bg-animations {
+  @keyframes #{$bg-animation} {
+    0% {
+      r: $big-radius;
+      fill-opacity: 0.4;
+    }
+    100% {
+      r: $big-radius + $grid-unit;
+      fill-opacity: 0;
+    }
   }
 }
 
-@keyframes anim-down {
-  0% {
-    r: $small-radius;
-  }
-  50% {
-    r: $small-radius - 1px;
-  }
-  100% {
-    r: $small-radius;
+$state-animations: (
+  'anim-up': 2px,
+  'anim-down': -1px,
+  'anim-error': -1px
+);
+@each $state-animation, $dr in $state-animations {
+  @keyframes #{$state-animation} {
+    0% {
+      r: $small-radius;
+    }
+    50% {
+      r: $small-radius + $dr;
+    }
+    100% {
+      r: $small-radius;
+    }
   }
 }
 

@@ -50,7 +50,7 @@ func (w *MonitoringService) NodeStatus(req *monitoringpb.NodeStatusRequest, stre
 			return nil
 
 		case node := <-nodeCh:
-			w.logger.Debugf("New node status: %#v", node)
+			w.logger.Debugf("[MonitoringService.NodeStatus] new status[%s] for node[%s - %s]", node.Status, node.Name, node.ID)
 			err := stream.Send(&monitoringpb.NodeStatusResponse{
 				Status: string(node.Status),
 				NodeId: node.ID,

@@ -5,19 +5,22 @@ import { GetVersionWorkflows_version_workflows_nodes } from 'Graphql/queries/typ
 export enum FinalStates {
   UP = 'UP',
   DOWN = 'DOWN',
-  LOADING = 'LOADING'
+  LOADING = 'LOADING',
+  ERROR = 'ERROR'
 }
 const defaultState = FinalStates.DOWN;
 
 const ProcessToFinal: Map<NodeStatus, FinalStates> = new Map([
+  [NodeStatus.STARTING, FinalStates.LOADING],
   [NodeStatus.STARTED, FinalStates.UP],
   [NodeStatus.STOPPED, FinalStates.DOWN],
-  [NodeStatus.ERROR, FinalStates.LOADING]
+  [NodeStatus.ERROR, FinalStates.ERROR]
 ]);
 const EdgeToFinal: Map<NodeStatus, FinalStates> = new Map([
+  [NodeStatus.STARTING, FinalStates.DOWN],
   [NodeStatus.STARTED, FinalStates.UP],
   [NodeStatus.STOPPED, FinalStates.DOWN],
-  [NodeStatus.ERROR, FinalStates.DOWN]
+  [NodeStatus.ERROR, FinalStates.ERROR]
 ]);
 
 export function getProcessState(processState: NodeStatus) {
@@ -25,16 +28,20 @@ export function getProcessState(processState: NodeStatus) {
 }
 
 const nodeLoading = (node: GetVersionWorkflows_version_workflows_nodes) =>
+  node.status === NodeStatus.STARTING;
+const nodeError = (node: GetVersionWorkflows_version_workflows_nodes) =>
   node.status === NodeStatus.ERROR;
 export function getWorkflowState(
   versionState: VersionStatus,
   nodes: GetVersionWorkflows_version_workflows_nodes[] = []
 ) {
   switch (true) {
-    case versionState === VersionStatus.PUBLISHED:
-      return FinalStates.UP;
     case nodes.some(nodeLoading):
       return FinalStates.LOADING;
+    case nodes.some(nodeError):
+      return FinalStates.ERROR;
+    case versionState === VersionStatus.PUBLISHED:
+      return FinalStates.UP;
     default:
       return FinalStates.DOWN;
   }

@@ -28,6 +28,7 @@ export enum LogLevel {
 export enum NodeStatus {
   ERROR = 'ERROR',
   STARTED = 'STARTED',
+  STARTING = 'STARTING',
   STOPPED = 'STOPPED'
 }
 
