@@ -79,6 +79,13 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 `,
 			"nats_subject.json": string(natsSubject),
 
+			"parsers.conf": `
+[PARSER]
+    Name multiline_pattern
+    Format regex
+    Regex ^(?<logtime>\d{4}\-\d{2}\-\d{2}T\d{1,2}\:\d{1,2}\:\d{1,2}(\.\d+Z|\+0000)) (?<level>(ERROR|WARN|INFO|DEBUG)) (?<capture>.*)
+`,
+
 			"fluent-bit.conf": `
 [SERVICE]
     Flush        1
@@ -99,6 +106,8 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
     Tag         mongo_writer_logs
     Buffer_Chunk_Size 1k
     Path        /var/log/app/*.log
+    Multiline On
+    Parser_Firstline multiline_pattern
 
 [FILTER]
     Name record_modifier

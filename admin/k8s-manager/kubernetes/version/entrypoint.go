@@ -184,6 +184,12 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 									SubPath:   "fluent-bit.conf",
 								},
 								{
+									Name:      "version-conf-files",
+									ReadOnly:  true,
+									MountPath: "/fluent-bit/etc/parsers.conf",
+									SubPath:   "parsers.conf",
+								},
+								{
 									Name:      "app-log-volume",
 									ReadOnly:  true,
 									MountPath: "/var/log/app",

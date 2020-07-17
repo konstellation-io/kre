@@ -6,7 +6,6 @@ This is an implementation in Python for the KRE runner.
 
 This image is built on top of `nvidia/cuda-10.2-devel` to add GPU support on the runner.
 
-
 ## Usage
 
 The injected code must implement a `handler(ctx, data)` function and optionally a `init(ctx)` function.
@@ -43,7 +42,7 @@ import pandas as pd
 # this function will be executed once when the runner is starting
 def init(ctx):
   # load file and save in memory to be used within the handler
-  ctx.set("categories", pickle.load(ctx.get_path("data/categories.pkl")))
+  ctx.set("categories", pickle.load(ctx.path("data/categories.pkl")))
 
 # this function will be executed when a message is received
 async def handler(ctx, data):

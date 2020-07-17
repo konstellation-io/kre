@@ -87,7 +87,9 @@ function LogItem({
             </div>
           </div>
           {localOpened && (
-            <div className={styles.messageComplete}>{message}</div>
+            <div className={styles.messageComplete}>
+              <pre>{message}</pre>
+            </div>
           )}
         </div>
       </div>
