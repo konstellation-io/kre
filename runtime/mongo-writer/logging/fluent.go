@@ -30,7 +30,19 @@ func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 
 		date := time.Unix(0, int64(msgTime)*int64(time.Second)).Format(time.RFC3339)
 		level := "INFO"
-		message := msgData["log"].(string)
+		message := ""
+
+		if val, ok := msgData["logtime"].(string); ok {
+			date = val
+		}
+
+		if val, ok := msgData["level"].(string); ok {
+			level = val
+		}
+
+		if val, ok := msgData["capture"].(string); ok {
+			message = val
+		}
 
 		// Extract level and message from log text for texts like:
 		//   INFO:kre-runner:connecting to NATS at 'kre-nats:4222'

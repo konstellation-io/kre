@@ -255,6 +255,12 @@ func (m *Manager) createNodeDeployment(
 									SubPath:   "fluent-bit.conf",
 								},
 								{
+									Name:      "version-conf-files",
+									ReadOnly:  true,
+									MountPath: "/fluent-bit/etc/parsers.conf",
+									SubPath:   "parsers.conf",
+								},
+								{
 									Name:      "app-log-volume",
 									ReadOnly:  true,
 									MountPath: "/var/log/app",

@@ -41,54 +41,56 @@ class NodeRunner(Runner):
         config = Config()
         name = f"{config.krt_version}-{config.krt_node_name}"
         Runner.__init__(self, name, config)
+        self.handler_ctx = None
+        self.load_handler()
+
+    def load_handler(self):
+        self.logger.info(f"loading handler script {self.config.handler_path}...")
+
+        handler_full_path = os.path.join(self.config.base_path, self.config.handler_path)
+        handler_dirname = os.path.dirname(handler_full_path)
+        sys.path.append(handler_dirname)
 
         try:
-            self.load_handler()
-        except SyntaxError as err:
-            traceback.print_exc()
-            self.logger.error(f"syntax error loading handler script: {err}")
+            spec = importlib.util.spec_from_file_location("worker", handler_full_path)
+            handler_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(handler_module)
+        except Exception as err:
+            tb = traceback.format_exc()
+            self.logger.error(f"error loading handler script {self.config.handler_path}: {err}\n\n{tb}")
             sys.exit(1)
+
+        if not hasattr(handler_module, "handler"):
+            raise Exception(f"handler module '{handler_full_path}' must implement a function 'handler(ctx, data)'")
+        
+        if hasattr(handler_module, "init"):
+            self.handler_init_fn = handler_module.init
+
+        self.handler_fn = handler_module.handler
+        self.logger.info(f"handler script was loaded from '{handler_full_path}'")
 
     async def process_messages(self):
         self.logger.info(f"connecting to MongoDB...")
         self.mongo_conn = pymongo.MongoClient(self.config.mongo_uri, socketTimeoutMS=10000, connectTimeoutMS=10000)
 
         queue_name = f"queue_{self.config.nats_input}"
-        self.logger.info(f"listening to '{self.config.nats_input}' subject with queue '{queue_name}'")
-
         self.subscription_sid = await self.nc.subscribe(
             self.config.nats_input,
             cb=self.create_message_cb(),
             queue=queue_name
         )
+        self.logger.info(f"listening to '{self.config.nats_input}' subject with queue '{queue_name}'")
 
-        self.execute_handler_init()
-
-    def load_handler(self):
-        handler_full_path = os.path.join(self.config.base_path, self.config.handler_path)
-        handler_dirname = os.path.dirname(handler_full_path)
-        sys.path.append(handler_dirname)
-
-        spec = importlib.util.spec_from_file_location("worker", handler_full_path)
-        handler_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(handler_module)
-        
-        if not hasattr(handler_module, "handler"):
-            raise Exception(f"handler module '{handler_full_path}' must implement a function 'handler(ctx, data)'")
-        else:
-            self.logger.info(f"handler script was loaded from '{handler_full_path}'")
-
-        self.handler_fn = handler_module.handler
-
-        if hasattr(handler_module, "init"):
-            self.handler_init_fn = handler_module.init
+        await self.execute_handler_init()
 
     async def execute_handler_init(self):
+        self.logger.info(f"creating handler context...")
         self.handler_ctx = HandlerContext(self.config, self.nc, self.mongo_conn, self.logger)
 
         if not self.handler_init_fn:
             return
 
+        self.logger.info(f"executing handler init...")
         if inspect.iscoroutinefunction(self.handler_init_fn):
             await asyncio.create_task(self.handler_init_fn(self.handler_ctx))
         else:
@@ -132,8 +134,8 @@ class NodeRunner(Runner):
                                  )
 
             except Exception as err:
-                traceback.print_exc()
-                self.logger.error("error executing handler:" + str(err))
+                tb = traceback.format_exc()
+                self.logger.error(f"error executing handler: {err} \n\n{tb}")
                 response_msg = KreNatsMessage(error=f"error in '{self.config.krt_node_name}': {str(err)}")
                 await self.nc.publish(request_msg.reply, response_msg.marshal())
 
