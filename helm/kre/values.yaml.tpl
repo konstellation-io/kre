@@ -66,24 +66,15 @@ k8sManager:
 
 
 mongodb:
-  image:
-    repository: mongo
-    tag: 4.0.19
   service:
     name: "mongodb"
   mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
   mongodbPassword: "123456"
-  volumePermissions:
-    enabled: true
   initConfigMap:
     name: kre-mongo-init-script
   volumePermissions:
-    enabled: false
-    image:
-      registry: docker.io
-      repository: debian
-      tag: buster-slim
+    enabled: ${DEVELOPMENT_MODE}
 
 certManager:
   enabled: false
