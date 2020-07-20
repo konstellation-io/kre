@@ -1,6 +1,6 @@
 module github.com/konstellation-io/kre/runtime/mongo-writer
 
-go 1.13
+go 1.14
 
 require (
 	github.com/golang/protobuf v1.4.0 // indirect

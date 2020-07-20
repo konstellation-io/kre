@@ -79,6 +79,7 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 `,
 			"nats_subject.json": string(natsSubject),
 
+			// nolint: lll
 			"parsers.conf": `
 [PARSER]
     Name multiline_pattern

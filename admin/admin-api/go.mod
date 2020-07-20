@@ -1,6 +1,6 @@
 module github.com/konstellation-io/kre/admin/admin-api
 
-go 1.13
+go 1.14
 
 require (
 	github.com/99designs/gqlgen v0.11.3
