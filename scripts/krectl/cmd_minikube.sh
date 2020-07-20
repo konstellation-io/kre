@@ -71,6 +71,8 @@ minikube_clean() {
   docker run --rm -it \
     -v /var/run/docker.sock:/var/run/docker.sock docker:stable \
     /bin/sh -c "docker system prune --filter \"until=${KEEP_THRESHOLD_HOURS}h\" -f"
+
+  unset DOCKER_TLS_VERIFY DOCKER_HOST DOCKER_CERT_PATH MINIKUBE_ACTIVE_DOCKERD
 }
 
 dracarys_header() {
