@@ -90,7 +90,7 @@ build_docker_images() {
   fi
 
   if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
-    echo_warning "¡¡¡¡¡ started with option $(echo_white "--local-frontend or --skip-frontend")."
+    echo_warning "¡¡¡¡¡ started with option $(echo_yellow "--local-frontend or --skip-frontend")."
     echo "  Now run \`$(echo_light_green "yarn start")\` inside admin-ui"
   fi
 }
