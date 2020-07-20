@@ -56,6 +56,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	idGenerator := mocks.NewMockIDGenerator(ctrl)
 	createStorage := CreateStorageMock
+	docGenerator := mocks.NewMockDocGenerator(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
@@ -76,6 +77,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		createStorage,
 		accessControl,
 		idGenerator,
+		docGenerator,
 	)
 
 	return &versionSuite{

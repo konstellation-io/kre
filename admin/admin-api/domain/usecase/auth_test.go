@@ -31,6 +31,7 @@ type authSuiteMocks struct {
 	userRepo                  *mocks.MockUserRepo
 	settingRepo               *mocks.MockSettingRepo
 	userActivityRepo          *mocks.MockUserActivityRepo
+	accessControl             *mocks.MockAccessControl
 }
 
 func newAuthSuite(t *testing.T) *authSuite {
@@ -64,18 +65,20 @@ func newAuthSuite(t *testing.T) *authSuite {
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		accessControl,
 	)
 
 	return &authSuite{
 		ctrl: ctrl,
 		mocks: authSuiteMocks{
-			logger:                    logger,
-			loginLinkTransport:        loginLinkTransport,
-			verificationCodeGenerator: verificationCodeGenerator,
-			verificationCodeRepo:      verificationCodeRepo,
-			userRepo:                  userRepo,
-			settingRepo:               settingRepo,
-			userActivityRepo:          userActivityRepo,
+			logger,
+			loginLinkTransport,
+			verificationCodeGenerator,
+			verificationCodeRepo,
+			userRepo,
+			settingRepo,
+			userActivityRepo,
+			accessControl,
 		},
 		authInteractor: authInteractor,
 	}
@@ -128,6 +131,7 @@ func TestSignUpWithValidEmailAddress(t *testing.T) {
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
 	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
 	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(user, nil)
+	s.mocks.accessControl.EXPECT().ReloadUserRoles().Return(nil)
 
 	err := s.authInteractor.SignIn(ctx, user.Email, verificationCodeDurationInMinutes)
 	require.Nil(t, err)
@@ -179,6 +183,7 @@ func TestSignUpWithValidDomain(t *testing.T) {
 	s.mocks.verificationCodeRepo.EXPECT().Store(verificationCode, user.ID, gomock.Any()).Return(nil)
 	s.mocks.loginLinkTransport.EXPECT().Send(user.Email, verificationCode).Return(nil)
 	s.mocks.userRepo.EXPECT().Create(gomock.Any(), user.Email, gomock.Any()).Return(user, nil)
+	s.mocks.accessControl.EXPECT().ReloadUserRoles().Return(nil)
 
 	err := s.authInteractor.SignIn(ctx, user.Email, verificationCodeDurationInMinutes)
 	require.Nil(t, err)
