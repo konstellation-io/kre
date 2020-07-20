@@ -37,7 +37,8 @@ func (r *ResourceMetricsService) GetVersion(
 		VersionRequest: *req,
 	}
 
-	r.logger.Infof("Getting metrics for version ", input.VersionRequest)
+	r.logger.Infof("Getting metrics for version %v", input.VersionRequest)
+
 	metrics, err := r.manager.GetVersionResourceMetrics(input)
 	if err != nil {
 		r.logger.Errorf("Error getting metrics: %v", err)
@@ -66,7 +67,6 @@ func (r *ResourceMetricsService) WatchVersion(
 
 	for m := range metricsCh {
 		err := stream.Send(toVersionResourceMetricsResponse(m))
-
 		if err != nil {
 			r.logger.Info("[ResourceMetricsService.WatchVersion] error sending to client: %s")
 			r.logger.Error(err.Error())

@@ -12,7 +12,7 @@ import (
 	"github.com/konstellation-io/kre/admin/k8s-manager/proto/versionpb"
 )
 
-// VersionService basic server
+// VersionService basic server.
 type VersionService struct {
 	config  *config.Config
 	logger  *simplelogger.SimpleLogger

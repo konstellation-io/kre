@@ -100,6 +100,7 @@ func (m *Manager) createNodeConfigMap(
 ) (string, error) {
 	name := fmt.Sprintf("%s-%s-%s", version.Name, node.Name, node.Id)
 	ns := version.Namespace
+
 	nodeConfig, err := m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -113,7 +114,6 @@ func (m *Manager) createNodeConfigMap(
 		},
 		Data: config,
 	})
-
 	if err != nil {
 		return "", err
 	}
@@ -121,6 +121,7 @@ func (m *Manager) createNodeConfigMap(
 	return nodeConfig.Name, nil
 }
 
+// nolint: funlen
 func (m *Manager) createNodeDeployment(
 	version *entity.Version,
 	node *versionpb.Version_Workflow_Node,
@@ -448,19 +449,21 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, version *entity.Ver
 	for {
 		select {
 		case event := <-watchResults:
-			if event.Type == watch.Deleted {
-				if d, ok := event.Object.(*appsv1.Deployment); ok {
-					// Check if the deleted object is one of the deployments to delete
-					if _, ok := deploymentsToDelete[d.Name]; ok {
-						m.logger.Infof("Deployment '%s' deleted", d.Name)
+			if event.Type != watch.Deleted {
+				continue
+			}
 
-						numDeployments--
+			if d, ok := event.Object.(*appsv1.Deployment); ok {
+				// Check if the deleted object is one of the deployments to delete
+				if _, ok := deploymentsToDelete[d.Name]; ok {
+					m.logger.Infof("Deployment '%s' deleted", d.Name)
 
-						if numDeployments == 0 {
-							w.Stop()
+					numDeployments--
 
-							return nil
-						}
+					if numDeployments == 0 {
+						w.Stop()
+
+						return nil
 					}
 				}
 			}
@@ -528,19 +531,21 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, version *entity.Vers
 	for {
 		select {
 		case event := <-watchResults:
-			if event.Type == watch.Deleted {
-				if c, ok := event.Object.(*apiv1.ConfigMap); ok {
-					// Check if the deleted object is one of the configmaps to delete
-					if _, ok := configmapNamesToDelete[c.Name]; ok {
-						m.logger.Infof("Configmap '%s' deleted", c.Name)
+			if event.Type != watch.Deleted {
+				continue
+			}
 
-						numConfigMaps--
+			if c, ok := event.Object.(*apiv1.ConfigMap); ok {
+				// Check if the deleted object is one of the configmaps to delete
+				if _, ok := configmapNamesToDelete[c.Name]; ok {
+					m.logger.Infof("Configmap '%s' deleted", c.Name)
 
-						if numConfigMaps == 0 {
-							w.Stop()
+					numConfigMaps--
 
-							return nil
-						}
+					if numConfigMaps == 0 {
+						w.Stop()
+
+						return nil
 					}
 				}
 			}

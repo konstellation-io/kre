@@ -1,6 +1,6 @@
 module github.com/konstellation-io/kre/runtime/runtime-api
 
-go 1.13
+go 1.14
 
 require (
 	github.com/gogo/protobuf v1.0.0 // indirect

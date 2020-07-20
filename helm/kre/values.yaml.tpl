@@ -71,10 +71,14 @@ mongodb:
   mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
   mongodbPassword: "123456"
-  initConfigMap:
-    name: kre-mongo-init-script
   volumePermissions:
     enabled: ${DEVELOPMENT_MODE}
+    image:
+      registry: docker.io
+      repository: debian
+      tag: buster-slim
+  initConfigMap:
+    name: kre-mongo-init-script
 
 certManager:
   enabled: false

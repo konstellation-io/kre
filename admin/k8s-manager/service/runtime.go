@@ -13,7 +13,7 @@ import (
 	"github.com/konstellation-io/kre/admin/k8s-manager/proto/runtimepb"
 )
 
-// RuntimeService basic server
+// RuntimeService basic server.
 type RuntimeService struct {
 	config  *config.Config
 	logger  *simplelogger.SimpleLogger

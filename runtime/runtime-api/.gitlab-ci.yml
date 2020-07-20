@@ -1,6 +1,6 @@
 test-runtime-api:
   stage: test
-  image: golang:1.13
+  image: golang:1.14
   script:
     - cd runtime/runtime-api
     - go get -u github.com/jstemmer/go-junit-report

@@ -61,6 +61,8 @@ func (m *Manager) createEntrypointConfigMap(version *entity.Version) (*apiv1.Con
 	})
 }
 
+// nolint: funlen
+// this function is not complex, just long due to the object definition.
 func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.Deployment, error) {
 	name := version.Name
 	ns := version.Namespace

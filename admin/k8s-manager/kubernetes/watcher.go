@@ -101,7 +101,6 @@ func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 	watch, err := k.clientset.CoreV1().Pods(ns).Watch(metav1.ListOptions{
 		LabelSelector: labelSelector,
 	})
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to set up watch for pod (error: %w)", err)
 	}
@@ -146,7 +145,6 @@ func (k *Watcher) waitForPodReady(ns string, podLabels []string, timeToWait time
 	watch, err := k.clientset.CoreV1().Pods(ns).Watch(metav1.ListOptions{
 		LabelSelector: labelSelector,
 	})
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to set up watch for pod (error: %w)", err)
 	}
