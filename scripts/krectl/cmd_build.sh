@@ -45,6 +45,12 @@ show_build_help() {
 build_docker_images() {
   # Setup environment to build images inside minikube
   echo_wait "Setting minikube docker-env\n"
+
+  # WARNING: This should always run outside minikube so docker can mount the volume correctly.
+  if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
+    docker run --rm -v "${PWD}"/admin/admin-ui/:/app -w /app node:14 sh -c 'yarn install && yarn run build'
+  fi
+
   eval "$(minikube docker-env -p "$MINIKUBE_PROFILE")"
 
   # Runners
@@ -57,8 +63,6 @@ build_docker_images() {
   build_image kre-k8s-manager admin/k8s-manager
 
   if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
-    yarn --cwd admin/admin-ui install
-    yarn --cwd admin/admin-ui run build
     build_image kre-admin-ui admin/admin-ui
   fi
 
