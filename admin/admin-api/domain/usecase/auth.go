@@ -24,6 +24,7 @@ type AuthInteractor struct {
 	settingRepo               repository.SettingRepo
 	userActivityInteractor    *UserActivityInteractor
 	sessionRepo               repository.SessionRepo
+	accessControl             auth.AccessControl
 }
 
 // NewAuthInteractor creates a new AuthInteractor.
@@ -36,6 +37,7 @@ func NewAuthInteractor(
 	settingRepo repository.SettingRepo,
 	userActivityInteractor *UserActivityInteractor,
 	sessionRepo repository.SessionRepo,
+	accessControl auth.AccessControl,
 ) *AuthInteractor {
 	return &AuthInteractor{
 		logger,
@@ -46,6 +48,7 @@ func NewAuthInteractor(
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		accessControl,
 	}
 }
 
@@ -105,6 +108,11 @@ func (a *AuthInteractor) SignIn(ctx context.Context, email string, verificationC
 		a.logger.Infof("The user '%s' doesn't exist, creating in the database...", email)
 
 		createdUser, err := a.userRepo.Create(context.Background(), email, entity.AccessLevelViewer)
+		if err != nil {
+			return err
+		}
+
+		err = a.accessControl.ReloadUserRoles()
 		if err != nil {
 			return err
 		}

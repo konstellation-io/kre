@@ -70,6 +70,7 @@ func main() {
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		accessControl,
 	)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(
