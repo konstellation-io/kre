@@ -63,7 +63,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "prettier": "prettier --write --single-quote \"src/**/*.ts\"",
-    "gen:types": "apollo client:codegen types --globalTypesFile=src/Graphql/types/globalTypes.ts --target typescript --includes=./src/Graphql/**/*.graphql --localSchemaFile=../admin-api/schema.graphql && yarn prettier",
+    "gen:types": "apollo client:codegen types --globalTypesFile=src/Graphql/types/globalTypes.ts --target typescript --includes=./src/Graphql/**/*.graphql --localSchemaFile=../admin-api/schema.graphql,src/extensions.graphql && yarn prettier",
     "test:cov": "react-scripts test --coverage --watchAll=false",
     "test:cov:ci": "react-scripts test --coverage --watchAll=false --coverageReporters --testResultsProcessor jest-junit",
     "test:cov:sonar": "react-scripts test --coverage --watchAll=false --coverageReporters --testResultsProcessor jest-sonar-reporter",

@@ -1,14 +1,15 @@
 import {
   FinalStates,
+  getEntrypointState,
   getLinkState,
-  getProcessState,
-  getWorkflowState
+  getProcessState
 } from '../../states';
 import {
   GetVersionWorkflows_version_workflows,
   GetVersionWorkflows_version_workflows_nodes
 } from 'Graphql/queries/types/GetVersionWorkflows';
 import { InputElContent, NodeTypes } from '../Tooltip/TooltipContents';
+import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import React, { FunctionComponent } from 'react';
 import { ScaleBand, scaleBand } from 'd3-scale';
 import { Selection, select } from 'd3-selection';
@@ -19,7 +20,6 @@ import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
 import ReactDOMServer from 'react-dom/server';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
-import { VersionStatus } from 'Graphql/types/globalTypes';
 import { get } from 'lodash';
 import { rgb } from 'd3-color';
 import styles from './WorkflowViz.module.scss';
@@ -48,6 +48,7 @@ type Props = {
   height: number;
   margin: Margin;
   workflowStatus: VersionStatus;
+  entrypointStatus: NodeStatus;
   onInnerNodeClick: Function;
   onInputNodeClick: Function;
   tooltipRefs: TooltipRefs;
@@ -162,10 +163,12 @@ class WorkflowViz {
   update = (
     data: GetVersionWorkflows_version_workflows,
     workflowStatus: VersionStatus,
+    entrypointStatus: NodeStatus,
     tooltipRefs: TooltipRefs
   ) => {
     this.props.data = data;
     this.props.workflowStatus = workflowStatus;
+    this.props.entrypointStatus = entrypointStatus;
     this.props.tooltipRefs = tooltipRefs;
 
     this.generateInnerNodes();
@@ -322,6 +325,7 @@ class WorkflowViz {
         data,
         workflowStatus,
         onInputNodeClick,
+        entrypointStatus,
         tooltipRefs: { onHideTooltip, lastHoveredNode }
       }
     } = this;
@@ -330,12 +334,13 @@ class WorkflowViz {
     const lineOffset = side * 0.1;
     const y = yOffset - side / 2;
     const linkStatus = getLinkState(data.nodes[0].status);
+    const nodeState = getEntrypointState(workflowStatus, entrypointStatus);
 
     if (this.inputNode === null) {
       this.inputNode = nodesG
         .append('g')
         .classed(styles.inputNode, true)
-        .classed(styles[getWorkflowState(workflowStatus)], true)
+        .classed(styles[nodeState], true)
         .classed(styles.clicksDisabled, !enableNodeClicks)
         .on('mouseenter', function() {
           getTooltip({
@@ -343,7 +348,7 @@ class WorkflowViz {
             y,
             side,
             nodeType: NodeTypes.INPUT,
-            status: getWorkflowState(workflowStatus, data.nodes),
+            status: nodeState,
             node: this
           });
         })
@@ -389,14 +394,14 @@ class WorkflowViz {
         .classed(styles.hovered, function() {
           return this === lastHoveredNode;
         })
-        .classed(styles[getWorkflowState(workflowStatus)], true)
+        .classed(styles[nodeState], true)
         .on('mouseenter', function() {
           getTooltip({
             x,
             y,
             side,
             nodeType: NodeTypes.INPUT,
-            status: getWorkflowState(workflowStatus, data.nodes),
+            status: nodeState,
             node: this
           });
         });
@@ -455,8 +460,10 @@ class WorkflowViz {
       nodeOuterRadius,
       xScale,
       yOffset,
-      props: { workflowStatus }
+      props: { workflowStatus, entrypointStatus }
     } = this;
+
+    const nodeState = getEntrypointState(workflowStatus, entrypointStatus);
 
     if (this.outputNode === null) {
       const side = nodeOuterRadius * 2;
@@ -467,7 +474,7 @@ class WorkflowViz {
       this.outputNode = nodesG
         .append('g')
         .classed(styles.outputNode, true)
-        .classed(styles[getWorkflowState(workflowStatus)], true);
+        .classed(styles[nodeState], true);
       this.outputNode
         .append('rect')
         .classed(styles.shape, true)
@@ -504,7 +511,7 @@ class WorkflowViz {
     } else {
       this.outputNode
         .attr('class', styles.outputNode)
-        .classed(styles[getWorkflowState(workflowStatus)], true);
+        .classed(styles[nodeState], true);
     }
   };
 

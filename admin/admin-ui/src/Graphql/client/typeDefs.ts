@@ -1,5 +1,4 @@
 import { AccessLevel } from '../types/globalTypes';
-import gql from 'graphql-tag';
 
 export enum NotificationType {
   MESSAGE = 'MESSAGE',
@@ -80,41 +79,3 @@ export interface UserSettings {
 export interface RemoveNotificationInput {
   id: string;
 }
-
-const typeDefs = gql`
-  extend type Query {
-    notifications: [Notification!]!
-  }
-
-  extend type Mutation {
-    addNotification(input: AddNotificationInput!): [Notification!]!
-    removeNotification(input: RemoveNotificationInput!): [Notification!]!
-  }
-
-  extend type Notification {
-    id: ID!
-    message: String!
-    type: NotificationType!
-    to: String!
-    timeout: Number!
-  }
-
-  extend type AddNotificationInput {
-    id: ID!
-    message: String!
-    type: NotificationType!
-    timeout: Number
-    to: String!
-  }
-
-  extend type RemoveNotificationInput {
-    id: ID!
-  }
-
-  extend enum NotificationType {
-    MESSAGE
-    ERROR
-  }
-`;
-
-export default typeDefs;

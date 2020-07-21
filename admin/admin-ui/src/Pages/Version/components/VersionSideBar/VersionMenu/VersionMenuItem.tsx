@@ -1,9 +1,10 @@
-import styles from './VersionMenuItem.module.scss';
 import React, { FunctionComponent } from 'react';
-import { NavLink } from 'react-router-dom';
+
 import IconWarning from '@material-ui/icons/Warning';
-import cx from 'classnames';
+import { NavLink } from 'react-router-dom';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import cx from 'classnames';
+import styles from './VersionMenuItem.module.scss';
 
 export type VersionMenuItemProps = {
   label: string;

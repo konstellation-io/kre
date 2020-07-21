@@ -11,7 +11,6 @@ import { get, sortBy } from 'lodash';
 import moment, { Moment } from 'moment';
 
 import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
-import Message from 'Components/Message/Message';
 import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { VersionRouteParams } from 'Constants/routes';
 import { WatchResourceMetrics } from 'Graphql/subscriptions/types/WatchResourceMetrics';
