@@ -5,7 +5,7 @@ import 'Styles/d3.scss';
 import { ApolloLink, split } from 'apollo-link';
 import { ErrorResponse, onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
-import typeDefs, {
+import {
   LogPanel,
   NotificationType,
   OpenedVersion,
@@ -30,8 +30,12 @@ import { createUploadLink } from 'apollo-upload-client';
 import { get } from 'lodash';
 import { getMainDefinition } from 'apollo-utilities';
 import history from './browserHistory';
+import { loader } from 'graphql.macro';
 import removeNotificationResolver from 'Graphql/client/resolvers/removeNotification';
 import updateTabFiltersResolver from 'Graphql/client/resolvers/updateTabFilters';
+import versionResolver from 'Graphql/client/resolvers/version';
+
+const extensionsSchema = loader('extensions.graphql');
 
 export let cache: InMemoryCache;
 export let API_BASE_URL: string;
@@ -188,14 +192,15 @@ config
     const client = new ApolloClient({
       cache,
       link,
-      typeDefs,
+      typeDefs: extensionsSchema,
       resolvers: {
         Mutation: {
           addNotification: addNotificationResolver,
           removeNotification: removeNotificationResolver,
           updateTabFilters: updateTabFiltersResolver,
           addLogTab: addLogTabResolver
-        }
+        },
+        Version: versionResolver
       }
     });
 

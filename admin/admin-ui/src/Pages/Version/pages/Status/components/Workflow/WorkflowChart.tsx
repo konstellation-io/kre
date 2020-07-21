@@ -1,8 +1,8 @@
+import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import React, { useEffect, useRef } from 'react';
 
 import { GetVersionWorkflows_version_workflows } from 'Graphql/queries/types/GetVersionWorkflows';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
-import { VersionStatus } from 'Graphql/types/globalTypes';
 import WorkflowViz from './WorkflowViz';
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
   width: number;
   height: number;
   workflowStatus: VersionStatus;
+  entrypointStatus: NodeStatus;
   onInnerNodeClick: Function;
   onInputNodeClick: Function;
   tooltipRefs: TooltipRefs;
@@ -20,6 +21,7 @@ function WorkflowChart({
   data,
   width,
   height,
+  entrypointStatus,
   workflowStatus,
   onInnerNodeClick,
   onInputNodeClick,
@@ -39,6 +41,7 @@ function WorkflowChart({
         height,
         data,
         workflowStatus,
+        entrypointStatus,
         onInnerNodeClick,
         onInputNodeClick,
         tooltipRefs,
@@ -54,7 +57,7 @@ function WorkflowChart({
 
   function update() {
     if (viz.current !== null) {
-      viz.current.update(data, workflowStatus, tooltipRefs);
+      viz.current.update(data, workflowStatus, entrypointStatus, tooltipRefs);
     } else {
       initialize();
     }

@@ -42,10 +42,16 @@ const NODE_WIDTH = 160;
 type Props = {
   workflow: GetVersionWorkflows_version_workflows;
   workflowStatus: VersionStatus;
+  entrypointStatus: NodeStatus;
   tooltipRefs: TooltipRefs;
 };
 
-function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
+function Workflow({
+  workflow,
+  workflowStatus,
+  entrypointStatus,
+  tooltipRefs
+}: Props) {
   const { accessLevel } = useUserAccess();
   const { versionId } = useParams<VersionRouteParams>();
   const { data: localData } = useQuery(GET_OPENED_VERSION_INFO);
@@ -114,7 +120,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
 
   const data = cloneDeep(workflow);
   const { width, height } = dimensions;
-  const status = getWorkflowState(workflowStatus, data.nodes);
+  const status = getWorkflowState(workflowStatus, data.nodes, entrypointStatus);
 
   return (
     <div
@@ -128,6 +134,7 @@ function Workflow({ workflow, workflowStatus, tooltipRefs }: Props) {
           height={height}
           data={data}
           workflowStatus={workflowStatus}
+          entrypointStatus={entrypointStatus}
           onInnerNodeClick={onInnerNodeClick}
           onInputNodeClick={onInputNodeClick}
           tooltipRefs={tooltipRefs}

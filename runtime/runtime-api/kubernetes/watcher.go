@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"fmt"
+
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
 	coreV1 "k8s.io/api/core/v1"
@@ -36,7 +37,7 @@ func (w *Watcher) NodeStatus(versionName string, statusCh chan<- entity.Node) ch
 	factory := informers.NewSharedInformerFactoryWithOptions(w.clientset, 0,
 		informers.WithNamespace(ns),
 		informers.WithTweakListOptions(func(options *metav1.ListOptions) {
-			options.LabelSelector = fmt.Sprintf("version-name=%s,type=node", versionName)
+			options.LabelSelector = fmt.Sprintf("version-name=%s,type in (node, entrypoint)", versionName)
 		}))
 
 	informer := factory.Core().V1().Pods().Informer()

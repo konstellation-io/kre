@@ -1,7 +1,5 @@
 import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 
-import { GetVersionWorkflows_version_workflows_nodes } from 'Graphql/queries/types/GetVersionWorkflows';
-
 export enum FinalStates {
   UP = 'UP',
   DOWN = 'DOWN',
@@ -27,18 +25,41 @@ export function getProcessState(processState: NodeStatus) {
   return ProcessToFinal.get(processState) || defaultState;
 }
 
-const nodeLoading = (node: GetVersionWorkflows_version_workflows_nodes) =>
-  node.status === NodeStatus.STARTING;
-const nodeError = (node: GetVersionWorkflows_version_workflows_nodes) =>
-  node.status === NodeStatus.ERROR;
+export function getEntrypointState(
+  versionStatus: VersionStatus,
+  entrypointStatus: NodeStatus
+) {
+  const versionPublished = versionStatus === VersionStatus.PUBLISHED;
+
+  switch (true) {
+    case entrypointStatus === NodeStatus.ERROR:
+      return FinalStates.ERROR;
+    case entrypointStatus === NodeStatus.STARTING:
+      return FinalStates.LOADING;
+    case versionPublished && entrypointStatus === NodeStatus.STARTED:
+      return FinalStates.UP;
+    default:
+      return FinalStates.DOWN;
+  }
+}
+
+type NodeWStatus = {
+  status: NodeStatus;
+};
+const nodeLoading = (node: NodeWStatus) => node.status === NodeStatus.STARTING;
+const nodeError = (node: NodeWStatus) => node.status === NodeStatus.ERROR;
 export function getWorkflowState(
   versionState: VersionStatus,
-  nodes: GetVersionWorkflows_version_workflows_nodes[] = []
+  nodes: NodeWStatus[] = [],
+  entrypointStatus: NodeStatus
 ) {
+  const entrypointNode: NodeWStatus = { status: entrypointStatus };
+  const allNodes: NodeWStatus[] = nodes.concat([entrypointNode]);
+
   switch (true) {
-    case nodes.some(nodeLoading):
+    case allNodes.some(nodeLoading):
       return FinalStates.LOADING;
-    case nodes.some(nodeError):
+    case allNodes.some(nodeError):
       return FinalStates.ERROR;
     case versionState === VersionStatus.PUBLISHED:
       return FinalStates.UP;

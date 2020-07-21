@@ -142,6 +142,30 @@ $animation-duration: 0.8s;
     }
   }
 
+  &.#{$status-error} {
+    .shape,
+    .nodePeak,
+    .peakCut {
+      fill: $color-error;
+    }
+
+    .icon > svg > path {
+      fill: font-color(dark);
+    }
+  }
+
+  &.#{$status-loading} {
+    .shape,
+    .nodePeak {
+      stroke: $color-status-changing;
+    }
+
+    .icon > svg > path {
+      fill: $color-status-changing;
+      animation: anim-state-change 2.5s linear 0s infinite;
+    }
+  }
+
   .icon > svg > path {
     @include animate(stroke);
     stroke: transparent !important;
@@ -175,6 +199,28 @@ $animation-duration: 0.8s;
 
     .icon > svg > path {
       fill: font-color(dark);
+    }
+  }
+
+  &.#{$status-error} {
+    .shape {
+      fill: $color-error;
+    }
+
+    .icon > svg > path {
+      fill: font-color(dark);
+    }
+  }
+
+  &.#{$status-loading} {
+    .shape,
+    .nodePeak {
+      stroke: $color-status-changing;
+    }
+
+    .icon > svg > path {
+      fill: $color-status-changing;
+      animation: anim-state-change 2.5s linear 0s infinite;
     }
   }
 

@@ -73,6 +73,12 @@ $color-bg: $bg-color-dark;
       border-left-color: $color-status-up;
     }
   }
+
+  &.#{$status-error} {
+    .container {
+      border-left-color: $color-status-error;
+    }
+  }
 }
 
 .tooltipContent {

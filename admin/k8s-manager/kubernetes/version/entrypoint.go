@@ -118,6 +118,8 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 					Labels: map[string]string{
 						"type":         "entrypoint",
 						"version-name": name,
+						"node-name":    "entrypoint",
+						"node-id":      "entrypoint",
 					},
 				},
 				Spec: apiv1.PodSpec{
