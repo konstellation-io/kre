@@ -122,3 +122,16 @@ func (r *VersionRepoMongoDB) SetHasDoc(ctx context.Context, versionID string, ha
 
 	return nil
 }
+
+func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, versionID string, status entity.VersionStatus) error {
+	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"status": status}})
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrVersionNotFound
+	}
+
+	return nil
+}

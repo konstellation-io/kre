@@ -18,11 +18,10 @@ type Minio struct {
 }
 
 func CreateStorage(logger logging.Logger, runtime *entity.Runtime) (repository.Storage, error) {
-	useSSL := false
 	endpoint := fmt.Sprintf("kre-minio.%s:9000", runtime.GetNamespace())
 
 	fmt.Printf("Minio endpoint: %s", endpoint)
-	client, err := minio.New(endpoint, runtime.Minio.AccessKey, runtime.Minio.SecretKey, useSSL)
+	client, err := minio.New(endpoint, runtime.Minio.AccessKey, runtime.Minio.SecretKey, false)
 	if err != nil {
 		return nil, fmt.Errorf("error Minio Connection to %s: %w", endpoint, err)
 	}
@@ -35,19 +34,17 @@ func (m Minio) CreateBucket(name string) error {
 
 	exists, err := m.client.BucketExists(name)
 	if err != nil {
-		return fmt.Errorf("error verifying if  Bucket %s exists: %w", name, err)
-	}
-	if exists {
-		m.logger.Errorf("Bucket %s already exists", name)
-		return fmt.Errorf("bucket %s already exists", name)
+		return fmt.Errorf("error verifying if bucket '%s' exists: %w", name, err)
 	}
 
-	err = m.client.MakeBucket(name, location)
-	if err != nil {
-		return fmt.Errorf("error Creating Bucket %s: %w", name, err)
-	}
+	if !exists {
+		err = m.client.MakeBucket(name, location)
+		if err != nil {
+			return fmt.Errorf("error Creating Bucket %s: %w", name, err)
+		}
 
-	m.logger.Infof("Bucket %s created", name)
+		m.logger.Infof("Bucket %s created", name)
+	}
 
 	return nil
 }

@@ -49,19 +49,19 @@ func (mr *MockMonitoringServiceMockRecorder) NodeLogs(ctx, runtime, versionID, f
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NodeLogs", reflect.TypeOf((*MockMonitoringService)(nil).NodeLogs), ctx, runtime, versionID, filters)
 }
 
-// VersionStatus mocks base method
-func (m *MockMonitoringService) VersionStatus(ctx context.Context, runtime *entity.Runtime, versionName string) (<-chan *entity.Node, error) {
+// WatchNodeStatus mocks base method
+func (m *MockMonitoringService) WatchNodeStatus(ctx context.Context, runtime *entity.Runtime, versionName string) (<-chan *entity.Node, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "VersionStatus", ctx, runtime, versionName)
+	ret := m.ctrl.Call(m, "WatchNodeStatus", ctx, runtime, versionName)
 	ret0, _ := ret[0].(<-chan *entity.Node)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// VersionStatus indicates an expected call of VersionStatus
-func (mr *MockMonitoringServiceMockRecorder) VersionStatus(ctx, runtime, versionName interface{}) *gomock.Call {
+// WatchNodeStatus indicates an expected call of WatchNodeStatus
+func (mr *MockMonitoringServiceMockRecorder) WatchNodeStatus(ctx, runtime, versionName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VersionStatus", reflect.TypeOf((*MockMonitoringService)(nil).VersionStatus), ctx, runtime, versionName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WatchNodeStatus", reflect.TypeOf((*MockMonitoringService)(nil).WatchNodeStatus), ctx, runtime, versionName)
 }
 
 // SearchLogs mocks base method

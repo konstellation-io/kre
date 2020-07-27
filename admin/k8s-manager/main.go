@@ -35,7 +35,7 @@ func main() {
 	clientset := kubernetes.NewClientset(cfg)
 	dynClient := kubernetes.NewDynamicClient(cfg)
 
-	watcher := kubernetes.NewWatcher(clientset)
+	watcher := kubernetes.NewWatcher(logger, clientset)
 
 	runtimeManager := runtime.New(cfg, logger, clientset, dynClient)
 	runtimeService := service.NewRuntimeService(cfg, logger, runtimeManager, watcher)

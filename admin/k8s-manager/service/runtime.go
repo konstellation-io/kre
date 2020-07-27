@@ -58,7 +58,7 @@ func (s *RuntimeService) RuntimeStatus(
 
 	fmt.Printf("Checking if runtime '%s' pods are created.\n", ns)
 
-	err := s.watcher.WaitForPods(ns)
+	err := s.watcher.WaitForRuntimePods(ns)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err

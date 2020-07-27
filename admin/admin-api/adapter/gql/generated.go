@@ -170,6 +170,7 @@ type ComplexityRoot struct {
 		RuntimeCreated       func(childComplexity int) int
 		WatchNodeStatus      func(childComplexity int, versionID string) int
 		WatchResourceMetrics func(childComplexity int, versionID string, fromDate string) int
+		WatchVersionStatus   func(childComplexity int) int
 	}
 
 	User struct {
@@ -257,6 +258,7 @@ type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
 	NodeLogs(ctx context.Context, runtimeID string, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
 	WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error)
+	WatchVersionStatus(ctx context.Context) (<-chan *entity.Version, error)
 	WatchResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
 }
 type UserResolver interface {
@@ -925,6 +927,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.WatchResourceMetrics(childComplexity, args["versionId"].(string), args["fromDate"].(string)), true
 
+	case "Subscription.watchVersionStatus":
+		if e.complexity.Subscription.WatchVersionStatus == nil {
+			break
+		}
+
+		return e.complexity.Subscription.WatchVersionStatus(childComplexity), true
+
 	case "User.accessLevel":
 		if e.complexity.User.AccessLevel == nil {
 			break
@@ -1272,6 +1281,7 @@ type Subscription {
   runtimeCreated: Runtime!
   nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionId: ID!): Node!
+  watchVersionStatus: Version!
   watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
@@ -1427,6 +1437,7 @@ enum VersionStatus {
   STARTING
   STARTED
   PUBLISHED
+  STOPPING
   STOPPED
 }
 
@@ -4765,6 +4776,50 @@ func (ec *executionContext) _Subscription_watchNodeStatus(ctx context.Context, f
 	}
 }
 
+func (ec *executionContext) _Subscription_watchVersionStatus(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Subscription",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().WatchVersionStatus(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-resTmp.(<-chan *entity.Version)
+		if !ok {
+			return nil
+		}
+		return graphql.WriterFunc(func(w io.Writer) {
+			w.Write([]byte{'{'})
+			graphql.MarshalString(field.Alias).MarshalGQL(w)
+			w.Write([]byte{':'})
+			ec.marshalNVersion2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx, field.Selections, res).MarshalGQL(w)
+			w.Write([]byte{'}'})
+		})
+	}
+}
+
 func (ec *executionContext) _Subscription_watchResourceMetrics(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -8041,6 +8096,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_nodeLogs(ctx, fields[0])
 	case "watchNodeStatus":
 		return ec._Subscription_watchNodeStatus(ctx, fields[0])
+	case "watchVersionStatus":
+		return ec._Subscription_watchVersionStatus(ctx, fields[0])
 	case "watchResourceMetrics":
 		return ec._Subscription_watchResourceMetrics(ctx, fields[0])
 	default:

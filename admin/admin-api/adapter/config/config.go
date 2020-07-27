@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"sync"
+	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	"gopkg.in/yaml.v2"
@@ -12,6 +13,9 @@ import (
 type Config struct {
 	DevelopmentMode bool `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
 
+	Application struct {
+		VersionStatusTimeout time.Duration `yaml:"versionStatusTimeout"`
+	} `yaml:"application"`
 	Admin struct {
 		APIAddress      string `yaml:"apiAddress" envconfig:"KRE_ADMIN_API_ADDRESS"`
 		BaseURL         string `yaml:"baseURL" envconfig:"KRE_ADMIN_API_BASE_URL"`

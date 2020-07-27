@@ -47,6 +47,11 @@ models:
     fields:
       date:
         resolver: true
+  VersionStatus:
+    model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.VersionStatus
+    fields:
+      date:
+        resolver: true
   UserActivity:
     model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.UserActivity
     fields:

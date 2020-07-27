@@ -1,4 +1,4 @@
-subscription VersionNodeStatus($versionId: ID!) {
+subscription WatchVersionNodeStatus($versionId: ID!) {
   watchNodeStatus(versionId: $versionId) {
     id
     status

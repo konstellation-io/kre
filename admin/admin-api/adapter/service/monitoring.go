@@ -110,15 +110,15 @@ func (m *MonitoringService) NodeLogs(ctx context.Context, runtime *entity.Runtim
 	return ch, nil
 }
 
-func (m *MonitoringService) VersionStatus(ctx context.Context, runtime *entity.Runtime, versionName string) (<-chan *entity.Node, error) {
+func (m *MonitoringService) WatchNodeStatus(ctx context.Context, runtime *entity.Runtime, versionName string) (<-chan *entity.Node, error) {
 	cc, err := grpc.Dial(fmt.Sprintf("runtime-api.%s:50051", runtime.GetNamespace()), grpc.WithInsecure())
 	if err != nil {
 		return nil, fmt.Errorf("version status connecting: %w", err)
 	}
 
-	m.logger.Debug("[MonitoringService.VersionStatus] opening stream with runtime-api...")
+	m.logger.Debug("[MonitoringService.WatchNodeStatus] opening stream with runtime-api...")
 	c := monitoringpb.NewMonitoringServiceClient(cc)
-	stream, err := c.NodeStatus(ctx, &monitoringpb.NodeStatusRequest{
+	stream, err := c.WatchNodeStatus(ctx, &monitoringpb.NodeStatusRequest{
 		VersionName: versionName,
 	})
 	if err != nil {
@@ -132,34 +132,34 @@ func (m *MonitoringService) VersionStatus(ctx context.Context, runtime *entity.R
 		defer func() {
 			err := cc.Close()
 			if err != nil {
-				m.logger.Errorf("[MonitoringService.VersionStatus] closing gRPC: %s", err)
+				m.logger.Errorf("[MonitoringService.WatchNodeStatus] closing gRPC: %s", err)
 			}
 		}()
 
 		for {
-			m.logger.Debug("[MonitoringService.VersionStatus] waiting for stream.Recv()...")
+			m.logger.Debug("[MonitoringService.WatchNodeStatus] waiting for stream.Recv()...")
 			msg, err := stream.Recv()
 
 			if stream.Context().Err() == context.Canceled {
-				m.logger.Debug("[MonitoringService.VersionStatus] Context canceled.")
+				m.logger.Debug("[MonitoringService.WatchNodeStatus] Context canceled.")
 				return
 			}
 
 			if err == io.EOF {
-				m.logger.Debug("[MonitoringService.VersionStatus] EOF msg received.")
+				m.logger.Debug("[MonitoringService.WatchNodeStatus] EOF msg received.")
 				return
 			}
 
 			if err != nil {
-				m.logger.Errorf("[MonitoringService.VersionStatus] Unexpected error: %s", err)
+				m.logger.Errorf("[MonitoringService.WatchNodeStatus] Unexpected error: %s", err)
 				return
 			}
 
-			m.logger.Debug("[MonitoringService.VersionStatus] Message received")
+			m.logger.Debug("[MonitoringService.WatchNodeStatus] Message received")
 
 			status := entity.NodeStatus(msg.GetStatus())
 			if !status.IsValid() {
-				m.logger.Errorf("[MonitoringService.VersionStatus] Invalid node status: %s", status)
+				m.logger.Errorf("[MonitoringService.WatchNodeStatus] Invalid node status: %s", status)
 				continue
 			}
 
