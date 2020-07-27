@@ -71,6 +71,12 @@ mongodb:
   mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
   mongodbPassword: "123456"
+  rootCredentials:
+    username: admin
+    password: "123456"
+  storage:
+    className: standard
+    size: 3G
   volumePermissions:
     enabled: ${DEVELOPMENT_MODE}
     image:

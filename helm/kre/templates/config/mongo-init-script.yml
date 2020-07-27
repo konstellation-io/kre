@@ -9,12 +9,35 @@ data:
   init-admin.js: |
     conn = new Mongo();
     db = conn.getDB("{{ .Values.mongodb.mongodbDatabase }}");
-    db.auth( "{{ .Values.mongodb.mongodbUsername }}", "{{ .Values.mongodb.mongodbPassword }}" );
+    try {
+        db.createRole({
+        role: "readWriteMinusDropRole",
+        privileges: [
+        {
+            resource: { db: "{{ .Values.mongodb.mongodbDatabase }}", collection: ""},
+            actions: [ "collStats", "dbHash", "dbStats", "find", "killCursors", "listIndexes", "listCollections", "convertToCapped", "createCollection", "createIndex", "dropIndex", "insert", "remove", "renameCollectionSameDB", "update"]} ],
+            roles: []
+        }
+        );
+    } catch (e) {
+        print("Role for readWriteMinusDropRole for {{ .Values.mongodb.mongodbDatabase }} already exists")
+    }
 
-    db.getCollection('users').insert({
-      "_id": "kre_admin_user",
-      "email": "{{ .Values.config.admin.userEmail }}",
-      "deleted": false,
-      "accessLevel": "ADMIN",
-      "creationDate": ISODate("2000-01-01T00:00:00.001Z")
-    })
+    try {
+        db.createUser({user: "{{ .Values.mongodb.mongodbUsername }}", pwd: "{{ .Values.mongodb.mongodbPassword }}", roles: [{role: 'readWriteMinusDropRole', db: "{{ .Values.mongodb.mongodbDatabase }}"}]})
+    } catch (e) {
+        print("User {{ .Values.mongodb.mongodbUsername }} admin for {{ .Values.mongodb.mongodbDatabase }} database already exists")
+    }
+
+    try {
+        db.getCollection('users').insert({
+            "_id": "kre_admin_user",
+            "email": "pepe@test.com",
+            "deleted": false,
+            "accessLevel": "ADMIN",
+            "creationDate": ISODate("2000-01-01T00:00:00.001Z")
+            })
+    } catch (error) {
+        print("User {{ .Values.mongodb.mongodbUsername }} for KRE already exists")
+    }
+
