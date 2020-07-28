@@ -10,5 +10,5 @@ metadata:
 data:
   config.json: |
     {
-      "API_BASE_URL": "{{ $protocol }}://{{ .Values.config.apiAddress }}"
+      "API_BASE_URL": "{{ $protocol }}://{{ .Values.config.admin.apiBaseURL }}"
     }

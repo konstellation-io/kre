@@ -32,7 +32,7 @@ data:
     try {
         db.getCollection('users').insert({
             "_id": "kre_admin_user",
-            "email": "pepe@test.com",
+            "email": "{{ .Values.config.admin.userEmail }}",
             "deleted": false,
             "accessLevel": "ADMIN",
             "creationDate": ISODate("2000-01-01T00:00:00.001Z")
