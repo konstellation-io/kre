@@ -34,7 +34,7 @@ mongo:
 
 minio:
   image:
-    repository: garugaru/minio-multiarch
+    repository: tetrash/minio-multiarch
     tag: latest
   credentials:
     accessKey: admin
