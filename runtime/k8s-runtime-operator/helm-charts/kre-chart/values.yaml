@@ -36,3 +36,16 @@ minio:
     secretKey: "12345678"
   storage:
     size: 1Gi
+
+influxdb2:
+  adminUser:
+    organization: "kre"
+    bucket: "default"
+    user: "admin"
+    password: "123456"
+    token: "admin-token"
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 10Gi
