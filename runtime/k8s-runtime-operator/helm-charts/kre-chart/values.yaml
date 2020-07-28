@@ -16,6 +16,8 @@ mongo:
   replicaSetName: rs0
   image:
     tag: 4.2
+  installImage:
+    tag: 0.8
   securityContext:
     enabled: false
   persistentVolume:
@@ -31,6 +33,9 @@ mongo:
     kre-app: kre-mongo
 
 minio:
+  image:
+    repository: garugaru/minio-multiarch
+    tag: latest
   credentials:
     accessKey: admin
     secretKey: "12345678"
