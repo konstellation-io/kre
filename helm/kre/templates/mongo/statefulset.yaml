@@ -25,19 +25,10 @@ spec:
           ports:
             - containerPort: 27017
           volumeMounts:
-            # - name: kre-mongo-pvc
-            #   mountPath: "/data/db"
+            - name: kre-mongo-pvc
+              mountPath: "/data/db"
             - name: init-scripts
-              mountPath: /opt/init-scripts
-          lifecycle:
-            postStart:
-              exec:
-                command: 
-                  - "sh"
-                  - "-c"
-                  - "sleep 10"
-                  - "&&"
-                  - "mongo /opt/init-scripts/init-admin.js"
+              mountPath: /docker-entrypoint-initdb.d/
       volumes:
       - name: init-scripts
         configMap:
