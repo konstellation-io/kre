@@ -67,3 +67,7 @@ func (r *Runtime) GetMongoURI(replicas int) string {
 	}
 	return fmt.Sprintf("mongodb://%s@%s/admin?replicaSet=rs0", creds, strings.Join(address, ","))
 }
+
+func (r *Runtime) GetInfluxURI() string {
+	return fmt.Sprintf("http://%s-influxdb2", r.GetNamespace())
+}

@@ -42,6 +42,7 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 			"KRT_HANDLER_PATH":      n.Src,
 			"KRT_MONGO_URI":         version.MongoUri,
 			"KRT_MONGO_DB_NAME":     version.MongoDbName,
+			"KRT_INFLUX_URI":        version.InfluxUri,
 		}
 	}
 
@@ -156,6 +157,17 @@ func (m *Manager) createNodeDeployment(
 		{
 			Name:  "KRT_NODE_ID",
 			Value: node.GetId(),
+		},
+		{
+			Name: "KRT_INFLUX_TOKEN",
+			ValueFrom: &apiv1.EnvVarSource{
+				SecretKeyRef: &apiv1.SecretKeySelector{
+					LocalObjectReference: apiv1.LocalObjectReference{
+						Name: fmt.Sprintf("%s-influxdb2-auth", version.Namespace),
+					},
+					Key: "admin-token",
+				},
+			},
 		},
 	}
 

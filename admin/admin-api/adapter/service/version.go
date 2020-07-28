@@ -91,6 +91,7 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 			Workflows:   wf,
 			MongoUri:    runtime.GetMongoURI(totalMongoReplicas),
 			MongoDbName: k.cfg.MongoDB.DBName,
+			InfluxUri:   runtime.GetInfluxURI(),
 		},
 	}
 
