@@ -1,26 +1,27 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: kre-mongo
   labels:
-    {{ include "runtime.labels" . | nindent 4 }}
     app: kre-mongo
 spec:
   replicas: 1
   serviceName: kre-mongo
+  selector:
+    matchLabels:
+      app: kre-mongo
   template:
     metadata:
       labels:
-        {{ include "runtime.labels" . | nindent 8 }}
         app: kre-mongo
     spec:
       containers:
         - name: kre-mongo
           image: mongo:4.2.8
           imagePullPolicy: IfNotPresent
-          # envFrom:
-          #   - secretRef:
-          #       name: kre-mongo-secret
+          envFrom:
+            - secretRef:
+                name: kre-mongo-secret
           ports:
             - containerPort: 27017
           volumeMounts:
@@ -28,24 +29,26 @@ spec:
             #   mountPath: "/data/db"
             - name: init-scripts
               mountPath: /opt/init-scripts
-          # lifecycle:
-          #   postStart:
-          #     exec:
-          #       command: 
-          #         - "sh"
-          #         - "-c"
-          #         - "mongo /opt/init-scripts/init-admin.js"
+          lifecycle:
+            postStart:
+              exec:
+                command: 
+                  - "sh"
+                  - "-c"
+                  - "sleep 10"
+                  - "&&"
+                  - "mongo /opt/init-scripts/init-admin.js"
       volumes:
       - name: init-scripts
         configMap:
           name: kre-mongo-init-script
-  # volumeClaimTemplates:
-  #   - metadata:
-  #       name: kre-mongo-pvc
-  #     spec:
-  #       accessModes:
-  #         - ReadWriteOnce
-  #       storageClassName: {{ .Values.mongodb.storage.className }}
-  #       resources:
-  #         requests:
-  #           storage:  {{ .Values.mongodb.storage.size }}
+  volumeClaimTemplates:
+    - metadata:
+        name: kre-mongo-pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.mongodb.storage.className }}
+        resources:
+          requests:
+            storage:  {{ .Values.mongodb.storage.size }}

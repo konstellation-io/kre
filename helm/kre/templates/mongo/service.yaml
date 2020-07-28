@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: kre-mongo
   labels:
-    {{ include "runtime.labels" . | nindent 4 }}
     app: kre-mongo
 spec:
   clusterIP: None
