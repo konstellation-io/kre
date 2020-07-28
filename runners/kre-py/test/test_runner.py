@@ -30,7 +30,7 @@ async def run(loop):
         sid = await nc.subscribe("mongo_writer", cb=message_handler)
         print("Waiting for a metrics message...")
 
-        # Stop receiving after 3 calls to metrics.save() and 1 call to db.save().
+        # Stop receiving after 3 calls to prediction.save() and 1 call to db.save().
         await nc.auto_unsubscribe(sid, 4)
 
         print(f"Sending a test message to {input_subject}...")

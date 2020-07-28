@@ -4,8 +4,6 @@ import abc
 
 from nats.aio.client import Client as NATS
 
-NATS_FLUSH_TIMEOUT = 10
-
 
 class Runner:
     def __init__(self, runner_name, config):
@@ -25,7 +23,6 @@ class Runner:
         self.config = config
         self.subscription_sid = None
         self.runner_name = runner_name
-        self.nats_flush_timeout = NATS_FLUSH_TIMEOUT
 
     def start(self):
         try:

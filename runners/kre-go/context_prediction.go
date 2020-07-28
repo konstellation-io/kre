@@ -41,13 +41,13 @@ type SaveMetricMsgDoc struct {
 	VersionName    string `json:"versionName"`
 }
 
-type contextMetrics struct {
+type contextPrediction struct {
 	cfg    config.Config
 	nc     *nats.Conn
-	Logger *simplelogger.SimpleLogger
+	logger *simplelogger.SimpleLogger
 }
 
-func (c *contextMetrics) Save(date time.Time, predictedValue, trueValue string) {
+func (c *contextPrediction) Save(date time.Time, predictedValue, trueValue string) {
 	msg, err := json.Marshal(SaveMetricMsg{
 		Coll: classificationMetricsColl,
 		Doc: SaveMetricMsgDoc{
@@ -60,19 +60,19 @@ func (c *contextMetrics) Save(date time.Time, predictedValue, trueValue string) 
 	})
 
 	if err != nil {
-		c.Logger.Infof("Error marshalling SaveMetricMsgDoc: %s", err)
+		c.logger.Infof("Error marshalling SaveMetricMsgDoc: %s", err)
 		return
 	}
 
 	_, err = c.nc.Request(c.cfg.NATS.MongoWriterSubject, msg, saveMetricTimeout)
 	if err != nil {
-		c.Logger.Infof("Error sending metric to NATS: %s", err)
+		c.logger.Infof("Error sending metric to NATS: %s", err)
 	}
 }
 
-func (c *contextMetrics) SaveError(saveMetricErr SaveMetricErr) {
+func (c *contextPrediction) SaveError(saveMetricErr SaveMetricErr) {
 	if err := saveMetricErr.IsValid(); err != nil {
-		c.Logger.Error(err.Error())
+		c.logger.Error(err.Error())
 		return
 	}
 
@@ -85,11 +85,11 @@ func (c *contextMetrics) SaveError(saveMetricErr SaveMetricErr) {
 		},
 	})
 	if err != nil {
-		c.Logger.Infof("Error generating SaveMetricMsg JSON: %s", err)
+		c.logger.Infof("Error generating SaveMetricMsg JSON: %s", err)
 	}
 
 	_, err = c.nc.Request(c.cfg.NATS.MongoWriterSubject, msg, saveMetricTimeout)
 	if err != nil {
-		c.Logger.Infof("Error sending error metric to NATS: %s", err)
+		c.logger.Infof("Error sending error metric to NATS: %s", err)
 	}
 }
