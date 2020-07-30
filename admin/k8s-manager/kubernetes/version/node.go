@@ -158,17 +158,6 @@ func (m *Manager) createNodeDeployment(
 			Name:  "KRT_NODE_ID",
 			Value: node.GetId(),
 		},
-		{
-			Name: "KRT_INFLUX_TOKEN",
-			ValueFrom: &apiv1.EnvVarSource{
-				SecretKeyRef: &apiv1.SecretKeySelector{
-					LocalObjectReference: apiv1.LocalObjectReference{
-						Name: fmt.Sprintf("%s-influxdb2-auth", version.Namespace),
-					},
-					Key: "admin-token",
-				},
-			},
-		},
 	}
 
 	return m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{

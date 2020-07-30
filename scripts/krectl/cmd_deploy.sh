@@ -50,7 +50,7 @@ prepare_helm() {
     # Helm v3 needs this the base repo to be added manually
     echo_wait "Init helm v3..."
     run helm repo add stable https://kubernetes-charts.storage.googleapis.com
-    run helm repo add influxdata https://influxdata.github.io/helm-charts
+    run helm repo add influxdata https://helm.influxdata.com/
   fi
   HELM_READY=1
 }

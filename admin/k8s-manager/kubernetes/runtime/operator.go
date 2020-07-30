@@ -21,9 +21,9 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 	}
 	client := m.dynClient.Resource(runtimeGVR)
 
-	entrypointURL := fmt.Sprintf("%s.%s", runtime.Namespace, domain)
+	runtimeHost := fmt.Sprintf("%s.%s", runtime.Namespace, domain)
 
-	log.Printf("Creating Runtime object on '%s' with url: %s", runtime.Namespace, entrypointURL)
+	log.Printf("Creating Runtime object on '%s' with url: http(s)://entrypoint.%s", runtime.Namespace, runtimeHost)
 
 	totalMongoReplicas := 3
 	if m.config.DevelopmentMode {
@@ -39,8 +39,8 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 			},
 			"spec": map[string]interface{}{
 				"developmentMode": m.config.DevelopmentMode,
-				"entrypoint": map[string]interface{}{
-					"host": entrypointURL,
+				"runtime": map[string]interface{}{
+					"host": runtimeHost,
 				},
 				"sharedStorageClass": m.config.SharedStorageClass,
 				"nats_streaming": map[string]interface{}{

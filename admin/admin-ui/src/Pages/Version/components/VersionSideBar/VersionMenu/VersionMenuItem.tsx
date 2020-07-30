@@ -21,19 +21,27 @@ function VersionMenuItem({
   warning,
   Icon
 }: VersionMenuItemProps) {
-  return (
-    <NavLink to={to} activeClassName={styles.active} exact={exact} replace>
-      <div className={styles.item}>
-        <div className={styles.icon}>
-          <Icon className="icon-regular" />
-        </div>
-        <span>{label}</span>
-        {warning && (
-          <div title={warning} className={styles.iconWarning}>
-            <IconWarning className={cx('icon-regular', styles.warning)} />
-          </div>
-        )}
+  const isExternal = /^https?:\/\/.+$/.test(to);
+  const itemContent = (
+    <div className={styles.item}>
+      <div className={styles.icon}>
+        <Icon className="icon-regular" />
       </div>
+      <span>{label}</span>
+      {warning && (
+        <div title={warning} className={styles.iconWarning}>
+          <IconWarning className={cx('icon-regular', styles.warning)} />
+        </div>
+      )}
+    </div>
+  );
+  return isExternal ? (
+    <a href={to} target="_blank">
+      {itemContent}
+    </a>
+  ) : (
+    <NavLink to={to} activeClassName={styles.active} exact={exact} replace>
+      {itemContent}
     </NavLink>
   );
 }

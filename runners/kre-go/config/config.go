@@ -6,11 +6,6 @@ import (
 	"github.com/konstellation-io/kre/libs/simplelogger"
 )
 
-const (
-	InfluxOrg    = "kre"
-	InfluxBucket = "default"
-)
-
 type Config struct {
 	VersionID string
 	Version   string
@@ -35,10 +30,7 @@ type ConfigNATS struct {
 }
 
 type InfluxDB struct {
-	URI    string
-	Token  string
-	Org    string
-	Bucket string
+	URI string
 }
 
 func NewConfig(logger *simplelogger.SimpleLogger) Config {
@@ -59,10 +51,7 @@ func NewConfig(logger *simplelogger.SimpleLogger) Config {
 			ConnTimeout: 120,
 		},
 		InfluxDB: InfluxDB{
-			URI:    getCfgFromEnv(logger, "KRT_INFLUX_URI"),
-			Token:  getCfgFromEnv(logger, "KRT_INFLUX_TOKEN"),
-			Org:    InfluxOrg,
-			Bucket: InfluxBucket,
+			URI: getCfgFromEnv(logger, "KRT_INFLUX_URI"),
 		},
 	}
 }

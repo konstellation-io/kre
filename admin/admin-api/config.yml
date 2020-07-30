@@ -1,3 +1,4 @@
+baseDomainName: "local"
 admin:
   apiAddress: ":4000"
   baseURL: "http://api.kre.local"

@@ -155,6 +155,7 @@ type ComplexityRoot struct {
 		CreationDate     func(childComplexity int) int
 		Description      func(childComplexity int) int
 		ID               func(childComplexity int) int
+		MeasurementsURL  func(childComplexity int) int
 		Name             func(childComplexity int) int
 		PublishedVersion func(childComplexity int) int
 		Status           func(childComplexity int) int
@@ -252,6 +253,7 @@ type RuntimeResolver interface {
 	CreationDate(ctx context.Context, obj *entity.Runtime) (string, error)
 	CreationAuthor(ctx context.Context, obj *entity.Runtime) (*entity.User, error)
 	PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error)
+	MeasurementsURL(ctx context.Context, obj *entity.Runtime) (string, error)
 }
 type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
@@ -847,6 +849,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Runtime.ID(childComplexity), true
 
+	case "Runtime.measurementsUrl":
+		if e.complexity.Runtime.MeasurementsURL == nil {
+			break
+		}
+
+		return e.complexity.Runtime.MeasurementsURL(childComplexity), true
+
 	case "Runtime.name":
 		if e.complexity.Runtime.Name == nil {
 			break
@@ -1370,6 +1379,7 @@ type Runtime {
   creationDate: String!
   creationAuthor: User!
   publishedVersion: Version
+  measurementsUrl: String!
 }
 
 enum RuntimeStatus {
@@ -4549,6 +4559,40 @@ func (ec *executionContext) _Runtime_publishedVersion(ctx context.Context, field
 	res := resTmp.(*entity.Version)
 	fc.Result = res
 	return ec.marshalOVersion2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Runtime_measurementsUrl(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Runtime",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Runtime().MeasurementsURL(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Settings_authAllowedDomains(ctx context.Context, field graphql.CollectedField, obj *entity.Settings) (ret graphql.Marshaler) {
@@ -7977,6 +8021,20 @@ func (ec *executionContext) _Runtime(ctx context.Context, sel ast.SelectionSet, 
 					}
 				}()
 				res = ec._Runtime_publishedVersion(ctx, field, obj)
+				return res
+			})
+		case "measurementsUrl":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Runtime_measurementsUrl(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		default:

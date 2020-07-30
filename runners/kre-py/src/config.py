@@ -1,8 +1,6 @@
 import os
 
 NATS_FLUSH_TIMEOUT = 10
-INFLUX_ORG = "kre"
-INFLUX_BUCKET = "default"
 
 
 class Config:
@@ -21,9 +19,6 @@ class Config:
             self.mongo_db_name = os.environ['KRT_MONGO_DB_NAME']
             self.mongo_uri = os.environ['KRT_MONGO_URI']
             self.influx_uri = os.environ['KRT_INFLUX_URI']
-            self.influx_token = os.environ['KRT_INFLUX_TOKEN']
-            self.influx_org = INFLUX_ORG
-            self.influx_bucket = INFLUX_BUCKET
             self.nats_flush_timeout = NATS_FLUSH_TIMEOUT
 
         except Exception as err:

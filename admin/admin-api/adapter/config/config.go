@@ -12,6 +12,8 @@ import (
 type Config struct {
 	DevelopmentMode bool `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
 
+	BaseDomainName string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`
+
 	Admin struct {
 		APIAddress      string `yaml:"apiAddress" envconfig:"KRE_ADMIN_API_ADDRESS"`
 		BaseURL         string `yaml:"baseURL" envconfig:"KRE_ADMIN_API_BASE_URL"`

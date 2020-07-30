@@ -2,8 +2,8 @@ dependencies:
 - name: mongodb-replicaset
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 3.11.3
-- name: influxdb2
+- name: influxdb
   repository: https://influxdata.github.io/helm-charts
-  version: 1.0.5
-digest: sha256:dd61d893c6dc988c963ac9edd89d63aad43771d7a456c18ad1682aadf53797da
-generated: "2020-07-27T08:41:18.900557286+02:00"
+  version: 4.8.1
+digest: sha256:f9b25ed3991ad2b04c20ac854ed16e8df30c5505d0f36741ac6dd3386ad16222
+generated: "2020-07-30T09:46:43.697374286+02:00"

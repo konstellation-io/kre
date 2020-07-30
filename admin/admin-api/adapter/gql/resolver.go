@@ -322,6 +322,10 @@ func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runt
 	return nil, nil
 }
 
+func (r *runtimeResolver) MeasurementsURL(_ context.Context, obj *entity.Runtime) (string, error) {
+	return obj.GetMeasurementURL(r.cfg.BaseDomainName), nil
+}
+
 func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
 	id := uuid.New().String()
 

@@ -1,6 +1,6 @@
 developmentMode: false
 
-entrypoint:
+runtime:
   host: "local"
 
 sharedStorageClass: standard
@@ -37,15 +37,19 @@ minio:
   storage:
     size: 1Gi
 
-influxdb2:
-  adminUser:
-    organization: "kre"
-    bucket: "default"
-    user: "admin"
-    password: "123456"
-    token: "admin-token"
+influxdb:
+  config:
+    http:
+      enabled: true
+      flux-enabled: true
+      auth-enabled: false
   persistence:
     enabled: true
     storageClass: "standard"
     accessMode: ReadWriteOnce
     size: 10Gi
+  initScripts:
+    enabled: true
+    scripts:
+      init.iql: |+
+        CREATE DATABASE "kre"
