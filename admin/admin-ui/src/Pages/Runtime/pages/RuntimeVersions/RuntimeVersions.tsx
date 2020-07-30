@@ -8,7 +8,7 @@ import IconTime from '@material-ui/icons/AccessTime';
 import InfoField from './components/InfoField/InfoField';
 import PublishedVersionStatus from './components/PublishedVersionStatus/PublishedVersionStatus';
 import React from 'react';
-import Title from 'Components/Title/Title';
+import { Title } from 'konstellation-web-components';
 import VersionInfo from './components/VersionInfo/VersionInfo';
 import { VersionStatus } from 'Graphql/types/globalTypes';
 import { formatDate } from 'Utils/format';

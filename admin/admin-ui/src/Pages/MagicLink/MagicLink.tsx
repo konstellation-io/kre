@@ -1,8 +1,7 @@
-import * as CHECK from 'Components/Form/check';
-
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import { CHECK } from 'konstellation-web-components';
 import Circle from 'Components/Shape/Circle/Circle';
 import { ENDPOINT } from 'Constants/application';
 import ROUTE from 'Constants/routes';

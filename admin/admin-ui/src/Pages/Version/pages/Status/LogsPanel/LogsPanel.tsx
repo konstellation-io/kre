@@ -13,7 +13,7 @@ import IconDuplicate from '@material-ui/icons/ControlPointDuplicate';
 import IconOpenInTab from '@material-ui/icons/Tab';
 import { Location } from 'history';
 import LogsTab from './components/LogsTab/LogsTab';
-import { MenuCallToAction } from 'Components/ContextMenu/ContextMenu';
+import { MenuCallToAction } from 'konstellation-web-components';
 import ROUTE from 'Constants/routes';
 import TabContainer from './components/TabContainer/TabContainer';
 import cx from 'classnames';

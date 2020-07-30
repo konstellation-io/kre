@@ -1,4 +1,9 @@
 import {
+  Button,
+  FileUpload,
+  SpinnerLinear
+} from 'konstellation-web-components';
+import {
   CreateVersion,
   CreateVersionVariables
 } from 'Graphql/mutations/types/CreateVersion';
@@ -6,9 +11,6 @@ import ROUTE, { RuntimeRouteParams } from 'Constants/routes';
 import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
 
-import Button from 'Components/Button/Button';
-import FileUpload from 'Components/Form/FileUpload/FileUpload';
-import SpinnerLinear from 'Components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 import { buildRoute } from 'Utils/routes';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, MouseEvent, ReactElement } from 'react';
 
-import Button from 'Components/Button/Button';
+import { Button } from 'konstellation-web-components';
 import PublishIcon from '@material-ui/icons/PlayCircleFilledOutlined';
 import StartIcon from '@material-ui/icons/SkipNext';
 import StopIcon from '@material-ui/icons/PauseCircleFilled';

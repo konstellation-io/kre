@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import Button from 'Components/Button/Button';
+import { Button } from 'konstellation-web-components';
 import { ConfVarPanelInfo } from '../../Configuration';
 import { HotKeys } from 'react-hotkeys';
 import IconClose from '@material-ui/icons/Close';

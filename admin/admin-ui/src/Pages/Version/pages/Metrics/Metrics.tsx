@@ -1,3 +1,4 @@
+import { ErrorMessage, SpinnerCircular } from 'konstellation-web-components';
 import {
   GetMetrics,
   GetMetricsVariables
@@ -12,9 +13,7 @@ import { registerMany, unregisterMany } from 'Utils/react-forms';
 
 import Charts from './components/Charts/Charts';
 import DashboardHeader from './components/DashboardHeader/DashboardHeader';
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import Message from 'Components/Message/Message';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { VersionRouteParams } from 'Constants/routes';
 import { loader } from 'graphql.macro';
 import styles from './Metrics.module.scss';

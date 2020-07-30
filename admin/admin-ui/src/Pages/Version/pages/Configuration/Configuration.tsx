@@ -1,4 +1,12 @@
 import {
+  Button,
+  ErrorMessage,
+  HorizontalBar,
+  ModalContainer,
+  ModalLayoutInfo,
+  SpinnerCircular
+} from 'konstellation-web-components';
+import {
   GetConfigurationVariables_version_config_vars as ConfigurationVariable,
   GetConfigurationVariables,
   GetConfigurationVariablesVariables
@@ -17,17 +25,11 @@ import { cloneDeep, isEqual, pick } from 'lodash';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
-import Button from 'Components/Button/Button';
 import ConfVarPanel from './components/ConfVarPanel/ConfVarPanel';
 import ConfigurationFilters from './ConfigurationFilters';
 import ConfigurationVariableList from 'Components/ConfigurationVariableList/ConfigurationVariableList';
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
-import HorizontalBar from 'Components/Layout/HorizontalBar/HorizontalBar';
 import Message from 'Components/Message/Message';
-import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutInfo from 'Components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
 import SettingsHeader from '../../../Settings/components/SettingsHeader/SettingsHeader';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { VersionRouteParams } from 'Constants/routes';
 import { VersionStatus } from 'Graphql/types/globalTypes';
 import { loader } from 'graphql.macro';

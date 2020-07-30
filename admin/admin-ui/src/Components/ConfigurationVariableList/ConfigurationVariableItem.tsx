@@ -1,11 +1,11 @@
-import Button from '../Button/Button';
+import { Button, TextInput } from 'konstellation-web-components';
+
 import { GetConfigurationVariables_version_config_vars as ConfVar } from 'Graphql/queries/types/GetConfigurationVariables';
 import { ConfVarPanelInfo } from 'Pages/Version/pages/Configuration/Configuration';
 import { ConfigurationVariableType } from 'Graphql/types/globalTypes';
 import IconKey from '@material-ui/icons/VpnKey';
 import React from 'react';
 import ShowMoreIcon from '@material-ui/icons/ArrowForward';
-import TextInput from 'Components/Form/TextInput/TextInput';
 import TypeFileIcon from '@material-ui/icons/InsertDriveFile';
 import TypeVarIcon from '@material-ui/icons/Code';
 import { capitalize } from 'lodash';

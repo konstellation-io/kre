@@ -1,13 +1,15 @@
 import {
+  ErrorMessage,
+  InfoMessage,
+  SpinnerCircular
+} from 'konstellation-web-components';
+import {
   GetUsersActivity,
   GetUsersActivityVariables,
   GetUsersActivity_userActivityList
 } from 'Graphql/queries/types/GetUsersActivity';
 import React, { UIEvent, useState } from 'react';
 
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
-import InfoMessage from 'Components/InfoMessage/InfoMessage';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import UserActivityItem from './UserActivityItem';
 import { loader } from 'graphql.macro';
 import { queryPayloadHelper } from 'Utils/formUtils';

@@ -1,8 +1,10 @@
+import {
+  Button,
+  ModalContainer,
+  ModalLayoutJustify
+} from 'konstellation-web-components';
 import { runtime, version } from 'Mocks/version';
 
-import Button from 'Components/Button/Button';
-import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutJustify from 'Components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
 import React from 'react';
 import VersionActions from './VersionActions';
 import { VersionStatus } from 'Graphql/types/globalTypes';

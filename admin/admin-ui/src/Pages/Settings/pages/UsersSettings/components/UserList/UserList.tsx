@@ -2,7 +2,7 @@ import { AccessLevel } from 'Graphql/types/globalTypes';
 import { GetUsers_users } from 'Graphql/queries/types/GetUsers';
 import IconDelete from '@material-ui/icons/Delete';
 import IconRevoke from '@material-ui/icons/HighlightOff';
-import { MenuCallToAction } from 'Components/ContextMenu/ContextMenu';
+import { MenuCallToAction } from 'konstellation-web-components';
 import React from 'react';
 import UsersTable from './UsersTable';
 import styles from './UserList.module.scss';

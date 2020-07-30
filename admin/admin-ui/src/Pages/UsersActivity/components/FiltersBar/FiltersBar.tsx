@@ -1,19 +1,20 @@
+import {
+  Button,
+  Calendar,
+  GroupSelect,
+  GroupSelectData,
+  MultiSelect,
+  SearchSelect
+} from 'konstellation-web-components';
 import CustomLabel, { HIGHLIGHT_COLORS } from './CustomLabel';
 import { FieldError, NestDataObject } from 'react-hook-form';
-import GroupSelect, {
-  GroupSelectData
-} from 'Components/Form/GroupSelect/GroupSelect';
 
 import ActivityIcon from '../ActivityIcon/ActivityIcon';
-import Button from 'Components/Button/Button';
-import Calendar from 'Components/Form/Calendar/Calendar';
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
+import { ErrorMessage } from 'konstellation-web-components';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import { GetUsersActivity_userActivityList_user } from 'Graphql/queries/types/GetUsersActivity';
 import { Moment } from 'moment';
-import MultiSelect from 'Components/Form/MultiSelect/MultiSelect';
 import React from 'react';
-import SearchSelect from 'Components/Form/SearchSelect/SearchSelect';
 import { UserActivityFormData } from '../../UsersActivity';
 import { UserActivityType } from 'Graphql/types/globalTypes';
 import { VersionsData } from 'Hooks/useAllVersions';

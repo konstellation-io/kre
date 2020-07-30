@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import Select, {
+import {
   CustomOptionProps,
+  ModalContainer,
+  ModalLayoutCalendar,
+  Select,
   SelectTheme
-} from 'Components/Form/Select/Select';
+} from 'konstellation-web-components';
+import React, { useEffect, useState } from 'react';
 import moment, { Moment } from 'moment';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
 
 import IconOptions from '@material-ui/icons/MoreHoriz';
 import IconTime from '@material-ui/icons/AccessTime';
-import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutCalendar from 'Components/Layout/ModalContainer/layouts/ModalLayoutCalendar/ModalLayoutCalendar';
 import { formatDate } from 'Utils/format';
 import styles from './DateFilter.module.scss';
 import { useForm } from 'react-hook-form';

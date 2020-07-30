@@ -1,3 +1,4 @@
+import { ErrorMessage, SpinnerCircular } from 'konstellation-web-components';
 import {
   GetVersionWorkflows,
   GetVersionWorkflowsVariables
@@ -7,11 +8,9 @@ import {
   VersionNodeStatusVariables
 } from 'Graphql/subscriptions/types/VersionNodeStatus';
 
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
 import { NodeStatus } from 'Graphql/types/globalTypes';
 import React from 'react';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { VersionRouteParams } from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';

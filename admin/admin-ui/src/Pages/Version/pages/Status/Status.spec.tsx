@@ -5,7 +5,7 @@ import {
   workflowsMock
 } from 'Mocks/version';
 
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
+import { ErrorMessage } from 'konstellation-web-components';
 import LogsPanel from './LogsPanel/LogsPanel';
 import { MockedProvider } from '@apollo/react-testing';
 import React from 'react';

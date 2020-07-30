@@ -1,11 +1,8 @@
-import * as CHECK from 'Components/Form/check';
-
+import { Button, CHECK, TextInput } from 'konstellation-web-components';
 import React, { useEffect } from 'react';
 
-import Button from 'Components/Button/Button';
 import { ENDPOINT } from 'Constants/application';
 import ROUTE from 'Constants/routes';
-import TextInput from 'Components/Form/TextInput/TextInput';
 import { get } from 'lodash';
 import styles from './Login.module.scss';
 import useEndpoint from 'Hooks/useEndpoint';

@@ -1,9 +1,8 @@
+import { Button, Left, Right } from 'konstellation-web-components';
+
 import { AccessLevel } from 'Graphql/types/globalTypes';
-import Button from 'Components/Button/Button';
-import Left from 'Components/Layout/Left/Left';
 import ROUTE from 'Constants/routes';
 import React from 'react';
-import Right from 'Components/Layout/Right/Right';
 import UserActions from './UserActions';
 import UserFilters from './UserFilters';
 import styles from './UserFiltersAndActions.module.scss';

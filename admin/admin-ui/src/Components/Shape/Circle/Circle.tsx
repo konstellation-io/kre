@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import Lottie from '../../Lottie/Lottie';
+import { Lottie } from 'konstellation-web-components';
 import { STATES } from 'Constants/application';
 import animationData from './Circle.json';
 import cx from 'classnames';

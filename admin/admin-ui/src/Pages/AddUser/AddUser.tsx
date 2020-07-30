@@ -1,5 +1,4 @@
-import * as CHECK from 'Components/Form/check';
-
+import { Button, CHECK, Select, TextInput } from 'konstellation-web-components';
 import {
   CreateUser,
   CreateUserVariables,
@@ -8,11 +7,8 @@ import {
 import React, { useEffect } from 'react';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
-import Button from 'Components/Button/Button';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import ROUTE from 'Constants/routes';
-import Select from 'Components/Form/Select/Select';
-import TextInput from 'Components/Form/TextInput/TextInput';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';

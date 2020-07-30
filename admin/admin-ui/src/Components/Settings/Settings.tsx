@@ -1,4 +1,8 @@
-import Button, { BUTTON_ALIGN } from '../Button/Button';
+import {
+  BUTTON_ALIGN,
+  Button,
+  useClickOutside
+} from 'konstellation-web-components';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 import AuditIcon from '@material-ui/icons/SupervisorAccount';
@@ -11,7 +15,6 @@ import cx from 'classnames';
 import { get } from 'lodash';
 import styles from './Settings.module.scss';
 import { useApolloClient } from '@apollo/react-hooks';
-import useClickOutside from 'Hooks/useClickOutside';
 import useEndpoint from 'Hooks/useEndpoint';
 import { useHistory } from 'react-router';
 import useUserAccess from 'Hooks/useUserAccess';

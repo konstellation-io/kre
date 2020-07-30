@@ -1,7 +1,9 @@
-import { Column, Row, useRowSelect, useSortBy, useTable } from 'react-table';
-import ContextMenu, {
+import {
+  Check,
+  ContextMenu,
   MenuCallToAction
-} from 'Components/ContextMenu/ContextMenu';
+} from 'konstellation-web-components';
+import { Column, Row, useRowSelect, useSortBy, useTable } from 'react-table';
 import {
   GET_USER_SETTINGS,
   GetUserSettings,
@@ -12,7 +14,6 @@ import { capitalize, get } from 'lodash';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
-import Check from 'Components/Form/Check/Check';
 import { GetUsers_users } from 'Graphql/queries/types/GetUsers';
 import IconArrowDown from '@material-ui/icons/ArrowDropDown';
 import IconArrowUp from '@material-ui/icons/ArrowDropUp';

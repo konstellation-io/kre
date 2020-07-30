@@ -33,7 +33,7 @@ $color-hexagon-disabled: palette(base, 200);
 .buttonWrapper {
   height: 40px;
   width: 40px;
-  margin-bottom: 24px;
+  margin: 0 30px 24px 0;
 
   &:hover {
     .button {

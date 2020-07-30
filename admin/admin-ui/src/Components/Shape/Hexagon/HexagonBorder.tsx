@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 
-import Lottie from '../../Lottie/Lottie';
-import animationData from './HexagonBorder.json';
-
-import styles from './Hexagon.module.scss';
-import cx from 'classnames';
 import { Link } from 'react-router-dom';
+import { Lottie } from 'konstellation-web-components';
+import animationData from './HexagonBorder.json';
+import cx from 'classnames';
+import styles from './Hexagon.module.scss';
 
 type Props = {
   to: string;

@@ -1,5 +1,8 @@
-import * as CHECK from 'Components/Form/check';
-
+import {
+  CHECK,
+  ErrorMessage,
+  SpinnerCircular
+} from 'konstellation-web-components';
 import FormRowInput, { FormData } from '../FormRowInput/FormRowInput';
 import {
   UpdateDomains,
@@ -8,12 +11,10 @@ import {
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import DomainIcon from '@material-ui/icons/Language';
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import { GetDomains } from 'Graphql/queries/types/GetDomains';
 import ListItem from '../ListItem/ListItem';
 import Message from 'Components/Message/Message';
 import React from 'react';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';

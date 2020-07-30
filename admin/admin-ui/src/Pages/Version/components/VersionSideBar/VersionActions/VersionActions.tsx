@@ -1,6 +1,11 @@
-import * as CHECK from 'Components/Form/check';
-
-import Button, { BUTTON_THEMES } from 'Components/Button/Button';
+import {
+  BUTTON_THEMES,
+  Button,
+  CHECK,
+  ModalContainer,
+  ModalLayoutInfo,
+  ModalLayoutJustify
+} from 'konstellation-web-components';
 import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions
@@ -8,9 +13,6 @@ import {
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
 import { Link } from 'react-router-dom';
-import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutInfo from 'Components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
-import ModalLayoutJustify from 'Components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
 import PublishIcon from '@material-ui/icons/Publish';
 import ROUTE from 'Constants/routes';
 import StartIcon from '@material-ui/icons/PlayCircleOutline';

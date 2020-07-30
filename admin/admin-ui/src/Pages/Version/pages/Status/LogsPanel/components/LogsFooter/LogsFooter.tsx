@@ -1,9 +1,8 @@
-import Button from 'Components/Button/Button';
+import { Button, Left, Right } from 'konstellation-web-components';
+
 import ClearIcon from '@material-ui/icons/Block';
 import FollowIcon from '@material-ui/icons/VerticalAlignBottom';
-import Left from 'Components/Layout/Left/Left';
 import React from 'react';
-import Right from 'Components/Layout/Right/Right';
 import cx from 'classnames';
 import styles from './LogsFooter.module.scss';
 

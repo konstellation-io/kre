@@ -1,5 +1,4 @@
-import * as CHECK from 'Components/Form/check';
-
+import { Button, CHECK, TextInput } from 'konstellation-web-components';
 import {
   CreateRuntime,
   CreateRuntimeVariables
@@ -11,9 +10,7 @@ import {
 } from 'Graphql/queries/types/GetRuntimes';
 import React, { useEffect } from 'react';
 
-import Button from 'Components/Button/Button';
 import ROUTE from 'Constants/routes';
-import TextInput from 'Components/Form/TextInput/TextInput';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
