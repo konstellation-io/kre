@@ -25,6 +25,7 @@ import LogsPanel from 'Pages/Version/pages/Status/LogsPanel/LogsPanel';
 import MagicLink from 'Pages/MagicLink/MagicLink';
 import NotFound from 'Pages/NotFound/NotFound';
 import NotificationService from 'Components/NotificationService/NotificationService';
+import SubscriptionService from 'Components/SubscriptionService/SubscriptionService';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import Runtime from 'Pages/Runtime/Runtime';
@@ -130,6 +131,7 @@ function App() {
     <GlobalHotKeys keyMap={keymaps} handlers={handlers}>
       <div className="app">
         <Router history={history}>
+          <SubscriptionService />
           <NotificationService />
           <Routes />
         </Router>

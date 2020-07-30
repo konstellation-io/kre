@@ -2,7 +2,6 @@ package runtime
 
 import (
 	"errors"
-	"log"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
@@ -49,21 +48,21 @@ func (m *Manager) Create(runtimeInput *entity.Runtime) error {
 
 	_, err := m.createNamespace(ns)
 	if err != nil {
-		log.Printf("error creating namespace: %v", err)
+		m.logger.Errorf("error creating namespace: %v", err)
 		return ErrCreation
 	}
 
 	// Create RBAC
 	err = m.createRBAC(ns)
 	if err != nil {
-		log.Printf("error creating RBAC: %v", err)
+		m.logger.Errorf("error creating RBAC: %v", err)
 		return ErrCreation
 	}
 
 	// Create K8s Runtime Operator
 	err = m.createK8sRuntimeOperator(ns)
 	if err != nil {
-		log.Printf("error creating k8s runtime operator: %v", err)
+		m.logger.Errorf("error creating k8s runtime operator: %v", err)
 		return ErrCreation
 	}
 
@@ -72,11 +71,11 @@ func (m *Manager) Create(runtimeInput *entity.Runtime) error {
 
 	err = m.createRuntimeObject(runtimeInput, domain)
 	if err != nil {
-		log.Printf("error creating runtime object: %v", err)
+		m.logger.Errorf("error creating runtime object: %v", err)
 		return ErrCreation
 	}
 
-	log.Printf("all resources created")
+	m.logger.Infof("all resources created")
 
 	return nil
 }

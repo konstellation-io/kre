@@ -13,5 +13,6 @@ type VersionRepo interface {
 	GetByIDs(ids []string) ([]*entity.Version, []error)
 	Update(version *entity.Version) error
 	SetHasDoc(ctx context.Context, versionID string, hasDoc bool) error
+	SetStatus(ctx context.Context, versionID string, status entity.VersionStatus) error
 	GetByRuntime(runtimeID string) ([]*entity.Version, error)
 }

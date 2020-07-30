@@ -3,9 +3,9 @@ import {
   GetVersionWorkflowsVariables
 } from 'Graphql/queries/types/GetVersionWorkflows';
 import {
-  VersionNodeStatus,
-  VersionNodeStatusVariables
-} from 'Graphql/subscriptions/types/VersionNodeStatus';
+  WatchVersionNodeStatus,
+  WatchVersionNodeStatusVariables
+} from 'Graphql/subscriptions/types/WatchVersionNodeStatus';
 
 import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
@@ -25,9 +25,8 @@ const GetVersionWorkflowsQuery = loader(
   'Graphql/queries/getVersionWorkflows.graphql'
 );
 const VersionNodeStatusSubscription = loader(
-  'Graphql/subscriptions/versionNodeStatus.graphql'
+  'Graphql/subscriptions/watchVersionNodeStatus.graphql'
 );
-
 export type Node = {
   id: string;
   name?: string;
@@ -50,7 +49,7 @@ function Status({ version }: Props) {
   });
 
   const subscribe = () =>
-    subscribeToMore<VersionNodeStatus, VersionNodeStatusVariables>({
+    subscribeToMore<WatchVersionNodeStatus, WatchVersionNodeStatusVariables>({
       document: VersionNodeStatusSubscription,
       variables: { versionId }
     });

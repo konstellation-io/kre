@@ -6,19 +6,19 @@
 import { NodeStatus } from './../../types/globalTypes';
 
 // ====================================================
-// GraphQL subscription operation: VersionNodeStatus
+// GraphQL subscription operation: WatchVersionNodeStatus
 // ====================================================
 
-export interface VersionNodeStatus_watchNodeStatus {
+export interface WatchVersionNodeStatus_watchNodeStatus {
   __typename: 'Node';
   id: string;
   status: NodeStatus;
 }
 
-export interface VersionNodeStatus {
-  watchNodeStatus: VersionNodeStatus_watchNodeStatus;
+export interface WatchVersionNodeStatus {
+  watchNodeStatus: WatchVersionNodeStatus_watchNodeStatus;
 }
 
-export interface VersionNodeStatusVariables {
+export interface WatchVersionNodeStatusVariables {
   versionId: string;
 }

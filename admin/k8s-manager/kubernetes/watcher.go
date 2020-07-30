@@ -2,28 +2,30 @@ package kubernetes
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
+	"github.com/konstellation-io/kre/libs/simplelogger"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
 type Watcher struct {
+	logger    *simplelogger.SimpleLogger
 	clientset *kubernetes.Clientset
 }
 
-func NewWatcher(clientset *kubernetes.Clientset) *Watcher {
+func NewWatcher(logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Watcher {
 	return &Watcher{
+		logger,
 		clientset,
 	}
 }
 
 const timeout = 5 * time.Minute
 
-func (k *Watcher) WaitForPods(ns string) error {
+func (k *Watcher) WaitForRuntimePods(ns string) error {
 	minioChan, err := k.waitForPodRunning(ns, []string{"app=kre-minio"}, timeout)
 	if err != nil {
 		return err
@@ -96,7 +98,7 @@ func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 	waitChan := make(chan bool)
 
 	labelSelector := strings.Join(podLabels, ",")
-	log.Printf("Creating watcher for POD with labels: %s\n", labelSelector)
+	k.logger.Debugf("Creating watcher for POD with labels: %s\n", labelSelector)
 
 	watch, err := k.clientset.CoreV1().Pods(ns).Watch(metav1.ListOptions{
 		LabelSelector: labelSelector,
@@ -116,7 +118,7 @@ func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 				pod := event.Object.(*v1.Pod)
 
 				if pod.Status.Phase == v1.PodRunning {
-					log.Printf("The POD with labels \"%s\" is running\n", labelSelector)
+					k.logger.Debugf("The POD with labels \"%s\" is running\n", labelSelector)
 					watch.Stop()
 					waitChan <- true
 					close(waitChan)
@@ -140,7 +142,7 @@ func (k *Watcher) waitForPodReady(ns string, podLabels []string, timeToWait time
 	waitChan := make(chan bool)
 
 	labelSelector := strings.Join(podLabels, ",")
-	log.Printf("Creating watcher for POD with labels: %s\n", labelSelector)
+	k.logger.Debugf("Creating watcher for POD with labels: %s\n", labelSelector)
 
 	watch, err := k.clientset.CoreV1().Pods(ns).Watch(metav1.ListOptions{
 		LabelSelector: labelSelector,
@@ -161,7 +163,7 @@ func (k *Watcher) waitForPodReady(ns string, podLabels []string, timeToWait time
 				// If the Pod contains a status condition Ready == True, stop watching.
 				for _, cond := range pod.Status.Conditions {
 					if cond.Type == v1.PodReady && cond.Status == v1.ConditionTrue {
-						log.Printf("The POD with labels \"%s\" is ready\n", labelSelector)
+						k.logger.Debugf("The POD with labels \"%s\" is ready\n", labelSelector)
 						watch.Stop()
 						waitChan <- true
 						close(waitChan)

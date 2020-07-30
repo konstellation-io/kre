@@ -13,6 +13,8 @@ const ANIM_SEGMENTS: { [key: string]: [number, number] } = {
   [STATES.DEFAULT]: [0, 178],
   [STATES.HOVER]: [180, 329],
   [STATES.STARTED]: [330, 479],
+  [STATES.STARTING]: [330, 479],
+  [STATES.STOPPING]: [480, 600],
   [STATES.STOPPED]: [480, 600]
 };
 

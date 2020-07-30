@@ -107,6 +107,20 @@ func (mr *MockVersionRepoMockRecorder) SetHasDoc(ctx, versionID, hasDoc interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHasDoc", reflect.TypeOf((*MockVersionRepo)(nil).SetHasDoc), ctx, versionID, hasDoc)
 }
 
+// SetStatus mocks base method
+func (m *MockVersionRepo) SetStatus(ctx context.Context, versionID string, status entity.VersionStatus) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetStatus", ctx, versionID, status)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetStatus indicates an expected call of SetStatus
+func (mr *MockVersionRepoMockRecorder) SetStatus(ctx, versionID, status interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStatus", reflect.TypeOf((*MockVersionRepo)(nil).SetStatus), ctx, versionID, status)
+}
+
 // GetByRuntime mocks base method
 func (m *MockVersionRepo) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
 	m.ctrl.T.Helper()
