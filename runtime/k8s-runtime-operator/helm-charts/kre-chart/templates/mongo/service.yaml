@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kre-mongo
+  labels:
+    {{ include "runtime.labels" . | nindent 4 }}
+    app: kre-mongo
+    kre-app: kre-mongo
+spec:
+  clusterIP: None
+  ports:
+    - port: 27017
+      targetPort: 27017
+      protocol: TCP
+  selector:
+    app: kre-mongo

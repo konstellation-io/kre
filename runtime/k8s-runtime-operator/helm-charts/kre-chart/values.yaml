@@ -12,25 +12,14 @@ nats_streaming:
     size: 1Gi
 
 mongo:
-  replicas: 3
-  replicaSetName: rs0
-  image:
-    tag: 4.2
-  installImage:
-    tag: 0.8
-  securityContext:
-    enabled: false
   persistentVolume:
     enabled: true
     storageClass: standard
     size: 5Gi
   auth:
     enabled: true
-    key: "qwerlk12SDf"
     adminUser: "admin"
     adminPassword: "123456"
-  extraLabels:
-    kre-app: kre-mongo
 
 minio:
   image:
