@@ -56,7 +56,7 @@ get_admin_api_pod() {
 }
 
 get_mongo_pod() {
-  kubectl -n kre get pod -l app=mongodb -o custom-columns=":metadata.name" --no-headers
+  kubectl -n kre get pod -l app=kre-mongo -o custom-columns=":metadata.name" --no-headers
 }
 
 minikube_stop() {

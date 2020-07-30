@@ -29,6 +29,8 @@ spec:
         - name: kre-mongo
           image: mongo:4.2.8
           imagePullPolicy: IfNotPresent
+          args:
+            - "--replSet=rs0"
           envFrom:
             - secretRef:
                 name: kre-mongo-secret
@@ -37,6 +39,13 @@ spec:
           volumeMounts:
             - name: kre-mongo-pvc
               mountPath: "/data/db"
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+      - name: init-scripts
+        configMap:
+          name: kre-mongo-init-script
+          defaultMode: 0777
   volumeClaimTemplates:
     - metadata:
         name: kre-mongo-pvc

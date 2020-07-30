@@ -54,5 +54,5 @@ Create the name of the service account to use
 Create MongoDB URI.
 */}}
 {{- define "runtime.mongoURI" -}}
-  {{- printf "mongodb://%s:%s@kre-mongo:27017/admin" $.Values.mongo.auth.adminUser $.Values.mongo.auth.adminPassword -}}
+  {{- printf "mongodb://%s:%s@kre-mongo-0:27017/admin?replicaSet=rs0" $.Values.mongo.auth.adminUser $.Values.mongo.auth.adminPassword -}}
 {{- end -}}
