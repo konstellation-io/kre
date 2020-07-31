@@ -16,6 +16,7 @@ metadata:
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
     nginx.ingress.kubernetes.io/proxy-body-size: 100000m
+    nginx.org/websocket-services: admin-api
   labels:
     {{- include "kre.labels" . | nindent 4 }}
     app:  {{ template "kre.fullname" . }}-admin-api-ingress
