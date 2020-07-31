@@ -1,5 +1,6 @@
 import * as COLORS from 'Constants/colors';
 
+import { ErrorMessage, SpinnerCircular } from 'konstellation-web-components';
 import {
   GetResourceMetrics,
   GetResourceMetricsVariables,
@@ -10,8 +11,6 @@ import TimeSeriesChart, { D } from '../TimeSeriesChart/TimeSeriesChart';
 import { get, sortBy } from 'lodash';
 import moment, { Moment } from 'moment';
 
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { VersionRouteParams } from 'Constants/routes';
 import { WatchResourceMetrics } from 'Graphql/subscriptions/types/WatchResourceMetrics';
 import cx from 'classnames';

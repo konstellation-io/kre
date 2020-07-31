@@ -1,10 +1,16 @@
-import * as CHECK from 'Components/Form/check';
-
 import {
   AccessLevel,
   UpdateAccessLevelInput,
   UsersInput
 } from 'Graphql/types/globalTypes';
+import {
+  CHECK,
+  ErrorMessage,
+  ModalContainer,
+  ModalLayoutConfirmList,
+  ModalLayoutJustify,
+  SpinnerCircular
+} from 'konstellation-web-components';
 import {
   GET_USER_SETTINGS,
   GetUserSettings
@@ -30,13 +36,8 @@ import {
 } from 'Graphql/mutations/types/UpdateAccessLevel';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
-import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutConfirmList from 'Components/Layout/ModalContainer/layouts/ModalLayoutConfirmList/ModalLayoutConfirmList';
-import ModalLayoutJustify from 'Components/Layout/ModalContainer/layouts/ModalLayoutJustify/ModalLayoutJustify';
 import SettingsHeader from '../../components/SettingsHeader/SettingsHeader';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import UserFiltersAndActions from './components/UserFiltersAndActions/UserFiltersAndActions';
 import UserList from './components/UserList/UserList';
 import UserRow from './components/UserRow/UserRow';

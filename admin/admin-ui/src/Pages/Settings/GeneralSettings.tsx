@@ -1,21 +1,23 @@
-import * as CHECK from 'Components/Form/check';
-
+import {
+  Button,
+  CHECK,
+  ErrorMessage,
+  HorizontalBar,
+  InputType,
+  ModalContainer,
+  ModalLayoutInfo,
+  SpinnerCircular,
+  TextInput
+} from 'konstellation-web-components';
 import React, { useEffect, useState } from 'react';
-import TextInput, { InputType } from 'Components/Form/TextInput/TextInput';
 import {
   UpdateSettings,
   UpdateSettingsVariables
 } from 'Graphql/mutations/types/UpdateSettings';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
-import Button from 'Components/Button/Button';
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import { GetSettings } from 'Graphql/queries/types/GetSettings';
-import HorizontalBar from 'Components/Layout/HorizontalBar/HorizontalBar';
-import ModalContainer from 'Components/Layout/ModalContainer/ModalContainer';
-import ModalLayoutInfo from 'Components/Layout/ModalContainer/layouts/ModalLayoutInfo/ModalLayoutInfo';
 import SettingsHeader from './components/SettingsHeader/SettingsHeader';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import cx from 'classnames';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';

@@ -1,6 +1,0 @@
-@import 'Styles/mixins';
-@import 'Styles/colors';
-
-.errorMessage {
-  @include input-footer($color-error);
-}

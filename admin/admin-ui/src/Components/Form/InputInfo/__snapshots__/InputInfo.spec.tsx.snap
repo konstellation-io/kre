@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`InputInfo matches snapshot 1`] = `
-<div
-  className="infoMessage show"
->
-  (some message)
-</div>
-`;

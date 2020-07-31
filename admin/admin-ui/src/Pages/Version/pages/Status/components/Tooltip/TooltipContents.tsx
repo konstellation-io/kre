@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import Button from 'Components/Button/Button';
+import { Button } from 'konstellation-web-components';
 import IconCopy from '@material-ui/icons/FileCopy';
 import cx from 'classnames';
 import styles from './Tooltip.module.scss';

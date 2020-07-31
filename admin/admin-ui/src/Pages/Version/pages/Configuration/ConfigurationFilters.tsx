@@ -1,10 +1,13 @@
-import Select, { SelectTheme } from 'Components/Form/Select/Select';
+import {
+  Button,
+  SearchSelect,
+  Select,
+  SelectTheme
+} from 'konstellation-web-components';
 
-import Button from 'Components/Button/Button';
 import { ConfigurationVariableType } from 'Graphql/types/globalTypes';
 import HideIcon from '@material-ui/icons/VisibilityOff';
 import React from 'react';
-import SearchSelect from 'Components/Form/SearchSelect/SearchSelect';
 import { VersionConfigurationFormData } from './Configuration';
 import ViewIcon from '@material-ui/icons/Visibility';
 import styles from './Configuration.module.scss';

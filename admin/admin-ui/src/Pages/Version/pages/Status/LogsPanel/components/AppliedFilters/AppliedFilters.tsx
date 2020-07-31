@@ -1,10 +1,7 @@
+import { Button, Chip, Left, Right } from 'konstellation-web-components';
 import React, { MouseEvent } from 'react';
 
-import Button from 'Components/Button/Button';
-import Chip from 'Components/Chip/Chip';
-import Left from 'Components/Layout/Left/Left';
 import { NodeSelection } from 'Graphql/client/typeDefs';
-import Right from 'Components/Layout/Right/Right';
 import { defaultFilters } from 'Graphql/client/resolvers/updateTabFilters';
 import styles from './AppliedFilters.module.scss';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';

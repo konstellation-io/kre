@@ -1,6 +1,6 @@
 import * as CHECK from 'Components/Form/check';
 
-import Button from 'Components/Button/Button';
+import { Button } from 'konstellation-web-components';
 import InputError from 'Components/Form/InputError/InputError';
 import Login from './Login';
 import React from 'react';

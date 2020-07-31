@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
+import { SearchSelect, Select } from 'konstellation-web-components';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
-import SearchSelect from 'Components/Form/SearchSelect/SearchSelect';
-import Select from 'Components/Form/Select/Select';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './UserFiltersAndActions.module.scss';

@@ -1,6 +1,6 @@
 import React, { MouseEvent } from 'react';
 
-import Button from 'Components/Button/Button';
+import { Button } from 'konstellation-web-components';
 import RemoveIcon from '@material-ui/icons/Delete';
 import styles from './ListItem.module.scss';
 

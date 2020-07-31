@@ -1,16 +1,18 @@
+import {
+  ErrorMessage,
+  GroupSelectData,
+  SpinnerCircular
+} from 'konstellation-web-components';
 import React, { useEffect, useState } from 'react';
 import SelectionsBar, {
   VersionChip
 } from './components/SelectionsBar/SelectionsBar';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
 
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import FiltersBar from './components/FiltersBar/FiltersBar';
-import { GroupSelectData } from 'Components/Form/GroupSelect/GroupSelect';
 import { Moment } from 'moment';
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import UserActivityList from './components/UserActivityList/UserActivityList';
 import { UserActivityType } from 'Graphql/types/globalTypes';
 import cx from 'classnames';

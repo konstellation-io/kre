@@ -1,7 +1,7 @@
+import { Left, Right } from 'konstellation-web-components';
+
 import { AccessLevel } from 'Graphql/types/globalTypes';
-import Left from 'Components/Layout/Left/Left';
 import React from 'react';
-import Right from 'Components/Layout/Right/Right';
 import styles from './UserRow.module.scss';
 
 type Props = {

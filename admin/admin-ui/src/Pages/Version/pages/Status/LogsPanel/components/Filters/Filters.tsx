@@ -1,20 +1,20 @@
-import GroupSelect, {
-  GroupSelectData
-} from 'Components/Form/GroupSelect/GroupSelect';
-import MultiSelect, {
+import {
+  GroupSelect,
+  GroupSelectData,
+  Left,
+  MultiSelect,
   MultiSelectOption,
-  SelectTheme
-} from 'Components/Form/MultiSelect/MultiSelect';
+  MultiSelectTheme,
+  Right,
+  SearchSelect
+} from 'konstellation-web-components';
 
 import DateFilter from './components/DatesFilter/DateFilter';
 import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';
-import Left from 'Components/Layout/Left/Left';
 import LevelIcon from 'Components/LevelIcon/LevelIcon';
 import { LogLevel } from 'Graphql/types/globalTypes';
 import { NodeSelection } from 'Graphql/client/typeDefs';
 import React from 'react';
-import Right from 'Components/Layout/Right/Right';
-import SearchSelect from 'Components/Form/SearchSelect/SearchSelect';
 import cx from 'classnames';
 import styles from './Filters.module.scss';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';
@@ -124,7 +124,7 @@ function Filters({ updateFilters, filterValues, versionId }: Props) {
             selectAllText="ALL LEVELS"
             options={levelOptions}
             formSelectedOptions={filterValues.levels || []}
-            theme={SelectTheme.LIGHT}
+            theme={MultiSelectTheme.LIGHT}
           />
         </div>
         <DateFilter

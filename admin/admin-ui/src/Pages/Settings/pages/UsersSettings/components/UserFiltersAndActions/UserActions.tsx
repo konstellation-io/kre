@@ -1,13 +1,12 @@
+import { Check, CustomOptionProps, Select } from 'konstellation-web-components';
 import {
   GET_USER_SETTINGS,
   GetUserSettings
 } from 'Graphql/client/queries/getUserSettings.graphql';
 import React, { FC } from 'react';
-import Select, { CustomOptionProps } from 'Components/Form/Select/Select';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
-import Check from 'Components/Form/Check/Check';
 import IconDelete from '@material-ui/icons/Delete';
 import IconRevoke from '@material-ui/icons/HighlightOff';
 import { UserSelection } from 'Graphql/client/typeDefs';

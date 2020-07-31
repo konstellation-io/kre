@@ -1,6 +1,6 @@
 import React, { MouseEvent } from 'react';
 
-import Button from 'Components/Button/Button';
+import { Button } from 'konstellation-web-components';
 import IconExpand from '@material-ui/icons/Fullscreen';
 import styles from './Box.module.scss';
 

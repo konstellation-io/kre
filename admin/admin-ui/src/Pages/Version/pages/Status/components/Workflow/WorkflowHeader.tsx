@@ -1,8 +1,7 @@
-import * as ICONS from 'Constants/icons';
-
 import Can from 'Components/Can/Can';
 import React from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
+import { TERMINAL } from 'konstellation-web-components';
 import styles from './Workflow.module.scss';
 
 type Props = {
@@ -21,7 +20,7 @@ function WorkflowHeader({ name = 'Workflow', onWorkflowClick }: Props) {
           title="Open logs for this workflow"
         >
           <SvgIcon className="icon-small">
-            <path d={ICONS.TERMINAL} />
+            <path d={TERMINAL} />
           </SvgIcon>
         </div>
       </Can>

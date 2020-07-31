@@ -1,10 +1,10 @@
 import {
+  Chip,
   GroupSelectData,
+  Left,
   flatSelections
-} from 'Components/Form/GroupSelect/GroupSelect';
+} from 'konstellation-web-components';
 
-import Chip from 'Components/Chip/Chip';
-import Left from 'Components/Layout/Left/Left';
 import React from 'react';
 import { VersionsData } from 'Hooks/useAllVersions';
 import { isEmpty } from 'lodash';

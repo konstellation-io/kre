@@ -8,6 +8,7 @@ import {
   GetServerLogsVariables
 } from 'Graphql/queries/types/GetServerLogs';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { SpinnerCircular, SpinnerLinear } from 'konstellation-web-components';
 import { Virtuoso, VirtuosoMethods } from 'react-virtuoso';
 
 import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';
@@ -16,8 +17,6 @@ import { LogFilters } from 'Graphql/types/globalTypes';
 import LogItem from './LogItem';
 import LogListHeader from './LogListHeader';
 import LogsFooter from '../LogsFooter/LogsFooter';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import SpinnerLinear from 'Components/LoadingComponents/SpinnerLinear/SpinnerLinear';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './LogsList.module.scss';

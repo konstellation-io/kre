@@ -1,4 +1,4 @@
-import Button from '../Button/Button';
+import { Button } from 'konstellation-web-components';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import { buildRoute } from 'Utils/routes';

@@ -1,4 +1,9 @@
 import {
+  Button,
+  ErrorMessage,
+  SpinnerCircular
+} from 'konstellation-web-components';
+import {
   GetVersionConfStatus,
   GetVersionConfStatusVariables
 } from 'Graphql/queries/types/GetVersionConfStatus';
@@ -6,12 +11,9 @@ import ROUTE, { VersionRouteParams } from 'Constants/routes';
 import React, { ReactElement } from 'react';
 import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 
-import Button from 'Components/Button/Button';
 import Can from 'Components/Can/Can';
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import Version from '../Version/Version';
 import { buildRoute } from 'Utils/routes';
 import { loader } from 'graphql.macro';

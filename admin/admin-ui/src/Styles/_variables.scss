@@ -1,14 +1,7 @@
+@import '~konstellation-web-components/styles/variables';
+
 $container-max-width-login: 960px;
 $container-max-width-add-element: 960px;
-
-$form-padding-width: 164px;
-$form-padding-height: 70px;
-
-$font-family: 'Montserrat', sans-serif;
-$font-weight: 300;
-$font-size-headline: 28px;
-$font-size-body: 13px;
-$font-size-small: 11px;
 
 $header-height: 40px;
 $runtime-menu-width: 70px;
@@ -17,8 +10,6 @@ $lateral-menu-width: 253px;
 $height-log-item: 24px;
 
 $version-statuses: 'PUBLISHED', 'STARTED', 'STOPPED', 'STARTING', 'STOPPING';
-
-$grid-unit: 8px;
 
 $logs-height: 22px;
 

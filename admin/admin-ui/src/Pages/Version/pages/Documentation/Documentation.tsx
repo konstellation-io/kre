@@ -1,15 +1,15 @@
+import ROUTES, { VersionRouteParams } from 'Constants/routes';
 import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 
+import { API_BASE_URL } from 'index';
 import CodeBlock from './CodeBlock';
+import CustomLink from './CustomLink';
 import MarkNav from 'markdown-navbar';
 import ReactMarkdown from 'react-markdown';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
-import styles from './Documentation.module.scss';
-import { useLocation, useParams } from 'react-router-dom';
+import { SpinnerCircular } from 'konstellation-web-components';
 import { buildRoute } from 'Utils/routes';
-import ROUTES, { VersionRouteParams } from 'Constants/routes';
-import CustomLink from './CustomLink';
-import { API_BASE_URL } from 'index';
+import styles from './Documentation.module.scss';
 
 function getHeader(tag: string) {
   return document.querySelectorAll(`[data-id="${tag}"]`)[0];

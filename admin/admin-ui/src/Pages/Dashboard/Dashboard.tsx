@@ -1,14 +1,17 @@
 import { AccessLevel, RuntimeStatus } from 'Graphql/types/globalTypes';
 import {
+  Button,
+  ErrorMessage,
+  SpinnerCircular
+} from 'konstellation-web-components';
+import {
   GetRuntimes,
   GetRuntimes_runtimes
 } from 'Graphql/queries/types/GetRuntimes';
 import React, { ReactElement } from 'react';
 
 import { ApolloError } from 'apollo-client';
-import Button from 'Components/Button/Button';
 import Can from 'Components/Can/Can';
-import ErrorMessage from 'Components/ErrorMessage/ErrorMessage';
 import Hexagon from 'Components/Shape/Hexagon/Hexagon';
 import HexagonBorder from 'Components/Shape/Hexagon/HexagonBorder';
 import HexagonPanel from 'Components/Layout/HexagonPanel/HexagonPanel';
@@ -16,7 +19,6 @@ import { History } from 'history';
 import Message from 'Components/Message/Message';
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import ROUTE from 'Constants/routes';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import { buildRoute } from 'Utils/routes';
 import { checkPermission } from 'rbac-rules';
 import { get } from 'lodash';

@@ -1,7 +1,6 @@
+import { Button, TextInput } from 'konstellation-web-components';
 import React, { useEffect } from 'react';
 
-import Button from 'Components/Button/Button';
-import TextInput from 'Components/Form/TextInput/TextInput';
 import { get } from 'lodash';
 import styles from './FormRowInput.module.scss';
 import { useForm } from 'react-hook-form';

@@ -1,5 +1,5 @@
-import Button from 'Components/Button/Button';
-import Calendar from 'Components/Form/Calendar/Calendar';
+import { Button, Calendar } from 'konstellation-web-components';
+
 import HideIcon from '@material-ui/icons/VisibilityOff';
 import { Moment } from 'moment';
 import React from 'react';

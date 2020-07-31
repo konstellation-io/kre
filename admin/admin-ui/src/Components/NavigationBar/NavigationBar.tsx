@@ -1,4 +1,9 @@
 import {
+  ErrorMessage,
+  SpinnerCircular,
+  VerticalBar
+} from 'konstellation-web-components';
+import {
   GetRuntimes,
   GetRuntimes_runtimes
 } from 'Graphql/queries/types/GetRuntimes';
@@ -6,14 +11,11 @@ import React, { memo } from 'react';
 
 import AddHexButton from './AddHexButton';
 import ConditionalLink from '../ConditionalLink/ConditionalLink';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import HexButton from './HexButton';
 import MultiHexButton from './MultiHexButton';
 import { NavLink } from 'react-router-dom';
 import ROUTE from 'Constants/routes';
 import { RuntimeStatus } from 'Graphql/types/globalTypes';
-import SpinnerCircular from '../LoadingComponents/SpinnerCircular/SpinnerCircular';
-import VerticalBar from '../Layout/VerticalBar/VerticalBar';
 import { buildRoute } from 'Utils/routes';
 import { checkPermission } from 'rbac-rules';
 import { get } from 'lodash';
