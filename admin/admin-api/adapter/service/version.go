@@ -34,7 +34,7 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 }
 
 // StartVersion creates resources in k8s
-func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Version) error {
+func (k *K8sVersionClient) Start(ctx context.Context, runtime *entity.Runtime, version *entity.Version) error {
 	wf := make([]*versionpb.Version_Workflow, len(version.Workflows))
 
 	for i, w := range version.Workflows {
@@ -95,9 +95,6 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 		},
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
 	_, err := k.client.Start(ctx, &req)
 	if err != nil {
 		return err
@@ -106,16 +103,13 @@ func (k *K8sVersionClient) Start(runtime *entity.Runtime, version *entity.Versio
 	return nil
 }
 
-func (k *K8sVersionClient) Stop(runtime *entity.Runtime, version *entity.Version) error {
+func (k *K8sVersionClient) Stop(ctx context.Context, runtime *entity.Runtime, version *entity.Version) error {
 	req := versionpb.Request{
 		Version: &versionpb.Version{
 			Name:      version.Name,
 			Namespace: runtime.GetNamespace(),
 		},
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
 
 	_, err := k.client.Stop(ctx, &req)
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 	"path"
 	"time"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/service"
@@ -42,6 +43,7 @@ var (
 
 // VersionInteractor contains app logic about Version entities
 type VersionInteractor struct {
+	cfg                    *config.Config
 	logger                 logging.Logger
 	versionRepo            repository.VersionRepo
 	runtimeRepo            repository.RuntimeRepo
@@ -56,6 +58,7 @@ type VersionInteractor struct {
 
 // NewVersionInteractor creates a new interactor
 func NewVersionInteractor(
+	cfg *config.Config,
 	logger logging.Logger,
 	versionRepo repository.VersionRepo,
 	runtimeRepo repository.RuntimeRepo,
@@ -68,6 +71,7 @@ func NewVersionInteractor(
 	docGenerator version.DocGenerator,
 ) *VersionInteractor {
 	return &VersionInteractor{
+		cfg,
 		logger,
 		versionRepo,
 		runtimeRepo,
@@ -250,87 +254,141 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 }
 
 // Start create the resources of the given Version
-func (i *VersionInteractor) Start(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+func (i *VersionInteractor) Start(
+	ctx context.Context,
+	loggedUserID string,
+	versionID string,
+	comment string,
+) (*entity.Version, chan *entity.Version, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	i.logger.Infof("The user %s is starting version %s", loggedUserID, versionID)
 
 	v, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	if v.Status != entity.VersionStatusStopped {
-		return nil, ErrInvalidVersionStatusBeforeStarting
+	if v.Status != entity.VersionStatusStopped && v.Status != entity.VersionStatusStopping {
+		return nil, nil, ErrInvalidVersionStatusBeforeStarting
 	}
 
 	if !v.Config.Completed {
-		return nil, ErrVersionConfigIncomplete
+		return nil, nil, ErrVersionConfigIncomplete
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	err = i.versionService.Start(runtime, v)
+	notifyStatusCh := make(chan *entity.Version, 1)
+
+	err = i.versionRepo.SetStatus(ctx, v.ID, entity.VersionStatusStarting)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	v.Status = entity.VersionStatusStarted // TODO: First go to Starting
-	err = i.versionRepo.Update(v)
-	if err != nil {
-		return nil, err
-	}
+	// Notify intermediate state
+	v.Status = entity.VersionStatusStarting
+	notifyStatusCh <- v
 
 	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, runtime, v, comment)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return v, nil
+
+	go i.notifyStatusChange(runtime, v, entity.VersionStatusStarted, notifyStatusCh)
+
+	return v, notifyStatusCh, nil
 }
 
 // Stop removes the resources of the given Version
-func (i *VersionInteractor) Stop(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+func (i *VersionInteractor) Stop(
+	ctx context.Context,
+	loggedUserID string,
+	versionID string,
+	comment string,
+) (*entity.Version, chan *entity.Version, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	i.logger.Infof("The user %s is stopping version %s", loggedUserID, versionID)
 
 	v, err := i.versionRepo.GetByID(versionID)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	if v.Status != entity.VersionStatusStarted {
-		return nil, ErrInvalidVersionStatusBeforeStopping
+	if v.Status != entity.VersionStatusStarted && v.Status != entity.VersionStatusStarting {
+		return nil, nil, ErrInvalidVersionStatusBeforeStopping
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	err = i.versionService.Stop(runtime, v)
+	err = i.versionRepo.SetStatus(ctx, v.ID, entity.VersionStatusStopping)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	v.Status = entity.VersionStatusStopped
-	err = i.versionRepo.Update(v)
-	if err != nil {
-		return nil, err
-	}
+	notifyStatusCh := make(chan *entity.Version, 1)
+
+	// Notify intermediate state
+	v.Status = entity.VersionStatusStopping
+	notifyStatusCh <- v
 
 	err = i.userActivityInteractor.RegisterStopAction(loggedUserID, runtime, v, comment)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return v, nil
+
+	go i.notifyStatusChange(runtime, v, entity.VersionStatusStopped, notifyStatusCh)
+
+	return v, notifyStatusCh, nil
+}
+
+func (i *VersionInteractor) notifyStatusChange(
+	runtime *entity.Runtime,
+	version *entity.Version,
+	status entity.VersionStatus,
+	notifyStatusCh chan *entity.Version,
+) {
+	// WARNING: This function doesn't handle error because there is no  ERROR status defined for a Version
+	ctx, cancel := context.WithTimeout(context.Background(), i.cfg.Application.VersionStatusTimeout)
+	defer func() {
+		cancel()
+		close(notifyStatusCh)
+		i.logger.Debug("[versionInteractor.notifyStatusChange] channel closed")
+	}()
+
+	if status == entity.VersionStatusStarted {
+		err := i.versionService.Start(ctx, runtime, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.notifyStatusChange] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+	}
+
+	if status == entity.VersionStatusStopped {
+		err := i.versionService.Stop(ctx, runtime, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.notifyStatusChange] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+	}
+
+	err := i.versionRepo.SetStatus(ctx, version.ID, status)
+	if err != nil {
+		i.logger.Errorf("[versionInteractor.Start] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+	}
+	version.Status = status
+	notifyStatusCh <- version
+	i.logger.Infof("[versionInteractor.Start] '%s' version status changed to %s", version.Name, status)
+
 }
 
 // Publish set a Version as published on DB and K8s
@@ -499,7 +557,7 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 	return version, nil
 }
 
-func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID, versionId string) (<-chan *entity.Node, error) {
+func (i *VersionInteractor) WatchNodeStatus(ctx context.Context, loggedUserID, versionId string) (<-chan *entity.Node, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView); err != nil {
 		return nil, err
 	}
@@ -514,7 +572,7 @@ func (i *VersionInteractor) WatchVersionStatus(ctx context.Context, loggedUserID
 		return nil, err
 	}
 
-	return i.monitoringService.VersionStatus(ctx, runtime, v.Name)
+	return i.monitoringService.WatchNodeStatus(ctx, runtime, v.Name)
 }
 
 func (i *VersionInteractor) WatchNodeLogs(

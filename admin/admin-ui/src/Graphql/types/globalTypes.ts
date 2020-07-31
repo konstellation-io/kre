@@ -59,7 +59,8 @@ export enum VersionStatus {
   PUBLISHED = 'PUBLISHED',
   STARTED = 'STARTED',
   STARTING = 'STARTING',
-  STOPPED = 'STOPPED'
+  STOPPED = 'STOPPED',
+  STOPPING = 'STOPPING'
 }
 
 export interface ConfigurationVariablesInput {

@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: minio
-          image: minio/minio:RELEASE.2019-10-02T21-19-38Z
+          image: "{{ .Values.minio.image.repository }}:{{ .Values.minio.image.tag }}"
           args:
             - server
             - /data

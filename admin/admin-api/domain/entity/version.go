@@ -10,12 +10,17 @@ const (
 	VersionStatusStarting  VersionStatus = "STARTING"
 	VersionStatusStarted   VersionStatus = "STARTED"
 	VersionStatusPublished VersionStatus = "PUBLISHED"
+	VersionStatusStopping  VersionStatus = "STOPPING"
 	VersionStatusStopped   VersionStatus = "STOPPED"
 )
 
 func (e VersionStatus) IsValid() bool {
 	switch e {
-	case VersionStatusStarting, VersionStatusStarted, VersionStatusPublished, VersionStatusStopped:
+	case VersionStatusStarting,
+		VersionStatusStarted,
+		VersionStatusPublished,
+		VersionStatusStopping,
+		VersionStatusStopped:
 		return true
 	}
 	return false

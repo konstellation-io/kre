@@ -2,9 +2,14 @@ package version
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/cache"
 
 	"github.com/konstellation-io/kre/admin/k8s-manager/config"
 	"github.com/konstellation-io/kre/admin/k8s-manager/entity"
@@ -101,4 +106,62 @@ func (m *Manager) UpdateConfig(ctx context.Context, version *entity.Version) err
 	}
 
 	return m.restartPodsSync(ctx, version)
+}
+
+func (m *Manager) WaitForVersionPods(ctx context.Context, version *entity.Version) error {
+	ns := version.Namespace
+	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s'", ns, version.Name)
+
+	nodes := []string{"entrypoint"}
+	for _, w := range version.Workflows {
+		for _, n := range w.Nodes {
+			nodes = append(nodes, n.Id)
+		}
+	}
+
+	labelSelector := fmt.Sprintf("version-name=%s,type in (node, entrypoint)", version.Name)
+	waitCh := make(chan struct{}, 1)
+	resolver := NewStatusResolver(m.logger, nodes, waitCh)
+
+	stopCh := m.watchResources(ns, labelSelector, cache.ResourceEventHandlerFuncs{
+		AddFunc:    resolver.onAdd,
+		UpdateFunc: resolver.onUpdate,
+		DeleteFunc: resolver.onDelete,
+	})
+	defer close(stopCh) // The k8s informer opened in WatchNodeStatus will be stopped when stopCh is closed.
+
+	for {
+		select {
+		case <-ctx.Done():
+			m.logger.Infof("[WaitForVersionPods] context cancelled. stop waiting.")
+			return nil
+
+		case <-time.After(10 * time.Minute):
+			return fmt.Errorf("[WaitForVersionPods] timeout waiting for version pods")
+
+		case <-waitCh:
+			m.logger.Debugf("[WaitForVersionPods] all version pods for '%s' are running", version.Name)
+			return nil
+		}
+	}
+}
+
+func (m *Manager) watchResources(ns, labelSelector string, handlers cache.ResourceEventHandler) chan struct{} {
+	stopCh := make(chan struct{})
+
+	go func() {
+		m.logger.Debugf("Starting informer with labelSelector: %s ", labelSelector)
+
+		factory := informers.NewSharedInformerFactoryWithOptions(m.clientset, 0,
+			informers.WithNamespace(ns),
+			informers.WithTweakListOptions(func(options *metav1.ListOptions) {
+				options.LabelSelector = labelSelector
+			}))
+
+		informer := factory.Core().V1().Pods().Informer()
+		informer.AddEventHandler(handlers)
+		informer.Run(stopCh)
+	}()
+
+	return stopCh
 }

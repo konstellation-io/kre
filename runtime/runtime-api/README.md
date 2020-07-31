@@ -17,6 +17,6 @@ $> mockery -all
 
 Before running the first time this code you need to install this specific kubernetes client go version:
 ```
-    go get k8s.io/client-go@kubernetes-1.15.4
+    go get k8s.io/client-go@kubernetes-1.15.12
     go run .
 ```

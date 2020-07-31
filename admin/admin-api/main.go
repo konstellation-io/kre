@@ -55,7 +55,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	paswordGenerator := runtime.NewPasswordGenerator()
+	passwordGenerator := runtime.NewPasswordGenerator()
 
 	idGenerator := version.NewIDGenerator()
 	docGenerator := version.NewHTTPStaticDocGenerator(cfg, logger)
@@ -78,7 +78,7 @@ func main() {
 		runtimeRepo,
 		runtimeService,
 		userActivityInteractor,
-		paswordGenerator,
+		passwordGenerator,
 		accessControl,
 	)
 
@@ -94,6 +94,7 @@ func main() {
 
 	minioCreateStorage := minio.CreateStorage
 	versionInteractor := usecase.NewVersionInteractor(
+		cfg,
 		logger,
 		versionMongoRepo,
 		runtimeRepo,

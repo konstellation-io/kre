@@ -2,7 +2,6 @@ package runtime
 
 import (
 	"io/ioutil"
-	"log"
 
 	"github.com/ghodss/yaml"
 	apiv1 "k8s.io/api/core/v1"
@@ -10,23 +9,23 @@ import (
 )
 
 func (m *Manager) createRBAC(ns string) error {
-	log.Printf("Creating RBAC: %v", ns)
+	m.logger.Infof("Creating RBAC: %v", ns)
 
 	err := m.createRole(ns)
 	if err != nil {
-		log.Printf("error creating role: %v", err)
+		m.logger.Errorf("error creating role: %v", err)
 		return err
 	}
 
 	err = m.createServiceAccount(ns)
 	if err != nil {
-		log.Printf("error creating service account: %v", err)
+		m.logger.Errorf("error creating service account: %v", err)
 		return err
 	}
 
 	err = m.createRoleBinding(ns)
 	if err != nil {
-		log.Printf("error creating role binding: %v", err)
+		m.logger.Errorf("error creating role binding: %v", err)
 		return err
 	}
 

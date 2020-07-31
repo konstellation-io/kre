@@ -35,10 +35,12 @@ delete_runtimes() {
 
   for NAME in $RUNTIMES; do
     RUNTIME="kre-${NAME}"
-    RUNTIME_EXISTS=$(kubectl get ns -o custom-columns=":metadata.name" --no-headers | grep "^${RUNTIME}$")
+
+    delete_runtime_script "$NAME" | execute_mongo_script
+
+    RUNTIME_EXISTS=$( kubectl get ns -o custom-columns=":metadata.name" --no-headers | grep "^${RUNTIME}$" || echo "")
 
     if [ "$RUNTIME_EXISTS" != "" ]; then
-      delete_runtime_script "$NAME" | execute_mongo_script
       echo_check "  removed runtime '$RUNTIME' from MongoDB."
 
       echo_wait "  deleting runtime '$RUNTIME' "
@@ -52,6 +54,7 @@ delete_runtimes() {
 }
 
 
+# shellcheck disable=SC2086
 delete_version() {
   NAME=$1
   VERSION=$2
@@ -62,13 +65,13 @@ delete_version() {
   }
   echo_info "Deleting '$VERSION' on $NAMESPACE"
 
-  DEPLOYMENT_NAMES=$(kubectl -n "$NAMESPACE" get deployment -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers)
-  POD_NAMES=$(kubectl -n "$NAMESPACE" get pod -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers)
-  CONFIG_NAMES=$(kubectl -n "$NAMESPACE" get configmap -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers)
+  DEPLOYMENT_NAMES=$(kubectl -n "$NAMESPACE" get deployment -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+  POD_NAMES=$(kubectl -n "$NAMESPACE" get pod -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+  CONFIG_NAMES=$(kubectl -n "$NAMESPACE" get configmap -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
 
-  [ -n "$DEPLOYMENT_NAMES" ] && echo_info "Deleting deployments" && kubectl -n "$NAMESPACE" delete deployment "$DEPLOYMENT_NAMES" --grace-period=0 --force
-  [ -n "$POD_NAMES" ] && echo_info "Deleting pods" && kubectl -n "$NAMESPACE" delete pod "$POD_NAMES" --grace-period=0 --force
-  [ -n "$CONFIG_NAMES" ] && echo_info "Deleting configs" && kubectl -n "$NAMESPACE" delete configmap "$CONFIG_NAMES" --grace-period=0 --force
+  [ -n "$DEPLOYMENT_NAMES" ] && echo_info "Deleting deployments" && kubectl -n "$NAMESPACE" delete deployment $DEPLOYMENT_NAMES --grace-period=0 --force
+  [ -n "$POD_NAMES" ] && echo_info "Deleting pods" && kubectl -n "$NAMESPACE" delete pod $POD_NAMES --grace-period=0 --force
+  [ -n "$CONFIG_NAMES" ] && echo_info "Deleting configs" && kubectl -n "$NAMESPACE" delete configmap $CONFIG_NAMES --grace-period=0 --force
   mongo_script "$VERSION" | execute_mongo_script
 }
 

@@ -22,7 +22,7 @@ message NodeLogsResponse {
 }
 
 message NodeStatusRequest {
-  string versionName = 2;
+  string versionName = 1;
 }
 
 message NodeStatusResponse {
@@ -65,7 +65,7 @@ message GetMetricsResponse {
 
 service MonitoringService {
   rpc NodeLogs (NodeLogsRequest) returns (stream NodeLogsResponse);
-  rpc NodeStatus (NodeStatusRequest) returns (stream NodeStatusResponse);
   rpc SearchLogs (SearchLogsRequest) returns (SearchLogsResponse);
   rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
+  rpc WatchNodeStatus (NodeStatusRequest) returns (stream NodeStatusResponse);
 };

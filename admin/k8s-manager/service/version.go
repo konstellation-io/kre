@@ -33,12 +33,19 @@ func NewVersionService(
 }
 
 // Start starts a version on Kubernetes.
-func (v *VersionService) Start(_ context.Context, req *versionpb.Request) (*versionpb.Response, error) {
+func (v *VersionService) Start(ctx context.Context, req *versionpb.Request) (*versionpb.Response, error) {
 	fmt.Println("Start request received")
 
-	err := v.manager.Start(&entity.Version{Version: *req.GetVersion()})
+	reqVersion := &entity.Version{Version: *req.GetVersion()}
+
+	err := v.manager.Start(reqVersion)
 	if err != nil {
 		fmt.Println(err)
+		return nil, err
+	}
+
+	err = v.manager.WaitForVersionPods(ctx, reqVersion)
+	if err != nil {
 		return nil, err
 	}
 

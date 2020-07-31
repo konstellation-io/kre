@@ -21,9 +21,11 @@ import (
 )
 
 var runtimeCreatedChannels map[string]chan *entity.Runtime
+var versionStatusChannels map[string]chan *entity.Version
 
 func init() {
 	runtimeCreatedChannels = map[string]chan *entity.Runtime{}
+	versionStatusChannels = map[string]chan *entity.Version{}
 }
 
 type Resolver struct {
@@ -97,12 +99,44 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 
 func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.Start(ctx, loggedUserID, input.VersionID, input.Comment)
+
+	v, notifyCh, err := r.versionInteractor.Start(ctx, loggedUserID, input.VersionID, input.Comment)
+	if err != nil {
+		return nil, err
+	}
+
+	go r.notifyVersionStatus(notifyCh)
+
+	return v, err
 }
 
 func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.Stop(ctx, loggedUserID, input.VersionID, input.Comment)
+
+	v, notifyCh, err := r.versionInteractor.Stop(ctx, loggedUserID, input.VersionID, input.Comment)
+	if err != nil {
+		return nil, err
+	}
+
+	go r.notifyVersionStatus(notifyCh)
+
+	return v, err
+}
+
+func (r *mutationResolver) notifyVersionStatus(notifyCh chan *entity.Version) {
+	for {
+		select {
+		case v, ok := <-notifyCh:
+			if !ok {
+				r.logger.Debugf("[notifyVersionStatus] received nil on notifyCh. closing notifier")
+				return
+			}
+
+			for _, vs := range versionStatusChannels {
+				vs <- v
+			}
+		}
+	}
 }
 
 func (r *mutationResolver) UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*entity.Version, error) {
@@ -340,9 +374,23 @@ func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *enti
 	return runtimeCreatedChan, nil
 }
 
+func (r *subscriptionResolver) WatchVersionStatus(ctx context.Context) (<-chan *entity.Version, error) {
+	id := uuid.New().String()
+
+	versionStatusCh := make(chan *entity.Version, 1)
+	go func() {
+		<-ctx.Done()
+		delete(versionStatusChannels, id)
+	}()
+
+	versionStatusChannels[id] = versionStatusCh
+
+	return versionStatusCh, nil
+}
+
 func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.WatchVersionStatus(ctx, loggedUserID, versionID)
+	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, versionID)
 }
 
 func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
