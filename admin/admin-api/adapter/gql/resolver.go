@@ -357,7 +357,7 @@ func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runt
 }
 
 func (r *runtimeResolver) MeasurementsURL(_ context.Context, obj *entity.Runtime) (string, error) {
-	return obj.GetMeasurementURL(r.cfg.BaseDomainName), nil
+	return obj.GetMeasurementURL(r.cfg.Admin.BaseURL), nil
 }
 
 func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {

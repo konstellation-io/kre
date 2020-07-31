@@ -72,6 +72,6 @@ func (r *Runtime) GetInfluxURL() string {
 	return fmt.Sprintf("http://%s-influxdb:8086", r.GetNamespace())
 }
 
-func (r *Runtime) GetMeasurementURL(baseDomainName string) string {
-	return fmt.Sprintf("https://chronograf.%s.%s", r.GetNamespace(), baseDomainName)
+func (r *Runtime) GetMeasurementURL(baseURL string) string {
+	return fmt.Sprintf("%s/measurements/%s", baseURL, r.GetNamespace())
 }

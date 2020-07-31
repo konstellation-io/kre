@@ -6,4 +6,4 @@ dependencies:
   repository: https://influxdata.github.io/helm-charts
   version: 4.8.1
 digest: sha256:66c8f0c3ce8a077fb5b5b68ebddd101c5a6db3de5a5016bbf6082f8e91dbb9e9
-generated: "2020-07-31T08:36:31.177229621+02:00"
+generated: "2020-07-31T12:33:00.6261189+02:00"
