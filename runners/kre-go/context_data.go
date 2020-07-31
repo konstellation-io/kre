@@ -21,7 +21,7 @@ type contextData struct {
 	cfg    config.Config
 	nc     *nats.Conn
 	mongoM mongodb.Manager
-	Logger *simplelogger.SimpleLogger
+	logger *simplelogger.SimpleLogger
 }
 
 func (c *contextData) Find(colName string, query QueryData, res interface{}) error {
@@ -42,7 +42,7 @@ func (c *contextData) Save(collection string, data interface{}) error {
 		Doc:  data,
 	})
 	if err != nil {
-		c.Logger.Infof("Error generating SaveDataMsg JSON: %s", err)
+		c.logger.Infof("Error generating SaveDataMsg JSON: %s", err)
 	}
 
 	_, err = c.nc.Request(c.cfg.NATS.MongoWriterSubject, msg, saveDataTimeout)

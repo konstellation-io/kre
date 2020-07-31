@@ -11,9 +11,9 @@ import (
 
 // Config holds the configuration values for the application.
 type Config struct {
-	DevelopmentMode bool `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
-
-	Application struct {
+	DevelopmentMode bool   `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
+	BaseDomainName  string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`
+	Application     struct {
 		VersionStatusTimeout time.Duration `yaml:"versionStatusTimeout"`
 	} `yaml:"application"`
 	Admin struct {

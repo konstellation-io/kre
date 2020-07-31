@@ -13,6 +13,7 @@ type Config struct {
 	BasePath  string
 	NATS      ConfigNATS
 	MongoDB   MongoDB
+	InfluxDB  InfluxDB
 }
 
 type MongoDB struct {
@@ -26,6 +27,10 @@ type ConfigNATS struct {
 	InputSubject       string
 	OutputSubject      string
 	MongoWriterSubject string
+}
+
+type InfluxDB struct {
+	URI string
 }
 
 func NewConfig(logger *simplelogger.SimpleLogger) Config {
@@ -44,6 +49,9 @@ func NewConfig(logger *simplelogger.SimpleLogger) Config {
 			Address:     getCfgFromEnv(logger, "KRT_MONGO_URI"),
 			DBName:      getCfgFromEnv(logger, "KRT_MONGO_DB_NAME"),
 			ConnTimeout: 120,
+		},
+		InfluxDB: InfluxDB{
+			URI: getCfgFromEnv(logger, "KRT_INFLUX_URI"),
 		},
 	}
 }

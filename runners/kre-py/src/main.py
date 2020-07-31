@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+from datetime import datetime
 import importlib.util
 import os
 import sys
@@ -9,31 +9,9 @@ import pymongo
 import inspect
 
 from kre_nats import KreNatsMessage
-from kre_context import HandlerContext
+from context import HandlerContext
 from kre_runner import Runner
-
-NATS_FLUSH_TIMEOUT = 10
-
-
-class Config:
-    def __init__(self):
-        # Mandatory variables
-        try:
-            self.krt_version_id = os.environ['KRT_VERSION_ID']
-            self.krt_version = os.environ['KRT_VERSION']
-            self.krt_node_name = os.environ['KRT_NODE_NAME']
-            self.nats_server = os.environ['KRT_NATS_SERVER']
-            self.nats_input = os.environ['KRT_NATS_INPUT']
-            self.nats_output = os.environ['KRT_NATS_OUTPUT']
-            self.nats_mongo_writer = os.environ['KRT_NATS_MONGO_WRITER']
-            self.base_path = os.environ['KRT_BASE_PATH']
-            self.handler_path = os.environ['KRT_HANDLER_PATH']
-            self.mongo_db_name = os.environ['KRT_MONGO_DB_NAME']
-            self.mongo_uri = os.environ['KRT_MONGO_URI']
-            self.nats_flush_timeout = NATS_FLUSH_TIMEOUT
-
-        except Exception as err:
-            raise Exception(f"error reading config: the {str(err)} env var is missing")
+from config import Config
 
 
 class NodeRunner(Runner):
@@ -42,6 +20,9 @@ class NodeRunner(Runner):
         name = f"{config.krt_version}-{config.krt_node_name}"
         Runner.__init__(self, name, config)
         self.handler_ctx = None
+        self.handler_init_fn = None
+        self.handler_fn = None
+        self.mongo_conn = None
         self.load_handler()
 
     def load_handler(self):
@@ -99,9 +80,9 @@ class NodeRunner(Runner):
     def create_message_cb(self):
         async def message_cb(msg):
             start = time.time()
-            try:
-                request_msg = KreNatsMessage(msg=msg)
+            request_msg = KreNatsMessage(msg=msg)
 
+            try:
                 if msg.reply == "" and request_msg.reply == "":
                     raise Exception("the reply subject was not found")
 
@@ -125,13 +106,23 @@ class NodeRunner(Runner):
                 await self.nc.flush(timeout=self.config.nats_flush_timeout)
 
                 end = time.time()
-                self.logger.info(f"version[{self.handler_ctx.__config__.krt_version}] "
-                                 f"node[{self.handler_ctx.__config__.krt_node_name}] "
-                                 f"reply[{request_msg.reply}] "
-                                 f"start[{datetime.datetime.utcfromtimestamp(start).isoformat()}] "
-                                 f"end[{datetime.datetime.utcfromtimestamp(end).isoformat()}] "
-                                 f"elapsed[{round(end - start, 2)}]"
-                                 )
+                elapsed = end - start
+                cfg = self.handler_ctx.__config__
+
+                self.logger.debug(f"version[{cfg.krt_version}] "
+                                  f"node[{cfg.krt_node_name}] "
+                                  f"reply[{request_msg.reply}] "
+                                  f"start[{datetime.utcfromtimestamp(start).isoformat()}] "
+                                  f"end[{datetime.utcfromtimestamp(end).isoformat()}] "
+                                  f"elapsed[{round(elapsed, 2)}]")
+
+                # Save the elapsed time measurement
+                fields = {"elapsed": elapsed}
+                tags = {
+                    "version": cfg.krt_version,
+                    "node": cfg.krt_node_name,
+                }
+                self.handler_ctx.measurement.save("node_elapsed_time", fields, tags)
 
             except Exception as err:
                 tb = traceback.format_exc()

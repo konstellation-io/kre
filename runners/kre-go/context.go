@@ -18,11 +18,12 @@ var (
 )
 
 type HandlerContext struct {
-	cfg     config.Config
-	values  map[string]interface{}
-	Logger  *simplelogger.SimpleLogger
-	Metrics *contextMetrics
-	DB      *contextData
+	cfg         config.Config
+	values      map[string]interface{}
+	Logger      *simplelogger.SimpleLogger
+	Prediction  *contextPrediction
+	Measurement *contextMeasurement
+	DB          *contextData
 }
 
 func NewHandlerContext(cfg config.Config, nc *nats.Conn, mongoM mongodb.Manager, logger *simplelogger.SimpleLogger) *HandlerContext {
@@ -30,16 +31,17 @@ func NewHandlerContext(cfg config.Config, nc *nats.Conn, mongoM mongodb.Manager,
 		cfg:    cfg,
 		values: map[string]interface{}{},
 		Logger: logger,
-		Metrics: &contextMetrics{
+		Prediction: &contextPrediction{
 			cfg:    cfg,
 			nc:     nc,
-			Logger: logger,
+			logger: logger,
 		},
+		Measurement: NewContextMeasurement(cfg, logger),
 		DB: &contextData{
 			cfg:    cfg,
 			nc:     nc,
 			mongoM: mongoM,
-			Logger: logger,
+			logger: logger,
 		},
 	}
 }

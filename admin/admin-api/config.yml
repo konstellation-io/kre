@@ -1,3 +1,4 @@
+baseDomainName: "local"
 application:
   versionStatusTimeout: 2m
 admin:

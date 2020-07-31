@@ -16,7 +16,8 @@ The context object received by theses functions, has the following methods:
 ctx.path("relative/path.xxx")
 ctx.set("label", value)
 ctx.get("label")
-await ctx.metrics.save("predicted_value", "true_value", "date", "error")
+ctx.measurement.save("measurement", fields_dict, tags_dict)
+await ctx.prediction.save("predicted_value", "true_value", "date", "error")
 ```
 
 The runner will have the following environment variables:
@@ -50,9 +51,9 @@ async def handler(ctx, data):
   categories = ctx.get("categories")
 
   # Saves metrics in MongoDB DB sending a message to the MongoWriter queue
-  await ctx.metrics.save(date="2020-04-06T09:02:09.277853Z",predicted_value="class_x",true_value="class_y")
-  await ctx.metrics.save(error=ctx.ERR_MISSING_VALUES, date="2020-04-07T00:00:00.0Z")
-  await ctx.metrics.save(error=ctx.ERR_NEW_LABELS) # If the date is not set, the 'date' field value will be now
+  await ctx.prediction.save(date="2020-04-06T09:02:09.277853Z",predicted_value="class_x",true_value="class_y")
+  await ctx.prediction.save(error=ctx.ERR_MISSING_VALUES, date="2020-04-07T00:00:00.0Z")
+  await ctx.prediction.save(error=ctx.ERR_NEW_LABELS) # If the date is not set, the 'date' field value will be now
 
   normalized_data = np.xxx(categories)
   normalized_data = pd.xxx(normalized_data)

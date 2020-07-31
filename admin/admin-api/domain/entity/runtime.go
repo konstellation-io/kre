@@ -67,3 +67,11 @@ func (r *Runtime) GetMongoURI(replicas int) string {
 	}
 	return fmt.Sprintf("mongodb://%s@%s/admin?replicaSet=rs0", creds, strings.Join(address, ","))
 }
+
+func (r *Runtime) GetInfluxURL() string {
+	return fmt.Sprintf("http://%s-influxdb:8086", r.GetNamespace())
+}
+
+func (r *Runtime) GetMeasurementURL(baseDomainName string) string {
+	return fmt.Sprintf("https://chronograf.%s.%s", r.GetNamespace(), baseDomainName)
+}

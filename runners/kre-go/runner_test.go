@@ -34,8 +34,8 @@ func handler(ctx *HandlerContext, data []byte) (interface{}, error) {
 	ctx.Logger.Info(greetingText)
 
 	// Saves metrics in MongoDB DB sending a message to the MongoWriter queue
-	// ctx.Metrics.Save(time.Now(), "class_x", "class_y")
-	// ctx.Metric.SaveError(ErrNewLabels)
+	// ctx.Prediction.Save(time.Now(), "class_x", "class_y")
+	// ctx.Prediction.SaveError(ErrNewLabels)
 
 	out := Output{}
 	out.Greeting = greetingText

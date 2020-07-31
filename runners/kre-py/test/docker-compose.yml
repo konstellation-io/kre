@@ -9,3 +9,7 @@ services:
     image: "mongo:4.2"
     ports:
       - "27017:27017"
+  influx:
+    image: "quay.io/influxdb/influxdb:2.0.0-beta"
+    ports:
+      - "9999:9999"

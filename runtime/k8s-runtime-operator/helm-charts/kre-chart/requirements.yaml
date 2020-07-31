@@ -3,3 +3,6 @@ dependencies:
     version: "3.17.0"
     repository: https://kubernetes-charts.storage.googleapis.com/
     alias: mongo
+  - name: influxdb
+    version: "4.8.1"
+    repository: https://influxdata.github.io/helm-charts

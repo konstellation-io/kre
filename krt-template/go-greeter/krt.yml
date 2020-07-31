@@ -6,7 +6,7 @@ entrypoint:
 
 nodes:
   - name: greeter
-    image: konstellation/kre-go:1.0.3
+    image: konstellation/kre-go:latest
     src: bin/greeter
 
 workflows:
