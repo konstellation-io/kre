@@ -10,6 +10,7 @@ echo "Compiling go-greeter source code"
 echo ""
 
 cd go-greeter/src/greeter
+export GOARCH=arm64
 go build -o ../../bin/greeter .
 cd ../../../
 

@@ -29,7 +29,16 @@ config:
         enabled: true
         storageClass: standard
         size: 5Gi
-
+    cronograf:
+      persistentVolume:
+        enabled: true
+        storageClass: standard
+        size: 1Gi
+    influxdb:
+      persistentVolume:
+        enabled: true
+        storageClass: standard
+        size: 5Gi
 
 adminApi:
   image:

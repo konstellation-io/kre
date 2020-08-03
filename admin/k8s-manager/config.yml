@@ -16,3 +16,11 @@ mongo:
   persistentVolume:
     storageClass: "standard"
     size: 5G
+cronograf:
+  persistentVolume:
+    storageClass: "standard"
+    size: 1G
+influxdb:
+  persistentVolume:
+    storageClass: "standard"
+    size: 5G

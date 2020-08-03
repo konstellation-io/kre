@@ -73,10 +73,7 @@ func (k *K8sVersionClient) Start(ctx context.Context, runtime *entity.Runtime, v
 		}
 	}
 
-	totalMongoReplicas := 3
-	if k.cfg.DevelopmentMode {
-		totalMongoReplicas = 1
-	}
+	totalMongoReplicas := 1
 
 	req := versionpb.Request{
 		Version: &versionpb.Version{

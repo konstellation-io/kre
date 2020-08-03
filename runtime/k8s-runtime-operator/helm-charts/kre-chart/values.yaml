@@ -31,6 +31,13 @@ minio:
   storage:
     size: 1Gi
 
+chronograf:
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 2Gi
+
 influxdb:
   config:
     http:

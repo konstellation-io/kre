@@ -32,7 +32,7 @@ WORKDIR /app
 COPY Pipfile* ./
 
 RUN python3 -m pip install pipenv && \
-    pipenv install --system --deploy
+    pipenv install --deploy
 
 COPY src src
 COPY entrypoint.sh ./

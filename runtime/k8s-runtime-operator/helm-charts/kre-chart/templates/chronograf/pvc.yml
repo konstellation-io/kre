@@ -5,10 +5,10 @@ metadata:
   labels:
     app: chronograf
   annotations:
-    volume.beta.kubernetes.io/storage-class: standard
+    volume.beta.kubernetes.io/storage-class: {{ .Values.chronograf.persistence.storageClass }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.chronograf.persistence.accessMode }}
   resources:
     requests:
-      storage: 6Gi
+      storage: {{ .Values.chronograf.persistence.size }}

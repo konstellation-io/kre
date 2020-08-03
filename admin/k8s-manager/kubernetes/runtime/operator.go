@@ -71,6 +71,18 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 						"size": m.config.SharedStorageSize,
 					},
 				},
+				"cronograf": map[string]interface{}{
+					"persistence": map[string]interface{}{
+						"storageClass": m.config.Cronograf.PersistentVolume.StorageClass,
+						"size":         m.config.Cronograf.PersistentVolume.Size,
+					},
+				},
+				"influxdb": map[string]interface{}{
+					"persistence": map[string]interface{}{
+						"storageClass": m.config.InfluxDB.PersistentVolume.StorageClass,
+						"size":         m.config.InfluxDB.PersistentVolume.Size,
+					},
+				},
 			},
 		},
 	}
