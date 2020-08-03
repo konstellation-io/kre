@@ -1,4 +1,4 @@
-import { Button, CHECK, Select, TextInput } from 'konstellation-web-components';
+import { Button, CHECK, Select, TextInput } from 'kwc';
 import {
   CreateUser,
   CreateUserVariables,

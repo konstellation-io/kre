@@ -1,9 +1,9 @@
 import { dashboardErrorMock, dashboardMock } from 'Mocks/runtime';
 import { mountWithRouter, prepareApolloComponent } from 'Utils/testUtilsEnzyme';
 
-import { Button } from 'konstellation-web-components';
+import { Button } from 'kwc';
 import Dashboard from './Dashboard';
-import { ErrorMessage } from 'konstellation-web-components';
+import { ErrorMessage } from 'kwc';
 import Header from 'Components/Header/Header';
 import Hexagon from 'Components/Shape/Hexagon/Hexagon';
 import HexagonBorder from 'Components/Shape/Hexagon/HexagonBorder';

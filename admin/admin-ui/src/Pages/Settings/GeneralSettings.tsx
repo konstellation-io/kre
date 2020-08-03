@@ -8,7 +8,7 @@ import {
   ModalLayoutInfo,
   SpinnerCircular,
   TextInput
-} from 'konstellation-web-components';
+} from 'kwc';
 import React, { useEffect, useState } from 'react';
 import {
   UpdateSettings,

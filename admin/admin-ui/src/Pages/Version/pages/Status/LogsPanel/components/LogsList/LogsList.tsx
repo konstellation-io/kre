@@ -8,7 +8,7 @@ import {
   GetServerLogsVariables
 } from 'Graphql/queries/types/GetServerLogs';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { SpinnerCircular, SpinnerLinear } from 'konstellation-web-components';
+import { SpinnerCircular, SpinnerLinear } from 'kwc';
 import { Virtuoso, VirtuosoMethods } from 'react-virtuoso';
 
 import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';

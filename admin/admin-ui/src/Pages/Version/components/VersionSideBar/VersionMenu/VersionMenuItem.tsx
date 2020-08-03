@@ -36,7 +36,7 @@ function VersionMenuItem({
     </div>
   );
   return isExternal ? (
-    <a href={to} target="_blank">
+    <a href={to} target="_blank" rel="noopener noreferrer">
       {itemContent}
     </a>
   ) : (

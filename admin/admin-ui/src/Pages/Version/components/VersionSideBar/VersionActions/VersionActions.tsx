@@ -5,7 +5,7 @@ import {
   ModalContainer,
   ModalLayoutInfo,
   ModalLayoutJustify
-} from 'konstellation-web-components';
+} from 'kwc';
 import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions

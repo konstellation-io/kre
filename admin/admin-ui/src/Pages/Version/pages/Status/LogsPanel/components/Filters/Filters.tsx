@@ -7,7 +7,7 @@ import {
   MultiSelectTheme,
   Right,
   SearchSelect
-} from 'konstellation-web-components';
+} from 'kwc';
 
 import DateFilter from './components/DatesFilter/DateFilter';
 import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';

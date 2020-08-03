@@ -1,8 +1,4 @@
-import {
-  ErrorMessage,
-  GroupSelectData,
-  SpinnerCircular
-} from 'konstellation-web-components';
+import { ErrorMessage, GroupSelectData, SpinnerCircular } from 'kwc';
 import React, { useEffect, useState } from 'react';
 import SelectionsBar, {
   VersionChip

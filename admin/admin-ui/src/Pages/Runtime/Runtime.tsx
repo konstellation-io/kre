@@ -1,8 +1,4 @@
-import {
-  Button,
-  ErrorMessage,
-  SpinnerCircular
-} from 'konstellation-web-components';
+import { Button, ErrorMessage, SpinnerCircular } from 'kwc';
 import {
   GetVersionConfStatus,
   GetVersionConfStatusVariables

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import ConditionalLink from '../../ConditionalLink/ConditionalLink';
-import { Lottie } from 'konstellation-web-components';
+import { Lottie } from 'kwc';
 import { RuntimeStatus } from 'Graphql/types/globalTypes';
 import { STATES } from 'Constants/application';
 import { VersionEnvStatus } from 'Pages/Dashboard/Dashboard';

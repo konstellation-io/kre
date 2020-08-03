@@ -1,8 +1,6 @@
 import ApolloClient from 'apollo-client';
-import { loader } from 'graphql.macro';
 import { WatchVersionStatus } from 'Graphql/subscriptions/types/WatchVersionStatus';
-import { get } from 'lodash';
-import ROUTE from '../../../../Constants/routes';
+import { loader } from 'graphql.macro';
 
 const VersionStatusSubscription = loader(
   'Graphql/subscriptions/watchVersionStatus.graphql'

@@ -1,4 +1,4 @@
-import { Button, TextInput } from 'konstellation-web-components';
+import { Button, TextInput } from 'kwc';
 
 import { GetConfigurationVariables_version_config_vars as ConfVar } from 'Graphql/queries/types/GetConfigurationVariables';
 import { ConfVarPanelInfo } from 'Pages/Version/pages/Configuration/Configuration';
