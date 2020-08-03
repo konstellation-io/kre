@@ -99,6 +99,11 @@ func NewApp(
 	r.Any("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 
+	m := e.Group("/measurements")
+	m.Use(jwtMiddleware)
+	m.Use(sessionMiddleware)
+	m.Use(kremiddleware.ChronografProxy())
+
 	return &App{
 		e,
 		cfg,

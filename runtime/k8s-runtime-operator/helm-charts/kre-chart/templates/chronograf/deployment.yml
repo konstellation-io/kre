@@ -25,14 +25,6 @@ spec:
           ports:
             - containerPort: 8888
               name: api
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: api
-          readinessProbe:
-            httpGet:
-              path: /ping
-              port: api
           volumeMounts:
             - name: data
               mountPath: /var/lib/chronograf
@@ -41,6 +33,8 @@ spec:
           env:
             - name: RESOURCES_PATH
               value: /usr/share/chronograf/resources
+            - name: BASE_PATH
+              value: /measurements/{{ .Release.Name }}
       volumes:
         - name: data
           persistentVolumeClaim:
