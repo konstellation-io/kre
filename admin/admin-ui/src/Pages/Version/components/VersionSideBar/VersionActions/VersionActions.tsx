@@ -11,6 +11,7 @@ import {
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import Tag, { TagTypes } from 'Components/Tag/Tag';
 
 import { Link } from 'react-router-dom';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -38,8 +39,8 @@ type WarningProps = {
 function Warning({ runtime, publishedVersion }: WarningProps) {
   return (
     <>
-      WARNING: A published version already exists, publishing this version will
-      unpublish the following version:{' '}
+      <Tag type={TagTypes.WARNING}>WARNING</Tag>A published version already
+      exists, publishing this version will unpublish the following version:{' '}
       <Link
         to={buildRoute.version(
           ROUTE.RUNTIME_VERSION,
@@ -47,7 +48,12 @@ function Warning({ runtime, publishedVersion }: WarningProps) {
           publishedVersion.id
         )}
       >
-        <span className={styles.publishedVersion}>{publishedVersion.name}</span>
+        <span
+          className={styles.publishedVersion}
+          title={publishedVersion.description}
+        >
+          {publishedVersion.name}
+        </span>
       </Link>
     </>
   );
@@ -197,6 +203,8 @@ function VersionActions({
     v => v.status === VersionStatus.PUBLISHED
   )[0];
 
+  const showWarning = publishedVersion && modalInfo.current.label === 'PUBLISH';
+
   return (
     <div
       className={cx(styles.wrapper, { [styles.quickActions]: quickActions })}
@@ -220,15 +228,18 @@ function VersionActions({
       {showConfirmation && (
         <ModalContainer
           title={`YOU ARE ABOUT TO ${modalInfo.current.label} A VERSION`}
+          actionButtonLabel={modalInfo.current.label}
           onAccept={onSubmit}
           onCancel={closeModal}
+          warning={showWarning}
+          blocking
         >
           <ModalLayoutJustify
             onUpdate={(value: string) => setValue('comment', value)}
             submit={onSubmit}
             error={get(errors.comment, 'message', '') as string}
           />
-          {publishedVersion && modalInfo.current.label === 'PUBLISH' && (
+          {showWarning && (
             <ModalLayoutInfo className={styles.warning}>
               <Warning runtime={runtime} publishedVersion={publishedVersion} />
             </ModalLayoutInfo>

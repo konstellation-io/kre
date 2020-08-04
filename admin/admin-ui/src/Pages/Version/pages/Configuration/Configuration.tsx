@@ -17,6 +17,7 @@ import {
   UpdateConfigurationInput
 } from 'Graphql/types/globalTypes';
 import React, { useEffect, useState } from 'react';
+import Tag, { TagTypes } from 'Components/Tag/Tag';
 import {
   UpdateVersionConfiguration,
   UpdateVersionConfigurationVariables
@@ -242,7 +243,7 @@ function Configuration() {
           >
             <ModalLayoutInfo>
               <>
-                <span className={styles.warnPrefix}>WARNING: </span>
+                <Tag type={TagTypes.WARNING}>WARNING</Tag>
                 After updating this configuration, the version will be restarted
                 (this process may take several seconds)
               </>
