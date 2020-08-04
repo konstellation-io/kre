@@ -39,6 +39,8 @@ chronograf:
     size: 2Gi
 
 influxdb:
+  image:
+    tag: 1.8.1
   config:
     http:
       enabled: true

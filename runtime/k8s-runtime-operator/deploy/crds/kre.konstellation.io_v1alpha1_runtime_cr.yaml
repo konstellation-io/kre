@@ -23,7 +23,7 @@ spec:
       className: standard
       size: 2Gi
 
-  cronograf:
+  chronograf:
     persistence:
       className: standard
       size: 1Gi

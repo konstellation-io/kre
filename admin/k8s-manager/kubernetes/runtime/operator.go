@@ -71,10 +71,10 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 						"size": m.config.SharedStorageSize,
 					},
 				},
-				"cronograf": map[string]interface{}{
+				"chronograf": map[string]interface{}{
 					"persistence": map[string]interface{}{
-						"storageClass": m.config.Cronograf.PersistentVolume.StorageClass,
-						"size":         m.config.Cronograf.PersistentVolume.Size,
+						"storageClass": m.config.Chronograf.PersistentVolume.StorageClass,
+						"size":         m.config.Chronograf.PersistentVolume.Size,
 					},
 				},
 				"influxdb": map[string]interface{}{

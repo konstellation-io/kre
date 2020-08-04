@@ -54,12 +54,12 @@ type Config struct {
 		} `yaml:"persistentVolume"`
 	} `yaml:"mongo"`
 
-	Cronograf struct {
+	Chronograf struct {
 		PersistentVolume struct {
-			StorageClass string `yaml:"storageClass" envconfig:"KRE_CRONOGRAF_STORAGECLASS"`
-			Size         string `yaml:"size" envconfig:"KRE_CRONOGRAF_STORAGE_SIZE"`
+			StorageClass string `yaml:"storageClass" envconfig:"KRE_CHRONOGRAF_STORAGECLASS"`
+			Size         string `yaml:"size" envconfig:"KRE_CHRONOGRAF_STORAGE_SIZE"`
 		} `yaml:"persistentVolume"`
-	} `yaml:"cronograf"`
+	} `yaml:"chronograf"`
 
 	InfluxDB struct {
 		PersistentVolume struct {

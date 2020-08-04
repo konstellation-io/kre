@@ -29,10 +29,8 @@ RUN apt update && \
 
 WORKDIR /app
 
-COPY Pipfile* ./
-
-RUN python3 -m pip install pipenv && \
-    pipenv install --deploy
+COPY requirements.txt ./
+RUN python3 -m pip install -r requirements.txt
 
 COPY src src
 COPY entrypoint.sh ./

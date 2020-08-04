@@ -16,7 +16,7 @@ mongo:
   persistentVolume:
     storageClass: "standard"
     size: 5G
-cronograf:
+chronograf:
   persistentVolume:
     storageClass: "standard"
     size: 1G

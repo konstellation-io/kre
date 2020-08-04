@@ -1,0 +1,6 @@
+dependencies:
+- name: influxdb
+  repository: https://influxdata.github.io/helm-charts
+  version: 4.8.1
+digest: sha256:fa476176dc02aa105855d15303559f36d0968654adf178dd2f2dee5854f5c0f0
+generated: "2020-08-04T08:40:26.237976023+02:00"

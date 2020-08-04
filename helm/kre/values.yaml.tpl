@@ -29,7 +29,7 @@ config:
         enabled: true
         storageClass: standard
         size: 5Gi
-    cronograf:
+    chronograf:
       persistentVolume:
         enabled: true
         storageClass: standard
