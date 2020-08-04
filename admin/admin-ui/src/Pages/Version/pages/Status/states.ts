@@ -1,9 +1,10 @@
 import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 
 export enum FinalStates {
-  UP = 'UP',
   DOWN = 'DOWN',
   LOADING = 'LOADING',
+  READY = 'READY',
+  UP = 'UP',
   ERROR = 'ERROR'
 }
 const defaultState = FinalStates.DOWN;
@@ -36,8 +37,8 @@ export function getEntrypointState(
       return FinalStates.ERROR;
     case entrypointStatus === NodeStatus.STARTING:
       return FinalStates.LOADING;
-    case versionPublished && entrypointStatus === NodeStatus.STARTED:
-      return FinalStates.UP;
+    case entrypointStatus === NodeStatus.STARTED:
+      return versionPublished ? FinalStates.UP : FinalStates.READY;
     default:
       return FinalStates.DOWN;
   }
