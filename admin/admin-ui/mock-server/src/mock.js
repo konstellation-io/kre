@@ -142,7 +142,18 @@ module.exports = {
       subscribe: () => pubsub.asyncIterator('watchVersionStatus')
     },
     watchNodeStatus: {
-      subscribe: () => pubsub.asyncIterator('watchNodeStatus')
+      subscribe: () => {
+        setTimeout(() => {
+          pubsub.publish('watchNodeStatus', {
+            watchNodeStatus: {
+              id: 'entrypoint',
+              status: 'STARTED'
+            }
+          });
+        }, 2000);
+
+        return pubsub.asyncIterator('watchNodeStatus');
+      }
     },
     watchResourceMetrics: {
       subscribe: () => pubsub.asyncIterator('watchResourceMetrics')

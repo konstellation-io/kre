@@ -104,131 +104,88 @@ $animation-duration: 0.8s;
   }
 }
 
-.inputNode {
-  cursor: pointer;
-
-  &.hovered {
-    filter: url('#glow');
+@mixin set-fill($selector, $color) {
+  #{$selector} {
+    fill: $color;
   }
-
-  .shape,
-  .nodePeak,
-  .peakCut {
-    @include animate(fill);
-    fill: $bg-box;
-    stroke: transparent;
-  }
-
-  &.#{$status-down} {
-    .shape,
-    .nodePeak {
-      stroke: $color-status-down;
-    }
-
-    .icon > svg > path {
-      fill: $color-status-down;
-    }
-  }
-
-  &.#{$status-up} {
-    .shape,
-    .nodePeak,
-    .peakCut {
-      fill: $color-status-up;
-    }
-
-    .icon > svg > path {
-      fill: font-color(dark);
-    }
-  }
-
-  &.#{$status-error} {
-    .shape,
-    .nodePeak,
-    .peakCut {
-      fill: $color-error;
-    }
-
-    .icon > svg > path {
-      fill: font-color(dark);
-    }
-  }
-
-  &.#{$status-loading} {
-    .shape,
-    .nodePeak {
-      stroke: $color-status-changing;
-    }
-
-    .icon > svg > path {
-      fill: $color-status-changing;
-      animation: anim-state-change 2.5s linear 0s infinite;
-    }
-  }
-
-  .icon > svg > path {
-    @include animate(stroke);
-    stroke: transparent !important;
+}
+@mixin set-border($selector, $color) {
+  #{$selector} {
+    stroke: $color;
   }
 }
 
-.outputNode {
-  .shape,
-  .nodePeak,
-  .peakCut {
+@mixin entrypoint($fill-selector, $border-selector) {
+  // Default style
+  #{$fill-selector} {
     @include animate(fill);
     fill: $bg-box;
     stroke: transparent;
   }
 
-  &.#{$status-down} {
-    .shape,
-    .nodePeak {
-      stroke: $color-status-down;
-    }
-
-    .icon > svg > path {
-      fill: $color-status-down;
-    }
-  }
-
-  &.#{$status-up} {
-    .shape {
-      fill: $color-status-up;
-    }
-
-    .icon > svg > path {
-      fill: font-color(dark);
-    }
-  }
-
-  &.#{$status-error} {
-    .shape {
-      fill: $color-error;
-    }
-
-    .icon > svg > path {
-      fill: font-color(dark);
-    }
-  }
-
-  &.#{$status-loading} {
-    .shape,
-    .nodePeak {
-      stroke: $color-status-changing;
-    }
-
-    .icon > svg > path {
-      fill: $color-status-changing;
-      animation: anim-state-change 2.5s linear 0s infinite;
-    }
-  }
-
+  // Icon styles
   .icon > svg > path {
     @include animate(stroke);
     stroke: transparent !important;
     fill: font-color(lowlight);
   }
+  &.#{$status-up},
+  &.#{$status-error} {
+    .icon > svg > path {
+      fill: font-color(dark);
+    }
+  }
+  &.#{$status-down},
+  &.#{$status-ready} {
+    .icon > svg > path {
+      fill: $color-status-down;
+    }
+  }
+
+  // Shape styles
+  &.#{$status-up} {
+    @include set-fill($fill-selector, $color-status-up);
+  }
+  &.#{$status-error} {
+    @include set-fill($fill-selector, $color-error);
+  }
+
+  &.#{$status-ready} {
+    @include set-border($border-selector, $color-status-up);
+  }
+  &.#{$status-down} {
+    @include set-border($border-selector, $color-status-down);
+  }
+  &.#{$status-loading} {
+    @include set-border($border-selector, $color-status-changing);
+
+    .icon > svg > path {
+      fill: $color-status-changing;
+      animation: anim-state-change 2.5s linear 0s infinite;
+    }
+  }
+
+  @content;
+}
+
+.inputNode {
+  $fill-selector: '.shape, .nodePeak, .peakCut';
+  $border-selector: '.shape, .nodePeak';
+
+  @include entrypoint($fill-selector, $border-selector) {
+    cursor: pointer;
+
+    &.hovered {
+      filter: url('#glow');
+    }
+  }
+}
+
+.outputNode {
+  $fill-selector: '.shape';
+  $border-selector: '.shape, .nodePeak';
+
+  @include entrypoint($fill-selector, $border-selector);
 }
 
 .nodeLabel {
