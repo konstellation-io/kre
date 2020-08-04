@@ -44,8 +44,8 @@
 
 .warning {
   @include font-small;
-  color: palette(alert);
 
+  line-height: 2.5 * $grid-unit;
   margin-bottom: $grid-unit;
 
   .publishedVersion {
