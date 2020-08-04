@@ -1,6 +1,6 @@
 developmentMode: false
 
-entrypoint:
+runtime:
   host: "local"
 
 sharedStorageClass: standard
@@ -41,3 +41,20 @@ minio:
     secretKey: "12345678"
   storage:
     size: 1Gi
+
+influxdb:
+  config:
+    http:
+      enabled: true
+      flux-enabled: true
+      auth-enabled: false
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 10Gi
+  initScripts:
+    enabled: true
+    scripts:
+      init.iql: |+
+        CREATE DATABASE "kre"

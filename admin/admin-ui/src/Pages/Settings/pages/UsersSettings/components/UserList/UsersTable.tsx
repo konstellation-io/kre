@@ -1,8 +1,4 @@
-import {
-  Check,
-  ContextMenu,
-  MenuCallToAction
-} from 'konstellation-web-components';
+import { Check, ContextMenu, MenuCallToAction } from 'kwc';
 import { Column, Row, useRowSelect, useSortBy, useTable } from 'react-table';
 import {
   GET_USER_SETTINGS,

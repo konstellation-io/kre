@@ -42,8 +42,14 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
   }
 
   itemProps.push({
-    label: 'METRICS',
+    label: 'PREDICTIONS',
     to: ROUTE.RUNTIME_VERSION_METRICS,
+    Icon: IconShowChart
+  });
+
+  itemProps.push({
+    label: 'MEASUREMENTS',
+    to: runtime.measurementsUrl,
     Icon: IconShowChart
   });
 

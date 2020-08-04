@@ -1,5 +1,4 @@
 import 'wdyr';
-import 'Styles/app.global.scss';
 import 'Styles/d3.scss';
 
 import { ApolloLink, split } from 'apollo-link';

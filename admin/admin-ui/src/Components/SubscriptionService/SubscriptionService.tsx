@@ -1,4 +1,3 @@
-import React from 'react';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { GET_LOGIN_STATUS } from 'Graphql/client/queries/getLoginStatus.graphql';

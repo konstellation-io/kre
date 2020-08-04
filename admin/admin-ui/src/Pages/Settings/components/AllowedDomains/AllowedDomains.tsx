@@ -1,8 +1,4 @@
-import {
-  CHECK,
-  ErrorMessage,
-  SpinnerCircular
-} from 'konstellation-web-components';
+import { CHECK, ErrorMessage, SpinnerCircular } from 'kwc';
 import FormRowInput, { FormData } from '../FormRowInput/FormRowInput';
 import {
   UpdateDomains,

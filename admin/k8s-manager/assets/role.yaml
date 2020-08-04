@@ -12,6 +12,10 @@ rules:
       - pods
       - secrets
       - services
+      - persistentvolumeclaims
+      - serviceaccounts
+      - configmaps
+      - services
     verbs:
       - "*"
   - apiGroups:
@@ -53,5 +57,11 @@ rules:
       - networking.k8s.io
     resources:
       - ingresses
+    verbs:
+      - "*"
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
     verbs:
       - "*"

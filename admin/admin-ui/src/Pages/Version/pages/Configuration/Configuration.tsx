@@ -5,7 +5,7 @@ import {
   ModalContainer,
   ModalLayoutInfo,
   SpinnerCircular
-} from 'konstellation-web-components';
+} from 'kwc';
 import {
   GetConfigurationVariables_version_config_vars as ConfigurationVariable,
   GetConfigurationVariables,

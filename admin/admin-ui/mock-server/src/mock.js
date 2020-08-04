@@ -138,6 +138,9 @@ module.exports = {
     runtimeCreated: {
       subscribe: () => pubsub.asyncIterator('runtimeCreated')
     },
+    watchVersionStatus: {
+      subscribe: () => pubsub.asyncIterator('watchVersionStatus')
+    },
     watchNodeStatus: {
       subscribe: () => pubsub.asyncIterator('watchNodeStatus')
     },

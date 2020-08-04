@@ -113,14 +113,25 @@ func Start(handlerInit HandlerInit, handler Handler) {
 		}
 
 		end := time.Now()
-		logger.Infof("version[%s] node[%s] reply[%s] start[%s] end[%s] elapsed[%s]",
+		elapsed := end.Sub(start).Seconds()
+		logger.Debugf("version[%s] node[%s] reply[%s] start[%s] end[%s] elapsed[%s]",
 			cfg.Version,
 			cfg.NodeName,
 			r.Reply,
 			start.Format(time.RFC3339Nano),
 			end.Format(time.RFC3339Nano),
-			fmt.Sprintf("%.2f", end.Sub(start).Seconds()),
+			fmt.Sprintf("%.2f", elapsed),
 		)
+
+		// Save the elapsed time measurement
+		fields := map[string]interface{}{
+			"elapsed": elapsed,
+		}
+		tags := map[string]string{
+			"version": cfg.Version,
+			"node":    cfg.NodeName,
+		}
+		c.Measurement.Save("node_elapsed_time", fields, tags)
 	})
 
 	if err != nil {

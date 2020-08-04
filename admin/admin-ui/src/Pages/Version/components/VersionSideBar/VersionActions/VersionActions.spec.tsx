@@ -1,8 +1,4 @@
-import {
-  Button,
-  ModalContainer,
-  ModalLayoutJustify
-} from 'konstellation-web-components';
+import { Button, ModalContainer, ModalLayoutJustify } from 'kwc';
 import { runtime, version } from 'Mocks/version';
 
 import React from 'react';

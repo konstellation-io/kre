@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-    - host: proto.{{ .Values.entrypoint.host }}
+    - host: proto.{{ .Values.runtime.host }}
       http:
         paths:
           - path: /

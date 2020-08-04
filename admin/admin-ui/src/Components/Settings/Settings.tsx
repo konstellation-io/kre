@@ -1,8 +1,4 @@
-import {
-  BUTTON_ALIGN,
-  Button,
-  useClickOutside
-} from 'konstellation-web-components';
+import { BUTTON_ALIGN, Button, useClickOutside } from 'kwc';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
 import AuditIcon from '@material-ui/icons/SupervisorAccount';

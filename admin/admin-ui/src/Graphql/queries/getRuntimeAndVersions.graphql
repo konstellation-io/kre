@@ -9,6 +9,7 @@ query GetVersionConfStatus($runtimeId: ID!) {
       id
       email
     }
+    measurementsUrl
   }
 
   versions(runtimeId: $runtimeId) {

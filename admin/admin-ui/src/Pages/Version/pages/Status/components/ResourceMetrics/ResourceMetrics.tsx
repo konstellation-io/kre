@@ -1,6 +1,6 @@
 import * as COLORS from 'Constants/colors';
 
-import { ErrorMessage, SpinnerCircular } from 'konstellation-web-components';
+import { ErrorMessage, SpinnerCircular } from 'kwc';
 import {
   GetResourceMetrics,
   GetResourceMetricsVariables,

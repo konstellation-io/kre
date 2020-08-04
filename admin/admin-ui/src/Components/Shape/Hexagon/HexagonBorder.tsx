@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { Link } from 'react-router-dom';
-import { Lottie } from 'konstellation-web-components';
+import { Lottie } from 'kwc';
 import animationData from './HexagonBorder.json';
 import cx from 'classnames';
 import styles from './Hexagon.module.scss';

@@ -1,4 +1,4 @@
-import { Button, Chip, Left, Right } from 'konstellation-web-components';
+import { Button, Chip, Left, Right } from 'kwc';
 import React, { MouseEvent } from 'react';
 
 import { NodeSelection } from 'Graphql/client/typeDefs';

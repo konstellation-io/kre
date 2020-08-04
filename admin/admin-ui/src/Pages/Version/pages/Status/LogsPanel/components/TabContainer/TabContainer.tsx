@@ -1,4 +1,4 @@
-import { ContextMenu, MenuCallToAction } from 'konstellation-web-components';
+import { ContextMenu, MenuCallToAction } from 'kwc';
 import React, { WheelEvent, useRef } from 'react';
 
 import { GetLogTabs_logTabs } from 'Graphql/client/queries/getLogs.graphql';

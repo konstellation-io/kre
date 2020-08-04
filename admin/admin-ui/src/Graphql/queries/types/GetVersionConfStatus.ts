@@ -23,6 +23,7 @@ export interface GetVersionConfStatus_runtime {
   status: RuntimeStatus;
   creationDate: string;
   creationAuthor: GetVersionConfStatus_runtime_creationAuthor;
+  measurementsUrl: string;
 }
 
 export interface GetVersionConfStatus_versions_creationAuthor {
