@@ -4,7 +4,7 @@ import {
   ModalLayoutCalendar,
   Select,
   SelectTheme
-} from 'konstellation-web-components';
+} from 'kwc';
 import React, { useEffect, useState } from 'react';
 import moment, { Moment } from 'moment';
 import { registerMany, unregisterMany } from 'Utils/react-forms';

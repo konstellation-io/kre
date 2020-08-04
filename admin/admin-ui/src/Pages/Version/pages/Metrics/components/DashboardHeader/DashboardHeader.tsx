@@ -1,4 +1,4 @@
-import { Button, Calendar } from 'konstellation-web-components';
+import { Button, Calendar } from 'kwc';
 
 import HideIcon from '@material-ui/icons/VisibilityOff';
 import { Moment } from 'moment';

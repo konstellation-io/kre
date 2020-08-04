@@ -1,4 +1,4 @@
-import { Check, CustomOptionProps, Select } from 'konstellation-web-components';
+import { Check, CustomOptionProps, Select } from 'kwc';
 import {
   GET_USER_SETTINGS,
   GetUserSettings

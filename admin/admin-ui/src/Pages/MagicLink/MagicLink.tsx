@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { CHECK } from 'konstellation-web-components';
+import { CHECK } from 'kwc';
 import Circle from 'Components/Shape/Circle/Circle';
 import { ENDPOINT } from 'Constants/application';
 import ROUTE from 'Constants/routes';

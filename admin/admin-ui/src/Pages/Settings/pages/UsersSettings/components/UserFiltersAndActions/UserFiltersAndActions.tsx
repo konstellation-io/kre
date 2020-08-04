@@ -1,4 +1,4 @@
-import { Button, Left, Right } from 'konstellation-web-components';
+import { Button, Left, Right } from 'kwc';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import ROUTE from 'Constants/routes';

@@ -5,12 +5,12 @@ import {
   GroupSelectData,
   MultiSelect,
   SearchSelect
-} from 'konstellation-web-components';
+} from 'kwc';
 import CustomLabel, { HIGHLIGHT_COLORS } from './CustomLabel';
 import { FieldError, NestDataObject } from 'react-hook-form';
 
 import ActivityIcon from '../ActivityIcon/ActivityIcon';
-import { ErrorMessage } from 'konstellation-web-components';
+import { ErrorMessage } from 'kwc';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import { GetUsersActivity_userActivityList_user } from 'Graphql/queries/types/GetUsersActivity';
 import { Moment } from 'moment';

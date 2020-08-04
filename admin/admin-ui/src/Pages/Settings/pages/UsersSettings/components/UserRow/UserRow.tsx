@@ -1,4 +1,4 @@
-import { Left, Right } from 'konstellation-web-components';
+import { Left, Right } from 'kwc';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import React from 'react';

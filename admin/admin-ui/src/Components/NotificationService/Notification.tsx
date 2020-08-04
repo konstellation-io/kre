@@ -5,7 +5,7 @@ import {
 } from 'Graphql/client/mutations/removeNotification.graphql';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Button } from 'konstellation-web-components';
+import { Button } from 'kwc';
 import CloseIcon from '@material-ui/icons/Close';
 import { NotificationType } from 'Graphql/client/typeDefs';
 import cx from 'classnames';
