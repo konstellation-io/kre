@@ -1,8 +1,4 @@
-import {
-  Button,
-  FileUpload,
-  SpinnerLinear
-} from 'konstellation-web-components';
+import { Button, FileUpload, SpinnerLinear } from 'kwc';
 import {
   CreateVersion,
   CreateVersionVariables

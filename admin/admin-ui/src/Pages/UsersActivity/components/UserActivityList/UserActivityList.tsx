@@ -1,8 +1,4 @@
-import {
-  ErrorMessage,
-  InfoMessage,
-  SpinnerCircular
-} from 'konstellation-web-components';
+import { ErrorMessage, InfoMessage, SpinnerCircular } from 'kwc';
 import {
   GetUsersActivity,
   GetUsersActivityVariables,

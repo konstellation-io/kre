@@ -1,7 +1,7 @@
 import Can from 'Components/Can/Can';
 import React from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import { TERMINAL } from 'konstellation-web-components';
+import { TERMINAL } from 'kwc';
 import styles from './Workflow.module.scss';
 
 type Props = {

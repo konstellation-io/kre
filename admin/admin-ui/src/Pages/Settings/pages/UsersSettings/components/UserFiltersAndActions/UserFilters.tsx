@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { SearchSelect, Select } from 'konstellation-web-components';
+import { SearchSelect, Select } from 'kwc';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 

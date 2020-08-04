@@ -1,8 +1,4 @@
-import {
-  ErrorMessage,
-  SpinnerCircular,
-  VerticalBar
-} from 'konstellation-web-components';
+import { ErrorMessage, SpinnerCircular, VerticalBar } from 'kwc';
 import {
   GetRuntimes,
   GetRuntimes_runtimes

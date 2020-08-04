@@ -7,7 +7,7 @@ import CodeBlock from './CodeBlock';
 import CustomLink from './CustomLink';
 import MarkNav from 'markdown-navbar';
 import ReactMarkdown from 'react-markdown';
-import { SpinnerCircular } from 'konstellation-web-components';
+import { SpinnerCircular } from 'kwc';
 import { buildRoute } from 'Utils/routes';
 import styles from './Documentation.module.scss';
 

@@ -4,7 +4,7 @@ import IconExpandExit from '@material-ui/icons/FullscreenExit';
 import IconOpen from '@material-ui/icons/ExpandLess';
 import React from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import { TERMINAL } from 'konstellation-web-components';
+import { TERMINAL } from 'kwc';
 import cx from 'classnames';
 import styles from './Header.module.scss';
 

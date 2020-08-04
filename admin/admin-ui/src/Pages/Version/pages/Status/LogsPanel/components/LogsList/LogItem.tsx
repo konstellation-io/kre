@@ -1,4 +1,4 @@
-import { ContextMenu, MenuCallToAction } from 'konstellation-web-components';
+import { ContextMenu, MenuCallToAction } from 'kwc';
 import React, { memo, useState } from 'react';
 
 import { GetServerLogs_logs_items } from 'Graphql/queries/types/GetServerLogs';

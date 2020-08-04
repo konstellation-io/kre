@@ -1,9 +1,4 @@
-import {
-  Button,
-  SearchSelect,
-  Select,
-  SelectTheme
-} from 'konstellation-web-components';
+import { Button, SearchSelect, Select, SelectTheme } from 'kwc';
 
 import { ConfigurationVariableType } from 'Graphql/types/globalTypes';
 import HideIcon from '@material-ui/icons/VisibilityOff';

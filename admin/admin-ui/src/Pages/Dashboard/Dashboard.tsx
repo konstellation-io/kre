@@ -1,9 +1,5 @@
 import { AccessLevel, RuntimeStatus } from 'Graphql/types/globalTypes';
-import {
-  Button,
-  ErrorMessage,
-  SpinnerCircular
-} from 'konstellation-web-components';
+import { Button, ErrorMessage, SpinnerCircular } from 'kwc';
 import {
   GetRuntimes,
   GetRuntimes_runtimes

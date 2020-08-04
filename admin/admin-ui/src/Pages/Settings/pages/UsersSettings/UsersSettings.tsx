@@ -10,7 +10,7 @@ import {
   ModalLayoutConfirmList,
   ModalLayoutJustify,
   SpinnerCircular
-} from 'konstellation-web-components';
+} from 'kwc';
 import {
   GET_USER_SETTINGS,
   GetUserSettings

@@ -1,9 +1,4 @@
-import {
-  Chip,
-  GroupSelectData,
-  Left,
-  flatSelections
-} from 'konstellation-web-components';
+import { Chip, GroupSelectData, Left, flatSelections } from 'kwc';
 
 import React from 'react';
 import { VersionsData } from 'Hooks/useAllVersions';

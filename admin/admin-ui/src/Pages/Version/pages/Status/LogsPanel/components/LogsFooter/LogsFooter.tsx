@@ -1,4 +1,4 @@
-import { Button, Left, Right } from 'konstellation-web-components';
+import { Button, Left, Right } from 'kwc';
 
 import ClearIcon from '@material-ui/icons/Block';
 import FollowIcon from '@material-ui/icons/VerticalAlignBottom';

@@ -1,4 +1,4 @@
-import { Button, TextInput } from 'konstellation-web-components';
+import { Button, TextInput } from 'kwc';
 import React, { useEffect } from 'react';
 
 import { get } from 'lodash';

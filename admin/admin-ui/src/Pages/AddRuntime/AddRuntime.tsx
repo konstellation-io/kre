@@ -1,4 +1,4 @@
-import { Button, CHECK, TextInput } from 'konstellation-web-components';
+import { Button, CHECK, TextInput } from 'kwc';
 import {
   CreateRuntime,
   CreateRuntimeVariables
