@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'docs/**'
+      - "docs/**"
 
 jobs:
   deploy:
@@ -19,7 +19,7 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
-          hugo-version: '0.74.3'
+          hugo-version: "0.74.3"
           extended: true
 
       - name: Install docsy theme submodules
@@ -34,7 +34,7 @@ jobs:
         run: hugo --minify
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3.7.0-6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/public
