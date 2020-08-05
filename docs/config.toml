@@ -1,4 +1,4 @@
-baseURL = "https://konstellation-io.github.io/kre"
+baseURL = "https://konstellation-io.github.io/kre/site"
 languageCode = "en-us"
 title = "KRE docs"
 theme = "docsy"

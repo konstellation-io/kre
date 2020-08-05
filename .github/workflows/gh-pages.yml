@@ -38,3 +38,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/public
+          # A destination subdirectory on a publishing branch.
+          # We publish to a subfolder because the kre helm charts
+          # are deployed into the gh-pages root folder.
+          # TODO Move the helm charts repository out of gh-pages.
+          destination_dir: site
