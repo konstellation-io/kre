@@ -17,7 +17,7 @@ import { checkPermission } from 'rbac-rules';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './NavigationBar.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import useUserAccess from 'Hooks/useUserAccess';
 
 const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');

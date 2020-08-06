@@ -4,15 +4,16 @@ import {
   GetUserSettings
 } from 'Graphql/client/queries/getUserSettings.graphql';
 import React, { FC } from 'react';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import IconDelete from '@material-ui/icons/Delete';
 import IconRevoke from '@material-ui/icons/HighlightOff';
-import { UserSelection } from 'Graphql/client/typeDefs';
+import { UserSelection } from 'Graphql/client/models/UserSettings';
 import cx from 'classnames';
 import { get } from 'lodash';
 import styles from './UserFiltersAndActions.module.scss';
+import { useQuery } from '@apollo/client';
+import useUserSettings from 'Graphql/hooks/useUserSettings';
 
 type CheckSelectAllPros = {
   handleCheckClick: (value: boolean) => void;
@@ -63,7 +64,8 @@ type Props = {
   onUpdateUsers: (newAccessLevel: AccessLevel) => void;
 };
 function UserActions({ onDeleteUsers, onRevokeUsers, onUpdateUsers }: Props) {
-  const client = useApolloClient();
+  const { changeUserSelection } = useUserSettings();
+
   const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
 
   const types = Object.values(Actions);
@@ -112,14 +114,7 @@ function UserActions({ onDeleteUsers, onRevokeUsers, onUpdateUsers }: Props) {
         break;
     }
 
-    client.writeData({
-      data: {
-        userSettings: {
-          userSelection: newUserSelection,
-          __typename: 'UserSettings'
-        }
-      }
-    });
+    changeUserSelection(newUserSelection);
   }
 
   return (

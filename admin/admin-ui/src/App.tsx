@@ -8,7 +8,6 @@ import 'Styles/react-tabs.scss';
 import { ErrorMessage, SpinnerCircular } from 'kwc';
 import { Redirect, Switch } from 'react-router';
 import { Route, Router } from 'react-router-dom';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import AccessDenied from 'Pages/AccessDenied/AccessDenied';
 import AddRuntime from 'Pages/AddRuntime/AddRuntime';
@@ -34,12 +33,15 @@ import { getNotAllowedRoutes } from './accessLevelRoutes';
 import history from './browserHistory';
 import keymaps from './keymaps';
 import { loader } from 'graphql.macro';
+import useLogin from 'Graphql/hooks/useLogin';
+import useLogs from 'Graphql/hooks/useLogs';
+import { useQuery } from '@apollo/client';
 
 const GetMeQuery = loader('Graphql/queries/getMe.graphql');
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);
-  const client = useApolloClient();
+  const { login } = useLogin();
 
   if (loading) {
     return (
@@ -53,7 +55,8 @@ function ProtectedRoutes() {
     return <ErrorMessage />;
   }
 
-  client.writeData({ data: { loggedIn: true } });
+  login();
+
   const protectedRoutes: string[] = getNotAllowedRoutes(data.me.accessLevel);
 
   return (
@@ -109,15 +112,7 @@ export function Routes() {
 }
 
 function App() {
-  const client = useApolloClient();
-
-  function openLogs() {
-    client.writeData({ data: { logsOpened: true } });
-  }
-
-  function closeLogs() {
-    client.writeData({ data: { logsOpened: false } });
-  }
+  const { openLogs, closeLogs } = useLogs();
 
   const handlers = {
     CLOSE_LOGS: closeLogs,

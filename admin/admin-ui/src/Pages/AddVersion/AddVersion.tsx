@@ -3,6 +3,10 @@ import {
   CreateVersion,
   CreateVersionVariables
 } from 'Graphql/mutations/types/CreateVersion';
+import {
+  GetVersionConfStatus,
+  GetVersionConfStatus_versions
+} from 'Graphql/queries/types/GetVersionConfStatus';
 import ROUTE, { RuntimeRouteParams } from 'Constants/routes';
 import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
@@ -13,9 +17,12 @@ import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddVersion.module.scss';
 import { useForm } from 'react-hook-form';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 const AddVersionMutation = loader('Graphql/mutations/addVersion.graphql');
+const GetRuntimeAndVersionQuery = loader(
+  'Graphql/queries/getRuntimeAndVersions.graphql'
+);
 
 function AddVersion() {
   const history = useHistory();
@@ -26,6 +33,24 @@ function AddVersion() {
     CreateVersionVariables
   >(AddVersionMutation, {
     onError: e => console.error(`addVersion: ${e}`),
+    update(cache, updateResult) {
+      if (updateResult.data) {
+        const cacheResult = cache.readQuery<GetVersionConfStatus>({
+          query: GetRuntimeAndVersionQuery,
+          variables: { runtimeId }
+        });
+
+        const versions = cacheResult?.versions || [];
+        const newVersion = updateResult.data
+          .createVersion as GetVersionConfStatus_versions;
+
+        cache.writeQuery({
+          query: GetRuntimeAndVersionQuery,
+          variables: { runtimeId },
+          data: { versions: versions.concat([newVersion]) }
+        });
+      }
+    },
     onCompleted
   });
 

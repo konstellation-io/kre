@@ -1,6 +1,6 @@
-import { AccessLevel } from '../../types/globalTypes';
-import gql from 'graphql-tag';
-import { UserSelection } from '../typeDefs';
+import { AccessLevel } from 'Graphql/types/globalTypes';
+import { UserSelection } from 'Graphql/client/models/UserSettings';
+import { gql } from '@apollo/client';
 
 export interface GetUserSettings_filters {
   email: string | null;

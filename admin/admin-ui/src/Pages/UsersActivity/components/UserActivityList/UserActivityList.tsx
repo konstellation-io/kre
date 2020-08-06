@@ -10,7 +10,7 @@ import UserActivityItem from './UserActivityItem';
 import { loader } from 'graphql.macro';
 import { queryPayloadHelper } from 'Utils/formUtils';
 import styles from './UserActivityList.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetUserActivityQuery = loader('Graphql/queries/getUserActivity.graphql');
 

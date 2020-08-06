@@ -34,7 +34,7 @@ import {
   UpdateAccessLevel,
   UpdateAccessLevelVariables
 } from 'Graphql/mutations/types/UpdateAccessLevel';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import SettingsHeader from '../../components/SettingsHeader/SettingsHeader';

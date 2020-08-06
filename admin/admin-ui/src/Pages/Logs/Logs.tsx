@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 
-import { GetLogTabs_logTabs } from 'Graphql/client/queries/getLogs.graphql';
 import Header from 'Components/Header/Header';
-import { useApolloClient } from '@apollo/react-hooks';
+import { LogPanel } from 'Graphql/client/typeDefs';
+import useLogs from 'Graphql/hooks/useLogs';
 import { useParams } from 'react-router-dom';
 
 type URLParams = {
@@ -10,22 +10,13 @@ type URLParams = {
 };
 
 function Logs() {
-  const client = useApolloClient();
+  const { initializeLogsPanel } = useLogs();
   const { logTabInfo } = useParams<URLParams>();
 
   useEffect(() => {
-    const tabInfo: GetLogTabs_logTabs = JSON.parse(
-      decodeURIComponent(logTabInfo)
-    );
-
-    client.writeData({
-      data: {
-        logsOpened: true,
-        activeTabId: tabInfo.uniqueId,
-        logTabs: [tabInfo]
-      }
-    });
-  }, [client, logTabInfo]);
+    const tabInfo: LogPanel = JSON.parse(decodeURIComponent(logTabInfo));
+    initializeLogsPanel(tabInfo);
+  }, [logTabInfo, initializeLogsPanel]);
 
   return <Header hideSettings />;
 }

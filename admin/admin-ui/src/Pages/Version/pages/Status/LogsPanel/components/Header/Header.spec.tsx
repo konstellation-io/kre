@@ -7,7 +7,7 @@ import IconStickBottom from '@material-ui/icons/VerticalAlignBottom';
 import IconClear from '@material-ui/icons/DeleteOutline';
 import { shallow, ShallowWrapper } from 'enzyme';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useApolloClient: () => ({ writeData: jest.fn() }),
   useQuery: jest.fn(() => ({ data: { logsAutoScroll: true } }))
 }));

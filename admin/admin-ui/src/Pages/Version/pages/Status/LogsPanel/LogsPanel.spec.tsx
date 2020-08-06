@@ -3,7 +3,7 @@ import Header from './components/Header/Header';
 import LogsPanel from './LogsPanel';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const mocksLogTabs = {
   data: {
@@ -18,7 +18,7 @@ const mocksLogTabs = {
   }
 };
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useQuery: jest.fn(() => mocksLogTabs),
   useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
 }));

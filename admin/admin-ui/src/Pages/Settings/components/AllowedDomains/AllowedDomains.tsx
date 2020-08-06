@@ -4,7 +4,7 @@ import {
   UpdateDomains,
   UpdateDomainsVariables
 } from 'Graphql/mutations/types/UpdateDomains';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 
 import DomainIcon from '@material-ui/icons/Language';
 import { GetDomains } from 'Graphql/queries/types/GetDomains';

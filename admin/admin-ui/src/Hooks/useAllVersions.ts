@@ -1,11 +1,10 @@
+import { ApolloError, useApolloClient, useQuery } from '@apollo/client';
 import {
   GetVersions,
   GetVersionsVariables
 } from 'Graphql/queries/types/GetVersions';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import { useEffect, useState } from 'react';
 
-import { ApolloError } from 'apollo-client/errors/ApolloError';
 import { GetRuntimes } from 'Graphql/queries/types/GetRuntimes';
 import { loader } from 'graphql.macro';
 
@@ -46,15 +45,17 @@ export default function useAllVersions() {
               query: GetVersionsQuery,
               variables: { runtimeId }
             })
-            .then(({ data: { versions } }) => ({
+            .then(({ data }) => ({
               runtime: {
                 id: runtimeId,
                 name: runtimeName
               },
-              versions: versions.map(({ id, name }) => ({
-                id,
-                name
-              }))
+              versions: data
+                ? data.versions.map(({ id, name }) => ({
+                    id,
+                    name
+                  }))
+                : []
             }))
             .catch(error => {
               setError(error);

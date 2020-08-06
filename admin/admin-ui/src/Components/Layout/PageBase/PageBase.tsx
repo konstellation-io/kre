@@ -5,7 +5,7 @@ import Header from '../../Header/Header';
 import NavigationBar from '../../NavigationBar/NavigationBar';
 import cx from 'classnames';
 import styles from './PageBase.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 type PageBaseProps = {
   children: ReactElement | ReactElement[] | null;

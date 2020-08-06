@@ -9,7 +9,7 @@ import { VersionRouteParams } from 'Constants/routes';
 import { loader } from 'graphql.macro';
 import styles from './StatusTopInfoBar.module.scss';
 import { useParams } from 'react-router';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetVersionWorkflowsQuery = loader(
   'Graphql/queries/getVersionWorkflows.graphql'

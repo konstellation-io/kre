@@ -14,7 +14,7 @@ import Version from '../Version/Version';
 import { buildRoute } from 'Utils/routes';
 import { loader } from 'graphql.macro';
 import styles from './Runtime.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetRuntimeAndVersionQuery = loader(
   'Graphql/queries/getRuntimeAndVersions.graphql'
@@ -27,7 +27,6 @@ function Runtime() {
     GetVersionConfStatus,
     GetVersionConfStatusVariables
   >(GetRuntimeAndVersionQuery, {
-    fetchPolicy: 'cache-and-network',
     variables: { runtimeId }
   });
 

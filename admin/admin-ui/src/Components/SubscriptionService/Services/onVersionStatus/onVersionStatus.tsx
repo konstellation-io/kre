@@ -1,4 +1,4 @@
-import ApolloClient from 'apollo-client';
+import { ApolloClient } from '@apollo/client';
 import { WatchVersionStatus } from 'Graphql/subscriptions/types/WatchVersionStatus';
 import { loader } from 'graphql.macro';
 

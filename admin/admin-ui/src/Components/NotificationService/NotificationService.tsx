@@ -1,45 +1,45 @@
 import {
-  GET_NOTIFICATIONS,
-  GetNotifications,
-  GetNotifications_notifications
-} from 'Graphql/client/queries/getNotification.graphql';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
+  GET_LOGIN_AND_NOTIFICATIONS,
+  GetLoginAndNotifications
+} from 'Graphql/client/queries/getLoginAndNotifications.graphql';
 
-import { GET_LOGIN_STATUS } from 'Graphql/client/queries/getLoginStatus.graphql';
 import Notification from './Notification';
 import React from 'react';
-import onRuntimeCreated from './Services/onRuntimeCreated/onRuntimeCreated';
-import onVersionCreated from './Services/onVersionCreated/onVersionCreated';
+import { ReactNode } from 'react';
+import RuntimeCreated from './Services/RuntimeCreated/RuntimeCreated';
+import VersionCreated from './Services/VersionCreated/VersionCreated';
 import styles from './Notification.module.scss';
+import { useQuery } from '@apollo/client';
 
 function NotificationService() {
-  const client = useApolloClient();
-  const { data } = useQuery(GET_LOGIN_STATUS);
-  const { data: notificationsData } = useQuery<GetNotifications>(
-    GET_NOTIFICATIONS
+  const { data } = useQuery<GetLoginAndNotifications>(
+    GET_LOGIN_AND_NOTIFICATIONS
   );
 
-  if (data && data.loggedIn) {
-    onRuntimeCreated(client);
-    onVersionCreated(client);
+  let services: ReactNode[] = [];
+
+  if (data?.loggedIn) {
+    services = [
+      <RuntimeCreated key="runtimeCreated" />,
+      <VersionCreated key="versionCreated" />
+    ];
   }
 
-  const notificationComponents =
-    notificationsData &&
-    notificationsData.notifications.map(
-      (notification: GetNotifications_notifications) => (
-        <Notification
-          {...notification}
-          key={notification.id}
-          buttonLabel="GO TO RUNTIME"
-        />
-      )
-    );
+  const notificationComponents = data?.notifications.map(notification => (
+    <Notification
+      {...notification}
+      key={notification.id}
+      buttonLabel="GO TO RUNTIME"
+    />
+  ));
 
   return (
-    <div className={styles.notificationsContainer}>
-      {notificationComponents}
-    </div>
+    <>
+      <div className={styles.notificationsContainer}>
+        {notificationComponents}
+      </div>
+      <div>{services}</div>
+    </>
   );
 }
 

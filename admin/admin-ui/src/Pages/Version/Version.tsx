@@ -3,16 +3,17 @@ import {
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 import Configuration from './pages/Configuration/Configuration';
 import Documentation from './pages/Documentation/Documentation';
 import Metrics from './pages/Metrics/Metrics';
+import { NodeStatus } from 'Graphql/types/globalTypes';
 import ROUTE from 'Constants/routes';
 import Status from './pages/Status/Status';
 import VersionSideBar from './components/VersionSideBar/VersionSideBar';
 import styles from './Version.module.scss';
-import { useApolloClient } from '@apollo/react-hooks';
+import useOpenedVersion from 'Graphql/hooks/useOpenedVersion';
 
 type Props = {
   versions?: GetVersionConfStatus_versions[];
@@ -21,21 +22,20 @@ type Props = {
 };
 
 function Version({ versions, version, runtime }: Props) {
-  const client = useApolloClient();
+  const { updateVersion, updateEntrypointStatus } = useOpenedVersion();
 
   useEffect(() => {
     if (runtime && version) {
-      client.writeData({
-        data: {
-          openedVersion: {
-            runtimeName: runtime.name,
-            versionName: version.name,
-            __typename: 'OpenedVersion'
-          }
-        }
-      });
+      updateVersion(runtime.name, version.name);
     }
-  }, [version, runtime, client]);
+  }, [version, runtime, updateVersion]);
+
+  useEffect(
+    () => () => updateEntrypointStatus(NodeStatus.STOPPED),
+    // We only want to execute this after unmounting
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   return (
     <div className={styles.container} data-testid="runtimeContainer">

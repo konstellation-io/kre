@@ -4,7 +4,6 @@ import {
   GetLogTabs_logTabs
 } from 'Graphql/client/queries/getLogs.graphql';
 import React, { useState } from 'react';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import Header from './components/Header/Header';
 import IconClose from '@material-ui/icons/Close';
@@ -20,86 +19,40 @@ import cx from 'classnames';
 import { get } from 'lodash';
 import styles from './LogsPanel.module.scss';
 import { useLocation } from 'react-router-dom';
+import useLogs from 'Graphql/hooks/useLogs';
+import { useQuery } from '@apollo/client';
 
 function actualPageIsLogs(location: Location) {
   return location.pathname.startsWith(ROUTE.LOGS.replace(':logTabInfo', ''));
 }
 
 function LogsPanel() {
-  const client = useApolloClient();
+  const {
+    openTab,
+    closeTab,
+    closeOtherTabs,
+    duplicateTab,
+    toggleLogs
+  } = useLogs();
   const location = useLocation();
   const onlyShowLogs = actualPageIsLogs(location);
   const [fullScreen, setFullScreen] = useState(onlyShowLogs);
 
   const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
   const opened = get(localData, 'logsOpened', false);
-  const activeTabId = get(localData, 'activeTabId', '');
+  const actActiveTabId = get(localData, 'activeTabId', '');
   const tabs = get<GetLogTabs, 'logTabs', GetLogTabs_logTabs[]>(
     localData,
     'logTabs',
     []
   );
 
-  function setOpened(value: boolean) {
-    client.writeData({ data: { logsOpened: value } });
-  }
-
-  function togglePanel() {
-    setOpened(!opened);
-  }
   function toggleFullScreen() {
     setFullScreen(!fullScreen);
   }
 
   function handleTabClick(uniqueId: string): void {
-    client.writeData({ data: { activeTabId: uniqueId } });
-  }
-
-  function getNewActiveTabId(index: number, newTabs: GetLogTabs_logTabs[]) {
-    let newActiveTabId = activeTabId;
-    const isRemovingSelectedTab = tabs[index].uniqueId === activeTabId;
-
-    if (isRemovingSelectedTab) {
-      newActiveTabId = newTabs[Math.max(0, index - 1)]?.uniqueId || '';
-    }
-
-    return newActiveTabId;
-  }
-
-  function closeAllButIndex(index: number): void {
-    const newTabs = [tabs[index]];
-    const newActiveTabId = tabs[index].uniqueId;
-
-    client.writeData({
-      data: { activeTabId: newActiveTabId, logTabs: newTabs }
-    });
-  }
-
-  function closeTabByIndex(index: number): void {
-    const newTabs = [...tabs];
-    newTabs.splice(index, 1);
-    const newActiveTabId = getNewActiveTabId(index, newTabs);
-
-    client.writeData({
-      data: { activeTabId: newActiveTabId, logTabs: newTabs }
-    });
-  }
-
-  function duplicateTab(_: any, index: number): void {
-    const tabToDuplicate = tabs[index];
-    const activeTabId = `${Date.now()}`;
-    client.writeData({
-      data: {
-        activeTabId,
-        logTabs: [
-          ...tabs,
-          {
-            ...tabToDuplicate,
-            uniqueId: activeTabId
-          }
-        ]
-      }
-    });
+    openTab(uniqueId);
   }
 
   function openInANewTab(index: number) {
@@ -114,7 +67,7 @@ function LogsPanel() {
     {
       Icon: IconDuplicate,
       text: 'duplicate',
-      callToAction: duplicateTab
+      callToAction: (_: any, index: number) => duplicateTab(index)
     },
     {
       Icon: IconOpenInTab,
@@ -125,12 +78,12 @@ function LogsPanel() {
       Icon: IconCloseOthers,
       text: 'close others',
       disabled: tabs.length < 2,
-      callToAction: (_: any, index: number) => closeAllButIndex(index)
+      callToAction: (_: any, index: number) => closeOtherTabs(index)
     },
     {
       Icon: IconClose,
       text: 'close',
-      callToAction: (_: any, index: number) => closeTabByIndex(index)
+      callToAction: (_: any, index: number) => closeTab(index)
     }
   ];
 
@@ -146,7 +99,7 @@ function LogsPanel() {
       >
         {!onlyShowLogs && (
           <Header
-            togglePanel={togglePanel}
+            togglePanel={toggleLogs}
             toggleFullScreen={toggleFullScreen}
             opened={opened}
             fullScreen={fullScreen}
@@ -154,7 +107,7 @@ function LogsPanel() {
         )}
         <TabContainer
           tabs={tabs}
-          activeTabId={activeTabId}
+          activeTabId={actActiveTabId}
           contextMenuActions={contextMenuActions}
           onTabClick={handleTabClick}
         />
@@ -162,7 +115,7 @@ function LogsPanel() {
           <div
             className={cx(styles.content, {
               [styles.opened]: opened,
-              [styles.inactiveTab]: activeTabId !== tab.uniqueId
+              [styles.inactiveTab]: actActiveTabId !== tab.uniqueId
             })}
             key={tab.uniqueId}
           >
@@ -179,7 +132,7 @@ function LogsPanel() {
         className={cx(styles.shield, {
           [styles.show]: opened && !hidden && !fullScreen
         })}
-        onClick={togglePanel}
+        onClick={toggleLogs}
       />
     </>
   );

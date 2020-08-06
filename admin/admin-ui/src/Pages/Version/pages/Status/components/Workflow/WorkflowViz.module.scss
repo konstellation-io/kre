@@ -112,6 +112,7 @@ $animation-duration: 0.8s;
 @mixin set-border($selector, $color) {
   #{$selector} {
     stroke: $color;
+    fill: $bg-box;
   }
 }
 
@@ -185,7 +186,12 @@ $animation-duration: 0.8s;
   $fill-selector: '.shape';
   $border-selector: '.shape, .nodePeak';
 
-  @include entrypoint($fill-selector, $border-selector);
+  @include entrypoint($fill-selector, $border-selector) {
+    .peakCut,
+    .nodePeak {
+      fill: $bg-box;
+    }
+  }
 }
 
 .nodeLabel {

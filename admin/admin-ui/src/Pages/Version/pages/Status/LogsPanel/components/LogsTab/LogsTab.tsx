@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import {
-  UPDATE_TAB_FILTERS,
-  UpdateTabFilters,
-  UpdateTabFiltersInput_newFilters,
-  UpdateTabFiltersVariables
-} from 'Graphql/client/mutations/updateTabFilters.graphql';
+import useLogs, {
+  UpdateTabFiltersVariables_newFilters
+} from 'Graphql/hooks/useLogs';
 
 import AppliedFilters from '../AppliedFilters/AppliedFilters';
 import Filters from '../Filters/Filters';
@@ -14,9 +11,7 @@ import { LogLevel } from 'Graphql/types/globalTypes';
 import LogsList from '../LogsList/LogsList';
 import { Moment } from 'moment';
 import { NodeSelection } from 'Graphql/client/typeDefs';
-import { getDefaultFilters } from 'Graphql/client/resolvers/updateTabFilters';
 import styles from './LogsTab.module.scss';
-import { useMutation } from '@apollo/react-hooks';
 
 export interface FilterTypes {
   dateOption: string;
@@ -33,37 +28,16 @@ type Props = {
   filterValues: GetLogTabs_logTabs_filters;
 };
 function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
-  const [logs, setLogs] = useState<GetServerLogs_logs_items[]>([]);
-  const [updateTabFilters] = useMutation<
-    UpdateTabFilters,
-    UpdateTabFiltersVariables
-  >(UPDATE_TAB_FILTERS, {
-    onError: e => console.error(`updateTabFilters: ${e}`)
-  });
+  const { updateTabFilters, resetTabFilters } = useLogs();
 
-  function updateFilters(newFilters: UpdateTabFiltersInput_newFilters) {
-    updateTabFilters({
-      variables: {
-        input: {
-          tabId: uniqueId,
-          newFilters: {
-            ...filterValues,
-            ...newFilters
-          }
-        }
-      }
-    });
+  const [logs, setLogs] = useState<GetServerLogs_logs_items[]>([]);
+
+  function updateFilters(newFilters: UpdateTabFiltersVariables_newFilters) {
+    updateTabFilters({ tabId: uniqueId, newFilters });
   }
 
   function resetFilters() {
-    updateTabFilters({
-      variables: {
-        input: {
-          tabId: uniqueId,
-          newFilters: getDefaultFilters() as UpdateTabFiltersInput_newFilters
-        }
-      }
-    });
+    resetTabFilters(uniqueId);
   }
 
   function clearLogs() {

@@ -5,7 +5,7 @@ import Settings from 'Components/Settings/Settings';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './Header.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetMeQuery = loader('Graphql/queries/getMe.graphql');
 

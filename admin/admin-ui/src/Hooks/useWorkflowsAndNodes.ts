@@ -4,7 +4,7 @@ import {
 } from 'Graphql/queries/types/GetVersionWorkflows';
 
 import { loader } from 'graphql.macro';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetVersionWorkflowsQuery = loader(
   'Graphql/queries/getVersionWorkflows.graphql'

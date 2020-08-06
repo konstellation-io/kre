@@ -1,8 +1,4 @@
 import {
-  ADD_LOG_TAB,
-  AddLogTabVariables
-} from 'Graphql/client/mutations/addLogTab.graphql';
-import {
   GetVersionWorkflows_version_workflows,
   GetVersionWorkflows_version_workflows_edges,
   GetVersionWorkflows_version_workflows_nodes
@@ -10,7 +6,6 @@ import {
 import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import React, { useEffect, useRef, useState } from 'react';
 import { RuntimeRouteParams, VersionRouteParams } from 'Constants/routes';
-import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import { GET_OPENED_VERSION_INFO } from 'Graphql/client/queries/getOpenedVersionInfo.graphql';
 import { NODE_NAME_ENTRYPOINT } from 'Hooks/useWorkflowsAndNodes';
@@ -23,7 +18,9 @@ import { cloneDeep } from 'lodash';
 import cx from 'classnames';
 import { getWorkflowState } from '../../states';
 import styles from './Workflow.module.scss';
+import useLogs from 'Graphql/hooks/useLogs';
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import useRenderOnResize from 'Hooks/useRenderOnResize';
 import useUserAccess from 'Hooks/useUserAccess';
 
@@ -54,6 +51,7 @@ function Workflow({
   entrypointAddress,
   tooltipRefs
 }: Props) {
+  const { createLogsTab } = useLogs();
   const { accessLevel } = useUserAccess();
   const { versionId } = useParams<VersionRouteParams>();
   const { data: localData } = useQuery(GET_OPENED_VERSION_INFO);
@@ -64,60 +62,43 @@ function Workflow({
   const chartRef = useRef<HTMLDivElement>(null);
   const dimensions = useRenderOnResize({ container: chartRef });
 
-  const [addLogTabMutation] = useMutation<null, AddLogTabVariables>(
-    ADD_LOG_TAB,
-    {
-      onError: e => console.error(`addLogTabMutation: ${e}`)
-    }
-  );
-
   // Sets container width.
   useEffect(() => {
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
   }, [setContainerWidth, workflow.nodes]);
 
-  function addLogTab(nodes: NodeSelection[]) {
-    addLogTabMutation({
-      variables: {
-        input: {
-          runtimeId,
-          runtimeName,
-          versionId,
-          versionName,
-          nodes
-        }
-      }
+  function createTab(node: NodeSelection) {
+    createLogsTab({
+      runtimeId,
+      runtimeName,
+      versionId,
+      versionName,
+      nodes: [node]
     });
   }
 
   function onInputNodeClick() {
-    addLogTab([
-      {
-        workflowName: '',
-        nodeNames: [NODE_NAME_ENTRYPOINT],
-        __typename: 'NodeSelection'
-      }
-    ]);
+    createTab({
+      workflowName: '',
+      nodeNames: [NODE_NAME_ENTRYPOINT],
+      __typename: 'NodeSelection'
+    });
   }
 
   function onInnerNodeClick(nodeName: string) {
-    addLogTab([
-      {
-        workflowName: workflow.name,
-        nodeNames: [nodeName],
-        __typename: 'NodeSelection'
-      }
-    ]);
+    createTab({
+      workflowName: workflow.name,
+      nodeNames: [nodeName],
+      __typename: 'NodeSelection'
+    });
   }
 
   function onWorkflowClick() {
-    addLogTab([
-      {
-        workflowName: workflow.name,
-        nodeNames: workflow.nodes.map(({ name }) => name),
-        __typename: 'NodeSelection'
-      }
-    ]);
+    createTab({
+      workflowName: workflow.name,
+      nodeNames: workflow.nodes.map(({ name }) => name),
+      __typename: 'NodeSelection'
+    });
   }
 
   const data = cloneDeep(workflow);

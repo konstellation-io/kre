@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 
 const mockDoLogout = jest.fn();
 
-jest.mock('@apollo/react-hooks');
+jest.mock('@apollo/client');
 jest.mock('react-router');
 jest.mock('Hooks/useEndpoint', () => jest.fn(() => [{}, mockDoLogout]));
 

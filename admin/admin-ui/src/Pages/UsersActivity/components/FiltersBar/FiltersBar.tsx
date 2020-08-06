@@ -21,7 +21,7 @@ import { VersionsData } from 'Hooks/useAllVersions';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './FiltersBar.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 

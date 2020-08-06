@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import AddVersion from './AddVersion';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useMutation: jest.fn(() => [jest.fn(), { loading: false, error: '' }])
 }));
 jest.mock('react-router', () => ({

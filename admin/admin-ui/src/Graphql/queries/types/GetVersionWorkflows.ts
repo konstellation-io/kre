@@ -31,12 +31,6 @@ export interface GetVersionWorkflows_version_workflows {
   edges: GetVersionWorkflows_version_workflows_edges[];
 }
 
-export interface GetVersionWorkflows_version_entrypoint {
-  __typename: 'Node';
-  id: string;
-  status: NodeStatus;
-}
-
 export interface GetVersionWorkflows_version_config {
   __typename: 'VersionConfig';
   completed: boolean;
@@ -49,7 +43,6 @@ export interface GetVersionWorkflows_version {
   status: VersionStatus;
   creationDate: string;
   workflows: GetVersionWorkflows_version_workflows[];
-  entrypoint: GetVersionWorkflows_version_entrypoint;
   config: GetVersionWorkflows_version_config;
 }
 

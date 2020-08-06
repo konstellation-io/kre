@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { SearchSelect, Select } from 'kwc';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
@@ -9,6 +8,8 @@ import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './UserFiltersAndActions.module.scss';
 import { useForm } from 'react-hook-form';
+import { useQuery } from '@apollo/client';
+import useUserSettings from 'Graphql/hooks/useUserSettings';
 
 const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 
@@ -18,7 +19,8 @@ type FormData = {
 };
 
 function UserFilters() {
-  const client = useApolloClient();
+  const { updateFilters } = useUserSettings();
+
   const { data } = useQuery<GetUsers>(GetUsersQuery);
 
   const {
@@ -41,18 +43,7 @@ function UserFilters() {
   }, [register, unregister]);
 
   function onSubmit(formData: FormData) {
-    client.writeData({
-      data: {
-        userSettings: {
-          filters: {
-            email: formData.userEmail || null,
-            accessLevel: formData.userType || null,
-            __typename: 'UserSettingsFilters'
-          },
-          __typename: 'UserSettings'
-        }
-      }
-    });
+    updateFilters(formData.userEmail, formData.userType);
   }
 
   return (

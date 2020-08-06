@@ -2,7 +2,7 @@ import { Button, Chip, Left, Right } from 'kwc';
 import React, { MouseEvent } from 'react';
 
 import { NodeSelection } from 'Graphql/client/typeDefs';
-import { defaultFilters } from 'Graphql/client/resolvers/updateTabFilters';
+import { defaultFilters } from 'Graphql/hooks/useLogs';
 import styles from './AppliedFilters.module.scss';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';
 

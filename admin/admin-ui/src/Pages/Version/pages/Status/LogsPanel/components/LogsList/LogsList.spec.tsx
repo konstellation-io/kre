@@ -57,7 +57,7 @@ jest.mock('react-router', () => ({
   }))
 }));
 const mockWriteData = jest.fn();
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useQuery: jest.fn(() => mockData),
   useSubscription: jest.fn(() => mockData),
   useApolloClient: () => ({

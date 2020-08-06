@@ -1,58 +1,31 @@
-import 'wdyr';
+// import 'wdyr';
 import 'Styles/d3.scss';
 
+import { ApolloClient, ApolloProvider } from '@apollo/client';
 import { ApolloLink, split } from 'apollo-link';
 import { ErrorResponse, onError } from 'apollo-link-error';
-import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import {
-  LogPanel,
-  NotificationType,
-  OpenedVersion,
-  UserSelection,
-  UserSettings
-} from 'Graphql/client/typeDefs';
+  Notification,
+  NotificationType
+} from 'Graphql/client/models/Notification';
 
-import { ADD_NOTIFICATION } from 'Graphql/client/mutations/addNotification.graphql';
-import { ApolloClient } from 'apollo-client';
-import { ApolloProvider } from '@apollo/react-hooks';
 import App from './App';
-import { GetNotifications_notifications } from 'Graphql/client/queries/getNotification.graphql';
-import { GetServerLogs_logs_items } from 'Graphql/queries/types/GetServerLogs';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { WebSocketLink } from 'apollo-link-ws';
-import addLogTabResolver from 'Graphql/client/resolvers/addLogTab';
-import addNotificationResolver from 'Graphql/client/resolvers/addNotification';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import cache from 'Graphql/client/cache';
 import config from './config';
 import { createUploadLink } from 'apollo-upload-client';
 import { get } from 'lodash';
 import { getMainDefinition } from 'apollo-utilities';
 import history from './browserHistory';
 import { loader } from 'graphql.macro';
-import removeNotificationResolver from 'Graphql/client/resolvers/removeNotification';
-import updateTabFiltersResolver from 'Graphql/client/resolvers/updateTabFilters';
-import versionResolver from 'Graphql/client/resolvers/version';
+import useNotifications from 'Graphql/hooks/useNotifications';
 
 const extensionsSchema = loader('extensions.graphql');
 
-export let cache: InMemoryCache;
 export let API_BASE_URL: string;
-
-export interface LocalState {
-  loggedIn: boolean;
-  logs: GetServerLogs_logs_items[];
-  notifications: GetNotifications_notifications[];
-  logTabs: LogPanel[];
-  activeTabId: string;
-  logsOpened: boolean;
-  logsAutoScroll: boolean;
-  openedVersion: OpenedVersion;
-  userSettings: UserSettings;
-}
-interface DefaultCache {
-  data: LocalState;
-}
 
 const UNAUTHORIZED_CODE = 'unauthorized';
 const INVALID_SESSION_CODE = 'invalid_session';
@@ -85,24 +58,22 @@ function getNotificationIdAndMessage(error: ErrorResponse) {
   return [notificationId, notificationMessage];
 }
 
-function addNotification(
-  client: ApolloClient<NormalizedCacheObject>,
+const { addNotification } = useNotifications();
+function addErrorNotification(
   notificationMessage?: string,
   notificationId?: string
 ) {
   if (notificationMessage !== undefined && notificationId !== undefined) {
-    client.mutate({
-      mutation: ADD_NOTIFICATION,
-      variables: {
-        input: {
-          id: notificationId,
-          message: notificationMessage,
-          type: NotificationType.ERROR,
-          timeout: 0,
-          to: ''
-        }
-      }
-    });
+    const newNotification: Notification = {
+      id: notificationId,
+      message: notificationMessage,
+      type: NotificationType.ERROR,
+      timeout: 0,
+      typeLabel: null,
+      to: ''
+    };
+
+    addNotification(newNotification);
   }
 }
 
@@ -111,7 +82,6 @@ config
     API_BASE_URL = envVariables.API_BASE_URL;
     const API_BASE_URL_WS = envVariables.API_BASE_URL.replace('http', 'ws');
 
-    cache = new InMemoryCache();
     const errorLink = onError((error: ErrorResponse) => {
       const [notificationId, notificationMessage] = getNotificationIdAndMessage(
         error
@@ -126,11 +96,11 @@ config
         history.push(ROUTE.LOGIN);
         client.clearStore().then(() => {
           client.resetStore().then(() => {
-            addNotification(client, notificationMessage, notificationId);
+            addErrorNotification(notificationMessage, notificationId);
           });
         });
       } else {
-        addNotification(client, notificationMessage, notificationId);
+        addErrorNotification(notificationMessage, notificationId);
       }
     });
 
@@ -155,59 +125,18 @@ config
           definition.operation === 'subscription'
         );
       },
+      // @ts-ignore   FIXME: wait for an update to fix this
       wsLink,
       uploadLink
     );
 
     const link = ApolloLink.from([errorLink, transportLink]);
 
-    const defaultCache: DefaultCache = {
-      data: {
-        loggedIn: false,
-        logs: [],
-        logTabs: [],
-        activeTabId: '',
-        notifications: [],
-        logsOpened: false,
-        logsAutoScroll: false,
-        openedVersion: {
-          runtimeName: '',
-          versionName: '',
-          __typename: 'OpenedVersion'
-        },
-        userSettings: {
-          selectedUserIds: [],
-          userSelection: UserSelection.NONE,
-          filters: {
-            email: null,
-            accessLevel: null,
-            __typename: 'UserSettingsFilters'
-          },
-          __typename: 'UserSettings'
-        }
-      }
-    };
-
     const client = new ApolloClient({
       cache,
+      // @ts-ignore   FIXME: SAME AS PREV ERROR, wait for an update to fix this
       link,
-      typeDefs: extensionsSchema,
-      resolvers: {
-        Mutation: {
-          addNotification: addNotificationResolver,
-          removeNotification: removeNotificationResolver,
-          updateTabFilters: updateTabFiltersResolver,
-          addLogTab: addLogTabResolver
-        },
-        Version: versionResolver
-      }
-    });
-
-    // Sets initial cache
-    cache.writeData(defaultCache);
-
-    client.onResetStore(async () => {
-      cache.writeData(defaultCache);
+      typeDefs: extensionsSchema
     });
 
     ReactDOM.render(

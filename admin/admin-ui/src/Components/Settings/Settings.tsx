@@ -10,9 +10,9 @@ import { checkPermission } from '../../rbac-rules';
 import cx from 'classnames';
 import { get } from 'lodash';
 import styles from './Settings.module.scss';
-import { useApolloClient } from '@apollo/react-hooks';
 import useEndpoint from 'Hooks/useEndpoint';
 import { useHistory } from 'react-router';
+import useLogin from 'Graphql/hooks/useLogin';
 import useUserAccess from 'Hooks/useUserAccess';
 
 const BUTTON_HEIGHT = 40;
@@ -25,8 +25,8 @@ type Props = {
 };
 
 function Settings({ label }: Props) {
+  const { logout } = useLogin();
   const { accessLevel } = useUserAccess();
-  const client = useApolloClient();
   const history = useHistory();
   const [opened, setOpened] = useState(false);
   const [logoutResponse, doLogout] = useEndpoint({
@@ -42,13 +42,13 @@ function Settings({ label }: Props) {
   useEffect(() => {
     if (logoutResponse.complete) {
       if (get(logoutResponse, 'status') === 200) {
-        client.writeData({ data: { loggedIn: false } });
+        logout();
         history.push(ROUTE.LOGIN);
       } else {
         console.error(`Error sending logout request.`);
       }
     }
-  }, [logoutResponse, history, client]);
+  }, [logoutResponse, history, logout]);
 
   function close() {
     setOpened(false);

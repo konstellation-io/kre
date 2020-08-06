@@ -16,7 +16,7 @@ import styles from './AddUser.module.scss';
 import { unregisterMany } from 'Utils/react-forms';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 const CreateUserMutation = loader('Graphql/mutations/createUser.graphql');

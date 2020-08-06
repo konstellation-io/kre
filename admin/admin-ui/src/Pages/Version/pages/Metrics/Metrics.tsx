@@ -19,7 +19,7 @@ import { loader } from 'graphql.macro';
 import styles from './Metrics.module.scss';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetMetricsQuery = loader('Graphql/queries/getMetrics.graphql');
 
