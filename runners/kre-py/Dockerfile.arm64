@@ -1,0 +1,26 @@
+FROM  eu.gcr.io/hivecell/cuda-arm64v8/pytorch-v1.5.0:latest
+
+# Fix error installing pipenv:
+#   RuntimeError: Click will abort further execution because
+#   Python 3 was configured to use ASCII as encoding for the environment.
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+RUN apt update && \
+    apt -y install libsm6 libxext6 libxrender-dev gfortran \
+        python3-pip python3.6-dev && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1 && \
+    update-alternatives --set python3 /usr/bin/python3.6
+
+WORKDIR /kre
+
+COPY requirements.txt ./
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-opencv
+RUN python3 -m pip install -r requirements.txt
+
+COPY install_stopwords.py ./
+RUN python3 /kre/install_stopwords.py
+
+COPY src src
+
+CMD ["sh","-c","/usr/bin/python3 /kre/src/main.py 2>&1 | tee -a /var/log/app/app.log"]
