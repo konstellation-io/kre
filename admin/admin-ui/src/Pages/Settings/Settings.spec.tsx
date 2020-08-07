@@ -3,12 +3,13 @@ import * as MOCK from 'Mocks/settings';
 import { History, createMemoryHistory } from 'history';
 import { RenderResult, cleanup, fireEvent } from '@testing-library/react';
 
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import { Router } from 'react-router-dom';
-import { Routes } from 'App';
+import Settings from './Settings';
 import { act } from 'react-dom/test-utils';
+import { dashboardMock } from 'Mocks/runtime';
 import { renderWithRouter } from 'Utils/testUtils';
 import { usernameMock } from 'Mocks/auth';
 import wait from 'waait';
@@ -19,6 +20,7 @@ const mocks = [
   MOCK.usersActivityMock,
   MOCK.addAllowedDomainMock,
   MOCK.updateExpirationTime,
+  dashboardMock,
   usernameMock
 ];
 
@@ -31,7 +33,8 @@ function generateComponent() {
   const wrapper = renderWithRouter(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router history={history}>
-        <Routes />
+        <Settings />
+        {/* <Routes /> */}
       </Router>
     </MockedProvider>
   );

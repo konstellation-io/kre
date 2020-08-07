@@ -13,7 +13,7 @@ describe('Settings', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<Settings />);
+    wrapper = shallow(<Settings label="some label" />);
   });
 
   it('matches snapshot', () => {
@@ -22,16 +22,6 @@ describe('Settings', () => {
 
   it('Shows logout option', () => {
     expect(wrapper.exists({ label: 'LOGOUT' })).toBeTruthy();
-  });
-
-  it('Shows options on mouse click', () => {
-    expect(wrapper.find('.options').prop('style').maxHeight).toBe(0);
-
-    wrapper.find('.container').simulate('click');
-    expect(wrapper.find('.options').prop('style').maxHeight).not.toBe(0);
-
-    wrapper.find('.container').simulate('click');
-    expect(wrapper.find('.options').prop('style').maxHeight).toBe(120);
   });
 
   it('handles logout action', () => {

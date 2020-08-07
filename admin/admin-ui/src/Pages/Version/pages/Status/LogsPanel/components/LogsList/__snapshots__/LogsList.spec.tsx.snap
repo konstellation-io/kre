@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LogItem matches snapshot 1`] = `
-<ContextMenu
+<Component
   actions={
     Array [
       Object {
@@ -85,5 +85,5 @@ exports[`LogItem matches snapshot 1`] = `
       </div>
     </div>
   </div>
-</ContextMenu>
+</Component>
 `;

@@ -9,7 +9,9 @@ exports[`Settings matches snapshot 1`] = `
   <div
     className="label"
     data-testid="settings-label"
-  />
+  >
+    some label
+  </div>
   <div
     className="options"
     data-testid="settingsContent"
@@ -19,7 +21,7 @@ exports[`Settings matches snapshot 1`] = `
       }
     }
   >
-    <Button
+    <A
       Icon={
         Object {
           "$$typeof": Symbol(react.memo),
@@ -42,7 +44,7 @@ exports[`Settings matches snapshot 1`] = `
       }
       to="/settings"
     />
-    <Button
+    <A
       Icon={
         Object {
           "$$typeof": Symbol(react.memo),
@@ -65,7 +67,7 @@ exports[`Settings matches snapshot 1`] = `
       }
       to="/audit"
     />
-    <Button
+    <A
       Icon={
         Object {
           "$$typeof": Symbol(react.memo),

@@ -1,9 +1,10 @@
+import AddVersion from './AddVersion';
 import React from 'react';
 import { shallow } from 'enzyme';
-import AddVersion from './AddVersion';
 
 jest.mock('@apollo/client', () => ({
-  useMutation: jest.fn(() => [jest.fn(), { loading: false, error: '' }])
+  useMutation: jest.fn(() => [jest.fn(), { loading: false, error: '' }]),
+  useApolloClient: jest.fn()
 }));
 jest.mock('react-router', () => ({
   useHistory: jest.fn(() => ({})),

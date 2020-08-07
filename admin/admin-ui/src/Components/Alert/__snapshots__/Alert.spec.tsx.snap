@@ -15,7 +15,7 @@ exports[`App matches snapshot 1`] = `
   >
     some message
   </div>
-  <Button
+  <A
     label="GO TO RUNTIME"
     to="/runtimes/runtimeID"
   />

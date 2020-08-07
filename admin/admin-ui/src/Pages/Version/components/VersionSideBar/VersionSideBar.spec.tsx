@@ -15,7 +15,9 @@ describe('VersionSideBar', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<VersionSideBar version={version} runtime={runtime} />);
+    wrapper = shallow(
+      <VersionSideBar version={version} runtime={runtime} versions={[]} />
+    );
   });
 
   it('matches snapshot', () => {

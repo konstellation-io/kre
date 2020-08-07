@@ -3,11 +3,10 @@ import { mountWithRouter, prepareApolloComponent } from 'Utils/testUtilsEnzyme';
 
 import { Button } from 'kwc';
 import Dashboard from './Dashboard';
-import { ErrorMessage } from 'kwc';
 import Header from 'Components/Header/Header';
 import Hexagon from 'Components/Shape/Hexagon/Hexagon';
 import HexagonBorder from 'Components/Shape/Hexagon/HexagonBorder';
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 import NavigationBar from 'Components/NavigationBar/NavigationBar';
 import React from 'react';
 import { usernameMock } from 'Mocks/auth';
@@ -48,7 +47,7 @@ describe('Dashboard', () => {
   it('shows error component', async () => {
     const { wrapper } = await prepareApolloComponent(ComponentError);
 
-    expect(wrapper.exists(ErrorMessage)).toBeFalsy();
+    expect(wrapper.exists(Hexagon)).toBeFalsy();
   });
 
   it('shows runtimes', async () => {

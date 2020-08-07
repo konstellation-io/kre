@@ -205,68 +205,190 @@ exports[`Header matches snapshot 1`] = `
         ApolloClient {
           "cache": InMemoryCache {
             "addTypename": false,
-            "cacheKeyRoot": KeyTrie {
-              "weak": WeakMap {},
-              "weakness": true,
-            },
             "config": Object {
               "addTypename": false,
               "dataIdFromObject": [Function],
-              "fragmentMatcher": HeuristicFragmentMatcher {},
-              "freezeResults": false,
               "resultCaching": true,
+              "typePolicies": Object {},
             },
-            "data": DepTrackingCache {
+            "data": Root {
+              "canRead": [Function],
               "data": Object {
-                "$ROOT_QUERY.me": Object {
-                  "accessLevel": "ADMIN",
-                  "email": "user@konstellation.com",
-                  "id": "someId",
-                },
                 "ROOT_QUERY": Object {
+                  "__typename": "Query",
                   "me": Object {
-                    "generated": true,
-                    "id": "$ROOT_QUERY.me",
-                    "type": "id",
-                    "typename": undefined,
+                    "accessLevel": "ADMIN",
+                    "email": "user@konstellation.com",
+                    "id": "someId",
                   },
                 },
               },
-              "depend": [Function],
+              "getFieldValue": [Function],
+              "group": CacheGroup {
+                "caching": true,
+                "d": [Function],
+                "keyMaker": KeyTrie {
+                  "makeData": [Function],
+                  "weak": WeakMap {},
+                  "weakness": true,
+                },
+              },
+              "policies": Policies {
+                "cache": [Circular],
+                "config": Object {
+                  "cache": [Circular],
+                  "dataIdFromObject": [Function],
+                  "possibleTypes": undefined,
+                  "typePolicies": Object {},
+                },
+                "rootIdsByTypename": Object {
+                  "Mutation": "ROOT_MUTATION",
+                  "Query": "ROOT_QUERY",
+                  "Subscription": "ROOT_SUBSCRIPTION",
+                },
+                "rootTypenamesById": Object {
+                  "ROOT_MUTATION": "Mutation",
+                  "ROOT_QUERY": "Query",
+                  "ROOT_SUBSCRIPTION": "Subscription",
+                },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
+                "typePolicies": Object {},
+                "usingPossibleTypes": false,
+              },
+              "refs": Object {},
+              "rootIds": Object {
+                "ROOT_QUERY": 1,
+              },
+              "sharedLayerGroup": CacheGroup {
+                "caching": true,
+                "d": [Function],
+                "keyMaker": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
+              },
+              "toReference": [Function],
             },
+            "getFragmentDoc": [Function],
+            "makeVar": [Function],
             "maybeBroadcastWatch": [Function],
-            "optimisticData": DepTrackingCache {
+            "optimisticData": Root {
+              "canRead": [Function],
               "data": Object {
-                "$ROOT_QUERY.me": Object {
-                  "accessLevel": "ADMIN",
-                  "email": "user@konstellation.com",
-                  "id": "someId",
-                },
                 "ROOT_QUERY": Object {
+                  "__typename": "Query",
                   "me": Object {
-                    "generated": true,
-                    "id": "$ROOT_QUERY.me",
-                    "type": "id",
-                    "typename": undefined,
+                    "accessLevel": "ADMIN",
+                    "email": "user@konstellation.com",
+                    "id": "someId",
                   },
                 },
               },
-              "depend": [Function],
+              "getFieldValue": [Function],
+              "group": CacheGroup {
+                "caching": true,
+                "d": [Function],
+                "keyMaker": KeyTrie {
+                  "makeData": [Function],
+                  "weak": WeakMap {},
+                  "weakness": true,
+                },
+              },
+              "policies": Policies {
+                "cache": [Circular],
+                "config": Object {
+                  "cache": [Circular],
+                  "dataIdFromObject": [Function],
+                  "possibleTypes": undefined,
+                  "typePolicies": Object {},
+                },
+                "rootIdsByTypename": Object {
+                  "Mutation": "ROOT_MUTATION",
+                  "Query": "ROOT_QUERY",
+                  "Subscription": "ROOT_SUBSCRIPTION",
+                },
+                "rootTypenamesById": Object {
+                  "ROOT_MUTATION": "Mutation",
+                  "ROOT_QUERY": "Query",
+                  "ROOT_SUBSCRIPTION": "Subscription",
+                },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
+                "typePolicies": Object {},
+                "usingPossibleTypes": false,
+              },
+              "refs": Object {},
+              "rootIds": Object {
+                "ROOT_QUERY": 1,
+              },
+              "sharedLayerGroup": CacheGroup {
+                "caching": true,
+                "d": [Function],
+                "keyMaker": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
+              },
+              "toReference": [Function],
             },
-            "silenceBroadcast": false,
+            "policies": Policies {
+              "cache": [Circular],
+              "config": Object {
+                "cache": [Circular],
+                "dataIdFromObject": [Function],
+                "possibleTypes": undefined,
+                "typePolicies": Object {},
+              },
+              "rootIdsByTypename": Object {
+                "Mutation": "ROOT_MUTATION",
+                "Query": "ROOT_QUERY",
+                "Subscription": "ROOT_SUBSCRIPTION",
+              },
+              "rootTypenamesById": Object {
+                "ROOT_MUTATION": "Mutation",
+                "ROOT_QUERY": "Query",
+                "ROOT_SUBSCRIPTION": "Subscription",
+              },
+              "storageTrie": KeyTrie {
+                "makeData": [Function],
+                "weakness": true,
+              },
+              "typePolicies": Object {},
+              "usingPossibleTypes": false,
+            },
             "storeReader": StoreReader {
+              "config": Object {
+                "addTypename": false,
+                "cache": [Circular],
+              },
               "executeSelectionSet": [Function],
-              "executeStoreQuery": [Function],
               "executeSubSelectedArray": [Function],
-              "freezeResults": false,
+              "knownResults": WeakMap {},
             },
-            "storeWriter": StoreWriter {},
+            "storeWriter": StoreWriter {
+              "cache": [Circular],
+              "reader": StoreReader {
+                "config": Object {
+                  "addTypename": false,
+                  "cache": [Circular],
+                },
+                "executeSelectionSet": [Function],
+                "executeSubSelectedArray": [Function],
+                "knownResults": WeakMap {},
+              },
+            },
+            "txCount": 0,
             "typenameDocumentCache": Map {},
+            "watchDep": [Function],
             "watches": Set {
               Object {
                 "callback": [Function],
                 "optimistic": true,
-                "previousResult": [Function],
                 "query": Object {
                   "definitions": Array [
                     Object {
@@ -359,72 +481,279 @@ exports[`Header matches snapshot 1`] = `
             "mockedResponsesByKey": Object {
               "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
             },
+            "operation": Object {
+              "extensions": Object {},
+              "operationName": "GetMe",
+              "query": Object {
+                "definitions": Array [
+                  Object {
+                    "directives": Array [],
+                    "kind": "OperationDefinition",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "GetMe",
+                    },
+                    "operation": "query",
+                    "selectionSet": Object {
+                      "kind": "SelectionSet",
+                      "selections": Array [
+                        Object {
+                          "arguments": Array [],
+                          "directives": Array [],
+                          "kind": "Field",
+                          "name": Object {
+                            "kind": "Name",
+                            "value": "me",
+                          },
+                          "selectionSet": Object {
+                            "kind": "SelectionSet",
+                            "selections": Array [
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "id",
+                                },
+                              },
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "email",
+                                },
+                              },
+                              Object {
+                                "arguments": Array [],
+                                "directives": Array [],
+                                "kind": "Field",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "accessLevel",
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    "variableDefinitions": Array [],
+                  },
+                ],
+                "kind": "Document",
+                "loc": Object {
+                  "end": 60,
+                  "source": Object {
+                    "body": "query GetMe {
+  me {
+    id
+    email
+    accessLevel
+  }
+}
+",
+                    "locationOffset": Object {
+                      "column": 1,
+                      "line": 1,
+                    },
+                    "name": "GraphQL request",
+                  },
+                  "start": 0,
+                },
+              },
+              "variables": Object {},
+            },
           },
           "localState": LocalState {
             "cache": InMemoryCache {
               "addTypename": false,
-              "cacheKeyRoot": KeyTrie {
-                "weak": WeakMap {},
-                "weakness": true,
-              },
               "config": Object {
                 "addTypename": false,
                 "dataIdFromObject": [Function],
-                "fragmentMatcher": HeuristicFragmentMatcher {},
-                "freezeResults": false,
                 "resultCaching": true,
+                "typePolicies": Object {},
               },
-              "data": DepTrackingCache {
+              "data": Root {
+                "canRead": [Function],
                 "data": Object {
-                  "$ROOT_QUERY.me": Object {
-                    "accessLevel": "ADMIN",
-                    "email": "user@konstellation.com",
-                    "id": "someId",
-                  },
                   "ROOT_QUERY": Object {
+                    "__typename": "Query",
                     "me": Object {
-                      "generated": true,
-                      "id": "$ROOT_QUERY.me",
-                      "type": "id",
-                      "typename": undefined,
+                      "accessLevel": "ADMIN",
+                      "email": "user@konstellation.com",
+                      "id": "someId",
                     },
                   },
                 },
-                "depend": [Function],
+                "getFieldValue": [Function],
+                "group": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weak": WeakMap {},
+                    "weakness": true,
+                  },
+                },
+                "policies": Policies {
+                  "cache": [Circular],
+                  "config": Object {
+                    "cache": [Circular],
+                    "dataIdFromObject": [Function],
+                    "possibleTypes": undefined,
+                    "typePolicies": Object {},
+                  },
+                  "rootIdsByTypename": Object {
+                    "Mutation": "ROOT_MUTATION",
+                    "Query": "ROOT_QUERY",
+                    "Subscription": "ROOT_SUBSCRIPTION",
+                  },
+                  "rootTypenamesById": Object {
+                    "ROOT_MUTATION": "Mutation",
+                    "ROOT_QUERY": "Query",
+                    "ROOT_SUBSCRIPTION": "Subscription",
+                  },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                  "typePolicies": Object {},
+                  "usingPossibleTypes": false,
+                },
+                "refs": Object {},
+                "rootIds": Object {
+                  "ROOT_QUERY": 1,
+                },
+                "sharedLayerGroup": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                },
+                "toReference": [Function],
               },
+              "getFragmentDoc": [Function],
+              "makeVar": [Function],
               "maybeBroadcastWatch": [Function],
-              "optimisticData": DepTrackingCache {
+              "optimisticData": Root {
+                "canRead": [Function],
                 "data": Object {
-                  "$ROOT_QUERY.me": Object {
-                    "accessLevel": "ADMIN",
-                    "email": "user@konstellation.com",
-                    "id": "someId",
-                  },
                   "ROOT_QUERY": Object {
+                    "__typename": "Query",
                     "me": Object {
-                      "generated": true,
-                      "id": "$ROOT_QUERY.me",
-                      "type": "id",
-                      "typename": undefined,
+                      "accessLevel": "ADMIN",
+                      "email": "user@konstellation.com",
+                      "id": "someId",
                     },
                   },
                 },
-                "depend": [Function],
+                "getFieldValue": [Function],
+                "group": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weak": WeakMap {},
+                    "weakness": true,
+                  },
+                },
+                "policies": Policies {
+                  "cache": [Circular],
+                  "config": Object {
+                    "cache": [Circular],
+                    "dataIdFromObject": [Function],
+                    "possibleTypes": undefined,
+                    "typePolicies": Object {},
+                  },
+                  "rootIdsByTypename": Object {
+                    "Mutation": "ROOT_MUTATION",
+                    "Query": "ROOT_QUERY",
+                    "Subscription": "ROOT_SUBSCRIPTION",
+                  },
+                  "rootTypenamesById": Object {
+                    "ROOT_MUTATION": "Mutation",
+                    "ROOT_QUERY": "Query",
+                    "ROOT_SUBSCRIPTION": "Subscription",
+                  },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                  "typePolicies": Object {},
+                  "usingPossibleTypes": false,
+                },
+                "refs": Object {},
+                "rootIds": Object {
+                  "ROOT_QUERY": 1,
+                },
+                "sharedLayerGroup": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                },
+                "toReference": [Function],
               },
-              "silenceBroadcast": false,
+              "policies": Policies {
+                "cache": [Circular],
+                "config": Object {
+                  "cache": [Circular],
+                  "dataIdFromObject": [Function],
+                  "possibleTypes": undefined,
+                  "typePolicies": Object {},
+                },
+                "rootIdsByTypename": Object {
+                  "Mutation": "ROOT_MUTATION",
+                  "Query": "ROOT_QUERY",
+                  "Subscription": "ROOT_SUBSCRIPTION",
+                },
+                "rootTypenamesById": Object {
+                  "ROOT_MUTATION": "Mutation",
+                  "ROOT_QUERY": "Query",
+                  "ROOT_SUBSCRIPTION": "Subscription",
+                },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
+                "typePolicies": Object {},
+                "usingPossibleTypes": false,
+              },
               "storeReader": StoreReader {
+                "config": Object {
+                  "addTypename": false,
+                  "cache": [Circular],
+                },
                 "executeSelectionSet": [Function],
-                "executeStoreQuery": [Function],
                 "executeSubSelectedArray": [Function],
-                "freezeResults": false,
+                "knownResults": WeakMap {},
               },
-              "storeWriter": StoreWriter {},
+              "storeWriter": StoreWriter {
+                "cache": [Circular],
+                "reader": StoreReader {
+                  "config": Object {
+                    "addTypename": false,
+                    "cache": [Circular],
+                  },
+                  "executeSelectionSet": [Function],
+                  "executeSubSelectedArray": [Function],
+                  "knownResults": WeakMap {},
+                },
+              },
+              "txCount": 0,
               "typenameDocumentCache": Map {},
+              "watchDep": [Function],
               "watches": Set {
                 Object {
                   "callback": [Function],
                   "optimistic": true,
-                  "previousResult": [Function],
                   "query": Object {
                     "definitions": Array [
                       Object {
@@ -516,139 +845,256 @@ exports[`Header matches snapshot 1`] = `
           "queryDeduplication": true,
           "queryManager": QueryManager {
             "assumeImmutableResults": false,
-            "clientAwareness": Object {
-              "name": undefined,
-              "version": undefined,
-            },
-            "dataStore": DataStore {
-              "cache": InMemoryCache {
+            "cache": InMemoryCache {
+              "addTypename": false,
+              "config": Object {
                 "addTypename": false,
-                "cacheKeyRoot": KeyTrie {
-                  "weak": WeakMap {},
+                "dataIdFromObject": [Function],
+                "resultCaching": true,
+                "typePolicies": Object {},
+              },
+              "data": Root {
+                "canRead": [Function],
+                "data": Object {
+                  "ROOT_QUERY": Object {
+                    "__typename": "Query",
+                    "me": Object {
+                      "accessLevel": "ADMIN",
+                      "email": "user@konstellation.com",
+                      "id": "someId",
+                    },
+                  },
+                },
+                "getFieldValue": [Function],
+                "group": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weak": WeakMap {},
+                    "weakness": true,
+                  },
+                },
+                "policies": Policies {
+                  "cache": [Circular],
+                  "config": Object {
+                    "cache": [Circular],
+                    "dataIdFromObject": [Function],
+                    "possibleTypes": undefined,
+                    "typePolicies": Object {},
+                  },
+                  "rootIdsByTypename": Object {
+                    "Mutation": "ROOT_MUTATION",
+                    "Query": "ROOT_QUERY",
+                    "Subscription": "ROOT_SUBSCRIPTION",
+                  },
+                  "rootTypenamesById": Object {
+                    "ROOT_MUTATION": "Mutation",
+                    "ROOT_QUERY": "Query",
+                    "ROOT_SUBSCRIPTION": "Subscription",
+                  },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                  "typePolicies": Object {},
+                  "usingPossibleTypes": false,
+                },
+                "refs": Object {},
+                "rootIds": Object {
+                  "ROOT_QUERY": 1,
+                },
+                "sharedLayerGroup": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                },
+                "toReference": [Function],
+              },
+              "getFragmentDoc": [Function],
+              "makeVar": [Function],
+              "maybeBroadcastWatch": [Function],
+              "optimisticData": Root {
+                "canRead": [Function],
+                "data": Object {
+                  "ROOT_QUERY": Object {
+                    "__typename": "Query",
+                    "me": Object {
+                      "accessLevel": "ADMIN",
+                      "email": "user@konstellation.com",
+                      "id": "someId",
+                    },
+                  },
+                },
+                "getFieldValue": [Function],
+                "group": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weak": WeakMap {},
+                    "weakness": true,
+                  },
+                },
+                "policies": Policies {
+                  "cache": [Circular],
+                  "config": Object {
+                    "cache": [Circular],
+                    "dataIdFromObject": [Function],
+                    "possibleTypes": undefined,
+                    "typePolicies": Object {},
+                  },
+                  "rootIdsByTypename": Object {
+                    "Mutation": "ROOT_MUTATION",
+                    "Query": "ROOT_QUERY",
+                    "Subscription": "ROOT_SUBSCRIPTION",
+                  },
+                  "rootTypenamesById": Object {
+                    "ROOT_MUTATION": "Mutation",
+                    "ROOT_QUERY": "Query",
+                    "ROOT_SUBSCRIPTION": "Subscription",
+                  },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                  "typePolicies": Object {},
+                  "usingPossibleTypes": false,
+                },
+                "refs": Object {},
+                "rootIds": Object {
+                  "ROOT_QUERY": 1,
+                },
+                "sharedLayerGroup": CacheGroup {
+                  "caching": true,
+                  "d": [Function],
+                  "keyMaker": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                },
+                "toReference": [Function],
+              },
+              "policies": Policies {
+                "cache": [Circular],
+                "config": Object {
+                  "cache": [Circular],
+                  "dataIdFromObject": [Function],
+                  "possibleTypes": undefined,
+                  "typePolicies": Object {},
+                },
+                "rootIdsByTypename": Object {
+                  "Mutation": "ROOT_MUTATION",
+                  "Query": "ROOT_QUERY",
+                  "Subscription": "ROOT_SUBSCRIPTION",
+                },
+                "rootTypenamesById": Object {
+                  "ROOT_MUTATION": "Mutation",
+                  "ROOT_QUERY": "Query",
+                  "ROOT_SUBSCRIPTION": "Subscription",
+                },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
                   "weakness": true,
                 },
+                "typePolicies": Object {},
+                "usingPossibleTypes": false,
+              },
+              "storeReader": StoreReader {
                 "config": Object {
                   "addTypename": false,
-                  "dataIdFromObject": [Function],
-                  "fragmentMatcher": HeuristicFragmentMatcher {},
-                  "freezeResults": false,
-                  "resultCaching": true,
+                  "cache": [Circular],
                 },
-                "data": DepTrackingCache {
-                  "data": Object {
-                    "$ROOT_QUERY.me": Object {
-                      "accessLevel": "ADMIN",
-                      "email": "user@konstellation.com",
-                      "id": "someId",
-                    },
-                    "ROOT_QUERY": Object {
-                      "me": Object {
-                        "generated": true,
-                        "id": "$ROOT_QUERY.me",
-                        "type": "id",
-                        "typename": undefined,
-                      },
-                    },
+                "executeSelectionSet": [Function],
+                "executeSubSelectedArray": [Function],
+                "knownResults": WeakMap {},
+              },
+              "storeWriter": StoreWriter {
+                "cache": [Circular],
+                "reader": StoreReader {
+                  "config": Object {
+                    "addTypename": false,
+                    "cache": [Circular],
                   },
-                  "depend": [Function],
-                },
-                "maybeBroadcastWatch": [Function],
-                "optimisticData": DepTrackingCache {
-                  "data": Object {
-                    "$ROOT_QUERY.me": Object {
-                      "accessLevel": "ADMIN",
-                      "email": "user@konstellation.com",
-                      "id": "someId",
-                    },
-                    "ROOT_QUERY": Object {
-                      "me": Object {
-                        "generated": true,
-                        "id": "$ROOT_QUERY.me",
-                        "type": "id",
-                        "typename": undefined,
-                      },
-                    },
-                  },
-                  "depend": [Function],
-                },
-                "silenceBroadcast": false,
-                "storeReader": StoreReader {
                   "executeSelectionSet": [Function],
-                  "executeStoreQuery": [Function],
                   "executeSubSelectedArray": [Function],
-                  "freezeResults": false,
+                  "knownResults": WeakMap {},
                 },
-                "storeWriter": StoreWriter {},
-                "typenameDocumentCache": Map {},
-                "watches": Set {
-                  Object {
-                    "callback": [Function],
-                    "optimistic": true,
-                    "previousResult": [Function],
-                    "query": Object {
-                      "definitions": Array [
-                        Object {
-                          "directives": Array [],
-                          "kind": "OperationDefinition",
-                          "name": Object {
-                            "kind": "Name",
-                            "value": "GetMe",
-                          },
-                          "operation": "query",
-                          "selectionSet": Object {
-                            "kind": "SelectionSet",
-                            "selections": Array [
-                              Object {
-                                "arguments": Array [],
-                                "directives": Array [],
-                                "kind": "Field",
-                                "name": Object {
-                                  "kind": "Name",
-                                  "value": "me",
-                                },
-                                "selectionSet": Object {
-                                  "kind": "SelectionSet",
-                                  "selections": Array [
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "id",
-                                      },
-                                    },
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "email",
-                                      },
-                                    },
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "accessLevel",
-                                      },
-                                    },
-                                  ],
-                                },
-                              },
-                            ],
-                          },
-                          "variableDefinitions": Array [],
+              },
+              "txCount": 0,
+              "typenameDocumentCache": Map {},
+              "watchDep": [Function],
+              "watches": Set {
+                Object {
+                  "callback": [Function],
+                  "optimistic": true,
+                  "query": Object {
+                    "definitions": Array [
+                      Object {
+                        "directives": Array [],
+                        "kind": "OperationDefinition",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "GetMe",
                         },
-                      ],
-                      "kind": "Document",
-                      "loc": Object {
-                        "end": 60,
-                        "source": Object {
-                          "body": "query GetMe {
+                        "operation": "query",
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "me",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "id",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "email",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "accessLevel",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                        "variableDefinitions": Array [],
+                      },
+                    ],
+                    "kind": "Document",
+                    "loc": Object {
+                      "end": 60,
+                      "source": Object {
+                        "body": "query GetMe {
   me {
     id
     email
@@ -656,94 +1102,303 @@ exports[`Header matches snapshot 1`] = `
   }
 }
 ",
-                          "locationOffset": Object {
-                            "column": 1,
-                            "line": 1,
-                          },
-                          "name": "GraphQL request",
+                        "locationOffset": Object {
+                          "column": 1,
+                          "line": 1,
                         },
-                        "start": 0,
+                        "name": "GraphQL request",
                       },
+                      "start": 0,
                     },
-                    "variables": Object {},
                   },
+                  "variables": Object {},
                 },
               },
             },
-            "fetchQueryRejectFns": Map {},
-            "idCounter": 3,
+            "clientAwareness": Object {
+              "name": undefined,
+              "version": undefined,
+            },
+            "fetchCancelFns": Map {},
             "inFlightLinkObservables": Map {},
             "link": MockLink {
               "addTypename": false,
               "mockedResponsesByKey": Object {
                 "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
               },
+              "operation": Object {
+                "extensions": Object {},
+                "operationName": "GetMe",
+                "query": Object {
+                  "definitions": Array [
+                    Object {
+                      "directives": Array [],
+                      "kind": "OperationDefinition",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "GetMe",
+                      },
+                      "operation": "query",
+                      "selectionSet": Object {
+                        "kind": "SelectionSet",
+                        "selections": Array [
+                          Object {
+                            "arguments": Array [],
+                            "directives": Array [],
+                            "kind": "Field",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "me",
+                            },
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "id",
+                                  },
+                                },
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "email",
+                                  },
+                                },
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "accessLevel",
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                      "variableDefinitions": Array [],
+                    },
+                  ],
+                  "kind": "Document",
+                  "loc": Object {
+                    "end": 60,
+                    "source": Object {
+                      "body": "query GetMe {
+  me {
+    id
+    email
+    accessLevel
+  }
+}
+",
+                      "locationOffset": Object {
+                        "column": 1,
+                        "line": 1,
+                      },
+                      "name": "GraphQL request",
+                    },
+                    "start": 0,
+                  },
+                },
+                "variables": Object {},
+              },
             },
             "localState": LocalState {
               "cache": InMemoryCache {
                 "addTypename": false,
-                "cacheKeyRoot": KeyTrie {
-                  "weak": WeakMap {},
-                  "weakness": true,
-                },
                 "config": Object {
                   "addTypename": false,
                   "dataIdFromObject": [Function],
-                  "fragmentMatcher": HeuristicFragmentMatcher {},
-                  "freezeResults": false,
                   "resultCaching": true,
+                  "typePolicies": Object {},
                 },
-                "data": DepTrackingCache {
+                "data": Root {
+                  "canRead": [Function],
                   "data": Object {
-                    "$ROOT_QUERY.me": Object {
-                      "accessLevel": "ADMIN",
-                      "email": "user@konstellation.com",
-                      "id": "someId",
-                    },
                     "ROOT_QUERY": Object {
+                      "__typename": "Query",
                       "me": Object {
-                        "generated": true,
-                        "id": "$ROOT_QUERY.me",
-                        "type": "id",
-                        "typename": undefined,
+                        "accessLevel": "ADMIN",
+                        "email": "user@konstellation.com",
+                        "id": "someId",
                       },
                     },
                   },
-                  "depend": [Function],
+                  "getFieldValue": [Function],
+                  "group": CacheGroup {
+                    "caching": true,
+                    "d": [Function],
+                    "keyMaker": KeyTrie {
+                      "makeData": [Function],
+                      "weak": WeakMap {},
+                      "weakness": true,
+                    },
+                  },
+                  "policies": Policies {
+                    "cache": [Circular],
+                    "config": Object {
+                      "cache": [Circular],
+                      "dataIdFromObject": [Function],
+                      "possibleTypes": undefined,
+                      "typePolicies": Object {},
+                    },
+                    "rootIdsByTypename": Object {
+                      "Mutation": "ROOT_MUTATION",
+                      "Query": "ROOT_QUERY",
+                      "Subscription": "ROOT_SUBSCRIPTION",
+                    },
+                    "rootTypenamesById": Object {
+                      "ROOT_MUTATION": "Mutation",
+                      "ROOT_QUERY": "Query",
+                      "ROOT_SUBSCRIPTION": "Subscription",
+                    },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
+                    "typePolicies": Object {},
+                    "usingPossibleTypes": false,
+                  },
+                  "refs": Object {},
+                  "rootIds": Object {
+                    "ROOT_QUERY": 1,
+                  },
+                  "sharedLayerGroup": CacheGroup {
+                    "caching": true,
+                    "d": [Function],
+                    "keyMaker": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
+                  },
+                  "toReference": [Function],
                 },
+                "getFragmentDoc": [Function],
+                "makeVar": [Function],
                 "maybeBroadcastWatch": [Function],
-                "optimisticData": DepTrackingCache {
+                "optimisticData": Root {
+                  "canRead": [Function],
                   "data": Object {
-                    "$ROOT_QUERY.me": Object {
-                      "accessLevel": "ADMIN",
-                      "email": "user@konstellation.com",
-                      "id": "someId",
-                    },
                     "ROOT_QUERY": Object {
+                      "__typename": "Query",
                       "me": Object {
-                        "generated": true,
-                        "id": "$ROOT_QUERY.me",
-                        "type": "id",
-                        "typename": undefined,
+                        "accessLevel": "ADMIN",
+                        "email": "user@konstellation.com",
+                        "id": "someId",
                       },
                     },
                   },
-                  "depend": [Function],
+                  "getFieldValue": [Function],
+                  "group": CacheGroup {
+                    "caching": true,
+                    "d": [Function],
+                    "keyMaker": KeyTrie {
+                      "makeData": [Function],
+                      "weak": WeakMap {},
+                      "weakness": true,
+                    },
+                  },
+                  "policies": Policies {
+                    "cache": [Circular],
+                    "config": Object {
+                      "cache": [Circular],
+                      "dataIdFromObject": [Function],
+                      "possibleTypes": undefined,
+                      "typePolicies": Object {},
+                    },
+                    "rootIdsByTypename": Object {
+                      "Mutation": "ROOT_MUTATION",
+                      "Query": "ROOT_QUERY",
+                      "Subscription": "ROOT_SUBSCRIPTION",
+                    },
+                    "rootTypenamesById": Object {
+                      "ROOT_MUTATION": "Mutation",
+                      "ROOT_QUERY": "Query",
+                      "ROOT_SUBSCRIPTION": "Subscription",
+                    },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
+                    "typePolicies": Object {},
+                    "usingPossibleTypes": false,
+                  },
+                  "refs": Object {},
+                  "rootIds": Object {
+                    "ROOT_QUERY": 1,
+                  },
+                  "sharedLayerGroup": CacheGroup {
+                    "caching": true,
+                    "d": [Function],
+                    "keyMaker": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
+                  },
+                  "toReference": [Function],
                 },
-                "silenceBroadcast": false,
+                "policies": Policies {
+                  "cache": [Circular],
+                  "config": Object {
+                    "cache": [Circular],
+                    "dataIdFromObject": [Function],
+                    "possibleTypes": undefined,
+                    "typePolicies": Object {},
+                  },
+                  "rootIdsByTypename": Object {
+                    "Mutation": "ROOT_MUTATION",
+                    "Query": "ROOT_QUERY",
+                    "Subscription": "ROOT_SUBSCRIPTION",
+                  },
+                  "rootTypenamesById": Object {
+                    "ROOT_MUTATION": "Mutation",
+                    "ROOT_QUERY": "Query",
+                    "ROOT_SUBSCRIPTION": "Subscription",
+                  },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
+                  "typePolicies": Object {},
+                  "usingPossibleTypes": false,
+                },
                 "storeReader": StoreReader {
+                  "config": Object {
+                    "addTypename": false,
+                    "cache": [Circular],
+                  },
                   "executeSelectionSet": [Function],
-                  "executeStoreQuery": [Function],
                   "executeSubSelectedArray": [Function],
-                  "freezeResults": false,
+                  "knownResults": WeakMap {},
                 },
-                "storeWriter": StoreWriter {},
+                "storeWriter": StoreWriter {
+                  "cache": [Circular],
+                  "reader": StoreReader {
+                    "config": Object {
+                      "addTypename": false,
+                      "cache": [Circular],
+                    },
+                    "executeSelectionSet": [Function],
+                    "executeSubSelectedArray": [Function],
+                    "knownResults": WeakMap {},
+                  },
+                },
+                "txCount": 0,
                 "typenameDocumentCache": Map {},
+                "watchDep": [Function],
                 "watches": Set {
                   Object {
                     "callback": [Function],
                     "optimistic": true,
-                    "previousResult": [Function],
                     "query": Object {
                       "definitions": Array [
                         Object {
@@ -830,14 +1485,296 @@ exports[`Header matches snapshot 1`] = `
               },
               "client": [Circular],
             },
+            "mutationIdCounter": 1,
             "mutationStore": MutationStore {
               "store": Object {},
             },
             "onBroadcast": [Function],
-            "pollingInfoByQueryId": Map {},
             "queries": Map {
-              "1" => Object {
+              "1" => QueryInfo {
+                "cache": InMemoryCache {
+                  "addTypename": false,
+                  "config": Object {
+                    "addTypename": false,
+                    "dataIdFromObject": [Function],
+                    "resultCaching": true,
+                    "typePolicies": Object {},
+                  },
+                  "data": Root {
+                    "canRead": [Function],
+                    "data": Object {
+                      "ROOT_QUERY": Object {
+                        "__typename": "Query",
+                        "me": Object {
+                          "accessLevel": "ADMIN",
+                          "email": "user@konstellation.com",
+                          "id": "someId",
+                        },
+                      },
+                    },
+                    "getFieldValue": [Function],
+                    "group": CacheGroup {
+                      "caching": true,
+                      "d": [Function],
+                      "keyMaker": KeyTrie {
+                        "makeData": [Function],
+                        "weak": WeakMap {},
+                        "weakness": true,
+                      },
+                    },
+                    "policies": Policies {
+                      "cache": [Circular],
+                      "config": Object {
+                        "cache": [Circular],
+                        "dataIdFromObject": [Function],
+                        "possibleTypes": undefined,
+                        "typePolicies": Object {},
+                      },
+                      "rootIdsByTypename": Object {
+                        "Mutation": "ROOT_MUTATION",
+                        "Query": "ROOT_QUERY",
+                        "Subscription": "ROOT_SUBSCRIPTION",
+                      },
+                      "rootTypenamesById": Object {
+                        "ROOT_MUTATION": "Mutation",
+                        "ROOT_QUERY": "Query",
+                        "ROOT_SUBSCRIPTION": "Subscription",
+                      },
+                      "storageTrie": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                      "typePolicies": Object {},
+                      "usingPossibleTypes": false,
+                    },
+                    "refs": Object {},
+                    "rootIds": Object {
+                      "ROOT_QUERY": 1,
+                    },
+                    "sharedLayerGroup": CacheGroup {
+                      "caching": true,
+                      "d": [Function],
+                      "keyMaker": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                    },
+                    "toReference": [Function],
+                  },
+                  "getFragmentDoc": [Function],
+                  "makeVar": [Function],
+                  "maybeBroadcastWatch": [Function],
+                  "optimisticData": Root {
+                    "canRead": [Function],
+                    "data": Object {
+                      "ROOT_QUERY": Object {
+                        "__typename": "Query",
+                        "me": Object {
+                          "accessLevel": "ADMIN",
+                          "email": "user@konstellation.com",
+                          "id": "someId",
+                        },
+                      },
+                    },
+                    "getFieldValue": [Function],
+                    "group": CacheGroup {
+                      "caching": true,
+                      "d": [Function],
+                      "keyMaker": KeyTrie {
+                        "makeData": [Function],
+                        "weak": WeakMap {},
+                        "weakness": true,
+                      },
+                    },
+                    "policies": Policies {
+                      "cache": [Circular],
+                      "config": Object {
+                        "cache": [Circular],
+                        "dataIdFromObject": [Function],
+                        "possibleTypes": undefined,
+                        "typePolicies": Object {},
+                      },
+                      "rootIdsByTypename": Object {
+                        "Mutation": "ROOT_MUTATION",
+                        "Query": "ROOT_QUERY",
+                        "Subscription": "ROOT_SUBSCRIPTION",
+                      },
+                      "rootTypenamesById": Object {
+                        "ROOT_MUTATION": "Mutation",
+                        "ROOT_QUERY": "Query",
+                        "ROOT_SUBSCRIPTION": "Subscription",
+                      },
+                      "storageTrie": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                      "typePolicies": Object {},
+                      "usingPossibleTypes": false,
+                    },
+                    "refs": Object {},
+                    "rootIds": Object {
+                      "ROOT_QUERY": 1,
+                    },
+                    "sharedLayerGroup": CacheGroup {
+                      "caching": true,
+                      "d": [Function],
+                      "keyMaker": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                    },
+                    "toReference": [Function],
+                  },
+                  "policies": Policies {
+                    "cache": [Circular],
+                    "config": Object {
+                      "cache": [Circular],
+                      "dataIdFromObject": [Function],
+                      "possibleTypes": undefined,
+                      "typePolicies": Object {},
+                    },
+                    "rootIdsByTypename": Object {
+                      "Mutation": "ROOT_MUTATION",
+                      "Query": "ROOT_QUERY",
+                      "Subscription": "ROOT_SUBSCRIPTION",
+                    },
+                    "rootTypenamesById": Object {
+                      "ROOT_MUTATION": "Mutation",
+                      "ROOT_QUERY": "Query",
+                      "ROOT_SUBSCRIPTION": "Subscription",
+                    },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
+                    "typePolicies": Object {},
+                    "usingPossibleTypes": false,
+                  },
+                  "storeReader": StoreReader {
+                    "config": Object {
+                      "addTypename": false,
+                      "cache": [Circular],
+                    },
+                    "executeSelectionSet": [Function],
+                    "executeSubSelectedArray": [Function],
+                    "knownResults": WeakMap {},
+                  },
+                  "storeWriter": StoreWriter {
+                    "cache": [Circular],
+                    "reader": StoreReader {
+                      "config": Object {
+                        "addTypename": false,
+                        "cache": [Circular],
+                      },
+                      "executeSelectionSet": [Function],
+                      "executeSubSelectedArray": [Function],
+                      "knownResults": WeakMap {},
+                    },
+                  },
+                  "txCount": 0,
+                  "typenameDocumentCache": Map {},
+                  "watchDep": [Function],
+                  "watches": Set {
+                    Object {
+                      "callback": [Function],
+                      "optimistic": true,
+                      "query": Object {
+                        "definitions": Array [
+                          Object {
+                            "directives": Array [],
+                            "kind": "OperationDefinition",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "GetMe",
+                            },
+                            "operation": "query",
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "me",
+                                  },
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "id",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "email",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "accessLevel",
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                            "variableDefinitions": Array [],
+                          },
+                        ],
+                        "kind": "Document",
+                        "loc": Object {
+                          "end": 60,
+                          "source": Object {
+                            "body": "query GetMe {
+  me {
+    id
+    email
+    accessLevel
+  }
+}
+",
+                            "locationOffset": Object {
+                              "column": 1,
+                              "line": 1,
+                            },
+                            "name": "GraphQL request",
+                          },
+                          "start": 0,
+                        },
+                      },
+                      "variables": Object {},
+                    },
+                  },
+                },
                 "cancel": [Function],
+                "diff": Object {
+                  "complete": true,
+                  "missing": undefined,
+                  "result": Object {
+                    "me": Object {
+                      "accessLevel": "ADMIN",
+                      "email": "user@konstellation.com",
+                      "id": "someId",
+                    },
+                  },
+                },
+                "dirty": false,
                 "document": Object {
                   "definitions": Array [
                     Object {
@@ -918,12 +1855,108 @@ exports[`Header matches snapshot 1`] = `
                     "start": 0,
                   },
                 },
-                "invalidated": false,
-                "lastRequestId": 2,
+                "graphQLErrors": Array [],
+                "lastRequestId": 1,
+                "lastWatch": Object {
+                  "callback": [Function],
+                  "optimistic": true,
+                  "query": Object {
+                    "definitions": Array [
+                      Object {
+                        "directives": Array [],
+                        "kind": "OperationDefinition",
+                        "name": Object {
+                          "kind": "Name",
+                          "value": "GetMe",
+                        },
+                        "operation": "query",
+                        "selectionSet": Object {
+                          "kind": "SelectionSet",
+                          "selections": Array [
+                            Object {
+                              "arguments": Array [],
+                              "directives": Array [],
+                              "kind": "Field",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "me",
+                              },
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "id",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "email",
+                                    },
+                                  },
+                                  Object {
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "accessLevel",
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                        "variableDefinitions": Array [],
+                      },
+                    ],
+                    "kind": "Document",
+                    "loc": Object {
+                      "end": 60,
+                      "source": Object {
+                        "body": "query GetMe {
+  me {
+    id
+    email
+    accessLevel
+  }
+}
+",
+                        "locationOffset": Object {
+                          "column": 1,
+                          "line": 1,
+                        },
+                        "name": "GraphQL request",
+                      },
+                      "start": 0,
+                    },
+                  },
+                  "variables": Object {},
+                },
+                "lastWrittenResult": Object {
+                  "data": Object {
+                    "me": Object {
+                      "accessLevel": "ADMIN",
+                      "email": "user@konstellation.com",
+                      "id": "someId",
+                    },
+                  },
+                },
+                "lastWrittenVars": Object {},
                 "listeners": Set {
                   [Function],
                 },
-                "newData": null,
+                "networkError": undefined,
+                "networkStatus": 7,
                 "observableQuery": ObservableQuery {
                   "_subscriber": [Function],
                   "isTornDown": false,
@@ -937,7 +1970,7 @@ exports[`Header matches snapshot 1`] = `
                     },
                     "loading": false,
                     "networkStatus": 7,
-                    "stale": false,
+                    "partial": false,
                   },
                   "lastResultSnapshot": Object {
                     "data": Object {
@@ -949,7 +1982,11 @@ exports[`Header matches snapshot 1`] = `
                     },
                     "loading": false,
                     "networkStatus": 7,
-                    "stale": false,
+                    "partial": false,
+                  },
+                  "observer": Object {
+                    "error": [Function],
+                    "next": [Function],
                   },
                   "observers": Set {
                     SubscriptionObserver {
@@ -967,11 +2004,6 @@ exports[`Header matches snapshot 1`] = `
                   "options": Object {
                     "context": undefined,
                     "displayName": "Query",
-                    "metadata": Object {
-                      "reactComponent": Object {
-                        "displayName": "Query",
-                      },
-                    },
                     "notifyOnNetworkStatusChange": false,
                     "query": Object {
                       "definitions": Array [
@@ -1056,83 +2088,117 @@ exports[`Header matches snapshot 1`] = `
                     "variables": Object {},
                   },
                   "queryId": "1",
+                  "queryInfo": [Circular],
                   "queryManager": [Circular],
                   "queryName": "GetMe",
-                  "shouldSubscribe": true,
-                  "subscriptions": Set {},
-                  "variables": Object {},
-                },
-                "subscriptions": Set {},
-              },
-            },
-            "queryDeduplication": true,
-            "queryStore": QueryStore {
-              "store": Object {
-                "1": Object {
-                  "document": Object {
-                    "definitions": Array [
-                      Object {
-                        "directives": Array [],
-                        "kind": "OperationDefinition",
-                        "name": Object {
-                          "kind": "Name",
-                          "value": "GetMe",
-                        },
-                        "operation": "query",
-                        "selectionSet": Object {
-                          "kind": "SelectionSet",
-                          "selections": Array [
-                            Object {
-                              "arguments": Array [],
-                              "directives": Array [],
-                              "kind": "Field",
-                              "name": Object {
-                                "kind": "Name",
-                                "value": "me",
-                              },
-                              "selectionSet": Object {
-                                "kind": "SelectionSet",
-                                "selections": Array [
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "id",
-                                    },
-                                  },
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "email",
-                                    },
-                                  },
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "accessLevel",
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                        "variableDefinitions": Array [],
+                  "reobserver": Reobserver {
+                    "concast": Concast {
+                      "_subscriber": [Function],
+                      "cancel": [Function],
+                      "handlers": Object {
+                        "complete": [Function],
+                        "error": [Function],
+                        "next": [Function],
                       },
-                    ],
-                    "kind": "Document",
-                    "loc": Object {
-                      "end": 60,
-                      "source": Object {
-                        "body": "query GetMe {
+                      "latest": Array [
+                        "next",
+                        Object {
+                          "data": Object {
+                            "me": Object {
+                              "accessLevel": "ADMIN",
+                              "email": "user@konstellation.com",
+                              "id": "someId",
+                            },
+                          },
+                          "loading": false,
+                          "networkStatus": 7,
+                        },
+                      ],
+                      "observers": Set {
+                        Object {
+                          "error": [Function],
+                          "next": [Function],
+                        },
+                      },
+                      "promise": Promise {},
+                      "reject": [Function],
+                      "resolve": [Function],
+                      "sources": Array [],
+                      "sub": null,
+                    },
+                    "fetch": [Function],
+                    "observer": Object {
+                      "error": [Function],
+                      "next": [Function],
+                    },
+                    "options": Object {
+                      "context": undefined,
+                      "displayName": "Query",
+                      "notifyOnNetworkStatusChange": false,
+                      "query": Object {
+                        "definitions": Array [
+                          Object {
+                            "directives": Array [],
+                            "kind": "OperationDefinition",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "GetMe",
+                            },
+                            "operation": "query",
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "me",
+                                  },
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "id",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "email",
+                                        },
+                                      },
+                                      Object {
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "accessLevel",
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                            "variableDefinitions": Array [],
+                          },
+                        ],
+                        "kind": "Document",
+                        "loc": Object {
+                          "end": 60,
+                          "source": Object {
+                            "body": "query GetMe {
   me {
     id
     email
@@ -1140,191 +2206,42 @@ exports[`Header matches snapshot 1`] = `
   }
 }
 ",
-                        "locationOffset": Object {
-                          "column": 1,
-                          "line": 1,
+                            "locationOffset": Object {
+                              "column": 1,
+                              "line": 1,
+                            },
+                            "name": "GraphQL request",
+                          },
+                          "start": 0,
                         },
-                        "name": "GraphQL request",
                       },
-                      "start": 0,
+                      "variables": Object {},
                     },
+                    "shouldFetch": [Function],
                   },
-                  "graphQLErrors": Array [],
-                  "metadata": Object {
-                    "reactComponent": Object {
-                      "displayName": "Query",
-                    },
-                  },
-                  "networkError": null,
-                  "networkStatus": 7,
-                  "previousVariables": null,
-                  "variables": Object {},
+                  "subscriptions": Set {},
                 },
+                "oqListener": [Function],
+                "subscriptions": Set {},
+                "variables": Object {},
               },
             },
+            "queryDeduplication": true,
+            "queryIdCounter": 2,
+            "requestIdCounter": 2,
             "ssrMode": false,
             "transformCache": WeakMap {},
           },
           "reFetchObservableQueries": [Function],
           "resetStore": [Function],
           "resetStoreCallbacks": Array [],
-          "store": DataStore {
-            "cache": InMemoryCache {
-              "addTypename": false,
-              "cacheKeyRoot": KeyTrie {
-                "weak": WeakMap {},
-                "weakness": true,
-              },
-              "config": Object {
-                "addTypename": false,
-                "dataIdFromObject": [Function],
-                "fragmentMatcher": HeuristicFragmentMatcher {},
-                "freezeResults": false,
-                "resultCaching": true,
-              },
-              "data": DepTrackingCache {
-                "data": Object {
-                  "$ROOT_QUERY.me": Object {
-                    "accessLevel": "ADMIN",
-                    "email": "user@konstellation.com",
-                    "id": "someId",
-                  },
-                  "ROOT_QUERY": Object {
-                    "me": Object {
-                      "generated": true,
-                      "id": "$ROOT_QUERY.me",
-                      "type": "id",
-                      "typename": undefined,
-                    },
-                  },
-                },
-                "depend": [Function],
-              },
-              "maybeBroadcastWatch": [Function],
-              "optimisticData": DepTrackingCache {
-                "data": Object {
-                  "$ROOT_QUERY.me": Object {
-                    "accessLevel": "ADMIN",
-                    "email": "user@konstellation.com",
-                    "id": "someId",
-                  },
-                  "ROOT_QUERY": Object {
-                    "me": Object {
-                      "generated": true,
-                      "id": "$ROOT_QUERY.me",
-                      "type": "id",
-                      "typename": undefined,
-                    },
-                  },
-                },
-                "depend": [Function],
-              },
-              "silenceBroadcast": false,
-              "storeReader": StoreReader {
-                "executeSelectionSet": [Function],
-                "executeStoreQuery": [Function],
-                "executeSubSelectedArray": [Function],
-                "freezeResults": false,
-              },
-              "storeWriter": StoreWriter {},
-              "typenameDocumentCache": Map {},
-              "watches": Set {
-                Object {
-                  "callback": [Function],
-                  "optimistic": true,
-                  "previousResult": [Function],
-                  "query": Object {
-                    "definitions": Array [
-                      Object {
-                        "directives": Array [],
-                        "kind": "OperationDefinition",
-                        "name": Object {
-                          "kind": "Name",
-                          "value": "GetMe",
-                        },
-                        "operation": "query",
-                        "selectionSet": Object {
-                          "kind": "SelectionSet",
-                          "selections": Array [
-                            Object {
-                              "arguments": Array [],
-                              "directives": Array [],
-                              "kind": "Field",
-                              "name": Object {
-                                "kind": "Name",
-                                "value": "me",
-                              },
-                              "selectionSet": Object {
-                                "kind": "SelectionSet",
-                                "selections": Array [
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "id",
-                                    },
-                                  },
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "email",
-                                    },
-                                  },
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "accessLevel",
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                        "variableDefinitions": Array [],
-                      },
-                    ],
-                    "kind": "Document",
-                    "loc": Object {
-                      "end": 60,
-                      "source": Object {
-                        "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                        "locationOffset": Object {
-                          "column": 1,
-                          "line": 1,
-                        },
-                        "name": "GraphQL request",
-                      },
-                      "start": 0,
-                    },
-                  },
-                  "variables": Object {},
-                },
-              },
-            },
-          },
           "typeDefs": undefined,
-          "version": "2.6.10",
+          "version": "local",
           "watchQuery": [Function],
         }
       }
     >
-      <Header>
+      <Memo(Header)>
         <header
           className="container"
           data-testid="app-header"
@@ -1337,7 +2254,7 @@ exports[`Header matches snapshot 1`] = `
           <div
             className="customHeaderElements"
           />
-          <Settings
+          <Memo(Settings)
             label="user@konstellation.com"
           >
             <div
@@ -1360,7 +2277,7 @@ exports[`Header matches snapshot 1`] = `
                   }
                 }
               >
-                <Button
+                <A
                   Icon={
                     Object {
                       "$$typeof": Symbol(react.memo),
@@ -1387,8 +2304,8 @@ exports[`Header matches snapshot 1`] = `
                     data-testid="buttonLink"
                     to="/settings"
                   />
-                </Button>
-                <Button
+                </A>
+                <A
                   Icon={
                     Object {
                       "$$typeof": Symbol(react.memo),
@@ -1415,8 +2332,8 @@ exports[`Header matches snapshot 1`] = `
                     data-testid="buttonLink"
                     to="/audit"
                   />
-                </Button>
-                <Button
+                </A>
+                <A
                   Icon={
                     Object {
                       "$$typeof": Symbol(react.memo),
@@ -1440,7 +2357,7 @@ exports[`Header matches snapshot 1`] = `
                   }
                 >
                   <div
-                    className="btn default left label notFocussable"
+                    className="_1lqJX _3ZftH _zeH0N undefined"
                     onClick={[Function]}
                     onKeyPress={[Function]}
                     style={
@@ -1492,12 +2409,12 @@ exports[`Header matches snapshot 1`] = `
                       LOGOUT
                     </span>
                   </div>
-                </Button>
+                </A>
               </div>
             </div>
-          </Settings>
+          </Memo(Settings)>
         </header>
-      </Header>
+      </Memo(Header)>
     </ApolloProvider>
   </MockedProvider>
 </Wrapper>

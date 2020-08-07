@@ -20,8 +20,10 @@ const mocksLogTabs = {
 
 jest.mock('@apollo/client', () => ({
   useQuery: jest.fn(() => mocksLogTabs),
-  useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
+  useApolloClient: jest.fn(() => ({ writeData: jest.fn() })),
+  gql: jest.fn()
 }));
+jest.mock('Graphql/client/cache', () => ({}));
 
 jest.mock('react-router', () => ({
   useLocation: jest.fn(() => ({

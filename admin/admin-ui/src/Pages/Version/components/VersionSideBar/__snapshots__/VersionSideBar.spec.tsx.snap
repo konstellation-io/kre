@@ -57,6 +57,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
         },
         "creationDate": "2020/01/01",
         "description": "versionDescription",
+        "hasDoc": false,
         "id": "versionId",
         "name": "versionName",
         "publicationAuthor": Object {
@@ -96,6 +97,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
         },
         "creationDate": "2020/01/01",
         "description": "versionDescription",
+        "hasDoc": false,
         "id": "versionId",
         "name": "versionName",
         "publicationAuthor": Object {
@@ -138,6 +140,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
           },
           "creationDate": "2020/01/01",
           "description": "versionDescription",
+          "hasDoc": false,
           "id": "versionId",
           "name": "versionName",
           "publicationAuthor": Object {
@@ -149,6 +152,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
           "status": "STARTED",
         }
       }
+      versions={Array []}
     />
   </Can>
 </div>

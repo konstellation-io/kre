@@ -1,3 +1,4 @@
+import { ErrorMessage, SpinnerCircular } from 'kwc';
 import {
   errorMorkflowsMock,
   nodeStatus,
@@ -5,12 +6,11 @@ import {
   workflowsMock
 } from 'Mocks/version';
 
-import { ErrorMessage } from 'kwc';
 import LogsPanel from './LogsPanel/LogsPanel';
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 import React from 'react';
-import SpinnerCircular from 'Components/LoadingComponents/SpinnerCircular/SpinnerCircular';
 import Status from './Status';
+import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
 
 jest.mock('react-router', () => ({
@@ -19,8 +19,8 @@ jest.mock('react-router', () => ({
   }))
 }));
 
-const mocks = [workflowsMock, nodeStatus, nodeStatus];
-const errorMocks = [errorMorkflowsMock, nodeStatus, nodeStatus];
+const mocks = [workflowsMock, nodeStatus];
+const errorMocks = [errorMorkflowsMock, nodeStatus];
 
 function Wrapper(props: any) {
   return (
@@ -41,8 +41,8 @@ describe('Status', () => {
   });
 
   it('show error on error response', async () => {
-    const wrapper = await mountApolloComponent(ErrorComponent);
+    const wrapper = await mountApolloComponent(ErrorComponent, false);
 
-    expect(wrapper.exists(ErrorMessage)).toBeTruthy();
+    expect(wrapper.exists(StatusTopInfoBar)).toBeFalsy();
   });
 });

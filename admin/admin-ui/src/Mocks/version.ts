@@ -9,10 +9,10 @@ const GetVersionWorkflowsQuery = loader(
   'Graphql/queries/getVersionWorkflows.graphql'
 );
 const GetVersionNodeStatusQuery = loader(
-  'Graphql/subscriptions/versionNodeStatus.graphql'
+  'Graphql/subscriptions/watchVersionNodeStatus.graphql'
 );
 const NodeStatusSubscription = loader(
-  'Graphql/subscriptions/versionNodeStatus.graphql'
+  'Graphql/subscriptions/watchVersionNodeStatus.graphql'
 );
 const PublishVersionMutation = loader(
   'Graphql/mutations/publishVersion.graphql'
@@ -52,7 +52,8 @@ export const version = {
   config: {
     vars: [],
     completed: false
-  }
+  },
+  hasDoc: false
 };
 export const confVarsMock = {
   request: {
@@ -130,7 +131,10 @@ export const errorMorkflowsMock = {
   request: {
     query: GetVersionWorkflowsQuery
   },
-  error: 'Some error'
+  error: 'Some error',
+  result: {
+    data: null
+  }
 };
 
 export const nodeStatus = {

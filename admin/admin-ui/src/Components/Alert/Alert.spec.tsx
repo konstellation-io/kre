@@ -1,7 +1,7 @@
-import React from 'react';
 import Alert from './Alert';
+import { Button } from 'kwc';
+import React from 'react';
 import { shallow } from 'enzyme';
-import Button from '../Button/Button';
 
 describe('App', () => {
   let wrapper;

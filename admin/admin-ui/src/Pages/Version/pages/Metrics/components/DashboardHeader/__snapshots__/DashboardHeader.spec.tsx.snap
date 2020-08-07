@@ -12,7 +12,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
   <div
     className="dateFilter"
   >
-    <Calendar
+    <j
       addTimeControls={true}
       hideError={true}
       label=""
@@ -21,7 +21,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
       onClose={[Function]}
     />
   </div>
-  <Button
+  <A
     Icon={
       Object {
         "$$typeof": Symbol(react.memo),

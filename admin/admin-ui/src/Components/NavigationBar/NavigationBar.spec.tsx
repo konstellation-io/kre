@@ -1,15 +1,14 @@
+import { ErrorMessage, SpinnerCircular } from 'kwc';
 import { dashboardErrorMock, dashboardMock } from 'Mocks/runtime';
 import { mountWithRouter, prepareApolloComponent } from 'Utils/testUtilsEnzyme';
 
 import AddHexButton from './AddHexButton';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import HexButton from './HexButton';
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 import MultiHexButton from './MultiHexButton';
 import { NavLink } from 'react-router-dom';
 import NavigationBar from './NavigationBar';
 import React from 'react';
-import SpinnerCircular from '../LoadingComponents/SpinnerCircular/SpinnerCircular';
 
 const mocks = [dashboardMock];
 const errorMocks = [dashboardErrorMock];

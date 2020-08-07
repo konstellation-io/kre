@@ -1,7 +1,7 @@
 import { mountApolloComponent, testid } from 'Utils/testUtilsEnzyme';
 
 import Header from './Header';
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 import React from 'react';
 import { usernameMock } from 'Mocks/auth';
 
