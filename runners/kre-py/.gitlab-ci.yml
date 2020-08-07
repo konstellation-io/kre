@@ -96,7 +96,7 @@ publish-kre-py-image-arm64:
     - docker login -u $DOCKER_USER -p $DOCKER_PASS
   script:
     - TAG=${CI_COMMIT_TAG#kre-py-v}
-    - docker buildx build -f runners/kre-py/Dockerfile.arm64--push --platform ${BUILDX_PLATFORM}
+    - docker buildx build -f runners/kre-py/Dockerfile.arm64 --push --platform ${BUILDX_PLATFORM}
       --tag $IMAGE_PROJECT_NAME:$TAG-arm64
       --tag $IMAGE_PROJECT_NAME:latest-arm64
       runners/kre-py
