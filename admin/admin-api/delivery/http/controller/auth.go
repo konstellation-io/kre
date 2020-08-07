@@ -83,8 +83,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	userId, err := a.authInteractor.VerifyCode(input.VerificationCode)
 	if err != nil {
 		switch err {
-		case usecase.ErrExpiredVerificationCode:
-		case usecase.ErrVerificationCodeNotFound:
+		case usecase.ErrExpiredVerificationCode, usecase.ErrVerificationCodeNotFound:
 			return httperrors.HTTPErrVerificationCodeNotFound
 		default:
 			a.logger.Error(err.Error())
