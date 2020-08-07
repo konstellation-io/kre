@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kre-mongo
+  labels:
+    app: kre-mongo
+spec:
+  replicas: 1
+  serviceName: kre-mongo
+  selector:
+    matchLabels:
+      app: kre-mongo
+  template:
+    metadata:
+      labels:
+        app: kre-mongo
+    spec:
+      containers:
+        - name: kre-mongo
+          image: mongo:4.2.8
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: kre-mongo-secret
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: kre-mongo-pvc
+              mountPath: "/data/db"
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+      - name: init-scripts
+        configMap:
+          name: kre-mongo-init-script
+  volumeClaimTemplates:
+    - metadata:
+        name: kre-mongo-pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.mongodb.storage.className }}
+        resources:
+          requests:
+            storage:  {{ .Values.mongodb.storage.size }}

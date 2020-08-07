@@ -6,6 +6,7 @@ config:
   admin:
     k8sManagerAddress: "k8s-manager:50051"
     apiAddress: ":80"
+    apiBaseURL: "api.kre.local"
     frontendBaseURL: ${KRE_ADMIN_FRONTEND_BASE_URL}
     corsEnabled: true
     userEmail: dev@local.local
@@ -28,7 +29,16 @@ config:
         enabled: true
         storageClass: standard
         size: 5Gi
-
+    chronograf:
+      persistentVolume:
+        enabled: true
+        storageClass: standard
+        size: 1Gi
+    influxdb:
+      persistentVolume:
+        enabled: true
+        storageClass: standard
+        size: 5Gi
 
 adminApi:
   image:
@@ -71,6 +81,12 @@ mongodb:
   mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
   mongodbPassword: "123456"
+  rootCredentials:
+    username: admin
+    password: "123456"
+  storage:
+    className: standard
+    size: 3G
   volumePermissions:
     enabled: ${DEVELOPMENT_MODE}
     image:

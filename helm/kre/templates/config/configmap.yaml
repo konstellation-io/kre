@@ -37,3 +37,9 @@ data:
   KRE_MONGODB_DB_NAME: "{{ .Values.mongodb.mongodbDatabase }}"
   KRE_MONGODB_STORAGECLASS: "{{ .Values.config.runtime.mongodb.persistentVolume.storageClass }}"
   KRE_MONGODB_STORAGE_SIZE: "{{ .Values.config.runtime.mongodb.persistentVolume.size }}"
+  # Chronograf
+  KRE_CHRONOGRAF_STORAGECLASS: "{{ .Values.config.runtime.chronograf.persistentVolume.storageClass }}"
+  KRE_CHRONOGRAF_STORAGE_SIZE: "{{ .Values.config.runtime.chronograf.persistentVolume.size }}"
+  #InfluxDB
+  KRE_INFLUXDB_STORAGECLASS: "{{ .Values.config.runtime.influxdb.persistentVolume.storageClass }}"
+  KRE_INFLUXDB_STORAGE_SIZE: "{{ .Values.config.runtime.influxdb.persistentVolume.size }}"

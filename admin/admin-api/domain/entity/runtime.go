@@ -63,7 +63,7 @@ func (r *Runtime) GetMongoURI(replicas int) string {
 
 	address := make([]string, replicas)
 	for i := 0; i < replicas; i++ {
-		address[i] = fmt.Sprintf("%s-mongo-%d.%s-mongo:27017", r.GetNamespace(), i, r.GetNamespace())
+		address[i] = fmt.Sprintf("kre-mongo-%d:27017", i)
 	}
 	return fmt.Sprintf("mongodb://%s@%s/admin?replicaSet=rs0", creds, strings.Join(address, ","))
 }

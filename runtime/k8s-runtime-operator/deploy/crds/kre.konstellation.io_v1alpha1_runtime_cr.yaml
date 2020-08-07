@@ -23,6 +23,16 @@ spec:
       className: standard
       size: 2Gi
 
+  chronograf:
+    persistence:
+      className: standard
+      size: 1Gi
+
+  influxdb:
+    persistence:
+      className: standard
+      size: 2Gi
+
   minio:
     credentials:
       accessKey: admin

@@ -1,7 +1,4 @@
 dependencies:
-- name: mongodb
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 7.4.5
 - name: prometheus-operator
   repository: https://kubernetes-charts.storage.googleapis.com
   version: 9.1.1

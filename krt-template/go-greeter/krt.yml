@@ -1,4 +1,4 @@
-version: go-greeter-v1
+version: go-greeter-v5
 description: Version for testing.
 entrypoint:
   proto: public_input.proto

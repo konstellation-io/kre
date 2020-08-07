@@ -53,6 +53,20 @@ type Config struct {
 			Size         string `yaml:"size" envconfig:"KRE_MONGODB_STORAGE_SIZE"`
 		} `yaml:"persistentVolume"`
 	} `yaml:"mongo"`
+
+	Chronograf struct {
+		PersistentVolume struct {
+			StorageClass string `yaml:"storageClass" envconfig:"KRE_CHRONOGRAF_STORAGECLASS"`
+			Size         string `yaml:"size" envconfig:"KRE_CHRONOGRAF_STORAGE_SIZE"`
+		} `yaml:"persistentVolume"`
+	} `yaml:"chronograf"`
+
+	InfluxDB struct {
+		PersistentVolume struct {
+			StorageClass string `yaml:"storageClass" envconfig:"KRE_INFLUXDB_STORAGECLASS"`
+			Size         string `yaml:"size" envconfig:"KRE_INFLUXDB_STORAGE_SIZE"`
+		} `yaml:"persistentVolume"`
+	} `yaml:"influxdb"`
 }
 
 // NewConfig will read the config.yml file and override values with env vars.
