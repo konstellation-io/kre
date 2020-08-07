@@ -64,3 +64,42 @@ publish-kre-py-image:
   rules:
     - if: '$CI_COMMIT_TAG =~ /^kre-py-v\d*.\d*.\d*$/'
       when: always
+
+publish-kre-py-image-arm64:
+  stage: publish-image
+  image: docker:19
+  services:
+    - name: docker:19.03.6-dind
+      command: ["--experimental"]
+
+  variables:
+    IMAGE_PROJECT_NAME: "konstellation/kre-py"
+    DOCKER_USER: $DOCKER_USER
+    DOCKER_PASS: $DOCKER_PASS
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_BUILDKIT: 1
+    DOCKER_CLI_EXPERIMENTAL: enabled
+    BUILDX_URL: https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
+    BUILDX_BUILDER: multiarch
+    BUILDX_PLATFORM: "linux/arm64"
+
+  before_script:
+    - mkdir -p $HOME/.docker/cli-plugins/
+    - wget -O $HOME/.docker/cli-plugins/docker-buildx $BUILDX_URL
+    - chmod a+x $HOME/.docker/cli-plugins/docker-buildx
+    - "echo -e '{\n  \"experimental\": \"enabled\"\n}' | tee $HOME/.docker/config.json"
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - docker buildx create --use --driver docker-container --name ${BUILDX_BUILDER} --platform=${BUILDX_PLATFORM}
+    - docker buildx inspect --bootstrap ${BUILDX_BUILDER}
+    - docker buildx ls
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  script:
+    - TAG=${CI_COMMIT_TAG#kre-py-v}
+    - docker buildx build -f runners/kre-py/Dockerfile.arm64--push --platform ${BUILDX_PLATFORM}
+      --tag $IMAGE_PROJECT_NAME:$TAG-arm64
+      --tag $IMAGE_PROJECT_NAME:latest-arm64
+      runners/kre-py
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^kre-py-v\d*.\d*.\d*$/'
+      when: always
