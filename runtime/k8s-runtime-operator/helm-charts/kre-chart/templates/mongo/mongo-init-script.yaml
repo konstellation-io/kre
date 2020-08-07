@@ -20,7 +20,6 @@ data:
     	return
     fi
 
-    # FIXME: assume mongod listens on 127.0.0.1:27017
     mongo=( mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --host 127.0.0.1 --port 27017 --quiet )
 
     tries=30
@@ -41,7 +40,6 @@ data:
     done
 
     echo 'about to initialize replica set'
-    # FIXME: hard-coded replica set name & member host
     "${mongo[@]}" <<-EOF
     	rs.initiate({
     	  _id: "rs0",
