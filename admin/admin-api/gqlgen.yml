@@ -33,6 +33,8 @@ models:
         resolver: true
       measurementsUrl:
         resolver: true
+      entrypointUrl:
+        resolver: true
   Version:
     model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.Version
     fields:

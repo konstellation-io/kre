@@ -360,6 +360,10 @@ func (r *runtimeResolver) MeasurementsURL(_ context.Context, obj *entity.Runtime
 	return obj.GetMeasurementURL(r.cfg.Admin.BaseURL), nil
 }
 
+func (r *runtimeResolver) EntrypointURL(_ context.Context, obj *entity.Runtime) (string, error) {
+	return obj.GetEntrypointURL(r.cfg.BaseDomainName), nil
+}
+
 func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
 	id := uuid.New().String()
 

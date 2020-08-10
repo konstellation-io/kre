@@ -75,3 +75,7 @@ func (r *Runtime) GetInfluxURL() string {
 func (r *Runtime) GetMeasurementURL(baseURL string) string {
 	return fmt.Sprintf("%s/measurements/%s", baseURL, r.GetNamespace())
 }
+
+func (r *Runtime) GetEntrypointURL(baseDomain string) string {
+	return fmt.Sprintf("entrypoint.%s.%s", r.GetNamespace(), baseDomain)
+}

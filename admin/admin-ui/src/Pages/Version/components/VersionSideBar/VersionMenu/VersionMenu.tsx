@@ -47,6 +47,13 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
     Icon: IconShowChart
   });
 
+  // TODO: Remove this when entrypointUrl is shown somewhere else.
+  itemProps.push({
+    label: 'ENTRYPOINT',
+    to: runtime.entrypointUrl,
+    Icon: IconShowChart
+  });
+
   itemProps.push({
     label: 'MEASUREMENTS',
     to: runtime.measurementsUrl,
