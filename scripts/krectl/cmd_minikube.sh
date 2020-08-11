@@ -41,7 +41,6 @@ minikube_start() {
         --extra-config=apiserver.authorization-mode=RBAC
 
       run minikube addons enable ingress -p "$MINIKUBE_PROFILE"
-      run minikube addons enable dashboard -p "$MINIKUBE_PROFILE"
       run minikube addons enable registry -p "$MINIKUBE_PROFILE"
       run minikube addons enable storage-provisioner -p "$MINIKUBE_PROFILE"
       run minikube addons enable metrics-server -p "$MINIKUBE_PROFILE"
