@@ -37,7 +37,7 @@ spec:
           ports:
             - containerPort: 27017
           volumeMounts:
-            - name: kre-mongo-pvc
+            - name: {{ .Release.Name }}-mongo-pvc
               mountPath: "/data/db"
             - name: init-scripts
               mountPath: /docker-entrypoint-initdb.d/
@@ -48,7 +48,7 @@ spec:
           defaultMode: 0777
   volumeClaimTemplates:
     - metadata:
-        name: kre-mongo-pvc
+        name: {{ .Release.Name }}-mongo-pvc
       spec:
         accessModes:
           - ReadWriteOnce
