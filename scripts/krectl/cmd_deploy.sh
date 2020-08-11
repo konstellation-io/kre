@@ -52,7 +52,19 @@ prepare_helm() {
     run helm repo add stable https://kubernetes-charts.storage.googleapis.com
     run helm repo add influxdata https://helm.influxdata.com/
   fi
+
+  if [ "$MINIKUBE_RESET" = "1" ]; then
+    clean_helm_deps
+  fi
+
   HELM_READY=1
+}
+
+clean_helm_deps() {
+  rm -rf helm/kre/charts/*
+  rm -rf runtime/k8s-runtime-operator/helm-charts/kre-chart/charts/*
+  helm dep update helm/kre
+  helm dep update runtime/k8s-runtime-operator/helm-charts/kre-chart
 }
 
 create_namespace() {
