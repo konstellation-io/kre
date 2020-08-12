@@ -2,21 +2,13 @@ import React, { useRef } from 'react';
 
 import { Button } from 'kwc';
 import IconCopy from '@material-ui/icons/FileCopy';
-import cx from 'classnames';
-import styles from './Tooltip.module.scss';
-
-export enum NodeTypes {
-  INPUT,
-  OUTPUT,
-  INNER
-}
+import styles from './EntrypointTooltipContent.module.scss';
 
 type InputProps = {
-  nodeType: NodeTypes;
+  entrypointAddress: string;
 };
-export function InputElContent({ nodeType }: InputProps) {
+export function EntrypointTooltipContent({ entrypointAddress }: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const url = 'https://www.dafdsafsads.com/a263r5436254/';
 
   function onCopyToClipboard() {
     if (inputRef.current !== null) {
@@ -28,9 +20,8 @@ export function InputElContent({ nodeType }: InputProps) {
   }
 
   return (
-    <div className={cx(styles.tooltipContent, styles[nodeType])}>
-      <span>HTTPS</span>
-      <input type="text" value={url} ref={inputRef} readOnly />
+    <div className={styles.wrapper}>
+      <input type="text" value={entrypointAddress} ref={inputRef} readOnly />
       <Button
         label=""
         onClick={onCopyToClipboard}

@@ -27,12 +27,14 @@ type OnShowTooltipProps = {
 type Props = {
   workflows: GetVersionWorkflows_version_workflows[];
   entrypointStatus: NodeStatus;
+  entrypointAddress: string;
   versionStatus?: VersionStatus;
 };
 
 function WorkflowsManager({
   workflows,
   entrypointStatus,
+  entrypointAddress,
   versionStatus = VersionStatus.STOPPED
 }: Props) {
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -124,6 +126,7 @@ function WorkflowsManager({
           workflow={workflow}
           workflowStatus={versionStatus}
           entrypointStatus={entrypointStatus}
+          entrypointAddress={entrypointAddress}
           tooltipRefs={tooltipRefs}
           key={workflow.id}
         />

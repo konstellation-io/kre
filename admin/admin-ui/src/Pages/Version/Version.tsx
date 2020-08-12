@@ -45,7 +45,9 @@ function Version({ versions, version, runtime }: Props) {
           <Route
             exact
             path={ROUTE.RUNTIME_VERSION_STATUS}
-            render={props => <Status {...props} version={version} />}
+            render={props => (
+              <Status {...props} version={version} runtime={runtime} />
+            )}
           />
           <Redirect
             exact
