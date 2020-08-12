@@ -154,7 +154,7 @@ type Runtime {
   creationAuthor: User!
   publishedVersion: Version
   measurementsUrl: String!
-  entrypointUrl: String!
+  entrypointAddress: String!
 }
 
 enum RuntimeStatus {

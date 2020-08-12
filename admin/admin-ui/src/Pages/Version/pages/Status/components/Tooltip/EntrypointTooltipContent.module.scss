@@ -1,0 +1,28 @@
+@import 'Styles/variables';
+@import 'Styles/mixins';
+@import 'Styles/shadows';
+@import 'Styles/colors';
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+
+  input {
+    @include font-body;
+    color: font-color(light);
+
+    width: -webkit-fill-available;
+    background: none;
+    border: none;
+    outline: none;
+  }
+  div {
+    margin: 0 (2 * $grid-unit) 0 auto;
+    cursor: pointer;
+  }
+}
+
+.copyButton svg {
+  margin-right: -$grid-unit;
+}

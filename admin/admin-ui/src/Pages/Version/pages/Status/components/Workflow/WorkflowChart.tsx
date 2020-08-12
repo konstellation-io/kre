@@ -11,6 +11,7 @@ type Props = {
   height: number;
   workflowStatus: VersionStatus;
   entrypointStatus: NodeStatus;
+  entrypointAddress: string;
   onInnerNodeClick: Function;
   onInputNodeClick: Function;
   tooltipRefs: TooltipRefs;
@@ -22,6 +23,7 @@ function WorkflowChart({
   width,
   height,
   entrypointStatus,
+  entrypointAddress,
   workflowStatus,
   onInnerNodeClick,
   onInputNodeClick,
@@ -42,6 +44,7 @@ function WorkflowChart({
         data,
         workflowStatus,
         entrypointStatus,
+        entrypointAddress,
         onInnerNodeClick,
         onInputNodeClick,
         tooltipRefs,

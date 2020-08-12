@@ -76,6 +76,6 @@ func (r *Runtime) GetMeasurementURL(baseURL string) string {
 	return fmt.Sprintf("%s/measurements/%s", baseURL, r.GetNamespace())
 }
 
-func (r *Runtime) GetEntrypointURL(baseDomain string) string {
+func (r *Runtime) GetEntrypointAddress(baseDomain string) string {
 	return fmt.Sprintf("entrypoint.%s.%s", r.GetNamespace(), baseDomain)
 }

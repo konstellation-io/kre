@@ -8,7 +8,7 @@ import {
   GetVersionWorkflows_version_workflows,
   GetVersionWorkflows_version_workflows_nodes
 } from 'Graphql/queries/types/GetVersionWorkflows';
-import { InputElContent, NodeTypes } from '../Tooltip/TooltipContents';
+import { EntrypointTooltipContent } from '../Tooltip/EntrypointTooltipContent';
 import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import React, { FunctionComponent } from 'react';
 import { ScaleBand, scaleBand } from 'd3-scale';
@@ -49,41 +49,12 @@ type Props = {
   margin: Margin;
   workflowStatus: VersionStatus;
   entrypointStatus: NodeStatus;
+  entrypointAddress: string;
   onInnerNodeClick: Function;
   onInputNodeClick: Function;
   tooltipRefs: TooltipRefs;
   enableNodeClicks: boolean;
 };
-
-function getTooltipHeader(nodeType: NodeTypes) {
-  let title = '';
-  let Icon;
-
-  switch (nodeType) {
-    case NodeTypes.INPUT:
-      title = 'INPUT PROCESS';
-      Icon = <InputNode />;
-      break;
-    default:
-      title = 'TITLE';
-      Icon = <InputNode />;
-  }
-
-  return { title, Icon };
-}
-function getTooltipContent(nodeType: NodeTypes) {
-  let content;
-
-  switch (nodeType) {
-    case NodeTypes.INPUT:
-      content = <InputElContent nodeType={nodeType} />;
-      break;
-    default:
-      content = <div>CONTENT</div>;
-  }
-
-  return content;
-}
 
 class WorkflowViz {
   props: Props;
@@ -319,7 +290,7 @@ class WorkflowViz {
       nodeOuterRadius,
       xScale,
       yOffset,
-      getTooltip,
+      entrypointTooltip,
       props: {
         enableNodeClicks,
         data,
@@ -343,11 +314,10 @@ class WorkflowViz {
         .classed(styles[nodeState], true)
         .classed(styles.clicksDisabled, !enableNodeClicks)
         .on('mouseenter', function() {
-          getTooltip({
+          entrypointTooltip({
             x,
             y,
             side,
-            nodeType: NodeTypes.INPUT,
             status: nodeState,
             node: this
           });
@@ -396,11 +366,10 @@ class WorkflowViz {
         })
         .classed(styles[nodeState], true)
         .on('mouseenter', function() {
-          getTooltip({
+          entrypointTooltip({
             x,
             y,
             side,
-            nodeType: NodeTypes.INPUT,
             status: nodeState,
             node: this
           });
@@ -410,36 +379,36 @@ class WorkflowViz {
     this.generateLink(x + side, linkStatus, 'inputNode');
   };
 
-  getTooltip = ({
+  entrypointTooltip = ({
     x,
     y,
     side,
-    nodeType,
     status,
     node
   }: {
     x: number;
     y: number;
     side: number;
-    nodeType: NodeTypes;
     status: FinalStates;
     node: any;
   }) => {
     const {
-      getTooltipCoords,
-      props: {
-        tooltipRefs: { onShowTooltip }
-      }
-    } = this;
-    const { left, top } = getTooltipCoords(x, y, side);
-    const header = getTooltipHeader(nodeType);
-    const content = getTooltipContent(nodeType);
+      tooltipRefs: { onShowTooltip },
+      entrypointAddress
+    } = this.props;
+    const { left, top } = this.getTooltipCoords(x, y, side);
+    const title = 'ENTRYPOINT';
+    const Icon = <InputNode />;
+    const content = (
+      <EntrypointTooltipContent entrypointAddress={entrypointAddress} />
+    );
+
     onShowTooltip({
       status,
       node,
       left,
       top,
-      header,
+      header: { title, Icon },
       content
     });
   };

@@ -151,15 +151,15 @@ type ComplexityRoot struct {
 	}
 
 	Runtime struct {
-		CreationAuthor   func(childComplexity int) int
-		CreationDate     func(childComplexity int) int
-		Description      func(childComplexity int) int
-		EntrypointURL    func(childComplexity int) int
-		ID               func(childComplexity int) int
-		MeasurementsURL  func(childComplexity int) int
-		Name             func(childComplexity int) int
-		PublishedVersion func(childComplexity int) int
-		Status           func(childComplexity int) int
+		CreationAuthor    func(childComplexity int) int
+		CreationDate      func(childComplexity int) int
+		Description       func(childComplexity int) int
+		EntrypointAddress func(childComplexity int) int
+		ID                func(childComplexity int) int
+		MeasurementsURL   func(childComplexity int) int
+		Name              func(childComplexity int) int
+		PublishedVersion  func(childComplexity int) int
+		Status            func(childComplexity int) int
 	}
 
 	Settings struct {
@@ -256,7 +256,7 @@ type RuntimeResolver interface {
 	CreationAuthor(ctx context.Context, obj *entity.Runtime) (*entity.User, error)
 	PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error)
 	MeasurementsURL(ctx context.Context, obj *entity.Runtime) (string, error)
-	EntrypointURL(ctx context.Context, obj *entity.Runtime) (string, error)
+	EntrypointAddress(ctx context.Context, obj *entity.Runtime) (string, error)
 }
 type SubscriptionResolver interface {
 	RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
@@ -846,12 +846,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Runtime.Description(childComplexity), true
 
-	case "Runtime.entrypointUrl":
-		if e.complexity.Runtime.EntrypointURL == nil {
+	case "Runtime.entrypointAddress":
+		if e.complexity.Runtime.EntrypointAddress == nil {
 			break
 		}
 
-		return e.complexity.Runtime.EntrypointURL(childComplexity), true
+		return e.complexity.Runtime.EntrypointAddress(childComplexity), true
 
 	case "Runtime.id":
 		if e.complexity.Runtime.ID == nil {
@@ -1399,7 +1399,7 @@ type Runtime {
   creationAuthor: User!
   publishedVersion: Version
   measurementsUrl: String!
-  entrypointUrl: String!
+  entrypointAddress: String!
 }
 
 enum RuntimeStatus {
@@ -4616,7 +4616,7 @@ func (ec *executionContext) _Runtime_measurementsUrl(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Runtime_entrypointUrl(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
+func (ec *executionContext) _Runtime_entrypointAddress(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4633,7 +4633,7 @@ func (ec *executionContext) _Runtime_entrypointUrl(ctx context.Context, field gr
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Runtime().EntrypointURL(rctx, obj)
+		return ec.resolvers.Runtime().EntrypointAddress(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8136,7 +8136,7 @@ func (ec *executionContext) _Runtime(ctx context.Context, sel ast.SelectionSet, 
 				}
 				return res
 			})
-		case "entrypointUrl":
+		case "entrypointAddress":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -8144,7 +8144,7 @@ func (ec *executionContext) _Runtime(ctx context.Context, sel ast.SelectionSet, 
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Runtime_entrypointUrl(ctx, field, obj)
+				res = ec._Runtime_entrypointAddress(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

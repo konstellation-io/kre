@@ -43,6 +43,7 @@ type Props = {
   workflow: GetVersionWorkflows_version_workflows;
   workflowStatus: VersionStatus;
   entrypointStatus: NodeStatus;
+  entrypointAddress: string;
   tooltipRefs: TooltipRefs;
 };
 
@@ -50,6 +51,7 @@ function Workflow({
   workflow,
   workflowStatus,
   entrypointStatus,
+  entrypointAddress,
   tooltipRefs
 }: Props) {
   const { accessLevel } = useUserAccess();
@@ -135,6 +137,7 @@ function Workflow({
           data={data}
           workflowStatus={workflowStatus}
           entrypointStatus={entrypointStatus}
+          entrypointAddress={entrypointAddress}
           onInnerNodeClick={onInnerNodeClick}
           onInputNodeClick={onInputNodeClick}
           tooltipRefs={tooltipRefs}

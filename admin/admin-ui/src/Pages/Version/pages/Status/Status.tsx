@@ -8,7 +8,10 @@ import {
   WatchVersionNodeStatusVariables
 } from 'Graphql/subscriptions/types/WatchVersionNodeStatus';
 
-import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from 'Graphql/queries/types/GetVersionConfStatus';
 import { NodeStatus } from 'Graphql/types/globalTypes';
 import React from 'react';
 import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
@@ -34,9 +37,10 @@ export type Node = {
 
 type Props = {
   version?: GetVersionConfStatus_versions;
+  runtime?: GetVersionConfStatus_runtime;
 };
 
-function Status({ version }: Props) {
+function Status({ version, runtime }: Props) {
   const { versionId } = useParams<VersionRouteParams>();
 
   const { data, loading, error, subscribeToMore } = useQuery<
@@ -66,6 +70,7 @@ function Status({ version }: Props) {
           'status',
           NodeStatus.STARTED
         )}
+        entrypointAddress={runtime?.entrypointAddress || ''}
         versionStatus={version?.status}
       />
     </div>
