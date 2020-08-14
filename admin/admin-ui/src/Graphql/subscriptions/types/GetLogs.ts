@@ -9,7 +9,7 @@ import { LogFilters, LogLevel } from './../../types/globalTypes';
 // GraphQL subscription operation: GetLogs
 // ====================================================
 
-export interface GetLogs_nodeLogs {
+export interface GetLogs_watchNodeLogs {
   __typename: 'NodeLog';
   id: string;
   date: string;
@@ -22,7 +22,7 @@ export interface GetLogs_nodeLogs {
 }
 
 export interface GetLogs {
-  nodeLogs: GetLogs_nodeLogs;
+  watchNodeLogs: GetLogs_watchNodeLogs;
 }
 
 export interface GetLogsVariables {

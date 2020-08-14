@@ -8,7 +8,7 @@ const GetRuntimeAndVersionQuery = loader(
 );
 const CreateRuntimeMutation = loader('Graphql/mutations/createRuntime.graphql');
 const RuntimeCreatedSubscription = loader(
-  'Graphql/subscriptions/runtimeCreated.graphql'
+  'Graphql/subscriptions/watchRuntimeCreated.graphql'
 );
 
 export const dashboardMock = {
@@ -100,7 +100,7 @@ export const runtimeCreatedMock = {
   },
   result: {
     data: {
-      runtimeCreated: { id: 'some id', name: 'some name' }
+      watchRuntimeCreated: { id: 'some id', name: 'some name' }
     }
   }
 };
