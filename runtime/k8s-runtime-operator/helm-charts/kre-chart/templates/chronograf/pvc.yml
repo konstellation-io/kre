@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: chronograf-pvc
+  name: {{ .Release.Name }}-chronograf-pvc
   labels:
     app: chronograf
   annotations:

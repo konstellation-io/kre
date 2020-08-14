@@ -32,7 +32,7 @@ spec:
             - secretRef:
                 name: kre-minio-secret
           volumeMounts:
-            - name: kre-minio-pvc
+            - name: {{ .Release.Name }}-kre-minio-pvc
               mountPath: "/data"
           ports:
             - containerPort: 9000
@@ -50,7 +50,7 @@ spec:
             periodSeconds: 10
   volumeClaimTemplates:
     - metadata:
-        name: kre-minio-pvc
+        name: {{ .Release.Name }}-kre-minio-pvc
       spec:
         accessModes:
           - ReadWriteMany
