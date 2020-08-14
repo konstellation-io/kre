@@ -364,7 +364,7 @@ func (r *runtimeResolver) EntrypointAddress(_ context.Context, obj *entity.Runti
 	return obj.GetEntrypointAddress(r.cfg.BaseDomainName), nil
 }
 
-func (r *subscriptionResolver) RuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
+func (r *subscriptionResolver) WatchRuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
 	id := uuid.New().String()
 
 	runtimeCreatedChan := make(chan *entity.Runtime, 1)
@@ -397,7 +397,7 @@ func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionID st
 	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, versionID)
 }
 
-func (r *subscriptionResolver) NodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeID, versionID, filters)
 }

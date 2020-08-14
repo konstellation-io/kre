@@ -23,9 +23,7 @@ import styles from './LogsList.module.scss';
 import { useQuery } from '@apollo/react-hooks';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';
 
-const GetLogsSubscription = loader(
-  'Graphql/subscriptions/getLogsSubscription.graphql'
-);
+const WatchNodeLogs = loader('Graphql/subscriptions/watchNodeLogs.graphql');
 const GetServerLogsQuery = loader('Graphql/queries/getServerLogs.graphql');
 
 const LOG_HEIGHT = 25;
@@ -110,14 +108,14 @@ function LogsList({
   // Subscription query
   const subscribe = () =>
     subscribeToMore<GetLogs, GetLogsVariables>({
-      document: GetLogsSubscription,
+      document: WatchNodeLogs,
       variables: {
         runtimeId,
         versionId,
         filters: formatFilters(filterValues)
       },
       updateQuery: (prev, { subscriptionData }) => {
-        const newLog = get(subscriptionData.data, 'nodeLogs');
+        const newLog = get(subscriptionData.data, 'watchNodeLogs');
         onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
           ...oldLogs,
           newLog

@@ -11,10 +11,10 @@ import { NotificationType } from 'Graphql/client/typeDefs';
 import ROUTE from 'Constants/routes';
 import { loader } from 'graphql.macro';
 import { runtimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
-import { runtimeCreated_runtimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
+import { runtimeCreated_watchRuntimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
 
-const RuntimeCreatedSubscription = loader(
-  'Graphql/subscriptions/runtimeCreated.graphql'
+const WatchRuntimeCreated = loader(
+  'Graphql/subscriptions/watchRuntimeCreated.graphql'
 );
 const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
 
@@ -22,7 +22,7 @@ const NOTIFICATION_TIMEOUT = 15 * 1000;
 
 function updateRuntimesCache(
   client: ApolloClient<object>,
-  runtime: runtimeCreated_runtimeCreated
+  runtime: runtimeCreated_watchRuntimeCreated
 ) {
   const data = client.readQuery({ query: GetRuntimesQuery });
   const runtimes = data && clone(data.runtimes);
@@ -37,13 +37,13 @@ function updateRuntimesCache(
 function onRuntimeCreated(client: ApolloClient<object>) {
   client
     .subscribe<runtimeCreated>({
-      query: RuntimeCreatedSubscription
+      query: WatchRuntimeCreated
     })
     .subscribe({
       next(data) {
-        const runtime: runtimeCreated_runtimeCreated = get(
+        const runtime: runtimeCreated_watchRuntimeCreated = get(
           data,
-          'data.runtimeCreated'
+          'data.watchRuntimeCreated'
         );
         const runtimePath = ROUTE.RUNTIME.replace(':runtimeId', runtime.id);
 

@@ -51,8 +51,8 @@ type Mutation {
 }
 
 type Subscription {
-  runtimeCreated: Runtime!
-  nodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
+  watchRuntimeCreated: Runtime!
+  watchNodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionId: ID!): Node!
   watchVersionStatus: Version!
   watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!

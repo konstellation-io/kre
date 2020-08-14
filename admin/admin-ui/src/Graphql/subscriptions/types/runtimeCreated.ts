@@ -9,20 +9,20 @@ import { RuntimeStatus, VersionStatus } from './../../types/globalTypes';
 // GraphQL subscription operation: runtimeCreated
 // ====================================================
 
-export interface runtimeCreated_runtimeCreated_publishedVersion {
+export interface runtimeCreated_watchRuntimeCreated_publishedVersion {
   __typename: 'Version';
   status: VersionStatus;
 }
 
-export interface runtimeCreated_runtimeCreated {
+export interface runtimeCreated_watchRuntimeCreated {
   __typename: 'Runtime';
   id: string;
   name: string;
   status: RuntimeStatus;
   creationDate: string;
-  publishedVersion: runtimeCreated_runtimeCreated_publishedVersion | null;
+  publishedVersion: runtimeCreated_watchRuntimeCreated_publishedVersion | null;
 }
 
 export interface runtimeCreated {
-  runtimeCreated: runtimeCreated_runtimeCreated;
+  watchRuntimeCreated: runtimeCreated_watchRuntimeCreated;
 }
