@@ -241,7 +241,7 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 							Name: "shared-data",
 							VolumeSource: apiv1.VolumeSource{
 								PersistentVolumeClaim: &apiv1.PersistentVolumeClaimVolumeSource{
-									ClaimName: "kre-minio-pvc-kre-minio-0",
+									ClaimName: fmt.Sprintf("%s-kre-minio-pvc-kre-minio-0", ns),
 									ReadOnly:  false,
 								},
 							},

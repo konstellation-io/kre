@@ -285,7 +285,7 @@ func (m *Manager) createNodeDeployment(
 							Name: "shared-data",
 							VolumeSource: apiv1.VolumeSource{
 								PersistentVolumeClaim: &apiv1.PersistentVolumeClaimVolumeSource{
-									ClaimName: "kre-minio-pvc-kre-minio-0",
+									ClaimName: fmt.Sprintf("%s-kre-minio-pvc-kre-minio-0", ns),
 									ReadOnly:  false,
 								},
 							},
