@@ -13,6 +13,12 @@ cmd_dev() {
         shift
       ;;
 
+      # WARNING: Doing a hard reset before deploying
+      --hard|--dracarys)
+        SKIP_BUILD=1
+        shift
+      ;;
+
       # Use it when you want to develop on admin-ui outside k8s and using the mock server
       --frontend-mock)
         KRE_ADMIN_API_BASE_URL="http://dev-admin.kre.local:4000"
@@ -45,7 +51,11 @@ cmd_dev() {
 
   minikube_start
   minikube_clean
-  cmd_build "$@"
+  if [ "$SKIP_BUILD" = "0" ]; then
+    cmd_build "$@"
+  else
+    sleep 30
+  fi
   deploy
   cmd_login
 
@@ -59,6 +69,7 @@ show_dev_help() {
 
     options:
       --hard, --dracarys  remove all contents of minikube kre profile. $(echo_yellow "(WARNING: will re-build all docker images again)").
+      --skip-build        skip all docker images build, useful for non-development environments
       --frontend-mock     starts a local mock server to avoid calling the actual API during Frontend development.
       --local-frontend    starts a local server outside from kubernetes for faster development.
 
