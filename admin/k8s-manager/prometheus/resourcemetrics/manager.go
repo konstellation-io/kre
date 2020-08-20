@@ -94,6 +94,10 @@ func (m *Manager) WatchVersionResourceMetrics(
 
 				if len(metrics) > 1 {
 					metrics = metrics[1:]
+				} else if len(metrics) == 0 {
+					metrics = append(metrics, entity.VersionResourceMetrics{
+						Date: toDate,
+					})
 				}
 
 				metricsCh <- metrics
