@@ -13,8 +13,7 @@ cmd_dev() {
         shift
       ;;
 
-      # WARNING: Doing a hard reset before deploying
-      --hard|--dracarys)
+      --skip-build)
         SKIP_BUILD=1
         shift
       ;;
@@ -54,7 +53,7 @@ cmd_dev() {
   if [ "$SKIP_BUILD" = "0" ]; then
     cmd_build "$@"
   else
-    sleep 30
+    sleep 10
   fi
   deploy
   cmd_login
