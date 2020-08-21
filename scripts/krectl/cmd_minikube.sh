@@ -28,7 +28,6 @@ minikube_start() {
     Stopped)
       echo_check "Restarting minikube profile"
       minikube start -p "$MINIKUBE_PROFILE"
-      cmd_etchost
     ;;
     *)
       echo_wait "Creating new minikube profile"
