@@ -24,6 +24,10 @@ type Config struct {
 
 	SharedStorageSize string `yaml:"sharedStorageSize" envconfig:"KRE_SHARED_STORAGE_SIZE"`
 
+	Entrypoint struct {
+		RequestTimeout string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINT_REQUEST_TIMEOUT"`
+	} `yaml:"entrypoint"`
+
 	Server struct {
 		Port string `yaml:"port" envconfig:"KRE_PORT"`
 	} `yaml:"server"`
