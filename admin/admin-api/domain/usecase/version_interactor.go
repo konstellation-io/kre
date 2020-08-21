@@ -121,49 +121,71 @@ func (i *VersionInteractor) GetByIDs(ids []string) ([]*entity.Version, []error) 
 	return i.versionRepo.GetByIDs(ids)
 }
 
+func (i *VersionInteractor) copyStreamToTempFile(krtFile io.Reader) (*os.File, error) {
+	tmpFile, err := ioutil.TempFile("", "version")
+
+	if err != nil {
+		return nil, fmt.Errorf("error creating temp file for version: %w", err)
+	}
+
+	_, err = io.Copy(tmpFile, krtFile)
+	i.logger.Infof("Created temp file: %s", tmpFile)
+
+	return tmpFile, nil
+}
+
 // Create creates a Version on the DB based on the content of a KRT file
-func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID string, krtFile io.Reader) (*entity.Version, error) {
+func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID string, krtFile io.Reader) (*entity.Version, chan *entity.Version, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
 	if err != nil {
-		return nil, fmt.Errorf("error runtime repo GetByID: %w", err)
-	}
-
-	tmpDir, err := ioutil.TempDir("", "version")
-	if err != nil {
-		return nil, fmt.Errorf("error creating temp dir for version: %w", err)
-	}
-	i.logger.Info("Created temp dir to extract the KRT files at " + tmpDir)
-
-	krtYml, err := krt.ProcessFile(i.logger, krtFile, tmpDir)
-	if err != nil {
-		return nil, fmt.Errorf("error processing krt: %w", err)
+		return nil, nil, fmt.Errorf("error runtime repo GetByID: %w", err)
 	}
 
 	// Check if the version is duplicated
 	versions, err := i.versionRepo.GetByRuntime(runtimeID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error checking duplicated version: %w", err)
+	}
+
+	tmpDir, err := ioutil.TempDir("", "version")
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating temp dir for version: %w", err)
+	}
+	i.logger.Info("Created temp dir to extract the KRT files at " + tmpDir)
+
+	tmpKrtFile, err := i.copyStreamToTempFile(krtFile)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating temp krt file for version: %w", err)
+	}
+
+	krtYml, err := krt.ProcessYaml(i.logger, tmpKrtFile.Name(), tmpDir)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error processing krt: %w", err)
+	}
+
 	for _, v := range versions {
 		if v.Name == krtYml.Version {
-			return nil, ErrVersionDuplicated
+			return nil, nil, ErrVersionDuplicated
 		}
 	}
 
 	workflows, err := i.generateWorkflows(krtYml)
 	if err != nil {
-		return nil, fmt.Errorf("error generating workflows: %w", err)
+		return nil, nil, fmt.Errorf("error generating workflows: %w", err)
 	}
 
 	existingConfig := readExistingConf(versions)
-	config := fillNewConfWithExisting(existingConfig, krtYml)
+	cfg := fillNewConfWithExisting(existingConfig, krtYml)
 
 	versionCreated, err := i.versionRepo.Create(loggedUserID, &entity.Version{
 		RuntimeID:   runtimeID,
 		Name:        krtYml.Version,
 		Description: krtYml.Description,
-		Config:      config,
+		Config:      cfg,
 		Entrypoint: entity.Entrypoint{
 			ProtoFile: krtYml.Entrypoint.Proto,
 			Image:     krtYml.Entrypoint.Image,
@@ -171,34 +193,81 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		Workflows: workflows,
 	})
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
+
 	i.logger.Info("Version created")
 
-	docFolder := path.Join(tmpDir, "docs")
-	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
-		err = i.docGenerator.Generate(versionCreated.ID, docFolder)
-		if err != nil {
-			return nil, fmt.Errorf("error generating version doc: %w", err)
-		}
-		err = i.versionRepo.SetHasDoc(ctx, versionCreated.ID, true)
-		if err != nil {
-			return nil, fmt.Errorf("error updating has doc field: %w", err)
-		}
-	} else {
-		i.logger.Infof("No documentation found inside the krt files")
-	}
+	notifyStatusCh := make(chan *entity.Version, 1)
 
-	err = i.storeContent(runtime, krtYml, tmpDir)
-	if err != nil {
-		return nil, err
-	}
+	go func() {
+		asyncCtx := context.Background()
+		defer func() {
+			err = tmpKrtFile.Close()
+			if err != nil {
+				i.logger.Errorf("error closing file: %s", err)
+				return
+			}
 
-	err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, runtime, versionCreated)
-	if err != nil {
-		return nil, fmt.Errorf("error registering activity: %w", err)
-	}
-	return versionCreated, nil
+			err = os.Remove(tmpKrtFile.Name())
+			if err != nil {
+				i.logger.Errorf("error removing file: %s", err)
+			}
+		}()
+
+		err = krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
+		if err != nil {
+			i.logger.Errorf("error processing krt: %s", err)
+			// TODO: Send error notification to channel  notifyStatusCh
+
+			return
+		}
+
+		docFolder := path.Join(tmpDir, "docs")
+		if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
+			err = i.docGenerator.Generate(versionCreated.ID, docFolder)
+			if err != nil {
+				i.logger.Errorf("error generating version doc: %s", err)
+				// TODO: Send error notification to channel  notifyStatusCh
+				return
+			}
+			err = i.versionRepo.SetHasDoc(asyncCtx, versionCreated.ID, true)
+			if err != nil {
+				i.logger.Errorf("error updating has doc field: %s", err)
+				// TODO: Send error notification to channel  notifyStatusCh
+				return
+			}
+		} else {
+			i.logger.Infof("No documentation found inside the krt files")
+		}
+
+		err = i.storeContent(runtime, krtYml, tmpDir)
+		if err != nil {
+			i.logger.Errorf("error saving content on new version: %s", err)
+			// TODO: Send error notification to channel  notifyStatusCh
+			return
+		}
+
+		err = i.versionRepo.SetStatus(asyncCtx, versionCreated.ID, entity.VersionStatusCreated)
+		if err != nil {
+			i.logger.Errorf("error setting version status: %s", err)
+			// TODO: Send error notification to channel  notifyStatusCh
+			return
+		}
+
+		// Notify state
+		versionCreated.Status = entity.VersionStatusCreated
+		notifyStatusCh <- versionCreated
+
+		err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, runtime, versionCreated)
+		if err != nil {
+			i.logger.Errorf("error registering activity: %s", err)
+			// TODO: Send error notification to channel  notifyStatusCh
+			return
+		}
+	}()
+
+	return versionCreated, notifyStatusCh, nil
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
@@ -271,7 +340,7 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
-	if v.Status != entity.VersionStatusStopped && v.Status != entity.VersionStatusStopping {
+	if !v.CanBeStarted() {
 		return nil, nil, ErrInvalidVersionStatusBeforeStarting
 	}
 
@@ -323,7 +392,7 @@ func (i *VersionInteractor) Stop(
 		return nil, nil, err
 	}
 
-	if v.Status != entity.VersionStatusStarted && v.Status != entity.VersionStatusStarting {
+	if !v.CanBeStopped() {
 		return nil, nil, ErrInvalidVersionStatusBeforeStopping
 	}
 

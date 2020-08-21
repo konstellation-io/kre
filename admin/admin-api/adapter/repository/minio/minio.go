@@ -57,7 +57,7 @@ func (m Minio) CopyDir(dir, bucketName string) error {
 		if info.IsDir() {
 			return nil
 		}
-		m.logger.Infof("Uploading file %s", path)
+
 		filePath, _ := filepath.Rel(dir, path)
 		_, err = m.client.FPutObject(bucketName, filePath, path, minio.PutObjectOptions{})
 		if err != nil {

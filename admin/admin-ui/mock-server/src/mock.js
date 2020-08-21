@@ -44,6 +44,8 @@ const generateVersion = () => ({
   )}.${casual.integer((from = 1), (to = 10))}`,
   description: casual.sentence,
   status: casual.random_element([
+    'CREATING',
+    'CREATED',
     'STARTING',
     'STARTED',
     'PUBLISHED',

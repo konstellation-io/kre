@@ -9,6 +9,10 @@
     $color: $color-primary;
   } @else if $status == 'STOPPED' {
     $color: font-color(light);
+  } @else if $status == 'CREATING' {
+    $color: palette(feedback);
+  } @else if $status == 'CREATED' {
+    $color: font-color(light);
   } @else if $status == 'STARTING' {
     $color: palette(feedback);
   } @else if $status == 'STOPPING' {

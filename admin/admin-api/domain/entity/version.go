@@ -7,6 +7,8 @@ import (
 type VersionStatus string
 
 const (
+	VersionStatusCreating  VersionStatus = "CREATING"
+	VersionStatusCreated   VersionStatus = "CREATED"
 	VersionStatusStarting  VersionStatus = "STARTING"
 	VersionStatusStarted   VersionStatus = "STARTED"
 	VersionStatusPublished VersionStatus = "PUBLISHED"
@@ -16,7 +18,9 @@ const (
 
 func (e VersionStatus) IsValid() bool {
 	switch e {
-	case VersionStatusStarting,
+	case VersionStatusCreating,
+		VersionStatusCreated,
+		VersionStatusStarting,
 		VersionStatusStarted,
 		VersionStatusPublished,
 		VersionStatusStopping,
@@ -135,6 +139,25 @@ func (v Version) PublishedOrStarted() bool {
 	switch v.Status {
 	case VersionStatusStarted,
 		VersionStatusPublished:
+		return true
+	}
+	return false
+}
+
+func (v Version) CanBeStarted() bool {
+	switch v.Status {
+	case VersionStatusCreated,
+		VersionStatusStopped,
+		VersionStatusStopping:
+		return true
+	}
+	return false
+}
+
+func (v Version) CanBeStopped() bool {
+	switch v.Status {
+	case VersionStatusStarted,
+		VersionStatusStarting:
 		return true
 	}
 	return false
