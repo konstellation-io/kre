@@ -34,10 +34,9 @@ function AddVersion() {
     console.log(`${versionCreatedId} version created`);
 
     history.push(
-      buildRoute.version(
-        ROUTE.RUNTIME_VERSION_STATUS,
+      buildRoute.runtime(
+        ROUTE.RUNTIME_VERSIONS,
         runtimeId,
-        versionCreatedId
       )
     );
   }

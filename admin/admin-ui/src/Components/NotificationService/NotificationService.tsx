@@ -9,6 +9,7 @@ import { GET_LOGIN_STATUS } from 'Graphql/client/queries/getLoginStatus.graphql'
 import Notification from './Notification';
 import React from 'react';
 import onRuntimeCreated from './Services/onRuntimeCreated/onRuntimeCreated';
+import onVersionCreated from './Services/onVersionCreated/onVersionCreated';
 import styles from './Notification.module.scss';
 
 function NotificationService() {
@@ -20,6 +21,7 @@ function NotificationService() {
 
   if (data && data.loggedIn) {
     onRuntimeCreated(client);
+    onVersionCreated(client);
   }
 
   const notificationComponents =

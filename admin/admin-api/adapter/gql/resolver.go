@@ -89,10 +89,13 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	version, err := r.versionInteractor.Create(ctx, loggedUserID, input.RuntimeID, input.File.File)
+
+	version, notifyCh, err := r.versionInteractor.Create(ctx, loggedUserID, input.RuntimeID, input.File.File)
 	if err != nil {
 		return nil, err
 	}
+
+	go r.notifyVersionStatus(notifyCh)
 
 	return version, nil
 }

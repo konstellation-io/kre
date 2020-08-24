@@ -22,8 +22,6 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 |  Runner Python  | [![coverage][runner-python-coverage]][runner-python-coverage-link] | [![bugs][runner-python-bugs]][runner-python-bugs-link] | [![loc][runner-python-loc]][runner-python-loc-link] | [![mr][runner-python-mr]][runner-python-mr-link] |
 
 
-
-
 # Architecture
 
 KRE is designed based on a microservice pattern to be run on top of a Kubernetes cluster.

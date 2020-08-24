@@ -140,6 +140,7 @@ function VersionActions({
   let buttons: ActionProps[] = [];
 
   switch (version.status) {
+    case VersionStatus.CREATED:
     case VersionStatus.STOPPING:
     case VersionStatus.STOPPED:
       buttons[0] = {
@@ -148,6 +149,18 @@ function VersionActions({
         action: () => openModal('START', startVersion),
         primary: version.config.completed,
         disabled: !version.config.completed
+      };
+      buttons[1] = {
+        Icon: PublishIcon,
+        label: 'PUBLISH',
+        disabled: true
+      };
+      break;
+    case VersionStatus.CREATING:
+      buttons[0] = {
+        Icon: StartIcon,
+        label: 'START',
+        disabled: true
       };
       buttons[1] = {
         Icon: PublishIcon,
