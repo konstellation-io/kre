@@ -10,7 +10,7 @@ echo "generating '${ENTRYPOINT_FILE}' file."
 /app/entrypoint-gen -input $PROTO_FILE -output $ENTRYPOINT_FILE
 
 # GENERATE protoc code
-echo "generating entrypoint protofub files."
+echo "generating entrypoint protobuf files."
 python3 -m grpc_tools.protoc \
   --proto_path="$(dirname "$PROTO_FILE")" \
   --python_out=./src/entrypoint \

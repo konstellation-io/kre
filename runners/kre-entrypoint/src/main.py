@@ -12,6 +12,8 @@ from kre_runner import Runner
 
 class Config:
     def __init__(self):
+        self.request_timeout = int(os.getenv('KRT_REQUEST_TIMEOUT', 30))
+
         # Mandatory variables
         try:
             self.krt_version_id = os.environ['KRT_VERSION_ID']
@@ -36,7 +38,7 @@ class EntrypointRunner(Runner):
             self.logger.info(f"Loaded NATS subject file: {subjects}")
 
         self.logger.info(f"Creating entrypoint service")
-        entrypoint = Entrypoint(self.logger, self.nc, subjects)
+        entrypoint = Entrypoint(self.logger, self.nc, subjects, self.config)
 
         services = ServerReflection.extend([entrypoint])
 

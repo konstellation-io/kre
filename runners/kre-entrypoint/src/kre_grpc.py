@@ -11,13 +11,11 @@ from kre_nats import KreNatsMessage
 
 # NOTE: EntrypointKRE will be extended by Entrypoint class auto-generated
 class EntrypointKRE:
-    def __init__(self, logger, nc, subjects):
+    def __init__(self, logger, nc, subjects, config):
         self.logger = logger
         self.subjects = subjects
         self.nc = nc
-
-        # FIXME: make timeout a config variable
-        self.request_timeout = 30
+        self.config = config
 
     @abc.abstractmethod
     async def make_response_object(self, subject, response):
@@ -37,7 +35,8 @@ class EntrypointKRE:
             nats_subject = self.subjects[subject]
             self.logger.info(f"Starting request/reply on NATS subject: '{nats_subject}'")
 
-            nats_reply = await self.nc.request(nats_subject, request_msg.marshal(), timeout=self.request_timeout)
+            nats_reply = await self.nc.request(nats_subject, request_msg.marshal(),
+                                               timeout=self.config.request_timeout)
 
             self.logger.info(f"creating a response from message reply")
             response_msg = KreNatsMessage(msg=nats_reply)
@@ -52,8 +51,8 @@ class EntrypointKRE:
             self.logger.info(f'gRPC successfully response')
 
             end = time.time()
-            self.logger.info(f"version[{os.environ['KRT_VERSION']}] "
-                             f"node[{os.environ['KRT_NODE_NAME']}] "
+            self.logger.info(f"version[{self.config.krt_version}] "
+                             f"node[{self.config.krt_node_name}] "
                              f"reply[{nats_reply.subject}] "
                              f"start[{datetime.datetime.utcfromtimestamp(start).isoformat()}] "
                              f"end[{datetime.datetime.utcfromtimestamp(end).isoformat()}] "

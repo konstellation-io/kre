@@ -35,8 +35,7 @@ service Entrypoint {
 	actual, err := ioutil.ReadAll(out)
 	assert.NoError(t, err)
 
-	expected := `import os
-from grpclib.server import Stream
+	expected := `from grpclib.server import Stream
 
 from kre_grpc import EntrypointKRE
 
@@ -44,9 +43,9 @@ from public_input_grpc import EntrypointBase
 import public_input_pb2
 
 class Entrypoint(EntrypointBase, EntrypointKRE):
-    def __init__(self, logger, nc, subjects):
-        logger.info(f"Entrypoint for '{os.environ['KRT_VERSION']}' initialized. ")
-        EntrypointKRE.__init__(self, logger, nc, subjects)
+    def __init__(self, logger, nc, subjects, config):
+        logger.info(f"Entrypoint for '{config.krt_version}' initialized. ")
+        EntrypointKRE.__init__(self, logger, nc, subjects, config)
 
     
     async def Test(self, stream: Stream[public_input_pb2.Request, public_input_pb2.Response]) -> None:

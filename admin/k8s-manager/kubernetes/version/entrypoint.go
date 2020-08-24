@@ -95,6 +95,11 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 			Name:  "KRT_NODE_ID",
 			Value: "entrypoint",
 		},
+		{
+			// NOTE: Time to wait for a message to do a round trip through a workflow.
+			Name:  "KRT_REQUEST_TIMEOUT",
+			Value: m.config.Entrypoint.RequestTimeout,
+		},
 	}
 
 	return m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{

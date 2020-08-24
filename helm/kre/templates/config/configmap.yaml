@@ -16,6 +16,8 @@ data:
   KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
   KRE_SHARED_STORAGECLASS: {{ .Values.config.runtime.sharedStorageClass }}
   KRE_SHARED_STORAGE_SIZE: {{ .Values.config.runtime.sharedStorageSize }}
+  KRE_ENTRYPOINT_REQUEST_TIMEOUT: "30"
+
   # SMTP
   KRE_SMTP_ENABLED: "{{ .Values.config.smtp.enabled }}"
   {{- if .Values.config.smtp.enabled }}
