@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
@@ -24,6 +25,7 @@ type versionSuite struct {
 }
 
 type versionSuiteMocks struct {
+	cfg               *config.Config
 	logger            *mocks.MockLogger
 	versionRepo       *mocks.MockVersionRepo
 	runtimeRepo       *mocks.MockRuntimeRepo
@@ -46,6 +48,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		return m, nil
 	}
 
+	cfg := &config.Config{}
 	logger := mocks.NewMockLogger(ctrl)
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
@@ -68,6 +71,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	)
 
 	versionInteractor := usecase.NewVersionInteractor(
+		cfg,
 		logger,
 		versionRepo,
 		runtimeRepo,
@@ -83,6 +87,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	return &versionSuite{
 		ctrl: ctrl,
 		mocks: versionSuiteMocks{
+			cfg,
 			logger,
 			versionRepo,
 			runtimeRepo,
@@ -148,9 +153,14 @@ func TestCreateNewVersion(t *testing.T) {
 	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(runtime, nil)
 	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
-
+	s.mocks.versionRepo.EXPECT().SetStatus(gomock.Any(), version.ID, entity.VersionStatusCreated).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
-	_, err = s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
+	_, statusCh, err := s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
 	require.Nil(t, err)
+
+	actual := <-statusCh
+	expected := version
+	expected.Status = entity.VersionStatusCreated
+	require.Equal(t, expected, actual)
 }

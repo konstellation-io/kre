@@ -1454,6 +1454,8 @@ type VersionConfig {
 }
 
 enum VersionStatus {
+  CREATING
+  CREATED
   STARTING
   STARTED
   PUBLISHED
