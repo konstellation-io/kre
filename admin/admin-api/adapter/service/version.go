@@ -45,6 +45,7 @@ func (k *K8sVersionClient) Start(ctx context.Context, runtime *entity.Runtime, v
 				Name:  n.Name,
 				Image: n.Image,
 				Src:   n.Src,
+				Gpu:   n.GPU,
 			}
 		}
 		edges := make([]*versionpb.Version_Workflow_Edge, len(w.Edges))

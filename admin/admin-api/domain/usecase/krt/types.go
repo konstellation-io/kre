@@ -15,6 +15,7 @@ type Node struct {
 	Name  string `yaml:"name" validate:"required,resource-name,gt=1,lt=20"`
 	Image string `yaml:"image" validate:"required"`
 	Src   string `yaml:"src" validate:"required"`
+	GPU   bool   `yaml:"gpu"`
 }
 
 // Workflow contains data about a version's workflow
