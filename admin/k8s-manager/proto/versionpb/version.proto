@@ -25,11 +25,13 @@ message Version {
   }
 
   message Workflow {
+
     message Node {
       string id = 1;
       string name = 2;
       string image = 3;
       string src = 4;
+      bool gpu = 5;
     }
 
     message Edge {

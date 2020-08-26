@@ -296,6 +296,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				Name:  name,
 				Image: nodeInfo.Image,
 				Src:   nodeInfo.Src,
+				GPU:   nodeInfo.GPU,
 			}
 
 			if previousN != nil {
@@ -369,7 +370,7 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
-	go i.notifyStatusChange(runtime, v, entity.VersionStatusStarted, notifyStatusCh)
+	go i.changeStatusAndNotify(runtime, v, entity.VersionStatusStarted, notifyStatusCh)
 
 	return v, notifyStatusCh, nil
 }
@@ -417,12 +418,12 @@ func (i *VersionInteractor) Stop(
 		return nil, nil, err
 	}
 
-	go i.notifyStatusChange(runtime, v, entity.VersionStatusStopped, notifyStatusCh)
+	go i.changeStatusAndNotify(runtime, v, entity.VersionStatusStopped, notifyStatusCh)
 
 	return v, notifyStatusCh, nil
 }
 
-func (i *VersionInteractor) notifyStatusChange(
+func (i *VersionInteractor) changeStatusAndNotify(
 	runtime *entity.Runtime,
 	version *entity.Version,
 	status entity.VersionStatus,
@@ -433,20 +434,20 @@ func (i *VersionInteractor) notifyStatusChange(
 	defer func() {
 		cancel()
 		close(notifyStatusCh)
-		i.logger.Debug("[versionInteractor.notifyStatusChange] channel closed")
+		i.logger.Debug("[versionInteractor.changeStatusAndNotify] channel closed")
 	}()
 
 	if status == entity.VersionStatusStarted {
 		err := i.versionService.Start(ctx, runtime, version)
 		if err != nil {
-			i.logger.Errorf("[versionInteractor.notifyStatusChange] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
 	}
 
 	if status == entity.VersionStatusStopped {
 		err := i.versionService.Stop(ctx, runtime, version)
 		if err != nil {
-			i.logger.Errorf("[versionInteractor.notifyStatusChange] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
 	}
 

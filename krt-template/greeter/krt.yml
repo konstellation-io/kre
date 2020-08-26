@@ -8,6 +8,8 @@ nodes:
   - name: greeter
     image: konstellation/kre-py:latest
     src: src/greeter/main.py
+    # gpu is an optional value, defaults to false.
+    gpu: false
 
 workflows:
   - name: greeting

@@ -64,6 +64,7 @@ type Node struct {
 	Name   string     `bson:"name"`
 	Image  string     `bson:"image"`
 	Src    string     `bson:"src"`
+	GPU    bool       `bson:"gpu"`
 	Status NodeStatus `bson:"-"` // This field value is calculated in k8s
 }
 

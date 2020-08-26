@@ -7,6 +7,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 
@@ -160,6 +161,14 @@ func (m *Manager) createNodeDeployment(
 		},
 	}
 
+	requests := apiv1.ResourceList{}
+	limits := apiv1.ResourceList{}
+
+	if node.Gpu {
+		limits["nvidia.com/gpu"] = resource.MustParse("1")
+		requests["nvidia.com/gpu"] = resource.MustParse("1")
+	}
+
 	return m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -236,6 +245,10 @@ func (m *Manager) createNodeDeployment(
 									Name:      "app-log-volume",
 									MountPath: "/var/log/app",
 								},
+							},
+							Resources: apiv1.ResourceRequirements{
+								Limits:   limits,
+								Requests: requests,
 							},
 						},
 						{
