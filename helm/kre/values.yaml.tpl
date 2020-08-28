@@ -102,7 +102,7 @@ certManager:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: user@email.com
 
-prometheusOperator:
+prometheus-operator:
   enabled: true
   grafana:
     enabled: false

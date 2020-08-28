@@ -5,6 +5,6 @@ name: kre
 version: 0.1.7
 dependencies:
   - name: prometheus-operator
-    version: "9.1.1"
+    version: "9.3.1"
     repository: "https://kubernetes-charts.storage.googleapis.com"
-    condition: prometheusOperator.enabled
+    condition: prometheus-operator.enabled
