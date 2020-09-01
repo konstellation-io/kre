@@ -57,6 +57,7 @@ func (m *Manager) createEntrypointConfigMap(version *entity.Version) (*apiv1.Con
 		Data: map[string]string{
 			"KRT_NATS_SERVER":        "kre-nats:4222",
 			"KRT_NATS_SUBJECTS_FILE": "/src/conf/nats_subject.json",
+			"KRT_INFLUX_URI":         version.InfluxUri,
 		},
 	})
 }

@@ -1,12 +1,12 @@
 import abc
 import datetime
-import os
 import time
 import traceback
 
 from protobuf_to_dict import protobuf_to_dict
 
 from kre_nats import KreNatsMessage
+from kre_measurements import KreMeasurements
 
 
 # NOTE: EntrypointKRE will be extended by Entrypoint class auto-generated
@@ -16,6 +16,7 @@ class EntrypointKRE:
         self.subjects = subjects
         self.nc = nc
         self.config = config
+        self.measurements = KreMeasurements(config.influx_uri)
 
     @abc.abstractmethod
     async def make_response_object(self, subject, response):
@@ -51,13 +52,22 @@ class EntrypointKRE:
             self.logger.info(f'gRPC successfully response')
 
             end = time.time()
-            self.logger.info(f"version[{self.config.krt_version}] "
-                             f"node[{self.config.krt_node_name}] "
-                             f"reply[{nats_reply.subject}] "
-                             f"start[{datetime.datetime.utcfromtimestamp(start).isoformat()}] "
-                             f"end[{datetime.datetime.utcfromtimestamp(end).isoformat()}] "
-                             f"elapsed[{round(end - start, 2)}]"
-                             )
+            elapsed = end - start
+
+            self.logger.debug(f"version[{self.config.krt_version}] "
+                              f"node[{self.config.krt_node_name}] "
+                              f"reply[{nats_reply.subject}] "
+                              f"start[{datetime.datetime.utcfromtimestamp(start).isoformat()}] "
+                              f"end[{datetime.datetime.utcfromtimestamp(end).isoformat()}] "
+                              f"elapsed[{round(elapsed, 2)}]"
+                              )
+
+            # Save the elapsed time measurement
+            fields = {"elapsed": elapsed}
+            tags = {
+                "version": self.config.krt_version,
+            }
+            self.measurements.save("entrypoint_elapsed_time", fields, tags)
 
         except Exception as err:
             err_msg = f'Exception on gRPC call : {err})'
