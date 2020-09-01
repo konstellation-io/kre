@@ -8,7 +8,7 @@ import { clone } from 'lodash';
 import { label } from 'Utils/testUtilsEnzyme';
 import { shallow } from 'enzyme';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useMutation: jest.fn(() => [jest.fn(), { loading: false }])
 }));
 

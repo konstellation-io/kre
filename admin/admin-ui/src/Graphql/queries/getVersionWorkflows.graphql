@@ -18,10 +18,6 @@ query GetVersionWorkflows($versionId: ID!) {
         toNode
       }
     }
-    entrypoint @client {
-      id
-      status
-    }
     config {
       completed
     }

@@ -1,29 +1,20 @@
-import {
-  REMOVE_NOTIFICATION,
-  RemoveNotification,
-  RemoveNotificationVariables
-} from 'Graphql/client/mutations/removeNotification.graphql';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Button } from 'kwc';
 import CloseIcon from '@material-ui/icons/Close';
-import { NotificationType } from 'Graphql/client/typeDefs';
+import { NotificationType } from 'Graphql/client/models/Notification';
 import cx from 'classnames';
 import styles from './Notification.module.scss';
-import { useMutation } from '@apollo/react-hooks';
+import useNotifications from 'Graphql/hooks/useNotifications';
 
 const MESSAGE_MARGIN = 30;
 const MESSAGE_MIN_HEIGHT = 60;
-
-function getMutationVars(id: string) {
-  return { variables: { input: { id } } };
-}
 
 export type Props = {
   id: string;
   message: string;
   buttonLabel: string;
-  typeLabel?: string;
+  typeLabel: string | null;
   timeout?: number;
   type?: NotificationType;
   to?: string;
@@ -38,14 +29,10 @@ function Notification({
   type = NotificationType.MESSAGE,
   to = ''
 }: Props) {
+  const { removeNotification } = useNotifications();
+
   const content = useRef<HTMLInputElement>(null);
   const [opened, setOpened] = useState<boolean>(false);
-  const [removeNotification] = useMutation<
-    RemoveNotification,
-    RemoveNotificationVariables
-  >(REMOVE_NOTIFICATION, {
-    onError: e => console.error(`removeNotification: ${e}`)
-  });
 
   useEffect(() => {
     let ttl: number;
@@ -54,7 +41,7 @@ function Notification({
 
     if (timeout !== 0) {
       ttl = window.setTimeout(() => {
-        removeNotification(getMutationVars(id));
+        removeNotification(id);
       }, timeout);
     }
 
@@ -64,7 +51,7 @@ function Notification({
   }, [id, timeout, removeNotification]);
 
   function onCloseNotification() {
-    removeNotification(getMutationVars(id));
+    removeNotification(id);
   }
 
   let style = {

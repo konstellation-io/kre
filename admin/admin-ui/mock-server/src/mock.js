@@ -36,12 +36,17 @@ const generateRuntime = () => ({
   }
 });
 
-const generateVersion = () => ({
-  id: casual.random_element(['v1', 'v2', 'v3', 'v4', 'v5', 'v6']),
-  name: `v${casual.integer((from = 1), (to = 10))}.${casual.integer(
-    (from = 1),
-    (to = 10)
-  )}.${casual.integer((from = 1), (to = 10))}`,
+const generateVersion = (
+  { id, name } = {
+    id: casual.random_element(['v1', 'v2', 'v3', 'v4', 'v5', 'v6']),
+    name: `v${casual.integer((from = 1), (to = 10))}.${casual.integer(
+      (from = 1),
+      (to = 10)
+    )}.${casual.integer((from = 1), (to = 10))}`
+  }
+) => ({
+  id,
+  name,
   description: casual.sentence,
   status: casual.random_element([
     'CREATING',
@@ -114,12 +119,12 @@ function sleep(ms) {
 
 module.exports = {
   Subscription: () => ({
-    nodeLogs: {
+    watchNodeLogs: {
       subscribe: () => {
         activeNodeLogsInterval && clearInterval(activeNodeLogsInterval);
         activeNodeLogsInterval = setInterval(() => {
-          pubsub.publish('nodeLogs', {
-            nodeLogs: {
+          pubsub.publish('watchNodeLogs', {
+            watchNodeLogs: {
               id: casual.uuid,
               date: new Date().toUTCString(),
               nodeId: casual.uuid,
@@ -134,11 +139,11 @@ module.exports = {
         setTimeout(() => {
           clearInterval(activeNodeLogsInterval);
         }, 5 * FREQUENCY_LOGS);
-        return pubsub.asyncIterator('nodeLogs');
+        return pubsub.asyncIterator('watchNodeLogs');
       }
     },
-    runtimeCreated: {
-      subscribe: () => pubsub.asyncIterator('runtimeCreated')
+    watchRuntimeCreated: {
+      subscribe: () => pubsub.asyncIterator('watchRuntimeCreated')
     },
     watchVersionStatus: {
       subscribe: () => pubsub.asyncIterator('watchVersionStatus')
@@ -152,7 +157,7 @@ module.exports = {
               status: 'STARTED'
             }
           });
-        }, 2000);
+        }, 5000);
 
         return pubsub.asyncIterator('watchNodeStatus');
       }
@@ -170,7 +175,10 @@ module.exports = {
     users: () => new MockList([20, 30]),
     runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 4]),
-    versions: () => new MockList([18, 28]),
+    versions: () => [
+      generateVersion({ id: 'V1', name: 'Version A' }),
+      generateVersion({ id: 'V2', name: 'Version B' })
+    ],
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
     logs: async () => {
@@ -197,20 +205,26 @@ module.exports = {
   }),
   Mutation: () => ({
     createRuntime: () => {
+      const _runtime = {
+        ...generateRuntime(),
+        id: 'newRuntime',
+        name: 'New Runtime'
+      };
+
       setTimeout(() => {
-        const _runtime = generateRuntime();
-        pubsub.publish('runtimeCreated', {
-          runtimeCreated: {
-            id: _runtime.id,
-            name: _runtime.name,
+        pubsub.publish('watchRuntimeCreated', {
+          watchRuntimeCreated: {
+            id: 'newRuntime',
+            name: 'New Runtime',
             status: 'STARTED',
             creationDate: moment()
           }
         });
       }, 4000);
-      return { errors: [], runtime: this.Runtime };
+
+      return _runtime;
     },
-    createVersion: () => ({ errors: [], version: version }),
+    createVersion: () => generateVersion({ id: 'V3', name: 'Version C' }),
     updateSettings: () => ({ errors: [], settings: this.Settings })
   }),
   MetricsValues: () => ({

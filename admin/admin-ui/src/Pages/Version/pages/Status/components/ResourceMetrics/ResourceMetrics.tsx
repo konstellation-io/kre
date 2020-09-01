@@ -19,7 +19,7 @@ import { formatDate } from 'Utils/format';
 import { loader } from 'graphql.macro';
 import styles from './ResourceMetrics.module.scss';
 import { useParams } from 'react-router';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const WatchResourceMetricsSubscription = loader(
   'Graphql/subscriptions/watchResourceMetrics.graphql'

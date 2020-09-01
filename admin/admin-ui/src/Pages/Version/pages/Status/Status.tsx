@@ -1,5 +1,13 @@
 import { ErrorMessage, SpinnerCircular } from 'kwc';
 import {
+  GET_ENTRYPOINT_STATUS,
+  GetEntrypointStatus
+} from 'Graphql/client/queries/getEntrypointStatus.graphql';
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from 'Graphql/queries/types/GetVersionConfStatus';
+import {
   GetVersionWorkflows,
   GetVersionWorkflowsVariables
 } from 'Graphql/queries/types/GetVersionWorkflows';
@@ -8,10 +16,6 @@ import {
   WatchVersionNodeStatusVariables
 } from 'Graphql/subscriptions/types/WatchVersionNodeStatus';
 
-import {
-  GetVersionConfStatus_runtime,
-  GetVersionConfStatus_versions
-} from 'Graphql/queries/types/GetVersionConfStatus';
 import { NodeStatus } from 'Graphql/types/globalTypes';
 import React from 'react';
 import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
@@ -20,8 +24,9 @@ import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './Status.module.scss';
+import useOpenedVersion from 'Graphql/hooks/useOpenedVersion';
 import { useParams } from 'react-router';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const GetVersionWorkflowsQuery = loader(
   'Graphql/queries/getVersionWorkflows.graphql'
@@ -42,6 +47,7 @@ type Props = {
 
 function Status({ version, runtime }: Props) {
   const { versionId } = useParams<VersionRouteParams>();
+  const { updateEntrypointStatus } = useOpenedVersion();
 
   const { data, loading, error, subscribeToMore } = useQuery<
     GetVersionWorkflows,
@@ -51,10 +57,27 @@ function Status({ version, runtime }: Props) {
     onCompleted: () => subscribe()
   });
 
+  const { data: localData } = useQuery<GetEntrypointStatus>(
+    GET_ENTRYPOINT_STATUS
+  );
+  const entrypointStatus = get(
+    localData?.openedVersion,
+    'entrypointStatus',
+    NodeStatus.STOPPED
+  );
+
   const subscribe = () =>
     subscribeToMore<WatchVersionNodeStatus, WatchVersionNodeStatusVariables>({
       document: VersionNodeStatusSubscription,
-      variables: { versionId }
+      variables: { versionId },
+      updateQuery: (prev, { subscriptionData }) => {
+        const node = subscriptionData.data.watchNodeStatus;
+        if (node.id === 'entrypoint') {
+          updateEntrypointStatus(node.status);
+        }
+
+        return prev;
+      }
     });
 
   if (error) return <ErrorMessage />;
@@ -65,11 +88,7 @@ function Status({ version, runtime }: Props) {
       <StatusTopInfoBar />
       <WorkflowsManager
         workflows={data?.version.workflows || []}
-        entrypointStatus={get(
-          data?.version.entrypoint,
-          'status',
-          NodeStatus.STARTED
-        )}
+        entrypointStatus={entrypointStatus}
         entrypointAddress={runtime?.entrypointAddress || ''}
         versionStatus={version?.status}
       />

@@ -1,9 +1,5 @@
-import { AccessLevel } from '../types/globalTypes';
-
-export enum NotificationType {
-  MESSAGE = 'MESSAGE',
-  ERROR = 'ERROR'
-}
+import { AccessLevel } from 'Graphql/types/globalTypes';
+import { NotificationType } from 'Graphql/client/models/Notification';
 
 export interface AddNotificationInput {
   id: string;
@@ -38,7 +34,7 @@ export interface LogPanelFilters {
   __typename: 'logTabFilters';
 }
 
-export interface SetCurrentLogPanelInput {
+export interface LogPanel {
   runtimeId: string;
   runtimeName: string;
   versionId: string;
@@ -47,33 +43,10 @@ export interface SetCurrentLogPanelInput {
   filters?: LogPanelFilters;
 }
 
-export interface LogPanel extends SetCurrentLogPanelInput {
-  __typename: string;
-}
-
-export interface OpenedVersion {
-  runtimeName: string;
-  versionName: string;
-  __typename: 'OpenedVersion';
-}
-
 export interface UserSettingsFilters {
   email: string | null;
   accessLevel: AccessLevel | null;
   __typename: 'UserSettingsFilters';
-}
-
-export enum UserSelection {
-  ALL,
-  INDETERMINATE,
-  NONE
-}
-
-export interface UserSettings {
-  selectedUserIds: string[];
-  userSelection: UserSelection;
-  filters: UserSettingsFilters;
-  __typename: 'UserSettings';
 }
 
 export interface RemoveNotificationInput {

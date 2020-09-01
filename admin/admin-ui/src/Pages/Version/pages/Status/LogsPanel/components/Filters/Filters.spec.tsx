@@ -2,7 +2,7 @@ import React from 'react';
 import Filters from './Filters';
 import { shallow } from 'enzyme';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useQuery: jest.fn(() => ({}))
 }));
 

@@ -193,6 +193,8 @@ function TimeSeriesChart({
 
       chart.current.update();
     }
+    // updateScales should not be added as this function changes when the chart do not expand
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, removed]);
 
   return (

@@ -6,7 +6,7 @@ import {
 } from 'Graphql/queries/types/GetRuntimes';
 import React, { ReactElement } from 'react';
 
-import { ApolloError } from 'apollo-client';
+import { ApolloError } from '@apollo/client';
 import Can from 'Components/Can/Can';
 import Hexagon from 'Components/Shape/Hexagon/Hexagon';
 import HexagonBorder from 'Components/Shape/Hexagon/HexagonBorder';
@@ -21,7 +21,7 @@ import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './Dashboard.module.scss';
 import { useHistory } from 'react-router';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import useUserAccess from 'Hooks/useUserAccess';
 
 const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
@@ -94,9 +94,7 @@ function getDashboardContent({ data, error, loading, accessLevel }: Props) {
 function Dashboard() {
   const { accessLevel } = useUserAccess();
   const history = useHistory();
-  const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery, {
-    fetchPolicy: 'cache-and-network'
-  });
+  const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery);
   const runtimes: GetRuntimes_runtimes[] = get(data, 'runtimes', []);
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
 

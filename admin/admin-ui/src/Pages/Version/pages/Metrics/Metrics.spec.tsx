@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 jest.mock('react-router', () => ({
   useParams: jest.fn(() => ({ runtimeId: '', versionId: '' }))
 }));
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useQuery: jest.fn(() => ({
     data: {},
     loading: false,

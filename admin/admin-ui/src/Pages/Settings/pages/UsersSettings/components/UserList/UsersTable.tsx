@@ -7,7 +7,6 @@ import {
 } from 'Graphql/client/queries/getUserSettings.graphql';
 import React, { useEffect, useMemo } from 'react';
 import { capitalize, get } from 'lodash';
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import { GetUsers_users } from 'Graphql/queries/types/GetUsers';
@@ -15,10 +14,12 @@ import IconArrowDown from '@material-ui/icons/ArrowDropDown';
 import IconArrowUp from '@material-ui/icons/ArrowDropUp';
 import IconOptions from '@material-ui/icons/MoreVert';
 import Message from 'Components/Message/Message';
-import { UserSelection } from 'Graphql/client/typeDefs';
+import { UserSelection } from 'Graphql/client/models/UserSettings';
 import cx from 'classnames';
 import { formatDate } from 'Utils/format';
 import styles from './UserList.module.scss';
+import { useQuery } from '@apollo/client';
+import useUserSettings from 'Graphql/hooks/useUserSettings';
 
 type Data = {
   creationDate: string;
@@ -99,7 +100,8 @@ type Props = {
   contextMenuActions: MenuCallToAction[];
 };
 function UsersTable({ users, contextMenuActions }: Props) {
-  const client = useApolloClient();
+  const { updateSelection } = useUserSettings();
+
   const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
   const filters = localData?.userSettings.filters || {
     email: null,
@@ -199,17 +201,9 @@ function UsersTable({ users, contextMenuActions }: Props) {
         )
         .map((user: GetUsers_users) => user.id);
 
-      client.writeData({
-        data: {
-          userSettings: {
-            selectedUserIds: newSelectedUsers,
-            userSelection: newUserSelection,
-            __typename: 'UserSettings'
-          }
-        }
-      });
+      updateSelection(newSelectedUsers, newUserSelection);
     }
-  }, [selectedRowIds, client, data, localData]);
+  }, [selectedRowIds, updateSelection, data, localData]);
 
   if (data.length === 0)
     return <Message text="There are no users with the applied filters" />;

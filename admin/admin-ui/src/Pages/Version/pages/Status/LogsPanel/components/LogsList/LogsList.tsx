@@ -20,7 +20,7 @@ import LogsFooter from '../LogsFooter/LogsFooter';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './LogsList.module.scss';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';
 
 const WatchNodeLogs = loader('Graphql/subscriptions/watchNodeLogs.graphql');

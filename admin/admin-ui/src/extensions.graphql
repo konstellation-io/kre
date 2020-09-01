@@ -27,10 +27,6 @@ extend type RemoveNotificationInput {
   id: ID!
 }
 
-extend type Version {
-  entrypoint: Node!
-}
-
 extend enum NotificationType {
   MESSAGE
   ERROR

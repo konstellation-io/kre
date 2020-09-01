@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
 import { LogLevel } from '../../types/globalTypes';
 import { NodeSelection } from '../typeDefs';
+import { gql } from '@apollo/client';
 
 export interface GetLogTabs_logTabs_filters {
   dateOption: string;

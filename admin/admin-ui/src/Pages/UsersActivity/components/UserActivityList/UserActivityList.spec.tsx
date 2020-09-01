@@ -10,7 +10,7 @@ import { usersActivityMock } from 'Mocks/settings';
 moment.tz.setDefault('UTC');
 
 const mockmockusersActivity = usersActivityMock.result.data.userActivityList;
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useQuery: jest.fn(() => ({
     data: { userActivityList: mockmockusersActivity }
   }))

@@ -17,7 +17,7 @@ import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddRuntime.module.scss';
 import { unregisterMany } from 'Utils/react-forms';
 import { useHistory } from 'react-router';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
 const CreateRuntimeMutation = loader('Graphql/mutations/createRuntime.graphql');
@@ -77,7 +77,7 @@ function AddRuntime() {
       console.error(`addRuntime: ${e}`);
     },
     update(cache, updateResult) {
-      if (updateResult.data !== undefined && updateResult.data !== null) {
+      if (updateResult.data) {
         const newRuntime = updateResult.data
           .createRuntime as GetRuntimes_runtimes;
         const cacheResult = cache.readQuery<GetRuntimes>({

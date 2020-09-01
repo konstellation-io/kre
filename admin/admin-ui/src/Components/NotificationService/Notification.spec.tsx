@@ -4,7 +4,7 @@ import { NotificationType } from 'Graphql/client/typeDefs';
 import React from 'react';
 import { shallow } from 'enzyme';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useMutation: jest.fn(() => [jest.fn()])
 }));
 

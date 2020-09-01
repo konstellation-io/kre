@@ -14,7 +14,7 @@ import {
   UpdateSettings,
   UpdateSettingsVariables
 } from 'Graphql/mutations/types/UpdateSettings';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { GetSettings } from 'Graphql/queries/types/GetSettings';
 import SettingsHeader from './components/SettingsHeader/SettingsHeader';

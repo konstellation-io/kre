@@ -1,10 +1,10 @@
 import React from 'react';
+import { Switch } from 'react-router-dom';
 import Version from './Version';
 import VersionSideBar from './components/VersionSideBar/VersionSideBar';
-import { Switch } from 'react-router-dom';
 import { shallow } from 'enzyme';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
 }));
 

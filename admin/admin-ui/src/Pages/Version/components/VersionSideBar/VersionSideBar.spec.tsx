@@ -7,7 +7,7 @@ import VersionMenu from './VersionMenu/VersionMenu';
 import VersionSideBar from './VersionSideBar';
 import { shallow } from 'enzyme';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useMutation: jest.fn(() => [jest.fn(), { loading: false }])
 }));
 

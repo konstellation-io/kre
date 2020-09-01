@@ -4,7 +4,7 @@ import Header from '../../Header/Header';
 import NavigationBar from '../../NavigationBar/NavigationBar';
 import { shallow } from 'enzyme';
 
-jest.mock('@apollo/react-hooks', () => ({
+jest.mock('@apollo/client', () => ({
   useQuery: jest.fn(() => ({}))
 }));
 

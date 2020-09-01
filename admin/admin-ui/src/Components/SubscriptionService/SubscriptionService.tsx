@@ -1,4 +1,4 @@
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import { useApolloClient, useQuery } from '@apollo/client';
 
 import { GET_LOGIN_STATUS } from 'Graphql/client/queries/getLoginStatus.graphql';
 import onVersionStatus from './Services/onVersionStatus/onVersionStatus';

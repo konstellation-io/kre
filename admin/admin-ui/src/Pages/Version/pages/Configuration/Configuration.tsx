@@ -24,7 +24,7 @@ import {
 } from 'Graphql/mutations/types/UpdateVersionConfiguration';
 import { cloneDeep, isEqual, pick } from 'lodash';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 
 import ConfVarPanel from './components/ConfVarPanel/ConfVarPanel';
 import ConfigurationFilters from './ConfigurationFilters';
@@ -115,14 +115,14 @@ function Configuration() {
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
-  function updateConfigurationVariables(data: ConfigurationVariable[]) {
-    setConfigurationVariables(cloneDeep(data));
-    setInitialConfiguration(cloneDeep(data));
+  function updateConfigurationVariables(d: ConfigurationVariable[]) {
+    setConfigurationVariables(cloneDeep(d));
+    setInitialConfiguration(cloneDeep(d));
   }
 
   // TODO: CHECK FOR ERRORS
-  function onCompleteUpdate(data: UpdateVersionConfiguration) {
-    updateConfigurationVariables(data.updateVersionConfiguration.config.vars);
+  function onCompleteUpdate(d: UpdateVersionConfiguration) {
+    updateConfigurationVariables(d.updateVersionConfiguration.config.vars);
   }
 
   function getContent() {
