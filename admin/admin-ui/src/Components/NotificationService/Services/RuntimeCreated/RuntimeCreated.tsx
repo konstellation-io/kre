@@ -4,6 +4,7 @@ import {
 } from 'Graphql/client/models/Notification';
 
 import ROUTE from 'Constants/routes';
+import { RuntimeStatus } from 'Graphql/types/globalTypes';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { runtimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
@@ -16,6 +17,34 @@ const RuntimeCreatedSubscription = loader(
 );
 
 const NOTIFICATION_TIMEOUT = 15 * 1000;
+
+function newInfoNotification(
+  runtime: runtimeCreated_watchRuntimeCreated
+): Notification {
+  const runtimePath = ROUTE.RUNTIME.replace(':runtimeId', runtime.id);
+
+  return {
+    id: `runtime-${runtime.id}-created`,
+    message: `The RUNTIME "${runtime.name}" has been successfully created!`,
+    type: NotificationType.MESSAGE,
+    typeLabel: 'CREATED',
+    timeout: NOTIFICATION_TIMEOUT,
+    to: runtimePath
+  };
+}
+
+function newErrorNotification(
+  runtime: runtimeCreated_watchRuntimeCreated
+): Notification {
+  return {
+    id: `runtime-${runtime.id}-creation-error`,
+    message: `The RUNTIME "${runtime.name}" could not be created!`,
+    type: NotificationType.ERROR,
+    typeLabel: 'ERROR',
+    timeout: 0,
+    to: ''
+  };
+}
 
 function RuntimeCreated() {
   const { addNotification } = useNotifications();
@@ -31,16 +60,11 @@ function RuntimeCreated() {
           data,
           'data.watchRuntimeCreated'
         );
-        const runtimePath = ROUTE.RUNTIME.replace(':runtimeId', runtime.id);
 
-        const newNotification: Notification = {
-          id: `runtime-${runtime.id}-created`,
-          message: `The RUNTIME "${runtime.name}" has been successfully created!`,
-          type: NotificationType.MESSAGE,
-          typeLabel: 'CREATED',
-          timeout: NOTIFICATION_TIMEOUT,
-          to: runtimePath
-        };
+        const newNotification =
+          runtime.status === RuntimeStatus.STARTED
+            ? newInfoNotification(runtime)
+            : newErrorNotification(runtime);
 
         addNotification(newNotification);
       },

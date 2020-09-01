@@ -216,7 +216,7 @@ module.exports = {
           watchRuntimeCreated: {
             id: 'newRuntime',
             name: 'New Runtime',
-            status: 'STARTED',
+            status: 'ERROR',
             creationDate: moment()
           }
         });
