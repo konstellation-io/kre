@@ -16,7 +16,9 @@ describe('VersionActions', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<VersionActions runtime={runtime} version={version} />);
+    wrapper = shallow(
+      <VersionActions runtime={runtime} version={version} versions={[]} />
+    );
   });
 
   it('matches snapshot', () => {
@@ -78,13 +80,13 @@ describe('VersionActions', () => {
     expect(wrapper.find(Button).exists({ label: 'UNPUBLISH' })).toBeTruthy();
   });
 
-  it('do not show right buttons when version is STARTING', async () => {
+  it('show right buttons when version is STARTING', async () => {
     const versionStarting = clone(version);
     versionStarting.status = VersionStatus.STARTING;
 
     wrapper.setProps({ version: versionStarting });
 
-    expect(wrapper.find(Button).length).toBe(0);
+    expect(wrapper.find(Button).length).toBe(2);
   });
 
   it('show right buttons when version is STARTED', async () => {

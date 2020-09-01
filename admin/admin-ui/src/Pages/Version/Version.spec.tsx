@@ -5,8 +5,14 @@ import VersionSideBar from './components/VersionSideBar/VersionSideBar';
 import { shallow } from 'enzyme';
 
 jest.mock('@apollo/client', () => ({
-  useApolloClient: jest.fn(() => ({ writeData: jest.fn() }))
+  useApolloClient: jest.fn(() => ({ writeData: jest.fn() })),
+  gql: jest.fn()
 }));
+
+jest.mock('index', () => ({
+  API_BASE_URL: 'url'
+}));
+jest.mock('Graphql/client/cache', () => ({}));
 
 describe('Version', () => {
   let wrapper;

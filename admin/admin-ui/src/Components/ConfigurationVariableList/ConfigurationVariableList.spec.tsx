@@ -1,7 +1,7 @@
 import ConfigurationVariableItem from './ConfigurationVariableItem';
 import ConfigurationVariableList from './ConfigurationVariableList';
 import React from 'react';
-import TextInput from '../Form/TextInput/TextInput';
+import { TextInput } from 'kwc';
 import { confVarsMock } from 'Mocks/version';
 import { shallow } from 'enzyme';
 

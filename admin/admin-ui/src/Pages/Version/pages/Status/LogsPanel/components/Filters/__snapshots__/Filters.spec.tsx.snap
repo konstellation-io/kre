@@ -4,13 +4,13 @@ exports[`Filters matches snapshot 1`] = `
 <div
   className="container"
 >
-  <Left
+  <at
     className="filterContainer leftContainer"
   >
     <div
       className="searchFilter"
     >
-      <SearchSelect
+      <Component
         className="searchForm"
         hideError={true}
         hideLabel={true}
@@ -23,7 +23,7 @@ exports[`Filters matches snapshot 1`] = `
     <div
       className="selectProcesses"
     >
-      <GroupSelect
+      <Component
         className="selectProcessForm"
         formSelectedOptions={Object {}}
         hideError={true}
@@ -40,14 +40,14 @@ exports[`Filters matches snapshot 1`] = `
         placeholder="Select Processes"
       />
     </div>
-  </Left>
-  <Right
+  </at>
+  <nt
     className="filterContainer rightFilters"
   >
     <div
       className="filterLevel"
     >
-      <MultiSelect
+      <Component
         formSelectedOptions={Array []}
         hideError={true}
         label=""
@@ -91,6 +91,6 @@ exports[`Filters matches snapshot 1`] = `
       formStartDate="2020-01-01"
       selectedOption="2020-01-01"
     />
-  </Right>
+  </nt>
 </div>
 `;

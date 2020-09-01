@@ -2,11 +2,11 @@
 
 exports[`PageBase matches snapshot 1`] = `
 <Fragment>
-  <Header />
+  <Memo(Header) />
   <div
     className="content"
   >
-    <NavigationBar />
+    <Memo(NavigationBar) />
     <div
       className="element"
     >

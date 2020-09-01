@@ -103,7 +103,7 @@ exports[`VariableRow matches snapshot 1`] = `
   <div
     className="col3"
   >
-    <TextInput
+    <$
       customClassname="variableValue"
       formValue="value1"
       hidden={true}

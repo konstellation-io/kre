@@ -4,10 +4,10 @@ exports[`RuntimeVersions matches snapshot 1`] = `
 <div
   className="content"
 >
-  <Title>
+  <Component>
     Versions of runtime 
     runtimeName
-  </Title>
+  </Component>
   <div
     className="runtimeInfo"
   >
@@ -76,6 +76,7 @@ exports[`RuntimeVersions matches snapshot 1`] = `
           },
           "creationDate": "2020/01/01",
           "description": "versionDescription",
+          "hasDoc": false,
           "id": "versionId",
           "name": "versionName",
           "publicationAuthor": Object {
@@ -104,6 +105,7 @@ exports[`RuntimeVersions matches snapshot 1`] = `
           },
           "creationDate": "2020/01/01",
           "description": "versionDescription",
+          "hasDoc": false,
           "id": "versionId",
           "name": "versionName",
           "publicationAuthor": Object {

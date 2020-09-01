@@ -12,7 +12,7 @@ exports[`PublishedVersionStatus matches snapshot 1`] = `
   <Can
     perform="version:edit"
   >
-    <Button
+    <A
       height={30}
       label="ADD VERSION"
       primary={true}

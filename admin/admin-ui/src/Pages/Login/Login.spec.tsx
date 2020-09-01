@@ -1,10 +1,7 @@
-import * as CHECK from 'Components/Form/check';
+import { Button, CHECK, InputError, TextInput } from 'kwc';
 
-import { Button } from 'kwc';
-import InputError from 'Components/Form/InputError/InputError';
 import Login from './Login';
 import React from 'react';
-import TextInput from 'Components/Form/TextInput/TextInput';
 import axios from 'axios';
 import { shallow } from 'enzyme';
 

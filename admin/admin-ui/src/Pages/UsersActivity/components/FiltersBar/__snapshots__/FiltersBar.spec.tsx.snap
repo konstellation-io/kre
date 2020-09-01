@@ -5,7 +5,7 @@ exports[`FiltersBar matches snapshot 1`] = `
   className="formField"
 >
   <div>
-    <SearchSelect
+    <Component
       label="search a user"
       name="userEmail"
       onChange={[Function]}
@@ -14,7 +14,7 @@ exports[`FiltersBar matches snapshot 1`] = `
     />
   </div>
   <div>
-    <GroupSelect
+    <Component
       hideSelections={true}
       label="filter by versions"
       onChange={[Function]}
@@ -23,7 +23,7 @@ exports[`FiltersBar matches snapshot 1`] = `
     />
   </div>
   <div>
-    <MultiSelect
+    <Component
       customLabels={
         Map {
           "LOGIN" => <CustomLabel>
@@ -193,7 +193,7 @@ exports[`FiltersBar matches snapshot 1`] = `
     />
   </div>
   <div>
-    <Calendar
+    <j
       label="dates selection"
       onChangeFromDateInput={[Function]}
       onChangeToDateInput={[Function]}
@@ -202,7 +202,7 @@ exports[`FiltersBar matches snapshot 1`] = `
   <div
     className="buttons"
   >
-    <Button
+    <A
       label="CLEAR"
       onClick={[Function]}
       style={

@@ -81,19 +81,18 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
       "!<rootDir>/node_modules/",
-      "!<rootDir>/src/graphql/*/types/*.ts",
-      "!<rootDir>/src/graphql/types/globalTypes.ts",
+      "!<rootDir>/src/Graphql/**/*.ts",
       "!<rootDir>/src/store.ts",
       "!<rootDir>/src/index.tsx",
       "!<rootDir>/src/react-app-env.d.ts",
-      "!<rootDir>/src/constants/mock.ts"
+      "!<rootDir>/src/Constants/mock.ts"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 20,
-        "functions": 20,
-        "lines": 20,
-        "statements": 20
+        "branches": 15,
+        "functions": 15,
+        "lines": 15,
+        "statements": 15
       }
     },
     "snapshotSerializers": [

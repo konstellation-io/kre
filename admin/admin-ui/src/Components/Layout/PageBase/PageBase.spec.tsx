@@ -1,12 +1,14 @@
-import React from 'react';
-import PageBase from './PageBase';
 import Header from '../../Header/Header';
 import NavigationBar from '../../NavigationBar/NavigationBar';
+import PageBase from './PageBase';
+import React from 'react';
 import { shallow } from 'enzyme';
 
 jest.mock('@apollo/client', () => ({
-  useQuery: jest.fn(() => ({}))
+  useQuery: jest.fn(() => ({})),
+  gql: jest.fn()
 }));
+jest.mock('Graphql/client/cache', () => ({}));
 
 describe('PageBase', () => {
   let wrapper: any;

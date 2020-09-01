@@ -1,11 +1,10 @@
+import { SpinnerLinear, TextInput } from 'kwc';
 import { addRuntimeMock, dashboardMock } from 'Mocks/runtime';
 import { label, mountApolloComponent, testid } from 'Utils/testUtilsEnzyme';
 
 import AddRuntime from './AddRuntime';
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 import React from 'react';
-import SpinnerLinear from 'Components/LoadingComponents/SpinnerLinear/SpinnerLinear';
-import TextInput from 'Components/Form/TextInput/TextInput';
 import { usernameMock } from 'Mocks/auth';
 
 const mocks = [addRuntimeMock, dashboardMock, usernameMock];

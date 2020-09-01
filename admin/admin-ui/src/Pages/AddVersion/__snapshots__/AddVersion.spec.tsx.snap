@@ -20,7 +20,7 @@ exports[`AddVersion matches snapshot 1`] = `
         className="content"
       >
         <form>
-          <FileUpload
+          <Component
             autofocus={true}
             error=""
             inputRef={[Function]}
@@ -32,7 +32,7 @@ exports[`AddVersion matches snapshot 1`] = `
           <div
             className="buttons"
           >
-            <Button
+            <A
               className="buttonSave"
               disabled={false}
               label="CREATE"
@@ -40,7 +40,7 @@ exports[`AddVersion matches snapshot 1`] = `
               primary={true}
               tabIndex={0}
             />
-            <Button
+            <A
               label="CANCEL"
               onClick={[Function]}
               tabIndex={0}
