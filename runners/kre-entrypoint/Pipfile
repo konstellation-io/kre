@@ -10,6 +10,7 @@ asyncio-nats-client = "==0.10.0"
 grpclib = "==0.3.2"
 protobuf = "==3.12.2"
 protobuf3-to-dict = "==0.1.5"
+influxdb-client = "==1.9.0"
 
 [dev-packages]
 pylint = "*"
