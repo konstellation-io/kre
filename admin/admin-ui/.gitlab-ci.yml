@@ -40,7 +40,7 @@ release-admin-ui:
   before_script:
     - npm install --prefix admin/admin-ui
   script:
-    - cd admin/admin-ui && npx semantic-release -e semantic-release-monorepo
+    - cd admin/admin-ui && npx semantic-release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always

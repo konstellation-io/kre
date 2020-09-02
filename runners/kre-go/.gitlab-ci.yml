@@ -4,7 +4,7 @@ release-kre-go:
   before_script:
     - npm install --prefix runners/kre-go
   script:
-    - cd runners/kre-go && npx semantic-release -e semantic-release-monorepo
+    - cd runners/kre-go && npx semantic-release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always

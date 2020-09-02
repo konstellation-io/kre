@@ -36,7 +36,7 @@ release-kre-py:
   before_script:
     - npm install --prefix runners/kre-py
   script:
-    - cd runners/kre-py && npx semantic-release -e semantic-release-monorepo
+    - cd runners/kre-py && npx semantic-release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always

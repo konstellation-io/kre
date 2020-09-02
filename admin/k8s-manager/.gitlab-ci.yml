@@ -4,7 +4,7 @@ release-k8s-manager:
   before_script:
     - npm install --prefix admin/k8s-manager
   script:
-    - cd admin/k8s-manager && npx semantic-release -e semantic-release-monorepo
+    - cd admin/k8s-manager && npx semantic-release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always

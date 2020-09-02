@@ -4,7 +4,7 @@ release-k8s-runtime-operator:
   before_script:
     - npm install --prefix runtime/k8s-runtime-operator
   script:
-    - cd runtime/k8s-runtime-operator && npx semantic-release -e semantic-release-monorepo
+    - cd runtime/k8s-runtime-operator && npx semantic-release
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
