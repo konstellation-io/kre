@@ -8,12 +8,12 @@ import {
   GetVersionWorkflows_version_workflows,
   GetVersionWorkflows_version_workflows_nodes
 } from 'Graphql/queries/types/GetVersionWorkflows';
-import { EntrypointTooltipContent } from '../Tooltip/EntrypointTooltipContent';
 import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import React, { FunctionComponent } from 'react';
 import { ScaleBand, scaleBand } from 'd3-scale';
 import { Selection, select } from 'd3-selection';
 
+import { EntrypointTooltipContent } from '../Tooltip/EntrypointTooltipContent';
 import { ReactComponent as InputNode } from '../../icons/inputNode.svg';
 import InputNodeIcon from '@material-ui/icons/Public';
 import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
@@ -128,8 +128,6 @@ class WorkflowViz {
 
     this.generateFilters();
   };
-
-  resize = () => {};
 
   update = (
     data: GetVersionWorkflows_version_workflows,

@@ -30,9 +30,7 @@ $bg-tooltip: map-get($color-dashboard, tooltip);
   &::after {
     content: '';
     position: absolute;
-    border: solid 10px #121317;
-    border-bottom-color: #0000;
-    border-left-color: #0000;
+    border: solid 10px $bg-tooltip;
     transform: rotate(135deg);
     top: calc(100% - 13px);
     left: calc(50% - 10px);

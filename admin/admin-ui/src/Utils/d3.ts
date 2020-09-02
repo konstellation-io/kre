@@ -1,6 +1,8 @@
+import { Selection, select } from 'd3-selection';
+
 import ReactDOMServer from 'react-dom/server';
-import { select, Selection } from 'd3-selection';
 import { ReactElement } from 'react';
+import { max } from 'd3-array';
 
 export function wrap(
   text: Selection<SVGTextElement, unknown, null, undefined>,
@@ -91,6 +93,56 @@ export function getAxesMargins({
   }
 
   return [xAxisHeight, yAxisWidth];
+}
+
+function generateLabels(
+  wrapper: Selection<SVGElement, unknown, null, undefined>,
+  labels: string[]
+) {
+  return wrapper
+    .append('g')
+    .selectAll('text')
+    .data(labels)
+    .enter()
+    .append('text')
+    .text(d => d);
+}
+
+function getLabelDims(
+  labels: Selection<SVGTextElement, string, SVGGElement, unknown>
+) {
+  const labelDims: { width: number; height: number }[] = [];
+  labels.each(function() {
+    const { width, height } = this.getBoundingClientRect();
+    labelDims.push({ width, height });
+  });
+
+  return labelDims;
+}
+
+export function getAxisWidth(
+  wrapper: Selection<SVGElement, unknown, null, undefined>,
+  domain: string[]
+) {
+  const labels = generateLabels(wrapper, domain);
+  const labelDims = getLabelDims(labels);
+  labels.remove();
+
+  return max(labelDims, d => d.width) || 0;
+}
+
+export function getAxisHeight(
+  wrapper: Selection<SVGElement, unknown, null, undefined>,
+  domain: string[],
+  rotation: number = 0
+) {
+  const labels = generateLabels(wrapper, domain)
+    .style('text-anchor', 'end')
+    .style('transform', `rotate(${rotation}deg)`);
+  const labelDims = getLabelDims(labels);
+  labels.remove();
+
+  return max(labelDims, d => d.height) || 0;
 }
 
 export function rotateAxis(

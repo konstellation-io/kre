@@ -1,9 +1,8 @@
-import ConfusionMatrix, {
-  D
-} from 'Components/Chart/ConfusionMatrix/ConfusionMatrix';
 import React, { useRef } from 'react';
 
 import Box from '../../components/Box/Box';
+import ConfusionMatrixChart from 'Components/Chart/ConfusionMatrix/ConfusionMatrixChart';
+import { D } from 'Components/Chart/ConfusionMatrix/ConfusionMatrixViz';
 import ExpandButton from '../../components/Box/ExpandButton';
 import { GetMetrics_metrics_charts_confusionMatrix } from 'Graphql/queries/types/GetMetrics';
 import Title from '../../components/Box/Title';
@@ -35,7 +34,7 @@ function ConfusionMatrixBox({ toggleExpanded, nodeId, data }: Props) {
         }}
       />
       <div className={styles.chartContainer} ref={container}>
-        <ConfusionMatrix
+        <ConfusionMatrixChart
           width={width}
           height={height}
           margin={{
