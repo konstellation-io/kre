@@ -1,7 +1,8 @@
-import BarChart, { D } from 'Components/Chart/BarChart/BarChart';
 import React, { useRef } from 'react';
 
+import BarChart from 'Components/Chart/BarChart/BarChart';
 import Box from '../../components/Box/Box';
+import { D } from 'Components/Chart/BarChart/BarChartViz';
 import ExpandButton from '../../components/Box/ExpandButton';
 import { GetMetrics_metrics_charts_successVsFails } from 'Graphql/queries/types/GetMetrics';
 import Title from '../../components/Box/Title';
