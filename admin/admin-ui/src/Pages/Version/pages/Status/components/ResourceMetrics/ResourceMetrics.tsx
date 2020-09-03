@@ -125,8 +125,8 @@ function ResourceMetrics() {
   if (chartData.cpu.length <= 1)
     return (
       <div className={styles.container}>
-        <div className={styles.notEnoughtData}>
-          Not enought data to represent resource metrics
+        <div className={styles.notEnoughData}>
+          Not enough data to represent resource metrics
         </div>
       </div>
     );
