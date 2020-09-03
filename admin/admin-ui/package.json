@@ -154,10 +154,11 @@
     }
   },
   "release": {
+    "debug": true,
     "extends": "semantic-release-monorepo",
     "plugins": [
-      "@semantic-release/commit-analyzer"
-    ],
-    "publish": []
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator"
+    ]
   }
 }
