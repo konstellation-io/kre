@@ -17,7 +17,7 @@ release-mongo-writer:
   before_script:
     - npm install --prefix runtime/mongo-writer
   script:
-    - cd runtime/mongo-writer && npx semantic-release
+    - cd runtime/mongo-writer && npx semantic-release --debug
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always

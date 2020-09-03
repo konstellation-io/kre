@@ -4,7 +4,7 @@ release-kre-entrypoint:
   before_script:
     - npm install --prefix runners/kre-entrypoint
   script:
-    - cd runners/kre-entrypoint && npx semantic-release
+    - cd runners/kre-entrypoint && npx semantic-release --debug
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always

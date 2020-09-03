@@ -37,7 +37,7 @@ release-runtime-api:
   before_script:
     - npm install --prefix runtime/runtime-api
   script:
-    - cd runtime/runtime-api && npx semantic-release
+    - cd runtime/runtime-api && npx semantic-release --debug
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
