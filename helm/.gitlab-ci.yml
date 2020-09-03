@@ -1,8 +1,8 @@
 release-helm-chart:
   stage: semantic-release
-  image: node:10
+  image: node:14
   script:
-    - npx semantic-release@17.1.1 -t helm-chart-v\${version} -b master
+    - npx semantic-release@17.1.1 -t helm-chart-v\${version} -b master --debug
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
@@ -11,9 +11,10 @@ release-helm-chart:
 
 release-helm-after-image:
   stage: semantic-release-helm
-  image: node:10
+  image: node:14
   script:
-    - npx semantic-release@17.1.1 -t helm-chart-v\${version} -b $CI_COMMIT_TAG
+    # Using version 15.14.0 because option -b doesn't work for tags on newer version of semantic-release
+    - npx semantic-release@15.14.0 -t helm-chart-v\${version} -b $CI_COMMIT_TAG --debug
   rules:
     - if: '$CI_COMMIT_TAG != "" && $CI_COMMIT_TAG !~ /^helm-chart-v\d*.\d*.\d*$/ && $CI_COMMIT_BRANCH != "master"'
       when: manual
