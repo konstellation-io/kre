@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import BarChartViz from './BarChartViz';
 import { D } from './BarChartViz';
-import { Margin } from 'Hooks/useChart';
+import { Margin } from 'Utils/d3';
 
 type Props = {
   data: D[];
@@ -12,7 +12,7 @@ type Props = {
   viewAllData: boolean;
 };
 
-function BarChartChart({ data, width, height, margin, viewAllData }: Props) {
+function BarChart({ data, width, height, margin, viewAllData }: Props) {
   const viz = useRef<BarChartViz | null>(null);
   const svg = useRef<SVGSVGElement>(null);
   const tooltip = useRef<HTMLDivElement>(null);
@@ -46,4 +46,4 @@ function BarChartChart({ data, width, height, margin, viewAllData }: Props) {
   );
 }
 
-export default BarChartChart;
+export default BarChart;

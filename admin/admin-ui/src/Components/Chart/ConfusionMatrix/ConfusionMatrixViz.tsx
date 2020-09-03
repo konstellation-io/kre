@@ -1,16 +1,16 @@
-import { RGBColor, color } from 'd3-color';
-import { ScaleBand, ScaleLinear, scaleBand, scaleLinear } from 'd3-scale';
-import { Selection, select } from 'd3-selection';
-import { axisBottom, axisLeft, axisRight } from 'd3-axis';
 import {
+  Margin,
   generateVerticalGradient,
   getAxisHeight,
   getAxisWidth,
   rotateAxis,
   tooltipAction
 } from 'Utils/d3';
+import { RGBColor, color } from 'd3-color';
+import { ScaleBand, ScaleLinear, scaleBand, scaleLinear } from 'd3-scale';
+import { Selection, select } from 'd3-selection';
+import { axisBottom, axisLeft, axisRight } from 'd3-axis';
 
-import { Margin } from 'Hooks/useChart';
 import React from 'react';
 import { interpolateHcl } from 'd3-interpolate';
 import { range } from 'd3-array';
@@ -67,7 +67,7 @@ class ConfusionMatrixViz {
   g: Selection<SVGGElement, unknown, null, undefined>;
   xScale: ScaleBand<string>;
   yScale: ScaleBand<string>;
-  colorScale: ScaleLinear<string, number>;
+  colorScale: ScaleLinear<string, string>;
   colorDomain: number[];
   xDomain: string[];
   yDomain: string[];
@@ -91,7 +91,7 @@ class ConfusionMatrixViz {
     this.colorDomain = Object.keys(COLORS).map(n => parseInt(n));
     this.xScale = scaleBand();
     this.yScale = scaleBand();
-    this.colorScale = scaleLinear<string, number>();
+    this.colorScale = scaleLinear<string, string>();
     this.axisBoxSide = props.height * AXIS_BOX_HEIGHT_PERC;
     this.left = 0;
     this.top = 0;
@@ -150,8 +150,7 @@ class ConfusionMatrixViz {
       .paddingInner(SCALE_PADDING_INNER)
       .paddingOuter(SCALE_PADDING_OUTER);
 
-    // @ts-ignore
-    this.colorScale = scaleLinear<string, number>()
+    this.colorScale = scaleLinear<string, string>()
       .domain(colorDomain)
       .interpolate(interpolateHcl)
       .range(Object.values(COLORS));

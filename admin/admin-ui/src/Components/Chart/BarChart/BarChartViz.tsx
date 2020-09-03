@@ -1,15 +1,15 @@
-import { ScaleBand, ScaleLinear, scaleBand, scaleLinear } from 'd3-scale';
-import { Selection, select } from 'd3-selection';
-import { axisBottom, axisLeft } from 'd3-axis';
 import {
+  Margin,
   getAxisHeight,
   getAxisWidth,
   getClassFromLabel,
   rotateAxis,
   tooltipAction
 } from 'Utils/d3';
+import { ScaleBand, ScaleLinear, scaleBand, scaleLinear } from 'd3-scale';
+import { Selection, select } from 'd3-selection';
+import { axisBottom, axisLeft } from 'd3-axis';
 
-import { Margin } from 'Hooks/useChart';
 import React from 'react';
 import moment from 'moment';
 import styles from './BarChart.module.scss';

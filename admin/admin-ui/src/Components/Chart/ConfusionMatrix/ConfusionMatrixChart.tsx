@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import ConfusionMatrixViz from './ConfusionMatrixViz';
 import { D } from './ConfusionMatrixViz';
-import { Margin } from 'Hooks/useChart';
+import { Margin } from 'Utils/d3';
 
 type Props = {
   data: D[];

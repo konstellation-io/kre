@@ -4,6 +4,14 @@ import ReactDOMServer from 'react-dom/server';
 import { ReactElement } from 'react';
 import { max } from 'd3-array';
 
+export interface Margin {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+export interface Padding extends Margin {}
+
 export function wrap(
   text: Selection<SVGTextElement, unknown, null, undefined>,
   width: number
