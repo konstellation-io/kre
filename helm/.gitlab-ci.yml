@@ -2,7 +2,7 @@ release-helm-chart:
   stage: semantic-release
   image: node:10
   script:
-    - npx semantic-release@17.1.1 -t helm-chart-v\${version}
+    - npx semantic-release@17.1.1 -t helm-chart-v\${version} -b master
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
