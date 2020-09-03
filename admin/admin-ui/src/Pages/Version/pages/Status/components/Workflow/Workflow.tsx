@@ -36,6 +36,12 @@ interface Workflow extends GetVersionWorkflows_version_workflows {
 const BASE_WIDTH = 323;
 const NODE_WIDTH = 160;
 
+const ENTRYPOINT_SELECTION = {
+  workflowName: '',
+  nodeNames: [NODE_NAME_ENTRYPOINT],
+  __typename: 'NodeSelection'
+};
+
 type Props = {
   workflow: GetVersionWorkflows_version_workflows;
   workflowStatus: VersionStatus;
@@ -67,38 +73,39 @@ function Workflow({
     setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
   }, [setContainerWidth, workflow.nodes]);
 
-  function createTab(node: NodeSelection) {
+  function createTab(nodes: NodeSelection[]) {
     createLogsTab({
       runtimeId,
       runtimeName,
       versionId,
       versionName,
-      nodes: [node]
+      nodes
     });
   }
 
   function onInputNodeClick() {
-    createTab({
-      workflowName: '',
-      nodeNames: [NODE_NAME_ENTRYPOINT],
-      __typename: 'NodeSelection'
-    });
+    createTab([ENTRYPOINT_SELECTION]);
   }
 
   function onInnerNodeClick(nodeName: string) {
-    createTab({
-      workflowName: workflow.name,
-      nodeNames: [nodeName],
-      __typename: 'NodeSelection'
-    });
+    createTab([
+      {
+        workflowName: workflow.name,
+        nodeNames: [nodeName],
+        __typename: 'NodeSelection'
+      }
+    ]);
   }
 
   function onWorkflowClick() {
-    createTab({
-      workflowName: workflow.name,
-      nodeNames: workflow.nodes.map(({ name }) => name),
-      __typename: 'NodeSelection'
-    });
+    createTab([
+      {
+        workflowName: workflow.name,
+        nodeNames: workflow.nodes.map(({ name }) => name),
+        __typename: 'NodeSelection'
+      },
+      ENTRYPOINT_SELECTION
+    ]);
   }
 
   const data = cloneDeep(workflow);
