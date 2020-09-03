@@ -8,14 +8,15 @@ import {
   GetVersionWorkflows_version_workflows,
   GetVersionWorkflows_version_workflows_nodes
 } from 'Graphql/queries/types/GetVersionWorkflows';
-import { EntrypointTooltipContent } from '../Tooltip/EntrypointTooltipContent';
 import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import React, { FunctionComponent } from 'react';
 import { ScaleBand, scaleBand } from 'd3-scale';
 import { Selection, select } from 'd3-selection';
 
+import { EntrypointTooltipContent } from '../Tooltip/EntrypointTooltipContent';
 import { ReactComponent as InputNode } from '../../icons/inputNode.svg';
 import InputNodeIcon from '@material-ui/icons/Public';
+import { Margin } from 'Utils/d3';
 import OutputNodeIcon from '@material-ui/icons/KeyboardTab';
 import ReactDOMServer from 'react-dom/server';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
@@ -36,11 +37,6 @@ const NODE_LABEL_PADDING = {
 };
 const MARGIN_TOP_LABELS = 4;
 const ICON_SIZE = 20;
-
-export type Margin = {
-  right: number;
-  left: number;
-};
 
 type Props = {
   data: GetVersionWorkflows_version_workflows;
@@ -128,8 +124,6 @@ class WorkflowViz {
 
     this.generateFilters();
   };
-
-  resize = () => {};
 
   update = (
     data: GetVersionWorkflows_version_workflows,

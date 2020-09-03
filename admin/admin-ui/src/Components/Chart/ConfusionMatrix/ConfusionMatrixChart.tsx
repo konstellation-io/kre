@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-import BarChartViz from './BarChartViz';
-import { D } from './BarChartViz';
+import ConfusionMatrixViz from './ConfusionMatrixViz';
+import { D } from './ConfusionMatrixViz';
 import { Margin } from 'Utils/d3';
 import tooltipStyles from 'Styles/tooltip.module.scss';
 
@@ -10,11 +10,10 @@ type Props = {
   width: number;
   height: number;
   margin: Margin;
-  viewAllData: boolean;
 };
 
-function BarChart({ data, width, height, margin, viewAllData }: Props) {
-  const viz = useRef<BarChartViz | null>(null);
+function ConfusionMatrixChart({ data, width, height, margin }: Props) {
+  const viz = useRef<ConfusionMatrixViz | null>(null);
   const svg = useRef<SVGSVGElement>(null);
   const tooltip = useRef<HTMLDivElement>(null);
 
@@ -30,10 +29,13 @@ function BarChart({ data, width, height, margin, viewAllData }: Props) {
         width,
         height,
         data,
-        margin,
-        viewAllData
+        margin
       };
-      viz.current = new BarChartViz(svg.current, tooltip.current, vizProps);
+      viz.current = new ConfusionMatrixViz(
+        svg.current,
+        tooltip.current,
+        vizProps
+      );
     }
   }
 
@@ -47,4 +49,4 @@ function BarChart({ data, width, height, margin, viewAllData }: Props) {
   );
 }
 
-export default BarChart;
+export default ConfusionMatrixChart;

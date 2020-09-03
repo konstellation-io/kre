@@ -1,6 +1,3 @@
-import BarChartSeries, {
-  Serie
-} from 'Components/Chart/BarChartSeries/BarChartSeries';
 import {
   GetMetrics_metrics_charts_seriesAccuracy,
   GetMetrics_metrics_charts_seriesRecall,
@@ -8,8 +5,10 @@ import {
 } from 'Graphql/queries/types/GetMetrics';
 import React, { useRef } from 'react';
 
+import BarChartSeries from 'Components/Chart/BarChartSeries/BarChartSeries';
 import Box from '../../components/Box/Box';
 import ExpandButton from '../../components/Box/ExpandButton';
+import { Serie } from 'Components/Chart/BarChartSeries/BarChartSeriesViz';
 import Title from '../../components/Box/Title';
 import styles from './LabelStats.module.scss';
 import useRenderOnResize from 'Hooks/useRenderOnResize';
@@ -25,14 +24,18 @@ type GetMetricsSeries = {
   Support: GetMetrics_metrics_charts_seriesSupport[];
 };
 
+// Only first and second charts show percentual values
+const PERC_STATS = [true, true, false];
+
 function formatData(data: GetMetricsSeries): Serie[] {
   return Object.entries(data).map(
-    ([title, values]: [string, MetricData[]]) => ({
+    ([title, values]: [string, MetricData[]], idx) => ({
       title,
       data: values.map((d: MetricData) => ({
         x: parseInt(d.x),
         y: d.y
-      }))
+      })),
+      perc: PERC_STATS[idx]
     })
   );
 }
@@ -44,13 +47,7 @@ type Props = {
   data: GetMetricsSeries;
   viewAllData: boolean;
 };
-function LabelStats({
-  withBgBars = false,
-  toggleExpanded,
-  nodeId,
-  data,
-  viewAllData
-}: Props) {
+function LabelStats({ toggleExpanded, nodeId, data, viewAllData }: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (
@@ -72,7 +69,6 @@ function LabelStats({
             left: 30
           }}
           data={formatData(data)}
-          withBgBars={withBgBars}
           viewAllData={viewAllData}
         />
       </div>

@@ -78,7 +78,6 @@ function SelectionsBar({
     )
   ];
 
-  // @ts-ignore
   filtersFormatted.sort(sortFilters);
   const activeFilters = getActiveFilters(filtersFormatted);
 

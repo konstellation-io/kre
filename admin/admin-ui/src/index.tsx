@@ -1,6 +1,4 @@
 // import 'wdyr';
-import 'Styles/d3.scss';
-
 import { ApolloClient, ApolloProvider } from '@apollo/client';
 import { ApolloLink, split } from 'apollo-link';
 import { ErrorResponse, onError } from 'apollo-link-error';

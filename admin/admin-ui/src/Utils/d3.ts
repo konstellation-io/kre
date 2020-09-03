@@ -1,6 +1,17 @@
+import { Selection, select } from 'd3-selection';
+
 import ReactDOMServer from 'react-dom/server';
-import { select, Selection } from 'd3-selection';
 import { ReactElement } from 'react';
+import { max } from 'd3-array';
+import tooltipStyles from 'Styles/tooltip.module.scss';
+
+export interface Margin {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+export interface Padding extends Margin {}
 
 export function wrap(
   text: Selection<SVGTextElement, unknown, null, undefined>,
@@ -93,6 +104,56 @@ export function getAxesMargins({
   return [xAxisHeight, yAxisWidth];
 }
 
+function generateLabels(
+  wrapper: Selection<SVGElement, unknown, null, undefined>,
+  labels: string[]
+) {
+  return wrapper
+    .append('g')
+    .selectAll('text')
+    .data(labels)
+    .enter()
+    .append('text')
+    .text(d => d);
+}
+
+function getLabelDims(
+  labels: Selection<SVGTextElement, string, SVGGElement, unknown>
+) {
+  const labelDims: { width: number; height: number }[] = [];
+  labels.each(function() {
+    const { width, height } = this.getBoundingClientRect();
+    labelDims.push({ width, height });
+  });
+
+  return labelDims;
+}
+
+export function getAxisWidth(
+  wrapper: Selection<SVGElement, unknown, null, undefined>,
+  domain: string[]
+) {
+  const labels = generateLabels(wrapper, domain);
+  const labelDims = getLabelDims(labels);
+  labels.remove();
+
+  return max(labelDims, d => d.width) || 0;
+}
+
+export function getAxisHeight(
+  wrapper: Selection<SVGElement, unknown, null, undefined>,
+  domain: string[],
+  rotation: number = 0
+) {
+  const labels = generateLabels(wrapper, domain)
+    .style('text-anchor', 'end')
+    .style('transform', `rotate(${rotation}deg)`);
+  const labelDims = getLabelDims(labels);
+  labels.remove();
+
+  return max(labelDims, d => d.height) || 0;
+}
+
 export function rotateAxis(
   axisG: Selection<SVGGElement, unknown, null, undefined>,
   angle: number
@@ -123,7 +184,7 @@ export const tooltipAction = {
     const containerDims = svgParent.getBoundingClientRect();
     const tooltipSelection = select(tooltip);
 
-    const tooltipContent = tooltipSelection.select('.tooltipContent');
+    const tooltipContent = tooltipSelection.select(`.${tooltipStyles.content}`);
     tooltipContent.html(ReactDOMServer.renderToString(content));
 
     const wrapper = tooltip.getBoundingClientRect();
@@ -132,14 +193,14 @@ export const tooltipAction = {
     let tooltipTop = dy - tooltipHeight - 10;
 
     const rightOverflow = dx + tooltipWidth / 2 > containerDims.width;
-    tooltipSelection.classed('left', rightOverflow);
+    tooltipSelection.classed(tooltipStyles.left, rightOverflow);
     if (rightOverflow) {
       tooltipLeft = dx - tooltipWidth - 15;
       tooltipTop = dy - tooltipHeight / 2;
     }
 
     const topOverflow = tooltipTop < 0;
-    tooltipSelection.classed('down', topOverflow);
+    tooltipSelection.classed(tooltipStyles.down, topOverflow);
     if (topOverflow) {
       tooltipTop = dy + 10;
     }
