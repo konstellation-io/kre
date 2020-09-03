@@ -14,16 +14,11 @@ type Props = {
 function BarChartSeries({ data, width, height, margin, viewAllData }: Props) {
   const viz = useRef<BarChartSeriesViz | null>(null);
   const svg = useRef<SVGSVGElement>(null);
-  const tooltip = useRef<HTMLDivElement>(null);
 
   useEffect(initialize, [width, height, data, viewAllData]);
 
   function initialize() {
-    if (
-      svg.current !== null &&
-      tooltip.current !== null &&
-      width * height !== 0
-    ) {
+    if (svg.current !== null && width * height !== 0) {
       const vizProps = {
         width,
         height,
@@ -31,20 +26,13 @@ function BarChartSeries({ data, width, height, margin, viewAllData }: Props) {
         margin,
         viewAllData
       };
-      viz.current = new BarChartSeriesViz(
-        svg.current,
-        tooltip.current,
-        vizProps
-      );
+      viz.current = new BarChartSeriesViz(svg.current, vizProps);
     }
   }
 
   return (
     <>
       <svg width={width} height={height} ref={svg} />
-      <div ref={tooltip} className="chartTooltip">
-        <div className="tooltipContent" />
-      </div>
     </>
   );
 }

@@ -3,6 +3,7 @@ import { Selection, select } from 'd3-selection';
 import ReactDOMServer from 'react-dom/server';
 import { ReactElement } from 'react';
 import { max } from 'd3-array';
+import tooltipStyles from 'Styles/tooltip.module.scss';
 
 export interface Margin {
   top: number;
@@ -183,7 +184,7 @@ export const tooltipAction = {
     const containerDims = svgParent.getBoundingClientRect();
     const tooltipSelection = select(tooltip);
 
-    const tooltipContent = tooltipSelection.select('.tooltipContent');
+    const tooltipContent = tooltipSelection.select(`.${tooltipStyles.content}`);
     tooltipContent.html(ReactDOMServer.renderToString(content));
 
     const wrapper = tooltip.getBoundingClientRect();
@@ -192,14 +193,14 @@ export const tooltipAction = {
     let tooltipTop = dy - tooltipHeight - 10;
 
     const rightOverflow = dx + tooltipWidth / 2 > containerDims.width;
-    tooltipSelection.classed('left', rightOverflow);
+    tooltipSelection.classed(tooltipStyles.left, rightOverflow);
     if (rightOverflow) {
       tooltipLeft = dx - tooltipWidth - 15;
       tooltipTop = dy - tooltipHeight / 2;
     }
 
     const topOverflow = tooltipTop < 0;
-    tooltipSelection.classed('down', topOverflow);
+    tooltipSelection.classed(tooltipStyles.down, topOverflow);
     if (topOverflow) {
       tooltipTop = dy + 10;
     }

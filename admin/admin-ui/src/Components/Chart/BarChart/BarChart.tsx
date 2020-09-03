@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import BarChartViz from './BarChartViz';
 import { D } from './BarChartViz';
 import { Margin } from 'Utils/d3';
+import tooltipStyles from 'Styles/tooltip.module.scss';
 
 type Props = {
   data: D[];
@@ -39,8 +40,8 @@ function BarChart({ data, width, height, margin, viewAllData }: Props) {
   return (
     <>
       <svg width={width} height={height} ref={svg} />
-      <div ref={tooltip} className="chartTooltip">
-        <div className="tooltipContent" />
+      <div ref={tooltip} className={tooltipStyles.container}>
+        <div className={tooltipStyles.content} />
       </div>
     </>
   );

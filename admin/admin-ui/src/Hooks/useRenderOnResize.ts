@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 type Dimensions = {
   width: number;
@@ -19,7 +19,7 @@ export default function useRenderOnResize({ container }: Params) {
     height: 0
   });
   const observer = useRef(
-    // @ts-ignore
+    // @ts-ignore Wait for this issue to be solved https://github.com/microsoft/TypeScript/issues/37861
     new ResizeObserver((entries: ResizeObserverEntry[]) => {
       const { width, height } = entries[0].contentRect;
       let rerender: Function = () => handleResize({ width, height });

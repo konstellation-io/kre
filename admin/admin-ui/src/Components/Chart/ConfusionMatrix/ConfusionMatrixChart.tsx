@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import ConfusionMatrixViz from './ConfusionMatrixViz';
 import { D } from './ConfusionMatrixViz';
 import { Margin } from 'Utils/d3';
+import tooltipStyles from 'Styles/tooltip.module.scss';
 
 type Props = {
   data: D[];
@@ -41,8 +42,8 @@ function ConfusionMatrixChart({ data, width, height, margin }: Props) {
   return (
     <>
       <svg width={width} height={height} ref={svg} />
-      <div ref={tooltip} className="chartTooltip">
-        <div className="tooltipContent" />
+      <div ref={tooltip} className={tooltipStyles.container}>
+        <div className={tooltipStyles.content} />
       </div>
     </>
   );

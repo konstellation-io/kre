@@ -42,7 +42,6 @@ class BarChartSeriesViz {
   props: Props;
   svg: Selection<SVGElement, unknown, null, undefined>;
   svgRef: SVGElement;
-  tooltip: HTMLDivElement;
   g: Selection<SVGGElement, unknown, null, undefined>;
   seriesDomain: string[];
   seriesScale: ScaleBand<string>;
@@ -58,10 +57,9 @@ class BarChartSeriesViz {
   top: number;
   padding: Padding;
 
-  constructor(svg: SVGElement, tooltip: HTMLDivElement, props: Props) {
+  constructor(svg: SVGElement, props: Props) {
     this.svg = select(svg);
     this.svgRef = svg;
-    this.tooltip = tooltip;
     this.g = this.svg.append('g');
     this.props = props;
 
