@@ -110,6 +110,7 @@ function LogsPanel() {
           activeTabId={actActiveTabId}
           contextMenuActions={contextMenuActions}
           onTabClick={handleTabClick}
+          closeTab={closeTab}
         />
         {tabs.map((tab: GetLogTabs_logTabs) => (
           <div
