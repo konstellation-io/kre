@@ -98,3 +98,31 @@ prometheus-operator:
   enabled: true
   grafana:
     enabled: false
+
+  alertmanager:
+    config:
+      route:
+        group_by: ['job']
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+        receiver: "kre-email"
+        routes:
+        - match:
+            alertname: Mongo
+        - match:
+            alertname: NATS
+        - match:
+            alertname: Minio
+        - match:
+            alertname: InfluxDB
+      receivers:
+      - name: 'kre-email'
+        email_configs:
+        - to: user@example.com
+          from: from_user@example.com
+          # Your smtp server address
+          smarthost: smtp.example.com:587
+          auth_username: from_user@example.com
+          auth_identity: from_user@example.com
+          auth_password: 1234
