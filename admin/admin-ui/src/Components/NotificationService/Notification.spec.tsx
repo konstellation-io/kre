@@ -4,11 +4,6 @@ import { NotificationType } from 'Graphql/client/models/Notification';
 import React from 'react';
 import { shallow } from 'enzyme';
 
-jest.mock('@apollo/client', () => ({
-  useMutation: jest.fn(() => [jest.fn()])
-}));
-jest.mock('Graphql/client/cache', () => ({}));
-
 describe('Notification', () => {
   let wrapper: any;
 

@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VersionInfo matches snapshot 1`] = `
+<BrowserRouter>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <VersionInfo
+      version={
+        Object {
+          "__typename": "Version",
+          "config": Object {
+            "completed": false,
+            "vars": Array [],
+          },
+          "creationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "creationDate": "2020/01/01",
+          "description": "versionDescription",
+          "hasDoc": false,
+          "id": "versionId",
+          "name": "versionName",
+          "publicationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "publicationDate": "2020/01/01",
+          "status": "STARTED",
+        }
+      }
+    >
+      <div
+        className="wrapper"
+      >
+        <div
+          className="name"
+        >
+          <div>
+            versionName
+          </div>
+        </div>
+        <div
+          className="labelContainer"
+        >
+          <StatusCircle
+            status="STARTED"
+          >
+            <div
+              className="circle STARTED"
+            />
+          </StatusCircle>
+          <div
+            className="label STARTED"
+          >
+            STARTED
+          </div>
+        </div>
+        <div>
+          <div
+            className="desc"
+          >
+            versionDescription
+          </div>
+        </div>
+      </div>
+    </VersionInfo>
+  </Router>
+</BrowserRouter>
+`;

@@ -1,10 +1,9 @@
-import React, { ReactElement } from 'react';
-import { useHistory } from 'react-router-dom';
-
 import NavBar, { Tab } from '../NavBar/NavBar';
-import LeftArrowIcon from '@material-ui/icons/KeyboardBackspace';
+import React, { ReactElement } from 'react';
 
+import LeftArrowIcon from '@material-ui/icons/KeyboardBackspace';
 import styles from './Sidebar.module.scss';
+import { useHistory } from 'react-router-dom';
 
 type Props = {
   title: string;

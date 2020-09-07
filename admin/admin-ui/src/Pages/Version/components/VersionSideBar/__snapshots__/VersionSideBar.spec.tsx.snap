@@ -25,6 +25,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
               },
               "description": "Some Description",
               "id": "runtimeId",
+              "measurementsUrl": "measurementsUrl",
               "name": "runtimeName",
               "status": "STARTED",
             }
@@ -79,6 +80,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
         },
         "description": "Some Description",
         "id": "runtimeId",
+        "measurementsUrl": "measurementsUrl",
         "name": "runtimeName",
         "status": "STARTED",
       }
@@ -122,6 +124,7 @@ exports[`VersionSideBar matches snapshot 1`] = `
           },
           "description": "Some Description",
           "id": "runtimeId",
+          "measurementsUrl": "measurementsUrl",
           "name": "runtimeName",
           "status": "STARTED",
         }

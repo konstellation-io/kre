@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LevelIcon matches snapshot 1`] = `
+<div
+  className="levelIcon INFO"
+>
+  <InfoIcon
+    className="icon-small"
+  />
+</div>
+`;

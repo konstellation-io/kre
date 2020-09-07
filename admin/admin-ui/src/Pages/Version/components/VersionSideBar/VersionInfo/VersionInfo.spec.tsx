@@ -4,15 +4,17 @@ import VersionInfo from './VersionInfo';
 import { mount } from 'enzyme';
 import { version } from 'Mocks/version';
 
+const Component = (
+  <BrowserRouter>
+    <VersionInfo version={version} />
+  </BrowserRouter>
+);
+
 describe('VersionInfo', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(
-      <BrowserRouter>
-        <VersionInfo version={version} />
-      </BrowserRouter>
-    );
+    wrapper = mount(Component);
   });
 
   it('matches snapshot', () => {

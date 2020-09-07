@@ -1,20 +1,20 @@
 import { mountApolloComponent, testid } from 'Utils/testUtilsEnzyme';
 
+import { BrowserRouter } from 'react-router-dom';
 import Header from './Header';
 import { MockedProvider } from '@apollo/client/testing';
 import React from 'react';
 import { usernameMock } from 'Mocks/auth';
 
-jest.mock('react-router');
-jest.mock('react-router-dom');
-
 const mocks = [usernameMock];
 
 function Wrapper({ mocks }: any) {
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Header />
-    </MockedProvider>
+    <BrowserRouter>
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Header />
+      </MockedProvider>
+    </BrowserRouter>
   );
 }
 const Component = <Wrapper mocks={mocks} />;

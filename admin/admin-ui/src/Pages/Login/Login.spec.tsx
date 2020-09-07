@@ -18,9 +18,6 @@ const getError = (wrapper: any) =>
     .dive()
     .find(InputError);
 
-jest.mock('react-router');
-jest.mock('history');
-
 describe('Login', () => {
   let wrapper: any;
 

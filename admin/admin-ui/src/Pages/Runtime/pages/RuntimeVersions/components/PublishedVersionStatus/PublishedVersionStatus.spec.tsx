@@ -1,17 +1,16 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import { BrowserRouter } from 'react-router-dom';
 import PublishedVersionStatus from './PublishedVersionStatus';
-
-jest.mock('react-router', () => ({
-  useParams: jest.fn(() => ({ runtimeId: 'runtimeId' }))
-}));
+import React from 'react';
+import { mount } from 'enzyme';
 
 describe('PublishedVersionStatus', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(
-      <PublishedVersionStatus nPublishedVersions={5} noVersions={false} />
+    wrapper = mount(
+      <BrowserRouter>
+        <PublishedVersionStatus nPublishedVersions={5} noVersions={false} />
+      </BrowserRouter>
     );
   });
 
