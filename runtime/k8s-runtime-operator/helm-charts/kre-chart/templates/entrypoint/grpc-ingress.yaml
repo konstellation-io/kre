@@ -5,6 +5,23 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # Based on this snippet:
+    #  https://github.com/kubernetes/ingress-nginx/issues/5609#issuecomment-634908849
+    nginx.ingress.kubernetes.io/server-snippet: |
+      error_page 404 = @grpc_unimplemented;
+      error_page 502 503 = @grpc_unavailable;
+
+      location @grpc_unimplemented {
+          add_header grpc-status 12;
+          add_header grpc-message unimplemented;
+          return 204;
+      }
+      location @grpc_unavailable {
+          add_header grpc-status 14;
+          add_header grpc-message unavailable;
+          return 204;
+      }
+      default_type application/grpc;
 spec:
   rules:
     - host: entrypoint.{{ .Values.runtime.host }}
