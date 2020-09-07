@@ -4,8 +4,6 @@ developmentMode: false
 config:
   baseDomainName: "local"
   admin:
-    k8sManagerAddress: "k8s-manager:50051"
-    apiAddress: ":80"
     apiHost: ${KRE_ADMIN_API_HOST}
     frontendBaseURL: ${KRE_ADMIN_FRONTEND_BASE_URL}
     corsEnabled: true
@@ -45,8 +43,6 @@ adminApi:
     repository: konstellation/kre-admin-api
     tag: ${ADMIN_API_IMAGE_TAG}
     pullPolicy: IfNotPresent
-  service:
-    port: 4000
   tls:
     enabled: false
   host: api.kre.local
@@ -60,8 +56,6 @@ adminUI:
     repository: konstellation/kre-admin-ui
     tag: ${ADMIN_UI_IMAGE_TAG}
     pullPolicy: IfNotPresent
-  service:
-    port: 5000
   tls:
     enabled: false
   host: admin.kre.local
@@ -71,8 +65,6 @@ k8sManager:
     repository: konstellation/kre-k8s-manager
     tag: ${K8S_MANAGER_IMAGE_TAG}
     pullPolicy: IfNotPresent
-  service:
-    port: 50051
 
 
 mongodb:

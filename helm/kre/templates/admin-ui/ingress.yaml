@@ -32,4 +32,4 @@ spec:
           - path: /
             backend:
               serviceName: admin-ui
-              servicePort: {{ .Values.adminUI.service.port }}
+              servicePort: web

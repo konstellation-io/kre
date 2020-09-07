@@ -8,9 +8,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: {{ .Values.k8sManager.service.port }}
+    - name: grpc
+      port: 50051
       protocol: TCP
-      targetPort: {{ .Values.k8sManager.service.port }}
+      targetPort: grpc
   selector:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "kre.fullname" . }}-k8s-manager

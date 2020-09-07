@@ -30,8 +30,9 @@ spec:
               mountPath: /usr/share/nginx/html/config/config.json
               subPath: config.json
           ports:
-            - containerPort: {{ .Values.adminUI.service.port }}
+            - containerPort: 80
               protocol: TCP
+              name: web
       volumes:
         - name: config-volume
           configMap:

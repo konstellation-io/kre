@@ -8,9 +8,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: 50051
+    - name: grpc
+      port: 50051
       protocol: TCP
-      targetPort: 50051
+      targetPort: grpc
   selector:
     {{- include "runtime.labels" . | nindent 4 }}
     app: runtime-api

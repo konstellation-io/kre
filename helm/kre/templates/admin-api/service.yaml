@@ -8,9 +8,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: {{ .Values.adminApi.service.port }}
+    - name: grpc
+      port: 80
       protocol: TCP
-      targetPort: 80
+      targetPort: grpc
   selector:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "kre.fullname" . }}-admin-api
