@@ -35,4 +35,4 @@ spec:
           - path: /
             backend:
               serviceName: admin-api
-              servicePort: {{ .Values.adminApi.service.port }}
+              servicePort: grpc

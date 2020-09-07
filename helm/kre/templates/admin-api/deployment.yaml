@@ -37,9 +37,12 @@ spec:
           env:
             - name: KRE_ADMIN_STORAGE_PATH
               value: {{ .Values.adminApi.storage.path }}
+            - name: KRE_ADMIN_API_ADDRESS
+              value: ":80"
           ports:
-            - containerPort: {{ .Values.adminApi.service.port }}
+            - containerPort: 80
               protocol: TCP
+              name: grpc
           volumeMounts:
             - name: admin-api-pv-storage
               mountPath: {{ .Values.adminApi.storage.path }}

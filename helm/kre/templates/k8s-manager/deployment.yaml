@@ -31,6 +31,12 @@ spec:
                 name: {{ .Release.Name }}-configmap
             - secretRef:
                 name: {{ .Release.Name }}-secrets
+
+          env:
+            - name: KRE_PORT
+              value: "50051"
+
           ports:
-            - containerPort: {{ .Values.k8sManager.service.port }}
+            - containerPort: 50051
               protocol: TCP
+              name: grpc

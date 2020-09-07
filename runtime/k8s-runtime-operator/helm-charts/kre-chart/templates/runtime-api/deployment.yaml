@@ -27,6 +27,7 @@ spec:
           ports:
             - containerPort: 50051
               protocol: TCP
+              name: grpc
           env:
             - name: POD_NAMESPACE
               valueFrom:
@@ -34,6 +35,8 @@ spec:
                   fieldPath: metadata.namespace
             - name: KRE_SHARED_STORAGECLASS
               value: {{ .Values.sharedStorageClass }}
+            - name: KRE_RUNTIME_API_SERVER_PORT
+              value: "50051"
           envFrom:
             - secretRef:
                 name: {{ .Release.Name }}-secrets
