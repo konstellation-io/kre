@@ -24,7 +24,6 @@ describe('useEndpoint tests', () => {
   });
 
   it('handles success request correctly', async () => {
-    // @ts-ignore
     axios.mockResolvedValue({ data: 'OK', status: 200 });
 
     expect(response.complete).toBeFalsy();
@@ -43,7 +42,6 @@ describe('useEndpoint tests', () => {
   });
 
   it('handles failure request correctly', async () => {
-    // @ts-ignore
     axios.mockRejectedValue({
       response: { data: { code: 'error' }, status: 400 }
     });

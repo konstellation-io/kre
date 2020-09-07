@@ -1,7 +1,8 @@
-import React from 'react';
 import NavBar, { Tab } from './NavBar';
-import { shallow } from 'enzyme';
+
 import { NavLink } from 'react-router-dom';
+import React from 'react';
+import { shallow } from 'enzyme';
 
 const tabs = [
   { label: 'TAB 1', route: '/home' } as Tab,

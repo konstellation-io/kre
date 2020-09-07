@@ -1,105 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Header matches snapshot 1`] = `
-<Wrapper
-  mocks={
-    Array [
-      Object {
-        "request": Object {
-          "query": Object {
-            "definitions": Array [
-              Object {
-                "directives": Array [],
-                "kind": "OperationDefinition",
-                "name": Object {
-                  "kind": "Name",
-                  "value": "GetMe",
-                },
-                "operation": "query",
-                "selectionSet": Object {
-                  "kind": "SelectionSet",
-                  "selections": Array [
-                    Object {
-                      "arguments": Array [],
-                      "directives": Array [],
-                      "kind": "Field",
-                      "name": Object {
-                        "kind": "Name",
-                        "value": "me",
-                      },
-                      "selectionSet": Object {
-                        "kind": "SelectionSet",
-                        "selections": Array [
-                          Object {
-                            "arguments": Array [],
-                            "directives": Array [],
-                            "kind": "Field",
-                            "name": Object {
-                              "kind": "Name",
-                              "value": "id",
-                            },
-                          },
-                          Object {
-                            "arguments": Array [],
-                            "directives": Array [],
-                            "kind": "Field",
-                            "name": Object {
-                              "kind": "Name",
-                              "value": "email",
-                            },
-                          },
-                          Object {
-                            "arguments": Array [],
-                            "directives": Array [],
-                            "kind": "Field",
-                            "name": Object {
-                              "kind": "Name",
-                              "value": "accessLevel",
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-                "variableDefinitions": Array [],
-              },
-            ],
-            "kind": "Document",
-            "loc": Object {
-              "end": 60,
-              "source": Object {
-                "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                "locationOffset": Object {
-                  "column": 1,
-                  "line": 1,
-                },
-                "name": "GraphQL request",
-              },
-              "start": 0,
-            },
-          },
-        },
-        "result": Object {
-          "data": Object {
-            "me": Object {
-              "accessLevel": "ADMIN",
-              "email": "user@konstellation.com",
-              "id": "someId",
-            },
-          },
-        },
-      },
-    ]
-  }
->
+exports[`WorkflowsManager matches snapshot 1`] = `
+<Wrapper>
   <BrowserRouter>
     <Router
       history={
@@ -125,103 +27,7 @@ exports[`Header matches snapshot 1`] = `
     >
       <MockedProvider
         addTypename={false}
-        mocks={
-          Array [
-            Object {
-              "request": Object {
-                "query": Object {
-                  "definitions": Array [
-                    Object {
-                      "directives": Array [],
-                      "kind": "OperationDefinition",
-                      "name": Object {
-                        "kind": "Name",
-                        "value": "GetMe",
-                      },
-                      "operation": "query",
-                      "selectionSet": Object {
-                        "kind": "SelectionSet",
-                        "selections": Array [
-                          Object {
-                            "arguments": Array [],
-                            "directives": Array [],
-                            "kind": "Field",
-                            "name": Object {
-                              "kind": "Name",
-                              "value": "me",
-                            },
-                            "selectionSet": Object {
-                              "kind": "SelectionSet",
-                              "selections": Array [
-                                Object {
-                                  "arguments": Array [],
-                                  "directives": Array [],
-                                  "kind": "Field",
-                                  "name": Object {
-                                    "kind": "Name",
-                                    "value": "id",
-                                  },
-                                },
-                                Object {
-                                  "arguments": Array [],
-                                  "directives": Array [],
-                                  "kind": "Field",
-                                  "name": Object {
-                                    "kind": "Name",
-                                    "value": "email",
-                                  },
-                                },
-                                Object {
-                                  "arguments": Array [],
-                                  "directives": Array [],
-                                  "kind": "Field",
-                                  "name": Object {
-                                    "kind": "Name",
-                                    "value": "accessLevel",
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        ],
-                      },
-                      "variableDefinitions": Array [],
-                    },
-                  ],
-                  "kind": "Document",
-                  "loc": Object {
-                    "end": 60,
-                    "source": Object {
-                      "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                      "locationOffset": Object {
-                        "column": 1,
-                        "line": 1,
-                      },
-                      "name": "GraphQL request",
-                    },
-                    "start": 0,
-                  },
-                },
-              },
-              "result": Object {
-                "data": Object {
-                  "me": Object {
-                    "accessLevel": "ADMIN",
-                    "email": "user@konstellation.com",
-                    "id": "someId",
-                  },
-                },
-              },
-            },
-          ]
-        }
+        mocks={Array []}
       >
         <ApolloProvider
           client={
@@ -236,16 +42,7 @@ exports[`Header matches snapshot 1`] = `
                 },
                 "data": Root {
                   "canRead": [Function],
-                  "data": Object {
-                    "ROOT_QUERY": Object {
-                      "__typename": "Query",
-                      "me": Object {
-                        "accessLevel": "ADMIN",
-                        "email": "user@konstellation.com",
-                        "id": "someId",
-                      },
-                    },
-                  },
+                  "data": Object {},
                   "getFieldValue": [Function],
                   "group": CacheGroup {
                     "caching": true,
@@ -282,9 +79,7 @@ exports[`Header matches snapshot 1`] = `
                     "usingPossibleTypes": false,
                   },
                   "refs": Object {},
-                  "rootIds": Object {
-                    "ROOT_QUERY": 1,
-                  },
+                  "rootIds": Object {},
                   "sharedLayerGroup": CacheGroup {
                     "caching": true,
                     "d": [Function],
@@ -300,16 +95,7 @@ exports[`Header matches snapshot 1`] = `
                 "maybeBroadcastWatch": [Function],
                 "optimisticData": Root {
                   "canRead": [Function],
-                  "data": Object {
-                    "ROOT_QUERY": Object {
-                      "__typename": "Query",
-                      "me": Object {
-                        "accessLevel": "ADMIN",
-                        "email": "user@konstellation.com",
-                        "id": "someId",
-                      },
-                    },
-                  },
+                  "data": Object {},
                   "getFieldValue": [Function],
                   "group": CacheGroup {
                     "caching": true,
@@ -346,9 +132,7 @@ exports[`Header matches snapshot 1`] = `
                     "usingPossibleTypes": false,
                   },
                   "refs": Object {},
-                  "rootIds": Object {
-                    "ROOT_QUERY": 1,
-                  },
+                  "rootIds": Object {},
                   "sharedLayerGroup": CacheGroup {
                     "caching": true,
                     "d": [Function],
@@ -417,51 +201,53 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "directives": Array [],
                           "kind": "OperationDefinition",
-                          "name": Object {
-                            "kind": "Name",
-                            "value": "GetMe",
-                          },
+                          "name": undefined,
                           "operation": "query",
                           "selectionSet": Object {
                             "kind": "SelectionSet",
                             "selections": Array [
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
-                                "directives": Array [],
+                                "directives": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "kind": "Directive",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "client",
+                                    },
+                                  },
+                                ],
                                 "kind": "Field",
                                 "name": Object {
                                   "kind": "Name",
-                                  "value": "me",
+                                  "value": "openedVersion",
                                 },
                                 "selectionSet": Object {
                                   "kind": "SelectionSet",
                                   "selections": Array [
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
-                                        "value": "id",
+                                        "value": "runtimeName",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
-                                        "value": "email",
+                                        "value": "versionName",
                                       },
-                                    },
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "accessLevel",
-                                      },
+                                      "selectionSet": undefined,
                                     },
                                   ],
                                 },
@@ -473,22 +259,7 @@ exports[`Header matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 60,
-                        "source": Object {
-                          "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                          "locationOffset": Object {
-                            "column": 1,
-                            "line": 1,
-                          },
-                          "name": "GraphQL request",
-                        },
+                        "end": 79,
                         "start": 0,
                       },
                     },
@@ -501,94 +272,7 @@ exports[`Header matches snapshot 1`] = `
               "disableNetworkFetches": false,
               "link": MockLink {
                 "addTypename": false,
-                "mockedResponsesByKey": Object {
-                  "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
-                },
-                "operation": Object {
-                  "extensions": Object {},
-                  "operationName": "GetMe",
-                  "query": Object {
-                    "definitions": Array [
-                      Object {
-                        "directives": Array [],
-                        "kind": "OperationDefinition",
-                        "name": Object {
-                          "kind": "Name",
-                          "value": "GetMe",
-                        },
-                        "operation": "query",
-                        "selectionSet": Object {
-                          "kind": "SelectionSet",
-                          "selections": Array [
-                            Object {
-                              "arguments": Array [],
-                              "directives": Array [],
-                              "kind": "Field",
-                              "name": Object {
-                                "kind": "Name",
-                                "value": "me",
-                              },
-                              "selectionSet": Object {
-                                "kind": "SelectionSet",
-                                "selections": Array [
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "id",
-                                    },
-                                  },
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "email",
-                                    },
-                                  },
-                                  Object {
-                                    "arguments": Array [],
-                                    "directives": Array [],
-                                    "kind": "Field",
-                                    "name": Object {
-                                      "kind": "Name",
-                                      "value": "accessLevel",
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                        "variableDefinitions": Array [],
-                      },
-                    ],
-                    "kind": "Document",
-                    "loc": Object {
-                      "end": 60,
-                      "source": Object {
-                        "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                        "locationOffset": Object {
-                          "column": 1,
-                          "line": 1,
-                        },
-                        "name": "GraphQL request",
-                      },
-                      "start": 0,
-                    },
-                  },
-                  "variables": Object {},
-                },
+                "mockedResponsesByKey": Object {},
               },
               "localState": LocalState {
                 "cache": InMemoryCache {
@@ -601,16 +285,7 @@ exports[`Header matches snapshot 1`] = `
                   },
                   "data": Root {
                     "canRead": [Function],
-                    "data": Object {
-                      "ROOT_QUERY": Object {
-                        "__typename": "Query",
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
+                    "data": Object {},
                     "getFieldValue": [Function],
                     "group": CacheGroup {
                       "caching": true,
@@ -647,9 +322,7 @@ exports[`Header matches snapshot 1`] = `
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
-                    "rootIds": Object {
-                      "ROOT_QUERY": 1,
-                    },
+                    "rootIds": Object {},
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
@@ -665,16 +338,7 @@ exports[`Header matches snapshot 1`] = `
                   "maybeBroadcastWatch": [Function],
                   "optimisticData": Root {
                     "canRead": [Function],
-                    "data": Object {
-                      "ROOT_QUERY": Object {
-                        "__typename": "Query",
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
+                    "data": Object {},
                     "getFieldValue": [Function],
                     "group": CacheGroup {
                       "caching": true,
@@ -711,9 +375,7 @@ exports[`Header matches snapshot 1`] = `
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
-                    "rootIds": Object {
-                      "ROOT_QUERY": 1,
-                    },
+                    "rootIds": Object {},
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
@@ -782,51 +444,53 @@ exports[`Header matches snapshot 1`] = `
                           Object {
                             "directives": Array [],
                             "kind": "OperationDefinition",
-                            "name": Object {
-                              "kind": "Name",
-                              "value": "GetMe",
-                            },
+                            "name": undefined,
                             "operation": "query",
                             "selectionSet": Object {
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
-                                  "directives": Array [],
+                                  "directives": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "kind": "Directive",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "client",
+                                      },
+                                    },
+                                  ],
                                   "kind": "Field",
                                   "name": Object {
                                     "kind": "Name",
-                                    "value": "me",
+                                    "value": "openedVersion",
                                   },
                                   "selectionSet": Object {
                                     "kind": "SelectionSet",
                                     "selections": Array [
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
                                         "name": Object {
                                           "kind": "Name",
-                                          "value": "id",
+                                          "value": "runtimeName",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
                                         "name": Object {
                                           "kind": "Name",
-                                          "value": "email",
+                                          "value": "versionName",
                                         },
-                                      },
-                                      Object {
-                                        "arguments": Array [],
-                                        "directives": Array [],
-                                        "kind": "Field",
-                                        "name": Object {
-                                          "kind": "Name",
-                                          "value": "accessLevel",
-                                        },
+                                        "selectionSet": undefined,
                                       },
                                     ],
                                   },
@@ -838,22 +502,7 @@ exports[`Header matches snapshot 1`] = `
                         ],
                         "kind": "Document",
                         "loc": Object {
-                          "end": 60,
-                          "source": Object {
-                            "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                            "locationOffset": Object {
-                              "column": 1,
-                              "line": 1,
-                            },
-                            "name": "GraphQL request",
-                          },
+                          "end": 79,
                           "start": 0,
                         },
                       },
@@ -878,16 +527,7 @@ exports[`Header matches snapshot 1`] = `
                   },
                   "data": Root {
                     "canRead": [Function],
-                    "data": Object {
-                      "ROOT_QUERY": Object {
-                        "__typename": "Query",
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
+                    "data": Object {},
                     "getFieldValue": [Function],
                     "group": CacheGroup {
                       "caching": true,
@@ -924,9 +564,7 @@ exports[`Header matches snapshot 1`] = `
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
-                    "rootIds": Object {
-                      "ROOT_QUERY": 1,
-                    },
+                    "rootIds": Object {},
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
@@ -942,16 +580,7 @@ exports[`Header matches snapshot 1`] = `
                   "maybeBroadcastWatch": [Function],
                   "optimisticData": Root {
                     "canRead": [Function],
-                    "data": Object {
-                      "ROOT_QUERY": Object {
-                        "__typename": "Query",
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
+                    "data": Object {},
                     "getFieldValue": [Function],
                     "group": CacheGroup {
                       "caching": true,
@@ -988,9 +617,7 @@ exports[`Header matches snapshot 1`] = `
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
-                    "rootIds": Object {
-                      "ROOT_QUERY": 1,
-                    },
+                    "rootIds": Object {},
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
@@ -1059,51 +686,53 @@ exports[`Header matches snapshot 1`] = `
                           Object {
                             "directives": Array [],
                             "kind": "OperationDefinition",
-                            "name": Object {
-                              "kind": "Name",
-                              "value": "GetMe",
-                            },
+                            "name": undefined,
                             "operation": "query",
                             "selectionSet": Object {
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
-                                  "directives": Array [],
+                                  "directives": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "kind": "Directive",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "client",
+                                      },
+                                    },
+                                  ],
                                   "kind": "Field",
                                   "name": Object {
                                     "kind": "Name",
-                                    "value": "me",
+                                    "value": "openedVersion",
                                   },
                                   "selectionSet": Object {
                                     "kind": "SelectionSet",
                                     "selections": Array [
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
                                         "name": Object {
                                           "kind": "Name",
-                                          "value": "id",
+                                          "value": "runtimeName",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
                                         "name": Object {
                                           "kind": "Name",
-                                          "value": "email",
+                                          "value": "versionName",
                                         },
-                                      },
-                                      Object {
-                                        "arguments": Array [],
-                                        "directives": Array [],
-                                        "kind": "Field",
-                                        "name": Object {
-                                          "kind": "Name",
-                                          "value": "accessLevel",
-                                        },
+                                        "selectionSet": undefined,
                                       },
                                     ],
                                   },
@@ -1115,22 +744,7 @@ exports[`Header matches snapshot 1`] = `
                         ],
                         "kind": "Document",
                         "loc": Object {
-                          "end": 60,
-                          "source": Object {
-                            "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                            "locationOffset": Object {
-                              "column": 1,
-                              "line": 1,
-                            },
-                            "name": "GraphQL request",
-                          },
+                          "end": 79,
                           "start": 0,
                         },
                       },
@@ -1142,98 +756,13 @@ exports[`Header matches snapshot 1`] = `
                   "name": undefined,
                   "version": undefined,
                 },
-                "fetchCancelFns": Map {},
+                "fetchCancelFns": Map {
+                  "1" => [Function],
+                },
                 "inFlightLinkObservables": Map {},
                 "link": MockLink {
                   "addTypename": false,
-                  "mockedResponsesByKey": Object {
-                    "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
-                  },
-                  "operation": Object {
-                    "extensions": Object {},
-                    "operationName": "GetMe",
-                    "query": Object {
-                      "definitions": Array [
-                        Object {
-                          "directives": Array [],
-                          "kind": "OperationDefinition",
-                          "name": Object {
-                            "kind": "Name",
-                            "value": "GetMe",
-                          },
-                          "operation": "query",
-                          "selectionSet": Object {
-                            "kind": "SelectionSet",
-                            "selections": Array [
-                              Object {
-                                "arguments": Array [],
-                                "directives": Array [],
-                                "kind": "Field",
-                                "name": Object {
-                                  "kind": "Name",
-                                  "value": "me",
-                                },
-                                "selectionSet": Object {
-                                  "kind": "SelectionSet",
-                                  "selections": Array [
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "id",
-                                      },
-                                    },
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "email",
-                                      },
-                                    },
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "accessLevel",
-                                      },
-                                    },
-                                  ],
-                                },
-                              },
-                            ],
-                          },
-                          "variableDefinitions": Array [],
-                        },
-                      ],
-                      "kind": "Document",
-                      "loc": Object {
-                        "end": 60,
-                        "source": Object {
-                          "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                          "locationOffset": Object {
-                            "column": 1,
-                            "line": 1,
-                          },
-                          "name": "GraphQL request",
-                        },
-                        "start": 0,
-                      },
-                    },
-                    "variables": Object {},
-                  },
+                  "mockedResponsesByKey": Object {},
                 },
                 "localState": LocalState {
                   "cache": InMemoryCache {
@@ -1246,16 +775,7 @@ exports[`Header matches snapshot 1`] = `
                     },
                     "data": Root {
                       "canRead": [Function],
-                      "data": Object {
-                        "ROOT_QUERY": Object {
-                          "__typename": "Query",
-                          "me": Object {
-                            "accessLevel": "ADMIN",
-                            "email": "user@konstellation.com",
-                            "id": "someId",
-                          },
-                        },
-                      },
+                      "data": Object {},
                       "getFieldValue": [Function],
                       "group": CacheGroup {
                         "caching": true,
@@ -1292,9 +812,7 @@ exports[`Header matches snapshot 1`] = `
                         "usingPossibleTypes": false,
                       },
                       "refs": Object {},
-                      "rootIds": Object {
-                        "ROOT_QUERY": 1,
-                      },
+                      "rootIds": Object {},
                       "sharedLayerGroup": CacheGroup {
                         "caching": true,
                         "d": [Function],
@@ -1310,16 +828,7 @@ exports[`Header matches snapshot 1`] = `
                     "maybeBroadcastWatch": [Function],
                     "optimisticData": Root {
                       "canRead": [Function],
-                      "data": Object {
-                        "ROOT_QUERY": Object {
-                          "__typename": "Query",
-                          "me": Object {
-                            "accessLevel": "ADMIN",
-                            "email": "user@konstellation.com",
-                            "id": "someId",
-                          },
-                        },
-                      },
+                      "data": Object {},
                       "getFieldValue": [Function],
                       "group": CacheGroup {
                         "caching": true,
@@ -1356,9 +865,7 @@ exports[`Header matches snapshot 1`] = `
                         "usingPossibleTypes": false,
                       },
                       "refs": Object {},
-                      "rootIds": Object {
-                        "ROOT_QUERY": 1,
-                      },
+                      "rootIds": Object {},
                       "sharedLayerGroup": CacheGroup {
                         "caching": true,
                         "d": [Function],
@@ -1427,51 +934,53 @@ exports[`Header matches snapshot 1`] = `
                             Object {
                               "directives": Array [],
                               "kind": "OperationDefinition",
-                              "name": Object {
-                                "kind": "Name",
-                                "value": "GetMe",
-                              },
+                              "name": undefined,
                               "operation": "query",
                               "selectionSet": Object {
                                 "kind": "SelectionSet",
                                 "selections": Array [
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
-                                    "directives": Array [],
+                                    "directives": Array [
+                                      Object {
+                                        "arguments": Array [],
+                                        "kind": "Directive",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "client",
+                                        },
+                                      },
+                                    ],
                                     "kind": "Field",
                                     "name": Object {
                                       "kind": "Name",
-                                      "value": "me",
+                                      "value": "openedVersion",
                                     },
                                     "selectionSet": Object {
                                       "kind": "SelectionSet",
                                       "selections": Array [
                                         Object {
+                                          "alias": undefined,
                                           "arguments": Array [],
                                           "directives": Array [],
                                           "kind": "Field",
                                           "name": Object {
                                             "kind": "Name",
-                                            "value": "id",
+                                            "value": "runtimeName",
                                           },
+                                          "selectionSet": undefined,
                                         },
                                         Object {
+                                          "alias": undefined,
                                           "arguments": Array [],
                                           "directives": Array [],
                                           "kind": "Field",
                                           "name": Object {
                                             "kind": "Name",
-                                            "value": "email",
+                                            "value": "versionName",
                                           },
-                                        },
-                                        Object {
-                                          "arguments": Array [],
-                                          "directives": Array [],
-                                          "kind": "Field",
-                                          "name": Object {
-                                            "kind": "Name",
-                                            "value": "accessLevel",
-                                          },
+                                          "selectionSet": undefined,
                                         },
                                       ],
                                     },
@@ -1483,22 +992,7 @@ exports[`Header matches snapshot 1`] = `
                           ],
                           "kind": "Document",
                           "loc": Object {
-                            "end": 60,
-                            "source": Object {
-                              "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                              "locationOffset": Object {
-                                "column": 1,
-                                "line": 1,
-                              },
-                              "name": "GraphQL request",
-                            },
+                            "end": 79,
                             "start": 0,
                           },
                         },
@@ -1525,16 +1019,7 @@ exports[`Header matches snapshot 1`] = `
                       },
                       "data": Root {
                         "canRead": [Function],
-                        "data": Object {
-                          "ROOT_QUERY": Object {
-                            "__typename": "Query",
-                            "me": Object {
-                              "accessLevel": "ADMIN",
-                              "email": "user@konstellation.com",
-                              "id": "someId",
-                            },
-                          },
-                        },
+                        "data": Object {},
                         "getFieldValue": [Function],
                         "group": CacheGroup {
                           "caching": true,
@@ -1571,9 +1056,7 @@ exports[`Header matches snapshot 1`] = `
                           "usingPossibleTypes": false,
                         },
                         "refs": Object {},
-                        "rootIds": Object {
-                          "ROOT_QUERY": 1,
-                        },
+                        "rootIds": Object {},
                         "sharedLayerGroup": CacheGroup {
                           "caching": true,
                           "d": [Function],
@@ -1589,16 +1072,7 @@ exports[`Header matches snapshot 1`] = `
                       "maybeBroadcastWatch": [Function],
                       "optimisticData": Root {
                         "canRead": [Function],
-                        "data": Object {
-                          "ROOT_QUERY": Object {
-                            "__typename": "Query",
-                            "me": Object {
-                              "accessLevel": "ADMIN",
-                              "email": "user@konstellation.com",
-                              "id": "someId",
-                            },
-                          },
-                        },
+                        "data": Object {},
                         "getFieldValue": [Function],
                         "group": CacheGroup {
                           "caching": true,
@@ -1635,9 +1109,7 @@ exports[`Header matches snapshot 1`] = `
                           "usingPossibleTypes": false,
                         },
                         "refs": Object {},
-                        "rootIds": Object {
-                          "ROOT_QUERY": 1,
-                        },
+                        "rootIds": Object {},
                         "sharedLayerGroup": CacheGroup {
                           "caching": true,
                           "d": [Function],
@@ -1706,51 +1178,53 @@ exports[`Header matches snapshot 1`] = `
                               Object {
                                 "directives": Array [],
                                 "kind": "OperationDefinition",
-                                "name": Object {
-                                  "kind": "Name",
-                                  "value": "GetMe",
-                                },
+                                "name": undefined,
                                 "operation": "query",
                                 "selectionSet": Object {
                                   "kind": "SelectionSet",
                                   "selections": Array [
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
-                                      "directives": Array [],
+                                      "directives": Array [
+                                        Object {
+                                          "arguments": Array [],
+                                          "kind": "Directive",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "client",
+                                          },
+                                        },
+                                      ],
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
-                                        "value": "me",
+                                        "value": "openedVersion",
                                       },
                                       "selectionSet": Object {
                                         "kind": "SelectionSet",
                                         "selections": Array [
                                           Object {
+                                            "alias": undefined,
                                             "arguments": Array [],
                                             "directives": Array [],
                                             "kind": "Field",
                                             "name": Object {
                                               "kind": "Name",
-                                              "value": "id",
+                                              "value": "runtimeName",
                                             },
+                                            "selectionSet": undefined,
                                           },
                                           Object {
+                                            "alias": undefined,
                                             "arguments": Array [],
                                             "directives": Array [],
                                             "kind": "Field",
                                             "name": Object {
                                               "kind": "Name",
-                                              "value": "email",
+                                              "value": "versionName",
                                             },
-                                          },
-                                          Object {
-                                            "arguments": Array [],
-                                            "directives": Array [],
-                                            "kind": "Field",
-                                            "name": Object {
-                                              "kind": "Name",
-                                              "value": "accessLevel",
-                                            },
+                                            "selectionSet": undefined,
                                           },
                                         ],
                                       },
@@ -1762,22 +1236,7 @@ exports[`Header matches snapshot 1`] = `
                             ],
                             "kind": "Document",
                             "loc": Object {
-                              "end": 60,
-                              "source": Object {
-                                "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                                "locationOffset": Object {
-                                  "column": 1,
-                                  "line": 1,
-                                },
-                                "name": "GraphQL request",
-                              },
+                              "end": 79,
                               "start": 0,
                             },
                           },
@@ -1787,15 +1246,84 @@ exports[`Header matches snapshot 1`] = `
                     },
                     "cancel": [Function],
                     "diff": Object {
-                      "complete": true,
-                      "missing": undefined,
-                      "result": Object {
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
+                      "complete": false,
+                      "missing": Array [
+                        MissingFieldError {
+                          "message": "Can't find field 'openedVersion' on ROOT_QUERY object",
+                          "path": Array [
+                            "openedVersion",
+                          ],
+                          "query": Object {
+                            "definitions": Array [
+                              Object {
+                                "directives": Array [],
+                                "kind": "OperationDefinition",
+                                "name": undefined,
+                                "operation": "query",
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "alias": undefined,
+                                      "arguments": Array [],
+                                      "directives": Array [
+                                        Object {
+                                          "arguments": Array [],
+                                          "kind": "Directive",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "client",
+                                          },
+                                        },
+                                      ],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "openedVersion",
+                                      },
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "runtimeName",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "versionName",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  ],
+                                },
+                                "variableDefinitions": Array [],
+                              },
+                            ],
+                            "kind": "Document",
+                            "loc": Object {
+                              "end": 79,
+                              "start": 0,
+                            },
+                          },
+                          "variables": Object {},
                         },
-                      },
+                      ],
+                      "result": Object {},
                     },
                     "dirty": false,
                     "document": Object {
@@ -1803,51 +1331,53 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "directives": Array [],
                           "kind": "OperationDefinition",
-                          "name": Object {
-                            "kind": "Name",
-                            "value": "GetMe",
-                          },
+                          "name": undefined,
                           "operation": "query",
                           "selectionSet": Object {
                             "kind": "SelectionSet",
                             "selections": Array [
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
-                                "directives": Array [],
+                                "directives": Array [
+                                  Object {
+                                    "arguments": Array [],
+                                    "kind": "Directive",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "client",
+                                    },
+                                  },
+                                ],
                                 "kind": "Field",
                                 "name": Object {
                                   "kind": "Name",
-                                  "value": "me",
+                                  "value": "openedVersion",
                                 },
                                 "selectionSet": Object {
                                   "kind": "SelectionSet",
                                   "selections": Array [
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
-                                        "value": "id",
+                                        "value": "runtimeName",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
-                                        "value": "email",
+                                        "value": "versionName",
                                       },
-                                    },
-                                    Object {
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "accessLevel",
-                                      },
+                                      "selectionSet": undefined,
                                     },
                                   ],
                                 },
@@ -1859,22 +1389,7 @@ exports[`Header matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 60,
-                        "source": Object {
-                          "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                          "locationOffset": Object {
-                            "column": 1,
-                            "line": 1,
-                          },
-                          "name": "GraphQL request",
-                        },
+                        "end": 79,
                         "start": 0,
                       },
                     },
@@ -1888,51 +1403,53 @@ exports[`Header matches snapshot 1`] = `
                           Object {
                             "directives": Array [],
                             "kind": "OperationDefinition",
-                            "name": Object {
-                              "kind": "Name",
-                              "value": "GetMe",
-                            },
+                            "name": undefined,
                             "operation": "query",
                             "selectionSet": Object {
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
-                                  "directives": Array [],
+                                  "directives": Array [
+                                    Object {
+                                      "arguments": Array [],
+                                      "kind": "Directive",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "client",
+                                      },
+                                    },
+                                  ],
                                   "kind": "Field",
                                   "name": Object {
                                     "kind": "Name",
-                                    "value": "me",
+                                    "value": "openedVersion",
                                   },
                                   "selectionSet": Object {
                                     "kind": "SelectionSet",
                                     "selections": Array [
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
                                         "name": Object {
                                           "kind": "Name",
-                                          "value": "id",
+                                          "value": "runtimeName",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
                                         "name": Object {
                                           "kind": "Name",
-                                          "value": "email",
+                                          "value": "versionName",
                                         },
-                                      },
-                                      Object {
-                                        "arguments": Array [],
-                                        "directives": Array [],
-                                        "kind": "Field",
-                                        "name": Object {
-                                          "kind": "Name",
-                                          "value": "accessLevel",
-                                        },
+                                        "selectionSet": undefined,
                                       },
                                     ],
                                   },
@@ -1944,68 +1461,31 @@ exports[`Header matches snapshot 1`] = `
                         ],
                         "kind": "Document",
                         "loc": Object {
-                          "end": 60,
-                          "source": Object {
-                            "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                            "locationOffset": Object {
-                              "column": 1,
-                              "line": 1,
-                            },
-                            "name": "GraphQL request",
-                          },
+                          "end": 79,
                           "start": 0,
                         },
                       },
                       "variables": Object {},
                     },
-                    "lastWrittenResult": Object {
-                      "data": Object {
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
-                    "lastWrittenVars": Object {},
                     "listeners": Set {
                       [Function],
                     },
-                    "networkError": undefined,
-                    "networkStatus": 7,
+                    "networkError": null,
+                    "networkStatus": 1,
                     "observableQuery": ObservableQuery {
                       "_subscriber": [Function],
                       "isTornDown": false,
                       "lastResult": Object {
-                        "data": Object {
-                          "me": Object {
-                            "accessLevel": "ADMIN",
-                            "email": "user@konstellation.com",
-                            "id": "someId",
-                          },
-                        },
-                        "loading": false,
-                        "networkStatus": 7,
-                        "partial": false,
+                        "data": undefined,
+                        "loading": true,
+                        "networkStatus": 1,
+                        "partial": true,
                       },
                       "lastResultSnapshot": Object {
-                        "data": Object {
-                          "me": Object {
-                            "accessLevel": "ADMIN",
-                            "email": "user@konstellation.com",
-                            "id": "someId",
-                          },
-                        },
-                        "loading": false,
-                        "networkStatus": 7,
-                        "partial": false,
+                        "data": undefined,
+                        "loading": true,
+                        "networkStatus": 1,
+                        "partial": true,
                       },
                       "observer": Object {
                         "error": [Function],
@@ -2019,8 +1499,18 @@ exports[`Header matches snapshot 1`] = `
                               "error": [Function],
                               "next": [Function],
                             },
-                            "_queue": undefined,
-                            "_state": "ready",
+                            "_queue": Array [
+                              Object {
+                                "type": "next",
+                                "value": Object {
+                                  "data": undefined,
+                                  "loading": true,
+                                  "networkStatus": 1,
+                                  "partial": true,
+                                },
+                              },
+                            ],
+                            "_state": "buffering",
                           },
                         },
                       },
@@ -2033,51 +1523,53 @@ exports[`Header matches snapshot 1`] = `
                             Object {
                               "directives": Array [],
                               "kind": "OperationDefinition",
-                              "name": Object {
-                                "kind": "Name",
-                                "value": "GetMe",
-                              },
+                              "name": undefined,
                               "operation": "query",
                               "selectionSet": Object {
                                 "kind": "SelectionSet",
                                 "selections": Array [
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
-                                    "directives": Array [],
+                                    "directives": Array [
+                                      Object {
+                                        "arguments": Array [],
+                                        "kind": "Directive",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "client",
+                                        },
+                                      },
+                                    ],
                                     "kind": "Field",
                                     "name": Object {
                                       "kind": "Name",
-                                      "value": "me",
+                                      "value": "openedVersion",
                                     },
                                     "selectionSet": Object {
                                       "kind": "SelectionSet",
                                       "selections": Array [
                                         Object {
+                                          "alias": undefined,
                                           "arguments": Array [],
                                           "directives": Array [],
                                           "kind": "Field",
                                           "name": Object {
                                             "kind": "Name",
-                                            "value": "id",
+                                            "value": "runtimeName",
                                           },
+                                          "selectionSet": undefined,
                                         },
                                         Object {
+                                          "alias": undefined,
                                           "arguments": Array [],
                                           "directives": Array [],
                                           "kind": "Field",
                                           "name": Object {
                                             "kind": "Name",
-                                            "value": "email",
+                                            "value": "versionName",
                                           },
-                                        },
-                                        Object {
-                                          "arguments": Array [],
-                                          "directives": Array [],
-                                          "kind": "Field",
-                                          "name": Object {
-                                            "kind": "Name",
-                                            "value": "accessLevel",
-                                          },
+                                          "selectionSet": undefined,
                                         },
                                       ],
                                     },
@@ -2089,22 +1581,7 @@ exports[`Header matches snapshot 1`] = `
                           ],
                           "kind": "Document",
                           "loc": Object {
-                            "end": 60,
-                            "source": Object {
-                              "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                              "locationOffset": Object {
-                                "column": 1,
-                                "line": 1,
-                              },
-                              "name": "GraphQL request",
-                            },
+                            "end": 79,
                             "start": 0,
                           },
                         },
@@ -2113,7 +1590,7 @@ exports[`Header matches snapshot 1`] = `
                       "queryId": "1",
                       "queryInfo": [Circular],
                       "queryManager": [Circular],
-                      "queryName": "GetMe",
+                      "queryName": undefined,
                       "reobserver": Reobserver {
                         "concast": Concast {
                           "_subscriber": [Function],
@@ -2123,21 +1600,12 @@ exports[`Header matches snapshot 1`] = `
                             "error": [Function],
                             "next": [Function],
                           },
-                          "latest": Array [
-                            "next",
-                            Object {
-                              "data": Object {
-                                "me": Object {
-                                  "accessLevel": "ADMIN",
-                                  "email": "user@konstellation.com",
-                                  "id": "someId",
-                                },
-                              },
-                              "loading": false,
-                              "networkStatus": 7,
-                            },
-                          ],
                           "observers": Set {
+                            Object {
+                              "complete": [Function],
+                              "error": [Function],
+                              "next": [Function],
+                            },
                             Object {
                               "error": [Function],
                               "next": [Function],
@@ -2147,7 +1615,16 @@ exports[`Header matches snapshot 1`] = `
                           "reject": [Function],
                           "resolve": [Function],
                           "sources": Array [],
-                          "sub": null,
+                          "sub": Subscription {
+                            "_cleanup": [Function],
+                            "_observer": Object {
+                              "complete": [Function],
+                              "error": [Function],
+                              "next": [Function],
+                            },
+                            "_queue": undefined,
+                            "_state": "ready",
+                          },
                         },
                         "fetch": [Function],
                         "observer": Object {
@@ -2163,51 +1640,53 @@ exports[`Header matches snapshot 1`] = `
                               Object {
                                 "directives": Array [],
                                 "kind": "OperationDefinition",
-                                "name": Object {
-                                  "kind": "Name",
-                                  "value": "GetMe",
-                                },
+                                "name": undefined,
                                 "operation": "query",
                                 "selectionSet": Object {
                                   "kind": "SelectionSet",
                                   "selections": Array [
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
-                                      "directives": Array [],
+                                      "directives": Array [
+                                        Object {
+                                          "arguments": Array [],
+                                          "kind": "Directive",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "client",
+                                          },
+                                        },
+                                      ],
                                       "kind": "Field",
                                       "name": Object {
                                         "kind": "Name",
-                                        "value": "me",
+                                        "value": "openedVersion",
                                       },
                                       "selectionSet": Object {
                                         "kind": "SelectionSet",
                                         "selections": Array [
                                           Object {
+                                            "alias": undefined,
                                             "arguments": Array [],
                                             "directives": Array [],
                                             "kind": "Field",
                                             "name": Object {
                                               "kind": "Name",
-                                              "value": "id",
+                                              "value": "runtimeName",
                                             },
+                                            "selectionSet": undefined,
                                           },
                                           Object {
+                                            "alias": undefined,
                                             "arguments": Array [],
                                             "directives": Array [],
                                             "kind": "Field",
                                             "name": Object {
                                               "kind": "Name",
-                                              "value": "email",
+                                              "value": "versionName",
                                             },
-                                          },
-                                          Object {
-                                            "arguments": Array [],
-                                            "directives": Array [],
-                                            "kind": "Field",
-                                            "name": Object {
-                                              "kind": "Name",
-                                              "value": "accessLevel",
-                                            },
+                                            "selectionSet": undefined,
                                           },
                                         ],
                                       },
@@ -2219,22 +1698,7 @@ exports[`Header matches snapshot 1`] = `
                             ],
                             "kind": "Document",
                             "loc": Object {
-                              "end": 60,
-                              "source": Object {
-                                "body": "query GetMe {
-  me {
-    id
-    email
-    accessLevel
-  }
-}
-",
-                                "locationOffset": Object {
-                                  "column": 1,
-                                  "line": 1,
-                                },
-                                "name": "GraphQL request",
-                              },
+                              "end": 79,
                               "start": 0,
                             },
                           },
@@ -2264,269 +1728,155 @@ exports[`Header matches snapshot 1`] = `
             }
           }
         >
-          <Memo(Header)>
-            <header
-              className="container"
-              data-testid="app-header"
+          <WorkflowsManager
+            entrypointAddress="some-address"
+            entrypointStatus="STARTED"
+            versionStatus="STARTED"
+            workflows={
+              Array [
+                Object {
+                  "__typename": "Workflow",
+                  "edges": Array [
+                    Object {
+                      "__typename": "Edge",
+                      "fromNode": "node1",
+                      "id": "edgeId",
+                      "toNode": "node2",
+                    },
+                  ],
+                  "id": "workflowId",
+                  "name": "Workflow Nane",
+                  "nodes": Array [
+                    Object {
+                      "__typename": "Node",
+                      "id": "nodeId",
+                      "name": "Node Name",
+                      "status": "STARTED",
+                    },
+                  ],
+                },
+              ]
+            }
+          >
+            <div
+              className="workflows"
             >
-              <img
-                alt="konstellation"
-                className="konstellationText"
-                src="/img/brand/konstellation.svg"
-              />
-              <div
-                className="customHeaderElements"
-              />
-              <Memo(Settings)
-                label="user@konstellation.com"
+              <Workflow
+                entrypointAddress="some-address"
+                entrypointStatus="STARTED"
+                key="workflowId"
+                tooltipRefs={
+                  Object {
+                    "body": Object {
+                      "current": <div
+                        class="wrapper STARTED"
+                      >
+                        <div
+                          class="container"
+                        >
+                          <div
+                            class="header"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root icon-regular STARTED"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            />
+                            <div
+                              class="title"
+                            />
+                          </div>
+                          <div
+                            class="content"
+                          >
+                            <div />
+                          </div>
+                        </div>
+                        <div
+                          class="separator"
+                        />
+                      </div>,
+                    },
+                    "content": Object {
+                      "current": <div
+                        class="content"
+                      >
+                        <div />
+                      </div>,
+                    },
+                    "header": Object {
+                      "current": <div
+                        class="header"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root icon-regular STARTED"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        />
+                        <div
+                          class="title"
+                        />
+                      </div>,
+                    },
+                    "lastHoveredNode": null,
+                    "onHideTooltip": [Function],
+                    "onShowTooltip": [Function],
+                  }
+                }
+                workflow={
+                  Object {
+                    "__typename": "Workflow",
+                    "edges": Array [
+                      Object {
+                        "__typename": "Edge",
+                        "fromNode": "node1",
+                        "id": "edgeId",
+                        "toNode": "node2",
+                      },
+                    ],
+                    "id": "workflowId",
+                    "name": "Workflow Nane",
+                    "nodes": Array [
+                      Object {
+                        "__typename": "Node",
+                        "id": "nodeId",
+                        "name": "Node Name",
+                        "status": "STARTED",
+                      },
+                    ],
+                  }
+                }
+                workflowStatus="STARTED"
               >
                 <div
-                  className="container"
-                  data-testid="settingsContainer"
-                  onClick={[Function]}
-                >
-                  <div
-                    className="label"
-                    data-testid="settings-label"
-                  >
-                    user@konstellation.com
-                  </div>
-                  <div
-                    className="options"
-                    data-testid="settingsContent"
-                    style={
-                      Object {
-                        "maxHeight": 0,
-                      }
+                  className="workflowContainer DOWN"
+                  style={
+                    Object {
+                      "width": 483,
                     }
+                  }
+                >
+                  <WorkflowHeader
+                    name="Workflow Nane"
+                    onWorkflowClick={[Function]}
                   >
-                    <A
-                      Icon={
-                        Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "displayName": "VerifiedUserIcon",
-                          "muiName": "SvgIcon",
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        }
-                      }
-                      align="left"
-                      key="buttonSettings"
-                      label="SETTINGS"
-                      style={
-                        Object {
-                          "paddingLeft": "20%",
-                        }
-                      }
-                      to="/settings"
-                    >
-                      <Link
-                        data-testid="buttonLink"
-                        to="/settings"
-                      >
-                        <LinkAnchor
-                          data-testid="buttonLink"
-                          href="/settings"
-                          navigate={[Function]}
-                        >
-                          <a
-                            data-testid="buttonLink"
-                            href="/settings"
-                            onClick={[Function]}
-                          >
-                            <div
-                              className="_1lqJX _3ZftH _zeH0N undefined"
-                              onClick={[Function]}
-                              onKeyPress={[Function]}
-                              style={
-                                Object {
-                                  "height": 40,
-                                  "lineHeight": "40px",
-                                  "paddingLeft": "20%",
-                                }
-                              }
-                              tabIndex={-1}
-                              title=""
-                            >
-                              <ForwardRef
-                                className="icon-small"
-                              >
-                                <WithStyles(ForwardRef(SvgIcon))
-                                  className="icon-small"
-                                >
-                                  <ForwardRef(SvgIcon)
-                                    className="icon-small"
-                                    classes={
-                                      Object {
-                                        "colorAction": "MuiSvgIcon-colorAction",
-                                        "colorDisabled": "MuiSvgIcon-colorDisabled",
-                                        "colorError": "MuiSvgIcon-colorError",
-                                        "colorPrimary": "MuiSvgIcon-colorPrimary",
-                                        "colorSecondary": "MuiSvgIcon-colorSecondary",
-                                        "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
-                                        "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
-                                        "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
-                                        "root": "MuiSvgIcon-root",
-                                      }
-                                    }
-                                  >
-                                    <svg
-                                      aria-hidden={true}
-                                      className="MuiSvgIcon-root icon-small"
-                                      focusable="false"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"
-                                      />
-                                    </svg>
-                                  </ForwardRef(SvgIcon)>
-                                </WithStyles(ForwardRef(SvgIcon))>
-                              </ForwardRef>
-                              <span>
-                                SETTINGS
-                              </span>
-                            </div>
-                          </a>
-                        </LinkAnchor>
-                      </Link>
-                    </A>
-                    <A
-                      Icon={
-                        Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "displayName": "SupervisorAccountIcon",
-                          "muiName": "SvgIcon",
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        }
-                      }
-                      align="left"
-                      key="buttonAudit"
-                      label="AUDIT"
-                      style={
-                        Object {
-                          "paddingLeft": "20%",
-                        }
-                      }
-                      to="/audit"
-                    >
-                      <Link
-                        data-testid="buttonLink"
-                        to="/audit"
-                      >
-                        <LinkAnchor
-                          data-testid="buttonLink"
-                          href="/audit"
-                          navigate={[Function]}
-                        >
-                          <a
-                            data-testid="buttonLink"
-                            href="/audit"
-                            onClick={[Function]}
-                          >
-                            <div
-                              className="_1lqJX _3ZftH _zeH0N undefined"
-                              onClick={[Function]}
-                              onKeyPress={[Function]}
-                              style={
-                                Object {
-                                  "height": 40,
-                                  "lineHeight": "40px",
-                                  "paddingLeft": "20%",
-                                }
-                              }
-                              tabIndex={-1}
-                              title=""
-                            >
-                              <ForwardRef
-                                className="icon-small"
-                              >
-                                <WithStyles(ForwardRef(SvgIcon))
-                                  className="icon-small"
-                                >
-                                  <ForwardRef(SvgIcon)
-                                    className="icon-small"
-                                    classes={
-                                      Object {
-                                        "colorAction": "MuiSvgIcon-colorAction",
-                                        "colorDisabled": "MuiSvgIcon-colorDisabled",
-                                        "colorError": "MuiSvgIcon-colorError",
-                                        "colorPrimary": "MuiSvgIcon-colorPrimary",
-                                        "colorSecondary": "MuiSvgIcon-colorSecondary",
-                                        "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
-                                        "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
-                                        "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
-                                        "root": "MuiSvgIcon-root",
-                                      }
-                                    }
-                                  >
-                                    <svg
-                                      aria-hidden={true}
-                                      className="MuiSvgIcon-root icon-small"
-                                      focusable="false"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        d="M16.5 12c1.38 0 2.49-1.12 2.49-2.5S17.88 7 16.5 7C15.12 7 14 8.12 14 9.5s1.12 2.5 2.5 2.5zM9 11c1.66 0 2.99-1.34 2.99-3S10.66 5 9 5C7.34 5 6 6.34 6 8s1.34 3 3 3zm7.5 3c-1.83 0-5.5.92-5.5 2.75V19h11v-2.25c0-1.83-3.67-2.75-5.5-2.75zM9 13c-2.33 0-7 1.17-7 3.5V19h7v-2.25c0-.85.33-2.34 2.37-3.47C10.5 13.1 9.66 13 9 13z"
-                                      />
-                                    </svg>
-                                  </ForwardRef(SvgIcon)>
-                                </WithStyles(ForwardRef(SvgIcon))>
-                              </ForwardRef>
-                              <span>
-                                AUDIT
-                              </span>
-                            </div>
-                          </a>
-                        </LinkAnchor>
-                      </Link>
-                    </A>
-                    <A
-                      Icon={
-                        Object {
-                          "$$typeof": Symbol(react.memo),
-                          "compare": null,
-                          "displayName": "ExitToAppIcon",
-                          "muiName": "SvgIcon",
-                          "type": Object {
-                            "$$typeof": Symbol(react.forward_ref),
-                            "render": [Function],
-                          },
-                        }
-                      }
-                      align="left"
-                      key="buttonLogout"
-                      label="LOGOUT"
-                      onClick={[Function]}
-                      style={
-                        Object {
-                          "paddingLeft": "20%",
-                        }
-                      }
+                    <div
+                      className="workflowHeader"
                     >
                       <div
-                        className="_1lqJX _3ZftH _zeH0N undefined"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          Object {
-                            "height": 40,
-                            "lineHeight": "40px",
-                            "paddingLeft": "20%",
-                          }
-                        }
-                        tabIndex={-1}
-                        title=""
+                        className="title"
                       >
-                        <ForwardRef
-                          className="icon-small"
+                        Workflow Nane
+                      </div>
+                      <Can
+                        perform="logs:view"
+                      >
+                        <div
+                          className="button"
+                          onClick={[Function]}
+                          title="Open logs for this workflow"
                         >
                           <WithStyles(ForwardRef(SvgIcon))
                             className="icon-small"
@@ -2554,22 +1904,245 @@ exports[`Header matches snapshot 1`] = `
                                 viewBox="0 0 24 24"
                               >
                                 <path
-                                  d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                                  d="M9.00787402,8.25488372 L1.66929134,15.624186 C1.56430446,15.7296124 1.44356955,15.7823256 1.30708661,15.7823256 C1.17060367,15.7823256 1.04986877,15.7296124 0.94488189,15.624186 L0.157480315,14.8334884 C0.0524934383,14.728062 0,14.6068217 0,14.4697674 C0,14.3327132 0.0524934383,14.2114729 0.157480315,14.1060465 L6.34645669,7.89116279 L0.157480315,1.67627907 C0.0524934383,1.57085271 0,1.4496124 0,1.31255814 C0,1.17550388 0.0524934383,1.05426357 0.157480315,0.948837209 L0.94488189,0.158139535 C1.04986877,0.0527131783 1.17060367,0 1.30708661,0 C1.44356955,0 1.56430446,0.0527131783 1.66929134,0.158139535 L9.00787402,7.52744186 C9.11286089,7.63286822 9.16535433,7.75410853 9.16535433,7.89116279 C9.16535433,8.02821705 9.11286089,8.14945736 9.00787402,8.25488372 Z M26,15.4818605 L26,16.4939535 C26,16.6415504 25.9527559,16.7627907 25.8582677,16.8576744 C25.7637795,16.9525581 25.6430446,17 25.496063,17 L10.3779528,17 C10.2309711,17 10.1102362,16.9525581 10.015748,16.8576744 C9.92125984,16.7627907 9.87401575,16.6415504 9.87401575,16.4939535 L9.87401575,15.4818605 C9.87401575,15.3342636 9.92125984,15.2130233 10.015748,15.1181395 C10.1102362,15.0232558 10.2309711,14.975814 10.3779528,14.975814 L25.496063,14.975814 C25.6430446,14.975814 25.7637795,15.0232558 25.8582677,15.1181395 C25.9527559,15.2130233 26,15.3342636 26,15.4818605 Z"
                                 />
                               </svg>
                             </ForwardRef(SvgIcon)>
                           </WithStyles(ForwardRef(SvgIcon))>
-                        </ForwardRef>
-                        <span>
-                          LOGOUT
-                        </span>
-                      </div>
-                    </A>
+                        </div>
+                      </Can>
+                    </div>
+                  </WorkflowHeader>
+                  <div
+                    className="chartContainer"
+                  >
+                    <WorkflowChart
+                      data={
+                        Object {
+                          "__typename": "Workflow",
+                          "edges": Array [
+                            Object {
+                              "__typename": "Edge",
+                              "fromNode": "node1",
+                              "id": "edgeId",
+                              "toNode": "node2",
+                            },
+                          ],
+                          "id": "workflowId",
+                          "name": "Workflow Nane",
+                          "nodes": Array [
+                            Object {
+                              "__typename": "Node",
+                              "id": "nodeId",
+                              "name": "Node Name",
+                              "status": "STARTED",
+                            },
+                          ],
+                        }
+                      }
+                      enableNodeClicks={true}
+                      entrypointAddress="some-address"
+                      entrypointStatus="STARTED"
+                      height={0}
+                      onInnerNodeClick={[Function]}
+                      onInputNodeClick={[Function]}
+                      tooltipRefs={
+                        Object {
+                          "body": Object {
+                            "current": <div
+                              class="wrapper STARTED"
+                            >
+                              <div
+                                class="container"
+                              >
+                                <div
+                                  class="header"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root icon-regular STARTED"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  />
+                                  <div
+                                    class="title"
+                                  />
+                                </div>
+                                <div
+                                  class="content"
+                                >
+                                  <div />
+                                </div>
+                              </div>
+                              <div
+                                class="separator"
+                              />
+                            </div>,
+                          },
+                          "content": Object {
+                            "current": <div
+                              class="content"
+                            >
+                              <div />
+                            </div>,
+                          },
+                          "header": Object {
+                            "current": <div
+                              class="header"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root icon-regular STARTED"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              />
+                              <div
+                                class="title"
+                              />
+                            </div>,
+                          },
+                          "lastHoveredNode": null,
+                          "onHideTooltip": [Function],
+                          "onShowTooltip": [Function],
+                        }
+                      }
+                      width={0}
+                      workflowStatus="STARTED"
+                    >
+                      <svg
+                        height={0}
+                        width={0}
+                      />
+                    </WorkflowChart>
                   </div>
                 </div>
-              </Memo(Settings)>
-            </header>
-          </Memo(Header)>
+              </Workflow>
+              <Tooltip
+                onTooltipEnter={[Function]}
+                onTooltipLeave={[Function]}
+                tooltipContentRef={
+                  Object {
+                    "current": <div
+                      class="content"
+                    >
+                      <div />
+                    </div>,
+                  }
+                }
+                tooltipHeader={
+                  Object {
+                    "Icon": null,
+                    "title": "",
+                  }
+                }
+                tooltipHeaderRef={
+                  Object {
+                    "current": <div
+                      class="header"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-root icon-regular STARTED"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      />
+                      <div
+                        class="title"
+                      />
+                    </div>,
+                  }
+                }
+                tooltipRef={
+                  Object {
+                    "current": <div
+                      class="wrapper STARTED"
+                    >
+                      <div
+                        class="container"
+                      >
+                        <div
+                          class="header"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root icon-regular STARTED"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          />
+                          <div
+                            class="title"
+                          />
+                        </div>
+                        <div
+                          class="content"
+                        >
+                          <div />
+                        </div>
+                      </div>
+                      <div
+                        class="separator"
+                      />
+                    </div>,
+                  }
+                }
+                tooltipStatus="STARTED"
+                tooltipVisible={false}
+              >
+                <div
+                  className="wrapper STARTED"
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                >
+                  <div
+                    className="container"
+                  >
+                    <div
+                      className="header"
+                    >
+                      <WithStyles(ForwardRef(SvgIcon))
+                        className="icon-regular STARTED"
+                      >
+                        <ForwardRef(SvgIcon)
+                          className="icon-regular STARTED"
+                          classes={
+                            Object {
+                              "colorAction": "MuiSvgIcon-colorAction",
+                              "colorDisabled": "MuiSvgIcon-colorDisabled",
+                              "colorError": "MuiSvgIcon-colorError",
+                              "colorPrimary": "MuiSvgIcon-colorPrimary",
+                              "colorSecondary": "MuiSvgIcon-colorSecondary",
+                              "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                              "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                              "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                              "root": "MuiSvgIcon-root",
+                            }
+                          }
+                        >
+                          <svg
+                            aria-hidden={true}
+                            className="MuiSvgIcon-root icon-regular STARTED"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          />
+                        </ForwardRef(SvgIcon)>
+                      </WithStyles(ForwardRef(SvgIcon))>
+                      <div
+                        className="title"
+                      />
+                    </div>
+                    <div
+                      className="content"
+                    >
+                      <div />
+                    </div>
+                  </div>
+                  <div
+                    className="separator"
+                  />
+                </div>
+              </Tooltip>
+            </div>
+          </WorkflowsManager>
         </ApolloProvider>
       </MockedProvider>
     </Router>

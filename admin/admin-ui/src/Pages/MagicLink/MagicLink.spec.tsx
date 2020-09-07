@@ -29,7 +29,6 @@ function renderComponent(locationPath: string) {
 }
 
 it('Render MagicLink without crashing', async () => {
-  // @ts-ignore
   axios.mockResolvedValue({
     data: { message: 'Email sent to the user' },
     status: 200
@@ -42,7 +41,6 @@ it('Render MagicLink without crashing', async () => {
 });
 
 it('handles success response', async () => {
-  // @ts-ignore
   axios.mockResolvedValue({
     data: { message: 'Email sent to the user' },
     status: 200
@@ -58,7 +56,6 @@ it('handles success response', async () => {
 });
 
 it('handles error response', async () => {
-  // @ts-ignore
   axios.mockRejectedValue({
     response: { data: { code: 'error' }, status: 400 }
   });

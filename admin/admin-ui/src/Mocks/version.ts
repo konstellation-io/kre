@@ -1,4 +1,8 @@
-import { RuntimeStatus, VersionStatus } from 'Graphql/types/globalTypes';
+import {
+  NodeStatus,
+  RuntimeStatus,
+  VersionStatus
+} from 'Graphql/types/globalTypes';
 
 import { loader } from 'graphql.macro';
 
@@ -29,6 +33,7 @@ export const runtime = {
   description: 'Some Description',
   creationAuthor: { email: 'some@user.com' },
   status: RuntimeStatus.STARTED,
+  measurementsUrl: 'measurementsUrl',
   __typename: 'Runtime'
 };
 export const version = {
@@ -55,9 +60,34 @@ export const version = {
   },
   hasDoc: false
 };
+export const workflow = {
+  __typename: 'Workflow',
+  id: 'workflowId',
+  name: 'Workflow Nane',
+  nodes: [
+    {
+      __typename: 'Node',
+      id: 'nodeId',
+      name: 'Node Name',
+      status: NodeStatus.STARTED
+    }
+  ],
+  edges: [
+    {
+      __typename: 'Edge',
+      id: 'edgeId',
+      fromNode: 'node1',
+      toNode: 'node2'
+    }
+  ]
+};
+
 export const confVarsMock = {
   request: {
-    query: GetConfigurationVariablesQuery
+    query: GetConfigurationVariablesQuery,
+    variables: {
+      versionId: 'id'
+    }
   },
   result: {
     data: {

@@ -1,28 +1,28 @@
-import FiltersBar from './FiltersBar';
+import { BrowserRouter } from 'react-router-dom';
+import Documentation from './Documentation';
 import { MockedProvider } from '@apollo/client/testing';
 import React from 'react';
 import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
 import { usersMock } from 'Mocks/users';
 
+jest.mock('index', () => ({
+  API_BASE_URL: 'url'
+}));
+
 const mocks = [usersMock];
 
 function Wrapper({ mocks }: any) {
   return (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <FiltersBar
-        onSubmit={jest.fn()}
-        types={['a', 'b', 'c']}
-        users={['1', '2', '3']}
-        runtimesAndVersions={[]}
-        errors={{}}
-        watch={jest.fn()}
-      />
-    </MockedProvider>
+    <BrowserRouter>
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Documentation />
+      </MockedProvider>
+    </BrowserRouter>
   );
 }
 const Component = <Wrapper mocks={mocks} />;
 
-describe('FiltersBar', () => {
+describe('Documentation', () => {
   let wrapper: any;
 
   beforeEach(async () => {

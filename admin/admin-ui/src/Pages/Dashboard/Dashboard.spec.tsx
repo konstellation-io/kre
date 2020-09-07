@@ -25,7 +25,6 @@ const Component = <Wrapper mocks={mocks} />;
 const ComponentError = <Wrapper mocks={errorMocks} />;
 
 function getRuntimeField(position: number, field: string): string {
-  // @ts-ignore
   return dashboardMock.result.data.runtimes[position][field];
 }
 const getRuntimeName = (pos: number) => getRuntimeField(pos, 'name');

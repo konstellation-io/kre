@@ -1,6 +1,7 @@
-import React from 'react';
-import ConditionalLink from './ConditionalLink';
 import { Link, NavLink } from 'react-router-dom';
+
+import ConditionalLink from './ConditionalLink';
+import React from 'react';
 import { shallow } from 'enzyme';
 
 describe('ConditionalLink', () => {

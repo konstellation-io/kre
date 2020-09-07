@@ -1,19 +1,24 @@
+import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
 import Settings from './Settings';
 import { label } from 'Utils/testUtilsEnzyme';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 
 const mockDoLogout = jest.fn();
 
-jest.mock('@apollo/client');
-jest.mock('react-router');
 jest.mock('Hooks/useEndpoint', () => jest.fn(() => [{}, mockDoLogout]));
+
+const Wrapper = () => (
+  <BrowserRouter>
+    <Settings label="some label" />
+  </BrowserRouter>
+);
 
 describe('Settings', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<Settings label="some label" />);
+    wrapper = mount(<Wrapper />);
   });
 
   it('matches snapshot', () => {

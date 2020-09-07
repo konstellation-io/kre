@@ -1,61 +1,157 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`VersionInfo matches snapshot 1`] = `
-<Link
-  to="/runtimes/runtimeId/versions/versionId/status"
->
-  <div
-    className="container"
-    id="versionInfoElement_versionId"
+<BrowserRouter>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
   >
-    <div
-      className="col1"
+    <VersionInfo
+      version={
+        Object {
+          "__typename": "Version",
+          "config": Object {
+            "completed": false,
+            "vars": Array [],
+          },
+          "creationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "creationDate": "2020/01/01",
+          "description": "versionDescription",
+          "hasDoc": false,
+          "id": "versionId",
+          "name": "versionName",
+          "publicationAuthor": Object {
+            "__typename": "User",
+            "email": "user@domain.com",
+            "id": "userId",
+          },
+          "publicationDate": "2020/01/01",
+          "status": "STARTED",
+        }
+      }
     >
-      <div
-        className="labelContainer"
+      <Link
+        to="/runtimes//versions/versionId/status"
       >
-        <div
-          className="label STARTED"
+        <LinkAnchor
+          href="/runtimes//versions/versionId/status"
+          navigate={[Function]}
         >
-          STARTED
-        </div>
-      </div>
-      <div
-        className="actionsContainer"
-      >
-        <div
-          className="creation"
-        >
-          <TodayIcon
-            className="icon-small"
-          />
-          <p
-            className="creationDate"
+          <a
+            href="/runtimes//versions/versionId/status"
+            onClick={[Function]}
           >
-            CREATED: Jan 1, 2020
-          </p>
-        </div>
-      </div>
-    </div>
-    <div
-      className="col2"
-    >
-      <p
-        className="version"
-      >
-        VERSION versionName
-      </p>
-      <p
-        className="descriptionTitle"
-      >
-        DESCRIPTION
-      </p>
-      <p
-        className="description"
-      >
-        versionDescription
-      </p>
-    </div>
-  </div>
-</Link>
+            <div
+              className="container"
+              id="versionInfoElement_versionId"
+            >
+              <div
+                className="col1"
+              >
+                <div
+                  className="labelContainer"
+                >
+                  <div
+                    className="label STARTED"
+                  >
+                    STARTED
+                  </div>
+                </div>
+                <div
+                  className="actionsContainer"
+                >
+                  <div
+                    className="creation"
+                  >
+                    <ForwardRef
+                      className="icon-small"
+                    >
+                      <WithStyles(ForwardRef(SvgIcon))
+                        className="icon-small"
+                      >
+                        <ForwardRef(SvgIcon)
+                          className="icon-small"
+                          classes={
+                            Object {
+                              "colorAction": "MuiSvgIcon-colorAction",
+                              "colorDisabled": "MuiSvgIcon-colorDisabled",
+                              "colorError": "MuiSvgIcon-colorError",
+                              "colorPrimary": "MuiSvgIcon-colorPrimary",
+                              "colorSecondary": "MuiSvgIcon-colorSecondary",
+                              "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                              "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                              "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                              "root": "MuiSvgIcon-root",
+                            }
+                          }
+                        >
+                          <svg
+                            aria-hidden={true}
+                            className="MuiSvgIcon-root icon-small"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                            />
+                          </svg>
+                        </ForwardRef(SvgIcon)>
+                      </WithStyles(ForwardRef(SvgIcon))>
+                    </ForwardRef>
+                    <p
+                      className="creationDate"
+                    >
+                      CREATED: Jan 1, 2020
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="col2"
+              >
+                <p
+                  className="version"
+                >
+                  VERSION versionName
+                </p>
+                <p
+                  className="descriptionTitle"
+                >
+                  DESCRIPTION
+                </p>
+                <p
+                  className="description"
+                >
+                  versionDescription
+                </p>
+              </div>
+            </div>
+          </a>
+        </LinkAnchor>
+      </Link>
+    </VersionInfo>
+  </Router>
+</BrowserRouter>
 `;
