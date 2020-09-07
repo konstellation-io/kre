@@ -4,6 +4,8 @@ metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
+    nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
 spec:
   rules:
     - host: proto.{{ .Values.runtime.host }}
