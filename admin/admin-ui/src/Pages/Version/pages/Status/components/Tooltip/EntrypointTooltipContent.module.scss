@@ -7,22 +7,9 @@
   display: flex;
   flex-direction: row;
   align-items: baseline;
+  justify-content: space-between;
 
-  input {
-    @include font-body;
-    color: font-color(light);
-
-    width: -webkit-fill-available;
-    background: none;
-    border: none;
-    outline: none;
+  .address {
+    align-self: center;
   }
-  div {
-    margin: 0 (2 * $grid-unit) 0 auto;
-    cursor: pointer;
-  }
-}
-
-.copyButton svg {
-  margin-right: -$grid-unit;
 }
