@@ -3,7 +3,6 @@
 @import 'Styles/shadows';
 @import 'Styles/colors';
 
-$width: $grid-unit * 55;
 $padding-y: 14px;
 $separation: 21px;
 $color-line: palette(base, 800);
@@ -28,7 +27,8 @@ $color-bg: $bg-color-dark;
   @include shadow(2);
 
   border-radius: $grid-unit / 2;
-  width: $width;
+  min-width: $grid-unit * 55;
+  max-width: $grid-unit * 75;
   padding: 11px $padding-y;
   background-color: $color-bg;
   border-left: solid 3px $color-ok;
