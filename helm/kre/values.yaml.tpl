@@ -98,7 +98,8 @@ prometheus-operator:
   enabled: true
   grafana:
     enabled: false
-
+  defaultRules:
+    create: false
   alertmanager:
     config:
       route:
