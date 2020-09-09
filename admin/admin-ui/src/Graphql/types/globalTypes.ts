@@ -56,9 +56,9 @@ export enum UserActivityType {
 }
 
 export enum VersionStatus {
-  PUBLISHED = 'PUBLISHED',
-  CREATING = 'CREATING',
   CREATED = 'CREATED',
+  CREATING = 'CREATING',
+  PUBLISHED = 'PUBLISHED',
   STARTED = 'STARTED',
   STARTING = 'STARTING',
   STOPPED = 'STOPPED',
@@ -71,6 +71,7 @@ export interface ConfigurationVariablesInput {
 }
 
 export interface CreateRuntimeInput {
+  id: string;
   name: string;
   description: string;
 }

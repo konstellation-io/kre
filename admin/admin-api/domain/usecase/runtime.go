@@ -3,9 +3,9 @@ package usecase
 import (
 	"context"
 	"errors"
-	"time"
-
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
+	"strings"
+	"time"
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
@@ -19,7 +19,8 @@ type RuntimeStatus string
 
 var (
 	// ErrRuntimeNotFound error
-	ErrRuntimeNotFound = errors.New("error runtime not found")
+	ErrRuntimeNotFound   = errors.New("error runtime not found")
+	ErrRuntimeDuplicated = errors.New("there is already a runtime with the same id")
 )
 
 // RuntimeInteractor contains app logic to handle Runtime entities
@@ -52,12 +53,18 @@ func NewRuntimeInteractor(
 }
 
 // CreateRuntime adds a new Runtime
-func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, name string, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
+func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, runtimeID, name, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit); err != nil {
 		return nil, nil, err
 	}
 
+	// Sanitize input params
+	runtimeID = strings.TrimSpace(runtimeID)
+	name = strings.TrimSpace(name)
+	description = strings.TrimSpace(description)
+
 	r := &entity.Runtime{
+		ID:          runtimeID,
 		Name:        name,
 		Description: description,
 		Owner:       loggedUserID,
@@ -71,6 +78,21 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, nam
 			SecretKey: i.passwordGenerator.NewPassword(),
 		},
 	}
+
+	// Validation
+	err = r.Validate()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Check if the Runtime already exists
+	_, err = i.runtimeRepo.GetByID(ctx, runtimeID)
+	if err == nil {
+		return nil, nil, ErrRuntimeDuplicated
+	} else if err != ErrRuntimeNotFound {
+		return nil, nil, err
+	}
+
 	createRuntimeInK8sResult, err := i.runtimeService.Create(ctx, r)
 	if err != nil {
 		return
