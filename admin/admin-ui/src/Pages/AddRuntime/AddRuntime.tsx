@@ -121,7 +121,6 @@ function AddRuntime() {
   }
 
   function onSubmit(formData: any) {
-    console.log(formData);
     addRuntime(mutationPayloadHelper(formData));
   }
 
