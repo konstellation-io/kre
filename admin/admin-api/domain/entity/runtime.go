@@ -2,6 +2,9 @@ package entity
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
+	"log"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -13,6 +16,22 @@ const (
 	RuntimeStatusStarted  RuntimeStatus = "STARTED"
 	RuntimeStatusError    RuntimeStatus = "ERROR"
 )
+
+var (
+	validate             = validator.New()
+	validRuntimeIDRegExp = regexp.MustCompile("^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$")
+)
+
+func init() {
+	err := validate.RegisterValidation("runtime-id", runtimeIDValidator)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func runtimeIDValidator(fl validator.FieldLevel) bool {
+	return validRuntimeIDRegExp.MatchString(fl.Field().String())
+}
 
 func (e RuntimeStatus) IsValid() bool {
 	switch e {
@@ -43,9 +62,9 @@ type RuntimeStatusEntity struct {
 }
 
 type Runtime struct {
-	ID               string        `bson:"_id"`
-	Name             string        `bson:"name"`
-	Description      string        `bson:"description"`
+	ID               string        `bson:"_id" validate:"required,gte=3,lte=15,runtime-id"`
+	Name             string        `bson:"name" validate:"required,lte=40"`
+	Description      string        `bson:"description" validate:"required,lte=500"`
 	CreationDate     time.Time     `bson:"creationDate"`
 	Owner            string        `bson:"owner"`
 	Status           RuntimeStatus `bson:"status"`
@@ -55,7 +74,7 @@ type Runtime struct {
 }
 
 func (r *Runtime) GetNamespace() string {
-	return fmt.Sprintf("kre-%s", strings.ToLower(r.Name))
+	return fmt.Sprintf("kre-%s", r.ID)
 }
 
 func (r *Runtime) GetMongoURI(replicas int) string {
@@ -78,4 +97,8 @@ func (r *Runtime) GetMeasurementURL(baseURL string) string {
 
 func (r *Runtime) GetEntrypointAddress(baseDomain string) string {
 	return fmt.Sprintf("entrypoint.%s.%s", r.GetNamespace(), baseDomain)
+}
+
+func (r *Runtime) Validate() error {
+	return validate.Struct(r)
 }

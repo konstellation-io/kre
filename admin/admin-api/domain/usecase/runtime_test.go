@@ -142,7 +142,7 @@ func TestCreateRuntime(t *testing.T) {
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
 
-	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(ctx, userID, name, description)
+	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(ctx, userID, "", name, description)
 	require.Nil(t, err)
 	require.Equal(t, expectedRuntime, runtime)
 

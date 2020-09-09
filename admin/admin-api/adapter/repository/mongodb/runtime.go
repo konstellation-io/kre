@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
@@ -30,16 +29,14 @@ func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mo
 }
 
 func (r *RuntimeRepoMongoDB) Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error) {
-	runtime.ID = primitive.NewObjectID().Hex()
 	runtime.CreationDate = time.Now().UTC()
 	runtime.Status = entity.RuntimeStatusCreating
 
-	res, err := r.collection.InsertOne(ctx, runtime)
+	_, err := r.collection.InsertOne(ctx, runtime)
 	if err != nil {
 		return nil, err
 	}
 
-	runtime.ID = res.InsertedID.(string)
 	return runtime, nil
 }
 
@@ -83,7 +80,7 @@ func (r *RuntimeRepoMongoDB) GetByID(ctx context.Context, runtimeID string) (*en
 
 	err := r.collection.FindOne(ctx, filter).Decode(runtime)
 	if err == mongo.ErrNoDocuments {
-		return runtime, usecase.ErrRuntimeNotFound
+		return nil, usecase.ErrRuntimeNotFound
 	}
 
 	return runtime, err

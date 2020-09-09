@@ -34,6 +34,8 @@ func NewK8sRuntimeClient(cfg *config.Config, logger logging.Logger) (*K8sRuntime
 }
 
 func (k *K8sRuntimeClient) Create(ctx context.Context, runtime *entity.Runtime) (string, error) {
+	k.logger.Infof("Creating the runtime \"%s\" (%s) in k8s...", runtime.Name, runtime.GetNamespace())
+
 	req := runtimepb.Request{
 		Runtime: &runtimepb.Runtime{
 			Name:      runtime.Name,

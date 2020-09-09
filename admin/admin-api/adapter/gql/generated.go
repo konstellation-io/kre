@@ -1304,6 +1304,7 @@ type Subscription {
 }
 
 input CreateRuntimeInput {
+  id: String!
   name: String!
   description: String!
 }
@@ -7054,6 +7055,12 @@ func (ec *executionContext) unmarshalInputCreateRuntimeInput(ctx context.Context
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "name":
 			var err error
 			it.Name, err = ec.unmarshalNString2string(ctx, v)

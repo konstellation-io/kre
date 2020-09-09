@@ -59,6 +59,7 @@ type Subscription {
 }
 
 input CreateRuntimeInput {
+  id: String!
   name: String!
   description: String!
 }

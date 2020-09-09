@@ -22,12 +22,27 @@ import { useMutation } from '@apollo/client';
 const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
 const CreateRuntimeMutation = loader('Graphql/mutations/createRuntime.graphql');
 
-const MAX_LENGTH = 20;
+const ID_MAX_LENGTH = 15;
+const NAME_MAX_LENGTH = 40;
+const DES_MAX_LENGTH = 500;
+const INVALID_ID_CHARS_REGEXP = /[^a-z0-9-]/g;
+const SPACES_REGEXP = / +/g;
 
 function verifyRuntimeName(value: string) {
   return CHECK.getValidationError([
     CHECK.isFieldNotEmpty(value),
-    CHECK.isLengthAllowed(value, MAX_LENGTH)
+    CHECK.isLengthAllowed(value, NAME_MAX_LENGTH)
+  ]);
+}
+
+function validateRuntimeID(value: string) {
+  return CHECK.getValidationError([
+    CHECK.isFieldNotEmpty(value),
+    CHECK.isLengthAllowed(value, ID_MAX_LENGTH),
+    CHECK.isLowerCase(value),
+    CHECK.matches(value, /^[a-z]+/, 'ID must start with a lowercase letter'),
+    CHECK.isAlphanumeric(value.replaceAll('-', '')),
+    CHECK.isSlug(value)
   ]);
 }
 
@@ -42,6 +57,7 @@ function getErrorText(errorType: FieldError | undefined) {
 
 type FormData = {
   name: string;
+  id: string;
   description: string;
 };
 
@@ -54,7 +70,6 @@ function AddRuntime() {
     register,
     unregister,
     errors,
-    setError,
     watch
   } = useForm<FormData>({
     defaultValues: {
@@ -63,12 +78,13 @@ function AddRuntime() {
   });
   useEffect(() => {
     register('name', { validate: verifyRuntimeName });
+    register('id', { validate: validateRuntimeID });
     register('description', { required: true });
 
     return () => unregisterMany(unregister, ['name', 'description']);
   }, [register, unregister, setValue]);
 
-  const [addRuntime, { loading, error: mutationError }] = useMutation<
+  const [addRuntime, { loading }] = useMutation<
     CreateRuntime,
     CreateRuntimeVariables
   >(CreateRuntimeMutation, {
@@ -80,33 +96,44 @@ function AddRuntime() {
       if (updateResult.data) {
         const newRuntime = updateResult.data
           .createRuntime as GetRuntimes_runtimes;
-        const cacheResult = cache.readQuery<GetRuntimes>({
-          query: GetRuntimesQuery
-        });
 
-        if (cacheResult !== null) {
-          const { runtimes } = cacheResult;
-          cache.writeQuery({
-            query: GetRuntimesQuery,
-            data: { runtimes: runtimes.concat([newRuntime]) }
+        try {
+          const cacheResult = cache.readQuery<GetRuntimes>({
+            query: GetRuntimesQuery
           });
-        }
+
+          if (cacheResult !== null) {
+            const { runtimes } = cacheResult;
+            cache.writeQuery({
+              query: GetRuntimesQuery,
+              data: { runtimes: runtimes.concat([newRuntime]) }
+            });
+          }
+          // readQuery throws an error when the query fails, we need to wrap it in a try/catch block to silent it.
+          // https://github.com/apollographql/apollo-client/issues/1542
+        } catch (e) {} // eslint-disable-line
       }
     }
   });
-
-  useEffect(() => {
-    if (mutationError) {
-      setError('name', '', mutationError.toString());
-    }
-  }, [mutationError, setError]);
 
   function onCompleteAddRuntime(updatedData: CreateRuntime) {
     history.push(ROUTE.HOME);
   }
 
   function onSubmit(formData: any) {
+    console.log(formData);
     addRuntime(mutationPayloadHelper(formData));
+  }
+
+  function generateID(name: string) {
+    const id = name
+      .trim()
+      .toLowerCase()
+      .replaceAll(SPACES_REGEXP, '-')
+      .replaceAll(INVALID_ID_CHARS_REGEXP, '')
+      .substr(0, ID_MAX_LENGTH);
+
+    setValue('id', id);
   }
 
   return (
@@ -118,13 +145,26 @@ function AddRuntime() {
           <div className={styles.content}>
             <TextInput
               whiteColor
-              label="runtime name"
+              label="name"
               error={get(errors.name, 'message') as string}
-              onChange={(value: string) => setValue('name', value)}
+              onChange={(value: string) => {
+                setValue('name', value);
+                generateID(value);
+              }}
               onEnterKeyPress={handleSubmit(onSubmit)}
-              helpText={`${watch('name', '').length}/${MAX_LENGTH}`}
-              maxLength={MAX_LENGTH}
+              helpText={`${watch('name', '').length}/${NAME_MAX_LENGTH}`}
+              maxLength={NAME_MAX_LENGTH}
               autoFocus
+            />
+            <TextInput
+              whiteColor
+              formValue={watch('id')}
+              label="ID"
+              error={get(errors.id, 'message') as string}
+              onChange={(value: string) => setValue('id', value)}
+              onEnterKeyPress={handleSubmit(onSubmit)}
+              helpText={`${watch('id', '').length}/${ID_MAX_LENGTH}`}
+              maxLength={ID_MAX_LENGTH}
             />
             <TextInput
               textArea
@@ -135,9 +175,11 @@ function AddRuntime() {
                 minHeight: 90,
                 maxHeight: 360
               }}
-              label="runtime description"
+              label="description"
               error={getErrorText(errors.description as FieldError)}
               onChange={(value: string) => setValue('description', value)}
+              helpText={`${watch('description', '').length}/${DES_MAX_LENGTH}`}
+              maxLength={DES_MAX_LENGTH}
             />
             <div className={styles.buttons}>
               <Button
