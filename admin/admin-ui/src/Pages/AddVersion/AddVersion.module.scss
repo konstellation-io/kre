@@ -55,3 +55,14 @@
 .buttonSave {
   margin-bottom: 2 * $grid-unit;
 }
+
+.errorBox {
+  @include font-small;
+  white-space: pre-line;
+  background-color: #4f1015;
+  color: #ffb0b7;
+  border-radius: 5px;
+  line-height: 20px;
+  margin: auto 30px;
+  padding: 8px;
+}

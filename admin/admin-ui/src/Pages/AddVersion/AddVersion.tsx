@@ -8,7 +8,7 @@ import {
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import ROUTE, { RuntimeRouteParams } from 'Constants/routes';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 
 import { buildRoute } from 'Utils/routes';
@@ -54,21 +54,23 @@ function AddVersion() {
     onCompleted
   });
 
+  const [validationErr, setValidationErr] = useState<string>('');
+
   function onCompleted(updatedData: CreateVersion) {
     const versionCreatedId = updatedData.createVersion.id;
     console.log(`${versionCreatedId} version created`);
 
-    history.push(
-      buildRoute.runtime(
-        ROUTE.RUNTIME_VERSIONS,
-        runtimeId,
-      )
-    );
+    history.push(buildRoute.runtime(ROUTE.RUNTIME_VERSIONS, runtimeId));
   }
 
   useEffect(() => {
     if (error) {
       setError('addVersionFile', 'apolloError', error.toString());
+
+      const err = error.graphQLErrors[0];
+      if (err.extensions?.code === 'krt_validation_error') {
+        setValidationErr(err.extensions?.details);
+      }
     } else {
       clearError('addVersionFile');
     }
@@ -76,6 +78,7 @@ function AddVersion() {
 
   function onChange() {
     clearError('addVersionFile');
+    setValidationErr('');
   }
   function onCancelClick() {
     history.goBack();
@@ -93,6 +96,11 @@ function AddVersion() {
         <div className={styles.container}>
           <h1>Add Version</h1>
           <p className={styles.subtitle} />
+
+          {validationErr && (
+            <div className={styles.errorBox}>{validationErr}</div>
+          )}
+
           <div className={styles.content}>
             <form>
               <FileUpload

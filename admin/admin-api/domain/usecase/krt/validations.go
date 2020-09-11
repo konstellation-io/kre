@@ -2,12 +2,10 @@ package krt
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"os"
 	"path"
 	"regexp"
-	"strings"
-
-	"github.com/go-playground/validator/v10"
 )
 
 var krtValidator *validator.Validate
@@ -31,15 +29,7 @@ func init() {
 func ValidateYaml(krt *Krt) error {
 	err := krtValidator.Struct(krt)
 	if err != nil {
-		if _, ok := err.(*validator.InvalidValidationError); ok {
-			return fmt.Errorf("error on KRT validation: %w", err)
-		}
-		var errList []string
-		for _, e := range err.(validator.ValidationErrors) {
-			errList = append(errList, fmt.Sprint(e))
-		}
-
-		return fmt.Errorf("KRT Yaml ValidationErrors: %s", strings.Join(errList, "\n -"))
+		return err
 	}
 
 	return nil

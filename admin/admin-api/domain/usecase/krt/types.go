@@ -2,7 +2,7 @@ package krt
 
 // Krt contains data about a version
 type Krt struct {
-	Version     string     `yaml:"version" validate:"required,resource-name,gt=1,lt=20"`
+	Version     string     `yaml:"version" validate:"required,resource-name,lt=20"`
 	Description string     `yaml:"description" validate:"required"`
 	Entrypoint  Entrypoint `yaml:"entrypoint" validate:"required"`
 	Config      Config     `yaml:"config" validate:"required"`
@@ -12,7 +12,7 @@ type Krt struct {
 
 // Node contains data about a version's node
 type Node struct {
-	Name  string `yaml:"name" validate:"required,resource-name,gt=1,lt=20"`
+	Name  string `yaml:"name" validate:"required,resource-name,lt=20"`
 	Image string `yaml:"image" validate:"required"`
 	Src   string `yaml:"src" validate:"required"`
 	GPU   bool   `yaml:"gpu"`
@@ -20,7 +20,7 @@ type Node struct {
 
 // Workflow contains data about a version's workflow
 type Workflow struct {
-	Name       string   `yaml:"name" validate:"required,resource-name,gt=1,lt=20"`
+	Name       string   `yaml:"name" validate:"required,resource-name,lt=20"`
 	Entrypoint string   `yaml:"entrypoint" validate:"required"`
 	Sequential []string `yaml:"sequential" validate:"required"`
 }
