@@ -92,7 +92,7 @@ func (p *Parser) ValidateYaml(krt *Krt) error {
 	p.logger.Info("Validating KRT file")
 	err := ValidateYaml(krt)
 	if err != nil {
-		return fmt.Errorf("error on KRT Yaml validation: %w", err)
+		return err
 	}
 
 	p.logger.Info("Validating KRT workflows")

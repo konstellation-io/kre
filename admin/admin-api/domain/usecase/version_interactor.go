@@ -129,7 +129,7 @@ func (i *VersionInteractor) copyStreamToTempFile(krtFile io.Reader) (*os.File, e
 	}
 
 	_, err = io.Copy(tmpFile, krtFile)
-	i.logger.Infof("Created temp file: %s", tmpFile)
+	i.logger.Infof("Created temp file: %s", tmpFile.Name())
 
 	return tmpFile, nil
 }
@@ -164,7 +164,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 
 	krtYml, err := krt.ProcessYaml(i.logger, tmpKrtFile.Name(), tmpDir)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error processing krt: %w", err)
+		return nil, nil, err
 	}
 
 	for _, v := range versions {
