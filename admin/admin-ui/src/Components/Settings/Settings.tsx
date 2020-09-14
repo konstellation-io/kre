@@ -95,7 +95,10 @@ function Settings({ label }: Props) {
 
   const buttons: JSX.Element[] = [];
   if (checkPermission(accessLevel, 'settings:edit')) {
-    buttons.push(settingsButton, usersButton);
+    buttons.push(settingsButton);
+  }
+  if (checkPermission(accessLevel, 'users:edit')) {
+    buttons.push(usersButton);
   }
   if (checkPermission(accessLevel, 'audit:view')) {
     buttons.push(auditButton);
