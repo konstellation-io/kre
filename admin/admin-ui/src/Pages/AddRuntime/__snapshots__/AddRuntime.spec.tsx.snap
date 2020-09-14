@@ -2183,11 +2183,11 @@ exports[`AddRuntime matches snapshot 1`] = `
               <div
                 className="content"
               >
-                <$
+                <tt
                   autoFocus={true}
-                  helpText="0/20"
-                  label="runtime name"
-                  maxLength={20}
+                  helpText="0/40"
+                  label="name"
+                  maxLength={40}
                   onChange={[Function]}
                   onEnterKeyPress={[Function]}
                   whiteColor={true}
@@ -2195,22 +2195,22 @@ exports[`AddRuntime matches snapshot 1`] = `
                   <div
                     className="_3YFWF _3xRGA"
                   >
-                    <Y
-                      text="runtime name"
+                    <R
+                      text="name"
                     >
                       <label
                         className="_3JtYz"
                         data-testid="label"
                       >
-                        RUNTIME NAME
+                        NAME
                       </label>
-                    </Y>
+                    </R>
                     <input
                       autoFocus={true}
                       className="_1ewky"
                       data-testid="input"
                       disabled={false}
-                      maxLength={20}
+                      maxLength={40}
                       onBlur={[Function]}
                       onChange={[Function]}
                       onKeyPress={[Function]}
@@ -2223,28 +2223,87 @@ exports[`AddRuntime matches snapshot 1`] = `
                       type="text"
                       value=""
                     />
-                    <J
+                    <Q
                       message=""
                     >
                       <div
                         className="_2S4fx"
                       />
-                    </J>
-                    <Q
-                      message="0/20"
+                    </Q>
+                    <$
+                      message="0/40"
                     >
                       <div
                         className="_19vo4 _5NOgA"
                         data-testid="help-message"
                       >
-                        0/20
+                        0/40
                       </div>
-                    </Q>
+                    </$>
                   </div>
-                </$>
-                <$
+                </tt>
+                <tt
+                  helpText="0/15"
+                  label="ID"
+                  maxLength={15}
+                  onChange={[Function]}
+                  onEnterKeyPress={[Function]}
+                  whiteColor={true}
+                >
+                  <div
+                    className="_3YFWF _3xRGA"
+                  >
+                    <R
+                      text="ID"
+                    >
+                      <label
+                        className="_3JtYz"
+                        data-testid="label"
+                      >
+                        ID
+                      </label>
+                    </R>
+                    <input
+                      autoFocus={false}
+                      className="_1ewky"
+                      data-testid="input"
+                      disabled={false}
+                      maxLength={15}
+                      onBlur={[Function]}
+                      onChange={[Function]}
+                      onKeyPress={[Function]}
+                      placeholder=""
+                      style={
+                        Object {
+                          "height": 40,
+                        }
+                      }
+                      type="text"
+                      value=""
+                    />
+                    <Q
+                      message=""
+                    >
+                      <div
+                        className="_2S4fx"
+                      />
+                    </Q>
+                    <$
+                      message="0/15"
+                    >
+                      <div
+                        className="_19vo4 _5NOgA"
+                        data-testid="help-message"
+                      >
+                        0/15
+                      </div>
+                    </$>
+                  </div>
+                </tt>
+                <tt
                   error=""
-                  label="runtime description"
+                  helpText="0/500"
+                  label="description"
                   limits={
                     Object {
                       "maxHeight": 360,
@@ -2252,6 +2311,7 @@ exports[`AddRuntime matches snapshot 1`] = `
                     }
                   }
                   lockHorizontalGrowth={true}
+                  maxLength={500}
                   onChange={[Function]}
                   onEnterKeyPress={[Function]}
                   textArea={true}
@@ -2260,21 +2320,22 @@ exports[`AddRuntime matches snapshot 1`] = `
                   <div
                     className="_3YFWF _3xRGA"
                   >
-                    <Y
-                      text="runtime description"
+                    <R
+                      text="description"
                     >
                       <label
                         className="_3JtYz"
                         data-testid="label"
                       >
-                        RUNTIME DESCRIPTION
+                        DESCRIPTION
                       </label>
-                    </Y>
+                    </R>
                     <textarea
                       autoFocus={false}
                       className="_1ewky _1LhFd"
                       data-testid="input"
                       disabled={false}
+                      maxLength={500}
                       onBlur={[Function]}
                       onChange={[Function]}
                       onKeyPress={[Function]}
@@ -2288,27 +2349,29 @@ exports[`AddRuntime matches snapshot 1`] = `
                       type="text"
                       value=""
                     />
-                    <J
+                    <Q
                       message=""
                     >
                       <div
                         className="_2S4fx"
                       />
-                    </J>
-                    <Q
-                      message=""
+                    </Q>
+                    <$
+                      message="0/500"
                     >
                       <div
-                        className="_19vo4"
+                        className="_19vo4 _5NOgA"
                         data-testid="help-message"
-                      />
-                    </Q>
+                      >
+                        0/500
+                      </div>
+                    </$>
                   </div>
-                </$>
+                </tt>
                 <div
                   className="buttons"
                 >
-                  <A
+                  <P
                     className="buttonSave"
                     label="SAVE"
                     loading={false}
@@ -2333,8 +2396,8 @@ exports[`AddRuntime matches snapshot 1`] = `
                         SAVE
                       </span>
                     </div>
-                  </A>
-                  <A
+                  </P>
+                  <P
                     label="CANCEL"
                     onClick={[Function]}
                     tabIndex={0}
@@ -2356,7 +2419,7 @@ exports[`AddRuntime matches snapshot 1`] = `
                         CANCEL
                       </span>
                     </div>
-                  </A>
+                  </P>
                 </div>
               </div>
             </div>

@@ -7,8 +7,6 @@ import { Route } from 'react-router';
 import SecurityIcon from '@material-ui/icons/Security';
 import SecuritySettings from './SecuritySettings';
 import Sidebar from 'Components/Sidebar/Sidebar';
-import UsersIcon from '@material-ui/icons/SupervisorAccount';
-import UsersSettings from './pages/UsersSettings/UsersSettings';
 import styles from './Settings.module.scss';
 
 const tabs = [
@@ -21,11 +19,6 @@ const tabs = [
     label: 'SECURITY',
     route: ROUTE.SETTINGS_SECURITY,
     Icon: SecurityIcon
-  },
-  {
-    label: 'USERS',
-    route: ROUTE.SETTINGS_USERS,
-    Icon: UsersIcon
   }
 ];
 
@@ -45,7 +38,6 @@ function Settings() {
             path={ROUTE.SETTINGS_SECURITY}
             component={SecuritySettings}
           />
-          <Route exact path={ROUTE.SETTINGS_USERS} component={UsersSettings} />
         </div>
       </div>
     </PageBase>
