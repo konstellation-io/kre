@@ -37,14 +37,15 @@ import {
 import { useMutation, useQuery } from '@apollo/client';
 
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
-import SettingsHeader from '../../components/SettingsHeader/SettingsHeader';
+import PageBase from 'Components/Layout/PageBase/PageBase';
+import SettingsHeader from 'Pages/Settings/components/SettingsHeader/SettingsHeader';
 import UserFiltersAndActions from './components/UserFiltersAndActions/UserFiltersAndActions';
 import UserList from './components/UserList/UserList';
 import UserRow from './components/UserRow/UserRow';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
-import styles from './UsersSettings.module.scss';
+import styles from './Users.module.scss';
 import { useForm } from 'react-hook-form';
 
 const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
@@ -64,7 +65,7 @@ type FormData = {
   comment: string;
 };
 
-function UsersSettings() {
+function Users() {
   const { handleSubmit, setValue, register, unregister, errors } = useForm<
     FormData
   >({
@@ -223,41 +224,43 @@ function UsersSettings() {
   }
 
   return (
-    <div className={styles.container}>
-      <SettingsHeader>Users Settings</SettingsHeader>
-      {getContent()}
-      {showConfirmation && (
-        <ModalContainer
-          title={modalInfo.current.title}
-          onAccept={onSubmit}
-          onCancel={closeModal}
-          actionButtonLabel={modalInfo.current.acceptLabel}
-          className={styles.modal}
-          blocking
-        >
-          <ModalLayoutConfirmList message={modalInfo.current.message}>
-            {modalInfo.current.userIds.map(userId => {
-              const user = data?.users.find(u => u.id === userId);
-              return (
-                <UserRow
-                  key={user?.email}
-                  email={user?.email}
-                  accessLevel={user?.accessLevel}
-                />
-              );
-            })}
-          </ModalLayoutConfirmList>
-          <ModalLayoutJustify
-            onUpdate={(value: string) => setValue('comment', value)}
-            error={get(errors.comment, 'message', '') as string}
-            label={modalInfo.current.commentLabel}
-            className={styles.justify}
-            submit={onSubmit}
-          />
-        </ModalContainer>
-      )}
-    </div>
+    <PageBase>
+      <div className={styles.container}>
+        <SettingsHeader>Users Settings</SettingsHeader>
+        {getContent()}
+        {showConfirmation && (
+          <ModalContainer
+            title={modalInfo.current.title}
+            onAccept={onSubmit}
+            onCancel={closeModal}
+            actionButtonLabel={modalInfo.current.acceptLabel}
+            className={styles.modal}
+            blocking
+          >
+            <ModalLayoutConfirmList message={modalInfo.current.message}>
+              {modalInfo.current.userIds.map(userId => {
+                const user = data?.users.find(u => u.id === userId);
+                return (
+                  <UserRow
+                    key={user?.email}
+                    email={user?.email}
+                    accessLevel={user?.accessLevel}
+                  />
+                );
+              })}
+            </ModalLayoutConfirmList>
+            <ModalLayoutJustify
+              onUpdate={(value: string) => setValue('comment', value)}
+              error={get(errors.comment, 'message', '') as string}
+              label={modalInfo.current.commentLabel}
+              className={styles.justify}
+              submit={onSubmit}
+            />
+          </ModalContainer>
+        )}
+      </div>
+    </PageBase>
   );
 }
 
-export default UsersSettings;
+export default Users;

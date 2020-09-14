@@ -118,6 +118,11 @@ function UsersTable({ users, contextMenuActions }: Props) {
     [filters, users]
   );
 
+  const actSelectedUsers = localData?.userSettings.selectedUserIds || [];
+  const initialStateSelectedRowIds = Object.fromEntries(
+    data.map((user, idx) => [idx, actSelectedUsers.includes(user.id)])
+  );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -129,7 +134,10 @@ function UsersTable({ users, contextMenuActions }: Props) {
   } = useTable<Data>(
     {
       columns,
-      data
+      data,
+      initialState: {
+        selectedRowIds: initialStateSelectedRowIds
+      }
     },
     useSortBy,
     useRowSelect,
@@ -179,7 +187,9 @@ function UsersTable({ users, contextMenuActions }: Props) {
 
   useEffect(() => {
     const actSelectedUsers = localData?.userSettings.selectedUserIds;
-    const newSelectedUsersPos = Object.keys(selectedRowIds);
+    const newSelectedUsersPos = Object.entries(selectedRowIds)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([rowId, _]) => rowId);
 
     if (actSelectedUsers?.length !== newSelectedUsersPos.length) {
       let newUserSelection: UserSelection;

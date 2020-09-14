@@ -7,7 +7,7 @@ const MANAGER_RULES = [
   'version:edit'
 ];
 
-const ADMIN_RULES = [...MANAGER_RULES, 'settings:edit'];
+const ADMIN_RULES = [...MANAGER_RULES, 'settings:edit', 'users:edit'];
 
 const rules: {
   [key in keyof typeof AccessLevel]: {

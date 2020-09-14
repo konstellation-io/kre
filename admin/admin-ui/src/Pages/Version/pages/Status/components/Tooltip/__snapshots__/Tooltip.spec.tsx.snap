@@ -70,12 +70,12 @@ exports[`Tooltip matches snapshot 1`] = `
             <div
               className="wrapper"
             >
-              <input
-                readOnly={true}
-                type="text"
-                value="some.url"
-              />
-              <A
+              <span
+                className="address"
+              >
+                some.url
+              </span>
+              <P
                 Icon={
                   Object {
                     "$$typeof": Symbol(react.memo),
@@ -142,7 +142,7 @@ exports[`Tooltip matches snapshot 1`] = `
                   </ForwardRef>
                   <span />
                 </div>
-              </A>
+              </P>
             </div>
           </EntrypointTooltipContent>
         </div>

@@ -1,11 +1,12 @@
 import { BUTTON_ALIGN, Button, useClickOutside } from 'kwc';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
-import AuditIcon from '@material-ui/icons/SupervisorAccount';
+import AuditIcon from '@material-ui/icons/EventNote';
 import { ENDPOINT } from 'Constants/application';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
 import ROUTE from 'Constants/routes';
 import SettingsIcon from '@material-ui/icons/VerifiedUser';
+import UsersIcon from '@material-ui/icons/SupervisorAccount';
 import { checkPermission } from '../../rbac-rules';
 import cx from 'classnames';
 import { get } from 'lodash';
@@ -78,6 +79,9 @@ function Settings({ label }: Props) {
       Icon={SettingsIcon}
     />
   );
+  const usersButton = (
+    <Button {...getBaseProps('Users')} to={ROUTE.USERS} Icon={UsersIcon} />
+  );
   const auditButton = (
     <Button {...getBaseProps('Audit')} to={ROUTE.AUDIT} Icon={AuditIcon} />
   );
@@ -92,6 +96,9 @@ function Settings({ label }: Props) {
   const buttons: JSX.Element[] = [];
   if (checkPermission(accessLevel, 'settings:edit')) {
     buttons.push(settingsButton);
+  }
+  if (checkPermission(accessLevel, 'users:edit')) {
+    buttons.push(usersButton);
   }
   if (checkPermission(accessLevel, 'audit:view')) {
     buttons.push(auditButton);

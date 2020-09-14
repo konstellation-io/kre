@@ -27,6 +27,7 @@ import React from 'react';
 import Runtime from 'Pages/Runtime/Runtime';
 import Settings from 'Pages/Settings/Settings';
 import SubscriptionService from 'Components/SubscriptionService/SubscriptionService';
+import Users from 'Pages/Users/Users';
 import UsersActivity from 'Pages/UsersActivity/UsersActivity';
 import VerifyEmail from 'Pages/VerifyEmail/VerifyEmail';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
@@ -90,6 +91,7 @@ function ProtectedRoutes() {
           <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
 
           <Route path={ROUTE.SETTINGS} component={Settings} />
+          <Route path={ROUTE.USERS} component={Users} />
           <Route path={ROUTE.AUDIT} component={UsersActivity} />
           <Route component={NotFound} />
         </Switch>

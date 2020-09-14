@@ -4,7 +4,7 @@ exports[`VersionActions matches snapshot 1`] = `
 <div
   className="wrapper"
 >
-  <A
+  <P
     Icon={
       Object {
         "$$typeof": Symbol(react.memo),
@@ -29,7 +29,7 @@ exports[`VersionActions matches snapshot 1`] = `
     theme="default"
     title=""
   />
-  <A
+  <P
     Icon={
       Object {
         "$$typeof": Symbol(react.memo),

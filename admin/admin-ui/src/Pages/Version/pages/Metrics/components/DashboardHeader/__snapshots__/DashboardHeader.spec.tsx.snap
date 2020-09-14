@@ -21,7 +21,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
       onClose={[Function]}
     />
   </div>
-  <A
+  <P
     Icon={
       Object {
         "$$typeof": Symbol(react.memo),

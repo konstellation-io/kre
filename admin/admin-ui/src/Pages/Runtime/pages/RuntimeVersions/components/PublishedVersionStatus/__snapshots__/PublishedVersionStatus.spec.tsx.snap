@@ -39,7 +39,7 @@ exports[`PublishedVersionStatus matches snapshot 1`] = `
         <Can
           perform="version:edit"
         >
-          <A
+          <P
             height={30}
             label="ADD VERSION"
             primary={true}
@@ -85,7 +85,7 @@ exports[`PublishedVersionStatus matches snapshot 1`] = `
                 </a>
               </LinkAnchor>
             </Link>
-          </A>
+          </P>
         </Can>
       </div>
     </PublishedVersionStatus>

@@ -270,7 +270,7 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                     <span>
                       Variable details
                     </span>
-                    <A
+                    <P
                       Icon={
                         Object {
                           "$$typeof": Symbol(react.memo),
@@ -336,7 +336,7 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                         </ForwardRef>
                         <span />
                       </div>
-                    </A>
+                    </P>
                   </div>
                   <div
                     className="varType"

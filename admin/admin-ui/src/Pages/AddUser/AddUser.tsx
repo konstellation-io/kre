@@ -92,8 +92,8 @@ function AddUser() {
     }
   }, [mutationError, setError]);
 
-  function onCompleteAddUser(updatedData: CreateUser) {
-    history.push(ROUTE.SETTINGS_USERS);
+  function onCompleteAddUser() {
+    history.push(ROUTE.USERS);
   }
 
   function onSubmit(formData: FormData) {

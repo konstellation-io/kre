@@ -175,9 +175,9 @@ exports[`Configuration matches snapshot 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 182,
+                    "end": 184,
                     "source": Object {
-                      "body": "query GetConfigurationVariables($versionId: ID!) {
+                      "body": "  query GetConfigurationVariables($versionId: ID!) {
   version(id: $versionId) {
     id
     status
@@ -730,9 +730,9 @@ exports[`Configuration matches snapshot 1`] = `
                           ],
                           "kind": "Document",
                           "loc": Object {
-                            "end": 182,
+                            "end": 184,
                             "source": Object {
-                              "body": "query GetConfigurationVariables($versionId: ID!) {
+                              "body": "  query GetConfigurationVariables($versionId: ID!) {
   version(id: $versionId) {
     id
     status
@@ -1980,9 +1980,9 @@ exports[`Configuration matches snapshot 1`] = `
                             ],
                             "kind": "Document",
                             "loc": Object {
-                              "end": 182,
+                              "end": 184,
                               "source": Object {
-                                "body": "query GetConfigurationVariables($versionId: ID!) {
+                                "body": "  query GetConfigurationVariables($versionId: ID!) {
   version(id: $versionId) {
     id
     status
@@ -3879,7 +3879,7 @@ exports[`Configuration matches snapshot 1`] = `
                   }
                 }
               >
-                <x
+                <w
                   forceSegments={true}
                   height={125}
                   options={
@@ -9773,7 +9773,7 @@ $bm_rt = loopOut('cycle', 0);",
                       }
                     }
                   />
-                </x>
+                </w>
               </div>
             </Component>
           </Configuration>

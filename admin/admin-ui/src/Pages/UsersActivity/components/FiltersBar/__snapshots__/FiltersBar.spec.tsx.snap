@@ -2968,7 +2968,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               <div
                 className="_82QGI"
               >
-                <Y
+                <R
                   text="search a user"
                 >
                   <label
@@ -2977,7 +2977,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     SEARCH A USER
                   </label>
-                </Y>
+                </R>
                 <input
                   autoComplete="off"
                   className="_YghJM"
@@ -3032,13 +3032,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                 <ul
                   className="_1Em_G"
                 />
-                <O
+                <Y
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </O>
+                </Y>
               </div>
             </Component>
           </div>
@@ -3053,7 +3053,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               <div
                 className="_1usSP"
               >
-                <Y
+                <R
                   text="filter by versions"
                 >
                   <label
@@ -3062,7 +3062,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     FILTER BY VERSIONS
                   </label>
-                </Y>
+                </R>
                 <div
                   className="_3ifZl"
                 >
@@ -3081,13 +3081,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                     }
                   />
                 </div>
-                <O
+                <Y
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </O>
+                </Y>
               </div>
             </Component>
           </div>
@@ -3263,7 +3263,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               <div
                 className="_DP1dK"
               >
-                <Y
+                <R
                   text="Activity type"
                 >
                   <label
@@ -3272,7 +3272,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     ACTIVITY TYPE
                   </label>
-                </Y>
+                </R>
                 <div
                   className="_3ouoE"
                 >
@@ -3295,13 +3295,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                     />
                   </div>
                 </div>
-                <O
+                <Y
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </O>
+                </Y>
               </div>
             </Component>
           </div>
@@ -3312,7 +3312,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               onChangeToDateInput={[Function]}
             >
               <div>
-                <Y
+                <R
                   text="dates selection"
                 >
                   <label
@@ -3321,7 +3321,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     DATES SELECTION
                   </label>
-                </Y>
+                </R>
                 <withStyles(DateRangePicker)
                   anchorDirection="left"
                   appendToBody={false}
@@ -4819,20 +4819,20 @@ exports[`FiltersBar matches snapshot 1`] = `
                     </div>
                   </DateRangePicker>
                 </withStyles(DateRangePicker)>
-                <O
+                <Y
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </O>
+                </Y>
               </div>
             </j>
           </div>
           <div
             className="buttons"
           >
-            <A
+            <P
               label="CLEAR"
               onClick={[Function]}
               style={
@@ -4859,7 +4859,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   CLEAR
                 </span>
               </div>
-            </A>
+            </P>
           </div>
         </form>
       </FiltersBar>

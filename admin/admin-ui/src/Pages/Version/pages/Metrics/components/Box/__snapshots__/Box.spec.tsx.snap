@@ -15,7 +15,7 @@ exports[`Box matches snapshot 1`] = `
 `;
 
 exports[`ExpandButton matches snapshot 1`] = `
-<A
+<P
   Icon={
     Object {
       "$$typeof": Symbol(react.memo),
