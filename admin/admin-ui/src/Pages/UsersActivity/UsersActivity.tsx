@@ -1,5 +1,5 @@
 import { ErrorMessage, GroupSelectData, SpinnerCircular } from 'kwc';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import SelectionsBar, {
   VersionChip
 } from './components/SelectionsBar/SelectionsBar';
@@ -11,6 +11,7 @@ import PageBase from 'Components/Layout/PageBase/PageBase';
 import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
 import UserActivityList from './components/UserActivityList/UserActivityList';
 import { UserActivityType } from 'Graphql/types/globalTypes';
+import { GetUsersActivityVariables } from 'Graphql/queries/types/GetUsersActivity';
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
 import useAllVersions from 'Hooks/useAllVersions';
@@ -20,21 +21,22 @@ export type UserActivityFormData = {
   types: UserActivityType[];
   versionIds: GroupSelectData;
   userEmail: string;
-  fromDate: Moment;
-  toDate: Moment;
+  fromDate: Moment | undefined;
+  toDate: Moment | undefined;
+};
+
+const DEFAULT_FILTERS: UserActivityFormData = {
+  types: [],
+  versionIds: {},
+  userEmail: '',
+  fromDate: undefined,
+  toDate: undefined
 };
 
 function UsersActivity() {
-  const [filterValues, setFilterValues] = useState<UserActivityFormData>();
-  const {
-    handleSubmit,
-    register,
-    unregister,
-    setValue,
-    errors,
-    watch,
-    reset
-  } = useForm<UserActivityFormData>();
+  const { register, unregister, setValue, errors, watch, reset } = useForm<
+    UserActivityFormData
+  >({ defaultValues: DEFAULT_FILTERS });
 
   useEffect(() => {
     const fields = ['types', 'versionIds', 'userEmail', 'fromDate', 'toDate'];
@@ -50,22 +52,14 @@ function UsersActivity() {
     getVersionId
   } = useAllVersions();
 
-  function handleReset() {
-    reset();
-    setFilterValues(undefined);
-  }
-
   function setAndSubmit(
     field: string,
     newValue: string | GroupSelectData | Moment | UserActivityType[]
   ) {
     setValue(field, newValue);
-    handleSubmit((formData: UserActivityFormData) =>
-      setFilterValues(formData)
-    )();
   }
 
-  function getVersionIds(versionsSelection: GroupSelectData) {
+  function getVersionIds(versionsSelection: GroupSelectData): string[] {
     return Object.entries(versionsSelection)
       .map(([runtimeName, versionNames]) =>
         versionNames.map(versionName => getVersionId(runtimeName, versionName))
@@ -73,11 +67,17 @@ function UsersActivity() {
       .flat();
   }
 
-  function getQueryVariables(data: UserActivityFormData | undefined) {
-    if (data?.versionIds)
-      return { ...data, versionIds: getVersionIds(data.versionIds) };
+  function getQueryVariables(data: UserActivityFormData) {
+    const queryVars: GetUsersActivityVariables = {
+      userEmail: `"${data.userEmail}"`,
+      fromDate: data.fromDate?.toISOString(),
+      toDate: data.toDate?.toISOString(),
+      types: data.types,
+      versionIds: getVersionIds(data.versionIds),
+      lastId: null
+    };
 
-    return data ?? {};
+    return queryVars;
   }
 
   const versionIds = watch('versionIds');
@@ -108,7 +108,7 @@ function UsersActivity() {
 
     return (
       <div className={styles.listContainer}>
-        <UserActivityList variables={getQueryVariables(filterValues)} />
+        <UserActivityList variables={getQueryVariables(watch())} />
       </div>
     );
   }
@@ -123,12 +123,12 @@ function UsersActivity() {
             runtimesAndVersions={versionsData ?? []}
             watch={watch}
             errors={errors}
-            reset={handleReset}
+            reset={reset}
           />
           <SelectionsBar
             filterValues={{
-              userEmail: filterValues?.userEmail || '',
-              versionIds: filterValues?.versionIds || {}
+              userEmail: watch('userEmail'),
+              versionIds: watch('versionIds')
             }}
             runtimesAndVersions={versionsData ?? []}
             onRemoveFilter={onRemoveFilter}

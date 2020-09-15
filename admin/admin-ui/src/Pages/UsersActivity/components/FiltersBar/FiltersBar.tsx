@@ -7,7 +7,7 @@ import {
   SearchSelect
 } from 'kwc';
 import CustomLabel, { HIGHLIGHT_COLORS } from './CustomLabel';
-import { FieldError, NestDataObject } from 'react-hook-form';
+import { FieldErrors } from 'react-hook-form';
 
 import ActivityIcon from '../ActivityIcon/ActivityIcon';
 import { ErrorMessage } from 'kwc';
@@ -83,7 +83,7 @@ type FormFieldProps = {
   ) => void;
   runtimesAndVersions: VersionsData[];
   watch: Function;
-  errors: NestDataObject<UserActivityFormData, FieldError>;
+  errors: FieldErrors<UserActivityFormData>;
   reset: Function;
 };
 function FiltersBar({
@@ -143,7 +143,6 @@ function FiltersBar({
         <MultiSelect<UserActivityType>
           options={multiSelectOptions}
           onChange={onTypeSelection}
-          error={get(errors.types, 'message')}
           formSelectedOptions={watch('types')}
           label="Activity type"
           placeholder="ALL TYPES"
@@ -162,9 +161,6 @@ function FiltersBar({
           onChangeToDateInput={(value: Moment) => setAndSubmit('toDate', value)}
           formFromDate={watch('fromDate')}
           formToDate={watch('toDate')}
-          error={
-            get(errors.fromDate, 'message') || get(errors.toDate, 'message')
-          }
         />
       </div>
       <div className={styles.buttons}>
