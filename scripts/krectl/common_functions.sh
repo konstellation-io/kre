@@ -35,7 +35,7 @@ check_requirements() {
   DOCKER_INSTALLED=$(cmd_installed docker)
   [ "$DOCKER_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing docker command"; }
 
-  KUBECTL_INSTALLED=$(cmd_installed helm)
+  KUBECTL_INSTALLED=$(cmd_installed kubectl)
   [ "$KUBECTL_INSTALLED" = "1" ] || { REQUIREMENTS_OK=0 && echo_warning "Missing kubectl command"; }
 
   HELM_INSTALLED=$(cmd_installed helm)
