@@ -47,6 +47,8 @@ func (c *contextMeasurement) Save(measurement string, fields map[string]interfac
 		p.AddTag(t, v)
 	}
 
+	p.AddTag("version", c.cfg.Version)
+
 	p.SetTime(time.Now())
 
 	c.writeAPI.WritePoint(p)

@@ -28,6 +28,8 @@ class ContextMeasurement:
         for key in tags:
             point.tag(key, tags[key])
 
+        point.tag("version", self.__config__.krt_version)
+
         point.time(datetime.utcnow(), WritePrecision.NS)
 
         self.__write_api__.write(INFLUX_BUCKET, INFLUX_ORG, point)
