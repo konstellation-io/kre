@@ -36,16 +36,36 @@ delete_runtimes() {
   for NAME in $RUNTIMES; do
     RUNTIME="kre-${NAME}"
 
+    # Skip -v on delete command
+    if [ "$RUNTIME" = "kre--v" ]; then
+      continue
+    fi
+
     delete_runtime_script "$NAME" | execute_mongo_script
+    echo_check "  removed runtime '$RUNTIME' from MongoDB."
 
     RUNTIME_EXISTS=$( kubectl get ns -o custom-columns=":metadata.name" --no-headers | grep "^${RUNTIME}$" || echo "")
 
     if [ "$RUNTIME_EXISTS" != "" ]; then
-      echo_check "  removed runtime '$RUNTIME' from MongoDB."
+      run kubectl delete runtime "$RUNTIME" -n "$RUNTIME" --force --grace-period 0 || true
+
+      DEPLOYMENT_NAMES=$(kubectl -n "$RUNTIME" get deployment -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+      [ -n "$DEPLOYMENT_NAMES" ] && \
+        echo_info "Deleting versions deployments" && \
+        ( run kubectl -n "$RUNTIME" delete deployment $DEPLOYMENT_NAMES --grace-period=0 --force || true )
+
+      POD_NAMES=$(kubectl -n "$RUNTIME" get pod -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+      [ -n "$POD_NAMES" ] && \
+        echo_info "Deleting versions pods" && \
+        ( run kubectl -n "$RUNTIME" delete pod $POD_NAMES --grace-period=0 --force || true )
+
+      CONFIG_NAMES=$(kubectl -n "$RUNTIME" get configmap -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+      [ -n "$CONFIG_NAMES" ] && \
+        echo_info "Deleting versions configs" && \
+        (run kubectl -n "$RUNTIME" delete configmap $CONFIG_NAMES --grace-period=0 --force || true )
 
       echo_wait "  deleting runtime '$RUNTIME' "
-      run kubectl delete runtime "$RUNTIME" -n "$RUNTIME" --force --grace-period 0
-      run kubectl delete ns "$RUNTIME" --force --grace-period 0
+      run kubectl delete ns "$RUNTIME" --force --grace-period 0 || true
       echo_check "  runtime '$RUNTIME' removed."
     else
       echo_info "  runtime '$RUNTIME' doesn't exists. skipping."
@@ -58,20 +78,28 @@ delete_runtimes() {
 delete_version() {
   NAME=$1
   VERSION=$2
-  NAMESPACE="kre-${NAME}"
+  RUNTIME="kre-${NAME}"
 
   mongo_script() {
     echo "db.getCollection('versions').remove({ \"name\": \"$1\" })"
   }
-  echo_info "Deleting '$VERSION' on $NAMESPACE"
+  echo_info "Deleting '$VERSION' on $RUNTIME"
 
-  DEPLOYMENT_NAMES=$(kubectl -n "$NAMESPACE" get deployment -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
-  POD_NAMES=$(kubectl -n "$NAMESPACE" get pod -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
-  CONFIG_NAMES=$(kubectl -n "$NAMESPACE" get configmap -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+  DEPLOYMENT_NAMES=$(kubectl -n "$RUNTIME" get deployment -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+  [ -n "$DEPLOYMENT_NAMES" ] && \
+    echo_info "Deleting version deployments" && \
+    ( run kubectl -n "$RUNTIME" delete deployment $DEPLOYMENT_NAMES --grace-period=0 --force || true )
 
-  [ -n "$DEPLOYMENT_NAMES" ] && echo_info "Deleting deployments" && kubectl -n "$NAMESPACE" delete deployment $DEPLOYMENT_NAMES --grace-period=0 --force
-  [ -n "$POD_NAMES" ] && echo_info "Deleting pods" && kubectl -n "$NAMESPACE" delete pod $POD_NAMES --grace-period=0 --force
-  [ -n "$CONFIG_NAMES" ] && echo_info "Deleting configs" && kubectl -n "$NAMESPACE" delete configmap $CONFIG_NAMES --grace-period=0 --force
+  POD_NAMES=$(kubectl -n "$RUNTIME" get pod  -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+  [ -n "$POD_NAMES" ] && \
+    echo_info "Deleting version pods" && \
+    ( run kubectl -n "$RUNTIME" delete pod $POD_NAMES --grace-period=0 --force || true )
+
+  CONFIG_NAMES=$(kubectl -n "$RUNTIME" get configmap  -l version-name="$VERSION" -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+  [ -n "$CONFIG_NAMES" ] && \
+    echo_info "Deleting versions configs" && \
+    (run kubectl -n "$RUNTIME" delete configmap $CONFIG_NAMES --grace-period=0 --force || true )
+
   mongo_script "$VERSION" | execute_mongo_script
 }
 
