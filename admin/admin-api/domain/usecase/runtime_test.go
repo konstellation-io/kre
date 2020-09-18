@@ -78,28 +78,15 @@ func TestCreateRuntime(t *testing.T) {
 	s := newRuntimeSuite(t)
 	defer s.ctrl.Finish()
 
-	name := "runtimeTest1"
+	runtimeID := "runtime-1"
+	name := "Runtime Test 1"
 	description := "runtimeDescriptionTest1"
 	userID := "userTest1"
 
 	fakePass := "t3st"
 
-	runtimeBeforeCreation := &entity.Runtime{
-		Name:        name,
-		Description: description,
-		Owner:       userID,
-		Mongo: entity.MongoConfig{
-			Username:  "admin",
-			Password:  fakePass,
-			SharedKey: fakePass,
-		},
-		Minio: entity.MinioConfig{
-			AccessKey: "admin",
-			SecretKey: fakePass,
-		},
-	}
 	expectedRuntime := &entity.Runtime{
-		ID:          "runtime1",
+		ID:          runtimeID,
 		Name:        name,
 		Description: description,
 		Owner:       userID,
@@ -114,7 +101,7 @@ func TestCreateRuntime(t *testing.T) {
 		},
 	}
 	updatedRuntime := &entity.Runtime{
-		ID:          "runtime1",
+		ID:          runtimeID,
 		Name:        name,
 		Description: description,
 		Owner:       userID,
@@ -132,9 +119,10 @@ func TestCreateRuntime(t *testing.T) {
 
 	ctx := context.Background()
 
-	s.mocks.runtimeService.EXPECT().Create(ctx, runtimeBeforeCreation).Return("OK", nil)
+	s.mocks.runtimeService.EXPECT().Create(ctx, expectedRuntime).Return("OK", nil)
 	s.mocks.passwordGenerator.EXPECT().NewPassword().Return(fakePass).Times(3)
-	s.mocks.runtimeRepo.EXPECT().Create(ctx, runtimeBeforeCreation).Return(expectedRuntime, nil)
+	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
+	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(nil, usecase.ErrRuntimeNotFound)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
 	s.mocks.runtimeService.EXPECT().WaitForRuntimeStarted(gomock.Any(), expectedRuntime).Return(nil, nil)
@@ -142,7 +130,7 @@ func TestCreateRuntime(t *testing.T) {
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
 
-	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(ctx, userID, "", name, description)
+	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(ctx, userID, runtimeID, name, description)
 	require.Nil(t, err)
 	require.Equal(t, expectedRuntime, runtime)
 
