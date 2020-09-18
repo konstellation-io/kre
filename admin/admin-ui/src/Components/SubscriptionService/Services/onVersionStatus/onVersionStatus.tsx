@@ -1,14 +1,14 @@
 import { ApolloClient } from '@apollo/client';
-import { WatchVersionStatus } from 'Graphql/subscriptions/types/WatchVersionStatus';
+import { WatchVersion } from 'Graphql/subscriptions/types/WatchVersion';
 import { loader } from 'graphql.macro';
 
 const VersionStatusSubscription = loader(
-  'Graphql/subscriptions/watchVersionStatus.graphql'
+  'Graphql/subscriptions/watchVersion.graphql'
 );
 
 function onVersionStatus(client: ApolloClient<object>) {
   client
-    .subscribe<WatchVersionStatus>({
+    .subscribe<WatchVersion>({
       query: VersionStatusSubscription
     })
     .subscribe({

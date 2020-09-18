@@ -1,6 +1,0 @@
-subscription WatchVersionStatus {
-  watchVersionStatus {
-    id
-    status
-  }
-}

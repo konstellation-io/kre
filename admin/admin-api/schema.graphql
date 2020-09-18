@@ -54,7 +54,7 @@ type Subscription {
   watchRuntimeCreated: Runtime!
   watchNodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionId: ID!): Node!
-  watchVersionStatus: Version!
+  watchVersion: Version!
   watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
@@ -202,6 +202,7 @@ type Version {
   workflows: [Workflow!]!
   config: VersionConfig!
   hasDoc: Boolean
+  errors: [String!]!
 }
 
 type VersionConfig {
@@ -217,6 +218,7 @@ enum VersionStatus {
   PUBLISHED
   STOPPING
   STOPPED
+  ERROR
 }
 
 type Settings {

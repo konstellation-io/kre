@@ -155,6 +155,11 @@ $color-border: palette(base, 400);
 
   .description {
     @include font-small;
+    margin-bottom: 8px;
+  }
+
+  .versionError {
+    color: palette(error);
   }
 
   .activatedContainer {

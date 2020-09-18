@@ -135,3 +135,20 @@ func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, versionID string, st
 
 	return nil
 }
+
+func (r *VersionRepoMongoDB) SetErrors(ctx context.Context, version *entity.Version, errorMessages []string) (*entity.Version, error) {
+	version.Status = entity.VersionStatusError
+	version.Errors = errorMessages
+
+	elem := bson.M{"$set": bson.M{"status": version.Status, "errors": version.Errors}}
+	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": version.ID}, elem)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.ModifiedCount != 1 {
+		return nil, usecase.ErrVersionNotFound
+	}
+
+	return version, nil
+}

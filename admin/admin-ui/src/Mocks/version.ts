@@ -58,7 +58,8 @@ export const version = {
     vars: [],
     completed: false
   },
-  hasDoc: false
+  hasDoc: false,
+  errors: []
 };
 export const workflow = {
   __typename: 'Workflow',

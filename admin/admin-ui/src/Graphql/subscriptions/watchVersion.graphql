@@ -1,0 +1,7 @@
+subscription WatchVersion {
+  watchVersion {
+    id
+    status
+    errors
+  }
+}

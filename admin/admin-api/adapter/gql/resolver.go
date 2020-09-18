@@ -422,7 +422,7 @@ func (r *subscriptionResolver) WatchRuntimeCreated(ctx context.Context) (<-chan 
 	return runtimeCreatedChan, nil
 }
 
-func (r *subscriptionResolver) WatchVersionStatus(ctx context.Context) (<-chan *entity.Version, error) {
+func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity.Version, error) {
 	id := uuid.New().String()
 
 	versionStatusCh := make(chan *entity.Version, 1)

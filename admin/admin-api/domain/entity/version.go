@@ -14,6 +14,7 @@ const (
 	VersionStatusPublished VersionStatus = "PUBLISHED"
 	VersionStatusStopping  VersionStatus = "STOPPING"
 	VersionStatusStopped   VersionStatus = "STOPPED"
+	VersionStatusError     VersionStatus = "ERROR"
 )
 
 func (e VersionStatus) IsValid() bool {
@@ -24,7 +25,8 @@ func (e VersionStatus) IsValid() bool {
 		VersionStatusStarted,
 		VersionStatusPublished,
 		VersionStatusStopping,
-		VersionStatusStopped:
+		VersionStatusStopped,
+		VersionStatusError:
 		return true
 	}
 	return false
@@ -133,7 +135,8 @@ type Version struct {
 	Entrypoint Entrypoint    `bson:"entrypoint"`
 	Workflows  []*Workflow   `bson:"workflows"`
 
-	HasDoc bool `bson:"hasDoc"`
+	HasDoc bool     `bson:"hasDoc"`
+	Errors []string `bson:"errors"`
 }
 
 func (v Version) PublishedOrStarted() bool {

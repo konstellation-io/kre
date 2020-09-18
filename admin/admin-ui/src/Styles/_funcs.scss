@@ -17,6 +17,8 @@
     $color: palette(feedback);
   } @else if $status == 'STOPPING' {
     $color: palette(feedback);
+  } @else if $status == 'STOPPING' {
+    $color: palette(error);
   }
 
   @return $color;

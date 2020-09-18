@@ -215,43 +215,42 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 			}
 		}()
 
-		err = krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
-		if err != nil {
-			i.logger.Errorf("error processing krt: %s", err)
-			// TODO: Send error notification to channel  notifyStatusCh
-
-			return
+		contentErrors := krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
+		if len(contentErrors) > 0 {
+			errorMessage := "error processing krt"
+			i.logger.Errorf("%s: %s", errorMessage, err)
+			contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
 		}
 
 		docFolder := path.Join(tmpDir, "docs")
 		if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
 			err = i.docGenerator.Generate(versionCreated.ID, docFolder)
 			if err != nil {
-				i.logger.Errorf("error generating version doc: %s", err)
-				// TODO: Send error notification to channel  notifyStatusCh
-				return
+				errorMessage := "error generating version doc"
+				i.logger.Errorf("%s: %s", errorMessage, err)
+				contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
 			}
+
 			err = i.versionRepo.SetHasDoc(asyncCtx, versionCreated.ID, true)
 			if err != nil {
-				i.logger.Errorf("error updating has doc field: %s", err)
-				// TODO: Send error notification to channel  notifyStatusCh
-				return
+				errorMessage := "error updating has doc field"
+				i.logger.Errorf("%s: %s", errorMessage, err)
+				contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
 			}
 		} else {
 			i.logger.Infof("No documentation found inside the krt files")
 		}
 
-		err = i.storeContent(runtime, krtYml, tmpDir)
-		if err != nil {
-			i.logger.Errorf("error saving content on new version: %s", err)
-			// TODO: Send error notification to channel  notifyStatusCh
+		if len(contentErrors) > 0 {
+			i.setStatusError(asyncCtx, versionCreated, contentErrors, notifyStatusCh)
+
 			return
 		}
 
 		err = i.versionRepo.SetStatus(asyncCtx, versionCreated.ID, entity.VersionStatusCreated)
 		if err != nil {
 			i.logger.Errorf("error setting version status: %s", err)
-			// TODO: Send error notification to channel  notifyStatusCh
+
 			return
 		}
 
@@ -262,7 +261,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 		err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, runtime, versionCreated)
 		if err != nil {
 			i.logger.Errorf("error registering activity: %s", err)
-			// TODO: Send error notification to channel  notifyStatusCh
+
 			return
 		}
 	}()
@@ -682,4 +681,18 @@ func (i *VersionInteractor) SearchLogs(
 	}
 
 	return i.monitoringService.SearchLogs(ctx, runtime, versionID, filters, cursor)
+}
+
+func (i *VersionInteractor) setStatusError(ctx context.Context, version *entity.Version, errors []error, notifyCh chan *entity.Version) {
+	errorMessages := make([]string, len(errors))
+	for i, error := range errors {
+		errorMessages[i] = error.Error()
+	}
+	versionWithError, err := i.versionRepo.SetErrors(ctx, version, errorMessages)
+
+	if err != nil {
+		i.logger.Errorf("error saving version error state: %s", err)
+	}
+
+	notifyCh <- versionWithError
 }

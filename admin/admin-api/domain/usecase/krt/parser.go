@@ -33,7 +33,7 @@ func ProcessYaml(logger logging.Logger, krtFilePath, dstDir string) (*Krt, error
 	return k, nil
 }
 
-func ProcessContent(logger logging.Logger, krtYml *Krt, krtFilePath, dstDir string) error {
+func ProcessContent(logger logging.Logger, krtYml *Krt, krtFilePath, dstDir string) []error {
 	p := Parser{
 		logger,
 		dstDir,
@@ -41,13 +41,10 @@ func ProcessContent(logger logging.Logger, krtYml *Krt, krtFilePath, dstDir stri
 
 	err := p.Extract(krtFilePath)
 	if err != nil {
-		return err
+		return []error{err}
 	}
-	err = p.ValidateContent(krtYml)
-	if err != nil {
-		return err
-	}
-	return nil
+
+	return p.ValidateContent(krtYml)
 }
 
 type Parser struct {
@@ -104,14 +101,14 @@ func (p *Parser) ValidateYaml(krt *Krt) error {
 	return nil
 }
 
-func (p *Parser) ValidateContent(krt *Krt) error {
+func (p *Parser) ValidateContent(krt *Krt) []error {
 	p.logger.Info("Validating KRT src paths")
-	err := validateSrcPaths(krt, p.dstDir)
-	if err != nil {
-		return fmt.Errorf("error on KRT Src validation: %w", err)
+	errors := validateSrcPaths(krt, p.dstDir)
+	if len(errors) > 0 {
+		errors = append([]error{fmt.Errorf("error on KRT Src validation")}, errors...)
 	}
 
-	return nil
+	return errors
 }
 
 func generateKrt(yamlFile string) (*Krt, error) {

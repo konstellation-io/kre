@@ -35,15 +35,16 @@ func ValidateYaml(krt *Krt) error {
 	return nil
 }
 
-func validateSrcPaths(krt *Krt, dstDir string) error {
+func validateSrcPaths(krt *Krt, dstDir string) []error {
+	var errors []error = nil
 	for _, node := range krt.Nodes {
 		nodeFile := path.Join(dstDir, node.Src)
 		if !fileExists(nodeFile) {
-			return fmt.Errorf("error src File %s for node %s not exists ", nodeFile, node.Name)
+			errors = append(errors, fmt.Errorf("error src File %s for node %s not exists ", node.Src, node.Name))
 		}
 	}
 
-	return nil
+	return errors
 }
 
 func fileExists(filename string) bool {
