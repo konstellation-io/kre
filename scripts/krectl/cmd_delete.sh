@@ -25,7 +25,7 @@ show_delete_help() {
 }
 
 delete_runtime_script() {
-  echo "db.getCollection('runtimes').remove({ \"_id\": \"$1\" })"
+  echo "db.getCollection('runtimes').remove({ \"_id\": \"$1\" }); db.getCollection('versions').remove({ \"runtimeId\": \"$1\" });"
 }
 
 delete_runtimes() {
