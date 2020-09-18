@@ -32,5 +32,6 @@ query GetVersionConfStatus($runtimeId: ID!) {
       completed
     }
     hasDoc
+    errors
   }
 }

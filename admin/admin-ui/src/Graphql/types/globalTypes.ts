@@ -58,6 +58,7 @@ export enum UserActivityType {
 export enum VersionStatus {
   CREATED = 'CREATED',
   CREATING = 'CREATING',
+  ERROR = 'ERROR',
   PUBLISHED = 'PUBLISHED',
   STARTED = 'STARTED',
   STARTING = 'STARTING',

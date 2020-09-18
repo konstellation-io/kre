@@ -172,7 +172,7 @@ type ComplexityRoot struct {
 		WatchNodeStatus      func(childComplexity int, versionID string) int
 		WatchResourceMetrics func(childComplexity int, versionID string, fromDate string) int
 		WatchRuntimeCreated  func(childComplexity int) int
-		WatchVersionStatus   func(childComplexity int) int
+		WatchVersion         func(childComplexity int) int
 	}
 
 	User struct {
@@ -202,6 +202,7 @@ type ComplexityRoot struct {
 		CreationAuthor    func(childComplexity int) int
 		CreationDate      func(childComplexity int) int
 		Description       func(childComplexity int) int
+		Errors            func(childComplexity int) int
 		HasDoc            func(childComplexity int) int
 		ID                func(childComplexity int) int
 		Name              func(childComplexity int) int
@@ -262,7 +263,7 @@ type SubscriptionResolver interface {
 	WatchRuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error)
 	WatchNodeLogs(ctx context.Context, runtimeID string, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
 	WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error)
-	WatchVersionStatus(ctx context.Context) (<-chan *entity.Version, error)
+	WatchVersion(ctx context.Context) (<-chan *entity.Version, error)
 	WatchResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
 }
 type UserResolver interface {
@@ -945,12 +946,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.WatchRuntimeCreated(childComplexity), true
 
-	case "Subscription.watchVersionStatus":
-		if e.complexity.Subscription.WatchVersionStatus == nil {
+	case "Subscription.watchVersion":
+		if e.complexity.Subscription.WatchVersion == nil {
 			break
 		}
 
-		return e.complexity.Subscription.WatchVersionStatus(childComplexity), true
+		return e.complexity.Subscription.WatchVersion(childComplexity), true
 
 	case "User.accessLevel":
 		if e.complexity.User.AccessLevel == nil {
@@ -1070,6 +1071,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Version.Description(childComplexity), true
+
+	case "Version.errors":
+		if e.complexity.Version.Errors == nil {
+			break
+		}
+
+		return e.complexity.Version.Errors(childComplexity), true
 
 	case "Version.hasDoc":
 		if e.complexity.Version.HasDoc == nil {
@@ -1299,7 +1307,7 @@ type Subscription {
   watchRuntimeCreated: Runtime!
   watchNodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionId: ID!): Node!
-  watchVersionStatus: Version!
+  watchVersion: Version!
   watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
@@ -1447,6 +1455,7 @@ type Version {
   workflows: [Workflow!]!
   config: VersionConfig!
   hasDoc: Boolean
+  errors: [String!]!
 }
 
 type VersionConfig {
@@ -1462,6 +1471,7 @@ enum VersionStatus {
   PUBLISHED
   STOPPING
   STOPPED
+  ERROR
 }
 
 type Settings {
@@ -4867,7 +4877,7 @@ func (ec *executionContext) _Subscription_watchNodeStatus(ctx context.Context, f
 	}
 }
 
-func (ec *executionContext) _Subscription_watchVersionStatus(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+func (ec *executionContext) _Subscription_watchVersion(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4884,7 +4894,7 @@ func (ec *executionContext) _Subscription_watchVersionStatus(ctx context.Context
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().WatchVersionStatus(rctx)
+		return ec.resolvers.Subscription().WatchVersion(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5764,6 +5774,40 @@ func (ec *executionContext) _Version_hasDoc(ctx context.Context, field graphql.C
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Version_errors(ctx context.Context, field graphql.CollectedField, obj *entity.Version) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Version",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Errors, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _VersionConfig_vars(ctx context.Context, field graphql.CollectedField, obj *entity.VersionConfig) (ret graphql.Marshaler) {
@@ -8221,8 +8265,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_watchNodeLogs(ctx, fields[0])
 	case "watchNodeStatus":
 		return ec._Subscription_watchNodeStatus(ctx, fields[0])
-	case "watchVersionStatus":
-		return ec._Subscription_watchVersionStatus(ctx, fields[0])
+	case "watchVersion":
+		return ec._Subscription_watchVersion(ctx, fields[0])
 	case "watchResourceMetrics":
 		return ec._Subscription_watchResourceMetrics(ctx, fields[0])
 	default:
@@ -8496,6 +8540,11 @@ func (ec *executionContext) _Version(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "hasDoc":
 			out.Values[i] = ec._Version_hasDoc(ctx, field, obj)
+		case "errors":
+			out.Values[i] = ec._Version_errors(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

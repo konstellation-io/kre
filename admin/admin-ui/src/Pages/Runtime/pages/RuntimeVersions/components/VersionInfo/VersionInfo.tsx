@@ -19,6 +19,7 @@ function VersionInfo({ version }: Props) {
   const { runtimeId } = useParams();
 
   const isPublishedVersion = version.status === VersionStatus.PUBLISHED;
+  const hasErrors = version.status === VersionStatus.ERROR;
 
   const versionPath = buildRoute.version(
     ROUTE.RUNTIME_VERSION_STATUS,
@@ -26,6 +27,11 @@ function VersionInfo({ version }: Props) {
     version.id
   );
 
+  const errors = version.errors.map((error: string, index: number) => (
+    <p key={index} className={styles.versionError}>
+      {error}
+    </p>
+  ));
   return (
     <Link to={versionPath}>
       <div className={styles.container} id={`versionInfoElement_${version.id}`}>
@@ -69,6 +75,12 @@ function VersionInfo({ version }: Props) {
                   </span>
                 </div>
               </div>
+            </>
+          )}
+          {hasErrors && (
+            <>
+              <p className={styles.descriptionTitle}>ERRORS</p>
+              <div>{errors}</div>
             </>
           )}
         </div>

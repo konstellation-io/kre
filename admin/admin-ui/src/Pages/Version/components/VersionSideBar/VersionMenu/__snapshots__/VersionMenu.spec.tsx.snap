@@ -52,6 +52,7 @@ exports[`VersionMenu matches snapshot 1`] = `
           },
           "creationDate": "2020/01/01",
           "description": "versionDescription",
+          "errors": Array [],
           "hasDoc": false,
           "id": "versionId",
           "name": "versionName",

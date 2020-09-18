@@ -135,3 +135,18 @@ func (mr *MockVersionRepoMockRecorder) GetByRuntime(runtimeID interface{}) *gomo
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByRuntime", reflect.TypeOf((*MockVersionRepo)(nil).GetByRuntime), runtimeID)
 }
+
+// SetErrors mocks base method
+func (m *MockVersionRepo) SetErrors(ctx context.Context, version *entity.Version, errorMessages []string) (*entity.Version, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetErrors", ctx, version, errorMessages)
+	ret0, _ := ret[0].(*entity.Version)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetErrors indicates an expected call of SetErrors
+func (mr *MockVersionRepoMockRecorder) SetErrors(ctx, version, errorMessages interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetErrors", reflect.TypeOf((*MockVersionRepo)(nil).SetErrors), ctx, version, errorMessages)
+}

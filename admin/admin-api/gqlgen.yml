@@ -46,13 +46,10 @@ models:
         resolver: true
       publicationAuthor:
         resolver: true
-  VersionNodeStatus:
-    model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.VersionNodeStatus
-    fields:
       date:
         resolver: true
-  VersionStatus:
-    model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.VersionStatus
+  VersionNodeStatus:
+    model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.VersionNodeStatus
     fields:
       date:
         resolver: true

@@ -6,15 +6,16 @@
 import { VersionStatus } from './../../types/globalTypes';
 
 // ====================================================
-// GraphQL subscription operation: WatchVersionStatus
+// GraphQL subscription operation: WatchVersion
 // ====================================================
 
-export interface WatchVersionStatus_watchVersionStatus {
+export interface WatchVersion_watchVersion {
   __typename: 'Version';
   id: string;
   status: VersionStatus;
+  errors: string[];
 }
 
-export interface WatchVersionStatus {
-  watchVersionStatus: WatchVersionStatus_watchVersionStatus;
+export interface WatchVersion {
+  watchVersion: WatchVersion_watchVersion;
 }

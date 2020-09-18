@@ -54,7 +54,8 @@ const generateVersion = (
     'STARTING',
     'STARTED',
     'PUBLISHED',
-    'STOPPED'
+    'STOPPED',
+    'ERROR',
   ]),
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
@@ -145,8 +146,8 @@ module.exports = {
     watchRuntimeCreated: {
       subscribe: () => pubsub.asyncIterator('watchRuntimeCreated')
     },
-    watchVersionStatus: {
-      subscribe: () => pubsub.asyncIterator('watchVersionStatus')
+    watchVersion: {
+      subscribe: () => pubsub.asyncIterator('watchVersion')
     },
     watchNodeStatus: {
       subscribe: () => {

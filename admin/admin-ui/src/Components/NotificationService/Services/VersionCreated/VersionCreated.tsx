@@ -4,16 +4,14 @@ import {
 } from 'Graphql/client/models/Notification';
 
 import { VersionStatus } from 'Graphql/types/globalTypes';
-import { WatchVersionStatus_watchVersionStatus } from 'Graphql/subscriptions/types/WatchVersionStatus';
+import { WatchVersion_watchVersion } from 'Graphql/subscriptions/types/WatchVersion';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import { runtimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
 import { useApolloClient } from '@apollo/client';
 import useNotifications from 'Graphql/hooks/useNotifications';
 
-const WatchVersionStatus = loader(
-  'Graphql/subscriptions/watchVersionStatus.graphql'
-);
+const WatchVersion = loader('Graphql/subscriptions/watchVersion.graphql');
 
 const NOTIFICATION_TIMEOUT = 15 * 1000;
 
@@ -23,13 +21,13 @@ function VersionCreated() {
 
   client
     .subscribe<runtimeCreated>({
-      query: WatchVersionStatus
+      query: WatchVersion
     })
     .subscribe({
       next(data) {
-        const version: WatchVersionStatus_watchVersionStatus = get(
+        const version: WatchVersion_watchVersion = get(
           data,
-          'data.watchVersionStatus'
+          'data.watchVersion'
         );
 
         if (version.status === VersionStatus.CREATED) {
@@ -46,9 +44,7 @@ function VersionCreated() {
         }
       },
       error(err) {
-        console.error(
-          `Error at watchVersionStatus subscription: ${err.toString()}`
-        );
+        console.error(`Error at watchVersion subscription: ${err.toString()}`);
       }
     });
 

@@ -56,6 +56,7 @@ export interface GetVersionConfStatus_versions {
   publicationAuthor: GetVersionConfStatus_versions_publicationAuthor | null;
   config: GetVersionConfStatus_versions_config;
   hasDoc: boolean | null;
+  errors: string[];
 }
 
 export interface GetVersionConfStatus {
