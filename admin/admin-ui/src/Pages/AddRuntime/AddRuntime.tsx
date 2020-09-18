@@ -41,7 +41,7 @@ function validateRuntimeID(value: string): string | boolean {
     CHECK.isLengthAllowed(value, ID_MAX_LENGTH),
     CHECK.isLowerCase(value),
     CHECK.matches(value, /^[a-z]/, 'ID must start with a lowercase letter'),
-    CHECK.matches(value, /.{3,}/, 'ID must contain at least 3 chars'),
+    CHECK.matches(value, /.{3,}/, 'ID must contain at least 3 characters'),
     CHECK.isAlphanumeric(
       value.replaceAll('-', ''),
       'ID only can contain lowercase alphanumeric and hyphens'
