@@ -141,7 +141,6 @@ function VersionActions({
 
   switch (version.status) {
     case VersionStatus.CREATED:
-    case VersionStatus.STOPPING:
     case VersionStatus.STOPPED:
       buttons[0] = {
         Icon: StartIcon,
@@ -149,6 +148,20 @@ function VersionActions({
         action: () => openModal('START', startVersion),
         primary: version.config.completed,
         disabled: !version.config.completed
+      };
+      buttons[1] = {
+        Icon: PublishIcon,
+        label: 'PUBLISH',
+        disabled: true
+      };
+      break;
+    case VersionStatus.STOPPING:
+      buttons[0] = {
+        Icon: StartIcon,
+        label: 'START',
+        action: () => openModal('START', startVersion),
+        primary: version.config.completed,
+        disabled: true
       };
       buttons[1] = {
         Icon: PublishIcon,
@@ -172,7 +185,8 @@ function VersionActions({
       buttons[0] = {
         Icon: StopIcon,
         label: 'STOP',
-        action: () => openModal('STOP', stopVersion)
+        action: () => openModal('STOP', stopVersion),
+        disabled: true
       };
       buttons[1] = {
         Icon: PublishIcon,

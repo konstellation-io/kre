@@ -148,8 +148,7 @@ func (v Version) PublishedOrStarted() bool {
 func (v Version) CanBeStarted() bool {
 	switch v.Status {
 	case VersionStatusCreated,
-		VersionStatusStopped,
-		VersionStatusStopping:
+		VersionStatusStopped:
 		return true
 	}
 	return false
@@ -157,8 +156,7 @@ func (v Version) CanBeStarted() bool {
 
 func (v Version) CanBeStopped() bool {
 	switch v.Status {
-	case VersionStatusStarted,
-		VersionStatusStarting:
+	case VersionStatusStarted:
 		return true
 	}
 	return false
