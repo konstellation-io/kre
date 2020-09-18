@@ -86,6 +86,18 @@ func (r *RuntimeRepoMongoDB) GetByID(ctx context.Context, runtimeID string) (*en
 	return runtime, err
 }
 
+func (r *RuntimeRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Runtime, error) {
+	runtime := &entity.Runtime{}
+	filter := bson.D{{"name", name}}
+
+	err := r.collection.FindOne(ctx, filter).Decode(runtime)
+	if err == mongo.ErrNoDocuments {
+		return nil, usecase.ErrRuntimeNotFound
+	}
+
+	return runtime, err
+}
+
 func (r *RuntimeRepoMongoDB) UpdatePublishedVersion(ctx context.Context, runtimeID string, versionID string) error {
 	filter := bson.M{"_id": runtimeID}
 	upd := bson.M{

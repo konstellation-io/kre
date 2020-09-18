@@ -123,6 +123,7 @@ func TestCreateRuntime(t *testing.T) {
 	s.mocks.passwordGenerator.EXPECT().NewPassword().Return(fakePass).Times(3)
 	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
 	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(nil, usecase.ErrRuntimeNotFound)
+	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, name).Return(nil, usecase.ErrRuntimeNotFound)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
 	s.mocks.runtimeService.EXPECT().WaitForRuntimeStarted(gomock.Any(), expectedRuntime).Return(nil, nil)
