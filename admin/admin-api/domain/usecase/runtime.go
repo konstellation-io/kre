@@ -19,8 +19,9 @@ type RuntimeStatus string
 
 var (
 	// ErrRuntimeNotFound error
-	ErrRuntimeNotFound   = errors.New("error runtime not found")
-	ErrRuntimeDuplicated = errors.New("there is already a runtime with the same id")
+	ErrRuntimeNotFound       = errors.New("error runtime not found")
+	ErrRuntimeDuplicated     = errors.New("there is already a runtime with the same id")
+	ErrRuntimeDuplicatedName = errors.New("there is already a runtime with the same name")
 )
 
 // RuntimeInteractor contains app logic to handle Runtime entities
@@ -86,9 +87,17 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 	}
 
 	// Check if the Runtime already exists
-	_, err = i.runtimeRepo.GetByID(ctx, runtimeID)
-	if err == nil {
+	runtimeFromDB, err := i.runtimeRepo.GetByID(ctx, runtimeID)
+	if runtimeFromDB != nil {
 		return nil, nil, ErrRuntimeDuplicated
+	} else if err != ErrRuntimeNotFound {
+		return nil, nil, err
+	}
+
+	// Check if there is another Runtime with the same name
+	runtimeFromDB, err = i.runtimeRepo.GetByName(ctx, name)
+	if runtimeFromDB != nil {
+		return nil, nil, ErrRuntimeDuplicatedName
 	} else if err != ErrRuntimeNotFound {
 		return nil, nil, err
 	}
