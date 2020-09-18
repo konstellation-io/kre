@@ -17,15 +17,15 @@ show_delete_help() {
   echo "$(help_global_header "delete <runtime|version> <names>")
 
     sub-commands:
-      version <runtime-name> <version-name>  removes one version from <runtime-name>.
-      runtime <runtime-name> [<runtime-name2> ... <runtime-name-N>] completely removes runtimes.
+      version <runtime-id> <version-name>  removes one version from <runtime-id>.
+      runtime <runtime-id> [<runtime-id-2> ... <runtime-id-N>] completely removes runtimes.
 
     $(help_global_options)
 "
 }
 
 delete_runtime_script() {
-  echo "db.getCollection('runtimes').remove({ \"name\": \"$1\" })"
+  echo "db.getCollection('runtimes').remove({ \"_id\": \"$1\" })"
 }
 
 delete_runtimes() {
