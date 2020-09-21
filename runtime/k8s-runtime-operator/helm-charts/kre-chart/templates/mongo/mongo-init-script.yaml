@@ -48,5 +48,14 @@ data:
     	    { _id: 0, host : "kre-mongo-0:27017" },
     	  ]
     	});
+      wait_rs_ready = 15000;
+      sleep(wait_rs_ready);
+      db.auth('admin', $MONGO_INITDB_ROOT_PASSWORD)
+      db = db.getSiblingDB('data')
+      db.createUser({
+        user: "$ME_CONFIG_MONGODB_AUTH_USERNAME",
+        pwd: "$ME_CONFIG_MONGODB_AUTH_PASSWORD",
+        roles: [{role: "read", db: "data"}], 
+        mechanisms:["SCRAM-SHA-1"] 
+      });
     EOF
- 

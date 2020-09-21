@@ -104,6 +104,11 @@ func NewApp(
 	m.Use(sessionMiddleware)
 	m.Use(kremiddleware.ChronografProxy())
 
+	d := e.Group("/database")
+	d.Use(jwtMiddleware)
+	d.Use(sessionMiddleware)
+	d.Use(kremiddleware.MongoExpressProxy())
+
 	return &App{
 		e,
 		cfg,
