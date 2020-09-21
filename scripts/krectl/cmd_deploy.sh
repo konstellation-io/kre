@@ -67,12 +67,21 @@ clean_helm_deps() {
   helm dep update runtime/k8s-runtime-operator/helm-charts/kre-chart
 }
 
+get_dry_run_cmd_from_v() {
+    kubectl_version="$(kubectl version --client=true --short | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')"
+    kubectl_req_version="1.18.0"
+    if [ "$(printf '%s\n' "${kubectl_act_version}" "${kubectl_req_version}" | sort -V | head -n1)" = "$kubectl_req_version" ]; then
+        echo "=client"
+    fi
+    echo ""
+}
+
 create_namespace() {
   echo_info "📚️ Create Namespace if not exist..."
-  NS=$(kubectl create ns "${NAMESPACE}" --dry-run=client -o yaml)
+  NS=$(kubectl create ns "${NAMESPACE}" --dry-run${get_dry_run_cmd_from_v} -o yaml)
   if [ "$VERBOSE" = "1" ]; then
     # NOTE: there is no way to call run() with pipe commands
-    echo_run "kubectl create ns \"${NAMESPACE}\" --dry-run=client -o yaml | kubectl apply -f -"
+    echo_run "kubectl create ns \"${NAMESPACE}\" --dry-run${get_dry_run_cmd_from_v} -o yaml | kubectl apply -f -"
     echo "$NS" | kubectl apply -f -
   else
     echo "$NS" | kubectl apply > /dev/null -f - 2>&1
