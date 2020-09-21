@@ -68,20 +68,28 @@ clean_helm_deps() {
 }
 
 get_dry_run_cmd_from_v() {
-    kubectl_version="$(kubectl version --client=true --short | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')"
+    kubectl_act_version="$(kubectl version --client=true --short | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')"
     kubectl_req_version="1.18.0"
-    if [ "$(printf '%s\n' "${kubectl_act_version}" "${kubectl_req_version}" | sort -V | head -n1)" = "$kubectl_req_version" ]; then
-        echo "=client"
+
+    # get the lowest version of the two compared
+    lowest_version=$(printf '%s\n' "${kubectl_act_version}" "${kubectl_req_version}" | sort -V | head -n1)
+
+    # if minimum required is met, use newer parameter
+    if [ "$lowest_version" = "$kubectl_req_version" ]; then
+      echo "--dry-run=client"
+      return
     fi
-    echo ""
+
+    echo "--dry-run"
 }
 
 create_namespace() {
+  DRY_RUN=$(get_dry_run_cmd_from_v)
   echo_info "📚️ Create Namespace if not exist..."
-  NS=$(kubectl create ns "${NAMESPACE}" --dry-run${get_dry_run_cmd_from_v} -o yaml)
+  NS=$(kubectl create ns "${NAMESPACE}" ${DRY_RUN} -o yaml)
   if [ "$VERBOSE" = "1" ]; then
     # NOTE: there is no way to call run() with pipe commands
-    echo_run "kubectl create ns \"${NAMESPACE}\" --dry-run${get_dry_run_cmd_from_v} -o yaml | kubectl apply -f -"
+    echo_run "kubectl create ns \"${NAMESPACE}\" ${DRY_RUN} -o yaml | kubectl apply -f -"
     echo "$NS" | kubectl apply -f -
   else
     echo "$NS" | kubectl apply > /dev/null -f - 2>&1
