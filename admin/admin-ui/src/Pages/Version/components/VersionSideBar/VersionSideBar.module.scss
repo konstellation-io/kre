@@ -12,42 +12,10 @@ $color-wrapper-bg: palette(base, 500);
   background-color: $color-wrapper-bg;
   display: flex;
 }
-
-.backSection {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  color: font-color(light);
-  font-size: 14px;
-  padding-left: 8px;
-  border-bottom: solid 1px palette(base, 900);
-  transition: color ease 0.4s, background-color ease 0.4s;
-
-  span {
-    padding-left: 8px;
-  }
-
-  &:hover {
-    color: font-color(light);
-    background-color: palette(base, 400);
-  }
-}
-
 .runtimeNameSection {
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-
-.runtimeHexagon {
-  padding: 15px;
-}
-
-.runtimeName {
-  @include font-subheader;
-  color: font-color(light);
-
-  margin-right: 15px;
 }
 
 .lateralPanel {

@@ -1,0 +1,49 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.container {
+  background-color: palette(base, 400);
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+
+  & > div:first-child {
+    border-right: solid 1px palette(base);
+  }
+}
+
+.link {
+  @include font-button;
+  font-weight: 700;
+  font-size: 11px;
+  color: font-color(lowlight);
+
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+
+  transition: background-color ease 0.3s, color ease 0.3s;
+
+  .icon {
+    line-height: 33px;
+    margin-right: $grid-unit / 2;
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  &:hover {
+    background-color: palette(lowlight, 800);
+    color: font-color(light);
+  }
+}

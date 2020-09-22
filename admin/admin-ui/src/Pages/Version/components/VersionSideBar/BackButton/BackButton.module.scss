@@ -1,0 +1,34 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.backSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: font-color(lowlight);
+  font-size: 14px;
+  padding-left: 8px;
+  border-bottom: solid 1px palette(base);
+  transition: color ease 0.4s, background-color ease 0.4s;
+  background-color: palette(base, 400);
+
+  span {
+    padding-left: 8px;
+  }
+
+  &:hover {
+    color: font-color(light);
+    background-color: palette(lowlight, 800);
+  }
+}
+
+.runtimeHexagon {
+  padding: 15px;
+}
+
+.runtimeName {
+  @include font-subheader;
+
+  margin-right: 15px;
+}
