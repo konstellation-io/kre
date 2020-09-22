@@ -61,6 +61,8 @@ var (
 	ErrVerificationCodeNotFound = errors.New("error the verification not found")
 	// ErrExpiredVerificationCode error
 	ErrExpiredVerificationCode = errors.New("error the verification code code is expired")
+	// ErrInvalidApiToken error
+	ErrInvalidApiToken = errors.New("error invalid API Token")
 	// ErrUserNotAllowed error
 	ErrUserNotAllowed = errors.New("error email address not allowed")
 	// ErrInvalidSession error
@@ -193,6 +195,16 @@ func (a *AuthInteractor) Logout(userID, token string) error {
 
 func (a *AuthInteractor) CreateSession(session entity.Session) error {
 	return a.sessionRepo.Create(session)
+}
+
+func (a *AuthInteractor) CheckApiToken(apiToken string) (string, error) {
+	user, err := a.userRepo.GetByApiToken(apiToken)
+	if err != nil {
+		a.logger.Errorf("Error getting user with API Token '%s': %s", apiToken, err)
+		return "", err
+	}
+
+	return user.ID, nil
 }
 
 func (a *AuthInteractor) CheckSessionIsActive(token string) error {

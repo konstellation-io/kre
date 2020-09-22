@@ -19,6 +19,8 @@ type UserRepo interface {
 
 	GetByID(userID string) (*entity.User, error)
 
+	GetByApiToken(apiToken string) (*entity.User, error)
+
 	GetByIDs(keys []string) ([]*entity.User, error)
 
 	GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error)

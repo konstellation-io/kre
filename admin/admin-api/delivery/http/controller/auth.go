@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -18,6 +19,10 @@ import (
 
 type signInInput struct {
 	Email string `json:"email" validate:"required,email"`
+}
+
+type apiTokenInput struct {
+	ApiToken string `json:"apiToken" validate:"required"`
 }
 
 type signinVerifyInput struct {
@@ -91,10 +96,70 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 		}
 	}
 
-	a.logger.Info("Generating JWT token.")
-	setting, err := a.settingInteractor.GetUnprotected(c.Request().Context())
+	jwtToken, expirationDate, err := a.GenerateAccessToken(c.Request().Context(), userId)
 	if err != nil {
-		return err
+		a.logger.Errorf("Error generating token: %s", err)
+		return httperrors.HTTPErrUnexpected
+	}
+
+	a.logger.Info("Set cookie containing the generated JWT token.")
+	auth.CreateSessionCookie(c, a.cfg, jwtToken, *expirationDate)
+
+	err = a.authInteractor.CreateSession(entity.Session{
+		UserID:         userId,
+		Token:          jwtToken,
+		CreationDate:   time.Now(),
+		ExpirationDate: *expirationDate,
+	})
+	if err != nil {
+		a.logger.Errorf("Error creating session: %s", err)
+		return httperrors.HTTPErrUnexpected
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login success"})
+}
+
+func (a *AuthController) SignInWithApiToken(c echo.Context) error {
+	input := new(apiTokenInput)
+	if err := c.Bind(input); err != nil {
+		return httperrors.HTTPErrInvalidJSON
+	}
+
+	if err := c.Validate(input); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, newResponseValidationError(err))
+	}
+
+	userId, err := a.authInteractor.CheckApiToken(input.ApiToken)
+	if err != nil {
+		a.logger.Errorf("Error SignInWithApiToken: %s", err)
+		return httperrors.HTTPErrUnauthorized
+	}
+
+	jwtToken, expirationDate, err := a.GenerateAccessToken(c.Request().Context(), userId)
+	if err != nil {
+		a.logger.Errorf("Error generating token: %s", err)
+		return httperrors.HTTPErrUnexpected
+	}
+
+	err = a.authInteractor.CreateSession(entity.Session{
+		UserID:         userId,
+		Token:          jwtToken,
+		CreationDate:   time.Now(),
+		ExpirationDate: *expirationDate,
+	})
+	if err != nil {
+		a.logger.Errorf("Error creating session: %s", err)
+		return httperrors.HTTPErrUnexpected
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"access_token": jwtToken})
+}
+
+func (a *AuthController) GenerateAccessToken(c context.Context, userId string) (string, *time.Time, error) {
+	a.logger.Info("Generating JWT token.")
+	setting, err := a.settingInteractor.GetUnprotected(c)
+	if err != nil {
+		return "", nil, err
 	}
 
 	ttl := time.Duration(setting.SessionLifetimeInDays) * 24 * time.Hour
@@ -108,25 +173,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 
 	jwtKey := []byte(a.cfg.Auth.JWTSignSecret)
 	jwtToken, err := token.SignedString(jwtKey)
-	if err != nil {
-		return err
-	}
-
-	a.logger.Info("Set cookie containing the generated JWT token.")
-	auth.CreateSessionCookie(c, a.cfg, jwtToken, expirationDate)
-
-	err = a.authInteractor.CreateSession(entity.Session{
-		UserID:         userId,
-		Token:          jwtToken,
-		CreationDate:   time.Now(),
-		ExpirationDate: expirationDate,
-	})
-	if err != nil {
-		a.logger.Errorf("Error creating session: %s", err)
-		return httperrors.HTTPErrUnexpected
-	}
-
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login success"})
+	return jwtToken, &expirationDate, err
 }
 
 func (a *AuthController) Logout(c echo.Context) error {
