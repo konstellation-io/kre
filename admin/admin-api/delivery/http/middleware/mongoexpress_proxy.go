@@ -12,10 +12,10 @@ import (
 
 var databaseURLRegexp = regexp.MustCompile("^/database/([^/]+)")
 
-// ChronografProxy creates a reverse proxy to send the incoming request
-// to one of the runtime's Chronograf service.
+// MongoExpressProxy creates a reverse proxy to send the incoming request
+// to one of the runtime's MongoExpress service.
 // The incoming request are like: "<api_base_url>/database/<runtime-name>/*"
-// and the destination URLs: "http://chronograf.<runtime-name>/database/<runtime-name>/*"
+// and the destination URLs: "http://kre-mongo-express.<runtime-name>/database/<runtime-name>/*"
 func MongoExpressProxy() echo.MiddlewareFunc {
 	return NewReverseProxyWithDynamicURLTarget(func(req *http.Request) (*url.URL, error) {
 		matches := databaseURLRegexp.FindStringSubmatch(req.URL.Path)
