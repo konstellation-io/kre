@@ -33,6 +33,8 @@ models:
         resolver: true
       measurementsUrl:
         resolver: true
+      databaseUrl:
+        resolver: true
       entrypointAddress:
         resolver: true
   Version:

@@ -155,7 +155,7 @@ type Runtime {
   creationAuthor: User!
   publishedVersion: Version
   measurementsUrl: String!
-  databasesUrl: String!
+  databaseUrl: String!
   entrypointAddress: String!
 }
 
