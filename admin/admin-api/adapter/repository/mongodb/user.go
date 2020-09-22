@@ -103,6 +103,18 @@ func (r *UserRepoMongoDB) GetManyByEmail(ctx context.Context, email string) ([]*
 	return users, nil
 }
 
+func (r *UserRepoMongoDB) GetByApiToken(apiToken string) (*entity.User, error) {
+	user := &entity.User{}
+	filter := bson.D{{"apiToken", apiToken}}
+
+	err := r.collection.FindOne(context.Background(), filter).Decode(user)
+	if err == mongo.ErrNoDocuments {
+		return user, usecase.ErrInvalidApiToken
+	}
+
+	return user, err
+}
+
 func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {
 	user := &entity.User{}
 	filter := bson.D{{"_id", userID}}

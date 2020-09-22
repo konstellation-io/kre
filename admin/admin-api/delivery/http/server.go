@@ -78,34 +78,56 @@ func NewApp(
 		resourceMetricsInteractor,
 	)
 
-	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey:  []byte(cfg.Auth.JWTSignSecret),
-		TokenLookup: "cookie:token",
-		ErrorHandler: func(err error) error {
-			logger.Errorf("Error looking for jwt token: %s", err)
-			return httperrors.HTTPErrUnauthorized
-		},
+	middlewareErrorHandler := func(err error) error {
+		logger.Errorf("Error looking for jwt token: %s", err)
+		return httperrors.HTTPErrUnauthorized
+	}
+
+	skipIfHeaderPresent := func(c echo.Context) bool {
+		auth := c.Request().Header.Get("Authorization")
+
+		authExists := auth != ""
+
+		if authExists {
+			logger.Debug("Authorization header present, skipping cookie check")
+		}
+
+		return authExists
+	}
+
+	jwtCookieMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		Skipper:      skipIfHeaderPresent,
+		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
+		TokenLookup:  "cookie:token",
+		ErrorHandler: middlewareErrorHandler,
+	})
+
+	jwtHeaderMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
+		ErrorHandler: middlewareErrorHandler,
 	})
 
 	sessionMiddleware := kremiddleware.NewSessionMiddleware(cfg, logger, authInteractor)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
+	e.POST("/api/v1/auth/token/signin", authController.SignInWithApiToken)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
-	e.POST("/api/v1/auth/logout", jwtMiddleware(authController.Logout))
+	e.POST("/api/v1/auth/logout", jwtCookieMiddleware(authController.Logout))
 
 	r := e.Group("/graphql")
-	r.Use(jwtMiddleware)
+	r.Use(jwtCookieMiddleware)
+	r.Use(jwtHeaderMiddleware)
 	r.Use(sessionMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 
 	m := e.Group("/measurements")
-	m.Use(jwtMiddleware)
+	m.Use(jwtCookieMiddleware)
 	m.Use(sessionMiddleware)
 	m.Use(kremiddleware.ChronografProxy())
 
 	d := e.Group("/database")
-	d.Use(jwtMiddleware)
+	d.Use(jwtCookieMiddleware)
 	d.Use(sessionMiddleware)
 	d.Use(kremiddleware.MongoExpressProxy())
 
