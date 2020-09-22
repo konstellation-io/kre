@@ -46,11 +46,6 @@ prepare_helm() {
     # Helm v2 needs to be initiated first
     echo_wait "Init helm v2..."
     run helm init --upgrade --wait
-  else
-    # Helm v3 needs this the base repo to be added manually
-    echo_wait "Init helm v3..."
-    run helm repo add --force-update stable https://kubernetes-charts.storage.googleapis.com
-    run helm repo add --force-update influxdata https://helm.influxdata.com/
   fi
 
   if [ "$MINIKUBE_RESET" = "1" ]; then
@@ -67,15 +62,15 @@ clean_helm_deps() {
   helm dep update runtime/k8s-runtime-operator/helm-charts/kre-chart
 }
 
-get_dry_run_cmd_from_v() {
-    kubectl_act_version="$(kubectl version --client=true --short | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')"
-    kubectl_req_version="1.18.0"
+get_kubectl_dry_run() {
+    act_version="$(kubectl version --client=true --short | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')"
+    req_version="1.18.0"
 
     # get the lowest version of the two compared
-    lowest_version=$(printf '%s\n' "${kubectl_act_version}" "${kubectl_req_version}" | sort -V | head -n1)
+    lowest_version=$(printf '%s\n' "${act_version}" "${req_version}" | sort -V | head -n1)
 
     # if minimum required is met, use newer parameter
-    if [ "$lowest_version" = "$kubectl_req_version" ]; then
+    if [ "$lowest_version" = "$req_version" ]; then
       echo "--dry-run=client"
       return
     fi
@@ -84,7 +79,7 @@ get_dry_run_cmd_from_v() {
 }
 
 create_namespace() {
-  DRY_RUN=$(get_dry_run_cmd_from_v)
+  DRY_RUN=$(get_kubectl_dry_run)
   echo_info "📚️ Create Namespace if not exist..."
   NS=$(kubectl create ns "${NAMESPACE}" ${DRY_RUN} -o yaml)
   if [ "$VERBOSE" = "1" ]; then
