@@ -49,8 +49,8 @@ prepare_helm() {
   else
     # Helm v3 needs this the base repo to be added manually
     echo_wait "Init helm v3..."
-    run helm repo add stable https://kubernetes-charts.storage.googleapis.com
-    run helm repo add influxdata https://helm.influxdata.com/
+    run helm repo add --force-update stable https://kubernetes-charts.storage.googleapis.com
+    run helm repo add --force-update influxdata https://helm.influxdata.com/
   fi
 
   if [ "$MINIKUBE_RESET" = "1" ]; then
