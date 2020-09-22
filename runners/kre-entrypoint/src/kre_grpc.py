@@ -3,6 +3,7 @@ import datetime
 import time
 import traceback
 
+from grpclib import GRPCError
 from protobuf_to_dict import protobuf_to_dict
 
 from kre_nats import KreNatsMessage
@@ -74,5 +75,5 @@ class EntrypointKRE:
             self.logger.error(err_msg)
             traceback.print_exc()
 
-            response = self.make_response_object(subject, KreNatsMessage(error=err_msg))
-            await stream.send_message(response)
+            if isinstance(err, GRPCError):
+                raise err
