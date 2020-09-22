@@ -2,19 +2,14 @@ import {
   GetVersionConfStatus_runtime,
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
-import RuntimeHexagon, {
-  RuntimeHexagonSize
-} from 'Components/RuntimeHexagon/RuntimeHexagon';
 
+import BackButton from './BackButton/BackButton';
 import Can from 'Components/Can/Can';
-import IconArrowBack from '@material-ui/icons/KeyboardBackspace';
-import { Link } from 'react-router-dom';
-import ROUTE from 'Constants/routes';
 import React from 'react';
+import RuntimeMenu from './RuntimeMenu/RuntimeMenu';
 import VersionActions from './VersionActions/VersionActions';
 import VersionInfo from './VersionInfo/VersionInfo';
 import VersionMenu from './VersionMenu/VersionMenu';
-import { buildRoute } from 'Utils/routes';
 import styles from './VersionSideBar.module.scss';
 
 type VersionSideBarProps = {
@@ -34,16 +29,8 @@ function VersionSideBar({ runtime, versions, version }: VersionSideBarProps) {
 
   return (
     <div className={styles.wrapper}>
-      <Link to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}>
-        <div className={styles.backSection}>
-          <IconArrowBack className="icon-regular" />
-          <div className={styles.runtimeHexagon}>
-            <RuntimeHexagon runtime={runtime} size={RuntimeHexagonSize.SMALL} />
-          </div>
-          <div className={styles.runtimeName}>{runtime.name}</div>
-        </div>
-      </Link>
-      <div className={styles.runtimeNameSection}></div>
+      <BackButton runtime={runtime} />
+      <RuntimeMenu runtime={runtime} />
       <VersionInfo version={version} />
       <VersionMenu runtime={runtime} version={version} />
       <Can perform="version:edit">

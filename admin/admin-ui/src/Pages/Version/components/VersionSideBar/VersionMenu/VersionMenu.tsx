@@ -47,12 +47,6 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
     Icon: IconShowChart
   });
 
-  itemProps.push({
-    label: 'MEASUREMENTS',
-    to: runtime.measurementsUrl,
-    Icon: IconShowChart
-  });
-
   if (checkPermission(accessLevel, 'version:edit')) {
     itemProps.push({
       label: 'CONFIGURATION',
