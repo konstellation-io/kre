@@ -241,9 +241,15 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 			i.logger.Infof("No documentation found inside the krt files")
 		}
 
+		err = i.storeContent(runtime, krtYml, tmpDir)
+		if err != nil {
+			errorMessage := "error saving content in file storage"
+			i.logger.Errorf("%s: %s", errorMessage, err)
+			contentErrors = append([]error{errors.New(errorMessage)}, contentErrors...)
+		}
+
 		if len(contentErrors) > 0 {
 			i.setStatusError(asyncCtx, versionCreated, contentErrors, notifyStatusCh)
-
 			return
 		}
 
@@ -685,11 +691,11 @@ func (i *VersionInteractor) SearchLogs(
 
 func (i *VersionInteractor) setStatusError(ctx context.Context, version *entity.Version, errors []error, notifyCh chan *entity.Version) {
 	errorMessages := make([]string, len(errors))
-	for i, error := range errors {
-		errorMessages[i] = error.Error()
+	for idx, err := range errors {
+		errorMessages[idx] = err.Error()
 	}
-	versionWithError, err := i.versionRepo.SetErrors(ctx, version, errorMessages)
 
+	versionWithError, err := i.versionRepo.SetErrors(ctx, version, errorMessages)
 	if err != nil {
 		i.logger.Errorf("error saving version error state: %s", err)
 	}
