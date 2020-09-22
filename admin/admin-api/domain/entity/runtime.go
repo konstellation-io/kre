@@ -2,11 +2,12 @@ package entity
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"log"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type RuntimeStatus string
@@ -93,6 +94,10 @@ func (r *Runtime) GetInfluxURL() string {
 
 func (r *Runtime) GetMeasurementURL(baseURL string) string {
 	return fmt.Sprintf("%s/measurements/%s", baseURL, r.GetNamespace())
+}
+
+func (r *Runtime) GetDatabaseURL(baseURL string) string {
+	return fmt.Sprintf("%s/database/%s", baseURL, r.GetNamespace())
 }
 
 func (r *Runtime) GetEntrypointAddress(baseDomain string) string {

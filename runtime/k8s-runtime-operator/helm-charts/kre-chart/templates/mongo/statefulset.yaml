@@ -34,6 +34,8 @@ spec:
           envFrom:
             - secretRef:
                 name: kre-mongo-secret
+            - secretRef:
+                name: kre-mongo-express-secret
           ports:
             - containerPort: 27017
           volumeMounts:

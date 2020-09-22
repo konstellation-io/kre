@@ -29,7 +29,7 @@ function RuntimeMenu({ runtime }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.links}>
-        <BlankLinkButton label="DATABASE" to={''} />
+        <BlankLinkButton label="DATABASE" to={runtime.databaseUrl} />
         <BlankLinkButton label="METRICS" to={runtime.measurementsUrl} />
       </div>
     </div>

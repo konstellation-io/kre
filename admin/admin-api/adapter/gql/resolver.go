@@ -404,6 +404,10 @@ func (r *runtimeResolver) MeasurementsURL(_ context.Context, obj *entity.Runtime
 	return obj.GetMeasurementURL(r.cfg.Admin.BaseURL), nil
 }
 
+func (r *runtimeResolver) DatabaseURL(_ context.Context, obj *entity.Runtime) (string, error) {
+	return obj.GetDatabaseURL(r.cfg.Admin.BaseURL), nil
+}
+
 func (r *runtimeResolver) EntrypointAddress(_ context.Context, obj *entity.Runtime) (string, error) {
 	return obj.GetEntrypointAddress(r.cfg.BaseDomainName), nil
 }
