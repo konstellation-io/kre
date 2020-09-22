@@ -1,3 +1,5 @@
+from grpclib.exceptions import GRPCError
+from grpclib.const import Status
 from grpclib.server import Stream
 
 from kre_grpc import EntrypointKRE
@@ -22,7 +24,7 @@ class Entrypoint(EntrypointBase, EntrypointKRE):
                              f" responses with '{{ .ReturnsType }}'. Data: {kre_nats_msg.data}")
 
             if kre_nats_msg.error:
-                return public_input_pb2.{{ .ReturnsType }}(error=kre_nats_msg.error)
+                raise GRPCError(Status.INTERNAL, kre_nats_msg.error)
             else:
                 return public_input_pb2.{{ .ReturnsType }}(**kre_nats_msg.data)
         {{ end }}
