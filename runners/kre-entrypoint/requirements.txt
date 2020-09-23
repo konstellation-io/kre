@@ -1,7 +1,29 @@
-grpcio-tools==1.28.1
-grpcio==1.28.1
+# Dependencies
 asyncio-nats-client==0.10.0
+grpcio==1.28.1
 grpclib==0.3.2
+grpcio-tools==1.28.1
+influxdb-client==1.9.0
 protobuf==3.12.2
 protobuf3-to-dict==0.1.5
-influxdb-client==1.9.0
+
+# Subdependencies
+asn1crypto==0.24.0
+certifi==2020.6.20
+cryptography==2.1.4
+h2==3.2.0
+hpack==3.0.0
+hyperframe==5.2.0
+idna==2.6
+keyring==10.6.0
+keyrings.alt==3.0
+multidict==4.7.6
+pycrypto==2.6.1
+pygobject==3.26.1
+python-dateutil==2.8.1
+pytz==2020.1
+pyxdg==0.25
+Rx==3.1.1
+SecretStorage==2.3.1
+six==1.11.0
+urllib3==1.25.10
