@@ -36,8 +36,8 @@ delete_runtimes() {
   for NAME in $RUNTIMES; do
     RUNTIME="kre-${NAME}"
 
-    # Skip -v on delete command
-    if [ "$RUNTIME" = "kre--v" ]; then
+    # Skip -q on delete command
+    if [ "$RUNTIME" = "kre--q" ]; then
       continue
     fi
 

@@ -42,7 +42,7 @@ help_global_header() {
 help_global_options() {
   echo "global options:
       h     prints this help.
-      v     verbose mode.
+      q     silent mode.
  "
 }
 

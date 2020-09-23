@@ -12,7 +12,7 @@ if [ "$DEBUG" = "1" ]; then
 fi
 
 # Default values
-VERBOSE=0
+VERBOSE=1
 SKIP_BUILD=0
 SKIP_FRONTEND_BUILD=0
 SKIP_OPERATOR_BUILD=0
@@ -47,8 +47,8 @@ echo
 
 # Parse global arguments
 case $* in
-  *\ -v*)
-    VERBOSE=1
+  *\ -q*)
+    VERBOSE=0
   ;;
   *--help|-h*)
     show_help "$@"
@@ -56,7 +56,7 @@ case $* in
   ;;
 esac
 
-if [ -z "$*" ] || { [ "$VERBOSE" = "1" ] && [ "$#" = "1" ]; }; then
+if [ -z "$*" ] || { [ "$VERBOSE" = "0" ] && [ "$#" = "1" ]; }; then
   echo_warning "missing command"
   echo
   echo
