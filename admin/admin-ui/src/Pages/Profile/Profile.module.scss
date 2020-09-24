@@ -1,0 +1,48 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: palette(base, 800);
+  overflow: auto;
+
+  > div:first-child {
+    padding-left: 20vw;
+  }
+}
+
+.section {
+  background-color: palette(lowlight, 900);
+  display: flex;
+  height: 5 * $grid-unit;
+  justify-content: space-between;
+  padding: 0 20vw;
+
+  .title {
+    @include font-body;
+    line-height: 5 * $grid-unit;
+  }
+}
+
+.content {
+  padding: 3 * $grid-unit 20vw;
+  margin: 0;
+  height: 100%;
+  background-color: palette(base, 500);
+}
+
+@media screen and (max-width: 1000px) {
+  .section {
+    padding: 0 0 0 3 * $grid-unit;
+  }
+  .content {
+    padding: 3 * $grid-unit;
+  }
+  .container > div:first-child {
+    padding-left: 3 * $grid-unit;
+  }
+}

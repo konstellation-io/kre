@@ -4,6 +4,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import AuditIcon from '@material-ui/icons/EventNote';
 import { ENDPOINT } from 'Constants/application';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
+import ProfileIcon from '@material-ui/icons/Person';
 import ROUTE from 'Constants/routes';
 import SettingsIcon from '@material-ui/icons/VerifiedUser';
 import UsersIcon from '@material-ui/icons/SupervisorAccount';
@@ -82,6 +83,13 @@ function Settings({ label }: Props) {
   const usersButton = (
     <Button {...getBaseProps('Users')} to={ROUTE.USERS} Icon={UsersIcon} />
   );
+  const profileButton = (
+    <Button
+      {...getBaseProps('Profile')}
+      to={ROUTE.PROFILE}
+      Icon={ProfileIcon}
+    />
+  );
   const auditButton = (
     <Button {...getBaseProps('Audit')} to={ROUTE.AUDIT} Icon={AuditIcon} />
   );
@@ -103,7 +111,7 @@ function Settings({ label }: Props) {
   if (checkPermission(accessLevel, 'audit:view')) {
     buttons.push(auditButton);
   }
-  buttons.push(logoutButton);
+  buttons.push(profileButton, logoutButton);
 
   const nButtons = buttons.length;
   const optionsHeight = nButtons * BUTTON_HEIGHT;

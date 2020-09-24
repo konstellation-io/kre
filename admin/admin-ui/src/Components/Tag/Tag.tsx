@@ -4,7 +4,8 @@ import cx from 'classnames';
 import styles from './Tag.module.scss';
 
 export enum TagTypes {
-  WARNING = 'WARNING'
+  WARNING = 'WARNING',
+  INFO = 'INFO'
 }
 
 type Props = {

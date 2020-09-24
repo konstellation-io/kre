@@ -1,0 +1,9 @@
+mutation DeleteApiToken {
+  deleteApiToken {
+    id
+    apiToken {
+      creationDate
+      lastActivity
+    }
+  }
+}

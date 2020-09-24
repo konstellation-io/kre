@@ -48,6 +48,8 @@ type Mutation {
   updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
   revokeUserSessions(input: UsersInput!): [User!]!
   createUser(input: CreateUserInput!): User!
+  deleteApiToken: User!
+  generateApiToken: String!
 }
 
 type Subscription {
@@ -117,12 +119,18 @@ type User {
   creationDate: String!
   lastActivity: String
   activeSessions: Int!
+  apiToken: ApiToken
 }
 
 enum AccessLevel {
   VIEWER
   MANAGER
   ADMIN
+}
+
+type ApiToken {
+  creationDate: String!
+  lastActivity: String
 }
 
 type ConfigurationVariable {

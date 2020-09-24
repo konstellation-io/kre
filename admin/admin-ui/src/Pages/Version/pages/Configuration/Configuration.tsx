@@ -236,7 +236,7 @@ function Configuration() {
             actionButtonLabel="RESTART"
             onAccept={makeUpdate}
             onCancel={closeModal}
-            confirmationTimer={5}
+            confirmationTimer={3}
             autofocusOnAccept
             blocking
             warning
