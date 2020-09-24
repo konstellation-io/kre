@@ -159,6 +159,10 @@ $color-header-border: palette(base, 300);
   color: font-color(lowlight);
 
   padding: 10px 47px 30px 47px;
+  
+  pre {
+    white-space: pre-wrap;
+  }
 }
 
 .container.header {
