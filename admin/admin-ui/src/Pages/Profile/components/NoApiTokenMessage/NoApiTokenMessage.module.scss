@@ -1,0 +1,8 @@
+@import 'Styles/variables';
+
+.noToken {
+  .warn {
+    margin-top: 3 * $grid-unit;
+    line-height: 2.5 * $grid-unit;
+  }
+}

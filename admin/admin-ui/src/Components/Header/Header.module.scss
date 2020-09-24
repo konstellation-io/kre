@@ -1,5 +1,6 @@
 @import 'Styles/colors';
 @import 'Styles/mixins';
+@import 'Styles/variables';
 
 .container {
   display: flex;
@@ -12,6 +13,7 @@
   height: $header-height;
   background-color: $bg-color-dark;
   white-space: nowrap;
+  z-index: $z-index-header;
 }
 
 .konstellationIcon {

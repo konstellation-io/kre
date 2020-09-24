@@ -14,4 +14,7 @@
   &.WARNING {
     background-color: palette(alert);
   }
+  &.INFO {
+    background-color: palette(feedback);
+  }
 }

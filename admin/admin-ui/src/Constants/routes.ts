@@ -14,6 +14,7 @@ const ROUTE = {
   USERS: '/users',
   AUDIT: '/audit',
   LOGS: '/logs/:logTabInfo',
+  PROFILE: '/profile',
   RUNTIMES,
   RUNTIME,
   RUNTIME_VERSIONS,

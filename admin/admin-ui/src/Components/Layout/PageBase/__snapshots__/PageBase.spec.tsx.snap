@@ -9361,6 +9361,100 @@ exports[`PageBase matches snapshot 1`] = `
                           Object {
                             "$$typeof": Symbol(react.memo),
                             "compare": null,
+                            "displayName": "PersonIcon",
+                            "muiName": "SvgIcon",
+                            "type": Object {
+                              "$$typeof": Symbol(react.forward_ref),
+                              "render": [Function],
+                            },
+                          }
+                        }
+                        align="left"
+                        key="buttonProfile"
+                        label="PROFILE"
+                        style={
+                          Object {
+                            "paddingLeft": "20%",
+                          }
+                        }
+                        to="/profile"
+                      >
+                        <Link
+                          data-testid="buttonLink"
+                          to="/profile"
+                        >
+                          <LinkAnchor
+                            data-testid="buttonLink"
+                            href="/profile"
+                            navigate={[Function]}
+                          >
+                            <a
+                              data-testid="buttonLink"
+                              href="/profile"
+                              onClick={[Function]}
+                            >
+                              <div
+                                className="_1lqJX _3ZftH _zeH0N undefined"
+                                onClick={[Function]}
+                                onKeyPress={[Function]}
+                                style={
+                                  Object {
+                                    "height": 40,
+                                    "lineHeight": "40px",
+                                    "paddingLeft": "20%",
+                                  }
+                                }
+                                tabIndex={-1}
+                                title=""
+                              >
+                                <ForwardRef
+                                  className="icon-small"
+                                >
+                                  <WithStyles(ForwardRef(SvgIcon))
+                                    className="icon-small"
+                                  >
+                                    <ForwardRef(SvgIcon)
+                                      className="icon-small"
+                                      classes={
+                                        Object {
+                                          "colorAction": "MuiSvgIcon-colorAction",
+                                          "colorDisabled": "MuiSvgIcon-colorDisabled",
+                                          "colorError": "MuiSvgIcon-colorError",
+                                          "colorPrimary": "MuiSvgIcon-colorPrimary",
+                                          "colorSecondary": "MuiSvgIcon-colorSecondary",
+                                          "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                                          "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                                          "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                                          "root": "MuiSvgIcon-root",
+                                        }
+                                      }
+                                    >
+                                      <svg
+                                        aria-hidden={true}
+                                        className="MuiSvgIcon-root icon-small"
+                                        focusable="false"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                                        />
+                                      </svg>
+                                    </ForwardRef(SvgIcon)>
+                                  </WithStyles(ForwardRef(SvgIcon))>
+                                </ForwardRef>
+                                <span>
+                                  PROFILE
+                                </span>
+                              </div>
+                            </a>
+                          </LinkAnchor>
+                        </Link>
+                      </P>
+                      <P
+                        Icon={
+                          Object {
+                            "$$typeof": Symbol(react.memo),
+                            "compare": null,
                             "displayName": "ExitToAppIcon",
                             "muiName": "SvgIcon",
                             "type": Object {

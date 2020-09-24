@@ -3,7 +3,9 @@ import 'kwc/index.css';
 import 'markdown-navbar/dist/navbar.css';
 import 'react-tabs/style/react-tabs.css';
 import 'Styles/markdown-navbar.scss';
+import 'react-toastify/dist/ReactToastify.css';
 import 'Styles/react-tabs.scss';
+import 'Styles/react-toastify.scss';
 
 import { ErrorMessage, SpinnerCircular } from 'kwc';
 import { Redirect, Switch } from 'react-router';
@@ -22,6 +24,7 @@ import LogsPanel from 'Pages/Version/pages/Status/LogsPanel/LogsPanel';
 import MagicLink from 'Pages/MagicLink/MagicLink';
 import NotFound from 'Pages/NotFound/NotFound';
 import NotificationService from 'Components/NotificationService/NotificationService';
+import Profile from 'Pages/Profile/Profile';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import Runtime from 'Pages/Runtime/Runtime';
@@ -91,6 +94,7 @@ function ProtectedRoutes() {
           <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
 
           <Route path={ROUTE.SETTINGS} component={Settings} />
+          <Route path={ROUTE.PROFILE} component={Profile} />
           <Route path={ROUTE.USERS} component={Users} />
           <Route path={ROUTE.AUDIT} component={UsersActivity} />
           <Route component={NotFound} />
