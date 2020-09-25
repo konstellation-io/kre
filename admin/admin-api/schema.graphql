@@ -48,8 +48,8 @@ type Mutation {
   updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
   revokeUserSessions(input: UsersInput!): [User!]!
   createUser(input: CreateUserInput!): User!
-  deleteApiToken: User!
-  generateApiToken: String!
+  deleteApiToken(input: DeleteApiTokenInput!): ApiToken!
+  generateApiToken(input: GenerateApiTokenInput!): String!
 }
 
 type Subscription {
@@ -96,6 +96,14 @@ input CreateUserInput {
   accessLevel: AccessLevel!
 }
 
+input GenerateApiTokenInput {
+  name: String!
+}
+
+input DeleteApiTokenInput {
+  id: ID!
+}
+
 input UsersInput {
   userIds: [ID!]!
   comment: String!
@@ -119,7 +127,7 @@ type User {
   creationDate: String!
   lastActivity: String
   activeSessions: Int!
-  apiToken: ApiToken
+  apiTokens: [ApiToken!]!
 }
 
 enum AccessLevel {
@@ -129,6 +137,8 @@ enum AccessLevel {
 }
 
 type ApiToken {
+  id: ID!
+  name: String!
   creationDate: String!
   lastActivity: String
 }
