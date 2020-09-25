@@ -42,7 +42,6 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 			"KRT_BASE_PATH":         "/krt-files",
 			"KRT_HANDLER_PATH":      n.Src,
 			"KRT_MONGO_URI":         version.MongoUri,
-			"KRT_MONGO_DB_NAME":     version.MongoDbName,
 			"KRT_INFLUX_URI":        version.InfluxUri,
 		}
 	}

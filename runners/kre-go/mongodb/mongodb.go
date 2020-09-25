@@ -85,7 +85,7 @@ func (m *MongoDB) Disconnect() error {
 
 func (m *MongoDB) Find(ctx context.Context, colName string, filter bson.M, results interface{}) error {
 	cursor, err := m.client.
-		Database(m.cfg.MongoDB.DBName).
+		Database(m.cfg.MongoDB.DataDBName).
 		Collection(colName).
 		Find(ctx, filter)
 	if err != nil {

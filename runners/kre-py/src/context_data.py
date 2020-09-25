@@ -32,8 +32,8 @@ class ContextData:
             raise Exception(f"[ctx.db.find] invalid 'query'='{query}', must be a nonempty dict")
 
         try:
-            collection = self.__mongo_conn__[self.__config__.mongo_db_name][coll]
-            self.__logger__.debug(f"call to mongo to get data on{self.__config__.mongo_db_name}.{coll}: {query}")
+            collection = self.__mongo_conn__[self.__config__.mongo_data_db_name][coll]
+            self.__logger__.debug(f"call to mongo to get data on{self.__config__.mongo_data_db_name}.{coll}: {query}")
             cursor = collection.find(query)
             return list(cursor)
 

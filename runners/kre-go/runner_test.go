@@ -62,7 +62,6 @@ func TestRunner(t *testing.T) {
 		"KRT_NATS_OUTPUT":       "",
 		"KRT_NATS_MONGO_WRITER": "mongo_writer",
 		"KRT_MONGO_URI":         "mongodb://localhost:27017",
-		"KRT_MONGO_DB_NAME":     "test",
 	})
 
 	cfg := config.NewConfig(nil)

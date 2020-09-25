@@ -8,25 +8,25 @@ metadata:
 data:
   init-admin.js: |
     conn = new Mongo();
-    db = conn.getDB("{{ .Values.mongodb.mongodbDatabase }}");
+    db = conn.getDB("kre");
     try {
         db.createRole({
         role: "readWriteMinusDropRole",
         privileges: [
         {
-            resource: { db: "{{ .Values.mongodb.mongodbDatabase }}", collection: ""},
+            resource: { db: "kre", collection: ""},
             actions: [ "collStats", "dbHash", "dbStats", "find", "killCursors", "listIndexes", "listCollections", "convertToCapped", "createCollection", "createIndex", "dropIndex", "insert", "remove", "renameCollectionSameDB", "update"]} ],
             roles: []
         }
         );
     } catch (e) {
-        print("Role for readWriteMinusDropRole for {{ .Values.mongodb.mongodbDatabase }} already exists")
+        print("Role for readWriteMinusDropRole for 'kre' already exists")
     }
 
     try {
-        db.createUser({user: "{{ .Values.mongodb.mongodbUsername }}", pwd: "{{ .Values.mongodb.mongodbPassword }}", roles: [{role: 'readWriteMinusDropRole', db: "{{ .Values.mongodb.mongodbDatabase }}"}]})
+        db.createUser({user: "{{ .Values.mongodb.mongodbUsername }}", pwd: "{{ .Values.mongodb.mongodbPassword }}", roles: [{role: 'readWriteMinusDropRole', db: "kre"}]})
     } catch (e) {
-        print("User {{ .Values.mongodb.mongodbUsername }} admin for {{ .Values.mongodb.mongodbDatabase }} database already exists")
+        print("User {{ .Values.mongodb.mongodbUsername }} admin for 'kre' database already exists")
     }
 
     try {

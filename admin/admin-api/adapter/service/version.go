@@ -86,10 +86,9 @@ func (k *K8sVersionClient) Start(ctx context.Context, runtime *entity.Runtime, v
 				ProtoFile: version.Entrypoint.ProtoFile,
 				Image:     version.Entrypoint.Image,
 			},
-			Workflows:   wf,
-			MongoUri:    runtime.GetMongoURI(totalMongoReplicas),
-			MongoDbName: k.cfg.MongoDB.DBName,
-			InfluxUri:   runtime.GetInfluxURL(),
+			Workflows: wf,
+			MongoUri:  runtime.GetMongoURI(totalMongoReplicas),
+			InfluxUri: runtime.GetInfluxURL(),
 		},
 	}
 

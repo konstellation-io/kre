@@ -18,7 +18,7 @@ type Config struct {
 
 type MongoDB struct {
 	Address     string
-	DBName      string
+	DataDBName  string
 	ConnTimeout int
 }
 
@@ -47,7 +47,7 @@ func NewConfig(logger *simplelogger.SimpleLogger) Config {
 		},
 		MongoDB: MongoDB{
 			Address:     getCfgFromEnv(logger, "KRT_MONGO_URI"),
-			DBName:      getCfgFromEnv(logger, "KRT_MONGO_DB_NAME"),
+			DataDBName:  "data",
 			ConnTimeout: 120,
 		},
 		InfluxDB: InfluxDB{

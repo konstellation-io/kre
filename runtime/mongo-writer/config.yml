@@ -4,5 +4,6 @@ nats:
   clusterId: "test-cluster"
 mongodb:
   address: "mongodb://admin:123456@kre-mongo:27017/admin"
-  dbName: "localKRE"
+  logsDbName: "kre"
+  dataDbName: "data"
   connTimeout: 120

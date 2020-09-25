@@ -70,7 +70,6 @@ k8sManager:
 mongodb:
   service:
     name: "mongodb"
-  mongodbDatabase: "localKRE"
   mongodbUsername: "admin"
   mongodbPassword: "123456"
   rootCredentials:
