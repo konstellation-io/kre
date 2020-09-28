@@ -24,6 +24,7 @@ const ROUTE = {
   RUNTIME_VERSION_METRICS: `${RUNTIME_VERSION}/metrics`,
   RUNTIME_VERSION_DOCUMENTATION: `${RUNTIME_VERSION}/documentation`,
   NEW_USER: '/new-user',
+  NEW_API_TOKEN: `/new_api_token`,
   NEW_RUNTIME: '/new-runtime',
   NEW_VERSION: `${RUNTIME}/new_version`
 };

@@ -4,21 +4,23 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetApiToken
+// GraphQL query operation: GetApiTokens
 // ====================================================
 
-export interface GetApiToken_me_apiToken {
+export interface GetApiTokens_me_apiTokens {
   __typename: 'ApiToken';
+  id: string;
+  name: string;
   creationDate: string;
   lastActivity: string | null;
 }
 
-export interface GetApiToken_me {
+export interface GetApiTokens_me {
   __typename: 'User';
   id: string;
-  apiToken: GetApiToken_me_apiToken | null;
+  apiTokens: GetApiTokens_me_apiTokens[];
 }
 
-export interface GetApiToken {
-  me: GetApiToken_me | null;
+export interface GetApiTokens {
+  me: GetApiTokens_me | null;
 }

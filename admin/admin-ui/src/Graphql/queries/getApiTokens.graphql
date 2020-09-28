@@ -1,7 +1,9 @@
-query GetApiToken {
+query GetApiTokens {
   me {
     id
-    apiToken {
+    apiTokens {
+      id
+      name
       creationDate
       lastActivity
     }

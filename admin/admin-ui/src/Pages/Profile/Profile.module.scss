@@ -33,6 +33,7 @@
   margin: 0;
   height: 100%;
   background-color: palette(base, 500);
+  overflow: auto;
 }
 
 @media screen and (max-width: 1000px) {
@@ -40,7 +41,7 @@
     padding: 0 0 0 3 * $grid-unit;
   }
   .content {
-    padding: 3 * $grid-unit;
+    padding: 3 * $grid-unit 0;
   }
   .container > div:first-child {
     padding-left: 3 * $grid-unit;

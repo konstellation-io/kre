@@ -87,6 +87,14 @@ export interface CreateVersionInput {
   runtimeId: string;
 }
 
+export interface DeleteApiTokenInput {
+  id: string;
+}
+
+export interface GenerateApiTokenInput {
+  name: string;
+}
+
 export interface LogFilters {
   startDate: string;
   endDate?: string | null;

@@ -1,0 +1,59 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.apiTokenContent {
+  line-height: 2.5 * $grid-unit;
+
+  .tokenRow:not(:first-child) {
+    border-top: solid 1px palette(lowlight);
+  }
+
+  .tokenRow:nth-child(even) {
+    background-color: palette(base, 700);
+  }
+
+  .tokenRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    color: font-color(lowlight);
+    padding: 0 0 3 * $grid-unit 2 * $grid-unit;
+
+    .info {
+      display: flex;
+    }
+
+    .icon {
+      margin-right: 2 * $grid-unit;
+      padding-top: 2 * $grid-unit;
+    }
+
+    .infoValues {
+      .name {
+        @include font-body;
+        color: font-color(light);
+      }
+
+      .dates {
+        .tokenDate:nth-child(even) {
+          margin-top: 0.25 * $grid-unit;
+        }
+      }
+
+      .tokenDate {
+        @include font-small;
+        display: flex;
+
+        .label {
+          color: font-color(regular);
+          margin: 0;
+        }
+
+        .value {
+          margin: 0 0 0 $grid-unit;
+        }
+      }
+    }
+  }
+}
