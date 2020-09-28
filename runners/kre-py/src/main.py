@@ -3,7 +3,6 @@ from datetime import datetime
 import importlib.util
 import os
 import sys
-import time
 import traceback
 import pymongo
 import inspect
@@ -79,7 +78,7 @@ class NodeRunner(Runner):
 
     def create_message_cb(self):
         async def message_cb(msg):
-            start = time.time()
+            start = datetime.utcnow().isoformat()
             request_msg = KreNatsMessage(msg=msg)
 
             try:
@@ -98,31 +97,23 @@ class NodeRunner(Runner):
 
                 is_last_node = self.config.nats_output == ''
                 output_subject = request_msg.reply if is_last_node else self.config.nats_output
-                response_msg = KreNatsMessage(reply=request_msg.reply, data=handler_result)
+                response_msg = KreNatsMessage(
+                    reply=request_msg.reply,
+                    data=handler_result,
+                    tracking_id=request_msg.tracking_id,
+                    tracking=request_msg.tracking
+                )
+
+                end = datetime.utcnow().isoformat()
+                response_msg.tracking.append({"node_name": self.config.krt_node_name, "start": start, "end": end})
 
                 await self.nc.publish(output_subject, response_msg.marshal())
                 self.logger.info(f"published response to '{output_subject}' with final reply '{request_msg.reply}'")
 
                 await self.nc.flush(timeout=self.config.nats_flush_timeout)
 
-                end = time.time()
-                elapsed = end - start
                 cfg = self.handler_ctx.__config__
 
-                self.logger.debug(f"version[{cfg.krt_version}] "
-                                  f"node[{cfg.krt_node_name}] "
-                                  f"reply[{request_msg.reply}] "
-                                  f"start[{datetime.utcfromtimestamp(start).isoformat()}] "
-                                  f"end[{datetime.utcfromtimestamp(end).isoformat()}] "
-                                  f"elapsed[{round(elapsed, 2)}]")
-
-                # Save the elapsed time measurement
-                fields = {"elapsed": elapsed}
-                tags = {
-                    "version": cfg.krt_version,
-                    "node": cfg.krt_node_name,
-                }
-                self.handler_ctx.measurement.save("node_elapsed_time", fields, tags)
 
             except Exception as err:
                 tb = traceback.format_exc()
