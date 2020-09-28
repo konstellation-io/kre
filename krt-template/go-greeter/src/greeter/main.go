@@ -34,6 +34,13 @@ func handler(ctx *kre.HandlerContext, data []byte) (interface{}, error) {
 
 	out := Output{}
 	out.Greeting = greetingText
+
+	// Saving salutation into DB for later analysis or use
+	err = ctx.DB.Save("go-greeter", out)
+	if err != nil {
+		return nil, err
+	}
+
 	return out, nil // Must be a serializable JSON
 }
 

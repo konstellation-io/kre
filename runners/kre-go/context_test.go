@@ -36,7 +36,6 @@ func TestHandlerContext_GetData(t *testing.T) {
 		"KRT_NATS_OUTPUT":       "",
 		"KRT_NATS_MONGO_WRITER": "mongo_writer",
 		"KRT_MONGO_URI":         "mongodb://mock",
-		"KRT_MONGO_DB_NAME":     "mock",
 	})
 
 	cfg := config.NewConfig(logger)

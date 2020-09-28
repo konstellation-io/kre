@@ -21,7 +21,8 @@ type Config struct {
 
 	MongoDB struct {
 		Address     string `yaml:"address" envconfig:"KRE_RUNTIME_MONGO_URI"`
-		DBName      string `yaml:"dbName" envconfig:"KRE_MONGODB_DB_NAME"`
+		LogsDBName  string `yaml:"logsDbName"`
+		DataDBName  string `yaml:"dataDbName"`
 		ConnTimeout int    `yaml:"connTimeout" envconfig:"KRE_MONGODB_CONN_TIMEOUT"`
 	} `yaml:"mongodb"`
 }

@@ -15,7 +15,7 @@ auth:
   secureCookie: false
   cookieDomain: "kre.local"
 mongodb:
-  address: "mongodb://admin:123456@mongodb:27017/localKRE"
-  dbName: "localKRE"
+  address: "mongodb://admin:123456@mongodb:27017/admin"
+  dbName: "kre"
 services:
   k8sManager: "localhost:50051"

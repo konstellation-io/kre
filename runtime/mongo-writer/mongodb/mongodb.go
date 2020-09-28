@@ -79,8 +79,8 @@ func (m *MongoDB) Disconnect() error {
 	return m.client.Disconnect(ctx)
 }
 
-func (m *MongoDB) InsertMessages(ctx context.Context, inserts *InsertsMap) error {
-	db := m.client.Database(m.cfg.MongoDB.DBName)
+func (m *MongoDB) InsertMessages(ctx context.Context, dbName string, inserts *InsertsMap) error {
+	db := m.client.Database(dbName)
 
 	for colName, list := range *inserts {
 		col := db.Collection(colName)
@@ -102,8 +102,8 @@ func (m *MongoDB) InsertMessages(ctx context.Context, inserts *InsertsMap) error
 	return nil
 }
 
-func (m *MongoDB) InsertOne(ctx context.Context, coll string, doc interface{}) error {
-	db := m.client.Database(m.cfg.MongoDB.DBName)
+func (m *MongoDB) InsertOne(ctx context.Context, dbName, coll string, doc interface{}) error {
+	db := m.client.Database(dbName)
 
 	_, err := db.Collection(coll).InsertOne(ctx, doc)
 	if err != nil {

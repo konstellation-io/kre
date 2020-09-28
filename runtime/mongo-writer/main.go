@@ -50,8 +50,8 @@ func main() {
 
 	startShowingStats(ctx, mongoM, natsM, logger)
 
-	go processLogsMsgs(ctx, logsCh, mongoM, natsM, logger)
-	go processDataMsgs(ctx, dataCh, mongoM, natsM, logger)
+	go processLogsMsgs(ctx, logsCh, mongoM, natsM, cfg, logger)
+	go processDataMsgs(ctx, dataCh, mongoM, natsM, cfg, logger)
 
 	// Handle sigterm and await termChan signal
 	termChan := make(chan os.Signal)
@@ -108,7 +108,7 @@ func startShowingStats(ctx context.Context, mongoM *mongodb.MongoDB, natsM *nats
 	}()
 }
 
-func processLogsMsgs(ctx context.Context, logsCh chan *nc.Msg, mongoM *mongodb.MongoDB, natsM *nats.NATSManager, logger *simplelogger.SimpleLogger) {
+func processLogsMsgs(ctx context.Context, logsCh chan *nc.Msg, mongoM *mongodb.MongoDB, natsM *nats.NATSManager, cfg *config.Config, logger *simplelogger.SimpleLogger) {
 	for msg := range logsCh {
 		natsM.TotalMsgs += 1
 
@@ -117,14 +117,14 @@ func processLogsMsgs(ctx context.Context, logsCh chan *nc.Msg, mongoM *mongodb.M
 			logger.Errorf("Error parsing Fluentbit msg: %s", err)
 		}
 
-		err = mongoM.InsertMessages(ctx, msgs)
+		err = mongoM.InsertMessages(ctx, cfg.MongoDB.LogsDBName, msgs)
 		if err != nil {
 			logger.Errorf("Error inserting msg: %s", err)
 		}
 	}
 }
 
-func processDataMsgs(ctx context.Context, dataCh chan *nc.Msg, mongoM *mongodb.MongoDB, natsM *nats.NATSManager, logger *simplelogger.SimpleLogger) {
+func processDataMsgs(ctx context.Context, dataCh chan *nc.Msg, mongoM *mongodb.MongoDB, natsM *nats.NATSManager, cfg *config.Config, logger *simplelogger.SimpleLogger) {
 	for msg := range dataCh {
 		natsM.TotalMsgs += 1
 
@@ -140,7 +140,7 @@ func processDataMsgs(ctx context.Context, dataCh chan *nc.Msg, mongoM *mongodb.M
 			Success: true,
 		}
 
-		err = mongoM.InsertOne(ctx, dataMsg.Coll, dataMsg.Doc)
+		err = mongoM.InsertOne(ctx, cfg.MongoDB.DataDBName, dataMsg.Coll, dataMsg.Doc)
 		if err != nil {
 			logger.Errorf("Error inserting data msg: %s", err)
 			res.Success = false

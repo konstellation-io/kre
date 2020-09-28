@@ -37,7 +37,6 @@ data:
   KRE_NATS_STORAGECLASS: "{{ .Values.config.runtime.nats_streaming.storage.className }}"
   KRE_NATS_STORAGE_SIZE: "{{ .Values.config.runtime.nats_streaming.storage.size }}"
   # MongoDB
-  KRE_MONGODB_DB_NAME: "{{ .Values.mongodb.mongodbDatabase }}"
   KRE_MONGODB_STORAGECLASS: "{{ .Values.config.runtime.mongodb.persistentVolume.storageClass }}"
   KRE_MONGODB_STORAGE_SIZE: "{{ .Values.config.runtime.mongodb.persistentVolume.size }}"
   # Chronograf

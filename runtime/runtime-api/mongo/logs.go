@@ -25,7 +25,7 @@ type LogRepo struct {
 }
 
 func NewLogRepo(cfg *config.Config, logger *simplelogger.SimpleLogger, client *mongo.Client) *LogRepo {
-	collection := client.Database(cfg.MongoDB.DBName).Collection(logsCollectionName)
+	collection := client.Database(cfg.MongoDB.LogsDBName).Collection(logsCollectionName)
 	return &LogRepo{
 		cfg,
 		logger,

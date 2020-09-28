@@ -7,6 +7,5 @@ export KRT_NATS_OUTPUT=
 export KRT_NATS_MONGO_WRITER=mongo_writer
 export KRT_BASE_PATH=${PWD}/runners/kre-py/test/myvol
 export KRT_HANDLER_PATH=src/node/node_handler.py
-export KRT_MONGO_DB_NAME=localKRE
 export KRT_MONGO_URI=mongodb://admin:123456@localhost:27017/admin
 export KRT_INFLUX_URI=http://influx

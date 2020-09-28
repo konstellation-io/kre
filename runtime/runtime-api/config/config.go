@@ -19,8 +19,9 @@ type Config struct {
 	} `yaml:"server"`
 
 	MongoDB struct {
-		Address string `yaml:"address" envconfig:"KRE_RUNTIME_MONGO_URI"`
-		DBName  string `yaml:"dbName" envconfig:"KRE_MONGODB_DB_NAME"`
+		Address    string `yaml:"address" envconfig:"KRE_RUNTIME_MONGO_URI"`
+		LogsDBName string `yaml:"logsDbName"`
+		DataDBName string `yaml:"dataDbName"`
 	} `yaml:"mongodb"`
 
 	Kubernetes struct {

@@ -22,7 +22,7 @@ MINIKUBE_RESET=0
 MONGO_POD=""
 
 # Admin MongoDB credentials
-MONGO_DB=localKRE
+MONGO_DB=kre
 MONGO_USER="admin"
 MONGO_PASS=123456
 

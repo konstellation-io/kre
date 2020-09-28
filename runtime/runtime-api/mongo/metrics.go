@@ -23,7 +23,7 @@ type MetricsRepo struct {
 }
 
 func NewMetricsRepo(cfg *config.Config, logger *simplelogger.SimpleLogger, client *mongo.Client) *MetricsRepo {
-	collection := client.Database(cfg.MongoDB.DBName).Collection(metricsCollectionName)
+	collection := client.Database(cfg.MongoDB.DataDBName).Collection(metricsCollectionName)
 	return &MetricsRepo{
 		cfg,
 		logger,
