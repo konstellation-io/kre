@@ -3,6 +3,7 @@ import Tag, { TagTypes } from 'Components/Tag/Tag';
 
 import { Button } from 'kwc';
 import CopyIcon from '@material-ui/icons/FileCopy';
+import ROUTE from 'Constants/routes';
 import React from 'react';
 import { copyToClipboard } from 'Utils/clipboard';
 import styles from './NewApiToken.module.scss';
@@ -30,12 +31,23 @@ function NewApiToken({ token }: Props) {
             Icon={CopyIcon}
             onClick={onCopy}
             className={styles.button}
+            tabIndex={0}
+            autofocus
           />
         </div>
         <div className={styles.warning}>
           <Tag type={TagTypes.WARNING}>WARNING</Tag> API Token cannot be
           accessed after it has been generated, remember to store the token as
           soon as it is generated.
+        </div>
+        <div className={styles.continueButton}>
+          <Button
+            label="CONTINUE"
+            to={ROUTE.PROFILE}
+            timeToEnable={2}
+            tabIndex={0}
+            primary
+          />
         </div>
       </div>
       <ToastContainer

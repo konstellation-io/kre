@@ -4,21 +4,27 @@
 
 .title {
   @include font-body;
+  color: palette(success);
+
+  margin-bottom: 4 * $grid-unit;
 }
 
 .token {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
   .button {
     height: 100%;
-    margin-left: $grid-unit;
+    margin: 2 * $grid-unit auto;
+    display: flex;
+    justify-content: center;
+
+    span {
+      width: unset;
+    }
   }
 
   .tokenValue {
     @include font-code;
 
+    max-height: 20 * $grid-unit;
     background-color: palette(base, 400);
     padding: 0.25 * $grid-unit $grid-unit;
     border-radius: 0.5 * $grid-unit;
@@ -33,6 +39,10 @@
 
   border-top: solid 1px palette(base, 300);
   margin-top: 2 * $grid-unit;
-  padding: 2 * $grid-unit;
+  padding: 2 * $grid-unit 0;
   line-height: 2.5 * $grid-unit;
+}
+
+.continueButton {
+  margin-top: 8 * $grid-unit;
 }

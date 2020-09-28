@@ -171,7 +171,8 @@ module.exports = {
     me: () => ({
       id: 'loggedUserId',
       accessLevel: 'ADMIN',
-      email: 'admin@intelygenz.com'
+      email: 'admin@intelygenz.com',
+      apiTokens: () => new MockList([2, 5])
     }),
     users: () => new MockList([20, 30]),
     runtimes: () => new MockList([4, 8]),
@@ -227,10 +228,9 @@ module.exports = {
     },
     createVersion: () => generateVersion({ id: 'V3', name: 'Version C' }),
     updateSettings: () => ({ errors: [], settings: this.Settings }),
-    deleteApiToken: () => ({
-      id: 'loggedUserId',
-      apiToken: null
-    }),
+    deleteApiToken: (_, b) => {
+      return { id: b.input.id };
+    },
     generateApiToken: () =>
       'JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5'
   }),
@@ -261,6 +261,8 @@ module.exports = {
     activeSessions: casual.integer(0, 9)
   }),
   ApiToken: () => ({
+    id: casual.uuid,
+    name: casual.name,
     creationDate: new Date().toUTCString(),
     lastActivity: new Date().toUTCString()
   }),

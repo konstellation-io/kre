@@ -12,6 +12,7 @@ import { Redirect, Switch } from 'react-router';
 import { Route, Router } from 'react-router-dom';
 
 import AccessDenied from 'Pages/AccessDenied/AccessDenied';
+import AddApiToken from 'Pages/AddApiToken/AddApiToken';
 import AddRuntime from 'Pages/AddRuntime/AddRuntime';
 import AddUser from 'Pages/AddUser/AddUser';
 import AddVersion from 'Pages/AddVersion/AddVersion';
@@ -78,6 +79,7 @@ function ProtectedRoutes() {
 
           <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
           <Route path={ROUTE.NEW_USER} component={AddUser} />
+          <Route path={ROUTE.NEW_API_TOKEN} component={AddApiToken} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
           <Route exact path={ROUTE.HOME} component={Dashboard} />

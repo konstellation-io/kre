@@ -1,9 +1,5 @@
-mutation DeleteApiToken {
-  deleteApiToken {
+mutation DeleteApiToken($input: DeleteApiTokenInput!) {
+  deleteApiToken(input: $input) {
     id
-    apiToken {
-      creationDate
-      lastActivity
-    }
   }
 }
