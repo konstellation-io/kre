@@ -11,7 +11,16 @@ COPY entrypoint-gen/* ./
 
 RUN go build -o entrypoint-gen .
 
+# Convert Pipfile.lock to requirements.txt
+FROM python:latest as requirement-builder
+WORKDIR /app
+RUN pip install pipfile-requirements
 
+COPY Pipfile.lock ./
+RUN pipfile2req > /app/requirements.txt
+
+
+# Final image build
 FROM ubuntu:18.04
 
 # Fix error installing pipenv:
@@ -29,7 +38,7 @@ RUN apt update && \
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY --from=requirement-builder /app/requirements.txt .
 RUN python3 -m pip install -r requirements.txt
 
 COPY src src
@@ -43,4 +52,3 @@ COPY --from=builder /build/entrypoint.py.tmpl .
 ENV PYTHONPATH="/app/src/entrypoint"
 
 CMD ["/app/entrypoint.sh"]
-

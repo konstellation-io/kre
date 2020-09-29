@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+asyncio-nats-client = "==0.10.0"
+grpcio = "==1.28.1"
+grpclib = "==0.3.2"
+grpcio-tools = "==1.28.1"
+influxdb-client = "==1.9.0"
+protobuf = "==3.12.2"
+protobuf3-to-dict = "==0.1.5"
+# This is a sub-dependency, added explicitily here because it fails on v4.0.
+h2 = "==3.2.0"
+
+[dev-packages]
+pylint = "*"
+
+[requires]
+python_version = "3"
