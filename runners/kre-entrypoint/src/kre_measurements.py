@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client.write_api import SYNCHRONOUS
+from influxdb_client.client.write_api import WriteOptions, WriteType
 
 
 # We are using influxdb-client-python that is compatible with 1.8+ versions:
@@ -12,9 +12,12 @@ INFLUX_TOKEN = ""  # we don't need authentication
 
 
 class KreMeasurements:
-    def __init__(self, influx_uri):
-        client = InfluxDBClient(url=influx_uri, token=INFLUX_TOKEN)
-        self.__write_api__ = client.write_api(write_options=SYNCHRONOUS)
+    def __init__(self, config):
+        self.__config__ = config
+
+        client = InfluxDBClient(url=self.__config__.influx_uri, token=INFLUX_TOKEN)
+        opts = WriteOptions(write_type=WriteType.batching, batch_size=1_000, flush_interval=500)
+        self.__write_api__ = client.write_api(write_options=opts)
 
     def save(self, measurement: str, fields: dict, tags: dict):
         point = Point(measurement)
