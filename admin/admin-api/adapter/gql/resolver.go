@@ -6,16 +6,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"github.com/vektah/gqlparser/v2/gqlerror"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/dataloader"
 	"github.com/konstellation-io/kre/admin/admin-api/delivery/http/middleware"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
@@ -25,10 +25,12 @@ import (
 
 var runtimeCreatedChannels map[string]chan *entity.Runtime
 var versionStatusChannels map[string]chan *entity.Version
+var mux *sync.RWMutex
 
 func init() {
 	runtimeCreatedChannels = map[string]chan *entity.Runtime{}
 	versionStatusChannels = map[string]chan *entity.Version{}
+	mux = &sync.RWMutex{}
 }
 
 type Resolver struct {
@@ -82,9 +84,11 @@ func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntim
 	go func() {
 		runtime := <-onRuntimeStartedChannel
 
+		mux.RLock()
 		for _, r := range runtimeCreatedChannels {
 			r <- runtime
 		}
+		mux.RUnlock()
 	}()
 
 	return runtime, nil
@@ -176,9 +180,11 @@ func (r *mutationResolver) notifyVersionStatus(notifyCh chan *entity.Version) {
 				return
 			}
 
+			mux.RLock()
 			for _, vs := range versionStatusChannels {
 				vs <- v
 			}
+			mux.RUnlock()
 		}
 	}
 }
@@ -418,10 +424,14 @@ func (r *subscriptionResolver) WatchRuntimeCreated(ctx context.Context) (<-chan 
 	runtimeCreatedChan := make(chan *entity.Runtime, 1)
 	go func() {
 		<-ctx.Done()
+		mux.Lock()
 		delete(runtimeCreatedChannels, id)
+		mux.Unlock()
 	}()
 
+	mux.Lock()
 	runtimeCreatedChannels[id] = runtimeCreatedChan
+	mux.Unlock()
 
 	return runtimeCreatedChan, nil
 }
@@ -432,10 +442,14 @@ func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity
 	versionStatusCh := make(chan *entity.Version, 1)
 	go func() {
 		<-ctx.Done()
+		mux.Lock()
 		delete(versionStatusChannels, id)
+		mux.Unlock()
 	}()
 
+	mux.Lock()
 	versionStatusChannels[id] = versionStatusCh
+	mux.Unlock()
 
 	return versionStatusCh, nil
 }
