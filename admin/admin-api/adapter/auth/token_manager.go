@@ -12,20 +12,19 @@ import (
 	"io"
 )
 
-type CipherObject struct {
+type TokenManager struct {
 	cfg    *config.Config
 	logger logging.Logger
 }
 
-func NewCipher(cfg *config.Config, logger logging.Logger) (auth.Cipher, error) {
-	cipher := &CipherObject{
+func NewTokenManager(cfg *config.Config, logger logging.Logger) auth.TokenManager {
+	return &TokenManager{
 		cfg:    cfg,
 		logger: logger,
 	}
-	return cipher, nil
 }
 
-func (a *CipherObject) Encrypt(stringToEncrypt string) (string, error) {
+func (a *TokenManager) Encrypt(stringToEncrypt string) (string, error) {
 
 	key := []byte(a.cfg.Auth.ApiToken.CipherSecret)
 
@@ -34,26 +33,26 @@ func (a *CipherObject) Encrypt(stringToEncrypt string) (string, error) {
 	//Create a new Cipher Block from the key
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", fmt.Errorf("error creating new aes cipher: %w", err)
+		return "", fmt.Errorf("encrypt error: %w", err)
 	}
 
 	//Create a new GCM
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		return "", fmt.Errorf("error creating new aes block: %w", err)
+		return "", fmt.Errorf("encrypt error: %w", err)
 	}
 
 	//Create a nonce
 	nonce := make([]byte, aesGCM.NonceSize())
 	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		return "", fmt.Errorf("error creating nonce cipher param: %w", err)
+		return "", fmt.Errorf("encrypt error: %w", err)
 	}
 
 	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
-func (a *CipherObject) Decrypt(encryptedString string) (string, error) {
+func (a *TokenManager) Decrypt(encryptedString string) (string, error) {
 
 	key := []byte(a.cfg.Auth.ApiToken.CipherSecret)
 	enc, _ := hex.DecodeString(encryptedString)
@@ -61,13 +60,13 @@ func (a *CipherObject) Decrypt(encryptedString string) (string, error) {
 	//Create a new Cipher Block from the key
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", fmt.Errorf("error creating new aes cipher: %w", err)
+		return "", fmt.Errorf("decrypt error: %w", err)
 	}
 
 	//Create a new GCM
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		return "", fmt.Errorf("error creating new aes block: %w", err)
+		return "", fmt.Errorf("decrypt error: %w", err)
 	}
 
 	//Get the nonce size
@@ -79,7 +78,7 @@ func (a *CipherObject) Decrypt(encryptedString string) (string, error) {
 	//Decrypt the data
 	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		return "", fmt.Errorf("error decripting aes block: %w", err)
+		return "", fmt.Errorf("decrypt error: %w", err)
 	}
 
 	return fmt.Sprintf("%s", plaintext), nil

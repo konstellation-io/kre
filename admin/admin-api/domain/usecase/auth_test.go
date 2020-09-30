@@ -24,7 +24,7 @@ import (
 type authSuite struct {
 	ctrl           *gomock.Controller
 	authInteractor usecase.AuthInteracter
-	cipher         auth.Cipher
+	tokenManager   auth.TokenManager
 	mocks          authSuiteMocks
 }
 
@@ -64,7 +64,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 
 	cfg := &config.Config{}
 	cfg.Auth.ApiToken.CipherSecret = "a16or32digitskey"
-	cipher, _ := authAdapter.NewCipher(cfg, logger)
+	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	authInteractor := usecase.NewAuthInteractor(
 		cfg,
@@ -77,12 +77,12 @@ func newAuthSuite(t *testing.T) *authSuite {
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
-		cipher,
+		tokenManager,
 	)
 
 	return &authSuite{
-		ctrl:   ctrl,
-		cipher: cipher,
+		ctrl:         ctrl,
+		tokenManager: tokenManager,
 		mocks: authSuiteMocks{
 			cfg,
 			logger,
@@ -392,7 +392,7 @@ func TestCheckApiToken(t *testing.T) {
 	key := uuid.UUIDv4()
 
 	internalToken := fmt.Sprintf("%s:%s", userInput, key)
-	apiToken, _ := s.cipher.Encrypt(internalToken)
+	apiToken, _ := s.tokenManager.Encrypt(internalToken)
 	ctx := context.Background()
 	s.mocks.userRepo.EXPECT().ExistApiToken(ctx, userInput, key).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {

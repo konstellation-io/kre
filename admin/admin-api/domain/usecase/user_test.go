@@ -42,7 +42,7 @@ func newUserSuite(t *testing.T) *userSuite {
 
 	cfg := &config.Config{}
 	cfg.Auth.ApiToken.CipherSecret = "a16or32digitskey"
-	cipher, _ := authAdapter.NewCipher(cfg, logger)
+	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 	loginLinkTransport := mocks.NewMockLoginLinkTransport(ctrl)
@@ -59,7 +59,7 @@ func newUserSuite(t *testing.T) *userSuite {
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
-		cipher,
+		tokenManager,
 	)
 	userInteractor := usecase.NewUserInteractor(
 		logger,

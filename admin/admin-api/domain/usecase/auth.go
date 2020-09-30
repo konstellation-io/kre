@@ -31,7 +31,7 @@ type AuthInteractor struct {
 	userActivityInteractor    *UserActivityInteractor
 	sessionRepo               repository.SessionRepo
 	accessControl             auth.AccessControl
-	cipher                    auth.Cipher
+	tokenManager              auth.TokenManager
 }
 
 type AuthInteracter interface {
@@ -59,7 +59,7 @@ func NewAuthInteractor(
 	userActivityInteractor *UserActivityInteractor,
 	sessionRepo repository.SessionRepo,
 	accessControl auth.AccessControl,
-	cipher auth.Cipher,
+	tokenManager auth.TokenManager,
 ) AuthInteracter {
 	return &AuthInteractor{
 		cfg,
@@ -72,7 +72,7 @@ func NewAuthInteractor(
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
-		cipher,
+		tokenManager,
 	}
 }
 
@@ -228,7 +228,7 @@ func (a *AuthInteractor) CreateSession(session entity.Session) error {
 }
 
 func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (string, error) {
-	decryptApiToken, err := a.cipher.Decrypt(apiToken)
+	decryptApiToken, err := a.tokenManager.Decrypt(apiToken)
 	if err != nil {
 		a.logger.Errorf("Error decrypting user API Token '%s': %s", apiToken, err)
 		return "", err
@@ -254,7 +254,7 @@ func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (st
 func (a *AuthInteractor) GenerateAPIToken(userId, tokenId string) (string, error) {
 	a.logger.Infof("Generating API Token for user %s", userId)
 
-	encryptToken, err := a.cipher.Encrypt(fmt.Sprintf("%s:%s", userId, tokenId))
+	encryptToken, err := a.tokenManager.Encrypt(fmt.Sprintf("%s:%s", userId, tokenId))
 	if err != nil {
 		return "", fmt.Errorf("error encrypting api token: %w", err)
 	}
