@@ -46,11 +46,46 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  cursor: pointer;
-  transition: color ease 0.4s;
   z-index: 1;
+}
 
-  &:hover {
-    color: font-color(light);
+.help {
+  position: absolute;
+  top: 16px;
+  right: 58px;
+  z-index: 1;
+}
+
+.modalContainer {
+  @include font-small;
+  font-weight: 500;
+
+  position: absolute;
+  background-color: palette(base, 400);
+  z-index: 1;
+  transform: translate(-100%, -50%);
+  border-radius: 0.5 * $grid-unit;
+
+  &.visible {
+    @include shadow(4);
+
+    &:after {
+      content: '';
+      border: solid 6px palette(base, 400);
+      border-left-color: transparent;
+      border-bottom-color: transparent;
+      transform: rotate(45deg);
+      position: absolute;
+      right: -5px;
+      top: calc(50% - 7px);
+    }
+
+    padding: 1.5 * $grid-unit 2 * $grid-unit;
+    width: 45 * $grid-unit;
+  }
+
+  .modal {
+    position: absolute;
+    top: 0;
   }
 }

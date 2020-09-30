@@ -5,6 +5,7 @@ import ConfusionMatrixChart from 'Components/Chart/ConfusionMatrix/ConfusionMatr
 import { D } from 'Components/Chart/ConfusionMatrix/ConfusionMatrixViz';
 import ExpandButton from '../../components/Box/ExpandButton';
 import { GetMetrics_metrics_charts_confusionMatrix } from 'Graphql/queries/types/GetMetrics';
+import Info from '../../components/Box/Info';
 import Title from '../../components/Box/Title';
 import styles from './ConfusionMatrixBox.module.scss';
 import useRenderOnResize from 'Hooks/useRenderOnResize';
@@ -21,13 +22,15 @@ type Props = {
   toggleExpanded?: Function;
   nodeId?: string;
   data: GetMetrics_metrics_charts_confusionMatrix[];
+  info: string;
 };
-function ConfusionMatrixBox({ toggleExpanded, nodeId, data }: Props) {
+function ConfusionMatrixBox({ toggleExpanded, nodeId, data, info }: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (
     <Box>
       <Title text="Confusion Matrix" />
+      <Info>{info}</Info>
       <ExpandButton
         onClick={() => {
           toggleExpanded && toggleExpanded(nodeId);
