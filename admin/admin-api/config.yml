@@ -1,6 +1,6 @@
 baseDomainName: "local"
 application:
-  versionStatusTimeout: 2m
+  versionStatusTimeout: 20m
 admin:
   apiAddress: ":4000"
   baseURL: "http://api.kre.local"
