@@ -17,7 +17,7 @@ ctx.path("relative/path.xxx")
 ctx.set("label", value)
 ctx.get("label")
 ctx.measurement.save("measurement", fields_dict, tags_dict)
-await ctx.prediction.save("predicted_value", "true_value", "date", "error")
+await ctx.prediction.save("predicted_value", "true_value", datetime, "error")
 ```
 
 The runner will have the following environment variables:

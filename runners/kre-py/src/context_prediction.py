@@ -1,5 +1,5 @@
-import datetime
 import json
+from datetime import datetime
 
 from nats.aio.client import ErrTimeout
 
@@ -14,7 +14,8 @@ class ContextPrediction:
         self.__nc__ = nc
         self.__logger__ = logger
 
-    async def save(self, predicted_value="", true_value="", date="", error=""):
+    async def save(self, predicted_value: str = "", true_value: str = "", utcdate: datetime = None,
+                   error: str = "") -> None:
         if error != "":
             if error not in self.PREDICTION_ERRORS:
                 raise Exception(f"[ctx.prediction.save] invalid value for metric error {error} "
@@ -26,19 +27,12 @@ class ContextPrediction:
             if not isinstance(true_value, str) or true_value == "":
                 raise Exception(f"[ctx.prediction.save] invalid 'true_value'='{true_value}', must be a nonempty string")
 
-        if date == "":
-            d = datetime.datetime.utcnow()
-            date = d.isoformat("T") + "Z"
-        else:
-            try:
-                datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
-            except ValueError:
-                raise Exception(f"[ctx.prediction.save] invalid 'date'='{date}', must be a RFC 3339 date like: "
-                                "2020-04-06T09:02:09.277853Z")
+        if utcdate is None:
+            utcdate = datetime.utcnow()
 
         coll = "classificationMetrics"
         doc = {
-            "date": date,
+            "date": utcdate_to_rfc3339(utcdate),
             "error": error,
             "predictedValue": predicted_value,
             "trueValue": true_value,
@@ -55,3 +49,9 @@ class ContextPrediction:
                 self.__logger__.error("Unexpected error saving metric")
         except ErrTimeout:
             self.__logger__.error("Error saving metric: request timed out")
+
+
+def utcdate_to_rfc3339(utcdate):
+    if utcdate.utcoffset().total_seconds() != 0:
+        raise Exception("Input date must be a UTC datetime")
+    return utcdate.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
