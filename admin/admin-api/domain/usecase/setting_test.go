@@ -16,7 +16,7 @@ import (
 
 type settingTest struct {
 	ctrl              *gomock.Controller
-	settingInteractor *usecase.SettingInteractor
+	settingInteractor usecase.SettingInteracter
 	mocks             *settingTestMocks
 }
 

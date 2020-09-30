@@ -37,11 +37,11 @@ type Resolver struct {
 	logger                    logging.Logger
 	runtimeInteractor         *usecase.RuntimeInteractor
 	userInteractor            *usecase.UserInteractor
-	settingInteractor         *usecase.SettingInteractor
+	settingInteractor         usecase.SettingInteracter
 	userActivityInteractor    *usecase.UserActivityInteractor
 	versionInteractor         *usecase.VersionInteractor
 	metricsInteractor         *usecase.MetricsInteractor
-	authInteractor            *usecase.AuthInteractor
+	authInteractor            usecase.AuthInteracter
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
 	cfg                       *config.Config
 }
@@ -50,11 +50,11 @@ func NewGraphQLResolver(
 	logger logging.Logger,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
-	settingInteractor *usecase.SettingInteractor,
+	settingInteractor usecase.SettingInteracter,
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
-	authInteractor *usecase.AuthInteractor,
+	authInteractor usecase.AuthInteracter,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 	cfg *config.Config,
 ) *Resolver {
@@ -301,6 +301,16 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput
 	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, loggedUserID)
 }
 
+func (r *mutationResolver) DeleteAPIToken(ctx context.Context, input DeleteAPITokenInput) (*entity.ApiToken, error) {
+	loggedUserID := ctx.Value("userID").(string)
+	return r.userInteractor.DeleteAPIToken(ctx, input.ID, loggedUserID)
+}
+
+func (r *mutationResolver) GenerateAPIToken(ctx context.Context, input GenerateAPITokenInput) (string, error) {
+	loggedUserID := ctx.Value("userID").(string)
+	return r.userInteractor.GenerateAPIToken(ctx, input.Name, loggedUserID)
+}
+
 func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.userInteractor.GetByID(loggedUserID)
@@ -499,6 +509,19 @@ func (r *userResolver) ActiveSessions(ctx context.Context, obj *entity.User) (in
 	return r.authInteractor.CountUserSessions(ctx, obj.ID)
 }
 
+func (a apiTokenResolver) CreationDate(ctx context.Context, obj *entity.ApiToken) (string, error) {
+	return obj.CreationDate.Format(time.RFC3339), nil
+}
+
+func (a apiTokenResolver) LastActivity(ctx context.Context, obj *entity.ApiToken) (*string, error) {
+	if obj.LastActivity == nil {
+		return nil, nil
+	}
+
+	date := obj.LastActivity.Format(time.RFC3339)
+	return &date, nil
+}
+
 func (r *versionResolver) CreationDate(_ context.Context, obj *entity.Version) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
@@ -540,6 +563,9 @@ func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionRes
 // User returns UserResolver implementation.
 func (r *Resolver) User() UserResolver { return &userResolver{r} }
 
+// ApiToken returns ApiTokenResolver implementation.
+func (r *Resolver) ApiToken() ApiTokenResolver { return &apiTokenResolver{r} }
+
 // UserActivity returns UserActivityResolver implementation.
 func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityResolver{r} }
 
@@ -552,4 +578,5 @@ type runtimeResolver struct{ *Resolver }
 type subscriptionResolver struct{ *Resolver }
 type userActivityResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
+type apiTokenResolver struct{ *Resolver }
 type versionResolver struct{ *Resolver }

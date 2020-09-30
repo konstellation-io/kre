@@ -4,11 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
-
+	"github.com/dgryski/trifles/uuid"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
 
@@ -19,6 +18,7 @@ type UserInteractor struct {
 	userActivityInteractor *UserActivityInteractor
 	sessionRepo            repository.SessionRepo
 	accessControl          auth.AccessControl
+	authInteractor         AuthInteracter
 }
 
 // NewUserInteractor creates a new UserInteractor
@@ -28,6 +28,7 @@ func NewUserInteractor(
 	userActivityInteractor *UserActivityInteractor,
 	sessionRepo repository.SessionRepo,
 	accessControl auth.AccessControl,
+	authInteractor AuthInteracter,
 ) *UserInteractor {
 	return &UserInteractor{
 		logger,
@@ -35,6 +36,7 @@ func NewUserInteractor(
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
+		authInteractor,
 	}
 }
 
@@ -152,4 +154,50 @@ func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, logg
 	}
 
 	return users, nil
+}
+
+// DeleteApiToken return the deleted ApiToken
+func (i *UserInteractor) DeleteAPIToken(ctx context.Context, id, loggedUserID string) (*entity.ApiToken, error) {
+	i.logger.Info("Deleting API JWT token.")
+
+	apiToken, err := i.userRepo.GetApiTokenById(ctx, id, loggedUserID)
+	if err != nil {
+		return nil, fmt.Errorf("error getting api token: %w", err)
+	}
+
+	err = i.userRepo.DeleteApiToken(ctx, id, loggedUserID)
+	if err != nil {
+		return nil, fmt.Errorf("error deleting api token: %w", err)
+	}
+
+	err = i.userActivityInteractor.RegisterDeleteApiToken(loggedUserID, apiToken.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error on register api token deletion: %w", err)
+	}
+
+	return apiToken, nil
+}
+
+// GenerateAPIToken create a new ApiToken and return the internal token
+func (i *UserInteractor) GenerateAPIToken(ctx context.Context, name, loggedUserID string) (string, error) {
+	i.logger.Info("Generating API JWT token.")
+
+	key := uuid.UUIDv4()
+
+	encryptToken, err := i.authInteractor.GenerateAPIToken(loggedUserID, key)
+	if err != nil {
+		return "", fmt.Errorf("error encrypting api token: %w", err)
+	}
+
+	err = i.userRepo.SaveApiToken(ctx, name, loggedUserID, key)
+	if err != nil {
+		return "", fmt.Errorf("error saving api token: %w", err)
+	}
+
+	err = i.userActivityInteractor.RegisterGenerateApiToken(loggedUserID, name)
+	if err != nil {
+		return "", fmt.Errorf("error on register api token generation: %w", err)
+	}
+
+	return encryptToken, err
 }

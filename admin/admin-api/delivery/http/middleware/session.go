@@ -11,7 +11,7 @@ import (
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
 
-func NewSessionMiddleware(cfg *config.Config, logger logging.Logger, authInteractor *usecase.AuthInteractor) echo.MiddlewareFunc {
+func NewSessionMiddleware(cfg *config.Config, logger logging.Logger, authInteractor usecase.AuthInteracter) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			user := c.Get("user").(*jwt.Token)

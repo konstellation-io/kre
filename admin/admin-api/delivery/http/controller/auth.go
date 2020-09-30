@@ -32,15 +32,15 @@ type signinVerifyInput struct {
 type AuthController struct {
 	cfg               *config.Config
 	logger            logging.Logger
-	authInteractor    *usecase.AuthInteractor
-	settingInteractor *usecase.SettingInteractor
+	authInteractor    usecase.AuthInteracter
+	settingInteractor usecase.SettingInteracter
 }
 
 func NewAuthController(
 	cfg *config.Config,
 	logger logging.Logger,
-	authInteractor *usecase.AuthInteractor,
-	settingInteractor *usecase.SettingInteractor,
+	authInteractor usecase.AuthInteracter,
+	settingInteractor usecase.SettingInteracter,
 ) *AuthController {
 	return &AuthController{
 		cfg,
@@ -96,7 +96,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 		}
 	}
 
-	jwtToken, expirationDate, err := a.GenerateAccessToken(c.Request().Context(), userId)
+	jwtToken, expirationDate, err := a.generateAccessToken(c.Request().Context(), userId)
 	if err != nil {
 		a.logger.Errorf("Error generating token: %s", err)
 		return httperrors.HTTPErrUnexpected
@@ -129,20 +129,20 @@ func (a *AuthController) SignInWithApiToken(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, newResponseValidationError(err))
 	}
 
-	userId, err := a.authInteractor.CheckApiToken(input.ApiToken)
+	userID, err := a.authInteractor.CheckApiToken(c.Request().Context(), input.ApiToken)
 	if err != nil {
 		a.logger.Errorf("Error SignInWithApiToken: %s", err)
 		return httperrors.HTTPErrUnauthorized
 	}
 
-	jwtToken, expirationDate, err := a.GenerateAccessToken(c.Request().Context(), userId)
+	jwtToken, expirationDate, err := a.generateAccessToken(c.Request().Context(), userID)
 	if err != nil {
 		a.logger.Errorf("Error generating token: %s", err)
 		return httperrors.HTTPErrUnexpected
 	}
 
 	err = a.authInteractor.CreateSession(entity.Session{
-		UserID:         userId,
+		UserID:         userID,
 		Token:          jwtToken,
 		CreationDate:   time.Now(),
 		ExpirationDate: *expirationDate,
@@ -155,7 +155,7 @@ func (a *AuthController) SignInWithApiToken(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"access_token": jwtToken})
 }
 
-func (a *AuthController) GenerateAccessToken(c context.Context, userId string) (string, *time.Time, error) {
+func (a *AuthController) generateAccessToken(c context.Context, userId string) (string, *time.Time, error) {
 	a.logger.Info("Generating JWT token.")
 	setting, err := a.settingInteractor.GetUnprotected(c)
 	if err != nil {

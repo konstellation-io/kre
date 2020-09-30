@@ -28,6 +28,14 @@ type CreateVersionInput struct {
 	RuntimeID string         `json:"runtimeId"`
 }
 
+type DeleteAPITokenInput struct {
+	ID string `json:"id"`
+}
+
+type GenerateAPITokenInput struct {
+	Name string `json:"name"`
+}
+
 type LogPage struct {
 	Cursor *string           `json:"cursor"`
 	Items  []*entity.NodeLog `json:"items"`

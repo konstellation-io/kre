@@ -26,10 +26,10 @@ const logFormat = "${time_rfc3339} INFO remote_ip=${remote_ip}, method=${method}
 func NewApp(
 	cfg *config.Config,
 	logger logging.Logger,
-	authInteractor *usecase.AuthInteractor,
+	authInteractor usecase.AuthInteracter,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
-	settingInteractor *usecase.SettingInteractor,
+	settingInteractor usecase.SettingInteracter,
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
@@ -83,26 +83,32 @@ func NewApp(
 		return httperrors.HTTPErrUnauthorized
 	}
 
-	skipIfHeaderPresent := func(c echo.Context) bool {
-		auth := c.Request().Header.Get("Authorization")
+	skipIfHeaderPresent := func(existCondition bool) func(c echo.Context) bool {
+		return func(c echo.Context) bool {
+			auth := c.Request().Header.Get(echo.HeaderAuthorization)
 
-		authExists := auth != ""
+			authExists := auth != ""
 
-		if authExists {
-			logger.Debug("Authorization header present, skipping cookie check")
+			if authExists {
+				logger.Debug("Authorization header present, skipping cookie check")
+			} else {
+				logger.Debug("Authorization header not present, skipping jwt header check")
+			}
+
+			return authExists == existCondition
 		}
 
-		return authExists
 	}
 
 	jwtCookieMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
-		Skipper:      skipIfHeaderPresent,
+		Skipper:      skipIfHeaderPresent(true),
 		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
 		TokenLookup:  "cookie:token",
 		ErrorHandler: middlewareErrorHandler,
 	})
 
 	jwtHeaderMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		Skipper:      skipIfHeaderPresent(false),
 		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
 		ErrorHandler: middlewareErrorHandler,
 	})

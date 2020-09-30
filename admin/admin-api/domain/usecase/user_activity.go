@@ -72,7 +72,7 @@ func (i *UserActivityInteractor) Get(
 }
 
 // Create add a new UserActivity to the given user
-func (i *UserActivityInteractor) Create(userID string, userActivityType entity.UserActivityType, vars []*entity.UserActivityVar) error {
+func (i *UserActivityInteractor) create(userID string, userActivityType entity.UserActivityType, vars []*entity.UserActivityVar) error {
 	userActivity := entity.UserActivity{
 		ID:     primitive.NewObjectID().Hex(),
 		UserID: userID,
@@ -93,17 +93,17 @@ func checkUserActivityError(logger logging.Logger, err error) error {
 }
 
 func (i *UserActivityInteractor) RegisterLogin(userID string) error {
-	err := i.Create(userID, entity.UserActivityTypeLogin, []*entity.UserActivityVar{})
+	err := i.create(userID, entity.UserActivityTypeLogin, []*entity.UserActivityVar{})
 	return checkUserActivityError(i.logger, err)
 }
 
 func (i *UserActivityInteractor) RegisterLogout(userID string) error {
-	err := i.Create(userID, entity.UserActivityTypeLogout, []*entity.UserActivityVar{})
+	err := i.create(userID, entity.UserActivityTypeLogout, []*entity.UserActivityVar{})
 	return checkUserActivityError(i.logger, err)
 }
 
 func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateRuntime,
 		[]*entity.UserActivityVar{
@@ -121,7 +121,7 @@ func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *e
 }
 
 func (i *UserActivityInteractor) RegisterCreateAction(userID string, runtime *entity.Runtime, version *entity.Version) error {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateVersion,
 		[]*entity.UserActivityVar{
@@ -135,7 +135,7 @@ func (i *UserActivityInteractor) RegisterCreateAction(userID string, runtime *en
 }
 
 func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeStartVersion,
 		[]*entity.UserActivityVar{
@@ -150,7 +150,7 @@ func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *ent
 }
 
 func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeStopVersion,
 		[]*entity.UserActivityVar{
@@ -164,7 +164,7 @@ func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *enti
 }
 
 func (i *UserActivityInteractor) RegisterPublishAction(userID string, runtime *entity.Runtime, version *entity.Version, prev *entity.Version, comment string) error {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypePublishVersion,
 		[]*entity.UserActivityVar{
@@ -180,7 +180,7 @@ func (i *UserActivityInteractor) RegisterPublishAction(userID string, runtime *e
 }
 
 func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeUnpublishVersion,
 		[]*entity.UserActivityVar{
@@ -194,12 +194,12 @@ func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime 
 }
 
 func (i *UserActivityInteractor) RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error {
-	err := i.Create(userID, entity.UserActivityTypeUpdateSetting, vars)
+	err := i.create(userID, entity.UserActivityTypeUpdateSetting, vars)
 	return checkUserActivityError(i.logger, err)
 }
 
 func (i *UserActivityInteractor) RegisterCreateUser(userID string, createdUser *entity.User) {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateUser,
 		[]*entity.UserActivityVar{
@@ -211,7 +211,7 @@ func (i *UserActivityInteractor) RegisterCreateUser(userID string, createdUser *
 }
 
 func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string) {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeRemoveUsers,
 		[]*entity.UserActivityVar{
@@ -223,7 +223,7 @@ func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, use
 }
 
 func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel, comment string) {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeUpdateAccessLevels,
 		[]*entity.UserActivityVar{
@@ -236,7 +236,7 @@ func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userI
 }
 
 func (i *UserActivityInteractor) RegisterRevokeSessions(userID string, userIDs, userEmails []string, comment string) {
-	err := i.Create(
+	err := i.create(
 		userID,
 		entity.UserActivityTypeRevokeSessions,
 		[]*entity.UserActivityVar{
@@ -262,4 +262,26 @@ func (i *UserActivityInteractor) NewUpdateSettingVars(settingName, oldValue, new
 			Value: newValue,
 		},
 	}
+}
+
+func (i *UserActivityInteractor) RegisterGenerateApiToken(userID, apiTokenName string) error {
+	err := i.create(
+		userID,
+		entity.UserActivityTypeGenerateApiToken,
+		[]*entity.UserActivityVar{
+			{Key: "API_TOKEN_NAME", Value: apiTokenName},
+		})
+
+	return checkUserActivityError(i.logger, err)
+}
+
+func (i *UserActivityInteractor) RegisterDeleteApiToken(userID, apiTokenName string) error {
+	err := i.create(
+		userID,
+		entity.UserActivityTypeDeleteApiToken,
+		[]*entity.UserActivityVar{
+			{Key: "API_TOKEN_NAME", Value: apiTokenName},
+		})
+
+	return checkUserActivityError(i.logger, err)
 }

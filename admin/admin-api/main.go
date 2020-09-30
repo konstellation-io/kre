@@ -51,9 +51,7 @@ func main() {
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
 	accessControl, err := auth.NewCasbinAccessControl(logger, userRepo)
-	if err != nil {
-		log.Fatal(err)
-	}
+	tokenManager := auth.NewTokenManager(cfg, logger)
 
 	passwordGenerator := runtime.NewPasswordGenerator()
 
@@ -62,6 +60,7 @@ func main() {
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 	authInteractor := usecase.NewAuthInteractor(
+		cfg,
 		logger,
 		loginLinkTransport,
 		verificationCodeGenerator,
@@ -71,6 +70,7 @@ func main() {
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
+		tokenManager,
 	)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(
@@ -88,6 +88,7 @@ func main() {
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
+		authInteractor,
 	)
 
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor, accessControl)

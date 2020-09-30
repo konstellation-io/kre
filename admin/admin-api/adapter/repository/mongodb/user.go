@@ -2,6 +2,8 @@ package mongodb
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -101,18 +103,6 @@ func (r *UserRepoMongoDB) GetManyByEmail(ctx context.Context, email string) ([]*
 	}
 
 	return users, nil
-}
-
-func (r *UserRepoMongoDB) GetByApiToken(apiToken string) (*entity.User, error) {
-	user := &entity.User{}
-	filter := bson.D{{"apiToken", apiToken}}
-
-	err := r.collection.FindOne(context.Background(), filter).Decode(user)
-	if err == mongo.ErrNoDocuments {
-		return user, usecase.ErrInvalidApiToken
-	}
-
-	return user, err
 }
 
 func (r *UserRepoMongoDB) GetByID(userID string) (*entity.User, error) {
@@ -239,6 +229,113 @@ func (r *UserRepoMongoDB) UpdateLastActivity(userID string) error {
 	}
 
 	result, err := r.collection.UpdateOne(context.Background(), filter, upd)
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrUserNotFound
+	}
+
+	return nil
+}
+func (r *UserRepoMongoDB) ExistApiToken(ctx context.Context, userID, token string) error {
+	filter := bson.M{
+		"_id": userID,
+	}
+
+	user := &entity.User{}
+	err := r.collection.FindOne(ctx, filter).Decode(user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return usecase.ErrUserNotFound
+		}
+		r.logger.Errorf("error getting user from DB: %s", err.Error())
+		return usecase.ErrInvalidApiToken
+	}
+
+	if len(user.ApiTokens) == 0 {
+		return errors.New(fmt.Sprintf("error apiToken not found in user %s", userID))
+	}
+
+	for _, apiToken := range user.ApiTokens {
+		if apiToken.Token == token {
+			return nil
+		}
+	}
+
+	return errors.New(fmt.Sprintf("error apiToken not found in user %s", userID))
+}
+
+func (r *UserRepoMongoDB) GetApiTokenById(ctx context.Context, id, userID string) (*entity.ApiToken, error) {
+	filter := bson.M{
+		"_id": userID,
+	}
+
+	user := &entity.User{}
+	err := r.collection.FindOne(ctx, filter).Decode(user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, usecase.ErrUserNotFound
+		}
+		return nil, err
+	}
+
+	if len(user.ApiTokens) == 0 {
+		return nil, errors.New(fmt.Sprintf("error apiToken %s not found in user %s", id, userID))
+	}
+
+	for _, apiToken := range user.ApiTokens {
+		if apiToken.Id == id {
+			return apiToken, nil
+		}
+	}
+
+	return nil, errors.New(fmt.Sprintf("error apiToken %s not found in user %s", id, userID))
+}
+
+func (r *UserRepoMongoDB) DeleteApiToken(ctx context.Context, id, userID string) error {
+	filter := bson.M{
+		"_id": userID,
+	}
+
+	upd := bson.M{
+		"$pull": bson.M{"apiTokens": bson.M{"_id": id}},
+	}
+
+	result, err := r.collection.UpdateOne(ctx, filter, upd)
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrUserNotFound
+	}
+
+	return nil
+
+}
+
+func (r *UserRepoMongoDB) SaveApiToken(ctx context.Context, name, userID, token string) error {
+	filter := bson.M{
+		"_id": userID,
+	}
+
+	now := time.Now()
+
+	apiToken := &entity.ApiToken{
+		Id:           primitive.NewObjectID().Hex(),
+		Name:         name,
+		CreationDate: now,
+		LastActivity: &now,
+		Token:        token,
+	}
+
+	upd := bson.M{
+		"$push": bson.M{"apiTokens": apiToken},
+	}
+
+	result, err := r.collection.UpdateOne(ctx, filter, upd)
 	if err != nil {
 		return err
 	}

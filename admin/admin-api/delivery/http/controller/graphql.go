@@ -21,11 +21,11 @@ type GraphQLController struct {
 	logger                    logging.Logger
 	runtimeInteractor         *usecase.RuntimeInteractor
 	userInteractor            *usecase.UserInteractor
-	settingInteractor         *usecase.SettingInteractor
+	settingInteractor         usecase.SettingInteracter
 	userActivityInteractor    *usecase.UserActivityInteractor
 	versionInteractor         *usecase.VersionInteractor
 	metricsInteractor         *usecase.MetricsInteractor
-	authInteractor            *usecase.AuthInteractor
+	authInteractor            usecase.AuthInteracter
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
 }
 
@@ -34,11 +34,11 @@ func NewGraphQLController(
 	logger logging.Logger,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
-	settingInteractor *usecase.SettingInteractor,
+	settingInteractor usecase.SettingInteracter,
 	userActivityInteractor *usecase.UserActivityInteractor,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
-	authInteractor *usecase.AuthInteractor,
+	authInteractor usecase.AuthInteracter,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) *GraphQLController {
 	return &GraphQLController{

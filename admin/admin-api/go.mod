@@ -7,6 +7,7 @@ require (
 	github.com/agnivade/levenshtein v1.1.0 // indirect
 	github.com/casbin/casbin/v2 v2.8.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/dgryski/trifles v0.0.0-20200323201526-dd97f9abfb48
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator v9.31.0+incompatible
@@ -48,5 +49,4 @@ require (
 	gopkg.in/ini.v1 v1.57.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
-	rsc.io/quote/v3 v3.1.0 // indirect
 )
