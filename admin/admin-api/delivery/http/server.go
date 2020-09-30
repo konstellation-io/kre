@@ -86,14 +86,7 @@ func NewApp(
 	skipIfHeaderPresent := func(existCondition bool) func(c echo.Context) bool {
 		return func(c echo.Context) bool {
 			auth := c.Request().Header.Get(echo.HeaderAuthorization)
-
 			authExists := auth != ""
-
-			if authExists {
-				logger.Debug("Authorization header present, skipping cookie check")
-			} else {
-				logger.Debug("Authorization header not present, skipping jwt header check")
-			}
 
 			return authExists == existCondition
 		}
