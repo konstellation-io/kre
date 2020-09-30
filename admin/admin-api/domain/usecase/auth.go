@@ -1,8 +1,13 @@
 package usecase
 
+//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/usecase_${GOFILE} -package=mocks
+
 import (
 	"context"
 	"errors"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"strings"
 	"time"
 
@@ -16,6 +21,7 @@ import (
 
 // AuthInteractor will manage all things related to authorizations.
 type AuthInteractor struct {
+	cfg                       *config.Config
 	logger                    logging.Logger
 	loginLinkTransport        auth.LoginLinkTransport
 	verificationCodeGenerator auth.VerificationCodeGenerator
@@ -25,10 +31,25 @@ type AuthInteractor struct {
 	userActivityInteractor    *UserActivityInteractor
 	sessionRepo               repository.SessionRepo
 	accessControl             auth.AccessControl
+	cipher                    auth.Cipher
+}
+
+type AuthInteracter interface {
+	SignIn(ctx context.Context, email string, verificationCodeDurationInMinutes int) error
+	VerifyCode(code string) (string, error)
+	Logout(userID, token string) error
+	CreateSession(session entity.Session) error
+	CheckApiToken(ctx context.Context, apiToken string) (string, error)
+	GenerateCipherAPIToken(userId, tokenId string) (string, error)
+	CheckSessionIsActive(token string) error
+	RevokeUserSessions(userIDs []string, loggedUser, comment string) error
+	UpdateLastActivity(loggedUserID string) error
+	CountUserSessions(ctx context.Context, userID string) (int, error)
 }
 
 // NewAuthInteractor creates a new AuthInteractor.
 func NewAuthInteractor(
+	cfg *config.Config,
 	logger logging.Logger,
 	loginLinkTransport auth.LoginLinkTransport,
 	verificationCodeGenerator auth.VerificationCodeGenerator,
@@ -38,8 +59,10 @@ func NewAuthInteractor(
 	userActivityInteractor *UserActivityInteractor,
 	sessionRepo repository.SessionRepo,
 	accessControl auth.AccessControl,
-) *AuthInteractor {
+	cipher auth.Cipher,
+) AuthInteracter {
 	return &AuthInteractor{
+		cfg,
 		logger,
 		loginLinkTransport,
 		verificationCodeGenerator,
@@ -49,7 +72,14 @@ func NewAuthInteractor(
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
+		cipher,
 	}
+}
+
+type TokenClaim struct {
+	UserID string `json:"userId"`
+	Token  string `json:"token"`
+	jwt.StandardClaims
 }
 
 var (
@@ -197,14 +227,34 @@ func (a *AuthInteractor) CreateSession(session entity.Session) error {
 	return a.sessionRepo.Create(session)
 }
 
-func (a *AuthInteractor) CheckApiToken(apiToken string) (string, error) {
-	user, err := a.userRepo.GetByApiToken(apiToken)
+func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (string, error) {
+	decryptApiToken, err := a.cipher.Decrypt(apiToken)
 	if err != nil {
-		a.logger.Errorf("Error getting user with API Token '%s': %s", apiToken, err)
+		a.logger.Errorf("Error decrypting user API Token '%s': %s", apiToken, err)
 		return "", err
 	}
 
-	return user.ID, nil
+	parts := strings.Split(decryptApiToken, ":")
+	userID, tokenId := parts[0], parts[1]
+
+	err = a.userRepo.ExistApiToken(ctx, userID, tokenId)
+	if err != nil {
+		a.logger.Errorf("Error getting user with API Token '%s': %s", apiToken, err)
+		return "", ErrInvalidApiToken
+	}
+
+	return userID, nil
+}
+
+func (a *AuthInteractor) GenerateCipherAPIToken(userId, tokenId string) (string, error) {
+	a.logger.Infof("Generating API Token for user %s", userId)
+
+	encryptToken, err := a.cipher.Encrypt(fmt.Sprintf("%s:%s", userId, tokenId))
+	if err != nil {
+		return "", fmt.Errorf("error encrypting api token: %w", err)
+	}
+
+	return encryptToken, err
 }
 
 func (a *AuthInteractor) CheckSessionIsActive(token string) error {

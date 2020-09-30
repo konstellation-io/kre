@@ -15,6 +15,8 @@ config:
     jwtSignSecret: jwt_secret
     secureCookie: false
     cookieDomain: kre.local
+    apiToken:
+      cipherSecret: "16or32AlphaNuKey"
   runtime:
     sharedStorageClass: standard
     sharedStorageSize: 2Gi

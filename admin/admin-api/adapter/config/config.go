@@ -37,6 +37,9 @@ type Config struct {
 		JWTSignSecret                     string `yaml:"jwtSignSecret" envconfig:"KRE_AUTH_JWT_SIGN_SECRET"`
 		SecureCookie                      bool   `yaml:"secureCookie" envconfig:"KRE_AUTH_SECURE_COOKIE"`
 		CookieDomain                      string `yaml:"cookieDomain" envconfig:"KRE_AUTH_COOKIE_DOMAIN"`
+		ApiToken                          struct {
+			CipherSecret string `yaml:"cipherSecret" envconfig:"KRE_AUTH_API_TOKEN_CIPHER_SECRET"`
+		} `yaml:"apiToken"`
 	} `yaml:"auth"`
 	MongoDB struct {
 		Address string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`

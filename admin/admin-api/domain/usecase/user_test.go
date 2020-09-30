@@ -2,10 +2,11 @@ package usecase_test
 
 import (
 	"context"
-	"testing"
-
+	authAdapter "github.com/konstellation-io/kre/admin/admin-api/adapter/auth"
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
+	"testing"
 
 	"github.com/golang/mock/gomock"
 
@@ -34,18 +35,38 @@ func newUserSuite(t *testing.T) *userSuite {
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	sessionRepo := mocks.NewMockSessionRepo(ctrl)
+	settingRepo := mocks.NewMockSettingRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
-
 	mocks.AddLoggerExpects(logger)
 
-	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
+	cfg := &config.Config{}
+	cfg.Auth.ApiToken.CipherSecret = "a16or32digitskey"
+	cipher, _ := authAdapter.NewCipher(cfg, logger)
 
+	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
+	loginLinkTransport := mocks.NewMockLoginLinkTransport(ctrl)
+	verificationCodeGenerator := mocks.NewMockVerificationCodeGenerator(ctrl)
+	verificationCodeRepo := mocks.NewMockVerificationCodeRepo(ctrl)
+	authInteractor := usecase.NewAuthInteractor(
+		cfg,
+		logger,
+		loginLinkTransport,
+		verificationCodeGenerator,
+		verificationCodeRepo,
+		userRepo,
+		settingRepo,
+		userActivityInteractor,
+		sessionRepo,
+		accessControl,
+		cipher,
+	)
 	userInteractor := usecase.NewUserInteractor(
 		logger,
 		userRepo,
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
+		authInteractor,
 	)
 
 	return &userSuite{
@@ -97,4 +118,40 @@ func TestGetAllUsers(t *testing.T) {
 	res, err := s.interactor.GetAllUsers(ctx, userID, false)
 	require.Nil(t, err)
 	require.EqualValues(t, res, usersFound)
+}
+
+func TestUserGenerateApiToken(t *testing.T) {
+	s := newUserSuite(t)
+	defer s.ctrl.Finish()
+
+	ctx := context.Background()
+	userID := "user1234"
+	name := "tokenName"
+
+	s.mocks.userRepo.EXPECT().SaveApiToken(ctx, name, userID, gomock.Any()).Return(nil)
+
+	res, err := s.interactor.GenerateAPIToken(ctx, name, userID)
+	require.NotEmpty(t, res)
+	require.Nil(t, err)
+}
+
+func TestDeleteApiToken(t *testing.T) {
+	s := newUserSuite(t)
+	defer s.ctrl.Finish()
+
+	inputApiToken := &entity.ApiToken{
+		Id:    "token1",
+		Name:  "test",
+		Token: "abcdefg",
+	}
+
+	ctx := context.Background()
+	userID := "user1234"
+
+	s.mocks.userRepo.EXPECT().GetApiTokenById(ctx, inputApiToken.Id, userID).Return(inputApiToken, nil)
+	s.mocks.userRepo.EXPECT().DeleteApiToken(ctx, inputApiToken.Id, userID).Return(nil)
+
+	apiToken, err := s.interactor.DeleteAPIToken(ctx, inputApiToken.Id, userID)
+	require.Nil(t, err)
+	require.EqualValues(t, inputApiToken, apiToken)
 }

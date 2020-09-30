@@ -4,6 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/dgryski/trifles/uuid"
+	authAdapter "github.com/konstellation-io/kre/admin/admin-api/adapter/auth"
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"testing"
 	"time"
 
@@ -19,11 +23,13 @@ import (
 
 type authSuite struct {
 	ctrl           *gomock.Controller
-	authInteractor *usecase.AuthInteractor
+	authInteractor usecase.AuthInteracter
+	cipher         auth.Cipher
 	mocks          authSuiteMocks
 }
 
 type authSuiteMocks struct {
+	cfg                       *config.Config
 	logger                    *mocks.MockLogger
 	loginLinkTransport        *mocks.MockLoginLinkTransport
 	verificationCodeGenerator *mocks.MockVerificationCodeGenerator
@@ -56,7 +62,12 @@ func newAuthSuite(t *testing.T) *authSuite {
 		accessControl,
 	)
 
+	cfg := &config.Config{}
+	cfg.Auth.ApiToken.CipherSecret = "a16or32digitskey"
+	cipher, _ := authAdapter.NewCipher(cfg, logger)
+
 	authInteractor := usecase.NewAuthInteractor(
+		cfg,
 		logger,
 		loginLinkTransport,
 		verificationCodeGenerator,
@@ -66,11 +77,14 @@ func newAuthSuite(t *testing.T) *authSuite {
 		userActivityInteractor,
 		sessionRepo,
 		accessControl,
+		cipher,
 	)
 
 	return &authSuite{
-		ctrl: ctrl,
+		ctrl:   ctrl,
+		cipher: cipher,
 		mocks: authSuiteMocks{
+			cfg,
 			logger,
 			loginLinkTransport,
 			verificationCodeGenerator,
@@ -368,4 +382,21 @@ func TestVerifyCodeErrDeletingValidationCode(t *testing.T) {
 	userId, err := s.authInteractor.VerifyCode(code)
 	require.Nil(t, err)
 	require.Equal(t, verificationCode.UID, userId)
+}
+
+func TestCheckApiToken(t *testing.T) {
+	s := newAuthSuite(t)
+	defer s.ctrl.Finish()
+
+	userInput := "user1"
+	key := uuid.UUIDv4()
+
+	internalToken := fmt.Sprintf("%s:%s", userInput, key)
+	apiToken, _ := s.cipher.Encrypt(internalToken)
+	ctx := context.Background()
+	s.mocks.userRepo.EXPECT().ExistApiToken(ctx, userInput, key).Return(nil)
+
+	userID, err := s.authInteractor.CheckApiToken(ctx, apiToken)
+	require.Nil(t, err)
+	require.Equal(t, userInput, userID)
 }
