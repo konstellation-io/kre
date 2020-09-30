@@ -239,6 +239,26 @@ function getOptions(User) {
           value: 'user1@kre.com, user2@kre.com, user3@kre.com'
         }
       ]
+    },
+    {
+      ...UserActivityBase,
+      type: 'GENERATE_API_TOKEN',
+      vars: [
+        {
+          key: 'API_TOKEN_NAME',
+          value: 'New API Token'
+        }
+      ]
+    },
+    {
+      ...UserActivityBase,
+      type: 'DELETE_API_TOKEN',
+      vars: [
+        {
+          key: 'API_TOKEN_NAME',
+          value: 'Old API Token'
+        }
+      ]
     }
   ];
 }

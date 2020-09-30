@@ -7,10 +7,10 @@ import {
   SearchSelect
 } from 'kwc';
 import CustomLabel, { HIGHLIGHT_COLORS } from './CustomLabel';
-import { FieldErrors } from 'react-hook-form';
 
 import ActivityIcon from '../ActivityIcon/ActivityIcon';
 import { ErrorMessage } from 'kwc';
+import { FieldErrors } from 'react-hook-form';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import { GetUsersActivity_userActivityList_user } from 'Graphql/queries/types/GetUsersActivity';
 import { Moment } from 'moment';
@@ -30,6 +30,14 @@ const customLabels = new Map([
   [UserActivityType.LOGOUT, <CustomLabel>Logout</CustomLabel>],
   [UserActivityType.CREATE_RUNTIME, <CustomLabel>Runtime created</CustomLabel>],
   [UserActivityType.CREATE_VERSION, <CustomLabel>Version Created</CustomLabel>],
+  [
+    UserActivityType.GENERATE_API_TOKEN,
+    <CustomLabel>API Token Created</CustomLabel>
+  ],
+  [
+    UserActivityType.DELETE_API_TOKEN,
+    <CustomLabel>API Token Removed</CustomLabel>
+  ],
   [
     UserActivityType.PUBLISH_VERSION,
     <CustomLabel highlight="published" color={HIGHLIGHT_COLORS.DEFAULT}>
