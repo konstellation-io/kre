@@ -170,6 +170,11 @@ func (i *UserInteractor) DeleteAPIToken(ctx context.Context, id, loggedUserID st
 		return nil, fmt.Errorf("error deleting api token: %w", err)
 	}
 
+	err = i.userActivityInteractor.RegisterDeleteApiToken(loggedUserID, apiToken.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error on register api token deletion: %w", err)
+	}
+
 	return apiToken, nil
 }
 
@@ -179,7 +184,7 @@ func (i *UserInteractor) GenerateAPIToken(ctx context.Context, name, loggedUserI
 
 	key := uuid.UUIDv4()
 
-	encryptToken, err := i.authInteractor.GenerateCipherAPIToken(loggedUserID, key)
+	encryptToken, err := i.authInteractor.GenerateAPIToken(loggedUserID, key)
 	if err != nil {
 		return "", fmt.Errorf("error encrypting api token: %w", err)
 	}
@@ -187,6 +192,11 @@ func (i *UserInteractor) GenerateAPIToken(ctx context.Context, name, loggedUserI
 	err = i.userRepo.SaveApiToken(ctx, name, loggedUserID, key)
 	if err != nil {
 		return "", fmt.Errorf("error saving api token: %w", err)
+	}
+
+	err = i.userActivityInteractor.RegisterGenerateApiToken(loggedUserID, name)
+	if err != nil {
+		return "", fmt.Errorf("error on register api token generation: %w", err)
 	}
 
 	return encryptToken, err

@@ -23,9 +23,10 @@ type userSuite struct {
 }
 
 type userSuiteMocks struct {
-	logger        *mocks.MockLogger
-	userRepo      *mocks.MockUserRepo
-	accessControl *mocks.MockAccessControl
+	logger           *mocks.MockLogger
+	userRepo         *mocks.MockUserRepo
+	userActivityRepo *mocks.MockUserActivityRepo
+	accessControl    *mocks.MockAccessControl
 }
 
 func newUserSuite(t *testing.T) *userSuite {
@@ -75,6 +76,7 @@ func newUserSuite(t *testing.T) *userSuite {
 		mocks: userSuiteMocks{
 			logger,
 			userRepo,
+			userActivityRepo,
 			accessControl,
 		},
 	}
@@ -129,10 +131,15 @@ func TestUserGenerateApiToken(t *testing.T) {
 	name := "tokenName"
 
 	s.mocks.userRepo.EXPECT().SaveApiToken(ctx, name, userID, gomock.Any()).Return(nil)
+	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
+		require.Equal(t, entity.UserActivityTypeGenerateApiToken, activity.Type)
+		require.Equal(t, userID, activity.UserID)
+		return nil
+	})
 
 	res, err := s.interactor.GenerateAPIToken(ctx, name, userID)
 	require.NotEmpty(t, res)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func TestDeleteApiToken(t *testing.T) {
@@ -150,8 +157,13 @@ func TestDeleteApiToken(t *testing.T) {
 
 	s.mocks.userRepo.EXPECT().GetApiTokenById(ctx, inputApiToken.Id, userID).Return(inputApiToken, nil)
 	s.mocks.userRepo.EXPECT().DeleteApiToken(ctx, inputApiToken.Id, userID).Return(nil)
+	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
+		require.Equal(t, entity.UserActivityTypeDeleteApiToken, activity.Type)
+		require.Equal(t, userID, activity.UserID)
+		return nil
+	})
 
 	apiToken, err := s.interactor.DeleteAPIToken(ctx, inputApiToken.Id, userID)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.EqualValues(t, inputApiToken, apiToken)
 }

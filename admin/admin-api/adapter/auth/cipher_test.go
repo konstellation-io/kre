@@ -42,12 +42,12 @@ func TestEncryptAndDecrypt(t *testing.T) {
 	s := newCipherSuite(t)
 	defer s.ctrl.Finish()
 
-	textToEncrypt := "Esto es una prueba"
+	textToEncrypt := "This is a test"
 	textEncrypted, err := s.cipher.Encrypt(textToEncrypt)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	textDecrypted, _ := s.cipher.Decrypt(textEncrypted)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	require.Equal(t, textToEncrypt, textDecrypted)
 }

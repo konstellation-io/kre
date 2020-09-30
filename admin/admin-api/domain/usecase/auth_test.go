@@ -380,7 +380,7 @@ func TestVerifyCodeErrDeletingValidationCode(t *testing.T) {
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
 	userId, err := s.authInteractor.VerifyCode(code)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.Equal(t, verificationCode.UID, userId)
 }
 
@@ -395,8 +395,13 @@ func TestCheckApiToken(t *testing.T) {
 	apiToken, _ := s.cipher.Encrypt(internalToken)
 	ctx := context.Background()
 	s.mocks.userRepo.EXPECT().ExistApiToken(ctx, userInput, key).Return(nil)
+	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
+		require.Equal(t, entity.UserActivityTypeLogin, activity.Type)
+		require.Equal(t, userInput, activity.UserID)
+		return nil
+	})
 
 	userID, err := s.authInteractor.CheckApiToken(ctx, apiToken)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.Equal(t, userInput, userID)
 }

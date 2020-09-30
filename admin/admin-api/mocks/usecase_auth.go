@@ -107,9 +107,9 @@ func (mr *MockAuthInteracterMockRecorder) CheckApiToken(ctx, apiToken interface{
 }
 
 // GenerateCipherAPIToken mocks base method
-func (m *MockAuthInteracter) GenerateCipherAPIToken(userId, tokenId string) (string, error) {
+func (m *MockAuthInteracter) GenerateAPIToken(userId, tokenId string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateCipherAPIToken", userId, tokenId)
+	ret := m.ctrl.Call(m, "GenerateAPIToken", userId, tokenId)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
@@ -118,7 +118,7 @@ func (m *MockAuthInteracter) GenerateCipherAPIToken(userId, tokenId string) (str
 // GenerateCipherAPIToken indicates an expected call of GenerateCipherAPIToken
 func (mr *MockAuthInteracterMockRecorder) GenerateCipherAPIToken(userId, tokenId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCipherAPIToken", reflect.TypeOf((*MockAuthInteracter)(nil).GenerateCipherAPIToken), userId, tokenId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateAPIToken", reflect.TypeOf((*MockAuthInteracter)(nil).GenerateAPIToken), userId, tokenId)
 }
 
 // CheckSessionIsActive mocks base method

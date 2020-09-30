@@ -40,7 +40,7 @@ type AuthInteracter interface {
 	Logout(userID, token string) error
 	CreateSession(session entity.Session) error
 	CheckApiToken(ctx context.Context, apiToken string) (string, error)
-	GenerateCipherAPIToken(userId, tokenId string) (string, error)
+	GenerateAPIToken(userId, tokenId string) (string, error)
 	CheckSessionIsActive(token string) error
 	RevokeUserSessions(userIDs []string, loggedUser, comment string) error
 	UpdateLastActivity(loggedUserID string) error
@@ -243,10 +243,15 @@ func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (st
 		return "", ErrInvalidApiToken
 	}
 
+	err = a.userActivityInteractor.RegisterLogin(userID)
+	if err != nil {
+		return "", err
+	}
+
 	return userID, nil
 }
 
-func (a *AuthInteractor) GenerateCipherAPIToken(userId, tokenId string) (string, error) {
+func (a *AuthInteractor) GenerateAPIToken(userId, tokenId string) (string, error) {
 	a.logger.Infof("Generating API Token for user %s", userId)
 
 	encryptToken, err := a.cipher.Encrypt(fmt.Sprintf("%s:%s", userId, tokenId))
