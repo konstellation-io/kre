@@ -221,6 +221,17 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 			i.logger.Errorf("%s: %s", errorMessage, err)
 			contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
 		}
+		// TODO check if there are Chronograf dahsboards within .KRT file
+
+		dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
+		if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
+			err := i.storeDashboards(runtime, dashboardsFolder)
+			if err != nil {
+				errorMessage := "error creating dashboard"
+				i.logger.Errorf("%s: %s", errorMessage, err)
+				contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+			}
+		}
 
 		docFolder := path.Join(tmpDir, "docs")
 		if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
