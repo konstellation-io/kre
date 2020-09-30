@@ -3107,6 +3107,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "CREATE_VERSION" => <CustomLabel>
                     Version Created
                   </CustomLabel>,
+                  "GENERATE_API_TOKEN" => <CustomLabel>
+                    API Token Created
+                  </CustomLabel>,
+                  "DELETE_API_TOKEN" => <CustomLabel>
+                    API Token Removed
+                  </CustomLabel>,
                   "PUBLISH_VERSION" => <CustomLabel
                     color="highlight"
                     highlight="published"
@@ -3176,6 +3182,20 @@ exports[`FiltersBar matches snapshot 1`] = `
                       invert={true}
                     />,
                     "label": "CREATE_VERSION",
+                  },
+                  Object {
+                    "Icon": <UNDEFINED
+                      activityType="DELETE_API_TOKEN"
+                      invert={true}
+                    />,
+                    "label": "DELETE_API_TOKEN",
+                  },
+                  Object {
+                    "Icon": <UNDEFINED
+                      activityType="GENERATE_API_TOKEN"
+                      invert={true}
+                    />,
+                    "label": "GENERATE_API_TOKEN",
                   },
                   Object {
                     "Icon": <UNDEFINED

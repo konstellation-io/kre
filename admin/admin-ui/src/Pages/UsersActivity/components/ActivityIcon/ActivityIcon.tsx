@@ -68,6 +68,10 @@ export const activityToIconProps = new Map([
     buildIconProp(IconAdd, IconColors.DARK, IconBackgrounds.LOWLIGHT)
   ],
   [
+    UserActivityType.GENERATE_API_TOKEN,
+    buildIconProp(IconAdd, IconColors.DARK, IconBackgrounds.LOWLIGHT)
+  ],
+  [
     UserActivityType.LOGIN,
     buildIconProp(IconUser, IconColors.DARK, IconBackgrounds.HIGHTLIGHT)
   ],
@@ -81,6 +85,10 @@ export const activityToIconProps = new Map([
   ],
   [
     UserActivityType.REMOVE_USERS,
+    buildIconProp(IconRemove, IconColors.DARK, IconBackgrounds.LIGHT)
+  ],
+  [
+    UserActivityType.DELETE_API_TOKEN,
     buildIconProp(IconRemove, IconColors.DARK, IconBackgrounds.LIGHT)
   ],
   [
