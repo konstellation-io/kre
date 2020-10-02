@@ -8,7 +8,6 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import Configuration from './pages/Configuration/Configuration';
 import Documentation from './pages/Documentation/Documentation';
 import Metrics from './pages/Metrics/Metrics';
-import { NodeStatus } from 'Graphql/types/globalTypes';
 import ROUTE from 'Constants/routes';
 import Status from './pages/Status/Status';
 import VersionSideBar from './components/VersionSideBar/VersionSideBar';
@@ -22,16 +21,21 @@ type Props = {
 };
 
 function Version({ versions, version, runtime }: Props) {
-  const { updateVersion, updateEntrypointStatus } = useOpenedVersion();
+  const { updateVersion, resetOpenedVersion } = useOpenedVersion();
 
   useEffect(() => {
     if (runtime && version) {
-      updateVersion(runtime.name, version.name);
+      updateVersion({
+        runtimeId: runtime.id,
+        runtimeName: runtime.name,
+        versionId: version.id,
+        versionName: version.name
+      });
     }
   }, [version, runtime, updateVersion]);
 
   useEffect(
-    () => () => updateEntrypointStatus(NodeStatus.STOPPED),
+    () => () => resetOpenedVersion(),
     // We only want to execute this after unmounting
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
