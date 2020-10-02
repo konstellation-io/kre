@@ -54,6 +54,7 @@ type VersionInteractor struct {
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
 	docGenerator           version.DocGenerator
+	dashboardService       service.DashboardService
 }
 
 // NewVersionInteractor creates a new interactor
@@ -69,6 +70,7 @@ func NewVersionInteractor(
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
 	docGenerator version.DocGenerator,
+	dashboardService service.DashboardService,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		cfg,
@@ -82,6 +84,7 @@ func NewVersionInteractor(
 		accessControl,
 		idGenerator,
 		docGenerator,
+		dashboardService,
 	}
 }
 
@@ -221,7 +224,6 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 			i.logger.Errorf("%s: %s", errorMessage, err)
 			contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
 		}
-		// TODO check if there are Chronograf dahsboards within .KRT file
 
 		dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
 		if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
