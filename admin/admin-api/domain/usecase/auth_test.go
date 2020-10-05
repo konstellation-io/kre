@@ -63,7 +63,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 	)
 
 	cfg := &config.Config{}
-	cfg.Auth.ApiToken.CipherSecret = "a16or32digitskey"
+	cfg.Auth.ApiToken.CipherSecret = "someSuperSecretValue"
 	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	authInteractor := usecase.NewAuthInteractor(

@@ -6,27 +6,63 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"io"
+
+	"golang.org/x/crypto/scrypt"
+
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
-	"io"
 )
 
-type TokenManager struct {
-	cfg    *config.Config
-	logger logging.Logger
-}
+type (
+	TokenManager struct {
+		keyConf keyConf
+		cfg     *config.Config
+		logger  logging.Logger
+	}
+	keyConf struct {
+		// Cost must be a power of two greater than 1
+		Cost int
+		Len  int
+	}
+)
 
 func NewTokenManager(cfg *config.Config, logger logging.Logger) auth.TokenManager {
 	return &TokenManager{
+		keyConf: keyConf{
+			// NOTE: this parameter is the COST of the algorithm
+			//	increase for security
+			//  decrease for performance
+			Cost: 65536,
+			Len:  32,
+		},
 		cfg:    cfg,
 		logger: logger,
 	}
 }
 
-func (a *TokenManager) Encrypt(stringToEncrypt string) (string, error) {
+func (a *TokenManager) deriveKey(salt []byte) ([]byte, []byte, error) {
+	if salt == nil {
+		salt = make([]byte, 32)
+		if _, err := rand.Read(salt); err != nil {
+			return nil, nil, err
+		}
+	}
 
-	key := []byte(a.cfg.Auth.ApiToken.CipherSecret)
+	key, err := scrypt.Key([]byte(a.cfg.Auth.ApiToken.CipherSecret), salt, a.keyConf.Cost, 8, 1, a.keyConf.Len)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return key, salt, nil
+}
+
+func (a *TokenManager) Encrypt(stringToEncrypt string) (string, error) {
+	key, salt, err := a.deriveKey(nil)
+	if err != nil {
+		return "", fmt.Errorf("encrypt error: %w", err)
+	}
 
 	plaintext := []byte(stringToEncrypt)
 
@@ -49,13 +85,17 @@ func (a *TokenManager) Encrypt(stringToEncrypt string) (string, error) {
 	}
 
 	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
+	ciphertext = append(ciphertext, salt...)
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
 func (a *TokenManager) Decrypt(encryptedString string) (string, error) {
-
-	key := []byte(a.cfg.Auth.ApiToken.CipherSecret)
-	enc, _ := hex.DecodeString(encryptedString)
+	raw, _ := hex.DecodeString(encryptedString)
+	salt, enc := raw[len(raw)-a.keyConf.Len:], raw[:len(raw)-a.keyConf.Len]
+	key, _, err := a.deriveKey(salt)
+	if err != nil {
+		return "", fmt.Errorf("decrypt error: %w", err)
+	}
 
 	//Create a new Cipher Block from the key
 	block, err := aes.NewCipher(key)

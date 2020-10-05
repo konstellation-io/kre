@@ -41,7 +41,7 @@ func newUserSuite(t *testing.T) *userSuite {
 	mocks.AddLoggerExpects(logger)
 
 	cfg := &config.Config{}
-	cfg.Auth.ApiToken.CipherSecret = "a16or32digitskey"
+	cfg.Auth.ApiToken.CipherSecret = "someSuperSecretValue"
 	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)

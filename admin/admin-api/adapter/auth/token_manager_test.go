@@ -22,13 +22,13 @@ type tokenManagerSuiteMocks struct {
 	logger *mocks.MockLogger
 }
 
-func newtokenManagerSuite(t *testing.T) *tokenManagerSuite {
+func newTokenManagerSuite(t *testing.T) *tokenManagerSuite {
 	ctrl := gomock.NewController(t)
 	logger := mocks.NewMockLogger(ctrl)
 	mocks.AddLoggerExpects(logger)
 
 	cfg := &config.Config{}
-	cfg.Auth.ApiToken.CipherSecret = "a16or32digitskey"
+	cfg.Auth.ApiToken.CipherSecret = "randomLengthSecret"
 	tokenManager := NewTokenManager(cfg, logger)
 	return &tokenManagerSuite{
 		ctrl:         ctrl,
@@ -41,7 +41,7 @@ func newtokenManagerSuite(t *testing.T) *tokenManagerSuite {
 }
 
 func TestEncryptAndDecrypt(t *testing.T) {
-	s := newtokenManagerSuite(t)
+	s := newTokenManagerSuite(t)
 	defer s.ctrl.Finish()
 
 	textToEncrypt := "This is a test"

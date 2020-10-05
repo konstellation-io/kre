@@ -16,7 +16,7 @@ config:
     secureCookie: false
     cookieDomain: kre.local
     apiToken:
-      cipherSecret: "16or32AlphaNuKey"
+      cipherSecret: "someSuperSecretValue"
   runtime:
     sharedStorageClass: standard
     sharedStorageSize: 2Gi
