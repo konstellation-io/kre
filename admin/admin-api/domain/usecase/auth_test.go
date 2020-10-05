@@ -388,20 +388,21 @@ func TestCheckApiToken(t *testing.T) {
 	s := newAuthSuite(t)
 	defer s.ctrl.Finish()
 
-	userInput := "user1"
+	userID := "user1"
 	key := uuid.UUIDv4()
 
-	internalToken := fmt.Sprintf("%s:%s", userInput, key)
+	internalToken := fmt.Sprintf("%s:%s", userID, key)
 	apiToken, _ := s.tokenManager.Encrypt(internalToken)
 	ctx := context.Background()
-	s.mocks.userRepo.EXPECT().ExistApiToken(ctx, userInput, key).Return(nil)
+	s.mocks.userRepo.EXPECT().ExistApiToken(ctx, userID, key).Return(nil)
+	s.mocks.userRepo.EXPECT().UpdateApiTokenLastActivity(key, userID).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
 		require.Equal(t, entity.UserActivityTypeLogin, activity.Type)
-		require.Equal(t, userInput, activity.UserID)
+		require.Equal(t, userID, activity.UserID)
 		return nil
 	})
 
-	userID, err := s.authInteractor.CheckApiToken(ctx, apiToken)
+	actualUserID, err := s.authInteractor.CheckApiToken(ctx, apiToken)
 	require.NoError(t, err)
-	require.Equal(t, userInput, userID)
+	require.Equal(t, userID, actualUserID)
 }

@@ -36,4 +36,6 @@ type UserRepo interface {
 	DeleteApiToken(ctx context.Context, id, userID string) error
 
 	SaveApiToken(ctx context.Context, name, id, token string) error
+
+	UpdateApiTokenLastActivity(token, userID string) error
 }

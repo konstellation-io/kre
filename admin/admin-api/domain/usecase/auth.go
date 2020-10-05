@@ -235,9 +235,9 @@ func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (st
 	}
 
 	parts := strings.Split(decryptApiToken, ":")
-	userID, tokenId := parts[0], parts[1]
+	userID, token := parts[0], parts[1]
 
-	err = a.userRepo.ExistApiToken(ctx, userID, tokenId)
+	err = a.userRepo.ExistApiToken(ctx, userID, token)
 	if err != nil {
 		a.logger.Errorf("Error getting user with API Token '%s': %s", apiToken, err)
 		return "", ErrInvalidApiToken
@@ -245,6 +245,12 @@ func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (st
 
 	err = a.userActivityInteractor.RegisterLogin(userID)
 	if err != nil {
+		return "", err
+	}
+
+	err = a.userRepo.UpdateApiTokenLastActivity(token, userID)
+	if err != nil {
+		a.logger.Errorf("Error updating API Token '%s' lastActivity: %s", token, err)
 		return "", err
 	}
 

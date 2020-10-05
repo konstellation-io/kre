@@ -224,3 +224,17 @@ func (mr *MockUserRepoMockRecorder) SaveApiToken(ctx, name, id, token interface{
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveApiToken", reflect.TypeOf((*MockUserRepo)(nil).SaveApiToken), ctx, name, id, token)
 }
+
+// UpdateApiTokenLastActivity mocks base method
+func (m *MockUserRepo) UpdateApiTokenLastActivity(token, userID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateApiTokenLastActivity", token, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateApiTokenLastActivity indicates an expected call of UpdateApiTokenLastActivity
+func (mr *MockUserRepoMockRecorder) UpdateApiTokenLastActivity(token, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateApiTokenLastActivity", reflect.TypeOf((*MockUserRepo)(nil).UpdateApiTokenLastActivity), token, userID)
+}

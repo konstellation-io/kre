@@ -239,6 +239,7 @@ func (r *UserRepoMongoDB) UpdateLastActivity(userID string) error {
 
 	return nil
 }
+
 func (r *UserRepoMongoDB) ExistApiToken(ctx context.Context, userID, token string) error {
 	filter := bson.M{
 		"_id": userID,
@@ -342,6 +343,32 @@ func (r *UserRepoMongoDB) SaveApiToken(ctx context.Context, name, userID, token 
 
 	if result.ModifiedCount != 1 {
 		return usecase.ErrUserNotFound
+	}
+
+	return nil
+}
+
+func (r *UserRepoMongoDB) UpdateApiTokenLastActivity(token, userID string) error {
+	filter := bson.M{
+		"_id": userID,
+		"apiTokens": bson.M{
+			"$elemMatch": bson.M{"token": token},
+		},
+	}
+
+	upd := bson.M{
+		"$set": bson.M{
+			"apiTokens.$.lastActivity": time.Now(),
+		},
+	}
+
+	result, err := r.collection.UpdateOne(context.Background(), filter, upd)
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount != 1 {
+		return usecase.ErrInvalidApiToken
 	}
 
 	return nil
