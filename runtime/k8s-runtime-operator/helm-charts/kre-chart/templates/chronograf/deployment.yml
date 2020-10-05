@@ -35,6 +35,8 @@ spec:
               value: /usr/share/chronograf/resources
             - name: BASE_PATH
               value: /measurements/{{ .Release.Name }}
+            - name: STATUS_FEED_URL
+              value: ""
       volumes:
         - name: data
           persistentVolumeClaim:
