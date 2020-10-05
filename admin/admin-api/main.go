@@ -51,6 +51,10 @@ func main() {
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
 	accessControl, err := auth.NewCasbinAccessControl(logger, userRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	tokenManager := auth.NewTokenManager(cfg, logger)
 
 	passwordGenerator := runtime.NewPasswordGenerator()
