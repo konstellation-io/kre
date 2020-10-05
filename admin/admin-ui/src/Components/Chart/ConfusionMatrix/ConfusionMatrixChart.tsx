@@ -10,9 +10,16 @@ type Props = {
   width: number;
   height: number;
   margin: Margin;
+  ellipseLabels: boolean;
 };
 
-function ConfusionMatrixChart({ data, width, height, margin }: Props) {
+function ConfusionMatrixChart({
+  data,
+  width,
+  height,
+  margin,
+  ellipseLabels
+}: Props) {
   const viz = useRef<ConfusionMatrixViz | null>(null);
   const svg = useRef<SVGSVGElement>(null);
   const tooltip = useRef<HTMLDivElement>(null);
@@ -29,7 +36,8 @@ function ConfusionMatrixChart({ data, width, height, margin }: Props) {
         width,
         height,
         data,
-        margin
+        margin,
+        ellipseLabels
       };
       viz.current = new ConfusionMatrixViz(
         svg.current,

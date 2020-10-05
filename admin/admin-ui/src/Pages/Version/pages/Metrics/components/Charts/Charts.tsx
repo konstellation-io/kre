@@ -100,6 +100,7 @@ function Charts({ data, expanded, toggleExpanded, viewAllData }: Props) {
               toggleExpanded={toggleExpanded}
               nodeId={'r2'}
               data={data.metrics.charts.confusionMatrix}
+              expanded={nodesToExpand.includes('r2')}
             />
           </Row>
           <Row

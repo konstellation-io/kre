@@ -21,8 +21,9 @@ type Props = {
   toggleExpanded?: Function;
   nodeId?: string;
   data: GetMetrics_metrics_charts_confusionMatrix[];
+  expanded: boolean;
 };
-function ConfusionMatrixBox({ toggleExpanded, nodeId, data }: Props) {
+function ConfusionMatrixBox({ toggleExpanded, nodeId, data, expanded }: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (
@@ -44,6 +45,7 @@ function ConfusionMatrixBox({ toggleExpanded, nodeId, data }: Props) {
             left: 14
           }}
           data={formatData(data)}
+          ellipseLabels={!expanded}
         />
       </div>
     </Box>
