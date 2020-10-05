@@ -52,6 +52,8 @@ class ContextPrediction:
 
 
 def utcdate_to_rfc3339(utcdate):
-    if utcdate.utcoffset().total_seconds() != 0:
+    offset = utcdate.utcoffset()
+    if offset and offset.total_seconds() != 0:
         raise Exception("Input date must be a UTC datetime")
+
     return utcdate.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
