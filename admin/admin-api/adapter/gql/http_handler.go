@@ -1,9 +1,10 @@
 package gql
 
 import (
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"net/http"
 	"time"
+
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -19,7 +20,7 @@ func NewHttpHandler(
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
 	settingInteractor *usecase.SettingInteractor,
-	userActivityInteractor *usecase.UserActivityInteractor,
+	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor *usecase.AuthInteractor,

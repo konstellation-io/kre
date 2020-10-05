@@ -1,8 +1,11 @@
 package service
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -29,20 +32,44 @@ type Chronograf struct {
 }
 
 func CreateDashboardService(logger logging.Logger) domainService.DashboardService {
-
 	client := http.Client{}
+
 	return &Chronograf{logger, client}
 }
 
-func (c *Chronograf) Create(ctx context.Context, runtime *entity.Runtime, version string, data *os.File) error {
+func (c *Chronograf) Create(ctx context.Context, runtime *entity.Runtime, version, dashboardPath string) error {
 
 	c.logger.Infof("creating dashboard for runtime ")
 
+	data, err := os.Open(dashboardPath)
+	if err != nil {
+		return fmt.Errorf("error opening dashboard definition: %w", err)
+	}
+
+	defer data.Close()
+	byteData, _ := ioutil.ReadAll(data)
+
+	var dashboard Dashboard
+	err = json.Unmarshal(byteData, &dashboard)
+	if err != nil {
+		return fmt.Errorf("error unmarshalling Chronograf dashboard definition: %w", err)
+	}
+
+	dashboard.Name = fmt.Sprintf("%s-%s", version, dashboard.Name)
+	requestByte, err := json.Marshal(dashboard)
+	if err != nil {
+		return fmt.Errorf("error marshalling Chronograf dashboard definition: %w", err)
+	}
+
+	requestReader := bytes.NewReader(requestByte)
+
 	chronografURL := fmt.Sprintf("%s/chronograf/v1/dashboards", runtime.GetChronografURL())
-	r, err := http.NewRequest(http.MethodPost, chronografURL, data)
+
+	r, err := http.NewRequest(http.MethodPost, chronografURL, requestReader)
 	if err != nil {
 		return fmt.Errorf("error creating Chronograf request: %w", err)
 	}
+
 	res, err := c.client.Do(r)
 	if err != nil {
 		return fmt.Errorf("error calling Chronograf: %w", err)

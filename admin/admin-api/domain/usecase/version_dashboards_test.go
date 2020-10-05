@@ -1,4 +1,4 @@
-package usecase_test
+package usecase
 
 import (
 	"context"
@@ -8,14 +8,13 @@ import (
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/repository/minio"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 type versionDashboardsSuite struct {
 	ctrl              *gomock.Controller
-	versionInteractor *usecase.VersionInteractor
+	versionInteractor *VersionInteractor
 	runtime           *entity.Runtime
 	mocks             versionDashboardsSuiteMocks
 }
@@ -43,7 +42,7 @@ func newVersionDashboardsSuite(t *testing.T) *versionDashboardsSuite {
 
 	mocks.AddLoggerExpects(logger)
 
-	versionInteractor := usecase.NewVersionInteractor(
+	versionInteractor := NewVersionInteractor(
 		cfg,
 		logger,
 		versionRepo,
@@ -78,6 +77,18 @@ func TestStoreDashboard(t *testing.T) {
 
 	s.mocks.dashboardService.EXPECT().Create(context.Background(), s.runtime, version, gomock.Any()).Return(nil)
 
-	err := s.versionInteractor.StoreDashboards(context.Background(), s.runtime, dashboardsFolder, version)
+	err := s.versionInteractor.storeDashboards(context.Background(), s.runtime, dashboardsFolder, version)
 	assert.Nil(t, err)
+}
+
+func TestStoreDashboardWrongFolderPath(t *testing.T) {
+	s := newVersionDashboardsSuite(t)
+	defer s.ctrl.Finish()
+
+	version := "test"
+	dashboardsFolder := "../../test_assets/dashboard"
+
+	err := s.versionInteractor.storeDashboards(context.Background(), s.runtime, dashboardsFolder, version)
+	assert.NotNil(t, err)
+	assert.Contains(t, err[0].Error(), "error listing dashboards files: open ../../test_assets/dashboard: no such file or directory")
 }

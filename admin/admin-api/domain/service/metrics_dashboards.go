@@ -4,11 +4,10 @@ package service
 
 import (
 	"context"
-	"os"
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 )
 
 type DashboardService interface {
-	Create(ctx context.Context, runtime *entity.Runtime, version string, data *os.File) error
+	Create(ctx context.Context, runtime *entity.Runtime, version, dashboardPath string) error
 }

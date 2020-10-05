@@ -93,7 +93,7 @@ func (r *Runtime) GetInfluxURL() string {
 }
 
 func (r *Runtime) GetChronografURL() string {
-	return fmt.Sprintf("http://chronograf.%s/measurements/kre-%s", r.GetNamespace(), r.GetNamespace())
+	return fmt.Sprintf("http://chronograf.%s/measurements/%s", r.GetNamespace(), r.GetNamespace())
 }
 
 func (r *Runtime) GetMeasurementURL(baseURL string) string {

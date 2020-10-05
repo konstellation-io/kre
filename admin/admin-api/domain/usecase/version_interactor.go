@@ -227,7 +227,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 
 		dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
 		if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
-			err := i.StoreDashboards(ctx, runtime, dashboardsFolder, versionCreated.Name)
+			err := i.storeDashboards(ctx, runtime, dashboardsFolder, versionCreated.Name)
 			if err != nil {
 				errorMessage := "error creating dashboard"
 				i.logger.Errorf("%s: %s", errorMessage, err)
