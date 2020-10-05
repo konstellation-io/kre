@@ -19,8 +19,6 @@ type UserRepo interface {
 
 	GetByID(userID string) (*entity.User, error)
 
-	ExistApiToken(ctx context.Context, userID, token string) error
-
 	GetByIDs(keys []string) ([]*entity.User, error)
 
 	GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error)
@@ -31,11 +29,13 @@ type UserRepo interface {
 
 	UpdateLastActivity(userID string) error
 
-	GetApiTokenById(ctx context.Context, id, userID string) (*entity.ApiToken, error)
+	GetAPITokenByValue(ctx context.Context, userID, token string) (*entity.APIToken, error)
 
-	DeleteApiToken(ctx context.Context, id, userID string) error
+	GetAPITokenById(ctx context.Context, userID, tokenID string) (*entity.APIToken, error)
 
-	SaveApiToken(ctx context.Context, name, id, token string) error
+	DeleteAPIToken(ctx context.Context, userID, tokenID string) error
 
-	UpdateApiTokenLastActivity(token, userID string) error
+	SaveAPIToken(ctx context.Context, name, userID, token string) error
+
+	UpdateAPITokenLastActivity(ctx context.Context, userID, token string) error
 }

@@ -301,7 +301,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput
 	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, loggedUserID)
 }
 
-func (r *mutationResolver) DeleteAPIToken(ctx context.Context, input DeleteAPITokenInput) (*entity.ApiToken, error) {
+func (r *mutationResolver) DeleteAPIToken(ctx context.Context, input DeleteAPITokenInput) (*entity.APIToken, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.userInteractor.DeleteAPIToken(ctx, input.ID, loggedUserID)
 }
@@ -509,11 +509,11 @@ func (r *userResolver) ActiveSessions(ctx context.Context, obj *entity.User) (in
 	return r.authInteractor.CountUserSessions(ctx, obj.ID)
 }
 
-func (a apiTokenResolver) CreationDate(ctx context.Context, obj *entity.ApiToken) (string, error) {
+func (a apiTokenResolver) CreationDate(ctx context.Context, obj *entity.APIToken) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
-func (a apiTokenResolver) LastActivity(ctx context.Context, obj *entity.ApiToken) (*string, error) {
+func (a apiTokenResolver) LastActivity(ctx context.Context, obj *entity.APIToken) (*string, error) {
 	if obj.LastActivity == nil {
 		return nil, nil
 	}
@@ -563,7 +563,7 @@ func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionRes
 // User returns UserResolver implementation.
 func (r *Resolver) User() UserResolver { return &userResolver{r} }
 
-// ApiToken returns ApiTokenResolver implementation.
+// APIToken returns APITokenResolver implementation.
 func (r *Resolver) ApiToken() ApiTokenResolver { return &apiTokenResolver{r} }
 
 // UserActivity returns UserActivityResolver implementation.

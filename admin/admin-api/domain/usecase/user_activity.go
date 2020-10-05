@@ -264,10 +264,10 @@ func (i *UserActivityInteractor) NewUpdateSettingVars(settingName, oldValue, new
 	}
 }
 
-func (i *UserActivityInteractor) RegisterGenerateApiToken(userID, apiTokenName string) error {
+func (i *UserActivityInteractor) RegisterGenerateAPIToken(userID, apiTokenName string) error {
 	err := i.create(
 		userID,
-		entity.UserActivityTypeGenerateApiToken,
+		entity.UserActivityTypeGenerateAPIToken,
 		[]*entity.UserActivityVar{
 			{Key: "API_TOKEN_NAME", Value: apiTokenName},
 		})
@@ -275,10 +275,10 @@ func (i *UserActivityInteractor) RegisterGenerateApiToken(userID, apiTokenName s
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterDeleteApiToken(userID, apiTokenName string) error {
+func (i *UserActivityInteractor) RegisterDeleteAPIToken(userID, apiTokenName string) error {
 	err := i.create(
 		userID,
-		entity.UserActivityTypeDeleteApiToken,
+		entity.UserActivityTypeDeleteAPIToken,
 		[]*entity.UserActivityVar{
 			{Key: "API_TOKEN_NAME", Value: apiTokenName},
 		})

@@ -28,7 +28,7 @@ func newTokenManagerSuite(t *testing.T) *tokenManagerSuite {
 	mocks.AddLoggerExpects(logger)
 
 	cfg := &config.Config{}
-	cfg.Auth.ApiToken.CipherSecret = "randomLengthSecret"
+	cfg.Auth.APIToken.CipherSecret = "randomLengthSecret"
 	tokenManager := NewTokenManager(cfg, logger)
 	return &tokenManagerSuite{
 		ctrl:         ctrl,

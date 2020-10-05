@@ -39,7 +39,7 @@ type AuthInteracter interface {
 	VerifyCode(code string) (string, error)
 	Logout(userID, token string) error
 	CreateSession(session entity.Session) error
-	CheckApiToken(ctx context.Context, apiToken string) (string, error)
+	CheckAPIToken(ctx context.Context, apiToken string) (string, error)
 	GenerateAPIToken(userId, tokenId string) (string, error)
 	CheckSessionIsActive(token string) error
 	RevokeUserSessions(userIDs []string, loggedUser, comment string) error
@@ -85,14 +85,16 @@ type TokenClaim struct {
 var (
 	// ErrUserNotFound error
 	ErrUserNotFound = errors.New("error user not found")
+	// ErrAPITokenNotFound error
+	ErrAPITokenNotFound = errors.New("API Token not found")
 	// ErrUserNotFound error
 	ErrUserEmailInvalid = errors.New("error user email is not valid")
 	// ErrVerificationCodeNotFound error
 	ErrVerificationCodeNotFound = errors.New("error the verification not found")
 	// ErrExpiredVerificationCode error
 	ErrExpiredVerificationCode = errors.New("error the verification code code is expired")
-	// ErrInvalidApiToken error
-	ErrInvalidApiToken = errors.New("error invalid API Token")
+	// ErrInvalidAPIToken error
+	ErrInvalidAPIToken = errors.New("error invalid API Token")
 	// ErrUserNotAllowed error
 	ErrUserNotAllowed = errors.New("error email address not allowed")
 	// ErrInvalidSession error
@@ -227,20 +229,20 @@ func (a *AuthInteractor) CreateSession(session entity.Session) error {
 	return a.sessionRepo.Create(session)
 }
 
-func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (string, error) {
-	decryptApiToken, err := a.tokenManager.Decrypt(apiToken)
+func (a *AuthInteractor) CheckAPIToken(ctx context.Context, apiToken string) (string, error) {
+	decryptAPIToken, err := a.tokenManager.Decrypt(apiToken)
 	if err != nil {
 		a.logger.Errorf("Error decrypting user API Token '%s': %s", apiToken, err)
 		return "", err
 	}
 
-	parts := strings.Split(decryptApiToken, ":")
+	parts := strings.Split(decryptAPIToken, ":")
 	userID, token := parts[0], parts[1]
 
-	err = a.userRepo.ExistApiToken(ctx, userID, token)
+	_, err = a.userRepo.GetAPITokenByValue(ctx, userID, token)
 	if err != nil {
 		a.logger.Errorf("Error getting user with API Token '%s': %s", apiToken, err)
-		return "", ErrInvalidApiToken
+		return "", ErrInvalidAPIToken
 	}
 
 	err = a.userActivityInteractor.RegisterLogin(userID)
@@ -248,7 +250,7 @@ func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (st
 		return "", err
 	}
 
-	err = a.userRepo.UpdateApiTokenLastActivity(token, userID)
+	err = a.userRepo.UpdateAPITokenLastActivity(ctx, userID, token)
 	if err != nil {
 		a.logger.Errorf("Error updating API Token '%s' lastActivity: %s", token, err)
 		return "", err
@@ -257,10 +259,10 @@ func (a *AuthInteractor) CheckApiToken(ctx context.Context, apiToken string) (st
 	return userID, nil
 }
 
-func (a *AuthInteractor) GenerateAPIToken(userId, tokenId string) (string, error) {
+func (a *AuthInteractor) GenerateAPIToken(userId, token string) (string, error) {
 	a.logger.Infof("Generating API Token for user %s", userId)
 
-	encryptToken, err := a.tokenManager.Encrypt(fmt.Sprintf("%s:%s", userId, tokenId))
+	encryptToken, err := a.tokenManager.Encrypt(fmt.Sprintf("%s:%s", userId, token))
 	if err != nil {
 		return "", fmt.Errorf("error encrypting api token: %w", err)
 	}

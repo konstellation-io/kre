@@ -109,7 +109,7 @@ func NewApp(
 	sessionMiddleware := kremiddleware.NewSessionMiddleware(cfg, logger, authInteractor)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
-	e.POST("/api/v1/auth/token/signin", authController.SignInWithApiToken)
+	e.POST("/api/v1/auth/token/signin", authController.SignInWithAPIToken)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
 	e.POST("/api/v1/auth/logout", jwtCookieMiddleware(authController.Logout))
 

@@ -13,10 +13,9 @@ config:
   auth:
     verificationCodeDurationInMinutes: 1
     jwtSignSecret: jwt_secret
+    apiTokenSignSecret: "someSuperSecretValue"
     secureCookie: false
     cookieDomain: kre.local
-    apiToken:
-      cipherSecret: "someSuperSecretValue"
   runtime:
     sharedStorageClass: standard
     sharedStorageSize: 2Gi

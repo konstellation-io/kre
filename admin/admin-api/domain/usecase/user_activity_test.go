@@ -44,7 +44,7 @@ func newUserActivitySuite(t *testing.T) *userActivitySuite {
 	}
 }
 
-func TestRegisterGenerateApiToken(t *testing.T) {
+func TestRegisterGenerateAPIToken(t *testing.T) {
 	s := newUserActivitySuite(t)
 	defer s.ctrl.Finish()
 
@@ -52,17 +52,17 @@ func TestRegisterGenerateApiToken(t *testing.T) {
 	name := "test"
 
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
-		require.Equal(t, entity.UserActivityTypeGenerateApiToken, activity.Type)
+		require.Equal(t, entity.UserActivityTypeGenerateAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
 		return nil
 	})
 
-	err := s.userActivityInteractor.RegisterGenerateApiToken(userID, name)
+	err := s.userActivityInteractor.RegisterGenerateAPIToken(userID, name)
 	require.NoError(t, err)
 
 }
 
-func TestRegisterDeleteApiToken(t *testing.T) {
+func TestRegisterDeleteAPIToken(t *testing.T) {
 	s := newUserActivitySuite(t)
 	defer s.ctrl.Finish()
 
@@ -70,12 +70,12 @@ func TestRegisterDeleteApiToken(t *testing.T) {
 	name := "test"
 
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
-		require.Equal(t, entity.UserActivityTypeDeleteApiToken, activity.Type)
+		require.Equal(t, entity.UserActivityTypeDeleteAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
 		return nil
 	})
 
-	err := s.userActivityInteractor.RegisterDeleteApiToken(userID, name)
+	err := s.userActivityInteractor.RegisterDeleteAPIToken(userID, name)
 	require.NoError(t, err)
 
 }

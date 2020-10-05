@@ -63,7 +63,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 	)
 
 	cfg := &config.Config{}
-	cfg.Auth.ApiToken.CipherSecret = "someSuperSecretValue"
+	cfg.Auth.APIToken.CipherSecret = "someSuperSecretValue"
 	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	authInteractor := usecase.NewAuthInteractor(
@@ -384,7 +384,7 @@ func TestVerifyCodeErrDeletingValidationCode(t *testing.T) {
 	require.Equal(t, verificationCode.UID, userId)
 }
 
-func TestCheckApiToken(t *testing.T) {
+func TestCheckAPIToken(t *testing.T) {
 	s := newAuthSuite(t)
 	defer s.ctrl.Finish()
 
@@ -394,15 +394,15 @@ func TestCheckApiToken(t *testing.T) {
 	internalToken := fmt.Sprintf("%s:%s", userID, key)
 	apiToken, _ := s.tokenManager.Encrypt(internalToken)
 	ctx := context.Background()
-	s.mocks.userRepo.EXPECT().ExistApiToken(ctx, userID, key).Return(nil)
-	s.mocks.userRepo.EXPECT().UpdateApiTokenLastActivity(key, userID).Return(nil)
+	s.mocks.userRepo.EXPECT().GetAPITokenByValue(ctx, userID, key).Return(&entity.APIToken{}, nil)
+	s.mocks.userRepo.EXPECT().UpdateAPITokenLastActivity(gomock.Any(), userID, key).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
 		require.Equal(t, entity.UserActivityTypeLogin, activity.Type)
 		require.Equal(t, userID, activity.UserID)
 		return nil
 	})
 
-	actualUserID, err := s.authInteractor.CheckApiToken(ctx, apiToken)
+	actualUserID, err := s.authInteractor.CheckAPIToken(ctx, apiToken)
 	require.NoError(t, err)
 	require.Equal(t, userID, actualUserID)
 }

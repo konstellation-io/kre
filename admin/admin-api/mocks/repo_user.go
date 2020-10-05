@@ -94,20 +94,6 @@ func (mr *MockUserRepoMockRecorder) GetByID(userID interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockUserRepo)(nil).GetByID), userID)
 }
 
-// ExistApiToken mocks base method
-func (m *MockUserRepo) ExistApiToken(ctx context.Context, userID, token string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ExistApiToken", ctx, userID, token)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ExistApiToken indicates an expected call of ExistApiToken
-func (mr *MockUserRepoMockRecorder) ExistApiToken(ctx, userID, token interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistApiToken", reflect.TypeOf((*MockUserRepo)(nil).ExistApiToken), ctx, userID, token)
-}
-
 // GetByIDs mocks base method
 func (m *MockUserRepo) GetByIDs(keys []string) ([]*entity.User, error) {
 	m.ctrl.T.Helper()
@@ -182,59 +168,74 @@ func (mr *MockUserRepoMockRecorder) UpdateLastActivity(userID interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLastActivity", reflect.TypeOf((*MockUserRepo)(nil).UpdateLastActivity), userID)
 }
 
-// GetApiTokenById mocks base method
-func (m *MockUserRepo) GetApiTokenById(ctx context.Context, id, userID string) (*entity.ApiToken, error) {
+// GetAPITokenByValue mocks base method
+func (m *MockUserRepo) GetAPITokenByValue(ctx context.Context, userID, token string) (*entity.APIToken, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetApiTokenById", ctx, id, userID)
-	ret0, _ := ret[0].(*entity.ApiToken)
+	ret := m.ctrl.Call(m, "GetAPITokenByValue", ctx, userID, token)
+	ret0, _ := ret[0].(*entity.APIToken)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetApiTokenById indicates an expected call of GetApiTokenById
-func (mr *MockUserRepoMockRecorder) GetApiTokenById(ctx, id, userID interface{}) *gomock.Call {
+// GetAPITokenByValue indicates an expected call of GetAPITokenByValue
+func (mr *MockUserRepoMockRecorder) GetAPITokenByValue(ctx, userID, token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApiTokenById", reflect.TypeOf((*MockUserRepo)(nil).GetApiTokenById), ctx, id, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAPITokenByValue", reflect.TypeOf((*MockUserRepo)(nil).GetAPITokenByValue), ctx, userID, token)
 }
 
-// DeleteApiToken mocks base method
-func (m *MockUserRepo) DeleteApiToken(ctx context.Context, id, userID string) error {
+// GetAPITokenById mocks base method
+func (m *MockUserRepo) GetAPITokenById(ctx context.Context, userID, tokenID string) (*entity.APIToken, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteApiToken", ctx, id, userID)
+	ret := m.ctrl.Call(m, "GetAPITokenById", ctx, userID, tokenID)
+	ret0, _ := ret[0].(*entity.APIToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAPITokenById indicates an expected call of GetAPITokenById
+func (mr *MockUserRepoMockRecorder) GetAPITokenById(ctx, userID, tokenID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAPITokenById", reflect.TypeOf((*MockUserRepo)(nil).GetAPITokenById), ctx, userID, tokenID)
+}
+
+// DeleteAPIToken mocks base method
+func (m *MockUserRepo) DeleteAPIToken(ctx context.Context, userID, tokenID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAPIToken", ctx, userID, tokenID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// DeleteApiToken indicates an expected call of DeleteApiToken
-func (mr *MockUserRepoMockRecorder) DeleteApiToken(ctx, id, userID interface{}) *gomock.Call {
+// DeleteAPIToken indicates an expected call of DeleteAPIToken
+func (mr *MockUserRepoMockRecorder) DeleteAPIToken(ctx, userID, tokenID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteApiToken", reflect.TypeOf((*MockUserRepo)(nil).DeleteApiToken), ctx, id, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAPIToken", reflect.TypeOf((*MockUserRepo)(nil).DeleteAPIToken), ctx, userID, tokenID)
 }
 
-// SaveApiToken mocks base method
-func (m *MockUserRepo) SaveApiToken(ctx context.Context, name, id, token string) error {
+// SaveAPIToken mocks base method
+func (m *MockUserRepo) SaveAPIToken(ctx context.Context, name, userID, token string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveApiToken", ctx, name, id, token)
+	ret := m.ctrl.Call(m, "SaveAPIToken", ctx, name, userID, token)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SaveApiToken indicates an expected call of SaveApiToken
-func (mr *MockUserRepoMockRecorder) SaveApiToken(ctx, name, id, token interface{}) *gomock.Call {
+// SaveAPIToken indicates an expected call of SaveAPIToken
+func (mr *MockUserRepoMockRecorder) SaveAPIToken(ctx, name, userID, token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveApiToken", reflect.TypeOf((*MockUserRepo)(nil).SaveApiToken), ctx, name, id, token)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveAPIToken", reflect.TypeOf((*MockUserRepo)(nil).SaveAPIToken), ctx, name, userID, token)
 }
 
-// UpdateApiTokenLastActivity mocks base method
-func (m *MockUserRepo) UpdateApiTokenLastActivity(token, userID string) error {
+// UpdateAPITokenLastActivity mocks base method
+func (m *MockUserRepo) UpdateAPITokenLastActivity(ctx context.Context, userID, token string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateApiTokenLastActivity", token, userID)
+	ret := m.ctrl.Call(m, "UpdateAPITokenLastActivity", ctx, userID, token)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// UpdateApiTokenLastActivity indicates an expected call of UpdateApiTokenLastActivity
-func (mr *MockUserRepoMockRecorder) UpdateApiTokenLastActivity(token, userID interface{}) *gomock.Call {
+// UpdateAPITokenLastActivity indicates an expected call of UpdateAPITokenLastActivity
+func (mr *MockUserRepoMockRecorder) UpdateAPITokenLastActivity(ctx, userID, token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateApiTokenLastActivity", reflect.TypeOf((*MockUserRepo)(nil).UpdateApiTokenLastActivity), token, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAPITokenLastActivity", reflect.TypeOf((*MockUserRepo)(nil).UpdateAPITokenLastActivity), ctx, userID, token)
 }

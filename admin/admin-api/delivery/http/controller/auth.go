@@ -22,7 +22,7 @@ type signInInput struct {
 }
 
 type apiTokenInput struct {
-	ApiToken string `json:"apiToken" validate:"required"`
+	APIToken string `json:"apiToken" validate:"required"`
 }
 
 type signinVerifyInput struct {
@@ -119,7 +119,7 @@ func (a *AuthController) SignInVerify(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login success"})
 }
 
-func (a *AuthController) SignInWithApiToken(c echo.Context) error {
+func (a *AuthController) SignInWithAPIToken(c echo.Context) error {
 	input := new(apiTokenInput)
 	if err := c.Bind(input); err != nil {
 		return httperrors.HTTPErrInvalidJSON
@@ -129,9 +129,9 @@ func (a *AuthController) SignInWithApiToken(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, newResponseValidationError(err))
 	}
 
-	userID, err := a.authInteractor.CheckApiToken(c.Request().Context(), input.ApiToken)
+	userID, err := a.authInteractor.CheckAPIToken(c.Request().Context(), input.APIToken)
 	if err != nil {
-		a.logger.Errorf("Error SignInWithApiToken: %s", err)
+		a.logger.Errorf("Error SignInWithAPIToken: %s", err)
 		return httperrors.HTTPErrUnauthorized
 	}
 

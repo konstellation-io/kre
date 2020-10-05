@@ -2,8 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -240,68 +238,49 @@ func (r *UserRepoMongoDB) UpdateLastActivity(userID string) error {
 	return nil
 }
 
-func (r *UserRepoMongoDB) ExistApiToken(ctx context.Context, userID, token string) error {
-	filter := bson.M{
-		"_id": userID,
-	}
-
-	user := &entity.User{}
-	err := r.collection.FindOne(ctx, filter).Decode(user)
+func (r *UserRepoMongoDB) GetAPITokenByValue(_ context.Context, userID, token string) (*entity.APIToken, error) {
+	user, err := r.GetByID(userID)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return usecase.ErrUserNotFound
-		}
-		r.logger.Errorf("error getting user from DB: %s", err.Error())
-		return usecase.ErrInvalidApiToken
-	}
-
-	if len(user.ApiTokens) == 0 {
-		return errors.New(fmt.Sprintf("error apiToken not found in user %s", userID))
-	}
-
-	for _, apiToken := range user.ApiTokens {
-		if apiToken.Token == token {
-			return nil
-		}
-	}
-
-	return errors.New(fmt.Sprintf("error apiToken not found in user %s", userID))
-}
-
-func (r *UserRepoMongoDB) GetApiTokenById(ctx context.Context, id, userID string) (*entity.ApiToken, error) {
-	filter := bson.M{
-		"_id": userID,
-	}
-
-	user := &entity.User{}
-	err := r.collection.FindOne(ctx, filter).Decode(user)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, usecase.ErrUserNotFound
-		}
 		return nil, err
 	}
-
-	if len(user.ApiTokens) == 0 {
-		return nil, errors.New(fmt.Sprintf("error apiToken %s not found in user %s", id, userID))
+	if len(user.APITokens) == 0 {
+		return nil, usecase.ErrAPITokenNotFound
 	}
 
-	for _, apiToken := range user.ApiTokens {
-		if apiToken.Id == id {
-			return apiToken, nil
+	for _, apiToken := range user.APITokens {
+		if apiToken.Token == token {
+			return &apiToken, nil
 		}
 	}
 
-	return nil, errors.New(fmt.Sprintf("error apiToken %s not found in user %s", id, userID))
+	return nil, usecase.ErrAPITokenNotFound
 }
 
-func (r *UserRepoMongoDB) DeleteApiToken(ctx context.Context, id, userID string) error {
+func (r *UserRepoMongoDB) GetAPITokenById(_ context.Context, userID, tokenID string) (*entity.APIToken, error) {
+	user, err := r.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	if len(user.APITokens) == 0 {
+		return nil, usecase.ErrAPITokenNotFound
+	}
+
+	for _, apiToken := range user.APITokens {
+		if apiToken.Id == tokenID {
+			return &apiToken, nil
+		}
+	}
+
+	return nil, usecase.ErrAPITokenNotFound
+}
+
+func (r *UserRepoMongoDB) DeleteAPIToken(ctx context.Context, userID, tokenID string) error {
 	filter := bson.M{
 		"_id": userID,
 	}
 
 	upd := bson.M{
-		"$pull": bson.M{"apiTokens": bson.M{"_id": id}},
+		"$pull": bson.M{"apiTokens": bson.M{"_id": tokenID}},
 	}
 
 	result, err := r.collection.UpdateOne(ctx, filter, upd)
@@ -310,25 +289,25 @@ func (r *UserRepoMongoDB) DeleteApiToken(ctx context.Context, id, userID string)
 	}
 
 	if result.ModifiedCount != 1 {
-		return usecase.ErrUserNotFound
+		return usecase.ErrAPITokenNotFound
 	}
 
 	return nil
 
 }
 
-func (r *UserRepoMongoDB) SaveApiToken(ctx context.Context, name, userID, token string) error {
+func (r *UserRepoMongoDB) SaveAPIToken(ctx context.Context, name, userID, token string) error {
 	filter := bson.M{
 		"_id": userID,
 	}
 
 	now := time.Now()
 
-	apiToken := &entity.ApiToken{
+	apiToken := entity.APIToken{
 		Id:           primitive.NewObjectID().Hex(),
 		Name:         name,
 		CreationDate: now,
-		LastActivity: &now,
+		LastActivity: nil,
 		Token:        token,
 	}
 
@@ -348,7 +327,7 @@ func (r *UserRepoMongoDB) SaveApiToken(ctx context.Context, name, userID, token 
 	return nil
 }
 
-func (r *UserRepoMongoDB) UpdateApiTokenLastActivity(token, userID string) error {
+func (r *UserRepoMongoDB) UpdateAPITokenLastActivity(ctx context.Context, userID, token string) error {
 	filter := bson.M{
 		"_id": userID,
 		"apiTokens": bson.M{
@@ -362,13 +341,13 @@ func (r *UserRepoMongoDB) UpdateApiTokenLastActivity(token, userID string) error
 		},
 	}
 
-	result, err := r.collection.UpdateOne(context.Background(), filter, upd)
+	result, err := r.collection.UpdateOne(ctx, filter, upd)
 	if err != nil {
 		return err
 	}
 
 	if result.ModifiedCount != 1 {
-		return usecase.ErrInvalidApiToken
+		return usecase.ErrInvalidAPIToken
 	}
 
 	return nil

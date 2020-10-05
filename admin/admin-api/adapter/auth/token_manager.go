@@ -50,7 +50,7 @@ func (a *TokenManager) deriveKey(salt []byte) ([]byte, []byte, error) {
 		}
 	}
 
-	key, err := scrypt.Key([]byte(a.cfg.Auth.ApiToken.CipherSecret), salt, a.keyConf.Cost, 8, 1, a.keyConf.Len)
+	key, err := scrypt.Key([]byte(a.cfg.Auth.APIToken.CipherSecret), salt, a.keyConf.Cost, 8, 1, a.keyConf.Len)
 	if err != nil {
 		return nil, nil, err
 	}

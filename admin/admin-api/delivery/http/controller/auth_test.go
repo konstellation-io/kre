@@ -22,7 +22,7 @@ func (tv *testValidator) Validate(i interface{}) error {
 	return tv.validator.Struct(i)
 }
 
-func TestSignInWithApiToken(t *testing.T) {
+func TestSignInWithAPIToken(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	logger := mocks.NewMockLogger(ctrl)
 	mocks.AddLoggerExpects(logger)
@@ -39,7 +39,7 @@ func TestSignInWithApiToken(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	authInteractor.EXPECT().CheckApiToken(c.Request().Context(), "123456").Return(userID, nil)
+	authInteractor.EXPECT().CheckAPIToken(c.Request().Context(), "123456").Return(userID, nil)
 	authInteractor.EXPECT().CreateSession(gomock.Any()).Return(nil)
 	settingInteractor.EXPECT().GetUnprotected(c.Request().Context()).Return(&entity.Settings{
 		SessionLifetimeInDays: 1,
@@ -49,7 +49,7 @@ func TestSignInWithApiToken(t *testing.T) {
 	h := NewAuthController(cfg, logger, authInteractor, settingInteractor)
 
 	// Assertions
-	if assert.NoError(t, h.SignInWithApiToken(c)) {
+	if assert.NoError(t, h.SignInWithAPIToken(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.NotEmpty(t, rec.Body.String())
 	}

@@ -41,7 +41,7 @@ func newUserSuite(t *testing.T) *userSuite {
 	mocks.AddLoggerExpects(logger)
 
 	cfg := &config.Config{}
-	cfg.Auth.ApiToken.CipherSecret = "someSuperSecretValue"
+	cfg.Auth.APIToken.CipherSecret = "someSuperSecretValue"
 	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
@@ -122,7 +122,7 @@ func TestGetAllUsers(t *testing.T) {
 	require.EqualValues(t, res, usersFound)
 }
 
-func TestUserGenerateApiToken(t *testing.T) {
+func TestUserGenerateAPIToken(t *testing.T) {
 	s := newUserSuite(t)
 	defer s.ctrl.Finish()
 
@@ -130,9 +130,9 @@ func TestUserGenerateApiToken(t *testing.T) {
 	userID := "user1234"
 	name := "tokenName"
 
-	s.mocks.userRepo.EXPECT().SaveApiToken(ctx, name, userID, gomock.Any()).Return(nil)
+	s.mocks.userRepo.EXPECT().SaveAPIToken(ctx, name, userID, gomock.Any()).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
-		require.Equal(t, entity.UserActivityTypeGenerateApiToken, activity.Type)
+		require.Equal(t, entity.UserActivityTypeGenerateAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
 		return nil
 	})
@@ -142,11 +142,11 @@ func TestUserGenerateApiToken(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestDeleteApiToken(t *testing.T) {
+func TestDeleteAPIToken(t *testing.T) {
 	s := newUserSuite(t)
 	defer s.ctrl.Finish()
 
-	inputApiToken := &entity.ApiToken{
+	inputAPIToken := &entity.APIToken{
 		Id:    "token1",
 		Name:  "test",
 		Token: "abcdefg",
@@ -155,15 +155,15 @@ func TestDeleteApiToken(t *testing.T) {
 	ctx := context.Background()
 	userID := "user1234"
 
-	s.mocks.userRepo.EXPECT().GetApiTokenById(ctx, inputApiToken.Id, userID).Return(inputApiToken, nil)
-	s.mocks.userRepo.EXPECT().DeleteApiToken(ctx, inputApiToken.Id, userID).Return(nil)
+	s.mocks.userRepo.EXPECT().GetAPITokenById(ctx, userID, inputAPIToken.Id).Return(inputAPIToken, nil)
+	s.mocks.userRepo.EXPECT().DeleteAPIToken(ctx, userID, inputAPIToken.Id).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
-		require.Equal(t, entity.UserActivityTypeDeleteApiToken, activity.Type)
+		require.Equal(t, entity.UserActivityTypeDeleteAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
 		return nil
 	})
 
-	apiToken, err := s.interactor.DeleteAPIToken(ctx, inputApiToken.Id, userID)
+	apiToken, err := s.interactor.DeleteAPIToken(ctx, inputAPIToken.Id, userID)
 	require.NoError(t, err)
-	require.EqualValues(t, inputApiToken, apiToken)
+	require.EqualValues(t, inputAPIToken, apiToken)
 }

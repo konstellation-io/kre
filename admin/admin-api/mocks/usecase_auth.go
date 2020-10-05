@@ -91,19 +91,19 @@ func (mr *MockAuthInteracterMockRecorder) CreateSession(session interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*MockAuthInteracter)(nil).CreateSession), session)
 }
 
-// CheckApiToken mocks base method
-func (m *MockAuthInteracter) CheckApiToken(ctx context.Context, apiToken string) (string, error) {
+// CheckAPIToken mocks base method
+func (m *MockAuthInteracter) CheckAPIToken(ctx context.Context, apiToken string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckApiToken", ctx, apiToken)
+	ret := m.ctrl.Call(m, "CheckAPIToken", ctx, apiToken)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CheckApiToken indicates an expected call of CheckApiToken
-func (mr *MockAuthInteracterMockRecorder) CheckApiToken(ctx, apiToken interface{}) *gomock.Call {
+// CheckAPIToken indicates an expected call of CheckAPIToken
+func (mr *MockAuthInteracterMockRecorder) CheckAPIToken(ctx, apiToken interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckApiToken", reflect.TypeOf((*MockAuthInteracter)(nil).CheckApiToken), ctx, apiToken)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckAPIToken", reflect.TypeOf((*MockAuthInteracter)(nil).CheckAPIToken), ctx, apiToken)
 }
 
 // GenerateAPIToken mocks base method

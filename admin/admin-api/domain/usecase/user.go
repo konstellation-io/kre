@@ -156,21 +156,21 @@ func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, logg
 	return users, nil
 }
 
-// DeleteApiToken return the deleted ApiToken
-func (i *UserInteractor) DeleteAPIToken(ctx context.Context, id, loggedUserID string) (*entity.ApiToken, error) {
-	i.logger.Info("Deleting API JWT token.")
+// DeleteAPIToken return the deleted APIToken
+func (i *UserInteractor) DeleteAPIToken(ctx context.Context, tokenID, loggedUserID string) (*entity.APIToken, error) {
+	i.logger.Info("Deleting API token.")
 
-	apiToken, err := i.userRepo.GetApiTokenById(ctx, id, loggedUserID)
+	apiToken, err := i.userRepo.GetAPITokenById(ctx, loggedUserID, tokenID)
 	if err != nil {
 		return nil, fmt.Errorf("error getting api token: %w", err)
 	}
 
-	err = i.userRepo.DeleteApiToken(ctx, id, loggedUserID)
+	err = i.userRepo.DeleteAPIToken(ctx, loggedUserID, tokenID)
 	if err != nil {
 		return nil, fmt.Errorf("error deleting api token: %w", err)
 	}
 
-	err = i.userActivityInteractor.RegisterDeleteApiToken(loggedUserID, apiToken.Name)
+	err = i.userActivityInteractor.RegisterDeleteAPIToken(loggedUserID, apiToken.Name)
 	if err != nil {
 		return nil, fmt.Errorf("error on register api token deletion: %w", err)
 	}
@@ -178,7 +178,7 @@ func (i *UserInteractor) DeleteAPIToken(ctx context.Context, id, loggedUserID st
 	return apiToken, nil
 }
 
-// GenerateAPIToken create a new ApiToken and return the internal token
+// GenerateAPIToken create a new APIToken and return the internal token
 func (i *UserInteractor) GenerateAPIToken(ctx context.Context, name, loggedUserID string) (string, error) {
 	i.logger.Info("Generating API JWT token.")
 
@@ -189,12 +189,12 @@ func (i *UserInteractor) GenerateAPIToken(ctx context.Context, name, loggedUserI
 		return "", fmt.Errorf("error encrypting api token: %w", err)
 	}
 
-	err = i.userRepo.SaveApiToken(ctx, name, loggedUserID, key)
+	err = i.userRepo.SaveAPIToken(ctx, name, loggedUserID, key)
 	if err != nil {
 		return "", fmt.Errorf("error saving api token: %w", err)
 	}
 
-	err = i.userActivityInteractor.RegisterGenerateApiToken(loggedUserID, name)
+	err = i.userActivityInteractor.RegisterGenerateAPIToken(loggedUserID, name)
 	if err != nil {
 		return "", fmt.Errorf("error on register api token generation: %w", err)
 	}
