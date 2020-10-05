@@ -11,6 +11,7 @@ $color-bg: palette(base, 400);
   padding: 10px 18px 10px 46px;
   background-color: $color-bg;
   flex-shrink: 0;
+  border-left: 1px solid palette(base);
 }
 
 .title {

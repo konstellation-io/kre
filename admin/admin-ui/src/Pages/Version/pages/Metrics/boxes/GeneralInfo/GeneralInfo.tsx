@@ -5,6 +5,7 @@ import {
 import InfoNumber, { Sizes } from '../../components/Box/InfoNumber';
 
 import Box from '../../components/Box/Box';
+import Info from '../../components/Box/Info';
 import React from 'react';
 import Title from '../../components/Box/Title';
 import styles from './GeneralInfo.module.scss';
@@ -59,11 +60,13 @@ function Section2({ value, label }: Section2Props) {
 
 type Props = {
   data: GetMetrics_metrics_values;
+  info: string;
 };
-function GeneralInfo({ data }: Props) {
+function GeneralInfo({ data, info }: Props) {
   return (
     <Box>
       <Title text="Accuracy" />
+      <Info>{info}</Info>
       <div className={styles.sections}>
         <Section1 {...data.accuracy} />
         <Section2 value={`${data.missing}%`} label="Missing values" />
