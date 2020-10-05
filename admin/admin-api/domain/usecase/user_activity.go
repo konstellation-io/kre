@@ -1,5 +1,7 @@
 package usecase
 
+//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/usecase_${GOFILE} -package=mocks
+
 import (
 	"context"
 	"fmt"
@@ -15,6 +17,26 @@ import (
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
 
+type UserActivityInteracter interface {
+	Get(ctx context.Context, loggedUserID string, userEmail *string, types []entity.UserActivityType,
+		versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
+	Create(userID string, userActivityType entity.UserActivityType, vars []*entity.UserActivityVar) error
+	RegisterLogin(userID string) error
+	RegisterLogout(userID string) error
+	RegisterCreateRuntime(userID string, runtime *entity.Runtime) error
+	RegisterCreateAction(userID string, runtime *entity.Runtime, version *entity.Version) error
+	RegisterStartAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error
+	RegisterStopAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error
+	RegisterPublishAction(userID string, runtime *entity.Runtime, version *entity.Version, prev *entity.Version, comment string) error
+	RegisterUnpublishAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error
+	RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error
+	RegisterCreateUser(userID string, createdUser *entity.User)
+	RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string)
+	RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel, comment string)
+	RegisterRevokeSessions(userID string, userIDs, userEmails []string, comment string)
+	NewUpdateSettingVars(settingName, oldValue, newValue string) []*entity.UserActivityVar
+}
+
 // UserActivityInteractor  contains app logic about UserActivity entities
 type UserActivityInteractor struct {
 	logger           logging.Logger
@@ -29,7 +51,7 @@ func NewUserActivityInteractor(
 	userActivityRepo repository.UserActivityRepo,
 	userRepo repository.UserRepo,
 	accessControl auth.AccessControl,
-) *UserActivityInteractor {
+) UserActivityInteracter {
 	return &UserActivityInteractor{
 		logger,
 		userActivityRepo,

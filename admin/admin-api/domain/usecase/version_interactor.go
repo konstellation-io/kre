@@ -49,7 +49,7 @@ type VersionInteractor struct {
 	runtimeRepo            repository.RuntimeRepo
 	versionService         service.VersionService
 	monitoringService      service.MonitoringService
-	userActivityInteractor *UserActivityInteractor
+	userActivityInteractor UserActivityInteracter
 	createStorage          repository.CreateStorage
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
@@ -65,7 +65,7 @@ func NewVersionInteractor(
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.VersionService,
 	monitoringService service.MonitoringService,
-	userActivityInteractor *UserActivityInteractor,
+	userActivityInteractor UserActivityInteracter,
 	createStorage repository.CreateStorage,
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
@@ -227,7 +227,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 
 		dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
 		if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
-			err := i.storeDashboards(runtime, dashboardsFolder)
+			err := i.StoreDashboards(ctx, runtime, dashboardsFolder, versionCreated.Name)
 			if err != nil {
 				errorMessage := "error creating dashboard"
 				i.logger.Errorf("%s: %s", errorMessage, err)

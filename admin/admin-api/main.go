@@ -93,7 +93,7 @@ func main() {
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor, accessControl)
 
 	minioCreateStorage := minio.CreateStorage
-	chronografDashboard := service.CreateDashboardService()
+	chronografDashboard := service.CreateDashboardService(logger)
 	versionInteractor := usecase.NewVersionInteractor(
 		cfg,
 		logger,

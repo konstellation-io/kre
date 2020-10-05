@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -9,7 +10,7 @@ import (
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 )
 
-func (i *VersionInteractor) storeDashboards(runtime *entity.Runtime, dashboardsFolder string) []error {
+func (i *VersionInteractor) StoreDashboards(ctx context.Context, runtime *entity.Runtime, dashboardsFolder, version string) []error {
 
 	i.logger.Infof("---- Creating dashboard ")
 
@@ -27,7 +28,11 @@ func (i *VersionInteractor) storeDashboards(runtime *entity.Runtime, dashboardsF
 			continue
 		}
 
-		// i.dashboardService.Create(ctx context.Context, runtime *entity.Runtime, version string)
+		err = i.dashboardService.Create(ctx, runtime, version, data)
+		if err != nil {
+			errors = append([]error{fmt.Errorf("error creating dashboard: %w", err)}, errors...)
+			continue
+		}
 
 	}
 	return errors
