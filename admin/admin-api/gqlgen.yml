@@ -22,6 +22,8 @@ models:
         resolver: true
       activeSessions:
         resolver: true
+      apiTokens:
+        resolver: true
 
   ApiToken:
     model: github.com/konstellation-io/kre/admin/admin-api/domain/entity.APIToken

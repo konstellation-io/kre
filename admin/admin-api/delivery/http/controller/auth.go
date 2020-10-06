@@ -129,7 +129,7 @@ func (a *AuthController) SignInWithAPIToken(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, newResponseValidationError(err))
 	}
 
-	userID, err := a.authInteractor.CheckAPIToken(c.Request().Context(), input.APIToken)
+	userID, err := a.authInteractor.VerifyAPIToken(c.Request().Context(), input.APIToken)
 	if err != nil {
 		a.logger.Errorf("Error SignInWithAPIToken: %s", err)
 		return httperrors.HTTPErrUnauthorized

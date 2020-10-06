@@ -5,11 +5,12 @@ package usecase
 import (
 	"context"
 	"errors"
-	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"strings"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 
 	"github.com/go-playground/validator"
 
@@ -30,8 +31,8 @@ type AuthInteractor struct {
 	settingRepo               repository.SettingRepo
 	userActivityInteractor    *UserActivityInteractor
 	sessionRepo               repository.SessionRepo
+	apiTokenRepo              repository.APITokenRepo
 	accessControl             auth.AccessControl
-	tokenManager              auth.TokenManager
 }
 
 type AuthInteracter interface {
@@ -39,8 +40,7 @@ type AuthInteracter interface {
 	VerifyCode(code string) (string, error)
 	Logout(userID, token string) error
 	CreateSession(session entity.Session) error
-	CheckAPIToken(ctx context.Context, apiToken string) (string, error)
-	GenerateAPIToken(userId, tokenId string) (string, error)
+	VerifyAPIToken(ctx context.Context, apiToken string) (string, error)
 	CheckSessionIsActive(token string) error
 	RevokeUserSessions(userIDs []string, loggedUser, comment string) error
 	UpdateLastActivity(loggedUserID string) error
@@ -58,8 +58,8 @@ func NewAuthInteractor(
 	settingRepo repository.SettingRepo,
 	userActivityInteractor *UserActivityInteractor,
 	sessionRepo repository.SessionRepo,
+	apiTokenRepo repository.APITokenRepo,
 	accessControl auth.AccessControl,
-	tokenManager auth.TokenManager,
 ) AuthInteracter {
 	return &AuthInteractor{
 		cfg,
@@ -71,8 +71,8 @@ func NewAuthInteractor(
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
-		tokenManager,
 	}
 }
 
@@ -87,6 +87,8 @@ var (
 	ErrUserNotFound = errors.New("error user not found")
 	// ErrAPITokenNotFound error
 	ErrAPITokenNotFound = errors.New("API Token not found")
+	// ErrAPITokenNameDup error
+	ErrAPITokenNameDup = errors.New("API Token name duplicated")
 	// ErrUserNotFound error
 	ErrUserEmailInvalid = errors.New("error user email is not valid")
 	// ErrVerificationCodeNotFound error
@@ -229,45 +231,25 @@ func (a *AuthInteractor) CreateSession(session entity.Session) error {
 	return a.sessionRepo.Create(session)
 }
 
-func (a *AuthInteractor) CheckAPIToken(ctx context.Context, apiToken string) (string, error) {
-	decryptAPIToken, err := a.tokenManager.Decrypt(apiToken)
+func (a *AuthInteractor) VerifyAPIToken(ctx context.Context, inputApiToken string) (string, error) {
+	apiToken, err := a.apiTokenRepo.GetByToken(ctx, inputApiToken)
 	if err != nil {
-		a.logger.Errorf("Error decrypting user API Token '%s': %s", apiToken, err)
-		return "", err
-	}
-
-	parts := strings.Split(decryptAPIToken, ":")
-	userID, token := parts[0], parts[1]
-
-	_, err = a.userRepo.GetAPITokenByValue(ctx, userID, token)
-	if err != nil {
-		a.logger.Errorf("Error getting user with API Token '%s': %s", apiToken, err)
+		a.logger.Errorf("Error getting user API Token: %s", err)
 		return "", ErrInvalidAPIToken
 	}
 
-	err = a.userActivityInteractor.RegisterLogin(userID)
+	err = a.userActivityInteractor.RegisterLogin(apiToken.UserID)
 	if err != nil {
 		return "", err
 	}
 
-	err = a.userRepo.UpdateAPITokenLastActivity(ctx, userID, token)
+	err = a.apiTokenRepo.UpdateLastActivity(ctx, apiToken.ID)
 	if err != nil {
-		a.logger.Errorf("Error updating API Token '%s' lastActivity: %s", token, err)
+		a.logger.Errorf("Error updating API Token lastActivity: %s", err)
 		return "", err
 	}
 
-	return userID, nil
-}
-
-func (a *AuthInteractor) GenerateAPIToken(userId, token string) (string, error) {
-	a.logger.Infof("Generating API Token for user %s", userId)
-
-	encryptToken, err := a.tokenManager.Encrypt(fmt.Sprintf("%s:%s", userId, token))
-	if err != nil {
-		return "", fmt.Errorf("error encrypting api token: %w", err)
-	}
-
-	return encryptToken, err
+	return apiToken.UserID, nil
 }
 
 func (a *AuthInteractor) CheckSessionIsActive(token string) error {

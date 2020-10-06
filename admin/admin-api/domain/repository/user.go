@@ -28,14 +28,4 @@ type UserRepo interface {
 	MarkAsDeleted(ctx context.Context, userIDs []string) ([]*entity.User, error)
 
 	UpdateLastActivity(userID string) error
-
-	GetAPITokenByValue(ctx context.Context, userID, token string) (*entity.APIToken, error)
-
-	GetAPITokenById(ctx context.Context, userID, tokenID string) (*entity.APIToken, error)
-
-	DeleteAPIToken(ctx context.Context, userID, tokenID string) error
-
-	SaveAPIToken(ctx context.Context, name, userID, token string) error
-
-	UpdateAPITokenLastActivity(ctx context.Context, userID, token string) error
 }

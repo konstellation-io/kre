@@ -39,7 +39,7 @@ func TestSignInWithAPIToken(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	authInteractor.EXPECT().CheckAPIToken(c.Request().Context(), "123456").Return(userID, nil)
+	authInteractor.EXPECT().VerifyAPIToken(c.Request().Context(), "123456").Return(userID, nil)
 	authInteractor.EXPECT().CreateSession(gomock.Any()).Return(nil)
 	settingInteractor.EXPECT().GetUnprotected(c.Request().Context()).Return(&entity.Settings{
 		SessionLifetimeInDays: 1,

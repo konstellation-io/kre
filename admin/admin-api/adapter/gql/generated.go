@@ -52,7 +52,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	APIToken struct {
 		CreationDate func(childComplexity int) int
-		Id           func(childComplexity int) int
+		ID           func(childComplexity int) int
 		LastActivity func(childComplexity int) int
 		Name         func(childComplexity int) int
 	}
@@ -289,6 +289,7 @@ type UserResolver interface {
 	CreationDate(ctx context.Context, obj *entity.User) (string, error)
 	LastActivity(ctx context.Context, obj *entity.User) (*string, error)
 	ActiveSessions(ctx context.Context, obj *entity.User) (int, error)
+	APITokens(ctx context.Context, obj *entity.User) ([]*entity.APIToken, error)
 }
 type UserActivityResolver interface {
 	User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error)
@@ -324,11 +325,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.APIToken.CreationDate(childComplexity), true
 
 	case "ApiToken.id":
-		if e.complexity.APIToken.Id == nil {
+		if e.complexity.APIToken.ID == nil {
 			break
 		}
 
-		return e.complexity.APIToken.Id(childComplexity), true
+		return e.complexity.APIToken.ID(childComplexity), true
 
 	case "ApiToken.lastActivity":
 		if e.complexity.APIToken.LastActivity == nil {
@@ -2222,7 +2223,7 @@ func (ec *executionContext) _ApiToken_id(ctx context.Context, field graphql.Coll
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Id, nil
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5567,13 +5568,13 @@ func (ec *executionContext) _User_apiTokens(ctx context.Context, field graphql.C
 		Object:   "User",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.APITokens, nil
+		return ec.resolvers.User().APITokens(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5585,9 +5586,9 @@ func (ec *executionContext) _User_apiTokens(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]entity.APIToken)
+	res := resTmp.([]*entity.APIToken)
 	fc.Result = res
-	return ec.marshalNApiToken2ᚕgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPITokenᚄ(ctx, field.Selections, res)
+	return ec.marshalNApiToken2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPITokenᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserActivity_id(ctx context.Context, field graphql.CollectedField, obj *entity.UserActivity) (ret graphql.Marshaler) {
@@ -8874,10 +8875,19 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				return res
 			})
 		case "apiTokens":
-			out.Values[i] = ec._User_apiTokens(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_apiTokens(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -9433,7 +9443,7 @@ func (ec *executionContext) marshalNApiToken2githubᚗcomᚋkonstellationᚑio�
 	return ec._ApiToken(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNApiToken2ᚕgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPITokenᚄ(ctx context.Context, sel ast.SelectionSet, v []entity.APIToken) graphql.Marshaler {
+func (ec *executionContext) marshalNApiToken2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPITokenᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.APIToken) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -9457,7 +9467,7 @@ func (ec *executionContext) marshalNApiToken2ᚕgithubᚗcomᚋkonstellationᚑi
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNApiToken2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPIToken(ctx, sel, v[i])
+			ret[i] = ec.marshalNApiToken2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPIToken(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)

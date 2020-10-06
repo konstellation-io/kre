@@ -2,17 +2,15 @@ package usecase_test
 
 import (
 	"context"
-	authAdapter "github.com/konstellation-io/kre/admin/admin-api/adapter/auth"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"testing"
 
 	"github.com/golang/mock/gomock"
-
 	"github.com/stretchr/testify/require"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/mocks"
 )
 
@@ -25,6 +23,7 @@ type userSuite struct {
 type userSuiteMocks struct {
 	logger           *mocks.MockLogger
 	userRepo         *mocks.MockUserRepo
+	apiTokenRepo     *mocks.MockAPITokenRepo
 	userActivityRepo *mocks.MockUserActivityRepo
 	accessControl    *mocks.MockAccessControl
 }
@@ -36,13 +35,13 @@ func newUserSuite(t *testing.T) *userSuite {
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	sessionRepo := mocks.NewMockSessionRepo(ctrl)
+	apiTokenRepo := mocks.NewMockAPITokenRepo(ctrl)
 	settingRepo := mocks.NewMockSettingRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	mocks.AddLoggerExpects(logger)
 
 	cfg := &config.Config{}
 	cfg.Auth.APIToken.CipherSecret = "someSuperSecretValue"
-	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 	loginLinkTransport := mocks.NewMockLoginLinkTransport(ctrl)
@@ -58,14 +57,15 @@ func newUserSuite(t *testing.T) *userSuite {
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
-		tokenManager,
 	)
 	userInteractor := usecase.NewUserInteractor(
 		logger,
 		userRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
 		authInteractor,
 	)
@@ -76,6 +76,7 @@ func newUserSuite(t *testing.T) *userSuite {
 		mocks: userSuiteMocks{
 			logger,
 			userRepo,
+			apiTokenRepo,
 			userActivityRepo,
 			accessControl,
 		},
@@ -129,8 +130,14 @@ func TestUserGenerateAPIToken(t *testing.T) {
 	ctx := context.Background()
 	userID := "user1234"
 	name := "tokenName"
+	code := "abc1234"
+	apiToken := entity.APIToken{
+		Name:   name,
+		UserID: userID,
+	}
 
-	s.mocks.userRepo.EXPECT().SaveAPIToken(ctx, name, userID, gomock.Any()).Return(nil)
+	s.mocks.apiTokenRepo.EXPECT().GenerateCode(userID).Return(code, nil)
+	s.mocks.apiTokenRepo.EXPECT().Create(ctx, apiToken, code).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
 		require.Equal(t, entity.UserActivityTypeGenerateAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
@@ -138,8 +145,8 @@ func TestUserGenerateAPIToken(t *testing.T) {
 	})
 
 	res, err := s.interactor.GenerateAPIToken(ctx, name, userID)
-	require.NotEmpty(t, res)
 	require.NoError(t, err)
+	require.Equal(t, code, res)
 }
 
 func TestDeleteAPIToken(t *testing.T) {
@@ -147,23 +154,23 @@ func TestDeleteAPIToken(t *testing.T) {
 	defer s.ctrl.Finish()
 
 	inputAPIToken := &entity.APIToken{
-		Id:    "token1",
-		Name:  "test",
-		Token: "abcdefg",
+		ID:   "token1",
+		Name: "test",
+		Hash: "abcdefg",
 	}
 
 	ctx := context.Background()
 	userID := "user1234"
 
-	s.mocks.userRepo.EXPECT().GetAPITokenById(ctx, userID, inputAPIToken.Id).Return(inputAPIToken, nil)
-	s.mocks.userRepo.EXPECT().DeleteAPIToken(ctx, userID, inputAPIToken.Id).Return(nil)
+	s.mocks.apiTokenRepo.EXPECT().GetByID(ctx, inputAPIToken.ID).Return(inputAPIToken, nil)
+	s.mocks.apiTokenRepo.EXPECT().DeleteById(ctx, inputAPIToken.ID).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
 		require.Equal(t, entity.UserActivityTypeDeleteAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
 		return nil
 	})
 
-	apiToken, err := s.interactor.DeleteAPIToken(ctx, inputAPIToken.Id, userID)
+	apiToken, err := s.interactor.DeleteAPIToken(ctx, inputAPIToken.ID, userID)
 	require.NoError(t, err)
 	require.EqualValues(t, inputAPIToken, apiToken)
 }

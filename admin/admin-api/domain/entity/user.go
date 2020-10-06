@@ -29,13 +29,4 @@ type User struct {
 	CreationDate time.Time   `bson:"creationDate"`
 	LastActivity *time.Time  `bson:"lastActivity"`
 	Deleted      bool        `bson:"deleted"`
-	APITokens    []APIToken  `bson:"apiTokens"`
-}
-
-type APIToken struct {
-	Id           string     `bson:"_id"`
-	Name         string     `bson:"name"`
-	CreationDate time.Time  `bson:"creationDate"`
-	LastActivity *time.Time `bson:"lastActivity"`
-	Token        string     `bson:"token"`
 }
