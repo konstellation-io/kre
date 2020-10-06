@@ -39,6 +39,7 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 			},
 			"spec": map[string]interface{}{
 				"developmentMode": m.config.DevelopmentMode,
+				"entrypointTLS":   m.config.EntrypointTLS,
 				"runtime": map[string]interface{}{
 					"host": runtimeHost,
 				},
