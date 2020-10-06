@@ -38,16 +38,18 @@ func CreateDashboardService(logger logging.Logger) domainService.DashboardServic
 }
 
 func (c *Chronograf) Create(ctx context.Context, runtime *entity.Runtime, version, dashboardPath string) error {
-
 	c.logger.Infof("creating dashboard for runtime ")
 
 	data, err := os.Open(dashboardPath)
 	if err != nil {
 		return fmt.Errorf("error opening dashboard definition: %w", err)
 	}
-
 	defer data.Close()
-	byteData, _ := ioutil.ReadAll(data)
+
+	byteData, err := ioutil.ReadAll(data)
+	if err != nil {
+		return fmt.Errorf("error reading Chronograf dashboard definition: %w", err)
+	}
 
 	var dashboard Dashboard
 	err = json.Unmarshal(byteData, &dashboard)
@@ -76,7 +78,7 @@ func (c *Chronograf) Create(ctx context.Context, runtime *entity.Runtime, versio
 	}
 
 	if res.StatusCode != http.StatusCreated {
-		return fmt.Errorf("error response from Chronograf: %w", err)
+		return fmt.Errorf("error response from Chronograf: received %d when expected %d", res.StatusCode, http.StatusCreated)
 	}
 	return nil
 }

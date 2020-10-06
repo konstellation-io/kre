@@ -6,11 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
-
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/service"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/runtime"
 )

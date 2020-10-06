@@ -10,8 +10,7 @@ import (
 )
 
 func (i *VersionInteractor) storeDashboards(ctx context.Context, runtime *entity.Runtime, dashboardsFolder, version string) []error {
-
-	i.logger.Infof("---- Creating dashboard ")
+	i.logger.Infof("Creating dashboard for Version %s in Runtime %s", version, runtime.Name)
 
 	var errors []error = nil
 	d, err := ioutil.ReadDir(dashboardsFolder)
@@ -21,11 +20,6 @@ func (i *VersionInteractor) storeDashboards(ctx context.Context, runtime *entity
 
 	for _, dashboard := range d {
 		dashboardPath := path.Join(dashboardsFolder, dashboard.Name())
-
-		if err != nil {
-			errors = append([]error{fmt.Errorf("error listing dashboards files: %w", err)}, errors...)
-			continue
-		}
 
 		err = i.dashboardService.Create(ctx, runtime, version, dashboardPath)
 		if err != nil {

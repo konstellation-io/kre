@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -74,8 +75,8 @@ func TestStoreDashboard(t *testing.T) {
 
 	version := "test"
 	dashboardsFolder := "../../test_assets/dashboards"
-
-	s.mocks.dashboardService.EXPECT().Create(context.Background(), s.runtime, version, gomock.Any()).Return(nil)
+	dashboardPath := fmt.Sprintf("%s/models.json", dashboardsFolder)
+	s.mocks.dashboardService.EXPECT().Create(context.Background(), s.runtime, version, dashboardPath).Return(nil)
 
 	err := s.versionInteractor.storeDashboards(context.Background(), s.runtime, dashboardsFolder, version)
 	assert.Nil(t, err)
