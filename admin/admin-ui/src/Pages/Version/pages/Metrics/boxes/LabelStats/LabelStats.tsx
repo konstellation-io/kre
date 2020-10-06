@@ -8,6 +8,7 @@ import React, { useRef } from 'react';
 import BarChartSeries from 'Components/Chart/BarChartSeries/BarChartSeries';
 import Box from '../../components/Box/Box';
 import ExpandButton from '../../components/Box/ExpandButton';
+import Info from '../../components/Box/Info';
 import { Serie } from 'Components/Chart/BarChartSeries/BarChartSeriesViz';
 import Title from '../../components/Box/Title';
 import styles from './LabelStats.module.scss';
@@ -46,13 +47,21 @@ type Props = {
   nodeId?: string;
   data: GetMetricsSeries;
   viewAllData: boolean;
+  info: string;
 };
-function LabelStats({ toggleExpanded, nodeId, data, viewAllData }: Props) {
+function LabelStats({
+  toggleExpanded,
+  nodeId,
+  data,
+  viewAllData,
+  info
+}: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (
     <Box>
       <Title text="" />
+      <Info>{info}</Info>
       <ExpandButton
         onClick={() => {
           toggleExpanded && toggleExpanded(nodeId);
