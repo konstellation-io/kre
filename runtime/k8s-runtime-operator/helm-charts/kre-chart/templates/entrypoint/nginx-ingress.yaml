@@ -15,7 +15,7 @@ spec:
   tls:
   - hosts: 
     - proto.{{ .Values.runtime.host }}
-    secretName: entrypoint.{{ .Values.runtime.host }}-tls
+    secretName: proto.{{ .Values.runtime.host }}-tls
   {{ end -}}
   rules:
     - host: proto.{{ .Values.runtime.host }}
