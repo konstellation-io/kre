@@ -49,11 +49,12 @@ type VersionInteractor struct {
 	runtimeRepo            repository.RuntimeRepo
 	versionService         service.VersionService
 	monitoringService      service.MonitoringService
-	userActivityInteractor *UserActivityInteractor
+	userActivityInteractor UserActivityInteracter
 	createStorage          repository.CreateStorage
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
 	docGenerator           version.DocGenerator
+	dashboardService       service.DashboardService
 }
 
 // NewVersionInteractor creates a new interactor
@@ -64,11 +65,12 @@ func NewVersionInteractor(
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.VersionService,
 	monitoringService service.MonitoringService,
-	userActivityInteractor *UserActivityInteractor,
+	userActivityInteractor UserActivityInteracter,
 	createStorage repository.CreateStorage,
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
 	docGenerator version.DocGenerator,
+	dashboardService service.DashboardService,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		cfg,
@@ -82,6 +84,7 @@ func NewVersionInteractor(
 		accessControl,
 		idGenerator,
 		docGenerator,
+		dashboardService,
 	}
 }
 
@@ -220,6 +223,16 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 			errorMessage := "error processing krt"
 			i.logger.Errorf("%s: %s", errorMessage, err)
 			contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
+		}
+
+		dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
+		if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
+			err := i.storeDashboards(ctx, runtime, dashboardsFolder, versionCreated.Name)
+			if err != nil {
+				errorMessage := "error creating dashboard"
+				i.logger.Errorf("%s: %s", errorMessage, err)
+				contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+			}
 		}
 
 		docFolder := path.Join(tmpDir, "docs")

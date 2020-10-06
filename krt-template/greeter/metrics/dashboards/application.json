@@ -1,0 +1,601 @@
+{
+  "id": "2",
+  "cells": [
+    {
+      "i": "3690a8a4-5e8b-4eda-91f5-93349e067593",
+      "x": 7,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "name": "Workflows processing time",
+      "queries": [
+        {
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"workflow\", \"_value\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"workflow\"], valueColumn: \"_value\")",
+          "queryConfig": {
+            "database": "",
+            "measurement": "",
+            "retentionPolicy": "",
+            "fields": [],
+            "tags": {},
+            "groupBy": {
+              "time": "",
+              "tags": []
+            },
+            "areTagsAccepted": false,
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"workflow\", \"_value\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"workflow\"], valueColumn: \"_value\")",
+            "range": null,
+            "shifts": null
+          },
+          "source": "",
+          "type": "flux"
+        }
+      ],
+      "axes": {
+        "x": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "Processing time (ms)",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y2": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        }
+      },
+      "type": "line",
+      "colors": [
+        {
+          "id": "050997b2-481c-43ac-82bc-e46bd2f10e33",
+          "type": "scale",
+          "hex": "#31C0F6",
+          "name": "Nineteen Eighty Four",
+          "value": "0"
+        },
+        {
+          "id": "ef2b2eab-8db4-4de2-96fc-91b49e826562",
+          "type": "scale",
+          "hex": "#A500A5",
+          "name": "Nineteen Eighty Four",
+          "value": "0"
+        },
+        {
+          "id": "5279a1cb-b653-4889-8ff7-b8e670bef024",
+          "type": "scale",
+          "hex": "#FF7E27",
+          "name": "Nineteen Eighty Four",
+          "value": "0"
+        }
+      ],
+      "legend": {},
+      "tableOptions": {
+        "verticalTimeAxis": true,
+        "sortBy": {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        },
+        "wrapping": "truncate",
+        "fixFirstColumn": true
+      },
+      "fieldOptions": [
+        {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        }
+      ],
+      "timeFormat": "MM/DD/YYYY HH:mm:ss",
+      "decimalPlaces": {
+        "isEnforced": true,
+        "digits": 2
+      },
+      "note": "",
+      "noteVisibility": "default",
+      "links": {
+        "self": "/chronograf/v1/dashboards/1/cells/3690a8a4-5e8b-4eda-91f5-93349e067593"
+      }
+    },
+    {
+      "i": "a9919758-deb9-4fbc-a118-8009fbfbf1db",
+      "x": 6,
+      "y": 5,
+      "w": 6,
+      "h": 3,
+      "name": "Nodes waiting time (ms)",
+      "queries": [
+        {
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"node_elapsed_time\" and (r._field == \"waiting_ms\"))\n  |> keep(columns: [\"node\", \"workflow\", \"_value\"])\n  |> group(columns: [\"workflow\", \"node\"])\n  |> reduce(fn: (r, accumulator) => ({\n    min: if r._value < accumulator.min then r._value else accumulator.min,\n    max: if r._value > accumulator.max then r._value else accumulator.max,\n    total: r._value + accumulator.total,\n    count: accumulator.count + 1.0\n   }), identity: {min: 999999999.0, max: 0.0, total: 0.0, count: 0.0})\n  |> map(fn: (r) => ({ r with avg: r.total / r.count }))\n  |> drop(columns: [\"count\"])\n  |> group(columns: [\"workflow\"])",
+          "queryConfig": {
+            "database": "",
+            "measurement": "",
+            "retentionPolicy": "",
+            "fields": [],
+            "tags": {},
+            "groupBy": {
+              "time": "",
+              "tags": []
+            },
+            "areTagsAccepted": false,
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"node_elapsed_time\" and (r._field == \"waiting_ms\"))\n  |> keep(columns: [\"node\", \"workflow\", \"_value\"])\n  |> group(columns: [\"workflow\", \"node\"])\n  |> reduce(fn: (r, accumulator) => ({\n    min: if r._value < accumulator.min then r._value else accumulator.min,\n    max: if r._value > accumulator.max then r._value else accumulator.max,\n    total: r._value + accumulator.total,\n    count: accumulator.count + 1.0\n   }), identity: {min: 999999999.0, max: 0.0, total: 0.0, count: 0.0})\n  |> map(fn: (r) => ({ r with avg: r.total / r.count }))\n  |> drop(columns: [\"count\"])\n  |> group(columns: [\"workflow\"])",
+            "range": null,
+            "shifts": null
+          },
+          "source": "",
+          "type": "flux"
+        }
+      ],
+      "axes": {
+        "x": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y2": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        }
+      },
+      "type": "table",
+      "colors": [
+        {
+          "id": "base",
+          "type": "text",
+          "hex": "#ffffff",
+          "name": "white",
+          "value": "-1000000000000000000"
+        }
+      ],
+      "legend": {},
+      "tableOptions": {
+        "verticalTimeAxis": true,
+        "sortBy": {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        },
+        "wrapping": "truncate",
+        "fixFirstColumn": false
+      },
+      "fieldOptions": [
+        {
+          "internalName": "node",
+          "displayName": "Node",
+          "visible": true
+        },
+        {
+          "internalName": "min",
+          "displayName": "Min",
+          "visible": true
+        },
+        {
+          "internalName": "max",
+          "displayName": "Max",
+          "visible": true
+        },
+        {
+          "internalName": "avg",
+          "displayName": "Avg",
+          "visible": true
+        },
+        {
+          "internalName": "total",
+          "displayName": "Total",
+          "visible": true
+        },
+        {
+          "internalName": "workflow",
+          "displayName": "",
+          "visible": false
+        }
+      ],
+      "timeFormat": "MM/DD/YYYY HH:mm:ss",
+      "decimalPlaces": {
+        "isEnforced": true,
+        "digits": 1
+      },
+      "note": "",
+      "noteVisibility": "default",
+      "links": {
+        "self": "/chronograf/v1/dashboards/1/cells/a9919758-deb9-4fbc-a118-8009fbfbf1db"
+      }
+    },
+    {
+      "i": "e192f4d3-93a2-43a3-a7ae-3c69e5b33ee3",
+      "x": 0,
+      "y": 5,
+      "w": 6,
+      "h": 3,
+      "name": "Nodes processing time (ms)",
+      "queries": [
+        {
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"node_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> keep(columns: [\"node\", \"workflow\", \"_value\"])\n  |> group(columns: [\"workflow\", \"node\"])\n  |> reduce(fn: (r, accumulator) => ({\n    min: if r._value < accumulator.min then r._value else accumulator.min,\n    max: if r._value > accumulator.max then r._value else accumulator.max,\n    total: r._value + accumulator.total,\n    count: accumulator.count + 1.0\n   }), identity: {min: 999999999.0, max: 0.0, total: 0.0, count: 0.0})\n  |> map(fn: (r) => ({ r with avg: r.total / r.count }))\n  |> drop(columns: [\"count\"])\n  |> group(columns: [\"workflow\"])",
+          "queryConfig": {
+            "database": "",
+            "measurement": "",
+            "retentionPolicy": "",
+            "fields": [],
+            "tags": {},
+            "groupBy": {
+              "time": "",
+              "tags": []
+            },
+            "areTagsAccepted": false,
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"node_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> keep(columns: [\"node\", \"workflow\", \"_value\"])\n  |> group(columns: [\"workflow\", \"node\"])\n  |> reduce(fn: (r, accumulator) => ({\n    min: if r._value < accumulator.min then r._value else accumulator.min,\n    max: if r._value > accumulator.max then r._value else accumulator.max,\n    total: r._value + accumulator.total,\n    count: accumulator.count + 1.0\n   }), identity: {min: 999999999.0, max: 0.0, total: 0.0, count: 0.0})\n  |> map(fn: (r) => ({ r with avg: r.total / r.count }))\n  |> drop(columns: [\"count\"])\n  |> group(columns: [\"workflow\"])",
+            "range": null,
+            "shifts": null
+          },
+          "source": "",
+          "type": "flux"
+        }
+      ],
+      "axes": {
+        "x": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y2": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        }
+      },
+      "type": "table",
+      "colors": [
+        {
+          "id": "base",
+          "type": "text",
+          "hex": "#ffffff",
+          "name": "white",
+          "value": "-1000000000000000000"
+        }
+      ],
+      "legend": {},
+      "tableOptions": {
+        "verticalTimeAxis": true,
+        "sortBy": {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        },
+        "wrapping": "truncate",
+        "fixFirstColumn": false
+      },
+      "fieldOptions": [
+        {
+          "internalName": "node",
+          "displayName": "Node",
+          "visible": true
+        },
+        {
+          "internalName": "min",
+          "displayName": "Min",
+          "visible": true
+        },
+        {
+          "internalName": "max",
+          "displayName": "Max",
+          "visible": true
+        },
+        {
+          "internalName": "avg",
+          "displayName": "Avg",
+          "visible": true
+        },
+        {
+          "internalName": "total",
+          "displayName": "Total",
+          "visible": true
+        },
+        {
+          "internalName": "workflow",
+          "displayName": "",
+          "visible": false
+        }
+      ],
+      "timeFormat": "MM/DD/YYYY HH:mm:ss",
+      "decimalPlaces": {
+        "isEnforced": true,
+        "digits": 1
+      },
+      "note": "",
+      "noteVisibility": "default",
+      "links": {
+        "self": "/chronograf/v1/dashboards/1/cells/e192f4d3-93a2-43a3-a7ae-3c69e5b33ee3"
+      }
+    },
+    {
+      "i": "0711800b-0f87-4386-b2f3-7d00000b3a1f",
+      "x": 2,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "name": "Requests evolution",
+      "queries": [
+        {
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"tracking_id\"])\n  |> map(fn: (r) => ({ r with _value: 1 }))\n  |> group()\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+          "queryConfig": {
+            "database": "",
+            "measurement": "",
+            "retentionPolicy": "",
+            "fields": [],
+            "tags": {},
+            "groupBy": {
+              "time": "",
+              "tags": []
+            },
+            "areTagsAccepted": false,
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"tracking_id\"])\n  |> map(fn: (r) => ({ r with _value: 1 }))\n  |> group()\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+            "range": null,
+            "shifts": null
+          },
+          "source": "",
+          "type": "flux"
+        }
+      ],
+      "axes": {
+        "x": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "#Requests",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y2": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        }
+      },
+      "type": "line",
+      "colors": [
+        {
+          "id": "050997b2-481c-43ac-82bc-e46bd2f10e33",
+          "type": "scale",
+          "hex": "#31C0F6",
+          "name": "Nineteen Eighty Four",
+          "value": "0"
+        },
+        {
+          "id": "ef2b2eab-8db4-4de2-96fc-91b49e826562",
+          "type": "scale",
+          "hex": "#A500A5",
+          "name": "Nineteen Eighty Four",
+          "value": "0"
+        },
+        {
+          "id": "5279a1cb-b653-4889-8ff7-b8e670bef024",
+          "type": "scale",
+          "hex": "#FF7E27",
+          "name": "Nineteen Eighty Four",
+          "value": "0"
+        }
+      ],
+      "legend": {},
+      "tableOptions": {
+        "verticalTimeAxis": true,
+        "sortBy": {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        },
+        "wrapping": "truncate",
+        "fixFirstColumn": true
+      },
+      "fieldOptions": [
+        {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        }
+      ],
+      "timeFormat": "MM/DD/YYYY HH:mm:ss",
+      "decimalPlaces": {
+        "isEnforced": true,
+        "digits": 2
+      },
+      "note": "",
+      "noteVisibility": "default",
+      "links": {
+        "self": "/chronograf/v1/dashboards/1/cells/0711800b-0f87-4386-b2f3-7d00000b3a1f"
+      }
+    },
+    {
+      "i": "0259e4ce-9201-475c-9c67-68bb22c0a82d",
+      "x": 0,
+      "y": 0,
+      "w": 2,
+      "h": 5,
+      "name": "Total requests",
+      "queries": [
+        {
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> group()\n  |> count()",
+          "queryConfig": {
+            "database": "",
+            "measurement": "",
+            "retentionPolicy": "",
+            "fields": [],
+            "tags": {},
+            "groupBy": {
+              "time": "",
+              "tags": []
+            },
+            "areTagsAccepted": false,
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> group()\n  |> count()",
+            "range": null,
+            "shifts": null
+          },
+          "source": "",
+          "type": "flux"
+        }
+      ],
+      "axes": {
+        "x": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": " requests",
+          "base": "10",
+          "scale": "linear"
+        },
+        "y2": {
+          "bounds": [
+            "",
+            ""
+          ],
+          "label": "",
+          "prefix": "",
+          "suffix": "",
+          "base": "10",
+          "scale": "linear"
+        }
+      },
+      "type": "single-stat",
+      "colors": [
+        {
+          "id": "base",
+          "type": "text",
+          "hex": "#00C9FF",
+          "name": "laser",
+          "value": "-1000000000000000000"
+        }
+      ],
+      "legend": {},
+      "tableOptions": {
+        "verticalTimeAxis": true,
+        "sortBy": {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        },
+        "wrapping": "truncate",
+        "fixFirstColumn": true
+      },
+      "fieldOptions": [
+        {
+          "internalName": "time",
+          "displayName": "",
+          "visible": true
+        }
+      ],
+      "timeFormat": "MM/DD/YYYY HH:mm:ss",
+      "decimalPlaces": {
+        "isEnforced": true,
+        "digits": 0
+      },
+      "note": "",
+      "noteVisibility": "default",
+      "links": {
+        "self": "/chronograf/v1/dashboards/1/cells/0259e4ce-9201-475c-9c67-68bb22c0a82d"
+      }
+    }
+  ],
+  "templates": [],
+  "name": "Application",
+  "organization": "default"
+}

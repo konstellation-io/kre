@@ -3,13 +3,13 @@ package usecase
 import (
 	"context"
 	"errors"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"strings"
 	"time"
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/service"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/runtime"
 )
@@ -29,7 +29,7 @@ type RuntimeInteractor struct {
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
 	runtimeService    service.RuntimeService
-	userActivity      *UserActivityInteractor
+	userActivity      UserActivityInteracter
 	passwordGenerator runtime.PasswordGenerator
 	accessControl     auth.AccessControl
 }
@@ -39,7 +39,7 @@ func NewRuntimeInteractor(
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.RuntimeService,
-	userActivity *UserActivityInteractor,
+	userActivity UserActivityInteracter,
 	passwordGenerator runtime.PasswordGenerator,
 	accessControl auth.AccessControl,
 ) *RuntimeInteractor {

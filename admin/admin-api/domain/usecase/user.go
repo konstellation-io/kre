@@ -16,7 +16,7 @@ import (
 type UserInteractor struct {
 	logger                 logging.Logger
 	userRepo               repository.UserRepo
-	userActivityInteractor *UserActivityInteractor
+	userActivityInteractor UserActivityInteracter
 	sessionRepo            repository.SessionRepo
 	accessControl          auth.AccessControl
 }
@@ -25,7 +25,7 @@ type UserInteractor struct {
 func NewUserInteractor(
 	logger logging.Logger,
 	userRepo repository.UserRepo,
-	userActivityInteractor *UserActivityInteractor,
+	userActivityInteractor UserActivityInteracter,
 	sessionRepo repository.SessionRepo,
 	accessControl auth.AccessControl,
 ) *UserInteractor {

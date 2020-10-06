@@ -18,7 +18,7 @@ const DefaultSessionLifetimeInDays = 30
 type SettingInteractor struct {
 	logger        logging.Logger
 	settingRepo   repository.SettingRepo
-	userActivity  *UserActivityInteractor
+	userActivity  UserActivityInteracter
 	accessControl auth.AccessControl
 }
 
@@ -26,7 +26,7 @@ type SettingInteractor struct {
 func NewSettingInteractor(
 	logger logging.Logger,
 	settingRepo repository.SettingRepo,
-	userActivity *UserActivityInteractor,
+	userActivity UserActivityInteracter,
 	accessControl auth.AccessControl,
 ) *SettingInteractor {
 	return &SettingInteractor{

@@ -22,7 +22,7 @@ type AuthInteractor struct {
 	verificationCodeRepo      repository.VerificationCodeRepo
 	userRepo                  repository.UserRepo
 	settingRepo               repository.SettingRepo
-	userActivityInteractor    *UserActivityInteractor
+	userActivityInteractor    UserActivityInteracter
 	sessionRepo               repository.SessionRepo
 	accessControl             auth.AccessControl
 }
@@ -35,7 +35,7 @@ func NewAuthInteractor(
 	verificationCodeRepo repository.VerificationCodeRepo,
 	userRepo repository.UserRepo,
 	settingRepo repository.SettingRepo,
-	userActivityInteractor *UserActivityInteractor,
+	userActivityInteractor UserActivityInteracter,
 	sessionRepo repository.SessionRepo,
 	accessControl auth.AccessControl,
 ) *AuthInteractor {
