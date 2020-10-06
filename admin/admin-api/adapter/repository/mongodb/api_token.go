@@ -24,10 +24,10 @@ import (
 )
 
 type APITokenRepoMongoDB struct {
-	cfg         *config.Config
-	logger      logging.Logger
-	collection  *mongo.Collection
-	tokenSecret []byte
+	cfg            *config.Config
+	logger         logging.Logger
+	collection     *mongo.Collection
+	tokenSecretKey []byte
 }
 
 func NewAPITokenRepoMongoDB(
@@ -43,35 +43,12 @@ func NewAPITokenRepoMongoDB(
 	}
 
 	apiTokens.createIndexes()
-	err := apiTokens.createSecret()
+	err := apiTokens.createSecretKey()
 	if err != nil {
 		return nil, err
 	}
 
 	return apiTokens, err
-}
-
-func (a *APITokenRepoMongoDB) salt() ([]byte, error) {
-	salt := make([]byte, 32)
-	if _, err := rand.Read(salt); err != nil {
-		return nil, err
-	}
-
-	return salt, nil
-}
-
-func (a *APITokenRepoMongoDB) createSecret() error {
-	salt, err := a.salt()
-	if err != nil {
-		return err
-	}
-	key, err := scrypt.Key([]byte(a.cfg.Auth.APITokenSecret), salt, 256*256, 8, 1, 16)
-	if err != nil {
-		return err
-	}
-
-	a.tokenSecret = key
-	return nil
 }
 
 func (a *APITokenRepoMongoDB) createIndexes() {
@@ -91,8 +68,38 @@ func (a *APITokenRepoMongoDB) createIndexes() {
 	}
 }
 
+func (a *APITokenRepoMongoDB) createSecretKey() error {
+	salt, err := a.salt()
+	if err != nil {
+		return err
+	}
+	key, err := scrypt.Key([]byte(a.cfg.Auth.APITokenSecret), salt, 256*256, 8, 1, 16)
+	if err != nil {
+		return err
+	}
+
+	a.tokenSecretKey = key
+	return nil
+}
+
+func (a *APITokenRepoMongoDB) salt() ([]byte, error) {
+	salt := make([]byte, 32)
+	if _, err := rand.Read(salt); err != nil {
+		return nil, err
+	}
+
+	return salt, nil
+}
+
+func (a *APITokenRepoMongoDB) hashToken(token string) string {
+	// NOTE: uncomment this line if we want to invalidate all existing tokens when the config secret changes
+	//hash := md5.Sum(append([]byte(token), []byte(a.cfg.Auth.APITokenSecret)...))
+	hash := md5.Sum([]byte(token))
+	return hex.EncodeToString(hash[:])
+}
+
 func (a *APITokenRepoMongoDB) GenerateCode(userID string) (string, error) {
-	block, err := aes.NewCipher(a.tokenSecret)
+	block, err := aes.NewCipher(a.tokenSecretKey)
 	if err != nil {
 		return "", err
 	}
@@ -113,11 +120,6 @@ func (a *APITokenRepoMongoDB) GenerateCode(userID string) (string, error) {
 	code := hex.EncodeToString(token)
 
 	return code, nil
-}
-
-func (a *APITokenRepoMongoDB) hashToken(token string) string {
-	hash := md5.Sum([]byte(token))
-	return hex.EncodeToString(hash[:])
 }
 
 func (a *APITokenRepoMongoDB) Create(ctx context.Context, apiToken entity.APIToken, code string) error {
