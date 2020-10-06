@@ -492,6 +492,10 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	return userLoader.Load(obj.UserID)
 }
 
+func (r *userResolver) APITokens(ctx context.Context, obj *entity.User) ([]*entity.APIToken, error) {
+	return r.userInteractor.GetTokensByUserID(ctx, obj.ID)
+}
+
 func (r *userResolver) LastActivity(_ context.Context, obj *entity.User) (*string, error) {
 	if obj.LastActivity == nil {
 		return nil, nil

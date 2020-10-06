@@ -35,6 +35,7 @@ type Config struct {
 	Auth struct {
 		VerificationCodeDurationInMinutes int    `yaml:"verificationCodeDurationInMinutes" envconfig:"KRE_AUTH_VERIFICATION_CODE_DURATION_IN_MINUTES"`
 		JWTSignSecret                     string `yaml:"jwtSignSecret" envconfig:"KRE_AUTH_JWT_SIGN_SECRET"`
+		APITokenSecret                    string `yaml:"apiTokenSecret" envconfig:"KRE_AUTH_API_TOKEN_SECRET"`
 		SecureCookie                      bool   `yaml:"secureCookie" envconfig:"KRE_AUTH_SECURE_COOKIE"`
 		CookieDomain                      string `yaml:"cookieDomain" envconfig:"KRE_AUTH_COOKIE_DOMAIN"`
 		APIToken                          struct {

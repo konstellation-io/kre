@@ -13,7 +13,7 @@ config:
   auth:
     verificationCodeDurationInMinutes: 1
     jwtSignSecret: jwt_secret
-    apiTokenSignSecret: "someSuperSecretValue"
+    apiTokenSecret: api_token_secret
     secureCookie: false
     cookieDomain: kre.local
   runtime:

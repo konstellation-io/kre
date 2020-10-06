@@ -4,27 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/dgryski/trifles/uuid"
-	authAdapter "github.com/konstellation-io/kre/admin/admin-api/adapter/auth"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"testing"
 	"time"
 
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
-
 	"github.com/golang/mock/gomock"
-
 	"github.com/stretchr/testify/require"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/mocks"
 )
 
 type authSuite struct {
 	ctrl           *gomock.Controller
 	authInteractor usecase.AuthInteracter
-	tokenManager   auth.TokenManager
 	mocks          authSuiteMocks
 }
 
@@ -36,6 +30,7 @@ type authSuiteMocks struct {
 	verificationCodeRepo      *mocks.MockVerificationCodeRepo
 	userRepo                  *mocks.MockUserRepo
 	settingRepo               *mocks.MockSettingRepo
+	apiTokenRepo              *mocks.MockAPITokenRepo
 	userActivityRepo          *mocks.MockUserActivityRepo
 	accessControl             *mocks.MockAccessControl
 }
@@ -50,6 +45,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	settingRepo := mocks.NewMockSettingRepo(ctrl)
 	sessionRepo := mocks.NewMockSessionRepo(ctrl)
+	apiTokenRepo := mocks.NewMockAPITokenRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 
@@ -64,7 +60,6 @@ func newAuthSuite(t *testing.T) *authSuite {
 
 	cfg := &config.Config{}
 	cfg.Auth.APIToken.CipherSecret = "someSuperSecretValue"
-	tokenManager := authAdapter.NewTokenManager(cfg, logger)
 
 	authInteractor := usecase.NewAuthInteractor(
 		cfg,
@@ -76,13 +71,12 @@ func newAuthSuite(t *testing.T) *authSuite {
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
-		tokenManager,
 	)
 
 	return &authSuite{
-		ctrl:         ctrl,
-		tokenManager: tokenManager,
+		ctrl: ctrl,
 		mocks: authSuiteMocks{
 			cfg,
 			logger,
@@ -91,6 +85,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 			verificationCodeRepo,
 			userRepo,
 			settingRepo,
+			apiTokenRepo,
 			userActivityRepo,
 			accessControl,
 		},
@@ -384,25 +379,31 @@ func TestVerifyCodeErrDeletingValidationCode(t *testing.T) {
 	require.Equal(t, verificationCode.UID, userId)
 }
 
-func TestCheckAPIToken(t *testing.T) {
+func TestVerifyAPIToken(t *testing.T) {
 	s := newAuthSuite(t)
 	defer s.ctrl.Finish()
 
-	userID := "user1"
-	key := uuid.UUIDv4()
+	token := "abc123"
+	user := entity.User{
+		ID: "user1",
+	}
+	hash := "hash1234"
+	apiToken := &entity.APIToken{
+		ID:     "12345",
+		UserID: user.ID,
+		Hash:   hash,
+	}
 
-	internalToken := fmt.Sprintf("%s:%s", userID, key)
-	apiToken, _ := s.tokenManager.Encrypt(internalToken)
 	ctx := context.Background()
-	s.mocks.userRepo.EXPECT().GetAPITokenByValue(ctx, userID, key).Return(&entity.APIToken{}, nil)
-	s.mocks.userRepo.EXPECT().UpdateAPITokenLastActivity(gomock.Any(), userID, key).Return(nil)
+	s.mocks.apiTokenRepo.EXPECT().GetByToken(ctx, token).Return(apiToken, nil)
+	s.mocks.apiTokenRepo.EXPECT().UpdateLastActivity(ctx, apiToken.ID).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
 		require.Equal(t, entity.UserActivityTypeLogin, activity.Type)
-		require.Equal(t, userID, activity.UserID)
+		require.Equal(t, user.ID, activity.UserID)
 		return nil
 	})
 
-	actualUserID, err := s.authInteractor.CheckAPIToken(ctx, apiToken)
+	actualUserID, err := s.authInteractor.VerifyAPIToken(ctx, token)
 	require.NoError(t, err)
-	require.Equal(t, userID, actualUserID)
+	require.Equal(t, user.ID, actualUserID)
 }

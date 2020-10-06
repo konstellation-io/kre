@@ -91,34 +91,19 @@ func (mr *MockAuthInteracterMockRecorder) CreateSession(session interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*MockAuthInteracter)(nil).CreateSession), session)
 }
 
-// CheckAPIToken mocks base method
-func (m *MockAuthInteracter) CheckAPIToken(ctx context.Context, apiToken string) (string, error) {
+// VerifyAPIToken mocks base method
+func (m *MockAuthInteracter) VerifyAPIToken(ctx context.Context, apiToken string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckAPIToken", ctx, apiToken)
+	ret := m.ctrl.Call(m, "VerifyAPIToken", ctx, apiToken)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CheckAPIToken indicates an expected call of CheckAPIToken
-func (mr *MockAuthInteracterMockRecorder) CheckAPIToken(ctx, apiToken interface{}) *gomock.Call {
+// VerifyAPIToken indicates an expected call of VerifyAPIToken
+func (mr *MockAuthInteracterMockRecorder) VerifyAPIToken(ctx, apiToken interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckAPIToken", reflect.TypeOf((*MockAuthInteracter)(nil).CheckAPIToken), ctx, apiToken)
-}
-
-// GenerateAPIToken mocks base method
-func (m *MockAuthInteracter) GenerateAPIToken(userId, tokenId string) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateAPIToken", userId, tokenId)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GenerateAPIToken indicates an expected call of GenerateAPIToken
-func (mr *MockAuthInteracterMockRecorder) GenerateAPIToken(userId, tokenId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateAPIToken", reflect.TypeOf((*MockAuthInteracter)(nil).GenerateAPIToken), userId, tokenId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyAPIToken", reflect.TypeOf((*MockAuthInteracter)(nil).VerifyAPIToken), ctx, apiToken)
 }
 
 // CheckSessionIsActive mocks base method
