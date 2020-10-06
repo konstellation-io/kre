@@ -1,938 +1,16 @@
 {
+  "id": "2",
   "cells": [
     {
-      "i": "7d6de114-9b4a-4c60-851e-ac7cea512df8",
-      "x": 6,
-      "y": 9,
-      "w": 6,
-      "h": 3,
-      "name": "Missing words",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"w2v\" and (r._field == \"missing_word\"))\n  |> keep(columns: [\"_time\", \"_value\", \"_field\"])\n  |> map(fn: (r) => ({ r with _field: r._value, _value: 1 }))\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: 1m, fn: count)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"w2v\" and (r._field == \"missing_word\"))\n  |> keep(columns: [\"_time\", \"_value\", \"_field\"])\n  |> map(fn: (r) => ({ r with _field: r._value, _value: 1 }))\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: 1m, fn: count)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "0",
-            ""
-          ],
-          "label": "# Repetitions",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "line-stacked",
-      "colors": [
-        {
-          "id": "fccfb1d8-8e66-42a1-a923-e28de04e8c5f",
-          "type": "scale",
-          "hex": "#FD7A5D",
-          "name": "Delorean",
-          "value": "0"
-        },
-        {
-          "id": "07ef9ad7-2f37-4db7-aa15-5a70843533f1",
-          "type": "scale",
-          "hex": "#5F1CF2",
-          "name": "Delorean",
-          "value": "0"
-        },
-        {
-          "id": "a763d110-d74f-462f-8956-748dbf6970c8",
-          "type": "scale",
-          "hex": "#4CE09A",
-          "name": "Delorean",
-          "value": "0"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": false
-      },
-      "fieldOptions": [
-        {
-          "internalName": "ticket_id",
-          "displayName": "Ticket",
-          "visible": true
-        },
-        {
-          "internalName": "asset_id",
-          "displayName": "Asset",
-          "visible": true
-        },
-        {
-          "internalName": "words",
-          "displayName": "Words",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 0
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/7d6de114-9b4a-4c60-851e-ac7cea512df8"
-      }
-    },
-    {
-      "i": "c2f795b3-a897-47f7-9ec3-b6763ee99244",
-      "x": 2,
-      "y": 9,
-      "w": 4,
-      "h": 3,
-      "name": "Missing words by ticket and asset",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"w2v\" and (r._field == \"missing_word\"))\n  |> keep(columns: [\"ticket_id\", \"asset_id\", \"_value\"])\n  |> group(columns: [\"ticket_id\", \"asset_id\"])\n  |> unique()\n  |> reduce(fn: (r, accumulator) => ({ words: if accumulator.words== \"\" then r._value else accumulator.words + \", \" + r._value }), identity: {words: \"\"})\n  |> group()\n  |> sort(columns: [\"ticket_id\", \"asset_id\"], desc: false)",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"w2v\" and (r._field == \"missing_word\"))\n  |> keep(columns: [\"ticket_id\", \"asset_id\", \"_value\"])\n  |> group(columns: [\"ticket_id\", \"asset_id\"])\n  |> unique()\n  |> reduce(fn: (r, accumulator) => ({ words: if accumulator.words== \"\" then r._value else accumulator.words + \", \" + r._value }), identity: {words: \"\"})\n  |> group()\n  |> sort(columns: [\"ticket_id\", \"asset_id\"], desc: false)",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "table",
-      "colors": [
-        {
-          "id": "base",
-          "type": "text",
-          "hex": "#00C9FF",
-          "name": "laser",
-          "value": "-1000000000000000000"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": false
-      },
-      "fieldOptions": [
-        {
-          "internalName": "ticket_id",
-          "displayName": "Ticket",
-          "visible": true
-        },
-        {
-          "internalName": "asset_id",
-          "displayName": "Asset",
-          "visible": true
-        },
-        {
-          "internalName": "words",
-          "displayName": "Words",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 0
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/c2f795b3-a897-47f7-9ec3-b6763ee99244"
-      }
-    },
-    {
-      "i": "7a1db931-1cc3-419e-8d57-39aad5e4c6a0",
-      "x": 0,
-      "y": 9,
-      "w": 2,
-      "h": 3,
-      "name": "Missing words",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"w2v\" and (r._field == \"missing_word\"))\n  |> keep(columns: [\"_value\"])\n  |> group(columns: [\"_value\"])\n  |> reduce(fn: (r, accumulator) => ({ r with count: 1 + accumulator.count }), identity: {count: 0})\n  |> group()\n  |> sort(columns: [\"count\"], desc: true)",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"w2v\" and (r._field == \"missing_word\"))\n  |> keep(columns: [\"_value\"])\n  |> group(columns: [\"_value\"])\n  |> reduce(fn: (r, accumulator) => ({ r with count: 1 + accumulator.count }), identity: {count: 0})\n  |> group()\n  |> sort(columns: [\"count\"], desc: true)",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "table",
-      "colors": [
-        {
-          "id": "base",
-          "type": "text",
-          "hex": "#00C9FF",
-          "name": "laser",
-          "value": "-1000000000000000000"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": false
-      },
-      "fieldOptions": [
-        {
-          "internalName": "_value",
-          "displayName": "Word",
-          "visible": true
-        },
-        {
-          "internalName": "count",
-          "displayName": "Count",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 0
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/7a1db931-1cc3-419e-8d57-39aad5e4c6a0"
-      }
-    },
-    {
-      "i": "3a5fcf7b-6964-4a47-b172-fccfc3f907b2",
-      "x": 3,
-      "y": 3,
-      "w": 9,
-      "h": 3,
-      "name": "Suggestions ussage",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"prediction_result\" and (r._field == \"predicted_value\" or r._field == \"true_value\"))\n  |> drop(columns: [\"_start\", \"_stop\", \"asset_id\", \"ticket_id\", \"tracking_id\", \"version\", \"_measurement\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: if r.predicted_value == r.true_value then \"hit\" else \"miss\" }))\n  |> drop(columns: [\"true_value\", \"predicted_value\"])\n  |> group(columns: [\"_value\"])\n  |> map(fn: (r) => ({ r with count: 1 }))\n  |> aggregateWindow(every: 1m, fn: sum, column: \"count\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_value\"], valueColumn: \"count\")\n",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"prediction_result\" and (r._field == \"predicted_value\" or r._field == \"true_value\"))\n  |> drop(columns: [\"_start\", \"_stop\", \"asset_id\", \"ticket_id\", \"tracking_id\", \"version\", \"_measurement\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: if r.predicted_value == r.true_value then \"hit\" else \"miss\" }))\n  |> drop(columns: [\"true_value\", \"predicted_value\"])\n  |> group(columns: [\"_value\"])\n  |> map(fn: (r) => ({ r with count: 1 }))\n  |> aggregateWindow(every: 1m, fn: sum, column: \"count\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_value\"], valueColumn: \"count\")\n",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "0",
-            ""
-          ],
-          "label": "# Repetitions",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "line-stacked",
-      "colors": [
-        {
-          "id": "cd765fe5-1c74-495b-9d05-bd5a6a746245",
-          "type": "scale",
-          "hex": "#FDC44F",
-          "name": "Cthulhu",
-          "value": "0"
-        },
-        {
-          "id": "179248ea-abfb-4a26-90fe-ea2e7567dca5",
-          "type": "scale",
-          "hex": "#007C76",
-          "name": "Cthulhu",
-          "value": "0"
-        },
-        {
-          "id": "351bd55a-fa8b-4632-b915-24ceb1922669",
-          "type": "scale",
-          "hex": "#8983FF",
-          "name": "Cthulhu",
-          "value": "0"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": true
-      },
-      "fieldOptions": [
-        {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 1
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/3a5fcf7b-6964-4a47-b172-fccfc3f907b2"
-      }
-    },
-    {
-      "i": "873e719f-5a0b-4288-a8b4-565140d548f7",
-      "x": 0,
-      "y": 3,
-      "w": 3,
-      "h": 3,
-      "name": "How many suggestions matched with final actions?",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"prediction_result\" and (r._field == \"predicted_value\" or r._field == \"true_value\"))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: if r.predicted_value == r.true_value then \"hit\" else \"miss\", count: 1 }))\n  |> group(columns: [\"_value\"])\n  |> sum(column: \"count\")\n  |> group()\n  |> reduce(fn: (r, accumulator) => ({ perc: if r._value == \"hit\" then r.count else accumulator.perc, total: accumulator.total + r.count }), identity: {perc: 0, total: 0})\n  |> map(fn: (r) => ({ r with _value: float(v: r.perc) / float(v: r.total) * 100.0 }))\n",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"prediction_result\" and (r._field == \"predicted_value\" or r._field == \"true_value\"))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: if r.predicted_value == r.true_value then \"hit\" else \"miss\", count: 1 }))\n  |> group(columns: [\"_value\"])\n  |> sum(column: \"count\")\n  |> group()\n  |> reduce(fn: (r, accumulator) => ({ perc: if r._value == \"hit\" then r.count else accumulator.perc, total: accumulator.total + r.count }), identity: {perc: 0, total: 0})\n  |> map(fn: (r) => ({ r with _value: float(v: r.perc) / float(v: r.total) * 100.0 }))\n",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "%",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "gauge",
-      "colors": [
-        {
-          "id": "0",
-          "type": "min",
-          "hex": "#7CE490",
-          "name": "honeydew",
-          "value": "0"
-        },
-        {
-          "id": "1",
-          "type": "max",
-          "hex": "#F48D38",
-          "name": "tiger",
-          "value": "100"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": true
-      },
-      "fieldOptions": [
-        {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 1
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/873e719f-5a0b-4288-a8b4-565140d548f7"
-      }
-    },
-    {
-      "i": "d63365da-e6fd-47c1-a825-061c6937130a",
-      "x": 6,
-      "y": 6,
-      "w": 6,
-      "h": 3,
-      "name": "Unknown task results",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"unknown_label\"))\n  |> drop(columns: [\"asset_id\", \"tracking_id\", \"_measurement\", \"version\"])\n  |> unique()\n  |> drop(columns: [\"ticket_id\"])\n  |> map(fn: (r) => ({ r with _field: r._value }))\n  |> aggregateWindow(every: 1m, fn: count)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\"])",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"unknown_label\"))\n  |> drop(columns: [\"asset_id\", \"tracking_id\", \"_measurement\", \"version\"])\n  |> unique()\n  |> drop(columns: [\"ticket_id\"])\n  |> map(fn: (r) => ({ r with _field: r._value }))\n  |> aggregateWindow(every: 1m, fn: count)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\"])",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "0",
-            ""
-          ],
-          "label": "# Repetitions",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "line-stacked",
-      "colors": [
-        {
-          "id": "92f35029-7567-4fd6-ae6c-f5e701dec9a4",
-          "type": "scale",
-          "hex": "#FD7A5D",
-          "name": "Delorean",
-          "value": "0"
-        },
-        {
-          "id": "9880f32b-3c3b-4911-ae9c-01b52cba4ad2",
-          "type": "scale",
-          "hex": "#5F1CF2",
-          "name": "Delorean",
-          "value": "0"
-        },
-        {
-          "id": "1563a018-4670-45d7-8941-eef5a42659fb",
-          "type": "scale",
-          "hex": "#4CE09A",
-          "name": "Delorean",
-          "value": "0"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": false
-      },
-      "fieldOptions": [
-        {
-          "internalName": "ticket_id",
-          "displayName": "Ticket",
-          "visible": true
-        },
-        {
-          "internalName": "asset_id",
-          "displayName": "Asset",
-          "visible": true
-        },
-        {
-          "internalName": "_value",
-          "displayName": "Task result",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 0
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/d63365da-e6fd-47c1-a825-061c6937130a"
-      }
-    },
-    {
-      "i": "5da46abd-7142-4e7c-a12c-08198b9184ad",
-      "x": 2,
-      "y": 6,
-      "w": 4,
-      "h": 3,
-      "name": "Unknown task results by ticket and asset",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"unknown_label\"))\n  |> drop(columns: [\"tracking_id\", \"_measurement\", \"version\", \"_field\"])\n  |> drop(columns: [\"_start\", \"_stop\", \"_time\"])\n  |> group()\n  |> sort(columns: [\"ticket_id\", \"asset_id\"], desc: false)",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"unknown_label\"))\n  |> drop(columns: [\"tracking_id\", \"_measurement\", \"version\", \"_field\"])\n  |> drop(columns: [\"_start\", \"_stop\", \"_time\"])\n  |> group()\n  |> sort(columns: [\"ticket_id\", \"asset_id\"], desc: false)",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "table",
-      "colors": [
-        {
-          "id": "base",
-          "type": "text",
-          "hex": "#00C9FF",
-          "name": "laser",
-          "value": "-1000000000000000000"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": false
-      },
-      "fieldOptions": [
-        {
-          "internalName": "ticket_id",
-          "displayName": "Ticket",
-          "visible": true
-        },
-        {
-          "internalName": "asset_id",
-          "displayName": "Asset",
-          "visible": true
-        },
-        {
-          "internalName": "_value",
-          "displayName": "Task result",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 0
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/5da46abd-7142-4e7c-a12c-08198b9184ad"
-      }
-    },
-    {
-      "i": "e6d548d6-b02e-4cd9-a368-009565a31004",
-      "x": 0,
-      "y": 6,
-      "w": 2,
-      "h": 3,
-      "name": "Unknown task results",
-      "queries": [
-        {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"unknown_label\"))\n  |> drop(columns: [\"asset_id\", \"tracking_id\", \"_measurement\", \"version\", \"_field\"])\n  |> unique()\n  |> drop(columns: [\"ticket_id\"])\n  |> group(columns: [\"_value\"])\n  |> reduce(fn: (r, accumulator) => ({ count: 1 + accumulator.count }), identity: {count: 0})\n  |> group()\n  |> sort(columns: [\"count\"], desc: true)",
-          "queryConfig": {
-            "database": "",
-            "measurement": "",
-            "retentionPolicy": "",
-            "fields": [],
-            "tags": {},
-            "groupBy": {
-              "time": "",
-              "tags": []
-            },
-            "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"unknown_label\"))\n  |> drop(columns: [\"asset_id\", \"tracking_id\", \"_measurement\", \"version\", \"_field\"])\n  |> unique()\n  |> drop(columns: [\"ticket_id\"])\n  |> group(columns: [\"_value\"])\n  |> reduce(fn: (r, accumulator) => ({ count: 1 + accumulator.count }), identity: {count: 0})\n  |> group()\n  |> sort(columns: [\"count\"], desc: true)",
-            "range": null,
-            "shifts": null
-          },
-          "source": "",
-          "type": "flux"
-        }
-      ],
-      "axes": {
-        "x": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        },
-        "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
-          "label": "",
-          "prefix": "",
-          "suffix": "",
-          "base": "10",
-          "scale": "linear"
-        }
-      },
-      "type": "table",
-      "colors": [
-        {
-          "id": "base",
-          "type": "text",
-          "hex": "#00C9FF",
-          "name": "laser",
-          "value": "-1000000000000000000"
-        }
-      ],
-      "legend": {},
-      "tableOptions": {
-        "verticalTimeAxis": true,
-        "sortBy": {
-          "internalName": "time",
-          "displayName": "",
-          "visible": true
-        },
-        "wrapping": "truncate",
-        "fixFirstColumn": false
-      },
-      "fieldOptions": [
-        {
-          "internalName": "_value",
-          "displayName": "Task result",
-          "visible": true
-        },
-        {
-          "internalName": "count",
-          "displayName": "Count",
-          "visible": true
-        }
-      ],
-      "timeFormat": "MM/DD/YYYY HH:mm:ss",
-      "decimalPlaces": {
-        "isEnforced": true,
-        "digits": 0
-      },
-      "note": "",
-      "noteVisibility": "default",
-      "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/e6d548d6-b02e-4cd9-a368-009565a31004"
-      }
-    },
-    {
-      "i": "3f704b0a-8a30-4f44-be76-2634cab2e244",
-      "x": 3,
+      "i": "f517cb42-2741-42d9-a1ec-e042fc92ca7c",
+      "x": 4,
       "y": 0,
-      "w": 9,
-      "h": 3,
-      "name": "Ticket activity",
+      "w": 7,
+      "h": 5,
+      "name": "Name ocurrencies (clone 1)",
       "queries": [
         {
-          "query": "ok = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"suggestion\" and (r._field == \"task_result\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"ok\" }))\n\nerror = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"category_field\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"error\" }))\n\nunion(tables: [ok, error])\n  |> group(columns: [\"_field\"], mode:\"by\")\n  |> aggregateWindow(every: autoInterval, fn: count)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\"])",
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"greetings\" and (r._field == \"name\"))\n  |> keep(columns: [\"_value\", \"_time\"])\n  |> group(columns: [\"_value\"], mode:\"by\")\n  |> map(fn: (r) => ({ r with name: r._value }))\n  |> aggregateWindow(every: autoInterval, fn: count, column: \"name\")\n  |> group()\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_value\"], valueColumn: \"name\")\n",
           "queryConfig": {
             "database": "",
             "measurement": "",
@@ -944,7 +22,7 @@
               "tags": []
             },
             "areTagsAccepted": false,
-            "rawText": "ok = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"suggestion\" and (r._field == \"task_result\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"ok\" }))\n\nerror = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"category_field\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"error\" }))\n\nunion(tables: [ok, error])\n  |> group(columns: [\"_field\"], mode:\"by\")\n  |> aggregateWindow(every: autoInterval, fn: count)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\"])",
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"greetings\" and (r._field == \"name\"))\n  |> keep(columns: [\"_value\", \"_time\"])\n  |> group(columns: [\"_value\"], mode:\"by\")\n  |> map(fn: (r) => ({ r with name: r._value }))\n  |> aggregateWindow(every: autoInterval, fn: count, column: \"name\")\n  |> group()\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_value\"], valueColumn: \"name\")\n",
             "range": null,
             "shifts": null
           },
@@ -966,10 +44,10 @@
         },
         "y": {
           "bounds": [
-            "0",
+            "",
             ""
           ],
-          "label": "# Predictions",
+          "label": "total",
           "prefix": "",
           "suffix": "",
           "base": "10",
@@ -987,27 +65,27 @@
           "scale": "linear"
         }
       },
-      "type": "line-stacked",
+      "type": "line",
       "colors": [
         {
-          "id": "cd765fe5-1c74-495b-9d05-bd5a6a746245",
+          "id": "8a31e473-0f98-4330-9efa-6694363a7a14",
           "type": "scale",
-          "hex": "#FDC44F",
-          "name": "Cthulhu",
+          "hex": "#31C0F6",
+          "name": "Nineteen Eighty Four",
           "value": "0"
         },
         {
-          "id": "179248ea-abfb-4a26-90fe-ea2e7567dca5",
+          "id": "4e9c0221-ac9d-43cc-895e-7b54b7a0f0e5",
           "type": "scale",
-          "hex": "#007C76",
-          "name": "Cthulhu",
+          "hex": "#A500A5",
+          "name": "Nineteen Eighty Four",
           "value": "0"
         },
         {
-          "id": "351bd55a-fa8b-4632-b915-24ceb1922669",
+          "id": "06ea06b0-e541-4abd-a615-4a86c6f177ab",
           "type": "scale",
-          "hex": "#8983FF",
-          "name": "Cthulhu",
+          "hex": "#FF7E27",
+          "name": "Nineteen Eighty Four",
           "value": "0"
         }
       ],
@@ -1015,16 +93,26 @@
       "tableOptions": {
         "verticalTimeAxis": true,
         "sortBy": {
-          "internalName": "time",
-          "displayName": "",
+          "internalName": "sum",
+          "displayName": "total",
           "visible": true
         },
         "wrapping": "truncate",
-        "fixFirstColumn": true
+        "fixFirstColumn": false
       },
       "fieldOptions": [
         {
-          "internalName": "time",
+          "internalName": "_value",
+          "displayName": "",
+          "visible": true
+        },
+        {
+          "internalName": "name",
+          "displayName": "",
+          "visible": true
+        },
+        {
+          "internalName": "_time",
           "displayName": "",
           "visible": true
         }
@@ -1032,24 +120,24 @@
       "timeFormat": "MM/DD/YYYY HH:mm:ss",
       "decimalPlaces": {
         "isEnforced": true,
-        "digits": 2
+        "digits": 0
       },
       "note": "",
       "noteVisibility": "default",
       "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/3f704b0a-8a30-4f44-be76-2634cab2e244"
+        "self": "/chronograf/v1/dashboards/2/cells/f517cb42-2741-42d9-a1ec-e042fc92ca7c"
       }
     },
     {
-      "i": "f41acf10-9742-425b-bc74-e1334d0ae821",
+      "i": "fa4c2e9d-14c0-4aa7-9083-578fcf267d1b",
       "x": 0,
       "y": 0,
-      "w": 3,
-      "h": 3,
-      "name": "Ticket predictions",
+      "w": 4,
+      "h": 5,
+      "name": "Name ocurrencies",
       "queries": [
         {
-          "query": "ok = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"suggestion\" and (r._field == \"task_result\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"ok\" }))\n\nerror = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"category_field\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"error\" }))\n\nunion(tables: [ok, error])\n  |> count(column: \"_value\")",
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"greetings\" and (r._field == \"name\"))\n  |> keep(columns: [\"_value\"])\n  |> group(columns: [\"_value\"], mode:\"by\")\n  |> reduce(fn: (r, accumulator) => ({ sum: 1.0 + accumulator.sum }), identity: {sum: 0.0})\n  |> group()\n",
           "queryConfig": {
             "database": "",
             "measurement": "",
@@ -1061,7 +149,7 @@
               "tags": []
             },
             "areTagsAccepted": false,
-            "rawText": "ok = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"suggestion\" and (r._field == \"task_result\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"ok\" }))\n\nerror = from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"category_error\" and (r._field == \"category_field\"))\n  |> group()\n  |> map(fn: (r) => ({ r with _field: \"error\" }))\n\nunion(tables: [ok, error])\n  |> count(column: \"_value\")",
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"greetings\" and (r._field == \"name\"))\n  |> keep(columns: [\"_value\"])\n  |> group(columns: [\"_value\"], mode:\"by\")\n  |> reduce(fn: (r, accumulator) => ({ sum: 1.0 + accumulator.sum }), identity: {sum: 0.0})\n  |> group()\n",
             "range": null,
             "shifts": null
           },
@@ -1088,7 +176,7 @@
           ],
           "label": "",
           "prefix": "",
-          "suffix": " predictions",
+          "suffix": "",
           "base": "10",
           "scale": "linear"
         },
@@ -1104,13 +192,13 @@
           "scale": "linear"
         }
       },
-      "type": "single-stat",
+      "type": "table",
       "colors": [
         {
           "id": "base",
           "type": "text",
-          "hex": "#7CE490",
-          "name": "honeydew",
+          "hex": "#00C9FF",
+          "name": "laser",
           "value": "-1000000000000000000"
         }
       ],
@@ -1118,17 +206,22 @@
       "tableOptions": {
         "verticalTimeAxis": true,
         "sortBy": {
-          "internalName": "time",
-          "displayName": "",
+          "internalName": "_value",
+          "displayName": "name",
           "visible": true
         },
         "wrapping": "truncate",
-        "fixFirstColumn": true
+        "fixFirstColumn": false
       },
       "fieldOptions": [
         {
-          "internalName": "time",
-          "displayName": "",
+          "internalName": "_value",
+          "displayName": "name",
+          "visible": true
+        },
+        {
+          "internalName": "sum",
+          "displayName": "total",
           "visible": true
         }
       ],
@@ -1140,16 +233,11 @@
       "note": "",
       "noteVisibility": "default",
       "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/f41acf10-9742-425b-bc74-e1334d0ae821"
+        "self": "/chronograf/v1/dashboards/2/cells/fa4c2e9d-14c0-4aa7-9083-578fcf267d1b"
       }
     }
   ],
   "templates": [],
   "name": "Model",
-  "organization": "default",
-  "links": {
-    "self": "/chronograf/v1/dashboards/1",
-    "cells": "/chronograf/v1/dashboards/1/cells",
-    "templates": "/chronograf/v1/dashboards/1/templates"
-  }
+  "organization": "default"
 }
