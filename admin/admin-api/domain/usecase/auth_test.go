@@ -59,7 +59,7 @@ func newAuthSuite(t *testing.T) *authSuite {
 	)
 
 	cfg := &config.Config{}
-	cfg.Auth.APIToken.CipherSecret = "someSuperSecretValue"
+	cfg.Auth.APITokenSecret = "someSuperSecretValue"
 
 	authInteractor := usecase.NewAuthInteractor(
 		cfg,

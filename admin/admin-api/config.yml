@@ -15,8 +15,6 @@ auth:
   apiTokenSecret: "api_token_secret"
   secureCookie: false
   cookieDomain: "kre.local"
-  apiToken:
-    cipherSecret: "someSuperSecretValue"
 mongodb:
   address: "mongodb://admin:123456@mongodb:27017/admin"
   dbName: "kre"
