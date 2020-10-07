@@ -1,7 +1,6 @@
 package gql
 
 import (
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"net/http"
 	"time"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gorilla/websocket"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
@@ -19,7 +19,7 @@ func NewHttpHandler(
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
 	settingInteractor usecase.SettingInteracter,
-	userActivityInteractor *usecase.UserActivityInteractor,
+	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor usecase.AuthInteracter,

@@ -4,6 +4,10 @@ metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    {{ if .Values.entrypointTLS }}
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
+    {{ end }}
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     # Based on this snippet:
     #  https://github.com/kubernetes/ingress-nginx/issues/5609#issuecomment-634908849
@@ -23,6 +27,12 @@ metadata:
       }
       default_type application/grpc;
 spec:
+  {{ if .Values.entrypointTLS -}}
+  tls:
+  - hosts: 
+    - entrypoint.{{ .Values.runtime.host }}
+    secretName: entrypoint.{{ .Values.runtime.host }}-tls
+  {{ end -}}
   rules:
     - host: entrypoint.{{ .Values.runtime.host }}
       http:

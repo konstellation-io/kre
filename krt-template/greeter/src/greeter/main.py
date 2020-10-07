@@ -19,6 +19,9 @@ async def handler(ctx, data):
     # If the date is not set, the 'date' field value will be now
     await ctx.prediction.save(error=ctx.prediction.ERR_NEW_LABELS)
 
+    # Save a measurement to show later in a Chronograf dashboard
+    ctx.measurement.save("greetings", {"name": data['name']}, {"node": "handler"})
+
     # Saving salutation into DB for later analysis or use
     await ctx.db.save("greeter", {"greeting": result})
 

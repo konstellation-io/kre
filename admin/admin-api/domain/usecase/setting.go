@@ -27,7 +27,7 @@ type SettingInteracter interface {
 type SettingInteractor struct {
 	logger        logging.Logger
 	settingRepo   repository.SettingRepo
-	userActivity  *UserActivityInteractor
+	userActivity  UserActivityInteracter
 	accessControl auth.AccessControl
 }
 
@@ -35,7 +35,7 @@ type SettingInteractor struct {
 func NewSettingInteractor(
 	logger logging.Logger,
 	settingRepo repository.SettingRepo,
-	userActivity *UserActivityInteractor,
+	userActivity UserActivityInteracter,
 	accessControl auth.AccessControl,
 ) SettingInteracter {
 	return &SettingInteractor{

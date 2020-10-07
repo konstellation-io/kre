@@ -22,7 +22,7 @@ type GraphQLController struct {
 	runtimeInteractor         *usecase.RuntimeInteractor
 	userInteractor            *usecase.UserInteractor
 	settingInteractor         usecase.SettingInteracter
-	userActivityInteractor    *usecase.UserActivityInteractor
+	userActivityInteractor    usecase.UserActivityInteracter
 	versionInteractor         *usecase.VersionInteractor
 	metricsInteractor         *usecase.MetricsInteractor
 	authInteractor            usecase.AuthInteracter
@@ -35,7 +35,7 @@ func NewGraphQLController(
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
 	settingInteractor usecase.SettingInteracter,
-	userActivityInteractor *usecase.UserActivityInteractor,
+	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor usecase.AuthInteracter,
