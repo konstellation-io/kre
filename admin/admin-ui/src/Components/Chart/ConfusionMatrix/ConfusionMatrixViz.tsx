@@ -36,6 +36,7 @@ const TEXT_COLOR = {
   DARK: '#00252E',
   LIGHT: '#CCF5FF'
 };
+const X_AXIS_MAX_LABEL_LENGTH = 20;
 
 function getTooltipContent(d: D) {
   return (
@@ -57,6 +58,7 @@ type Props = {
   height: number;
   margin: Margin;
   data: D[];
+  ellipseLabels: boolean;
 };
 
 class ConfusionMatrixViz {
@@ -157,9 +159,11 @@ class ConfusionMatrixViz {
   };
 
   createAxes = () => {
-    const { xScale, yScale, g, innerHeight, axisBoxSide } = this;
+    const { xScale, yScale, g, innerHeight, axisBoxSide, ellipseLabel } = this;
 
-    const xAxis = axisBottom(xScale).tickSize(0);
+    const xAxis = axisBottom(xScale)
+      .tickSize(0)
+      .tickFormat(ellipseLabel);
     const yAxis = axisLeft(yScale)
       .ticks(0)
       .tickSize(0);
@@ -179,11 +183,19 @@ class ConfusionMatrixViz {
       .attr('transform', `translate(${-axisBoxSide - AXIS_PADDING},0)`)
       .call(yAxis);
 
-    rotateAxis(xAxisG, -90);
+    rotateAxis(xAxisG, -45);
 
     // Remove unwanted axes lines
     yAxisG.select('.domain').remove();
     xAxisG.select('.domain').remove();
+
+    // Better aligns the X axis labels and adds a title
+    xAxisG
+      .selectAll('text')
+      .attr('dx', 0)
+      .attr('dy', 0)
+      .append('svg:title')
+      .text(d => `${d}`);
   };
 
   createAxisBoxes = () => {
@@ -340,16 +352,25 @@ class ConfusionMatrixViz {
     }
   };
 
+  ellipseLabel = (label: string) => {
+    if (!this.props.ellipseLabels) return label;
+
+    return label.length > X_AXIS_MAX_LABEL_LENGTH
+      ? `${label.slice(0, X_AXIS_MAX_LABEL_LENGTH)}...`
+      : label;
+  };
+
   getPaddings = () => {
     const {
       svg,
       xDomain,
       yDomain,
       axisBoxSide,
+      ellipseLabel,
       props: { width }
     } = this;
 
-    let xAxisHeight = getAxisHeight(svg, xDomain, -90);
+    let xAxisHeight = getAxisHeight(svg, xDomain.map(ellipseLabel), -45);
     let yAxisWidth = getAxisWidth(svg, yDomain);
 
     const leftAxisPadding = axisBoxSide + yAxisWidth + AXIS_PADDING;
