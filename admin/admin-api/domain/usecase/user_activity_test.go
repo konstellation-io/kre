@@ -10,7 +10,7 @@ import (
 
 type userActivitySuite struct {
 	ctrl                   *gomock.Controller
-	userActivityInteractor *UserActivityInteractor
+	userActivityInteractor UserActivityInteracter
 	mocks                  userActivitySuiteMocks
 }
 

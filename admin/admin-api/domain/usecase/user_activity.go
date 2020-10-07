@@ -20,7 +20,6 @@ import (
 type UserActivityInteracter interface {
 	Get(ctx context.Context, loggedUserID string, userEmail *string, types []entity.UserActivityType,
 		versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
-	Create(userID string, userActivityType entity.UserActivityType, vars []*entity.UserActivityVar) error
 	RegisterLogin(userID string) error
 	RegisterLogout(userID string) error
 	RegisterCreateRuntime(userID string, runtime *entity.Runtime) error
@@ -35,6 +34,8 @@ type UserActivityInteracter interface {
 	RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel, comment string)
 	RegisterRevokeSessions(userID string, userIDs, userEmails []string, comment string)
 	NewUpdateSettingVars(settingName, oldValue, newValue string) []*entity.UserActivityVar
+	RegisterGenerateAPIToken(userID, apiTokenName string) error
+	RegisterDeleteAPIToken(userID, apiTokenName string) error
 }
 
 // UserActivityInteractor  contains app logic about UserActivity entities
