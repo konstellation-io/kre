@@ -69,9 +69,8 @@ class EntrypointKRE:
             elapsed = (entrypoint_end - entrypoint_start).total_seconds() * 1000
 
             # Save the elapsed time measurement
-            fields = {"elapsed_ms": elapsed}
+            fields = {"elapsed_ms": elapsed, "tracking_id": tracking_id}
             tags = {
-                "tracking_id": tracking_id,
                 "workflow": subject,
                 "version": self.config.krt_version,
             }
@@ -80,7 +79,6 @@ class EntrypointKRE:
             # Save the elapsed time for each node
             for idx, t in enumerate(tracking):
                 tags = {
-                    "tracking_id": tracking_id,
                     "workflow": subject,
                     "version": self.config.krt_version,
                     "node": t["node_name"]
@@ -99,8 +97,9 @@ class EntrypointKRE:
                 elapsed = node_end - node_start
                 waiting = node_start - prev_node_end
                 fields = {
+                    "tracking_id": tracking_id,
                     "node_from": prev_node_name,
                     "elapsed_ms": elapsed.total_seconds() * 1000,
-                    "waiting_ms": waiting.total_seconds() * 1000,
+                    "waiting_ms": waiting.total_seconds() * 1000
                 }
                 self.measurements.save("node_elapsed_time", fields, tags)
