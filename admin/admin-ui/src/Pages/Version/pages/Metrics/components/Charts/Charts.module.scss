@@ -8,6 +8,7 @@
 }
 
 .wrapper {
+  position: relative;
   height: 100%;
   padding: 10px 36px 10px 10px;
   overflow: scroll;
@@ -33,6 +34,10 @@
       width: 0 !important;
       height: 0 !important;
     }
+  }
+
+  .modal {
+    opacity: 1;
   }
 }
 

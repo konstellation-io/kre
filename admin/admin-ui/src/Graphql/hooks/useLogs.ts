@@ -3,20 +3,17 @@ import {
   LogPanelFilters,
   NodeSelection
 } from 'Graphql/client/typeDefs';
-import { activeTabId, logTabs, logsOpened } from 'Graphql/client/cache';
+import {
+  activeTabId,
+  logTabs,
+  logsOpened,
+  openedVersion
+} from 'Graphql/client/cache';
 import { cloneDeep, findIndex, isEqual, omit } from 'lodash';
 
 import { LogLevel } from 'Graphql/types/globalTypes';
 import { dateFilterOptions } from 'Pages/Version/pages/Status/LogsPanel/components/Filters/components/DatesFilter/DateFilter';
 import moment from 'moment';
-
-type AddLogsTabVariables = {
-  runtimeId: string;
-  runtimeName: string;
-  versionId: string;
-  versionName: string;
-  nodes: NodeSelection[];
-};
 
 export interface UpdateTabFiltersVariables_newFilters {
   dateOption?: string;
@@ -138,19 +135,22 @@ function useLogs() {
     logTabs([...logTabsList, newTab]);
   }
 
-  function createLogsTab(newTabInfo: AddLogsTabVariables) {
+  function createLogsTab(nodes: NodeSelection[]) {
+    const { runtimeId, runtimeName, versionId, versionName } = openedVersion();
     const logTabsList = logTabs();
 
     const newLogTabId = getUniqueId();
 
-    const { nodes, ...baseFields } = newTabInfo;
     const newLogTab: LogPanel = {
-      ...baseFields,
+      runtimeId,
+      runtimeName,
+      versionId,
+      versionName,
       uniqueId: newLogTabId,
       filters: {
         ...getDefaultFilters(),
         nodes
-      } as LogPanelFilters
+      }
     };
 
     const tabIndex = findLogTab(logTabsList, newLogTab);

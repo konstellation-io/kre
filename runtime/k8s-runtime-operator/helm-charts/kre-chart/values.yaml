@@ -1,5 +1,7 @@
 developmentMode: false
 
+entrypointTLS: false
+
 runtime:
   host: "local"
 

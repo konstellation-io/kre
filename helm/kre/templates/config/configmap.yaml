@@ -8,6 +8,8 @@ metadata:
     app: {{ template "kre.fullname" . }}-admin-api
 data:
   KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
+  # Runtime Entrypoint TLS
+  KRE_ENTRYPOINT_TLS: "{{ .Values.config.runtime.entrypoint.tls }}"
   # Admin
   KRE_ADMIN_FRONTEND_BASE_URL: "{{ .Values.config.admin.frontendBaseURL }}"
   KRE_ADMIN_API_BASE_URL: "{{ $protocol }}://{{ .Values.config.admin.apiHost }}"

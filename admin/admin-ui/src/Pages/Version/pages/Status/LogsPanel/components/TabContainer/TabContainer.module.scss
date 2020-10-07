@@ -23,7 +23,7 @@ $color-tab-selected-bg: palette(lowlight, 800);
   @include font-small;
   color: font-color(grey);
 
-  min-width: 204px;
+  min-width: 144px;
   max-width: 280px;
 
   cursor: pointer;
@@ -40,11 +40,28 @@ $color-tab-selected-bg: palette(lowlight, 800);
     margin-left: $grid-unit;
   }
 
-  .title {
+  .runtime,
+  .separator,
+  .version {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .separator {
+    margin: 0 $grid-unit;
+  }
+
+  .version.openedVersion {
+    color: palette(highlight, 800);
+  }
+  &:hover .version.openedVersion {
+    color: palette(highlight, 700);
+  }
+  &.selected .version.openedVersion {
+    color: palette(highlight);
+  }
+
   &:hover {
     background-color: palette(base, 400);
     color: font-color(lowlight);

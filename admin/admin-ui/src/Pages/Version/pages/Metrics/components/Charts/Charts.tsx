@@ -4,6 +4,7 @@ import Accuracy from '../../boxes/Accuracy/Accuracy';
 import ConfusionMatrixBox from '../../boxes/ConfusionMatrixBox/ConfusionMatrixBox';
 import GeneralInfo from '../../boxes/GeneralInfo/GeneralInfo';
 import { GetMetrics } from 'Graphql/queries/types/GetMetrics';
+import { INFO } from './infoTexts';
 import LabelStats from '../../boxes/LabelStats/LabelStats';
 import React from 'react';
 import cx from 'classnames';
@@ -72,6 +73,7 @@ function Charts({ data, expanded, toggleExpanded, viewAllData }: Props) {
         })}
         style={{ height }}
       >
+        <div className={styles.modal} />
         <RowsWrapper separatorProps={separatorRowProps}>
           <Row
             initialHeight={165}
@@ -83,7 +85,7 @@ function Charts({ data, expanded, toggleExpanded, viewAllData }: Props) {
             })}
             disabled
           >
-            <GeneralInfo data={data.metrics.values} />
+            <GeneralInfo data={data.metrics.values} info={INFO.GENERAL} />
           </Row>
           <Row
             initialHeight={confusionMatrixHeight}
@@ -101,6 +103,7 @@ function Charts({ data, expanded, toggleExpanded, viewAllData }: Props) {
               nodeId={'r2'}
               data={data.metrics.charts.confusionMatrix}
               expanded={nodesToExpand.includes('r2')}
+              info={INFO.CONFUSION_MATRIX}
             />
           </Row>
           <Row
@@ -115,6 +118,7 @@ function Charts({ data, expanded, toggleExpanded, viewAllData }: Props) {
               nodeId={'r3'}
               data={series}
               viewAllData={viewAllData}
+              info={INFO.ACCURACY_RECALL_SUPPORT}
             />
           </Row>
           <Row

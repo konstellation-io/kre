@@ -1,0 +1,27 @@
+{{- if and ( eq .Values.certManager.enabled true) ( eq .Values.config.runtime.entrypoint.tls true) }}
+apiVersion: cert-manager.io/v1alpha3
+kind: ClusterIssuer
+metadata:
+  name: clusterissuer-runtimes-entrypoints
+spec:
+  acme:
+    server: {{ .Values.certManager.acme.server }}
+    email: {{ .Values.certManager.acme.email }}
+    privateKeySecretRef:
+      name: clusterissuer-runtimes
+    solvers:
+      {{ if hasKey .Values.certManager "dns01" -}}
+      - dns01:
+          route53:
+            region: {{ .Values.certManager.dns01.route53.region }}
+            accessKeyID: {{ .Values.certManager.dns01.route53.accessKeyID }}
+            hostedZoneID: {{ .Values.certManager.dns01.route53.hostedZoneID }}
+            secretAccessKeySecretRef:
+              name: aws-secret
+              key: AWS_SECRET_ACCESS_KEY
+    {{ else -}}
+      - http01:
+          ingress:
+            class: nginx
+    {{ end -}}
+{{- end }}

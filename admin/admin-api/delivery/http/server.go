@@ -30,7 +30,7 @@ func NewApp(
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
 	settingInteractor *usecase.SettingInteractor,
-	userActivityInteractor *usecase.UserActivityInteractor,
+	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,

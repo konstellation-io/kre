@@ -5,9 +5,7 @@ import {
 } from 'Graphql/queries/types/GetVersionWorkflows';
 import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 import React, { useEffect, useRef, useState } from 'react';
-import { RuntimeRouteParams, VersionRouteParams } from 'Constants/routes';
 
-import { GET_OPENED_VERSION_INFO } from 'Graphql/client/queries/getOpenedVersionInfo.graphql';
 import { NODE_NAME_ENTRYPOINT } from 'Hooks/useWorkflowsAndNodes';
 import { NodeSelection } from 'Graphql/client/typeDefs';
 import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
@@ -19,8 +17,6 @@ import cx from 'classnames';
 import { getWorkflowState } from '../../states';
 import styles from './Workflow.module.scss';
 import useLogs from 'Graphql/hooks/useLogs';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
 import useRenderOnResize from 'Hooks/useRenderOnResize';
 import useUserAccess from 'Hooks/useUserAccess';
 
@@ -59,11 +55,6 @@ function Workflow({
 }: Props) {
   const { createLogsTab } = useLogs();
   const { accessLevel } = useUserAccess();
-  const { versionId } = useParams<VersionRouteParams>();
-  const { data: localData } = useQuery(GET_OPENED_VERSION_INFO);
-  const runtimeName = localData?.openedVersion.runtimeName || '';
-  const versionName = localData?.openedVersion.versionName || '';
-  const { runtimeId } = useParams<RuntimeRouteParams>();
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const chartRef = useRef<HTMLDivElement>(null);
   const dimensions = useRenderOnResize({ container: chartRef });
@@ -74,13 +65,7 @@ function Workflow({
   }, [setContainerWidth, workflow.nodes]);
 
   function createTab(nodes: NodeSelection[]) {
-    createLogsTab({
-      runtimeId,
-      runtimeName,
-      versionId,
-      versionName,
-      nodes
-    });
+    createLogsTab(nodes);
   }
 
   function onInputNodeClick() {

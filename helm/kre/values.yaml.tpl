@@ -16,6 +16,8 @@ config:
     secureCookie: false
     cookieDomain: kre.local
   runtime:
+    entrypoint:
+      tls: false
     sharedStorageClass: standard
     sharedStorageSize: 2Gi
     nats_streaming:

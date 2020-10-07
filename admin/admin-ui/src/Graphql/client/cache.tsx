@@ -10,8 +10,10 @@ import { NodeStatus } from 'Graphql/types/globalTypes';
 import { Notification } from 'Graphql/client/models/Notification';
 import { OpenedVersion } from 'Graphql/client/models/OpenedVersion';
 
-const initialStateOpenedVersion: OpenedVersion = {
+export const initialStateOpenedVersion: OpenedVersion = {
+  runtimeId: '',
   runtimeName: '',
+  versionId: '',
   versionName: '',
   entrypointStatus: NodeStatus.STOPPED
 };

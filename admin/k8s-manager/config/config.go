@@ -18,6 +18,8 @@ var (
 type Config struct {
 	DevelopmentMode bool `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
 
+	EntrypointTLS bool `yaml:"entrypointTLS" envconfig:"KRE_ENTRYPOINT_TLS"`
+
 	BaseDomainName string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`
 
 	SharedStorageClass string `yaml:"sharedStorageClass" envconfig:"KRE_SHARED_STORAGECLASS"`
