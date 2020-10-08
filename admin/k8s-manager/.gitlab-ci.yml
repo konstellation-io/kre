@@ -19,7 +19,8 @@ release-k8s-manager:
   script:
     - cd admin/k8s-manager && npx semantic-release --debug
   rules:
-    - when: always
+    - if: '$CI_COMMIT_BRANCH == /*/'
+      when: always
       changes:
         - admin/k8s-manager/**/*
         - .gitlab-ci.yml
