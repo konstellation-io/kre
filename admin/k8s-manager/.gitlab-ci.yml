@@ -1,3 +1,16 @@
+sonar-k8s-manager:
+  extends: .sonar-scanner
+  variables:
+    SONAR_TOKEN: $SONAR_TOKEN_K8S_MANAGER
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin/k8s-manager/.sonar"
+    COMPONENT_PATH: admin/k8s-manager
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
+        - admin/k8s-manager/**/*
+
 release-k8s-manager:
   stage: semantic-release
   image: node:10
