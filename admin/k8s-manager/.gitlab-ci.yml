@@ -9,6 +9,7 @@ sonar-k8s-manager:
     - if: '$CI_COMMIT_BRANCH != ""'
       changes:
         - admin/k8s-manager/**/*
+        - .gitlab-ci.yml
 
 release-k8s-manager:
   stage: semantic-release
