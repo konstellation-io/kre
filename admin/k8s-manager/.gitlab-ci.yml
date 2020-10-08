@@ -6,7 +6,7 @@ sonar-k8s-manager:
     COMPONENT_PATH: admin/k8s-manager
     GIT_DEPTH: "0"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH != ""'
       when: always
       changes:
         - admin/k8s-manager/**/*
@@ -19,7 +19,8 @@ release-k8s-manager:
   script:
     - cd admin/k8s-manager && npx semantic-release --debug
   rules:
-    - if: '$CI_COMMIT_BRANCH != ""'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
       changes:
         - admin/k8s-manager/**/*
         - .gitlab-ci.yml
