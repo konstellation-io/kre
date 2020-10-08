@@ -7,12 +7,14 @@ test-admin-ui:
     - cd admin/admin-ui
     - yarn install
   script:
+    - yarn run test:cov
     - yarn run test:cov:ci
     - yarn run test:cov:sonar
   coverage: '/Statements   : \d+\.\d+/'
   artifacts:
     paths:
       - admin/admin-ui/test-report.xml
+      - admin/admin-ui/coverage
     reports:
       junit: admin/admin-ui/junit.xml
   rules:
