@@ -7,16 +7,12 @@ test-admin-ui:
     - cd admin/admin-ui
     - yarn install
   script:
-    - yarn run test:cov
-    - yarn run test:cov:ci
     - yarn run test:cov:sonar
   coverage: '/Statements   : \d+\.\d+/'
   artifacts:
     paths:
       - admin/admin-ui/test-report.xml
       - admin/admin-ui/coverage
-    reports:
-      junit: admin/admin-ui/junit.xml
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
@@ -27,9 +23,9 @@ sonar-admin-ui:
   extends: .sonar-scanner
   variables:
     SONAR_TOKEN: $SONAR_TOKEN_ADMIN_UI
-    SONAR_USER_HOME: '${CI_PROJECT_DIR}/admin/admin-ui/.sonar'
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin/admin-ui/.sonar"
     COMPONENT_PATH: admin/admin-ui
-    GIT_DEPTH: '0'
+    GIT_DEPTH: "0"
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
@@ -57,7 +53,7 @@ publish-admin-ui-image:
       command: ["--experimental"]
 
   variables:
-    IMAGE_PROJECT_NAME: 'konstellation/kre-admin-ui'
+    IMAGE_PROJECT_NAME: "konstellation/kre-admin-ui"
     DOCKER_USER: $DOCKER_USER
     DOCKER_PASS: $DOCKER_PASS
     DOCKER_HOST: tcp://docker:2375
