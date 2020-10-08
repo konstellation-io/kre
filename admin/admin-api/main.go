@@ -30,6 +30,10 @@ func main() {
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
 	sessionRepo := mongodb.NewSessionRepoMongoDB(cfg, logger, mongodbClient)
+	apiTokenRepo, err := mongodb.NewAPITokenRepoMongoDB(cfg, logger, mongodbClient)
+	if err != nil {
+		log.Fatal(err)
+	}
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 
@@ -62,6 +66,7 @@ func main() {
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
 	authInteractor := usecase.NewAuthInteractor(
+		cfg,
 		logger,
 		loginLinkTransport,
 		verificationCodeGenerator,
@@ -70,6 +75,7 @@ func main() {
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
 	)
 
@@ -87,7 +93,9 @@ func main() {
 		userRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
+		authInteractor,
 	)
 
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor, accessControl)

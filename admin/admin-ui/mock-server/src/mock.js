@@ -55,7 +55,7 @@ const generateVersion = (
     'STARTED',
     'PUBLISHED',
     'STOPPED',
-    'ERROR',
+    'ERROR'
   ]),
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
@@ -169,9 +169,10 @@ module.exports = {
   }),
   Query: () => ({
     me: () => ({
-      id: casual.uuid,
+      id: 'loggedUserId',
       accessLevel: 'ADMIN',
-      email: 'admin@intelygenz.com'
+      email: 'admin@intelygenz.com',
+      apiTokens: () => new MockList([2, 5])
     }),
     users: () => new MockList([20, 30]),
     runtimes: () => new MockList([4, 8]),
@@ -226,7 +227,12 @@ module.exports = {
       return _runtime;
     },
     createVersion: () => generateVersion({ id: 'V3', name: 'Version C' }),
-    updateSettings: () => ({ errors: [], settings: this.Settings })
+    updateSettings: () => ({ errors: [], settings: this.Settings }),
+    deleteApiToken: (_, b) => {
+      return { id: b.input.id };
+    },
+    generateApiToken: () =>
+      'JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5JYHFGAKSYJFDH5786587656587FDSAKDHFGASJ5'
   }),
   MetricsValues: () => ({
     accuracy: this.MetricsAccuracy,
@@ -253,6 +259,12 @@ module.exports = {
     creationDate: new Date().toUTCString(),
     lastActivity: new Date().toUTCString(),
     activeSessions: casual.integer(0, 9)
+  }),
+  ApiToken: () => ({
+    id: casual.uuid,
+    name: casual.name,
+    creationDate: new Date().toUTCString(),
+    lastActivity: new Date().toUTCString()
   }),
   LogPane: () => ({
     cursor: casual.string,

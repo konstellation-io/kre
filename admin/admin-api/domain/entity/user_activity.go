@@ -21,6 +21,8 @@ const (
 	UserActivityTypeRemoveUsers                UserActivityType = "REMOVE_USERS"
 	UserActivityTypeUpdateAccessLevels         UserActivityType = "UPDATE_ACCESS_LEVELS"
 	UserActivityTypeRevokeSessions             UserActivityType = "REVOKE_SESSIONS"
+	UserActivityTypeGenerateAPIToken           UserActivityType = "GENERATE_API_TOKEN"
+	UserActivityTypeDeleteAPIToken             UserActivityType = "DELETE_API_TOKEN"
 )
 
 func (e UserActivityType) IsValid() bool {

@@ -42,6 +42,8 @@ export enum UserActivityType {
   CREATE_RUNTIME = 'CREATE_RUNTIME',
   CREATE_USER = 'CREATE_USER',
   CREATE_VERSION = 'CREATE_VERSION',
+  DELETE_API_TOKEN = 'DELETE_API_TOKEN',
+  GENERATE_API_TOKEN = 'GENERATE_API_TOKEN',
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
   PUBLISH_VERSION = 'PUBLISH_VERSION',
@@ -85,6 +87,14 @@ export interface CreateUserInput {
 export interface CreateVersionInput {
   file: any;
   runtimeId: string;
+}
+
+export interface DeleteApiTokenInput {
+  id: string;
+}
+
+export interface GenerateApiTokenInput {
+  name: string;
 }
 
 export interface LogFilters {

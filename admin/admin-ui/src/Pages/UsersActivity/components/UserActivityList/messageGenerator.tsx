@@ -26,7 +26,8 @@ export enum VarTypes {
   CREATED_USER_EMAIL = 'CREATED_USER_EMAIL',
   CREATED_USER_ACCESS_LEVEL = 'CREATED_USER_ACCESS_LEVEL',
   USER_EMAILS = 'USER_EMAILS',
-  ACCESS_LEVEL = 'ACCESS_LEVEL'
+  ACCESS_LEVEL = 'ACCESS_LEVEL',
+  API_TOKEN_NAME = 'API_TOKEN_NAME'
 }
 
 type Message = ReactElement | null;
@@ -70,6 +71,7 @@ export default function getMessage(
   const createdUserAccessLevel = vars[VarTypes.CREATED_USER_ACCESS_LEVEL];
   const userEmails = vars[VarTypes.USER_EMAILS];
   const accessLevel = vars[VarTypes.ACCESS_LEVEL];
+  const tokenName = vars[VarTypes.API_TOKEN_NAME];
 
   const runtimeLink = runtimeId ? (
     <Link
@@ -136,6 +138,22 @@ export default function getMessage(
           {versionLink}
           at Runtime
           {runtimeLink}
+        </>
+      );
+      break;
+    case UserActivityType.GENERATE_API_TOKEN:
+      message = (
+        <>
+          New API Token generated:
+          <Highlight>{tokenName}</Highlight>
+        </>
+      );
+      break;
+    case UserActivityType.DELETE_API_TOKEN:
+      message = (
+        <>
+          API Token removed:
+          <Highlight>{tokenName}</Highlight>
         </>
       );
       break;

@@ -1,5 +1,7 @@
 package usecase
 
+//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/usecase_${GOFILE} -package=mocks
+
 import (
 	"context"
 	"errors"
@@ -13,6 +15,13 @@ import (
 
 // DefaultSessionLifetimeInDays ttl of the users sessions in days
 const DefaultSessionLifetimeInDays = 30
+
+type SettingInteracter interface {
+	CreateDefaults(ctx context.Context) error
+	Update(loggedUserID string, settings *entity.Settings, changes []entity.UserActivity) error
+	GetUnprotected(ctx context.Context) (*entity.Settings, error)
+	Get(ctx context.Context, loggedUserID string) (*entity.Settings, error)
+}
 
 // SettingInteractor contains app logic about Settings entities
 type SettingInteractor struct {
@@ -28,7 +37,7 @@ func NewSettingInteractor(
 	settingRepo repository.SettingRepo,
 	userActivity UserActivityInteracter,
 	accessControl auth.AccessControl,
-) *SettingInteractor {
+) SettingInteracter {
 	return &SettingInteractor{
 		logger,
 		settingRepo,

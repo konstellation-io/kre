@@ -226,7 +226,7 @@ function Users() {
   return (
     <PageBase>
       <div className={styles.container}>
-        <SettingsHeader>Users Settings</SettingsHeader>
+        <SettingsHeader>Users</SettingsHeader>
         {getContent()}
         {showConfirmation && (
           <ModalContainer

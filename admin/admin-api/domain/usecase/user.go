@@ -5,10 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
-
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
+	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
 
@@ -18,7 +17,9 @@ type UserInteractor struct {
 	userRepo               repository.UserRepo
 	userActivityInteractor UserActivityInteracter
 	sessionRepo            repository.SessionRepo
+	apiTokenRepo           repository.APITokenRepo
 	accessControl          auth.AccessControl
+	authInteractor         AuthInteracter
 }
 
 // NewUserInteractor creates a new UserInteractor
@@ -27,14 +28,18 @@ func NewUserInteractor(
 	userRepo repository.UserRepo,
 	userActivityInteractor UserActivityInteracter,
 	sessionRepo repository.SessionRepo,
+	apiTokenRepo repository.APITokenRepo,
 	accessControl auth.AccessControl,
+	authInteractor AuthInteracter,
 ) *UserInteractor {
 	return &UserInteractor{
 		logger,
 		userRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
+		authInteractor,
 	}
 }
 
@@ -46,6 +51,11 @@ func (i *UserInteractor) GetByID(userID string) (*entity.User, error) {
 // GetByIDs returns a list of User by IDs
 func (i *UserInteractor) GetByIDs(userIDs []string) ([]*entity.User, error) {
 	return i.userRepo.GetByIDs(userIDs)
+}
+
+// GetTokensByUserID returns a list of User by IDs
+func (i *UserInteractor) GetTokensByUserID(ctx context.Context, userID string) ([]*entity.APIToken, error) {
+	return i.apiTokenRepo.GetByUserID(ctx, userID)
 }
 
 // GetAllUsers returns all existing Users
@@ -146,10 +156,64 @@ func (i *UserInteractor) RemoveUsers(ctx context.Context, userIDs []string, logg
 		return nil, err
 	}
 
+	err = i.apiTokenRepo.DeleteByUserIDs(ctx, deletedUserIDs)
+	if err != nil {
+		return nil, err
+	}
+
 	err = i.accessControl.ReloadUserRoles()
 	if err != nil {
 		return nil, err
 	}
 
 	return users, nil
+}
+
+// DeleteAPIToken return the deleted APIToken
+func (i *UserInteractor) DeleteAPIToken(ctx context.Context, tokenID, loggedUserID string) (*entity.APIToken, error) {
+	i.logger.Info("Deleting API token.")
+
+	apiToken, err := i.apiTokenRepo.GetByID(ctx, tokenID)
+	if err != nil {
+		return nil, fmt.Errorf("error getting api token: %w", err)
+	}
+
+	err = i.apiTokenRepo.DeleteById(ctx, tokenID)
+	if err != nil {
+		return nil, fmt.Errorf("error deleting api token: %w", err)
+	}
+
+	err = i.userActivityInteractor.RegisterDeleteAPIToken(loggedUserID, apiToken.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error on register api token deletion: %w", err)
+	}
+
+	return apiToken, nil
+}
+
+// GenerateAPIToken create a new APIToken and return the internal token
+func (i *UserInteractor) GenerateAPIToken(ctx context.Context, name, loggedUserID string) (string, error) {
+	i.logger.Info("Generating API Token.")
+
+	code, err := i.apiTokenRepo.GenerateCode(loggedUserID)
+	if err != nil {
+		return "", fmt.Errorf("error generating api token: %w", err)
+	}
+
+	apiToken := entity.APIToken{
+		Name:   name,
+		UserID: loggedUserID,
+	}
+
+	err = i.apiTokenRepo.Create(ctx, apiToken, code)
+	if err != nil {
+		return "", fmt.Errorf("error saving api token: %w", err)
+	}
+
+	err = i.userActivityInteractor.RegisterGenerateAPIToken(loggedUserID, name)
+	if err != nil {
+		return "", fmt.Errorf("error on register api token generation: %w", err)
+	}
+
+	return code, err
 }

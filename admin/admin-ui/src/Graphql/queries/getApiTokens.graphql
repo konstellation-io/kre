@@ -1,0 +1,11 @@
+query GetApiTokens {
+  me {
+    id
+    apiTokens {
+      id
+      name
+      creationDate
+      lastActivity
+    }
+  }
+}

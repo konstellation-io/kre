@@ -1,10 +1,16 @@
 package usecase
 
+//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/usecase_${GOFILE} -package=mocks
+
 import (
 	"context"
 	"errors"
 	"strings"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 
 	"github.com/go-playground/validator"
 
@@ -16,6 +22,7 @@ import (
 
 // AuthInteractor will manage all things related to authorizations.
 type AuthInteractor struct {
+	cfg                       *config.Config
 	logger                    logging.Logger
 	loginLinkTransport        auth.LoginLinkTransport
 	verificationCodeGenerator auth.VerificationCodeGenerator
@@ -24,11 +31,25 @@ type AuthInteractor struct {
 	settingRepo               repository.SettingRepo
 	userActivityInteractor    UserActivityInteracter
 	sessionRepo               repository.SessionRepo
+	apiTokenRepo              repository.APITokenRepo
 	accessControl             auth.AccessControl
+}
+
+type AuthInteracter interface {
+	SignIn(ctx context.Context, email string, verificationCodeDurationInMinutes int) error
+	VerifyCode(code string) (string, error)
+	Logout(userID, token string) error
+	CreateSession(session entity.Session) error
+	VerifyAPIToken(ctx context.Context, apiToken string) (string, error)
+	CheckSessionIsActive(token string) error
+	RevokeUserSessions(userIDs []string, loggedUser, comment string) error
+	UpdateLastActivity(loggedUserID string) error
+	CountUserSessions(ctx context.Context, userID string) (int, error)
 }
 
 // NewAuthInteractor creates a new AuthInteractor.
 func NewAuthInteractor(
+	cfg *config.Config,
 	logger logging.Logger,
 	loginLinkTransport auth.LoginLinkTransport,
 	verificationCodeGenerator auth.VerificationCodeGenerator,
@@ -37,9 +58,11 @@ func NewAuthInteractor(
 	settingRepo repository.SettingRepo,
 	userActivityInteractor UserActivityInteracter,
 	sessionRepo repository.SessionRepo,
+	apiTokenRepo repository.APITokenRepo,
 	accessControl auth.AccessControl,
-) *AuthInteractor {
+) AuthInteracter {
 	return &AuthInteractor{
+		cfg,
 		logger,
 		loginLinkTransport,
 		verificationCodeGenerator,
@@ -48,19 +71,32 @@ func NewAuthInteractor(
 		settingRepo,
 		userActivityInteractor,
 		sessionRepo,
+		apiTokenRepo,
 		accessControl,
 	}
+}
+
+type TokenClaim struct {
+	UserID string `json:"userId"`
+	Token  string `json:"token"`
+	jwt.StandardClaims
 }
 
 var (
 	// ErrUserNotFound error
 	ErrUserNotFound = errors.New("error user not found")
+	// ErrAPITokenNotFound error
+	ErrAPITokenNotFound = errors.New("API Token not found")
+	// ErrAPITokenNameDup error
+	ErrAPITokenNameDup = errors.New("API Token name duplicated")
 	// ErrUserNotFound error
 	ErrUserEmailInvalid = errors.New("error user email is not valid")
 	// ErrVerificationCodeNotFound error
 	ErrVerificationCodeNotFound = errors.New("error the verification not found")
 	// ErrExpiredVerificationCode error
 	ErrExpiredVerificationCode = errors.New("error the verification code code is expired")
+	// ErrInvalidAPIToken error
+	ErrInvalidAPIToken = errors.New("error invalid API Token")
 	// ErrUserNotAllowed error
 	ErrUserNotAllowed = errors.New("error email address not allowed")
 	// ErrInvalidSession error
@@ -193,6 +229,27 @@ func (a *AuthInteractor) Logout(userID, token string) error {
 
 func (a *AuthInteractor) CreateSession(session entity.Session) error {
 	return a.sessionRepo.Create(session)
+}
+
+func (a *AuthInteractor) VerifyAPIToken(ctx context.Context, inputApiToken string) (string, error) {
+	apiToken, err := a.apiTokenRepo.GetByToken(ctx, inputApiToken)
+	if err != nil {
+		a.logger.Errorf("Error getting user API Token: %s", err)
+		return "", ErrInvalidAPIToken
+	}
+
+	err = a.userActivityInteractor.RegisterLogin(apiToken.UserID)
+	if err != nil {
+		return "", err
+	}
+
+	err = a.apiTokenRepo.UpdateLastActivity(ctx, apiToken.ID)
+	if err != nil {
+		a.logger.Errorf("Error updating API Token lastActivity: %s", err)
+		return "", err
+	}
+
+	return apiToken.UserID, nil
 }
 
 func (a *AuthInteractor) CheckSessionIsActive(token string) error {

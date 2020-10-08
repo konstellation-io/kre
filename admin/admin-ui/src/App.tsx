@@ -3,13 +3,16 @@ import 'kwc/index.css';
 import 'markdown-navbar/dist/navbar.css';
 import 'react-tabs/style/react-tabs.css';
 import 'Styles/markdown-navbar.scss';
+import 'react-toastify/dist/ReactToastify.css';
 import 'Styles/react-tabs.scss';
+import 'Styles/react-toastify.scss';
 
 import { ErrorMessage, SpinnerCircular } from 'kwc';
 import { Redirect, Switch } from 'react-router';
 import { Route, Router } from 'react-router-dom';
 
 import AccessDenied from 'Pages/AccessDenied/AccessDenied';
+import AddApiToken from 'Pages/AddApiToken/AddApiToken';
 import AddRuntime from 'Pages/AddRuntime/AddRuntime';
 import AddUser from 'Pages/AddUser/AddUser';
 import AddVersion from 'Pages/AddVersion/AddVersion';
@@ -22,6 +25,7 @@ import LogsPanel from 'Pages/Version/pages/Status/LogsPanel/LogsPanel';
 import MagicLink from 'Pages/MagicLink/MagicLink';
 import NotFound from 'Pages/NotFound/NotFound';
 import NotificationService from 'Components/NotificationService/NotificationService';
+import Profile from 'Pages/Profile/Profile';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import Runtime from 'Pages/Runtime/Runtime';
@@ -75,6 +79,7 @@ function ProtectedRoutes() {
 
           <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
           <Route path={ROUTE.NEW_USER} component={AddUser} />
+          <Route path={ROUTE.NEW_API_TOKEN} component={AddApiToken} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
           <Route exact path={ROUTE.HOME} component={Dashboard} />
@@ -91,6 +96,7 @@ function ProtectedRoutes() {
           <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
 
           <Route path={ROUTE.SETTINGS} component={Settings} />
+          <Route path={ROUTE.PROFILE} component={Profile} />
           <Route path={ROUTE.USERS} component={Users} />
           <Route path={ROUTE.AUDIT} component={UsersActivity} />
           <Route component={NotFound} />

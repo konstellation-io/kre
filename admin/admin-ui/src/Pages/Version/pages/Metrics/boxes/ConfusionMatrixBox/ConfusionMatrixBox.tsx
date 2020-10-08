@@ -25,7 +25,13 @@ type Props = {
   info: string;
   expanded: boolean;
 };
-function ConfusionMatrixBox({ toggleExpanded, nodeId, data, info, expanded }: Props) {
+function ConfusionMatrixBox({
+  toggleExpanded,
+  nodeId,
+  data,
+  info,
+  expanded
+}: Props) {
   const container = useRef(null);
   const { width, height } = useRenderOnResize({ container });
   return (

@@ -38,9 +38,6 @@ export const userSettings = makeVar<UserSettings>(initialStateUserSettings);
 
 const cache = new InMemoryCache({
   typePolicies: {
-    Version: {
-      fields: { config: { merge: false } }
-    },
     Query: {
       fields: {
         loggedIn: { read: () => loggedIn() },
@@ -55,6 +52,14 @@ const cache = new InMemoryCache({
         versions: { merge: false },
         settings: { merge: false }
       }
+    },
+    User: {
+      fields: {
+        apiTokens: { merge: false }
+      }
+    },
+    Version: {
+      fields: { config: { merge: false } }
     }
   }
 });

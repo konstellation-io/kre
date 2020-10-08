@@ -26,10 +26,10 @@ const logFormat = "${time_rfc3339} INFO remote_ip=${remote_ip}, method=${method}
 func NewApp(
 	cfg *config.Config,
 	logger logging.Logger,
-	authInteractor *usecase.AuthInteractor,
+	authInteractor usecase.AuthInteracter,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
-	settingInteractor *usecase.SettingInteractor,
+	settingInteractor usecase.SettingInteracter,
 	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
@@ -78,34 +78,55 @@ func NewApp(
 		resourceMetricsInteractor,
 	)
 
-	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey:  []byte(cfg.Auth.JWTSignSecret),
-		TokenLookup: "cookie:token",
-		ErrorHandler: func(err error) error {
-			logger.Errorf("Error looking for jwt token: %s", err)
-			return httperrors.HTTPErrUnauthorized
-		},
+	middlewareErrorHandler := func(err error) error {
+		logger.Errorf("Error looking for jwt token: %s", err)
+		return httperrors.HTTPErrUnauthorized
+	}
+
+	skipIfHeaderPresent := func(existCondition bool) func(c echo.Context) bool {
+		return func(c echo.Context) bool {
+			auth := c.Request().Header.Get(echo.HeaderAuthorization)
+			authExists := auth != ""
+
+			return authExists == existCondition
+		}
+
+	}
+
+	jwtCookieMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		Skipper:      skipIfHeaderPresent(true),
+		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
+		TokenLookup:  "cookie:token",
+		ErrorHandler: middlewareErrorHandler,
+	})
+
+	jwtHeaderMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		Skipper:      skipIfHeaderPresent(false),
+		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
+		ErrorHandler: middlewareErrorHandler,
 	})
 
 	sessionMiddleware := kremiddleware.NewSessionMiddleware(cfg, logger, authInteractor)
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
+	e.POST("/api/v1/auth/token/signin", authController.SignInWithAPIToken)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
-	e.POST("/api/v1/auth/logout", jwtMiddleware(authController.Logout))
+	e.POST("/api/v1/auth/logout", jwtCookieMiddleware(authController.Logout))
 
 	r := e.Group("/graphql")
-	r.Use(jwtMiddleware)
+	r.Use(jwtCookieMiddleware)
+	r.Use(jwtHeaderMiddleware)
 	r.Use(sessionMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 
 	m := e.Group("/measurements")
-	m.Use(jwtMiddleware)
+	m.Use(jwtCookieMiddleware)
 	m.Use(sessionMiddleware)
 	m.Use(kremiddleware.ChronografProxy())
 
 	d := e.Group("/database")
-	d.Use(jwtMiddleware)
+	d.Use(jwtCookieMiddleware)
 	d.Use(sessionMiddleware)
 	d.Use(kremiddleware.MongoExpressProxy())
 

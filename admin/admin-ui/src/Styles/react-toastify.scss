@@ -1,0 +1,15 @@
+@import './variables';
+@import './colors';
+@import './mixins';
+
+.Toastify__toast {
+  &--info {
+    @include font-small;
+    color: font-color(light);
+
+    background-color: palette(feedback);
+    text-align: center;
+    border-radius: 0.5 * $grid-unit;
+    min-height: 5 * $grid-unit;
+  }
+}

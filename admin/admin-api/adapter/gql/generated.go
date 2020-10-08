@@ -36,6 +36,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	ApiToken() ApiTokenResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 	Runtime() RuntimeResolver
@@ -49,6 +50,13 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	APIToken struct {
+		CreationDate func(childComplexity int) int
+		ID           func(childComplexity int) int
+		LastActivity func(childComplexity int) int
+		Name         func(childComplexity int) int
+	}
+
 	ConfigurationVariable struct {
 		Key   func(childComplexity int) int
 		Type  func(childComplexity int) int
@@ -102,6 +110,8 @@ type ComplexityRoot struct {
 		CreateRuntime              func(childComplexity int, input CreateRuntimeInput) int
 		CreateUser                 func(childComplexity int, input CreateUserInput) int
 		CreateVersion              func(childComplexity int, input CreateVersionInput) int
+		DeleteAPIToken             func(childComplexity int, input DeleteAPITokenInput) int
+		GenerateAPIToken           func(childComplexity int, input GenerateAPITokenInput) int
 		PublishVersion             func(childComplexity int, input PublishVersionInput) int
 		RemoveUsers                func(childComplexity int, input UsersInput) int
 		RevokeUserSessions         func(childComplexity int, input UsersInput) int
@@ -177,6 +187,7 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
+		APITokens      func(childComplexity int) int
 		AccessLevel    func(childComplexity int) int
 		ActiveSessions func(childComplexity int) int
 		CreationDate   func(childComplexity int) int
@@ -226,6 +237,10 @@ type ComplexityRoot struct {
 	}
 }
 
+type ApiTokenResolver interface {
+	CreationDate(ctx context.Context, obj *entity.APIToken) (string, error)
+	LastActivity(ctx context.Context, obj *entity.APIToken) (*string, error)
+}
 type MutationResolver interface {
 	CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error)
 	CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error)
@@ -239,6 +254,8 @@ type MutationResolver interface {
 	UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error)
 	RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error)
 	CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error)
+	DeleteAPIToken(ctx context.Context, input DeleteAPITokenInput) (*entity.APIToken, error)
+	GenerateAPIToken(ctx context.Context, input GenerateAPITokenInput) (string, error)
 }
 type QueryResolver interface {
 	Me(ctx context.Context) (*entity.User, error)
@@ -272,6 +289,7 @@ type UserResolver interface {
 	CreationDate(ctx context.Context, obj *entity.User) (string, error)
 	LastActivity(ctx context.Context, obj *entity.User) (*string, error)
 	ActiveSessions(ctx context.Context, obj *entity.User) (int, error)
+	APITokens(ctx context.Context, obj *entity.User) ([]*entity.APIToken, error)
 }
 type UserActivityResolver interface {
 	User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error)
@@ -298,6 +316,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "ApiToken.creationDate":
+		if e.complexity.APIToken.CreationDate == nil {
+			break
+		}
+
+		return e.complexity.APIToken.CreationDate(childComplexity), true
+
+	case "ApiToken.id":
+		if e.complexity.APIToken.ID == nil {
+			break
+		}
+
+		return e.complexity.APIToken.ID(childComplexity), true
+
+	case "ApiToken.lastActivity":
+		if e.complexity.APIToken.LastActivity == nil {
+			break
+		}
+
+		return e.complexity.APIToken.LastActivity(childComplexity), true
+
+	case "ApiToken.name":
+		if e.complexity.APIToken.Name == nil {
+			break
+		}
+
+		return e.complexity.APIToken.Name(childComplexity), true
 
 	case "ConfigurationVariable.key":
 		if e.complexity.ConfigurationVariable.Key == nil {
@@ -509,6 +555,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateVersion(childComplexity, args["input"].(CreateVersionInput)), true
+
+	case "Mutation.deleteApiToken":
+		if e.complexity.Mutation.DeleteAPIToken == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteApiToken_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAPIToken(childComplexity, args["input"].(DeleteAPITokenInput)), true
+
+	case "Mutation.generateApiToken":
+		if e.complexity.Mutation.GenerateAPIToken == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_generateApiToken_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.GenerateAPIToken(childComplexity, args["input"].(GenerateAPITokenInput)), true
 
 	case "Mutation.publishVersion":
 		if e.complexity.Mutation.PublishVersion == nil {
@@ -962,6 +1032,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.WatchVersion(childComplexity), true
 
+	case "User.apiTokens":
+		if e.complexity.User.APITokens == nil {
+			break
+		}
+
+		return e.complexity.User.APITokens(childComplexity), true
+
 	case "User.accessLevel":
 		if e.complexity.User.AccessLevel == nil {
 			break
@@ -1310,6 +1387,8 @@ type Mutation {
   updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
   revokeUserSessions(input: UsersInput!): [User!]!
   createUser(input: CreateUserInput!): User!
+  deleteApiToken(input: DeleteApiTokenInput!): ApiToken!
+  generateApiToken(input: GenerateApiTokenInput!): String!
 }
 
 type Subscription {
@@ -1356,6 +1435,14 @@ input CreateUserInput {
   accessLevel: AccessLevel!
 }
 
+input GenerateApiTokenInput {
+  name: String!
+}
+
+input DeleteApiTokenInput {
+  id: ID!
+}
+
 input UsersInput {
   userIds: [ID!]!
   comment: String!
@@ -1379,12 +1466,20 @@ type User {
   creationDate: String!
   lastActivity: String
   activeSessions: Int!
+  apiTokens: [ApiToken!]!
 }
 
 enum AccessLevel {
   VIEWER
   MANAGER
   ADMIN
+}
+
+type ApiToken {
+  id: ID!
+  name: String!
+  creationDate: String!
+  lastActivity: String
 }
 
 type ConfigurationVariable {
@@ -1517,6 +1612,8 @@ enum UserActivityType {
   REMOVE_USERS
   UPDATE_ACCESS_LEVELS
   REVOKE_SESSIONS
+  GENERATE_API_TOKEN
+  DELETE_API_TOKEN
 }
 
 input LogFilters {
@@ -1629,6 +1726,34 @@ func (ec *executionContext) field_Mutation_createVersion_args(ctx context.Contex
 	var arg0 CreateVersionInput
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNCreateVersionInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋadapterᚋgqlᚐCreateVersionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteApiToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 DeleteAPITokenInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNDeleteApiTokenInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋadapterᚋgqlᚐDeleteAPITokenInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_generateApiToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 GenerateAPITokenInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNGenerateApiTokenInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋadapterᚋgqlᚐGenerateAPITokenInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2080,6 +2205,139 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _ApiToken_id(ctx context.Context, field graphql.CollectedField, obj *entity.APIToken) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ApiToken",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ApiToken_name(ctx context.Context, field graphql.CollectedField, obj *entity.APIToken) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ApiToken",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ApiToken_creationDate(ctx context.Context, field graphql.CollectedField, obj *entity.APIToken) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ApiToken",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.ApiToken().CreationDate(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ApiToken_lastActivity(ctx context.Context, field graphql.CollectedField, obj *entity.APIToken) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ApiToken",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.ApiToken().LastActivity(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
 
 func (ec *executionContext) _ConfigurationVariable_key(ctx context.Context, field graphql.CollectedField, obj *entity.ConfigurationVariable) (ret graphql.Marshaler) {
 	defer func() {
@@ -3418,6 +3676,88 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	res := resTmp.(*entity.User)
 	fc.Result = res
 	return ec.marshalNUser2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteApiToken(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteApiToken_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAPIToken(rctx, args["input"].(DeleteAPITokenInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.APIToken)
+	fc.Result = res
+	return ec.marshalNApiToken2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPIToken(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_generateApiToken(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_generateApiToken_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().GenerateAPIToken(rctx, args["input"].(GenerateAPITokenInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Node_id(ctx context.Context, field graphql.CollectedField, obj *entity.Node) (ret graphql.Marshaler) {
@@ -5215,6 +5555,40 @@ func (ec *executionContext) _User_activeSessions(ctx context.Context, field grap
 	res := resTmp.(int)
 	fc.Result = res
 	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_apiTokens(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().APITokens(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.APIToken)
+	fc.Result = res
+	return ec.marshalNApiToken2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPITokenᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserActivity_id(ctx context.Context, field graphql.CollectedField, obj *entity.UserActivity) (ret graphql.Marshaler) {
@@ -7215,6 +7589,42 @@ func (ec *executionContext) unmarshalInputCreateVersionInput(ctx context.Context
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputDeleteApiTokenInput(ctx context.Context, obj interface{}) (DeleteAPITokenInput, error) {
+	var it DeleteAPITokenInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputGenerateApiTokenInput(ctx context.Context, obj interface{}) (GenerateAPITokenInput, error) {
+	var it GenerateAPITokenInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "name":
+			var err error
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputLogFilters(ctx context.Context, obj interface{}) (entity.LogFilters, error) {
 	var it entity.LogFilters
 	var asMap = obj.(map[string]interface{})
@@ -7462,6 +7872,63 @@ func (ec *executionContext) unmarshalInputUsersInput(ctx context.Context, obj in
 // endregion ************************** interface.gotpl ***************************
 
 // region    **************************** object.gotpl ****************************
+
+var apiTokenImplementors = []string{"ApiToken"}
+
+func (ec *executionContext) _ApiToken(ctx context.Context, sel ast.SelectionSet, obj *entity.APIToken) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, apiTokenImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ApiToken")
+		case "id":
+			out.Values[i] = ec._ApiToken_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "name":
+			out.Values[i] = ec._ApiToken_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "creationDate":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ApiToken_creationDate(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "lastActivity":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ApiToken_lastActivity(ctx, field, obj)
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
 
 var configurationVariableImplementors = []string{"ConfigurationVariable"}
 
@@ -7833,6 +8300,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "createUser":
 			out.Values[i] = ec._Mutation_createUser(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteApiToken":
+			out.Values[i] = ec._Mutation_deleteApiToken(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "generateApiToken":
+			out.Values[i] = ec._Mutation_generateApiToken(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -8397,6 +8874,20 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				}
 				return res
 			})
+		case "apiTokens":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_apiTokens(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8948,6 +9439,57 @@ func (ec *executionContext) marshalNAccessLevel2githubᚗcomᚋkonstellationᚑi
 	return res
 }
 
+func (ec *executionContext) marshalNApiToken2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v entity.APIToken) graphql.Marshaler {
+	return ec._ApiToken(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNApiToken2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPITokenᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.APIToken) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNApiToken2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPIToken(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNApiToken2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v *entity.APIToken) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ApiToken(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	return graphql.UnmarshalBoolean(v)
 }
@@ -9072,6 +9614,10 @@ func (ec *executionContext) unmarshalNCreateVersionInput2githubᚗcomᚋkonstell
 	return ec.unmarshalInputCreateVersionInput(ctx, v)
 }
 
+func (ec *executionContext) unmarshalNDeleteApiTokenInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋadapterᚋgqlᚐDeleteAPITokenInput(ctx context.Context, v interface{}) (DeleteAPITokenInput, error) {
+	return ec.unmarshalInputDeleteApiTokenInput(ctx, v)
+}
+
 func (ec *executionContext) marshalNEdge2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋdomainᚋentityᚐEdge(ctx context.Context, sel ast.SelectionSet, v entity.Edge) graphql.Marshaler {
 	return ec._Edge(ctx, sel, &v)
 }
@@ -9125,6 +9671,10 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNGenerateApiTokenInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋadminᚋadminᚑapiᚋadapterᚋgqlᚐGenerateAPITokenInput(ctx context.Context, v interface{}) (GenerateAPITokenInput, error) {
+	return ec.unmarshalInputGenerateApiTokenInput(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {

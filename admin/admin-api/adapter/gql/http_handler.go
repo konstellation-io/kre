@@ -4,13 +4,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gorilla/websocket"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
@@ -19,11 +18,11 @@ func NewHttpHandler(
 	logger logging.Logger,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
-	settingInteractor *usecase.SettingInteractor,
+	settingInteractor usecase.SettingInteracter,
 	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
-	authInteractor *usecase.AuthInteractor,
+	authInteractor usecase.AuthInteracter,
 	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 	cfg *config.Config,
 ) http.Handler {
