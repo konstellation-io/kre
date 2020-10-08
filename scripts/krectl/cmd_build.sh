@@ -1,6 +1,7 @@
 #!/bin/sh
 
 CLEAN_DOCKER=0
+SETUP_ENV=0
 
 cmd_build() {
   # NOTE: Use this loop to capture multiple unsorted args
@@ -8,6 +9,21 @@ cmd_build() {
     case "$1" in
      --clean)
       CLEAN_DOCKER=1
+      shift
+    ;;
+    --engine)
+      BUILD_ENGINE=1
+      BUILD_ALL=0
+      shift
+    ;;
+    --runtime)
+      BUILD_RUNTIME=1
+      BUILD_ALL=0
+      shift
+    ;;
+    --runners)
+      BUILD_RUNNERS=1
+      BUILD_ALL=0
       shift
     ;;
     --skip-frontend)
@@ -36,6 +52,9 @@ show_build_help() {
 
     options:
       --clean          sends a prune command to remove old docker images and containers. (will keep last 24h).
+      --engine         build only engine components (admin-api, k8s-manager, admin-ui, admin-ui-builder).
+      --runtime        build only runtime components (runtime-api, mongo-writer, operator).
+      --runners        build only runners (kre-entrypoint, kre-py, kre-go).
       --skip-frontend  skip docker build for admin-ui component.
 
     $(help_global_options)
@@ -43,45 +62,73 @@ show_build_help() {
 }
 
 build_docker_images() {
-  # Setup environment to build images inside minikube
-  echo_wait "Setting minikube docker-env\n"
-
-  # WARNING: This should always run outside minikube so docker can mount the volume correctly.
-  if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
-     echo_build_header "admin-ui-builder"
-
-     # build UI statics
-     export DOCKER_BUILDKIT=1 # Needed to load Dockerfile.builder.dockerignore file
-     run docker build -t admin-ui-build:latest admin/admin-ui -f admin/admin-ui/Dockerfile.builder
-
-     # creates a container and extract UI statics to admin-ui/build folder
-     CONTAINER_ID=$(docker create admin-ui-build:latest)
-     run docker cp "${CONTAINER_ID}":/app/build admin/admin-ui
-
-     # clean up
-     run docker rm "${CONTAINER_ID}"
-     unset DOCKER_BUILDKIT
+  # Engine
+  if [ "$BUILD_ENGINE" = "1" ] || [ "$BUILD_ALL" = "1" ]; then
+    build_engine
   fi
 
-  eval "$(minikube docker-env -p "$MINIKUBE_PROFILE")"
+  setup_env
+
+  # Runtime
+  if [ "$BUILD_RUNTIME" = "1" ] || [ "$BUILD_ALL" = "1" ]; then
+    build_runtime
+  fi
 
   # Runners
-  build_image kre-runtime-entrypoint runners/kre-entrypoint
-  build_image kre-py runners/kre-py
-  build_image kre-go runners/kre-go
+  if [ "$BUILD_RUNNERS" = "1" ] || [ "$BUILD_ALL" = "1" ]; then
+    build_runners
+  fi
 
-  # Admin
+  if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
+    echo_warning "¡¡¡¡¡ started with option $(echo_yellow "--local-frontend or --skip-frontend")."
+    echo "  Now run \`$(echo_light_green "yarn start")\` inside admin-ui"
+  fi
+}
+
+setup_env() {
+  if [ "$SETUP_ENV" = 1 ]; then
+    return
+  fi
+
+  # Setup environment to build images inside minikube
+  eval "$(minikube docker-env -p "$MINIKUBE_PROFILE")"
+  SETUP_ENV=1
+}
+
+build_yarn_frontend() {
+  echo_build_header "admin-ui-builder"
+
+  # build UI statics
+  export DOCKER_BUILDKIT=1 # Needed to load Dockerfile.builder.dockerignore file
+  run docker build -t admin-ui-build:latest admin/admin-ui -f admin/admin-ui/Dockerfile.builder
+
+  # creates a container and extract UI statics to admin-ui/build folder
+  CONTAINER_ID=$(docker create admin-ui-build:latest)
+  run docker cp "${CONTAINER_ID}":/app/build admin/admin-ui
+
+  # clean up
+  run docker rm "${CONTAINER_ID}"
+  unset DOCKER_BUILDKIT
+}
+
+build_engine() {
+  # WARNING: This should always run outside minikube so docker can mount the volume correctly.
+  if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
+    build_yarn_frontend
+  fi
+
+  setup_env
   build_image kre-admin-api admin/admin-api
   build_image kre-k8s-manager admin/k8s-manager
 
   if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
     build_image kre-admin-ui admin/admin-ui
   fi
+}
 
-  # Runtime
+build_runtime() {
   build_image kre-runtime-api runtime/runtime-api
   build_image kre-mongo-writer runtime/mongo-writer
-
   if  [ "$SKIP_OPERATOR_BUILD" != "1" ]; then
     if [ "$OPERATOR_SDK_INSTALLED" = "1" ]; then
       # Init helm and basic dependencies
@@ -100,11 +147,12 @@ build_docker_images() {
       echo
     fi
   fi
+}
 
-  if [ "$SKIP_FRONTEND_BUILD" = "1" ]; then
-    echo_warning "¡¡¡¡¡ started with option $(echo_yellow "--local-frontend or --skip-frontend")."
-    echo "  Now run \`$(echo_light_green "yarn start")\` inside admin-ui"
-  fi
+build_runners() {
+  build_image kre-runtime-entrypoint runners/kre-entrypoint
+  build_image kre-py runners/kre-py
+  build_image kre-go runners/kre-go
 }
 
 build_image() {
