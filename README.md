@@ -1,25 +1,38 @@
 - [KRE (Konstellation Runtime Engine)](#kre-konstellation-runtime-engine)
-- [Architecture](#archiecture)
   - [Engine](#engine)
   - [Runtime](#runtime)
+- [Architecture](#architecture)
+  - [Engine](#engine-1)
+  - [Runtime](#runtime-1)
     - [KRT](#krt)
 - [Install](#install)
+  - [Custom Installation](#custom-installation)
+    - [Prometheus](#prometheus)
 - [Development](#development)
+  - [Requirements](#requirements)
   - [Local Environment](#local-environment)
+    - [Login](#login)
 
 # KRE (Konstellation Runtime Engine)
 
 Konstellation Runtime Engine is an application that allow to run AI/ML models for inference based on the content of a
  `.krt` file. 
 
+ ## Engine
+
 |  Component  | Coverage  |  Bugs  |  Lines of Code  |  Maintainability Rating  |
 | :---------: | :-----:   |  :---: |  :-----------:  |  :--------------------:  |
 |  Admin UI  | [![coverage][admin-ui-coverage]][admin-ui-coverage-link] | [![bugs][admin-ui-bugs]][admin-ui-bugs-link] | [![loc][admin-ui-loc]][admin-ui-loc-link] | [![mr][admin-ui-mr]][admin-ui-mr-link] |
 |  Admin API  | [![coverage][admin-api-coverage]][admin-api-coverage-link] | [![bugs][admin-api-bugs]][admin-api-bugs-link] | [![loc][admin-api-loc]][admin-api-loc-link] | [![mr][admin-api-mr]][admin-api-mr-link] |
-| K8s Manager |  |  |  |  |
+|  K8s Manager | [![coverage][k8s-manager-coverage]][k8s-manager-coverage-link] | [![bugs][k8s-manager-bugs]][k8s-manager-bugs-link] | [![loc][k8s-manager-loc]][k8s-manager-loc-link] | [![mr][k8s-manager-mr]][k8s-manager-mr-link] |
+
+## Runtime
+
+|  Component  | Coverage  |  Bugs  |  Lines of Code  |  Maintainability Rating  |
+| :---------: | :-----:   |  :---: |  :-----------:  |  :--------------------:  |
 |  Runtime API  | [![coverage][runtime-api-coverage]][runtime-api-coverage-link] | [![bugs][runtime-api-bugs]][runtime-api-bugs-link] | [![loc][runtime-api-loc]][runtime-api-loc-link] | [![mr][runtime-api-mr]][runtime-api-mr-link] |
-|  K8s Runtime Operator   |  |  |  |  |
-|  Runner Python  | [![coverage][runner-python-coverage]][runner-python-coverage-link] | [![bugs][runner-python-bugs]][runner-python-bugs-link] | [![loc][runner-python-loc]][runner-python-loc-link] | [![mr][runner-python-mr]][runner-python-mr-link] |
+|  K8s Runtime Operator   | - | - | - | - |
+|  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![loc][mongo-writer-loc]][mongo-writer-loc-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
 
 
 # Architecture
@@ -205,10 +218,6 @@ You will see an output like this:
 ✔️  Done.
 ```
 
-
-
-
-
 [admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=coverage 
 [admin-ui-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_admin_ui&metric=Coverage 
 [admin-ui-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_ui&metric=bugs
@@ -227,6 +236,15 @@ You will see an output like this:
 [admin-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_admin_api&metric=sqale_rating
 [admin-api-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_admin_api
 
+[k8s-manager-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_k8s_manager&metric=coverage 
+[k8s-manager-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_k8s_manager 
+[k8s-manager-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_k8s_manager&metric=bugs
+[k8s-manager-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_k8s_manager
+[k8s-manager-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_k8s_manager&metric=ncloc
+[k8s-manager-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_k8s_manager
+[k8s-manager-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_k8s_manager&metric=sqale_rating
+[k8s-manager-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_k8s_manager
+
 [runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=coverage 
 [runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=Coverage 
 [runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=bugs
@@ -236,13 +254,13 @@ You will see an output like this:
 [runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_runtime_api&metric=sqale_rating
 [runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_runtime_api&metric=alert_status&view=list
 
-[runner-python-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=coverage 
-[runner-python-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Coverage 
-[runner-python-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=bugs
-[runner-python-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Security&view=list
-[runner-python-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=ncloc
-[runner-python-loc-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=Coverage&view=list
-[runner-python-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=sqale_rating
-[runner-python-mr-link]: https://sonarcloud.io/component_measures?id=konstellation_kre_py&metric=alert_status&view=list
+[mongo-writer-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_mongo_writer&metric=coverage
+[mongo-writer-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_mongo_writer 
+[mongo-writer-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_mongo_writer&metric=bugs
+[mongo-writer-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_mongo_writer
+[mongo-writer-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_mongo_writer&metric=ncloc
+[mongo-writer-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_mongo_writer
+[mongo-writer-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_mongo_writer&metric=sqale_rating
+[mongo-writer-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_mongo_writer
 
 
