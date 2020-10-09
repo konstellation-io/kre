@@ -1,3 +1,16 @@
+sonar-kre-entrypoint:
+  extends: .sonar-scanner
+  variables:
+    SONAR_TOKEN: $SONAR_TOKEN_KRE_ENTRYPOINT
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/runners/kre-entrypoint/.sonar"
+    COMPONENT_PATH: runners/kre-entrypoint
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+      changes:
+        - runners/kre-entrypoint/**/*
+
 release-kre-entrypoint:
   stage: semantic-release
   image: node:10

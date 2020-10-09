@@ -1,6 +1,7 @@
 - [KRE (Konstellation Runtime Engine)](#kre-konstellation-runtime-engine)
   - [Engine](#engine)
   - [Runtime](#runtime)
+  - [Runners](#runners)
 - [Architecture](#architecture)
   - [Engine](#engine-1)
   - [Runtime](#runtime-1)
@@ -34,6 +35,13 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 |  K8s Runtime Operator   | - | - | - | - |
 |  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![loc][mongo-writer-loc]][mongo-writer-loc-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
 
+## Runners
+
+|  Component  | Coverage  |  Bugs  |  Lines of Code  |  Maintainability Rating  |
+| :---------: | :-----:   |  :---: |  :-----------:  |  :--------------------:  |
+|  KRE Entrypoint  | [![coverage][kre-entrypoint-coverage]][kre-entrypoint-coverage-link] | [![bugs][kre-entrypoint-bugs]][kre-entrypoint-bugs-link] | [![loc][kre-entrypoint-loc]][kre-entrypoint-loc-link] | [![mr][kre-entrypoint-mr]][kre-entrypoint-mr-link] |
+|  KRE Go  | [![coverage][kre-go-coverage]][kre-go-coverage-link] | [![bugs][kre-go-bugs]][kre-go-bugs-link] | [![loc][kre-go-loc]][kre-go-loc-link] | [![mr][kre-go-mr]][kre-go-mr-link] |
+|  KRE Py  | [![coverage][kre-py-coverage]][kre-py-coverage-link] | [![bugs][kre-py-bugs]][kre-py-bugs-link] | [![loc][kre-py-loc]][kre-py-loc-link] | [![mr][kre-py-mr]][kre-py-mr-link] |
 
 # Architecture
 
@@ -263,4 +271,29 @@ You will see an output like this:
 [mongo-writer-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_mongo_writer&metric=sqale_rating
 [mongo-writer-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_mongo_writer
 
+[kre-py-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=coverage
+[kre-py-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py 
+[kre-py-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=bugs
+[kre-py-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py
+[kre-py-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=ncloc
+[kre-py-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py
+[kre-py-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=sqale_rating
+[kre-py-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py
 
+[kre-go-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=coverage
+[kre-go-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go 
+[kre-go-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=bugs
+[kre-go-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go
+[kre-go-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=ncloc
+[kre-go-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go
+[kre-go-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=sqale_rating
+[kre-go-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go
+
+[kre-entrypoint-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=coverage
+[kre-entrypoint-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint 
+[kre-entrypoint-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=bugs
+[kre-entrypoint-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint
+[kre-entrypoint-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=ncloc
+[kre-entrypoint-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint
+[kre-entrypoint-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=sqale_rating
+[kre-entrypoint-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint
