@@ -21,27 +21,27 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
  ## Engine
 
-|  Component  | Coverage  |  Bugs  |  Lines of Code  |  Maintainability Rating  |
-| :---------: | :-----:   |  :---: |  :-----------:  |  :--------------------:  |
-|  Admin UI  | [![coverage][admin-ui-coverage]][admin-ui-coverage-link] | [![bugs][admin-ui-bugs]][admin-ui-bugs-link] | [![loc][admin-ui-loc]][admin-ui-loc-link] | [![mr][admin-ui-mr]][admin-ui-mr-link] |
-|  Admin API  | [![coverage][admin-api-coverage]][admin-api-coverage-link] | [![bugs][admin-api-bugs]][admin-api-bugs-link] | [![loc][admin-api-loc]][admin-api-loc-link] | [![mr][admin-api-mr]][admin-api-mr-link] |
-|  K8s Manager | [![coverage][k8s-manager-coverage]][k8s-manager-coverage-link] | [![bugs][k8s-manager-bugs]][k8s-manager-bugs-link] | [![loc][k8s-manager-loc]][k8s-manager-loc-link] | [![mr][k8s-manager-mr]][k8s-manager-mr-link] |
+|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
+| :---------: | :-----:   |  :---: |  :--------------------:  |
+|  Admin UI  | [![coverage][admin-ui-coverage]][admin-ui-coverage-link] | [![bugs][admin-ui-bugs]][admin-ui-bugs-link] | [![mr][admin-ui-mr]][admin-ui-mr-link] |
+|  Admin API  | [![coverage][admin-api-coverage]][admin-api-coverage-link] | [![bugs][admin-api-bugs]][admin-api-bugs-link] | [![mr][admin-api-mr]][admin-api-mr-link] |
+|  K8s Manager | [![coverage][k8s-manager-coverage]][k8s-manager-coverage-link] | [![bugs][k8s-manager-bugs]][k8s-manager-bugs-link] | [![mr][k8s-manager-mr]][k8s-manager-mr-link] |
 
 ## Runtime
 
-|  Component  | Coverage  |  Bugs  |  Lines of Code  |  Maintainability Rating  |
-| :---------: | :-----:   |  :---: |  :-----------:  |  :--------------------:  |
-|  Runtime API  | [![coverage][runtime-api-coverage]][runtime-api-coverage-link] | [![bugs][runtime-api-bugs]][runtime-api-bugs-link] | [![loc][runtime-api-loc]][runtime-api-loc-link] | [![mr][runtime-api-mr]][runtime-api-mr-link] |
-|  K8s Runtime Operator   | - | - | - | - |
-|  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![loc][mongo-writer-loc]][mongo-writer-loc-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
+|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
+| :---------: | :-----:   |  :---: |  :--------------------:  |
+|  Runtime API  | [![coverage][runtime-api-coverage]][runtime-api-coverage-link] | [![bugs][runtime-api-bugs]][runtime-api-bugs-link] | [![mr][runtime-api-mr]][runtime-api-mr-link] |
+|  K8s Runtime Operator   | - | - | - |
+|  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
 
 ## Runners
 
-|  Component  | Coverage  |  Bugs  |  Lines of Code  |  Maintainability Rating  |
-| :---------: | :-----:   |  :---: |  :-----------:  |  :--------------------:  |
-|  KRE Entrypoint  | [![coverage][kre-entrypoint-coverage]][kre-entrypoint-coverage-link] | [![bugs][kre-entrypoint-bugs]][kre-entrypoint-bugs-link] | [![loc][kre-entrypoint-loc]][kre-entrypoint-loc-link] | [![mr][kre-entrypoint-mr]][kre-entrypoint-mr-link] |
-|  KRE Go  | [![coverage][kre-go-coverage]][kre-go-coverage-link] | [![bugs][kre-go-bugs]][kre-go-bugs-link] | [![loc][kre-go-loc]][kre-go-loc-link] | [![mr][kre-go-mr]][kre-go-mr-link] |
-|  KRE Py  | [![coverage][kre-py-coverage]][kre-py-coverage-link] | [![bugs][kre-py-bugs]][kre-py-bugs-link] | [![loc][kre-py-loc]][kre-py-loc-link] | [![mr][kre-py-mr]][kre-py-mr-link] |
+|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
+| :---------: | :-----:   |  :---: |  :--------------------:  |
+|  KRE Entrypoint  | [![coverage][kre-entrypoint-coverage]][kre-entrypoint-coverage-link] | [![bugs][kre-entrypoint-bugs]][kre-entrypoint-bugs-link] | [![mr][kre-entrypoint-mr]][kre-entrypoint-mr-link] |
+|  KRE Go  | [![coverage][kre-go-coverage]][kre-go-coverage-link] | [![bugs][kre-go-bugs]][kre-go-bugs-link] | [![mr][kre-go-mr]][kre-go-mr-link] |
+|  KRE Py  | [![coverage][kre-py-coverage]][kre-py-coverage-link] | [![bugs][kre-py-bugs]][kre-py-bugs-link] | [![mr][kre-py-mr]][kre-py-mr-link] |
 
 # Architecture
 
