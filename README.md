@@ -35,7 +35,7 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 |  K8s Runtime Operator   | - | - | - |
 |  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
 
-## Runners
+## Runners 
 
 |  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
 | :---------: | :-----:   |  :---: |  :--------------------:  |
