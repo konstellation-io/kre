@@ -14,7 +14,7 @@ class ContextPrediction:
         self.__nc__ = nc
         self.__logger__ = logger
 
-    async def save(self, predicted_value: str = "", true_value: str = "", utcdate: datetime = None,
+    async def save(self, predicted_value: str = "", true_value: str = "", extra: dict = None, utcdate: datetime = None,
                    error: str = "") -> None:
         if error != "":
             if error not in self.PREDICTION_ERRORS:
@@ -36,6 +36,7 @@ class ContextPrediction:
             "error": error,
             "predictedValue": predicted_value,
             "trueValue": true_value,
+            "extra": extra,
             "versionId": self.__config__.krt_version_id,
             "versionName": self.__config__.krt_version
         }
