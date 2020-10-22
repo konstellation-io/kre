@@ -14,10 +14,35 @@ The context object received by theses functions, has the following methods:
 
 ```python
 ctx.path("relative/path.xxx")
-ctx.set("label", value)
+
 ctx.get("label")
-ctx.measurement.save("measurement", fields_dict, tags_dict)
-await ctx.prediction.save("predicted_value", "true_value", datetime, "error")
+ctx.set("label", value)
+
+ctx.db.save(
+  coll,
+  data
+)
+
+ctx.db.find(
+  coll,
+  query
+)
+
+ctx.measurement.save(
+  measurement: str,
+  fields: dict,
+  tags: dict,
+  time: datetime=None,
+  precision=PRECISION_NS
+)
+
+await ctx.prediction.save(
+  predicted_value: str = "",
+  true_value: str = "",
+  extra: dict = None,
+  utcdate: datetime = None,
+  error: str = ""
+)
 ```
 
 The runner will have the following environment variables:
@@ -108,4 +133,3 @@ python3 src/main.py
 pipenv shell
 python3 test/test_runner.py
 ```
-
