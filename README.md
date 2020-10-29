@@ -91,7 +91,7 @@ run and a YAML file called `kre.yaml` with the desired workflows definitions.
 The base structure of a `kre.yaml` is as follow:
 
 ```yaml
-version: mettel-tnba-v1
+version: my-project-v1
 description: This is the new version that solves some problems.
 entrypoint: 
   proto: public_input.proto
