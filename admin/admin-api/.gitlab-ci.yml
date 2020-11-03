@@ -18,18 +18,18 @@
 #       changes:
 #         - admin/admin-api/**/*
 
-sonar-admin-api:
-  extends: .sonar-scanner
-  variables:
-    SONAR_TOKEN: $SONAR_TOKEN_ADMIN_API
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin/admin-api/.sonar"
-    COMPONENT_PATH: admin/admin-api
-    GIT_DEPTH: "0"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: always
-      changes:
-        - admin/admin-api/**/*
+# sonar-admin-api:
+#   extends: .sonar-scanner
+#   variables:
+#     SONAR_TOKEN: $SONAR_TOKEN_ADMIN_API
+#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin/admin-api/.sonar"
+#     COMPONENT_PATH: admin/admin-api
+#     GIT_DEPTH: "0"
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "master"'
+#       when: always
+#       changes:
+#         - admin/admin-api/**/*
 
 release-admin-api:
   stage: semantic-release
