@@ -1,0 +1,25 @@
+name: Pre Release
+
+on:
+  workflow_run:
+    workflows:
+      - "ADMIN admin-api Tests"
+    branches: [master]
+    types: 
+      - completed
+
+jobs:
+  generate-prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Generate a pre-release
+        uses: intelygenz/action-product-version-tags@v0.1.6
+        with:
+          current-major: 0
+          prefix: "release-"
+          mode: 'pre-release'
+          pre-release: 'alpha'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PATNAME }}
