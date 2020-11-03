@@ -1,35 +1,35 @@
-test-admin-api:
-  stage: test
-  image: golang:1.14
-  script:
-    - cd admin/admin-api
-    - go get -u github.com/jstemmer/go-junit-report
-    - go test ./... -cover -v -coverprofile=admin-api-coverage.out 2>&1 | tee -a report.out
-    - cat report.out | go-junit-report > admin-api-report.xml
-  coverage: /coverage:\s(\d+(?:\.\d+)?%)/
-  artifacts:
-    paths:
-      - admin/admin-api/admin-api-coverage.out
-    reports:
-      junit: admin/admin-api/admin-api-report.xml
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: always
-      changes:
-        - admin/admin-api/**/*
+# test-admin-api:
+#   stage: test
+#   image: golang:1.14
+#   script:
+#     - cd admin/admin-api
+#     - go get -u github.com/jstemmer/go-junit-report
+#     - go test ./... -cover -v -coverprofile=admin-api-coverage.out 2>&1 | tee -a report.out
+#     - cat report.out | go-junit-report > admin-api-report.xml
+#   coverage: /coverage:\s(\d+(?:\.\d+)?%)/
+#   artifacts:
+#     paths:
+#       - admin/admin-api/admin-api-coverage.out
+#     reports:
+#       junit: admin/admin-api/admin-api-report.xml
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "master"'
+#       when: always
+#       changes:
+#         - admin/admin-api/**/*
 
-sonar-admin-api:
-  extends: .sonar-scanner
-  variables:
-    SONAR_TOKEN: $SONAR_TOKEN_ADMIN_API
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin/admin-api/.sonar"
-    COMPONENT_PATH: admin/admin-api
-    GIT_DEPTH: "0"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: always
-      changes:
-        - admin/admin-api/**/*
+# sonar-admin-api:
+#   extends: .sonar-scanner
+#   variables:
+#     SONAR_TOKEN: $SONAR_TOKEN_ADMIN_API
+#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/admin/admin-api/.sonar"
+#     COMPONENT_PATH: admin/admin-api
+#     GIT_DEPTH: "0"
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "master"'
+#       when: always
+#       changes:
+#         - admin/admin-api/**/*
 
 release-admin-api:
   stage: semantic-release

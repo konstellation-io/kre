@@ -1,0 +1,18 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Generate a release
+        uses: intelygenz/action-product-version-tags@v0.1.6
+        with:
+          prefix: "release-"
+          mode: 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PATNAME }}

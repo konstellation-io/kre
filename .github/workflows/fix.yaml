@@ -1,0 +1,25 @@
+name: Fix
+
+on:
+  workflow_run:
+    workflows:
+      - "ADMIN admin-api Tests"
+    branches: ["release-*"]
+    types: 
+      - completed
+
+jobs:
+  create-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Generate a fix
+        uses: intelygenz/action-product-version-tags@v0.1.6
+        with:
+          prefix: "release-"
+          mode: 'fix'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PATNAME }}
