@@ -21,5 +21,6 @@ jobs:
           prefix: "release-"
           mode: 'pre-release'
           pre-release: 'alpha'
+          default-branch: 'master'
         env:
           GITHUB_TOKEN: ${{ secrets.PATNAME }}

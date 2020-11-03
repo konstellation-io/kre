@@ -31,19 +31,19 @@
 #       changes:
 #         - admin/admin-api/**/*
 
-release-admin-api:
-  stage: semantic-release
-  image: node:10
-  before_script:
-    - npm install --prefix admin/admin-api
-  script:
-    - cd admin/admin-api && npx semantic-release --debug
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: always
-      changes:
-        - admin/admin-api/**/*
-        - .gitlab-ci.yml
+# release-admin-api:
+#   stage: semantic-release
+#   image: node:10
+#   before_script:
+#     - npm install --prefix admin/admin-api
+#   script:
+#     - cd admin/admin-api && npx semantic-release --debug
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "master"'
+#       when: always
+#       changes:
+#         - admin/admin-api/**/*
+#         - .gitlab-ci.yml
 
 publish-admin-api-image:
   stage: publish-image
