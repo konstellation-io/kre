@@ -8,6 +8,7 @@ on:
       - v*
     paths:
       - "admin/admin-api/**/*"
+      - ".github/workflows/admin-admin-api*"
 
 jobs:
   test:
