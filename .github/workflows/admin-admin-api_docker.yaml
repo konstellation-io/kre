@@ -33,6 +33,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./admin/admin-api
+          file: ./admin/admin-api/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
