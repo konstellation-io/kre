@@ -5,4 +5,4 @@ config.dev.yml
 helm/values-dell.yaml
 helm/kre/charts/*
 runtime/k8s-runtime-operator/helm-charts/kre-chart/charts
-runners/kre-py/test/env_vars.sh
+runners
