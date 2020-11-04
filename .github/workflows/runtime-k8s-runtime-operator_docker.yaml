@@ -1,0 +1,55 @@
+name: RUNTIME k8s-runtime-operator Docker
+
+on:
+  push:
+    branches:
+      - "migrate-k8s-runtime-operator"
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      
+      - name: Setup Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'v3.2.4' # default is latest stable
+        id: install
+      
+      - name: Update Helm dependencies
+        run: |
+          helm dependency update helm-charts/kre-chart
+        working-directory: runtime/k8s-runtime-operator
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Version
+        id: get_version
+        # run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: echo ::set-output name=VERSION::v1.1.1
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: ./runtime/k8s-runtime-operator
+          file: ./runtime/k8s-runtime-operator/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-k8s-runtime-operator:${{ steps.get_version.outputs.VERSION }}
+            konstellation/kre-k8s-runtime-operator:latest
