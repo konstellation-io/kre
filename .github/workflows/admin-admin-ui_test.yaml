@@ -46,7 +46,7 @@ jobs:
           name: coverage-report
           path: admin/admin-ui
       - name: Fix code coverage paths
-        working-directory: ./front
+        working-directory: ./admin/admin-ui
         run: |
           sed -i 's|/home/runner/work/kre/kre/|/github/workspace/|g' coverage/lcov.info
           sed -i 's|/home/runner/work/kre/kre/|/github/workspace/|g' test-report.xml
