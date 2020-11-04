@@ -34,9 +34,9 @@ include:
   # - local: admin/k8s-manager/.gitlab-ci.yml
 
   # Runtime
-  - local: runtime/k8s-runtime-operator/.gitlab-ci.yml
-  - local: runtime/runtime-api/.gitlab-ci.yml
-  - local: runtime/mongo-writer/.gitlab-ci.yml
+  # - local: runtime/k8s-runtime-operator/.gitlab-ci.yml
+  # - local: runtime/runtime-api/.gitlab-ci.yml
+  # - local: runtime/mongo-writer/.gitlab-ci.yml
 
   # Runners
   - local: runners/kre-entrypoint/.gitlab-ci.yml
