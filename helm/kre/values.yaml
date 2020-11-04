@@ -4,8 +4,8 @@ developmentMode: false
 config:
   baseDomainName: "local"
   admin:
-    apiHost: ${KRE_ADMIN_API_HOST}
-    frontendBaseURL: ${KRE_ADMIN_FRONTEND_BASE_URL}
+    apiHost: api.kre.local
+    frontendBaseURL: http://admin.kre.local
     corsEnabled: true
     userEmail: dev@local.local
   smtp:
@@ -44,7 +44,7 @@ config:
 adminApi:
   image:
     repository: konstellation/kre-admin-api
-    tag: ${ADMIN_API_IMAGE_TAG}
+    tag: latest
     pullPolicy: IfNotPresent
   tls:
     enabled: false
@@ -57,7 +57,7 @@ adminApi:
 adminUI:
   image:
     repository: konstellation/kre-admin-ui
-    tag: ${ADMIN_UI_IMAGE_TAG}
+    tag: latest
     pullPolicy: IfNotPresent
   tls:
     enabled: false
@@ -66,7 +66,7 @@ adminUI:
 k8sManager:
   image:
     repository: konstellation/kre-k8s-manager
-    tag: ${K8S_MANAGER_IMAGE_TAG}
+    tag: latest
     pullPolicy: IfNotPresent
 
 
@@ -82,7 +82,7 @@ mongodb:
     className: standard
     size: 3G
   volumePermissions:
-    enabled: ${DEVELOPMENT_MODE}
+    enabled: false
     image:
       registry: docker.io
       repository: debian

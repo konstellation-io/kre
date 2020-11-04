@@ -99,5 +99,8 @@ deploy_helm_chart() {
     --install "${DEPLOY_NAME}" \
     --namespace "${NAMESPACE}" \
     --set developmentMode="${DEVELOPMENT_MODE}" \
+    --set config.admin.apiHost="${KRE_ADMIN_API_HOST}" \
+    --set config.admin.frontBaseURL="${KRE_ADMIN_FRONTEND_BASE_URL}" \
+    --set mongodb.volumePermissions.enabled="${DEVELOPMENT_MODE}" \
     helm/kre
 }
