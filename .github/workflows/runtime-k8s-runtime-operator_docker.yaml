@@ -2,8 +2,6 @@ name: RUNTIME k8s-runtime-operator Docker
 
 on:
   push:
-    branches:
-      - "migrate-k8s-runtime-operator"
     tags:
       - 'v*.*.*'
 
@@ -40,8 +38,7 @@ jobs:
 
       - name: Get Version
         id: get_version
-        # run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-        run: echo ::set-output name=VERSION::v1.1.1
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
