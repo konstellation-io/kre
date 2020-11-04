@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows:
       - "ADMIN admin-api Tests"
+      - "ADMIN k8s-manager Tests"
     branches: ["release-*"]
     types: 
       - completed
