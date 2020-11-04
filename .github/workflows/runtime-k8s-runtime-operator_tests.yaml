@@ -8,7 +8,7 @@ on:
       - v*
     paths:
       - "runtime/k8s-runtime-operator/**/*"
-      - ".github/workflows/admin-k8s-runtime-operator*"
+      - ".github/workflows/runtime-k8s-runtime-operator*"
 
 jobs:
   test:
