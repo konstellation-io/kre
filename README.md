@@ -37,11 +37,7 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
 ## Runners
 
-|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
-| :---------: | :-----:   |  :---: |  :--------------------:  |
-|  KRE Entrypoint  | [![coverage][kre-entrypoint-coverage]][kre-entrypoint-coverage-link] | [![bugs][kre-entrypoint-bugs]][kre-entrypoint-bugs-link] | [![mr][kre-entrypoint-mr]][kre-entrypoint-mr-link] |
-|  KRE Go  | [![coverage][kre-go-coverage]][kre-go-coverage-link] | [![bugs][kre-go-bugs]][kre-go-bugs-link] | [![mr][kre-go-mr]][kre-go-mr-link] |
-|  KRE Py  | [![coverage][kre-py-coverage]][kre-py-coverage-link] | [![bugs][kre-py-bugs]][kre-py-bugs-link] | [![mr][kre-py-mr]][kre-py-mr-link] |
+All runners for different languages are located on [kre-runners repo](https://github.com/konstellation-io/kre-runners).
 
 # Architecture
 
@@ -50,7 +46,6 @@ KRE is designed based on a microservice pattern to be run on top of a Kubernetes
 In the following diagram is described the main components and the relationship each other.
 
 ![Architecture](.github/images/kre-architecture.jpg)
-
 
 Below are described the main concepts of KRE.
 
@@ -270,30 +265,3 @@ You will see an output like this:
 [mongo-writer-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_mongo_writer
 [mongo-writer-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_mongo_writer&metric=sqale_rating
 [mongo-writer-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_mongo_writer
-
-[kre-py-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=coverage
-[kre-py-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py 
-[kre-py-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=bugs
-[kre-py-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py
-[kre-py-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=ncloc
-[kre-py-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py
-[kre-py-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_py&metric=sqale_rating
-[kre-py-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_py
-
-[kre-go-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=coverage
-[kre-go-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go 
-[kre-go-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=bugs
-[kre-go-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go
-[kre-go-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=ncloc
-[kre-go-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go
-[kre-go-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_go&metric=sqale_rating
-[kre-go-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_go
-
-[kre-entrypoint-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=coverage
-[kre-entrypoint-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint 
-[kre-entrypoint-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=bugs
-[kre-entrypoint-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint
-[kre-entrypoint-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=ncloc
-[kre-entrypoint-loc-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint
-[kre-entrypoint-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation_kre_entrypoint&metric=sqale_rating
-[kre-entrypoint-mr-link]: https://sonarcloud.io/dashboard?id=konstellation_kre_entrypoint
