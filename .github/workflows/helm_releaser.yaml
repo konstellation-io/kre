@@ -37,7 +37,6 @@ jobs:
           # format version X.X.X 
           RELEASE_VERSION=`echo "${{ steps.get_version.outputs.VERSION }}" | sed -e 's/v//g' | sed -e 's/-alpha.*/.0/g'`
           yq w -i helm/kre/Chart.yaml 'version' $RELEASE_VERSION
-          curl --request POST --header "${{ secrets.NOTIFY_TOKEN }}" "${{ secrets.NOTIFY_URL }}"$RELEASE_VERSION >/dev/null 2>&1
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.0.0
@@ -46,3 +45,7 @@ jobs:
           charts_repo_url: 'https://charts.konstellation.io'
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Update Helm Chart
+        run:  |
+          curl --request POST --header "${{ secrets.NOTIFY_TOKEN }}" "${{ secrets.NOTIFY_URL }}"$RELEASE_VERSION >/dev/null 2>&1
