@@ -2,6 +2,20 @@ apiVersion: v1
 entries:
   kre:
   - apiVersion: v2
+    appVersion: v0.2-alpha.1
+    created: "2020-11-05T18:17:06.740210539Z"
+    dependencies:
+    - condition: prometheus-operator.enabled
+      name: prometheus-operator
+      repository: https://kubernetes-charts.storage.googleapis.com
+      version: 9.3.1
+    description: Konstellation Runtime Environment Chart
+    digest: 18db648f3afab46e5e911e6b81d54a8cd22a677f6cb778f4d3b81d3abc3cfbde
+    name: kre
+    urls:
+    - https://github.com/konstellation-io/kre/releases/download/kre-0.2.0/kre-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: v0.1-alpha.0
     created: "2020-11-04T15:15:41.503277161Z"
     dependencies:
