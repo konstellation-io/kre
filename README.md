@@ -221,82 +221,82 @@ You will see an output like this:
 ✔️  Done.
 ```
 
-[admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_ui&metric=coverage
+[admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=coverage
 
-[admin-ui-coverage-link]: https://sonarcloud.io/component_measures?id=kre_admin_ui&metric=Coverage
+[admin-ui-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_admin_ui&metric=Coverage
 
-[admin-ui-bugs]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_ui&metric=bugs
+[admin-ui-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=bugs
 
-[admin-ui-bugs-link]: https://sonarcloud.io/component_measures?id=kre_admin_ui&metric=Reliability
+[admin-ui-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_admin_ui&metric=Reliability
 
-[admin-ui-loc]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_ui&metric=ncloc
+[admin-ui-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=ncloc
 
-[admin-ui-loc-link]: https://sonarcloud.io/component_measures?id=kre_admin_ui&metric=Coverage
+[admin-ui-loc-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_admin_ui&metric=Coverage
 
-[admin-ui-mr]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_ui&metric=sqale_rating
+[admin-ui-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=sqale_rating
 
-[admin-ui-mr-link]: https://sonarcloud.io/component_measures?id=kre_admin_ui&metric=Maintainability
+[admin-ui-mr-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_admin_ui&metric=Maintainability
 
-[admin-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_api&metric=coverage
+[admin-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_api&metric=coverage
 
-[admin-api-coverage-link]: https://sonarcloud.io/component_measures?id=kre_admin_api&metric=Coverage
+[admin-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_admin_api&metric=Coverage
 
-[admin-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_api&metric=bugs
+[admin-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_api&metric=bugs
 
-[admin-api-bugs-link]: https://sonarcloud.io/component_measures?id=kre_admin_api&metric=Security
+[admin-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_admin_api&metric=Security
 
-[admin-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_api&metric=ncloc
+[admin-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_api&metric=ncloc
 
-[admin-api-loc-link]: https://sonarcloud.io/component_measures?id=kre_admin_api&metric=Coverage
+[admin-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_admin_api&metric=Coverage
 
-[admin-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=kre_admin_api&metric=sqale_rating
+[admin-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_api&metric=sqale_rating
 
-[admin-api-mr-link]: https://sonarcloud.io/dashboard?id=kre_admin_api
+[admin-api-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_admin_api
 
-[k8s-manager-coverage]: https://sonarcloud.io/api/project_badges/measure?project=kre_k8s_manager&metric=coverage
+[k8s-manager-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_k8s_manager&metric=coverage
 
-[k8s-manager-coverage-link]: https://sonarcloud.io/dashboard?id=kre_k8s_manager
+[k8s-manager-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_k8s_manager
 
-[k8s-manager-bugs]: https://sonarcloud.io/api/project_badges/measure?project=kre_k8s_manager&metric=bugs
+[k8s-manager-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_k8s_manager&metric=bugs
 
-[k8s-manager-bugs-link]: https://sonarcloud.io/dashboard?id=kre_k8s_manager
+[k8s-manager-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_k8s_manager
 
-[k8s-manager-loc]: https://sonarcloud.io/api/project_badges/measure?project=kre_k8s_manager&metric=ncloc
+[k8s-manager-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_k8s_manager&metric=ncloc
 
-[k8s-manager-loc-link]: https://sonarcloud.io/dashboard?id=kre_k8s_manager
+[k8s-manager-loc-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_k8s_manager
 
-[k8s-manager-mr]: https://sonarcloud.io/api/project_badges/measure?project=kre_k8s_manager&metric=sqale_rating
+[k8s-manager-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_k8s_manager&metric=sqale_rating
 
-[k8s-manager-mr-link]: https://sonarcloud.io/dashboard?id=kre_k8s_manager
+[k8s-manager-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_k8s_manager
 
-[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=kre_runtime_api&metric=coverage
+[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=coverage
 
-[runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=kre_runtime_api&metric=Coverage
+[runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Coverage
 
-[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=kre_runtime_api&metric=bugs
+[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=bugs
 
-[runtime-api-bugs-link]: https://sonarcloud.io/component_measures?id=kre_runtime_api&metric=Security&view=list
+[runtime-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Security&view=list
 
-[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=kre_runtime_api&metric=ncloc
+[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=ncloc
 
-[runtime-api-loc-link]: https://sonarcloud.io/component_measures?id=kre_runtime_api&metric=Coverage&view=list
+[runtime-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Coverage&view=list
 
-[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=kre_runtime_api&metric=sqale_rating
+[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=sqale_rating
 
-[runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=kre_runtime_api&metric=alert_status&view=list
+[runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=alert_status&view=list
 
-[mongo-writer-coverage]: https://sonarcloud.io/api/project_badges/measure?project=kre_mongo_writer&metric=coverage
+[mongo-writer-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=coverage
 
-[mongo-writer-coverage-link]: https://sonarcloud.io/dashboard?id=kre_mongo_writer
+[mongo-writer-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_mongo_writer
 
-[mongo-writer-bugs]: https://sonarcloud.io/api/project_badges/measure?project=kre_mongo_writer&metric=bugs
+[mongo-writer-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=bugs
 
-[mongo-writer-bugs-link]: https://sonarcloud.io/dashboard?id=kre_mongo_writer
+[mongo-writer-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_mongo_writer
 
-[mongo-writer-loc]: https://sonarcloud.io/api/project_badges/measure?project=kre_mongo_writer&metric=ncloc
+[mongo-writer-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=ncloc
 
-[mongo-writer-loc-link]: https://sonarcloud.io/dashboard?id=kre_mongo_writer
+[mongo-writer-loc-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_mongo_writer
 
-[mongo-writer-mr]: https://sonarcloud.io/api/project_badges/measure?project=kre_mongo_writer&metric=sqale_rating
+[mongo-writer-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=sqale_rating
 
-[mongo-writer-mr-link]: https://sonarcloud.io/dashboard?id=kre_mongo_writer
+[mongo-writer-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_mongo_writer
