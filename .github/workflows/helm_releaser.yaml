@@ -21,7 +21,11 @@ jobs:
       
       - name: Get Version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: |
+          # format version X.X.X 
+          RELEASE_VERSION=`echo "${GITHUB_REF#refs/tags/}" | sed -e 's/v//g' | sed -e 's/-alpha.*/.0/g'`
+          echo ::set-output name=RELEASE_VERSION::${RELEASE_VERSION}
+          echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
       - uses: chrisdickinson/setup-yq@latest
       - name: Replace component version with YQ
@@ -31,12 +35,9 @@ jobs:
           yq w -i helm/kre/values.yaml 'adminApi.image.tag' ${{ steps.get_version.outputs.VERSION }}
           yq w -i helm/kre/values.yaml 'k8sManager.image.tag' ${{ steps.get_version.outputs.VERSION }}
 
-          # set app version in chart
+          # set app version and chart version
           yq w -i helm/kre/Chart.yaml 'appVersion' ${{ steps.get_version.outputs.VERSION }}
-
-          # format version X.X.X 
-          RELEASE_VERSION=`echo "${{ steps.get_version.outputs.VERSION }}" | sed -e 's/v//g' | sed -e 's/-alpha.*/.0/g'`
-          yq w -i helm/kre/Chart.yaml 'version' $RELEASE_VERSION
+          yq w -i helm/kre/Chart.yaml 'version' ${{ steps.get_version.outputs.RELEASE_VERSION }}
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.0.0
@@ -48,4 +49,4 @@ jobs:
 
       - name: Update Helm Chart
         run:  |
-          curl --request POST --header "${{ secrets.NOTIFY_TOKEN }}" "${{ secrets.NOTIFY_URL }}"$RELEASE_VERSION >/dev/null 2>&1
+          curl --request POST --header "${{ secrets.NOTIFY_TOKEN }}" "${{ secrets.NOTIFY_URL }}"${{ steps.get_version.outputs.RELEASE_VERSION }} >/dev/null 2>&1
