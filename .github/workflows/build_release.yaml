@@ -1,0 +1,284 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  docker-admin-api:
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # check commit if folder admin/admin-api have any changes
+      # set an env var with true or false is changes
+      # if false just update docker image tag
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: ./admin/admin-api
+          file: ./admin/admin-api/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-admin-api:${{ steps.get_version.outputs.VERSION }}
+            konstellation/kre-admin-api:latest
+
+  docker-admin-ui:
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Build Front
+        run: |
+          yarn install
+          yarn run build
+        working-directory: ./admin/admin-ui
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: ./admin/admin-ui
+          file: ./admin/admin-ui/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-admin-ui:${{ steps.get_version.outputs.VERSION }}
+            konstellation/kre-admin-ui:latest
+
+  docker-k8s-manager:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: ./admin/k8s-manager
+          file: ./admin/k8s-manager/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-k8s-manager:${{ steps.get_version.outputs.VERSION }}
+            konstellation/kre-k8s-manager:latest
+
+  docker-runtime-api:
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: ./runtime/runtime-api
+          file: ./runtime/runtime-api/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-runtime-api:${{ steps.get_version.outputs.VERSION }}
+            konstellation/kre-runtime-api:latest
+
+  docker-k8s-runtime-operator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      
+      - name: Setup Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'v3.2.4' # default is latest stable
+        id: install
+      
+      - name: Update Helm dependencies
+        run: |
+          helm dependency update helm-charts/kre-chart
+        working-directory: runtime/k8s-runtime-operator
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: ./runtime/k8s-runtime-operator
+          file: ./runtime/k8s-runtime-operator/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-k8s-runtime-operator:${{ steps.get_version.outputs.VERSION }}
+            konstellation/kre-k8s-runtime-operator:latest
+
+  docker-mongo-writer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: ./runtime/mongo-writer
+          file: ./runtime/mongo-writer/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-mongo-writer:${{ steps.get_version.outputs.VERSION }}
+            konstellation/kre-mongo-writer:latest
+
+  helm:
+    if: ${{ ! contains( github.event.ref, 'alpha' ) }}
+    runs-on: ubuntu-latest
+    needs:
+      - docker-admin-api
+      - docker-admin-ui
+      - docker-k8s-manager
+      - docker-runtime-api
+      - docker-k8s-runtime-operator
+      - docker-mongo-writer
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      
+      - name: Get Version
+        id: get_version
+        run: |
+          # format version X.X.X 
+          RELEASE_VERSION=`echo "${GITHUB_REF#refs/tags/}" | sed -e 's/v//g' | sed -e 's/-alpha.*/.0/g'`
+          echo ::set-output name=RELEASE_VERSION::${RELEASE_VERSION}
+          echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - uses: chrisdickinson/setup-yq@latest
+      - name: Replace component version with YQ
+        run:  |
+          # set image tags
+          yq w -i helm/kre/values.yaml 'adminUI.image.tag' ${{ steps.get_version.outputs.VERSION }}
+          yq w -i helm/kre/values.yaml 'adminApi.image.tag' ${{ steps.get_version.outputs.VERSION }}
+          yq w -i helm/kre/values.yaml 'k8sManager.image.tag' ${{ steps.get_version.outputs.VERSION }}
+
+          # set app version and chart version
+          yq w -i helm/kre/Chart.yaml 'appVersion' ${{ steps.get_version.outputs.VERSION }}
+          yq w -i helm/kre/Chart.yaml 'version' ${{ steps.get_version.outputs.RELEASE_VERSION }}
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.0.0
+        with:
+          charts_dir: 'helm'
+          charts_repo_url: 'https://charts.konstellation.io'
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Update Helm Chart
+        run:  |
+          curl --request POST --header "${{ secrets.NOTIFY_TOKEN }}" "${{ secrets.NOTIFY_URL }}"${{ steps.get_version.outputs.RELEASE_VERSION }} >/dev/null 2>&1
+
