@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package entrypoint;
 
+option go_package = "main";
+
 message Request {
   string name = 1;
 }
@@ -11,8 +13,8 @@ message Response {
 }
 
 service Entrypoint {
-  rpc Greet (Request) returns (Response) {
+  rpc PyGreet (Request) returns (Response) {
   };
-  rpc Salute (Request) returns (Response) {
+  rpc GoGreet (Request) returns (Response) {
   };
 };

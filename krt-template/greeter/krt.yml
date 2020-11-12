@@ -5,19 +5,25 @@ entrypoint:
   image: konstellation/kre-runtime-entrypoint:latest
 
 nodes:
-  - name: greeter
+  - name: py-greeter
     image: konstellation/kre-py:latest
-    src: src/greeter/main.py
+    src: src/py-greeter/main.py
+    # gpu is an optional value, defaults to false.
+    gpu: false
+
+  - name: go-greeter
+    image: konstellation/kre-go:latest
+    src: bin/go-greeter
     # gpu is an optional value, defaults to false.
     gpu: false
 
 workflows:
-  - name: greeting
-    entrypoint: Greet
+  - name: py-greeting
+    entrypoint: PyGreet
     sequential:
-      - greeter
+      - py-greeter
 
-  - name: saluting
-    entrypoint: Salute
+  - name: go-greeting
+    entrypoint: GoGreet
     sequential:
-      - greeter
+      - go-greeter
