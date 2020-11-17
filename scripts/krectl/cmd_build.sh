@@ -150,7 +150,7 @@ build_runtime() {
 }
 
 build_runners() {
-  build_image kre-runtime-entrypoint runners/kre-entrypoint
+  build_image kre-entrypoint runners/kre-entrypoint
   build_image kre-py runners/kre-py
   build_image kre-go runners/kre-go
 }
