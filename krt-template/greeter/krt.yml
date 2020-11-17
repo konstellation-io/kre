@@ -2,17 +2,17 @@ version: greeter-v1
 description: Version for testing.
 entrypoint:
   proto: public_input.proto
-  image: konstellation/kre-runtime-entrypoint:latest
+  image: konstellation/kre-entrypoint:1.6.0
 
 nodes:
   - name: py-greeter
-    image: konstellation/kre-py:latest
+    image: konstellation/kre-py:1.23.0
     src: src/py-greeter/main.py
     # gpu is an optional value, defaults to false.
     gpu: false
 
   - name: go-greeter
-    image: konstellation/kre-go:latest
+    image: konstellation/kre-go:1.9.0
     src: bin/go-greeter
     # gpu is an optional value, defaults to false.
     gpu: false
