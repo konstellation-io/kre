@@ -72,9 +72,13 @@ type Runtime struct {
 	Minio            MinioConfig   `bson:"minio"`
 	PublishedVersion string        `bson:"publishedVersion"`
 	Mongo            MongoConfig
+	Monoruntime      bool `bson:"monoruntime"`
 }
 
 func (r *Runtime) GetNamespace() string {
+	if r.Monoruntime {
+		return r.ID
+	}
 	return fmt.Sprintf("kre-%s", r.ID)
 }
 

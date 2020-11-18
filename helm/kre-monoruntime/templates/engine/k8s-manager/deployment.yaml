@@ -5,26 +5,27 @@ apiVersion: extensions/v1beta1
   {{ end }}
 kind: Deployment
 metadata:
-  name: {{ template "kre.fullname" . }}-k8s-manager
+  name: {{ .Release.Name }}-k8s-manager
 spec:
   replicas: 1
   selector:
     matchLabels:
       {{- include "kre.labels" . | nindent 6 }}
-      app: {{ template "kre.fullname" . }}-k8s-manager
+      app: {{ .Release.Name }}-k8s-manager
   template:
     metadata:
       labels:
         {{- include "kre.labels" . | nindent 8 }}
-        app: {{ template "kre.fullname" . }}-k8s-manager
+        app: {{ .Release.Name }}-k8s-manager
         type: admin
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
+      serviceAccountName: k8s-manager
       containers:
-        - name: {{ template "kre.fullname" . }}-k8s-manager
-          image: {{ .Values.engine.k8sManager.image.repository }}:{{ .Values.engine.k8sManager.image.tag }}
-          imagePullPolicy: {{ .Values.engine.k8sManager.image.pullPolicy }}
+        - name: {{ .Release.Name }}-k8s-manager
+          image: {{ .Values.k8sManager.image.repository }}:{{ .Values.k8sManager.image.tag }}
+          imagePullPolicy: {{ .Values.k8sManager.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap

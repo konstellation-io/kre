@@ -44,7 +44,7 @@ local_login() {
   echo_debug "watching $WATCH_FILE"
   echo_debug "waiting link log on pod: $ADMIN_API_POD"
 
-  kubectl -n kre logs "$ADMIN_API_POD" | tail -n 100 > "$WATCH_FILE"
+  kubectl -n "${NAMESPACE}" logs "$ADMIN_API_POD" | tail -n 100 > "$WATCH_FILE"
 
   # Read the file in reverse order and capture the first signin link
   LINK=$(awk '{print NR" "$0}' < "$WATCH_FILE" | sort -k1 -n -r | sed 's/^[^ ]* //g' | egrep -oh "http://.*/signin/([^\"]*)" | head -n 1)

@@ -4,7 +4,7 @@ metadata:
   name: admin-api
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-admin-api
+    app: {{ .Release.Name }}-admin-api
 spec:
   clusterIP: None
   ports:
@@ -14,4 +14,4 @@ spec:
       targetPort: grpc
   selector:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-admin-api
+    app: {{ .Release.Name }}-admin-api

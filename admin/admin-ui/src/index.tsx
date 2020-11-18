@@ -79,7 +79,7 @@ function addErrorNotification(
 config
   .then(envVariables => {
     API_BASE_URL = envVariables.API_BASE_URL;
-    MONORUNTIME_MODE = envVariables.MONORUNTIME_MODE || false;
+    MONORUNTIME_MODE = envVariables.MONORUNTIME_MODE === '1';
 
     const API_BASE_URL_WS = envVariables.API_BASE_URL.replace('http', 'ws');
 

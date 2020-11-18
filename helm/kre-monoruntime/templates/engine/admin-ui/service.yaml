@@ -4,7 +4,7 @@ metadata:
   name: admin-ui
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-admin-ui
+    app: {{ .Release.Name }}-admin-ui
 spec:
   clusterIP: None
   ports:
@@ -14,4 +14,4 @@ spec:
       targetPort: web
   selector:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-admin-ui
+    app: {{ .Release.Name }}-admin-ui

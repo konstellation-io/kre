@@ -1,12 +1,48 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kre-mongo-runtime-init-script
+  name: kre-mongo-init-script
   labels:
   {{- include "runtime.labels" . | nindent 4 }}
 
 data:
-  init-admin.sh: |
+  init-engine-admin.js: |
+    conn = new Mongo();
+    db = conn.getDB("kre");
+    try {
+        db.createRole({
+        role: "readWriteMinusDropRole",
+        privileges: [
+        {
+            resource: { db: "kre", collection: ""},
+            actions: [ "collStats", "dbHash", "dbStats", "find", "killCursors", "listIndexes", "listCollections", "convertToCapped", "createCollection", "createIndex", "dropIndex", "insert", "remove", "renameCollectionSameDB", "update"]} ],
+            roles: []
+        }
+        );
+    } catch (e) {
+        print("Role for readWriteMinusDropRole for 'kre' already exists")
+    }
+
+    try {
+        db.createUser({user: "{{ .Values.mongodb.auth.adminUser }}", pwd: "{{ .Values.mongodb.auth.adminPassword }}", roles: [{role: 'readWriteMinusDropRole', db: "kre"}]})
+    } catch (e) {
+        print("User {{ .Values.mongodb.auth.adminUser }} admin for 'kre' database already exists")
+    }
+
+    try {
+        db.getCollection('users').insert({
+            "_id": "kre_admin_user",
+            "email": "{{ .Values.config.admin.userEmail }}",
+            "deleted": false,
+            "accessLevel": "ADMIN",
+            "creationDate": ISODate("2000-01-01T00:00:00.001Z")
+            })
+    } catch (error) {
+        print("User {{ .Values.mongodb.mongodbUsername }} for KRE already exists")
+    }
+
+
+  init-runtime-admin.sh: |
     #!/bin/bash
 
     : "${FORKED:=}"
@@ -45,7 +81,7 @@ data:
     	  _id: "rs0",
     	  version: 1,
     	  members: [
-    	    { _id: 0, host : "kre-mongo-runtime-0:27017" },
+    	    { _id: 0, host : "kre-mongo-0:27017" },
     	  ]
     	});
       wait_rs_ready = 15000;

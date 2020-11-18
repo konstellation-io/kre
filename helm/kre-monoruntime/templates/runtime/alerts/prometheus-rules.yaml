@@ -20,7 +20,7 @@ spec:
         - alert: MongoDB
           annotations:
             message: 'Mongo is Down'
-          expr: kube_statefulset_status_replicas{ namespace="{{ .Release.Namespace }}", statefulset="kre-mongo-runtime"} < 1
+          expr: kube_statefulset_status_replicas{ namespace="{{ .Release.Namespace }}", statefulset="kre-mongo"} < 1
           for: 5m
           labels:
             severity: warning

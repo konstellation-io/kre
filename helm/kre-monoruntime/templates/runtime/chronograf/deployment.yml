@@ -34,7 +34,7 @@ spec:
             - name: RESOURCES_PATH
               value: /usr/share/chronograf/resources
             - name: BASE_PATH
-              value: /measurements/{{ .Release.Name }}
+              value: /measurements/{{ .Release.Namespace }}
             - name: STATUS_FEED_URL
               value: ""
       volumes:

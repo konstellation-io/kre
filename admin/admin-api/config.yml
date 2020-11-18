@@ -20,3 +20,12 @@ mongodb:
   dbName: "kre"
 services:
   k8sManager: "localhost:50051"
+monoruntime:
+  enabled: false
+  name: ""
+  namespace: ""
+  minio:
+    secretKey: ""
+  mongo:
+    username: ""
+    password: ""

@@ -18,6 +18,7 @@ spec:
         {{- include "runtime.labels" . | nindent 8 }}
         app: runtime-api
     spec:
+      serviceAccountName: k8s-manager
       containers:
         - name: runtime-api
           # TODO: This version should be fixed and the operator released in-sync with new runtime-api changes
@@ -33,7 +34,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: KRE_SHARED_STORAGECLASS
-              value: {{ .Values.runtime.sharedStorageClass }}
+              value: {{ .Values.sharedStorageClass }}
             - name: KRE_RUNTIME_API_SERVER_PORT
               value: "50051"
           envFrom:

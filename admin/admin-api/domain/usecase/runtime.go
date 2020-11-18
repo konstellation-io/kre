@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/service"
@@ -26,6 +27,7 @@ var (
 
 // RuntimeInteractor contains app logic to handle Runtime entities
 type RuntimeInteractor struct {
+	cfg               *config.Config
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
 	runtimeService    service.RuntimeService
@@ -36,6 +38,7 @@ type RuntimeInteractor struct {
 
 // NewRuntimeInteractor creates a new RuntimeInteractor
 func NewRuntimeInteractor(
+	cfg *config.Config,
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.RuntimeService,
@@ -44,6 +47,7 @@ func NewRuntimeInteractor(
 	accessControl auth.AccessControl,
 ) *RuntimeInteractor {
 	return &RuntimeInteractor{
+		cfg,
 		logger,
 		runtimeRepo,
 		runtimeService,
@@ -51,6 +55,54 @@ func NewRuntimeInteractor(
 		passwordGenerator,
 		accessControl,
 	}
+}
+
+func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context) error {
+	adminUserID := "kre_admin_user" //TODO: look into DB
+	all, err := i.FindAll(ctx, adminUserID)
+	if err != nil {
+		return err
+	}
+
+	runtimeID := "monoruntime" // TODO: convert from name
+	runtimeName := i.cfg.Monoruntime.Name
+	description := "monoruntime"
+
+	if len(all) > 0 {
+		// NOTE: There already a runtime created
+		return nil
+	}
+
+	// Sanitize input params
+	runtimeID = strings.TrimSpace(runtimeID)
+	name := strings.TrimSpace(runtimeName)
+	description = strings.TrimSpace(description)
+
+	r := &entity.Runtime{
+		ID:          i.cfg.Monoruntime.Namespace,
+		Name:        name,
+		Description: description,
+		Owner:       adminUserID,
+		Mongo: entity.MongoConfig{
+			Username: i.cfg.Monoruntime.Mongo.Username,
+			Password: i.cfg.Monoruntime.Mongo.Password,
+		},
+		Minio: entity.MinioConfig{
+			AccessKey: "admin",
+			SecretKey: i.cfg.Monoruntime.Minio.SecretKey,
+		},
+		Status:      entity.RuntimeStatusStarted,
+		Monoruntime: true,
+	}
+
+	createdRuntime, err := i.runtimeRepo.Create(ctx, r)
+	if err != nil {
+		i.logger.Errorf("Error create monoruntime: %s", err)
+		return err
+	}
+	i.logger.Info("Monoruntime stored in the database with ID=" + createdRuntime.ID)
+
+	return nil
 }
 
 // CreateRuntime adds a new Runtime

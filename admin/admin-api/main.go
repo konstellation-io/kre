@@ -80,6 +80,7 @@ func main() {
 	)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(
+		cfg,
 		logger,
 		runtimeRepo,
 		runtimeService,
@@ -135,6 +136,13 @@ func main() {
 	err = settingInteractor.CreateDefaults(context.Background())
 	if err != nil {
 		panic(err)
+	}
+
+	if cfg.Monoruntime.Enabled {
+		err = runtimeInteractor.EnsureMonoruntime(context.Background())
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	app := http.NewApp(

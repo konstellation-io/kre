@@ -4,7 +4,7 @@ metadata:
   name: k8s-manager
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-k8s-manager
+    app: {{ .Release.Name }}-k8s-manager
 spec:
   clusterIP: None
   ports:
@@ -14,4 +14,4 @@ spec:
       targetPort: grpc
   selector:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-k8s-manager
+    app: {{ .Release.Name }}-k8s-manager

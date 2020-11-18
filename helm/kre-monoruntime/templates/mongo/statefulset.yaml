@@ -5,35 +5,35 @@ apiVersion: apps/v1beta1
   {{ end }}
 kind: StatefulSet
 metadata:
-  name: kre-mongo-runtime
+  name: kre-mongo
   labels:
     {{ include "runtime.labels" . | nindent 4 }}
-    app: kre-mongo-runtime
-    kre-app: kre-mongo-runtime
+    app: kre-mongo
+    kre-app: kre-mongo
 spec:
   replicas: 1
-  serviceName: kre-mongo-runtime
+  serviceName: kre-mongo
   selector:
     matchLabels:
       {{- include "runtime.labels" . | nindent 6 }}
-      app: kre-mongo-runtime
-      kre-app: kre-mongo-runtime
+      app: kre-mongo
+      kre-app: kre-mongo
   template:
     metadata:
       labels:
         {{ include "runtime.labels" . | nindent 8 }}
-        app: kre-mongo-runtime
-        kre-app: kre-mongo-runtime
+        app: kre-mongo
+        kre-app: kre-mongo
     spec:
       containers:
-        - name: kre-mongo-runtime
+        - name: kre-mongo
           image: mongo:4.2.8
           imagePullPolicy: IfNotPresent
           args:
             - "--replSet=rs0"
           envFrom:
             - secretRef:
-                name: kre-mongo-runtime-secret
+                name: kre-mongo-secret
             - secretRef:
                 name: kre-mongo-express-secret
           ports:
@@ -46,7 +46,7 @@ spec:
       volumes:
         - name: init-scripts
           configMap:
-            name: kre-mongo-runtime-init-script
+            name: kre-mongo-init-script
             defaultMode: 0777
   volumeClaimTemplates:
     - metadata:
@@ -54,7 +54,7 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        storageClassName: {{ .Values.runtime.mongo.persistentVolume.storageClass }}
+        storageClassName: {{ .Values.mongodb.persistentVolume.storageClass }}
         resources:
           requests:
-            storage:  {{ .Values.runtime.mongo.persistentVolume.size }}
+            storage:  {{ .Values.mongodb.persistentVolume.size }}

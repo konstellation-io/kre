@@ -46,6 +46,18 @@ type Config struct {
 	Services struct {
 		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
 	} `yaml:"services"`
+	Monoruntime struct {
+		Enabled   bool   `yaml:"enabled"`
+		Name      string `yaml:"name" envconfig:"KRE_MONORUNTIME_NAME"`
+		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
+		Minio     struct {
+			SecretKey string `yaml:"secretKey" envconfig:"MONORUNTIME_MINIO_SECRET_KEY"`
+		} `yaml:"minio"`
+		Mongo struct {
+			Username string `yaml:"username" envconfig:"MONORUNTIME_MONGO_USERNAME"`
+			Password string `yaml:"password" envconfig:"MONORUNTIME_MONGO_PASSWORD"`
+		} `yaml:"mongo"`
+	} `yaml:"monoruntime"`
 }
 
 var once sync.Once
@@ -64,6 +76,10 @@ func NewConfig() *Config {
 		err = decoder.Decode(cfg)
 		if err != nil {
 			panic(err)
+		}
+
+		if os.Getenv("KRE_MONORUNTIME_MODE") == "yes" {
+			cfg.Monoruntime.Enabled = true
 		}
 
 		err = envconfig.Process("", cfg)

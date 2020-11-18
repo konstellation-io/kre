@@ -50,11 +50,11 @@ minikube_start() {
 }
 
 get_admin_api_pod() {
-  kubectl -n kre get pod -l app=kre-local-admin-api -o custom-columns=":metadata.name" --no-headers
+  kubectl -n ${NAMESPACE} get pod -l app=${DEPLOY_NAME}-admin-api -o custom-columns=":metadata.name" --no-headers
 }
 
 get_mongo_pod() {
-  kubectl -n kre get pod -l app=kre-mongo -o custom-columns=":metadata.name" --no-headers
+  kubectl -n ${NAMESPACE} get pod -l app=${NAMESPACE}-mongo -o custom-columns=":metadata.name" --no-headers
 }
 
 minikube_stop() {

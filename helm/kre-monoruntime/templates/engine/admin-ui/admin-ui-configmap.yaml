@@ -1,4 +1,4 @@
-{{- $protocol := ternary  "https" "http" .Values.engine.adminUI.tls.enabled -}}
+{{- $protocol := ternary  "https" "http" .Values.adminUI.tls.enabled -}}
 
 apiVersion: v1
 kind: ConfigMap
@@ -6,9 +6,10 @@ metadata:
   name: {{ .Release.Name }}-admin-ui-configmap
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-admin-ui
+    app: {{ .Release.Name }}-admin-ui
 data:
   config.json: |
     {
-      "API_BASE_URL": "{{ $protocol }}://{{ .Values.engine.config.admin.apiHost }}"
+      "API_BASE_URL": "{{ $protocol }}://{{ .Values.config.admin.apiHost }}",
+      "MONORUNTIME_MODE": "1"
     }

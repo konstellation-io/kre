@@ -5,7 +5,7 @@ metadata:
   labels:
     app: kre-nats
 spec:
-  replicas: {{ .Values.runtime.nats_streaming.replicas }}
+  replicas: {{ .Values.nats_streaming.replicas }}
   serviceName: kre-nats
   selector:
     matchLabels:
@@ -41,9 +41,9 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        storageClassName: {{ .Values.runtime.nats_streaming.storage.className }}
+        storageClassName: {{ .Values.nats_streaming.storage.className }}
         resources:
           requests:
-            storage: {{ .Values.runtime.nats_streaming.storage.size }}
+            storage: {{ .Values.nats_streaming.storage.size }}
 
 

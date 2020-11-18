@@ -1,21 +1,21 @@
-{{- if .Values.engine.certManager.enabled }}
+{{- if .Values.certManager.enabled }}
 apiVersion: cert-manager.io/v1alpha3
 kind: Issuer
 metadata:
-  name: {{ template "kre.fullname" . }}-admin-api
+  name: {{ .Release.Name }}-admin-api
 spec:
   acme:
-    server: {{ .Values.engine.certManager.acme.server }}
-    email: {{ .Values.engine.certManager.acme.email }}
+    server: {{ .Values.certManager.acme.server }}
+    email: {{ .Values.certManager.acme.email }}
     privateKeySecretRef:
-      name: {{ template "kre.fullname" . }}-admin-api
+      name: {{ .Release.Name }}-admin-api
     solvers:
-      {{ if hasKey .Values.engine.certManager "dns01" -}}
+      {{ if hasKey .Values.certManager "dns01" -}}
       - dns01:
           route53:
-            region: {{ .Values.engine.certManager.dns01.route53.region }}
-            accessKeyID: {{ .Values.engine.certManager.dns01.route53.accessKeyID }}
-            hostedZoneID: {{ .Values.engine.certManager.dns01.route53.hostedZoneID }}
+            region: {{ .Values.certManager.dns01.route53.region }}
+            accessKeyID: {{ .Values.certManager.dns01.route53.accessKeyID }}
+            hostedZoneID: {{ .Values.certManager.dns01.route53.hostedZoneID }}
             secretAccessKeySecretRef:
               name: aws-secret
               key: AWS_SECRET_ACCESS_KEY
