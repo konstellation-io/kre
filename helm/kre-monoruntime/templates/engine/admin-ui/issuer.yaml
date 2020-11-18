@@ -1,0 +1,27 @@
+{{- if .Values.engine.certManager.enabled }}
+apiVersion: cert-manager.io/v1alpha3
+kind: Issuer
+metadata:
+  name: {{ template "kre.fullname" . }}-admin-ui
+spec:
+  acme:
+    server: {{ .Values.engine.certManager.acme.server }}
+    email: {{ .Values.engine.certManager.acme.email }}
+    privateKeySecretRef:
+      name: {{ template "kre.fullname" . }}-admin-ui
+    solvers:
+      {{ if hasKey .Values.engine.certManager "dns01" -}}
+      - dns01:
+          route53:
+            region: {{ .Values.engine.certManager.dns01.route53.region }}
+            accessKeyID: {{ .Values.engine.certManager.dns01.route53.accessKeyID }}
+            hostedZoneID: {{ .Values.engine.certManager.dns01.route53.hostedZoneID }}
+            secretAccessKeySecretRef:
+              name: aws-secret
+              key: AWS_SECRET_ACCESS_KEY
+      {{ else -}}
+      - http01:
+          ingress:
+            class: nginx
+  {{ end -}}
+  {{- end }}

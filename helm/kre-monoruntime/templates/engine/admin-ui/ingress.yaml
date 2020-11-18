@@ -1,0 +1,35 @@
+{{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+  {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+apiVersion: extensions/v1beta1
+  {{ end }}
+kind: Ingress
+metadata:
+  name: {{ template "kre.fullname" . }}-admin-ui-ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/issuer: {{ template "kre.fullname" . }}-admin-ui
+    {{ if hasKey .Values.engine.certManager "dns01" -}}
+    cert-manager.io/acme-challenge-type: "dns01"
+    {{ else -}}
+    cert-manager.io/acme-challenge-type: "http01"
+  {{ end }}
+  labels:
+    {{- include "kre.labels" . | nindent 4 }}
+    app: {{ template "kre.fullname" . }}-admin-ui-ingress
+spec:
+  {{- if .Values.engine.adminUI.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.engine.adminUI.host }}
+      secretName: {{ .Values.engine.adminUI.host }}-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.engine.adminUI.host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: admin-ui
+              servicePort: web

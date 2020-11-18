@@ -1,0 +1,28 @@
+{{ if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+  {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+apiVersion: extensions/v1beta1
+  {{ end }}
+kind: Deployment
+metadata:
+  name: mongo-writer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "runtime.labels" . | nindent 6 }}
+      app: mongo-writer
+  template:
+    metadata:
+      labels:
+        {{- include "runtime.labels" . | nindent 8 }}
+        app: mongo-writer
+    spec:
+      containers:
+        - name: mongo-writer
+          # TODO: This version should be fixed and the operator released in-sync with new mongo-writer changes
+          image: konstellation/kre-mongo-writer:latest
+          imagePullPolicy: {{ if .Values.developmentMode }}IfNotPresent{{ else }}Always{{ end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-runtime-secrets

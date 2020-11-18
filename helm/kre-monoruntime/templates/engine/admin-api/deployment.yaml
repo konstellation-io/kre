@@ -1,0 +1,48 @@
+{{ if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+        {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+apiVersion: extensions/v1beta1
+        {{ end }}
+kind: Deployment
+metadata:
+  name: {{ template "kre.fullname" . }}-admin-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+            {{- include "kre.labels" . | nindent 6 }}
+      app: {{ template "kre.fullname" . }}-admin-api
+  template:
+    metadata:
+      labels:
+              {{- include "kre.labels" . | nindent 8 }}
+        app: {{ template "kre.fullname" . }}-admin-api
+        type: admin
+      annotations:
+        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
+    spec:
+      volumes:
+        - name: admin-api-pv-storage
+          persistentVolumeClaim:
+            claimName: admin-api-pv-claim
+      containers:
+        - name: {{ template "kre.fullname" . }}-admin-api
+          image: {{ .Values.engine.adminApi.image.repository }}:{{ .Values.engine.adminApi.image.tag }}
+          imagePullPolicy: {{ .Values.engine.adminApi.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+            - secretRef:
+                name: {{ .Release.Name }}-engine-secrets
+          env:
+            - name: KRE_ADMIN_STORAGE_PATH
+              value: {{ .Values.engine.adminApi.storage.path }}
+            - name: KRE_ADMIN_API_ADDRESS
+              value: ":80"
+          ports:
+            - containerPort: 80
+              protocol: TCP
+              name: grpc
+          volumeMounts:
+            - name: admin-api-pv-storage
+              mountPath: {{ .Values.engine.adminApi.storage.path }}

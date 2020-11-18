@@ -1,0 +1,47 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    meta.helm.sh/release-name: kre-local
+    meta.helm.sh/release-namespace: kre
+    prometheus-operator-validated: "true"
+  labels:
+    app: prometheus-operator
+    app.kubernetes.io/managed-by: Helm
+    chart: prometheus-operator-9.1.1
+    heritage: Helm
+    release: kre-local
+  name: kre-local-{{ .Release.Namespace }}.rules
+  namespace: {{ .Release.Namespace }}
+spec:
+  groups:
+    - name: {{ .Release.Namespace }}.rules
+      rules:
+        - alert: MongoDB
+          annotations:
+            message: 'Mongo is Down'
+          expr: kube_statefulset_status_replicas{ namespace="{{ .Release.Namespace }}", statefulset="kre-mongo-runtime"} < 1
+          for: 5m
+          labels:
+            severity: warning
+        - alert: NATS
+          annotations:
+            message: 'NATS is Down'
+          expr: kube_statefulset_status_replicas{ namespace="{{ .Release.Namespace }}", statefulset="kre-nats"} < 1
+          for: 5m
+          labels:
+            severity: warning
+        - alert: Minio
+          annotations:
+            message: 'Minio is Down'
+          expr: kube_statefulset_status_replicas{ namespace="{{ .Release.Namespace }}", statefulset="kre-minio"} < 1
+          for: 5m
+          labels:
+            severity: warning
+        - alert: InfluxDB
+          annotations:
+            message: 'InfluxDB is Down'
+          expr: kube_statefulset_status_replicas{ namespace="{{ .Release.Namespace }}", statefulset="{{ .Release.Namespace }}-influxdb"} < 1
+          for: 5m
+          labels:
+            severity: warning

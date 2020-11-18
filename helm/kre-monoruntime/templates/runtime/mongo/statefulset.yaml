@@ -1,0 +1,60 @@
+{{ if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+  {{ else if .Capabilities.APIVersions.Has "apps/v1beta1" }}
+apiVersion: apps/v1beta1
+  {{ end }}
+kind: StatefulSet
+metadata:
+  name: kre-mongo-runtime
+  labels:
+    {{ include "runtime.labels" . | nindent 4 }}
+    app: kre-mongo-runtime
+    kre-app: kre-mongo-runtime
+spec:
+  replicas: 1
+  serviceName: kre-mongo-runtime
+  selector:
+    matchLabels:
+      {{- include "runtime.labels" . | nindent 6 }}
+      app: kre-mongo-runtime
+      kre-app: kre-mongo-runtime
+  template:
+    metadata:
+      labels:
+        {{ include "runtime.labels" . | nindent 8 }}
+        app: kre-mongo-runtime
+        kre-app: kre-mongo-runtime
+    spec:
+      containers:
+        - name: kre-mongo-runtime
+          image: mongo:4.2.8
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--replSet=rs0"
+          envFrom:
+            - secretRef:
+                name: kre-mongo-runtime-secret
+            - secretRef:
+                name: kre-mongo-express-secret
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: {{ .Release.Name }}-mongo-pvc
+              mountPath: "/data/db"
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: kre-mongo-runtime-init-script
+            defaultMode: 0777
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Release.Name }}-mongo-pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.runtime.mongo.persistentVolume.storageClass }}
+        resources:
+          requests:
+            storage:  {{ .Values.runtime.mongo.persistentVolume.size }}

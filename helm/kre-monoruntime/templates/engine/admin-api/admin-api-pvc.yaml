@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: admin-api-pv-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.engine.adminApi.storage.size }}
+  storageClassName: {{ .Values.engine.adminApi.storage.class }}
