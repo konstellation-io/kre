@@ -10,7 +10,7 @@ $color-hexagon-disabled: palette(base, 200);
   padding-top: 16px;
   z-index: 2;
 
-  .link:last-child:after {
+  .addRuntimeLink:after {
     background-color: transparent;
   }
 }
