@@ -121,6 +121,9 @@ func TestCreateRuntime(t *testing.T) {
 		},
 	}
 
+	updatedRuntime.ReleaseName = updatedRuntime.GetNamespace()
+	expectedRuntime.ReleaseName = expectedRuntime.GetNamespace()
+
 	ctx := context.Background()
 
 	s.mocks.runtimeService.EXPECT().Create(ctx, expectedRuntime).Return("OK", nil)
