@@ -47,10 +47,11 @@ type Config struct {
 		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
 	} `yaml:"services"`
 	Monoruntime struct {
-		Enabled   bool   `yaml:"enabled"`
-		Name      string `yaml:"name" envconfig:"KRE_MONORUNTIME_NAME"`
-		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
-		Minio     struct {
+		Enabled     bool   `yaml:"enabled"`
+		Name        string `yaml:"name" envconfig:"KRE_MONORUNTIME_NAME"`
+		ReleaseName string `yaml:"releaseName" envconfig:"KRE_MONORUNTIME_RELEASE_NAME"`
+		Namespace   string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
+		Minio       struct {
 			SecretKey string `yaml:"secretKey" envconfig:"MONORUNTIME_MINIO_SECRET_KEY"`
 		} `yaml:"minio"`
 		Mongo struct {

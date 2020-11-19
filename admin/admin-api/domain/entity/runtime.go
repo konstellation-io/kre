@@ -72,9 +72,12 @@ type Runtime struct {
 	Minio            MinioConfig   `bson:"minio"`
 	PublishedVersion string        `bson:"publishedVersion"`
 	Mongo            MongoConfig
-	Monoruntime      bool `bson:"monoruntime"`
+	Monoruntime      bool   `bson:"monoruntime"`
+	ReleaseName      string `bson:"releaseName"`
 }
 
+// Multi runtime: .Release.Name  == .Release.Namespace
+// Mono  runtime: .Release.Name  != .Release.Namespace
 func (r *Runtime) GetNamespace() string {
 	if r.Monoruntime {
 		return r.ID
@@ -93,7 +96,7 @@ func (r *Runtime) GetMongoURI(replicas int) string {
 }
 
 func (r *Runtime) GetInfluxURL() string {
-	return fmt.Sprintf("http://%s-influxdb:8086", r.GetNamespace())
+	return fmt.Sprintf("http://%s-influxdb:8086", r.ReleaseName)
 }
 
 func (r *Runtime) GetChronografURL() string {

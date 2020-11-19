@@ -1,6 +1,6 @@
 developmentMode: false
 
-runtimeName: "Super Runtime"
+runtimeName: "Mono Runtime"
 
 mongodb:
   service:

@@ -23,6 +23,7 @@ services:
 monoruntime:
   enabled: false
   name: ""
+  releaseName: ""
   namespace: ""
   minio:
     secretKey: ""

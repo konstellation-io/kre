@@ -94,6 +94,7 @@ func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context, ownerUser *en
 		},
 		Status:      entity.RuntimeStatusStarted,
 		Monoruntime: true,
+		ReleaseName: i.cfg.Monoruntime.ReleaseName,
 	}
 
 	createdRuntime, err := i.runtimeRepo.Create(ctx, r)
@@ -132,6 +133,9 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 			SecretKey: i.passwordGenerator.NewPassword(),
 		},
 	}
+
+	// NOTE: On multi-runtime-mode ReleaseName and Namespace are controlled by the operator and are the same.
+	r.ReleaseName = r.GetNamespace()
 
 	// Validation
 	err = r.Validate()
