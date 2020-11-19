@@ -1,22 +1,22 @@
 {{ if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
-        {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+  {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
 apiVersion: extensions/v1beta1
-        {{ end }}
+  {{ end }}
 kind: Deployment
 metadata:
-  name: {{ template "kre.fullname" . }}-admin-api
+  name: {{ .Release.Name }}-admin-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-            {{- include "kre.labels" . | nindent 6 }}
-      app: {{ template "kre.fullname" . }}-admin-api
+      {{- include "kre.labels" . | nindent 6 }}
+      app: {{ .Release.Name }}-admin-api
   template:
     metadata:
       labels:
-              {{- include "kre.labels" . | nindent 8 }}
-        app: {{ template "kre.fullname" . }}-admin-api
+        {{- include "kre.labels" . | nindent 8 }}
+        app: {{ .Release.Name }}-admin-api
         type: admin
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
@@ -26,9 +26,9 @@ spec:
           persistentVolumeClaim:
             claimName: admin-api-pv-claim
       containers:
-        - name: {{ template "kre.fullname" . }}-admin-api
-          image: {{ .Values.engine.adminApi.image.repository }}:{{ .Values.engine.adminApi.image.tag }}
-          imagePullPolicy: {{ .Values.engine.adminApi.image.pullPolicy }}
+        - name: {{ .Release.Name }}-admin-api
+          image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
+          imagePullPolicy: {{ .Values.adminApi.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
@@ -36,13 +36,17 @@ spec:
                 name: {{ .Release.Name }}-engine-secrets
           env:
             - name: KRE_ADMIN_STORAGE_PATH
-              value: {{ .Values.engine.adminApi.storage.path }}
+              value: {{ .Values.adminApi.storage.path }}
             - name: KRE_ADMIN_API_ADDRESS
               value: ":80"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           ports:
             - containerPort: 80
               protocol: TCP
               name: grpc
           volumeMounts:
             - name: admin-api-pv-storage
-              mountPath: {{ .Values.engine.adminApi.storage.path }}
+              mountPath: {{ .Values.adminApi.storage.path }}

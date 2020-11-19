@@ -25,7 +25,7 @@ show_restart_help() {
 }
 
 restart_admin_pods() {
-  POD_NAMES=$(kubectl -n kre get pod -l type=admin -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
+  POD_NAMES=$(kubectl -n "${NAMESPACE}" get pod -l type=admin -o custom-columns=":metadata.name" --no-headers | tr '\n' ' ')
 
   if [ -z "$POD_NAMES" ]; then
     echo_fatal "no pods to restart"
@@ -34,7 +34,7 @@ restart_admin_pods() {
 
   echo_wait "Restarting kre pods"
   # shellcheck disable=SC2086 # this behaviour is expected here
-  run kubectl -n kre delete pod ${POD_NAMES} --grace-period=0
+  run kubectl -n "${NAMESPACE}" delete pod ${POD_NAMES} --grace-period=0
 }
 
 get_version_pods() {

@@ -5,26 +5,26 @@ apiVersion: extensions/v1beta1
   {{ end }}
 kind: Deployment
 metadata:
-  name: {{ template "kre.fullname" . }}-admin-ui
+  name: {{ .Release.Name }}-admin-ui
 spec:
   replicas: 1
   selector:
     matchLabels:
       {{- include "kre.labels" . | nindent 6 }}
-      app: {{ template "kre.fullname" . }}-admin-ui
+      app: {{ .Release.Name }}-admin-ui
   template:
     metadata:
       labels:
         {{- include "kre.labels" . | nindent 8 }}
-        app: {{ template "kre.fullname" . }}-admin-ui
+        app: {{ .Release.Name }}-admin-ui
         type: admin
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
-        - name: {{ template "kre.fullname" . }}-admin-ui
-          image: {{ .Values.engine.adminUI.image.repository }}:{{ .Values.engine.adminUI.image.tag }}
-          imagePullPolicy: {{ .Values.engine.adminUI.image.pullPolicy }}
+        - name: {{ .Release.Name }}-admin-ui
+          image: {{ .Values.adminUI.image.repository }}:{{ .Values.adminUI.image.tag }}
+          imagePullPolicy: {{ .Values.adminUI.image.pullPolicy }}
           volumeMounts:
             - name: config-volume
               mountPath: /usr/share/nginx/html/config/config.json

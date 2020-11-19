@@ -4,21 +4,21 @@ metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
   annotations:
     kubernetes.io/ingress.class: "nginx"
-          {{ if .Values.runtime.entrypointTLS }}
+    {{ if .Values.entrypointTLS }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
-          {{ end }}
+    {{ end }}
     nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
     nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
 spec:
-        {{ if .Values.runtime.entrypointTLS -}}
+  {{ if .Values.entrypointTLS -}}
   tls:
     - hosts:
-        - proto.{{ .Values.runtime.host }}
-      secretName: proto.{{ .Values.runtime.host }}-tls
-        {{ end -}}
+        - proto.{{ .Values.host }}
+      secretName: proto.{{ .Values.host }}-tls
+  {{ end -}}
   rules:
-    - host: proto.{{ .Values.runtime.host }}
+    - host: proto.{{ .Values.host }}
       http:
         paths:
           - path: /

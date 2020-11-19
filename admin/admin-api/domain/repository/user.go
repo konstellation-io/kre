@@ -21,6 +21,8 @@ type UserRepo interface {
 
 	GetByIDs(keys []string) ([]*entity.User, error)
 
+	GetByAccessLevel(ctx context.Context, accessLevel entity.AccessLevel) ([]*entity.User, error)
+
 	GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error)
 
 	UpdateAccessLevel(ctx context.Context, userIDs []string, accessLevel entity.AccessLevel) ([]*entity.User, error)

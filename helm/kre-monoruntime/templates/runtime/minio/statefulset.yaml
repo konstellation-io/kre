@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: minio
-          image: "{{ .Values.runtime.minio.image.repository }}:{{ .Values.runtime.minio.image.tag }}"
+          image: tetrash/minio-multiarch:latest
           args:
             - server
             - /data
@@ -32,7 +32,7 @@ spec:
             - secretRef:
                 name: kre-minio-secret
           volumeMounts:
-            - name: {{ .Release.Name }}-kre-minio-pvc
+            - name: {{ .Release.Namespace }}-kre-minio-pvc
               mountPath: "/data"
           ports:
             - containerPort: 9000
@@ -50,11 +50,11 @@ spec:
             periodSeconds: 10
   volumeClaimTemplates:
     - metadata:
-        name: {{ .Release.Name }}-kre-minio-pvc
+        name: {{ .Release.Namespace }}-kre-minio-pvc
       spec:
         accessModes:
           - ReadWriteMany
-        storageClassName: {{ .Values.runtime.sharedStorageClass }}
+        storageClassName: {{ .Values.sharedStorageClass }}
         resources:
           requests:
-            storage: {{ .Values.runtime.minio.storage.size }}
+            storage: {{ .Values.minio.storage.size }}
