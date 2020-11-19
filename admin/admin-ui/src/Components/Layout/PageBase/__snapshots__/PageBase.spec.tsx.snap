@@ -9874,13 +9874,13 @@ exports[`PageBase matches snapshot 1`] = `
                       </ConditionalLink>
                       <NavLink
                         activeClassName="active"
-                        className="link"
+                        className="link addRuntimeLink"
                         key="NavBarItem_AddRuntime"
                         to="/new-runtime"
                       >
                         <Link
                           aria-current={null}
-                          className="link"
+                          className="link addRuntimeLink"
                           to={
                             Object {
                               "hash": "",
@@ -9892,13 +9892,13 @@ exports[`PageBase matches snapshot 1`] = `
                         >
                           <LinkAnchor
                             aria-current={null}
-                            className="link"
+                            className="link addRuntimeLink"
                             href="/new-runtime"
                             navigate={[Function]}
                           >
                             <a
                               aria-current={null}
-                              className="link"
+                              className="link addRuntimeLink"
                               href="/new-runtime"
                               onClick={[Function]}
                             >
