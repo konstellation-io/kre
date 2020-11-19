@@ -131,6 +131,25 @@ func (r *UserRepoMongoDB) GetByIDs(keys []string) ([]*entity.User, error) {
 	return users, nil
 }
 
+func (r *UserRepoMongoDB) GetByAccessLevel(ctx context.Context, level entity.AccessLevel) ([]*entity.User, error) {
+	filter := bson.M{
+		"accessLevel": level,
+	}
+
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []*entity.User
+	err = cursor.All(ctx, &users)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func (r *UserRepoMongoDB) GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error) {
 	filter := bson.M{}
 	if !returnDeleted {

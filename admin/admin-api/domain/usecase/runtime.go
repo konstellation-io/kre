@@ -57,16 +57,17 @@ func NewRuntimeInteractor(
 	}
 }
 
-func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context) error {
-	adminUserID := "kre_admin_user" //TODO: look into DB
-	all, err := i.FindAll(ctx, adminUserID)
+func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context, ownerUser *entity.User) error {
+	all, err := i.runtimeRepo.FindAll(ctx)
 	if err != nil {
 		return err
 	}
 
-	runtimeID := "monoruntime" // TODO: convert from name
+	ownerUserID := ownerUser.ID
 	runtimeName := i.cfg.Monoruntime.Name
-	description := "monoruntime"
+	// Using namespace for ID and descriptive name
+	runtimeID := i.cfg.Monoruntime.Namespace
+	description := i.cfg.Monoruntime.Namespace
 
 	if len(all) > 0 {
 		// NOTE: There already a runtime created
@@ -82,7 +83,7 @@ func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context) error {
 		ID:          i.cfg.Monoruntime.Namespace,
 		Name:        name,
 		Description: description,
-		Owner:       adminUserID,
+		Owner:       ownerUserID,
 		Mongo: entity.MongoConfig{
 			Username: i.cfg.Monoruntime.Mongo.Username,
 			Password: i.cfg.Monoruntime.Mongo.Password,

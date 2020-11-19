@@ -139,7 +139,11 @@ func main() {
 	}
 
 	if cfg.Monoruntime.Enabled {
-		err = runtimeInteractor.EnsureMonoruntime(context.Background())
+		adminUser, err := userInteractor.GetFirstAdmin(context.Background())
+		if err != nil {
+			panic(err)
+		}
+		err = runtimeInteractor.EnsureMonoruntime(context.Background(), adminUser)
 		if err != nil {
 			panic(err)
 		}
