@@ -18,7 +18,7 @@ spec:
         {{- include "runtime.labels" . | nindent 8 }}
         app: runtime-api
     spec:
-      serviceAccountName: k8s-manager
+      serviceAccountName: {{ .Values.rbac.serviceAccount }}
       containers:
         - name: runtime-api
           # TODO: This version should be fixed and the operator released in-sync with new runtime-api changes

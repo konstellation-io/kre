@@ -21,7 +21,7 @@ spec:
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
-      serviceAccountName: k8s-manager
+      serviceAccountName: {{ .Values.rbac.serviceAccount }}
       containers:
         - name: {{ .Release.Name }}-k8s-manager
           image: {{ .Values.k8sManager.image.repository }}:{{ .Values.k8sManager.image.tag }}
