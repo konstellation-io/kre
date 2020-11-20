@@ -21,6 +21,7 @@ type RuntimeStatus string
 var (
 	// ErrRuntimeNotFound error
 	ErrRuntimeNotFound       = errors.New("error runtime not found")
+	ErrMonoruntimeMode       = errors.New("this action is disabled in monoruntime mode")
 	ErrRuntimeDuplicated     = errors.New("there is already a runtime with the same id")
 	ErrRuntimeDuplicatedName = errors.New("there is already a runtime with the same name")
 )
@@ -109,6 +110,9 @@ func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context, ownerUser *en
 
 // CreateRuntime adds a new Runtime
 func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, runtimeID, name, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
+	if i.cfg.Monoruntime.Enabled {
+		return nil, nil, ErrMonoruntimeMode
+	}
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit); err != nil {
 		return nil, nil, err
 	}

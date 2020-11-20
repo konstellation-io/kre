@@ -429,6 +429,9 @@ func (r *runtimeResolver) EntrypointAddress(_ context.Context, obj *entity.Runti
 }
 
 func (r *subscriptionResolver) WatchRuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
+	if r.cfg.Monoruntime.Enabled {
+		return nil, usecase.ErrMonoruntimeMode
+	}
 	id := uuid.New().String()
 
 	runtimeCreatedChan := make(chan *entity.Runtime, 1)
