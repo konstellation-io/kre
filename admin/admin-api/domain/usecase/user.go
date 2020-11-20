@@ -64,6 +64,9 @@ func (i *UserInteractor) GetFirstAdmin(ctx context.Context) (*entity.User, error
 	if err != nil {
 		return nil, err
 	}
+	if len(users) < 1 {
+		return nil, ErrUserNotFound
+	}
 
 	return users[0], nil
 }
