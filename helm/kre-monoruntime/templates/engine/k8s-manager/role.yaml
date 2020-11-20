@@ -8,13 +8,11 @@ rules:
   - apiGroups:
       - ""
     resources:
-      - namespaces
       - configmaps
       - pods
       - secrets
       - services
       - persistentvolumeclaims
-      - serviceaccounts
       - configmaps
       - services
     verbs:
