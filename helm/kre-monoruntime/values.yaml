@@ -3,7 +3,7 @@ developmentMode: false
 runtimeName: "Mono Runtime"
 
 rbac:
-  createServiceAccount: false
+  createServiceAccount: true
   serviceAccount: k8s-manager
 
 mongodb:
