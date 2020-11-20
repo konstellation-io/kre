@@ -103,6 +103,7 @@ func TestCreateRuntime(t *testing.T) {
 			AccessKey: "admin",
 			SecretKey: fakePass,
 		},
+		Status: entity.RuntimeStatusCreating,
 	}
 	updatedRuntime := &entity.Runtime{
 		ID:          runtimeID,

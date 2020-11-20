@@ -136,6 +136,7 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 			AccessKey: "admin",
 			SecretKey: i.passwordGenerator.NewPassword(),
 		},
+		Status: entity.RuntimeStatusCreating,
 	}
 
 	// NOTE: On multi-runtime-mode ReleaseName and Namespace are controlled by the operator and are the same.
