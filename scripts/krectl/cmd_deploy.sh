@@ -106,7 +106,7 @@ deploy_helm_chart() {
   run helm dep update helm/kre
   run helm upgrade \
     --wait \
-    --install "${DEPLOY_NAME}" \
+    --install "${RELEASE_NAME}" \
     --namespace "${NAMESPACE}" \
     --set developmentMode="${DEVELOPMENT_MODE}" \
     --set config.admin.apiHost="${KRE_ADMIN_API_HOST}" \
@@ -120,7 +120,7 @@ deploy_monoruntime_helm_chart() {
   run helm dep update helm/kre-monoruntime
   run helm upgrade \
     --wait \
-    --install "${DEPLOY_NAME}" \
+    --install "${RELEASE_NAME}" \
     --namespace "${NAMESPACE}" \
     --set developmentMode="${DEVELOPMENT_MODE}" \
     --set config.admin.apiHost="${KRE_ADMIN_API_HOST}" \
