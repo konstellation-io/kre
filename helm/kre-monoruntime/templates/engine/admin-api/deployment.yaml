@@ -33,7 +33,7 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
             - secretRef:
-                name: {{ .Release.Name }}-engine-secrets
+                name: {{ .Release.Name }}-secrets
           env:
             - name: KRE_ADMIN_STORAGE_PATH
               value: {{ .Values.adminApi.storage.path }}

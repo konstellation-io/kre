@@ -30,7 +30,7 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
             - secretRef:
-                name: {{ .Release.Name }}-engine-secrets
+                name: {{ .Release.Name }}-secrets
 
           env:
             - name: KRE_PORT

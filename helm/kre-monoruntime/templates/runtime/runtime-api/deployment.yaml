@@ -39,4 +39,4 @@ spec:
               value: "50051"
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-runtime-secrets
+                name: {{ .Release.Name }}-secrets

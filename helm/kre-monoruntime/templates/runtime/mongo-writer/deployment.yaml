@@ -25,4 +25,4 @@ spec:
           imagePullPolicy: {{ if .Values.developmentMode }}IfNotPresent{{ else }}Always{{ end }}
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-runtime-secrets
+                name: {{ .Release.Name }}-secrets
