@@ -1,0 +1,39 @@
+{{ if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+  {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+apiVersion: extensions/v1beta1
+  {{ end }}
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-admin-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "kre.labels" . | nindent 6 }}
+      app: {{ .Release.Name }}-admin-ui
+  template:
+    metadata:
+      labels:
+        {{- include "kre.labels" . | nindent 8 }}
+        app: {{ .Release.Name }}-admin-ui
+        type: admin
+      annotations:
+        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-admin-ui
+          image: {{ .Values.adminUI.image.repository }}:{{ .Values.adminUI.image.tag }}
+          imagePullPolicy: {{ .Values.adminUI.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/config/config.json
+              subPath: config.json
+          ports:
+            - containerPort: 80
+              protocol: TCP
+              name: web
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-admin-ui-configmap

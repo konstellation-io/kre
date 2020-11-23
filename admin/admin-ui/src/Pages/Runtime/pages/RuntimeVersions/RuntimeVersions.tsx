@@ -3,15 +3,13 @@ import {
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
 
-import IconEmail from '@material-ui/icons/Email';
-import IconTime from '@material-ui/icons/AccessTime';
-import InfoField from './components/InfoField/InfoField';
+import { MONORUNTIME_MODE } from 'index';
 import PublishedVersionStatus from './components/PublishedVersionStatus/PublishedVersionStatus';
 import React from 'react';
+import RuntimeInfo from './components/RuntimeInfo/RuntimeInfo';
 import { Title } from 'kwc';
 import VersionInfo from './components/VersionInfo/VersionInfo';
 import { VersionStatus } from 'Graphql/types/globalTypes';
-import { formatDate } from 'Utils/format';
 import { sortBy } from 'lodash';
 import styles from './RuntimeVersions.module.scss';
 
@@ -34,24 +32,11 @@ function RuntimeVersions({ runtime, versions }: Props) {
       <VersionInfo key={version.id} version={version} />
     ));
 
+  const showRuntimeInfo = !MONORUNTIME_MODE;
   return (
     <div className={styles.content}>
       <Title>Versions of runtime {runtime.name}</Title>
-      <div className={styles.runtimeInfo}>
-        <div className={styles.infoFields}>
-          <InfoField
-            field="CREATOR"
-            Icon={IconEmail}
-            value={runtime.creationAuthor.email}
-          />
-          <InfoField
-            field="CREATED"
-            Icon={IconTime}
-            value={formatDate(new Date(runtime.creationDate), true)}
-          />
-        </div>
-        <p className={styles.description}>{runtime.description}</p>
-      </div>
+      {showRuntimeInfo && <RuntimeInfo runtime={runtime} />}
       <PublishedVersionStatus
         noVersions={noVersions}
         nPublishedVersions={nPublishedVersions}

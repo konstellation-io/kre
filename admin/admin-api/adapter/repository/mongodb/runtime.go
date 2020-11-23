@@ -30,7 +30,6 @@ func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mo
 
 func (r *RuntimeRepoMongoDB) Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error) {
 	runtime.CreationDate = time.Now().UTC()
-	runtime.Status = entity.RuntimeStatusCreating
 
 	_, err := r.collection.InsertOne(ctx, runtime)
 	if err != nil {

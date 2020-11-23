@@ -109,6 +109,21 @@ func (mr *MockUserRepoMockRecorder) GetByIDs(keys interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByIDs", reflect.TypeOf((*MockUserRepo)(nil).GetByIDs), keys)
 }
 
+// GetByAccessLevel mocks base method
+func (m *MockUserRepo) GetByAccessLevel(ctx context.Context, accessLevel entity.AccessLevel) ([]*entity.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByAccessLevel", ctx, accessLevel)
+	ret0, _ := ret[0].([]*entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByAccessLevel indicates an expected call of GetByAccessLevel
+func (mr *MockUserRepoMockRecorder) GetByAccessLevel(ctx, accessLevel interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByAccessLevel", reflect.TypeOf((*MockUserRepo)(nil).GetByAccessLevel), ctx, accessLevel)
+}
+
 // GetAll mocks base method
 func (m *MockUserRepo) GetAll(ctx context.Context, returnDeleted bool) ([]*entity.User, error) {
 	m.ctrl.T.Helper()

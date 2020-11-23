@@ -24,6 +24,7 @@ import useNotifications from 'Graphql/hooks/useNotifications';
 const extensionsSchema = loader('extensions.graphql');
 
 export let API_BASE_URL: string;
+export let MONORUNTIME_MODE: boolean;
 
 const UNAUTHORIZED_CODE = 'unauthorized';
 const INVALID_SESSION_CODE = 'invalid_session';
@@ -78,6 +79,8 @@ function addErrorNotification(
 config
   .then(envVariables => {
     API_BASE_URL = envVariables.API_BASE_URL;
+    MONORUNTIME_MODE = envVariables.MONORUNTIME_MODE === '1';
+
     const API_BASE_URL_WS = envVariables.API_BASE_URL.replace('http', 'ws');
 
     const errorLink = onError((error: ErrorResponse) => {

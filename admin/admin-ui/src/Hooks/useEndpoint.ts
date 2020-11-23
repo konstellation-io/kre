@@ -1,9 +1,8 @@
+import axios, { AxiosResponse, Method } from 'axios';
+import { useCallback, useState } from 'react';
+
+import { API_BASE_URL } from 'index';
 import { get } from 'lodash';
-
-import { envVariables } from '../config';
-
-import { useState, useCallback } from 'react';
-import axios, { Method, AxiosResponse } from 'axios';
 
 export type Response = {
   data: Response | null;
@@ -30,7 +29,7 @@ export default function useEndpoint({
   method = 'GET'
 }: Params = {}): [Response, Function] {
   const [response, setResponse] = useState(defaultResponseState);
-  const apiURL = `${envVariables.API_BASE_URL}/api/v1/auth`;
+  const apiURL = `${API_BASE_URL}/api/v1/auth`;
 
   const sendRequest = useCallback(
     async (data: Object = {}) => {

@@ -58,6 +58,19 @@ func (i *UserInteractor) GetTokensByUserID(ctx context.Context, userID string) (
 	return i.apiTokenRepo.GetByUserID(ctx, userID)
 }
 
+// GetFirstAdmin returns first user with admin
+func (i *UserInteractor) GetFirstAdmin(ctx context.Context) (*entity.User, error) {
+	users, err := i.userRepo.GetByAccessLevel(ctx, entity.AccessLevelAdmin)
+	if err != nil {
+		return nil, err
+	}
+	if len(users) < 1 {
+		return nil, ErrUserNotFound
+	}
+
+	return users[0], nil
+}
+
 // GetAllUsers returns all existing Users
 func (i *UserInteractor) GetAllUsers(ctx context.Context, loggedUserID string, returnDeleted bool) ([]*entity.User, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResUsers, auth.ActView); err != nil {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 
@@ -50,7 +51,10 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		accessControl,
 	)
 
+	cfg := &config.Config{}
+
 	runtimeInteractor := usecase.NewRuntimeInteractor(
+		cfg,
 		logger,
 		runtimeRepo,
 		runtimeService,
@@ -99,6 +103,7 @@ func TestCreateRuntime(t *testing.T) {
 			AccessKey: "admin",
 			SecretKey: fakePass,
 		},
+		Status: entity.RuntimeStatusCreating,
 	}
 	updatedRuntime := &entity.Runtime{
 		ID:          runtimeID,
@@ -116,6 +121,9 @@ func TestCreateRuntime(t *testing.T) {
 			SecretKey: fakePass,
 		},
 	}
+
+	updatedRuntime.ReleaseName = updatedRuntime.GetNamespace()
+	expectedRuntime.ReleaseName = expectedRuntime.GetNamespace()
 
 	ctx := context.Background()
 

@@ -1,0 +1,40 @@
+{{ if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+  {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+apiVersion: extensions/v1beta1
+  {{ end }}
+kind: Deployment
+metadata:
+  name: kre-mongo-express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "runtime.labels" . | nindent 6 }}
+      app: kre-mongo-express
+  template:
+    metadata:
+      labels:
+        {{- include "runtime.labels" . | nindent 8 }}
+        app: kre-mongo-express
+    spec:
+      containers:
+        - name: kre-mongo-express
+          image: mongo-express:0.54.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ME_CONFIG_MONGODB_SERVER
+              value: "kre-mongo-0"
+            - name: ME_CONFIG_OPTIONS_READONLY
+              value: "true"
+            - name: ME_CONFIG_MONGODB_ENABLE_ADMIN
+              value: "false"
+            - name: ME_CONFIG_MONGODB_AUTH_DATABASE
+              value: "data"
+            - name: ME_CONFIG_SITE_BASEURL
+              value: /database/{{ .Release.Namespace }}
+          envFrom:
+            - secretRef:
+                name: kre-mongo-express-secret
+          ports:
+            - containerPort: 8081

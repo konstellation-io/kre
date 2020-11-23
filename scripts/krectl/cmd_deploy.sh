@@ -6,6 +6,9 @@ cmd_deploy() {
     --build)
       BUILD_DOCKER_IMAGES=1
     ;;
+    --monoruntime)
+      MONORUNTIME_MODE=1
+    ;;
   esac
 
   deploy
@@ -32,7 +35,12 @@ deploy() {
 
   replace_env_vars
   create_namespace
-  deploy_helm_chart
+
+  if [ "$MONORUNTIME_MODE" = "1" ]; then
+    deploy_monoruntime_helm_chart
+  else
+    deploy_helm_chart
+  fi
 }
 
 HELM_READY=""
@@ -57,8 +65,10 @@ prepare_helm() {
 
 clean_helm_deps() {
   rm -rf helm/kre/charts/*
+  rm -rf helm/kre-monoruntime/charts/*
   rm -rf runtime/k8s-runtime-operator/helm-charts/kre-chart/charts/*
   helm dep update helm/kre
+  helm dep update helm/kre-monoruntime
   helm dep update runtime/k8s-runtime-operator/helm-charts/kre-chart
 }
 
@@ -96,11 +106,25 @@ deploy_helm_chart() {
   run helm dep update helm/kre
   run helm upgrade \
     --wait \
-    --install "${DEPLOY_NAME}" \
+    --install "${RELEASE_NAME}" \
     --namespace "${NAMESPACE}" \
     --set developmentMode="${DEVELOPMENT_MODE}" \
     --set config.admin.apiHost="${KRE_ADMIN_API_HOST}" \
     --set config.admin.frontBaseURL="${KRE_ADMIN_FRONTEND_BASE_URL}" \
     --set mongodb.volumePermissions.enabled="${DEVELOPMENT_MODE}" \
     helm/kre
+}
+
+deploy_monoruntime_helm_chart() {
+  echo_info "📦 Applying helm chart for MONORUNTIME..."
+  run helm dep update helm/kre-monoruntime
+  run helm upgrade \
+    --wait \
+    --install "${RELEASE_NAME}" \
+    --namespace "${NAMESPACE}" \
+    --set developmentMode="${DEVELOPMENT_MODE}" \
+    --set config.admin.apiHost="${KRE_ADMIN_API_HOST}" \
+    --set config.admin.frontBaseURL="${KRE_ADMIN_FRONTEND_BASE_URL}" \
+    --set mongodb.volumePermissions.enabled="${DEVELOPMENT_MODE}" \
+    helm/kre-monoruntime
 }

@@ -3,6 +3,7 @@ import {
   GetLoginAndNotifications
 } from 'Graphql/client/queries/getLoginAndNotifications.graphql';
 
+import { MONORUNTIME_MODE } from 'index';
 import Notification from './Notification';
 import React from 'react';
 import { ReactNode } from 'react';
@@ -19,10 +20,11 @@ function NotificationService() {
   let services: ReactNode[] = [];
 
   if (data?.loggedIn) {
-    services = [
-      <RuntimeCreated key="runtimeCreated" />,
-      <VersionCreated key="versionCreated" />
-    ];
+    services = [<VersionCreated key="versionCreated" />];
+
+    if (!MONORUNTIME_MODE) {
+      services.push(<RuntimeCreated key="runtimeCreated" />);
+    }
   }
 
   const notificationComponents = data?.notifications.map(notification => (
