@@ -10,14 +10,17 @@ type BlackLinkButton = {
 
 function BlankLinkButton({ label, to }: BlackLinkButton) {
   return (
-    <div className={styles.link}>
+    <a
+      href={to}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={styles.link}
+    >
       <div className={styles.icon}>
         <IconOpenInTab className="icon-small" />
       </div>
-      <a href={to} target="_blank" rel="noopener noreferrer">
-        {label}
-      </a>
-    </div>
+      {label}
+    </a>
   );
 }
 
