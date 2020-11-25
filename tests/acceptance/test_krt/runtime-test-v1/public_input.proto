@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package entrypoint;
+option go_package = ".;pb";
+
+message Message {
+  bool go_runner_success = 1;
+  bool py_runner_success = 2;
+}
+
+service Entrypoint {
+  rpc WorkflowTest (Message) returns (Message) {};
+};
