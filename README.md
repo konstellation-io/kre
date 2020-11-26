@@ -6,6 +6,7 @@
   - [Engine](#engine-1)
   - [Runtime](#runtime-1)
     - [KRT](#krt)
+  - [Monoruntime Mode](#monoruntime-mode)
 - [Install](#install)
   - [Custom Installation](#custom-installation)
     - [Prometheus](#prometheus)
@@ -13,6 +14,7 @@
   - [Requirements](#requirements)
   - [Local Environment](#local-environment)
     - [Login](#login)
+    - [Monoruntime](#monoruntime)
 
 # KRE (Konstellation Runtime Engine)
 
@@ -51,9 +53,9 @@ Below are described the main concepts of KRE.
 
 ## Engine
 
-When you install KRE in your Kubernetes cluster a Namespace called `kre` is created and within this are deployed some 
-components. These components are responsible to create new runtimes and expose all the required information to the 
-Admin UI.
+When you install KRE in your Kubernetes cluster a Namespace called `kre` is created and within this are deployed some
+components. These components are responsible to create new runtimes and expose all the required information to the Admin
+UI.
 
 The Engine is composed by the following components:
 
@@ -80,10 +82,10 @@ Each Runtime is composed by the following components:
 
 ### KRT
 
-Konstellation Runtime Transport is a compressed file with the definition of a runtime version, included the code to 
-run and a YAML file called `kre.yaml` with the desired workflows definitions.
+Konstellation Runtime Transport is a compressed file with the definition of a runtime version, included the code to run,
+and a YAML file called `kre.yaml` with the desired workflows definitions.
 
-The base structure of a `kre.yaml` is as follow:
+The base structure of a `kre.yaml` is as follows:
 
 ```yaml
 version: my-project-v1
@@ -130,17 +132,49 @@ workflows:
 
 ```
 
+## Monoruntime mode
+
+There is a single architecture that can be used that only needs a single Kubernetes namespace as shown on the following
+image:
+
+![Monoruntime Architecture](.github/images/kre-monoruntime-architecture.jpg)
+
 # Install
 
-KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. In order to install it 
-just need to download the desired Chart version, define your custom `values.yaml` and run the following command.
+KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. As explained on the
+architecture section, there are two ways of installation, **normal mode** and **monoruntime mode**.
+
+First, add the repository to helm:
 
 ```bash
-helm repo add konstellation-ce https://charts.konstellation.io
-helm upgrade --install --namespace kre --values ./custom-values.yaml kre-v1.0.0
+helm repo add konstellation-io https://charts.konstellation.io
+helm repo update
 ```
 
+Then, in order to install it just needs to add Chart repository to your helm and, define your custom `values.yaml` and
+run one of the following commands:
+
+- **Normal Installation**
+
+```bash
+helm upgrade --install kre --namespace kre \
+ --values ./custom-values.yaml \
+ konstellation-io/kre
+```
+
+- **Monoruntime Installation**
+
+```bash
+helm upgrade --install kre-monoruntime --namespace kre-monoruntime \
+  --values ./custom-monoruntime-values.yaml \ 
+  konstellation-io/kre-monoruntime
+```
+
+***NOTE***: You can check default values for each installation, [normal](./helm/kre/values.yaml) or
+[monoruntime](./helm/kre-monoruntime/values.yaml).
+
 ## Custom Installation
+
 KRE allows a custom configuration to use parts that already exist in your infrastructure.
 
 ### Prometheus
@@ -150,6 +184,7 @@ KRE allows a custom configuration to use parts that already exist in your infras
 |       Param                | Value |
 | -------------------------- | ----- |
 | prometheusOperator.enabled | false |
+
 
 # Development 
 
@@ -169,8 +204,8 @@ In order to start development on this project you will need these tools:
 
 This repo contains a tool called `./krectl.sh` to handle common actions you need during development.
 
-All the configuration needed to run  KRE locally can be found in `.krectl.conf` file. Usually you'd be ok with the default values.
-Check Minikube parameters if you need to tweak the resources assigned to it.
+All the configuration needed to run KRE locally can be found in `.krectl.conf` file. Usually you'd be ok with the
+default values. Check Minikube parameters if you need to tweak the resources assigned to it.
 
 Run help to get info for each command:
 
@@ -199,9 +234,10 @@ $> krectl.sh [command] --help
 
 ### Login
 
-First of all remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
+First, remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
 
-NOTE: If you have [hostctl](https://github.com/guumaster/hostctl) installed, updating `/etc/hosts` will be done automatically too.
+NOTE: If you have [hostctl](https://github.com/guumaster/hostctl) installed, updating `/etc/hosts` will be done
+automatically too.
 
 In order to access the admin app, the login process can be done automatically using this script:
 
@@ -220,6 +256,17 @@ You will see an output like this:
 
 ✔️  Done.
 ```
+
+### Monoruntime
+
+To start KRE as a single `namespace` installation and in `MONORUNTIME_MODE`, you can use `./krectl.sh` as follows:
+
+```
+$ ./krectl.sh dev --monoruntime
+```
+
+It will install everything in the namespace specified in your development `.kreconf` file.
+
 
 [admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=coverage
 
