@@ -1,0 +1,20 @@
+version: runtime-test-v1
+description: Version for testing.
+entrypoint:
+  proto: public_input.proto
+  image: konstellation/kre-entrypoint:1.6.0
+
+nodes:
+  - name: py-runner
+    image: konstellation/kre-py:1.23.0
+    src: src/py-runner/main.py
+  - name: go-runner
+    image: konstellation/kre-go:1.9.0
+    src: bin/go-runner
+
+workflows:
+  - name: workflow-test
+    entrypoint: WorkflowTest
+    sequential:
+      - py-runner
+      - go-runner
