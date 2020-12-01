@@ -30,7 +30,7 @@ spec:
               mountPath: /usr/share/nginx/html/config/config.json
               subPath: config.json
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP
               name: web
       volumes:
