@@ -50,4 +50,3 @@ spec:
           volumeMounts:
             - name: admin-api-pv-storage
               mountPath: {{ .Values.adminApi.storage.path }}
-              
