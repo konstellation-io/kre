@@ -1,6 +1,34 @@
-{{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Release.Name }}-admin-api-route
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/issuer: {{ .Release.Name }}-admin-api
+    {{ if hasKey .Values.certManager "dns01" -}}
+    cert-manager.io/acme-challenge-type: "dns01"
+    {{ else -}}
+    cert-manager.io/acme-challenge-type: "http01"
+    {{ end }}
+  labels:
+    {{- include "kre.labels" . | nindent 4 }}
+    app: {{ .Release.Name }}-admin-api-route
+spec:
+  host: {{ .Values.adminApi.host }}
+  path: /  
+  port:
+    targetPort: grpc
+  to:
+    kind: Service
+    name: admin-api
+    weight: 100
+{{ else }}
+{{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{ else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
 apiVersion: networking.k8s.io/v1beta1
-{{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+{{ else if .Capabilities.APIVersions.Has "extensions/v1beta1/Ingress" }}
 apiVersion: extensions/v1beta1
 {{ end }}
 kind: Ingress
@@ -32,7 +60,18 @@ spec:
     - host: {{ .Values.adminApi.host }}
       http:
         paths:
+          {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: admin-api
+                port:
+                  number: 80
+          {{ else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
           - path: /
             backend:
               serviceName: admin-api
               servicePort: grpc
+          {{ end }} 
+{{- end }}

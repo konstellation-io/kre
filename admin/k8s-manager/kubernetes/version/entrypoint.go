@@ -208,11 +208,11 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 						},
 						{
 							Name:            fmt.Sprintf("%s-web", name),
-							Image:           "nginx:alpine",
+							Image:           "nginxinc/nginx-unprivileged:stable-alpine",
 							ImagePullPolicy: apiv1.PullIfNotPresent,
 							Ports: []apiv1.ContainerPort{
 								{
-									ContainerPort: 80,
+									ContainerPort: 8080,
 									Protocol:      "TCP",
 								},
 							},
@@ -311,7 +311,7 @@ func (m *Manager) createEntrypointService(version *entity.Version) (*apiv1.Servi
 					{
 						Name:       "web",
 						Protocol:   "TCP",
-						TargetPort: intstr.IntOrString{IntVal: 80},
+						TargetPort: intstr.IntOrString{IntVal: 8080},
 						Port:       80,
 					},
 				},

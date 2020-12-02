@@ -63,7 +63,7 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 		},
 		Data: map[string]string{
 			"default.conf": `server {
-        listen       80;
+        listen       8080;
         server_name  localhost;
 
         location / {

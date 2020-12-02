@@ -21,10 +21,10 @@ spec:
       containers:
 
         - name: runtime-default-backend
-          image: nginx:latest
+          image: nginxinc/nginx-unprivileged:stable-alpine
           imagePullPolicy: {{ if .Values.developmentMode }}IfNotPresent{{ else }}Always{{ end }}
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP
               name: static
           volumeMounts:
