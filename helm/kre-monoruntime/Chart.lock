@@ -3,7 +3,7 @@ dependencies:
   repository: https://influxdata.github.io/helm-charts
   version: 4.8.1
 - name: prometheus-operator
-  repository: https://kubernetes-charts.storage.googleapis.com
+  repository: https://charts.helm.sh/stable
   version: 9.3.1
-digest: sha256:7e7699633954f22dffab0b623fdab3b640dd6ef4a3a1ede4133e649653719f39
-generated: "2020-11-26T12:14:14.264797709+01:00"
+digest: sha256:5d7c42eb9f9762d18e93c60450628bb2c1ff078d30aa374589d2eb564a79493d
+generated: "2020-12-11T11:38:01.667666786+01:00"
