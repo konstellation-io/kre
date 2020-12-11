@@ -1,10 +1,8 @@
 import 'Styles/app.global.scss';
 import 'kwc/index.css';
 import 'markdown-navbar/dist/navbar.css';
-import 'react-tabs/style/react-tabs.css';
 import 'Styles/markdown-navbar.scss';
 import 'react-toastify/dist/ReactToastify.css';
-import 'Styles/react-tabs.scss';
 import 'Styles/react-toastify.scss';
 
 import { ErrorMessage, SpinnerCircular } from 'kwc';
