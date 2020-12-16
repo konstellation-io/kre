@@ -27,19 +27,8 @@ spec:
   rules:
     - host: {{ .Values.adminApi.host }}
       http:
-        paths:
-          {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-          - pathType: Prefix
-            path: "/"
-            backend:
-              service:
-                name: admin-api
-                port:
-                  number: 80
-          {{ else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
           - path: /
             backend:
               serviceName: admin-api
               servicePort: grpc
-          {{ end }} 
 
