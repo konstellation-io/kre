@@ -1,24 +1,31 @@
 #!/bin/sh
 
 cmd_restart() {
-    TYPE=$1
-    shift
+    TYPE=${1:-"minikube"}
 
     if [ "$TYPE" = "kre" ]; then
       restart_admin_pods
     fi
 
     if [ "$TYPE" = "version" ]; then
+      shift
       restart_version "$@"
     fi
+
+    if [ "$TYPE" = "minikube" ]; then
+      minikube_stop
+      minikube_start
+    fi
+
 }
 
 show_restart_help() {
   echo "$(help_global_header "restart <type> [options]")
 
     types:
-      kre  restarts pods on kre namespace.
-      version <runtime-name> <version-name> restarts all pods inside a version.
+      minikube  restarts minikube (default option).
+      kre       restarts pods on kre namespace.
+      version   <runtime-name> <version-name> restarts all pods inside a version.
 
     $(help_global_options)
 "
