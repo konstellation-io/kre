@@ -25,4 +25,3 @@ spec:
             backend:
               serviceName: active-entrypoint
               servicePort: web
-{{ end }}

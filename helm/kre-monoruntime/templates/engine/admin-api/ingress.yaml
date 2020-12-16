@@ -42,4 +42,3 @@ spec:
               serviceName: admin-api
               servicePort: grpc
           {{ end }} 
-{{- end }}

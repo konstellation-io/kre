@@ -39,4 +39,3 @@ spec:
               serviceName: admin-ui
               servicePort: web
           {{ end }} 
-{{- end }}
