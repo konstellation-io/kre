@@ -27,6 +27,7 @@ spec:
   rules:
     - host: {{ .Values.adminApi.host }}
       http:
+        paths:
           - path: /
             backend:
               serviceName: admin-api
