@@ -1,33 +1,4 @@
-# {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
-# apiVersion: route.openshift.io/v1
-# kind: Route
-# metadata:
-#   name: {{ template "runtime.fullname" . }}-entrypoint
-#   annotations:
-#     {{ if .Values.entrypointTLS }}
-#     kubernetes.io/tls-acme: "true"
-#     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
-#     {{ end }}
-#   labels:
-#     {{- include "kre.labels" . | nindent 4 }}
-#     app: {{ template "runtime.fullname" . }}-entrypoint
-# spec:
-#   host: entrypoint.{{ .Values.host }}
-#   path: /  
-#   port:
-#     targetPort: grpc
-#   to:
-#     kind: Service
-#     name: active-entrypoint
-#     weight: 100
-# {{ else }}
-# {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-# apiVersion: networking.k8s.io/v1
-# {{ else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
-# apiVersion: networking.k8s.io/v1beta1
-# {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1/Ingress" }}
 apiVersion: extensions/v1beta1
-# {{ end }}
 kind: Ingress
 metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint
@@ -71,4 +42,3 @@ spec:
             backend:
               serviceName: active-entrypoint
               servicePort: grpc
-{{ end }}
