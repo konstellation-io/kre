@@ -37,11 +37,11 @@ func (r *ResourceMetricsService) GetVersion(
 		VersionRequest: *req,
 	}
 
-	r.logger.Infof("Getting metrics for version %v", input.VersionRequest)
+	r.logger.Debugf("Getting metrics for version: %s", input.VersionRequest.String())
 
 	metrics, err := r.manager.GetVersionResourceMetrics(input)
 	if err != nil {
-		r.logger.Errorf("Error getting metrics: %v", err)
+		r.logger.Errorf("Error getting metrics: %s", err)
 		return nil, err
 	}
 
