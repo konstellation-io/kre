@@ -125,9 +125,9 @@ func (m *Manager) prometheusQuery(
 	cpuQuery := fmt.Sprintf(`sum (
 		max(kube_pod_labels{label_version_name='%s'}) by(label_version_name, pod) * on (pod) group_right(label_version_name)
 		label_replace(
-			 sum by (pod_name)(
-				  rate(container_cpu_usage_seconds_total{namespace='%s', container_name!="POD",container_name!=""}[5m])*1000
-			 ), 'pod', '$1', 'pod_name', '(.+)'
+			 sum by (pod)(
+				  rate(container_cpu_usage_seconds_total{namespace='%s', container!="POD",container!=""}[5m])*1000
+			 ), 'pod', '$1', 'pod', '(.+)'
 		)
 	 ) by (label_version_name)`, versionName, namespace)
 
@@ -144,9 +144,9 @@ func (m *Manager) prometheusQuery(
 	memQuery := fmt.Sprintf(`sum (
 		max(kube_pod_labels{label_version_name='%s'}) by(label_version_name, pod) * on (pod) group_right(label_version_name)
 		label_replace(
-			 sum by (pod_name)(
-				  container_memory_working_set_bytes{namespace='%s', container_name!="POD",container_name!=""}
-			 ), 'pod', '$1', 'pod_name', '(.+)'
+			 sum by (pod)(
+				  container_memory_working_set_bytes{namespace='%s', container!="POD",container!=""}
+			 ), 'pod', '$1', 'pod', '(.+)'
 		)
 	 ) by (label_version_name)`, versionName, namespace)
 
