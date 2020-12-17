@@ -1,6 +1,6 @@
 dependencies:
 - name: prometheus-operator
-  repository: https://kubernetes-charts.storage.googleapis.com
+  repository: https://charts.helm.sh/stable
   version: 9.3.1
-digest: sha256:62bab2a6883b447dd260b07a6c19d5d3cd9890652a409893bd8039301e4c19f4
-generated: "2020-08-28T12:44:51.13362657+02:00"
+digest: sha256:7e33a62b4f99e7f67c7e23d8c6ad5a5b0fb04fe73d2ffac665d102b77d39960b
+generated: "2020-12-17T13:14:25.604098759+01:00"
