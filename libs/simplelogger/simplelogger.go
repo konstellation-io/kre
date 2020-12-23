@@ -2,6 +2,8 @@ package simplelogger
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"regexp"
 	"time"
 )
@@ -24,14 +26,35 @@ var levelNames = []string{
 
 var lineBreakRE = regexp.MustCompile(`\r?\n`)
 
+type SimpleLoggerInterface interface {
+	Debug(msg string)
+	Info(msg string)
+	Warn(msg string)
+	Error(msg string)
+	Debugf(format string, a ...interface{})
+	Infof(format string, a ...interface{})
+	Warnf(format string, a ...interface{})
+	Errorf(format string, a ...interface{})
+}
+
 type SimpleLogger struct {
-	level LogLevel
+	level  LogLevel
+	writer io.Writer
 }
 
 // New creates a new SimpleLogger instance.
 func New(level LogLevel) *SimpleLogger {
 	return &SimpleLogger{
-		level: level,
+		level:  level,
+		writer: os.Stdout,
+	}
+}
+
+// New creates a new SimpleLogger instance.
+func NewWithWriter(level LogLevel, writer io.Writer) *SimpleLogger {
+	return &SimpleLogger{
+		level,
+		writer,
 	}
 }
 
@@ -41,7 +64,7 @@ func (l *SimpleLogger) printLog(level LogLevel, msg string) {
 	}
 
 	t := time.Now().Format(time.RFC3339Nano)
-	fmt.Printf("%s %s %s\n", t, levelNames[level], lineBreakRE.ReplaceAllLiteralString(msg, " "))
+	_, _ = fmt.Fprintf(l.writer, "%s %s %s\n", t, levelNames[level], lineBreakRE.ReplaceAllLiteralString(msg, " "))
 }
 
 func (l *SimpleLogger) Debug(msg string) {
