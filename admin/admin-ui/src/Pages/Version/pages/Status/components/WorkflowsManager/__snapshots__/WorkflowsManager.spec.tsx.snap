@@ -60,6 +60,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -70,10 +71,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
                     "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
@@ -86,6 +85,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "makeData": [Function],
                       "weakness": true,
                     },
+                  },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
                   },
                   "toReference": [Function],
                 },
@@ -112,6 +115,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -122,10 +126,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
                     "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
@@ -139,6 +141,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "weakness": true,
                     },
                   },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
                   "toReference": [Function],
                 },
                 "policies": Policies {
@@ -149,6 +155,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "possibleTypes": undefined,
                     "typePolicies": Object {},
                   },
+                  "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
                     "Mutation": "ROOT_MUTATION",
                     "Query": "ROOT_QUERY",
@@ -159,10 +166,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "ROOT_QUERY": "Query",
                     "ROOT_SUBSCRIPTION": "Subscription",
                   },
-                  "storageTrie": KeyTrie {
-                    "makeData": [Function],
-                    "weakness": true,
-                  },
+                  "supertypeMap": Map {},
+                  "toBeAdded": Object {},
                   "typePolicies": Object {},
                   "usingPossibleTypes": false,
                 },
@@ -228,6 +233,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -238,10 +244,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
                       "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
@@ -254,6 +258,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "makeData": [Function],
                         "weakness": true,
                       },
+                    },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
                     },
                     "toReference": [Function],
                   },
@@ -280,6 +288,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -290,10 +299,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
                       "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
@@ -307,6 +314,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
                   "policies": Policies {
@@ -317,6 +328,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -327,10 +339,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
                     "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
@@ -395,6 +405,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -405,10 +416,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
                       "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
@@ -421,6 +430,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "makeData": [Function],
                         "weakness": true,
                       },
+                    },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
                     },
                     "toReference": [Function],
                   },
@@ -447,6 +460,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -457,10 +471,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
                       "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
@@ -474,6 +486,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
                   "policies": Policies {
@@ -484,6 +500,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -494,10 +511,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
                     "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
@@ -566,6 +581,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                           "possibleTypes": undefined,
                           "typePolicies": Object {},
                         },
+                        "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
                           "Mutation": "ROOT_MUTATION",
                           "Query": "ROOT_QUERY",
@@ -576,10 +592,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                           "ROOT_QUERY": "Query",
                           "ROOT_SUBSCRIPTION": "Subscription",
                         },
-                        "storageTrie": KeyTrie {
-                          "makeData": [Function],
-                          "weakness": true,
-                        },
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
                         "typePolicies": Object {},
                         "usingPossibleTypes": false,
                       },
@@ -592,6 +606,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                           "makeData": [Function],
                           "weakness": true,
                         },
+                      },
+                      "storageTrie": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
                       },
                       "toReference": [Function],
                     },
@@ -618,6 +636,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                           "possibleTypes": undefined,
                           "typePolicies": Object {},
                         },
+                        "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
                           "Mutation": "ROOT_MUTATION",
                           "Query": "ROOT_QUERY",
@@ -628,10 +647,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                           "ROOT_QUERY": "Query",
                           "ROOT_SUBSCRIPTION": "Subscription",
                         },
-                        "storageTrie": KeyTrie {
-                          "makeData": [Function],
-                          "weakness": true,
-                        },
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
                         "typePolicies": Object {},
                         "usingPossibleTypes": false,
                       },
@@ -645,6 +662,10 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                           "weakness": true,
                         },
                       },
+                      "storageTrie": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
                       "toReference": [Function],
                     },
                     "policies": Policies {
@@ -655,6 +676,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -665,10 +687,8 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
                       "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
@@ -701,9 +721,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                   "client": [Circular],
                 },
                 "mutationIdCounter": 1,
-                "mutationStore": MutationStore {
-                  "store": Object {},
-                },
+                "mutationStore": Object {},
                 "onBroadcast": [Function],
                 "queries": Map {},
                 "queryDeduplication": true,
@@ -716,7 +734,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
               "resetStore": [Function],
               "resetStoreCallbacks": Array [],
               "typeDefs": undefined,
-              "version": "local",
+              "version": "3.3.5",
               "watchQuery": [Function],
             }
           }

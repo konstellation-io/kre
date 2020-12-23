@@ -340,6 +340,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "possibleTypes": undefined,
                   "typePolicies": Object {},
                 },
+                "fuzzySubtypes": Map {},
                 "rootIdsByTypename": Object {
                   "Mutation": "ROOT_MUTATION",
                   "Query": "ROOT_QUERY",
@@ -350,11 +351,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "ROOT_QUERY": "Query",
                   "ROOT_SUBSCRIPTION": "Subscription",
                 },
-                "storageTrie": KeyTrie {
-                  "makeData": [Function],
-                  "weakness": true,
+                "supertypeMap": Map {},
+                "toBeAdded": Object {},
+                "typePolicies": Object {
+                  "Query": Object {
+                    "fields": Object {},
+                  },
                 },
-                "typePolicies": Object {},
                 "usingPossibleTypes": false,
               },
               "refs": Object {},
@@ -369,11 +372,17 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "weakness": true,
                 },
               },
+              "storageTrie": KeyTrie {
+                "makeData": [Function],
+                "weakness": true,
+              },
               "toReference": [Function],
             },
+            "evict": [Function],
             "getFragmentDoc": [Function],
             "makeVar": [Function],
             "maybeBroadcastWatch": [Function],
+            "modify": [Function],
             "optimisticData": Root {
               "canRead": [Function],
               "data": Object {
@@ -417,6 +426,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "possibleTypes": undefined,
                   "typePolicies": Object {},
                 },
+                "fuzzySubtypes": Map {},
                 "rootIdsByTypename": Object {
                   "Mutation": "ROOT_MUTATION",
                   "Query": "ROOT_QUERY",
@@ -427,11 +437,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "ROOT_QUERY": "Query",
                   "ROOT_SUBSCRIPTION": "Subscription",
                 },
-                "storageTrie": KeyTrie {
-                  "makeData": [Function],
-                  "weakness": true,
+                "supertypeMap": Map {},
+                "toBeAdded": Object {},
+                "typePolicies": Object {
+                  "Query": Object {
+                    "fields": Object {},
+                  },
                 },
-                "typePolicies": Object {},
                 "usingPossibleTypes": false,
               },
               "refs": Object {},
@@ -446,6 +458,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "weakness": true,
                 },
               },
+              "storageTrie": KeyTrie {
+                "makeData": [Function],
+                "weakness": true,
+              },
               "toReference": [Function],
             },
             "policies": Policies {
@@ -456,6 +472,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "possibleTypes": undefined,
                 "typePolicies": Object {},
               },
+              "fuzzySubtypes": Map {},
               "rootIdsByTypename": Object {
                 "Mutation": "ROOT_MUTATION",
                 "Query": "ROOT_QUERY",
@@ -466,13 +483,16 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "ROOT_QUERY": "Query",
                 "ROOT_SUBSCRIPTION": "Subscription",
               },
-              "storageTrie": KeyTrie {
-                "makeData": [Function],
-                "weakness": true,
+              "supertypeMap": Map {},
+              "toBeAdded": Object {},
+              "typePolicies": Object {
+                "Query": Object {
+                  "fields": Object {},
+                },
               },
-              "typePolicies": Object {},
               "usingPossibleTypes": false,
             },
+            "reset": [Function],
             "storeReader": StoreReader {
               "config": Object {
                 "addTypename": false,
@@ -791,6 +811,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "possibleTypes": undefined,
                     "typePolicies": Object {},
                   },
+                  "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
                     "Mutation": "ROOT_MUTATION",
                     "Query": "ROOT_QUERY",
@@ -801,11 +822,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "ROOT_QUERY": "Query",
                     "ROOT_SUBSCRIPTION": "Subscription",
                   },
-                  "storageTrie": KeyTrie {
-                    "makeData": [Function],
-                    "weakness": true,
+                  "supertypeMap": Map {},
+                  "toBeAdded": Object {},
+                  "typePolicies": Object {
+                    "Query": Object {
+                      "fields": Object {},
+                    },
                   },
-                  "typePolicies": Object {},
                   "usingPossibleTypes": false,
                 },
                 "refs": Object {},
@@ -820,11 +843,17 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "weakness": true,
                   },
                 },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
                 "toReference": [Function],
               },
+              "evict": [Function],
               "getFragmentDoc": [Function],
               "makeVar": [Function],
               "maybeBroadcastWatch": [Function],
+              "modify": [Function],
               "optimisticData": Root {
                 "canRead": [Function],
                 "data": Object {
@@ -868,6 +897,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "possibleTypes": undefined,
                     "typePolicies": Object {},
                   },
+                  "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
                     "Mutation": "ROOT_MUTATION",
                     "Query": "ROOT_QUERY",
@@ -878,11 +908,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "ROOT_QUERY": "Query",
                     "ROOT_SUBSCRIPTION": "Subscription",
                   },
-                  "storageTrie": KeyTrie {
-                    "makeData": [Function],
-                    "weakness": true,
+                  "supertypeMap": Map {},
+                  "toBeAdded": Object {},
+                  "typePolicies": Object {
+                    "Query": Object {
+                      "fields": Object {},
+                    },
                   },
-                  "typePolicies": Object {},
                   "usingPossibleTypes": false,
                 },
                 "refs": Object {},
@@ -897,6 +929,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "weakness": true,
                   },
                 },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
                 "toReference": [Function],
               },
               "policies": Policies {
@@ -907,6 +943,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "possibleTypes": undefined,
                   "typePolicies": Object {},
                 },
+                "fuzzySubtypes": Map {},
                 "rootIdsByTypename": Object {
                   "Mutation": "ROOT_MUTATION",
                   "Query": "ROOT_QUERY",
@@ -917,13 +954,16 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "ROOT_QUERY": "Query",
                   "ROOT_SUBSCRIPTION": "Subscription",
                 },
-                "storageTrie": KeyTrie {
-                  "makeData": [Function],
-                  "weakness": true,
+                "supertypeMap": Map {},
+                "toBeAdded": Object {},
+                "typePolicies": Object {
+                  "Query": Object {
+                    "fields": Object {},
+                  },
                 },
-                "typePolicies": Object {},
                 "usingPossibleTypes": false,
               },
+              "reset": [Function],
               "storeReader": StoreReader {
                 "config": Object {
                   "addTypename": false,
@@ -1124,6 +1164,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "possibleTypes": undefined,
                     "typePolicies": Object {},
                   },
+                  "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
                     "Mutation": "ROOT_MUTATION",
                     "Query": "ROOT_QUERY",
@@ -1134,11 +1175,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "ROOT_QUERY": "Query",
                     "ROOT_SUBSCRIPTION": "Subscription",
                   },
-                  "storageTrie": KeyTrie {
-                    "makeData": [Function],
-                    "weakness": true,
+                  "supertypeMap": Map {},
+                  "toBeAdded": Object {},
+                  "typePolicies": Object {
+                    "Query": Object {
+                      "fields": Object {},
+                    },
                   },
-                  "typePolicies": Object {},
                   "usingPossibleTypes": false,
                 },
                 "refs": Object {},
@@ -1153,11 +1196,17 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "weakness": true,
                   },
                 },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
                 "toReference": [Function],
               },
+              "evict": [Function],
               "getFragmentDoc": [Function],
               "makeVar": [Function],
               "maybeBroadcastWatch": [Function],
+              "modify": [Function],
               "optimisticData": Root {
                 "canRead": [Function],
                 "data": Object {
@@ -1201,6 +1250,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "possibleTypes": undefined,
                     "typePolicies": Object {},
                   },
+                  "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
                     "Mutation": "ROOT_MUTATION",
                     "Query": "ROOT_QUERY",
@@ -1211,11 +1261,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "ROOT_QUERY": "Query",
                     "ROOT_SUBSCRIPTION": "Subscription",
                   },
-                  "storageTrie": KeyTrie {
-                    "makeData": [Function],
-                    "weakness": true,
+                  "supertypeMap": Map {},
+                  "toBeAdded": Object {},
+                  "typePolicies": Object {
+                    "Query": Object {
+                      "fields": Object {},
+                    },
                   },
-                  "typePolicies": Object {},
                   "usingPossibleTypes": false,
                 },
                 "refs": Object {},
@@ -1230,6 +1282,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "weakness": true,
                   },
                 },
+                "storageTrie": KeyTrie {
+                  "makeData": [Function],
+                  "weakness": true,
+                },
                 "toReference": [Function],
               },
               "policies": Policies {
@@ -1240,6 +1296,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "possibleTypes": undefined,
                   "typePolicies": Object {},
                 },
+                "fuzzySubtypes": Map {},
                 "rootIdsByTypename": Object {
                   "Mutation": "ROOT_MUTATION",
                   "Query": "ROOT_QUERY",
@@ -1250,13 +1307,16 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "ROOT_QUERY": "Query",
                   "ROOT_SUBSCRIPTION": "Subscription",
                 },
-                "storageTrie": KeyTrie {
-                  "makeData": [Function],
-                  "weakness": true,
+                "supertypeMap": Map {},
+                "toBeAdded": Object {},
+                "typePolicies": Object {
+                  "Query": Object {
+                    "fields": Object {},
+                  },
                 },
-                "typePolicies": Object {},
                 "usingPossibleTypes": false,
               },
+              "reset": [Function],
               "storeReader": StoreReader {
                 "config": Object {
                   "addTypename": false,
@@ -1578,6 +1638,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -1588,11 +1649,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
+                    "typePolicies": Object {
+                      "Query": Object {
+                        "fields": Object {},
+                      },
                     },
-                    "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
                   "refs": Object {},
@@ -1607,11 +1670,17 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "weakness": true,
                     },
                   },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
                   "toReference": [Function],
                 },
+                "evict": [Function],
                 "getFragmentDoc": [Function],
                 "makeVar": [Function],
                 "maybeBroadcastWatch": [Function],
+                "modify": [Function],
                 "optimisticData": Root {
                   "canRead": [Function],
                   "data": Object {
@@ -1655,6 +1724,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -1665,11 +1735,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
+                    "typePolicies": Object {
+                      "Query": Object {
+                        "fields": Object {},
+                      },
                     },
-                    "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
                   "refs": Object {},
@@ -1684,6 +1756,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "weakness": true,
                     },
                   },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
                   "toReference": [Function],
                 },
                 "policies": Policies {
@@ -1694,6 +1770,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "possibleTypes": undefined,
                     "typePolicies": Object {},
                   },
+                  "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
                     "Mutation": "ROOT_MUTATION",
                     "Query": "ROOT_QUERY",
@@ -1704,13 +1781,16 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "ROOT_QUERY": "Query",
                     "ROOT_SUBSCRIPTION": "Subscription",
                   },
-                  "storageTrie": KeyTrie {
-                    "makeData": [Function],
-                    "weakness": true,
+                  "supertypeMap": Map {},
+                  "toBeAdded": Object {},
+                  "typePolicies": Object {
+                    "Query": Object {
+                      "fields": Object {},
+                    },
                   },
-                  "typePolicies": Object {},
                   "usingPossibleTypes": false,
                 },
+                "reset": [Function],
                 "storeReader": StoreReader {
                   "config": Object {
                     "addTypename": false,
@@ -1856,9 +1936,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               "client": [Circular],
             },
             "mutationIdCounter": 1,
-            "mutationStore": MutationStore {
-              "store": Object {},
-            },
+            "mutationStore": Object {},
             "onBroadcast": [Function],
             "queries": Map {
               "1" => QueryInfo {
@@ -1913,6 +1991,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -1923,11 +2002,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
                       },
-                      "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
@@ -1942,11 +2023,17 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
+                  "evict": [Function],
                   "getFragmentDoc": [Function],
                   "makeVar": [Function],
                   "maybeBroadcastWatch": [Function],
+                  "modify": [Function],
                   "optimisticData": Root {
                     "canRead": [Function],
                     "data": Object {
@@ -1990,6 +2077,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -2000,11 +2088,13 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
                       },
-                      "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
@@ -2019,6 +2109,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
                   "policies": Policies {
@@ -2029,6 +2123,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -2039,13 +2134,16 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
+                    "typePolicies": Object {
+                      "Query": Object {
+                        "fields": Object {},
+                      },
                     },
-                    "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
+                  "reset": [Function],
                   "storeReader": StoreReader {
                     "config": Object {
                       "addTypename": false,
@@ -2441,29 +2539,32 @@ exports[`FiltersBar matches snapshot 1`] = `
                   },
                   "variables": Object {},
                 },
-                "lastWrittenResult": Object {
-                  "data": Object {
-                    "users": Array [
-                      Object {
-                        "accessLevel": "ADMIN",
-                        "activeSessions": 4,
-                        "creationDate": "2018-01-01",
-                        "email": "user1@konstellation.com",
-                        "id": "user1",
-                        "lastActivity": "2018-01-01",
-                      },
-                      Object {
-                        "accessLevel": "MANAGER",
-                        "activeSessions": 4,
-                        "creationDate": "2018-01-01",
-                        "email": "user2@konstellation.com",
-                        "id": "user2",
-                        "lastActivity": "2018-01-01",
-                      },
-                    ],
+                "lastWrite": Object {
+                  "dmCount": 0,
+                  "result": Object {
+                    "data": Object {
+                      "users": Array [
+                        Object {
+                          "accessLevel": "ADMIN",
+                          "activeSessions": 4,
+                          "creationDate": "2018-01-01",
+                          "email": "user1@konstellation.com",
+                          "id": "user1",
+                          "lastActivity": "2018-01-01",
+                        },
+                        Object {
+                          "accessLevel": "MANAGER",
+                          "activeSessions": 4,
+                          "creationDate": "2018-01-01",
+                          "email": "user2@konstellation.com",
+                          "id": "user2",
+                          "lastActivity": "2018-01-01",
+                        },
+                      ],
+                    },
                   },
+                  "variables": Object {},
                 },
-                "lastWrittenVars": Object {},
                 "listeners": Set {
                   [Function],
                 },
@@ -2495,7 +2596,6 @@ exports[`FiltersBar matches snapshot 1`] = `
                     },
                     "loading": false,
                     "networkStatus": 7,
-                    "partial": false,
                   },
                   "lastResultSnapshot": Object {
                     "data": Object {
@@ -2520,7 +2620,6 @@ exports[`FiltersBar matches snapshot 1`] = `
                     },
                     "loading": false,
                     "networkStatus": 7,
-                    "partial": false,
                   },
                   "observer": Object {
                     "error": [Function],
@@ -2662,6 +2761,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "reobserver": Reobserver {
                     "concast": Concast {
                       "_subscriber": [Function],
+                      "addCount": 1,
                       "cancel": [Function],
                       "handlers": Object {
                         "complete": [Function],
@@ -2833,6 +2933,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "subscriptions": Set {},
                 },
                 "oqListener": [Function],
+                "stopped": false,
                 "subscriptions": Set {},
                 "variables": Object {},
               },
@@ -2847,7 +2948,7 @@ exports[`FiltersBar matches snapshot 1`] = `
           "resetStore": [Function],
           "resetStoreCallbacks": Array [],
           "typeDefs": undefined,
-          "version": "local",
+          "version": "3.3.5",
           "watchQuery": [Function],
         }
       }
@@ -2993,7 +3094,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   onClick={[Function]}
                   title="Clear input"
                 >
-                  <ForwardRef
+                  <ForwardRef(CloseIcon)
                     className="icon-small"
                   >
                     <WithStyles(ForwardRef(SvgIcon))
@@ -3027,7 +3128,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         </svg>
                       </ForwardRef(SvgIcon)>
                     </WithStyles(ForwardRef(SvgIcon))>
-                  </ForwardRef>
+                  </ForwardRef(CloseIcon)>
                 </div>
                 <ul
                   className="_1Em_G"
@@ -4523,7 +4624,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     className="DateRangePickerInput_arrow DateRangePickerInput_arrow_1"
                                     role="presentation"
                                   >
-                                    <ForwardRef
+                                    <ForwardRef(ArrowForwardIcon)
                                       className="icon-small"
                                     >
                                       <WithStyles(ForwardRef(SvgIcon))
@@ -4557,7 +4658,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           </svg>
                                         </ForwardRef(SvgIcon)>
                                       </WithStyles(ForwardRef(SvgIcon))>
-                                    </ForwardRef>
+                                    </ForwardRef(ArrowForwardIcon)>
                                   </div>
                                   <withStyles(DateInput)
                                     block={false}
