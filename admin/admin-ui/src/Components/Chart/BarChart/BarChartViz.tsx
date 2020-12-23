@@ -156,10 +156,12 @@ class BarChartViz {
       .append('g')
       .attr('transform', `translate(0,${innerHeight})`)
       .classed(styles.xAxis, true)
+      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(xAxis);
     const yAxisG = axes
       .append('g')
       .classed(styles.yAxis, true)
+      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(yAxis);
 
     rotateAxis(xAxisG, -45);

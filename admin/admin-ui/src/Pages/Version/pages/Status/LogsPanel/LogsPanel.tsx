@@ -22,7 +22,7 @@ import { useLocation } from 'react-router-dom';
 import useLogs from 'Graphql/hooks/useLogs';
 import { useQuery } from '@apollo/client';
 
-function actualPageIsLogs(location: Location) {
+function actualPageIsLogs(location: Location<unknown>) {
   return location.pathname.startsWith(ROUTE.LOGS.replace(':logTabInfo', ''));
 }
 

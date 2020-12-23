@@ -177,6 +177,7 @@ class BarChartSeriesViz {
     const yAxisG = axes
       .append('g')
       .classed(styles.yAxis, true)
+      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(yAxis);
 
     yAxisG
@@ -210,6 +211,7 @@ class BarChartSeriesViz {
       .classed(styles.seriesAxis, true)
       .attr('transform', `translate(0,${innerHeight})`)
       .each(function(d: Serie, idx) {
+        // @ts-ignore TODO: Update dependencies to fix this typing error
         select(this).call(xAxes[idx]);
       });
 

@@ -176,11 +176,13 @@ class ConfusionMatrixViz {
         'transform',
         `translate(0,${innerHeight + 4 + axisBoxSide + AXIS_PADDING})`
       )
+      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(xAxis);
     const yAxisG = axes
       .append('g')
       .classed(styles.yAxis, true)
       .attr('transform', `translate(${-axisBoxSide - AXIS_PADDING},0)`)
+      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(yAxis);
 
     rotateAxis(xAxisG, -45);
@@ -267,6 +269,7 @@ class ConfusionMatrixViz {
       .append('g')
       .attr('transform', `translate(${innerWidth + legendWidth + 40},0)`)
       .classed(styles.zAxis, true)
+      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(zAxis);
     zAxisG.select('.domain').remove();
   };

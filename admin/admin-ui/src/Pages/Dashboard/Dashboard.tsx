@@ -38,7 +38,6 @@ type Props = {
   data: GetRuntimes_runtimes[];
   error?: ApolloError;
   loading: boolean;
-  history: History;
   accessLevel: AccessLevel;
 };
 
@@ -93,7 +92,6 @@ function getDashboardContent({ data, error, loading, accessLevel }: Props) {
 
 function Dashboard() {
   const { accessLevel } = useUserAccess();
-  const history = useHistory();
   const { data, loading, error } = useQuery<GetRuntimes>(GetRuntimesQuery);
   const runtimes: GetRuntimes_runtimes[] = get(data, 'runtimes', []);
   const nRuntimes = runtimes === null ? 0 : runtimes.length;
@@ -121,7 +119,6 @@ function Dashboard() {
               data: runtimes,
               error,
               loading,
-              history,
               accessLevel
             })}
           </div>
