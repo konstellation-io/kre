@@ -264,6 +264,7 @@ exports[`Header matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -274,11 +275,13 @@ exports[`Header matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
+                    "typePolicies": Object {
+                      "Query": Object {
+                        "fields": Object {},
+                      },
                     },
-                    "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
                   "refs": Object {},
@@ -293,11 +296,17 @@ exports[`Header matches snapshot 1`] = `
                       "weakness": true,
                     },
                   },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
                   "toReference": [Function],
                 },
+                "evict": [Function],
                 "getFragmentDoc": [Function],
                 "makeVar": [Function],
                 "maybeBroadcastWatch": [Function],
+                "modify": [Function],
                 "optimisticData": Root {
                   "canRead": [Function],
                   "data": Object {
@@ -328,6 +337,7 @@ exports[`Header matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -338,11 +348,13 @@ exports[`Header matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
+                    "typePolicies": Object {
+                      "Query": Object {
+                        "fields": Object {},
+                      },
                     },
-                    "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
                   "refs": Object {},
@@ -357,6 +369,10 @@ exports[`Header matches snapshot 1`] = `
                       "weakness": true,
                     },
                   },
+                  "storageTrie": KeyTrie {
+                    "makeData": [Function],
+                    "weakness": true,
+                  },
                   "toReference": [Function],
                 },
                 "policies": Policies {
@@ -367,6 +383,7 @@ exports[`Header matches snapshot 1`] = `
                     "possibleTypes": undefined,
                     "typePolicies": Object {},
                   },
+                  "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
                     "Mutation": "ROOT_MUTATION",
                     "Query": "ROOT_QUERY",
@@ -377,13 +394,16 @@ exports[`Header matches snapshot 1`] = `
                     "ROOT_QUERY": "Query",
                     "ROOT_SUBSCRIPTION": "Subscription",
                   },
-                  "storageTrie": KeyTrie {
-                    "makeData": [Function],
-                    "weakness": true,
+                  "supertypeMap": Map {},
+                  "toBeAdded": Object {},
+                  "typePolicies": Object {
+                    "Query": Object {
+                      "fields": Object {},
+                    },
                   },
-                  "typePolicies": Object {},
                   "usingPossibleTypes": false,
                 },
+                "reset": [Function],
                 "storeReader": StoreReader {
                   "config": Object {
                     "addTypename": false,
@@ -629,6 +649,7 @@ exports[`Header matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -639,11 +660,13 @@ exports[`Header matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
                       },
-                      "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
@@ -658,11 +681,17 @@ exports[`Header matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
+                  "evict": [Function],
                   "getFragmentDoc": [Function],
                   "makeVar": [Function],
                   "maybeBroadcastWatch": [Function],
+                  "modify": [Function],
                   "optimisticData": Root {
                     "canRead": [Function],
                     "data": Object {
@@ -693,6 +722,7 @@ exports[`Header matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -703,11 +733,13 @@ exports[`Header matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
                       },
-                      "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
@@ -722,6 +754,10 @@ exports[`Header matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
                   "policies": Policies {
@@ -732,6 +768,7 @@ exports[`Header matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -742,13 +779,16 @@ exports[`Header matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
+                    "typePolicies": Object {
+                      "Query": Object {
+                        "fields": Object {},
+                      },
                     },
-                    "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
+                  "reset": [Function],
                   "storeReader": StoreReader {
                     "config": Object {
                       "addTypename": false,
@@ -906,6 +946,7 @@ exports[`Header matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -916,11 +957,13 @@ exports[`Header matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
                       },
-                      "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
@@ -935,11 +978,17 @@ exports[`Header matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
+                  "evict": [Function],
                   "getFragmentDoc": [Function],
                   "makeVar": [Function],
                   "maybeBroadcastWatch": [Function],
+                  "modify": [Function],
                   "optimisticData": Root {
                     "canRead": [Function],
                     "data": Object {
@@ -970,6 +1019,7 @@ exports[`Header matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -980,11 +1030,13 @@ exports[`Header matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
                       },
-                      "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
@@ -999,6 +1051,10 @@ exports[`Header matches snapshot 1`] = `
                         "weakness": true,
                       },
                     },
+                    "storageTrie": KeyTrie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
                     "toReference": [Function],
                   },
                   "policies": Policies {
@@ -1009,6 +1065,7 @@ exports[`Header matches snapshot 1`] = `
                       "possibleTypes": undefined,
                       "typePolicies": Object {},
                     },
+                    "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
                       "Mutation": "ROOT_MUTATION",
                       "Query": "ROOT_QUERY",
@@ -1019,13 +1076,16 @@ exports[`Header matches snapshot 1`] = `
                       "ROOT_QUERY": "Query",
                       "ROOT_SUBSCRIPTION": "Subscription",
                     },
-                    "storageTrie": KeyTrie {
-                      "makeData": [Function],
-                      "weakness": true,
+                    "supertypeMap": Map {},
+                    "toBeAdded": Object {},
+                    "typePolicies": Object {
+                      "Query": Object {
+                        "fields": Object {},
+                      },
                     },
-                    "typePolicies": Object {},
                     "usingPossibleTypes": false,
                   },
+                  "reset": [Function],
                   "storeReader": StoreReader {
                     "config": Object {
                       "addTypename": false,
@@ -1274,6 +1334,7 @@ exports[`Header matches snapshot 1`] = `
                           "possibleTypes": undefined,
                           "typePolicies": Object {},
                         },
+                        "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
                           "Mutation": "ROOT_MUTATION",
                           "Query": "ROOT_QUERY",
@@ -1284,11 +1345,13 @@ exports[`Header matches snapshot 1`] = `
                           "ROOT_QUERY": "Query",
                           "ROOT_SUBSCRIPTION": "Subscription",
                         },
-                        "storageTrie": KeyTrie {
-                          "makeData": [Function],
-                          "weakness": true,
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
+                        "typePolicies": Object {
+                          "Query": Object {
+                            "fields": Object {},
+                          },
                         },
-                        "typePolicies": Object {},
                         "usingPossibleTypes": false,
                       },
                       "refs": Object {},
@@ -1303,11 +1366,17 @@ exports[`Header matches snapshot 1`] = `
                           "weakness": true,
                         },
                       },
+                      "storageTrie": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
                       "toReference": [Function],
                     },
+                    "evict": [Function],
                     "getFragmentDoc": [Function],
                     "makeVar": [Function],
                     "maybeBroadcastWatch": [Function],
+                    "modify": [Function],
                     "optimisticData": Root {
                       "canRead": [Function],
                       "data": Object {
@@ -1338,6 +1407,7 @@ exports[`Header matches snapshot 1`] = `
                           "possibleTypes": undefined,
                           "typePolicies": Object {},
                         },
+                        "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
                           "Mutation": "ROOT_MUTATION",
                           "Query": "ROOT_QUERY",
@@ -1348,11 +1418,13 @@ exports[`Header matches snapshot 1`] = `
                           "ROOT_QUERY": "Query",
                           "ROOT_SUBSCRIPTION": "Subscription",
                         },
-                        "storageTrie": KeyTrie {
-                          "makeData": [Function],
-                          "weakness": true,
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
+                        "typePolicies": Object {
+                          "Query": Object {
+                            "fields": Object {},
+                          },
                         },
-                        "typePolicies": Object {},
                         "usingPossibleTypes": false,
                       },
                       "refs": Object {},
@@ -1367,6 +1439,10 @@ exports[`Header matches snapshot 1`] = `
                           "weakness": true,
                         },
                       },
+                      "storageTrie": KeyTrie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
                       "toReference": [Function],
                     },
                     "policies": Policies {
@@ -1377,6 +1453,7 @@ exports[`Header matches snapshot 1`] = `
                         "possibleTypes": undefined,
                         "typePolicies": Object {},
                       },
+                      "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
                         "Mutation": "ROOT_MUTATION",
                         "Query": "ROOT_QUERY",
@@ -1387,13 +1464,16 @@ exports[`Header matches snapshot 1`] = `
                         "ROOT_QUERY": "Query",
                         "ROOT_SUBSCRIPTION": "Subscription",
                       },
-                      "storageTrie": KeyTrie {
-                        "makeData": [Function],
-                        "weakness": true,
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
                       },
-                      "typePolicies": Object {},
                       "usingPossibleTypes": false,
                     },
+                    "reset": [Function],
                     "storeReader": StoreReader {
                       "config": Object {
                         "addTypename": false,
@@ -1509,9 +1589,7 @@ exports[`Header matches snapshot 1`] = `
                   "client": [Circular],
                 },
                 "mutationIdCounter": 1,
-                "mutationStore": MutationStore {
-                  "store": Object {},
-                },
+                "mutationStore": Object {},
                 "onBroadcast": [Function],
                 "queries": Map {
                   "1" => QueryInfo {
@@ -1553,6 +1631,7 @@ exports[`Header matches snapshot 1`] = `
                             "possibleTypes": undefined,
                             "typePolicies": Object {},
                           },
+                          "fuzzySubtypes": Map {},
                           "rootIdsByTypename": Object {
                             "Mutation": "ROOT_MUTATION",
                             "Query": "ROOT_QUERY",
@@ -1563,11 +1642,13 @@ exports[`Header matches snapshot 1`] = `
                             "ROOT_QUERY": "Query",
                             "ROOT_SUBSCRIPTION": "Subscription",
                           },
-                          "storageTrie": KeyTrie {
-                            "makeData": [Function],
-                            "weakness": true,
+                          "supertypeMap": Map {},
+                          "toBeAdded": Object {},
+                          "typePolicies": Object {
+                            "Query": Object {
+                              "fields": Object {},
+                            },
                           },
-                          "typePolicies": Object {},
                           "usingPossibleTypes": false,
                         },
                         "refs": Object {},
@@ -1582,11 +1663,17 @@ exports[`Header matches snapshot 1`] = `
                             "weakness": true,
                           },
                         },
+                        "storageTrie": KeyTrie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
                         "toReference": [Function],
                       },
+                      "evict": [Function],
                       "getFragmentDoc": [Function],
                       "makeVar": [Function],
                       "maybeBroadcastWatch": [Function],
+                      "modify": [Function],
                       "optimisticData": Root {
                         "canRead": [Function],
                         "data": Object {
@@ -1617,6 +1704,7 @@ exports[`Header matches snapshot 1`] = `
                             "possibleTypes": undefined,
                             "typePolicies": Object {},
                           },
+                          "fuzzySubtypes": Map {},
                           "rootIdsByTypename": Object {
                             "Mutation": "ROOT_MUTATION",
                             "Query": "ROOT_QUERY",
@@ -1627,11 +1715,13 @@ exports[`Header matches snapshot 1`] = `
                             "ROOT_QUERY": "Query",
                             "ROOT_SUBSCRIPTION": "Subscription",
                           },
-                          "storageTrie": KeyTrie {
-                            "makeData": [Function],
-                            "weakness": true,
+                          "supertypeMap": Map {},
+                          "toBeAdded": Object {},
+                          "typePolicies": Object {
+                            "Query": Object {
+                              "fields": Object {},
+                            },
                           },
-                          "typePolicies": Object {},
                           "usingPossibleTypes": false,
                         },
                         "refs": Object {},
@@ -1646,6 +1736,10 @@ exports[`Header matches snapshot 1`] = `
                             "weakness": true,
                           },
                         },
+                        "storageTrie": KeyTrie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
                         "toReference": [Function],
                       },
                       "policies": Policies {
@@ -1656,6 +1750,7 @@ exports[`Header matches snapshot 1`] = `
                           "possibleTypes": undefined,
                           "typePolicies": Object {},
                         },
+                        "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
                           "Mutation": "ROOT_MUTATION",
                           "Query": "ROOT_QUERY",
@@ -1666,13 +1761,16 @@ exports[`Header matches snapshot 1`] = `
                           "ROOT_QUERY": "Query",
                           "ROOT_SUBSCRIPTION": "Subscription",
                         },
-                        "storageTrie": KeyTrie {
-                          "makeData": [Function],
-                          "weakness": true,
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
+                        "typePolicies": Object {
+                          "Query": Object {
+                            "fields": Object {},
+                          },
                         },
-                        "typePolicies": Object {},
                         "usingPossibleTypes": false,
                       },
+                      "reset": [Function],
                       "storeReader": StoreReader {
                         "config": Object {
                           "addTypename": false,
@@ -1965,16 +2063,19 @@ exports[`Header matches snapshot 1`] = `
                       },
                       "variables": Object {},
                     },
-                    "lastWrittenResult": Object {
-                      "data": Object {
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
+                    "lastWrite": Object {
+                      "dmCount": 0,
+                      "result": Object {
+                        "data": Object {
+                          "me": Object {
+                            "accessLevel": "ADMIN",
+                            "email": "user@konstellation.com",
+                            "id": "someId",
+                          },
                         },
                       },
+                      "variables": Object {},
                     },
-                    "lastWrittenVars": Object {},
                     "listeners": Set {
                       [Function],
                     },
@@ -1993,7 +2094,6 @@ exports[`Header matches snapshot 1`] = `
                         },
                         "loading": false,
                         "networkStatus": 7,
-                        "partial": false,
                       },
                       "lastResultSnapshot": Object {
                         "data": Object {
@@ -2005,7 +2105,6 @@ exports[`Header matches snapshot 1`] = `
                         },
                         "loading": false,
                         "networkStatus": 7,
-                        "partial": false,
                       },
                       "observer": Object {
                         "error": [Function],
@@ -2117,6 +2216,7 @@ exports[`Header matches snapshot 1`] = `
                       "reobserver": Reobserver {
                         "concast": Concast {
                           "_subscriber": [Function],
+                          "addCount": 1,
                           "cancel": [Function],
                           "handlers": Object {
                             "complete": [Function],
@@ -2245,6 +2345,7 @@ exports[`Header matches snapshot 1`] = `
                       "subscriptions": Set {},
                     },
                     "oqListener": [Function],
+                    "stopped": false,
                     "subscriptions": Set {},
                     "variables": Object {},
                   },
@@ -2259,7 +2360,7 @@ exports[`Header matches snapshot 1`] = `
               "resetStore": [Function],
               "resetStoreCallbacks": Array [],
               "typeDefs": undefined,
-              "version": "local",
+              "version": "3.3.5",
               "watchQuery": [Function],
             }
           }
