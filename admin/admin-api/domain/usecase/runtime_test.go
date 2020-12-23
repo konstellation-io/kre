@@ -99,10 +99,6 @@ func TestCreateRuntime(t *testing.T) {
 			Password:  fakePass,
 			SharedKey: fakePass,
 		},
-		Minio: entity.MinioConfig{
-			AccessKey: "admin",
-			SecretKey: fakePass,
-		},
 		Status: entity.RuntimeStatusCreating,
 	}
 	updatedRuntime := &entity.Runtime{
@@ -116,10 +112,6 @@ func TestCreateRuntime(t *testing.T) {
 			Password:  fakePass,
 			SharedKey: fakePass,
 		},
-		Minio: entity.MinioConfig{
-			AccessKey: "admin",
-			SecretKey: fakePass,
-		},
 	}
 
 	updatedRuntime.ReleaseName = updatedRuntime.GetNamespace()
@@ -128,7 +120,7 @@ func TestCreateRuntime(t *testing.T) {
 	ctx := context.Background()
 
 	s.mocks.runtimeService.EXPECT().Create(ctx, expectedRuntime).Return("OK", nil)
-	s.mocks.passwordGenerator.EXPECT().NewPassword().Return(fakePass).Times(3)
+	s.mocks.passwordGenerator.EXPECT().NewPassword().Return(fakePass).Times(2)
 	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
 	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(nil, usecase.ErrRuntimeNotFound)
 	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, name).Return(nil, usecase.ErrRuntimeNotFound)

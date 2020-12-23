@@ -113,12 +113,6 @@ nats_streaming:
     className: standard
     size: 1Gi
 
-minio:
-  credentials:
-    secretKey: "12345678"
-  storage:
-    size: 1Gi
-
 chronograf:
   persistence:
     enabled: true

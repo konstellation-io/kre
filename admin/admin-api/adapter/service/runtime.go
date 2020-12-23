@@ -45,10 +45,6 @@ func (k *K8sRuntimeClient) Create(ctx context.Context, runtime *entity.Runtime) 
 				Password:  runtime.Mongo.Password,
 				SharedKey: runtime.Mongo.SharedKey,
 			},
-			Minio: &runtimepb.Runtime_MinioConf{
-				AccessKey: runtime.Minio.AccessKey,
-				SecretKey: runtime.Minio.SecretKey,
-			},
 		},
 	}
 

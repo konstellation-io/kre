@@ -11,10 +11,8 @@ import (
 
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 	"github.com/konstellation-io/kre/admin/admin-api/mocks"
 )
 
@@ -33,20 +31,12 @@ type versionSuiteMocks struct {
 	monitoringService *mocks.MockMonitoringService
 	userActivityRepo  *mocks.MockUserActivityRepo
 	userRepo          *mocks.MockUserRepo
-	createStorage     repository.CreateStorage
 	accessControl     *mocks.MockAccessControl
 	idGenerator       *mocks.MockIDGenerator
 }
 
 func newVersionSuite(t *testing.T) *versionSuite {
 	ctrl := gomock.NewController(t)
-
-	CreateStorageMock := func(logger logging.Logger, runtime *entity.Runtime) (repository.Storage, error) {
-		m := mocks.NewMockStorage(ctrl)
-		m.EXPECT().CreateBucket(gomock.Any()).Return(nil)
-		m.EXPECT().CopyDir(gomock.Any(), gomock.Any()).Return(nil)
-		return m, nil
-	}
 
 	cfg := &config.Config{}
 	logger := mocks.NewMockLogger(ctrl)
@@ -58,7 +48,6 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	idGenerator := mocks.NewMockIDGenerator(ctrl)
-	createStorage := CreateStorageMock
 	docGenerator := mocks.NewMockDocGenerator(ctrl)
 	dashboardService := mocks.NewMockDashboardService(ctrl)
 
@@ -79,7 +68,6 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		versionService,
 		monitoringService,
 		userActivityInteractor,
-		createStorage,
 		accessControl,
 		idGenerator,
 		docGenerator,
@@ -97,7 +85,6 @@ func newVersionSuite(t *testing.T) *versionSuite {
 			monitoringService,
 			userActivityRepo,
 			userRepo,
-			createStorage,
 			accessControl,
 			idGenerator,
 		},
@@ -117,7 +104,6 @@ func TestCreateNewVersion(t *testing.T) {
 		CreationDate: time.Time{},
 		Owner:        "",
 		Status:       "",
-		Minio:        entity.MinioConfig{},
 		Mongo:        entity.MongoConfig{},
 	}
 
@@ -156,6 +142,7 @@ func TestCreateNewVersion(t *testing.T) {
 	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
 	s.mocks.versionRepo.EXPECT().SetStatus(gomock.Any(), version.ID, entity.VersionStatusCreated).Return(nil)
+	s.mocks.versionRepo.EXPECT().UploadKRTFile(version, gomock.Any()).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
 	_, statusCh, err := s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)

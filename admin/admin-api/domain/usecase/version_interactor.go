@@ -50,7 +50,6 @@ type VersionInteractor struct {
 	versionService         service.VersionService
 	monitoringService      service.MonitoringService
 	userActivityInteractor UserActivityInteracter
-	createStorage          repository.CreateStorage
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
 	docGenerator           version.DocGenerator
@@ -66,7 +65,6 @@ func NewVersionInteractor(
 	runtimeService service.VersionService,
 	monitoringService service.MonitoringService,
 	userActivityInteractor UserActivityInteracter,
-	createStorage repository.CreateStorage,
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
 	docGenerator version.DocGenerator,
@@ -80,7 +78,6 @@ func NewVersionInteractor(
 		runtimeService,
 		monitoringService,
 		userActivityInteractor,
-		createStorage,
 		accessControl,
 		idGenerator,
 		docGenerator,
@@ -254,9 +251,9 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID, runtimeID 
 			i.logger.Infof("No documentation found inside the krt files")
 		}
 
-		err = i.storeContent(runtime, krtYml, tmpDir)
+		err = i.versionRepo.UploadKRTFile(versionCreated, tmpKrtFile.Name())
 		if err != nil {
-			errorMessage := "error saving content in file storage"
+			errorMessage := "error storing KRT file"
 			i.logger.Errorf("%s: %s", errorMessage, err)
 			contentErrors = append([]error{errors.New(errorMessage)}, contentErrors...)
 		}

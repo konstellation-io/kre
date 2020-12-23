@@ -31,13 +31,6 @@ spec:
       for: 5m
       labels:
         severity: warning
-    - alert: Minio
-      annotations:
-        message: 'Minio is Down'
-      expr: kube_statefulset_status_replicas{ namespace="{{ .Release.Namespace }}", statefulset="kre-minio"} < 1
-      for: 5m
-      labels:
-        severity: warning
     - alert: InfluxDB
       annotations:
         message: 'InfluxDB is Down'

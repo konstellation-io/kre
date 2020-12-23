@@ -26,16 +26,6 @@ func NewWatcher(logger *simplelogger.SimpleLogger, clientset *kubernetes.Clients
 const timeout = 5 * time.Minute
 
 func (k *Watcher) WaitForRuntimePods(ns string) error {
-	minioChan, err := k.waitForPodRunning(ns, []string{"app=kre-minio"}, timeout)
-	if err != nil {
-		return err
-	}
-
-	minioReadyChan, err := k.waitForPodReady(ns, []string{"app=kre-minio"}, timeout)
-	if err != nil {
-		return err
-	}
-
 	mongoChan, err := k.waitForPodRunning(ns, []string{"kre-app=kre-mongo"}, timeout)
 	if err != nil {
 		return err
@@ -51,26 +41,14 @@ func (k *Watcher) WaitForRuntimePods(ns string) error {
 		return err
 	}
 
-	minioRunning,
-		minioReady,
-		mongoRunning,
+	mongoRunning,
 		kreOperatorRunning,
 		natsRunning :=
-		<-minioChan,
-		<-minioReadyChan,
 		<-mongoChan,
 		<-kreOperatorChan,
 		<-natsChan
 
 	var failedPods []string
-
-	if !minioRunning {
-		failedPods = append(failedPods, "Minio")
-	}
-
-	if !minioReady {
-		failedPods = append(failedPods, "MinioReady")
-	}
 
 	if !mongoRunning {
 		failedPods = append(failedPods, "MongoDB")

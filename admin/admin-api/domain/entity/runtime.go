@@ -46,11 +46,6 @@ func (e RuntimeStatus) String() string {
 	return string(e)
 }
 
-type MinioConfig struct {
-	AccessKey string `bson:"accessKey"`
-	SecretKey string `bson:"secretKey"`
-}
-
 type MongoConfig struct {
 	Username  string
 	Password  string
@@ -69,7 +64,6 @@ type Runtime struct {
 	CreationDate     time.Time     `bson:"creationDate"`
 	Owner            string        `bson:"owner"`
 	Status           RuntimeStatus `bson:"status"`
-	Minio            MinioConfig   `bson:"minio"`
 	PublishedVersion string        `bson:"publishedVersion"`
 	Mongo            MongoConfig
 	Monoruntime      bool   `bson:"monoruntime"`

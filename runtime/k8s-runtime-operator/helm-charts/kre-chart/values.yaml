@@ -23,16 +23,6 @@ mongo:
     adminUser: "admin"
     adminPassword: "123456"
 
-minio:
-  image:
-    repository: tetrash/minio-multiarch
-    tag: latest
-  credentials:
-    accessKey: admin
-    secretKey: "12345678"
-  storage:
-    size: 1Gi
-
 chronograf:
   persistence:
     enabled: true

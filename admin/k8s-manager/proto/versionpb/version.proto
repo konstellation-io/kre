@@ -12,6 +12,8 @@ message Version {
   repeated Workflow workflows = 6;
   string mongo_uri = 7;
   string influx_uri = 8;
+  string mongo_db_name = 9;
+  string mongo_krt_bucket = 10;
 
   message Config {
     string key = 1;

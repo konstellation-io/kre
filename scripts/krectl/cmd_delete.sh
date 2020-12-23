@@ -34,7 +34,7 @@ delete_runtimes() {
   echo_wait "  deleting runtimes $(echo_green "${RUNTIMES}")..."
 
   for NAME in $RUNTIMES; do
-    RUNTIME="kre-${NAME}"
+    RUNTIME="${NAME}"
 
     # Skip -q on delete command
     if [ "$RUNTIME" = "kre--q" ]; then
@@ -78,7 +78,7 @@ delete_runtimes() {
 delete_version() {
   NAME=$1
   VERSION=$2
-  RUNTIME="kre-${NAME}"
+  RUNTIME="${NAME}"
 
   mongo_script() {
     echo "db.getCollection('versions').remove({ \"name\": \"$1\" })"

@@ -150,3 +150,17 @@ func (mr *MockVersionRepoMockRecorder) SetErrors(ctx, version, errorMessages int
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetErrors", reflect.TypeOf((*MockVersionRepo)(nil).SetErrors), ctx, version, errorMessages)
 }
+
+// UploadKRTFile mocks base method
+func (m *MockVersionRepo) UploadKRTFile(version *entity.Version, file string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UploadKRTFile", version, file)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UploadKRTFile indicates an expected call of UploadKRTFile
+func (mr *MockVersionRepoMockRecorder) UploadKRTFile(version, file interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadKRTFile", reflect.TypeOf((*MockVersionRepo)(nil).UploadKRTFile), version, file)
+}

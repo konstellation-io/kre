@@ -80,15 +80,17 @@ func (k *K8sVersionClient) Start(ctx context.Context, runtime *entity.Runtime, v
 		Version: &versionpb.Version{
 			Id:        version.ID,
 			Name:      version.Name,
-			Namespace: runtime.GetNamespace(),
+			Namespace: runtime.GetNamespace(), // K8s Namespace should not be part of Version properties
 			Config:    configVars,
 			Entrypoint: &versionpb.Version_Entrypoint{
 				ProtoFile: version.Entrypoint.ProtoFile,
 				Image:     version.Entrypoint.Image,
 			},
-			Workflows: wf,
-			MongoUri:  runtime.GetMongoURI(totalMongoReplicas),
-			InfluxUri: runtime.GetInfluxURL(),
+			Workflows:      wf,
+			MongoUri:       runtime.GetMongoURI(totalMongoReplicas), // MongoURI should not be part of Version properties
+			InfluxUri:      runtime.GetInfluxURL(),                  // InfluxURL should not be part of Version properties
+			MongoDbName:    k.cfg.MongoDB.DBName,                    // MongoDbName should not be part of Version properties
+			MongoKrtBucket: k.cfg.MongoDB.KRTBucket,                 // MongoKrtBucket should not be part of Version properties
 		},
 	}
 
