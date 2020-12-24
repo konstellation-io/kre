@@ -215,7 +215,7 @@ func TestValidator_ValidateInvalidVersion(t *testing.T) {
 	valErrs := errs.(validator.ValidationErrors)
 
 	require.Len(t, valErrs, 1)
-	require.EqualError(t, valErrs[0], "error on KRT struct validation: \nKey: 'File.Version' Error:Field validation for 'Version' failed on the 'required' tag")
+	require.EqualError(t, valErrs[0], "the krt.yml file contains the following validation errors:\n  - The field \"File.Version\" is required")
 }
 
 func TestValidator_ValidateInvalidKrt(t *testing.T) {

@@ -1,12 +1,14 @@
 package validator
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"regexp"
+	"strings"
 
 	"github.com/docker/distribution/reference"
 	"github.com/go-playground/validator/v10"
@@ -79,14 +81,42 @@ func (v *Validator) Validate(file *krt.File) error {
 	}
 
 	if vErr != nil {
-		return ValidationErrors{
-			fmt.Errorf("error on KRT struct validation: \n%s", vErr.Error()), // nolint: goerr113
+		if errs, ok := vErr.(validator.ValidationErrors); ok {
+			details := "the krt.yml file contains the following validation errors:"
+			hasResNameErr := false
+
+			for _, e := range errs {
+				location := strings.Replace(e.Namespace(), "Krt.", "", 1)
+				switch e.Tag() {
+				case "required":
+					details += fmt.Sprintf("\n  - The field \"%s\" is required", location)
+				case "lt":
+					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be lower than %s", e.Value(), location, e.Param())
+				case "lte":
+					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be lower or equal than %s", e.Value(), location, e.Param())
+				case "gt":
+					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be greater than %s", e.Value(), location, e.Param())
+				case "gte":
+					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be greater or equal than %s", e.Value(), location, e.Param())
+				case "resource-name":
+					details += fmt.Sprintf("\n  - Invalid resource name \"%s\" at \"%s\"", e.Value(), location)
+					hasResNameErr = true
+				default:
+					details += fmt.Sprintf("\n  - %s", e)
+				}
+			}
+
+			if hasResNameErr {
+				details += "\nresource names must contain only lowercase alphanumeric characters or '-', e.g. my-resource-name."
+			}
+
+			return ValidationErrors{errors.New(details)}
 		}
 	}
 
-	var allErr ValidationErrors
-
 	v.log("Validating KRT workflows")
+
+	var allErr ValidationErrors
 
 	errs := validateWorkflows(file)
 	if errs != nil {
