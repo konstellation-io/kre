@@ -11,7 +11,6 @@ import Can from 'Components/Can/Can';
 import Hexagon from 'Components/Shape/Hexagon/Hexagon';
 import HexagonBorder from 'Components/Shape/Hexagon/HexagonBorder';
 import HexagonPanel from 'Components/Layout/HexagonPanel/HexagonPanel';
-import { History } from 'history';
 import Message from 'Components/Message/Message';
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import ROUTE from 'Constants/routes';
@@ -20,7 +19,6 @@ import { checkPermission } from 'rbac-rules';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './Dashboard.module.scss';
-import { useHistory } from 'react-router';
 import { useQuery } from '@apollo/client';
 import useUserAccess from 'Hooks/useUserAccess';
 

@@ -156,12 +156,10 @@ class BarChartViz {
       .append('g')
       .attr('transform', `translate(0,${innerHeight})`)
       .classed(styles.xAxis, true)
-      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(xAxis);
     const yAxisG = axes
       .append('g')
       .classed(styles.yAxis, true)
-      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(yAxis);
 
     rotateAxis(xAxisG, -45);
@@ -242,10 +240,10 @@ class BarChartViz {
       .attr('height', (d: D) => Math.max(0, innerHeight - yScale(100)))
       .attr('width', xScale.step())
       .attr('fill', 'transparent')
-      .on('mouseenter', function(d: D) {
+      .on('mouseenter', function(_, d: D) {
         events.barHighlight(d, this, true);
       })
-      .on('mouseleave', function(d: D) {
+      .on('mouseleave', function(_, d: D) {
         events.barHighlight(d, this, false);
       });
 
