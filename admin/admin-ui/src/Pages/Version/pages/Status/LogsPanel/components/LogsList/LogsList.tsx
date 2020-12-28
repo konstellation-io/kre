@@ -253,6 +253,9 @@ function LogsList({
         clearLogs={clearLogs}
         toggleAutoScrollActive={toggleAutoScrollActive}
         autoScrollActive={autoScrollActive}
+        runtimeId={runtimeId}
+        versionId={versionId}
+        logs={logs}
       />
     </>
   );
