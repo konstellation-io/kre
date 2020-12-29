@@ -177,7 +177,6 @@ class BarChartSeriesViz {
     const yAxisG = axes
       .append('g')
       .classed(styles.yAxis, true)
-      // @ts-ignore TODO: Update dependencies to fix this typing error
       .call(yAxis);
 
     yAxisG
@@ -211,7 +210,6 @@ class BarChartSeriesViz {
       .classed(styles.seriesAxis, true)
       .attr('transform', `translate(0,${innerHeight})`)
       .each(function(d: Serie, idx) {
-        // @ts-ignore TODO: Update dependencies to fix this typing error
         select(this).call(xAxes[idx]);
       });
 
@@ -290,10 +288,10 @@ class BarChartSeriesViz {
       .attr('height', rowHeight)
       .attr('fill', 'transparent')
       .attr('fill-opacity', 0.5)
-      .on('mouseenter', function(d: string) {
+      .on('mouseenter', function(_, d: string) {
         events.rowHighlight(d, true);
       })
-      .on('mouseleave', function(d: string) {
+      .on('mouseleave', function(_, d: string) {
         events.rowHighlight(d, false);
       });
 
