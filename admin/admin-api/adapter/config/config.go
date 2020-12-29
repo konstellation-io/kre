@@ -40,8 +40,9 @@ type Config struct {
 		CookieDomain                      string `yaml:"cookieDomain" envconfig:"KRE_AUTH_COOKIE_DOMAIN"`
 	} `yaml:"auth"`
 	MongoDB struct {
-		Address string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
-		DBName  string `yaml:"dbName"`
+		Address   string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
+		DBName    string `yaml:"dbName"`
+		KRTBucket string `yaml:"krtBucket"`
 	} `yaml:"mongodb"`
 	Services struct {
 		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
@@ -51,10 +52,7 @@ type Config struct {
 		Name        string `yaml:"name" envconfig:"KRE_MONORUNTIME_NAME"`
 		ReleaseName string `yaml:"releaseName" envconfig:"KRE_MONORUNTIME_RELEASE_NAME"`
 		Namespace   string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
-		Minio       struct {
-			SecretKey string `yaml:"secretKey" envconfig:"MONORUNTIME_MINIO_SECRET_KEY"`
-		} `yaml:"minio"`
-		Mongo struct {
+		Mongo       struct {
 			Username string `yaml:"username" envconfig:"MONORUNTIME_MONGO_USERNAME"`
 			Password string `yaml:"password" envconfig:"MONORUNTIME_MONGO_PASSWORD"`
 		} `yaml:"mongo"`

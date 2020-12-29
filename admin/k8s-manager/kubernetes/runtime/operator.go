@@ -63,15 +63,6 @@ func (m *Manager) createRuntimeObject(runtime *entity.Runtime, domain string) er
 						"adminPassword": runtime.Mongo.Password,
 					},
 				},
-				"minio": map[string]interface{}{
-					"credentials": map[string]interface{}{
-						"accessKey": runtime.Minio.AccessKey,
-						"secretKey": runtime.Minio.SecretKey,
-					},
-					"storage": map[string]string{
-						"size": m.config.SharedStorageSize,
-					},
-				},
 				"chronograf": map[string]interface{}{
 					"persistence": map[string]interface{}{
 						"storageClass": m.config.Chronograf.PersistentVolume.StorageClass,

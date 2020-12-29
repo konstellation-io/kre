@@ -55,7 +55,7 @@ func (m *Manager) createEntrypointConfigMap(version *entity.Version) (*apiv1.Con
 			},
 		},
 		Data: map[string]string{
-			"KRT_NATS_SERVER":        "kre-nats:4222",
+			"KRT_NATS_SERVER":        natsURL,
 			"KRT_NATS_SUBJECTS_FILE": "/src/conf/nats_subject.json",
 			"KRT_INFLUX_URI":         version.InfluxUri,
 		},
@@ -97,6 +97,22 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 			Value: "entrypoint",
 		},
 		{
+			Name:  "KRT_MONGO_URI",
+			Value: version.GetMongoUri(),
+		},
+		{
+			Name:  "KRT_MONGO_DB_NAME",
+			Value: version.GetMongoDbName(),
+		},
+		{
+			Name:  "KRT_MONGO_BUCKET",
+			Value: version.GetMongoKrtBucket(),
+		},
+		{
+			Name:  "KRT_BASE_PATH",
+			Value: basePathKRT,
+		},
+		{
 			// NOTE: Time to wait for a message to do a round trip through a workflow.
 			Name:  "KRT_REQUEST_TIMEOUT",
 			Value: m.config.Entrypoint.RequestTimeout,
@@ -129,6 +145,21 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 					},
 				},
 				Spec: apiv1.PodSpec{
+					InitContainers: []apiv1.Container{
+						{
+							Name:            "krt-files-downloader",
+							Image:           "konstellation/krt-files-downloader:latest",
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							Env:             envVars,
+							VolumeMounts: []apiv1.VolumeMount{
+								{
+									Name:      "krt-base-path",
+									ReadOnly:  false,
+									MountPath: basePathKRT,
+								},
+							},
+						},
+					},
 					Containers: []apiv1.Container{
 						{
 							Name:            name,
@@ -148,16 +179,9 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 									SubPath:   "nats_subject.json",
 								},
 								{
-									Name:      "shared-data",
-									ReadOnly:  true,
-									MountPath: "/krt-files",
-									SubPath:   name,
-								},
-								{
-									Name:      "shared-data",
+									Name:      basePathKRTName,
 									ReadOnly:  false,
-									MountPath: "/data",
-									SubPath:   version.Name + "/data",
+									MountPath: basePathKRT,
 								},
 								{
 									Name:      "app-log-volume",
@@ -224,7 +248,12 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 									SubPath:   "default.conf",
 								},
 								{
-									Name:      "shared-data",
+									Name:      basePathKRTName,
+									ReadOnly:  false,
+									MountPath: basePathKRT,
+								},
+								{
+									Name:      basePathKRTName,
 									ReadOnly:  true,
 									MountPath: fmt.Sprintf("/proto/%s", version.Entrypoint.ProtoFile),
 									SubPath:   fmt.Sprintf("%s/%s", name, version.Entrypoint.ProtoFile),
@@ -234,21 +263,18 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 					},
 					Volumes: []apiv1.Volume{
 						{
+							Name: basePathKRTName,
+							VolumeSource: apiv1.VolumeSource{
+								EmptyDir: &apiv1.EmptyDirVolumeSource{},
+							},
+						},
+						{
 							Name: "version-conf-files",
 							VolumeSource: apiv1.VolumeSource{
 								ConfigMap: &apiv1.ConfigMapVolumeSource{
 									LocalObjectReference: apiv1.LocalObjectReference{
 										Name: fmt.Sprintf("%s-conf-files", name),
 									},
-								},
-							},
-						},
-						{
-							Name: "shared-data",
-							VolumeSource: apiv1.VolumeSource{
-								PersistentVolumeClaim: &apiv1.PersistentVolumeClaimVolumeSource{
-									ClaimName: fmt.Sprintf("%s-kre-minio-pvc-kre-minio-0", ns),
-									ReadOnly:  false,
 								},
 							},
 						},

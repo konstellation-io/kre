@@ -8,7 +8,6 @@ import (
 
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/repository/minio"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/repository/mongodb"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/runtime"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/service"
@@ -101,7 +100,6 @@ func main() {
 
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor, accessControl)
 
-	minioCreateStorage := minio.CreateStorage
 	chronografDashboard := service.CreateDashboardService(logger)
 	versionInteractor := usecase.NewVersionInteractor(
 		cfg,
@@ -111,7 +109,6 @@ func main() {
 		versionService,
 		monitoringService,
 		userActivityInteractor,
-		minioCreateStorage,
 		accessControl,
 		idGenerator,
 		docGenerator,

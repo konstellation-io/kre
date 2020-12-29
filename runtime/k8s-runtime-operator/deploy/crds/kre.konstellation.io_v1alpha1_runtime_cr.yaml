@@ -32,11 +32,3 @@ spec:
     persistence:
       className: standard
       size: 2Gi
-
-  minio:
-    credentials:
-      accessKey: admin
-      secretKey: "12345678"
-    storage:
-      className: standard
-      size: 2Gi

@@ -89,10 +89,6 @@ func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context, ownerUser *en
 			Username: i.cfg.Monoruntime.Mongo.Username,
 			Password: i.cfg.Monoruntime.Mongo.Password,
 		},
-		Minio: entity.MinioConfig{
-			AccessKey: "admin",
-			SecretKey: i.cfg.Monoruntime.Minio.SecretKey,
-		},
 		Status:      entity.RuntimeStatusStarted,
 		Monoruntime: true,
 		ReleaseName: i.cfg.Monoruntime.ReleaseName,
@@ -131,10 +127,6 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 			Username:  "admin",
 			Password:  i.passwordGenerator.NewPassword(),
 			SharedKey: i.passwordGenerator.NewPassword(),
-		},
-		Minio: entity.MinioConfig{
-			AccessKey: "admin",
-			SecretKey: i.passwordGenerator.NewPassword(),
 		},
 		Status: entity.RuntimeStatusCreating,
 	}

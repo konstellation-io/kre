@@ -17,8 +17,7 @@ message Runtime {
 
   string name = 1;
   string namespace = 2;
-  MinioConf minio = 3;
-  MongoConf mongo = 4;
+  MongoConf mongo = 3;
 }
 
 message Request {

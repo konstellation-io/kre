@@ -54,7 +54,7 @@ show_build_help() {
       --clean          sends a prune command to remove old docker images and containers. (will keep last 24h).
       --engine         build only engine components (admin-api, k8s-manager, admin-ui, admin-ui-builder).
       --runtime        build only runtime components (runtime-api, mongo-writer, operator).
-      --runners        build only runners (kre-entrypoint, kre-py, kre-go).
+      --runners        build only runners (kre-entrypoint, kre-py, kre-go, krt-files-downloader).
       --skip-frontend  skip docker build for admin-ui component.
 
     $(help_global_options)
@@ -153,6 +153,7 @@ build_runners() {
   build_image kre-entrypoint runners/kre-entrypoint
   build_image kre-py runners/kre-py
   build_image kre-go runners/kre-go
+  build_image krt-files-downloader runners/krt-files-downloader
 }
 
 build_image() {

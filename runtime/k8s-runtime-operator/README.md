@@ -19,7 +19,7 @@ The KRE Operator will be deployed within the namespace of each Runtime. This is 
 
 ## Custom Resources
 
-* **Runtime**: This object generates the needed infrastructure containers used by the RuntimeVersions. example: mongo, nats and minio.  
+* **Runtime**: This object generates the needed infrastructure containers used by the RuntimeVersions. example: mongo and nats.  
 
 * **RuntimeVersion** (TODO): This object generate all the containers needed to perform the inference of an AI/ML model.
 
@@ -88,7 +88,6 @@ To start development of the operator follow this steps:
     kubectl -n SOME_NAMESPACE get pods
     # sample output
     NAME          READY   STATUS      RESTARTS   AGE
-    kre-minio-0   0/1     Running     0          8s
     kre-mongo-0   1/1     Running     0          8s
     kre-nats-0    1/1     Running     0          8s
     kre-nats-1    1/1     Running     0          8s

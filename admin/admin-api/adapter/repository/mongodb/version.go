@@ -2,6 +2,10 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
+	"go.mongodb.org/mongo-driver/mongo/gridfs"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"io/ioutil"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,6 +22,7 @@ type VersionRepoMongoDB struct {
 	cfg        *config.Config
 	logger     logging.Logger
 	collection *mongo.Collection
+	client     *mongo.Client
 }
 
 func NewVersionRepoMongoDB(
@@ -30,6 +35,7 @@ func NewVersionRepoMongoDB(
 		cfg,
 		logger,
 		collection,
+		client,
 	}
 }
 
@@ -151,4 +157,38 @@ func (r *VersionRepoMongoDB) SetErrors(ctx context.Context, version *entity.Vers
 	}
 
 	return version, nil
+}
+
+func (r *VersionRepoMongoDB) UploadKRTFile(version *entity.Version, file string) error {
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		return fmt.Errorf("reading KRT file at %s: %w", file, err)
+	}
+
+	bucket, err := gridfs.NewBucket(
+		r.client.Database(r.cfg.MongoDB.DBName),
+		options.GridFSBucket().SetName(r.cfg.MongoDB.KRTBucket),
+	)
+	if err != nil {
+		return fmt.Errorf("creating bucket \"%s\" to store KRT files: %w", r.cfg.MongoDB.DBName, err)
+	}
+
+	filename := fmt.Sprintf("%s.krt", version.Name)
+	uploadStream, err := bucket.OpenUploadStreamWithID(
+		version.ID,
+		filename,
+	)
+	if err != nil {
+		return fmt.Errorf("opening KRT upload stream: %w", err)
+	}
+	defer uploadStream.Close()
+
+	fileSize, err := uploadStream.Write(data)
+	if err != nil {
+		return fmt.Errorf("writing into the KRT upload stream: %w", err)
+
+	}
+	r.logger.Infof("Uploaded %d bytes of \"%s\" to GridFS successfully", filename, fileSize)
+
+	return nil
 }

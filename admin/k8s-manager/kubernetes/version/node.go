@@ -35,14 +35,20 @@ func (m *Manager) generateNodeConfig(version *entity.Version, workflow *versionp
 
 	for _, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
-			"KRT_VERSION":           version.Name,
-			"KRT_NODE_NAME":         n.Name,
-			"KRT_NATS_SERVER":       "kre-nats:4222",
+			"KRT_WORKFLOW_ID":       workflow.GetId(),
+			"KRT_WORKFLOW_NAME":     workflow.GetName(),
+			"KRT_VERSION":           version.GetName(),
+			"KRT_VERSION_ID":        version.GetId(),
+			"KRT_NODE_ID":           n.GetId(),
+			"KRT_NODE_NAME":         n.GetName(),
+			"KRT_NATS_SERVER":       natsURL,
 			"KRT_NATS_MONGO_WRITER": "mongo_writer",
-			"KRT_BASE_PATH":         "/krt-files",
+			"KRT_BASE_PATH":         basePathKRT,
 			"KRT_HANDLER_PATH":      n.Src,
-			"KRT_MONGO_URI":         version.MongoUri,
-			"KRT_INFLUX_URI":        version.InfluxUri,
+			"KRT_MONGO_URI":         version.GetMongoUri(),       // TODO MongoUri should not be part of Version properties
+			"KRT_MONGO_DB_NAME":     version.GetMongoDbName(),    // TODO MongoDBName should not be part of Version properties
+			"KRT_MONGO_BUCKET":      version.GetMongoKrtBucket(), // TODO MongoKRTBucketName should not be part of Version properties
+			"KRT_INFLUX_URI":        version.GetInfluxUri(),      // TODO InfluxUri should not be part of Version properties
 		}
 	}
 
@@ -82,14 +88,13 @@ func (m *Manager) createNode(
 	version *entity.Version,
 	node *versionpb.Version_Workflow_Node,
 	nodeConfig NodeConfig,
-	workflow *versionpb.Version_Workflow,
 ) error {
-	configName, err := m.createNodeConfigMap(version, node, nodeConfig)
+	configName, err := m.createNodeConfigMap(version, node, nodeConfig) // TODO dont use config map, use Env
 	if err != nil {
 		return err
 	}
 
-	_, err = m.createNodeDeployment(version, node, configName, workflow)
+	_, err = m.createNodeDeployment(version, node, configName)
 
 	return err
 }
@@ -127,38 +132,10 @@ func (m *Manager) createNodeDeployment(
 	version *entity.Version,
 	node *versionpb.Version_Workflow_Node,
 	configName string,
-	workflow *versionpb.Version_Workflow,
 ) (*appsv1.Deployment, error) {
 	name := fmt.Sprintf("%s-%s-%s", version.Name, node.Name, node.Id)
 	ns := version.Namespace
-	m.logger.Info(fmt.Sprintf("Creating node deployment in %s named %s from image %s", ns, name, node.Image))
-
-	envVars := []apiv1.EnvVar{
-		{
-			Name:  "KRT_VERSION_ID",
-			Value: version.GetId(),
-		},
-		{
-			Name:  "KRT_VERSION",
-			Value: version.GetName(),
-		},
-		{
-			Name:  "KRT_WORKFLOW_NAME",
-			Value: workflow.GetName(),
-		},
-		{
-			Name:  "KRT_WORKFLOW_ID",
-			Value: workflow.GetId(),
-		},
-		{
-			Name:  "KRT_NODE_NAME",
-			Value: node.GetName(),
-		},
-		{
-			Name:  "KRT_NODE_ID",
-			Value: node.GetId(),
-		},
-	}
+	m.logger.Infof("Creating node deployment in %s named %s from image %s", ns, name, node.Image)
 
 	requests := apiv1.ResourceList{}
 	limits := apiv1.ResourceList{}
@@ -198,12 +175,34 @@ func (m *Manager) createNodeDeployment(
 					},
 				},
 				Spec: apiv1.PodSpec{
+					InitContainers: []apiv1.Container{
+						{
+							Name:            "krt-files-downloader",
+							Image:           "konstellation/krt-files-downloader:latest",
+							ImagePullPolicy: apiv1.PullIfNotPresent,
+							EnvFrom: []apiv1.EnvFromSource{
+								{
+									ConfigMapRef: &apiv1.ConfigMapEnvSource{
+										LocalObjectReference: apiv1.LocalObjectReference{
+											Name: configName,
+										},
+									},
+								},
+							},
+							VolumeMounts: []apiv1.VolumeMount{
+								{
+									Name:      basePathKRTName,
+									ReadOnly:  false,
+									MountPath: basePathKRT,
+								},
+							},
+						},
+					},
 					Containers: []apiv1.Container{
 						{
 							Name:            name,
 							Image:           node.Image,
 							ImagePullPolicy: apiv1.PullIfNotPresent,
-							Env:             envVars,
 							EnvFrom: []apiv1.EnvFromSource{
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
@@ -229,16 +228,9 @@ func (m *Manager) createNodeDeployment(
 							},
 							VolumeMounts: []apiv1.VolumeMount{
 								{
-									Name:      "shared-data",
+									Name:      basePathKRTName,
 									ReadOnly:  true,
-									MountPath: "/krt-files",
-									SubPath:   version.Name,
-								},
-								{
-									Name:      "shared-data",
-									ReadOnly:  false,
-									MountPath: "/data",
-									SubPath:   version.Name + "/data",
+									MountPath: basePathKRT,
 								},
 								{
 									Name:      "app-log-volume",
@@ -260,7 +252,6 @@ func (m *Manager) createNodeDeployment(
 								"/fluent-bit/etc/fluent-bit.conf",
 								"-v",
 							},
-							Env: envVars,
 							VolumeMounts: []apiv1.VolumeMount{
 								{
 									Name:      "version-conf-files",
@@ -294,12 +285,9 @@ func (m *Manager) createNodeDeployment(
 							},
 						},
 						{
-							Name: "shared-data",
+							Name: basePathKRTName,
 							VolumeSource: apiv1.VolumeSource{
-								PersistentVolumeClaim: &apiv1.PersistentVolumeClaimVolumeSource{
-									ClaimName: fmt.Sprintf("%s-kre-minio-pvc-kre-minio-0", ns),
-									ReadOnly:  false,
-								},
+								EmptyDir: &apiv1.EmptyDirVolumeSource{},
 							},
 						},
 						{

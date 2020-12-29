@@ -7,7 +7,6 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/admin/admin-api/adapter/repository/minio"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/mocks"
 	"github.com/stretchr/testify/assert"
@@ -36,7 +35,6 @@ func newVersionDashboardsSuite(t *testing.T) *versionDashboardsSuite {
 	versionService := mocks.NewMockVersionService(ctrl)
 	monitoringService := mocks.NewMockMonitoringService(ctrl)
 	userActivityInteractor := mocks.NewMockUserActivityInteracter(ctrl)
-	createStorage := minio.CreateStorage
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	idGenerator := mocks.NewMockIDGenerator(ctrl)
 	docGenerator := mocks.NewMockDocGenerator(ctrl)
@@ -51,7 +49,6 @@ func newVersionDashboardsSuite(t *testing.T) *versionDashboardsSuite {
 		versionService,
 		monitoringService,
 		userActivityInteractor,
-		createStorage,
 		accessControl,
 		idGenerator,
 		docGenerator,
