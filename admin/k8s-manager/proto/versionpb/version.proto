@@ -3,54 +3,61 @@ syntax = "proto3";
 package version;
 option go_package = "versionpb";
 
-message Version {
-  string id = 1;
-  string name = 2;
-  string namespace = 3;
-  Entrypoint entrypoint = 4;
-  repeated Config config = 5;
-  repeated Workflow workflows = 6;
-  string mongo_uri = 7;
-  string influx_uri = 8;
-  string mongo_db_name = 9;
-  string mongo_krt_bucket = 10;
-
-  message Config {
-    string key = 1;
-    string value = 2;
-  }
-
-  message Entrypoint {
-    string proto_file = 1;
-    string image = 2;
-  }
-
-  message Workflow {
-
-    message Node {
-      string id = 1;
-      string name = 2;
-      string image = 3;
-      string src = 4;
-      bool gpu = 5;
-    }
-
-    message Edge {
-      string id = 1;
-      string fromNode = 2;
-      string toNode = 3;
-    }
-
-    string id = 1;
-    string name = 2;
-    string entrypoint = 3;
-    repeated Node nodes = 4;
-    repeated Edge edges = 5;
-  }
+message Config {
+  string key = 1;
+  string value = 2;
 }
 
-message Request {
-  Version version = 1;
+// deprecated: this will be deleted with https://github.com/konstellation-io/kre/issues/152
+message Entrypoint {
+  string proto_file = 1;
+  string image = 2;
+}
+
+message Workflow {
+  message Node {
+    string id = 1;
+    string name = 2;
+    string image = 3;
+    string src = 4;
+    bool gpu = 5;
+  }
+
+  message Edge {
+    string id = 1;
+    string fromNode = 2;
+    string toNode = 3;
+  }
+
+  string id = 1;
+  string name = 2;
+  string entrypoint = 3;
+  repeated Node nodes = 4;
+  repeated Edge edges = 5;
+}
+
+message StartRequest {
+  string version_id = 1;
+  string version_name = 2;
+  repeated Config config = 3;
+  repeated Workflow workflows = 4;
+  string mongo_uri = 5;
+  string mongo_db_name = 6;
+  string mongo_krt_bucket = 7;
+  string influx_uri = 8;
+  Entrypoint entrypoint = 9; // deprecated: this will be deleted with https://github.com/konstellation-io/kre/issues/152
+  string k8s_namespace = 10; // deprecated: with mono-runtime there is a single namespace
+}
+
+message VersionName {
+  string name = 1;
+  string k8s_namespace = 2; // deprecated: with mono-runtime there is a single namespace
+}
+
+message UpdateConfigRequest {
+  string version_name = 1;
+  repeated Config config = 2;
+  string k8s_namespace = 3; // deprecated: with mono-runtime there is a single namespace
 }
 
 message Response {
@@ -58,9 +65,9 @@ message Response {
 }
 
 service VersionService {
-  rpc Start (Request) returns (Response);
-  rpc Stop (Request) returns (Response);
-  rpc Publish (Request) returns (Response);
-  rpc Unpublish (Request) returns (Response);
-  rpc UpdateConfig (Request) returns (Response);
+  rpc Start (StartRequest) returns (Response);
+  rpc Stop (VersionName) returns (Response);
+  rpc Publish (VersionName) returns (Response);
+  rpc Unpublish (VersionName) returns (Response);
+  rpc UpdateConfig (UpdateConfigRequest) returns (Response);
 };

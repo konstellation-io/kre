@@ -2,8 +2,11 @@ package version
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
+
+	"github.com/konstellation-io/kre/admin/k8s-manager/proto/versionpb"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -12,7 +15,6 @@ import (
 	"k8s.io/client-go/tools/cache"
 
 	"github.com/konstellation-io/kre/admin/k8s-manager/config"
-	"github.com/konstellation-io/kre/admin/k8s-manager/entity"
 )
 
 type Manager struct {
@@ -21,105 +23,76 @@ type Manager struct {
 	clientset *kubernetes.Clientset
 }
 
-func New(config *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Manager {
+const timeoutWaitingForVersionPODS = 10 * time.Minute
+
+var ErrWaitingForVersionPODSTimeout = errors.New("[WaitForVersionPods] timeout waiting for version pods")
+
+func New(cfg *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Manager {
 	return &Manager{
-		config,
+		cfg,
 		logger,
 		clientset,
 	}
 }
 
-type Config struct {
-	Entrypoint EntrypointConfig
-	Workflows  map[string]WorkflowConfig
-}
+// Start request k8s to create all version resources like deployments and config maps associated with the version.
+func (m *Manager) Start(req *versionpb.StartRequest) error {
+	m.logger.Infof("Starting version \"%s\"", req.VersionName)
 
-func (m *Manager) Start(version *entity.Version) error {
-	m.logger.Infof("Starting version: %s", version.Name)
-
-	versionConfig := Config{
-		Entrypoint: EntrypointConfig{},
-		Workflows:  map[string]WorkflowConfig{},
-	}
-
-	for _, w := range version.Workflows {
-		m.logger.Infof("Processing workflow %s", w.Name)
-		versionConfig.Workflows[w.Name] = m.generateNodeConfig(version, w)
-
-		for _, n := range w.Nodes {
-			nodeConfig := versionConfig.Workflows[w.Name][n.Id]
-
-			err := m.createNode(version, n, nodeConfig)
-			if err != nil {
-				m.logger.Error(err.Error())
-
-				return err
-			}
-		}
-	}
-
-	econf := m.generateEntrypointConfig(version, versionConfig.Workflows)
-
-	_, err := m.createConfig(version, econf)
+	err := m.createVersionConfFiles(req.VersionName, req.K8SNamespace, req.Workflows)
 	if err != nil {
 		return err
 	}
 
-	err = m.createEntrypoint(version)
+	err = m.createAllNodeDeployments(req)
 	if err != nil {
-		m.logger.Error(err.Error())
 		return err
 	}
 
-	return nil
+	return m.createEntrypoint(req)
 }
 
 // Stop calls kubernetes remove all version resources.
-func (m *Manager) Stop(ctx context.Context, version *entity.Version) error {
-	err := m.deleteConfigMapsSync(ctx, version)
+func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionName) error {
+	err := m.deleteConfigMapsSync(ctx, req.Name, req.K8SNamespace)
 	if err != nil {
 		return err
 	}
 
-	return m.deleteDeploymentsSync(ctx, version)
+	return m.deleteDeploymentsSync(ctx, req.Name, req.K8SNamespace)
 }
 
 // Publish calls kubernetes to create a new Version Object.
-func (m *Manager) Publish(version *entity.Version) error {
-	m.logger.Infof("Publish version %s", version.Name)
-	_, err := m.createEntrypointService(version)
+func (m *Manager) Publish(req *versionpb.VersionName) error {
+	m.logger.Infof("Publish version %s", req.Name)
+	_, err := m.createEntrypointService(req.Name, req.K8SNamespace)
 
 	return err
 }
 
-// Stop calls kubernetes remove access to this version.
-func (m *Manager) Unpublish(version *entity.Version) error {
-	m.logger.Infof("Deactivating version '%s'", version.Name)
-	return m.deleteEntrypointService(version)
+// Unpublish calls kubernetes remove access to this version.
+func (m *Manager) Unpublish(req *versionpb.VersionName) error {
+	m.logger.Infof("Deactivating version '%s'", req.Name)
+	return m.deleteEntrypointService(req.Name, req.K8SNamespace)
 }
 
 // UpdateConfig calls kubernetes to update a version config.
-func (m *Manager) UpdateConfig(ctx context.Context, version *entity.Version) error {
-	_, err := m.updateConfigMap(version)
-	if err != nil {
-		return err
-	}
-
-	return m.restartPodsSync(ctx, version)
+func (m *Manager) UpdateConfig(ctx context.Context, req *versionpb.UpdateConfigRequest) error {
+	return m.restartPodsSync(ctx, req.VersionName, req.K8SNamespace)
 }
 
-func (m *Manager) WaitForVersionPods(ctx context.Context, version *entity.Version) error {
-	ns := version.Namespace
-	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s'", ns, version.Name)
+func (m *Manager) WaitForVersionPods(ctx context.Context, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {
+	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s'", ns, versionName)
 
 	nodes := []string{"entrypoint"}
-	for _, w := range version.Workflows {
+
+	for _, w := range versionWorkflows {
 		for _, n := range w.Nodes {
 			nodes = append(nodes, n.Id)
 		}
 	}
 
-	labelSelector := fmt.Sprintf("version-name=%s,type in (node, entrypoint)", version.Name)
+	labelSelector := fmt.Sprintf("version-name=%s,type in (node, entrypoint)", versionName)
 	waitCh := make(chan struct{}, 1)
 	resolver := NewStatusResolver(m.logger, nodes, waitCh)
 
@@ -133,14 +106,14 @@ func (m *Manager) WaitForVersionPods(ctx context.Context, version *entity.Versio
 	for {
 		select {
 		case <-ctx.Done():
-			m.logger.Infof("[WaitForVersionPods] context cancelled. stop waiting.")
+			m.logger.Infof("[WaitForVersionPods] context canceled. stop waiting.")
 			return nil
 
-		case <-time.After(10 * time.Minute):
-			return fmt.Errorf("[WaitForVersionPods] timeout waiting for version pods")
+		case <-time.After(timeoutWaitingForVersionPODS):
+			return ErrWaitingForVersionPODSTimeout
 
 		case <-waitCh:
-			m.logger.Debugf("[WaitForVersionPods] all version pods for '%s' are running", version.Name)
+			m.logger.Debugf("[WaitForVersionPods] all version pods for '%s' are running", versionName)
 			return nil
 		}
 	}

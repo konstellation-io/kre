@@ -15,6 +15,7 @@ import (
 )
 
 const refreshInterval = 60 * time.Second
+const prometheusQueryTimeout = 10 * time.Second
 
 // Manager contains methods to call Prometheus.
 type Manager struct {
@@ -24,9 +25,9 @@ type Manager struct {
 }
 
 // New returns an instance of the Prometheus manager.
-func New(config *config.Config, logger *simplelogger.SimpleLogger) (*Manager, error) {
+func New(cfg *config.Config, logger *simplelogger.SimpleLogger) (*Manager, error) {
 	client, err := api.NewClient(api.Config{
-		Address: config.Prometheus.URL,
+		Address: cfg.Prometheus.URL,
 	})
 	if err != nil {
 		logger.Errorf("Error creating Prometheus client: %v\n", err.Error())
@@ -36,7 +37,7 @@ func New(config *config.Config, logger *simplelogger.SimpleLogger) (*Manager, er
 	prometheus := v1.NewAPI(client)
 
 	return &Manager{
-		config,
+		cfg,
 		logger,
 		prometheus,
 	}, nil
@@ -113,7 +114,7 @@ func (m *Manager) prometheusQuery(
 	step time.Duration,
 	versionName, namespace string,
 ) ([]entity.VersionResourceMetrics, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), prometheusQueryTimeout)
 	defer cancel()
 
 	r := v1.Range{

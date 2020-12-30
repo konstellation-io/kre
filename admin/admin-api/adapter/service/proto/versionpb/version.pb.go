@@ -24,118 +24,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Version struct {
-	Id                   string              `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name                 string              `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Namespace            string              `protobuf:"bytes,3,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	Entrypoint           *Version_Entrypoint `protobuf:"bytes,4,opt,name=entrypoint,proto3" json:"entrypoint,omitempty"`
-	Config               []*Version_Config   `protobuf:"bytes,5,rep,name=config,proto3" json:"config,omitempty"`
-	Workflows            []*Version_Workflow `protobuf:"bytes,6,rep,name=workflows,proto3" json:"workflows,omitempty"`
-	MongoUri             string              `protobuf:"bytes,7,opt,name=mongo_uri,json=mongoUri,proto3" json:"mongo_uri,omitempty"`
-	InfluxUri            string              `protobuf:"bytes,8,opt,name=influx_uri,json=influxUri,proto3" json:"influx_uri,omitempty"`
-	MongoDbName          string              `protobuf:"bytes,9,opt,name=mongo_db_name,json=mongoDbName,proto3" json:"mongo_db_name,omitempty"`
-	MongoKrtBucket       string              `protobuf:"bytes,10,opt,name=mongo_krt_bucket,json=mongoKrtBucket,proto3" json:"mongo_krt_bucket,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
-}
-
-func (m *Version) Reset()         { *m = Version{} }
-func (m *Version) String() string { return proto.CompactTextString(m) }
-func (*Version) ProtoMessage()    {}
-func (*Version) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{0}
-}
-
-func (m *Version) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Version.Unmarshal(m, b)
-}
-func (m *Version) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Version.Marshal(b, m, deterministic)
-}
-func (m *Version) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Version.Merge(m, src)
-}
-func (m *Version) XXX_Size() int {
-	return xxx_messageInfo_Version.Size(m)
-}
-func (m *Version) XXX_DiscardUnknown() {
-	xxx_messageInfo_Version.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Version proto.InternalMessageInfo
-
-func (m *Version) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *Version) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *Version) GetNamespace() string {
-	if m != nil {
-		return m.Namespace
-	}
-	return ""
-}
-
-func (m *Version) GetEntrypoint() *Version_Entrypoint {
-	if m != nil {
-		return m.Entrypoint
-	}
-	return nil
-}
-
-func (m *Version) GetConfig() []*Version_Config {
-	if m != nil {
-		return m.Config
-	}
-	return nil
-}
-
-func (m *Version) GetWorkflows() []*Version_Workflow {
-	if m != nil {
-		return m.Workflows
-	}
-	return nil
-}
-
-func (m *Version) GetMongoUri() string {
-	if m != nil {
-		return m.MongoUri
-	}
-	return ""
-}
-
-func (m *Version) GetInfluxUri() string {
-	if m != nil {
-		return m.InfluxUri
-	}
-	return ""
-}
-
-func (m *Version) GetMongoDbName() string {
-	if m != nil {
-		return m.MongoDbName
-	}
-	return ""
-}
-
-func (m *Version) GetMongoKrtBucket() string {
-	if m != nil {
-		return m.MongoKrtBucket
-	}
-	return ""
-}
-
-type Version_Config struct {
+type Config struct {
 	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -143,46 +32,47 @@ type Version_Config struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Version_Config) Reset()         { *m = Version_Config{} }
-func (m *Version_Config) String() string { return proto.CompactTextString(m) }
-func (*Version_Config) ProtoMessage()    {}
-func (*Version_Config) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{0, 0}
+func (m *Config) Reset()         { *m = Config{} }
+func (m *Config) String() string { return proto.CompactTextString(m) }
+func (*Config) ProtoMessage()    {}
+func (*Config) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{0}
 }
 
-func (m *Version_Config) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Version_Config.Unmarshal(m, b)
+func (m *Config) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Config.Unmarshal(m, b)
 }
-func (m *Version_Config) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Version_Config.Marshal(b, m, deterministic)
+func (m *Config) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Config.Marshal(b, m, deterministic)
 }
-func (m *Version_Config) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Version_Config.Merge(m, src)
+func (m *Config) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Config.Merge(m, src)
 }
-func (m *Version_Config) XXX_Size() int {
-	return xxx_messageInfo_Version_Config.Size(m)
+func (m *Config) XXX_Size() int {
+	return xxx_messageInfo_Config.Size(m)
 }
-func (m *Version_Config) XXX_DiscardUnknown() {
-	xxx_messageInfo_Version_Config.DiscardUnknown(m)
+func (m *Config) XXX_DiscardUnknown() {
+	xxx_messageInfo_Config.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Version_Config proto.InternalMessageInfo
+var xxx_messageInfo_Config proto.InternalMessageInfo
 
-func (m *Version_Config) GetKey() string {
+func (m *Config) GetKey() string {
 	if m != nil {
 		return m.Key
 	}
 	return ""
 }
 
-func (m *Version_Config) GetValue() string {
+func (m *Config) GetValue() string {
 	if m != nil {
 		return m.Value
 	}
 	return ""
 }
 
-type Version_Entrypoint struct {
+// deprecated: this will be deleted with https://github.com/konstellation-io/kre/issues/152
+type Entrypoint struct {
 	ProtoFile            string   `protobuf:"bytes,1,opt,name=proto_file,json=protoFile,proto3" json:"proto_file,omitempty"`
 	Image                string   `protobuf:"bytes,2,opt,name=image,proto3" json:"image,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -190,117 +80,117 @@ type Version_Entrypoint struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Version_Entrypoint) Reset()         { *m = Version_Entrypoint{} }
-func (m *Version_Entrypoint) String() string { return proto.CompactTextString(m) }
-func (*Version_Entrypoint) ProtoMessage()    {}
-func (*Version_Entrypoint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{0, 1}
+func (m *Entrypoint) Reset()         { *m = Entrypoint{} }
+func (m *Entrypoint) String() string { return proto.CompactTextString(m) }
+func (*Entrypoint) ProtoMessage()    {}
+func (*Entrypoint) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{1}
 }
 
-func (m *Version_Entrypoint) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Version_Entrypoint.Unmarshal(m, b)
+func (m *Entrypoint) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Entrypoint.Unmarshal(m, b)
 }
-func (m *Version_Entrypoint) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Version_Entrypoint.Marshal(b, m, deterministic)
+func (m *Entrypoint) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Entrypoint.Marshal(b, m, deterministic)
 }
-func (m *Version_Entrypoint) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Version_Entrypoint.Merge(m, src)
+func (m *Entrypoint) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Entrypoint.Merge(m, src)
 }
-func (m *Version_Entrypoint) XXX_Size() int {
-	return xxx_messageInfo_Version_Entrypoint.Size(m)
+func (m *Entrypoint) XXX_Size() int {
+	return xxx_messageInfo_Entrypoint.Size(m)
 }
-func (m *Version_Entrypoint) XXX_DiscardUnknown() {
-	xxx_messageInfo_Version_Entrypoint.DiscardUnknown(m)
+func (m *Entrypoint) XXX_DiscardUnknown() {
+	xxx_messageInfo_Entrypoint.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Version_Entrypoint proto.InternalMessageInfo
+var xxx_messageInfo_Entrypoint proto.InternalMessageInfo
 
-func (m *Version_Entrypoint) GetProtoFile() string {
+func (m *Entrypoint) GetProtoFile() string {
 	if m != nil {
 		return m.ProtoFile
 	}
 	return ""
 }
 
-func (m *Version_Entrypoint) GetImage() string {
+func (m *Entrypoint) GetImage() string {
 	if m != nil {
 		return m.Image
 	}
 	return ""
 }
 
-type Version_Workflow struct {
-	Id                   string                   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name                 string                   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Entrypoint           string                   `protobuf:"bytes,3,opt,name=entrypoint,proto3" json:"entrypoint,omitempty"`
-	Nodes                []*Version_Workflow_Node `protobuf:"bytes,4,rep,name=nodes,proto3" json:"nodes,omitempty"`
-	Edges                []*Version_Workflow_Edge `protobuf:"bytes,5,rep,name=edges,proto3" json:"edges,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
-	XXX_unrecognized     []byte                   `json:"-"`
-	XXX_sizecache        int32                    `json:"-"`
+type Workflow struct {
+	Id                   string           `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                 string           `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Entrypoint           string           `protobuf:"bytes,3,opt,name=entrypoint,proto3" json:"entrypoint,omitempty"`
+	Nodes                []*Workflow_Node `protobuf:"bytes,4,rep,name=nodes,proto3" json:"nodes,omitempty"`
+	Edges                []*Workflow_Edge `protobuf:"bytes,5,rep,name=edges,proto3" json:"edges,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
 }
 
-func (m *Version_Workflow) Reset()         { *m = Version_Workflow{} }
-func (m *Version_Workflow) String() string { return proto.CompactTextString(m) }
-func (*Version_Workflow) ProtoMessage()    {}
-func (*Version_Workflow) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{0, 2}
+func (m *Workflow) Reset()         { *m = Workflow{} }
+func (m *Workflow) String() string { return proto.CompactTextString(m) }
+func (*Workflow) ProtoMessage()    {}
+func (*Workflow) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{2}
 }
 
-func (m *Version_Workflow) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Version_Workflow.Unmarshal(m, b)
+func (m *Workflow) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Workflow.Unmarshal(m, b)
 }
-func (m *Version_Workflow) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Version_Workflow.Marshal(b, m, deterministic)
+func (m *Workflow) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Workflow.Marshal(b, m, deterministic)
 }
-func (m *Version_Workflow) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Version_Workflow.Merge(m, src)
+func (m *Workflow) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Workflow.Merge(m, src)
 }
-func (m *Version_Workflow) XXX_Size() int {
-	return xxx_messageInfo_Version_Workflow.Size(m)
+func (m *Workflow) XXX_Size() int {
+	return xxx_messageInfo_Workflow.Size(m)
 }
-func (m *Version_Workflow) XXX_DiscardUnknown() {
-	xxx_messageInfo_Version_Workflow.DiscardUnknown(m)
+func (m *Workflow) XXX_DiscardUnknown() {
+	xxx_messageInfo_Workflow.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Version_Workflow proto.InternalMessageInfo
+var xxx_messageInfo_Workflow proto.InternalMessageInfo
 
-func (m *Version_Workflow) GetId() string {
+func (m *Workflow) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *Version_Workflow) GetName() string {
+func (m *Workflow) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Version_Workflow) GetEntrypoint() string {
+func (m *Workflow) GetEntrypoint() string {
 	if m != nil {
 		return m.Entrypoint
 	}
 	return ""
 }
 
-func (m *Version_Workflow) GetNodes() []*Version_Workflow_Node {
+func (m *Workflow) GetNodes() []*Workflow_Node {
 	if m != nil {
 		return m.Nodes
 	}
 	return nil
 }
 
-func (m *Version_Workflow) GetEdges() []*Version_Workflow_Edge {
+func (m *Workflow) GetEdges() []*Workflow_Edge {
 	if m != nil {
 		return m.Edges
 	}
 	return nil
 }
 
-type Version_Workflow_Node struct {
+type Workflow_Node struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Image                string   `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`
@@ -311,67 +201,67 @@ type Version_Workflow_Node struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Version_Workflow_Node) Reset()         { *m = Version_Workflow_Node{} }
-func (m *Version_Workflow_Node) String() string { return proto.CompactTextString(m) }
-func (*Version_Workflow_Node) ProtoMessage()    {}
-func (*Version_Workflow_Node) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{0, 2, 0}
+func (m *Workflow_Node) Reset()         { *m = Workflow_Node{} }
+func (m *Workflow_Node) String() string { return proto.CompactTextString(m) }
+func (*Workflow_Node) ProtoMessage()    {}
+func (*Workflow_Node) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{2, 0}
 }
 
-func (m *Version_Workflow_Node) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Version_Workflow_Node.Unmarshal(m, b)
+func (m *Workflow_Node) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Workflow_Node.Unmarshal(m, b)
 }
-func (m *Version_Workflow_Node) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Version_Workflow_Node.Marshal(b, m, deterministic)
+func (m *Workflow_Node) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Workflow_Node.Marshal(b, m, deterministic)
 }
-func (m *Version_Workflow_Node) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Version_Workflow_Node.Merge(m, src)
+func (m *Workflow_Node) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Workflow_Node.Merge(m, src)
 }
-func (m *Version_Workflow_Node) XXX_Size() int {
-	return xxx_messageInfo_Version_Workflow_Node.Size(m)
+func (m *Workflow_Node) XXX_Size() int {
+	return xxx_messageInfo_Workflow_Node.Size(m)
 }
-func (m *Version_Workflow_Node) XXX_DiscardUnknown() {
-	xxx_messageInfo_Version_Workflow_Node.DiscardUnknown(m)
+func (m *Workflow_Node) XXX_DiscardUnknown() {
+	xxx_messageInfo_Workflow_Node.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Version_Workflow_Node proto.InternalMessageInfo
+var xxx_messageInfo_Workflow_Node proto.InternalMessageInfo
 
-func (m *Version_Workflow_Node) GetId() string {
+func (m *Workflow_Node) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *Version_Workflow_Node) GetName() string {
+func (m *Workflow_Node) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Version_Workflow_Node) GetImage() string {
+func (m *Workflow_Node) GetImage() string {
 	if m != nil {
 		return m.Image
 	}
 	return ""
 }
 
-func (m *Version_Workflow_Node) GetSrc() string {
+func (m *Workflow_Node) GetSrc() string {
 	if m != nil {
 		return m.Src
 	}
 	return ""
 }
 
-func (m *Version_Workflow_Node) GetGpu() bool {
+func (m *Workflow_Node) GetGpu() bool {
 	if m != nil {
 		return m.Gpu
 	}
 	return false
 }
 
-type Version_Workflow_Edge struct {
+type Workflow_Edge struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	FromNode             string   `protobuf:"bytes,2,opt,name=fromNode,proto3" json:"fromNode,omitempty"`
 	ToNode               string   `protobuf:"bytes,3,opt,name=toNode,proto3" json:"toNode,omitempty"`
@@ -380,89 +270,263 @@ type Version_Workflow_Edge struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Version_Workflow_Edge) Reset()         { *m = Version_Workflow_Edge{} }
-func (m *Version_Workflow_Edge) String() string { return proto.CompactTextString(m) }
-func (*Version_Workflow_Edge) ProtoMessage()    {}
-func (*Version_Workflow_Edge) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{0, 2, 1}
+func (m *Workflow_Edge) Reset()         { *m = Workflow_Edge{} }
+func (m *Workflow_Edge) String() string { return proto.CompactTextString(m) }
+func (*Workflow_Edge) ProtoMessage()    {}
+func (*Workflow_Edge) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{2, 1}
 }
 
-func (m *Version_Workflow_Edge) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Version_Workflow_Edge.Unmarshal(m, b)
+func (m *Workflow_Edge) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Workflow_Edge.Unmarshal(m, b)
 }
-func (m *Version_Workflow_Edge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Version_Workflow_Edge.Marshal(b, m, deterministic)
+func (m *Workflow_Edge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Workflow_Edge.Marshal(b, m, deterministic)
 }
-func (m *Version_Workflow_Edge) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Version_Workflow_Edge.Merge(m, src)
+func (m *Workflow_Edge) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Workflow_Edge.Merge(m, src)
 }
-func (m *Version_Workflow_Edge) XXX_Size() int {
-	return xxx_messageInfo_Version_Workflow_Edge.Size(m)
+func (m *Workflow_Edge) XXX_Size() int {
+	return xxx_messageInfo_Workflow_Edge.Size(m)
 }
-func (m *Version_Workflow_Edge) XXX_DiscardUnknown() {
-	xxx_messageInfo_Version_Workflow_Edge.DiscardUnknown(m)
+func (m *Workflow_Edge) XXX_DiscardUnknown() {
+	xxx_messageInfo_Workflow_Edge.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Version_Workflow_Edge proto.InternalMessageInfo
+var xxx_messageInfo_Workflow_Edge proto.InternalMessageInfo
 
-func (m *Version_Workflow_Edge) GetId() string {
+func (m *Workflow_Edge) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *Version_Workflow_Edge) GetFromNode() string {
+func (m *Workflow_Edge) GetFromNode() string {
 	if m != nil {
 		return m.FromNode
 	}
 	return ""
 }
 
-func (m *Version_Workflow_Edge) GetToNode() string {
+func (m *Workflow_Edge) GetToNode() string {
 	if m != nil {
 		return m.ToNode
 	}
 	return ""
 }
 
-type Request struct {
-	Version              *Version `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+type StartRequest struct {
+	VersionId            string      `protobuf:"bytes,1,opt,name=version_id,json=versionId,proto3" json:"version_id,omitempty"`
+	VersionName          string      `protobuf:"bytes,2,opt,name=version_name,json=versionName,proto3" json:"version_name,omitempty"`
+	Config               []*Config   `protobuf:"bytes,3,rep,name=config,proto3" json:"config,omitempty"`
+	Workflows            []*Workflow `protobuf:"bytes,4,rep,name=workflows,proto3" json:"workflows,omitempty"`
+	MongoUri             string      `protobuf:"bytes,5,opt,name=mongo_uri,json=mongoUri,proto3" json:"mongo_uri,omitempty"`
+	MongoDbName          string      `protobuf:"bytes,6,opt,name=mongo_db_name,json=mongoDbName,proto3" json:"mongo_db_name,omitempty"`
+	MongoKrtBucket       string      `protobuf:"bytes,7,opt,name=mongo_krt_bucket,json=mongoKrtBucket,proto3" json:"mongo_krt_bucket,omitempty"`
+	InfluxUri            string      `protobuf:"bytes,8,opt,name=influx_uri,json=influxUri,proto3" json:"influx_uri,omitempty"`
+	Entrypoint           *Entrypoint `protobuf:"bytes,9,opt,name=entrypoint,proto3" json:"entrypoint,omitempty"`
+	K8SNamespace         string      `protobuf:"bytes,10,opt,name=k8s_namespace,json=k8sNamespace,proto3" json:"k8s_namespace,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *StartRequest) Reset()         { *m = StartRequest{} }
+func (m *StartRequest) String() string { return proto.CompactTextString(m) }
+func (*StartRequest) ProtoMessage()    {}
+func (*StartRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{3}
+}
+
+func (m *StartRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StartRequest.Unmarshal(m, b)
+}
+func (m *StartRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StartRequest.Marshal(b, m, deterministic)
+}
+func (m *StartRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StartRequest.Merge(m, src)
+}
+func (m *StartRequest) XXX_Size() int {
+	return xxx_messageInfo_StartRequest.Size(m)
+}
+func (m *StartRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_StartRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StartRequest proto.InternalMessageInfo
+
+func (m *StartRequest) GetVersionId() string {
+	if m != nil {
+		return m.VersionId
+	}
+	return ""
+}
+
+func (m *StartRequest) GetVersionName() string {
+	if m != nil {
+		return m.VersionName
+	}
+	return ""
+}
+
+func (m *StartRequest) GetConfig() []*Config {
+	if m != nil {
+		return m.Config
+	}
+	return nil
+}
+
+func (m *StartRequest) GetWorkflows() []*Workflow {
+	if m != nil {
+		return m.Workflows
+	}
+	return nil
+}
+
+func (m *StartRequest) GetMongoUri() string {
+	if m != nil {
+		return m.MongoUri
+	}
+	return ""
+}
+
+func (m *StartRequest) GetMongoDbName() string {
+	if m != nil {
+		return m.MongoDbName
+	}
+	return ""
+}
+
+func (m *StartRequest) GetMongoKrtBucket() string {
+	if m != nil {
+		return m.MongoKrtBucket
+	}
+	return ""
+}
+
+func (m *StartRequest) GetInfluxUri() string {
+	if m != nil {
+		return m.InfluxUri
+	}
+	return ""
+}
+
+func (m *StartRequest) GetEntrypoint() *Entrypoint {
+	if m != nil {
+		return m.Entrypoint
+	}
+	return nil
+}
+
+func (m *StartRequest) GetK8SNamespace() string {
+	if m != nil {
+		return m.K8SNamespace
+	}
+	return ""
+}
+
+type VersionName struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	K8SNamespace         string   `protobuf:"bytes,2,opt,name=k8s_namespace,json=k8sNamespace,proto3" json:"k8s_namespace,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Request) Reset()         { *m = Request{} }
-func (m *Request) String() string { return proto.CompactTextString(m) }
-func (*Request) ProtoMessage()    {}
-func (*Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{1}
+func (m *VersionName) Reset()         { *m = VersionName{} }
+func (m *VersionName) String() string { return proto.CompactTextString(m) }
+func (*VersionName) ProtoMessage()    {}
+func (*VersionName) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{4}
 }
 
-func (m *Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Request.Unmarshal(m, b)
+func (m *VersionName) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_VersionName.Unmarshal(m, b)
 }
-func (m *Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Request.Marshal(b, m, deterministic)
+func (m *VersionName) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_VersionName.Marshal(b, m, deterministic)
 }
-func (m *Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Request.Merge(m, src)
+func (m *VersionName) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VersionName.Merge(m, src)
 }
-func (m *Request) XXX_Size() int {
-	return xxx_messageInfo_Request.Size(m)
+func (m *VersionName) XXX_Size() int {
+	return xxx_messageInfo_VersionName.Size(m)
 }
-func (m *Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_Request.DiscardUnknown(m)
+func (m *VersionName) XXX_DiscardUnknown() {
+	xxx_messageInfo_VersionName.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Request proto.InternalMessageInfo
+var xxx_messageInfo_VersionName proto.InternalMessageInfo
 
-func (m *Request) GetVersion() *Version {
+func (m *VersionName) GetName() string {
 	if m != nil {
-		return m.Version
+		return m.Name
+	}
+	return ""
+}
+
+func (m *VersionName) GetK8SNamespace() string {
+	if m != nil {
+		return m.K8SNamespace
+	}
+	return ""
+}
+
+type UpdateConfigRequest struct {
+	VersionName          string    `protobuf:"bytes,1,opt,name=version_name,json=versionName,proto3" json:"version_name,omitempty"`
+	Config               []*Config `protobuf:"bytes,2,rep,name=config,proto3" json:"config,omitempty"`
+	K8SNamespace         string    `protobuf:"bytes,3,opt,name=k8s_namespace,json=k8sNamespace,proto3" json:"k8s_namespace,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *UpdateConfigRequest) Reset()         { *m = UpdateConfigRequest{} }
+func (m *UpdateConfigRequest) String() string { return proto.CompactTextString(m) }
+func (*UpdateConfigRequest) ProtoMessage()    {}
+func (*UpdateConfigRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_60b189bce7aa4304, []int{5}
+}
+
+func (m *UpdateConfigRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateConfigRequest.Unmarshal(m, b)
+}
+func (m *UpdateConfigRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateConfigRequest.Marshal(b, m, deterministic)
+}
+func (m *UpdateConfigRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateConfigRequest.Merge(m, src)
+}
+func (m *UpdateConfigRequest) XXX_Size() int {
+	return xxx_messageInfo_UpdateConfigRequest.Size(m)
+}
+func (m *UpdateConfigRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateConfigRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateConfigRequest proto.InternalMessageInfo
+
+func (m *UpdateConfigRequest) GetVersionName() string {
+	if m != nil {
+		return m.VersionName
+	}
+	return ""
+}
+
+func (m *UpdateConfigRequest) GetConfig() []*Config {
+	if m != nil {
+		return m.Config
 	}
 	return nil
+}
+
+func (m *UpdateConfigRequest) GetK8SNamespace() string {
+	if m != nil {
+		return m.K8SNamespace
+	}
+	return ""
 }
 
 type Response struct {
@@ -476,7 +540,7 @@ func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_60b189bce7aa4304, []int{2}
+	return fileDescriptor_60b189bce7aa4304, []int{6}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -505,13 +569,14 @@ func (m *Response) GetMessage() string {
 }
 
 func init() {
-	proto.RegisterType((*Version)(nil), "version.Version")
-	proto.RegisterType((*Version_Config)(nil), "version.Version.Config")
-	proto.RegisterType((*Version_Entrypoint)(nil), "version.Version.Entrypoint")
-	proto.RegisterType((*Version_Workflow)(nil), "version.Version.Workflow")
-	proto.RegisterType((*Version_Workflow_Node)(nil), "version.Version.Workflow.Node")
-	proto.RegisterType((*Version_Workflow_Edge)(nil), "version.Version.Workflow.Edge")
-	proto.RegisterType((*Request)(nil), "version.Request")
+	proto.RegisterType((*Config)(nil), "version.Config")
+	proto.RegisterType((*Entrypoint)(nil), "version.Entrypoint")
+	proto.RegisterType((*Workflow)(nil), "version.Workflow")
+	proto.RegisterType((*Workflow_Node)(nil), "version.Workflow.Node")
+	proto.RegisterType((*Workflow_Edge)(nil), "version.Workflow.Edge")
+	proto.RegisterType((*StartRequest)(nil), "version.StartRequest")
+	proto.RegisterType((*VersionName)(nil), "version.VersionName")
+	proto.RegisterType((*UpdateConfigRequest)(nil), "version.UpdateConfigRequest")
 	proto.RegisterType((*Response)(nil), "version.Response")
 }
 
@@ -520,43 +585,46 @@ func init() {
 }
 
 var fileDescriptor_60b189bce7aa4304 = []byte{
-	// 565 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x94, 0x54, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0x56, 0xf3, 0xe3, 0x9f, 0x09, 0x54, 0x65, 0x85, 0xc0, 0xb8, 0xb4, 0xaa, 0x22, 0x0e, 0x11,
-	0xa0, 0xb4, 0x4a, 0x41, 0x1c, 0x38, 0x51, 0x28, 0x07, 0x90, 0x2a, 0xe4, 0x28, 0x20, 0x71, 0x89,
-	0xec, 0x78, 0x13, 0x56, 0x49, 0xbc, 0x66, 0xbd, 0x4e, 0xe9, 0x95, 0x27, 0xe5, 0x01, 0x78, 0x08,
-	0x76, 0x67, 0xd7, 0x4e, 0x20, 0x42, 0x84, 0x53, 0x66, 0xbe, 0xf9, 0xbe, 0x99, 0x9d, 0x19, 0x4f,
-	0xe0, 0x28, 0x17, 0x5c, 0xf2, 0xd3, 0x15, 0x15, 0x05, 0xe3, 0x59, 0x9e, 0x54, 0x56, 0x1f, 0x71,
-	0xe2, 0x5a, 0xb7, 0xfb, 0xc3, 0x01, 0xf7, 0xa3, 0xb1, 0xc9, 0x3e, 0x34, 0x58, 0x1a, 0xec, 0x9d,
-	0xec, 0xf5, 0xfc, 0x48, 0x59, 0x84, 0x40, 0x2b, 0x8b, 0x97, 0x34, 0x68, 0x20, 0x82, 0x36, 0x79,
-	0x08, 0xbe, 0xfe, 0x2d, 0xf2, 0x78, 0x42, 0x83, 0x26, 0x06, 0xd6, 0x00, 0x79, 0x09, 0x40, 0x33,
-	0x29, 0x6e, 0x72, 0xce, 0x32, 0x19, 0xb4, 0x54, 0xb8, 0x33, 0x38, 0xec, 0x57, 0xa5, 0x6d, 0x9d,
-	0xfe, 0x65, 0x4d, 0x89, 0x36, 0xe8, 0xe4, 0x14, 0x9c, 0x09, 0xcf, 0xa6, 0x6c, 0x16, 0xb4, 0x4f,
-	0x9a, 0x4a, 0x78, 0x7f, 0x4b, 0xf8, 0x1a, 0xc3, 0x91, 0xa5, 0x91, 0x17, 0xe0, 0x5f, 0x73, 0x31,
-	0x9f, 0x2e, 0xf8, 0x75, 0x11, 0x38, 0xa8, 0x79, 0xb0, 0xa5, 0xf9, 0x64, 0x19, 0xd1, 0x9a, 0x4b,
-	0x0e, 0xc1, 0x5f, 0xf2, 0x6c, 0xc6, 0xc7, 0xa5, 0x60, 0x81, 0x8b, 0x4d, 0x78, 0x08, 0x8c, 0x04,
-	0x23, 0x47, 0x00, 0x2c, 0x9b, 0x2e, 0xca, 0x6f, 0x18, 0xf5, 0x4c, 0x8b, 0x06, 0xd1, 0xe1, 0x2e,
-	0xdc, 0x36, 0xda, 0x34, 0x19, 0xe3, 0x74, 0x7c, 0x64, 0x74, 0x10, 0x7c, 0x93, 0x5c, 0xe9, 0x21,
-	0xf5, 0xe0, 0xc0, 0x70, 0xe6, 0x42, 0x8e, 0x93, 0x72, 0x32, 0xa7, 0x32, 0x00, 0xa4, 0xed, 0x23,
-	0xfe, 0x5e, 0xc8, 0x0b, 0x44, 0xc3, 0x33, 0x70, 0x4c, 0x53, 0xe4, 0x00, 0x9a, 0x73, 0x7a, 0x63,
-	0xa7, 0xaf, 0x4d, 0x72, 0x17, 0xda, 0xab, 0x78, 0x51, 0x56, 0xf3, 0x37, 0x4e, 0xf8, 0x0a, 0x60,
-	0x3d, 0x3f, 0xfd, 0x58, 0x5c, 0xe8, 0x78, 0xca, 0x16, 0xd4, 0x8a, 0x7d, 0x44, 0xde, 0x2a, 0x40,
-	0xa7, 0x60, 0xcb, 0x78, 0x56, 0xa7, 0x40, 0x27, 0xfc, 0xd9, 0x00, 0xaf, 0x1a, 0xcb, 0x4e, 0x4b,
-	0x3f, 0xfe, 0x6d, 0xad, 0x66, 0xeb, 0x9b, 0x9b, 0x7b, 0x06, 0xed, 0x8c, 0xa7, 0xb4, 0x50, 0x1b,
-	0xd7, 0x4b, 0x38, 0xfe, 0xeb, 0x12, 0xfa, 0x57, 0x8a, 0x16, 0x19, 0xb2, 0x56, 0xd1, 0x74, 0xa6,
-	0x54, 0xed, 0x7f, 0xa9, 0x2e, 0x15, 0x2d, 0x32, 0xe4, 0x30, 0x85, 0x96, 0x4e, 0xb2, 0xd3, 0xbb,
-	0xeb, 0xf6, 0x9b, 0x1b, 0xed, 0xeb, 0x49, 0x17, 0x62, 0x82, 0x5f, 0xa7, 0x9a, 0xb4, 0x32, 0x35,
-	0x32, 0xcb, 0x4b, 0xf5, 0x8e, 0xbd, 0x9e, 0x17, 0x69, 0x33, 0x7c, 0x07, 0x2d, 0x5d, 0x74, 0xab,
-	0x4a, 0x08, 0xde, 0x54, 0xf0, 0xa5, 0x7e, 0x81, 0xad, 0x54, 0xfb, 0xe4, 0x1e, 0x38, 0x92, 0x63,
-	0xc4, 0x94, 0xb3, 0x5e, 0xf7, 0x39, 0xb8, 0x11, 0xfd, 0x5a, 0xd2, 0x42, 0x92, 0xc7, 0x50, 0x1d,
-	0x1e, 0xe6, 0xec, 0x0c, 0x0e, 0xfe, 0x6c, 0x3a, 0xaa, 0x2f, 0xf3, 0x11, 0x78, 0x91, 0x3a, 0x2b,
-	0x9e, 0x15, 0x94, 0x04, 0xe0, 0xaa, 0x13, 0x2b, 0xd6, 0x9b, 0xac, 0xdc, 0xc1, 0xf7, 0x06, 0xec,
-	0x5b, 0xe9, 0x90, 0x8a, 0x15, 0x53, 0x47, 0xf8, 0x14, 0xda, 0x43, 0x19, 0x0b, 0x49, 0xd6, 0xc9,
-	0x6d, 0xfd, 0xf0, 0xce, 0x06, 0x62, 0x53, 0x3f, 0x81, 0xd6, 0x50, 0xf2, 0x7c, 0x37, 0x72, 0x1f,
-	0xdc, 0x0f, 0x65, 0xb2, 0x60, 0xc5, 0x97, 0xdd, 0xf8, 0x67, 0xe0, 0x8f, 0xb2, 0xfc, 0x7f, 0x14,
-	0xe7, 0x70, 0x6b, 0x94, 0xa7, 0xb1, 0xa4, 0xd5, 0x59, 0xec, 0x20, 0xba, 0xe8, 0x7c, 0xf6, 0xeb,
-	0x3f, 0xba, 0xc4, 0xc1, 0xcf, 0xff, 0xfc, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe9, 0xe0, 0x35,
-	0xe6, 0x02, 0x05, 0x00, 0x00,
+	// 621 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x94, 0x54, 0xdd, 0x6e, 0xd3, 0x4c,
+	0x10, 0x95, 0xed, 0xfc, 0x79, 0x92, 0xf6, 0xeb, 0xb7, 0x2d, 0x95, 0x15, 0x28, 0x2a, 0x06, 0x89,
+	0x5c, 0xa0, 0x16, 0x52, 0x2e, 0xb8, 0x43, 0x14, 0x5a, 0x09, 0x90, 0x2a, 0xe4, 0x28, 0x20, 0x71,
+	0x13, 0xd9, 0xf1, 0x26, 0x58, 0x49, 0xbc, 0x66, 0x6d, 0xa7, 0xf4, 0x05, 0xb8, 0xe4, 0x15, 0x78,
+	0x31, 0x1e, 0x86, 0xdd, 0xf1, 0x7a, 0xe3, 0x92, 0x50, 0x95, 0xbb, 0xd9, 0x33, 0x3f, 0x67, 0xe6,
+	0xcc, 0xd8, 0x70, 0x90, 0x70, 0x96, 0xb1, 0xe3, 0x25, 0xe5, 0x69, 0xc4, 0xe2, 0x24, 0x28, 0xad,
+	0x23, 0xc4, 0x49, 0x53, 0x3d, 0xdd, 0xa7, 0xd0, 0x78, 0xcd, 0xe2, 0x49, 0x34, 0x25, 0x3b, 0x60,
+	0xcd, 0xe8, 0x95, 0x63, 0x1c, 0x1a, 0x3d, 0xdb, 0x93, 0x26, 0xd9, 0x83, 0xfa, 0xd2, 0x9f, 0xe7,
+	0xd4, 0x31, 0x11, 0x2b, 0x1e, 0xee, 0x2b, 0x80, 0xb3, 0x38, 0xe3, 0x57, 0x09, 0x8b, 0xe2, 0x8c,
+	0x1c, 0x00, 0x60, 0xc5, 0xd1, 0x24, 0x9a, 0x53, 0x95, 0x6c, 0x23, 0x72, 0x2e, 0x00, 0x59, 0x22,
+	0x5a, 0xf8, 0x53, 0x5d, 0x02, 0x1f, 0xee, 0x2f, 0x13, 0x5a, 0x9f, 0x18, 0x9f, 0x4d, 0xe6, 0xec,
+	0x92, 0x6c, 0x83, 0x19, 0x85, 0x2a, 0x53, 0x58, 0x84, 0x40, 0x2d, 0xf6, 0x17, 0x65, 0x06, 0xda,
+	0xe4, 0x3e, 0x00, 0xd5, 0x9c, 0x8e, 0x85, 0x9e, 0x0a, 0x42, 0x9e, 0x40, 0x3d, 0x66, 0x21, 0x4d,
+	0x9d, 0xda, 0xa1, 0xd5, 0x6b, 0xf7, 0xf7, 0x8f, 0xca, 0x69, 0x4b, 0x96, 0xa3, 0x0b, 0xe1, 0xf6,
+	0x8a, 0x20, 0x19, 0x4d, 0xc3, 0xa9, 0x88, 0xae, 0xff, 0x2d, 0xfa, 0x4c, 0xb8, 0xbd, 0x22, 0xa8,
+	0x1b, 0x42, 0x4d, 0x26, 0xdf, 0xaa, 0x4f, 0x3d, 0xae, 0x55, 0x19, 0x57, 0x2a, 0x9b, 0xf2, 0xb1,
+	0xe8, 0x0d, 0x95, 0x15, 0xa6, 0x44, 0xa6, 0x49, 0x2e, 0xf8, 0x8d, 0x5e, 0xcb, 0x93, 0x66, 0xf7,
+	0x1d, 0xd4, 0x24, 0xe9, 0x1a, 0x4b, 0x17, 0x5a, 0x13, 0xce, 0x16, 0xb2, 0x03, 0xc5, 0xa4, 0xdf,
+	0x64, 0x1f, 0x1a, 0x19, 0x43, 0x4f, 0x41, 0xa7, 0x5e, 0xee, 0x0f, 0x0b, 0x3a, 0x83, 0xcc, 0xe7,
+	0x99, 0x47, 0xbf, 0xe6, 0x34, 0xc5, 0x25, 0xa9, 0x11, 0x47, 0xba, 0xb8, 0xad, 0x90, 0xb7, 0x21,
+	0x79, 0x00, 0x9d, 0xd2, 0x5d, 0x99, 0xa8, 0xad, 0xb0, 0x0b, 0x39, 0xd8, 0x63, 0x68, 0x8c, 0xf1,
+	0x4c, 0x04, 0x95, 0xd4, 0xec, 0x3f, 0xad, 0x59, 0x71, 0x3d, 0x9e, 0x72, 0x93, 0x63, 0xb0, 0x2f,
+	0x95, 0x8a, 0xe5, 0x36, 0xfe, 0x5f, 0xd3, 0xd7, 0x5b, 0xc5, 0x90, 0xbb, 0x60, 0x2f, 0x58, 0x3c,
+	0x65, 0xa3, 0x9c, 0x47, 0x28, 0x88, 0x98, 0x10, 0x81, 0x21, 0x8f, 0x88, 0x0b, 0x5b, 0x85, 0x33,
+	0x0c, 0x8a, 0xd6, 0x1a, 0x45, 0x6b, 0x08, 0xbe, 0x09, 0xb0, 0xb5, 0x1e, 0xec, 0x14, 0x31, 0x33,
+	0x9e, 0x8d, 0x82, 0x7c, 0x3c, 0xa3, 0x99, 0xd3, 0xc4, 0xb0, 0x6d, 0xc4, 0xdf, 0xf3, 0xec, 0x14,
+	0x51, 0x29, 0x43, 0x14, 0x4f, 0xe6, 0xf9, 0x37, 0xe4, 0x6a, 0x15, 0x32, 0x14, 0x88, 0x24, 0x3b,
+	0xb9, 0x76, 0x64, 0xb6, 0x70, 0xb7, 0xfb, 0xbb, 0xba, 0xf7, 0xd5, 0xcd, 0x5f, 0xbb, 0xbc, 0x87,
+	0xb0, 0x35, 0x7b, 0x91, 0x62, 0x73, 0x69, 0xe2, 0x8f, 0xa9, 0x03, 0x58, 0xb6, 0x23, 0xc0, 0x8b,
+	0x12, 0x73, 0xcf, 0xa1, 0xfd, 0xb1, 0x22, 0x66, 0x79, 0x39, 0x46, 0xe5, 0x72, 0xd6, 0xea, 0x98,
+	0x1b, 0xea, 0x7c, 0x37, 0x60, 0x77, 0x98, 0x84, 0x7e, 0x46, 0x95, 0xea, 0x6a, 0xbf, 0x7f, 0x2e,
+	0xd0, 0xb8, 0x69, 0x81, 0xe6, 0xcd, 0x0b, 0x5c, 0x6b, 0xc4, 0xda, 0xd0, 0xc8, 0x23, 0x68, 0x79,
+	0xc2, 0x64, 0x71, 0x4a, 0x89, 0x03, 0x4d, 0x01, 0xa7, 0xab, 0x8f, 0xbc, 0x7c, 0xf6, 0x7f, 0x9a,
+	0xb0, 0xad, 0xe6, 0x1e, 0x50, 0xbe, 0x8c, 0xc6, 0x94, 0x3c, 0x83, 0x3a, 0x5e, 0x26, 0xb9, 0xa3,
+	0xf9, 0xab, 0x97, 0xda, 0x5d, 0xdd, 0x8a, 0xae, 0x7f, 0x0c, 0xb5, 0x41, 0xc6, 0x12, 0xb2, 0xa7,
+	0x5d, 0x15, 0x2d, 0x37, 0x25, 0xf4, 0xa1, 0xf9, 0x21, 0x0f, 0xe6, 0x51, 0xfa, 0xe5, 0xf6, 0x39,
+	0xcf, 0xc1, 0x1e, 0xc6, 0xc9, 0xbf, 0x66, 0xbd, 0x84, 0x4e, 0x75, 0x1d, 0xe4, 0x9e, 0x0e, 0xd9,
+	0xb0, 0xa5, 0x0d, 0x05, 0x4e, 0xdb, 0x9f, 0x6d, 0xfd, 0x87, 0x0e, 0x1a, 0xf8, 0xdb, 0x3c, 0xf9,
+	0x1d, 0x00, 0x00, 0xff, 0xff, 0x25, 0x33, 0x8a, 0x76, 0xbb, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -571,11 +639,11 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type VersionServiceClient interface {
-	Start(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-	Stop(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-	Publish(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-	Unpublish(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-	UpdateConfig(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*Response, error)
+	Stop(ctx context.Context, in *VersionName, opts ...grpc.CallOption) (*Response, error)
+	Publish(ctx context.Context, in *VersionName, opts ...grpc.CallOption) (*Response, error)
+	Unpublish(ctx context.Context, in *VersionName, opts ...grpc.CallOption) (*Response, error)
+	UpdateConfig(ctx context.Context, in *UpdateConfigRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type versionServiceClient struct {
@@ -586,7 +654,7 @@ func NewVersionServiceClient(cc grpc.ClientConnInterface) VersionServiceClient {
 	return &versionServiceClient{cc}
 }
 
-func (c *versionServiceClient) Start(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *versionServiceClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/version.VersionService/Start", in, out, opts...)
 	if err != nil {
@@ -595,7 +663,7 @@ func (c *versionServiceClient) Start(ctx context.Context, in *Request, opts ...g
 	return out, nil
 }
 
-func (c *versionServiceClient) Stop(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *versionServiceClient) Stop(ctx context.Context, in *VersionName, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/version.VersionService/Stop", in, out, opts...)
 	if err != nil {
@@ -604,7 +672,7 @@ func (c *versionServiceClient) Stop(ctx context.Context, in *Request, opts ...gr
 	return out, nil
 }
 
-func (c *versionServiceClient) Publish(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *versionServiceClient) Publish(ctx context.Context, in *VersionName, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/version.VersionService/Publish", in, out, opts...)
 	if err != nil {
@@ -613,7 +681,7 @@ func (c *versionServiceClient) Publish(ctx context.Context, in *Request, opts ..
 	return out, nil
 }
 
-func (c *versionServiceClient) Unpublish(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *versionServiceClient) Unpublish(ctx context.Context, in *VersionName, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/version.VersionService/Unpublish", in, out, opts...)
 	if err != nil {
@@ -622,7 +690,7 @@ func (c *versionServiceClient) Unpublish(ctx context.Context, in *Request, opts 
 	return out, nil
 }
 
-func (c *versionServiceClient) UpdateConfig(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *versionServiceClient) UpdateConfig(ctx context.Context, in *UpdateConfigRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/version.VersionService/UpdateConfig", in, out, opts...)
 	if err != nil {
@@ -633,30 +701,30 @@ func (c *versionServiceClient) UpdateConfig(ctx context.Context, in *Request, op
 
 // VersionServiceServer is the server API for VersionService service.
 type VersionServiceServer interface {
-	Start(context.Context, *Request) (*Response, error)
-	Stop(context.Context, *Request) (*Response, error)
-	Publish(context.Context, *Request) (*Response, error)
-	Unpublish(context.Context, *Request) (*Response, error)
-	UpdateConfig(context.Context, *Request) (*Response, error)
+	Start(context.Context, *StartRequest) (*Response, error)
+	Stop(context.Context, *VersionName) (*Response, error)
+	Publish(context.Context, *VersionName) (*Response, error)
+	Unpublish(context.Context, *VersionName) (*Response, error)
+	UpdateConfig(context.Context, *UpdateConfigRequest) (*Response, error)
 }
 
 // UnimplementedVersionServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedVersionServiceServer struct {
 }
 
-func (*UnimplementedVersionServiceServer) Start(ctx context.Context, req *Request) (*Response, error) {
+func (*UnimplementedVersionServiceServer) Start(ctx context.Context, req *StartRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Start not implemented")
 }
-func (*UnimplementedVersionServiceServer) Stop(ctx context.Context, req *Request) (*Response, error) {
+func (*UnimplementedVersionServiceServer) Stop(ctx context.Context, req *VersionName) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stop not implemented")
 }
-func (*UnimplementedVersionServiceServer) Publish(ctx context.Context, req *Request) (*Response, error) {
+func (*UnimplementedVersionServiceServer) Publish(ctx context.Context, req *VersionName) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Publish not implemented")
 }
-func (*UnimplementedVersionServiceServer) Unpublish(ctx context.Context, req *Request) (*Response, error) {
+func (*UnimplementedVersionServiceServer) Unpublish(ctx context.Context, req *VersionName) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Unpublish not implemented")
 }
-func (*UnimplementedVersionServiceServer) UpdateConfig(ctx context.Context, req *Request) (*Response, error) {
+func (*UnimplementedVersionServiceServer) UpdateConfig(ctx context.Context, req *UpdateConfigRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateConfig not implemented")
 }
 
@@ -665,7 +733,7 @@ func RegisterVersionServiceServer(s *grpc.Server, srv VersionServiceServer) {
 }
 
 func _VersionService_Start_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(StartRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -677,13 +745,13 @@ func _VersionService_Start_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/version.VersionService/Start",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersionServiceServer).Start(ctx, req.(*Request))
+		return srv.(VersionServiceServer).Start(ctx, req.(*StartRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VersionService_Stop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(VersionName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -695,13 +763,13 @@ func _VersionService_Stop_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/version.VersionService/Stop",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersionServiceServer).Stop(ctx, req.(*Request))
+		return srv.(VersionServiceServer).Stop(ctx, req.(*VersionName))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VersionService_Publish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(VersionName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -713,13 +781,13 @@ func _VersionService_Publish_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/version.VersionService/Publish",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersionServiceServer).Publish(ctx, req.(*Request))
+		return srv.(VersionServiceServer).Publish(ctx, req.(*VersionName))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VersionService_Unpublish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(VersionName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -731,13 +799,13 @@ func _VersionService_Unpublish_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/version.VersionService/Unpublish",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersionServiceServer).Unpublish(ctx, req.(*Request))
+		return srv.(VersionServiceServer).Unpublish(ctx, req.(*VersionName))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VersionService_UpdateConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(UpdateConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -749,7 +817,7 @@ func _VersionService_UpdateConfig_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/version.VersionService/UpdateConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersionServiceServer).UpdateConfig(ctx, req.(*Request))
+		return srv.(VersionServiceServer).UpdateConfig(ctx, req.(*UpdateConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

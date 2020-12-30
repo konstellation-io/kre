@@ -1,64 +1,40 @@
 package version
 
 import (
-	"encoding/json"
 	"fmt"
 
+	"github.com/konstellation-io/kre/admin/k8s-manager/proto/versionpb"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"github.com/konstellation-io/kre/admin/k8s-manager/entity"
 )
 
-func (m *Manager) createConfig(version *entity.Version, econf EntrypointConfig) (string, error) {
-	versionConfig, err := m.createConfigMap(version)
-	if err != nil {
-		return "", err
+func (m *Manager) getCommonEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
+	return []apiv1.EnvVar{
+		{Name: "KRT_INFLUX_URI", Value: req.GetInfluxUri()},
+		{Name: "KRT_VERSION_ID", Value: req.GetVersionId()},
+		{Name: "KRT_VERSION", Value: req.GetVersionName()},
+		{Name: "KRT_MONGO_URI", Value: req.GetMongoUri()},
+		{Name: "KRT_MONGO_DB_NAME", Value: req.GetMongoDbName()},
+		{Name: "KRT_MONGO_BUCKET", Value: req.GetMongoKrtBucket()},
+		{Name: "KRT_BASE_PATH", Value: basePathKRT},
+		{Name: "KRT_NATS_SERVER", Value: natsURL},
 	}
-
-	_, err = m.createFilesConfigMap(version, econf)
-	if err != nil {
-		return "", err
-	}
-
-	return versionConfig.Name, nil
 }
 
-func (m *Manager) createConfigMap(version *entity.Version) (*apiv1.ConfigMap, error) {
-	ns := version.Namespace
-	config := make(map[string]string)
+func (m *Manager) createVersionConfFiles(versionName, ns string, workflows []*versionpb.Workflow) error {
+	m.logger.Info("Creating version config files...")
 
-	for _, c := range version.Config {
-		config[c.Key] = c.Value
-	}
-
-	return m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("%s-global", version.Name),
-			Namespace: ns,
-			Labels: map[string]string{
-				"type":         "version",
-				"version-name": version.Name,
-			},
-		},
-		Data: config,
-	})
-}
-
-func (m *Manager) createFilesConfigMap(version *entity.Version, econf EntrypointConfig) (*apiv1.ConfigMap, error) {
-	ns := version.Namespace
-
-	natsSubject, err := json.Marshal(econf["nats-subjects"])
+	natsSubjectJSON, err := m.generateNATSSubjects(versionName, workflows)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
+	_, err = m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-conf-files", version.Name),
+			Name: fmt.Sprintf("%s-conf-files", versionName),
 			Labels: map[string]string{
 				"type":         "version",
-				"version-name": version.Name,
+				"version-name": versionName,
 			},
 		},
 		Data: map[string]string{
@@ -77,9 +53,8 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
         }
     }
 `,
-			"nats_subject.json": string(natsSubject),
+			"nats_subject.json": natsSubjectJSON,
 
-			// nolint: lll
 			"parsers.conf": `
 [PARSER]
     Name multiline_pattern
@@ -132,25 +107,6 @@ func (m *Manager) createFilesConfigMap(version *entity.Version, econf Entrypoint
 `,
 		},
 	})
-}
 
-func (m *Manager) updateConfigMap(version *entity.Version) (*apiv1.ConfigMap, error) {
-	name := fmt.Sprintf("%s-global", version.Name)
-	ns := version.Namespace
-
-	config := make(map[string]string)
-	for _, c := range version.Config {
-		config[c.Key] = c.Value
-	}
-
-	m.logger.Infof("Creating version '%s' on ns: '%s'", name, ns)
-
-	currentConfig, err := m.clientset.CoreV1().ConfigMaps(ns).Get(name, metav1.GetOptions{})
-	if err != nil {
-		return nil, err
-	}
-
-	currentConfig.Data = config
-
-	return m.clientset.CoreV1().ConfigMaps(ns).Update(currentConfig)
+	return err
 }
