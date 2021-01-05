@@ -22,13 +22,13 @@ type Manager struct {
 
 // New creates a new Runtime Manager.
 func New(
-	config *config.Config,
+	cfg *config.Config,
 	logger *simplelogger.SimpleLogger,
 	clientset *kubernetes.Clientset,
 	dynClient dynamic.Interface,
 ) *Manager {
 	return &Manager{
-		config,
+		cfg,
 		logger,
 		clientset,
 		dynClient,

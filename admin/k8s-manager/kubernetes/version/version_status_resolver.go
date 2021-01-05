@@ -44,6 +44,7 @@ func (n *StatusResolver) onAddOrUpdate(obj interface{}) {
 		}
 
 		n.logger.Debugf("[StatusResolver] waiting: %d/%d", len(n.started), len(n.nodes))
+
 		if len(n.nodes) == len(n.started) {
 			n.statusCh <- struct{}{}
 		}
@@ -58,7 +59,9 @@ func getNodeStatus(logger *simplelogger.SimpleLogger, p *coreV1.Pod) (entity.Nod
 	crashLoopBackOff := 0
 	containerCreating := 0
 
-	for _, cs := range p.Status.ContainerStatuses {
+	for i := range p.Status.ContainerStatuses {
+		cs := p.Status.ContainerStatuses[i]
+
 		total++
 
 		if cs.State.Running != nil {
@@ -80,7 +83,8 @@ func getNodeStatus(logger *simplelogger.SimpleLogger, p *coreV1.Pod) (entity.Nod
 		}
 	}
 
-	logger.Debugf("[StatusResolver.getNodeStatus] POD[%s] total[%d] running[%d] terminated[%d] waiting[%d] crashLoopBackOff[%d] containerCreating[%d]",
+	logger.Debugf("[StatusResolver.getNodeStatus] POD[%s] total[%d] running[%d] terminated[%d] waiting[%d]"+
+		" crashLoopBackOff[%d] containerCreating[%d]",
 		p.Name, total, running, terminated, waiting, crashLoopBackOff, containerCreating)
 
 	if terminated == total {

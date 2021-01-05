@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -10,6 +11,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
+
+var ErrWaitForPODsRunningTimeout = errors.New("timeout waiting for running PODs")
 
 type Watcher struct {
 	logger    *simplelogger.SimpleLogger
@@ -63,15 +66,13 @@ func (k *Watcher) WaitForRuntimePods(ns string) error {
 	}
 
 	if len(failedPods) > 0 {
-		// nolint:goerr113
-		return fmt.Errorf("the following components '%v' are not running in the namespace '%s' within '%s'",
-			failedPods, ns, timeout)
+		return fmt.Errorf("%w: elapsed time %s missing PODs \"%s\" in Namespace \"%s\"",
+			ErrWaitForPODsRunningTimeout, timeout, failedPods, ns)
 	}
 
 	return nil
 }
 
-// nolint:unparam
 func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait time.Duration) (chan bool, error) {
 	waitChan := make(chan bool)
 
@@ -82,7 +83,7 @@ func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 		LabelSelector: labelSelector,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to set up watch for pod (error: %w)", err)
+		return nil, fmt.Errorf("failed to set up watch for pod: %w", err)
 	}
 
 	go func() {
@@ -103,53 +104,6 @@ func (k *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 
 					return
 				}
-			case <-time.After(timeToWait - time.Since(startTime)):
-				watch.Stop()
-				waitChan <- false
-				close(waitChan)
-
-				return
-			}
-		}
-	}()
-
-	return waitChan, nil
-}
-
-func (k *Watcher) waitForPodReady(ns string, podLabels []string, timeToWait time.Duration) (chan bool, error) {
-	waitChan := make(chan bool)
-
-	labelSelector := strings.Join(podLabels, ",")
-	k.logger.Debugf("Creating watcher for POD with labels: %s\n", labelSelector)
-
-	watch, err := k.clientset.CoreV1().Pods(ns).Watch(metav1.ListOptions{
-		LabelSelector: labelSelector,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to set up watch for pod (error: %w)", err)
-	}
-
-	go func() {
-		events := watch.ResultChan()
-
-		startTime := time.Now()
-
-		for {
-			select {
-			case event := <-events:
-				pod := event.Object.(*v1.Pod)
-				// If the Pod contains a status condition Ready == True, stop watching.
-				for _, cond := range pod.Status.Conditions {
-					if cond.Type == v1.PodReady && cond.Status == v1.ConditionTrue {
-						k.logger.Debugf("The POD with labels \"%s\" is ready\n", labelSelector)
-						watch.Stop()
-						waitChan <- true
-						close(waitChan)
-
-						return
-					}
-				}
-
 			case <-time.After(timeToWait - time.Since(startTime)):
 				watch.Stop()
 				waitChan <- false

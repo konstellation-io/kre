@@ -35,79 +35,34 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 
 // StartVersion creates resources in k8s
 func (k *K8sVersionClient) Start(ctx context.Context, runtime *entity.Runtime, version *entity.Version) error {
-	wf := make([]*versionpb.Version_Workflow, len(version.Workflows))
-
-	for i, w := range version.Workflows {
-		nodes := make([]*versionpb.Version_Workflow_Node, len(w.Nodes))
-		for j, n := range w.Nodes {
-			nodes[j] = &versionpb.Version_Workflow_Node{
-				Id:    n.ID,
-				Name:  n.Name,
-				Image: n.Image,
-				Src:   n.Src,
-				Gpu:   n.GPU,
-			}
-		}
-		edges := make([]*versionpb.Version_Workflow_Edge, len(w.Edges))
-		for k, e := range w.Edges {
-			edges[k] = &versionpb.Version_Workflow_Edge{
-				Id:       e.ID,
-				FromNode: e.FromNode,
-				ToNode:   e.ToNode,
-			}
-		}
-
-		wf[i] = &versionpb.Version_Workflow{
-			Id:         w.ID,
-			Name:       w.Name,
-			Entrypoint: w.Entrypoint,
-			Nodes:      nodes,
-			Edges:      edges,
-		}
-	}
-
-	configVars := make([]*versionpb.Version_Config, len(version.Config.Vars))
-	for i, c := range version.Config.Vars {
-		configVars[i] = &versionpb.Version_Config{
-			Key:   c.Key,
-			Value: c.Value,
-		}
-	}
-
+	configVars := versionToConfig(version)
+	wf := versionToWorkflows(version)
 	totalMongoReplicas := 1
 
-	req := versionpb.Request{
-		Version: &versionpb.Version{
-			Id:        version.ID,
-			Name:      version.Name,
-			Namespace: runtime.GetNamespace(), // K8s Namespace should not be part of Version properties
-			Config:    configVars,
-			Entrypoint: &versionpb.Version_Entrypoint{
-				ProtoFile: version.Entrypoint.ProtoFile,
-				Image:     version.Entrypoint.Image,
-			},
-			Workflows:      wf,
-			MongoUri:       runtime.GetMongoURI(totalMongoReplicas), // MongoURI should not be part of Version properties
-			InfluxUri:      runtime.GetInfluxURL(),                  // InfluxURL should not be part of Version properties
-			MongoDbName:    k.cfg.MongoDB.DBName,                    // MongoDbName should not be part of Version properties
-			MongoKrtBucket: k.cfg.MongoDB.KRTBucket,                 // MongoKrtBucket should not be part of Version properties
+	req := versionpb.StartRequest{
+		VersionId:      version.ID,
+		VersionName:    version.Name,
+		Config:         configVars,
+		Workflows:      wf,
+		MongoUri:       runtime.GetMongoURI(totalMongoReplicas),
+		MongoDbName:    k.cfg.MongoDB.DBName,
+		MongoKrtBucket: k.cfg.MongoDB.KRTBucket,
+		InfluxUri:      runtime.GetInfluxURL(),
+		Entrypoint: &versionpb.Entrypoint{
+			ProtoFile: version.Entrypoint.ProtoFile,
+			Image:     version.Entrypoint.Image,
 		},
+		K8SNamespace: runtime.GetNamespace(),
 	}
 
 	_, err := k.client.Start(ctx, &req)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (k *K8sVersionClient) Stop(ctx context.Context, runtime *entity.Runtime, version *entity.Version) error {
-	req := versionpb.Request{
-		Version: &versionpb.Version{
-			Name:      version.Name,
-			Namespace: runtime.GetNamespace(),
-		},
+	req := versionpb.VersionName{
+		Name:         version.Name,
+		K8SNamespace: runtime.GetNamespace(),
 	}
 
 	_, err := k.client.Stop(ctx, &req)
@@ -119,68 +74,91 @@ func (k *K8sVersionClient) Stop(ctx context.Context, runtime *entity.Runtime, ve
 }
 
 func (k *K8sVersionClient) UpdateConfig(runtime *entity.Runtime, version *entity.Version) error {
-	configVars := make([]*versionpb.Version_Config, len(version.Config.Vars))
-	for x, c := range version.Config.Vars {
-		configVars[x] = &versionpb.Version_Config{
-			Key:   c.Key,
-			Value: c.Value,
-		}
-	}
+	configVars := versionToConfig(version)
 
-	req := versionpb.Request{
-		Version: &versionpb.Version{
-			Name:      version.Name,
-			Namespace: runtime.GetNamespace(),
-			Config:    configVars,
-		},
+	req := versionpb.UpdateConfigRequest{
+		VersionName:  version.Name,
+		Config:       configVars,
+		K8SNamespace: runtime.GetNamespace(),
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
 
 	_, err := k.client.UpdateConfig(ctx, &req)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (k *K8sVersionClient) Unpublish(runtime *entity.Runtime, version *entity.Version) error {
-	req := versionpb.Request{
-		Version: &versionpb.Version{
-			Name:      version.Name,
-			Namespace: runtime.GetNamespace(),
-		},
+	req := versionpb.VersionName{
+		Name:         version.Name,
+		K8SNamespace: runtime.GetNamespace(),
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 
 	_, err := k.client.Unpublish(ctx, &req)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (k *K8sVersionClient) Publish(runtime *entity.Runtime, version *entity.Version) error {
-
-	req := versionpb.Request{
-		Version: &versionpb.Version{
-			Name:      version.Name,
-			Namespace: runtime.GetNamespace(),
-		},
+	req := versionpb.VersionName{
+		Name:         version.Name,
+		K8SNamespace: runtime.GetNamespace(),
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 
 	_, err := k.client.Publish(ctx, &req)
-	if err != nil {
-		return err
+	return err
+}
+
+func versionToConfig(version *entity.Version) []*versionpb.Config {
+	configVars := make([]*versionpb.Config, len(version.Config.Vars))
+
+	for i, c := range version.Config.Vars {
+		configVars[i] = &versionpb.Config{
+			Key:   c.Key,
+			Value: c.Value,
+		}
 	}
 
-	return nil
+	return configVars
+}
+
+func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
+	wf := make([]*versionpb.Workflow, len(version.Workflows))
+
+	for i, w := range version.Workflows {
+		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
+		for j, n := range w.Nodes {
+			nodes[j] = &versionpb.Workflow_Node{
+				Id:    n.ID,
+				Name:  n.Name,
+				Image: n.Image,
+				Src:   n.Src,
+				Gpu:   n.GPU,
+			}
+		}
+		edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
+		for k, e := range w.Edges {
+			edges[k] = &versionpb.Workflow_Edge{
+				Id:       e.ID,
+				FromNode: e.FromNode,
+				ToNode:   e.ToNode,
+			}
+		}
+
+		wf[i] = &versionpb.Workflow{
+			Id:         w.ID,
+			Name:       w.Name,
+			Entrypoint: w.Entrypoint,
+			Nodes:      nodes,
+			Edges:      edges,
+		}
+	}
+
+	return wf
 }

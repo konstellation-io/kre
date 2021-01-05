@@ -22,13 +22,13 @@ type RuntimeService struct {
 }
 
 func NewRuntimeService(
-	config *config.Config,
+	cfg *config.Config,
 	logger *simplelogger.SimpleLogger,
 	manager *runtime.Manager,
 	watcher *kubernetes.Watcher,
 ) *RuntimeService {
 	return &RuntimeService{
-		config,
+		cfg,
 		logger,
 		manager,
 		watcher,

@@ -1,169 +1,101 @@
 package version
 
 import (
+	"encoding/json"
 	"fmt"
+
+	"github.com/konstellation-io/kre/admin/k8s-manager/proto/versionpb"
 
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-
-	"github.com/konstellation-io/kre/admin/k8s-manager/entity"
 )
 
 type EntrypointConfig map[string]interface{}
 
-func (m *Manager) generateEntrypointConfig(version *entity.Version, wconf map[string]WorkflowConfig) EntrypointConfig {
-	natsSubjects := map[string]interface{}{}
-
-	for _, w := range version.Workflows {
-		firstNodeID := w.Nodes[0].Id
-		node := wconf[w.Name][firstNodeID]
-		natsSubjects[w.Entrypoint] = node["KRT_NATS_INPUT"]
+func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
+	entrypointEnvVars := []apiv1.EnvVar{
+		{Name: "KRT_NATS_SUBJECTS_FILE", Value: natsSubjectsFilePath},
+		{Name: "KRT_WORKFLOW_NAME", Value: "entrypoint"},
+		{Name: "KRT_WORKFLOW_ID", Value: "entrypoint"},
+		{Name: "KRT_NODE_NAME", Value: "entrypoint"},
+		{Name: "KRT_NODE_ID", Value: "entrypoint"},
+		// Time to wait for a message to do a round trip through a workflow.
+		{Name: "KRT_REQUEST_TIMEOUT", Value: m.config.Entrypoint.RequestTimeout},
 	}
 
-	return EntrypointConfig{
-		"nats-subjects": natsSubjects,
-	}
+	return append(m.getCommonEnvVars(req), entrypointEnvVars...)
 }
 
-func (m *Manager) createEntrypoint(version *entity.Version) error {
-	m.logger.Info("Creating entrypoint configmap")
+// generateNATSSubjects creates a JSON containing the NATS input subjects of each workflow like:
+//   {
+//      "Workflow1": "version1-Workflow1-entrypoint",
+//      "Workflow2": "version1-Workflow2-entrypoint"
+//   }
+func (m *Manager) generateNATSSubjects(versionName string, workflows []*versionpb.Workflow) (string, error) {
+	natsSubjects := map[string]string{}
 
-	_, err := m.createEntrypointConfigMap(version)
+	for _, w := range workflows {
+		natsSubjects[w.Entrypoint] = getFirstNodeNATSInput(versionName, w.Entrypoint)
+	}
+
+	natsSubjectJSON, err := json.Marshal(natsSubjects)
 	if err != nil {
-		return err
+		return "", err
 	}
 
+	ns := string(natsSubjectJSON)
+
+	m.logger.Infof("NATS subjects generated: %s", ns)
+
+	return ns, nil
+}
+
+func (m *Manager) getEntrypointLabels(versionName string) map[string]string {
+	return map[string]string{
+		"type":         "entrypoint",
+		"version-name": versionName,
+		"node-name":    "entrypoint",
+		"node-id":      "entrypoint",
+	}
+}
+
+func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 	m.logger.Info("Creating entrypoint deployment")
-	_, err = m.createEntrypointDeployment(version)
 
-	return err
-}
+	versionName := req.VersionName
+	ns := req.K8SNamespace
+	img := req.Entrypoint.Image
+	proto := req.Entrypoint.ProtoFile
+	envVars := m.getEntrypointEnvVars(req)
+	labels := m.getEntrypointLabels(req.VersionName)
 
-func (m *Manager) createEntrypointConfigMap(version *entity.Version) (*apiv1.ConfigMap, error) {
-	name := version.Name
-	ns := version.Namespace
+	m.logger.Info(fmt.Sprintf("Creating entrypoint deployment in %s named %s from image %s", ns, versionName, img))
 
-	return m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
+	_, err := m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-entrypoint-env", name),
-			Labels: map[string]string{
-				"type":         "entrypoint",
-				"version-name": name,
-			},
-		},
-		Data: map[string]string{
-			"KRT_NATS_SERVER":        natsURL,
-			"KRT_NATS_SUBJECTS_FILE": "/src/conf/nats_subject.json",
-			"KRT_INFLUX_URI":         version.InfluxUri,
-		},
-	})
-}
-
-// nolint: funlen
-// this function is not complex, just long due to the object definition.
-func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.Deployment, error) {
-	name := version.Name
-	ns := version.Namespace
-	entrypointImage := version.Entrypoint.Image
-
-	m.logger.Info(fmt.Sprintf("Creating entrypoint deployment in %s named %s from image %s", ns, name, entrypointImage))
-
-	envVars := []apiv1.EnvVar{
-		{
-			Name:  "KRT_VERSION_ID",
-			Value: version.GetId(),
-		},
-		{
-			Name:  "KRT_VERSION",
-			Value: version.GetName(),
-		},
-		{
-			Name:  "KRT_WORKFLOW_NAME",
-			Value: "entrypoint",
-		},
-		{
-			Name:  "KRT_WORKFLOW_ID",
-			Value: "entrypoint",
-		},
-		{
-			Name:  "KRT_NODE_NAME",
-			Value: "entrypoint",
-		},
-		{
-			Name:  "KRT_NODE_ID",
-			Value: "entrypoint",
-		},
-		{
-			Name:  "KRT_MONGO_URI",
-			Value: version.GetMongoUri(),
-		},
-		{
-			Name:  "KRT_MONGO_DB_NAME",
-			Value: version.GetMongoDbName(),
-		},
-		{
-			Name:  "KRT_MONGO_BUCKET",
-			Value: version.GetMongoKrtBucket(),
-		},
-		{
-			Name:  "KRT_BASE_PATH",
-			Value: basePathKRT,
-		},
-		{
-			// NOTE: Time to wait for a message to do a round trip through a workflow.
-			Name:  "KRT_REQUEST_TIMEOUT",
-			Value: m.config.Entrypoint.RequestTimeout,
-		},
-	}
-
-	return m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("%s-entrypoint", name),
+			Name:      fmt.Sprintf("%s-entrypoint", versionName),
 			Namespace: ns,
-			Labels: map[string]string{
-				"type":         "entrypoint",
-				"version-name": name,
-			},
+			Labels:    labels,
 		},
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"type":         "entrypoint",
-					"version-name": name,
-				},
+				MatchLabels: labels,
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"type":         "entrypoint",
-						"version-name": name,
-						"node-name":    "entrypoint",
-						"node-id":      "entrypoint",
-					},
+					Labels: labels,
 				},
 				Spec: apiv1.PodSpec{
 					InitContainers: []apiv1.Container{
-						{
-							Name:            "krt-files-downloader",
-							Image:           "konstellation/krt-files-downloader:latest",
-							ImagePullPolicy: apiv1.PullIfNotPresent,
-							Env:             envVars,
-							VolumeMounts: []apiv1.VolumeMount{
-								{
-									Name:      "krt-base-path",
-									ReadOnly:  false,
-									MountPath: basePathKRT,
-								},
-							},
-						},
+						m.getKRTFilesDownloaderContainer(envVars),
 					},
 					Containers: []apiv1.Container{
 						{
-							Name:            name,
-							Image:           entrypointImage,
+							Name:            versionName,
+							Image:           img,
 							ImagePullPolicy: apiv1.PullIfNotPresent,
 							Ports: []apiv1.ContainerPort{
 								{
@@ -175,63 +107,17 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 								{
 									Name:      "version-conf-files",
 									ReadOnly:  true,
-									MountPath: "/src/conf/nats_subject.json",
+									MountPath: natsSubjectsFilePath,
 									SubPath:   "nats_subject.json",
 								},
-								{
-									Name:      basePathKRTName,
-									ReadOnly:  false,
-									MountPath: basePathKRT,
-								},
-								{
-									Name:      "app-log-volume",
-									MountPath: "/var/log/app",
-								},
+								m.getKRTFilesVolumeMount(),
+								m.getAppLogVolumeMount(),
 							},
 							Env: envVars,
-							EnvFrom: []apiv1.EnvFromSource{
-								{
-									ConfigMapRef: &apiv1.ConfigMapEnvSource{
-										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: fmt.Sprintf("%s-entrypoint-env", name),
-										},
-									},
-								},
-							},
 						},
+						m.getFluentBitContainer(envVars),
 						{
-							Name:            "fluent-bit",
-							Image:           "fluent/fluent-bit:1.3",
-							ImagePullPolicy: apiv1.PullIfNotPresent,
-							Command: []string{
-								"/fluent-bit/bin/fluent-bit",
-								"-c",
-								"/fluent-bit/etc/fluent-bit.conf",
-								"-v",
-							},
-							Env: envVars,
-							VolumeMounts: []apiv1.VolumeMount{
-								{
-									Name:      "version-conf-files",
-									ReadOnly:  true,
-									MountPath: "/fluent-bit/etc/fluent-bit.conf",
-									SubPath:   "fluent-bit.conf",
-								},
-								{
-									Name:      "version-conf-files",
-									ReadOnly:  true,
-									MountPath: "/fluent-bit/etc/parsers.conf",
-									SubPath:   "parsers.conf",
-								},
-								{
-									Name:      "app-log-volume",
-									ReadOnly:  true,
-									MountPath: "/var/log/app",
-								},
-							},
-						},
-						{
-							Name:            fmt.Sprintf("%s-web", name),
+							Name:            fmt.Sprintf("%s-web", versionName),
 							Image:           "nginxinc/nginx-unprivileged:stable-alpine",
 							ImagePullPolicy: apiv1.PullIfNotPresent,
 							Ports: []apiv1.ContainerPort{
@@ -247,54 +133,27 @@ func (m *Manager) createEntrypointDeployment(version *entity.Version) (*appsv1.D
 									MountPath: "/etc/nginx/conf.d/default.conf",
 									SubPath:   "default.conf",
 								},
-								{
-									Name:      basePathKRTName,
-									ReadOnly:  false,
-									MountPath: basePathKRT,
-								},
+								m.getKRTFilesVolumeMount(),
 								{
 									Name:      basePathKRTName,
 									ReadOnly:  true,
-									MountPath: fmt.Sprintf("/proto/%s", version.Entrypoint.ProtoFile),
-									SubPath:   fmt.Sprintf("%s/%s", name, version.Entrypoint.ProtoFile),
+									MountPath: fmt.Sprintf("/proto/%s", proto),
+									SubPath:   fmt.Sprintf("%s/%s", versionName, proto),
 								},
 							},
 						},
 					},
-					Volumes: []apiv1.Volume{
-						{
-							Name: basePathKRTName,
-							VolumeSource: apiv1.VolumeSource{
-								EmptyDir: &apiv1.EmptyDirVolumeSource{},
-							},
-						},
-						{
-							Name: "version-conf-files",
-							VolumeSource: apiv1.VolumeSource{
-								ConfigMap: &apiv1.ConfigMapVolumeSource{
-									LocalObjectReference: apiv1.LocalObjectReference{
-										Name: fmt.Sprintf("%s-conf-files", name),
-									},
-								},
-							},
-						},
-						{
-							Name: "app-log-volume",
-							VolumeSource: apiv1.VolumeSource{
-								EmptyDir: &apiv1.EmptyDirVolumeSource{},
-							},
-						},
-					},
+					Volumes: m.getCommonVolumes(versionName),
 				},
 			},
 		},
 	})
+
+	return err
 }
 
-func (m *Manager) deleteEntrypointService(version *entity.Version) error {
-	name := version.Name
-	ns := version.Namespace
-	m.logger.Info(fmt.Sprintf("Deleting service in %s named %s", ns, name))
+func (m *Manager) deleteEntrypointService(versionName, ns string) error {
+	m.logger.Info(fmt.Sprintf("Deleting service in %s named %s", ns, versionName))
 
 	gracePeriod := new(int64)
 	*gracePeriod = 0
@@ -307,14 +166,12 @@ func (m *Manager) deleteEntrypointService(version *entity.Version) error {
 	})
 }
 
-func (m *Manager) createEntrypointService(version *entity.Version) (*apiv1.Service, error) {
-	name := version.Name
-	ns := version.Namespace
-	m.logger.Info(fmt.Sprintf("Updating service in %s named %s", ns, name))
+func (m *Manager) createEntrypointService(versionName, ns string) (*apiv1.Service, error) {
+	m.logger.Info(fmt.Sprintf("Updating service in %s named %s", ns, versionName))
 
 	serviceLabels := map[string]string{
 		"type":         "entrypoint",
-		"version-name": name,
+		"version-name": versionName,
 	}
 
 	existingService, err := m.clientset.CoreV1().Services(ns).Get("active-entrypoint", metav1.GetOptions{})

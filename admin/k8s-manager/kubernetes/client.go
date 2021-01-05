@@ -36,8 +36,8 @@ func NewDynamicClient(cfg *config.Config) dynamic.Interface {
 	return dynClient
 }
 
-func newKubernetesConfig(config *config.Config) *rest.Config {
-	if config.Kubernetes.IsInsideCluster {
+func newKubernetesConfig(cfg *config.Config) *rest.Config {
+	if cfg.Kubernetes.IsInsideCluster {
 		log.Printf("Creating K8s config in-cluster")
 
 		kubeConfig, err := rest.InClusterConfig()
