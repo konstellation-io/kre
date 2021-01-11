@@ -1,4 +1,4 @@
-{{- if .Values.developmentMode }}
+{{- if .Values.argocd }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
