@@ -1,4 +1,0 @@
-dependencies:
-  - name: influxdb
-    version: "4.8.1"
-    repository: https://influxdata.github.io/helm-charts
