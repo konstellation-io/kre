@@ -266,18 +266,9 @@ jobs:
           yq w -i helm/kre/values.yaml 'adminApi.image.tag' ${{ steps.get_version.outputs.VERSION }}
           yq w -i helm/kre/values.yaml 'k8sManager.image.tag' ${{ steps.get_version.outputs.VERSION }}
 
-          # set image tags on kre-monoruntime
-          yq w -i helm/kre-monoruntime/values.yaml 'adminUI.image.tag' ${{ steps.get_version.outputs.VERSION }}
-          yq w -i helm/kre-monoruntime/values.yaml 'adminApi.image.tag' ${{ steps.get_version.outputs.VERSION }}
-          yq w -i helm/kre-monoruntime/values.yaml 'k8sManager.image.tag' ${{ steps.get_version.outputs.VERSION }}
-
           # set app version and chart version for kre
           yq w -i helm/kre/Chart.yaml 'appVersion' ${{ steps.get_version.outputs.VERSION }}
           yq w -i helm/kre/Chart.yaml 'version' ${{ steps.get_version.outputs.RELEASE_VERSION }}
-
-          # set app version and chart version for kre-monoruntime
-          yq w -i helm/kre-monoruntime/Chart.yaml 'appVersion' ${{ steps.get_version.outputs.VERSION }}
-          yq w -i helm/kre-monoruntime/Chart.yaml 'version' ${{ steps.get_version.outputs.RELEASE_VERSION }}
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.0.0

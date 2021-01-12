@@ -38,12 +38,6 @@ cmd_dev() {
         exit 0
       ;;
 
-      --monoruntime)
-        MONORUNTIME_MODE=1
-        SKIP_OPERATOR_BUILD=1 # no need for the operator on monoruntime
-        shift
-      ;;
-
       *)
         shift
       ;;
@@ -77,7 +71,6 @@ show_dev_help() {
       --skip-build        skip all docker images build, useful for non-development environments
       --frontend-mock     starts a local mock server to avoid calling the actual API during Frontend development.
       --local-frontend    starts a local server outside from kubernetes for faster development.
-      --monoruntime       starts a local server with a single runtime.
 
     $(help_global_options)
 "
