@@ -45,7 +45,7 @@ KRE is designed based on a microservice pattern to be run on top of a Kubernetes
 
 In the following diagram is described the main components and the relationship each other.
 
-![Architecture](.github/images/kre-monoruntime-architecture.jpg)
+![Architecture](.github/images/kre-architecture.jpg)
 
 Below are described the main concepts of KRE.
 
