@@ -6,7 +6,6 @@
   - [Engine](#engine-1)
   - [Runtime](#runtime-1)
     - [KRT](#krt)
-  - [Monoruntime Mode](#monoruntime-mode)
 - [Install](#install)
   - [Custom Installation](#custom-installation)
     - [Prometheus](#prometheus)
@@ -14,7 +13,6 @@
   - [Requirements](#requirements)
   - [Local Environment](#local-environment)
     - [Login](#login)
-    - [Monoruntime](#monoruntime)
 
 # KRE (Konstellation Runtime Engine)
 
@@ -47,7 +45,7 @@ KRE is designed based on a microservice pattern to be run on top of a Kubernetes
 
 In the following diagram is described the main components and the relationship each other.
 
-![Architecture](.github/images/kre-architecture.jpg)
+![Architecture](.github/images/kre-monoruntime-architecture.jpg)
 
 Below are described the main concepts of KRE.
 
@@ -132,29 +130,25 @@ workflows:
 
 ```
 
-## Monoruntime mode
-
-There is a single architecture that can be used that only needs a single Kubernetes namespace as shown on the following
-image:
-
-![Monoruntime Architecture](.github/images/kre-monoruntime-architecture.jpg)
-
 # Install
 
-KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. As explained on the
-architecture section, there are two ways of installation, **normal mode** and **monoruntime mode**.
+KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. In order to install it 
+just need to add the chart repository, define your custom `values.yaml` and run one command.
 
-First, add the repository to helm:
+Let's start adding the repository to helm:
 
 ```bash
 helm repo add konstellation-io https://charts.konstellation.io
 helm repo update
 ```
 
-Then, in order to install it just needs to add Chart repository to your helm and, define your custom `values.yaml` and
-run one of the following commands:
+Now define your custom `values.yaml`, you can get the default values using this command (this can be used as a template to customize yours later):
 
-- **Normal Installation**
+```bash
+helm show values konstellation.io/kre
+```
+
+Once you have the appropriate values, you can start the installation with the following command: 
 
 ```bash
 helm upgrade --install kre --namespace kre \
@@ -162,16 +156,7 @@ helm upgrade --install kre --namespace kre \
  konstellation-io/kre
 ```
 
-- **Monoruntime Installation**
-
-```bash
-helm upgrade --install kre-monoruntime --namespace kre-monoruntime \
-  --values ./custom-monoruntime-values.yaml \ 
-  konstellation-io/kre-monoruntime
-```
-
-***NOTE***: You can check default values for each installation, [normal](./helm/kre/values.yaml) or
-[monoruntime](./helm/kre-monoruntime/values.yaml).
+***NOTE***: You can also check default values for the installation in this repository [file](./helm/kre/values.yaml).
 
 ## Custom Installation
 
@@ -232,7 +217,17 @@ $> krectl.sh [command] --help
       v     verbose mode.
 ```
 
-### Login
+### Install local environment
+
+To install KRE in your local environment:
+
+```
+$ ./krectl.sh dev
+```
+
+It will install everything in the namespace specified in your development `.kreconf` file.
+
+### Login to local environment
 
 First, remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
 
@@ -256,16 +251,6 @@ You will see an output like this:
 
 ✔️  Done.
 ```
-
-### Monoruntime
-
-To start KRE as a single `namespace` installation and in `MONORUNTIME_MODE`, you can use `./krectl.sh` as follows:
-
-```
-$ ./krectl.sh dev --monoruntime
-```
-
-It will install everything in the namespace specified in your development `.kreconf` file.
 
 
 [admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=coverage
