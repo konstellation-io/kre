@@ -64,11 +64,13 @@ The Engine is composed by the following components:
 
 ## Runtime
 
-When you create what is called a `runtime`, the Engine create a new Namespace within the Kubernetes cluster with the 
+When you install `kre` it would also create a `runtime`, the instalattion create a Namespace within the Kubernetes cluster with the 
 name set by the user from the Admin UI, and deploy on this Namespace all the base components that are described
 below.
 
 The goal of a Runtime is to run the designed services within the `.krt` file to perform the inference of a AI/ML model.
+
+A `kre` installation can only have one `runtime` at a time. If you need more `runtimes`, install another `kre`.
 
 Each Runtime is composed by the following components:
 
