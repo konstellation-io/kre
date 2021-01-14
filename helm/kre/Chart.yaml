@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "0.1"
+appVersion: "latest"
 description: Konstellation Runtime Environment Chart
 name: kre
 version: 0.1.7
