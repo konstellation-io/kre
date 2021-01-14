@@ -81,4 +81,3 @@ $ ./scripts/metrics-grpc-call.sh
     },
 [...]
 ```
-
