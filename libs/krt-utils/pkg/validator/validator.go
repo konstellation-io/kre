@@ -145,25 +145,25 @@ func (v *Validator) ValidateContent(file *krt.File, rootDir string) error {
 }
 
 func validateImages(krt *krt.File) ValidationErrors {
-	var errors []error = nil
+	var errs []error = nil
 
 	_, err := reference.Parse(krt.Entrypoint.Image)
 	if err != nil {
-		errors = append(errors, fmt.Errorf("entrypoint image error: %w", err))
+		errs = append(errs, fmt.Errorf("entrypoint image error: %w", err))
 	}
 
 	for _, node := range krt.Nodes {
 		_, err := reference.Parse(node.Image)
 		if err != nil {
-			errors = append(errors, fmt.Errorf("node image error: %w", err))
+			errs = append(errs, fmt.Errorf("node image error: %w", err))
 		}
 	}
 
-	return errors
+	return errs
 }
 
 func validateWorkflows(k *krt.File) ValidationErrors {
-	var errors ValidationErrors = nil
+	var errs ValidationErrors = nil
 
 	nodeList := map[string]int{}
 	for _, node := range k.Nodes {
@@ -173,12 +173,12 @@ func validateWorkflows(k *krt.File) ValidationErrors {
 	for _, workflow := range k.Workflows {
 		for _, nodeName := range workflow.Sequential {
 			if _, ok := nodeList[nodeName]; !ok {
-				errors = append(errors, fmt.Errorf("node in sequential not found: %s", nodeName)) // nolint: goerr113
+				errs = append(errs, fmt.Errorf("node in sequential not found: %s", nodeName)) // nolint: goerr113
 			}
 		}
 	}
 
-	return errors
+	return errs
 }
 
 func (v *Validator) log(msg string) {
@@ -186,17 +186,17 @@ func (v *Validator) log(msg string) {
 }
 
 func validateSrcPaths(file *krt.File, rootDir string) error {
-	var errors ValidationErrors = nil
+	var errs ValidationErrors = nil
 
 	for _, node := range file.Nodes {
 		nodeFile := path.Join(rootDir, node.Src)
 		if !fileExists(nodeFile) {
-			errors = append(errors, fmt.Errorf("error src File %s for node %s not exists", node.Src, node.Name)) // nolint: goerr113
+			errs = append(errs, fmt.Errorf("error src File %s for node %s not exists", node.Src, node.Name)) // nolint: goerr113
 		}
 	}
 
-	if len(errors) > 0 {
-		return errors
+	if len(errs) > 0 {
+		return errs
 	}
 
 	return nil

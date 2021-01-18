@@ -7,6 +7,7 @@ require (
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20201224090044-7d2e9c2cfd32
+	github.com/mattn/go-zglob v0.0.3
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776

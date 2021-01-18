@@ -32,10 +32,25 @@ func main() {
   }
   
   // Check all content is valid
-  errs := v.ValidateContent(krtFile)
+  errs := v.ValidateContent(krtFile, "/home/test/krt")
   if errs != nil {
     log.Fatal(errs)
   }
+}
+```
+
+- KRT builder
+```go  
+package main
+
+func main() {
+  b := builder.New()
+  
+  err := builder.Build()
+  if err != nil {
+    log.Fatal(err)
+  } 
+  
 }
 ```
 
