@@ -104,6 +104,7 @@ github.com/kelseyhightower/envconfig v1.4.0/go.mod h1:cccZRl6mQpaq41TPp5QxidR+Sa
 github.com/kisielk/errcheck v1.2.0/go.mod h1:/BMXB+zMLi60iA8Vv6Ksmxu/1UDYcXs4uQLJ+jE2L00=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
+github.com/konstellation-io/kre v0.2.4 h1:UElXcBEKg3LW9hpvOTuL4GgtQhcDBSTHPErFcYSCTxg=
 github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611081512-198d96c2a13a h1:uVWHEl+W2+9LTdicN6uJGT+Mj1xCe6m11HcBXxUbeMw=
 github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611081512-198d96c2a13a/go.mod h1:NBvrtiOd/pwGYVmJBDwGzr/SiHp5gZToELhUiJ1CmIk=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=

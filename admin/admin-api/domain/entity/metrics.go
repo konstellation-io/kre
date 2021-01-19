@@ -32,9 +32,11 @@ type MetricChartData struct {
 	Z string `json:"z"`
 }
 
-type MetricRow struct {
-	Date           string
-	Error          string
-	PredictedValue string
-	TrueValue      string
+type ClassificationMetric struct {
+	ID             string `bson:"_id"`
+	VersionID      string `bson:"versionId"`
+	Date           string `bson:"date"`
+	Error          string `bson:"error"`
+	PredictedValue string `bson:"predictedValue"`
+	TrueValue      string `bson:"trueValue"`
 }

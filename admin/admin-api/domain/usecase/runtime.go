@@ -3,16 +3,13 @@ package usecase
 import (
 	"context"
 	"errors"
-	"strings"
-	"time"
-
 	"github.com/konstellation-io/kre/admin/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/service"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/runtime"
+	"strings"
 )
 
 // RuntimeStatus enumerates all Runtime status
@@ -20,10 +17,8 @@ type RuntimeStatus string
 
 var (
 	// ErrRuntimeNotFound error
-	ErrRuntimeNotFound       = errors.New("error runtime not found")
-	ErrMonoruntimeMode       = errors.New("this action is disabled in monoruntime mode")
-	ErrRuntimeDuplicated     = errors.New("there is already a runtime with the same id")
-	ErrRuntimeDuplicatedName = errors.New("there is already a runtime with the same name")
+	ErrRuntimeNotFound = errors.New("error runtime not found")
+	ErrMonoruntimeMode = errors.New("this action is disabled in monoruntime mode")
 )
 
 // RuntimeInteractor contains app logic to handle Runtime entities
@@ -31,7 +26,6 @@ type RuntimeInteractor struct {
 	cfg               *config.Config
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
-	runtimeService    service.RuntimeService
 	userActivity      UserActivityInteracter
 	passwordGenerator runtime.PasswordGenerator
 	accessControl     auth.AccessControl
@@ -42,7 +36,6 @@ func NewRuntimeInteractor(
 	cfg *config.Config,
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
-	runtimeService service.RuntimeService,
 	userActivity UserActivityInteracter,
 	passwordGenerator runtime.PasswordGenerator,
 	accessControl auth.AccessControl,
@@ -51,7 +44,6 @@ func NewRuntimeInteractor(
 		cfg,
 		logger,
 		runtimeRepo,
-		runtimeService,
 		userActivity,
 		passwordGenerator,
 		accessControl,
@@ -102,105 +94,6 @@ func (i *RuntimeInteractor) EnsureMonoruntime(ctx context.Context, ownerUser *en
 	i.logger.Info("Monoruntime stored in the database with ID=" + createdRuntime.ID)
 
 	return nil
-}
-
-// CreateRuntime adds a new Runtime
-func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, runtimeID, name, description string) (createdRuntime *entity.Runtime, onRuntimeStartedChannel chan *entity.Runtime, err error) {
-	if i.cfg.Monoruntime.Enabled {
-		return nil, nil, ErrMonoruntimeMode
-	}
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActEdit); err != nil {
-		return nil, nil, err
-	}
-
-	// Sanitize input params
-	runtimeID = strings.TrimSpace(runtimeID)
-	name = strings.TrimSpace(name)
-	description = strings.TrimSpace(description)
-
-	r := &entity.Runtime{
-		ID:          runtimeID,
-		Name:        name,
-		Description: description,
-		Owner:       loggedUserID,
-		Mongo: entity.MongoConfig{
-			Username:  "admin",
-			Password:  i.passwordGenerator.NewPassword(),
-			SharedKey: i.passwordGenerator.NewPassword(),
-		},
-		Status: entity.RuntimeStatusCreating,
-	}
-
-	// NOTE: On multi-runtime-mode ReleaseName and Namespace are controlled by the operator and are the same.
-	r.ReleaseName = r.GetNamespace()
-
-	// Validation
-	err = r.Validate()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Check if the Runtime already exists
-	runtimeFromDB, err := i.runtimeRepo.GetByID(ctx, runtimeID)
-	if runtimeFromDB != nil {
-		return nil, nil, ErrRuntimeDuplicated
-	} else if err != ErrRuntimeNotFound {
-		return nil, nil, err
-	}
-
-	// Check if there is another Runtime with the same name
-	runtimeFromDB, err = i.runtimeRepo.GetByName(ctx, name)
-	if runtimeFromDB != nil {
-		return nil, nil, ErrRuntimeDuplicatedName
-	} else if err != ErrRuntimeNotFound {
-		return nil, nil, err
-	}
-
-	createRuntimeInK8sResult, err := i.runtimeService.Create(ctx, r)
-	if err != nil {
-		return
-	}
-	i.logger.Info("K8sManagerService create result: " + createRuntimeInK8sResult)
-
-	createdRuntime, err = i.runtimeRepo.Create(ctx, r)
-	if err != nil {
-		return
-	}
-	i.logger.Info("Runtime stored in the database with ID=" + createdRuntime.ID)
-
-	err = i.userActivity.RegisterCreateRuntime(loggedUserID, createdRuntime)
-	if err != nil {
-		return
-	}
-
-	onRuntimeStartedChannel = make(chan *entity.Runtime, 1)
-
-	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
-		defer cancel()
-
-		_, err := i.runtimeService.WaitForRuntimeStarted(ctx, createdRuntime)
-
-		// If all pods are running, the runtime status should be set to running.
-		// In other case, the runtime status will be set to error
-		if err != nil {
-			createdRuntime.Status = entity.RuntimeStatusError
-			i.logger.Errorf("Error creating runtime: %s", err)
-		} else {
-			createdRuntime.Status = entity.RuntimeStatusStarted
-		}
-
-		i.logger.Infof("Set runtime status to %s", createdRuntime.Status.String())
-		err = i.runtimeRepo.UpdateStatus(ctx, createdRuntime.ID, createdRuntime.Status)
-		if err != nil {
-			i.logger.Errorf("Error updating runtime: %s", err)
-		}
-
-		onRuntimeStartedChannel <- createdRuntime
-		close(onRuntimeStartedChannel)
-	}()
-
-	return
 }
 
 // FindAll returns a list of all Runtimes

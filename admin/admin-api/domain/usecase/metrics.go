@@ -9,7 +9,6 @@ import (
 
 	"github.com/konstellation-io/kre/admin/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/repository"
-	"github.com/konstellation-io/kre/admin/admin-api/domain/service"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
@@ -22,49 +21,56 @@ const oneDay = 24
 const oneWeek = 7 * oneDay
 
 type MetricsInteractor struct {
-	logger            logging.Logger
-	runtimeRepo       repository.RuntimeRepo
-	monitoringService service.MonitoringService
-	accessControl     auth.AccessControl
+	logger        logging.Logger
+	runtimeRepo   repository.RuntimeRepo
+	accessControl auth.AccessControl
+	metricRepo    repository.MetricRepo
 }
 
 func NewMetricsInteractor(
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
-	monitoringService service.MonitoringService,
 	accessControl auth.AccessControl,
+	metricRepo repository.MetricRepo,
 ) *MetricsInteractor {
 	return &MetricsInteractor{
 		logger,
 		runtimeRepo,
-		monitoringService,
 		accessControl,
+		metricRepo,
 	}
 }
 
-func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
+func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResMetrics, auth.ActView); err != nil {
 		return nil, err
 	}
 
 	var result *entity.Metrics
-	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
+
+	parsedStartDate, err := time.Parse(time.RFC3339, startDate)
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("invalid start date: %w", err)
 	}
-	rows, err := i.monitoringService.GetMetrics(ctx, runtime, versionID, startDate, endDate)
+
+	parsedEndDate, err := time.Parse(time.RFC3339, endDate)
+	if err != nil {
+		return result, fmt.Errorf("invalid end date: %w", err)
+	}
+
+	metrics, err := i.metricRepo.GetMetrics(ctx, parsedStartDate, parsedEndDate, versionID)
 	if err != nil {
 		return result, fmt.Errorf("error getting metrics: %w", err)
 	}
 
-	if len(rows) == 0 {
+	if len(metrics) == 0 {
 		return nil, nil
 	}
 
-	return i.CalculateChartsAndValues(rows)
+	return i.CalculateChartsAndValues(metrics)
 }
 
-func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.MetricRow) (*entity.Metrics, error) {
+func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.ClassificationMetric) (*entity.Metrics, error) {
 	hits := 0 // items classified correctly
 	newLabels := 0
 	missingValues := 0
@@ -211,7 +217,7 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.MetricRow)
 	}, nil
 }
 
-func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.MetricRow) ([]*entity.MetricChartData, error) {
+func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.ClassificationMetric) ([]*entity.MetricChartData, error) {
 	var result []*entity.MetricChartData
 
 	firstMetric := metrics[0].Date
@@ -250,7 +256,7 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.MetricRow) (
 	}
 
 	intervalDuration := time.Duration(interval) * time.Hour
-	metricsGroups := make(map[int][]entity.MetricRow)
+	metricsGroups := make(map[int][]entity.ClassificationMetric)
 
 	var numGroups int
 	for _, m := range metrics {

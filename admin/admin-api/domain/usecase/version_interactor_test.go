@@ -23,16 +23,15 @@ type versionSuite struct {
 }
 
 type versionSuiteMocks struct {
-	cfg               *config.Config
-	logger            *mocks.MockLogger
-	versionRepo       *mocks.MockVersionRepo
-	runtimeRepo       *mocks.MockRuntimeRepo
-	versionService    *mocks.MockVersionService
-	monitoringService *mocks.MockMonitoringService
-	userActivityRepo  *mocks.MockUserActivityRepo
-	userRepo          *mocks.MockUserRepo
-	accessControl     *mocks.MockAccessControl
-	idGenerator       *mocks.MockIDGenerator
+	cfg              *config.Config
+	logger           *mocks.MockLogger
+	versionRepo      *mocks.MockVersionRepo
+	runtimeRepo      *mocks.MockRuntimeRepo
+	versionService   *mocks.MockVersionService
+	userActivityRepo *mocks.MockUserActivityRepo
+	userRepo         *mocks.MockUserRepo
+	accessControl    *mocks.MockAccessControl
+	idGenerator      *mocks.MockIDGenerator
 }
 
 func newVersionSuite(t *testing.T) *versionSuite {
@@ -42,7 +41,6 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	logger := mocks.NewMockLogger(ctrl)
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
-	monitoringService := mocks.NewMockMonitoringService(ctrl)
 	versionService := mocks.NewMockVersionService(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
@@ -50,6 +48,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	idGenerator := mocks.NewMockIDGenerator(ctrl)
 	docGenerator := mocks.NewMockDocGenerator(ctrl)
 	dashboardService := mocks.NewMockDashboardService(ctrl)
+	nodeLogRepo := mocks.NewMockNodeLogRepository(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
@@ -60,19 +59,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		accessControl,
 	)
 
-	versionInteractor := usecase.NewVersionInteractor(
-		cfg,
-		logger,
-		versionRepo,
-		runtimeRepo,
-		versionService,
-		monitoringService,
-		userActivityInteractor,
-		accessControl,
-		idGenerator,
-		docGenerator,
-		dashboardService,
-	)
+	versionInteractor := usecase.NewVersionInteractor(cfg, logger, versionRepo, runtimeRepo, versionService, userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
 
 	return &versionSuite{
 		ctrl: ctrl,
@@ -82,7 +69,6 @@ func newVersionSuite(t *testing.T) *versionSuite {
 			versionRepo,
 			runtimeRepo,
 			versionService,
-			monitoringService,
 			userActivityRepo,
 			userRepo,
 			accessControl,

@@ -33,27 +33,15 @@ func newVersionDashboardsSuite(t *testing.T) *versionDashboardsSuite {
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	versionService := mocks.NewMockVersionService(ctrl)
-	monitoringService := mocks.NewMockMonitoringService(ctrl)
 	userActivityInteractor := mocks.NewMockUserActivityInteracter(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	idGenerator := mocks.NewMockIDGenerator(ctrl)
 	docGenerator := mocks.NewMockDocGenerator(ctrl)
+	nodeLogRepo := mocks.NewMockNodeLogRepository(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
-	versionInteractor := NewVersionInteractor(
-		cfg,
-		logger,
-		versionRepo,
-		runtimeRepo,
-		versionService,
-		monitoringService,
-		userActivityInteractor,
-		accessControl,
-		idGenerator,
-		docGenerator,
-		dashboardService,
-	)
+	versionInteractor := NewVersionInteractor(cfg, logger, versionRepo, runtimeRepo, versionService, userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
 
 	runtime := &entity.Runtime{Name: "test"}
 	return &versionDashboardsSuite{ctrl: ctrl,

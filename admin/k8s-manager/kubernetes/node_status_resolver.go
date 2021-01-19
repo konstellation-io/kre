@@ -1,11 +1,10 @@
 package kubernetes
 
 import (
+	"github.com/konstellation-io/kre/admin/k8s-manager/entity"
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
 	coreV1 "k8s.io/api/core/v1"
-
-	"github.com/konstellation-io/kre/runtime/runtime-api/entity"
 )
 
 type NodeStatusResolver struct {

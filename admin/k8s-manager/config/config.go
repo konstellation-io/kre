@@ -33,6 +33,8 @@ type Config struct {
 		} `yaml:"k8sRuntimeOperator"`
 
 		IsInsideCluster bool
+
+		Namespace string `envconfig:"POD_NAMESPACE"`
 	} `yaml:"kubernetes"`
 
 	Prometheus struct {

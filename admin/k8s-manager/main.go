@@ -11,11 +11,9 @@ import (
 
 	"github.com/konstellation-io/kre/admin/k8s-manager/config"
 	"github.com/konstellation-io/kre/admin/k8s-manager/kubernetes"
-	"github.com/konstellation-io/kre/admin/k8s-manager/kubernetes/runtime"
 	"github.com/konstellation-io/kre/admin/k8s-manager/kubernetes/version"
 	"github.com/konstellation-io/kre/admin/k8s-manager/prometheus/resourcemetrics"
 	"github.com/konstellation-io/kre/admin/k8s-manager/proto/resourcemetricspb"
-	"github.com/konstellation-io/kre/admin/k8s-manager/proto/runtimepb"
 	"github.com/konstellation-io/kre/admin/k8s-manager/proto/versionpb"
 	"github.com/konstellation-io/kre/admin/k8s-manager/service"
 )
@@ -33,15 +31,11 @@ func main() {
 	s := grpc.NewServer()
 
 	clientset := kubernetes.NewClientset(cfg)
-	dynClient := kubernetes.NewDynamicClient(cfg)
 
-	watcher := kubernetes.NewWatcher(logger, clientset)
-
-	runtimeManager := runtime.New(cfg, logger, clientset, dynClient)
-	runtimeService := service.NewRuntimeService(cfg, logger, runtimeManager, watcher)
+	watcher := kubernetes.NewWatcher(cfg, logger, clientset)
 
 	versionManager := version.New(cfg, logger, clientset)
-	versionService := service.NewVersionService(cfg, logger, versionManager)
+	versionService := service.NewVersionService(cfg, logger, versionManager, watcher)
 
 	resourceMetricsManager, err := resourcemetrics.New(cfg, logger)
 	if err != nil {
@@ -50,7 +44,6 @@ func main() {
 
 	resourceMetricsService := service.NewResourceMetricsService(logger, resourceMetricsManager)
 
-	runtimepb.RegisterRuntimeServiceServer(s, runtimeService)
 	versionpb.RegisterVersionServiceServer(s, versionService)
 	resourcemetricspb.RegisterResourceMetricsServiceServer(s, resourceMetricsService)
 	reflection.Register(s)

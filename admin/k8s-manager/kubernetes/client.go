@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -23,17 +22,6 @@ func NewClientset(cfg *config.Config) *kubernetes.Clientset {
 	}
 
 	return clientset
-}
-
-func NewDynamicClient(cfg *config.Config) dynamic.Interface {
-	kubeConfig := newKubernetesConfig(cfg)
-
-	dynClient, err := dynamic.NewForConfig(kubeConfig)
-	if err != nil {
-		log.Fatalf("Fatal error kubernetes config: %s", err)
-	}
-
-	return dynClient
 }
 
 func newKubernetesConfig(cfg *config.Config) *rest.Config {

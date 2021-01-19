@@ -14,4 +14,5 @@ type VersionService interface {
 	Unpublish(*entity.Runtime, *entity.Version) error
 	Publish(*entity.Runtime, *entity.Version) error
 	UpdateConfig(*entity.Runtime, *entity.Version) error
+	WatchNodeStatus(ctx context.Context, versionName string) (<-chan *entity.Node, error)
 }

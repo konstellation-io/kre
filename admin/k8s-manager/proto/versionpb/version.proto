@@ -64,10 +64,21 @@ message Response {
   string message = 2;
 }
 
+message NodeStatusRequest {
+  string versionName = 1;
+}
+
+message NodeStatusResponse {
+  string nodeId = 1;
+  string status = 2;
+  string name = 3;
+}
+
 service VersionService {
   rpc Start (StartRequest) returns (Response);
   rpc Stop (VersionName) returns (Response);
   rpc Publish (VersionName) returns (Response);
   rpc Unpublish (VersionName) returns (Response);
   rpc UpdateConfig (UpdateConfigRequest) returns (Response);
+  rpc WatchNodeStatus (NodeStatusRequest) returns (stream NodeStatusResponse);
 };

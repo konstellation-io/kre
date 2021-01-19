@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	"google.golang.org/grpc"
@@ -161,4 +162,55 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 	}
 
 	return wf
+}
+
+func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, versionName string) (<-chan *entity.Node, error) {
+	stream, err := k.client.WatchNodeStatus(ctx, &versionpb.NodeStatusRequest{
+		VersionName: versionName,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("version status opening stream: %w", err)
+	}
+
+	ch := make(chan *entity.Node, 1)
+
+	go func() {
+		defer close(ch)
+
+		for {
+			k.logger.Debug("[VersionService.WatchNodeStatus] waiting for stream.Recv()...")
+			msg, err := stream.Recv()
+
+			if stream.Context().Err() == context.Canceled {
+				k.logger.Debug("[VersionService.WatchNodeStatus] Context canceled.")
+				return
+			}
+
+			if err == io.EOF {
+				k.logger.Debug("[VersionService.WatchNodeStatus] EOF msg received.")
+				return
+			}
+
+			if err != nil {
+				k.logger.Errorf("[VersionService.WatchNodeStatus] Unexpected error: %s", err)
+				return
+			}
+
+			k.logger.Debug("[VersionService.WatchNodeStatus] Message received")
+
+			status := entity.NodeStatus(msg.GetStatus())
+			if !status.IsValid() {
+				k.logger.Errorf("[VersionService.WatchNodeStatus] Invalid node status: %s", status)
+				continue
+			}
+
+			ch <- &entity.Node{
+				ID:     msg.GetNodeId(),
+				Name:   msg.GetName(),
+				Status: status,
+			}
+		}
+	}()
+
+	return ch, nil
 }

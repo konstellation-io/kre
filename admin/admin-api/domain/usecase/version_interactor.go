@@ -48,12 +48,12 @@ type VersionInteractor struct {
 	versionRepo            repository.VersionRepo
 	runtimeRepo            repository.RuntimeRepo
 	versionService         service.VersionService
-	monitoringService      service.MonitoringService
 	userActivityInteractor UserActivityInteracter
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
 	docGenerator           version.DocGenerator
 	dashboardService       service.DashboardService
+	nodeLogRepo            repository.NodeLogRepository
 }
 
 // NewVersionInteractor creates a new interactor
@@ -63,12 +63,12 @@ func NewVersionInteractor(
 	versionRepo repository.VersionRepo,
 	runtimeRepo repository.RuntimeRepo,
 	runtimeService service.VersionService,
-	monitoringService service.MonitoringService,
 	userActivityInteractor UserActivityInteracter,
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
 	docGenerator version.DocGenerator,
 	dashboardService service.DashboardService,
+	nodeLogRepo repository.NodeLogRepository,
 ) *VersionInteractor {
 	return &VersionInteractor{
 		cfg,
@@ -76,12 +76,12 @@ func NewVersionInteractor(
 		versionRepo,
 		runtimeRepo,
 		runtimeService,
-		monitoringService,
 		userActivityInteractor,
 		accessControl,
 		idGenerator,
 		docGenerator,
 		dashboardService,
+		nodeLogRepo,
 	}
 }
 
@@ -626,7 +626,7 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 		return nil, err
 	}
 
-	// No need to call runtime-api if there are no resources running
+	// No need to restart PODs if there are no resources running
 	if isStarted {
 		err = i.versionService.UpdateConfig(runtime, version)
 		if err != nil {
@@ -652,51 +652,56 @@ func (i *VersionInteractor) WatchNodeStatus(ctx context.Context, loggedUserID, v
 		return nil, err
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, v.RuntimeID)
-	if err != nil {
-		return nil, err
-	}
-
-	return i.monitoringService.WatchNodeStatus(ctx, runtime, v.Name)
+	return i.versionService.WatchNodeStatus(ctx, v.Name)
 }
 
 func (i *VersionInteractor) WatchNodeLogs(
 	ctx context.Context,
-	loggedUserID, runtimeID, versionID string,
+	loggedUserID, versionID string,
 	filters entity.LogFilters,
 ) (<-chan *entity.NodeLog, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView); err != nil {
 		return nil, err
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
-	if err != nil {
-		return nil, err
-	}
-
-	return i.monitoringService.NodeLogs(ctx, runtime, versionID, filters)
+	return i.nodeLogRepo.WatchNodeLogs(ctx, versionID, filters)
 }
 
 func (i *VersionInteractor) SearchLogs(
 	ctx context.Context,
 	loggedUserID string,
-	runtimeID string,
-	versionID string,
 	filters entity.LogFilters,
 	cursor *string,
-) (entity.SearchLogsResult, error) {
-	var result entity.SearchLogsResult
-
+) (*entity.SearchLogsResult, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView); err != nil {
-		return result, err
+		return nil, err
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
+	startDate, err := time.Parse(time.RFC3339, filters.StartDate)
 	if err != nil {
-		return result, err
+		return nil, fmt.Errorf("invalid start date: %w", err)
 	}
 
-	return i.monitoringService.SearchLogs(ctx, runtime, versionID, filters, cursor)
+	var endDate time.Time
+	if filters.EndDate != nil {
+		endDate, err = time.Parse(time.RFC3339, *filters.EndDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid end date: %w", err)
+		}
+	} else {
+		endDate = time.Now()
+	}
+
+	options := &entity.SearchLogsOptions{
+		Cursor:    cursor,
+		StartDate: startDate,
+		EndDate:   endDate,
+		Search:    filters.Search,
+		NodeIDs:   filters.NodeIDs,
+		Levels:    filters.Levels,
+	}
+
+	return i.nodeLogRepo.PaginatedSearch(ctx, options)
 }
 
 func (i *VersionInteractor) setStatusError(ctx context.Context, version *entity.Version, errors []error, notifyCh chan *entity.Version) {
