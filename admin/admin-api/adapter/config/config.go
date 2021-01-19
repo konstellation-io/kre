@@ -48,7 +48,6 @@ type Config struct {
 		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
 	} `yaml:"services"`
 	Monoruntime struct {
-		Enabled     bool   `yaml:"enabled"`
 		Name        string `yaml:"name" envconfig:"KRE_MONORUNTIME_NAME"`
 		ReleaseName string `yaml:"releaseName" envconfig:"KRE_MONORUNTIME_RELEASE_NAME"`
 		Namespace   string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
@@ -75,10 +74,6 @@ func NewConfig() *Config {
 		err = decoder.Decode(cfg)
 		if err != nil {
 			panic(err)
-		}
-
-		if os.Getenv("KRE_MONORUNTIME_MODE") == "yes" {
-			cfg.Monoruntime.Enabled = true
 		}
 
 		err = envconfig.Process("", cfg)

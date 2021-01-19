@@ -73,10 +73,7 @@ type Runtime struct {
 // Multi runtime: .Release.Name  == .Release.Namespace
 // Mono  runtime: .Release.Name  != .Release.Namespace
 func (r *Runtime) GetNamespace() string {
-	if r.Monoruntime {
-		return r.ID
-	}
-	return fmt.Sprintf("kre-%s", r.ID)
+	return r.ID
 }
 
 func (r *Runtime) GetMongoURI(replicas int) string {

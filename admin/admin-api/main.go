@@ -131,15 +131,13 @@ func main() {
 		panic(err)
 	}
 
-	if cfg.Monoruntime.Enabled {
-		adminUser, err := userInteractor.GetFirstAdmin(context.Background())
-		if err != nil {
-			panic(err)
-		}
-		err = runtimeInteractor.EnsureMonoruntime(context.Background(), adminUser)
-		if err != nil {
-			panic(err)
-		}
+	adminUser, err := userInteractor.GetFirstAdmin(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	err = runtimeInteractor.EnsureMonoruntime(context.Background(), adminUser)
+	if err != nil {
+		panic(err)
 	}
 
 	app := http.NewApp(
