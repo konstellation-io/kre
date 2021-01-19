@@ -23,12 +23,10 @@ import (
 	"github.com/konstellation-io/kre/admin/admin-api/domain/usecase/logging"
 )
 
-var runtimeCreatedChannels map[string]chan *entity.Runtime
 var versionStatusChannels map[string]chan *entity.Version
 var mux *sync.RWMutex
 
 func init() {
-	runtimeCreatedChannels = map[string]chan *entity.Runtime{}
 	versionStatusChannels = map[string]chan *entity.Version{}
 	mux = &sync.RWMutex{}
 }
@@ -73,25 +71,7 @@ func NewGraphQLResolver(
 }
 
 func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
-	loggedUserID := ctx.Value("userID").(string)
-
-	runtime, onRuntimeStartedChannel, err := r.runtimeInteractor.CreateRuntime(ctx, loggedUserID, input.ID, input.Name, input.Description)
-	if err != nil {
-		r.logger.Error("Error creating runtime: " + err.Error())
-		return nil, err
-	}
-
-	go func() {
-		runtime := <-onRuntimeStartedChannel
-
-		mux.RLock()
-		for _, r := range runtimeCreatedChannels {
-			r <- runtime
-		}
-		mux.RUnlock()
-	}()
-
-	return runtime, nil
+	return nil, usecase.ErrMonoruntimeMode
 }
 
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error) {
@@ -316,9 +296,10 @@ func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	return r.userInteractor.GetByID(loggedUserID)
 }
 
+// TODO remove runtimeID
 func (r *queryResolver) Metrics(ctx context.Context, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, runtimeID, versionID, startDate, endDate)
+	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, versionID, startDate, endDate)
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
@@ -366,14 +347,14 @@ func (r *queryResolver) UserActivityList(
 
 func (r *queryResolver) Logs(
 	ctx context.Context,
-	runtimeID string,
-	versionID string,
+	runtimeID string, // TODO remove runtimeID
+	versionID string, // TODO remove versionID
 	filters entity.LogFilters,
 	cursor *string,
 ) (*LogPage, error) {
 	loggedUserID := ctx.Value("userID").(string)
 
-	searchResult, err := r.versionInteractor.SearchLogs(ctx, loggedUserID, runtimeID, versionID, filters, cursor)
+	searchResult, err := r.versionInteractor.SearchLogs(ctx, loggedUserID, filters, cursor)
 	if err != nil {
 		return nil, err
 	}
@@ -429,24 +410,7 @@ func (r *runtimeResolver) EntrypointAddress(_ context.Context, obj *entity.Runti
 }
 
 func (r *subscriptionResolver) WatchRuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
-	if r.cfg.Monoruntime.Enabled {
-		return nil, usecase.ErrMonoruntimeMode
-	}
-	id := uuid.New().String()
-
-	runtimeCreatedChan := make(chan *entity.Runtime, 1)
-	go func() {
-		<-ctx.Done()
-		mux.Lock()
-		delete(runtimeCreatedChannels, id)
-		mux.Unlock()
-	}()
-
-	mux.Lock()
-	runtimeCreatedChannels[id] = runtimeCreatedChan
-	mux.Unlock()
-
-	return runtimeCreatedChan, nil
+	return nil, usecase.ErrMonoruntimeMode
 }
 
 func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity.Version, error) {
@@ -472,9 +436,10 @@ func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionID st
 	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, versionID)
 }
 
+// TODO remove runtimeID
 func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeID, versionID, filters)
+	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, versionID, filters)
 }
 
 func (r *subscriptionResolver) WatchResourceMetrics(

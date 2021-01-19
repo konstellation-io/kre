@@ -31,8 +31,6 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
 |  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
 | :---------: | :-----:   |  :---: |  :--------------------:  |
-|  Runtime API  | [![coverage][runtime-api-coverage]][runtime-api-coverage-link] | [![bugs][runtime-api-bugs]][runtime-api-bugs-link] | [![mr][runtime-api-mr]][runtime-api-mr-link] |
-|  K8s Runtime Operator   | - | - | - |
 |  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
 
 ## Runners
@@ -74,8 +72,6 @@ A `kre` installation can only have one `runtime` at a time. If you need more `ru
 
 Each Runtime is composed by the following components:
 
-* [K8s Runtime Operator](runtime/k8s-runtime-operator/README.md)
-* [Runtime API](runtime/runtime-api/README.md)
 * MongoDB
 * Minio
 * NATS-Streaming
@@ -302,22 +298,6 @@ You will see an output like this:
 [k8s-manager-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_k8s_manager&metric=sqale_rating
 
 [k8s-manager-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_k8s_manager
-
-[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=coverage
-
-[runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Coverage
-
-[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=bugs
-
-[runtime-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Security&view=list
-
-[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=ncloc
-
-[runtime-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Coverage&view=list
-
-[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=sqale_rating
-
-[runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=alert_status&view=list
 
 [mongo-writer-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=coverage
 

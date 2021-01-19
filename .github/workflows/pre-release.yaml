@@ -7,7 +7,6 @@ on:
       - "ADMIN admin-ui Tests"
       - "ADMIN k8s-manager Tests"
       - "RUNTIME mongo-writer Tests"
-      - "RUNTIME runtime-api Tests"
     branches: [master]
     types: 
       - completed

@@ -7657,7 +7657,7 @@ func (ec *executionContext) unmarshalInputLogFilters(ctx context.Context, obj in
 			}
 		case "nodeIds":
 			var err error
-			it.NodeIds, err = ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			it.NodeIDs, err = ec.unmarshalOID2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}

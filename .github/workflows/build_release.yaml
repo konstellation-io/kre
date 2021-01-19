@@ -116,40 +116,6 @@ jobs:
             konstellation/kre-k8s-manager:${{ steps.get_version.outputs.VERSION }}
             konstellation/kre-k8s-manager:latest
 
-  docker-runtime-api:
-    runs-on: ubuntu-latest    
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to DockerHub Registry
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Get Version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-
-      - name: Push to Docker Hub
-        uses: docker/build-push-action@v2
-        with:
-          context: ./runtime/runtime-api
-          file: ./runtime/runtime-api/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            konstellation/kre-runtime-api:${{ steps.get_version.outputs.VERSION }}
-            konstellation/kre-runtime-api:latest
-
   docker-mongo-writer:
     runs-on: ubuntu-latest
     steps:
@@ -191,7 +157,6 @@ jobs:
       - docker-admin-api
       - docker-admin-ui
       - docker-k8s-manager
-      - docker-runtime-api
       - docker-mongo-writer
     steps:
       - name: Checkout

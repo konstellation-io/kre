@@ -19,9 +19,8 @@ type metricsSuite struct {
 }
 
 type metricsSuiteMocks struct {
-	logger            *mocks.MockLogger
-	runtimeRepo       *mocks.MockRuntimeRepo
-	monitoringService *mocks.MockMonitoringService
+	logger      *mocks.MockLogger
+	runtimeRepo *mocks.MockRuntimeRepo
 }
 
 func newMetricsSuite(t *testing.T) *metricsSuite {
@@ -29,25 +28,24 @@ func newMetricsSuite(t *testing.T) *metricsSuite {
 
 	logger := mocks.NewMockLogger(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
-	monitoringService := mocks.NewMockMonitoringService(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
+	metricRepo := mocks.NewMockMetricRepo(ctrl)
 
 	mocks.AddLoggerExpects(logger)
 
 	metricsInteractor := usecase.NewMetricsInteractor(
 		logger,
 		runtimeRepo,
-		monitoringService,
 		accessControl,
+		metricRepo,
 	)
 
 	return &metricsSuite{
 		ctrl:              ctrl,
 		metricsInteractor: metricsInteractor,
 		mocks: metricsSuiteMocks{
-			logger:            logger,
-			runtimeRepo:       runtimeRepo,
-			monitoringService: monitoringService,
+			logger:      logger,
+			runtimeRepo: runtimeRepo,
 		},
 	}
 }
@@ -56,7 +54,7 @@ func TestMetricsInteractor_CalculateMetrics(t *testing.T) {
 	s := newMetricsSuite(t)
 	defer s.ctrl.Finish()
 
-	rows := []entity.MetricRow{
+	rows := []entity.ClassificationMetric{
 		{
 			Date:  "2020-01-30T20:55:59Z",
 			Error: usecase.MetricsMissingValuesKey,
@@ -175,7 +173,7 @@ func TestMetricsInteractor_GetSuccessVsFailsChartWithOneMetric(t *testing.T) {
 	s := newMetricsSuite(t)
 	defer s.ctrl.Finish()
 
-	metrics := []entity.MetricRow{
+	metrics := []entity.ClassificationMetric{
 		{
 			Date:           "2020-01-30T00:00:00Z",
 			PredictedValue: "man",
@@ -199,7 +197,7 @@ func TestMetricsInteractor_GetSuccessVsFailsChartWithSmallInterval(t *testing.T)
 	s := newMetricsSuite(t)
 	defer s.ctrl.Finish()
 
-	metrics := []entity.MetricRow{
+	metrics := []entity.ClassificationMetric{
 		{
 			Date:           "2020-01-30T00:00:00Z",
 			PredictedValue: "man",
@@ -250,7 +248,7 @@ func TestMetricsInteractor_GetSuccessVsFailsChartWithNoTruncatedTime(t *testing.
 	s := newMetricsSuite(t)
 	defer s.ctrl.Finish()
 
-	metrics := []entity.MetricRow{
+	metrics := []entity.ClassificationMetric{
 		{
 			Date:           "2020-01-30T20:55:59Z",
 			PredictedValue: "man",
@@ -313,7 +311,7 @@ func TestMetricsInteractor_GetSuccessVsFailsChartWithLongInterval(t *testing.T) 
 	s := newMetricsSuite(t)
 	defer s.ctrl.Finish()
 
-	metrics := []entity.MetricRow{
+	metrics := []entity.ClassificationMetric{
 		{
 			Date:           "2020-01-30T00:55:59Z",
 			PredictedValue: "man",
@@ -396,7 +394,7 @@ func TestMetricsInteractor_GetSuccessVsFailsChartWithUnordered(t *testing.T) {
 	s := newMetricsSuite(t)
 	defer s.ctrl.Finish()
 
-	metrics := []entity.MetricRow{
+	metrics := []entity.ClassificationMetric{
 		{
 			Date:           "2020-01-30T01:00:00Z",
 			PredictedValue: "woman",

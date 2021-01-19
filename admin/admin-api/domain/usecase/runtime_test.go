@@ -57,7 +57,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		cfg,
 		logger,
 		runtimeRepo,
-		runtimeService,
 		userActivity,
 		passwordGenerator,
 		accessControl,
@@ -76,67 +75,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 			accessControl,
 		},
 	}
-}
-
-func TestCreateRuntime(t *testing.T) {
-	s := newRuntimeSuite(t)
-	defer s.ctrl.Finish()
-
-	runtimeID := "runtime-1"
-	name := "Runtime Test 1"
-	description := "runtimeDescriptionTest1"
-	userID := "userTest1"
-
-	fakePass := "t3st"
-
-	expectedRuntime := &entity.Runtime{
-		ID:          runtimeID,
-		Name:        name,
-		Description: description,
-		Owner:       userID,
-		Mongo: entity.MongoConfig{
-			Username:  "admin",
-			Password:  fakePass,
-			SharedKey: fakePass,
-		},
-		Status: entity.RuntimeStatusCreating,
-	}
-	updatedRuntime := &entity.Runtime{
-		ID:          runtimeID,
-		Name:        name,
-		Description: description,
-		Owner:       userID,
-		Status:      entity.RuntimeStatusStarted,
-		Mongo: entity.MongoConfig{
-			Username:  "admin",
-			Password:  fakePass,
-			SharedKey: fakePass,
-		},
-	}
-
-	updatedRuntime.ReleaseName = updatedRuntime.GetNamespace()
-	expectedRuntime.ReleaseName = expectedRuntime.GetNamespace()
-
-	ctx := context.Background()
-
-	s.mocks.runtimeService.EXPECT().Create(ctx, expectedRuntime).Return("OK", nil)
-	s.mocks.passwordGenerator.EXPECT().NewPassword().Return(fakePass).Times(2)
-	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(nil, usecase.ErrRuntimeNotFound)
-	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, name).Return(nil, usecase.ErrRuntimeNotFound)
-	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
-
-	s.mocks.runtimeService.EXPECT().WaitForRuntimeStarted(gomock.Any(), expectedRuntime).Return(nil, nil)
-	s.mocks.runtimeRepo.EXPECT().UpdateStatus(gomock.Any(), updatedRuntime.ID, updatedRuntime.Status).Return(nil)
-
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-
-	runtime, createdRuntimeChannel, err := s.runtimeInteractor.CreateRuntime(ctx, userID, runtimeID, name, description)
-	require.Nil(t, err)
-	require.Equal(t, expectedRuntime, runtime)
-
-	r := <-createdRuntimeChannel
-	require.Equal(t, updatedRuntime, r)
 }
 
 func TestFindAll(t *testing.T) {

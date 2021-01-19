@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/konstellation-io/kre/admin/k8s-manager/entity"
+	"github.com/konstellation-io/kre/admin/k8s-manager/kubernetes"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 
@@ -16,6 +18,7 @@ type VersionService struct {
 	config  *config.Config
 	logger  *simplelogger.SimpleLogger
 	manager *version.Manager
+	watcher *kubernetes.Watcher
 }
 
 // NewVersionService instantiates the GRPC server implementation.
@@ -23,11 +26,13 @@ func NewVersionService(
 	cfg *config.Config,
 	logger *simplelogger.SimpleLogger,
 	manager *version.Manager,
+	watcher *kubernetes.Watcher,
 ) *VersionService {
 	return &VersionService{
 		cfg,
 		logger,
 		manager,
+		watcher,
 	}
 }
 
@@ -105,4 +110,34 @@ func (v *VersionService) Unpublish(_ context.Context, req *versionpb.VersionName
 	return &versionpb.Response{
 		Message: fmt.Sprintf("Version '%s' unpublished", req.GetName()),
 	}, nil
+}
+
+func (v *VersionService) WatchNodeStatus(req *versionpb.NodeStatusRequest, stream versionpb.VersionService_WatchNodeStatusServer) error {
+	v.logger.Info("[MonitoringService.WatchNodeStatus] starting watcher...")
+
+	versionName := req.GetVersionName()
+	nodeCh := make(chan entity.Node, 1)
+	stopCh := v.watcher.WatchNodeStatus(versionName, nodeCh)
+	defer close(stopCh) // The k8s informer opened in WatchNodeStatus will be stopped when stopCh is closed.
+
+	for {
+		select {
+		case <-stream.Context().Done():
+			v.logger.Info("[VersionService.WatchNodeStatus] context closed")
+			return nil
+
+		case node := <-nodeCh:
+			v.logger.Debugf("[VersionService.WatchNodeStatus] new watcher[%s] for node[%s - %s]", node.Status, node.Name, node.ID)
+			err := stream.Send(&versionpb.NodeStatusResponse{
+				Status: string(node.Status),
+				NodeId: node.ID,
+				Name:   node.Name,
+			})
+
+			if err != nil {
+				v.logger.Infof("[VersionService.WatchNodeStatus] error sending to client: %s", err)
+				return err
+			}
+		}
+	}
 }

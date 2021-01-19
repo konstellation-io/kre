@@ -53,7 +53,7 @@ func (c *ResourceMetricsService) Get(ctx context.Context, runtimeName, versionNa
 
 // Watch watch resources metrics from K8s Manager
 func (c *ResourceMetricsService) Watch(ctx context.Context, runtimeName, versionName, fromDate string, step int32) (<-chan []*entity.ResourceMetrics, error) {
-	c.logger.Info("[ResourceMetricsService.Watch] opening stream with runtime-api...")
+	c.logger.Info("[ResourceMetricsService.Watch] opening stream...")
 	stream, err := c.client.WatchVersion(ctx, &resourcemetricspb.VersionRequest{
 		Namespace:   runtimeName,
 		VersionName: versionName,

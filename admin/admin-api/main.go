@@ -26,7 +26,7 @@ func main() {
 
 	verificationCodeRepo := mongodb.NewVerificationCodeRepoMongoDB(cfg, logger, mongodbClient)
 	userRepo := mongodb.NewUserRepoMongoDB(cfg, logger, mongodbClient)
-	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
+	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient) // TODO check if we need a runtime repository
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
 	sessionRepo := mongodb.NewSessionRepoMongoDB(cfg, logger, mongodbClient)
 	apiTokenRepo, err := mongodb.NewAPITokenRepoMongoDB(cfg, logger, mongodbClient)
@@ -35,17 +35,14 @@ func main() {
 	}
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
+	nodeLogRepo := mongodb.NewNodeLogMongoDBRepo(cfg, logger, mongodbClient)
+	metricRepo := mongodb.NewMetricMongoDBRepo(cfg, logger, mongodbClient)
 
-	runtimeService, err := service.NewK8sRuntimeClient(cfg, logger)
-	if err != nil {
-		log.Fatal(err)
-	}
 	versionService, err := service.NewK8sVersionClient(cfg, logger)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	monitoringService := service.NewMonitoringService(cfg, logger)
 	resourceMetricsService, err := service.NewResourceMetricsService(cfg, logger)
 	if err != nil {
 		log.Fatal(err)
@@ -82,7 +79,6 @@ func main() {
 		cfg,
 		logger,
 		runtimeRepo,
-		runtimeService,
 		userActivityInteractor,
 		passwordGenerator,
 		accessControl,
@@ -107,19 +103,19 @@ func main() {
 		versionMongoRepo,
 		runtimeRepo,
 		versionService,
-		monitoringService,
 		userActivityInteractor,
 		accessControl,
 		idGenerator,
 		docGenerator,
 		chronografDashboard,
+		nodeLogRepo,
 	)
 
 	metricsInteractor := usecase.NewMetricsInteractor(
 		logger,
 		runtimeRepo,
-		monitoringService,
 		accessControl,
+		metricRepo,
 	)
 
 	resourceMetricsInteractor := usecase.NewResourceMetricsInteractor(

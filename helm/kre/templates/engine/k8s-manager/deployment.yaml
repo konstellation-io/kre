@@ -35,6 +35,10 @@ spec:
           env:
             - name: KRE_PORT
               value: "50051"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
 
           ports:
             - containerPort: 50051

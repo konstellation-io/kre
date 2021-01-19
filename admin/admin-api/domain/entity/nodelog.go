@@ -1,14 +1,28 @@
 package entity
 
+import "time"
+
 type NodeLog struct {
-	ID           string
-	Date         string
-	Level        LogLevel
-	Message      string
-	NodeID       string `gqlgen:"nodeId"`
-	NodeName     string
-	WorkflowID   string `gqlgen:"workflowId"`
-	WorkflowName string
+	ID           string   `bson:"_id"`
+	Date         string   `bson:"date"`
+	Message      string   `bson:"message"`
+	Level        LogLevel `bson:"level"`
+	PodID        string   `bson:"podId"`
+	NodeID       string   `bson:"nodeId" gqlgen:"nodeId"`
+	NodeName     string   `bson:"nodeName"`
+	VersionID    string   `bson:"versionId"`
+	VersionName  string   `bson:"versionName"`
+	WorkflowID   string   `bson:"workflowId" gqlgen:"workflowId"`
+	WorkflowName string   `bson:"workflowName"`
+}
+
+type SearchLogsOptions struct {
+	StartDate time.Time
+	EndDate   time.Time
+	Search    *string
+	Levels    []LogLevel
+	NodeIDs   []string
+	Cursor    *string
 }
 
 type SearchLogsResult struct {
@@ -21,7 +35,7 @@ type LogFilters struct {
 	EndDate   *string    `json:"endDate"`
 	Search    *string    `json:"search"`
 	Levels    []LogLevel `json:"levels"`
-	NodeIds   []string   `json:"nodeIds"`
+	NodeIDs   []string   `json:"nodeIds"`
 }
 
 type LogLevel string
