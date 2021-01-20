@@ -46,7 +46,7 @@ func (v *VersionService) Start(ctx context.Context, req *versionpb.StartRequest)
 		return nil, err
 	}
 
-	err = v.manager.WaitForVersionPods(ctx, req.VersionName, req.K8SNamespace, req.Workflows)
+	err = v.manager.WaitForVersionPods(ctx, req.VersionName, v.config.Kubernetes.Namespace, req.Workflows)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (v *VersionService) Publish(_ context.Context, req *versionpb.VersionName) 
 	}
 
 	return &versionpb.Response{
-		Message: fmt.Sprintf("Version  '%s' published correctly. in namespace '%s'", req.GetName(), req.GetK8SNamespace()),
+		Message: fmt.Sprintf("Version  '%s' published correctly. in namespace '%s'", req.GetName(), v.config.Kubernetes.Namespace),
 	}, nil
 }
 

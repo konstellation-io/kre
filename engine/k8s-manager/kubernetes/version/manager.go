@@ -39,7 +39,7 @@ func New(cfg *config.Config, logger *simplelogger.SimpleLogger, clientset *kuber
 func (m *Manager) Start(req *versionpb.StartRequest) error {
 	m.logger.Infof("Starting version \"%s\"", req.VersionName)
 
-	err := m.createVersionConfFiles(req.VersionName, req.K8SNamespace, req.Workflows)
+	err := m.createVersionConfFiles(req.VersionName, m.config.Kubernetes.Namespace, req.Workflows)
 	if err != nil {
 		return err
 	}
@@ -54,18 +54,18 @@ func (m *Manager) Start(req *versionpb.StartRequest) error {
 
 // Stop calls kubernetes remove all version resources.
 func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionName) error {
-	err := m.deleteConfigMapsSync(ctx, req.Name, req.K8SNamespace)
+	err := m.deleteConfigMapsSync(ctx, req.Name, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}
 
-	return m.deleteDeploymentsSync(ctx, req.Name, req.K8SNamespace)
+	return m.deleteDeploymentsSync(ctx, req.Name, m.config.Kubernetes.Namespace)
 }
 
 // Publish calls kubernetes to create a new Version Object.
 func (m *Manager) Publish(req *versionpb.VersionName) error {
 	m.logger.Infof("Publish version %s", req.Name)
-	_, err := m.createEntrypointService(req.Name, req.K8SNamespace)
+	_, err := m.createEntrypointService(req.Name, m.config.Kubernetes.Namespace)
 
 	return err
 }
@@ -73,12 +73,12 @@ func (m *Manager) Publish(req *versionpb.VersionName) error {
 // Unpublish calls kubernetes remove access to this version.
 func (m *Manager) Unpublish(req *versionpb.VersionName) error {
 	m.logger.Infof("Deactivating version '%s'", req.Name)
-	return m.deleteEntrypointService(req.Name, req.K8SNamespace)
+	return m.deleteEntrypointService(req.Name, m.config.Kubernetes.Namespace)
 }
 
 // UpdateConfig calls kubernetes to update a version config.
 func (m *Manager) UpdateConfig(ctx context.Context, req *versionpb.UpdateConfigRequest) error {
-	return m.restartPodsSync(ctx, req.VersionName, req.K8SNamespace)
+	return m.restartPodsSync(ctx, req.VersionName, m.config.Kubernetes.Namespace)
 }
 
 func (m *Manager) WaitForVersionPods(ctx context.Context, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {

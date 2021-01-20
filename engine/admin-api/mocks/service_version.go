@@ -35,73 +35,73 @@ func (m *MockVersionService) EXPECT() *MockVersionServiceMockRecorder {
 }
 
 // Start mocks base method
-func (m *MockVersionService) Start(arg0 context.Context, arg1 *entity.Runtime, arg2 *entity.Version) error {
+func (m *MockVersionService) Start(arg0 context.Context, arg1 *entity.Version) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Start", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "Start", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Start indicates an expected call of Start
-func (mr *MockVersionServiceMockRecorder) Start(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockVersionServiceMockRecorder) Start(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockVersionService)(nil).Start), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockVersionService)(nil).Start), arg0, arg1)
 }
 
 // Stop mocks base method
-func (m *MockVersionService) Stop(arg0 context.Context, arg1 *entity.Runtime, arg2 *entity.Version) error {
+func (m *MockVersionService) Stop(arg0 context.Context, arg1 *entity.Version) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Stop", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "Stop", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Stop indicates an expected call of Stop
-func (mr *MockVersionServiceMockRecorder) Stop(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockVersionServiceMockRecorder) Stop(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stop", reflect.TypeOf((*MockVersionService)(nil).Stop), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stop", reflect.TypeOf((*MockVersionService)(nil).Stop), arg0, arg1)
 }
 
 // Unpublish mocks base method
-func (m *MockVersionService) Unpublish(arg0 *entity.Runtime, arg1 *entity.Version) error {
+func (m *MockVersionService) Unpublish(arg0 *entity.Version) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Unpublish", arg0, arg1)
+	ret := m.ctrl.Call(m, "Unpublish", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Unpublish indicates an expected call of Unpublish
-func (mr *MockVersionServiceMockRecorder) Unpublish(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockVersionServiceMockRecorder) Unpublish(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Unpublish", reflect.TypeOf((*MockVersionService)(nil).Unpublish), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Unpublish", reflect.TypeOf((*MockVersionService)(nil).Unpublish), arg0)
 }
 
 // Publish mocks base method
-func (m *MockVersionService) Publish(arg0 *entity.Runtime, arg1 *entity.Version) error {
+func (m *MockVersionService) Publish(arg0 *entity.Version) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Publish", arg0, arg1)
+	ret := m.ctrl.Call(m, "Publish", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Publish indicates an expected call of Publish
-func (mr *MockVersionServiceMockRecorder) Publish(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockVersionServiceMockRecorder) Publish(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Publish", reflect.TypeOf((*MockVersionService)(nil).Publish), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Publish", reflect.TypeOf((*MockVersionService)(nil).Publish), arg0)
 }
 
 // UpdateConfig mocks base method
-func (m *MockVersionService) UpdateConfig(arg0 *entity.Runtime, arg1 *entity.Version) error {
+func (m *MockVersionService) UpdateConfig(arg0 *entity.Version) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateConfig", arg0, arg1)
+	ret := m.ctrl.Call(m, "UpdateConfig", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateConfig indicates an expected call of UpdateConfig
-func (mr *MockVersionServiceMockRecorder) UpdateConfig(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockVersionServiceMockRecorder) UpdateConfig(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConfig", reflect.TypeOf((*MockVersionService)(nil).UpdateConfig), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConfig", reflect.TypeOf((*MockVersionService)(nil).UpdateConfig), arg0)
 }
 
 // WatchNodeStatus mocks base method

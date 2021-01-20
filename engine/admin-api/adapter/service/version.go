@@ -34,36 +34,33 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 	}, nil
 }
 
-// StartVersion creates resources in k8s
-func (k *K8sVersionClient) Start(ctx context.Context, runtime *entity.Runtime, version *entity.Version) error {
+// Start creates the version resources in k8s
+func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version) error {
 	configVars := versionToConfig(version)
 	wf := versionToWorkflows(version)
-	totalMongoReplicas := 1
 
 	req := versionpb.StartRequest{
 		VersionId:      version.ID,
 		VersionName:    version.Name,
 		Config:         configVars,
 		Workflows:      wf,
-		MongoUri:       runtime.GetMongoURI(totalMongoReplicas),
+		MongoUri:       k.cfg.MongoDB.Address,
 		MongoDbName:    k.cfg.MongoDB.DBName,
 		MongoKrtBucket: k.cfg.MongoDB.KRTBucket,
-		InfluxUri:      runtime.GetInfluxURL(),
+		InfluxUri:      fmt.Sprintf("http://%s-influxdb:8086", k.cfg.ReleaseName),
 		Entrypoint: &versionpb.Entrypoint{
 			ProtoFile: version.Entrypoint.ProtoFile,
 			Image:     version.Entrypoint.Image,
 		},
-		K8SNamespace: runtime.GetNamespace(),
 	}
 
 	_, err := k.client.Start(ctx, &req)
 	return err
 }
 
-func (k *K8sVersionClient) Stop(ctx context.Context, runtime *entity.Runtime, version *entity.Version) error {
+func (k *K8sVersionClient) Stop(ctx context.Context, version *entity.Version) error {
 	req := versionpb.VersionName{
-		Name:         version.Name,
-		K8SNamespace: runtime.GetNamespace(),
+		Name: version.Name,
 	}
 
 	_, err := k.client.Stop(ctx, &req)
@@ -74,13 +71,12 @@ func (k *K8sVersionClient) Stop(ctx context.Context, runtime *entity.Runtime, ve
 	return nil
 }
 
-func (k *K8sVersionClient) UpdateConfig(runtime *entity.Runtime, version *entity.Version) error {
+func (k *K8sVersionClient) UpdateConfig(version *entity.Version) error {
 	configVars := versionToConfig(version)
 
 	req := versionpb.UpdateConfigRequest{
-		VersionName:  version.Name,
-		Config:       configVars,
-		K8SNamespace: runtime.GetNamespace(),
+		VersionName: version.Name,
+		Config:      configVars,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
@@ -90,10 +86,9 @@ func (k *K8sVersionClient) UpdateConfig(runtime *entity.Runtime, version *entity
 	return err
 }
 
-func (k *K8sVersionClient) Unpublish(runtime *entity.Runtime, version *entity.Version) error {
+func (k *K8sVersionClient) Unpublish(version *entity.Version) error {
 	req := versionpb.VersionName{
-		Name:         version.Name,
-		K8SNamespace: runtime.GetNamespace(),
+		Name: version.Name,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
@@ -103,10 +98,9 @@ func (k *K8sVersionClient) Unpublish(runtime *entity.Runtime, version *entity.Ve
 	return err
 }
 
-func (k *K8sVersionClient) Publish(runtime *entity.Runtime, version *entity.Version) error {
+func (k *K8sVersionClient) Publish(version *entity.Version) error {
 	req := versionpb.VersionName{
-		Name:         version.Name,
-		K8SNamespace: runtime.GetNamespace(),
+		Name: version.Name,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)

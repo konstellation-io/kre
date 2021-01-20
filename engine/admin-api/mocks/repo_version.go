@@ -121,19 +121,19 @@ func (mr *MockVersionRepoMockRecorder) SetStatus(ctx, versionID, status interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStatus", reflect.TypeOf((*MockVersionRepo)(nil).SetStatus), ctx, versionID, status)
 }
 
-// GetByRuntime mocks base method
-func (m *MockVersionRepo) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
+// GetAll mocks base method
+func (m *MockVersionRepo) GetAll() ([]*entity.Version, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByRuntime", runtimeID)
+	ret := m.ctrl.Call(m, "GetAll")
 	ret0, _ := ret[0].([]*entity.Version)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByRuntime indicates an expected call of GetByRuntime
-func (mr *MockVersionRepoMockRecorder) GetByRuntime(runtimeID interface{}) *gomock.Call {
+// GetAll indicates an expected call of GetAll
+func (mr *MockVersionRepoMockRecorder) GetAll() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByRuntime", reflect.TypeOf((*MockVersionRepo)(nil).GetByRuntime), runtimeID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockVersionRepo)(nil).GetAll))
 }
 
 // SetErrors mocks base method
@@ -163,4 +163,19 @@ func (m *MockVersionRepo) UploadKRTFile(version *entity.Version, file string) er
 func (mr *MockVersionRepoMockRecorder) UploadKRTFile(version, file interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadKRTFile", reflect.TypeOf((*MockVersionRepo)(nil).UploadKRTFile), version, file)
+}
+
+// ClearPublishedVersion mocks base method
+func (m *MockVersionRepo) ClearPublishedVersion(ctx context.Context) (*entity.Version, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ClearPublishedVersion", ctx)
+	ret0, _ := ret[0].(*entity.Version)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ClearPublishedVersion indicates an expected call of ClearPublishedVersion
+func (mr *MockVersionRepoMockRecorder) ClearPublishedVersion(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClearPublishedVersion", reflect.TypeOf((*MockVersionRepo)(nil).ClearPublishedVersion), ctx)
 }
