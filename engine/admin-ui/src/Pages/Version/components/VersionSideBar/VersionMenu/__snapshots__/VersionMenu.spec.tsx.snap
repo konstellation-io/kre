@@ -28,14 +28,10 @@ exports[`VersionMenu matches snapshot 1`] = `
       runtime={
         Object {
           "__typename": "Runtime",
-          "creationAuthor": Object {
-            "email": "some@user.com",
-          },
           "description": "Some Description",
           "id": "runtimeId",
           "measurementsUrl": "measurementsUrl",
           "name": "runtimeName",
-          "status": "STARTED",
         }
       }
       version={

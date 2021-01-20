@@ -20,7 +20,7 @@ function BackButton({ runtime }: BackButtonProps) {
       <div className={styles.backSection}>
         <IconArrowBack className="icon-regular" />
         <div className={styles.runtimeHexagon}>
-          <RuntimeHexagon runtime={runtime} size={RuntimeHexagonSize.SMALL} />
+          <RuntimeHexagon size={RuntimeHexagonSize.SMALL} />
         </div>
         <div className={styles.runtimeName}>{runtime.name}</div>
       </div>

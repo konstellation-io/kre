@@ -85,9 +85,7 @@ function AddVersion() {
   }
 
   function onSubmit(formData: any) {
-    addVersion(
-      mutationPayloadHelper({ file: formData.addVersionFile[0], runtimeId })
-    );
+    addVersion(mutationPayloadHelper({ file: formData.addVersionFile[0] }));
   }
 
   return (

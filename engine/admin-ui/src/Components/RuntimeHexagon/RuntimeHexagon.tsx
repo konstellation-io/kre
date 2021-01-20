@@ -1,6 +1,4 @@
-import { GetVersionConfStatus_runtime } from 'Graphql/queries/types/GetVersionConfStatus';
 import React from 'react';
-import cx from 'classnames';
 import styles from './RuntimeHexagon.module.scss';
 
 export enum RuntimeHexagonSize {
@@ -10,14 +8,13 @@ export enum RuntimeHexagonSize {
 }
 
 type RuntimeHexagonProps = {
-  runtime: GetVersionConfStatus_runtime;
   size: RuntimeHexagonSize;
 };
 
-function RuntimeHexagon({ runtime, size }: RuntimeHexagonProps) {
+function RuntimeHexagon({ size }: RuntimeHexagonProps) {
   return (
     <div className={styles.wrapper} style={{ height: size, width: size }}>
-      <div className={cx(styles.hexagon, styles[runtime.status])}></div>
+      <div className={styles.hexagon} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-query GetVersions($runtimeId: ID!) {
-  versions(runtimeId: $runtimeId) {
+query GetVersions {
+  versions {
     id
     name
     status

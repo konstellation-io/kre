@@ -11,7 +11,7 @@ exports[`RuntimeHexagon matches snapshot 1`] = `
   }
 >
   <div
-    className="hexagon STARTED"
+    className="hexagon"
   />
 </div>
 `;

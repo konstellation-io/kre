@@ -1,7 +1,7 @@
 import { Chip, GroupSelectData, Left, flatSelections } from 'kwc';
 
+import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import React from 'react';
-import { VersionsData } from 'Hooks/useAllVersions';
 import { isEmpty } from 'lodash';
 import styles from './SelectionsBar.module.scss';
 
@@ -53,20 +53,19 @@ type Props = {
     userEmail: string;
     versionIds: GroupSelectData;
   };
-  runtimesAndVersions: VersionsData[];
+  runtimeAndVersions: GetVersionConfStatus;
   onRemoveFilter: (filter: string, value: string | VersionChip) => void;
 };
 function SelectionsBar({
   filterValues,
-  runtimesAndVersions,
+  runtimeAndVersions,
   onRemoveFilter
 }: Props) {
-  const versionOptions = Object.fromEntries(
-    runtimesAndVersions.map(({ runtime: { name: runtimeName }, versions }) => [
-      runtimeName,
-      versions.map(v => v.name)
-    ])
-  );
+  const versionOptions = {
+    [runtimeAndVersions.runtime.name]: runtimeAndVersions.versions.map(
+      v => v.name
+    )
+  };
 
   const filtersFormatted: Filter[] = [
     ['userEmail', filterValues.userEmail],

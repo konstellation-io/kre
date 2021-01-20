@@ -8,16 +8,5 @@
 .hexagon {
   @include hexagon;
 
-  &.STOPPED,
-  &.CREATING {
-    background-color: font-color(regular);
-  }
-
-  &.STARTED {
-    background-color: $color-primary;
-  }
-
-  &.ERROR {
-    background-color: $color-error;
-  }
+  background-color: $color-primary;
 }

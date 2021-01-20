@@ -2,6 +2,7 @@ import FiltersBar from './FiltersBar';
 import { MockedProvider } from '@apollo/client/testing';
 import React from 'react';
 import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
+import { runtimeAndVersions } from 'Mocks/runtime';
 import { usersMock } from 'Mocks/users';
 
 const mocks = [usersMock];
@@ -13,7 +14,7 @@ function Wrapper({ mocks }: any) {
         onSubmit={jest.fn()}
         types={['a', 'b', 'c']}
         users={['1', '2', '3']}
-        runtimesAndVersions={[]}
+        runtimeAndVersions={runtimeAndVersions}
         errors={{}}
         watch={jest.fn()}
       />

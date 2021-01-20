@@ -87,7 +87,6 @@ function LogsList({
     GetServerLogsVariables
   >(GetServerLogsQuery, {
     variables: {
-      runtimeId,
       versionId,
       filters: formatFilters(filterValues)
     },
@@ -110,7 +109,6 @@ function LogsList({
     subscribeToMore<GetLogs, GetLogsVariables>({
       document: WatchNodeLogs,
       variables: {
-        runtimeId,
         versionId,
         filters: formatFilters(filterValues)
       },
@@ -150,7 +148,6 @@ function LogsList({
     setRefetching(true);
     fetchMore({
       variables: {
-        runtimeId,
         versionId,
         filters: formatFilters(filterValues),
         cursor: nextPage

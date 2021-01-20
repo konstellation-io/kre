@@ -11,17 +11,14 @@ import { Route, Router } from 'react-router-dom';
 
 import AccessDenied from 'Pages/AccessDenied/AccessDenied';
 import AddApiToken from 'Pages/AddApiToken/AddApiToken';
-import AddRuntime from 'Pages/AddRuntime/AddRuntime';
 import AddUser from 'Pages/AddUser/AddUser';
 import AddVersion from 'Pages/AddVersion/AddVersion';
-import Dashboard from 'Pages/Dashboard/Dashboard';
 import { GetMe } from 'Graphql/queries/types/GetMe';
-import { GetRuntimes } from 'Graphql/queries/types/GetRuntimes';
+import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { GlobalHotKeys } from 'react-hotkeys';
 import Login from 'Pages/Login/Login';
 import Logs from 'Pages/Logs/Logs';
 import LogsPanel from 'Pages/Version/pages/Status/LogsPanel/LogsPanel';
-import { MONORUNTIME_MODE } from 'index';
 import MagicLink from 'Pages/MagicLink/MagicLink';
 import NotFound from 'Pages/NotFound/NotFound';
 import NotificationService from 'Components/NotificationService/NotificationService';
@@ -44,16 +41,16 @@ import useLogs from 'Graphql/hooks/useLogs';
 import { useQuery } from '@apollo/client';
 
 const GetMeQuery = loader('Graphql/queries/getMe.graphql');
-const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
+const GetRuntimeQuery = loader('Graphql/queries/getRuntimeAndVersions.graphql');
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);
-  const { data: runtimesData, loading: runtimesLoading } = useQuery<
-    GetRuntimes
-  >(GetRuntimesQuery);
+  const { data: runtimeData, loading: runtimeLoading } = useQuery<
+    GetVersionConfStatus
+  >(GetRuntimeQuery);
   const { login } = useLogin();
 
-  if (loading || runtimesLoading) {
+  if (loading || runtimeLoading || !runtimeData) {
     return (
       <div className="splash">
         <SpinnerCircular />
@@ -61,14 +58,7 @@ function ProtectedRoutes() {
     );
   }
 
-  if (error || !data || !data.me) {
-    return <ErrorMessage />;
-  }
-
-  const monoruntime_Runtime = runtimesData?.runtimes[0];
-  // In mono-runtime mode, there must be a runtime created
-  if (MONORUNTIME_MODE && !monoruntime_Runtime) {
-    console.error('Mono Runtime: There is no runtime created.');
+  if (error || !data || !data.me || !runtimeData.runtime) {
     return <ErrorMessage />;
   }
 
@@ -89,21 +79,16 @@ function ProtectedRoutes() {
           />
           <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
 
-          <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
           <Route path={ROUTE.NEW_USER} component={AddUser} />
           <Route path={ROUTE.NEW_API_TOKEN} component={AddApiToken} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
-          {/* In mono-runtime mode, redirect from Home to Runtime page */}
-          {MONORUNTIME_MODE && (
-            <Redirect
-              exact
-              from={ROUTE.HOME}
-              to={buildRoute.runtime(ROUTE.RUNTIME, monoruntime_Runtime?.id)}
-            />
-          )}
+          <Redirect
+            exact
+            from={ROUTE.HOME}
+            to={buildRoute.runtime(ROUTE.RUNTIME, runtimeData.runtime.id)}
+          />
 
-          <Route exact path={ROUTE.HOME} component={Dashboard} />
           <Route exact path={ROUTE.LOGS} component={Logs} />
           <Route
             path={[

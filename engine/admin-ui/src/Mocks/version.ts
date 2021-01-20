@@ -1,8 +1,4 @@
-import {
-  NodeStatus,
-  RuntimeStatus,
-  VersionStatus
-} from 'Graphql/types/globalTypes';
+import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 
 import { loader } from 'graphql.macro';
 
@@ -31,8 +27,6 @@ export const runtime = {
   id: 'runtimeId',
   name: 'runtimeName',
   description: 'Some Description',
-  creationAuthor: { email: 'some@user.com' },
-  status: RuntimeStatus.STARTED,
   measurementsUrl: 'measurementsUrl',
   __typename: 'Runtime'
 };

@@ -73,7 +73,6 @@ export interface GetMetrics {
 }
 
 export interface GetMetricsVariables {
-  runtimeId: string;
   versionId: string;
   startDate: string;
   endDate: string;

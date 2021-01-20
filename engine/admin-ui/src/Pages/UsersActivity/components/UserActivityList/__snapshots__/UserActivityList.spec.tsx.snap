@@ -4,15 +4,7 @@ exports[`messageGenerator show right CREATE_RUNTIME message 1`] = `
 <div>
   <div
     className="message"
-  >
-    New Runtime created:
-    <Link
-      className="link"
-      to="/runtimes/runtimeId"
-    >
-      runtimeName
-    </Link>
-  </div>
+  />
 </div>
 `;
 

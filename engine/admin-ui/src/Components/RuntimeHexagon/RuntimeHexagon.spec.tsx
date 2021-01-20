@@ -1,13 +1,12 @@
 import React from 'react';
 import RuntimeHexagon from './RuntimeHexagon';
-import { runtime } from 'Mocks/version';
 import { shallow } from 'enzyme';
 
 describe('RuntimeHexagon', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<RuntimeHexagon size={20} runtime={runtime} />);
+    wrapper = shallow(<RuntimeHexagon size={20} />);
   });
 
   it('matches snapshot', () => {

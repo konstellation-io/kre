@@ -1,13 +1,10 @@
 import { Button, ErrorMessage, SpinnerCircular } from 'kwc';
-import {
-  GetVersionConfStatus,
-  GetVersionConfStatusVariables
-} from 'Graphql/queries/types/GetVersionConfStatus';
 import ROUTE, { VersionRouteParams } from 'Constants/routes';
 import React, { ReactElement } from 'react';
 import { Route, Switch, useLocation, useParams } from 'react-router-dom';
 
 import Can from 'Components/Can/Can';
+import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import Version from '../Version/Version';
@@ -23,12 +20,9 @@ const GetRuntimeAndVersionQuery = loader(
 function Runtime() {
   const { runtimeId, versionId } = useParams<VersionRouteParams>();
   const location = useLocation();
-  const { data, loading, error } = useQuery<
-    GetVersionConfStatus,
-    GetVersionConfStatusVariables
-  >(GetRuntimeAndVersionQuery, {
-    variables: { runtimeId }
-  });
+  const { data, loading, error } = useQuery<GetVersionConfStatus>(
+    GetRuntimeAndVersionQuery
+  );
 
   function getContent(): ReactElement | null {
     if (loading) return <SpinnerCircular />;

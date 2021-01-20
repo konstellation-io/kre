@@ -7,7 +7,6 @@ import { VersionStatus } from 'Graphql/types/globalTypes';
 import { WatchVersion_watchVersion } from 'Graphql/subscriptions/types/WatchVersion';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
-import { runtimeCreated } from 'Graphql/subscriptions/types/runtimeCreated';
 import { useApolloClient } from '@apollo/client';
 import useNotifications from 'Graphql/hooks/useNotifications';
 
@@ -20,7 +19,7 @@ function VersionCreated() {
   const client = useApolloClient();
 
   client
-    .subscribe<runtimeCreated>({
+    .subscribe({
       query: WatchVersion
     })
     .subscribe({

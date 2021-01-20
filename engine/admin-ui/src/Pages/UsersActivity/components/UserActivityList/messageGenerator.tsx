@@ -123,14 +123,6 @@ export default function getMessage(
     case UserActivityType.LOGOUT:
       message = <>Log out</>;
       break;
-    case UserActivityType.CREATE_RUNTIME:
-      message = (
-        <>
-          New Runtime created:
-          {runtimeLink}
-        </>
-      );
-      break;
     case UserActivityType.CREATE_VERSION:
       message = (
         <>

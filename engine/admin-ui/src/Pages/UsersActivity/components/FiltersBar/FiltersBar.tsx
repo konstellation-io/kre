@@ -13,11 +13,11 @@ import { ErrorMessage } from 'kwc';
 import { FieldErrors } from 'react-hook-form';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import { GetUsersActivity_userActivityList_user } from 'Graphql/queries/types/GetUsersActivity';
+import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { Moment } from 'moment';
 import React from 'react';
 import { UserActivityFormData } from '../../UsersActivity';
 import { UserActivityType } from 'Graphql/types/globalTypes';
-import { VersionsData } from 'Hooks/useAllVersions';
 import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './FiltersBar.module.scss';
@@ -28,7 +28,6 @@ const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
 const customLabels = new Map([
   [UserActivityType.LOGIN, <CustomLabel>Login</CustomLabel>],
   [UserActivityType.LOGOUT, <CustomLabel>Logout</CustomLabel>],
-  [UserActivityType.CREATE_RUNTIME, <CustomLabel>Runtime created</CustomLabel>],
   [UserActivityType.CREATE_VERSION, <CustomLabel>Version Created</CustomLabel>],
   [
     UserActivityType.GENERATE_API_TOKEN,
@@ -89,14 +88,14 @@ type FormFieldProps = {
     field: string,
     newValue: string | GroupSelectData | Moment | UserActivityType[]
   ) => void;
-  runtimesAndVersions: VersionsData[];
+  runtimeAndVersions: GetVersionConfStatus;
   watch: Function;
   errors: FieldErrors<UserActivityFormData>;
   reset: Function;
 };
 function FiltersBar({
   setAndSubmit,
-  runtimesAndVersions,
+  runtimeAndVersions,
   watch,
   errors,
   reset
@@ -117,12 +116,11 @@ function FiltersBar({
     setAndSubmit('types', newtypes);
   }
 
-  const versionOptions = Object.fromEntries(
-    runtimesAndVersions.map(({ runtime: { name: runtimeName }, versions }) => [
-      runtimeName,
-      versions.map(v => v.name)
-    ])
-  );
+  const versionOptions = {
+    [runtimeAndVersions.runtime.name]: runtimeAndVersions.versions.map(
+      v => v.name
+    )
+  };
 
   return (
     <form className={styles.formField}>

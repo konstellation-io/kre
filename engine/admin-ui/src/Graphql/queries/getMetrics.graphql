@@ -1,15 +1,5 @@
-query GetMetrics(
-  $runtimeId: ID!
-  $versionId: ID!
-  $startDate: String!
-  $endDate: String!
-) {
-  metrics(
-    runtimeId: $runtimeId
-    versionId: $versionId
-    startDate: $startDate
-    endDate: $endDate
-  ) {
+query GetMetrics($versionId: ID!, $startDate: String!, $endDate: String!) {
+  metrics(versionId: $versionId, startDate: $startDate, endDate: $endDate) {
     values {
       accuracy {
         total

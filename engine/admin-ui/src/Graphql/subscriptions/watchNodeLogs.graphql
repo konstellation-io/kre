@@ -1,5 +1,5 @@
-subscription GetLogs($filters: LogFilters!, $runtimeId: ID!, $versionId: ID!) {
-  watchNodeLogs(filters: $filters, runtimeId: $runtimeId, versionId: $versionId) {
+subscription GetLogs($filters: LogFilters!, $versionId: ID!) {
+  watchNodeLogs(filters: $filters, versionId: $versionId) {
     id
     date
     nodeId
