@@ -17,6 +17,7 @@ import {
 
 import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { VersionStatus } from 'Graphql/types/globalTypes';
+import { cloneDeep } from 'lodash';
 import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/client';
 
@@ -58,11 +59,13 @@ export default function useVersionAction(runtimeId: string) {
         if (cacheResult !== null) {
           const { versions, runtime } = cacheResult;
           const newVersions = versions.map(v => {
-            if (v.id === updatedVersion.id) return v;
-            if (v.status === VersionStatus.PUBLISHED) {
-              v.status = VersionStatus.STARTED;
+            const newVersion = cloneDeep(v);
+            if (newVersion.id === updatedVersion.id) return newVersion;
+
+            if (newVersion.status === VersionStatus.PUBLISHED) {
+              newVersion.status = VersionStatus.STARTED;
             }
-            return v;
+            return newVersion;
           });
 
           cache.writeQuery({

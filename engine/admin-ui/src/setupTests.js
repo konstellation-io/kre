@@ -8,8 +8,7 @@ configure({ adapter: new Adapter() });
 jest.mock('./config', () =>
   Promise.resolve({
     envVariables: jest.fn().mockReturnValue({
-      API_BASE_URL: 'some value',
-      MONORUNTIME_MODE: '0'
+      API_BASE_URL: 'some value'
     })
   })
 );
