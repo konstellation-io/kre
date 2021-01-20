@@ -55,9 +55,9 @@ UI.
 
 The Engine is composed by the following components:
 
-* [Admin UI](./admin/admin-ui/README.md)
-* [Admin API](./admin/admin-api/README.md)
-* [K8s Manager](./admin/k8s-manager/README.md)
+* [Admin UI](engine/admin-ui/README.md)
+* [Admin API](engine/admin-api/README.md)
+* [K8s Manager](engine/k8s-manager/README.md)
 * MongoDB
 
 ## Runtime
