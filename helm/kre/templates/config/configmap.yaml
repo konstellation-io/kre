@@ -8,7 +8,6 @@ metadata:
     app: {{ .Release.Name }}-admin-api
 data:
   KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
-  KRE_MONORUNTIME_MODE: "yes"
   KRE_MONORUNTIME_NAME: "{{ .Values.runtimeName }}"
   KRE_MONORUNTIME_RELEASE_NAME: "{{ .Release.Name }}"
   # Runtime Entrypoint TLS
