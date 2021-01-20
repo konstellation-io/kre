@@ -7,7 +7,7 @@ on:
     tags-ignore:
       - v*
     paths:
-      - "admin/k8s-manager/**/*"
+      - "engine/k8s-manager/**/*"
       - ".github/workflows/admin-k8s-manager*"
 
 jobs:
@@ -23,12 +23,12 @@ jobs:
           go-version: 1.14.x
       - name: Test
         run: go test ./... -cover -v -coverprofile=coverage.out
-        working-directory: ./admin/k8s-manager
+        working-directory: ./engine/k8s-manager
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: admin/k8s-manager/coverage.out
+          path: engine/k8s-manager/coverage.out
 
   sonarcloud:
     name: SonarCloud
@@ -42,11 +42,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: coverage-report
-          path: admin/k8s-manager
+          path: engine/k8s-manager
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: admin/k8s-manager
+          projectBaseDir: engine/k8s-manager
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_K8S_MANAGER }}

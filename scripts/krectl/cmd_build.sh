@@ -85,11 +85,11 @@ build_yarn_frontend() {
 
   # build UI statics
   export DOCKER_BUILDKIT=1 # Needed to load Dockerfile.builder.dockerignore file
-  run docker build -t admin-ui-build:latest admin/admin-ui -f admin/admin-ui/Dockerfile.builder
+  run docker build -t admin-ui-build:latest engine/admin-ui -f engine/admin-ui/Dockerfile.builder
 
   # creates a container and extract UI statics to admin-ui/build folder
   CONTAINER_ID=$(docker create admin-ui-build:latest)
-  run docker cp "${CONTAINER_ID}":/app/build admin/admin-ui
+  run docker cp "${CONTAINER_ID}":/app/build engine/admin-ui
 
   # clean up
   run docker rm "${CONTAINER_ID}"
@@ -103,11 +103,11 @@ build_engine() {
   fi
 
   setup_env
-  build_image kre-admin-api admin/admin-api
-  build_image kre-k8s-manager admin/k8s-manager
+  build_image kre-admin-api engine/admin-api
+  build_image kre-k8s-manager engine/k8s-manager
 
   if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
-    build_image kre-admin-ui admin/admin-ui
+    build_image kre-admin-ui engine/admin-ui
   fi
 
   build_image kre-mongo-writer runtime/mongo-writer

@@ -7,8 +7,8 @@ on:
     tags-ignore:
       - v*
     paths:
-      - "admin/admin-ui/**/*"
-      - ".github/workflows/admin-admin-ui*"
+      - "engine/admin-ui/**/*"
+      - ".github/workflows/engine-admin-ui*"
 
 jobs:
   test:
@@ -23,7 +23,7 @@ jobs:
         run: |
           yarn install
           yarn run test:cov:sonar
-        working-directory: ./admin/admin-ui
+        working-directory: ./engine/admin-ui
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
         with:
@@ -44,16 +44,16 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: coverage-report
-          path: admin/admin-ui
+          path: engine/admin-ui
       - name: Fix code coverage paths
-        working-directory: ./admin/admin-ui
+        working-directory: ./engine/admin-ui
         run: |
           sed -i 's|/home/runner/work/kre/kre/|/github/workspace/|g' coverage/lcov.info
           sed -i 's|/home/runner/work/kre/kre/|/github/workspace/|g' test-report.xml
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: admin/admin-ui
+          projectBaseDir: engine/admin-ui
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_ADMIN_UI }}
