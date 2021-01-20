@@ -4,11 +4,10 @@ import { MockedProvider } from '@apollo/client/testing';
 import NavigationBar from '../../NavigationBar/NavigationBar';
 import PageBase from './PageBase';
 import React from 'react';
-import { dashboardMock } from 'Mocks/runtime';
 import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
 import { usernameMock } from 'Mocks/auth';
 
-const mocks = [dashboardMock, usernameMock];
+const mocks = [usernameMock];
 
 function Wrapper({ mocks }: any) {
   return (
