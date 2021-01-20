@@ -8,7 +8,7 @@ import (
 	nc "github.com/nats-io/nats.go"
 	"go.mongodb.org/mongo-driver/bson"
 
-	"github.com/konstellation-io/kre/runtime/mongo-writer/mongodb"
+	"github.com/konstellation-io/kre/engine/mongo-writer/mongodb"
 )
 
 const logsCollName = "logs"

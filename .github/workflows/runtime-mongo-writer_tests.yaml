@@ -7,7 +7,7 @@ on:
     tags-ignore:
       - v*
     paths:
-      - "runtime/mongo-writer/**/*"
+      - "engine/mongo-writer/**/*"
       - ".github/workflows/runtime-mongo-writer*"
 
 jobs:
@@ -23,12 +23,12 @@ jobs:
           go-version: 1.14.x
       - name: Test
         run: go test ./... -cover -v -coverprofile=coverage.out
-        working-directory: ./runtime/mongo-writer
+        working-directory: ./engine/mongo-writer
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: runtime/mongo-writer/coverage.out
+          path: engine/mongo-writer/coverage.out
 
   sonarcloud:
     name: SonarCloud
@@ -42,11 +42,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: coverage-report
-          path: runtime/mongo-writer
+          path: engine/mongo-writer
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: runtime/mongo-writer
+          projectBaseDir: engine/mongo-writer
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_MONGO_WRITER }}

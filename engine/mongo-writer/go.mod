@@ -1,4 +1,4 @@
-module github.com/konstellation-io/kre/runtime/mongo-writer
+module github.com/konstellation-io/kre/engine/mongo-writer
 
 go 1.14
 

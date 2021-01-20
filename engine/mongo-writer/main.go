@@ -13,11 +13,11 @@ import (
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	nc "github.com/nats-io/nats.go"
 
-	"github.com/konstellation-io/kre/runtime/mongo-writer/logging"
+	"github.com/konstellation-io/kre/engine/mongo-writer/logging"
 
-	"github.com/konstellation-io/kre/runtime/mongo-writer/config"
-	"github.com/konstellation-io/kre/runtime/mongo-writer/mongodb"
-	"github.com/konstellation-io/kre/runtime/mongo-writer/nats"
+	"github.com/konstellation-io/kre/engine/mongo-writer/config"
+	"github.com/konstellation-io/kre/engine/mongo-writer/mongodb"
+	"github.com/konstellation-io/kre/engine/mongo-writer/nats"
 )
 
 const natsSubjectLogs = "mongo_writer_logs"

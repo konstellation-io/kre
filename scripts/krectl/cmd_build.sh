@@ -110,7 +110,7 @@ build_engine() {
     build_image kre-admin-ui engine/admin-ui
   fi
 
-  build_image kre-mongo-writer runtime/mongo-writer
+  build_image kre-mongo-writer engine/mongo-writer
 }
 
 build_runners() {

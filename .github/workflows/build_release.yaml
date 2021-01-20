@@ -142,8 +142,8 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          context: ./runtime/mongo-writer
-          file: ./runtime/mongo-writer/Dockerfile
+          context: ./engine/mongo-writer
+          file: ./engine/mongo-writer/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
