@@ -1,4 +1,4 @@
-name: ADMIN admin-ui Tests
+name: ENGINE admin-ui Tests
 
 on:
   push:
@@ -29,8 +29,8 @@ jobs:
         with:
           name: coverage-report
           path: |
-            ./admin/admin-ui/coverage
-            ./admin/admin-ui/test-report.xml
+            ./engine/admin-ui/coverage
+            ./engine/admin-ui/test-report.xml
   
   sonarcloud:
     name: SonarCloud

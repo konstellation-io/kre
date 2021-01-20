@@ -1,4 +1,4 @@
-name: RUNTIME mongo-writer Tests
+name: ENGINE k8s-manager Tests
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     tags-ignore:
       - v*
     paths:
-      - "engine/mongo-writer/**/*"
-      - ".github/workflows/runtime-mongo-writer*"
+      - "engine/k8s-manager/**/*"
+      - ".github/workflows/admin-k8s-manager*"
 
 jobs:
   test:
@@ -23,12 +23,12 @@ jobs:
           go-version: 1.14.x
       - name: Test
         run: go test ./... -cover -v -coverprofile=coverage.out
-        working-directory: ./engine/mongo-writer
+        working-directory: ./engine/k8s-manager
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: engine/mongo-writer/coverage.out
+          path: engine/k8s-manager/coverage.out
 
   sonarcloud:
     name: SonarCloud
@@ -42,11 +42,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: coverage-report
-          path: engine/mongo-writer
+          path: engine/k8s-manager
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: engine/mongo-writer
+          projectBaseDir: engine/k8s-manager
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_MONGO_WRITER }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_K8S_MANAGER }}
