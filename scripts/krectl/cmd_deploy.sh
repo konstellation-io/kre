@@ -57,9 +57,7 @@ prepare_helm() {
 
 clean_helm_deps() {
   rm -rf helm/kre/charts/*
-  rm -rf runtime/k8s-runtime-operator/helm-charts/kre-chart/charts/*
   helm dep update helm/kre
-  helm dep update runtime/k8s-runtime-operator/helm-charts/kre-chart
 }
 
 get_kubectl_dry_run() {
