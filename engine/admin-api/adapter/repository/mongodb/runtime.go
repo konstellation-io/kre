@@ -45,15 +45,3 @@ func (r *RuntimeRepoMongoDB) Get(ctx context.Context) (*entity.Runtime, error) {
 
 	return runtime, err
 }
-
-func (r *RuntimeRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Runtime, error) {
-	runtime := &entity.Runtime{}
-	filter := bson.D{{"name", name}}
-
-	err := r.collection.FindOne(ctx, filter).Decode(runtime)
-	if err == mongo.ErrNoDocuments {
-		return nil, usecase.ErrRuntimeNotFound
-	}
-
-	return runtime, err
-}
