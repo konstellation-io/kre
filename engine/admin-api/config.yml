@@ -1,4 +1,5 @@
 baseDomainName: "local"
+releaseName: ""
 application:
   versionStatusTimeout: 20m
 admin:
@@ -19,13 +20,9 @@ mongodb:
   address: "mongodb://admin:123456@mongodb:27017/admin"
   dbName: "kre"
   krtBucket: "krt"
+k8s:
+  namespace: ""
 services:
   k8sManager: "localhost:50051"
-monoruntime:
-  enabled: false
+runtime:
   name: ""
-  releaseName: ""
-  namespace: ""
-  mongo:
-    username: ""
-    password: ""

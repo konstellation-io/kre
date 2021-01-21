@@ -46,18 +46,15 @@ message StartRequest {
   string mongo_krt_bucket = 7;
   string influx_uri = 8;
   Entrypoint entrypoint = 9; // deprecated: this will be deleted with https://github.com/konstellation-io/kre/issues/152
-  string k8s_namespace = 10; // deprecated: with mono-runtime there is a single namespace
 }
 
 message VersionName {
   string name = 1;
-  string k8s_namespace = 2; // deprecated: with mono-runtime there is a single namespace
 }
 
 message UpdateConfigRequest {
   string version_name = 1;
   repeated Config config = 2;
-  string k8s_namespace = 3; // deprecated: with mono-runtime there is a single namespace
 }
 
 message Response {

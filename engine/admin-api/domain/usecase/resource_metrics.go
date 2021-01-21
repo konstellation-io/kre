@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"time"
 
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
@@ -19,6 +20,7 @@ const (
 )
 
 type ResourceMetricsInteractor struct {
+	cfg                    *config.Config
 	logger                 logging.Logger
 	runtimeRepo            repository.RuntimeRepo
 	versionRepo            repository.VersionRepo
@@ -27,6 +29,7 @@ type ResourceMetricsInteractor struct {
 }
 
 func NewResourceMetricsInteractor(
+	cfg *config.Config,
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
 	versionRepo repository.VersionRepo,
@@ -34,6 +37,7 @@ func NewResourceMetricsInteractor(
 	accessControl auth.AccessControl,
 ) *ResourceMetricsInteractor {
 	return &ResourceMetricsInteractor{
+		cfg,
 		logger,
 		runtimeRepo,
 		versionRepo,
@@ -52,17 +56,12 @@ func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versi
 		return nil, fmt.Errorf("error getting version by id: %w", err)
 	}
 
-	runtime, err := r.runtimeRepo.GetByID(ctx, version.RuntimeID)
-	if err != nil {
-		return nil, fmt.Errorf("error getting runtime by id: %w", err)
-	}
-
 	step, err := calcResourceMetricsStep(fromDate, toDate)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.resourceMetricsService.Get(ctx, runtime.GetNamespace(), version.Name, fromDate, toDate, step)
+	return r.resourceMetricsService.Get(ctx, r.cfg.K8s.Namespace, version.Name, fromDate, toDate, step)
 }
 
 func (r *ResourceMetricsInteractor) Watch(ctx context.Context, loggedUserID, versionId, fromDate string) (<-chan []*entity.ResourceMetrics, error) {
@@ -75,12 +74,7 @@ func (r *ResourceMetricsInteractor) Watch(ctx context.Context, loggedUserID, ver
 		return nil, fmt.Errorf("error getting version by id: %w", err)
 	}
 
-	runtime, err := r.runtimeRepo.GetByID(ctx, version.RuntimeID)
-	if err != nil {
-		return nil, fmt.Errorf("error getting runtime by id: %w", err)
-	}
-
-	return r.resourceMetricsService.Watch(ctx, runtime.GetNamespace(), version.Name, fromDate, watchStepInterval)
+	return r.resourceMetricsService.Watch(ctx, r.cfg.K8s.Namespace, version.Name, fromDate, watchStepInterval)
 }
 
 func calcResourceMetricsStep(fromDate, toDate string) (int32, error) {

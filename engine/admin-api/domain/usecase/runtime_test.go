@@ -23,7 +23,6 @@ type runtimeSuite struct {
 
 type runtimeSuiteMocks struct {
 	logger            *mocks.MockLogger
-	runtimeService    *mocks.MockRuntimeService
 	runtimeRepo       *mocks.MockRuntimeRepo
 	userActivityRepo  *mocks.MockUserActivityRepo
 	userRepo          *mocks.MockUserRepo
@@ -35,7 +34,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
-	runtimeService := mocks.NewMockRuntimeService(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
@@ -67,7 +65,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		runtimeInteractor: runtimeInteractor,
 		mocks: &runtimeSuiteMocks{
 			logger,
-			runtimeService,
 			runtimeRepo,
 			userActivityRepo,
 			userRepo,
@@ -77,30 +74,7 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	}
 }
 
-func TestFindAll(t *testing.T) {
-	s := newRuntimeSuite(t)
-	defer s.ctrl.Finish()
-
-	expectedRuntimes := []*entity.Runtime{
-		{
-			ID: "runtime1",
-		},
-		{
-			ID: "runtime2",
-		},
-	}
-	userID := "user1234"
-
-	ctx := context.Background()
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActView)
-	s.mocks.runtimeRepo.EXPECT().FindAll(ctx).Return(expectedRuntimes, nil)
-
-	runtimes, err := s.runtimeInteractor.FindAll(ctx, userID)
-	require.Nil(t, err)
-	require.Equal(t, expectedRuntimes, runtimes)
-}
-
-func TestGetByID(t *testing.T) {
+func TestGet(t *testing.T) {
 	s := newRuntimeSuite(t)
 	defer s.ctrl.Finish()
 
@@ -113,9 +87,9 @@ func TestGetByID(t *testing.T) {
 	ctx := context.Background()
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActView)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(expectedRuntime, nil)
+	s.mocks.runtimeRepo.EXPECT().Get(ctx).Return(expectedRuntime, nil)
 
-	runtime, err := s.runtimeInteractor.GetByID(ctx, userID, runtimeID)
+	runtime, err := s.runtimeInteractor.Get(ctx, userID)
 	require.Nil(t, err)
 	require.Equal(t, expectedRuntime, runtime)
 }

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -27,14 +28,15 @@ type Dashboard struct {
 }
 
 type Chronograf struct {
+	cfg    *config.Config
 	logger logging.Logger
 	client http.Client
 }
 
-func CreateDashboardService(logger logging.Logger) domainService.DashboardService {
+func CreateDashboardService(cfg *config.Config, logger logging.Logger) domainService.DashboardService {
 	client := http.Client{}
 
-	return &Chronograf{logger, client}
+	return &Chronograf{cfg, logger, client}
 }
 
 func (c *Chronograf) Create(ctx context.Context, runtime *entity.Runtime, version, dashboardPath string) error {
@@ -65,7 +67,8 @@ func (c *Chronograf) Create(ctx context.Context, runtime *entity.Runtime, versio
 
 	requestReader := bytes.NewReader(requestByte)
 
-	chronografURL := fmt.Sprintf("%s/chronograf/v1/dashboards", runtime.GetChronografURL())
+	chronografURL := fmt.Sprintf("http://chronograf.%s/measurements/%s/chronograf/v1/dashboards",
+		c.cfg.K8s.Namespace, c.cfg.K8s.Namespace)
 
 	r, err := http.NewRequest(http.MethodPost, chronografURL, requestReader)
 	if err != nil {

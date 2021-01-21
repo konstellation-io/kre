@@ -1,7 +1,7 @@
 developmentMode: false
 argocd: false
 
-runtimeName: "Mono Runtime"
+runtimeName: "My Runtime"
 
 rbac:
   createServiceAccount: true

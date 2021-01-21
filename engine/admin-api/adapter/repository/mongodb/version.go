@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo/gridfs"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -95,10 +96,10 @@ func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
 	return nil
 }
 
-func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
+func (r *VersionRepoMongoDB) GetAll() ([]*entity.Version, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
-	cur, err := r.collection.Find(ctx, bson.M{"runtimeId": runtimeID})
+	cur, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return versions, err
 	}
@@ -191,4 +192,26 @@ func (r *VersionRepoMongoDB) UploadKRTFile(version *entity.Version, file string)
 	r.logger.Infof("Uploaded %d bytes of \"%s\" to GridFS successfully", filename, fileSize)
 
 	return nil
+}
+
+func (r *VersionRepoMongoDB) ClearPublishedVersion(ctx context.Context) (*entity.Version, error) {
+	oldPublishedVersion := &entity.Version{}
+
+	filter := bson.M{"status": entity.VersionStatusPublished}
+	upd := bson.M{
+		"$set": bson.M{
+			"status":            entity.VersionStatusStarted,
+			"publicationDate":   nil,
+			"publicationUserId": nil,
+		},
+	}
+
+	result := r.collection.FindOneAndUpdate(ctx, filter, upd)
+	err := result.Decode(oldPublishedVersion)
+
+	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+		return nil, err
+	}
+
+	return oldPublishedVersion, nil
 }

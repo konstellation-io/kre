@@ -70,14 +70,10 @@ func NewGraphQLResolver(
 	}
 }
 
-func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
-	return nil, usecase.ErrMonoruntimeMode
-}
-
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
 
-	version, notifyCh, err := r.versionInteractor.Create(ctx, loggedUserID, input.RuntimeID, input.File.File)
+	version, notifyCh, err := r.versionInteractor.Create(ctx, loggedUserID, input.File.File)
 	if err != nil {
 		if errs, ok := err.(validator.ValidationErrors); ok {
 			details := "The krt.yml file contains the following validation errors:"
@@ -296,8 +292,7 @@ func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	return r.userInteractor.GetByID(loggedUserID)
 }
 
-// TODO remove runtimeID
-func (r *queryResolver) Metrics(ctx context.Context, runtimeID string, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
+func (r *queryResolver) Metrics(ctx context.Context, versionID, startDate, endDate string) (*entity.Metrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, versionID, startDate, endDate)
 }
@@ -307,14 +302,9 @@ func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
 	return r.userInteractor.GetAllUsers(ctx, loggedUserID, false)
 }
 
-func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
+func (r *queryResolver) Runtime(ctx context.Context) (*entity.Runtime, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.runtimeInteractor.GetByID(ctx, loggedUserID, id)
-}
-
-func (r *queryResolver) Runtimes(ctx context.Context) ([]*entity.Runtime, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.runtimeInteractor.FindAll(ctx, loggedUserID)
+	return r.runtimeInteractor.Get(ctx, loggedUserID)
 }
 
 func (r *queryResolver) Version(ctx context.Context, id string) (*entity.Version, error) {
@@ -322,9 +312,9 @@ func (r *queryResolver) Version(ctx context.Context, id string) (*entity.Version
 	return r.versionInteractor.GetByID(loggedUserID, id)
 }
 
-func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error) {
+func (r *queryResolver) Versions(ctx context.Context) ([]*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.GetByRuntime(loggedUserID, runtimeID)
+	return r.versionInteractor.GetAll(loggedUserID)
 }
 
 func (r *queryResolver) Settings(ctx context.Context) (*entity.Settings, error) {
@@ -347,8 +337,7 @@ func (r *queryResolver) UserActivityList(
 
 func (r *queryResolver) Logs(
 	ctx context.Context,
-	runtimeID string, // TODO remove runtimeID
-	versionID string, // TODO remove versionID
+	versionID string,
 	filters entity.LogFilters,
 	cursor *string,
 ) (*LogPage, error) {
@@ -380,37 +369,20 @@ func (r *queryResolver) ResourceMetrics(
 	return r.resourceMetricsInteractor.Get(ctx, loggedUserID, versionId, fromDate, toDate)
 }
 
-func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
-	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
-	return userLoader.Load(runtime.Owner)
-}
-
 func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
-func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
-	if obj.PublishedVersion != "" {
-		versionLoader := ctx.Value(middleware.VersionLoaderKey).(*dataloader.VersionLoader)
-		return versionLoader.Load(obj.PublishedVersion)
-	}
-	return nil, nil
-}
-
 func (r *runtimeResolver) MeasurementsURL(_ context.Context, obj *entity.Runtime) (string, error) {
-	return obj.GetMeasurementURL(r.cfg.Admin.BaseURL), nil
+	return fmt.Sprintf("%s/measurements/%s", r.cfg.Admin.BaseURL, r.cfg.K8s.Namespace), nil
 }
 
 func (r *runtimeResolver) DatabaseURL(_ context.Context, obj *entity.Runtime) (string, error) {
-	return obj.GetDatabaseURL(r.cfg.Admin.BaseURL), nil
+	return fmt.Sprintf("%s/database/%s", r.cfg.Admin.BaseURL, r.cfg.K8s.Namespace), nil
 }
 
 func (r *runtimeResolver) EntrypointAddress(_ context.Context, obj *entity.Runtime) (string, error) {
-	return obj.GetEntrypointAddress(r.cfg.BaseDomainName), nil
-}
-
-func (r *subscriptionResolver) WatchRuntimeCreated(ctx context.Context) (<-chan *entity.Runtime, error) {
-	return nil, usecase.ErrMonoruntimeMode
+	return fmt.Sprintf("entrypoint.%s.%s", r.cfg.K8s.Namespace, r.cfg.BaseDomainName), nil
 }
 
 func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity.Version, error) {
@@ -436,8 +408,7 @@ func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionID st
 	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, versionID)
 }
 
-// TODO remove runtimeID
-func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, runtimeID, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, versionID, filters)
 }

@@ -12,6 +12,7 @@ import (
 // Config holds the configuration values for the application.
 type Config struct {
 	DevelopmentMode bool   `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
+	ReleaseName     string `yaml:"releaseName" envconfig:"KRE_RELEASE_NAME"`
 	BaseDomainName  string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`
 	Application     struct {
 		VersionStatusTimeout time.Duration `yaml:"versionStatusTimeout"`
@@ -44,18 +45,15 @@ type Config struct {
 		DBName    string `yaml:"dbName"`
 		KRTBucket string `yaml:"krtBucket"`
 	} `yaml:"mongodb"`
+	K8s struct {
+		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
+	} `yaml:"k8s"`
 	Services struct {
 		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
 	} `yaml:"services"`
-	Monoruntime struct {
-		Name        string `yaml:"name" envconfig:"KRE_MONORUNTIME_NAME"`
-		ReleaseName string `yaml:"releaseName" envconfig:"KRE_MONORUNTIME_RELEASE_NAME"`
-		Namespace   string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
-		Mongo       struct {
-			Username string `yaml:"username" envconfig:"MONORUNTIME_MONGO_USERNAME"`
-			Password string `yaml:"password" envconfig:"MONORUNTIME_MONGO_PASSWORD"`
-		} `yaml:"mongo"`
-	} `yaml:"monoruntime"`
+	Runtime struct {
+		Name string `yaml:"name" envconfig:"KRE_RUNTIME_NAME"`
+	} `yaml:"runtime"`
 }
 
 var once sync.Once

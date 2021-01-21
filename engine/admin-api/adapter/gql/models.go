@@ -3,6 +3,10 @@
 package gql
 
 import (
+	"fmt"
+	"io"
+	"strconv"
+
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 )
@@ -12,20 +16,13 @@ type ConfigurationVariablesInput struct {
 	Value string `json:"value"`
 }
 
-type CreateRuntimeInput struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
 type CreateUserInput struct {
 	Email       string             `json:"email"`
 	AccessLevel entity.AccessLevel `json:"accessLevel"`
 }
 
 type CreateVersionInput struct {
-	File      graphql.Upload `json:"file"`
-	RuntimeID string         `json:"runtimeId"`
+	File graphql.Upload `json:"file"`
 }
 
 type DeleteAPITokenInput struct {
@@ -80,4 +77,47 @@ type UpdateConfigurationInput struct {
 type UsersInput struct {
 	UserIds []string `json:"userIds"`
 	Comment string   `json:"comment"`
+}
+
+type RuntimeStatus string
+
+const (
+	RuntimeStatusCreating RuntimeStatus = "CREATING"
+	RuntimeStatusStarted  RuntimeStatus = "STARTED"
+	RuntimeStatusError    RuntimeStatus = "ERROR"
+)
+
+var AllRuntimeStatus = []RuntimeStatus{
+	RuntimeStatusCreating,
+	RuntimeStatusStarted,
+	RuntimeStatusError,
+}
+
+func (e RuntimeStatus) IsValid() bool {
+	switch e {
+	case RuntimeStatusCreating, RuntimeStatusStarted, RuntimeStatusError:
+		return true
+	}
+	return false
+}
+
+func (e RuntimeStatus) String() string {
+	return string(e)
+}
+
+func (e *RuntimeStatus) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = RuntimeStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid RuntimeStatus", str)
+	}
+	return nil
+}
+
+func (e RuntimeStatus) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

@@ -22,12 +22,11 @@ type UserActivityInteracter interface {
 		versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	RegisterLogin(userID string) error
 	RegisterLogout(userID string) error
-	RegisterCreateRuntime(userID string, runtime *entity.Runtime) error
-	RegisterCreateAction(userID string, runtime *entity.Runtime, version *entity.Version) error
-	RegisterStartAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error
-	RegisterStopAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error
-	RegisterPublishAction(userID string, runtime *entity.Runtime, version *entity.Version, prev *entity.Version, comment string) error
-	RegisterUnpublishAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error
+	RegisterCreateAction(userID string, version *entity.Version) error
+	RegisterStartAction(userID string, version *entity.Version, comment string) error
+	RegisterStopAction(userID string, version *entity.Version, comment string) error
+	RegisterPublishAction(userID string, version *entity.Version, prev *entity.Version, comment string) error
+	RegisterUnpublishAction(userID string, version *entity.Version, comment string) error
 	RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error
 	RegisterCreateUser(userID string, createdUser *entity.User)
 	RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string)
@@ -125,31 +124,11 @@ func (i *UserActivityInteractor) RegisterLogout(userID string) error {
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
-	err := i.create(
-		userID,
-		entity.UserActivityTypeCreateRuntime,
-		[]*entity.UserActivityVar{
-			{
-				Key:   "RUNTIME_ID",
-				Value: runtime.ID,
-			},
-			{
-				Key:   "RUNTIME_NAME",
-				Value: runtime.Name,
-			},
-		})
-
-	return checkUserActivityError(i.logger, err)
-}
-
-func (i *UserActivityInteractor) RegisterCreateAction(userID string, runtime *entity.Runtime, version *entity.Version) error {
+func (i *UserActivityInteractor) RegisterCreateAction(userID string, version *entity.Version) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtime.ID},
-			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 		})
@@ -157,13 +136,11 @@ func (i *UserActivityInteractor) RegisterCreateAction(userID string, runtime *en
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterStartAction(userID string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeStartVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtime.ID},
-			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -172,13 +149,11 @@ func (i *UserActivityInteractor) RegisterStartAction(userID string, runtime *ent
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterStopAction(userID string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeStopVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtime.ID},
-			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -186,13 +161,11 @@ func (i *UserActivityInteractor) RegisterStopAction(userID string, runtime *enti
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterPublishAction(userID string, runtime *entity.Runtime, version *entity.Version, prev *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterPublishAction(userID string, version *entity.Version, prev *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypePublishVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtime.ID},
-			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "OLD_PUBLISHED_VERSION_ID", Value: prev.ID},
@@ -202,13 +175,11 @@ func (i *UserActivityInteractor) RegisterPublishAction(userID string, runtime *e
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, runtime *entity.Runtime, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeUnpublishVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtime.ID},
-			{Key: "RUNTIME_NAME", Value: runtime.Name},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
