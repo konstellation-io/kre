@@ -79,15 +79,15 @@ exports[`VersionMenu matches snapshot 1`] = `
             }
           }
           exact={false}
-          key="STATUS-/runtimes/runtimeId/versions/versionId/status"
+          key="STATUS-/versions/versionId/status"
           label="STATUS"
-          to="/runtimes/runtimeId/versions/versionId/status"
+          to="/versions/versionId/status"
         >
           <NavLink
             activeClassName="active"
             exact={false}
             replace={true}
-            to="/runtimes/runtimeId/versions/versionId/status"
+            to="/versions/versionId/status"
           >
             <Link
               aria-current={null}
@@ -95,7 +95,7 @@ exports[`VersionMenu matches snapshot 1`] = `
               to={
                 Object {
                   "hash": "",
-                  "pathname": "/runtimes/runtimeId/versions/versionId/status",
+                  "pathname": "/versions/versionId/status",
                   "search": "",
                   "state": null,
                 }
@@ -103,12 +103,12 @@ exports[`VersionMenu matches snapshot 1`] = `
             >
               <LinkAnchor
                 aria-current={null}
-                href="/runtimes/runtimeId/versions/versionId/status"
+                href="/versions/versionId/status"
                 navigate={[Function]}
               >
                 <a
                   aria-current={null}
-                  href="/runtimes/runtimeId/versions/versionId/status"
+                  href="/versions/versionId/status"
                   onClick={[Function]}
                 >
                   <div
@@ -175,14 +175,14 @@ exports[`VersionMenu matches snapshot 1`] = `
               },
             }
           }
-          key="PREDICTIONS-/runtimes/runtimeId/versions/versionId/metrics"
+          key="PREDICTIONS-/versions/versionId/metrics"
           label="PREDICTIONS"
-          to="/runtimes/runtimeId/versions/versionId/metrics"
+          to="/versions/versionId/metrics"
         >
           <NavLink
             activeClassName="active"
             replace={true}
-            to="/runtimes/runtimeId/versions/versionId/metrics"
+            to="/versions/versionId/metrics"
           >
             <Link
               aria-current={null}
@@ -190,7 +190,7 @@ exports[`VersionMenu matches snapshot 1`] = `
               to={
                 Object {
                   "hash": "",
-                  "pathname": "/runtimes/runtimeId/versions/versionId/metrics",
+                  "pathname": "/versions/versionId/metrics",
                   "search": "",
                   "state": null,
                 }
@@ -198,12 +198,12 @@ exports[`VersionMenu matches snapshot 1`] = `
             >
               <LinkAnchor
                 aria-current={null}
-                href="/runtimes/runtimeId/versions/versionId/metrics"
+                href="/versions/versionId/metrics"
                 navigate={[Function]}
               >
                 <a
                   aria-current={null}
-                  href="/runtimes/runtimeId/versions/versionId/metrics"
+                  href="/versions/versionId/metrics"
                   onClick={[Function]}
                 >
                   <div
@@ -270,15 +270,15 @@ exports[`VersionMenu matches snapshot 1`] = `
               },
             }
           }
-          key="CONFIGURATION-/runtimes/runtimeId/versions/versionId/configuration"
+          key="CONFIGURATION-/versions/versionId/configuration"
           label="CONFIGURATION"
-          to="/runtimes/runtimeId/versions/versionId/configuration"
+          to="/versions/versionId/configuration"
           warning="Configuration is not completed"
         >
           <NavLink
             activeClassName="active"
             replace={true}
-            to="/runtimes/runtimeId/versions/versionId/configuration"
+            to="/versions/versionId/configuration"
           >
             <Link
               aria-current={null}
@@ -286,7 +286,7 @@ exports[`VersionMenu matches snapshot 1`] = `
               to={
                 Object {
                   "hash": "",
-                  "pathname": "/runtimes/runtimeId/versions/versionId/configuration",
+                  "pathname": "/versions/versionId/configuration",
                   "search": "",
                   "state": null,
                 }
@@ -294,12 +294,12 @@ exports[`VersionMenu matches snapshot 1`] = `
             >
               <LinkAnchor
                 aria-current={null}
-                href="/runtimes/runtimeId/versions/versionId/configuration"
+                href="/versions/versionId/configuration"
                 navigate={[Function]}
               >
                 <a
                   aria-current={null}
-                  href="/runtimes/runtimeId/versions/versionId/configuration"
+                  href="/versions/versionId/configuration"
                   onClick={[Function]}
                 >
                   <div

@@ -10,22 +10,15 @@ import { buildRoute } from 'Utils/routes';
 import cx from 'classnames';
 import { formatDate } from 'Utils/format';
 import styles from './VersionInfo.module.scss';
-import { useParams } from 'react-router';
 
 type Props = {
   version: GetVersionConfStatus_versions;
 };
 function VersionInfo({ version }: Props) {
-  const { runtimeId } = useParams();
-
   const isPublishedVersion = version.status === VersionStatus.PUBLISHED;
   const hasErrors = version.status === VersionStatus.ERROR;
 
-  const versionPath = buildRoute.version(
-    ROUTE.RUNTIME_VERSION_STATUS,
-    runtimeId,
-    version.id
-  );
+  const versionPath = buildRoute(ROUTE.VERSION_STATUS, version.id);
 
   const errors = version.errors.map((error: string, index: number) => (
     <p key={index} className={styles.versionError}>

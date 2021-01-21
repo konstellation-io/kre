@@ -3331,13 +3331,6 @@ exports[`FiltersBar matches snapshot 1`] = `
                 Array [
                   Object {
                     "Icon": <UNDEFINED
-                      activityType="CREATE_RUNTIME"
-                      invert={true}
-                    />,
-                    "label": "CREATE_RUNTIME",
-                  },
-                  Object {
-                    "Icon": <UNDEFINED
                       activityType="CREATE_USER"
                       invert={true}
                     />,

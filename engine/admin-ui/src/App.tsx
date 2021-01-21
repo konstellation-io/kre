@@ -31,7 +31,6 @@ import SubscriptionService from 'Components/SubscriptionService/SubscriptionServ
 import Users from 'Pages/Users/Users';
 import UsersActivity from 'Pages/UsersActivity/UsersActivity';
 import VerifyEmail from 'Pages/VerifyEmail/VerifyEmail';
-import { buildRoute } from 'Utils/routes';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
 import history from './browserHistory';
 import keymaps from './keymaps';
@@ -72,34 +71,25 @@ function ProtectedRoutes() {
         <Switch>
           <Route path={protectedRoutes} component={AccessDenied} />
           <Redirect exact from={ROUTE.SETTINGS} to={ROUTE.SETTINGS_GENERAL} />
-          <Redirect
-            exact
-            from={ROUTE.RUNTIME_VERSION}
-            to={ROUTE.RUNTIME_VERSION_STATUS}
-          />
-          <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
+          <Redirect exact from={ROUTE.VERSION} to={ROUTE.VERSION_STATUS} />
 
           <Route path={ROUTE.NEW_USER} component={AddUser} />
           <Route path={ROUTE.NEW_API_TOKEN} component={AddApiToken} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
-          <Redirect
-            exact
-            from={ROUTE.HOME}
-            to={buildRoute.runtime(ROUTE.RUNTIME, runtimeData.runtime.id)}
-          />
+          <Redirect exact from={ROUTE.HOME} to={ROUTE.VERSIONS} />
 
           <Route exact path={ROUTE.LOGS} component={Logs} />
           <Route
             path={[
-              ROUTE.RUNTIME_VERSION_CONFIGURATION,
-              ROUTE.RUNTIME_VERSION_METRICS,
-              ROUTE.RUNTIME_VERSION_DOCUMENTATION,
-              ROUTE.RUNTIME_VERSION_STATUS
+              ROUTE.VERSION_CONFIGURATION,
+              ROUTE.VERSION_METRICS,
+              ROUTE.VERSION_DOCUMENTATION,
+              ROUTE.VERSION_STATUS
             ]}
             component={Runtime}
           />
-          <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
+          <Route path={ROUTE.VERSIONS} component={Runtime} />
 
           <Route path={ROUTE.SETTINGS} component={Settings} />
           <Route path={ROUTE.PROFILE} component={Profile} />

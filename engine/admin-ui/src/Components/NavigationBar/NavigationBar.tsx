@@ -6,7 +6,6 @@ import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus
 import HexButton from './HexButton';
 import { NavLink } from 'react-router-dom';
 import ROUTE from 'Constants/routes';
-import { buildRoute } from 'Utils/routes';
 import { loader } from 'graphql.macro';
 import styles from './NavigationBar.module.scss';
 import { useQuery } from '@apollo/client';
@@ -26,7 +25,7 @@ function NavigationBar() {
       <div className={styles.container} data-testid="navigation-bar">
         <ConditionalLink
           LinkType={NavLink}
-          to={buildRoute.runtime(ROUTE.RUNTIME, data.runtime.id)}
+          to={ROUTE.VERSIONS}
           linkProps={{
             activeClassName: styles.active,
             className: styles.link

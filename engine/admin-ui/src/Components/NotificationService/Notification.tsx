@@ -13,7 +13,7 @@ const MESSAGE_MIN_HEIGHT = 60;
 export type Props = {
   id: string;
   message: string;
-  buttonLabel: string;
+  buttonLabel?: string;
   typeLabel: string | null;
   timeout?: number;
   type?: NotificationType;
@@ -23,7 +23,7 @@ export type Props = {
 function Notification({
   id,
   message,
-  buttonLabel,
+  buttonLabel = '',
   typeLabel = '',
   timeout = 0,
   type = NotificationType.MESSAGE,

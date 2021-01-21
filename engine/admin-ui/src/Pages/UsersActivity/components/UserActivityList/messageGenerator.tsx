@@ -12,8 +12,6 @@ import cx from 'classnames';
 import styles from './UserActivityList.module.scss';
 
 export enum VarTypes {
-  RUNTIME_ID = 'RUNTIME_ID',
-  RUNTIME_NAME = 'RUNTIME_NAME',
   VERSION_ID = 'VERSION_ID',
   VERSION_NAME = 'VERSION_NAME',
   OLD_PUBLISHED_VERSION_NAME = 'OLD_PUBLISHED_VERSION_NAME',
@@ -75,11 +73,7 @@ export default function getMessage(
   const versionLink =
     runtimeId && versionId ? (
       <Link
-        to={buildRoute.version(
-          ROUTE.RUNTIME_VERSION_STATUS,
-          runtimeId,
-          versionId
-        )}
+        to={buildRoute(ROUTE.VERSION_STATUS, versionId)}
         className={cx(styles.link)}
       >
         {versionName}
@@ -92,11 +86,7 @@ export default function getMessage(
     runtimeId &&
     oldPublishedVersionId ? (
       <Link
-        to={buildRoute.version(
-          ROUTE.RUNTIME_VERSION_STATUS,
-          runtimeId,
-          oldPublishedVersionId
-        )}
+        to={buildRoute(ROUTE.VERSION_STATUS, oldPublishedVersionId)}
         className={cx(styles.link)}
       >
         {oldPublishedVersionName}

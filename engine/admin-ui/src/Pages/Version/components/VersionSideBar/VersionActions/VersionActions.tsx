@@ -41,13 +41,7 @@ function Warning({ runtime, publishedVersion }: WarningProps) {
     <>
       <Tag type={TagTypes.WARNING}>WARNING</Tag>A published version already
       exists, publishing this version will unpublish the following version:{' '}
-      <Link
-        to={buildRoute.version(
-          ROUTE.RUNTIME_VERSION,
-          runtime.id,
-          publishedVersion.id
-        )}
-      >
+      <Link to={buildRoute(ROUTE.VERSION, publishedVersion.id)}>
         <span
           className={styles.publishedVersion}
           title={publishedVersion.description}

@@ -47,11 +47,7 @@ function Documentation() {
   const location = useLocation();
   const params = useParams<VersionRouteParams>();
 
-  const baseUrl = buildRoute.version(
-    ROUTES.RUNTIME_VERSION_DOCUMENTATION,
-    params.runtimeId,
-    params.versionId
-  );
+  const baseUrl = buildRoute(ROUTES.VERSION_DOCUMENTATION, params.versionId);
   const docPath = location.pathname.replace(baseUrl, '');
   const apiDocUrl = `${API_BASE_URL}/static/version/${params.versionId}/docs/${docPath}`;
   const file = useDocFile(apiDocUrl);

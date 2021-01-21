@@ -22,11 +22,7 @@ function NotificationService() {
   }
 
   const notificationComponents = data?.notifications.map(notification => (
-    <Notification
-      {...notification}
-      key={notification.id}
-      buttonLabel="GO TO RUNTIME"
-    />
+    <Notification {...notification} key={notification.id} />
   ));
 
   return (

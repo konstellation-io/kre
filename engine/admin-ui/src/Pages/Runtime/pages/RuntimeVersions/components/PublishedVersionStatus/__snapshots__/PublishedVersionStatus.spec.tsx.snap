@@ -48,20 +48,20 @@ exports[`PublishedVersionStatus matches snapshot 1`] = `
                 "borderRadius": 2,
               }
             }
-            to="/runtimes//new_version"
+            to="/new_version"
           >
             <Link
               data-testid="buttonLink"
-              to="/runtimes//new_version"
+              to="/new_version"
             >
               <LinkAnchor
                 data-testid="buttonLink"
-                href="/runtimes//new_version"
+                href="/new_version"
                 navigate={[Function]}
               >
                 <a
                   data-testid="buttonLink"
-                  href="/runtimes//new_version"
+                  href="/new_version"
                   onClick={[Function]}
                 >
                   <div

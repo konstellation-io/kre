@@ -2,18 +2,14 @@ import { Button } from 'kwc';
 import Can from 'Components/Can/Can';
 import ROUTE from 'Constants/routes';
 import React from 'react';
-import { buildRoute } from 'Utils/routes';
 import cx from 'classnames';
 import styles from '../../RuntimeVersions.module.scss';
-import { useParams } from 'react-router';
 
 type Props = {
   nPublishedVersions: number;
   noVersions: boolean;
 };
 function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
-  const { runtimeId } = useParams();
-
   let title;
   if (noVersions) {
     title =
@@ -26,8 +22,6 @@ function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
     title = 'There is no published version';
   }
 
-  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
-
   return (
     <div
       className={cx(styles.activeVersion, {
@@ -38,7 +32,7 @@ function PublishedVersionStatus({ noVersions, nPublishedVersions }: Props) {
       <Can perform="version:edit">
         <Button
           label="ADD VERSION"
-          to={newVersionRoute}
+          to={ROUTE.NEW_VERSION}
           primary
           height={30}
           style={{ borderRadius: 2 }}

@@ -8,7 +8,6 @@ import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import Version from '../Version/Version';
-import { buildRoute } from 'Utils/routes';
 import { loader } from 'graphql.macro';
 import styles from './Runtime.module.scss';
 import { useQuery } from '@apollo/client';
@@ -18,7 +17,7 @@ const GetRuntimeAndVersionQuery = loader(
 );
 
 function Runtime() {
-  const { runtimeId, versionId } = useParams<VersionRouteParams>();
+  const { versionId } = useParams<VersionRouteParams>();
   const location = useLocation();
   const { data, loading, error } = useQuery<GetVersionConfStatus>(
     GetRuntimeAndVersionQuery
@@ -39,7 +38,7 @@ function Runtime() {
           <Switch>
             <Route
               exact
-              path={ROUTE.RUNTIME_VERSIONS}
+              path={ROUTE.VERSIONS}
               render={props => (
                 <RuntimeVersions
                   {...props}
@@ -64,20 +63,14 @@ function Runtime() {
     );
   }
 
-  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
-
-  const versionsPath: string = buildRoute.runtime(
-    ROUTE.RUNTIME_VERSIONS,
-    runtimeId
-  );
-  const isUserInRuntimeVersions: boolean = location.pathname === versionsPath;
+  const isUserInVersions: boolean = location.pathname === ROUTE.VERSIONS;
 
   return (
     <PageBase
       headerChildren={
-        (isUserInRuntimeVersions && (
+        (isUserInVersions && (
           <Can perform="version:edit">
-            <Button label="ADD VERSION" height={40} to={newVersionRoute} />
+            <Button label="ADD VERSION" height={40} to={ROUTE.NEW_VERSION} />
           </Can>
         )) ||
         null

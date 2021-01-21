@@ -246,7 +246,6 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
-  CREATE_RUNTIME
   CREATE_VERSION
   PUBLISH_VERSION
   UNPUBLISH_VERSION
