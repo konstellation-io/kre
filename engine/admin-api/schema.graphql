@@ -3,10 +3,9 @@ scalar Upload
 type Query {
   me: User
   users: [User!]!
-  runtime(id: ID!): Runtime!
-  runtimes: [Runtime!]!
+  runtime: Runtime!
   version(id: ID!): Version!
-  versions(runtimeId: ID!): [Version!]!
+  versions: [Version!]!
   settings: Settings!
   userActivityList(
     userEmail: String
@@ -17,13 +16,11 @@ type Query {
     lastId: String
   ): [UserActivity!]!
   logs(
-    runtimeId: ID!
     versionId: ID!
     filters: LogFilters!
     cursor: String
   ): LogPage!
   metrics(
-    runtimeId: ID!
     versionId: ID!
     startDate: String!
     endDate: String!
@@ -36,7 +33,6 @@ type Query {
 }
 
 type Mutation {
-  createRuntime(input: CreateRuntimeInput!): Runtime!
   createVersion(input: CreateVersionInput!): Version!
   startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
@@ -53,22 +49,14 @@ type Mutation {
 }
 
 type Subscription {
-  watchRuntimeCreated: Runtime!
-  watchNodeLogs(runtimeId: ID!, versionId: ID!, filters: LogFilters!): NodeLog!
+  watchNodeLogs(versionId: ID!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionId: ID!): Node!
   watchVersion: Version!
   watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
 }
 
-input CreateRuntimeInput {
-  id: String!
-  name: String!
-  description: String!
-}
-
 input CreateVersionInput {
   file: Upload!
-  runtimeId: String!
 }
 
 input StartVersionInput {
@@ -168,19 +156,10 @@ type Runtime {
   id: ID!
   name: String!
   description: String!
-  status: RuntimeStatus!
   creationDate: String!
-  creationAuthor: User!
-  publishedVersion: Version
   measurementsUrl: String!
   databaseUrl: String!
   entrypointAddress: String!
-}
-
-enum RuntimeStatus {
-  CREATING
-  STARTED
-  ERROR
 }
 
 type Edge {
@@ -261,7 +240,6 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
-  CREATE_RUNTIME
   CREATE_VERSION
   PUBLISH_VERSION
   UNPUBLISH_VERSION

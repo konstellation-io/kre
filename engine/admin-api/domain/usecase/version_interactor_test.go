@@ -82,17 +82,6 @@ func TestCreateNewVersion(t *testing.T) {
 	s := newVersionSuite(t)
 	defer s.ctrl.Finish()
 
-	runtimeID := "run-1"
-
-	runtime := &entity.Runtime{
-		ID:           runtimeID,
-		Name:         "",
-		CreationDate: time.Time{},
-		Owner:        "",
-		Status:       "",
-		Mongo:        entity.MongoConfig{},
-	}
-
 	userID := "user1"
 
 	userFound := &entity.User{
@@ -102,7 +91,6 @@ func TestCreateNewVersion(t *testing.T) {
 
 	version := &entity.Version{
 		ID:                userID,
-		RuntimeID:         runtimeID,
 		Name:              "version-1",
 		Description:       "",
 		CreationDate:      time.Time{},
@@ -120,18 +108,15 @@ func TestCreateNewVersion(t *testing.T) {
 		t.Error(err)
 	}
 
-	ctx := context.Background()
-
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
 	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(4)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(runtime, nil)
-	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetAll().Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
 	s.mocks.versionRepo.EXPECT().SetStatus(gomock.Any(), version.ID, entity.VersionStatusCreated).Return(nil)
 	s.mocks.versionRepo.EXPECT().UploadKRTFile(version, gomock.Any()).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
-	_, statusCh, err := s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
+	_, statusCh, err := s.versionInteractor.Create(context.Background(), userFound.ID, file)
 	require.Nil(t, err)
 
 	actual := <-statusCh

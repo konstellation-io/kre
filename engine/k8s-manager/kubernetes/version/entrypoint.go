@@ -66,7 +66,7 @@ func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 	m.logger.Info("Creating entrypoint deployment")
 
 	versionName := req.VersionName
-	ns := req.K8SNamespace
+	ns := m.config.Kubernetes.Namespace
 	img := req.Entrypoint.Image
 	proto := req.Entrypoint.ProtoFile
 	envVars := m.getEntrypointEnvVars(req)

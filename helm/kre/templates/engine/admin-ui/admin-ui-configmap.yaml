@@ -10,6 +10,5 @@ metadata:
 data:
   config.json: |
     {
-      "API_BASE_URL": "{{ $protocol }}://{{ .Values.config.admin.apiHost }}",
-      "MONORUNTIME_MODE": "1"
+      "API_BASE_URL": "{{ $protocol }}://{{ .Values.config.admin.apiHost }}"
     }

@@ -8,21 +8,6 @@ exports[`RuntimeVersions matches snapshot 1`] = `
     Versions of runtime 
     runtimeName
   </Component>
-  <RuntimeInfo
-    runtime={
-      Object {
-        "__typename": "Runtime",
-        "creationAuthor": Object {
-          "email": "some@user.com",
-        },
-        "description": "Some Description",
-        "id": "runtimeId",
-        "measurementsUrl": "measurementsUrl",
-        "name": "runtimeName",
-        "status": "STARTED",
-      }
-    }
-  />
   <PublishedVersionStatus
     nPublishedVersions={0}
     noVersions={false}

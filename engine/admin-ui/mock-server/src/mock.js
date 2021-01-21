@@ -11,52 +11,21 @@ const generateRuntime = () => ({
   id: parseInt(casual.array_of_digits(8).join('')),
   name: casual.name,
   description: casual.sentences(10),
-  status: casual.random_element(['CREATING', 'STARTED', 'ERROR']),
-  creationAuthor: () => ({
-    id: casual.uuid,
-    email: casual.random_element(emails)
-  }),
   creationDate: casual.moment.toISOString(),
   versions: () => new MockList([1, 5]),
-  publishedVersion: () => {
-    if (Math.random() > 0.5) {
-      return {
-        id: parseInt(casual.array_of_digits(8).join('')),
-        name: `v${casual.integer(1, 10)}.${casual.integer(
-          (from = 1),
-          (to = 10)
-        )}.${casual.integer((from = 1), (to = 10))}`,
-        description: casual.sentence,
-        status: 'STARTED',
-        creationDate: casual.moment.toISOString(),
-        activationDate: casual.moment.toISOString()
-      };
-    }
-    return null;
-  }
 });
 
 const generateVersion = (
-  { id, name } = {
+  { id, name, status } = {
     id: casual.random_element(['v1', 'v2', 'v3', 'v4', 'v5', 'v6']),
-    name: `v${casual.integer((from = 1), (to = 10))}.${casual.integer(
-      (from = 1),
-      (to = 10)
-    )}.${casual.integer((from = 1), (to = 10))}`
+    name: `v${casual.integer(1, 10)}.${casual.integer(1, 10)}.${casual.integer(1, 10)}`,
+    status: 'PUBLISHED'
   }
 ) => ({
   id,
   name,
   description: casual.sentence,
-  status: casual.random_element([
-    'CREATING',
-    'CREATED',
-    'STARTING',
-    'STARTED',
-    'PUBLISHED',
-    'STOPPED',
-    'ERROR'
-  ]),
+  status,
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
   workflows: () => new MockList(2)
@@ -110,7 +79,7 @@ function getLogMessage() {
 
 let activeNodeLogsInterval = null;
 
-const getPercStr = () => casual.integer((from = 0), (to = 100)).toString();
+const getPercStr = () => casual.integer(0, 100).toString();
 
 const FREQUENCY_LOGS = 2000;
 
@@ -143,9 +112,6 @@ module.exports = {
         return pubsub.asyncIterator('watchNodeLogs');
       }
     },
-    watchRuntimeCreated: {
-      subscribe: () => pubsub.asyncIterator('watchRuntimeCreated')
-    },
     watchVersion: {
       subscribe: () => pubsub.asyncIterator('watchVersion')
     },
@@ -175,11 +141,11 @@ module.exports = {
       apiTokens: () => new MockList([2, 5])
     }),
     users: () => new MockList([20, 30]),
-    runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 4]),
     versions: () => [
-      generateVersion({ id: 'V1', name: 'Version A' }),
-      generateVersion({ id: 'V2', name: 'Version B' })
+      generateVersion({ id: 'V1', name: 'Version A', status: 'PUBLISHED' }),
+      generateVersion({ id: 'V2', name: 'Version B', status: 'PUBLISHED' }),
+      generateVersion({ id: 'V3', name: 'Version C', status: 'STARTED' }),
     ],
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
@@ -206,26 +172,6 @@ module.exports = {
     }
   }),
   Mutation: () => ({
-    createRuntime: () => {
-      const _runtime = {
-        ...generateRuntime(),
-        id: 'newRuntime',
-        name: 'New Runtime'
-      };
-
-      setTimeout(() => {
-        pubsub.publish('watchRuntimeCreated', {
-          watchRuntimeCreated: {
-            id: 'newRuntime',
-            name: 'New Runtime',
-            status: 'ERROR',
-            creationDate: moment()
-          }
-        });
-      }, 4000);
-
-      return _runtime;
-    },
     createVersion: () => generateVersion({ id: 'V3', name: 'Version C' }),
     updateSettings: () => ({ errors: [], settings: this.Settings }),
     deleteApiToken: (_, b) => {

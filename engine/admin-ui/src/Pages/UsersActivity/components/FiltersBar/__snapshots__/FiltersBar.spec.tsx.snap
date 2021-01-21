@@ -2956,7 +2956,69 @@ exports[`FiltersBar matches snapshot 1`] = `
       <FiltersBar
         errors={Object {}}
         onSubmit={[MockFunction]}
-        runtimesAndVersions={Array []}
+        runtimeAndVersions={
+          Object {
+            "runtime": Object {
+              "__typename": "Runtime",
+              "description": "Some Description",
+              "id": "runtimeId",
+              "measurementsUrl": "measurementsUrl",
+              "name": "runtimeName",
+            },
+            "versions": Array [
+              Object {
+                "__typename": "Version",
+                "config": Object {
+                  "completed": false,
+                  "vars": Array [],
+                },
+                "creationAuthor": Object {
+                  "__typename": "User",
+                  "email": "user@domain.com",
+                  "id": "userId",
+                },
+                "creationDate": "2020/01/01",
+                "description": "versionDescription",
+                "errors": Array [],
+                "hasDoc": false,
+                "id": "versionId",
+                "name": "versionName",
+                "publicationAuthor": Object {
+                  "__typename": "User",
+                  "email": "user@domain.com",
+                  "id": "userId",
+                },
+                "publicationDate": "2020/01/01",
+                "status": "STARTED",
+              },
+              Object {
+                "__typename": "Version",
+                "config": Object {
+                  "completed": false,
+                  "vars": Array [],
+                },
+                "creationAuthor": Object {
+                  "__typename": "User",
+                  "email": "user@domain.com",
+                  "id": "userId",
+                },
+                "creationDate": "2020/01/01",
+                "description": "versionDescription",
+                "errors": Array [],
+                "hasDoc": false,
+                "id": "versionId",
+                "name": "versionName",
+                "publicationAuthor": Object {
+                  "__typename": "User",
+                  "email": "user@domain.com",
+                  "id": "userId",
+                },
+                "publicationDate": "2020/01/01",
+                "status": "STARTED",
+              },
+            ],
+          }
+        }
         types={
           Array [
             "a",
@@ -3148,7 +3210,14 @@ exports[`FiltersBar matches snapshot 1`] = `
               hideSelections={true}
               label="filter by versions"
               onChange={[Function]}
-              options={Object {}}
+              options={
+                Object {
+                  "runtimeName": Array [
+                    "versionName",
+                    "versionName",
+                  ],
+                }
+              }
               placeholder="Select Versions"
             >
               <div
@@ -3201,9 +3270,6 @@ exports[`FiltersBar matches snapshot 1`] = `
                   </CustomLabel>,
                   "LOGOUT" => <CustomLabel>
                     Logout
-                  </CustomLabel>,
-                  "CREATE_RUNTIME" => <CustomLabel>
-                    Runtime created
                   </CustomLabel>,
                   "CREATE_VERSION" => <CustomLabel>
                     Version Created
@@ -3263,13 +3329,6 @@ exports[`FiltersBar matches snapshot 1`] = `
               onChange={[Function]}
               options={
                 Array [
-                  Object {
-                    "Icon": <UNDEFINED
-                      activityType="CREATE_RUNTIME"
-                      invert={true}
-                    />,
-                    "label": "CREATE_RUNTIME",
-                  },
                   Object {
                     "Icon": <UNDEFINED
                       activityType="CREATE_USER"

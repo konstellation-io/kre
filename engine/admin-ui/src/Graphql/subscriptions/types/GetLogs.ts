@@ -27,6 +27,5 @@ export interface GetLogs {
 
 export interface GetLogsVariables {
   filters: LogFilters;
-  runtimeId: string;
   versionId: string;
 }

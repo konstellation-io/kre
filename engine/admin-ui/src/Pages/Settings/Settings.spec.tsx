@@ -9,7 +9,6 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import Settings from './Settings';
 import { act } from 'react-dom/test-utils';
-import { dashboardMock } from 'Mocks/runtime';
 import { renderWithRouter } from 'Utils/testUtils';
 import { usernameMock } from 'Mocks/auth';
 import wait from 'waait';
@@ -20,7 +19,6 @@ const mocks = [
   MOCK.usersActivityMock,
   MOCK.addAllowedDomainMock,
   MOCK.updateExpirationTime,
-  dashboardMock,
   usernameMock
 ];
 
@@ -34,7 +32,6 @@ function generateComponent() {
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router history={history}>
         <Settings />
-        {/* <Routes /> */}
       </Router>
     </MockedProvider>
   );

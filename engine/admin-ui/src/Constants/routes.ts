@@ -1,7 +1,5 @@
-const RUNTIMES = '/runtimes';
-const RUNTIME = `${RUNTIMES}/:runtimeId`;
-const RUNTIME_VERSIONS = `${RUNTIME}/versions`;
-const RUNTIME_VERSION = `${RUNTIME_VERSIONS}/:versionId`;
+const VERSIONS = `/versions`;
+const VERSION = `${VERSIONS}/:versionId`;
 const SETTINGS = '/settings';
 const ROUTE = {
   HOME: '/',
@@ -15,24 +13,18 @@ const ROUTE = {
   AUDIT: '/audit',
   LOGS: '/logs/:logTabInfo',
   PROFILE: '/profile',
-  RUNTIMES,
-  RUNTIME,
-  RUNTIME_VERSIONS,
-  RUNTIME_VERSION,
-  RUNTIME_VERSION_STATUS: `${RUNTIME_VERSION}/status`,
-  RUNTIME_VERSION_CONFIGURATION: `${RUNTIME_VERSION}/configuration`,
-  RUNTIME_VERSION_METRICS: `${RUNTIME_VERSION}/metrics`,
-  RUNTIME_VERSION_DOCUMENTATION: `${RUNTIME_VERSION}/documentation`,
+  VERSIONS,
+  VERSION,
+  VERSION_STATUS: `${VERSION}/status`,
+  VERSION_CONFIGURATION: `${VERSION}/configuration`,
+  VERSION_METRICS: `${VERSION}/metrics`,
+  VERSION_DOCUMENTATION: `${VERSION}/documentation`,
   NEW_USER: '/new-user',
   NEW_API_TOKEN: `/new_api_token`,
-  NEW_RUNTIME: '/new-runtime',
-  NEW_VERSION: `${RUNTIME}/new_version`
+  NEW_VERSION: `/new_version`
 };
 
-export interface RuntimeRouteParams {
-  runtimeId: string;
-}
-export interface VersionRouteParams extends RuntimeRouteParams {
+export interface VersionRouteParams {
   versionId: string;
 }
 

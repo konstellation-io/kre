@@ -4,10 +4,8 @@ package service
 
 import (
 	"context"
-
-	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 )
 
 type DashboardService interface {
-	Create(ctx context.Context, runtime *entity.Runtime, version, dashboardPath string) error
+	Create(ctx context.Context, version, dashboardPath string) error
 }

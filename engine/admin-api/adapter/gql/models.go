@@ -12,20 +12,13 @@ type ConfigurationVariablesInput struct {
 	Value string `json:"value"`
 }
 
-type CreateRuntimeInput struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
 type CreateUserInput struct {
 	Email       string             `json:"email"`
 	AccessLevel entity.AccessLevel `json:"accessLevel"`
 }
 
 type CreateVersionInput struct {
-	File      graphql.Upload `json:"file"`
-	RuntimeID string         `json:"runtimeId"`
+	File graphql.Upload `json:"file"`
 }
 
 type DeleteAPITokenInput struct {

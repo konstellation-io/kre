@@ -48,28 +48,25 @@ function Version({ versions, version, runtime }: Props) {
         <Switch>
           <Route
             exact
-            path={ROUTE.RUNTIME_VERSION_STATUS}
+            path={ROUTE.VERSION_STATUS}
             render={props => (
               <Status {...props} version={version} runtime={runtime} />
             )}
           />
           <Redirect
             exact
-            from={ROUTE.RUNTIME_VERSION_DOCUMENTATION}
-            to={ROUTE.RUNTIME_VERSION_DOCUMENTATION + '/README.md'}
+            from={ROUTE.VERSION_DOCUMENTATION}
+            to={ROUTE.VERSION_DOCUMENTATION + '/README.md'}
           />
-          <Route
-            path={ROUTE.RUNTIME_VERSION_DOCUMENTATION}
-            component={Documentation}
-          />
+          <Route path={ROUTE.VERSION_DOCUMENTATION} component={Documentation} />
           <Route
             exact
-            path={ROUTE.RUNTIME_VERSION_CONFIGURATION}
+            path={ROUTE.VERSION_CONFIGURATION}
             component={Configuration}
           />
           <Route
             exact
-            path={ROUTE.RUNTIME_VERSION_METRICS}
+            path={ROUTE.VERSION_METRICS}
             render={props => (
               <Metrics {...props} runtime={runtime} version={version} />
             )}

@@ -7,7 +7,6 @@ import IconArrowBack from '@material-ui/icons/KeyboardBackspace';
 import { Link } from 'react-router-dom';
 import ROUTE from 'Constants/routes';
 import React from 'react';
-import { buildRoute } from 'Utils/routes';
 import styles from './BackButton.module.scss';
 
 type BackButtonProps = {
@@ -16,11 +15,11 @@ type BackButtonProps = {
 
 function BackButton({ runtime }: BackButtonProps) {
   return (
-    <Link to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}>
+    <Link to={ROUTE.VERSIONS}>
       <div className={styles.backSection}>
         <IconArrowBack className="icon-regular" />
         <div className={styles.runtimeHexagon}>
-          <RuntimeHexagon runtime={runtime} size={RuntimeHexagonSize.SMALL} />
+          <RuntimeHexagon size={RuntimeHexagonSize.SMALL} />
         </div>
         <div className={styles.runtimeName}>{runtime.name}</div>
       </div>

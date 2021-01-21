@@ -1,15 +1,5 @@
-query GetServerLogs(
-  $filters: LogFilters!
-  $runtimeId: ID!
-  $versionId: ID!
-  $cursor: String
-) {
-  logs(
-    filters: $filters
-    runtimeId: $runtimeId
-    versionId: $versionId
-    cursor: $cursor
-  ) {
+query GetServerLogs($filters: LogFilters!, $versionId: ID!, $cursor: String) {
+  logs(filters: $filters, versionId: $versionId, cursor: $cursor) {
     items {
       id
       date

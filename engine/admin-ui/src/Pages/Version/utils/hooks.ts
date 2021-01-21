@@ -1,8 +1,4 @@
 import {
-  GetVersionConfStatus,
-  GetVersionConfStatusVariables
-} from 'Graphql/queries/types/GetVersionConfStatus';
-import {
   PublishVersion,
   PublishVersionVariables
 } from 'Graphql/mutations/types/PublishVersion';
@@ -19,7 +15,9 @@ import {
   UnpublishVersionVariables
 } from 'Graphql/mutations/types/UnpublishVersion';
 
+import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { VersionStatus } from 'Graphql/types/globalTypes';
+import { cloneDeep } from 'lodash';
 import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/client';
 
@@ -54,24 +52,20 @@ export default function useVersionAction(runtimeId: string) {
       if (updateResult.data !== undefined && updateResult.data !== null) {
         const updatedVersion = updateResult.data.publishVersion;
 
-        const cacheResult = cache.readQuery<
-          GetVersionConfStatus,
-          GetVersionConfStatusVariables
-        >({
-          query: GetRuntimeAndVersionsQuery,
-          variables: {
-            runtimeId: runtimeId
-          }
+        const cacheResult = cache.readQuery<GetVersionConfStatus>({
+          query: GetRuntimeAndVersionsQuery
         });
 
         if (cacheResult !== null) {
           const { versions, runtime } = cacheResult;
           const newVersions = versions.map(v => {
-            if (v.id === updatedVersion.id) return v;
-            if (v.status === VersionStatus.PUBLISHED) {
-              v.status = VersionStatus.STARTED;
+            const newVersion = cloneDeep(v);
+            if (newVersion.id === updatedVersion.id) return newVersion;
+
+            if (newVersion.status === VersionStatus.PUBLISHED) {
+              newVersion.status = VersionStatus.STARTED;
             }
-            return v;
+            return newVersion;
           });
 
           cache.writeQuery({

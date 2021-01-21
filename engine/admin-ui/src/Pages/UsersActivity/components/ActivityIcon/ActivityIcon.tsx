@@ -56,10 +56,6 @@ function buildIconProp(
 
 export const activityToIconProps = new Map([
   [
-    UserActivityType.CREATE_RUNTIME,
-    buildIconProp(IconAdd, IconColors.DARK, IconBackgrounds.LOWLIGHT)
-  ],
-  [
     UserActivityType.CREATE_USER,
     buildIconProp(IconAdd, IconColors.DARK, IconBackgrounds.LOWLIGHT)
   ],

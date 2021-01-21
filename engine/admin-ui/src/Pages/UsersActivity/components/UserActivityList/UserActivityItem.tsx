@@ -8,10 +8,11 @@ import styles from './UserActivityList.module.scss';
 
 type Props = {
   userActivity: GetUsersActivity_userActivityList;
+  runtimeId: string;
   idx: number;
 };
-function UserActivityItem({ userActivity, idx }: Props) {
-  const [message, comment] = getMessage(userActivity);
+function UserActivityItem({ userActivity, runtimeId, idx }: Props) {
+  const [message, comment] = getMessage(userActivity, runtimeId);
 
   return (
     <div className={styles.row} key={`${userActivity.date}-${idx}`}>

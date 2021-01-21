@@ -26,7 +26,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
   const itemProps: VersionMenuItemProps[] = [
     {
       label: 'STATUS',
-      to: ROUTE.RUNTIME_VERSION_STATUS,
+      to: ROUTE.VERSION_STATUS,
       exact: false,
       Icon: IconDeviceHub
     }
@@ -35,7 +35,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
   if (version.hasDoc) {
     itemProps.push({
       label: 'DOCUMENTATION',
-      to: ROUTE.RUNTIME_VERSION_DOCUMENTATION,
+      to: ROUTE.VERSION_DOCUMENTATION,
       exact: false,
       Icon: IconDoc
     });
@@ -43,21 +43,21 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
 
   itemProps.push({
     label: 'PREDICTIONS',
-    to: ROUTE.RUNTIME_VERSION_METRICS,
+    to: ROUTE.VERSION_METRICS,
     Icon: IconShowChart
   });
 
   if (checkPermission(accessLevel, 'version:edit')) {
     itemProps.push({
       label: 'CONFIGURATION',
-      to: ROUTE.RUNTIME_VERSION_CONFIGURATION,
+      to: ROUTE.VERSION_CONFIGURATION,
       Icon: IconSettings,
       warning: version.config.completed ? '' : 'Configuration is not completed'
     });
   }
 
   itemProps.forEach(p => {
-    p.to = buildRoute.version(p.to, runtime.id, version.id);
+    p.to = buildRoute(p.to, version.id);
   });
 
   const items = itemProps.map(props => (

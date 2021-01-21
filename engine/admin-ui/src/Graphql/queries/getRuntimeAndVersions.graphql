@@ -1,20 +1,15 @@
-query GetVersionConfStatus($runtimeId: ID!) {
-  runtime(id: $runtimeId) {
+query GetVersionConfStatus {
+  runtime {
     id
     name
     description
-    status
     creationDate
-    creationAuthor {
-      id
-      email
-    }
     measurementsUrl
     databaseUrl
     entrypointAddress
   }
 
-  versions(runtimeId: $runtimeId) {
+  versions {
     id
     name
     description

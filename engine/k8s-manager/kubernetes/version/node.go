@@ -151,7 +151,7 @@ func (m *Manager) createNodeDeployment(
 	config NodeConfig,
 ) error {
 	versionName := req.VersionName
-	ns := req.K8SNamespace
+	ns := m.config.Kubernetes.Namespace
 	name := fmt.Sprintf("%s-%s-%s", versionName, node.Name, node.Id)
 	envVars := m.getNodeEnvVars(req, config)
 	labels := m.getNodeLabels(req.VersionName, node)

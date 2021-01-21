@@ -14,7 +14,8 @@ type VersionRepo interface {
 	Update(version *entity.Version) error
 	SetHasDoc(ctx context.Context, versionID string, hasDoc bool) error
 	SetStatus(ctx context.Context, versionID string, status entity.VersionStatus) error
-	GetByRuntime(runtimeID string) ([]*entity.Version, error)
+	GetAll() ([]*entity.Version, error)
 	SetErrors(ctx context.Context, version *entity.Version, errorMessages []string) (*entity.Version, error)
 	UploadKRTFile(version *entity.Version, file string) error
+	ClearPublishedVersion(ctx context.Context) (*entity.Version, error)
 }

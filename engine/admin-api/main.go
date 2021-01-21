@@ -26,7 +26,7 @@ func main() {
 
 	verificationCodeRepo := mongodb.NewVerificationCodeRepoMongoDB(cfg, logger, mongodbClient)
 	userRepo := mongodb.NewUserRepoMongoDB(cfg, logger, mongodbClient)
-	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient) // TODO check if we need a runtime repository
+	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
 	sessionRepo := mongodb.NewSessionRepoMongoDB(cfg, logger, mongodbClient)
 	apiTokenRepo, err := mongodb.NewAPITokenRepoMongoDB(cfg, logger, mongodbClient)
@@ -96,7 +96,7 @@ func main() {
 
 	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor, accessControl)
 
-	chronografDashboard := service.CreateDashboardService(logger)
+	chronografDashboard := service.CreateDashboardService(cfg, logger)
 	versionInteractor := usecase.NewVersionInteractor(
 		cfg,
 		logger,
@@ -119,6 +119,7 @@ func main() {
 	)
 
 	resourceMetricsInteractor := usecase.NewResourceMetricsInteractor(
+		cfg,
 		logger,
 		runtimeRepo,
 		versionMongoRepo,
@@ -131,11 +132,7 @@ func main() {
 		panic(err)
 	}
 
-	adminUser, err := userInteractor.GetFirstAdmin(context.Background())
-	if err != nil {
-		panic(err)
-	}
-	err = runtimeInteractor.EnsureMonoruntime(context.Background(), adminUser)
+	err = runtimeInteractor.EnsureRuntimeIsCreated(context.Background())
 	if err != nil {
 		panic(err)
 	}

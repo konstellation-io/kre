@@ -32,14 +32,7 @@ export enum NodeStatus {
   STOPPED = 'STOPPED'
 }
 
-export enum RuntimeStatus {
-  CREATING = 'CREATING',
-  ERROR = 'ERROR',
-  STARTED = 'STARTED'
-}
-
 export enum UserActivityType {
-  CREATE_RUNTIME = 'CREATE_RUNTIME',
   CREATE_USER = 'CREATE_USER',
   CREATE_VERSION = 'CREATE_VERSION',
   DELETE_API_TOKEN = 'DELETE_API_TOKEN',
@@ -73,12 +66,6 @@ export interface ConfigurationVariablesInput {
   value: string;
 }
 
-export interface CreateRuntimeInput {
-  id: string;
-  name: string;
-  description: string;
-}
-
 export interface CreateUserInput {
   email: string;
   accessLevel: AccessLevel;
@@ -86,7 +73,6 @@ export interface CreateUserInput {
 
 export interface CreateVersionInput {
   file: any;
-  runtimeId: string;
 }
 
 export interface DeleteApiTokenInput {

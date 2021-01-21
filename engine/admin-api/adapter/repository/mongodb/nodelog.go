@@ -131,7 +131,7 @@ func (n *NodeLogMongoDBRepo) PaginatedSearch(ctx context.Context, searchOpts *en
 		},
 	}
 
-	if searchOpts.Search != nil {
+	if searchOpts.Search != nil && *searchOpts.Search != "" {
 		// https://docs.mongodb.com/manual/text-search/
 		filter["$text"] = bson.M{"$search": *searchOpts.Search}
 	}

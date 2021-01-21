@@ -3,11 +3,9 @@ import {
   GetLoginAndNotifications
 } from 'Graphql/client/queries/getLoginAndNotifications.graphql';
 
-import { MONORUNTIME_MODE } from 'index';
 import Notification from './Notification';
 import React from 'react';
 import { ReactNode } from 'react';
-import RuntimeCreated from './Services/RuntimeCreated/RuntimeCreated';
 import VersionCreated from './Services/VersionCreated/VersionCreated';
 import styles from './Notification.module.scss';
 import { useQuery } from '@apollo/client';
@@ -21,18 +19,10 @@ function NotificationService() {
 
   if (data?.loggedIn) {
     services = [<VersionCreated key="versionCreated" />];
-
-    if (!MONORUNTIME_MODE) {
-      services.push(<RuntimeCreated key="runtimeCreated" />);
-    }
   }
 
   const notificationComponents = data?.notifications.map(notification => (
-    <Notification
-      {...notification}
-      key={notification.id}
-      buttonLabel="GO TO RUNTIME"
-    />
+    <Notification {...notification} key={notification.id} />
   ));
 
   return (

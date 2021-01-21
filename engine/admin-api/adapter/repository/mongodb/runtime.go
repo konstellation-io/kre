@@ -2,8 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
@@ -29,8 +27,6 @@ func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mo
 }
 
 func (r *RuntimeRepoMongoDB) Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error) {
-	runtime.CreationDate = time.Now().UTC()
-
 	_, err := r.collection.InsertOne(ctx, runtime)
 	if err != nil {
 		return nil, err
@@ -39,79 +35,13 @@ func (r *RuntimeRepoMongoDB) Create(ctx context.Context, runtime *entity.Runtime
 	return runtime, nil
 }
 
-func (r *RuntimeRepoMongoDB) FindAll(ctx context.Context) ([]*entity.Runtime, error) {
-	var runtimes []*entity.Runtime
-	cursor, err := r.collection.Find(ctx, bson.D{})
-	if err != nil {
-		return runtimes, err
-	}
-
-	err = cursor.All(ctx, &runtimes)
-	if err != nil {
-		return nil, err
-	}
-
-	return runtimes, nil
-}
-
-func (r *RuntimeRepoMongoDB) UpdateStatus(ctx context.Context, runtimeID string, newStatus entity.RuntimeStatus) error {
-	filter := bson.M{"_id": runtimeID}
-	upd := bson.M{
-		"$set": bson.M{
-			"status": newStatus.String(),
-		},
-	}
-	result, err := r.collection.UpdateOne(ctx, filter, upd)
-	if err != nil {
-		return err
-	}
-
-	if result.ModifiedCount != 1 {
-		return usecase.ErrRuntimeNotFound
-	}
-
-	return nil
-}
-
-func (r *RuntimeRepoMongoDB) GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error) {
+func (r *RuntimeRepoMongoDB) Get(ctx context.Context) (*entity.Runtime, error) {
 	runtime := &entity.Runtime{}
-	filter := bson.D{{"_id", runtimeID}}
 
-	err := r.collection.FindOne(ctx, filter).Decode(runtime)
+	err := r.collection.FindOne(ctx, bson.M{}).Decode(runtime)
 	if err == mongo.ErrNoDocuments {
 		return nil, usecase.ErrRuntimeNotFound
 	}
 
 	return runtime, err
-}
-
-func (r *RuntimeRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Runtime, error) {
-	runtime := &entity.Runtime{}
-	filter := bson.D{{"name", name}}
-
-	err := r.collection.FindOne(ctx, filter).Decode(runtime)
-	if err == mongo.ErrNoDocuments {
-		return nil, usecase.ErrRuntimeNotFound
-	}
-
-	return runtime, err
-}
-
-func (r *RuntimeRepoMongoDB) UpdatePublishedVersion(ctx context.Context, runtimeID string, versionID string) error {
-	filter := bson.M{"_id": runtimeID}
-	upd := bson.M{
-		"$set": bson.M{
-			"publishedVersion": versionID,
-		},
-	}
-	result, err := r.collection.UpdateOne(ctx, filter, upd)
-	if err != nil {
-		return err
-	}
-
-	if result.ModifiedCount != 1 {
-		return usecase.ErrRuntimeNotFound
-	}
-
-	return nil
 }

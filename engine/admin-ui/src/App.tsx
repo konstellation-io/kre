@@ -11,17 +11,14 @@ import { Route, Router } from 'react-router-dom';
 
 import AccessDenied from 'Pages/AccessDenied/AccessDenied';
 import AddApiToken from 'Pages/AddApiToken/AddApiToken';
-import AddRuntime from 'Pages/AddRuntime/AddRuntime';
 import AddUser from 'Pages/AddUser/AddUser';
 import AddVersion from 'Pages/AddVersion/AddVersion';
-import Dashboard from 'Pages/Dashboard/Dashboard';
 import { GetMe } from 'Graphql/queries/types/GetMe';
-import { GetRuntimes } from 'Graphql/queries/types/GetRuntimes';
+import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { GlobalHotKeys } from 'react-hotkeys';
 import Login from 'Pages/Login/Login';
 import Logs from 'Pages/Logs/Logs';
 import LogsPanel from 'Pages/Version/pages/Status/LogsPanel/LogsPanel';
-import { MONORUNTIME_MODE } from 'index';
 import MagicLink from 'Pages/MagicLink/MagicLink';
 import NotFound from 'Pages/NotFound/NotFound';
 import NotificationService from 'Components/NotificationService/NotificationService';
@@ -34,7 +31,6 @@ import SubscriptionService from 'Components/SubscriptionService/SubscriptionServ
 import Users from 'Pages/Users/Users';
 import UsersActivity from 'Pages/UsersActivity/UsersActivity';
 import VerifyEmail from 'Pages/VerifyEmail/VerifyEmail';
-import { buildRoute } from 'Utils/routes';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
 import history from './browserHistory';
 import keymaps from './keymaps';
@@ -44,16 +40,16 @@ import useLogs from 'Graphql/hooks/useLogs';
 import { useQuery } from '@apollo/client';
 
 const GetMeQuery = loader('Graphql/queries/getMe.graphql');
-const GetRuntimesQuery = loader('Graphql/queries/getRuntimes.graphql');
+const GetRuntimeQuery = loader('Graphql/queries/getRuntimeAndVersions.graphql');
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);
-  const { data: runtimesData, loading: runtimesLoading } = useQuery<
-    GetRuntimes
-  >(GetRuntimesQuery);
+  const { data: runtimeData, loading: runtimeLoading } = useQuery<
+    GetVersionConfStatus
+  >(GetRuntimeQuery);
   const { login } = useLogin();
 
-  if (loading || runtimesLoading) {
+  if (loading || runtimeLoading || !runtimeData) {
     return (
       <div className="splash">
         <SpinnerCircular />
@@ -61,14 +57,7 @@ function ProtectedRoutes() {
     );
   }
 
-  if (error || !data || !data.me) {
-    return <ErrorMessage />;
-  }
-
-  const monoruntime_Runtime = runtimesData?.runtimes[0];
-  // In mono-runtime mode, there must be a runtime created
-  if (MONORUNTIME_MODE && !monoruntime_Runtime) {
-    console.error('Mono Runtime: There is no runtime created.');
+  if (error || !data || !data.me || !runtimeData.runtime) {
     return <ErrorMessage />;
   }
 
@@ -82,39 +71,25 @@ function ProtectedRoutes() {
         <Switch>
           <Route path={protectedRoutes} component={AccessDenied} />
           <Redirect exact from={ROUTE.SETTINGS} to={ROUTE.SETTINGS_GENERAL} />
-          <Redirect
-            exact
-            from={ROUTE.RUNTIME_VERSION}
-            to={ROUTE.RUNTIME_VERSION_STATUS}
-          />
-          <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.RUNTIME_VERSIONS} />
+          <Redirect exact from={ROUTE.VERSION} to={ROUTE.VERSION_STATUS} />
 
-          <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
           <Route path={ROUTE.NEW_USER} component={AddUser} />
           <Route path={ROUTE.NEW_API_TOKEN} component={AddApiToken} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
-          {/* In mono-runtime mode, redirect from Home to Runtime page */}
-          {MONORUNTIME_MODE && (
-            <Redirect
-              exact
-              from={ROUTE.HOME}
-              to={buildRoute.runtime(ROUTE.RUNTIME, monoruntime_Runtime?.id)}
-            />
-          )}
+          <Redirect exact from={ROUTE.HOME} to={ROUTE.VERSIONS} />
 
-          <Route exact path={ROUTE.HOME} component={Dashboard} />
           <Route exact path={ROUTE.LOGS} component={Logs} />
           <Route
             path={[
-              ROUTE.RUNTIME_VERSION_CONFIGURATION,
-              ROUTE.RUNTIME_VERSION_METRICS,
-              ROUTE.RUNTIME_VERSION_DOCUMENTATION,
-              ROUTE.RUNTIME_VERSION_STATUS
+              ROUTE.VERSION_CONFIGURATION,
+              ROUTE.VERSION_METRICS,
+              ROUTE.VERSION_DOCUMENTATION,
+              ROUTE.VERSION_STATUS
             ]}
             component={Runtime}
           />
-          <Route path={ROUTE.RUNTIME_VERSIONS} component={Runtime} />
+          <Route path={ROUTE.VERSIONS} component={Runtime} />
 
           <Route path={ROUTE.SETTINGS} component={Settings} />
           <Route path={ROUTE.PROFILE} component={Profile} />

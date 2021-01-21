@@ -3,10 +3,8 @@ import {
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
 
-import { MONORUNTIME_MODE } from 'index';
 import PublishedVersionStatus from './components/PublishedVersionStatus/PublishedVersionStatus';
 import React from 'react';
-import RuntimeInfo from './components/RuntimeInfo/RuntimeInfo';
 import { Title } from 'kwc';
 import VersionInfo from './components/VersionInfo/VersionInfo';
 import { VersionStatus } from 'Graphql/types/globalTypes';
@@ -32,11 +30,9 @@ function RuntimeVersions({ runtime, versions }: Props) {
       <VersionInfo key={version.id} version={version} />
     ));
 
-  const showRuntimeInfo = !MONORUNTIME_MODE;
   return (
     <div className={styles.content}>
       <Title>Versions of runtime {runtime.name}</Title>
-      {showRuntimeInfo && <RuntimeInfo runtime={runtime} />}
       <PublishedVersionStatus
         noVersions={noVersions}
         nPublishedVersions={nPublishedVersions}

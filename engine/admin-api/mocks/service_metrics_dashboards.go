@@ -7,7 +7,6 @@ package mocks
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	entity "github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	reflect "reflect"
 )
 
@@ -35,15 +34,15 @@ func (m *MockDashboardService) EXPECT() *MockDashboardServiceMockRecorder {
 }
 
 // Create mocks base method
-func (m *MockDashboardService) Create(ctx context.Context, runtime *entity.Runtime, version, dashboardPath string) error {
+func (m *MockDashboardService) Create(ctx context.Context, version, dashboardPath string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, runtime, version, dashboardPath)
+	ret := m.ctrl.Call(m, "Create", ctx, version, dashboardPath)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create
-func (mr *MockDashboardServiceMockRecorder) Create(ctx, runtime, version, dashboardPath interface{}) *gomock.Call {
+func (mr *MockDashboardServiceMockRecorder) Create(ctx, version, dashboardPath interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDashboardService)(nil).Create), ctx, runtime, version, dashboardPath)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDashboardService)(nil).Create), ctx, version, dashboardPath)
 }
