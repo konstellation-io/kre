@@ -82,14 +82,6 @@ func TestCreateNewVersion(t *testing.T) {
 	s := newVersionSuite(t)
 	defer s.ctrl.Finish()
 
-	runtimeID := "run-1"
-
-	runtime := &entity.Runtime{
-		ID:           runtimeID,
-		Name:         "",
-		CreationDate: time.Time{},
-	}
-
 	userID := "user1"
 
 	userFound := &entity.User{
@@ -116,11 +108,8 @@ func TestCreateNewVersion(t *testing.T) {
 		t.Error(err)
 	}
 
-	ctx := context.Background()
-
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
 	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(4)
-	s.mocks.runtimeRepo.EXPECT().Get(ctx).Return(runtime, nil)
 	s.mocks.versionRepo.EXPECT().GetAll().Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
 	s.mocks.versionRepo.EXPECT().SetStatus(gomock.Any(), version.ID, entity.VersionStatusCreated).Return(nil)

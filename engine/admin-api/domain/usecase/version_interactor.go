@@ -140,17 +140,6 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, krt
 		return nil, nil, err
 	}
 
-	runtime, err := i.runtimeRepo.Get(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Check if the version is duplicated
-	versions, err := i.versionRepo.GetAll()
-	if err != nil {
-		return nil, nil, fmt.Errorf("error checking duplicated version: %w", err)
-	}
-
 	tmpDir, err := ioutil.TempDir("", "version")
 	if err != nil {
 		return nil, nil, fmt.Errorf("error creating temp dir for version: %w", err)
@@ -167,6 +156,13 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, krt
 		return nil, nil, err
 	}
 
+	// Versions are needed to check duplicates and fill config values
+	versions, err := i.versionRepo.GetAll()
+	if err != nil {
+		return nil, nil, fmt.Errorf("error checking duplicated version: %w", err)
+	}
+
+	// Check if the version is duplicated
 	for _, v := range versions {
 		if v.Name == krtYml.Version {
 			return nil, nil, ErrVersionDuplicated
@@ -199,89 +195,90 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, krt
 
 	notifyStatusCh := make(chan *entity.Version, 1)
 
-	go func() {
-		asyncCtx := context.Background()
-		defer func() {
-			err = tmpKrtFile.Close()
-			if err != nil {
-				i.logger.Errorf("error closing file: %s", err)
-				return
-			}
+	go i.completeVersionCreation(loggedUserID, tmpKrtFile, krtYml, tmpDir, versionCreated, notifyStatusCh)
 
-			err = os.Remove(tmpKrtFile.Name())
-			if err != nil {
-				i.logger.Errorf("error removing file: %s", err)
-			}
-		}()
+	return versionCreated, notifyStatusCh, nil
+}
 
-		contentErrors := krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
-		if len(contentErrors) > 0 {
-			errorMessage := "error processing krt"
-			i.logger.Errorf("%s: %s", errorMessage, err)
-			contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
-		}
+func (i *VersionInteractor) completeVersionCreation(loggedUserID string, tmpKrtFile *os.File, krtYml *krt.Krt, tmpDir string, versionCreated *entity.Version, notifyStatusCh chan *entity.Version) {
+	ctx := context.Background()
+	defer close(notifyStatusCh)
 
-		dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
-		if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
-			err := i.storeDashboards(ctx, runtime, dashboardsFolder, versionCreated.Name)
-			if err != nil {
-				errorMessage := "error creating dashboard"
-				i.logger.Errorf("%s: %s", errorMessage, err)
-				contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
-			}
-		}
-
-		docFolder := path.Join(tmpDir, "docs")
-		if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
-			err = i.docGenerator.Generate(versionCreated.ID, docFolder)
-			if err != nil {
-				errorMessage := "error generating version doc"
-				i.logger.Errorf("%s: %s", errorMessage, err)
-				contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
-			}
-
-			err = i.versionRepo.SetHasDoc(asyncCtx, versionCreated.ID, true)
-			if err != nil {
-				errorMessage := "error updating has doc field"
-				i.logger.Errorf("%s: %s", errorMessage, err)
-				contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
-			}
-		} else {
-			i.logger.Infof("No documentation found inside the krt files")
-		}
-
-		err = i.versionRepo.UploadKRTFile(versionCreated, tmpKrtFile.Name())
+	defer func() {
+		err := tmpKrtFile.Close()
 		if err != nil {
-			errorMessage := "error storing KRT file"
-			i.logger.Errorf("%s: %s", errorMessage, err)
-			contentErrors = append([]error{errors.New(errorMessage)}, contentErrors...)
-		}
-
-		if len(contentErrors) > 0 {
-			i.setStatusError(asyncCtx, versionCreated, contentErrors, notifyStatusCh)
+			i.logger.Errorf("error closing file: %s", err)
 			return
 		}
 
-		err = i.versionRepo.SetStatus(asyncCtx, versionCreated.ID, entity.VersionStatusCreated)
+		err = os.Remove(tmpKrtFile.Name())
 		if err != nil {
-			i.logger.Errorf("error setting version status: %s", err)
-
-			return
-		}
-
-		// Notify state
-		versionCreated.Status = entity.VersionStatusCreated
-		notifyStatusCh <- versionCreated
-
-		err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, versionCreated)
-		if err != nil {
-			i.logger.Errorf("error registering activity: %s", err)
-
-			return
+			i.logger.Errorf("error removing file: %s", err)
 		}
 	}()
 
-	return versionCreated, notifyStatusCh, nil
+	contentErrors := krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
+	if len(contentErrors) > 0 {
+		errorMessage := "error processing krt"
+		i.logger.Errorf("%s: %s", errorMessage, contentErrors)
+		contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
+	}
+
+	dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
+	if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
+		err := i.storeDashboards(ctx, dashboardsFolder, versionCreated.Name)
+		if err != nil {
+			errorMessage := "error creating dashboard"
+			i.logger.Errorf("%s: %s", errorMessage, err)
+			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+		}
+	}
+
+	docFolder := path.Join(tmpDir, "docs")
+	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
+		err = i.docGenerator.Generate(versionCreated.ID, docFolder)
+		if err != nil {
+			errorMessage := "error generating version doc"
+			i.logger.Errorf("%s: %s", errorMessage, err)
+			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+		}
+
+		err = i.versionRepo.SetHasDoc(ctx, versionCreated.ID, true)
+		if err != nil {
+			errorMessage := "error updating has doc field"
+			i.logger.Errorf("%s: %s", errorMessage, err)
+			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+		}
+	} else {
+		i.logger.Infof("No documentation found inside the krt files")
+	}
+
+	err := i.versionRepo.UploadKRTFile(versionCreated, tmpKrtFile.Name())
+	if err != nil {
+		errorMessage := "error storing KRT file"
+		i.logger.Errorf("%s: %s", errorMessage, err)
+		contentErrors = append([]error{errors.New(errorMessage)}, contentErrors...)
+	}
+
+	if len(contentErrors) > 0 {
+		i.setStatusError(ctx, versionCreated, contentErrors, notifyStatusCh)
+		return
+	}
+
+	err = i.versionRepo.SetStatus(ctx, versionCreated.ID, entity.VersionStatusCreated)
+	if err != nil {
+		i.logger.Errorf("error setting version status: %s", err)
+		return
+	}
+
+	// Notify state
+	versionCreated.Status = entity.VersionStatusCreated
+	notifyStatusCh <- versionCreated
+
+	err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, versionCreated)
+	if err != nil {
+		i.logger.Errorf("error registering activity: %s", err)
+	}
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
