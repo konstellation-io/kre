@@ -117,18 +117,8 @@ function getOptions(User) {
     },
     {
       ...UserActivityBase,
-      type: 'CREATE_RUNTIME',
-      vars: [
-        { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' }
-      ]
-    },
-    {
-      ...UserActivityBase,
       type: 'CREATE_VERSION',
       vars: [
-        { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' }
       ]
@@ -137,8 +127,6 @@ function getOptions(User) {
       ...UserActivityBase,
       type: 'PUBLISH_VERSION',
       vars: [
-        { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' },
         { key: 'OLD_PUBLISHED_VERSION_NAME', value: 'VERSION 1' },
@@ -154,8 +142,6 @@ function getOptions(User) {
       ...UserActivityBase,
       type: 'UNPUBLISH_VERSION',
       vars: [
-        { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' }
       ]
@@ -164,8 +150,6 @@ function getOptions(User) {
       ...UserActivityBase,
       type: 'STOP_VERSION',
       vars: [
-        { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' }
       ]
@@ -174,8 +158,6 @@ function getOptions(User) {
       ...UserActivityBase,
       type: 'START_VERSION',
       vars: [
-        { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' }
       ]
@@ -193,8 +175,6 @@ function getOptions(User) {
       ...UserActivityBase,
       type: 'UPDATE_VERSION_CONFIGURATION',
       vars: [
-        { key: 'RUNTIME_ID', value: 'ID_001' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'VERSION_ID', value: 'ID_002' },
         { key: 'VERSION_NAME', value: 'Version Y' },
         { key: 'CONFIG_KEYS', value: 'KEY_A, KEY_B' }
@@ -205,7 +185,6 @@ function getOptions(User) {
       type: 'CREATE_USER',
       vars: [
         { key: 'CREATED_USER_EMAIL', value: 'admin@konstellation.io' },
-        { key: 'RUNTIME_NAME', value: 'Runtime X' },
         { key: 'CREATED_USER_ACCESS_LEVEL', value: 'ADMIN' }
       ]
     },

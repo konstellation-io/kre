@@ -33,6 +33,7 @@ export enum NodeStatus {
 }
 
 export enum UserActivityType {
+  CREATE_RUNTIME = 'CREATE_RUNTIME',
   CREATE_USER = 'CREATE_USER',
   CREATE_VERSION = 'CREATE_VERSION',
   DELETE_API_TOKEN = 'DELETE_API_TOKEN',

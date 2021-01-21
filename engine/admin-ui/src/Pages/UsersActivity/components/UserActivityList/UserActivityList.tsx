@@ -6,6 +6,7 @@ import {
 } from 'Graphql/queries/types/GetUsersActivity';
 import React, { UIEvent, useState } from 'react';
 
+import { GetRuntime } from 'Graphql/queries/types/GetRuntime';
 import UserActivityItem from './UserActivityItem';
 import { loader } from 'graphql.macro';
 import { queryPayloadHelper } from 'Utils/formUtils';
@@ -13,6 +14,7 @@ import styles from './UserActivityList.module.scss';
 import { useQuery } from '@apollo/client';
 
 const GetUserActivityQuery = loader('Graphql/queries/getUserActivity.graphql');
+const GetRuntimeQuery = loader('Graphql/queries/getRuntime.graphql');
 
 const N_LIST_ITEMS_STEP = 30;
 const ITEM_HEIGHT = 76;
@@ -36,6 +38,11 @@ function UserActivityList({ variables }: Props) {
       fetchPolicy: 'no-cache'
     }
   );
+  const {
+    data: getRuntimeData,
+    loading: getRuntimeLoading,
+    error: getRuntimeError
+  } = useQuery<GetRuntime>(GetRuntimeQuery);
 
   const [usersActivityData, setUsersActivityData] = useState<
     GetUsersActivity_userActivityList[]
@@ -64,8 +71,9 @@ function UserActivityList({ variables }: Props) {
     }
   }
 
-  if (loading) return <SpinnerCircular />;
-  if (error) return <ErrorMessage />;
+  if (loading || getRuntimeLoading || !getRuntimeData)
+    return <SpinnerCircular />;
+  if (error || getRuntimeError) return <ErrorMessage />;
   if (!usersActivityData || usersActivityData.length === 0)
     return <InfoMessage message="No activity with the specified filters" />;
 
@@ -76,6 +84,7 @@ function UserActivityList({ variables }: Props) {
           <UserActivityItem
             key={userActivity.id}
             userActivity={userActivity}
+            runtimeId={getRuntimeData.runtime.id}
             idx={idx}
           />
         )

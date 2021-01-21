@@ -41,7 +41,8 @@ const Highlight: FC<HighlightProps> = ({ children, type }) => (
 );
 
 export default function getMessage(
-  userActivity: GetUsersActivity_userActivityList
+  userActivity: GetUsersActivity_userActivityList,
+  runtimeId: string
 ): [Message | null, string | undefined] {
   let message: Message | null = null;
 
@@ -56,8 +57,6 @@ export default function getMessage(
     {}
   );
 
-  const runtimeName = vars[VarTypes.RUNTIME_NAME];
-  const runtimeId = vars[VarTypes.RUNTIME_ID];
   const versionName = vars[VarTypes.VERSION_NAME];
   const versionId = vars[VarTypes.VERSION_ID];
   const oldPublishedVersionName = vars[VarTypes.OLD_PUBLISHED_VERSION_NAME];
@@ -73,16 +72,6 @@ export default function getMessage(
   const accessLevel = vars[VarTypes.ACCESS_LEVEL];
   const tokenName = vars[VarTypes.API_TOKEN_NAME];
 
-  const runtimeLink = runtimeId ? (
-    <Link
-      to={buildRoute.runtime(ROUTE.RUNTIME, runtimeId)}
-      className={cx(styles.link)}
-    >
-      {runtimeName}
-    </Link>
-  ) : (
-    undefined
-  );
   const versionLink =
     runtimeId && versionId ? (
       <Link
@@ -128,8 +117,6 @@ export default function getMessage(
         <>
           New Version created:
           {versionLink}
-          at Runtime
-          {runtimeLink}
         </>
       );
       break;
@@ -156,8 +143,6 @@ export default function getMessage(
           {versionLink}
           Have been
           <Highlight type="published">Published</Highlight>
-          at Runtime
-          {runtimeLink}
           {oldVersionLink && (
             <>
               {'. Previous published version: '}
@@ -174,8 +159,6 @@ export default function getMessage(
           {versionLink}
           Have been
           <Highlight type="unpublished">Unpublished</Highlight>
-          at Runtime
-          {runtimeLink}
         </>
       );
       break;
@@ -186,8 +169,6 @@ export default function getMessage(
           {versionLink}
           Have been
           <Highlight type="stopped">Stopped</Highlight>
-          at Runtime
-          {runtimeLink}
         </>
       );
       break;
@@ -198,8 +179,6 @@ export default function getMessage(
           {versionLink}
           Have been
           <Highlight type="started">Started</Highlight>
-          at Runtime
-          {runtimeLink}
         </>
       );
       break;
