@@ -96,13 +96,6 @@ describe('messageGenerator', () => {
     setWrapper({ type: UserActivityType.LOGOUT });
   });
 
-  it('show right CREATE_RUNTIME message', () => {
-    setWrapper({
-      type: UserActivityType.CREATE_RUNTIME,
-      vars: [...runtime]
-    });
-  });
-
   it('show right CREATE_VERSION message', () => {
     setWrapper({
       type: UserActivityType.CREATE_VERSION,

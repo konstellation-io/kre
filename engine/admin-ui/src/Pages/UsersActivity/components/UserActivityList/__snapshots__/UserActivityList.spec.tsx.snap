@@ -1,13 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`messageGenerator show right CREATE_RUNTIME message 1`] = `
-<div>
-  <div
-    className="message"
-  />
-</div>
-`;
-
 exports[`messageGenerator show right CREATE_VERSION message 1`] = `
 <div>
   <div

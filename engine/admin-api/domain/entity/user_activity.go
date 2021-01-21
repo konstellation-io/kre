@@ -9,7 +9,6 @@ type UserActivityType string
 const (
 	UserActivityTypeLogin                      UserActivityType = "LOGIN"
 	UserActivityTypeLogout                     UserActivityType = "LOGOUT"
-	UserActivityTypeCreateRuntime              UserActivityType = "CREATE_RUNTIME"
 	UserActivityTypeCreateVersion              UserActivityType = "CREATE_VERSION"
 	UserActivityTypePublishVersion             UserActivityType = "PUBLISH_VERSION"
 	UserActivityTypeUnpublishVersion           UserActivityType = "UNPUBLISH_VERSION"
@@ -27,7 +26,7 @@ const (
 
 func (e UserActivityType) IsValid() bool {
 	switch e {
-	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateRuntime, UserActivityTypeCreateVersion, UserActivityTypePublishVersion, UserActivityTypeUnpublishVersion, UserActivityTypeStartVersion, UserActivityTypeStopVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration, UserActivityTypeCreateUser, UserActivityTypeRemoveUsers, UserActivityTypeUpdateAccessLevels, UserActivityTypeRevokeSessions:
+	case UserActivityTypeLogin, UserActivityTypeLogout, UserActivityTypeCreateVersion, UserActivityTypePublishVersion, UserActivityTypeUnpublishVersion, UserActivityTypeStartVersion, UserActivityTypeStopVersion, UserActivityTypeUpdateSetting, UserActivityTypeUpdateVersionConfiguration, UserActivityTypeCreateUser, UserActivityTypeRemoveUsers, UserActivityTypeUpdateAccessLevels, UserActivityTypeRevokeSessions:
 		return true
 	}
 	return false

@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
@@ -220,43 +221,18 @@ func (i *VersionInteractor) completeVersionCreation(loggedUserID string, tmpKrtF
 	contentErrors := krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
 	if len(contentErrors) > 0 {
 		errorMessage := "error processing krt"
-		i.logger.Errorf("%s: %s", errorMessage, contentErrors)
 		contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
 	}
 
 	dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
-	if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
-		err := i.storeDashboards(ctx, dashboardsFolder, versionCreated.Name)
-		if err != nil {
-			errorMessage := "error creating dashboard"
-			i.logger.Errorf("%s: %s", errorMessage, err)
-			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
-		}
-	}
+	contentErrors = i.saveKRTDashboards(dashboardsFolder, ctx, versionCreated, contentErrors)
 
 	docFolder := path.Join(tmpDir, "docs")
-	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
-		err = i.docGenerator.Generate(versionCreated.ID, docFolder)
-		if err != nil {
-			errorMessage := "error generating version doc"
-			i.logger.Errorf("%s: %s", errorMessage, err)
-			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
-		}
-
-		err = i.versionRepo.SetHasDoc(ctx, versionCreated.ID, true)
-		if err != nil {
-			errorMessage := "error updating has doc field"
-			i.logger.Errorf("%s: %s", errorMessage, err)
-			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
-		}
-	} else {
-		i.logger.Infof("No documentation found inside the krt files")
-	}
+	contentErrors = i.saveKRTDoc(docFolder, versionCreated, contentErrors, ctx)
 
 	err := i.versionRepo.UploadKRTFile(versionCreated, tmpKrtFile.Name())
 	if err != nil {
 		errorMessage := "error storing KRT file"
-		i.logger.Errorf("%s: %s", errorMessage, err)
 		contentErrors = append([]error{errors.New(errorMessage)}, contentErrors...)
 	}
 
@@ -279,6 +255,36 @@ func (i *VersionInteractor) completeVersionCreation(loggedUserID string, tmpKrtF
 	if err != nil {
 		i.logger.Errorf("error registering activity: %s", err)
 	}
+}
+
+func (i *VersionInteractor) saveKRTDashboards(dashboardsFolder string, ctx context.Context, versionCreated *entity.Version, contentErrors []error) []error {
+	if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
+		err := i.storeDashboards(ctx, dashboardsFolder, versionCreated.Name)
+		if err != nil {
+			errorMessage := "error creating dashboard"
+			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+		}
+	}
+	return contentErrors
+}
+
+func (i *VersionInteractor) saveKRTDoc(docFolder string, versionCreated *entity.Version, contentErrors []error, ctx context.Context) []error {
+	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
+		err = i.docGenerator.Generate(versionCreated.ID, docFolder)
+		if err != nil {
+			errorMessage := "error generating version doc"
+			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+		}
+
+		err = i.versionRepo.SetHasDoc(ctx, versionCreated.ID, true)
+		if err != nil {
+			errorMessage := "error updating has doc field"
+			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))
+		}
+	} else {
+		i.logger.Infof("No documentation found inside the krt files")
+	}
+	return contentErrors
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
@@ -647,6 +653,7 @@ func (i *VersionInteractor) setStatusError(ctx context.Context, version *entity.
 		errorMessages[idx] = err.Error()
 	}
 
+	i.logger.Errorf("The version \"%s\" has the following errors: %s", version.Name, strings.Join(errorMessages, "\n"))
 	versionWithError, err := i.versionRepo.SetErrors(ctx, version, errorMessages)
 	if err != nil {
 		i.logger.Errorf("error saving version error state: %s", err)
