@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	domainService "github.com/konstellation-io/kre/engine/admin-api/domain/service"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
@@ -39,8 +38,8 @@ func CreateDashboardService(cfg *config.Config, logger logging.Logger) domainSer
 	return &Chronograf{cfg, logger, client}
 }
 
-func (c *Chronograf) Create(ctx context.Context, runtime *entity.Runtime, version, dashboardPath string) error {
-	c.logger.Infof("creating dashboard for version %s in runtime %s", version, runtime.Name)
+func (c *Chronograf) Create(ctx context.Context, version, dashboardPath string) error {
+	c.logger.Infof("Creating dashboard: \"%s\" for version: \"%s\"", dashboardPath, version)
 
 	data, err := os.Open(dashboardPath)
 	if err != nil {
