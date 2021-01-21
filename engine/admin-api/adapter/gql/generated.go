@@ -1433,12 +1433,6 @@ type Runtime {
   entrypointAddress: String!
 }
 
-enum RuntimeStatus {
-  CREATING
-  STARTED
-  ERROR
-}
-
 type Edge {
   id: ID!
   fromNode: ID!
