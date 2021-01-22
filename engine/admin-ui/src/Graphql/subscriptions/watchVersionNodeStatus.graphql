@@ -1,5 +1,5 @@
-subscription WatchVersionNodeStatus($versionId: ID!) {
-  watchNodeStatus(versionId: $versionId) {
+subscription WatchVersionNodeStatus($versionName: String!) {
+  watchNodeStatus(versionName: $versionName) {
     id
     status
   }

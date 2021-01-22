@@ -12,11 +12,11 @@ const GetVersionWorkflowsQuery = loader(
 
 export const NODE_NAME_ENTRYPOINT = 'Entry points';
 
-export default function useWorkflowsAndNodes(versionId: string) {
+export default function useWorkflowsAndNodes(versionName: string) {
   const { data } = useQuery<GetVersionWorkflows, GetVersionWorkflowsVariables>(
     GetVersionWorkflowsQuery,
     {
-      variables: { versionId }
+      variables: { versionName }
     }
   );
 

@@ -41,7 +41,7 @@ function Warning({ runtime, publishedVersion }: WarningProps) {
     <>
       <Tag type={TagTypes.WARNING}>WARNING</Tag>A published version already
       exists, publishing this version will unpublish the following version:{' '}
-      <Link to={buildRoute(ROUTE.VERSION, publishedVersion.id)}>
+      <Link to={buildRoute(ROUTE.VERSION, publishedVersion.name)}>
         <span
           className={styles.publishedVersion}
           title={publishedVersion.description}
@@ -119,7 +119,7 @@ function VersionActions({
   function openModal(label: string, mutation: Function) {
     modalInfo.current = {
       action: (comment: string) => {
-        mutation(getMutationVars(version.id, comment));
+        mutation(getMutationVars(version.name, comment));
         closeModal();
       },
       label

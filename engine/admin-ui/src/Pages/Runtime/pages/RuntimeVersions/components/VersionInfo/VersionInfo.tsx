@@ -18,7 +18,7 @@ function VersionInfo({ version }: Props) {
   const isPublishedVersion = version.status === VersionStatus.PUBLISHED;
   const hasErrors = version.status === VersionStatus.ERROR;
 
-  const versionPath = buildRoute(ROUTE.VERSION_STATUS, version.id);
+  const versionPath = buildRoute(ROUTE.VERSION_STATUS, version.name);
 
   const errors = version.errors.map((error: string, index: number) => (
     <p key={index} className={styles.versionError}>

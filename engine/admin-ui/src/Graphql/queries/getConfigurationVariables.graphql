@@ -1,5 +1,5 @@
-  query GetConfigurationVariables($versionId: ID!) {
-  version(id: $versionId) {
+query GetConfigurationVariables($versionName: String!) {
+  version(name: $versionName) {
     id
     status
     config {

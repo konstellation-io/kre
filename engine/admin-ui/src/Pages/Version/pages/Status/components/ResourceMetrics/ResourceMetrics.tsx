@@ -50,7 +50,7 @@ function buildDElement(date: string, value: number): D {
 
 function ResourceMetrics() {
   const [expanded, setExpanded] = useState(false);
-  const { versionId } = useParams<VersionRouteParams>();
+  const { versionName } = useParams<VersionRouteParams>();
   const [fromDate] = useState<Moment>(
     moment().subtract(N_MINUTES_TO_SHOW, 'minute')
   );
@@ -64,7 +64,7 @@ function ResourceMetrics() {
     GetResourceMetricsVariables
   >(GetResourceMetricsQuery, {
     variables: {
-      versionId,
+      versionName,
       fromDate: fromDate.toISOString(),
       toDate: toDate.current.toISOString()
     },
@@ -86,7 +86,7 @@ function ResourceMetrics() {
   const subscribe = () =>
     subscribeToMore({
       document: WatchResourceMetricsSubscription,
-      variables: { versionId, fromDate: toDate.current.toISOString() },
+      variables: { versionName, fromDate: toDate.current.toISOString() },
       updateQuery: (prev, { subscriptionData }: SubscriptionData) => {
         const newResourceMetrics = get(
           subscriptionData.data,

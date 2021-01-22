@@ -3,7 +3,7 @@ query GetUsersActivity(
   $fromDate: String
   $toDate: String
   $types: [UserActivityType!]
-  $versionIds: [ID!]
+  $versionNames: [String!]
   $lastId: String
 ) {
   userActivityList(
@@ -11,7 +11,7 @@ query GetUsersActivity(
     fromDate: $fromDate
     toDate: $toDate
     types: $types
-    versionIds: $versionIds
+    versionNames: $versionNames
     lastId: $lastId
   ) {
     id

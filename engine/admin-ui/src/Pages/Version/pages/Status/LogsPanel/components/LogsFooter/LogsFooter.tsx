@@ -23,7 +23,7 @@ type Props = {
   clearLogs: () => void;
   toggleAutoScrollActive: () => void;
   runtimeId: string;
-  versionId: string;
+  versionName: string;
   autoScrollActive: boolean;
   logs: GetServerLogs_logs_items[];
 };
@@ -33,13 +33,13 @@ function LogsFooter({
   toggleAutoScrollActive,
   autoScrollActive,
   runtimeId,
-  versionId,
+  versionName,
   logs
 }: Props) {
   const followText = `${autoScrollActive ? 'UN' : ''}FOLLOW NEW LOGS`;
 
   function onDownloadLogs() {
-    const filename = `logs_${runtimeId}_${versionId}_${new Date().toISOString()}`;
+    const filename = `logs_${runtimeId}_${versionName}_${new Date().toISOString()}`;
     const logTraces = logs.map(getLogTrace).join('\n');
 
     downloadFile(filename, logTraces);

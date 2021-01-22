@@ -92,7 +92,7 @@ export interface LogFilters {
 }
 
 export interface PublishVersionInput {
-  versionId: string;
+  versionName: string;
   comment: string;
 }
 
@@ -102,17 +102,17 @@ export interface SettingsInput {
 }
 
 export interface StartVersionInput {
-  versionId: string;
+  versionName: string;
   comment: string;
 }
 
 export interface StopVersionInput {
-  versionId: string;
+  versionName: string;
   comment: string;
 }
 
 export interface UnpublishVersionInput {
-  versionId: string;
+  versionName: string;
   comment: string;
 }
 
@@ -123,7 +123,7 @@ export interface UpdateAccessLevelInput {
 }
 
 export interface UpdateConfigurationInput {
-  versionId: string;
+  versionName: string;
   configurationVariables: ConfigurationVariablesInput[];
 }
 

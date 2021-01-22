@@ -122,7 +122,7 @@ function LogsPanel() {
           >
             <LogsTab
               runtimeId={tab.runtimeId}
-              versionId={tab.versionId}
+              versionName={tab.versionName}
               uniqueId={tab.uniqueId}
               filterValues={tab.filters}
             />

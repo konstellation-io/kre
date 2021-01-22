@@ -51,7 +51,7 @@ function getLogsQueryFilters(
 
 type Props = {
   runtimeId: string;
-  versionId: string;
+  versionName: string;
   filterValues: GetLogTabs_logTabs_filters;
   onNewLogs: Function;
   logs: GetServerLogs_logs_items[];
@@ -60,7 +60,7 @@ type Props = {
 
 function LogsList({
   runtimeId,
-  versionId,
+  versionName,
   filterValues,
   logs,
   onNewLogs,
@@ -72,7 +72,7 @@ function LogsList({
   const { data: localData } = useQuery<GetLogTabs>(GET_LOGS_OPENED);
   const logsOpened = localData?.logsOpened;
 
-  const { nodeNameToId } = useWorkflowsAndNodes(versionId);
+  const { nodeNameToId } = useWorkflowsAndNodes(versionName);
   const [autoScrollActive, setAutoScrollActive] = useState(true);
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ function LogsList({
     GetServerLogsVariables
   >(GetServerLogsQuery, {
     variables: {
-      versionId,
+      versionName,
       filters: formatFilters(filterValues)
     },
     onCompleted: data => {
@@ -109,7 +109,7 @@ function LogsList({
     subscribeToMore<GetLogs, GetLogsVariables>({
       document: WatchNodeLogs,
       variables: {
-        versionId,
+        versionName,
         filters: formatFilters(filterValues)
       },
       updateQuery: (prev, { subscriptionData }) => {
@@ -148,7 +148,7 @@ function LogsList({
     setRefetching(true);
     fetchMore({
       variables: {
-        versionId,
+        versionName,
         filters: formatFilters(filterValues),
         cursor: nextPage
       },
@@ -251,7 +251,7 @@ function LogsList({
         toggleAutoScrollActive={toggleAutoScrollActive}
         autoScrollActive={autoScrollActive}
         runtimeId={runtimeId}
-        versionId={versionId}
+        versionName={versionName}
         logs={logs}
       />
     </>

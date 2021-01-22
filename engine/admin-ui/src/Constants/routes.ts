@@ -1,5 +1,5 @@
 const VERSIONS = `/versions`;
-const VERSION = `${VERSIONS}/:versionId`;
+const VERSION = `${VERSIONS}/:versionName`;
 const SETTINGS = '/settings';
 const ROUTE = {
   HOME: '/',
@@ -25,7 +25,7 @@ const ROUTE = {
 };
 
 export interface VersionRouteParams {
-  versionId: string;
+  versionName: string;
 }
 
 export default ROUTE;

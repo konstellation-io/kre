@@ -56,9 +56,7 @@ export default function getMessage(
   );
 
   const versionName = vars[VarTypes.VERSION_NAME];
-  const versionId = vars[VarTypes.VERSION_ID];
   const oldPublishedVersionName = vars[VarTypes.OLD_PUBLISHED_VERSION_NAME];
-  const oldPublishedVersionId = vars[VarTypes.OLD_PUBLISHED_VERSION_ID];
   const comment = vars[VarTypes.COMMENT];
   const settingName = vars[VarTypes.SETTING_NAME];
   const oldValue = vars[VarTypes.OLD_VALUE];
@@ -71,9 +69,9 @@ export default function getMessage(
   const tokenName = vars[VarTypes.API_TOKEN_NAME];
 
   const versionLink =
-    runtimeId && versionId ? (
+    runtimeId && versionName ? (
       <Link
-        to={buildRoute(ROUTE.VERSION_STATUS, versionId)}
+        to={buildRoute(ROUTE.VERSION_STATUS, versionName)}
         className={cx(styles.link)}
       >
         {versionName}
@@ -84,9 +82,9 @@ export default function getMessage(
   const oldVersionLink =
     userActivity.type === UserActivityType.PUBLISH_VERSION &&
     runtimeId &&
-    oldPublishedVersionId ? (
+    oldPublishedVersionName ? (
       <Link
-        to={buildRoute(ROUTE.VERSION_STATUS, oldPublishedVersionId)}
+        to={buildRoute(ROUTE.VERSION_STATUS, oldPublishedVersionName)}
         className={cx(styles.link)}
       >
         {oldPublishedVersionName}

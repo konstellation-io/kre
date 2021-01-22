@@ -20,5 +20,5 @@ export interface WatchVersionNodeStatus {
 }
 
 export interface WatchVersionNodeStatusVariables {
-  versionId: string;
+  versionName: string;
 }

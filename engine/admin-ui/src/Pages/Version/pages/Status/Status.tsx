@@ -46,14 +46,14 @@ type Props = {
 };
 
 function Status({ version, runtime }: Props) {
-  const { versionId } = useParams<VersionRouteParams>();
+  const { versionName } = useParams<VersionRouteParams>();
   const { updateEntrypointStatus } = useOpenedVersion();
 
   const { data, loading, error, subscribeToMore } = useQuery<
     GetVersionWorkflows,
     GetVersionWorkflowsVariables
   >(GetVersionWorkflowsQuery, {
-    variables: { versionId },
+    variables: { versionName },
     onCompleted: () => subscribe()
   });
 
@@ -69,7 +69,7 @@ function Status({ version, runtime }: Props) {
   const subscribe = () =>
     subscribeToMore<WatchVersionNodeStatus, WatchVersionNodeStatusVariables>({
       document: VersionNodeStatusSubscription,
-      variables: { versionId },
+      variables: { versionName },
       updateQuery: (prev, { subscriptionData }) => {
         const node = subscriptionData.data.watchNodeStatus;
         if (node.id === 'entrypoint') {

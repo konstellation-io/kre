@@ -143,9 +143,9 @@ module.exports = {
     users: () => new MockList([20, 30]),
     alerts: () => new MockList([1, 4]),
     versions: () => [
-      generateVersion({ id: 'V1', name: 'Version A', status: 'PUBLISHED' }),
-      generateVersion({ id: 'V2', name: 'Version B', status: 'PUBLISHED' }),
-      generateVersion({ id: 'V3', name: 'Version C', status: 'STARTED' }),
+      generateVersion({ id: 'V1', name: 'Version-A', status: 'PUBLISHED' }),
+      generateVersion({ id: 'V2', name: 'Version-B', status: 'PUBLISHED' }),
+      generateVersion({ id: 'V3', name: 'Version-C', status: 'STARTED' }),
     ],
     domains: () => new MockList([2, 6]),
     userActivityList: () => new MockList([30, 30]),
@@ -172,7 +172,7 @@ module.exports = {
     }
   }),
   Mutation: () => ({
-    createVersion: () => generateVersion({ id: 'V3', name: 'Version C' }),
+    createVersion: () => generateVersion({ id: 'V3', name: 'Version-C' }),
     updateSettings: () => ({ errors: [], settings: this.Settings }),
     deleteApiToken: (_, b) => {
       return { id: b.input.id };

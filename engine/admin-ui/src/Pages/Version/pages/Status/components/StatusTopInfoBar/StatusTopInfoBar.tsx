@@ -16,10 +16,10 @@ const GetVersionWorkflowsQuery = loader(
 );
 
 function StatusTopInfoBar() {
-  const { versionId } = useParams<VersionRouteParams>();
+  const { versionName } = useParams<VersionRouteParams>();
   const { data } = useQuery<GetVersionWorkflows, GetVersionWorkflowsVariables>(
     GetVersionWorkflowsQuery,
-    { variables: { versionId } }
+    { variables: { versionName } }
   );
 
   const nWorkflows = data?.version.workflows.length ?? 0;

@@ -53,7 +53,7 @@ const mockData = {
 };
 jest.mock('react-router', () => ({
   useParams: jest.fn(() => ({
-    runtimeId: 'someId'
+    versionName: ''
   }))
 }));
 const mockWriteData = jest.fn();

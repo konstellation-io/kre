@@ -65,13 +65,9 @@ function UsersActivity() {
     setValue(field, newValue);
   }
 
-  function getVersionId(versionName: string) {
-    return data?.versions.find(v => v.name === versionName)?.id || '';
-  }
-
-  function getVersionIds(versionsSelection: GroupSelectData): string[] {
+  function getVersionNames(versionsSelection: GroupSelectData): string[] {
     return Object.entries(versionsSelection)
-      .map(([_, versionNames]) => versionNames.map(getVersionId))
+      .map(([_, versionNames]) => versionNames)
       .flat();
   }
 
@@ -81,7 +77,7 @@ function UsersActivity() {
       fromDate: formData.fromDate?.toISOString(),
       toDate: formData.toDate?.toISOString(),
       types: formData.types,
-      versionIds: getVersionIds(formData.versionIds),
+      versionNames: getVersionNames(formData.versionIds),
       lastId: null
     };
 

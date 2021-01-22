@@ -36,5 +36,5 @@ export interface GetConfigurationVariables {
 }
 
 export interface GetConfigurationVariablesVariables {
-  versionId: string;
+  versionName: string;
 }

@@ -47,9 +47,9 @@ function Documentation() {
   const location = useLocation();
   const params = useParams<VersionRouteParams>();
 
-  const baseUrl = buildRoute(ROUTES.VERSION_DOCUMENTATION, params.versionId);
+  const baseUrl = buildRoute(ROUTES.VERSION_DOCUMENTATION, params.versionName);
   const docPath = location.pathname.replace(baseUrl, '');
-  const apiDocUrl = `${API_BASE_URL}/static/version/${params.versionId}/docs/${docPath}`;
+  const apiDocUrl = `${API_BASE_URL}/static/version/${params.versionName}/docs/${docPath}`;
   const file = useDocFile(apiDocUrl);
 
   useEffect(() => {

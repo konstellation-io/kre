@@ -108,10 +108,10 @@ export default function useVersionAction(runtimeId: string) {
   };
 
   function getMutationVars(
-    versionId: string,
+    versionName: string,
     comment: string
   ): MutationsVariables {
-    return { variables: { input: { versionId, comment } } };
+    return { variables: { input: { versionName, comment } } };
   }
 
   return {

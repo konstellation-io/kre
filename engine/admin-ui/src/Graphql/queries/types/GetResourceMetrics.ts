@@ -19,7 +19,7 @@ export interface GetResourceMetrics {
 }
 
 export interface GetResourceMetricsVariables {
-  versionId: string;
+  versionName: string;
   fromDate: string;
   toDate: string;
 }
