@@ -106,9 +106,9 @@ func (i *VersionInteractor) GetAll(loggedUserID string) ([]*entity.Version, erro
 	return versions, nil
 }
 
-// GetByID returns a Version by its ID
-func (i *VersionInteractor) GetByID(loggedUserID, id string) (*entity.Version, error) {
-	v, err := i.versionRepo.GetByID(id)
+// GetByName returns a Version by its ID
+func (i *VersionInteractor) GetByName(ctx context.Context, loggedUserID, name string) (*entity.Version, error) {
+	v, err := i.versionRepo.GetByName(ctx, name)
 	if err != nil {
 		return nil, err
 	}
@@ -344,16 +344,16 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 func (i *VersionInteractor) Start(
 	ctx context.Context,
 	loggedUserID string,
-	versionID string,
+	versionName string,
 	comment string,
 ) (*entity.Version, chan *entity.Version, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
 		return nil, nil, err
 	}
 
-	i.logger.Infof("The user %s is starting version %s", loggedUserID, versionID)
+	i.logger.Infof("The user %s is starting version %s", loggedUserID, versionName)
 
-	v, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByName(ctx, versionName)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -391,16 +391,16 @@ func (i *VersionInteractor) Start(
 func (i *VersionInteractor) Stop(
 	ctx context.Context,
 	loggedUserID string,
-	versionID string,
+	versionName string,
 	comment string,
 ) (*entity.Version, chan *entity.Version, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
 		return nil, nil, err
 	}
 
-	i.logger.Infof("The user %s is stopping version %s", loggedUserID, versionID)
+	i.logger.Infof("The user %s is stopping version %s", loggedUserID, versionName)
 
-	v, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByName(ctx, versionName)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -467,14 +467,14 @@ func (i *VersionInteractor) changeStatusAndNotify(
 }
 
 // Publish set a Version as published on DB and K8s
-func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, versionName string, comment string) (*entity.Version, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
 		return nil, err
 	}
 
-	i.logger.Infof("The user %s is publishing version %s", loggedUserID, versionID)
+	i.logger.Infof("The user %s is publishing version %s", loggedUserID, versionName)
 
-	v, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByName(ctx, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -511,14 +511,14 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ve
 }
 
 // Unpublish set a Version as not published on DB and K8s
-func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, versionID string, comment string) (*entity.Version, error) {
+func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, versionName string, comment string) (*entity.Version, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
 		return nil, err
 	}
 
-	i.logger.Infof("The user %s is unpublishing version %s", loggedUserID, versionID)
+	i.logger.Infof("The user %s is unpublishing version %s", loggedUserID, versionName)
 
-	v, err := i.versionRepo.GetByID(versionID)
+	v, err := i.versionRepo.GetByName(ctx, versionName)
 	if err != nil {
 		return nil, err
 	}

@@ -66,7 +66,7 @@ func (mr *MockAPITokenRepoMockRecorder) Create(ctx, apiToken, code interface{}) 
 // GetByID mocks base method
 func (m *MockAPITokenRepo) GetByID(ctx context.Context, id string) (*entity.APIToken, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", ctx, id)
+	ret := m.ctrl.Call(m, "GetByName", ctx, id)
 	ret0, _ := ret[0].(*entity.APIToken)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
@@ -75,7 +75,7 @@ func (m *MockAPITokenRepo) GetByID(ctx context.Context, id string) (*entity.APIT
 // GetByID indicates an expected call of GetByID
 func (mr *MockAPITokenRepoMockRecorder) GetByID(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockAPITokenRepo)(nil).GetByID), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockAPITokenRepo)(nil).GetByID), ctx, id)
 }
 
 // GetByUserID mocks base method
