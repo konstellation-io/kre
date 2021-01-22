@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/konstellation-io/kre/engine/k8s-manager/config"
 	"github.com/konstellation-io/kre/engine/k8s-manager/entity"
+	"github.com/konstellation-io/kre/engine/k8s-manager/kubernetes/node"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/tools/cache"
 	"strings"
@@ -127,16 +128,16 @@ func (w *Watcher) WatchNodeStatus(versionName string, statusCh chan<- entity.Nod
 	w.logger.Debugf("[WatchNodeStatus] watching '%s'", versionName)
 
 	labelSelector := fmt.Sprintf("version-name=%s,type in (node, entrypoint)", versionName)
-	resolver := NodeStatusResolver{
-		out:        statusCh,
-		logger:     w.logger,
-		lastStatus: map[string]entity.NodeStatus{},
+	resolver := node.NodeStatusResolver{
+		Out:        statusCh,
+		Logger:     w.logger,
+		LastStatus: map[string]entity.NodeStatus{},
 	}
 
 	return w.watchResources(labelSelector, cache.ResourceEventHandlerFuncs{
-		AddFunc:    resolver.onAdd,
-		UpdateFunc: resolver.onUpdate,
-		DeleteFunc: resolver.onDelete,
+		AddFunc:    resolver.OnAdd,
+		UpdateFunc: resolver.OnUpdate,
+		DeleteFunc: resolver.OnDelete,
 	})
 }
 
