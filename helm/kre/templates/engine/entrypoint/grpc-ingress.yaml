@@ -5,7 +5,7 @@ metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    {{ if .Values.entrypointTLS }}
+    {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
@@ -29,14 +29,14 @@ metadata:
       default_type application/grpc;
 
 spec:
-  {{ if .Values.entrypointTLS -}}
+  {{ if .Values.entrypoint.tls -}}
   tls:
     - hosts:
-        - entrypoint.{{ .Values.host }}
-      secretName: entrypoint.{{ .Values.host }}-tls
+        - entrypoint.{{ .Values.entrypoint.host }}
+      secretName: entrypoint.{{ .Values.entrypoint.host }}-tls
   {{ end -}}
   rules:
-    - host: entrypoint.{{ .Values.host }}
+    - host: entrypoint.{{ .Values.entrypoint.host }}
       http:
         paths:
           - path: /
@@ -50,7 +50,7 @@ kind: Route
 metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint
   annotations:
-    {{ if .Values.entrypointTLS }}
+    {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
@@ -58,7 +58,7 @@ metadata:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "runtime.fullname" . }}-entrypoint
 spec:
-  host: entrypoint.{{ .Values.host }}
+  host: entrypoint.{{ .Values.entrypoint.host }}
   path: /  
   port:
     targetPort: grpc
@@ -79,7 +79,7 @@ metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    {{ if .Values.entrypointTLS }}
+    {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
@@ -103,14 +103,14 @@ metadata:
       default_type application/grpc;
 
 spec:
-  {{ if .Values.entrypointTLS -}}
+  {{ if .Values.entrypoint.tls -}}
   tls:
     - hosts:
-        - entrypoint.{{ .Values.host }}
-      secretName: entrypoint.{{ .Values.host }}-tls
+        - entrypoint.{{ .Values.entrypoint.host }}
+      secretName: entrypoint.{{ .Values.entrypoint.host }}-tls
   {{ end -}}
   rules:
-    - host: entrypoint.{{ .Values.host }}
+    - host: entrypoint.{{ .Values.entrypoint.host }}
       http:
         paths:
           - path: /

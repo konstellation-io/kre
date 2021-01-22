@@ -1,4 +1,4 @@
-{{- if and ( eq .Values.certManager.enabled true) ( eq .Values.config.runtime.entrypoint.tls true) }}
+{{- if and ( eq .Values.certManager.enabled true) ( eq .Values.entrypoint.tls true) }}
 apiVersion: cert-manager.io/v1alpha3
 kind: ClusterIssuer
 metadata:

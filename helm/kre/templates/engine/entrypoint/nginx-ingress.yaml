@@ -5,21 +5,21 @@ metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    {{ if .Values.entrypointTLS }}
+    {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
     nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
     nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
 spec:
-  {{ if .Values.entrypointTLS -}}
+  {{ if .Values.entrypoint.tls -}}
   tls:
     - hosts:
-        - proto.{{ .Values.host }}
-      secretName: proto.{{ .Values.host }}-tls
+        - proto.{{ .Values.entrypoint.host }}
+      secretName: proto.{{ .Values.entrypoint.host }}-tls
   {{ end -}}
   rules:
-    - host: proto.{{ .Values.host }}
+    - host: proto.{{ .Values.entrypoint.host }}
       http:
         paths:
           - path: /
@@ -33,7 +33,7 @@ kind: Route
 metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
   annotations:
-    {{ if .Values.entrypointTLS }}
+    {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
@@ -41,7 +41,7 @@ metadata:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "runtime.fullname" . }}-entrypoint-web
 spec:
-  host: proto.{{ .Values.host }}
+  host: proto.{{ .Values.entrypoint.host }}
   path: /  
   port:
     targetPort: web
@@ -62,21 +62,21 @@ metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    {{ if .Values.entrypointTLS }}
+    {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
     nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
     nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
 spec:
-  {{ if .Values.entrypointTLS -}}
+  {{ if .Values.entrypoint.tls -}}
   tls:
     - hosts:
-        - proto.{{ .Values.host }}
-      secretName: proto.{{ .Values.host }}-tls
+        - proto.{{ .Values.entrypoint.host }}
+      secretName: proto.{{ .Values.entrypoint.host }}-tls
   {{ end -}}
   rules:
-    - host: proto.{{ .Values.host }}
+    - host: proto.{{ .Values.entrypoint.host }}
       http:
         paths:
           - path: /

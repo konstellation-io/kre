@@ -47,25 +47,6 @@ config:
     apiTokenSecret: api_token_secret
     secureCookie: false
     cookieDomain: kre.local
-  runtime:
-    entrypoint:
-      tls: false
-    sharedStorageClass: standard
-    sharedStorageSize: 2Gi
-    nats_streaming:
-      storage:
-        className: standard
-        size: 1Gi
-    chronograf:
-      persistentVolume:
-        enabled: true
-        storageClass: standard
-        size: 1Gi
-    influxdb:
-      persistentVolume:
-        enabled: true
-        storageClass: standard
-        size: 5Gi
 
 adminApi:
   image:
@@ -101,12 +82,9 @@ certManager:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: user@email.com
 
-
-# Config from runtime/k8s-runtime-operator/helm-charts/kre-chart
-host: "local"
-
-entrypointTLS: false
-sharedStorageClass: standard
+entrypoint:
+  tls: false
+  host: "local"
 
 nats_streaming:
   replicas: 1
@@ -121,8 +99,6 @@ chronograf:
     accessMode: ReadWriteOnce
     size: 2Gi
 
-
-## Sub-charts
 prometheus-operator:
   enabled: true
   grafana:

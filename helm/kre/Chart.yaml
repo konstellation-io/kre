@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: "1.0"
-description: KRE monoruntime
-name: kre-monoruntime
+description: KRE
+name: kre
 version: 0.0.1
 dependencies:
   - name: influxdb

@@ -1,6 +1,4 @@
 baseDomainName: "local"
-sharedStorageClass: "standard"
-sharedStorageSize: "1Gi"
 entrypoint:
   requestTimeout: "30"
 server:
