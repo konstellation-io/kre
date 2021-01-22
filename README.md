@@ -13,6 +13,10 @@
   - [Requirements](#requirements)
   - [Local Environment](#local-environment)
     - [Login](#login)
+  - [Versioning lifecycle](#Versioning-lifecycle)
+    - [Alphas](#Alphas)
+    - [Releases](#Releases)
+    - [Fixes](#Fixes)
 
 # KRE (Konstellation Runtime Engine)
 
@@ -49,31 +53,16 @@ Below are described the main concepts of KRE.
 
 ## Engine
 
-When you install KRE in your Kubernetes cluster a Namespace called `kre` is created and within this are deployed some
-components. These components are responsible to create new runtimes and expose all the required information to the Admin
-UI.
+Before installing KRE an already existing Kubernetes namespace is required as a general rule the name used to be `KRE` but can be any value. The installation process will deploy some
+components that are responsible to manage the full life cycle of AI solution.
 
 The Engine is composed by the following components:
 
 * [Admin UI](engine/admin-ui/README.md)
 * [Admin API](engine/admin-api/README.md)
 * [K8s Manager](engine/k8s-manager/README.md)
+* [Mongo Writer](engine/mongo-writer/README.md)
 * MongoDB
-
-## Runtime
-
-When you install `kre` it would also create a `runtime`, the instalattion create a Namespace within the Kubernetes cluster with the 
-name set by the user from the Admin UI, and deploy on this Namespace all the base components that are described
-below.
-
-The goal of a Runtime is to run the designed services within the `.krt` file to perform the inference of a AI/ML model.
-
-A `kre` installation can only have one `runtime` at a time. If you need more `runtimes`, install another `kre`.
-
-Each Runtime is composed by the following components:
-
-* MongoDB
-* Minio
 * NATS-Streaming
 
 ### KRT
@@ -249,6 +238,22 @@ You will see an output like this:
 
 ✔️  Done.
 ```
+
+# Versioning lifecycle
+
+In the development lifecycle of KLI there are three main stages depend if we are going to add a new feature, release a new version with some features or apply a fix to a current release.
+
+### Alphas
+
+In order to add new features just create a feature branch from master, and after the merger the Pull Request a workflow will run the tests and if everything passes a new alpha tag will be created (like *v0.0-alpha.0*), and a new release will be generated with this tag.
+
+### Releases
+
+After some alpha versions we can create what we call a release, and to do that we have to run manual the Release Action. This workflow will create a new release branch and a new tag like *v0.0.0*. With this tag, a new release will be generated.
+
+### Fixes
+
+If we find out a bug in a release, we can apply a bugfix just by creating a fixed branch from the specific release branch, and creating a Pull Request to the same release branch. When the Pull Request is merged, after passing the tests, a new fix tag will be created just by increasing the patch number of the version, and a new release will be build and released.
 
 
 [admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=coverage
