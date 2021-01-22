@@ -148,7 +148,7 @@ type ComplexityRoot struct {
 		Settings         func(childComplexity int) int
 		UserActivityList func(childComplexity int, userEmail *string, types []entity.UserActivityType, versionNames []string, fromDate *string, toDate *string, lastID *string) int
 		Users            func(childComplexity int) int
-		Version          func(childComplexity int, id string) int
+		Version          func(childComplexity int, name string) int
 		Versions         func(childComplexity int) int
 	}
 
@@ -254,7 +254,7 @@ type QueryResolver interface {
 	Me(ctx context.Context) (*entity.User, error)
 	Users(ctx context.Context) ([]*entity.User, error)
 	Runtime(ctx context.Context) (*entity.Runtime, error)
-	Version(ctx context.Context, id string) (*entity.Version, error)
+	Version(ctx context.Context, name string) (*entity.Version, error)
 	Versions(ctx context.Context) ([]*entity.Version, error)
 	Settings(ctx context.Context) (*entity.Settings, error)
 	UserActivityList(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionNames []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
@@ -828,7 +828,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Version(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Version(childComplexity, args["name"].(string)), true
 
 	case "Query.versions":
 		if e.complexity.Query.Versions == nil {
@@ -1275,7 +1275,7 @@ type Query {
   me: User
   users: [User!]!
   runtime: Runtime!
-  version(id: ID!): Version!
+  version(name: String!): Version!
   versions: [Version!]!
   settings: Settings!
   userActivityList(
@@ -1946,13 +1946,13 @@ func (ec *executionContext) field_Query_version_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["name"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["name"] = arg0
 	return args, nil
 }
 
@@ -4048,7 +4048,7 @@ func (ec *executionContext) _Query_version(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Version(rctx, args["id"].(string))
+		return ec.resolvers.Query().Version(rctx, args["name"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
