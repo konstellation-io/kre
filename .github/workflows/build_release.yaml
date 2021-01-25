@@ -31,7 +31,19 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-      - name: Push to Docker Hub
+      - name: Push to Docker Hub RELEASE
+        if: ${{ ! contains( github.event.ref, 'alpha' ) }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./admin/admin-api
+          file: ./admin/admin-api/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-admin-api:${{ steps.get_version.outputs.VERSION }}
+      
+      - name: Push to Docker Hub ALPHA
+        if: ${{ contains( github.event.ref, 'alpha' ) }}
         uses: docker/build-push-action@v2
         with:
           context: ./engine/admin-api
@@ -71,7 +83,19 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-      - name: Push to Docker Hub
+      - name: Push to Docker Hub RELEASE
+        if: ${{ ! contains( github.event.ref, 'alpha' ) }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./admin/admin-ui
+          file: ./admin/admin-ui/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-admin-ui:${{ steps.get_version.outputs.VERSION }}
+      
+      - name: Push to Docker Hub ALPHA
+        if: ${{ contains( github.event.ref, 'alpha' ) }}
         uses: docker/build-push-action@v2
         with:
           context: ./engine/admin-ui
@@ -105,7 +129,19 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-      - name: Push to Docker Hub
+      - name: Push to Docker Hub RELEASE
+        if: ${{ ! contains( github.event.ref, 'alpha' ) }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./admin/k8s-manager
+          file: ./admin/k8s-manager/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-k8s-manager:${{ steps.get_version.outputs.VERSION }}
+      
+      - name: Push to Docker Hub ALPHA
+        if: ${{ contains( github.event.ref, 'alpha' ) }}
         uses: docker/build-push-action@v2
         with:
           context: ./engine/k8s-manager
@@ -139,7 +175,19 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-      - name: Push to Docker Hub
+      - name: Push to Docker Hub RELEASES
+        if: ${{ ! contains( github.event.ref, 'alpha' ) }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./runtime/mongo-writer
+          file: ./runtime/mongo-writer/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            konstellation/kre-mongo-writer:${{ steps.get_version.outputs.VERSION }}
+
+      - name: Push to Docker Hub ALPHA
+        if: ${{ contains( github.event.ref, 'alpha' ) }}
         uses: docker/build-push-action@v2
         with:
           context: ./engine/mongo-writer
