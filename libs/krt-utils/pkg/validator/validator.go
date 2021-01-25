@@ -144,6 +144,10 @@ func (v *Validator) ValidateContent(file *krt.File, rootDir string) error {
 	return validateSrcPaths(file, rootDir)
 }
 
+func ValidateVersionName(versionName string) bool {
+	return reResourceName.MatchString(versionName)
+}
+
 func validateImages(krt *krt.File) ValidationErrors {
 	var errs []error = nil
 
