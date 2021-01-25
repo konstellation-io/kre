@@ -1,8 +1,0 @@
-query GetVersions($runtimeId: ID!) {
-  versions(runtimeId: $runtimeId) {
-    id
-    name
-    status
-    errors
-  }
-}

@@ -1,0 +1,19 @@
+query GetServerLogs(
+  $filters: LogFilters!
+  $versionName: String!
+  $cursor: String
+) {
+  logs(filters: $filters, versionName: $versionName, cursor: $cursor) {
+    items {
+      id
+      date
+      nodeId
+      nodeName
+      workflowId
+      workflowName
+      message
+      level
+    }
+    cursor
+  }
+}

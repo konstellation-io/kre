@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RuntimeHexagon matches snapshot 1`] = `
+<div
+  className="wrapper"
+  style={
+    Object {
+      "height": 20,
+      "width": 20,
+    }
+  }
+>
+  <div
+    className="hexagon"
+  />
+</div>
+`;

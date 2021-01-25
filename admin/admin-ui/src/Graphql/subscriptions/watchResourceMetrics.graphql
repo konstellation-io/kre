@@ -1,7 +1,0 @@
-subscription WatchResourceMetrics($versionId: ID!, $fromDate: String!) {
-  watchResourceMetrics(versionId: $versionId, fromDate: $fromDate) {
-    date
-    cpu
-    mem
-  }
-}

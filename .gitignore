@@ -4,6 +4,4 @@
 config.dev.yml
 helm/values-dell.yaml
 helm/kre/charts/*
-helm/kre-monoruntime/charts/*
-runtime/k8s-runtime-operator/helm-charts/kre-chart/charts
 runners

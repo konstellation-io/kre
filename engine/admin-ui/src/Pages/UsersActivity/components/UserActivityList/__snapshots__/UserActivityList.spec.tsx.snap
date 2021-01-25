@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`messageGenerator show right CREATE_VERSION message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    New Version created:
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right LOGIN message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    Log in
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right LOGOUT message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    Log out
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right PUBLISH_VERSION message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    The version
+    Have been
+    <Highlight
+      type="published"
+    >
+      Published
+    </Highlight>
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right START_VERSION message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    The version
+    Have been
+    <Highlight
+      type="started"
+    >
+      Started
+    </Highlight>
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right STOP_VERSION message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    The version
+    Have been
+    <Highlight
+      type="stopped"
+    >
+      Stopped
+    </Highlight>
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right UNPUBLISH_VERSION message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    The version
+    Have been
+    <Highlight
+      type="unpublished"
+    >
+      Unpublished
+    </Highlight>
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right UPDATE_SETTING message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    Has updated
+    <Highlight>
+      setting
+    </Highlight>
+    setting from
+    <Highlight>
+      oldValue
+    </Highlight>
+    to
+    <Highlight>
+      newValue
+    </Highlight>
+  </div>
+</div>
+`;
+
+exports[`messageGenerator show right UPDATE_VERSION_CONFIGURATION message 1`] = `
+<div>
+  <div
+    className="message"
+  >
+    Updated settings
+    <Highlight>
+      confA, confB, confC
+    </Highlight>
+    from version
+  </div>
+</div>
+`;

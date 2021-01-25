@@ -1,0 +1,26 @@
+baseDomainName: "local"
+entrypoint:
+  requestTimeout: "30"
+server:
+  port: "50051"
+kubernetes:
+  k8sRuntimeOperator:
+    version: latest
+prometheus:
+  url: http://localhost:9090
+nats_streaming:
+  storage:
+    className: "standard"
+    size: 1G
+mongo:
+  persistentVolume:
+    storageClass: "standard"
+    size: 5G
+chronograf:
+  persistentVolume:
+    storageClass: "standard"
+    size: 1G
+influxdb:
+  persistentVolume:
+    storageClass: "standard"
+    size: 5G

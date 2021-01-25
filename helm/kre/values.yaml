@@ -1,6 +1,37 @@
-# Default values for konstellation Runtime Environment.
 developmentMode: false
+argocd: false
 
+runtimeName: "My Runtime"
+
+rbac:
+  createServiceAccount: true
+  serviceAccount: k8s-manager
+
+mongodb:
+  service:
+    name: "mongodb"
+  auth:
+    adminUser: "admin"
+    adminPassword: "123456"
+  mongodbUsername: "admin"
+  mongodbPassword: "123456"
+  storage:
+    className: standard
+    size: 3G
+  volumePermissions:
+    enabled: false
+    image:
+      registry: docker.io
+      repository: debian
+      tag: buster-slim
+  initConfigMap:
+    name: kre-mongo-init-script
+  persistentVolume:
+    enabled: true
+    storageClass: standard
+    size: 5Gi
+
+# Config from kre/helm
 config:
   baseDomainName: "local"
   admin:
@@ -16,30 +47,6 @@ config:
     apiTokenSecret: api_token_secret
     secureCookie: false
     cookieDomain: kre.local
-  runtime:
-    entrypoint:
-      tls: false
-    sharedStorageClass: standard
-    sharedStorageSize: 2Gi
-    nats_streaming:
-      storage:
-        className: standard
-        size: 1Gi
-    mongodb:
-      persistentVolume:
-        enabled: true
-        storageClass: standard
-        size: 5Gi
-    chronograf:
-      persistentVolume:
-        enabled: true
-        storageClass: standard
-        size: 1Gi
-    influxdb:
-      persistentVolume:
-        enabled: true
-        storageClass: standard
-        size: 5Gi
 
 adminApi:
   image:
@@ -69,32 +76,28 @@ k8sManager:
     tag: latest
     pullPolicy: IfNotPresent
 
-
-mongodb:
-  service:
-    name: "mongodb"
-  mongodbUsername: "admin"
-  mongodbPassword: "123456"
-  rootCredentials:
-    username: admin
-    password: "123456"
-  storage:
-    className: standard
-    size: 3G
-  volumePermissions:
-    enabled: false
-    image:
-      registry: docker.io
-      repository: debian
-      tag: buster-slim
-  initConfigMap:
-    name: kre-mongo-init-script
-
 certManager:
   enabled: false
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: user@email.com
+
+entrypoint:
+  tls: false
+  host: "local"
+
+nats_streaming:
+  replicas: 1
+  storage:
+    className: standard
+    size: 1Gi
+
+chronograf:
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 2Gi
 
 prometheus-operator:
   enabled: true
@@ -105,27 +108,46 @@ prometheus-operator:
   alertmanager:
     config:
       route:
-        group_by: ['job']
+        group_by: [ 'job' ]
         group_wait: 30s
         group_interval: 5m
         repeat_interval: 12h
         receiver: "kre-email"
         routes:
-        - match:
-            alertname: Mongo
-        - match:
-            alertname: NATS
-        - match:
-            alertname: Minio
-        - match:
-            alertname: InfluxDB
+          - match:
+              alertname: Mongo
+          - match:
+              alertname: NATS
+          - match:
+              alertname: Minio
+          - match:
+              alertname: InfluxDB
       receivers:
-      - name: 'kre-email'
-        email_configs:
-        - to: user@example.com
-          from: from_user@example.com
-          # Your smtp server address
-          smarthost: smtp.example.com:587
-          auth_username: from_user@example.com
-          auth_identity: from_user@example.com
-          auth_password: 1234
+        - name: 'kre-email'
+          email_configs:
+            - to: user@example.com
+              from: from_user@example.com
+              # Your smtp server address
+              smarthost: smtp.example.com:587
+              auth_username: from_user@example.com
+              auth_identity: from_user@example.com
+              auth_password: 1234
+
+influxdb:
+  image:
+    tag: 1.8.1
+  config:
+    http:
+      enabled: true
+      flux-enabled: true
+      auth-enabled: false
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 10Gi
+  initScripts:
+    enabled: true
+    scripts:
+      init.iql: |+
+        CREATE DATABASE "kre"

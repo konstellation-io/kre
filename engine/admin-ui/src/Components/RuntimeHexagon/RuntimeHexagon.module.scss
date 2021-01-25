@@ -1,0 +1,12 @@
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+.wrapper {
+  @include hexagonWrapper;
+}
+
+.hexagon {
+  @include hexagon;
+
+  background-color: $color-primary;
+}

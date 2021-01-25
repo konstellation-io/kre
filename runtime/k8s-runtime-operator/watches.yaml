@@ -1,5 +1,0 @@
----
-- version: v1alpha1
-  group: kre.konstellation.io
-  kind: Runtime
-  chart: /opt/helm/helm-charts/kre-chart

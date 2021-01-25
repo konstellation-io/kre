@@ -3,11 +3,10 @@ name: Pre Release
 on:
   workflow_run:
     workflows:
-      - "ADMIN admin-api Tests"
-      - "ADMIN admin-ui Tests"
-      - "ADMIN k8s-manager Tests"
-      - "RUNTIME mongo-writer Tests"
-      - "RUNTIME runtime-api Tests"
+      - "ENGINE admin-api Tests"
+      - "ENGINE admin-ui Tests"
+      - "ENGINE k8s-manager Tests"
+      - "ENGINE mongo-writer Tests"
     branches: [master]
     types: 
       - completed
@@ -21,7 +20,7 @@ jobs:
       - name: Generate a pre-release
         uses: intelygenz/action-product-version-tags@v0.1.8
         with:
-          current-major: 0
+          current-major: 1
           prefix: "release-"
           mode: 'pre-release'
           pre-release: 'alpha'

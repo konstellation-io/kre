@@ -1,0 +1,8 @@
+query GetVersions {
+  versions {
+    id
+    name
+    status
+    errors
+  }
+}

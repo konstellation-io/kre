@@ -6,7 +6,6 @@
   - [Engine](#engine-1)
   - [Runtime](#runtime-1)
     - [KRT](#krt)
-  - [Monoruntime Mode](#monoruntime-mode)
 - [Install](#install)
   - [Custom Installation](#custom-installation)
     - [Prometheus](#prometheus)
@@ -14,7 +13,10 @@
   - [Requirements](#requirements)
   - [Local Environment](#local-environment)
     - [Login](#login)
-    - [Monoruntime](#monoruntime)
+  - [Versioning lifecycle](#Versioning-lifecycle)
+    - [Alphas](#Alphas)
+    - [Releases](#Releases)
+    - [Fixes](#Fixes)
 
 # KRE (Konstellation Runtime Engine)
 
@@ -33,8 +35,6 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
 |  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
 | :---------: | :-----:   |  :---: |  :--------------------:  |
-|  Runtime API  | [![coverage][runtime-api-coverage]][runtime-api-coverage-link] | [![bugs][runtime-api-bugs]][runtime-api-bugs-link] | [![mr][runtime-api-mr]][runtime-api-mr-link] |
-|  K8s Runtime Operator   | - | - | - |
 |  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
 
 ## Runners
@@ -53,31 +53,16 @@ Below are described the main concepts of KRE.
 
 ## Engine
 
-When you install KRE in your Kubernetes cluster a Namespace called `kre` is created and within this are deployed some
-components. These components are responsible to create new runtimes and expose all the required information to the Admin
-UI.
+Before installing KRE an already existing Kubernetes namespace is required as a general rule the name used to be `KRE` but can be any value. The installation process will deploy some
+components that are responsible to manage the full life cycle of AI solution.
 
 The Engine is composed by the following components:
 
-* [Admin UI](./admin/admin-ui/README.md)
-* [Admin API](./admin/admin-api/README.md)
-* [K8s Manager](./admin/k8s-manager/README.md)
+* [Admin UI](engine/admin-ui/README.md)
+* [Admin API](engine/admin-api/README.md)
+* [K8s Manager](engine/k8s-manager/README.md)
+* [Mongo Writer](engine/mongo-writer/README.md)
 * MongoDB
-
-## Runtime
-
-When you create what is called a `runtime`, the Engine create a new Namespace within the Kubernetes cluster with the 
-name set by the user from the Admin UI, and deploy on this Namespace all the base components that are described
-below.
-
-The goal of a Runtime is to run the designed services within the `.krt` file to perform the inference of a AI/ML model.
-
-Each Runtime is composed by the following components:
-
-* [K8s Runtime Operator](runtime/k8s-runtime-operator/README.md)
-* [Runtime API](runtime/runtime-api/README.md)
-* MongoDB
-* Minio
 * NATS-Streaming
 
 ### KRT
@@ -132,29 +117,25 @@ workflows:
 
 ```
 
-## Monoruntime mode
-
-There is a single architecture that can be used that only needs a single Kubernetes namespace as shown on the following
-image:
-
-![Monoruntime Architecture](.github/images/kre-monoruntime-architecture.jpg)
-
 # Install
 
-KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. As explained on the
-architecture section, there are two ways of installation, **normal mode** and **monoruntime mode**.
+KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. In order to install it 
+just need to add the chart repository, define your custom `values.yaml` and run one command.
 
-First, add the repository to helm:
+Let's start adding the repository to helm:
 
 ```bash
 helm repo add konstellation-io https://charts.konstellation.io
 helm repo update
 ```
 
-Then, in order to install it just needs to add Chart repository to your helm and, define your custom `values.yaml` and
-run one of the following commands:
+Now define your custom `values.yaml`, you can get the default values using this command (this can be used as a template to customize yours later):
 
-- **Normal Installation**
+```bash
+helm show values konstellation.io/kre
+```
+
+Once you have the appropriate values, you can start the installation with the following command: 
 
 ```bash
 helm upgrade --install kre --namespace kre \
@@ -162,16 +143,7 @@ helm upgrade --install kre --namespace kre \
  konstellation-io/kre
 ```
 
-- **Monoruntime Installation**
-
-```bash
-helm upgrade --install kre-monoruntime --namespace kre-monoruntime \
-  --values ./custom-monoruntime-values.yaml \ 
-  konstellation-io/kre-monoruntime
-```
-
-***NOTE***: You can check default values for each installation, [normal](./helm/kre/values.yaml) or
-[monoruntime](./helm/kre-monoruntime/values.yaml).
+***NOTE***: You can also check default values for the installation in this repository [file](./helm/kre/values.yaml).
 
 ## Custom Installation
 
@@ -232,7 +204,17 @@ $> krectl.sh [command] --help
       v     verbose mode.
 ```
 
-### Login
+### Install local environment
+
+To install KRE in your local environment:
+
+```
+$ ./krectl.sh dev
+```
+
+It will install everything in the namespace specified in your development `.kreconf` file.
+
+### Login to local environment
 
 First, remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
 
@@ -257,15 +239,21 @@ You will see an output like this:
 ✔️  Done.
 ```
 
-### Monoruntime
+# Versioning lifecycle
 
-To start KRE as a single `namespace` installation and in `MONORUNTIME_MODE`, you can use `./krectl.sh` as follows:
+In the development lifecycle of KLI there are three main stages depend if we are going to add a new feature, release a new version with some features or apply a fix to a current release.
 
-```
-$ ./krectl.sh dev --monoruntime
-```
+### Alphas
 
-It will install everything in the namespace specified in your development `.kreconf` file.
+In order to add new features just create a feature branch from master, and after the merger the Pull Request a workflow will run the tests and if everything passes a new alpha tag will be created (like *v0.0-alpha.0*), and a new release will be generated with this tag.
+
+### Releases
+
+After some alpha versions we can create what we call a release, and to do that we have to run manual the Release Action. This workflow will create a new release branch and a new tag like *v0.0.0*. With this tag, a new release will be generated.
+
+### Fixes
+
+If we find out a bug in a release, we can apply a bugfix just by creating a fixed branch from the specific release branch, and creating a Pull Request to the same release branch. When the Pull Request is merged, after passing the tests, a new fix tag will be created just by increasing the patch number of the version, and a new release will be build and released.
 
 
 [admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=coverage
@@ -315,22 +303,6 @@ It will install everything in the namespace specified in your development `.krec
 [k8s-manager-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_k8s_manager&metric=sqale_rating
 
 [k8s-manager-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_k8s_manager
-
-[runtime-api-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=coverage
-
-[runtime-api-coverage-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Coverage
-
-[runtime-api-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=bugs
-
-[runtime-api-bugs-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Security&view=list
-
-[runtime-api-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=ncloc
-
-[runtime-api-loc-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=Coverage&view=list
-
-[runtime-api-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_runtime_api&metric=sqale_rating
-
-[runtime-api-mr-link]: https://sonarcloud.io/component_measures?id=konstellation-io_kre_runtime_api&metric=alert_status&view=list
 
 [mongo-writer-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=coverage
 

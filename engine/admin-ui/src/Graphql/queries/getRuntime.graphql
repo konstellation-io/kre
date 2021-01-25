@@ -1,0 +1,6 @@
+query GetRuntime {
+  runtime {
+    id
+    name
+  }
+}

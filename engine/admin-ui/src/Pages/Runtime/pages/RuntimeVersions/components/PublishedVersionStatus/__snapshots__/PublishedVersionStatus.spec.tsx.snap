@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PublishedVersionStatus matches snapshot 1`] = `
+<BrowserRouter>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <PublishedVersionStatus
+      nPublishedVersions={5}
+      noVersions={false}
+    >
+      <div
+        className="activeVersion active"
+      >
+        <span
+          className="versionTitle"
+        >
+          5 versions published
+        </span>
+        <Can
+          perform="version:edit"
+        >
+          <P
+            height={30}
+            label="ADD VERSION"
+            primary={true}
+            style={
+              Object {
+                "borderRadius": 2,
+              }
+            }
+            to="/new_version"
+          >
+            <Link
+              data-testid="buttonLink"
+              to="/new_version"
+            >
+              <LinkAnchor
+                data-testid="buttonLink"
+                href="/new_version"
+                navigate={[Function]}
+              >
+                <a
+                  data-testid="buttonLink"
+                  href="/new_version"
+                  onClick={[Function]}
+                >
+                  <div
+                    className="_1lqJX _3kQFd _pg7GC undefined"
+                    onClick={[Function]}
+                    onKeyPress={[Function]}
+                    style={
+                      Object {
+                        "borderRadius": 2,
+                        "height": 30,
+                        "lineHeight": "30px",
+                      }
+                    }
+                    tabIndex={-1}
+                    title=""
+                  >
+                    <span>
+                      ADD VERSION
+                    </span>
+                  </div>
+                </a>
+              </LinkAnchor>
+            </Link>
+          </P>
+        </Can>
+      </div>
+    </PublishedVersionStatus>
+  </Router>
+</BrowserRouter>
+`;

@@ -1,0 +1,12 @@
+subscription GetLogs($filters: LogFilters!, $versionName: String!) {
+  watchNodeLogs(filters: $filters, versionName: $versionName) {
+    id
+    date
+    nodeId
+    nodeName
+    workflowId
+    workflowName
+    message
+    level
+  }
+}

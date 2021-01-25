@@ -5,11 +5,13 @@ metadata:
   name: {{ .Release.Name }}-configmap
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ template "kre.fullname" . }}-admin-api
+    app: {{ .Release.Name }}-admin-api
 data:
   KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
+  KRE_RUNTIME_NAME: "{{ .Values.runtimeName }}"
+  KRE_RELEASE_NAME: "{{ .Release.Name }}"
   # Runtime Entrypoint TLS
-  KRE_ENTRYPOINT_TLS: "{{ .Values.config.runtime.entrypoint.tls }}"
+  KRE_ENTRYPOINT_TLS: "{{ .Values.entrypoint.tls }}"
   # Admin
   KRE_ADMIN_FRONTEND_BASE_URL: "{{ .Values.config.admin.frontendBaseURL }}"
   KRE_ADMIN_API_BASE_URL: "{{ $protocol }}://{{ .Values.config.admin.apiHost }}"
@@ -17,8 +19,6 @@ data:
   KRE_SERVICES_K8S_MANAGER: "k8s-manager:50051"
   # K8S MANAGER
   KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
-  KRE_SHARED_STORAGECLASS: {{ .Values.config.runtime.sharedStorageClass }}
-  KRE_SHARED_STORAGE_SIZE: {{ .Values.config.runtime.sharedStorageSize }}
   KRE_ENTRYPOINT_REQUEST_TIMEOUT: "30"
 
   # SMTP
@@ -36,14 +36,14 @@ data:
   # Prometheus
   KRE_PROMETHEUS_URL: "http://prometheus-operated:9090"
   # NATS Streaming
-  KRE_NATS_STORAGECLASS: "{{ .Values.config.runtime.nats_streaming.storage.className }}"
-  KRE_NATS_STORAGE_SIZE: "{{ .Values.config.runtime.nats_streaming.storage.size }}"
+  KRE_NATS_STORAGECLASS: "{{ .Values.nats_streaming.storage.className }}"
+  KRE_NATS_STORAGE_SIZE: "{{ .Values.nats_streaming.storage.size }}"
   # MongoDB
-  KRE_MONGODB_STORAGECLASS: "{{ .Values.config.runtime.mongodb.persistentVolume.storageClass }}"
-  KRE_MONGODB_STORAGE_SIZE: "{{ .Values.config.runtime.mongodb.persistentVolume.size }}"
+  KRE_MONGODB_STORAGECLASS: "{{ .Values.mongodb.persistentVolume.storageClass }}"
+  KRE_MONGODB_STORAGE_SIZE: "{{ .Values.mongodb.persistentVolume.size }}"
   # Chronograf
-  KRE_CHRONOGRAF_STORAGECLASS: "{{ .Values.config.runtime.chronograf.persistentVolume.storageClass }}"
-  KRE_CHRONOGRAF_STORAGE_SIZE: "{{ .Values.config.runtime.chronograf.persistentVolume.size }}"
+  KRE_CHRONOGRAF_STORAGECLASS: "{{ .Values.chronograf.persistence.storageClass }}"
+  KRE_CHRONOGRAF_STORAGE_SIZE: "{{ .Values.chronograf.persistence.size }}"
   #InfluxDB
-  KRE_INFLUXDB_STORAGECLASS: "{{ .Values.config.runtime.influxdb.persistentVolume.storageClass }}"
-  KRE_INFLUXDB_STORAGE_SIZE: "{{ .Values.config.runtime.influxdb.persistentVolume.size }}"
+  KRE_INFLUXDB_STORAGECLASS: "{{ .Values.influxdb.persistence.storageClass }}"
+  KRE_INFLUXDB_STORAGE_SIZE: "{{ .Values.influxdb.persistence.size }}"
