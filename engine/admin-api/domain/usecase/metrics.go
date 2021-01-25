@@ -41,7 +41,7 @@ func NewMetricsInteractor(
 	}
 }
 
-func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, versionID string, startDate string, endDate string) (*entity.Metrics, error) {
+func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, versionName string, startDate string, endDate string) (*entity.Metrics, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResMetrics, auth.ActView); err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, versio
 		return result, fmt.Errorf("invalid end date: %w", err)
 	}
 
-	metrics, err := i.metricRepo.GetMetrics(ctx, parsedStartDate, parsedEndDate, versionID)
+	metrics, err := i.metricRepo.GetMetrics(ctx, parsedStartDate, parsedEndDate, versionName)
 	if err != nil {
 		return result, fmt.Errorf("error getting metrics: %w", err)
 	}

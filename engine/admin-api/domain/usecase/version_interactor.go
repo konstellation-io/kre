@@ -585,12 +585,12 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 	return version, nil
 }
 
-func (i *VersionInteractor) WatchNodeStatus(ctx context.Context, loggedUserID, versionId string) (<-chan *entity.Node, error) {
+func (i *VersionInteractor) WatchNodeStatus(ctx context.Context, loggedUserID, versionName string) (<-chan *entity.Node, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView); err != nil {
 		return nil, err
 	}
 
-	v, err := i.versionRepo.GetByID(versionId)
+	v, err := i.versionRepo.GetByName(ctx, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -600,14 +600,14 @@ func (i *VersionInteractor) WatchNodeStatus(ctx context.Context, loggedUserID, v
 
 func (i *VersionInteractor) WatchNodeLogs(
 	ctx context.Context,
-	loggedUserID, versionID string,
+	loggedUserID, versionName string,
 	filters entity.LogFilters,
 ) (<-chan *entity.NodeLog, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResLogs, auth.ActView); err != nil {
 		return nil, err
 	}
 
-	return i.nodeLogRepo.WatchNodeLogs(ctx, versionID, filters)
+	return i.nodeLogRepo.WatchNodeLogs(ctx, versionName, filters)
 }
 
 func (i *VersionInteractor) SearchLogs(

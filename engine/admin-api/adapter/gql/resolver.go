@@ -292,9 +292,9 @@ func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	return r.userInteractor.GetByID(loggedUserID)
 }
 
-func (r *queryResolver) Metrics(ctx context.Context, versionID, startDate, endDate string) (*entity.Metrics, error) {
+func (r *queryResolver) Metrics(ctx context.Context, versionName, startDate, endDate string) (*entity.Metrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, versionID, startDate, endDate)
+	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, versionName, startDate, endDate)
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
@@ -337,7 +337,7 @@ func (r *queryResolver) UserActivityList(
 
 func (r *queryResolver) Logs(
 	ctx context.Context,
-	versionID string,
+	versionName string,
 	filters entity.LogFilters,
 	cursor *string,
 ) (*LogPage, error) {
@@ -361,12 +361,12 @@ func (r *queryResolver) Logs(
 
 func (r *queryResolver) ResourceMetrics(
 	ctx context.Context,
-	versionId string,
+	versionName string,
 	fromDate string,
 	toDate string,
 ) ([]*entity.ResourceMetrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.resourceMetricsInteractor.Get(ctx, loggedUserID, versionId, fromDate, toDate)
+	return r.resourceMetricsInteractor.Get(ctx, loggedUserID, versionName, fromDate, toDate)
 }
 
 func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (string, error) {
@@ -403,23 +403,23 @@ func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity
 	return versionStatusCh, nil
 }
 
-func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error) {
+func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionName string) (<-chan *entity.Node, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, versionID)
+	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, versionName)
 }
 
-func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, versionID, filters)
+	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, versionName, filters)
 }
 
 func (r *subscriptionResolver) WatchResourceMetrics(
 	ctx context.Context,
-	versionId string,
+	versionName string,
 	fromDate string,
 ) (<-chan []*entity.ResourceMetrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.resourceMetricsInteractor.Watch(ctx, loggedUserID, versionId, fromDate)
+	return r.resourceMetricsInteractor.Watch(ctx, loggedUserID, versionName, fromDate)
 }
 
 func (r *userActivityResolver) Date(_ context.Context, obj *entity.UserActivity) (string, error) {
