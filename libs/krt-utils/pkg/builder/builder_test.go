@@ -11,6 +11,8 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/stretchr/testify/require"
+
+	"github.com/konstellation-io/kre/libs/krt-utils/pkg/validator"
 )
 
 var (
@@ -73,7 +75,7 @@ func TestBuilder_Build(t *testing.T) {
 	}
 
 	// Create test dir structure
-	tmp, err := ioutil.TempDir("", "test-krtutils")
+	tmp, err := ioutil.TempDir("", "TestBuilder_Build")
 	require.NoError(t, err)
 	defer os.RemoveAll(tmp)
 
@@ -92,7 +94,6 @@ func TestBuilder_Build(t *testing.T) {
 }
 
 func TestBuilder_skipFile(t *testing.T) {
-
 	type testCases struct {
 		File     map[string]bool
 		Patterns []string
@@ -125,4 +126,39 @@ func TestBuilder_skipFile(t *testing.T) {
 		}
 	}
 
+}
+
+func TestBuilder_UpdateVersion(t *testing.T) {
+	tmp, err := ioutil.TempDir("", "TestBuilder_UpdateVersion")
+	require.NoError(t, err)
+	createKrtFile(t, tmp, sampleKrtString, "krt.yml")
+
+	updateVersion := "test1234"
+	b := New()
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.NoError(t, err)
+	_, yaml, err := b.getKrtYaml(tmp)
+	require.NoError(t, err)
+
+	v := validator.New()
+	krt, err := v.ParseFile(yaml)
+	require.NoError(t, err)
+	require.Equal(t, krt.Version, updateVersion)
+}
+
+func TestBuilder_UpdateVersionErrors(t *testing.T) {
+	tmp, err := ioutil.TempDir("", "TestBuilder_UpdateVersionErrors")
+	require.NoError(t, err)
+	b := New()
+	updateVersion := "test1234"
+	defer os.RemoveAll(tmp)
+
+	// Test no file found
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.Error(t, err)
+
+	// Test bad yaml file
+	createKrtFile(t, tmp, "badyaml", "krt.yml")
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.Error(t, err)
 }

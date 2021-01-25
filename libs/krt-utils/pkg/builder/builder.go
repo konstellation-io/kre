@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"io"
 	"io/ioutil"
 	"os"
@@ -90,18 +91,18 @@ func (b *Builder) skipFile(file string, patterns []string) (bool, error) {
 }
 
 // getKrtYaml checks source directory for yaml files.
-func (b *Builder) getKrtYaml(src string) (*krt.File, error) {
+func (b *Builder) getKrtYaml(src string) (*krt.File, string, error) {
 	ymls := []string{filepath.Join(src, "krt.yaml"), filepath.Join(src, "krt.yml")}
 	v := validator.New()
 
 	for _, file := range ymls {
 		k, err := v.ParseFile(file)
 		if err == nil {
-			return k, nil
+			return k, file, nil
 		}
 	}
 
-	return nil, ErrYamlNotFound
+	return nil, "", ErrYamlNotFound
 }
 
 // CreateKrt create a krt file from a source dir.
@@ -203,19 +204,58 @@ func (b *Builder) Build(src, target string) error {
 // Validate validates Krt source dir.
 func (b *Builder) Validate(src string) error {
 	v := validator.New()
-	yaml, err := b.getKrtYaml(src)
+	yml, _, err := b.getKrtYaml(src)
 	if err != nil {
 		return err
 	}
 
-	err = v.Validate(yaml)
+	err = v.Validate(yml)
 	if err != nil {
 		return err
 	}
 
-	err = v.ValidateContent(yaml, src)
+	err = v.ValidateContent(yml, src)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// UpdateVersion updates krt yaml file version name.
+func (b *Builder) UpdateVersion(src, version string) error {
+	validVersion := validator.ValidateVersionName(version)
+	if !validVersion {
+		return ErrInvalidVersionName
+	}
+	y, filename, err := b.getKrtYaml(src)
+
+	if err != nil {
+		return fmt.Errorf("error while getting yaml: %w", err)
+	}
+
+	y.Version = version
+
+	fileInfo, err := os.Stat(filename)
+	if err != nil {
+		return fmt.Errorf("error with yaml file: %w", err)
+	}
+
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, fileInfo.Mode())
+	if err != nil {
+		return fmt.Errorf("error while opening yaml file: %w", err)
+	}
+	defer file.Close()
+
+	data, err := yaml.Marshal(&y)
+	if err != nil {
+		return fmt.Errorf("error while marshalling yaml file: %w", err)
+	}
+
+	_, err = file.Write(data)
+
+	if err != nil {
+		return fmt.Errorf("error while writing yaml file: %w", err)
+	}
+
 	return nil
 }
