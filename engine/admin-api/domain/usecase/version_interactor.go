@@ -106,7 +106,7 @@ func (i *VersionInteractor) GetAll(loggedUserID string) ([]*entity.Version, erro
 	return versions, nil
 }
 
-// GetByName returns a Version by its ID
+// GetByName returns a Version by its unique name
 func (i *VersionInteractor) GetByName(ctx context.Context, loggedUserID, name string) (*entity.Version, error) {
 	v, err := i.versionRepo.GetByName(ctx, name)
 	if err != nil {
