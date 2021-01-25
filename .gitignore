@@ -3,5 +3,4 @@
 
 config.dev.yml
 helm/values-dell.yaml
-helm/kre/charts/*
 runners
