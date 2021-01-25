@@ -76,6 +76,12 @@ k8sManager:
     tag: latest
     pullPolicy: IfNotPresent
 
+mongoWriter:
+  image:
+    repository: konstellation/kre-mongo-writer
+    tag: latest
+    pullPolicy: IfNotPresent
+
 certManager:
   enabled: false
   acme:
