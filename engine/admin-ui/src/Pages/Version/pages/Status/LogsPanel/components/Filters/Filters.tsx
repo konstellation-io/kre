@@ -54,12 +54,12 @@ const levelsOrdered = [
 ];
 
 type Props = {
-  versionId: string;
+  versionName: string;
   updateFilters: Function;
   filterValues: GetLogTabs_logTabs_filters;
 };
-function Filters({ updateFilters, filterValues, versionId }: Props) {
-  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionId);
+function Filters({ updateFilters, filterValues, versionName }: Props) {
+  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionName);
 
   const levelOptions = levelsOrdered.map(
     (level: LogLevel) =>

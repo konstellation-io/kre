@@ -35,18 +35,18 @@ func (m *MockNodeLogRepository) EXPECT() *MockNodeLogRepositoryMockRecorder {
 }
 
 // WatchNodeLogs mocks base method
-func (m *MockNodeLogRepository) WatchNodeLogs(ctx context.Context, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (m *MockNodeLogRepository) WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WatchNodeLogs", ctx, versionID, filters)
+	ret := m.ctrl.Call(m, "WatchNodeLogs", ctx, versionName, filters)
 	ret0, _ := ret[0].(<-chan *entity.NodeLog)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // WatchNodeLogs indicates an expected call of WatchNodeLogs
-func (mr *MockNodeLogRepositoryMockRecorder) WatchNodeLogs(ctx, versionID, filters interface{}) *gomock.Call {
+func (mr *MockNodeLogRepositoryMockRecorder) WatchNodeLogs(ctx, versionName, filters interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WatchNodeLogs", reflect.TypeOf((*MockNodeLogRepository)(nil).WatchNodeLogs), ctx, versionID, filters)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WatchNodeLogs", reflect.TypeOf((*MockNodeLogRepository)(nil).WatchNodeLogs), ctx, versionName, filters)
 }
 
 // PaginatedSearch mocks base method

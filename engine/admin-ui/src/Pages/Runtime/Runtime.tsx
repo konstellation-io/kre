@@ -17,7 +17,7 @@ const GetRuntimeAndVersionQuery = loader(
 );
 
 function Runtime() {
-  const { versionId } = useParams<VersionRouteParams>();
+  const { versionName } = useParams<VersionRouteParams>();
   const location = useLocation();
   const { data, loading, error } = useQuery<GetVersionConfStatus>(
     GetRuntimeAndVersionQuery
@@ -30,7 +30,7 @@ function Runtime() {
 
     const runtime = data.runtime;
     const versions = data.versions;
-    const version = versions.find(v => v.id === versionId);
+    const version = versions.find(v => v.name === versionName);
 
     return (
       <>

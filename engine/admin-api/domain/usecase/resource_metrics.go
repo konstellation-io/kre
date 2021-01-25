@@ -46,12 +46,12 @@ func NewResourceMetricsInteractor(
 	}
 }
 
-func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versionId, fromDate, toDate string) ([]*entity.ResourceMetrics, error) {
+func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versionName, fromDate, toDate string) ([]*entity.ResourceMetrics, error) {
 	if err := r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView); err != nil {
 		return nil, err
 	}
 
-	version, err := r.versionRepo.GetByID(versionId)
+	version, err := r.versionRepo.GetByName(ctx, versionName)
 	if err != nil {
 		return nil, fmt.Errorf("error getting version by id: %w", err)
 	}
@@ -64,12 +64,12 @@ func (r *ResourceMetricsInteractor) Get(ctx context.Context, loggedUserID, versi
 	return r.resourceMetricsService.Get(ctx, r.cfg.K8s.Namespace, version.Name, fromDate, toDate, step)
 }
 
-func (r *ResourceMetricsInteractor) Watch(ctx context.Context, loggedUserID, versionId, fromDate string) (<-chan []*entity.ResourceMetrics, error) {
+func (r *ResourceMetricsInteractor) Watch(ctx context.Context, loggedUserID, versionName, fromDate string) (<-chan []*entity.ResourceMetrics, error) {
 	if err := r.accessControl.CheckPermission(loggedUserID, auth.ResResourceMetrics, auth.ActView); err != nil {
 		return nil, err
 	}
 
-	version, err := r.versionRepo.GetByID(versionId)
+	version, err := r.versionRepo.GetByName(ctx, versionName)
 	if err != nil {
 		return nil, fmt.Errorf("error getting version by id: %w", err)
 	}

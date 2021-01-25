@@ -19,6 +19,6 @@ export interface WatchResourceMetrics {
 }
 
 export interface WatchResourceMetricsVariables {
-  versionId: string;
+  versionName: string;
   fromDate: string;
 }

@@ -12,6 +12,7 @@ import { VersionStatus } from './../../types/globalTypes';
 export interface WatchVersion_watchVersion {
   __typename: 'Version';
   id: string;
+  name: string;
   status: VersionStatus;
   errors: string[];
 }

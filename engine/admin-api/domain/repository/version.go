@@ -10,6 +10,7 @@ import (
 type VersionRepo interface {
 	Create(userID string, version *entity.Version) (*entity.Version, error)
 	GetByID(id string) (*entity.Version, error)
+	GetByName(ctx context.Context, name string) (*entity.Version, error)
 	GetByIDs(ids []string) ([]*entity.Version, []error)
 	Update(version *entity.Version) error
 	SetHasDoc(ctx context.Context, versionID string, hasDoc bool) error

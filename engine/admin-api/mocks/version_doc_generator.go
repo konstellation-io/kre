@@ -33,15 +33,15 @@ func (m *MockDocGenerator) EXPECT() *MockDocGeneratorMockRecorder {
 }
 
 // Generate mocks base method
-func (m *MockDocGenerator) Generate(versionID, docFolder string) error {
+func (m *MockDocGenerator) Generate(versionName, docFolder string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Generate", versionID, docFolder)
+	ret := m.ctrl.Call(m, "Generate", versionName, docFolder)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Generate indicates an expected call of Generate
-func (mr *MockDocGeneratorMockRecorder) Generate(versionID, docFolder interface{}) *gomock.Call {
+func (mr *MockDocGeneratorMockRecorder) Generate(versionName, docFolder interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Generate", reflect.TypeOf((*MockDocGenerator)(nil).Generate), versionID, docFolder)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Generate", reflect.TypeOf((*MockDocGenerator)(nil).Generate), versionName, docFolder)
 }

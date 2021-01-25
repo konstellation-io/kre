@@ -43,13 +43,13 @@ type Props = {
 function Metrics({ runtime, version }: Props) {
   const [viewAllData, setViewAllData] = useState<boolean>(false);
 
-  const { versionId } = useParams<VersionRouteParams>();
+  const { versionName } = useParams<VersionRouteParams>();
   const { data, loading, error, refetch } = useQuery<
     GetMetrics,
     GetMetricsVariables
   >(GetMetricsQuery, {
     variables: {
-      versionId,
+      versionName,
       startDate: DEFAULT_DATES.startDate.toISOString(),
       endDate: DEFAULT_DATES.endDate.toISOString()
     }
@@ -79,12 +79,12 @@ function Metrics({ runtime, version }: Props) {
   const submit = useCallback(() => {
     handleSubmit(({ startDate, endDate }: FormData) => {
       refetch({
-        versionId,
+        versionName,
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString()
       });
     })();
-  }, [handleSubmit, refetch, versionId]);
+  }, [handleSubmit, refetch, versionName]);
 
   function getContent() {
     if (loading) return <SpinnerCircular />;

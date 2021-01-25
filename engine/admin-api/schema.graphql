@@ -4,29 +4,29 @@ type Query {
   me: User
   users: [User!]!
   runtime: Runtime!
-  version(id: ID!): Version!
+  version(name: String!): Version!
   versions: [Version!]!
   settings: Settings!
   userActivityList(
     userEmail: String
     types: [UserActivityType!]
-    versionIds: [ID!]
+    versionNames: [String!]
     fromDate: String
     toDate: String
     lastId: String
   ): [UserActivity!]!
   logs(
-    versionId: ID!
+    versionName: String!
     filters: LogFilters!
     cursor: String
   ): LogPage!
   metrics(
-    versionId: ID!
+    versionName: String!
     startDate: String!
     endDate: String!
   ): Metrics
   resourceMetrics(
-    versionId: ID!
+    versionName: String!
     fromDate: String!
     toDate: String!
   ): [ResourceMetrics!]!
@@ -49,10 +49,10 @@ type Mutation {
 }
 
 type Subscription {
-  watchNodeLogs(versionId: ID!, filters: LogFilters!): NodeLog!
-  watchNodeStatus(versionId: ID!): Node!
+  watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
+  watchNodeStatus(versionName: String!): Node!
   watchVersion: Version!
-  watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
+  watchResourceMetrics(versionName: String!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateVersionInput {
@@ -60,22 +60,22 @@ input CreateVersionInput {
 }
 
 input StartVersionInput {
-  versionId: ID!
+  versionName : String!
   comment: String!
 }
 
 input StopVersionInput {
-  versionId: ID!
+  versionName: String!
   comment: String!
 }
 
 input PublishVersionInput {
-  versionId: ID!
+  versionName: String!
   comment: String!
 }
 
 input UnpublishVersionInput {
-  versionId: ID!
+  versionName: String!
   comment: String!
 }
 
@@ -148,7 +148,7 @@ input ConfigurationVariablesInput {
 }
 
 input UpdateConfigurationInput {
-  versionId: ID!
+  versionName: String!
   configurationVariables: [ConfigurationVariablesInput!]!
 }
 

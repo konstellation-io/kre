@@ -35,8 +35,8 @@ type LogPage struct {
 }
 
 type PublishVersionInput struct {
-	VersionID string `json:"versionId"`
-	Comment   string `json:"comment"`
+	VersionName string `json:"versionName"`
+	Comment     string `json:"comment"`
 }
 
 type SettingsInput struct {
@@ -45,18 +45,18 @@ type SettingsInput struct {
 }
 
 type StartVersionInput struct {
-	VersionID string `json:"versionId"`
-	Comment   string `json:"comment"`
+	VersionName string `json:"versionName"`
+	Comment     string `json:"comment"`
 }
 
 type StopVersionInput struct {
-	VersionID string `json:"versionId"`
-	Comment   string `json:"comment"`
+	VersionName string `json:"versionName"`
+	Comment     string `json:"comment"`
 }
 
 type UnpublishVersionInput struct {
-	VersionID string `json:"versionId"`
-	Comment   string `json:"comment"`
+	VersionName string `json:"versionName"`
+	Comment     string `json:"comment"`
 }
 
 type UpdateAccessLevelInput struct {
@@ -66,7 +66,7 @@ type UpdateAccessLevelInput struct {
 }
 
 type UpdateConfigurationInput struct {
-	VersionID              string                         `json:"versionId"`
+	VersionName            string                         `json:"versionName"`
 	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
 }
 

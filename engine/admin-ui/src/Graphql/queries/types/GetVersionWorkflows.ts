@@ -51,5 +51,5 @@ export interface GetVersionWorkflows {
 }
 
 export interface GetVersionWorkflowsVariables {
-  versionId: string;
+  versionName: string;
 }

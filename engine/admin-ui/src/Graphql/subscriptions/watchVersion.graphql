@@ -1,6 +1,7 @@
 subscription WatchVersion {
   watchVersion {
     id
+    name
     status
     errors
   }

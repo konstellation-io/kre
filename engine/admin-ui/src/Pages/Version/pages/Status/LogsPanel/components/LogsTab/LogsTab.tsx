@@ -23,11 +23,11 @@ export interface FilterTypes {
 }
 type Props = {
   runtimeId: string;
-  versionId: string;
+  versionName: string;
   uniqueId: string;
   filterValues: GetLogTabs_logTabs_filters;
 };
-function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
+function LogsTab({ runtimeId, versionName, uniqueId, filterValues }: Props) {
   const { updateTabFilters, resetTabFilters } = useLogs();
 
   const [logs, setLogs] = useState<GetServerLogs_logs_items[]>([]);
@@ -54,12 +54,12 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
       <Filters
         updateFilters={updateFilters}
         filterValues={filterValues}
-        versionId={versionId}
+        versionName={versionName}
       />
       <AppliedFilters
         filters={displayableFilters}
         updateFilters={updateFilters}
-        versionId={versionId}
+        versionName={versionName}
         resetFilters={resetFilters}
       />
       <LogsList
@@ -67,7 +67,7 @@ function LogsTab({ runtimeId, versionId, uniqueId, filterValues }: Props) {
         onNewLogs={setLogs}
         clearLogs={clearLogs}
         runtimeId={runtimeId}
-        versionId={versionId}
+        versionName={versionName}
         filterValues={filterValues}
       />
     </div>

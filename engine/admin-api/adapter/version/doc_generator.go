@@ -32,8 +32,8 @@ func NewHTTPStaticDocGenerator(cfg *config.Config, logger logging.Logger) *HTTPS
 
 // Generate takes the documents & images from the docFolder and copies it to
 // the static web folder changing the relatives image URLs.
-func (g *HTTPStaticDocGenerator) Generate(versionID, docFolder string) error {
-	versionDocSubfolder := path.Join("version", versionID, "docs")
+func (g *HTTPStaticDocGenerator) Generate(versionName, docFolder string) error {
+	versionDocSubfolder := path.Join("version", versionName, "docs")
 
 	err := g.processMarkdownFiles(docFolder, versionDocSubfolder)
 	if err != nil {

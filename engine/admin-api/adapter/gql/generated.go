@@ -140,15 +140,15 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Logs             func(childComplexity int, versionID string, filters entity.LogFilters, cursor *string) int
+		Logs             func(childComplexity int, versionName string, filters entity.LogFilters, cursor *string) int
 		Me               func(childComplexity int) int
-		Metrics          func(childComplexity int, versionID string, startDate string, endDate string) int
-		ResourceMetrics  func(childComplexity int, versionID string, fromDate string, toDate string) int
+		Metrics          func(childComplexity int, versionName string, startDate string, endDate string) int
+		ResourceMetrics  func(childComplexity int, versionName string, fromDate string, toDate string) int
 		Runtime          func(childComplexity int) int
 		Settings         func(childComplexity int) int
-		UserActivityList func(childComplexity int, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate *string, toDate *string, lastID *string) int
+		UserActivityList func(childComplexity int, userEmail *string, types []entity.UserActivityType, versionNames []string, fromDate *string, toDate *string, lastID *string) int
 		Users            func(childComplexity int) int
-		Version          func(childComplexity int, id string) int
+		Version          func(childComplexity int, name string) int
 		Versions         func(childComplexity int) int
 	}
 
@@ -174,9 +174,9 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
-		WatchNodeLogs        func(childComplexity int, versionID string, filters entity.LogFilters) int
-		WatchNodeStatus      func(childComplexity int, versionID string) int
-		WatchResourceMetrics func(childComplexity int, versionID string, fromDate string) int
+		WatchNodeLogs        func(childComplexity int, versionName string, filters entity.LogFilters) int
+		WatchNodeStatus      func(childComplexity int, versionName string) int
+		WatchResourceMetrics func(childComplexity int, versionName string, fromDate string) int
 		WatchVersion         func(childComplexity int) int
 	}
 
@@ -254,13 +254,13 @@ type QueryResolver interface {
 	Me(ctx context.Context) (*entity.User, error)
 	Users(ctx context.Context) ([]*entity.User, error)
 	Runtime(ctx context.Context) (*entity.Runtime, error)
-	Version(ctx context.Context, id string) (*entity.Version, error)
+	Version(ctx context.Context, name string) (*entity.Version, error)
 	Versions(ctx context.Context) ([]*entity.Version, error)
 	Settings(ctx context.Context) (*entity.Settings, error)
-	UserActivityList(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
-	Logs(ctx context.Context, versionID string, filters entity.LogFilters, cursor *string) (*LogPage, error)
-	Metrics(ctx context.Context, versionID string, startDate string, endDate string) (*entity.Metrics, error)
-	ResourceMetrics(ctx context.Context, versionID string, fromDate string, toDate string) ([]*entity.ResourceMetrics, error)
+	UserActivityList(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionNames []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
+	Logs(ctx context.Context, versionName string, filters entity.LogFilters, cursor *string) (*LogPage, error)
+	Metrics(ctx context.Context, versionName string, startDate string, endDate string) (*entity.Metrics, error)
+	ResourceMetrics(ctx context.Context, versionName string, fromDate string, toDate string) ([]*entity.ResourceMetrics, error)
 }
 type RuntimeResolver interface {
 	CreationDate(ctx context.Context, obj *entity.Runtime) (string, error)
@@ -269,10 +269,10 @@ type RuntimeResolver interface {
 	EntrypointAddress(ctx context.Context, obj *entity.Runtime) (string, error)
 }
 type SubscriptionResolver interface {
-	WatchNodeLogs(ctx context.Context, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
-	WatchNodeStatus(ctx context.Context, versionID string) (<-chan *entity.Node, error)
+	WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
+	WatchNodeStatus(ctx context.Context, versionName string) (<-chan *entity.Node, error)
 	WatchVersion(ctx context.Context) (<-chan *entity.Version, error)
-	WatchResourceMetrics(ctx context.Context, versionID string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
+	WatchResourceMetrics(ctx context.Context, versionName string, fromDate string) (<-chan []*entity.ResourceMetrics, error)
 }
 type UserResolver interface {
 	CreationDate(ctx context.Context, obj *entity.User) (string, error)
@@ -752,7 +752,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Logs(childComplexity, args["versionId"].(string), args["filters"].(entity.LogFilters), args["cursor"].(*string)), true
+		return e.complexity.Query.Logs(childComplexity, args["versionName"].(string), args["filters"].(entity.LogFilters), args["cursor"].(*string)), true
 
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
@@ -771,7 +771,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Metrics(childComplexity, args["versionId"].(string), args["startDate"].(string), args["endDate"].(string)), true
+		return e.complexity.Query.Metrics(childComplexity, args["versionName"].(string), args["startDate"].(string), args["endDate"].(string)), true
 
 	case "Query.resourceMetrics":
 		if e.complexity.Query.ResourceMetrics == nil {
@@ -783,7 +783,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ResourceMetrics(childComplexity, args["versionId"].(string), args["fromDate"].(string), args["toDate"].(string)), true
+		return e.complexity.Query.ResourceMetrics(childComplexity, args["versionName"].(string), args["fromDate"].(string), args["toDate"].(string)), true
 
 	case "Query.runtime":
 		if e.complexity.Query.Runtime == nil {
@@ -809,7 +809,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.UserActivityList(childComplexity, args["userEmail"].(*string), args["types"].([]entity.UserActivityType), args["versionIds"].([]string), args["fromDate"].(*string), args["toDate"].(*string), args["lastId"].(*string)), true
+		return e.complexity.Query.UserActivityList(childComplexity, args["userEmail"].(*string), args["types"].([]entity.UserActivityType), args["versionNames"].([]string), args["fromDate"].(*string), args["toDate"].(*string), args["lastId"].(*string)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -828,7 +828,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Version(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Version(childComplexity, args["name"].(string)), true
 
 	case "Query.versions":
 		if e.complexity.Query.Versions == nil {
@@ -931,7 +931,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Subscription.WatchNodeLogs(childComplexity, args["versionId"].(string), args["filters"].(entity.LogFilters)), true
+		return e.complexity.Subscription.WatchNodeLogs(childComplexity, args["versionName"].(string), args["filters"].(entity.LogFilters)), true
 
 	case "Subscription.watchNodeStatus":
 		if e.complexity.Subscription.WatchNodeStatus == nil {
@@ -943,7 +943,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Subscription.WatchNodeStatus(childComplexity, args["versionId"].(string)), true
+		return e.complexity.Subscription.WatchNodeStatus(childComplexity, args["versionName"].(string)), true
 
 	case "Subscription.watchResourceMetrics":
 		if e.complexity.Subscription.WatchResourceMetrics == nil {
@@ -955,7 +955,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Subscription.WatchResourceMetrics(childComplexity, args["versionId"].(string), args["fromDate"].(string)), true
+		return e.complexity.Subscription.WatchResourceMetrics(childComplexity, args["versionName"].(string), args["fromDate"].(string)), true
 
 	case "Subscription.watchVersion":
 		if e.complexity.Subscription.WatchVersion == nil {
@@ -1275,29 +1275,29 @@ type Query {
   me: User
   users: [User!]!
   runtime: Runtime!
-  version(id: ID!): Version!
+  version(name: String!): Version!
   versions: [Version!]!
   settings: Settings!
   userActivityList(
     userEmail: String
     types: [UserActivityType!]
-    versionIds: [ID!]
+    versionNames: [String!]
     fromDate: String
     toDate: String
     lastId: String
   ): [UserActivity!]!
   logs(
-    versionId: ID!
+    versionName: String!
     filters: LogFilters!
     cursor: String
   ): LogPage!
   metrics(
-    versionId: ID!
+    versionName: String!
     startDate: String!
     endDate: String!
   ): Metrics
   resourceMetrics(
-    versionId: ID!
+    versionName: String!
     fromDate: String!
     toDate: String!
   ): [ResourceMetrics!]!
@@ -1320,10 +1320,10 @@ type Mutation {
 }
 
 type Subscription {
-  watchNodeLogs(versionId: ID!, filters: LogFilters!): NodeLog!
-  watchNodeStatus(versionId: ID!): Node!
+  watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
+  watchNodeStatus(versionName: String!): Node!
   watchVersion: Version!
-  watchResourceMetrics(versionId: ID!, fromDate: String!): [ResourceMetrics!]!
+  watchResourceMetrics(versionName: String!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateVersionInput {
@@ -1331,22 +1331,22 @@ input CreateVersionInput {
 }
 
 input StartVersionInput {
-  versionId: ID!
+  versionName : String!
   comment: String!
 }
 
 input StopVersionInput {
-  versionId: ID!
+  versionName: String!
   comment: String!
 }
 
 input PublishVersionInput {
-  versionId: ID!
+  versionName: String!
   comment: String!
 }
 
 input UnpublishVersionInput {
-  versionId: ID!
+  versionName: String!
   comment: String!
 }
 
@@ -1419,7 +1419,7 @@ input ConfigurationVariablesInput {
 }
 
 input UpdateConfigurationInput {
-  versionId: ID!
+  versionName: String!
   configurationVariables: [ConfigurationVariablesInput!]!
 }
 
@@ -1802,13 +1802,13 @@ func (ec *executionContext) field_Query_logs_args(ctx context.Context, rawArgs m
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionId"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["versionName"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionId"] = arg0
+	args["versionName"] = arg0
 	var arg1 entity.LogFilters
 	if tmp, ok := rawArgs["filters"]; ok {
 		arg1, err = ec.unmarshalNLogFilters2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐLogFilters(ctx, tmp)
@@ -1832,13 +1832,13 @@ func (ec *executionContext) field_Query_metrics_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionId"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["versionName"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionId"] = arg0
+	args["versionName"] = arg0
 	var arg1 string
 	if tmp, ok := rawArgs["startDate"]; ok {
 		arg1, err = ec.unmarshalNString2string(ctx, tmp)
@@ -1862,13 +1862,13 @@ func (ec *executionContext) field_Query_resourceMetrics_args(ctx context.Context
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionId"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["versionName"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionId"] = arg0
+	args["versionName"] = arg0
 	var arg1 string
 	if tmp, ok := rawArgs["fromDate"]; ok {
 		arg1, err = ec.unmarshalNString2string(ctx, tmp)
@@ -1908,13 +1908,13 @@ func (ec *executionContext) field_Query_userActivityList_args(ctx context.Contex
 	}
 	args["types"] = arg1
 	var arg2 []string
-	if tmp, ok := rawArgs["versionIds"]; ok {
-		arg2, err = ec.unmarshalOID2ᚕstringᚄ(ctx, tmp)
+	if tmp, ok := rawArgs["versionNames"]; ok {
+		arg2, err = ec.unmarshalOString2ᚕstringᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionIds"] = arg2
+	args["versionNames"] = arg2
 	var arg3 *string
 	if tmp, ok := rawArgs["fromDate"]; ok {
 		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
@@ -1946,13 +1946,13 @@ func (ec *executionContext) field_Query_version_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["name"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["name"] = arg0
 	return args, nil
 }
 
@@ -1960,13 +1960,13 @@ func (ec *executionContext) field_Subscription_watchNodeLogs_args(ctx context.Co
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionId"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["versionName"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionId"] = arg0
+	args["versionName"] = arg0
 	var arg1 entity.LogFilters
 	if tmp, ok := rawArgs["filters"]; ok {
 		arg1, err = ec.unmarshalNLogFilters2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐLogFilters(ctx, tmp)
@@ -1982,13 +1982,13 @@ func (ec *executionContext) field_Subscription_watchNodeStatus_args(ctx context.
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionId"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["versionName"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionId"] = arg0
+	args["versionName"] = arg0
 	return args, nil
 }
 
@@ -1996,13 +1996,13 @@ func (ec *executionContext) field_Subscription_watchResourceMetrics_args(ctx con
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionId"]; ok {
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["versionName"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionId"] = arg0
+	args["versionName"] = arg0
 	var arg1 string
 	if tmp, ok := rawArgs["fromDate"]; ok {
 		arg1, err = ec.unmarshalNString2string(ctx, tmp)
@@ -4048,7 +4048,7 @@ func (ec *executionContext) _Query_version(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Version(rctx, args["id"].(string))
+		return ec.resolvers.Query().Version(rctx, args["name"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4157,7 +4157,7 @@ func (ec *executionContext) _Query_userActivityList(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().UserActivityList(rctx, args["userEmail"].(*string), args["types"].([]entity.UserActivityType), args["versionIds"].([]string), args["fromDate"].(*string), args["toDate"].(*string), args["lastId"].(*string))
+		return ec.resolvers.Query().UserActivityList(rctx, args["userEmail"].(*string), args["types"].([]entity.UserActivityType), args["versionNames"].([]string), args["fromDate"].(*string), args["toDate"].(*string), args["lastId"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4198,7 +4198,7 @@ func (ec *executionContext) _Query_logs(ctx context.Context, field graphql.Colle
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Logs(rctx, args["versionId"].(string), args["filters"].(entity.LogFilters), args["cursor"].(*string))
+		return ec.resolvers.Query().Logs(rctx, args["versionName"].(string), args["filters"].(entity.LogFilters), args["cursor"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4239,7 +4239,7 @@ func (ec *executionContext) _Query_metrics(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Metrics(rctx, args["versionId"].(string), args["startDate"].(string), args["endDate"].(string))
+		return ec.resolvers.Query().Metrics(rctx, args["versionName"].(string), args["startDate"].(string), args["endDate"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4277,7 +4277,7 @@ func (ec *executionContext) _Query_resourceMetrics(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ResourceMetrics(rctx, args["versionId"].(string), args["fromDate"].(string), args["toDate"].(string))
+		return ec.resolvers.Query().ResourceMetrics(rctx, args["versionName"].(string), args["fromDate"].(string), args["toDate"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4795,7 +4795,7 @@ func (ec *executionContext) _Subscription_watchNodeLogs(ctx context.Context, fie
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().WatchNodeLogs(rctx, args["versionId"].(string), args["filters"].(entity.LogFilters))
+		return ec.resolvers.Subscription().WatchNodeLogs(rctx, args["versionName"].(string), args["filters"].(entity.LogFilters))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4846,7 +4846,7 @@ func (ec *executionContext) _Subscription_watchNodeStatus(ctx context.Context, f
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().WatchNodeStatus(rctx, args["versionId"].(string))
+		return ec.resolvers.Subscription().WatchNodeStatus(rctx, args["versionName"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4941,7 +4941,7 @@ func (ec *executionContext) _Subscription_watchResourceMetrics(ctx context.Conte
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().WatchResourceMetrics(rctx, args["versionId"].(string), args["fromDate"].(string))
+		return ec.resolvers.Subscription().WatchResourceMetrics(rctx, args["versionName"].(string), args["fromDate"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7249,9 +7249,9 @@ func (ec *executionContext) unmarshalInputPublishVersionInput(ctx context.Contex
 
 	for k, v := range asMap {
 		switch k {
-		case "versionId":
+		case "versionName":
 			var err error
-			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			it.VersionName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7297,9 +7297,9 @@ func (ec *executionContext) unmarshalInputStartVersionInput(ctx context.Context,
 
 	for k, v := range asMap {
 		switch k {
-		case "versionId":
+		case "versionName":
 			var err error
-			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			it.VersionName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7321,9 +7321,9 @@ func (ec *executionContext) unmarshalInputStopVersionInput(ctx context.Context, 
 
 	for k, v := range asMap {
 		switch k {
-		case "versionId":
+		case "versionName":
 			var err error
-			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			it.VersionName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7345,9 +7345,9 @@ func (ec *executionContext) unmarshalInputUnpublishVersionInput(ctx context.Cont
 
 	for k, v := range asMap {
 		switch k {
-		case "versionId":
+		case "versionName":
 			var err error
-			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			it.VersionName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7399,9 +7399,9 @@ func (ec *executionContext) unmarshalInputUpdateConfigurationInput(ctx context.C
 
 	for k, v := range asMap {
 		switch k {
-		case "versionId":
+		case "versionName":
 			var err error
-			it.VersionID, err = ec.unmarshalNID2string(ctx, v)
+			it.VersionName, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

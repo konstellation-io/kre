@@ -29,14 +29,14 @@ func (m *MetricsMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Coll
 	m.logger.Infof("MongoDB creating indexes for %s collection...", metricsCollectionName)
 	_, err := coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
-			Keys: bson.D{{"date", 1}, {"versionId", 1}},
+			Keys: bson.D{{"date", 1}, {"versionName", 1}},
 		},
 	})
 
 	return err
 }
 
-func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, versionID string) ([]entity.ClassificationMetric, error) {
+func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, versionName string) ([]entity.ClassificationMetric, error) {
 	var result []entity.ClassificationMetric
 	err := m.ensureIndexes(ctx, m.collection)
 	if err != nil {
@@ -52,7 +52,7 @@ func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time
 			"$gte": startDate.Format(time.RFC3339),
 			"$lte": endDate.Format(time.RFC3339),
 		},
-		"versionId": versionID,
+		"versionName": versionName,
 	}
 
 	m.logger.Debugf("Finding metrics with filter = %#v", filter)

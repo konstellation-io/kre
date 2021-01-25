@@ -1,5 +1,5 @@
-query GetVersionWorkflows($versionId: ID!) {
-  version(id: $versionId) {
+query GetVersionWorkflows($versionName: String!) {
+  version(name: $versionName) {
     id
     name
     status

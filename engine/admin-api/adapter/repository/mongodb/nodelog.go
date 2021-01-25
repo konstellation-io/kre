@@ -43,7 +43,7 @@ func (n *NodeLogMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Coll
 
 // TODO use the Search filter: https://jira.mongodb.org/browse/NODE-2162
 // you cannot use a $text matcher on a change stream
-func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionID string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	logsCh := make(chan *entity.NodeLog, 1)
 
 	go func() {
@@ -58,7 +58,7 @@ func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionID string
 
 		conditions := bson.A{
 			bson.D{{"operationType", "insert"}},
-			bson.D{{"fullDocument.versionId", versionID}},
+			bson.D{{"fullDocument.versionName", versionName}},
 		}
 
 		if len(filters.NodeIDs) > 0 {

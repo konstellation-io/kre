@@ -1,2 +1,2 @@
-export const buildRoute = (route: string, versionId: string = ''): string =>
-  route.replace(':versionId', versionId);
+export const buildRoute = (route: string, versionName: string = ''): string =>
+  route.replace(':versionName', versionName);

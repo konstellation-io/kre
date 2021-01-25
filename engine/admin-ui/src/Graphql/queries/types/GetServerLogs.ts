@@ -33,6 +33,6 @@ export interface GetServerLogs {
 
 export interface GetServerLogsVariables {
   filters: LogFilters;
-  versionId: string;
+  versionName: string;
   cursor?: string | null;
 }

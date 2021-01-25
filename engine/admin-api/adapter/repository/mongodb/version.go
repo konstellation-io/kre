@@ -66,6 +66,18 @@ func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {
 	return v, err
 }
 
+func (r *VersionRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Version, error) {
+	v := &entity.Version{}
+	filter := bson.D{{"name", name}}
+
+	err := r.collection.FindOne(ctx, filter).Decode(v)
+	if err == mongo.ErrNoDocuments {
+		return nil, usecase.ErrVersionNotFound
+	}
+
+	return v, err
+}
+
 func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error) {
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version

@@ -15,7 +15,7 @@ import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
 
 jest.mock('react-router', () => ({
   useParams: jest.fn(() => ({
-    runtimeId: 'someId'
+    versionName: ''
   }))
 }));
 

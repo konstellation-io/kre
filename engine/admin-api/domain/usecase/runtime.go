@@ -79,7 +79,7 @@ func (i *RuntimeInteractor) EnsureRuntimeIsCreated(ctx context.Context) error {
 	return nil
 }
 
-// GetByID return a Runtime by its ID
+// Get return the current Runtime
 func (i *RuntimeInteractor) Get(ctx context.Context, loggedUserID string) (*entity.Runtime, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView); err != nil {
 		return nil, err

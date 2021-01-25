@@ -32,7 +32,7 @@ function VersionCreated() {
         if (version.status === VersionStatus.CREATED) {
           const newNotification: Notification = {
             id: `version-${version.id}-created`,
-            message: `The VERSION "${version.id}" has been successfully created!`,
+            message: `The VERSION "${version.name}" has been successfully created!`,
             type: NotificationType.MESSAGE,
             typeLabel: 'CREATED',
             timeout: NOTIFICATION_TIMEOUT,

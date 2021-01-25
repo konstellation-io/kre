@@ -80,12 +80,12 @@ function Configuration() {
   const [configurationVariables, setConfigurationVariables] = useState<
     ConfigurationVariable[]
   >([]);
-  const { versionId } = useParams<VersionRouteParams>();
+  const { versionName } = useParams<VersionRouteParams>();
   const { data, loading, error } = useQuery<
     GetConfigurationVariables,
     GetConfigurationVariablesVariables
   >(GetConfVariablesQuery, {
-    variables: { versionId }
+    variables: { versionName }
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<
     UpdateVersionConfiguration,
@@ -174,11 +174,11 @@ function Configuration() {
   function makeUpdate(): void {
     closeModal();
 
-    if (versionId) {
+    if (versionName) {
       updateConfiguration({
         variables: {
           input: {
-            versionId,
+            versionName,
             configurationVariables: formatConfVars(configurationVariables)
           } as UpdateConfigurationInput
         } as UpdateVersionConfigurationVariables
