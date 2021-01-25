@@ -270,7 +270,7 @@ func (i *VersionInteractor) saveKRTDashboards(dashboardsFolder string, ctx conte
 
 func (i *VersionInteractor) saveKRTDoc(docFolder string, versionCreated *entity.Version, contentErrors []error, ctx context.Context) []error {
 	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
-		err = i.docGenerator.Generate(versionCreated.ID, docFolder)
+		err = i.docGenerator.Generate(versionCreated.Name, docFolder)
 		if err != nil {
 			errorMessage := "error generating version doc"
 			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))

@@ -36,7 +36,7 @@ func TestHTTPStaticDocGenerator_Generate(t *testing.T) {
 	cfg.Admin.BaseURL = "http://api.local"
 	cfg.Admin.StoragePath = storageFolder
 
-	versionID := "version1234"
+	versionName := "version1234"
 
 	readmeContent := []byte(`
 # Example
@@ -76,7 +76,7 @@ This is an example:
 `)
 
 	generator := version.NewHTTPStaticDocGenerator(cfg, logger)
-	err = generator.Generate(versionID, docFolder)
+	err = generator.Generate(versionName, docFolder)
 	require.Nil(t, err)
 
 	generatedReadme, err := ioutil.ReadFile(path.Join(cfg.Admin.StoragePath, "version/version1234/docs/README.md"))
@@ -93,9 +93,9 @@ func TestHTTPStaticDocGenerator_GenerateWithNoContent(t *testing.T) {
 	mocks.AddLoggerExpects(logger)
 	cfg := &config.Config{}
 
-	versionID := "version1234"
+	versionName := "version1234"
 
 	generator := version.NewHTTPStaticDocGenerator(cfg, logger)
-	err := generator.Generate(versionID, "not-exists-folder")
+	err := generator.Generate(versionName, "not-exists-folder")
 	require.NotNil(t, err)
 }
