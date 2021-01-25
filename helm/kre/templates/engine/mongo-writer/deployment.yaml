@@ -19,10 +19,9 @@ spec:
         app: mongo-writer
     spec:
       containers:
-        - name: mongo-writer
-          # TODO: This version should be fixed and the operator released in-sync with new mongo-writer changes
-          image: konstellation/kre-mongo-writer:latest
-          imagePullPolicy: {{ if .Values.developmentMode }}IfNotPresent{{ else }}Always{{ end }}
+        - name: {{ .Release.Name }}-mongo-writer
+          image: {{ .Values.mongoWriter.image.repository }}:{{ .Values.mongoWriter.image.tag }}
+          imagePullPolicy: {{ .Values.mongoWriter.image.pullPolicy }}
           envFrom:
             - secretRef:
                 name: {{ .Release.Name }}-secrets
