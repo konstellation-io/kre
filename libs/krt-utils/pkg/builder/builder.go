@@ -3,6 +3,7 @@ package builder
 import (
 	"archive/tar"
 	"compress/gzip"
+	"errors"
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"io"
@@ -99,6 +100,11 @@ func (b *Builder) getKrtYaml(src string) (*krt.File, string, error) {
 		k, err := v.ParseFile(file)
 		if err == nil {
 			return k, file, nil
+		}
+
+		var pathError *os.PathError
+		if !errors.As(err, &pathError) {
+			return k, file, err
 		}
 	}
 
@@ -228,7 +234,6 @@ func (b *Builder) UpdateVersion(src, version string) error {
 		return ErrInvalidVersionName
 	}
 	y, filename, err := b.getKrtYaml(src)
-
 	if err != nil {
 		return fmt.Errorf("error while getting yaml: %w", err)
 	}

@@ -151,14 +151,24 @@ func TestBuilder_UpdateVersionErrors(t *testing.T) {
 	require.NoError(t, err)
 	b := New()
 	updateVersion := "test1234"
+	invalidVersion := "12345TEST"
 	defer os.RemoveAll(tmp)
+	fmt.Println(tmp)
+
+	// Test wrong  name
+	err = b.UpdateVersion(tmp, invalidVersion)
+	require.EqualError(t, err, "invalid version name")
 
 	// Test no file found
 	err = b.UpdateVersion(tmp, updateVersion)
-	require.Error(t, err)
+	require.EqualError(t, err, "error while getting yaml: no yaml file found")
 
 	// Test bad yaml file
-	createKrtFile(t, tmp, "badyaml", "krt.yml")
+	createKrtFile(t, tmp, "descriptio, Version for testing", "krt.yml")
 	err = b.UpdateVersion(tmp, updateVersion)
-	require.Error(t, err)
+	require.EqualError(t, err, "error")
+
+	// Test bad write
+	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0100)
+	require.NoError(t, err)
 }
