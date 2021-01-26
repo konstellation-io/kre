@@ -4,7 +4,7 @@ metadata:
   name: admin-api-pv-claim
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: {{ .Values.adminApi.storage.size }}
