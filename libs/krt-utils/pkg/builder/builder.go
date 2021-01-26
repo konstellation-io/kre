@@ -3,7 +3,6 @@ package builder
 import (
 	"archive/tar"
 	"compress/gzip"
-	"errors"
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"io"
@@ -92,23 +91,19 @@ func (b *Builder) skipFile(file string, patterns []string) (bool, error) {
 }
 
 // getKrtYaml checks source directory for yaml files.
-func (b *Builder) getKrtYaml(src string) (*krt.File, string, error) {
+func (b *Builder) getKrtYaml(src string) (*krt.File, os.FileInfo, error) {
 	ymls := []string{filepath.Join(src, "krt.yaml"), filepath.Join(src, "krt.yml")}
 	v := validator.New()
 
 	for _, file := range ymls {
-		k, err := v.ParseFile(file)
+		fileInfo, err := os.Stat(file)
 		if err == nil {
-			return k, file, nil
-		}
-
-		var pathError *os.PathError
-		if !errors.As(err, &pathError) {
-			return k, file, err
+			k, err := v.ParseFile(file)
+			return k, fileInfo, err
 		}
 	}
 
-	return nil, "", ErrYamlNotFound
+	return nil, nil, ErrYamlNotFound
 }
 
 // CreateKrt create a krt file from a source dir.
@@ -233,31 +228,22 @@ func (b *Builder) UpdateVersion(src, version string) error {
 	if !validVersion {
 		return ErrInvalidVersionName
 	}
-	y, filename, err := b.getKrtYaml(src)
+	y, fileInfo, err := b.getKrtYaml(src)
 	if err != nil {
 		return fmt.Errorf("error while getting yaml: %w", err)
 	}
 
 	y.Version = version
 
-	fileInfo, err := os.Stat(filename)
-	if err != nil {
-		return fmt.Errorf("error with yaml file: %w", err)
-	}
-
-	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, fileInfo.Mode())
+	file, err := os.OpenFile(fileInfo.Name(), os.O_RDWR|os.O_CREATE|os.O_TRUNC, fileInfo.Mode())
 	if err != nil {
 		return fmt.Errorf("error while opening yaml file: %w", err)
 	}
 	defer file.Close()
 
-	data, err := yaml.Marshal(&y)
-	if err != nil {
-		return fmt.Errorf("error while marshalling yaml file: %w", err)
-	}
+	data, _ := yaml.Marshal(&y)
 
 	_, err = file.Write(data)
-
 	if err != nil {
 		return fmt.Errorf("error while writing yaml file: %w", err)
 	}
