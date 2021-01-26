@@ -131,7 +131,7 @@ func TestBuilder_skipFile(t *testing.T) {
 func TestBuilder_UpdateVersion(t *testing.T) {
 	tmp, err := ioutil.TempDir("", "TestBuilder_UpdateVersion")
 	require.NoError(t, err)
-	createKrtFile(t, tmp, sampleKrtString, "krt.yml")
+	createKrtFile(t, tmp, sampleKrtString, "krt.yaml")
 
 	updateVersion := "test1234"
 	b := New()
@@ -141,7 +141,7 @@ func TestBuilder_UpdateVersion(t *testing.T) {
 	require.NoError(t, err)
 
 	v := validator.New()
-	krt, err := v.ParseFile(yaml)
+	krt, err := v.ParseFile(yaml.Name())
 	require.NoError(t, err)
 	require.Equal(t, krt.Version, updateVersion)
 }
@@ -164,11 +164,16 @@ func TestBuilder_UpdateVersionErrors(t *testing.T) {
 	require.EqualError(t, err, "error while getting yaml: no yaml file found")
 
 	// Test bad yaml file
-	createKrtFile(t, tmp, "descriptio, Version for testing", "krt.yml")
+	createKrtFile(t, tmp, "description, Version for testing", "krt.yml")
 	err = b.UpdateVersion(tmp, updateVersion)
-	require.EqualError(t, err, "error")
+	require.EqualError(t, err, "error while getting yaml: error Unmarshal yaml file: yaml: unmarshal errors:\n  "+
+		"line 1: cannot unmarshal !!str `descrip...` into krt.File")
 
-	// Test bad write
-	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0100)
+	// Test error opening
+	createKrtFile(t, tmp, sampleKrtString, "krt.yml")
+	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0444)
 	require.NoError(t, err)
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.EqualError(t, err, "error while opening yaml file: open krt.yml: permission denied")
+	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0777)
 }
