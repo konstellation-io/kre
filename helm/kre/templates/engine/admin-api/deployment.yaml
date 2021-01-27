@@ -21,6 +21,8 @@ spec:
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:
+      securityContext:
+        fsGroup: 10001
       volumes:
         - name: admin-api-pv-storage
           persistentVolumeClaim:
@@ -29,8 +31,6 @@ spec:
         - name: {{ .Release.Name }}-admin-api
           image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
           imagePullPolicy: {{ .Values.adminApi.image.pullPolicy }}
-          securityContext:
-            fsGroup: 10001
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
