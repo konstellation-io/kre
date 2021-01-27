@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   kre:
   - apiVersion: v2
+    appVersion: v1.0.0
+    created: "2021-01-27T13:10:17.428477074Z"
+    dependencies:
+    - name: influxdb
+      repository: https://influxdata.github.io/helm-charts
+      version: 4.8.1
+    - condition: prometheus-operator.enabled
+      name: prometheus-operator
+      repository: https://charts.helm.sh/stable
+      version: 9.3.1
+    description: KRE
+    digest: b5c40a98978a374edc3263cd5e4045d3663523373129b9980e87c8f73c65d7c1
+    name: kre
+    urls:
+    - https://github.com/konstellation-io/kre/releases/download/kre-1.0.0/kre-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: v0.2.4
     created: "2021-01-14T18:03:10.673634866Z"
     dependencies:
