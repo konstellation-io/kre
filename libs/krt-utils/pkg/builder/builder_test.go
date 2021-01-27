@@ -141,7 +141,7 @@ func TestBuilder_UpdateVersion(t *testing.T) {
 	require.NoError(t, err)
 
 	v := validator.New()
-	krt, err := v.ParseFile(yaml.Name())
+	krt, err := v.ParseFile(filepath.Join(tmp, yaml.Name()))
 	require.NoError(t, err)
 	require.Equal(t, krt.Version, updateVersion)
 }
@@ -174,6 +174,7 @@ func TestBuilder_UpdateVersionErrors(t *testing.T) {
 	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0444)
 	require.NoError(t, err)
 	err = b.UpdateVersion(tmp, updateVersion)
-	require.EqualError(t, err, "error while opening yaml file: open krt.yml: permission denied")
+	require.EqualError(t, err, fmt.Sprintf("error while opening yaml file: open %v/krt.yml: permission denied", tmp))
 	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0755)
+	require.NoError(t, err)
 }

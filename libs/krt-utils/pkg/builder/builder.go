@@ -235,7 +235,7 @@ func (b *Builder) UpdateVersion(src, version string) error {
 
 	y.Version = version
 
-	file, err := os.OpenFile(fileInfo.Name(), os.O_RDWR|os.O_CREATE|os.O_TRUNC, fileInfo.Mode())
+	file, err := os.OpenFile(filepath.Join(src, fileInfo.Name()), os.O_RDWR|os.O_CREATE|os.O_TRUNC, fileInfo.Mode())
 	if err != nil {
 		return fmt.Errorf("error while opening yaml file: %w", err)
 	}
