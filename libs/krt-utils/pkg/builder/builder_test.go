@@ -11,6 +11,8 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/stretchr/testify/require"
+
+	"github.com/konstellation-io/kre/libs/krt-utils/pkg/validator"
 )
 
 var (
@@ -73,7 +75,7 @@ func TestBuilder_Build(t *testing.T) {
 	}
 
 	// Create test dir structure
-	tmp, err := ioutil.TempDir("", "test-krtutils")
+	tmp, err := ioutil.TempDir("", "TestBuilder_Build")
 	require.NoError(t, err)
 	defer os.RemoveAll(tmp)
 
@@ -92,7 +94,6 @@ func TestBuilder_Build(t *testing.T) {
 }
 
 func TestBuilder_skipFile(t *testing.T) {
-
 	type testCases struct {
 		File     map[string]bool
 		Patterns []string
@@ -125,4 +126,55 @@ func TestBuilder_skipFile(t *testing.T) {
 		}
 	}
 
+}
+
+func TestBuilder_UpdateVersion(t *testing.T) {
+	tmp, err := ioutil.TempDir("", "TestBuilder_UpdateVersion")
+	require.NoError(t, err)
+	createKrtFile(t, tmp, sampleKrtString, "krt.yaml")
+
+	updateVersion := "test1234"
+	b := New()
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.NoError(t, err)
+	_, yaml, err := b.getKrtYaml(tmp)
+	require.NoError(t, err)
+
+	v := validator.New()
+	krt, err := v.ParseFile(filepath.Join(tmp, yaml.Name()))
+	require.NoError(t, err)
+	require.Equal(t, krt.Version, updateVersion)
+}
+
+func TestBuilder_UpdateVersionErrors(t *testing.T) {
+	tmp, err := ioutil.TempDir("", "TestBuilder_UpdateVersionErrors")
+	require.NoError(t, err)
+	b := New()
+	updateVersion := "test1234"
+	invalidVersion := "12345TEST"
+	defer os.RemoveAll(tmp)
+	fmt.Println(tmp)
+
+	// Test wrong  name
+	err = b.UpdateVersion(tmp, invalidVersion)
+	require.EqualError(t, err, "invalid version name")
+
+	// Test no file found
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.EqualError(t, err, "error while getting yaml: no yaml file found")
+
+	// Test bad yaml file
+	createKrtFile(t, tmp, "description, Version for testing", "krt.yml")
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.EqualError(t, err, "error while getting yaml: error Unmarshal yaml file: yaml: unmarshal errors:\n  "+
+		"line 1: cannot unmarshal !!str `descrip...` into krt.File")
+
+	// Test error opening
+	createKrtFile(t, tmp, sampleKrtString, "krt.yml")
+	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0444)
+	require.NoError(t, err)
+	err = b.UpdateVersion(tmp, updateVersion)
+	require.EqualError(t, err, fmt.Sprintf("error while opening yaml file: open %v/krt.yml: permission denied", tmp))
+	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0755)
+	require.NoError(t, err)
 }

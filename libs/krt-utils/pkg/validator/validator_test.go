@@ -237,6 +237,13 @@ func TestValidator_ValidateInvalidKrt(t *testing.T) {
 	require.EqualError(t, valErrs[1], "error validating KRT images: entrypoint image error: repository name must be lowercase")
 }
 
+func TestValidator_ValidateVersionName(t *testing.T) {
+	validated := validator.ValidateVersionName("testversionname")
+	require.True(t, validated)
+	validated = validator.ValidateVersionName("TestVersionName")
+	require.False(t, validated)
+}
+
 func createTestKrtYaml(t *testing.T, filename, content string) {
 	t.Helper()
 
