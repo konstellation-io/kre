@@ -175,5 +175,5 @@ func TestBuilder_UpdateVersionErrors(t *testing.T) {
 	require.NoError(t, err)
 	err = b.UpdateVersion(tmp, updateVersion)
 	require.EqualError(t, err, "error while opening yaml file: open krt.yml: permission denied")
-	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0777)
+	err = os.Chmod(filepath.Join(tmp, "krt.yml"), 0755)
 }

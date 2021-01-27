@@ -241,7 +241,10 @@ func (b *Builder) UpdateVersion(src, version string) error {
 	}
 	defer file.Close()
 
-	data, _ := yaml.Marshal(&y)
+	data, err := yaml.Marshal(&y)
+	if err != nil {
+		return fmt.Errorf("error while marshalling yaml file: %w", err)
+	}
 
 	_, err = file.Write(data)
 	if err != nil {
