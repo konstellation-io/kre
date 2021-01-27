@@ -29,6 +29,8 @@ spec:
         - name: {{ .Release.Name }}-admin-api
           image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
           imagePullPolicy: {{ .Values.adminApi.image.pullPolicy }}
+          securityContext:
+            fsGroup: 10001
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
