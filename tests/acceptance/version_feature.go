@@ -17,17 +17,17 @@ import (
 
 const CallTimeout = 10
 
-func (r *TestRunner) theVersionStatusIs(versionID, expectedStatus string) error {
-	status, err := r.gqManager.GetVersionStatus(versionID)
+func (r *TestRunner) theVersionStatusIs(versionName, expectedStatus string) error {
+	status, err := r.gqManager.GetVersionStatus(versionName)
 	if err != nil {
 		return err
 	}
 
 	if expectedStatus != status {
 		if status == entity.VersionStatusPublished && expectedStatus == entity.VersionStatusStarted {
-			return r.gqManager.VersionUnpublish(versionID, "set to expected status")
+			return r.gqManager.VersionUnpublish(versionName, "set to expected status")
 		} else if status == entity.VersionStatusStarted && expectedStatus == entity.VersionStatusPublished {
-			return r.gqManager.VersionPublish(versionID, "set to expected status")
+			return r.gqManager.VersionPublish(versionName, "set to expected status")
 		} else {
 			// nolint:goerr113
 			return fmt.Errorf("the version status is %s and should be %s", status, expectedStatus)
@@ -37,12 +37,12 @@ func (r *TestRunner) theVersionStatusIs(versionID, expectedStatus string) error 
 	return nil
 }
 
-func (r *TestRunner) theAPIClientPublishTheVersionSendingComment(versionID, comment string) error {
-	return r.gqManager.VersionPublish(versionID, comment)
+func (r *TestRunner) theAPIClientPublishTheVersionSendingComment(versionName, comment string) error {
+	return r.gqManager.VersionPublish(versionName, comment)
 }
 
-func (r *TestRunner) theAPIClientUnpublishTheVersionSendingComment(versionID, comment string) error {
-	return r.gqManager.VersionUnpublish(versionID, comment)
+func (r *TestRunner) theAPIClientUnpublishTheVersionSendingComment(versionName, comment string) error {
+	return r.gqManager.VersionUnpublish(versionName, comment)
 }
 
 func (r *TestRunner) theAPIClientCallsToTheWorkflowTestAt(entrypointAddress string) error {
