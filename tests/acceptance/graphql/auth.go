@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -22,7 +23,13 @@ func (g *GQManager) SignIn() error {
 	data := url.Values{}
 	data.Add("apiToken", g.cfg.APIToken)
 
-	signInURL := fmt.Sprintf("%s/api/v1/auth/token/signin", g.cfg.APIBaseURL)
+	u, err := url.Parse(g.cfg.APIBaseURL)
+	if err != nil {
+		return err
+	}
+	u.Path = path.Join(u.Path, "/api/v1/auth/token/signin")
+	signInURL := u.String()
+
 	log.Printf("Getting valid access token from %s...", signInURL)
 
 	//nolint:gosec
