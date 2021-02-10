@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 
 	testRunner, err := integrationtests.NewTestRunner()
 	if err != nil {
-		log.Fatalf("unexpected error with integration tests runner: %p \n", err)
+		log.Fatalf("unexpected error with integration tests runner: %s", err)
 	}
 
 	status := godog.TestSuite{
