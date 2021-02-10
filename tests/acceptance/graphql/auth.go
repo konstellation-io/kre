@@ -22,10 +22,14 @@ func (g *GQManager) SignIn() error {
 	data := url.Values{}
 	data.Add("apiToken", g.cfg.APIToken)
 
-	signInURL := fmt.Sprintf("%s/api/v1/auth/token/signin", g.cfg.APIBaseURL)
+	signInURL, err := getAPIURL(g.cfg.APIBaseURL, "/api/v1/auth/token/signin")
+
+	if err != nil {
+		return err
+	}
+
 	log.Printf("Getting valid access token from %s...", signInURL)
 
-	//nolint:gosec
 	ctx, cancel := context.WithTimeout(context.Background(), signInTimeout)
 	defer cancel()
 

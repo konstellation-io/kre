@@ -3,8 +3,9 @@ package graphql
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
+	"net/url"
+	"path"
 	"time"
 
 	"github.com/machinebox/graphql"
@@ -21,15 +22,33 @@ type GQManager struct {
 	accessToken string
 }
 
-func NewGQManager(cfg config.Config) *GQManager {
-	graphQLURL := fmt.Sprintf("%s/graphql", cfg.APIBaseURL)
+func getAPIURL(baseURL, pathURL string) (string, error) {
+	u, err := url.Parse(baseURL)
+
+	if err != nil {
+		return "", err
+	}
+
+	u.Path = path.Join(u.Path, pathURL)
+	fullURL := u.String()
+
+	return fullURL, nil
+}
+
+func NewGQManager(cfg config.Config) (*GQManager, error) {
+	graphQLURL, err := getAPIURL(cfg.APIBaseURL, "/graphql")
+
+	if err != nil {
+		return nil, err
+	}
+
 	c := graphql.NewClient(graphQLURL)
 	c.Log = func(s string) { log.Println(s) }
 
 	return &GQManager{
 		cfg:    cfg,
 		client: c,
-	}
+	}, nil
 }
 
 func (g GQManager) makeRequest(query string, respData interface{}, vars map[string]interface{}) error {

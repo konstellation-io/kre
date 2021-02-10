@@ -37,10 +37,10 @@ type versionUnpublishResponse struct {
 	}
 }
 
-func (g GQManager) VersionPublish(versionID, comment string) error {
+func (g GQManager) VersionPublish(versionName, comment string) error {
 	respData := versionPublishResponse{}
 
-	err := g.versionPublishing(versionPublish, &respData, versionID, comment)
+	err := g.versionPublishing(versionPublish, &respData, versionName, comment)
 	if err != nil {
 		return err
 	}
@@ -55,10 +55,10 @@ func (g GQManager) VersionPublish(versionID, comment string) error {
 	return nil
 }
 
-func (g GQManager) VersionUnpublish(versionID, comment string) error {
+func (g GQManager) VersionUnpublish(versionName, comment string) error {
 	respData := versionUnpublishResponse{}
 
-	err := g.versionPublishing(versionUnpublish, &respData, versionID, comment)
+	err := g.versionPublishing(versionUnpublish, &respData, versionName, comment)
 	if err != nil {
 		return err
 	}
@@ -73,9 +73,9 @@ func (g GQManager) VersionUnpublish(versionID, comment string) error {
 	return nil
 }
 
-func (g GQManager) versionPublishing(query string, respData interface{}, versionID, comment string) error {
+func (g GQManager) versionPublishing(query string, respData interface{}, versionName, comment string) error {
 	vars := map[string]interface{}{
-		"input": map[string]string{"versionId": versionID, "comment": comment},
+		"input": map[string]string{"versionName": versionName, "comment": comment},
 	}
 
 	err := g.makeRequest(query, &respData, vars)

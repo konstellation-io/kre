@@ -2,6 +2,7 @@ package integrationtests_test
 
 import (
 	"flag"
+	"log"
 	"os"
 	"testing"
 
@@ -22,7 +23,10 @@ func TestMain(m *testing.M) {
 	flag.Parse()
 	opts.Paths = flag.Args()
 
-	testRunner := integrationtests.NewTestRunner()
+	testRunner, err := integrationtests.NewTestRunner()
+	if err != nil {
+		log.Fatalf("unexpected error with integration tests runner: %s", err)
+	}
 
 	status := godog.TestSuite{
 		Name: "godogs",

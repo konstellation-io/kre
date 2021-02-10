@@ -1,9 +1,9 @@
 package graphql
 
 const queryVersion = `
-	query FetchVersion($id: ID!) {
-		version(id: $id) {
-			id
+	query FetchVersion($name: String!) {
+		version(name: $name) {
+			name
 			status
 		}
 	}
@@ -11,16 +11,16 @@ const queryVersion = `
 
 type VersionResponse struct {
 	Version struct {
-		ID     string
+		Name   string
 		Status string
 	}
 }
 
-func (g GQManager) GetVersionStatus(versionID string) (string, error) {
+func (g GQManager) GetVersionStatus(versionName string) (string, error) {
 	var respData VersionResponse
 
 	vars := map[string]interface{}{
-		"id": versionID,
+		"name": versionName,
 	}
 
 	err := g.makeRequest(queryVersion, &respData, vars)
