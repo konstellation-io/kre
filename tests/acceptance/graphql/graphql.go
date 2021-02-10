@@ -22,13 +22,25 @@ type GQManager struct {
 	accessToken string
 }
 
+func getAPIURL(baseURL, pathURL string) (string, error) {
+	u, err := url.Parse(baseURL)
+
+	if err != nil {
+		return "", err
+	}
+
+	u.Path = path.Join(u.Path, pathURL)
+	fullURL := u.String()
+
+	return fullURL, nil
+}
+
 func NewGQManager(cfg config.Config) (*GQManager, error) {
-	u, err := url.Parse(cfg.APIBaseURL)
+	graphQLURL, err := getAPIURL(cfg.APIBaseURL, "/graphql")
+
 	if err != nil {
 		return nil, err
 	}
-	u.Path = path.Join(u.Path, "/graphql")
-	graphQLURL := u.String()
 
 	c := graphql.NewClient(graphQLURL)
 	c.Log = func(s string) { log.Println(s) }

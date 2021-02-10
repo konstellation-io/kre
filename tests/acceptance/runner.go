@@ -13,6 +13,7 @@ type TestRunner struct {
 func NewTestRunner() (TestRunner, error) {
 	cfg := config.NewConfig()
 	gqManager, err := graphql.NewGQManager(cfg)
+
 	if err != nil {
 		return TestRunner{}, err
 	}

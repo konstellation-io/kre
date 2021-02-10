@@ -25,8 +25,7 @@ func TestMain(m *testing.M) {
 
 	testRunner, err := integrationtests.NewTestRunner()
 	if err != nil {
-		log.Println("The unittests URL is invalid")
-		os.Exit(1)
+		log.Fatalf("unexpected error with integration tests runner: %p \n", err)
 	}
 
 	status := godog.TestSuite{
