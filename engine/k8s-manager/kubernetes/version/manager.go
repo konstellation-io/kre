@@ -39,7 +39,12 @@ func New(cfg *config.Config, logger *simplelogger.SimpleLogger, clientset *kuber
 func (m *Manager) Start(req *versionpb.StartRequest) error {
 	m.logger.Infof("Starting version \"%s\"", req.VersionName)
 
-	err := m.createVersionConfFiles(req.VersionName, m.config.Kubernetes.Namespace, req.Workflows)
+	err := m.createVersionKRTConf(req.VersionName, m.config.Kubernetes.Namespace, req.Config)
+	if err != nil {
+		return err
+	}
+
+	err = m.createVersionConfFiles(req.VersionName, m.config.Kubernetes.Namespace, req.Workflows)
 	if err != nil {
 		return err
 	}
@@ -77,8 +82,22 @@ func (m *Manager) Unpublish(req *versionpb.VersionName) error {
 }
 
 // UpdateConfig calls kubernetes to update a version config.
+// To achieve this, the version KRT config map is regenerated and the version PODs are restarted.
 func (m *Manager) UpdateConfig(ctx context.Context, req *versionpb.UpdateConfigRequest) error {
-	return m.restartPodsSync(ctx, req.VersionName, m.config.Kubernetes.Namespace)
+	versionName := req.VersionName
+	ns := m.config.Kubernetes.Namespace
+
+	err := m.deleteVersionKRTConf(versionName, ns)
+	if err != nil {
+		return err
+	}
+
+	err = m.createVersionKRTConf(versionName, ns, req.Config)
+	if err != nil {
+		return err
+	}
+
+	return m.restartPodsSync(ctx, versionName, ns)
 }
 
 func (m *Manager) WaitForVersionPods(ctx context.Context, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {
