@@ -182,6 +182,15 @@ func (m *Manager) createNodeDeployment(
 							Image:           node.Image,
 							ImagePullPolicy: apiv1.PullIfNotPresent,
 							Env:             envVars,
+							EnvFrom: []apiv1.EnvFromSource{
+								{
+									ConfigMapRef: &apiv1.ConfigMapEnvSource{
+										LocalObjectReference: apiv1.LocalObjectReference{
+											Name: m.getVersionKRTConfName(versionName),
+										},
+									},
+								},
+							},
 							VolumeMounts: []apiv1.VolumeMount{
 								m.getKRTFilesVolumeMount(),
 								m.getAppLogVolumeMount(),

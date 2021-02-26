@@ -21,6 +21,39 @@ func (m *Manager) getCommonEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
 	}
 }
 
+func (m *Manager) getVersionKRTConfName(versionName string) string {
+	return fmt.Sprintf("%s-krt-conf", versionName)
+}
+
+// createVersionKRTConf creates a config-map in k8s with all config values defined in the krt.yml.
+// This config-map will be regenerated when the values are changed in manager.UpdateConfig and the
+// version PODs will be restarted in order to get the new config values.
+func (m *Manager) createVersionKRTConf(versionName, ns string, krtConfigs []*versionpb.Config) error {
+	m.logger.Info("Creating version krt configurations...")
+
+	values := map[string]string{}
+	for _, c := range krtConfigs {
+		values[c.Key] = c.Value
+	}
+
+	_, err := m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: m.getVersionKRTConfName(versionName),
+			Labels: map[string]string{
+				"type":         "version",
+				"version-name": versionName,
+			},
+		},
+		Data: values,
+	})
+
+	return err
+}
+
+func (m *Manager) deleteVersionKRTConf(versionName, ns string) error {
+	return m.clientset.CoreV1().ConfigMaps(ns).Delete(m.getVersionKRTConfName(versionName), &metav1.DeleteOptions{})
+}
+
 func (m *Manager) createVersionConfFiles(versionName, ns string, workflows []*versionpb.Workflow) error {
 	m.logger.Info("Creating version config files...")
 
