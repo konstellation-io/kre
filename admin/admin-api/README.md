@@ -78,4 +78,3 @@ $ ./scripts/generate_dataloaders.sh
 ```
 
 If you want to create a new one, remember adding it to the previous script.
-
