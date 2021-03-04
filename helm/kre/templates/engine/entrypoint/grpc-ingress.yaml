@@ -9,6 +9,7 @@ metadata:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 16m
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     # Based on this snippet:
     #  https://github.com/kubernetes/ingress-nginx/issues/5609#issuecomment-634908849
@@ -83,6 +84,7 @@ metadata:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: clusterissuer-runtimes-entrypoints
     {{ end }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 16m
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     # Based on this snippet:
     #  https://github.com/kubernetes/ingress-nginx/issues/5609#issuecomment-634908849
