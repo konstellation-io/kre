@@ -2,7 +2,7 @@
 apiVersion: cert-manager.io/v1alpha3
 kind: ClusterIssuer
 metadata:
-  name: clusterissuer-runtimes-entrypoints
+  name: {{ include "runtime.name" . }}-clusterissuer-runtimes-entrypoints
 spec:
   acme:
     server: {{ .Values.certManager.acme.server }}
