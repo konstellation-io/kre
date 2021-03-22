@@ -31,6 +31,9 @@ spec:
           - sh
           - -c
           - mkdir -p {{ .Values.adminApi.storage.path }} && chown 10001:10001 {{ .Values.adminApi.storage.path }}
+          volumeMounts:
+            - name: admin-api-pv-storage
+              mountPath: {{ .Values.adminApi.storage.path }}
       containers:
         - name: {{ .Release.Name }}-admin-api
           image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
