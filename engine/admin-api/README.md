@@ -56,6 +56,7 @@ Mocks used on tests are generated with **mockgen**, when you need a new mock, ad
 ```
 
 To generate the mocks execute:
+
 ```sh
 $ go generate ./...
 ```
