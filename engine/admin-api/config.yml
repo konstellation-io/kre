@@ -19,6 +19,7 @@ auth:
 mongodb:
   address: "mongodb://admin:123456@mongodb:27017/admin"
   dbName: "kre"
+  dataDbName: "data"
   krtBucket: "krt"
 k8s:
   namespace: ""
