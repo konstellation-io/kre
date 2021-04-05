@@ -41,9 +41,10 @@ type Config struct {
 		CookieDomain                      string `yaml:"cookieDomain" envconfig:"KRE_AUTH_COOKIE_DOMAIN"`
 	} `yaml:"auth"`
 	MongoDB struct {
-		Address   string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
-		DBName    string `yaml:"dbName"`
-		KRTBucket string `yaml:"krtBucket"`
+		Address    string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
+		DBName     string `yaml:"dbName"`
+		DataDBName string `yaml:"dataDbName"`
+		KRTBucket  string `yaml:"krtBucket"`
 	} `yaml:"mongodb"`
 	K8s struct {
 		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
