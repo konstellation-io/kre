@@ -382,7 +382,7 @@ func (r *runtimeResolver) DatabaseURL(_ context.Context, obj *entity.Runtime) (s
 }
 
 func (r *runtimeResolver) EntrypointAddress(_ context.Context, obj *entity.Runtime) (string, error) {
-	return fmt.Sprintf("entrypoint.%s.%s", r.cfg.K8s.Namespace, r.cfg.BaseDomainName), nil
+	return fmt.Sprintf("entrypoint.%s", r.cfg.BaseDomainName), nil
 }
 
 func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity.Version, error) {
