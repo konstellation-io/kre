@@ -1,7 +1,6 @@
 import { BrowserRouter } from 'react-router-dom';
 import Header from '../../Header/Header';
 import { MockedProvider } from '@apollo/client/testing';
-import NavigationBar from '../../NavigationBar/NavigationBar';
 import PageBase from './PageBase';
 import React from 'react';
 import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
@@ -37,7 +36,6 @@ describe('PageBase', () => {
 
   it('contains right components', () => {
     expect(wrapper.exists(Header)).toBeTruthy();
-    expect(wrapper.exists(NavigationBar)).toBeTruthy();
     expect(wrapper.exists('.element')).toBeTruthy();
   });
 
