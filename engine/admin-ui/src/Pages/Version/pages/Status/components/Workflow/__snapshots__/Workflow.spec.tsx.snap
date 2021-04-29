@@ -783,10 +783,17 @@ exports[`Workflow matches snapshot 1`] = `
                 <div
                   className="workflowHeader"
                 >
-                  <div
-                    className="title"
-                  >
-                    Workflow Nane
+                  <div>
+                    <div
+                      className="titleName"
+                    >
+                      Workflow
+                    </div>
+                    <div
+                      className="title"
+                    >
+                      Workflow Nane
+                    </div>
                   </div>
                   <Can
                     perform="logs:view"
