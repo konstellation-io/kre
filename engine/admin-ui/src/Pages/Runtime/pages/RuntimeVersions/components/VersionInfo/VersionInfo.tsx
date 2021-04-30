@@ -8,6 +8,7 @@ import TimeIcon from '@material-ui/icons/AccessTime';
 import { VersionStatus } from 'Graphql/types/globalTypes';
 import { buildRoute } from 'Utils/routes';
 import cx from 'classnames';
+import InfoField from './InfoField';
 import { formatDate } from 'Utils/format';
 import styles from './VersionInfo.module.scss';
 
@@ -44,32 +45,37 @@ function VersionInfo({ version }: Props) {
           </div>
         </div>
         <div className={styles.col2}>
-          <p className={styles.version}>{`VERSION ${version.name}`}</p>
-          {version.description && (
-            <p className={styles.descriptionTitle}>DESCRIPTION</p>
-          )}
-          <p className={styles.description}>{version.description}</p>
-          {isPublishedVersion && (
-            <>
-              <p className={styles.activatedTitle}>PUBLISHED BY</p>
-              <div className={styles.activatedContainer}>
-                <div className={styles.col2CreatorName}>
-                  <EmailIcon className="icon-small" />
-                  <span className={styles.activatedAuthor}>
-                    {version &&
-                      version.publicationAuthor &&
-                      version.publicationAuthor.email}
-                  </span>
+          <p className={styles.version}>{version.name}</p>
+          <div className={styles.infoFields}>
+            {version.description && (
+              <InfoField
+                title="DESCRIPTION"
+                className={styles.descriptionField}
+              >
+                <p className={styles.description}>{version.description}</p>
+              </InfoField>
+            )}
+            {isPublishedVersion && (
+              <InfoField title="PUBLISHED BY" className={styles.publishedField}>
+                <div className={styles.activatedContainer}>
+                  <div className={styles.col2CreatorName}>
+                    <EmailIcon className="icon-small" />
+                    <span className={styles.activatedAuthor}>
+                      {version &&
+                        version.publicationAuthor &&
+                        version.publicationAuthor.email}
+                    </span>
+                  </div>
+                  <div className={styles.col2CreationDate}>
+                    <TimeIcon className="icon-small" />
+                    <span className={styles.activatedDate}>
+                      {version.publicationDate}
+                    </span>
+                  </div>
                 </div>
-                <div className={styles.col2CreationDate}>
-                  <TimeIcon className="icon-small" />
-                  <span className={styles.activatedDate}>
-                    {version.publicationDate}
-                  </span>
-                </div>
-              </div>
-            </>
-          )}
+              </InfoField>
+            )}
+          </div>
           {hasErrors && (
             <>
               <p className={styles.descriptionTitle}>ERRORS</p>

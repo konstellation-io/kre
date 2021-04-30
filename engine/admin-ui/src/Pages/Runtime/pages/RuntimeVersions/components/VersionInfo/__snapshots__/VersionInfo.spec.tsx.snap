@@ -135,18 +135,35 @@ exports[`VersionInfo matches snapshot 1`] = `
                 <p
                   className="version"
                 >
-                  VERSION versionName
+                  versionName
                 </p>
-                <p
-                  className="descriptionTitle"
+                <div
+                  className="infoFields"
                 >
-                  DESCRIPTION
-                </p>
-                <p
-                  className="description"
-                >
-                  versionDescription
-                </p>
+                  <InfoField
+                    className="descriptionField"
+                    title="DESCRIPTION"
+                  >
+                    <div
+                      className="infoField descriptionField"
+                    >
+                      <p
+                        className="infoFieldTitle"
+                      >
+                        DESCRIPTION
+                      </p>
+                      <div
+                        className="infoFieldBody"
+                      >
+                        <p
+                          className="description"
+                        >
+                          versionDescription
+                        </p>
+                      </div>
+                    </div>
+                  </InfoField>
+                </div>
               </div>
             </div>
           </a>

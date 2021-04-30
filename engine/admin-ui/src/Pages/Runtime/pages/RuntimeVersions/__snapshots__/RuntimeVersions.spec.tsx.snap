@@ -8,16 +8,16 @@ exports[`RuntimeVersions matches snapshot 1`] = `
     Versions of runtime 
     runtimeName
   </Component>
-  <PublishedVersionStatus
-    nPublishedVersions={0}
-    noVersions={false}
+  <VersionsList
+    hideNumberOnTitle={true}
+    title="Published version"
+    versions={Array []}
   />
-  <div
-    className="versionList"
-  >
-    <VersionInfo
-      key="versionId"
-      version={
+  <VersionsList
+    showAddVersionButton={true}
+    title="All versions"
+    versions={
+      Array [
         Object {
           "__typename": "Version",
           "config": Object {
@@ -42,12 +42,7 @@ exports[`RuntimeVersions matches snapshot 1`] = `
           },
           "publicationDate": "2020/01/01",
           "status": "STARTED",
-        }
-      }
-    />
-    <VersionInfo
-      key="versionId"
-      version={
+        },
         Object {
           "__typename": "Version",
           "config": Object {
@@ -72,9 +67,9 @@ exports[`RuntimeVersions matches snapshot 1`] = `
           },
           "publicationDate": "2020/01/01",
           "status": "STARTED",
-        }
-      }
-    />
-  </div>
+        },
+      ]
+    }
+  />
 </div>
 `;

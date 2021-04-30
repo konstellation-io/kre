@@ -11,6 +11,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .runtimeInfo {
@@ -19,7 +20,7 @@
 
   .infoFields {
     display: flex;
-    flex-direction: horizontal;
+    flex-direction: row;
   }
 }
 
@@ -31,7 +32,7 @@
 }
 
 .activeVersion {
-  padding: 8px 24px;
+  padding-left: 3 * $grid-unit;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -47,7 +48,7 @@
 }
 
 .versionTitle {
-  line-height: 40px;
+  line-height: 30px;
 }
 
 .versionCreation {
