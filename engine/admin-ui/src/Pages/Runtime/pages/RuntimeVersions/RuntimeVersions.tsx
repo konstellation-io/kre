@@ -3,11 +3,10 @@ import {
   GetVersionConfStatus_versions
 } from 'Graphql/queries/types/GetVersionConfStatus';
 
-import PublishedVersionStatus from './components/PublishedVersionStatus/PublishedVersionStatus';
 import React from 'react';
-import { Title } from 'kwc';
-import VersionInfo from './components/VersionInfo/VersionInfo';
+import { InfoMessage, Title } from 'kwc';
 import { VersionStatus } from 'Graphql/types/globalTypes';
+import VersionsList from './components/VersionsList/VersionsList';
 import { sortBy } from 'lodash';
 import styles from './RuntimeVersions.module.scss';
 
@@ -19,25 +18,43 @@ type Props = {
 };
 
 function RuntimeVersions({ runtime, versions }: Props) {
-  const noVersions = versions.length === 0;
-  const nPublishedVersions: number = versions.filter(
-    version => version.status === VersionStatus.PUBLISHED
-  ).length;
+  const sortedVersions = sortBy(versions, VERSION_SORT_FIELD).reverse();
 
-  const versionsComponents = sortBy(versions, VERSION_SORT_FIELD)
-    .reverse()
-    .map((version: GetVersionConfStatus_versions) => (
-      <VersionInfo key={version.id} version={version} />
-    ));
+  const publishedVersions: GetVersionConfStatus_versions[] = [];
+  const otherVersions: GetVersionConfStatus_versions[] = [];
+  sortedVersions.forEach(version => {
+    if (version.status === VersionStatus.PUBLISHED)
+      publishedVersions.push(version);
+    else otherVersions.push(version);
+  });
+
+  function renderVersions() {
+    if (!versions.length) {
+      return (
+        <InfoMessage message="There are no versions available. Update a new one." />
+      );
+    }
+
+    return (
+      <>
+        <VersionsList
+          title="Published version"
+          versions={publishedVersions}
+          hideNumberOnTitle
+        />
+        <VersionsList
+          title={publishedVersions.length ? 'Other versions' : 'All versions'}
+          versions={otherVersions}
+          showAddVersionButton
+        />
+      </>
+    );
+  }
 
   return (
     <div className={styles.content}>
       <Title>Versions of runtime {runtime.name}</Title>
-      <PublishedVersionStatus
-        noVersions={noVersions}
-        nPublishedVersions={nPublishedVersions}
-      />
-      <div className={styles.versionList}>{versionsComponents}</div>
+      {renderVersions()}
     </div>
   );
 }

@@ -1,0 +1,19 @@
+@import 'Styles/mixins';
+@import 'Styles/colors';
+
+.header {
+  padding-left: 3 * $grid-unit;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background-color: palette(base, 300);
+}
+.title {
+  @include font-body;
+  color: font-color(light);
+  line-height: 30px;
+}
+.list {
+  margin: 0;
+  padding: 0;
+}

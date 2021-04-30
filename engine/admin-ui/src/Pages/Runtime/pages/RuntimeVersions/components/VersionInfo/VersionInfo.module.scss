@@ -52,11 +52,9 @@ $color-border: palette(base, 400);
 }
 
 .col1 {
-  padding: 20px 16px 40px 40px;
-  flex-grow: 1;
-  max-width: 400px;
-  min-width: 340px;
-  width: 50%;
+  padding: 2.5 * $grid-unit 2 * $grid-unit 2.5 * $grid-unit 3 * $grid-unit;
+  flex-shrink: 0;
+  min-width: 45 * $grid-unit;
   display: flex;
   flex-direction: row;
 
@@ -115,9 +113,9 @@ $color-border: palette(base, 400);
 }
 
 .col2 {
-  width: 50%;
-  padding: 20px 20px 40px 30px;
+  padding: 2.5 * $grid-unit 2.5 * $grid-unit 2.5 * $grid-unit 4 * $grid-unit;
   border-left: solid 1px $color-border;
+  width: 100%;
 
   .name {
     @include font-body;
@@ -128,10 +126,41 @@ $color-border: palette(base, 400);
   }
 
   .version {
-    @include font-caption;
+    @include font-subheader;
     line-height: 24px;
 
     margin-bottom: 15px;
+  }
+
+  .infoFields {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .descriptionField {
+    flex-grow: 1;
+    min-width: 40 * $grid-unit;
+  }
+
+  .publishedField {
+    flex-grow: 2;
+  }
+
+  .infoField {
+    margin: 0 3 * $grid-unit $grid-unit 0;
+    flex-basis: 0;
+  }
+
+  .infoFieldTitle {
+    @include font-caption;
+    color: font-color(regular);
+
+    margin-bottom: $grid-unit;
+  }
+
+  .infoFieldBody {
+    min-height: 3 * $grid-unit;
   }
 
   .descriptionTitle,
