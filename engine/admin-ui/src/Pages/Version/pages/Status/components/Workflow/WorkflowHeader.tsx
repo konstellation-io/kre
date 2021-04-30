@@ -12,7 +12,10 @@ type Props = {
 function WorkflowHeader({ name = 'Workflow', onWorkflowClick }: Props) {
   return (
     <div className={styles.workflowHeader}>
-      <div className={styles.title}>{name}</div>
+      <div>
+        <div className={styles.titleName}>Workflow</div>
+        <div className={styles.title}>{name}</div>
+      </div>
       <Can perform="logs:view">
         <div
           className={styles.button}

@@ -5,7 +5,7 @@
 @import 'Styles/shadows';
 
 $workflowMargin: 2.5 * $grid-unit;
-$container-height: 220px;
+$container-height: 240px;
 $color-border: palette(base, 500);
 $color-box-bg: $bg-box;
 
@@ -51,6 +51,12 @@ $color-box-bg: $bg-box;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 2 * $grid-unit;
+
+    .titleName {
+      @include font-subheader;
+      color: font-color(lowlight);
+      font-size: 13px;
+    }
 
     .title {
       display: flex;
