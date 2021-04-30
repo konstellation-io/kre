@@ -6,6 +6,9 @@ import { get } from 'lodash';
 import { loader } from 'graphql.macro';
 import styles from './Header.module.scss';
 import { useQuery } from '@apollo/client';
+import ROUTE from "Constants/routes";
+import { Link, useRouteMatch } from 'react-router-dom';
+import cx from 'classnames';
 
 const GetMeQuery = loader('Graphql/queries/getMe.graphql');
 
@@ -18,6 +21,7 @@ const Header: FunctionComponent<Props> = ({
   hideSettings = false
 }) => {
   const { data, loading } = useQuery<GetMe>(GetMeQuery);
+  const isAtVersions = useRouteMatch(ROUTE.VERSIONS)?.isExact;
 
   if (loading)
     return <div className={styles.splash} data-testid="splashscreen" />;
@@ -26,11 +30,13 @@ const Header: FunctionComponent<Props> = ({
 
   return (
     <header className={styles.container} data-testid="app-header">
-      <img
-        className={styles.konstellationText}
-        src={'/img/brand/konstellation.svg'}
-        alt="konstellation"
-      />
+      <Link to={ROUTE.HOME} className={cx({[styles.linkDisabled]: isAtVersions})}>
+        <img
+          className={styles.konstellationText}
+          src={'/img/brand/konstellation.svg'}
+          alt="konstellation"
+        />
+      </Link>
       <div className={styles.customHeaderElements}>{children}</div>
       {!hideSettings && <Settings label={username} />}
     </header>

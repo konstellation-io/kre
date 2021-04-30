@@ -3,6 +3,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 
 import AuditIcon from '@material-ui/icons/EventNote';
 import { ENDPOINT } from 'Constants/application';
+import VersionsIcon from '@material-ui/icons/Home';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
 import ProfileIcon from '@material-ui/icons/Person';
 import ROUTE from 'Constants/routes';
@@ -73,6 +74,13 @@ function Settings({ label }: Props) {
     };
   }
 
+  const versionsButton = (
+    <Button
+      {...getBaseProps('Versions')}
+      to={ROUTE.VERSIONS}
+      Icon={VersionsIcon}
+    />
+  );
   const settingsButton = (
     <Button
       {...getBaseProps('Settings')}
@@ -101,7 +109,7 @@ function Settings({ label }: Props) {
     />
   );
 
-  const buttons: JSX.Element[] = [];
+  const buttons: JSX.Element[] = [versionsButton];
   if (checkPermission(accessLevel, 'settings:edit')) {
     buttons.push(settingsButton);
   }

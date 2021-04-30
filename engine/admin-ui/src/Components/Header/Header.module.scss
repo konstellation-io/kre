@@ -45,3 +45,7 @@
   background-color: $bg-color-dark;
   z-index: 100;
 }
+
+.linkDisabled {
+  pointer-events: none;
+}
