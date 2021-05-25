@@ -8,13 +8,10 @@ import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import RuntimeVersions from './pages/RuntimeVersions/RuntimeVersions';
 import Version from '../Version/Version';
-import { loader } from 'graphql.macro';
 import styles from './Runtime.module.scss';
 import { useQuery } from '@apollo/client';
 
-const GetRuntimeAndVersionQuery = loader(
-  'Graphql/queries/getRuntimeAndVersions.graphql'
-);
+import GetRuntimeAndVersionQuery from 'Graphql/queries/getRuntimeAndVersions';
 
 function Runtime() {
   const { versionName } = useParams<VersionRouteParams>();

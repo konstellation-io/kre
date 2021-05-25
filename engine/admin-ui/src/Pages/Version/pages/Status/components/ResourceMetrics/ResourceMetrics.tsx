@@ -3,8 +3,8 @@ import * as COLORS from 'Constants/colors';
 import { ErrorMessage, SpinnerCircular } from 'kwc';
 import {
   GetResourceMetrics,
-  GetResourceMetricsVariables,
-  GetResourceMetrics_resourceMetrics
+  GetResourceMetrics_resourceMetrics,
+  GetResourceMetricsVariables
 } from 'Graphql/queries/types/GetResourceMetrics';
 import React, { useEffect, useRef, useState } from 'react';
 import TimeSeriesChart, { D } from '../TimeSeriesChart/TimeSeriesChart';
@@ -16,17 +16,12 @@ import { WatchResourceMetrics } from 'Graphql/subscriptions/types/WatchResourceM
 import cx from 'classnames';
 import { format } from 'd3-format';
 import { formatDate } from 'Utils/format';
-import { loader } from 'graphql.macro';
 import styles from './ResourceMetrics.module.scss';
 import { useParams } from 'react-router';
 import { useQuery } from '@apollo/client';
 
-const WatchResourceMetricsSubscription = loader(
-  'Graphql/subscriptions/watchResourceMetrics.graphql'
-);
-const GetResourceMetricsQuery = loader(
-  'Graphql/queries/getResourceMetrics.graphql'
-);
+import WatchResourceMetricsSubscription from 'Graphql/subscriptions/watchResourceMetrics';
+import GetResourceMetricsQuery from 'Graphql/queries/getResourceMetrics';
 
 type SubscriptionData = {
   subscriptionData: {

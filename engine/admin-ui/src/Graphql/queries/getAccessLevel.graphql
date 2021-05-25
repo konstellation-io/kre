@@ -1,5 +1,0 @@
-query GetAccessLevel {
-  me {
-    accessLevel
-  }
-}

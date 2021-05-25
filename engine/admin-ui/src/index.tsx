@@ -18,10 +18,9 @@ import { createUploadLink } from 'apollo-upload-client';
 import { get } from 'lodash';
 import { getMainDefinition } from 'apollo-utilities';
 import history from './browserHistory';
-import { loader } from 'graphql.macro';
 import useNotifications from 'Graphql/hooks/useNotifications';
 
-const extensionsSchema = loader('extensions.graphql');
+import extensionsSchema from 'extensions';
 
 export let API_BASE_URL: string;
 

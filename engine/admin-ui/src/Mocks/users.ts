@@ -1,7 +1,6 @@
 import { AccessLevel } from 'Graphql/types/globalTypes';
-import { loader } from 'graphql.macro';
 
-const GetUsers = loader('Graphql/queries/getUsers.graphql');
+import GetUsers from 'Graphql/queries/getUsers';
 
 export const usersMock = {
   request: {

@@ -18,20 +18,13 @@ import {
 import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { VersionStatus } from 'Graphql/types/globalTypes';
 import { cloneDeep } from 'lodash';
-import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/client';
 
-const PublishVersionMutation = loader(
-  'Graphql/mutations/publishVersion.graphql'
-);
-const UnpublishVersionMutation = loader(
-  'Graphql/mutations/unpublishVersion.graphql'
-);
-const StartVersionMutation = loader('Graphql/mutations/startVersion.graphql');
-const StopVersionMutation = loader('Graphql/mutations/stopVersion.graphql');
-const GetRuntimeAndVersionsQuery = loader(
-  'Graphql/queries/getRuntimeAndVersions.graphql'
-);
+import PublishVersionMutation from 'Graphql/mutations/publishVersion';
+import UnpublishVersionMutation from 'Graphql/mutations/unpublishVersion';
+import StartVersionMutation from 'Graphql/mutations/startVersion';
+import StopVersionMutation from 'Graphql/mutations/stopVersion';
+import GetRuntimeAndVersionsQuery from 'Graphql/queries/getRuntimeAndVersions';
 
 export enum versionActions {
   start = 'startVersion',

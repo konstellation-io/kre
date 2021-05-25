@@ -6,14 +6,13 @@ import { cleanup } from '@testing-library/react';
 import moment from 'moment-timezone';
 import { shallow } from 'enzyme';
 import { usersActivityMock } from 'Mocks/settings';
+import * as apolloClient from '@apollo/client';
 
 moment.tz.setDefault('UTC');
 
 const mockmockusersActivity = usersActivityMock.result.data.userActivityList;
-jest.mock('@apollo/client', () => ({
-  useQuery: jest.fn(() => ({
-    data: { userActivityList: mockmockusersActivity }
-  }))
+apolloClient.useQuery = jest.fn(() => ({
+  data: { userActivityList: mockmockusersActivity }
 }));
 
 afterEach(cleanup);

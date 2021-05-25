@@ -1,20 +1,19 @@
 import { ErrorMessage, InfoMessage, SpinnerCircular } from 'kwc';
 import {
   GetUsersActivity,
-  GetUsersActivityVariables,
-  GetUsersActivity_userActivityList
+  GetUsersActivity_userActivityList,
+  GetUsersActivityVariables
 } from 'Graphql/queries/types/GetUsersActivity';
 import React, { UIEvent, useState } from 'react';
 
 import { GetRuntime } from 'Graphql/queries/types/GetRuntime';
 import UserActivityItem from './UserActivityItem';
-import { loader } from 'graphql.macro';
 import { queryPayloadHelper } from 'Utils/formUtils';
 import styles from './UserActivityList.module.scss';
 import { useQuery } from '@apollo/client';
 
-const GetUserActivityQuery = loader('Graphql/queries/getUserActivity.graphql');
-const GetRuntimeQuery = loader('Graphql/queries/getRuntime.graphql');
+import GetUserActivityQuery from 'Graphql/queries/getUserActivity';
+import GetRuntimeQuery from 'Graphql/queries/getRuntime';
 
 const N_LIST_ITEMS_STEP = 30;
 const ITEM_HEIGHT = 76;

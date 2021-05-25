@@ -14,14 +14,11 @@ import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader
 import UserActivityList from './components/UserActivityList/UserActivityList';
 import { UserActivityType } from 'Graphql/types/globalTypes';
 import cx from 'classnames';
-import { loader } from 'graphql.macro';
 import styles from './UsersActivity.module.scss';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@apollo/client';
 
-const GetRuntimeAndVersionsQuery = loader(
-  'Graphql/queries/getRuntimeAndVersions.graphql'
-);
+import GetRuntimeAndVersionsQuery from 'Graphql/queries/getRuntimeAndVersions';
 
 export type UserActivityFormData = {
   types: UserActivityType[];

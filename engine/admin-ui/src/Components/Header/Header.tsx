@@ -1,16 +1,15 @@
-import React, { FunctionComponent, ReactElement, memo } from 'react';
+import React, { FunctionComponent, memo, ReactElement } from 'react';
 
 import { GetMe } from 'Graphql/queries/types/GetMe';
 import Settings from 'Components/Settings/Settings';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import styles from './Header.module.scss';
 import { useQuery } from '@apollo/client';
-import ROUTE from "Constants/routes";
+import ROUTE from 'Constants/routes';
 import { Link, useRouteMatch } from 'react-router-dom';
 import cx from 'classnames';
 
-const GetMeQuery = loader('Graphql/queries/getMe.graphql');
+import GetMeQuery from 'Graphql/queries/getMe';
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -30,7 +29,10 @@ const Header: FunctionComponent<Props> = ({
 
   return (
     <header className={styles.container} data-testid="app-header">
-      <Link to={ROUTE.HOME} className={cx({[styles.linkDisabled]: isAtVersions})}>
+      <Link
+        to={ROUTE.HOME}
+        className={cx({ [styles.linkDisabled]: isAtVersions })}
+      >
         <img
           className={styles.konstellationText}
           src={'/img/brand/konstellation.svg'}

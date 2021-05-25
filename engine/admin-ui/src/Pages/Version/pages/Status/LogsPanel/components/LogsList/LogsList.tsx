@@ -5,6 +5,7 @@ import {
 import { GetLogs, GetLogsVariables } from 'Graphql/subscriptions/types/GetLogs';
 import {
   GetServerLogs,
+  GetServerLogs_logs_items,
   GetServerLogsVariables
 } from 'Graphql/queries/types/GetServerLogs';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -12,19 +13,17 @@ import { SpinnerCircular, SpinnerLinear } from 'kwc';
 import { Virtuoso, VirtuosoMethods } from 'react-virtuoso';
 
 import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';
-import { GetServerLogs_logs_items } from 'Graphql/queries/types/GetServerLogs';
 import { LogFilters } from 'Graphql/types/globalTypes';
 import LogItem from './LogItem';
 import LogListHeader from './LogListHeader';
 import LogsFooter from '../LogsFooter/LogsFooter';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import styles from './LogsList.module.scss';
 import { useQuery } from '@apollo/client';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';
 
-const WatchNodeLogs = loader('Graphql/subscriptions/watchNodeLogs.graphql');
-const GetServerLogsQuery = loader('Graphql/queries/getServerLogs.graphql');
+import WatchNodeLogs from 'Graphql/subscriptions/watchNodeLogs';
+import GetServerLogsQuery from 'Graphql/queries/getServerLogs';
 
 const LOG_HEIGHT = 25;
 const SCROLL_THRESHOLD = 8 * LOG_HEIGHT;

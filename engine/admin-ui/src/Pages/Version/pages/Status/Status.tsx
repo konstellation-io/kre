@@ -22,18 +22,14 @@ import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { VersionRouteParams } from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import styles from './Status.module.scss';
 import useOpenedVersion from 'Graphql/hooks/useOpenedVersion';
 import { useParams } from 'react-router';
 import { useQuery } from '@apollo/client';
 
-const GetVersionWorkflowsQuery = loader(
-  'Graphql/queries/getVersionWorkflows.graphql'
-);
-const VersionNodeStatusSubscription = loader(
-  'Graphql/subscriptions/watchVersionNodeStatus.graphql'
-);
+import GetVersionWorkflowsQuery from 'Graphql/queries/getVersionWorkflows';
+import VersionNodeStatusSubscription from 'Graphql/subscriptions/watchVersionNodeStatus';
+
 export type Node = {
   id: string;
   name?: string;

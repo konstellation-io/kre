@@ -5,13 +5,12 @@ import { registerMany, unregisterMany } from 'Utils/react-forms';
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import styles from './UserFiltersAndActions.module.scss';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@apollo/client';
 import useUserSettings from 'Graphql/hooks/useUserSettings';
 
-const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
+import GetUsersQuery from 'Graphql/queries/getUsers';
 
 type FormData = {
   userEmail?: string;

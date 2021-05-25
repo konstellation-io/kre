@@ -2,13 +2,9 @@ import {
   GetVersionWorkflows,
   GetVersionWorkflowsVariables
 } from 'Graphql/queries/types/GetVersionWorkflows';
-
-import { loader } from 'graphql.macro';
 import { useQuery } from '@apollo/client';
 
-const GetVersionWorkflowsQuery = loader(
-  'Graphql/queries/getVersionWorkflows.graphql'
-);
+import GetVersionWorkflowsQuery from 'Graphql/queries/getVersionWorkflows';
 
 export const NODE_NAME_ENTRYPOINT = 'Entry points';
 

@@ -1,10 +1,6 @@
 import { runtime, version } from './version';
 
-import { loader } from 'graphql.macro';
-
-const GetRuntimeAndVersionQuery = loader(
-  'Graphql/queries/getRuntimeAndVersions.graphql'
-);
+import GetRuntimeAndVersionQuery from 'Graphql/queries/getRuntimeAndVersions';
 
 export const runtimeAndVersions = {
   runtime,

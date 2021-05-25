@@ -1,10 +1,9 @@
 import React from 'react';
 import Filters from './Filters';
 import { shallow } from 'enzyme';
+import * as apolloClient from '@apollo/client';
 
-jest.mock('@apollo/client', () => ({
-  useQuery: jest.fn(() => ({}))
-}));
+apolloClient.useQuery = jest.fn(() => ({}));
 
 describe('Filters', () => {
   let wrapper;

@@ -8,15 +8,12 @@ import Tag, { TagTypes } from 'Components/Tag/Tag';
 
 import ApiTokenInfo from './ApiTokenInfo';
 import { DeleteApiToken } from 'Graphql/mutations/types/DeleteApiToken';
-import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './ApiTokensInfo.module.scss';
 import { useMutation } from '@apollo/client';
 
-const getApiTokenDateQuery = loader('Graphql/queries/getApiTokens.graphql');
-const deleteApiTokenMutation = loader(
-  'Graphql/mutations/deleteApiToken.graphql'
-);
+import getApiTokenDateQuery from 'Graphql/queries/getApiTokens';
+import deleteApiTokenMutation from 'Graphql/mutations/deleteApiToken';
 
 type Props = {
   apiTokens: GetApiTokens_me_apiTokens[];

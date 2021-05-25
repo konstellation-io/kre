@@ -34,13 +34,12 @@ import VerifyEmail from 'Pages/VerifyEmail/VerifyEmail';
 import { getNotAllowedRoutes } from './accessLevelRoutes';
 import history from './browserHistory';
 import keymaps from './keymaps';
-import { loader } from 'graphql.macro';
 import useLogin from 'Graphql/hooks/useLogin';
 import useLogs from 'Graphql/hooks/useLogs';
 import { useQuery } from '@apollo/client';
 
-const GetMeQuery = loader('Graphql/queries/getMe.graphql');
-const GetRuntimeQuery = loader('Graphql/queries/getRuntimeAndVersions.graphql');
+import GetMeQuery from 'Graphql/queries/getMe';
+import GetRuntimeQuery from 'Graphql/queries/getRuntimeAndVersions';
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);
