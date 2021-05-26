@@ -22,19 +22,19 @@ const AXIS_BOX_HEIGHT_PERC: number = 0.06;
 const AXIS_PADDING: number = 12;
 const LEGEND_MARGIN_PERC: number = 0.1;
 const COLORS = {
-  10: '#00252E',
-  20: '#00303B',
-  30: '#004151',
-  40: '#005266',
-  60: '#47FFFF',
-  80: '#84FFFF',
-  90: '#ADFFFF',
-  100: '#D6FFFF'
+  10: styles.matrix10,
+  20: styles.matrix20,
+  30: styles.matrix30,
+  40: styles.matrix40,
+  60: styles.matrix60,
+  80: styles.matrix80,
+  90: styles.matrix90,
+  100: styles.matrix100
 };
 const TEXT_COLOR_THRESHOLD = 90;
 const TEXT_COLOR = {
-  DARK: '#00252E',
-  LIGHT: '#CCF5FF'
+  DARK: styles.textDark,
+  LIGHT: styles.textLight
 };
 const X_AXIS_MAX_LABEL_LENGTH = 20;
 
