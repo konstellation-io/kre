@@ -12,10 +12,6 @@ import {
   SpinnerCircular
 } from 'kwc';
 import {
-  GET_USER_SETTINGS,
-  GetUserSettings
-} from 'Graphql/client/queries/getUserSettings.graphql';
-import {
   defaultModalInfo,
   getModalInfo,
   ModalInfo
@@ -34,7 +30,7 @@ import {
   UpdateAccessLevel,
   UpdateAccessLevelVariables
 } from 'Graphql/mutations/types/UpdateAccessLevel';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import PageBase from 'Components/Layout/PageBase/PageBase';
@@ -51,6 +47,7 @@ import GetUsersQuery from 'Graphql/queries/getUsers';
 import UpdateAccessLevelMutation from 'Graphql/mutations/updateAccessLevel';
 import RemoveUsersMutation from 'Graphql/mutations/removeUsers';
 import RevokeUserSessionsMutation from 'Graphql/mutations/revokeUserSessions';
+import { userSettings } from '../../Graphql/client/cache';
 
 function verifyComment(value: string) {
   return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
@@ -68,8 +65,8 @@ function Users() {
       comment: ''
     }
   });
+  const dataUserSettings = useReactiveVar(userSettings);
   const { data, loading, error } = useQuery<GetUsers>(GetUsersQuery);
-  const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
   const [removeUsers] = useMutation<RemoveUsers, RemoveUsersVariables>(
     RemoveUsersMutation,
     {
@@ -128,7 +125,7 @@ function Users() {
     )();
   }
 
-  const selectedUsers = localData?.userSettings.selectedUserIds || [];
+  const selectedUsers = dataUserSettings.selectedUserIds || [];
 
   function getUsersInfo(user?: [string]) {
     const userIds = user || selectedUsers;

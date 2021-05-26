@@ -5,29 +5,23 @@ import useLogs, {
 
 import AppliedFilters from '../AppliedFilters/AppliedFilters';
 import Filters from '../Filters/Filters';
-import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';
 import { GetServerLogs_logs_items } from 'Graphql/queries/types/GetServerLogs';
-import { LogLevel } from 'Graphql/types/globalTypes';
 import LogsList from '../LogsList/LogsList';
-import { Moment } from 'moment';
-import { NodeSelection } from 'Graphql/client/typeDefs';
+import { LogPanelFilters } from 'Graphql/client/typeDefs';
 import styles from './LogsTab.module.scss';
 
-export interface FilterTypes {
-  dateOption: string;
-  startDate: Moment;
-  endDate: Moment;
-  nodes: NodeSelection[];
-  levels: LogLevel[];
-  search: string;
-}
 type Props = {
   runtimeId: string;
   versionName: string;
   uniqueId: string;
-  filterValues: GetLogTabs_logTabs_filters;
+  filterValues: LogPanelFilters;
 };
-function LogsTab({ runtimeId, versionName, uniqueId, filterValues }: Props) {
+function LogsTab({
+  runtimeId,
+  versionName,
+  uniqueId = '',
+  filterValues
+}: Props) {
   const { updateTabFilters, resetTabFilters } = useLogs();
 
   const [logs, setLogs] = useState<GetServerLogs_logs_items[]>([]);
@@ -45,8 +39,8 @@ function LogsTab({ runtimeId, versionName, uniqueId, filterValues }: Props) {
   }
 
   const displayableFilters = {
-    nodes: filterValues.nodes || null,
-    search: filterValues.search || null
+    nodes: filterValues?.nodes || null,
+    search: filterValues?.search || null
   };
 
   return (

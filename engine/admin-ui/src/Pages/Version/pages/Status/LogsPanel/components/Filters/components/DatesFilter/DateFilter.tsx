@@ -38,9 +38,9 @@ function CustomRange({ label }: CustomOptionProps) {
 
 type Props = {
   updateFilters: Function;
-  selectedOption: string;
-  formStartDate: string;
-  formEndDate: string;
+  selectedOption?: string;
+  formStartDate?: string;
+  formEndDate?: string;
 };
 export const dateFilterOptions: { [key: string]: string } = {
   lastHour: 'LAST HOUR',
@@ -141,12 +141,14 @@ function DateFilter({
       <div className={styles.dateValues}>
         <div className={styles.dateValue}>
           <div>From</div>
-          <span>{` ${formatDate(new Date(formStartDate), true)}`}</span>
+          <span>{` ${formStartDate &&
+            formatDate(new Date(formStartDate), true)}`}</span>
         </div>
         {showEndDate && (
           <div className={styles.dateValue}>
             <div>To</div>
-            <span>{` ${formatDate(new Date(formEndDate), true)}`}</span>
+            <span>{` ${formEndDate &&
+              formatDate(new Date(formEndDate), true)}`}</span>
           </div>
         )}
       </div>
