@@ -11,7 +11,7 @@ import { VersionStatus } from 'Graphql/types/globalTypes';
 function generateActionButton(
   label: string,
   icon: FunctionComponent<SvgIconProps>,
-  action: (e: MouseEvent<HTMLDivElement>) => void
+  action: (e?: MouseEvent<HTMLDivElement>) => void
 ): ReactElement {
   return (
     <Button
@@ -25,10 +25,10 @@ function generateActionButton(
 }
 
 function getStateToButtons(
-  publishAction: (e: MouseEvent<HTMLDivElement>) => void,
-  startAction: (e: MouseEvent<HTMLDivElement>) => void,
-  stopAction: (e: MouseEvent<HTMLDivElement>) => void,
-  unpublishAction: (e: MouseEvent<HTMLDivElement>) => void
+  publishAction: (e?: MouseEvent<HTMLDivElement>) => void,
+  startAction: (e?: MouseEvent<HTMLDivElement>) => void,
+  stopAction: (e?: MouseEvent<HTMLDivElement>) => void,
+  unpublishAction: (e?: MouseEvent<HTMLDivElement>) => void
 ): { [key: string]: ReactElement[] } {
   const buttonStart = generateActionButton('START', StartIcon, startAction);
   const buttonStop = generateActionButton('STOP', StopIcon, stopAction);
@@ -51,10 +51,10 @@ function getStateToButtons(
 }
 
 export function getVersionActionButtons(
-  publishAction: (e: MouseEvent<HTMLDivElement>) => void,
-  startAction: (e: MouseEvent<HTMLDivElement>) => void,
-  stopAction: (e: MouseEvent<HTMLDivElement>) => void,
-  unpublishAction: (e: MouseEvent<HTMLDivElement>) => void,
+  publishAction: (e?: MouseEvent<HTMLDivElement>) => void,
+  startAction: (e?: MouseEvent<HTMLDivElement>) => void,
+  stopAction: (e?: MouseEvent<HTMLDivElement>) => void,
+  unpublishAction: (e?: MouseEvent<HTMLDivElement>) => void,
   status?: string
 ) {
   const stateToButtons = getStateToButtons(

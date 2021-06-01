@@ -54,6 +54,10 @@ $input-height: 30px;
         height: $input-height;
         min-height: $input-height;
       }
+      & > div {
+        min-height: $input-height;
+        height: $input-height;
+      }
     }
   }
 

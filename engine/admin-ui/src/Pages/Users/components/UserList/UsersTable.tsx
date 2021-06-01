@@ -181,12 +181,12 @@ function UsersTable({ users, contextMenuActions }: Props) {
   }, [userSelection, toggleAllRowsSelected]);
 
   useEffect(() => {
-    const actSelectedUsers = dataUserSettings.selectedUserIds;
+    const prevSelectedUsers = dataUserSettings.selectedUserIds;
     const newSelectedUsersPos = Object.entries(selectedRowIds)
       .filter(([_, isSelected]) => isSelected)
       .map(([rowId, _]) => rowId);
 
-    if (actSelectedUsers?.length !== newSelectedUsersPos.length) {
+    if (prevSelectedUsers?.length !== newSelectedUsersPos.length) {
       let newUserSelection: UserSelection;
 
       switch (newSelectedUsersPos.length) {

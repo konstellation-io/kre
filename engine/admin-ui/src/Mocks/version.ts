@@ -2,7 +2,6 @@ import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 
 import GetConfigurationVariablesQuery from 'Graphql/queries/getConfigurationVariables';
 import GetVersionWorkflowsQuery from 'Graphql/queries/getVersionWorkflows';
-import GetVersionNodeStatusQuery from 'Graphql/subscriptions/watchVersionNodeStatus';
 import NodeStatusSubscription from 'Graphql/subscriptions/watchVersionNodeStatus';
 import PublishVersionMutation from 'Graphql/mutations/publishVersion';
 import StartVersionMutation from 'Graphql/mutations/startVersion';
@@ -150,7 +149,7 @@ export const errorMorkflowsMock = {
 
 export const nodeStatus = {
   request: {
-    query: GetVersionNodeStatusQuery
+    query: NodeStatusSubscription
   },
   result: {
     data: {

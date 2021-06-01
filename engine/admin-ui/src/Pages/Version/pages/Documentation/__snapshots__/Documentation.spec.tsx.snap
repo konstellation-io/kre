@@ -1295,7 +1295,7 @@ exports[`Documentation matches snapshot 1`] = `
                       }
                     }
                   >
-                    <w
+                    <E
                       forceSegments={true}
                       height={125}
                       options={
@@ -7189,7 +7189,7 @@ $bm_rt = loopOut('cycle', 0);",
                           }
                         }
                       />
-                    </w>
+                    </E>
                   </div>
                 </Component>
               </div>
