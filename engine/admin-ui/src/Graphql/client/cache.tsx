@@ -48,7 +48,6 @@ const cache = new InMemoryCache({
         logsOpened: { read: () => logsOpened() },
         openedVersion: { read: () => openedVersion() },
         userSettings: { read: () => userSettings() },
-        runtimes: { merge: false },
         versions: { merge: false },
         settings: { merge: false }
       }

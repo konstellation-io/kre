@@ -250,9 +250,8 @@ class WorkflowViz {
     };
 
     const labelIsOdd = idx % 2;
-    const shouldMoveLabel = labelIsOdd;
 
-    if (shouldMoveLabel) {
+    if (labelIsOdd) {
       labelYOffset = yOffset - labelSeparation - MARGIN_TOP_LABELS;
 
       box.attr(
@@ -544,6 +543,7 @@ class WorkflowViz {
     }
   };
 
+  // Creates a blue glow filter behind the nodes to highlight them when hovering.
   generateFilters = () => {
     const { defs } = this;
 
