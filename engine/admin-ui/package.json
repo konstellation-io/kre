@@ -27,7 +27,7 @@
     "enzyme-to-json": "3.5.0",
     "graphql": "15.3.0",
     "kwc": "1.15.1",
-    "lodash": "4.17.19",
+    "lodash": "4.17.21",
     "lottie-web": "5.7.0",
     "markdown-navbar": "1.4.2",
     "moment": "2.27.0",
