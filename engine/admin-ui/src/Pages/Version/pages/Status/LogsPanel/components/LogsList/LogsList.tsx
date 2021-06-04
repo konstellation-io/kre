@@ -1,36 +1,31 @@
-import {
-  GET_LOGS_OPENED,
-  GetLogTabs
-} from 'Graphql/client/queries/getLogsOpened.graphql';
 import { GetLogs, GetLogsVariables } from 'Graphql/subscriptions/types/GetLogs';
 import {
   GetServerLogs,
+  GetServerLogs_logs_items,
   GetServerLogsVariables
 } from 'Graphql/queries/types/GetServerLogs';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SpinnerCircular, SpinnerLinear } from 'kwc';
 import { Virtuoso, VirtuosoMethods } from 'react-virtuoso';
-
-import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';
-import { GetServerLogs_logs_items } from 'Graphql/queries/types/GetServerLogs';
 import { LogFilters } from 'Graphql/types/globalTypes';
 import LogItem from './LogItem';
 import LogListHeader from './LogListHeader';
 import LogsFooter from '../LogsFooter/LogsFooter';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import styles from './LogsList.module.scss';
-import { useQuery } from '@apollo/client';
+import { useQuery, useReactiveVar } from '@apollo/client';
 import useWorkflowsAndNodes from 'Hooks/useWorkflowsAndNodes';
 
-const WatchNodeLogs = loader('Graphql/subscriptions/watchNodeLogs.graphql');
-const GetServerLogsQuery = loader('Graphql/queries/getServerLogs.graphql');
+import WatchNodeLogs from 'Graphql/subscriptions/watchNodeLogs';
+import GetServerLogsQuery from 'Graphql/queries/getServerLogs';
+import { LogPanelFilters } from 'Graphql/client/typeDefs';
+import { logsOpened } from 'Graphql/client/cache';
 
 const LOG_HEIGHT = 25;
 const SCROLL_THRESHOLD = 8 * LOG_HEIGHT;
 
 function getLogsQueryFilters(
-  filterValues: GetLogTabs_logTabs_filters,
+  filterValues: LogPanelFilters,
   nodeNameToId: Map<string, string>
 ) {
   return {
@@ -52,7 +47,7 @@ function getLogsQueryFilters(
 type Props = {
   runtimeId: string;
   versionName: string;
-  filterValues: GetLogTabs_logTabs_filters;
+  filterValues: LogPanelFilters;
   onNewLogs: Function;
   logs: GetServerLogs_logs_items[];
   clearLogs: () => void;
@@ -69,8 +64,7 @@ function LogsList({
   const virtuoso = useRef<VirtuosoMethods>(null);
   const [openedLogs, setOpenedLogs] = useState<boolean[]>([]);
 
-  const { data: localData } = useQuery<GetLogTabs>(GET_LOGS_OPENED);
-  const logsOpened = localData?.logsOpened;
+  const dataLogsOpened = useReactiveVar(logsOpened);
 
   const { nodeNameToId } = useWorkflowsAndNodes(versionName);
   const [autoScrollActive, setAutoScrollActive] = useState(true);
@@ -79,7 +73,7 @@ function LogsList({
   const unsubscribeRef = useRef<Function | null>(null);
   const [refetching, setRefetching] = useState(false);
 
-  const formatFilters = (filters: GetLogTabs_logTabs_filters) =>
+  const formatFilters = (filters: LogPanelFilters) =>
     getLogsQueryFilters(filters, nodeNameToId);
 
   const { loading, fetchMore, subscribeToMore } = useQuery<
@@ -223,7 +217,7 @@ function LogsList({
   return (
     <>
       <LogListHeader />
-      {loading && logsOpened && (
+      {loading && dataLogsOpened && (
         <div className={styles.spinner}>
           <SpinnerCircular size={100} />
         </div>

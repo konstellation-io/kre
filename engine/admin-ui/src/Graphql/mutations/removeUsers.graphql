@@ -1,9 +1,0 @@
-mutation RemoveUsers($input: UsersInput!) {
-  removeUsers(input: $input) {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-  }
-}

@@ -7,14 +7,15 @@ import {
   SpinnerCircular
 } from 'kwc';
 import {
-  GetConfigurationVariables_version_config_vars as ConfigurationVariable,
   GetConfigurationVariables,
+  GetConfigurationVariables_version_config_vars as ConfigurationVariable,
   GetConfigurationVariablesVariables
 } from 'Graphql/queries/types/GetConfigurationVariables';
 import {
-  ConfigurationVariableType,
   ConfigurationVariablesInput,
-  UpdateConfigurationInput
+  ConfigurationVariableType,
+  UpdateConfigurationInput,
+  VersionStatus
 } from 'Graphql/types/globalTypes';
 import React, { useEffect, useState } from 'react';
 import Tag, { TagTypes } from 'Components/Tag/Tag';
@@ -32,18 +33,12 @@ import ConfigurationVariableList from 'Components/ConfigurationVariableList/Conf
 import Message from 'Components/Message/Message';
 import SettingsHeader from '../../../Settings/components/SettingsHeader/SettingsHeader';
 import { VersionRouteParams } from 'Constants/routes';
-import { VersionStatus } from 'Graphql/types/globalTypes';
-import { loader } from 'graphql.macro';
 import styles from './Configuration.module.scss';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 
-const GetConfVariablesQuery = loader(
-  'Graphql/queries/getConfigurationVariables.graphql'
-);
-const UpdateVersionConfigurationMutation = loader(
-  'Graphql/mutations/updateVersionConfiguration.graphql'
-);
+import GetConfVariablesQuery from 'Graphql/queries/getConfigurationVariables';
+import UpdateVersionConfigurationMutation from 'Graphql/mutations/updateVersionConfiguration';
 
 export type ConfVarPanelInfo = {
   key: string;

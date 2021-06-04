@@ -1,5 +1,0 @@
-mutation UpdateSettings($input: SettingsInput!) {
-  updateSettings(input: $input) {
-    sessionLifetimeInDays
-  }
-}

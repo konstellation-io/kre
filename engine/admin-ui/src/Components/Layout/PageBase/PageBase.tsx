@@ -1,10 +1,9 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-
-import { GET_LOG_TABS } from 'Graphql/client/queries/getLogs.graphql';
 import Header from '../../Header/Header';
 import cx from 'classnames';
 import styles from './PageBase.module.scss';
-import { useQuery } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client';
+import { logTabs } from '../../../Graphql/client/cache';
 
 type PageBaseProps = {
   children: ReactElement | ReactElement[] | null;
@@ -19,11 +18,12 @@ function PageBase({
 }: PageBaseProps) {
   const [opened, setOpened] = useState<boolean>(false);
 
-  const { data: localData } = useQuery(GET_LOG_TABS);
+  const dataLogTabs = useReactiveVar(logTabs);
 
   useEffect(() => {
-    setOpened(localData?.logTabs?.length);
-  }, [localData]);
+    setOpened(!!dataLogTabs.length);
+  }, [dataLogTabs]);
+
   return (
     <>
       <Header>{headerChildren}</Header>

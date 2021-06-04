@@ -10,10 +10,9 @@ import {
 } from 'kwc';
 
 import DateFilter from './components/DatesFilter/DateFilter';
-import { GetLogTabs_logTabs_filters } from 'Graphql/client/queries/getLogs.graphql';
 import LevelIcon from 'Components/LevelIcon/LevelIcon';
 import { LogLevel } from 'Graphql/types/globalTypes';
-import { NodeSelection } from 'Graphql/client/typeDefs';
+import { LogPanelFilters, NodeSelection } from 'Graphql/client/typeDefs';
 import React from 'react';
 import cx from 'classnames';
 import styles from './Filters.module.scss';
@@ -56,7 +55,7 @@ const levelsOrdered = [
 type Props = {
   versionName: string;
   updateFilters: Function;
-  filterValues: GetLogTabs_logTabs_filters;
+  filterValues: LogPanelFilters;
 };
 function Filters({ updateFilters, filterValues, versionName }: Props) {
   const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionName);

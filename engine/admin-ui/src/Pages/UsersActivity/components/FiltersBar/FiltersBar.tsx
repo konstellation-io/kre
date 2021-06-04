@@ -1,6 +1,7 @@
 import {
   Button,
   Calendar,
+  ErrorMessage,
   GroupSelect,
   GroupSelectData,
   MultiSelect,
@@ -9,7 +10,6 @@ import {
 import CustomLabel, { HIGHLIGHT_COLORS } from './CustomLabel';
 
 import ActivityIcon from '../ActivityIcon/ActivityIcon';
-import { ErrorMessage } from 'kwc';
 import { FieldErrors } from 'react-hook-form';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import { GetUsersActivity_userActivityList_user } from 'Graphql/queries/types/GetUsersActivity';
@@ -19,11 +19,10 @@ import React from 'react';
 import { UserActivityFormData } from '../../UsersActivity';
 import { UserActivityType } from 'Graphql/types/globalTypes';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import styles from './FiltersBar.module.scss';
 import { useQuery } from '@apollo/client';
 
-const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
+import GetUsersQuery from 'Graphql/queries/getUsers';
 
 const customLabels = new Map([
   [UserActivityType.LOGIN, <CustomLabel>Login</CustomLabel>],

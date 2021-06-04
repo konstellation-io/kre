@@ -20,6 +20,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "kind": "SelectionSet",
                   "selections": Array [
                     Object {
+                      "alias": undefined,
                       "arguments": Array [],
                       "directives": Array [],
                       "kind": "Field",
@@ -31,6 +32,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "kind": "SelectionSet",
                         "selections": Array [
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -38,8 +40,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "Name",
                               "value": "id",
                             },
+                            "selectionSet": undefined,
                           },
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -47,8 +51,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "Name",
                               "value": "email",
                             },
+                            "selectionSet": undefined,
                           },
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -56,8 +62,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "Name",
                               "value": "accessLevel",
                             },
+                            "selectionSet": undefined,
                           },
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -65,8 +73,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "Name",
                               "value": "creationDate",
                             },
+                            "selectionSet": undefined,
                           },
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -74,8 +84,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "Name",
                               "value": "lastActivity",
                             },
+                            "selectionSet": undefined,
                           },
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -83,6 +95,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "Name",
                               "value": "activeSessions",
                             },
+                            "selectionSet": undefined,
                           },
                         ],
                       },
@@ -94,25 +107,7 @@ exports[`FiltersBar matches snapshot 1`] = `
             ],
             "kind": "Document",
             "loc": Object {
-              "end": 119,
-              "source": Object {
-                "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                "locationOffset": Object {
-                  "column": 1,
-                  "line": 1,
-                },
-                "name": "GraphQL request",
-              },
+              "end": 140,
               "start": 0,
             },
           },
@@ -163,6 +158,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "kind": "SelectionSet",
                     "selections": Array [
                       Object {
+                        "alias": undefined,
                         "arguments": Array [],
                         "directives": Array [],
                         "kind": "Field",
@@ -174,6 +170,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                           "kind": "SelectionSet",
                           "selections": Array [
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -181,8 +178,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "Name",
                                 "value": "id",
                               },
+                              "selectionSet": undefined,
                             },
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -190,8 +189,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "Name",
                                 "value": "email",
                               },
+                              "selectionSet": undefined,
                             },
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -199,8 +200,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "Name",
                                 "value": "accessLevel",
                               },
+                              "selectionSet": undefined,
                             },
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -208,8 +211,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "Name",
                                 "value": "creationDate",
                               },
+                              "selectionSet": undefined,
                             },
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -217,8 +222,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "Name",
                                 "value": "lastActivity",
                               },
+                              "selectionSet": undefined,
                             },
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -226,6 +233,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "Name",
                                 "value": "activeSessions",
                               },
+                              "selectionSet": undefined,
                             },
                           ],
                         },
@@ -237,25 +245,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               ],
               "kind": "Document",
               "loc": Object {
-                "end": 119,
-                "source": Object {
-                  "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                  "locationOffset": Object {
-                    "column": 1,
-                    "line": 1,
-                  },
-                  "name": "GraphQL request",
-                },
+                "end": 140,
                 "start": 0,
               },
             },
@@ -326,7 +316,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               "group": CacheGroup {
                 "caching": true,
                 "d": [Function],
-                "keyMaker": KeyTrie {
+                "keyMaker": Trie {
                   "makeData": [Function],
                   "weak": WeakMap {},
                   "weakness": true,
@@ -367,12 +357,12 @@ exports[`FiltersBar matches snapshot 1`] = `
               "sharedLayerGroup": CacheGroup {
                 "caching": true,
                 "d": [Function],
-                "keyMaker": KeyTrie {
+                "keyMaker": Trie {
                   "makeData": [Function],
                   "weakness": true,
                 },
               },
-              "storageTrie": KeyTrie {
+              "storageTrie": Trie {
                 "makeData": [Function],
                 "weakness": true,
               },
@@ -412,7 +402,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               "group": CacheGroup {
                 "caching": true,
                 "d": [Function],
-                "keyMaker": KeyTrie {
+                "keyMaker": Trie {
                   "makeData": [Function],
                   "weak": WeakMap {},
                   "weakness": true,
@@ -453,12 +443,12 @@ exports[`FiltersBar matches snapshot 1`] = `
               "sharedLayerGroup": CacheGroup {
                 "caching": true,
                 "d": [Function],
-                "keyMaker": KeyTrie {
+                "keyMaker": Trie {
                   "makeData": [Function],
                   "weakness": true,
                 },
               },
-              "storageTrie": KeyTrie {
+              "storageTrie": Trie {
                 "makeData": [Function],
                 "weakness": true,
               },
@@ -535,6 +525,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "kind": "SelectionSet",
                         "selections": Array [
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -546,6 +537,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -553,8 +545,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "id",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -562,8 +556,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "email",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -571,8 +567,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "accessLevel",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -580,8 +578,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "creationDate",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -589,8 +589,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "lastActivity",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -598,6 +600,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "activeSessions",
                                   },
+                                  "selectionSet": undefined,
                                 },
                               ],
                             },
@@ -609,25 +612,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 119,
-                    "source": Object {
-                      "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                      "locationOffset": Object {
-                        "column": 1,
-                        "line": 1,
-                      },
-                      "name": "GraphQL request",
-                    },
+                    "end": 140,
                     "start": 0,
                   },
                 },
@@ -660,6 +645,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                       "kind": "SelectionSet",
                       "selections": Array [
                         Object {
+                          "alias": undefined,
                           "arguments": Array [],
                           "directives": Array [],
                           "kind": "Field",
@@ -671,6 +657,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                             "kind": "SelectionSet",
                             "selections": Array [
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -678,8 +665,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "Name",
                                   "value": "id",
                                 },
+                                "selectionSet": undefined,
                               },
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -687,8 +676,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "Name",
                                   "value": "email",
                                 },
+                                "selectionSet": undefined,
                               },
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -696,8 +687,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "Name",
                                   "value": "accessLevel",
                                 },
+                                "selectionSet": undefined,
                               },
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -705,8 +698,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "Name",
                                   "value": "creationDate",
                                 },
+                                "selectionSet": undefined,
                               },
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -714,8 +709,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "Name",
                                   "value": "lastActivity",
                                 },
+                                "selectionSet": undefined,
                               },
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -723,6 +720,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "Name",
                                   "value": "activeSessions",
                                 },
+                                "selectionSet": undefined,
                               },
                             ],
                           },
@@ -734,25 +732,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                 ],
                 "kind": "Document",
                 "loc": Object {
-                  "end": 119,
-                  "source": Object {
-                    "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                    "locationOffset": Object {
-                      "column": 1,
-                      "line": 1,
-                    },
-                    "name": "GraphQL request",
-                  },
+                  "end": 140,
                   "start": 0,
                 },
               },
@@ -797,7 +777,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "group": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weak": WeakMap {},
                     "weakness": true,
@@ -838,12 +818,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "sharedLayerGroup": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
                 },
-                "storageTrie": KeyTrie {
+                "storageTrie": Trie {
                   "makeData": [Function],
                   "weakness": true,
                 },
@@ -883,7 +863,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "group": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weak": WeakMap {},
                     "weakness": true,
@@ -924,12 +904,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "sharedLayerGroup": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
                 },
-                "storageTrie": KeyTrie {
+                "storageTrie": Trie {
                   "makeData": [Function],
                   "weakness": true,
                 },
@@ -1006,6 +986,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                           "kind": "SelectionSet",
                           "selections": Array [
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -1017,6 +998,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "SelectionSet",
                                 "selections": Array [
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1024,8 +1006,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "id",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1033,8 +1017,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "email",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1042,8 +1028,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "accessLevel",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1051,8 +1039,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "creationDate",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1060,8 +1050,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "lastActivity",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1069,6 +1061,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "activeSessions",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                 ],
                               },
@@ -1080,25 +1073,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 119,
-                      "source": Object {
-                        "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                        "locationOffset": Object {
-                          "column": 1,
-                          "line": 1,
-                        },
-                        "name": "GraphQL request",
-                      },
+                      "end": 140,
                       "start": 0,
                     },
                   },
@@ -1150,7 +1125,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "group": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weak": WeakMap {},
                     "weakness": true,
@@ -1191,12 +1166,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "sharedLayerGroup": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
                 },
-                "storageTrie": KeyTrie {
+                "storageTrie": Trie {
                   "makeData": [Function],
                   "weakness": true,
                 },
@@ -1236,7 +1211,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "group": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weak": WeakMap {},
                     "weakness": true,
@@ -1277,12 +1252,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                 "sharedLayerGroup": CacheGroup {
                   "caching": true,
                   "d": [Function],
-                  "keyMaker": KeyTrie {
+                  "keyMaker": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
                 },
-                "storageTrie": KeyTrie {
+                "storageTrie": Trie {
                   "makeData": [Function],
                   "weakness": true,
                 },
@@ -1359,6 +1334,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                           "kind": "SelectionSet",
                           "selections": Array [
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -1370,6 +1346,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "SelectionSet",
                                 "selections": Array [
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1377,8 +1354,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "id",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1386,8 +1365,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "email",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1395,8 +1376,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "accessLevel",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1404,8 +1387,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "creationDate",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1413,8 +1398,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "lastActivity",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -1422,6 +1409,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "activeSessions",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                 ],
                               },
@@ -1433,25 +1421,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 119,
-                      "source": Object {
-                        "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                        "locationOffset": Object {
-                          "column": 1,
-                          "line": 1,
-                        },
-                        "name": "GraphQL request",
-                      },
+                      "end": 140,
                       "start": 0,
                     },
                   },
@@ -1487,6 +1457,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "kind": "SelectionSet",
                         "selections": Array [
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -1498,6 +1469,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -1505,8 +1477,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "id",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -1514,8 +1488,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "email",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -1523,8 +1499,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "accessLevel",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -1532,8 +1510,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "creationDate",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -1541,8 +1521,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "lastActivity",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -1550,6 +1532,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "activeSessions",
                                   },
+                                  "selectionSet": undefined,
                                 },
                               ],
                             },
@@ -1561,25 +1544,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 119,
-                    "source": Object {
-                      "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                      "locationOffset": Object {
-                        "column": 1,
-                        "line": 1,
-                      },
-                      "name": "GraphQL request",
-                    },
+                    "end": 140,
                     "start": 0,
                   },
                 },
@@ -1624,7 +1589,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "group": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weak": WeakMap {},
                       "weakness": true,
@@ -1665,12 +1630,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "sharedLayerGroup": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
                   },
-                  "storageTrie": KeyTrie {
+                  "storageTrie": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
@@ -1710,7 +1675,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "group": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weak": WeakMap {},
                       "weakness": true,
@@ -1751,12 +1716,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                   "sharedLayerGroup": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
                   },
-                  "storageTrie": KeyTrie {
+                  "storageTrie": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
@@ -1833,6 +1798,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                             "kind": "SelectionSet",
                             "selections": Array [
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -1844,6 +1810,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "SelectionSet",
                                   "selections": Array [
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -1851,8 +1818,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "id",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -1860,8 +1829,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "email",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -1869,8 +1840,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "accessLevel",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -1878,8 +1851,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "creationDate",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -1887,8 +1862,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "lastActivity",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -1896,6 +1873,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "activeSessions",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                   ],
                                 },
@@ -1907,25 +1885,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 119,
-                        "source": Object {
-                          "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                          "locationOffset": Object {
-                            "column": 1,
-                            "line": 1,
-                          },
-                          "name": "GraphQL request",
-                        },
+                        "end": 140,
                         "start": 0,
                       },
                     },
@@ -1977,7 +1937,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "group": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weak": WeakMap {},
                         "weakness": true,
@@ -2018,12 +1978,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
                     },
-                    "storageTrie": KeyTrie {
+                    "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -2063,7 +2023,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "group": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weak": WeakMap {},
                         "weakness": true,
@@ -2104,12 +2064,12 @@ exports[`FiltersBar matches snapshot 1`] = `
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
                     },
-                    "storageTrie": KeyTrie {
+                    "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -2186,6 +2146,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2197,6 +2158,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "SelectionSet",
                                     "selections": Array [
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2204,8 +2166,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "id",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2213,8 +2177,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "email",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2222,8 +2188,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "accessLevel",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2231,8 +2199,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "creationDate",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2240,8 +2210,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "lastActivity",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2249,6 +2221,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "activeSessions",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                     ],
                                   },
@@ -2260,25 +2233,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         ],
                         "kind": "Document",
                         "loc": Object {
-                          "end": 119,
-                          "source": Object {
-                            "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                            "locationOffset": Object {
-                              "column": 1,
-                              "line": 1,
-                            },
-                            "name": "GraphQL request",
-                          },
+                          "end": 140,
                           "start": 0,
                         },
                       },
@@ -2326,6 +2281,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         "kind": "SelectionSet",
                         "selections": Array [
                           Object {
+                            "alias": undefined,
                             "arguments": Array [],
                             "directives": Array [],
                             "kind": "Field",
@@ -2337,6 +2293,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2344,8 +2301,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "id",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2353,8 +2312,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "email",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2362,8 +2323,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "accessLevel",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2371,8 +2334,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "creationDate",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2380,8 +2345,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "lastActivity",
                                   },
+                                  "selectionSet": undefined,
                                 },
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2389,6 +2356,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "Name",
                                     "value": "activeSessions",
                                   },
+                                  "selectionSet": undefined,
                                 },
                               ],
                             },
@@ -2400,25 +2368,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   ],
                   "kind": "Document",
                   "loc": Object {
-                    "end": 119,
-                    "source": Object {
-                      "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                      "locationOffset": Object {
-                        "column": 1,
-                        "line": 1,
-                      },
-                      "name": "GraphQL request",
-                    },
+                    "end": 140,
                     "start": 0,
                   },
                 },
@@ -2441,6 +2391,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                           "kind": "SelectionSet",
                           "selections": Array [
                             Object {
+                              "alias": undefined,
                               "arguments": Array [],
                               "directives": Array [],
                               "kind": "Field",
@@ -2452,6 +2403,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                 "kind": "SelectionSet",
                                 "selections": Array [
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -2459,8 +2411,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "id",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -2468,8 +2422,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "email",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -2477,8 +2433,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "accessLevel",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -2486,8 +2444,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "creationDate",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -2495,8 +2455,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "lastActivity",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                   Object {
+                                    "alias": undefined,
                                     "arguments": Array [],
                                     "directives": Array [],
                                     "kind": "Field",
@@ -2504,6 +2466,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                       "kind": "Name",
                                       "value": "activeSessions",
                                     },
+                                    "selectionSet": undefined,
                                   },
                                 ],
                               },
@@ -2515,25 +2478,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                     ],
                     "kind": "Document",
                     "loc": Object {
-                      "end": 119,
-                      "source": Object {
-                        "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                        "locationOffset": Object {
-                          "column": 1,
-                          "line": 1,
-                        },
-                        "name": "GraphQL request",
-                      },
+                      "end": 140,
                       "start": 0,
                     },
                   },
@@ -2656,6 +2601,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                             "kind": "SelectionSet",
                             "selections": Array [
                               Object {
+                                "alias": undefined,
                                 "arguments": Array [],
                                 "directives": Array [],
                                 "kind": "Field",
@@ -2667,6 +2613,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                   "kind": "SelectionSet",
                                   "selections": Array [
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -2674,8 +2621,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "id",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -2683,8 +2632,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "email",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -2692,8 +2643,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "accessLevel",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -2701,8 +2654,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "creationDate",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -2710,8 +2665,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "lastActivity",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                     Object {
+                                      "alias": undefined,
                                       "arguments": Array [],
                                       "directives": Array [],
                                       "kind": "Field",
@@ -2719,6 +2676,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                         "kind": "Name",
                                         "value": "activeSessions",
                                       },
+                                      "selectionSet": undefined,
                                     },
                                   ],
                                 },
@@ -2730,25 +2688,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                       ],
                       "kind": "Document",
                       "loc": Object {
-                        "end": 119,
-                        "source": Object {
-                          "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                          "locationOffset": Object {
-                            "column": 1,
-                            "line": 1,
-                          },
-                          "name": "GraphQL request",
-                        },
+                        "end": 140,
                         "start": 0,
                       },
                     },
@@ -2830,6 +2770,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                               "kind": "SelectionSet",
                               "selections": Array [
                                 Object {
+                                  "alias": undefined,
                                   "arguments": Array [],
                                   "directives": Array [],
                                   "kind": "Field",
@@ -2841,6 +2782,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                     "kind": "SelectionSet",
                                     "selections": Array [
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2848,8 +2790,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "id",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2857,8 +2801,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "email",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2866,8 +2812,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "accessLevel",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2875,8 +2823,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "creationDate",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2884,8 +2834,10 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "lastActivity",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                       Object {
+                                        "alias": undefined,
                                         "arguments": Array [],
                                         "directives": Array [],
                                         "kind": "Field",
@@ -2893,6 +2845,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                                           "kind": "Name",
                                           "value": "activeSessions",
                                         },
+                                        "selectionSet": undefined,
                                       },
                                     ],
                                   },
@@ -2904,25 +2857,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                         ],
                         "kind": "Document",
                         "loc": Object {
-                          "end": 119,
-                          "source": Object {
-                            "body": "query GetUsers {
-  users {
-    id
-    email
-    accessLevel
-    creationDate
-    lastActivity
-    activeSessions
-  }
-}
-",
-                            "locationOffset": Object {
-                              "column": 1,
-                              "line": 1,
-                            },
-                            "name": "GraphQL request",
-                          },
+                          "end": 140,
                           "start": 0,
                         },
                       },
@@ -2948,7 +2883,7 @@ exports[`FiltersBar matches snapshot 1`] = `
           "resetStore": [Function],
           "resetStoreCallbacks": Array [],
           "typeDefs": undefined,
-          "version": "3.3.5",
+          "version": "3.3.19",
           "watchQuery": [Function],
         }
       }
@@ -3129,9 +3064,9 @@ exports[`FiltersBar matches snapshot 1`] = `
               placeholder="User email"
             >
               <div
-                className="_82QGI"
+                className="_82QGI _1C2q-"
               >
-                <R
+                <z
                   text="search a user"
                 >
                   <label
@@ -3140,68 +3075,76 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     SEARCH A USER
                   </label>
-                </R>
-                <input
-                  autoComplete="off"
-                  className="_YghJM"
-                  name="userEmail"
-                  onChange={[Function]}
-                  onKeyDown={[Function]}
-                  placeholder="User email"
-                  type="text"
-                  value=""
-                />
+                </z>
                 <div
-                  className="_3LQr6"
-                  onClick={[Function]}
-                  title="Clear input"
+                  className="_1wPLW"
                 >
-                  <ForwardRef(CloseIcon)
-                    className="icon-small"
+                  <div
+                    className="_1j-sT"
                   >
-                    <WithStyles(ForwardRef(SvgIcon))
+                    <input
+                      autoComplete="off"
+                      className="_YghJM"
+                      name="userEmail"
+                      onChange={[Function]}
+                      onKeyDown={[Function]}
+                      placeholder="User email"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                  <div
+                    className="_3LQr6"
+                    onClick={[Function]}
+                    title="Clear input"
+                  >
+                    <ForwardRef(CloseIcon)
                       className="icon-small"
                     >
-                      <ForwardRef(SvgIcon)
+                      <WithStyles(ForwardRef(SvgIcon))
                         className="icon-small"
-                        classes={
-                          Object {
-                            "colorAction": "MuiSvgIcon-colorAction",
-                            "colorDisabled": "MuiSvgIcon-colorDisabled",
-                            "colorError": "MuiSvgIcon-colorError",
-                            "colorPrimary": "MuiSvgIcon-colorPrimary",
-                            "colorSecondary": "MuiSvgIcon-colorSecondary",
-                            "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
-                            "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
-                            "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
-                            "root": "MuiSvgIcon-root",
-                          }
-                        }
                       >
-                        <svg
-                          aria-hidden={true}
-                          className="MuiSvgIcon-root icon-small"
-                          focusable="false"
-                          viewBox="0 0 24 24"
+                        <ForwardRef(SvgIcon)
+                          className="icon-small"
+                          classes={
+                            Object {
+                              "colorAction": "MuiSvgIcon-colorAction",
+                              "colorDisabled": "MuiSvgIcon-colorDisabled",
+                              "colorError": "MuiSvgIcon-colorError",
+                              "colorPrimary": "MuiSvgIcon-colorPrimary",
+                              "colorSecondary": "MuiSvgIcon-colorSecondary",
+                              "fontSizeInherit": "MuiSvgIcon-fontSizeInherit",
+                              "fontSizeLarge": "MuiSvgIcon-fontSizeLarge",
+                              "fontSizeSmall": "MuiSvgIcon-fontSizeSmall",
+                              "root": "MuiSvgIcon-root",
+                            }
+                          }
                         >
-                          <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                          />
-                        </svg>
-                      </ForwardRef(SvgIcon)>
-                    </WithStyles(ForwardRef(SvgIcon))>
-                  </ForwardRef(CloseIcon)>
+                          <svg
+                            aria-hidden={true}
+                            className="MuiSvgIcon-root icon-small"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                            />
+                          </svg>
+                        </ForwardRef(SvgIcon)>
+                      </WithStyles(ForwardRef(SvgIcon))>
+                    </ForwardRef(CloseIcon)>
+                  </div>
                 </div>
                 <ul
                   className="_1Em_G"
                 />
-                <Y
+                <V
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </Y>
+                </V>
               </div>
             </Component>
           </div>
@@ -3223,7 +3166,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               <div
                 className="_1usSP"
               >
-                <R
+                <z
                   text="filter by versions"
                 >
                   <label
@@ -3232,7 +3175,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     FILTER BY VERSIONS
                   </label>
-                </R>
+                </z>
                 <div
                   className="_3ifZl"
                 >
@@ -3242,22 +3185,60 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     Select Versions
                   </div>
-                  <div
+                  <N
                     className="_2JwOA"
-                    style={
-                      Object {
-                        "maxHeight": 0,
+                    close={[Function]}
+                    opened={false}
+                  >
+                    <AnimateHeight
+                      animateOpacity={false}
+                      animationStateClasses={
+                        Object {
+                          "animating": "rah-animating",
+                          "animatingDown": "rah-animating--down",
+                          "animatingToHeightAuto": "rah-animating--to-height-auto",
+                          "animatingToHeightSpecific": "rah-animating--to-height-specific",
+                          "animatingToHeightZero": "rah-animating--to-height-zero",
+                          "animatingUp": "rah-animating--up",
+                          "static": "rah-static",
+                          "staticHeightAuto": "rah-static--height-auto",
+                          "staticHeightSpecific": "rah-static--height-specific",
+                          "staticHeightZero": "rah-static--height-zero",
+                        }
                       }
-                    }
-                  />
+                      applyInlineTransitions={true}
+                      className="_2JwOA"
+                      delay={0}
+                      duration={300}
+                      easing="ease"
+                      height={0}
+                      onAnimationEnd={[Function]}
+                      style={Object {}}
+                    >
+                      <div
+                        aria-hidden={true}
+                        className="rah-static rah-static--height-zero _2JwOA"
+                        style={
+                          Object {
+                            "height": 0,
+                            "overflow": "hidden",
+                          }
+                        }
+                      >
+                        <div
+                          style={Object {}}
+                        />
+                      </div>
+                    </AnimateHeight>
+                  </N>
                 </div>
-                <Y
+                <V
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </Y>
+                </V>
               </div>
             </Component>
           </div>
@@ -3443,7 +3424,7 @@ exports[`FiltersBar matches snapshot 1`] = `
               <div
                 className="_DP1dK"
               >
-                <R
+                <z
                   text="Activity type"
                 >
                   <label
@@ -3452,7 +3433,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     ACTIVITY TYPE
                   </label>
-                </R>
+                </z>
                 <div
                   className="_3ouoE"
                 >
@@ -3462,37 +3443,71 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     ALL TYPES
                   </div>
-                  <div
+                  <N
                     className="_3K0FO"
-                    style={
-                      Object {
-                        "maxHeight": 0,
-                      }
-                    }
+                    close={[Function]}
+                    opened={false}
                   >
-                    <div
-                      className="_1Wht9"
-                    />
-                  </div>
+                    <AnimateHeight
+                      animateOpacity={false}
+                      animationStateClasses={
+                        Object {
+                          "animating": "rah-animating",
+                          "animatingDown": "rah-animating--down",
+                          "animatingToHeightAuto": "rah-animating--to-height-auto",
+                          "animatingToHeightSpecific": "rah-animating--to-height-specific",
+                          "animatingToHeightZero": "rah-animating--to-height-zero",
+                          "animatingUp": "rah-animating--up",
+                          "static": "rah-static",
+                          "staticHeightAuto": "rah-static--height-auto",
+                          "staticHeightSpecific": "rah-static--height-specific",
+                          "staticHeightZero": "rah-static--height-zero",
+                        }
+                      }
+                      applyInlineTransitions={true}
+                      className="_3K0FO"
+                      delay={0}
+                      duration={300}
+                      easing="ease"
+                      height={0}
+                      onAnimationEnd={[Function]}
+                      style={Object {}}
+                    >
+                      <div
+                        aria-hidden={true}
+                        className="rah-static rah-static--height-zero _3K0FO"
+                        style={
+                          Object {
+                            "height": 0,
+                            "overflow": "hidden",
+                          }
+                        }
+                      >
+                        <div
+                          style={Object {}}
+                        />
+                      </div>
+                    </AnimateHeight>
+                  </N>
                 </div>
-                <Y
+                <V
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </Y>
+                </V>
               </div>
             </Component>
           </div>
           <div>
-            <j
+            <Z
               label="dates selection"
               onChangeFromDateInput={[Function]}
               onChangeToDateInput={[Function]}
             >
               <div>
-                <R
+                <z
                   text="dates selection"
                 >
                   <label
@@ -3501,7 +3516,7 @@ exports[`FiltersBar matches snapshot 1`] = `
                   >
                     DATES SELECTION
                   </label>
-                </R>
+                </z>
                 <withStyles(DateRangePicker)
                   anchorDirection="left"
                   appendToBody={false}
@@ -4999,15 +5014,15 @@ exports[`FiltersBar matches snapshot 1`] = `
                     </div>
                   </DateRangePicker>
                 </withStyles(DateRangePicker)>
-                <Y
+                <V
                   message=""
                 >
                   <div
                     className="_2fvTK"
                   />
-                </Y>
+                </V>
               </div>
-            </j>
+            </Z>
           </div>
           <div
             className="buttons"

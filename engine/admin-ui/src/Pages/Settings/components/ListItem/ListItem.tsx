@@ -6,7 +6,7 @@ import styles from './ListItem.module.scss';
 
 export type Action = {
   label: string;
-  onClick: (e: MouseEvent<HTMLDivElement>) => void;
+  onClick: (e?: MouseEvent<HTMLDivElement>) => void;
 };
 
 type Props = {

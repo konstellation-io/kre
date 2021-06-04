@@ -1,22 +1,4 @@
-import { AccessLevel } from 'Graphql/types/globalTypes';
-import { NotificationType } from 'Graphql/client/models/Notification';
-
-export interface AddNotificationInput {
-  id: string;
-  message: string;
-  type: NotificationType;
-  timeout: number;
-  to: string;
-  typeLabel?: string;
-}
-
-export interface AddLogTabInput {
-  runtimeId: string;
-  runtimeName: string;
-  versionId: string;
-  versionName: string;
-  nodes: NodeSelection[];
-}
+import { AccessLevel, LogLevel } from 'Graphql/types/globalTypes';
 
 export interface NodeSelection {
   workflowName: string;
@@ -30,7 +12,7 @@ export interface LogPanelFilters {
   endDate?: string;
   nodes?: NodeSelection[];
   search?: string;
-  levels?: string[] | null;
+  levels?: LogLevel[] | null;
   __typename: 'logTabFilters';
 }
 
@@ -39,16 +21,12 @@ export interface LogPanel {
   runtimeName: string;
   versionId: string;
   versionName: string;
-  uniqueId?: string;
-  filters?: LogPanelFilters;
+  uniqueId: string;
+  filters: LogPanelFilters;
 }
 
 export interface UserSettingsFilters {
   email: string | null;
   accessLevel: AccessLevel | null;
   __typename: 'UserSettingsFilters';
-}
-
-export interface RemoveNotificationInput {
-  id: string;
 }

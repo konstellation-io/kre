@@ -3,7 +3,7 @@ import Header from './components/Header/Header';
 import LogsPanel from './LogsPanel';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { useQuery } from '@apollo/client';
+import * as apolloClient from '@apollo/client';
 
 const mocksLogTabs = {
   data: {
@@ -18,11 +18,10 @@ const mocksLogTabs = {
   }
 };
 
-jest.mock('@apollo/client', () => ({
-  useQuery: jest.fn(() => mocksLogTabs),
-  useApolloClient: jest.fn(() => ({ writeData: jest.fn() })),
-  gql: jest.fn()
-}));
+apolloClient.useQuery = jest.fn(() => mocksLogTabs);
+apolloClient.useApolloClient = jest.fn(() => ({ writeData: jest.fn() }));
+apolloClient.useReactiveVar = jest.fn(() => []);
+
 jest.mock('Graphql/client/cache', () => ({}));
 
 jest.mock('react-router', () => ({
@@ -46,18 +45,6 @@ describe('Logs', () => {
   it('show right components', () => {
     expect(wrapper.exists('.container')).toBeTruthy();
     expect(wrapper.exists(Header)).toBeTruthy();
-  });
-
-  it('should be empty when there is no node', () => {
-    // Arrange.
-    useQuery.mockReturnValueOnce({ data: undefined });
-
-    // Act.
-    const wrapper2 = shallow(<LogsPanel />);
-
-    // Assert.
-    expect(useQuery).toBeCalled();
-    expect(wrapper2).toMatchSnapshot();
   });
 
   // FIXME: fix it when you can mock or use useEffect with shallow

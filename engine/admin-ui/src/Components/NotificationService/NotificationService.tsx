@@ -1,27 +1,21 @@
-import {
-  GET_LOGIN_AND_NOTIFICATIONS,
-  GetLoginAndNotifications
-} from 'Graphql/client/queries/getLoginAndNotifications.graphql';
-
 import Notification from './Notification';
-import React from 'react';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import VersionCreated from './Services/VersionCreated/VersionCreated';
 import styles from './Notification.module.scss';
-import { useQuery } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client';
+import { loggedIn, notifications } from '../../Graphql/client/cache';
 
 function NotificationService() {
-  const { data } = useQuery<GetLoginAndNotifications>(
-    GET_LOGIN_AND_NOTIFICATIONS
-  );
+  const dataLoggedIn = useReactiveVar(loggedIn);
+  const dataNotifications = useReactiveVar(notifications);
 
   let services: ReactNode[] = [];
 
-  if (data?.loggedIn) {
+  if (dataLoggedIn) {
     services = [<VersionCreated key="versionCreated" />];
   }
 
-  const notificationComponents = data?.notifications.map(notification => (
+  const notificationComponents = dataNotifications.map(notification => (
     <Notification {...notification} key={notification.id} />
   ));
 

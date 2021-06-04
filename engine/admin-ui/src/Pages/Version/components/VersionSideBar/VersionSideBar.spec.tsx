@@ -6,10 +6,9 @@ import VersionInfo from './VersionInfo/VersionInfo';
 import VersionMenu from './VersionMenu/VersionMenu';
 import VersionSideBar from './VersionSideBar';
 import { shallow } from 'enzyme';
+import * as apolloClient from '@apollo/client';
 
-jest.mock('@apollo/client', () => ({
-  useMutation: jest.fn(() => [jest.fn(), { loading: false }])
-}));
+apolloClient.useMutation = jest.fn(() => [jest.fn(), { loading: false }]);
 
 describe('VersionSideBar', () => {
   let wrapper;
@@ -28,7 +27,6 @@ describe('VersionSideBar', () => {
     expect(wrapper.exists(VersionInfo)).toBeTruthy();
     expect(wrapper.exists(VersionMenu)).toBeTruthy();
     expect(wrapper.exists(VersionActions)).toBeTruthy();
-    expect('a').toBeTruthy();
   });
 
   it('do now show when there is no runtime', async () => {

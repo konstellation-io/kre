@@ -47,7 +47,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                   "group": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -81,12 +81,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                   "sharedLayerGroup": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
                   },
-                  "storageTrie": KeyTrie {
+                  "storageTrie": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
@@ -102,7 +102,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                   "group": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -136,12 +136,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                   "sharedLayerGroup": CacheGroup {
                     "caching": true,
                     "d": [Function],
-                    "keyMaker": KeyTrie {
+                    "keyMaker": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
                   },
-                  "storageTrie": KeyTrie {
+                  "storageTrie": Trie {
                     "makeData": [Function],
                     "weakness": true,
                   },
@@ -220,7 +220,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "group": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
@@ -254,12 +254,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
                     },
-                    "storageTrie": KeyTrie {
+                    "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -275,7 +275,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "group": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
@@ -309,12 +309,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
                     },
-                    "storageTrie": KeyTrie {
+                    "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -392,7 +392,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "group": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
@@ -426,12 +426,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
                     },
-                    "storageTrie": KeyTrie {
+                    "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -447,7 +447,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "group": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
@@ -481,12 +481,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                     "sharedLayerGroup": CacheGroup {
                       "caching": true,
                       "d": [Function],
-                      "keyMaker": KeyTrie {
+                      "keyMaker": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
                     },
-                    "storageTrie": KeyTrie {
+                    "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
                     },
@@ -568,7 +568,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "group": CacheGroup {
                         "caching": true,
                         "d": [Function],
-                        "keyMaker": KeyTrie {
+                        "keyMaker": Trie {
                           "makeData": [Function],
                           "weakness": true,
                         },
@@ -602,12 +602,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "sharedLayerGroup": CacheGroup {
                         "caching": true,
                         "d": [Function],
-                        "keyMaker": KeyTrie {
+                        "keyMaker": Trie {
                           "makeData": [Function],
                           "weakness": true,
                         },
                       },
-                      "storageTrie": KeyTrie {
+                      "storageTrie": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
@@ -623,7 +623,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "group": CacheGroup {
                         "caching": true,
                         "d": [Function],
-                        "keyMaker": KeyTrie {
+                        "keyMaker": Trie {
                           "makeData": [Function],
                           "weakness": true,
                         },
@@ -657,12 +657,12 @@ exports[`WorkflowsManager matches snapshot 1`] = `
                       "sharedLayerGroup": CacheGroup {
                         "caching": true,
                         "d": [Function],
-                        "keyMaker": KeyTrie {
+                        "keyMaker": Trie {
                           "makeData": [Function],
                           "weakness": true,
                         },
                       },
-                      "storageTrie": KeyTrie {
+                      "storageTrie": Trie {
                         "makeData": [Function],
                         "weakness": true,
                       },
@@ -734,7 +734,7 @@ exports[`WorkflowsManager matches snapshot 1`] = `
               "resetStore": [Function],
               "resetStoreCallbacks": Array [],
               "typeDefs": undefined,
-              "version": "3.3.5",
+              "version": "3.3.19",
               "watchQuery": [Function],
             }
           }

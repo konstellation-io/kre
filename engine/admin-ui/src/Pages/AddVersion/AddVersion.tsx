@@ -11,17 +11,14 @@ import React, { useEffect, useState } from 'react';
 
 import ROUTE from 'Constants/routes';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddVersion.module.scss';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/client';
 
-const AddVersionMutation = loader('Graphql/mutations/addVersion.graphql');
-const GetRuntimeAndVersionQuery = loader(
-  'Graphql/queries/getRuntimeAndVersions.graphql'
-);
+import AddVersionMutation from 'Graphql/mutations/addVersion';
+import GetRuntimeAndVersionQuery from 'Graphql/queries/getRuntimeAndVersions';
 
 function AddVersion() {
   const history = useHistory();

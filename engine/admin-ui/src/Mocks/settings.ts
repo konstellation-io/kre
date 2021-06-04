@@ -1,12 +1,8 @@
-import { loader } from 'graphql.macro';
-
-const GetUserActivityQuery = loader('Graphql/queries/getUserActivity.graphql');
-const GetDomainsQuery = loader('Graphql/queries/getDomains.graphql');
-const GetExpTimeQuery = loader('Graphql/queries/getExpirationTime.graphql');
-const UpdateSessionLifetimeMutation = loader(
-  'Graphql/mutations/updateVersionConfiguration.graphql'
-);
-const UpdateDomainsMutation = loader('Graphql/mutations/updateDomains.graphql');
+import GetUserActivityQuery from 'Graphql/queries/getUserActivity';
+import GetDomainsQuery from 'Graphql/queries/getDomains';
+import GetExpTimeQuery from 'Graphql/queries/getExpirationTime';
+import UpdateSessionLifetimeMutation from 'Graphql/mutations/updateVersionConfiguration';
+import UpdateDomainsMutation from 'Graphql/mutations/updateDomains';
 
 export const domainMock = {
   request: {

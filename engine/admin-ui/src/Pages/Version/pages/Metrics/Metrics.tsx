@@ -15,13 +15,12 @@ import Charts from './components/Charts/Charts';
 import DashboardHeader from './components/DashboardHeader/DashboardHeader';
 import Message from 'Components/Message/Message';
 import { VersionRouteParams } from 'Constants/routes';
-import { loader } from 'graphql.macro';
 import styles from './Metrics.module.scss';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
-const GetMetricsQuery = loader('Graphql/queries/getMetrics.graphql');
+import GetMetricsQuery from 'Graphql/queries/getMetrics';
 
 type FormData = {
   startDate: Moment;

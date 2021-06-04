@@ -1,12 +1,7 @@
 import { Check, ContextMenu, MenuCallToAction } from 'kwc';
 import { Column, Row, useRowSelect, useSortBy, useTable } from 'react-table';
-import {
-  GET_USER_SETTINGS,
-  GetUserSettings,
-  GetUserSettings_filters
-} from 'Graphql/client/queries/getUserSettings.graphql';
 import React, { useEffect, useMemo } from 'react';
-import { capitalize, get } from 'lodash';
+import { capitalize } from 'lodash';
 
 import { AccessLevel } from 'Graphql/types/globalTypes';
 import { GetUsers_users } from 'Graphql/queries/types/GetUsers';
@@ -18,8 +13,10 @@ import { UserSelection } from 'Graphql/client/models/UserSettings';
 import cx from 'classnames';
 import { formatDate } from 'Utils/format';
 import styles from './UserList.module.scss';
-import { useQuery } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client';
 import useUserSettings from 'Graphql/hooks/useUserSettings';
+import { userSettings } from 'Graphql/client/cache';
+import { UserSettingsFilters } from 'Graphql/client/typeDefs';
 
 type Data = {
   creationDate: string;
@@ -85,7 +82,7 @@ function TableColCheck({
   );
 }
 
-function rowNotFiltered(row: GetUsers_users, filters: GetUserSettings_filters) {
+function rowNotFiltered(row: GetUsers_users, filters: UserSettingsFilters) {
   let filtered = false;
 
   if (filters.email && !row.email.includes(filters.email)) filtered = true;
@@ -102,23 +99,21 @@ type Props = {
 function UsersTable({ users, contextMenuActions }: Props) {
   const { updateSelection } = useUserSettings();
 
-  const { data: localData } = useQuery<GetUserSettings>(GET_USER_SETTINGS);
-  const filters = localData?.userSettings.filters || {
+  const dataUserSettings = useReactiveVar(userSettings);
+  const filters = dataUserSettings.filters || {
     email: null,
-    accessLevel: null
+    accessLevel: null,
+    __typename: 'UserSettingsFilters'
   };
-  const userSelection = get(
-    localData?.userSettings,
-    'userSelection',
-    UserSelection.NONE
-  );
+  const userSelection = dataUserSettings.userSelection;
 
   const data = useMemo(
+    // @ts-ignore
     () => users.filter(user => rowNotFiltered(user, filters)),
     [filters, users]
   );
 
-  const actSelectedUsers = localData?.userSettings.selectedUserIds || [];
+  const actSelectedUsers = dataUserSettings.selectedUserIds || [];
   const initialStateSelectedRowIds = Object.fromEntries(
     data.map((user, idx) => [idx, actSelectedUsers.includes(user.id)])
   );
@@ -186,12 +181,12 @@ function UsersTable({ users, contextMenuActions }: Props) {
   }, [userSelection, toggleAllRowsSelected]);
 
   useEffect(() => {
-    const actSelectedUsers = localData?.userSettings.selectedUserIds;
+    const prevSelectedUsers = dataUserSettings.selectedUserIds;
     const newSelectedUsersPos = Object.entries(selectedRowIds)
       .filter(([_, isSelected]) => isSelected)
       .map(([rowId, _]) => rowId);
 
-    if (actSelectedUsers?.length !== newSelectedUsersPos.length) {
+    if (prevSelectedUsers?.length !== newSelectedUsersPos.length) {
       let newUserSelection: UserSelection;
 
       switch (newSelectedUsersPos.length) {
@@ -213,7 +208,7 @@ function UsersTable({ users, contextMenuActions }: Props) {
 
       updateSelection(newSelectedUsers, newUserSelection);
     }
-  }, [selectedRowIds, updateSelection, data, localData]);
+  }, [selectedRowIds, updateSelection, data, dataUserSettings]);
 
   if (data.length === 0)
     return <Message text="There are no users with the applied filters" />;

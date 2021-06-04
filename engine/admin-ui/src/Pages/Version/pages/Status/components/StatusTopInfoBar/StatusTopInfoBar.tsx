@@ -6,14 +6,11 @@ import {
 import React from 'react';
 import ResourceMetrics from '../ResourceMetrics/ResourceMetrics';
 import { VersionRouteParams } from 'Constants/routes';
-import { loader } from 'graphql.macro';
 import styles from './StatusTopInfoBar.module.scss';
 import { useParams } from 'react-router';
 import { useQuery } from '@apollo/client';
 
-const GetVersionWorkflowsQuery = loader(
-  'Graphql/queries/getVersionWorkflows.graphql'
-);
+import GetVersionWorkflowsQuery from 'Graphql/queries/getVersionWorkflows';
 
 function StatusTopInfoBar() {
   const { versionName } = useParams<VersionRouteParams>();

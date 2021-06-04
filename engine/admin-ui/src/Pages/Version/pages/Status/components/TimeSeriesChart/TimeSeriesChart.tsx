@@ -39,7 +39,7 @@ function TimeSeriesChart({
   toggleExpand,
   highlightLastValue,
   removed = 0,
-  color = '#f00',
+  color = 'red',
   formatXAxis = v => v,
   formatYAxis = v => v.toString()
 }: Props) {

@@ -20,17 +20,12 @@ import { GetSettings } from 'Graphql/queries/types/GetSettings';
 import SettingsHeader from './components/SettingsHeader/SettingsHeader';
 import cx from 'classnames';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './Settings.module.scss';
 import { useForm } from 'react-hook-form';
 
-const GetExpirationTimeQuery = loader(
-  'Graphql/queries/getExpirationTime.graphql'
-);
-const updateSessionLifetimeMutation = loader(
-  'Graphql/mutations/updateSettings.graphql'
-);
+import GetExpirationTimeQuery from 'Graphql/queries/getExpirationTime';
+import updateSessionLifetimeMutation from 'Graphql/mutations/updateSettings';
 
 const MIN_EXPIRATION_DAYS = 1;
 

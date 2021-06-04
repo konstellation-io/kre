@@ -12,11 +12,10 @@ import ListItem from '../ListItem/ListItem';
 import Message from 'Components/Message/Message';
 import React from 'react';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 
-const GetDomainsQuery = loader('Graphql/queries/getDomains.graphql');
-const UpdateDomainsMutation = loader('Graphql/mutations/updateDomains.graphql');
+import GetDomainsQuery from 'Graphql/queries/getDomains';
+import UpdateDomainsMutation from 'Graphql/mutations/updateDomains';
 
 function AllowedDomains() {
   const { data, loading, error } = useQuery<GetDomains>(GetDomainsQuery);

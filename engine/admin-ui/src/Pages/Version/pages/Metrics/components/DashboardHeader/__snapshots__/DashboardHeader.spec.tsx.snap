@@ -12,7 +12,7 @@ exports[`DashboardTitle matches snapshot 1`] = `
   <div
     className="dateFilter"
   >
-    <j
+    <Z
       addTimeControls={true}
       hideError={true}
       label=""

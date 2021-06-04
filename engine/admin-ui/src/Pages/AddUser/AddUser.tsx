@@ -1,8 +1,8 @@
 import { Button, CHECK, Select, TextInput } from 'kwc';
 import {
   CreateUser,
-  CreateUserVariables,
-  CreateUser_createUser
+  CreateUser_createUser,
+  CreateUserVariables
 } from 'Graphql/mutations/types/CreateUser';
 import React, { useEffect } from 'react';
 
@@ -10,7 +10,6 @@ import { AccessLevel } from 'Graphql/types/globalTypes';
 import { GetUsers } from 'Graphql/queries/types/GetUsers';
 import ROUTE from 'Constants/routes';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddUser.module.scss';
 import { unregisterMany } from 'Utils/react-forms';
@@ -18,8 +17,8 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { useMutation } from '@apollo/client';
 
-const GetUsersQuery = loader('Graphql/queries/getUsers.graphql');
-const CreateUserMutation = loader('Graphql/mutations/createUser.graphql');
+import GetUsersQuery from 'Graphql/queries/getUsers';
+import CreateUserMutation from 'Graphql/mutations/createUser';
 
 function verifyEmail(value: string) {
   return CHECK.getValidationError([

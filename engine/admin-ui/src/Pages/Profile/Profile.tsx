@@ -7,11 +7,10 @@ import PageBase from 'Components/Layout/PageBase/PageBase';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import SettingsHeader from 'Pages/Settings/components/SettingsHeader/SettingsHeader';
-import { loader } from 'graphql.macro';
 import styles from './Profile.module.scss';
 import { useQuery } from '@apollo/client';
 
-const getApiTokenDateQuery = loader('Graphql/queries/getApiTokens.graphql');
+import getApiTokenDateQuery from 'Graphql/queries/getApiTokens';
 
 function Profile() {
   const { data, loading, error } = useQuery<GetApiTokens>(getApiTokenDateQuery);

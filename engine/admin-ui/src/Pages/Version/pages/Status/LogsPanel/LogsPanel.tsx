@@ -1,8 +1,3 @@
-import {
-  GET_LOG_TABS,
-  GetLogTabs,
-  GetLogTabs_logTabs
-} from 'Graphql/client/queries/getLogs.graphql';
 import React, { useState } from 'react';
 
 import Header from './components/Header/Header';
@@ -16,11 +11,11 @@ import { MenuCallToAction } from 'kwc';
 import ROUTE from 'Constants/routes';
 import TabContainer from './components/TabContainer/TabContainer';
 import cx from 'classnames';
-import { get } from 'lodash';
 import styles from './LogsPanel.module.scss';
 import { useLocation } from 'react-router-dom';
 import useLogs from 'Graphql/hooks/useLogs';
-import { useQuery } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client';
+import { activeTabId, logsOpened, logTabs } from 'Graphql/client/cache';
 
 function actualPageIsLogs(location: Location<unknown>) {
   return location.pathname.startsWith(ROUTE.LOGS.replace(':logTabInfo', ''));
@@ -38,14 +33,9 @@ function LogsPanel() {
   const onlyShowLogs = actualPageIsLogs(location);
   const [fullScreen, setFullScreen] = useState(onlyShowLogs);
 
-  const { data: localData } = useQuery<GetLogTabs>(GET_LOG_TABS);
-  const opened = get(localData, 'logsOpened', false);
-  const actActiveTabId = get(localData, 'activeTabId', '');
-  const tabs = get<GetLogTabs, 'logTabs', GetLogTabs_logTabs[]>(
-    localData,
-    'logTabs',
-    []
-  );
+  const dataLogsOpened = useReactiveVar(logsOpened);
+  const dataActiveTabId = useReactiveVar(activeTabId);
+  const dataLogTabs = useReactiveVar(logTabs);
 
   function toggleFullScreen() {
     setFullScreen(!fullScreen);
@@ -56,7 +46,7 @@ function LogsPanel() {
   }
 
   function openInANewTab(index: number) {
-    const logTabInfo = encodeURIComponent(JSON.stringify(tabs[index]));
+    const logTabInfo = encodeURIComponent(JSON.stringify(dataLogTabs[index]));
 
     window
       .open(ROUTE.LOGS.replace(':logTabInfo', logTabInfo), '_blank')
@@ -77,7 +67,7 @@ function LogsPanel() {
     {
       Icon: IconCloseOthers,
       text: 'close others',
-      disabled: tabs.length < 2,
+      disabled: dataLogTabs.length < 2,
       callToAction: (_: any, index: number) => closeOtherTabs(index)
     },
     {
@@ -87,12 +77,12 @@ function LogsPanel() {
     }
   ];
 
-  const hidden = tabs.length === 0;
+  const hidden = dataLogTabs.length === 0;
   return (
     <>
       <div
         className={cx(styles.container, {
-          [styles.opened]: opened,
+          [styles.opened]: dataLogsOpened,
           [styles.hidden]: hidden,
           [styles.fullScreen]: fullScreen
         })}
@@ -101,22 +91,22 @@ function LogsPanel() {
           <Header
             togglePanel={toggleLogs}
             toggleFullScreen={toggleFullScreen}
-            opened={opened}
+            opened={dataLogsOpened}
             fullScreen={fullScreen}
           />
         )}
         <TabContainer
-          tabs={tabs}
-          activeTabId={actActiveTabId}
+          tabs={dataLogTabs}
+          activeTabId={dataActiveTabId}
           contextMenuActions={contextMenuActions}
           onTabClick={handleTabClick}
           closeTab={closeTab}
         />
-        {tabs.map((tab: GetLogTabs_logTabs) => (
+        {dataLogTabs.map(tab => (
           <div
             className={cx(styles.content, {
-              [styles.opened]: opened,
-              [styles.inactiveTab]: actActiveTabId !== tab.uniqueId
+              [styles.opened]: dataLogsOpened,
+              [styles.inactiveTab]: dataActiveTabId !== tab.uniqueId
             })}
             key={tab.uniqueId}
           >
@@ -131,7 +121,7 @@ function LogsPanel() {
       </div>
       <div
         className={cx(styles.shield, {
-          [styles.show]: opened && !hidden && !fullScreen
+          [styles.show]: dataLogsOpened && !hidden && !fullScreen
         })}
         onClick={toggleLogs}
       />

@@ -1,6 +1,20 @@
 @import 'Styles/colors';
 @import 'Styles/mixins';
 
+:export {
+  matrix10: #00252e;
+  matrix20: #00303b;
+  matrix30: #004151;
+  matrix40: #005266;
+  matrix60: palette(highlight, 400);
+  matrix80: palette(highlight, 200);
+  matrix90: palette(highlight, 100);
+  matrix100: #d6ffff;
+
+  textDark: #00252e;
+  textLight: #ccf5ff;
+}
+
 $color-axisCell: map-get($color-dashboard, primary-dark);
 $color-primaryLight: map-get($color-dashboard, primary-light);
 

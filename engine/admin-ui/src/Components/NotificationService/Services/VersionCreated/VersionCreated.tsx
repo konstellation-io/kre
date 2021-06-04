@@ -6,11 +6,10 @@ import {
 import { VersionStatus } from 'Graphql/types/globalTypes';
 import { WatchVersion_watchVersion } from 'Graphql/subscriptions/types/WatchVersion';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import { useApolloClient } from '@apollo/client';
 import useNotifications from 'Graphql/hooks/useNotifications';
 
-const WatchVersion = loader('Graphql/subscriptions/watchVersion.graphql');
+import WatchVersion from 'Graphql/subscriptions/watchVersion';
 
 const NOTIFICATION_TIMEOUT = 15 * 1000;
 

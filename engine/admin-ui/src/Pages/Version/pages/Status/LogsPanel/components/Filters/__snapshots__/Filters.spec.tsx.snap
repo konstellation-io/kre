@@ -4,7 +4,7 @@ exports[`Filters matches snapshot 1`] = `
 <div
   className="container"
 >
-  <nt
+  <ot
     className="filterContainer leftContainer"
   >
     <div
@@ -40,8 +40,8 @@ exports[`Filters matches snapshot 1`] = `
         placeholder="Select Processes"
       />
     </div>
-  </nt>
-  <rt
+  </ot>
+  <ht
     className="filterContainer rightFilters"
   >
     <div
@@ -91,6 +91,6 @@ exports[`Filters matches snapshot 1`] = `
       formStartDate="2020-01-01"
       selectedOption="2020-01-01"
     />
-  </rt>
+  </ht>
 </div>
 `;

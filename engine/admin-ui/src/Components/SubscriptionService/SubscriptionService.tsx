@@ -1,13 +1,12 @@
-import { useApolloClient, useQuery } from '@apollo/client';
-
-import { GET_LOGIN_STATUS } from 'Graphql/client/queries/getLoginStatus.graphql';
+import { useApolloClient, useReactiveVar } from '@apollo/client';
 import onVersionStatus from './Services/onVersionStatus/onVersionStatus';
+import { loggedIn } from '../../Graphql/client/cache';
 
 function SubscriptionService() {
   const client = useApolloClient();
-  const { data } = useQuery(GET_LOGIN_STATUS);
+  const dataLoggedIn = useReactiveVar(loggedIn);
 
-  if (data && data.loggedIn) {
+  if (dataLoggedIn) {
     onVersionStatus(client);
   }
 

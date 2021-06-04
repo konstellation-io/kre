@@ -7,10 +7,9 @@ import { VersionStatus } from 'Graphql/types/globalTypes';
 import { clone } from 'lodash';
 import { label } from 'Utils/testUtilsEnzyme';
 import { shallow } from 'enzyme';
+import * as apolloClient from '@apollo/client';
 
-jest.mock('@apollo/client', () => ({
-  useMutation: jest.fn(() => [jest.fn(), { loading: false }])
-}));
+apolloClient.useMutation = jest.fn(() => [jest.fn(), { loading: false }]);
 
 describe('VersionActions', () => {
   let wrapper;

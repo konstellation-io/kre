@@ -125,7 +125,7 @@ type Props = {
   filters: Filters;
   updateFilters: Function;
   versionName: string;
-  resetFilters: (e: MouseEvent<HTMLDivElement>) => void;
+  resetFilters: (e?: MouseEvent<HTMLDivElement>) => void;
 };
 function AppliedFilters({
   filters,

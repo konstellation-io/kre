@@ -1,4 +1,4 @@
-// NOTE: Keep this file sync with ../styles/_colors.scss
+import styles from './colors.module.scss';
 
-export const HIGHLIGHT = '#33ffff';
-export const ALERT = '#fc915f';
+export const HIGHLIGHT = styles.colorHighlight;
+export const ALERT = styles.colorAlert;

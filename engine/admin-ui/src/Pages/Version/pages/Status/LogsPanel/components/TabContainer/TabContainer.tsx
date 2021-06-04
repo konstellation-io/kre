@@ -1,20 +1,17 @@
 import { ContextMenu, MenuCallToAction } from 'kwc';
-import {
-  GET_OPENED_VERSION_INFO,
-  GetOpenedVersionInfo
-} from 'Graphql/client/queries/getOpenedVersionInfo.graphql';
-import React, { MouseEvent, WheelEvent, useRef } from 'react';
+import React, { MouseEvent, useRef, WheelEvent } from 'react';
 
-import { GetLogTabs_logTabs } from 'Graphql/client/queries/getLogs.graphql';
 import IconMoreVert from '@material-ui/icons/MoreVert';
 import cx from 'classnames';
 import styles from './TabContainer.module.scss';
-import { useQuery } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client';
+import { LogPanel } from 'Graphql/client/typeDefs';
+import { openedVersion } from 'Graphql/client/cache';
 
 const MOUSE_MIDDLE_BUTTON = 1;
 
 type Props = {
-  tabs: GetLogTabs_logTabs[];
+  tabs: LogPanel[];
   activeTabId: string;
   onTabClick: Function;
   contextMenuActions: MenuCallToAction[];
@@ -28,10 +25,7 @@ function TabContainer({
   closeTab
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { data: localData } = useQuery<GetOpenedVersionInfo>(
-    GET_OPENED_VERSION_INFO
-  );
-  const openedVersion = localData?.openedVersion;
+  const dataOpenedVersion = useReactiveVar(openedVersion);
 
   function onMouseWheel(e: WheelEvent<HTMLDivElement>) {
     if (containerRef.current) containerRef.current.scrollLeft += e.deltaY;
@@ -42,11 +36,11 @@ function TabContainer({
   }
 
   function sameVersionAsOpened(runtimeName: string, versionName: string) {
-    if (!openedVersion) return false;
+    if (!dataOpenedVersion) return false;
 
     return (
-      openedVersion.runtimeName === runtimeName &&
-      openedVersion.versionName === versionName
+      dataOpenedVersion.runtimeName === runtimeName &&
+      dataOpenedVersion.versionName === versionName
     );
   }
 
@@ -56,7 +50,7 @@ function TabContainer({
       onWheel={onMouseWheel}
       ref={containerRef}
     >
-      {tabs.map((tab: GetLogTabs_logTabs, index: number) => (
+      {tabs.map((tab, index: number) => (
         <ContextMenu
           key={tab.uniqueId}
           actions={contextMenuActions}

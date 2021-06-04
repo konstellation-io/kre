@@ -1,7 +1,6 @@
 import { AccessLevel } from 'Graphql/types/globalTypes';
-import { loader } from 'graphql.macro';
 
-const GetUserEmailQuery = loader('Graphql/queries/getMe.graphql');
+import GetUserEmailQuery from 'Graphql/queries/getMe';
 
 export const usernameMock = {
   request: {

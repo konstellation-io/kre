@@ -9,16 +9,13 @@ import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { GetMe } from 'Graphql/queries/types/GetMe';
 import NewApiToken from './components/NewApiToken/NewApiToken';
 import { get } from 'lodash';
-import { loader } from 'graphql.macro';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddApiToken.module.scss';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 
-const GetMeQuery = loader('Graphql/queries/getMe.graphql');
-const generateApiTokenMutation = loader(
-  'Graphql/mutations/generateApiToken.graphql'
-);
+import GetMeQuery from 'Graphql/queries/getMe';
+import generateApiTokenMutation from 'Graphql/mutations/generateApiToken';
 
 function verifyName(value: string) {
   return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
