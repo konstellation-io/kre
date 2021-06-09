@@ -6,10 +6,7 @@ import {
   ModalLayoutInfo,
   ModalLayoutJustify
 } from 'kwc';
-import {
-  GetVersionConfStatus_runtime,
-  GetVersionConfStatus_versions
-} from 'Graphql/queries/types/GetVersionConfStatus';
+import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import Tag, { TagTypes } from 'Components/Tag/Tag';
 
@@ -33,10 +30,9 @@ function verifyComment(value: string) {
 }
 
 type WarningProps = {
-  runtime: GetVersionConfStatus_runtime;
   publishedVersion: GetVersionConfStatus_versions;
 };
-function Warning({ runtime, publishedVersion }: WarningProps) {
+function Warning({ publishedVersion }: WarningProps) {
   return (
     <>
       <Tag type={TagTypes.WARNING}>WARNING</Tag>A published version already
@@ -71,18 +67,12 @@ type FormData = {
 };
 
 type Props = {
-  runtime: GetVersionConfStatus_runtime;
   versions: GetVersionConfStatus_versions[];
   version: GetVersionConfStatus_versions;
   quickActions?: boolean;
 };
 
-function VersionActions({
-  runtime,
-  versions,
-  version,
-  quickActions = false
-}: Props) {
+function VersionActions({ versions, version, quickActions = false }: Props) {
   const { handleSubmit, setValue, register, unregister, errors } = useForm<
     FormData
   >({
@@ -114,7 +104,7 @@ function VersionActions({
     stopVersion,
     unpublishVersion,
     getMutationVars
-  } = useVersionAction(runtime.id);
+  } = useVersionAction();
 
   function openModal(label: string, mutation: Function) {
     modalInfo.current = {
@@ -262,7 +252,7 @@ function VersionActions({
           />
           {showWarning && (
             <ModalLayoutInfo className={styles.warning}>
-              <Warning runtime={runtime} publishedVersion={publishedVersion} />
+              <Warning publishedVersion={publishedVersion} />
             </ModalLayoutInfo>
           )}
         </ModalContainer>
