@@ -1,5 +1,5 @@
 import { Button, ModalContainer, ModalLayoutJustify } from 'kwc';
-import { runtime, version } from 'Mocks/version';
+import { version } from 'Mocks/version';
 
 import React from 'react';
 import VersionActions from './VersionActions';
@@ -15,9 +15,7 @@ describe('VersionActions', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(
-      <VersionActions runtime={runtime} version={version} versions={[]} />
-    );
+    wrapper = shallow(<VersionActions version={version} versions={[]} />);
   });
 
   it('matches snapshot', () => {

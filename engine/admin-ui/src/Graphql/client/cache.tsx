@@ -40,14 +40,6 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        loggedIn: { read: () => loggedIn() },
-        logs: { read: () => logs() },
-        notifications: { read: () => notifications() },
-        logTabs: { read: () => logTabs() },
-        activeTabId: { read: () => activeTabId() },
-        logsOpened: { read: () => logsOpened() },
-        openedVersion: { read: () => openedVersion() },
-        userSettings: { read: () => userSettings() },
         versions: { merge: false },
         settings: { merge: false }
       }

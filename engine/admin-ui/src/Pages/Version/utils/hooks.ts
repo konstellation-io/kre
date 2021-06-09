@@ -33,7 +33,7 @@ export enum versionActions {
   unpublish = 'unpublishVersion'
 }
 
-export default function useVersionAction(runtimeId: string) {
+export default function useVersionAction() {
   const [publishMutation, { loading: loadingM1 }] = useMutation<
     PublishVersion,
     PublishVersionVariables

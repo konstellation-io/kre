@@ -12,18 +12,20 @@ import useEndpoint from 'Hooks/useEndpoint';
 
 const DEFAULT_ERROR = 'Unexpected error. Contact support for more information';
 
-const getTitle = {
+type TextGetter = { [key in keyof typeof STATES]?: string };
+
+const getTitle: TextGetter = {
   [STATES.INITIALIZING]: 'Connecting to KRE',
   [STATES.SUCCESS]: 'You are connected!',
   [STATES.ERROR]: 'Cannot connect to KRE'
 };
-const getSubtitle = {
+const getSubtitle: TextGetter = {
   [STATES.INITIALIZING]: 'It will take a moment',
   [STATES.SUCCESS]: 'You will be redirected in a moment.',
   [STATES.ERROR]:
     'Please, try again later or contact administration for more details.'
 };
-const getCircleText = {
+const getCircleText: TextGetter = {
   [STATES.INITIALIZING]: 'LOADING',
   [STATES.SUCCESS]: 'DONE',
   [STATES.ERROR]: 'ERROR'
@@ -49,7 +51,7 @@ function MagicLink() {
   const history = useHistory();
   const [error, setError] = useState<string | boolean>('');
   const [animationPending, setAnimationPending] = useState(true);
-  const [status, setStatus] = useState(STATES.INITIALIZING);
+  const [status, setStatus] = useState<STATES>(STATES.INITIALIZING);
   const [response, makeRequest] = useEndpoint({
     endpoint: ENDPOINT.VALIDATE_MAGIC_LINK,
     method: 'POST'
