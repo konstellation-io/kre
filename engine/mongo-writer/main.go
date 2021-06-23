@@ -129,10 +129,26 @@ func processDataMsgs(ctx context.Context, dataCh chan *nc.Msg, mongoM *mongodb.M
 		natsM.TotalMsgs += 1
 
 		dataMsg := DataMsg{}
-		err := json.Unmarshal(msg.Data, &dataMsg)
+
+		var (
+			err  error
+			data []byte
+		)
+
+		if isCompressed(msg.Data) {
+			data, err = uncompress(msg.Data)
+			if err != nil {
+				logger.Errorf("error uncompressing the message: %s", err)
+				continue
+			}
+		} else {
+			data = msg.Data
+		}
+
+		err = json.Unmarshal(data, &dataMsg)
 		if err != nil {
 			logger.Errorf("Error parsing data msg: %s", err)
-			return
+			continue
 		}
 
 		// MongoDB ACK needed to reply to NATS
