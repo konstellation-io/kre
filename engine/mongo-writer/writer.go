@@ -53,7 +53,7 @@ func (w *Writer) Start() {
 	go dataProcessor.ProcessMsgs(ctx, dataCh)
 
 	// Handle sigterm and await termChan signal
-	termChan := make(chan os.Signal)
+	termChan := make(chan os.Signal, 1)
 	signal.Notify(termChan, syscall.SIGINT, syscall.SIGTERM)
 	<-termChan
 	log.Println("Shutdown signal received")
@@ -87,6 +87,7 @@ func (w *Writer) disconnectClients() {
 // startShowingStats logs every N sec the stats.
 func (w *Writer) startShowingStats(ctx context.Context) {
 	msgProcessed := 0
+
 	for {
 		select {
 		case <-ctx.Done():

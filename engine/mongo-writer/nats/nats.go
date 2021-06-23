@@ -26,6 +26,7 @@ func NewNATSManager(cfg *config.Config, logger *simplelogger.SimpleLogger) *NATS
 
 func (n *NATSManager) Connect() error {
 	n.logger.Info("NATS connecting...")
+
 	conn, err := nc.Connect(n.cfg.Nats.Server)
 	if err != nil {
 		return err
@@ -33,14 +34,17 @@ func (n *NATSManager) Connect() error {
 
 	n.logger.Info("NATS connected")
 	n.nc = conn
+
 	return nil
 }
 
 func (n *NATSManager) Disconnect() {
 	n.logger.Info("NATS disconnecting...")
+
 	if n.subscriptions != nil {
 		for _, s := range n.subscriptions {
 			n.logger.Infof("NATS unsubscribe from %s...", s.Subject)
+
 			if err := s.Unsubscribe(); err != nil {
 				n.logger.Infof("NATS unsubscribe from %s error: %s", s.Subject, err)
 			}
@@ -53,7 +57,9 @@ func (n *NATSManager) Disconnect() {
 
 func (n *NATSManager) SubscribeToChannel(channel string) chan *nc.Msg {
 	n.logger.Infof("NATS subscribe to channel: %s...", channel)
-	msgCh := make(chan *nc.Msg, 64)
+
+	const msgChanSize = 64
+	msgCh := make(chan *nc.Msg, msgChanSize)
 
 	sub, err := n.nc.ChanSubscribe(channel, msgCh)
 	if err != nil {
@@ -63,5 +69,6 @@ func (n *NATSManager) SubscribeToChannel(channel string) chan *nc.Msg {
 
 	n.logger.Infof("NATS subscribed to channel: %s", channel)
 	n.subscriptions = append(n.subscriptions, sub)
+
 	return msgCh
 }

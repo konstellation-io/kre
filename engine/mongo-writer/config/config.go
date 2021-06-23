@@ -2,16 +2,12 @@ package config
 
 import (
 	"os"
-	"sync"
 
 	"github.com/kelseyhightower/envconfig"
 	"gopkg.in/yaml.v2"
 )
 
-var once sync.Once
-var cfg *Config
-
-// Config holds the configuration values for the application
+// Config holds the configuration values for the application.
 type Config struct {
 	Debug string `yaml:"debug" envconfig:"DEBUG"`
 	Nats  struct {
@@ -29,24 +25,23 @@ type Config struct {
 
 // NewConfig will read the config.yml file and override values with env vars.
 func NewConfig() *Config {
-	once.Do(func() {
-		f, err := os.Open("config.yml")
-		if err != nil {
-			panic(err)
-		}
+	f, err := os.Open("config.yml")
+	if err != nil {
+		panic(err)
+	}
 
-		cfg = &Config{}
-		decoder := yaml.NewDecoder(f)
-		err = decoder.Decode(cfg)
-		if err != nil {
-			panic(err)
-		}
+	cfg := &Config{}
+	decoder := yaml.NewDecoder(f)
 
-		err = envconfig.Process("", cfg)
-		if err != nil {
-			panic(err)
-		}
-	})
+	err = decoder.Decode(cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	err = envconfig.Process("", cfg)
+	if err != nil {
+		panic(err)
+	}
 
 	return cfg
 }

@@ -19,11 +19,13 @@ func isCompressed(data []byte) bool {
 // uncompress opens gzip and return uncompressed []byte.
 func uncompress(data []byte) ([]byte, error) {
 	rd := bytes.NewReader(data)
+
 	gr, err := gzip.NewReader(rd)
 	if err != nil {
 		return nil, err
 	}
 
 	defer gr.Close()
+
 	return ioutil.ReadAll(gr)
 }

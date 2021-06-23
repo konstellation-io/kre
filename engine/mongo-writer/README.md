@@ -91,3 +91,15 @@ Then you can execute the workflow using gcurl:
 grpcurl -plaintext -d '{"name": "John"}' localhost:9001 entrypoint.Entrypoint/Greet
 ``` 
 
+## Linters
+
+`golangci-lint` is a fast Go linters runner. It runs linters in parallel, uses caching, supports yaml config, has
+integrations with all major IDE and has dozens of linters included.
+
+As you can see in the `.golangci.yml` config file of this repo, we enable more linters than the default and
+have more strict settings.
+
+To run `golangci-lint` execute:
+```
+golangci-lint run
+```

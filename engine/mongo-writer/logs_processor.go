@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+
 	"github.com/konstellation-io/kre/engine/mongo-writer/config"
 	"github.com/konstellation-io/kre/engine/mongo-writer/logging"
 	"github.com/konstellation-io/kre/engine/mongo-writer/mongodb"
@@ -33,7 +34,7 @@ func NewLogsProcessor(
 
 func (l *LogsProcessor) ProcessMsgs(ctx context.Context, logsCh chan *nc.Msg) {
 	for msg := range logsCh {
-		l.natsM.TotalMsgs += 1
+		l.natsM.TotalMsgs++
 
 		msgs, err := logging.FluentbitMsgParser(msg)
 		if err != nil {

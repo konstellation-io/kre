@@ -3,12 +3,20 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+
 	"github.com/konstellation-io/kre/engine/mongo-writer/config"
 	"github.com/konstellation-io/kre/engine/mongo-writer/mongodb"
 	"github.com/konstellation-io/kre/engine/mongo-writer/nats"
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	nc "github.com/nats-io/nats.go"
+)
+
+var (
+	ErrInserting     = errors.New("error inserting in MongoDB")
+	ErrUncompressing = errors.New("error uncompressing in MongoDB")
+	ErrParsing       = errors.New("error parsing in MongoDB")
 )
 
 type DataMsg struct {
@@ -43,7 +51,7 @@ func NewDataProcessor(
 
 func (d *DataProcessor) ProcessMsgs(ctx context.Context, dataCh chan *nc.Msg) {
 	for msg := range dataCh {
-		d.natsM.TotalMsgs += 1
+		d.natsM.TotalMsgs++
 
 		dataMsg, err := d.getData(msg)
 		if err != nil {
@@ -53,7 +61,7 @@ func (d *DataProcessor) ProcessMsgs(ctx context.Context, dataCh chan *nc.Msg) {
 
 		err = d.mongoM.InsertOne(ctx, d.cfg.MongoDB.DataDBName, dataMsg.Coll, dataMsg.Doc)
 		if err != nil {
-			d.errorResponse(msg, fmt.Errorf("error inserting in Mongodb: %s", err))
+			d.errorResponse(msg, fmt.Errorf("%w: %s", ErrInserting, err))
 			continue
 		}
 
@@ -70,16 +78,17 @@ func (d *DataProcessor) getData(msg *nc.Msg) (*DataMsg, error) {
 	if isCompressed(msg.Data) {
 		data, err = uncompress(msg.Data)
 		if err != nil {
-			return nil, fmt.Errorf("error uncompressing msg: %s", err)
+			return nil, fmt.Errorf("%w: %s", ErrUncompressing, err)
 		}
 	} else {
 		data = msg.Data
 	}
 
 	dataMsg := DataMsg{}
+
 	err = json.Unmarshal(data, &dataMsg)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing data msg: %s", err)
+		return nil, fmt.Errorf("%w: %s", ErrParsing, err)
 	}
 
 	return &dataMsg, nil

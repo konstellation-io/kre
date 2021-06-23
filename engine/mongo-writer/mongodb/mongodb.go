@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"os"
 	"time"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
@@ -37,8 +36,7 @@ func (m *MongoDB) Connect() error {
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(m.cfg.MongoDB.Address))
 	if err != nil {
-		m.logger.Error(err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(m.cfg.MongoDB.ConnTimeout)*time.Second)
@@ -46,8 +44,7 @@ func (m *MongoDB) Connect() error {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		m.logger.Error(err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	// Call Ping to verify that the deployment is up and the Client was configured successfully.
@@ -55,6 +52,7 @@ func (m *MongoDB) Connect() error {
 	defer cancel()
 
 	m.logger.Info("MongoDB ping...")
+
 	err = client.Ping(ctx, nil)
 	if err != nil {
 		return err

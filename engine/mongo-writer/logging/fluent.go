@@ -17,12 +17,14 @@ var logRegexp = regexp.MustCompile(`^.+ (ERROR|WARN|INFO|DEBUG) (.+)$`)
 
 func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 	var msgList []interface{}
+
 	err := json.Unmarshal(msg.Data, &msgList)
 	if err != nil {
 		return nil, err
 	}
 
 	result := mongodb.InsertsMap{}
+
 	for _, msgItem := range msgList {
 		msgItemArray := msgItem.([]interface{})
 		msgTime := msgItemArray[0].(float64)
