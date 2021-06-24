@@ -1,4 +1,4 @@
-debug: 0
+logLevel: "debug"
 nats:
   server: "kre-nats:4222"
 mongodb:

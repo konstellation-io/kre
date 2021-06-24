@@ -70,15 +70,14 @@ Example:
 
 ### Connect with the deployed local environment
 
-- Execute `./krectl.sh dev` and `./krectl.sh login --new` 
-- Create a Runtime (use http://admin.kre.local)
-- Get the user/password for the created runtime MongoDB. It is stored in the KRE MongoDB database.
+- Execute `./krectl.sh dev` and `./krectl.sh login --new`
+- Get the user/password for the MongoDB.
 - Create a port-forward for the runtime MongoDB instance.
 - Create a port-forward for the runtime NATS instance.
 - Configure the environment vars:
 ```
 KRT_NATS_SERVER=localhost:4222
-KRE_RUNTIME_MONGO_URI=mongodb://admin:S3uyJKZy@0.0.0.0:27017/admin?connect=direct
+KRE_RUNTIME_MONGO_URI=mongodb://admin:123456@0.0.0.0:27017/admin?connect=direct
 ```
 Notice the `?connect=direct` param in the MongoDB uri!
 

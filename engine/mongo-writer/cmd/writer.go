@@ -2,16 +2,17 @@ package main
 
 import (
 	"context"
+
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/konstellation-io/kre/engine/mongo-writer/config"
-	"github.com/konstellation-io/kre/engine/mongo-writer/mongodb"
-	"github.com/konstellation-io/kre/engine/mongo-writer/nats"
-	"github.com/konstellation-io/kre/libs/simplelogger"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/config"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/mongodb"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/nats"
 )
 
 const natsSubjectLogs = "mongo_writer_logs"
@@ -20,14 +21,14 @@ const showStatsSeconds = 5
 
 type Writer struct {
 	cfg    *config.Config
-	logger *simplelogger.SimpleLogger
+	logger logging.Logger
 	mongoM *mongodb.MongoDB
 	natsM  *nats.NATSManager
 }
 
 func NewWriter(
 	cfg *config.Config,
-	logger *simplelogger.SimpleLogger,
+	logger logging.Logger,
 	mongoM *mongodb.MongoDB,
 	natsM *nats.NATSManager,
 ) *Writer {

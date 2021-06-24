@@ -6,11 +6,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/konstellation-io/kre/engine/mongo-writer/config"
-	"github.com/konstellation-io/kre/engine/mongo-writer/mongodb"
-	"github.com/konstellation-io/kre/engine/mongo-writer/nats"
-	"github.com/konstellation-io/kre/libs/simplelogger"
 	nc "github.com/nats-io/nats.go"
+
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/config"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/mongodb"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/nats"
 )
 
 var (
@@ -30,14 +31,14 @@ type DataMsgResponse struct {
 
 type DataProcessor struct {
 	cfg    *config.Config
-	logger *simplelogger.SimpleLogger
+	logger logging.Logger
 	mongoM *mongodb.MongoDB
 	natsM  *nats.NATSManager
 }
 
 func NewDataProcessor(
 	cfg *config.Config,
-	logger *simplelogger.SimpleLogger,
+	logger logging.Logger,
 	mongoM *mongodb.MongoDB,
 	natsM *nats.NATSManager,
 ) *DataProcessor {

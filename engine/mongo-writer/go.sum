@@ -56,10 +56,13 @@ github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxv
 github.com/konsorten/go-windows-terminal-sequences v1.0.2/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/konstellation-io/kre v0.0.0-20200529075220-c5e9f14a204e h1:c8UJOxLdVd6ZormcE34BVpxcMr9DazlhV2eX2ePbqDM=
 github.com/konstellation-io/kre v0.0.0-20200612125025-86990df312ef h1:UTMm64Q6y2Cv9q7gOGCgMvBkeJa/SsOHPR7qiqnpGdA=
+github.com/konstellation-io/kre v1.0.6 h1:1khp4rLXprCwBj8igOkNBPgbDEci6WzeNAAYxokJrc8=
 github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200528163054-00a4161cd71a h1:TMBdiQ2XJzW1e1+VVKgODYFgsCeBJDFFK7HVe6tZ/fU=
 github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200528163054-00a4161cd71a/go.mod h1:wcPYwzobTcs5cf4ALtB93l8t938qYcMMkYPkRjci26Q=
 github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200612125025-86990df312ef h1:46GcY33pVi3ENottRADjBwn/vF7VMjIGmLw2WHVZBPM=
 github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200612125025-86990df312ef/go.mod h1:NBvrtiOd/pwGYVmJBDwGzr/SiHp5gZToELhUiJ1CmIk=
+github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20210609143120-29dc7b6f00c5 h1:5a4lABns73qHRkg5/k9XzwSFqNIKgqWrrgFuG85Yt4M=
+github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20210609143120-29dc7b6f00c5/go.mod h1:NBvrtiOd/pwGYVmJBDwGzr/SiHp5gZToELhUiJ1CmIk=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=

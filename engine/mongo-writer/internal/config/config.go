@@ -9,11 +9,10 @@ import (
 
 // Config holds the configuration values for the application.
 type Config struct {
-	Debug string `yaml:"debug" envconfig:"DEBUG"`
-	Nats  struct {
+	LogLevel string `yaml:"logLevel" envconfig:"MONGO_WRITER_LOG_LEVEL"`
+	Nats     struct {
 		Server string `yaml:"server" envconfig:"KRT_NATS_SERVER"`
 	} `yaml:"nats"`
-
 	MongoDB struct {
 		Address     string `yaml:"address" envconfig:"KRE_RUNTIME_MONGO_URI"`
 		LogsDBName  string `yaml:"logsDbName"`

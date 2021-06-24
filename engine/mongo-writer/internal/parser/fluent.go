@@ -1,31 +1,36 @@
-package logging
+package parser
 
 import (
 	"encoding/json"
 	"regexp"
 	"time"
-
-	nc "github.com/nats-io/nats.go"
-	"go.mongodb.org/mongo-driver/bson"
-
-	"github.com/konstellation-io/kre/engine/mongo-writer/mongodb"
 )
 
-const logsCollName = "logs"
+type LogMsg struct {
+	Date         string
+	Level        string
+	Message      string
+	WorkflowId   string
+	WorkflowName string
+	NodeId       string
+	NodeName     string
+	VersionId    string
+	VersionName  string
+}
 
 var logRegexp = regexp.MustCompile(`^.+ (ERROR|WARN|INFO|DEBUG) (.+)$`)
 
-func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
+func FluentbitMsgParser(data []byte) ([]LogMsg, error) {
 	var msgList []interface{}
 
-	err := json.Unmarshal(msg.Data, &msgList)
+	err := json.Unmarshal(data, &msgList)
 	if err != nil {
 		return nil, err
 	}
 
-	result := mongodb.InsertsMap{}
+	result := make([]LogMsg, len(msgList))
 
-	for _, msgItem := range msgList {
+	for idx, msgItem := range msgList {
 		msgItemArray := msgItem.([]interface{})
 		msgTime := msgItemArray[0].(float64)
 		msgData := msgItemArray[1].(map[string]interface{})
@@ -54,20 +59,18 @@ func FluentbitMsgParser(msg *nc.Msg) (*mongodb.InsertsMap, error) {
 			message = r[0][2]
 		}
 
-		doc := bson.M{
-			"date":         date,
-			"level":        level,
-			"message":      message,
-			"workflowId":   msgData["workflowId"],
-			"workflowName": msgData["workflowName"],
-			"nodeId":       msgData["nodeId"],
-			"nodeName":     msgData["nodeName"],
-			"versionId":    msgData["versionId"],
-			"versionName":  msgData["versionName"],
+		result[idx] = LogMsg{
+			Date:         date,
+			Level:        level,
+			Message:      message,
+			WorkflowId:   msgData["workflowId"].(string),
+			WorkflowName: msgData["workflowName"].(string),
+			NodeId:       msgData["nodeId"].(string),
+			NodeName:     msgData["nodeName"].(string),
+			VersionId:    msgData["versionId"].(string),
+			VersionName:  msgData["versionName"].(string),
 		}
-
-		result[logsCollName] = append(result[logsCollName], doc)
 	}
 
-	return &result, nil
+	return result, nil
 }

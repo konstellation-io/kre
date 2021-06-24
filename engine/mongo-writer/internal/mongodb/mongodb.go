@@ -4,25 +4,21 @@ import (
 	"context"
 	"time"
 
-	"github.com/konstellation-io/kre/libs/simplelogger"
-
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/konstellation-io/kre/engine/mongo-writer/config"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/config"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 )
 
 type MongoDB struct {
 	cfg          *config.Config
-	logger       *simplelogger.SimpleLogger
+	logger       logging.Logger
 	client       *mongo.Client
 	TotalInserts int64
 }
 
-type InsertsMap map[string][]bson.M
-
-func NewMongoManager(cfg *config.Config, logger *simplelogger.SimpleLogger) *MongoDB {
+func NewMongoManager(cfg *config.Config, logger logging.Logger) *MongoDB {
 	return &MongoDB{
 		cfg,
 		logger,
@@ -77,25 +73,23 @@ func (m *MongoDB) Disconnect() error {
 	return m.client.Disconnect(ctx)
 }
 
-func (m *MongoDB) InsertMessages(ctx context.Context, dbName string, inserts *InsertsMap) error {
+func (m *MongoDB) InsertMessages(ctx context.Context, dbName, collName string, inserts interface{}) error {
 	db := m.client.Database(dbName)
+	col := db.Collection(collName)
 
-	for colName, list := range *inserts {
-		col := db.Collection(colName)
+	list := inserts.([]interface{})
+	writes := make([]mongo.WriteModel, len(list))
 
-		writes := make([]mongo.WriteModel, len(list))
-
-		for i, d := range list {
-			writes[i] = mongo.NewInsertOneModel().SetDocument(d)
-		}
-
-		r, err := col.BulkWrite(ctx, writes)
-		if err != nil {
-			return err
-		}
-
-		m.TotalInserts += r.InsertedCount
+	for idx, doc := range list {
+		writes[idx] = mongo.NewInsertOneModel().SetDocument(doc)
 	}
+
+	r, err := col.BulkWrite(ctx, writes)
+	if err != nil {
+		return err
+	}
+
+	m.TotalInserts += r.InsertedCount
 
 	return nil
 }

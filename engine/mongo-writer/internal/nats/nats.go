@@ -3,21 +3,21 @@ package nats
 import (
 	"os"
 
-	"github.com/konstellation-io/kre/libs/simplelogger"
 	nc "github.com/nats-io/nats.go"
 
-	"github.com/konstellation-io/kre/engine/mongo-writer/config"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/config"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 )
 
 type NATSManager struct {
 	cfg           *config.Config
-	logger        *simplelogger.SimpleLogger
+	logger        logging.Logger
 	nc            *nc.Conn
 	subscriptions []*nc.Subscription
 	TotalMsgs     int
 }
 
-func NewNATSManager(cfg *config.Config, logger *simplelogger.SimpleLogger) *NATSManager {
+func NewNATSManager(cfg *config.Config, logger logging.Logger) *NATSManager {
 	return &NATSManager{
 		cfg:    cfg,
 		logger: logger,
