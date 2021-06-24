@@ -11,8 +11,7 @@ import (
 type Config struct {
 	Debug string `yaml:"debug" envconfig:"DEBUG"`
 	Nats  struct {
-		Server    string `yaml:"server" envconfig:"KRT_NATS_SERVER"`
-		ClusterID string `yaml:"clusterId" envconfig:"KRT_NATS_CLUSTER_ID"`
+		Server string `yaml:"server" envconfig:"KRT_NATS_SERVER"`
 	} `yaml:"nats"`
 
 	MongoDB struct {
