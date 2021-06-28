@@ -89,6 +89,25 @@ Then you can execute the workflow using gcurl:
 ```
 grpcurl -plaintext -d '{"name": "John"}' localhost:9001 entrypoint.Entrypoint/Greet
 ``` 
+## Testing
+
+To create new tests install [GoMock](https://github.com/golang/mock). Mocks used on tests are generated with
+**mockgen**, when you need a new mock, add the following:
+
+```go
+//go:generate mockgen -source=${GOFILE} -destination=mocks_${GOFILE} -package=${GOPACKAGE}
+```
+
+To generate the mocks execute:
+```sh
+go generate ./...
+```
+
+### Run tests
+
+```sh
+go test ./...
+```
 
 ## Linters
 
@@ -99,6 +118,6 @@ As you can see in the `.golangci.yml` config file of this repo, we enable more l
 have more strict settings.
 
 To run `golangci-lint` execute:
-```
+```sh
 golangci-lint run
 ```

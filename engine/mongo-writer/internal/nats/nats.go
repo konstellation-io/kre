@@ -9,22 +9,22 @@ import (
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 )
 
-type NATSManager struct {
+type NATSManagerImpl struct {
 	cfg           *config.Config
 	logger        logging.Logger
 	nc            *nc.Conn
 	subscriptions []*nc.Subscription
-	TotalMsgs     int
+	totalMsgs     int64
 }
 
-func NewNATSManager(cfg *config.Config, logger logging.Logger) *NATSManager {
-	return &NATSManager{
+func NewNATSManager(cfg *config.Config, logger logging.Logger) NATSManager {
+	return &NATSManagerImpl{
 		cfg:    cfg,
 		logger: logger,
 	}
 }
 
-func (n *NATSManager) Connect() error {
+func (n *NATSManagerImpl) Connect() error {
 	n.logger.Info("NATS connecting...")
 
 	conn, err := nc.Connect(n.cfg.Nats.Server)
@@ -38,7 +38,7 @@ func (n *NATSManager) Connect() error {
 	return nil
 }
 
-func (n *NATSManager) Disconnect() {
+func (n *NATSManagerImpl) Disconnect() {
 	n.logger.Info("NATS disconnecting...")
 
 	if n.subscriptions != nil {
@@ -55,7 +55,7 @@ func (n *NATSManager) Disconnect() {
 	n.logger.Info("NATS disconnected")
 }
 
-func (n *NATSManager) SubscribeToChannel(channel string) chan *nc.Msg {
+func (n *NATSManagerImpl) SubscribeToChannel(channel string) chan *nc.Msg {
 	n.logger.Infof("NATS subscribe to channel: %s...", channel)
 
 	const msgChanSize = 64
@@ -71,4 +71,12 @@ func (n *NATSManager) SubscribeToChannel(channel string) chan *nc.Msg {
 	n.subscriptions = append(n.subscriptions, sub)
 
 	return msgCh
+}
+
+func (n *NATSManagerImpl) IncreaseTotalMsgs(amount int64) {
+	n.totalMsgs += amount
+}
+
+func (n *NATSManagerImpl) TotalMsgs() int64 {
+	return n.totalMsgs
 }

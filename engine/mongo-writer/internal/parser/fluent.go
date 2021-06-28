@@ -20,7 +20,13 @@ type LogMsg struct {
 
 var logRegexp = regexp.MustCompile(`^.+ (ERROR|WARN|INFO|DEBUG) (.+)$`)
 
-func FluentbitMsgParser(data []byte) ([]LogMsg, error) {
+type fluentbitMsgParser struct{}
+
+func NewFluentbitMsgParser() FluentbitMsgParser {
+	return &fluentbitMsgParser{}
+}
+
+func (f *fluentbitMsgParser) Parse(data []byte) ([]LogMsg, error) {
 	var msgList []interface{}
 
 	err := json.Unmarshal(data, &msgList)

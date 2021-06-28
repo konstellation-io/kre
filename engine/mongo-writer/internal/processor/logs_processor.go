@@ -1,4 +1,4 @@
-package main
+package processor
 
 import (
 	"context"
@@ -12,40 +12,43 @@ import (
 	nc "github.com/nats-io/nats.go"
 )
 
-const logsCollName = "logs"
+const LogsCollName = "logs"
 
 type LogsProcessor struct {
-	cfg    *config.Config
-	logger logging.Logger
-	mongoM *mongodb.MongoDB
-	natsM  *nats.NATSManager
+	cfg             *config.Config
+	logger          logging.Logger
+	mongoM          mongodb.MongoManager
+	natsM           nats.NATSManager
+	fluentbitParser parser.FluentbitMsgParser
 }
 
 func NewLogsProcessor(
 	cfg *config.Config,
 	logger logging.Logger,
-	mongoM *mongodb.MongoDB,
-	natsM *nats.NATSManager,
+	mongoM mongodb.MongoManager,
+	natsM nats.NATSManager,
+	fluentbitParser parser.FluentbitMsgParser,
 ) *LogsProcessor {
 	return &LogsProcessor{
-		cfg:    cfg,
-		logger: logger,
-		mongoM: mongoM,
-		natsM:  natsM,
+		cfg:             cfg,
+		logger:          logger,
+		mongoM:          mongoM,
+		natsM:           natsM,
+		fluentbitParser: fluentbitParser,
 	}
 }
 
 func (l *LogsProcessor) ProcessMsgs(ctx context.Context, logsCh chan *nc.Msg) {
 	for msg := range logsCh {
-		l.natsM.TotalMsgs++
+		l.natsM.IncreaseTotalMsgs(1)
 
-		msgs, err := parser.FluentbitMsgParser(msg.Data)
+		msgs, err := l.fluentbitParser.Parse(msg.Data)
 		if err != nil {
 			l.logger.Errorf("Error parsing Fluentbit msg: %s", err)
 			continue
 		}
 
-		err = l.mongoM.InsertMessages(ctx, l.cfg.MongoDB.LogsDBName, logsCollName, msgs)
+		err = l.mongoM.InsertMany(ctx, l.cfg.MongoDB.LogsDBName, LogsCollName, msgs)
 		if err != nil {
 			l.logger.Errorf("Error inserting msg: %s", err)
 		}

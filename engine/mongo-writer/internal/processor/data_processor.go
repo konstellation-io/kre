@@ -1,4 +1,4 @@
-package main
+package processor
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	nc "github.com/nats-io/nats.go"
 
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/compression"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/config"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/mongodb"
@@ -16,8 +17,8 @@ import (
 
 var (
 	ErrInserting     = errors.New("error inserting in MongoDB")
-	ErrUncompressing = errors.New("error uncompressing in MongoDB")
-	ErrParsing       = errors.New("error parsing in MongoDB")
+	ErrUncompressing = errors.New("error uncompressing")
+	ErrParsing       = errors.New("error parsing")
 )
 
 type DataMsg struct {
@@ -32,15 +33,15 @@ type DataMsgResponse struct {
 type DataProcessor struct {
 	cfg    *config.Config
 	logger logging.Logger
-	mongoM *mongodb.MongoDB
-	natsM  *nats.NATSManager
+	mongoM mongodb.MongoManager
+	natsM  nats.NATSManager
 }
 
 func NewDataProcessor(
 	cfg *config.Config,
 	logger logging.Logger,
-	mongoM *mongodb.MongoDB,
-	natsM *nats.NATSManager,
+	mongoM mongodb.MongoManager,
+	natsM nats.NATSManager,
 ) *DataProcessor {
 	return &DataProcessor{
 		cfg:    cfg,
@@ -52,7 +53,7 @@ func NewDataProcessor(
 
 func (d *DataProcessor) ProcessMsgs(ctx context.Context, dataCh chan *nc.Msg) {
 	for msg := range dataCh {
-		d.natsM.TotalMsgs++
+		d.natsM.IncreaseTotalMsgs(1)
 
 		dataMsg, err := d.getData(msg)
 		if err != nil {
@@ -76,8 +77,8 @@ func (d *DataProcessor) getData(msg *nc.Msg) (*DataMsg, error) {
 		err  error
 	)
 
-	if isCompressed(msg.Data) {
-		data, err = uncompress(msg.Data)
+	if compression.IsCompressed(msg.Data) {
+		data, err = compression.Uncompress(msg.Data)
 		if err != nil {
 			return nil, fmt.Errorf("%w: %s", ErrUncompressing, err)
 		}

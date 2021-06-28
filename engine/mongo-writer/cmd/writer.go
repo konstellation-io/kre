@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/processor"
 
 	"log"
 	"os"
@@ -22,15 +24,15 @@ const showStatsSeconds = 5
 type Writer struct {
 	cfg    *config.Config
 	logger logging.Logger
-	mongoM *mongodb.MongoDB
-	natsM  *nats.NATSManager
+	mongoM mongodb.MongoManager
+	natsM  nats.NATSManager
 }
 
 func NewWriter(
 	cfg *config.Config,
 	logger logging.Logger,
-	mongoM *mongodb.MongoDB,
-	natsM *nats.NATSManager,
+	mongoM mongodb.MongoManager,
+	natsM nats.NATSManager,
 ) *Writer {
 	return &Writer{cfg: cfg, logger: logger, mongoM: mongoM, natsM: natsM}
 }
@@ -42,16 +44,17 @@ func (w *Writer) Start() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	fluentbitParser := parser.NewFluentbitMsgParser()
+
 	logsCh := w.natsM.SubscribeToChannel(natsSubjectLogs)
 	dataCh := w.natsM.SubscribeToChannel(natsSubjectData)
 
-	go w.startShowingStats(ctx)
-
-	logsProcessor := NewLogsProcessor(w.cfg, w.logger, w.mongoM, w.natsM)
-	dataProcessor := NewDataProcessor(w.cfg, w.logger, w.mongoM, w.natsM)
+	logsProcessor := processor.NewLogsProcessor(w.cfg, w.logger, w.mongoM, w.natsM, fluentbitParser)
+	dataProcessor := processor.NewDataProcessor(w.cfg, w.logger, w.mongoM, w.natsM)
 
 	go logsProcessor.ProcessMsgs(ctx, logsCh)
 	go dataProcessor.ProcessMsgs(ctx, dataCh)
+	go w.startShowingStats(ctx)
 
 	// Handle sigterm and await termChan signal
 	termChan := make(chan os.Signal, 1)
@@ -87,21 +90,21 @@ func (w *Writer) disconnectClients() {
 
 // startShowingStats logs every N sec the stats.
 func (w *Writer) startShowingStats(ctx context.Context) {
-	msgProcessed := 0
+	var msgProcessed int64 = 0
 
 	for {
 		select {
 		case <-ctx.Done():
 			break
 		case <-time.Tick(time.Duration(showStatsSeconds) * time.Second):
-			if w.natsM.TotalMsgs == msgProcessed {
+			if w.natsM.TotalMsgs() == msgProcessed {
 				continue
 			}
 
-			msgProcessed = w.natsM.TotalMsgs
+			msgProcessed = w.natsM.TotalMsgs()
 			w.logger.Debugf("NATS: %6d messages. MongoDB: %6d inserted documents",
-				w.natsM.TotalMsgs,
-				w.mongoM.TotalInserts,
+				w.natsM.TotalMsgs(),
+				w.mongoM.TotalInserts(),
 			)
 		}
 	}

@@ -8,7 +8,7 @@ import (
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
 )
 
-func TestFluentbitMsgParser(t *testing.T) {
+func TestFluentbitMsgParser_Parse(t *testing.T) {
 	input := `
 [
   [
@@ -95,7 +95,8 @@ func TestFluentbitMsgParser(t *testing.T) {
 		},
 	}
 
-	result, err := parser.FluentbitMsgParser([]byte(input))
+	fbParser := parser.NewFluentbitMsgParser()
+	result, err := fbParser.Parse([]byte(input))
 	require.NoError(t, err)
 
 	require.Equal(t, expectedResult, result)

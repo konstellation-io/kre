@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,14 +12,18 @@ import (
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 )
 
+var (
+	ErrDocsInvalidType = errors.New("docs must be a slice of documents")
+)
+
 type MongoDB struct {
 	cfg          *config.Config
 	logger       logging.Logger
 	client       *mongo.Client
-	TotalInserts int64
+	totalInserts int64
 }
 
-func NewMongoManager(cfg *config.Config, logger logging.Logger) *MongoDB {
+func NewMongoManager(cfg *config.Config, logger logging.Logger) MongoManager {
 	return &MongoDB{
 		cfg,
 		logger,
@@ -30,12 +35,14 @@ func NewMongoManager(cfg *config.Config, logger logging.Logger) *MongoDB {
 func (m *MongoDB) Connect() error {
 	m.logger.Info("MongoDB connecting...")
 
+	timeout := time.Duration(m.cfg.MongoDB.ConnTimeout) * time.Second
+
 	client, err := mongo.NewClient(options.Client().ApplyURI(m.cfg.MongoDB.Address))
 	if err != nil {
 		return err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(m.cfg.MongoDB.ConnTimeout)*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	err = client.Connect(ctx)
@@ -44,7 +51,7 @@ func (m *MongoDB) Connect() error {
 	}
 
 	// Call Ping to verify that the deployment is up and the Client was configured successfully.
-	ctx, cancel = context.WithTimeout(context.Background(), time.Duration(m.cfg.MongoDB.ConnTimeout)*time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	m.logger.Info("MongoDB ping...")
@@ -73,36 +80,39 @@ func (m *MongoDB) Disconnect() error {
 	return m.client.Disconnect(ctx)
 }
 
-func (m *MongoDB) InsertMessages(ctx context.Context, dbName, collName string, inserts interface{}) error {
-	db := m.client.Database(dbName)
-	col := db.Collection(collName)
+func (m *MongoDB) InsertOne(ctx context.Context, db, coll string, doc interface{}) error {
+	_, err := m.client.Database(db).Collection(coll).InsertOne(ctx, doc)
+	if err != nil {
+		return err
+	}
 
-	list := inserts.([]interface{})
+	m.totalInserts++
+
+	return nil
+}
+
+func (m *MongoDB) InsertMany(ctx context.Context, db, coll string, docs interface{}) error {
+	list, ok := docs.([]interface{})
+	if !ok {
+		return ErrDocsInvalidType
+	}
+
 	writes := make([]mongo.WriteModel, len(list))
 
 	for idx, doc := range list {
 		writes[idx] = mongo.NewInsertOneModel().SetDocument(doc)
 	}
 
-	r, err := col.BulkWrite(ctx, writes)
+	r, err := m.client.Database(db).Collection(coll).BulkWrite(ctx, writes)
 	if err != nil {
 		return err
 	}
 
-	m.TotalInserts += r.InsertedCount
+	m.totalInserts += r.InsertedCount
 
 	return nil
 }
 
-func (m *MongoDB) InsertOne(ctx context.Context, dbName, coll string, doc interface{}) error {
-	db := m.client.Database(dbName)
-
-	_, err := db.Collection(coll).InsertOne(ctx, doc)
-	if err != nil {
-		return err
-	}
-
-	m.TotalInserts++
-
-	return nil
+func (m *MongoDB) TotalInserts() int64 {
+	return m.totalInserts
 }

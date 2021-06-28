@@ -3,6 +3,7 @@ module github.com/konstellation-io/kre/engine/mongo-writer
 go 1.14
 
 require (
+	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.4.0 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20210609143120-29dc7b6f00c5

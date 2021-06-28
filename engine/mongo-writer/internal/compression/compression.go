@@ -1,4 +1,4 @@
-package main
+package compression
 
 import (
 	"bytes"
@@ -12,12 +12,12 @@ const (
 )
 
 // isCompressed checks if the input string is compressed.
-func isCompressed(data []byte) bool {
+func IsCompressed(data []byte) bool {
 	return data[0] == gzipID1 && data[1] == gzipID2
 }
 
 // uncompress opens gzip and return uncompressed []byte.
-func uncompress(data []byte) ([]byte, error) {
+func Uncompress(data []byte) ([]byte, error) {
 	rd := bytes.NewReader(data)
 
 	gr, err := gzip.NewReader(rd)
