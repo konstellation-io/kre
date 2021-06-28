@@ -10,11 +10,11 @@ type LogMsg struct {
 	Date         string
 	Level        string
 	Message      string
-	WorkflowId   string
+	WorkflowID   string
 	WorkflowName string
-	NodeId       string
+	NodeID       string
 	NodeName     string
-	VersionId    string
+	VersionID    string
 	VersionName  string
 }
 
@@ -63,11 +63,11 @@ func FluentbitMsgParser(data []byte) ([]LogMsg, error) {
 			Date:         date,
 			Level:        level,
 			Message:      message,
-			WorkflowId:   msgData["workflowId"].(string),
+			WorkflowID:   msgData["workflowId"].(string),
 			WorkflowName: msgData["workflowName"].(string),
-			NodeId:       msgData["nodeId"].(string),
+			NodeID:       msgData["nodeId"].(string),
 			NodeName:     msgData["nodeName"].(string),
-			VersionId:    msgData["versionId"].(string),
+			VersionID:    msgData["versionId"].(string),
 			VersionName:  msgData["versionName"].(string),
 		}
 	}

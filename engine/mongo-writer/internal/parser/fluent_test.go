@@ -1,10 +1,11 @@
 package parser_test
 
 import (
-	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
 )
 
 func TestFluentbitMsgParser(t *testing.T) {
@@ -63,33 +64,33 @@ func TestFluentbitMsgParser(t *testing.T) {
 			Date:         "2021-06-24T10:50:18+0000",
 			Level:        "INFO",
 			Message:      "gRPC message received",
-			WorkflowId:   "entrypoint",
+			WorkflowID:   "entrypoint",
 			WorkflowName: "entrypoint",
-			NodeId:       "entrypoint",
+			NodeID:       "entrypoint",
 			NodeName:     "entrypoint",
-			VersionId:    "60d0b4d389a76e646f1f66b7",
+			VersionID:    "60d0b4d389a76e646f1f66b7",
 			VersionName:  "greeter-v1",
 		},
 		{
 			Date:         "2021-06-24T10:50:18+0000",
 			Level:        "INFO",
 			Message:      "Starting request/reply on NATS subject: 'greeter-v1-PyGreet-entrypoint'",
-			WorkflowId:   "entrypoint",
+			WorkflowID:   "entrypoint",
 			WorkflowName: "entrypoint",
-			NodeId:       "entrypoint",
+			NodeID:       "entrypoint",
 			NodeName:     "entrypoint",
-			VersionId:    "60d0b4d389a76e646f1f66b7",
+			VersionID:    "60d0b4d389a76e646f1f66b7",
 			VersionName:  "greeter-v1",
 		},
 		{
 			Date:         "2021-06-24T10:50:18+0000",
 			Level:        "INFO",
 			Message:      "creating a response from message reply",
-			WorkflowId:   "entrypoint",
+			WorkflowID:   "entrypoint",
 			WorkflowName: "entrypoint",
-			NodeId:       "entrypoint",
+			NodeID:       "entrypoint",
 			NodeName:     "entrypoint",
-			VersionId:    "60d0b4d389a76e646f1f66b7",
+			VersionID:    "60d0b4d389a76e646f1f66b7",
 			VersionName:  "greeter-v1",
 		},
 	}
