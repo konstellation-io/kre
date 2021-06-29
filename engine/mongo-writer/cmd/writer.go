@@ -48,6 +48,9 @@ func (w *Writer) Start() {
 	logsCh := w.natsM.SubscribeToChannel(natsSubjectLogs)
 	dataCh := w.natsM.SubscribeToChannel(natsSubjectData)
 
+	defer close(logsCh)
+	defer close(dataCh)
+
 	logsProcessor := processor.NewLogsProcessor(w.cfg, w.logger, w.mongoM, w.natsM, fluentbitParser)
 	dataProcessor := processor.NewDataProcessor(w.cfg, w.logger, w.mongoM, w.natsM)
 
