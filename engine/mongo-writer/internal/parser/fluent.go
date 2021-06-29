@@ -7,15 +7,15 @@ import (
 )
 
 type LogMsg struct {
-	Date         string
-	Level        string
-	Message      string
-	WorkflowID   string
-	WorkflowName string
-	NodeID       string
-	NodeName     string
-	VersionID    string
-	VersionName  string
+	Date         string `bson:"date"`
+	Level        string `bson:"level"`
+	Message      string `bson:"message"`
+	WorkflowID   string `bson:"workflowId"`
+	WorkflowName string `bson:"workflowName"`
+	NodeID       string `bson:"nodeId"`
+	NodeName     string `bson:"nodeName"`
+	VersionID    string `bson:"versionId"`
+	VersionName  string `bson:"versionName"`
 }
 
 var logRegexp = regexp.MustCompile(`^.+ (ERROR|WARN|INFO|DEBUG) (.+)$`)
