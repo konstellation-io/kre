@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"reflect"
+	"sync"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -21,15 +22,14 @@ type MongoDB struct {
 	cfg          *config.Config
 	logger       logging.Logger
 	client       *mongo.Client
+	mu           sync.Mutex
 	totalInserts int64
 }
 
 func NewMongoManager(cfg *config.Config, logger logging.Logger) MongoManager {
 	return &MongoDB{
-		cfg,
-		logger,
-		nil,
-		0,
+		cfg:    cfg,
+		logger: logger,
 	}
 }
 
@@ -87,7 +87,9 @@ func (m *MongoDB) InsertOne(ctx context.Context, db, coll string, doc interface{
 		return err
 	}
 
+	m.mu.Lock()
 	m.totalInserts++
+	m.mu.Unlock()
 
 	return nil
 }
@@ -109,11 +111,16 @@ func (m *MongoDB) InsertMany(ctx context.Context, db, coll string, docs interfac
 		return err
 	}
 
+	m.mu.Lock()
 	m.totalInserts += r.InsertedCount
+	m.mu.Unlock()
 
 	return nil
 }
 
 func (m *MongoDB) TotalInserts() int64 {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	return m.totalInserts
 }

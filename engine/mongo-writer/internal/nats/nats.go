@@ -2,6 +2,7 @@ package nats
 
 import (
 	"os"
+	"sync"
 
 	nc "github.com/nats-io/nats.go"
 
@@ -14,6 +15,7 @@ type NATSManagerImpl struct {
 	logger        logging.Logger
 	nc            *nc.Conn
 	subscriptions []*nc.Subscription
+	mu            sync.Mutex
 	totalMsgs     int64
 }
 
@@ -74,9 +76,14 @@ func (n *NATSManagerImpl) SubscribeToChannel(channel string) chan *nc.Msg {
 }
 
 func (n *NATSManagerImpl) IncreaseTotalMsgs(amount int64) {
+	n.mu.Lock()
 	n.totalMsgs += amount
+	n.mu.Unlock()
 }
 
 func (n *NATSManagerImpl) TotalMsgs() int64 {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+
 	return n.totalMsgs
 }
