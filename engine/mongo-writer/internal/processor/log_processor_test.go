@@ -2,17 +2,17 @@ package processor_test
 
 import (
 	"context"
-	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
-	nc "github.com/nats-io/nats.go"
 	"testing"
 	"time"
 
 	"github.com/golang/mock/gomock"
+	nc "github.com/nats-io/nats.go"
 
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/config"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/mongodb"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/nats"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/processor"
 )
 
@@ -74,7 +74,8 @@ func TestDataProcessor_ProcessMsgs(t *testing.T) {
 	}
 
 	var expectedCalls int64 = 1
-	s.mocks.natsM.EXPECT().IncreaseTotalMsgs(expectedCalls)
+
+	s.mocks.natsM.EXPECT().IncreaseTotalMsgs(expectedCalls).Return()
 	s.mocks.fbParser.EXPECT().Parse(testMsg.Data).Return(fbOutput, nil)
 	s.mocks.mongoM.EXPECT().InsertMany(ctx, s.cfg.MongoDB.LogsDBName, processor.LogsCollName, fbOutput)
 

@@ -2,9 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
-	"github.com/konstellation-io/kre/engine/mongo-writer/internal/processor"
-
 	"log"
 	"os"
 	"os/signal"
@@ -15,6 +12,8 @@ import (
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/mongodb"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/nats"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/parser"
+	"github.com/konstellation-io/kre/engine/mongo-writer/internal/processor"
 )
 
 const natsSubjectLogs = "mongo_writer_logs"
