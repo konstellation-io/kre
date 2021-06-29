@@ -3,6 +3,7 @@ package mongodb
 import (
 	"context"
 	"errors"
+	"reflect"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -92,15 +93,15 @@ func (m *MongoDB) InsertOne(ctx context.Context, db, coll string, doc interface{
 }
 
 func (m *MongoDB) InsertMany(ctx context.Context, db, coll string, docs interface{}) error {
-	list, ok := docs.([]interface{})
-	if !ok {
+	docsValue := reflect.ValueOf(docs)
+	if docsValue.Kind() != reflect.Slice {
 		return ErrDocsInvalidType
 	}
 
-	writes := make([]mongo.WriteModel, len(list))
+	writes := make([]mongo.WriteModel, docsValue.Len())
 
-	for idx, doc := range list {
-		writes[idx] = mongo.NewInsertOneModel().SetDocument(doc)
+	for i := 0; i < docsValue.Len(); i++ {
+		writes[i] = mongo.NewInsertOneModel().SetDocument(docsValue.Index(i).Interface())
 	}
 
 	r, err := m.client.Database(db).Collection(coll).BulkWrite(ctx, writes)
