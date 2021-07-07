@@ -1,13 +1,11 @@
-FROM golang:1.14.12-alpine3.12 as builder
+FROM golang:1.16-alpine3.13 as builder
 
 # Build the binary statically.
 ENV CGO_ENABLED=0
 
 WORKDIR /app
-COPY go.* ./
-RUN go mod download
 COPY . .
-RUN go build -o mongo-writer .
+RUN cd cmd && go build -o ../mongo-writer .
 
 
 FROM alpine:3.10.2

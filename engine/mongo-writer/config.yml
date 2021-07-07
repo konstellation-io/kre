@@ -1,7 +1,6 @@
-debug: 0
+logLevel: "debug"
 nats:
   server: "kre-nats:4222"
-  clusterId: "test-cluster"
 mongodb:
   address: "mongodb://admin:123456@kre-mongo:27017/admin"
   logsDbName: "kre"

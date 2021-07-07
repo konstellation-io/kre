@@ -11,6 +11,17 @@ on:
       - ".github/workflows/runtime-mongo-writer*"
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.37
+          working-directory: ./engine/mongo-writer
+          args: --timeout 5m
   test:
     name: Tests
     runs-on: ubuntu-latest
