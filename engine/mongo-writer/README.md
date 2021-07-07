@@ -70,15 +70,14 @@ Example:
 
 ### Connect with the deployed local environment
 
-- Execute `./krectl.sh dev` and `./krectl.sh login --new` 
-- Create a Runtime (use http://admin.kre.local)
-- Get the user/password for the created runtime MongoDB. It is stored in the KRE MongoDB database.
+- Execute `./krectl.sh dev` and `./krectl.sh login --new`
+- Get the user/password for the MongoDB.
 - Create a port-forward for the runtime MongoDB instance.
 - Create a port-forward for the runtime NATS instance.
 - Configure the environment vars:
 ```
 KRT_NATS_SERVER=localhost:4222
-KRE_RUNTIME_MONGO_URI=mongodb://admin:S3uyJKZy@0.0.0.0:27017/admin?connect=direct
+KRE_RUNTIME_MONGO_URI=mongodb://admin:123456@0.0.0.0:27017/admin?connect=direct
 ```
 Notice the `?connect=direct` param in the MongoDB uri!
 
@@ -90,4 +89,35 @@ Then you can execute the workflow using gcurl:
 ```
 grpcurl -plaintext -d '{"name": "John"}' localhost:9001 entrypoint.Entrypoint/Greet
 ``` 
+## Testing
 
+To create new tests install [GoMock](https://github.com/golang/mock). Mocks used on tests are generated with
+**mockgen**, when you need a new mock, add the following:
+
+```go
+//go:generate mockgen -source=${GOFILE} -destination=mocks_${GOFILE} -package=${GOPACKAGE}
+```
+
+To generate the mocks execute:
+```sh
+go generate ./...
+```
+
+### Run tests
+
+```sh
+go test ./...
+```
+
+## Linters
+
+`golangci-lint` is a fast Go linters runner. It runs linters in parallel, uses caching, supports yaml config, has
+integrations with all major IDE and has dozens of linters included.
+
+As you can see in the `.golangci.yml` config file of this repo, we enable more linters than the default and
+have more strict settings.
+
+To run `golangci-lint` execute:
+```sh
+golangci-lint run
+```
