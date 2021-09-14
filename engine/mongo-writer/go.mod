@@ -9,7 +9,7 @@ require (
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20210609143120-29dc7b6f00c5
 	github.com/nats-io/nats-server/v2 v2.1.6 // indirect
 	github.com/nats-io/nats.go v1.9.2
-	github.com/stretchr/testify v1.3.0
-	go.mongodb.org/mongo-driver v1.3.2
+	github.com/stretchr/testify v1.6.1
+	go.mongodb.org/mongo-driver v1.5.1
 	gopkg.in/yaml.v2 v2.2.8
 )
