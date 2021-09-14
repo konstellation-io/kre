@@ -7,7 +7,7 @@ on:
       - "ENGINE admin-ui Tests"
       - "ENGINE k8s-manager Tests"
       - "ENGINE mongo-writer Tests"
-    branches: [master]
+    branches: [main]
     types: 
       - completed
 
@@ -24,6 +24,6 @@ jobs:
           prefix: "release-"
           mode: 'pre-release'
           pre-release: 'alpha'
-          default-branch: 'master'
+          default-branch: 'main'
         env:
           GITHUB_TOKEN: ${{ secrets.PATNAME }}

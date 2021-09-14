@@ -83,4 +83,4 @@ golangci-lint run
 [report-link]: https://goreportcard.com/report/github.com/konstellation-io/kre/libs/krt-utils
 
 [license-badge]: https://img.shields.io/github/license/konstellation-io/kre/libs/krt-utils
-[license-link]: https://github.com/konstellation-io/kre/libs/krt-utils/blob/master/LICENSE
+[license-link]: https://github.com/konstellation-io/kre/libs/krt-utils/blob/main/LICENSE

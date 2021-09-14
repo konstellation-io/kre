@@ -245,7 +245,7 @@ In the development lifecycle of KLI there are three main stages depend if we are
 
 ### Alphas
 
-In order to add new features just create a feature branch from master, and after the merger the Pull Request a workflow will run the tests and if everything passes a new alpha tag will be created (like *v0.0-alpha.0*), and a new release will be generated with this tag.
+In order to add new features just create a feature branch from main, and after the merger the Pull Request a workflow will run the tests and if everything passes a new alpha tag will be created (like *v0.0-alpha.0*), and a new release will be generated with this tag.
 
 ### Releases
 
