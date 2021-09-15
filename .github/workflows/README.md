@@ -25,6 +25,7 @@ Each component in the repo has a workflow that verifies QA.
 - engine-mongo-writer_tests.yaml
 
 Conditions:
+
 - Ignore tags starting with `v*`
 - Ignore branches starting with `v*`
 - Each workflow is triggered only if the component is changed
@@ -34,14 +35,15 @@ Conditions:
 This workflow makes an alpha tag, calculating the major and minor automatically from the tag list present in the repository.
 
 Conditions:
-- Only in `main` branch
-- Only if a quality workflow was triggered
+
+- Only in `main` branch and only when quality workflow was triggered
 
 ## Release
 
 Generates a new release tag and branch. The tag is calculated taking in account the last pre-release tag.
 
 Conditions:
+
 - Manual run
 
 ## Build Release
@@ -58,6 +60,5 @@ This workflow is responsible for generating fix in release branches, generating 
 for the current release branch version.
 
 Conditions:
-- Only if a quality workflow was triggered
-- Only on `release-*` branches
-- 
+
+- Only in `release-*` branch and only when quality workflow was triggered
