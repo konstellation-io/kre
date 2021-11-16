@@ -157,3 +157,21 @@ influxdb:
     scripts:
       init.iql: |+
         CREATE DATABASE "kre"
+
+## Using default values from https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml
+##
+kapacitor:
+  enabled: false
+
+  ## If kapacitor enabled, set influxURL=http://<chart_release>-influxdb:8086
+  ## Where <chart_release> is the release name by with the chart is deployed
+  #
+  #influxURL: http://kre-local-influxdb:8086
+  
+  ## Persistence is disabled by default
+  #
+  # persistence:
+  #   enabled: true
+  #   storageClass: default
+  #   accessMode: ReadWriteOnce
+  #   size: 1Gi
