@@ -95,3 +95,25 @@ Create MongoDB URI.
 {{- define "runtime.mongoURI" -}}
   {{- printf "mongodb://%s:%s@kre-mongo-0:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword -}}
 {{- end -}}
+
+{{/*
+Create a default fully qualified InfluxDB service name for InfluxDB.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "kre-influxdb.fullname" -}}
+{{- if .Values.influxdb.fullnameOverride -}}
+{{- .Values.influxdb.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "influxdb" .Values.influxdb.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified Kapacitor service name for Chronograph.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "kre-kapacitor.fullname" -}}
+{{- $name := default "kapacitor" .Values.kapacitor.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

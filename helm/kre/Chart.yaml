@@ -7,6 +7,10 @@ dependencies:
   - name: influxdb
     version: "4.8.1"
     repository: https://influxdata.github.io/helm-charts
+  - name: kapacitor
+    version: "1.4.0"
+    repository: https://helm.influxdata.com/
+    condition: kapacitor.enabled
   - name: prometheus-operator
     version: "9.3.1"
     repository: "https://charts.helm.sh/stable"
