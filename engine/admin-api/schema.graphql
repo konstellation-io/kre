@@ -25,11 +25,6 @@ type Query {
     startDate: String!
     endDate: String!
   ): Metrics
-  resourceMetrics(
-    versionName: String!
-    fromDate: String!
-    toDate: String!
-  ): [ResourceMetrics!]!
 }
 
 type Mutation {
@@ -52,7 +47,6 @@ type Subscription {
   watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionName: String!): Node!
   watchVersion: Version!
-  watchResourceMetrics(versionName: String!, fromDate: String!): [ResourceMetrics!]!
 }
 
 input CreateVersionInput {
@@ -316,10 +310,4 @@ type MetricChartData {
   x: String!
   y: String!
   z: String!
-}
-
-type ResourceMetrics {
-  date: String!
-  cpu: Float!
-  mem: Float!
 }

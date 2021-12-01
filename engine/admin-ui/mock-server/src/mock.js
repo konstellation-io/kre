@@ -33,25 +33,6 @@ const generateVersion = (
 
 let datetime = moment().subtract(24, 'hour');
 
-function getResourceMetrics(unit, quantity) {
-  datetime = datetime.add(quantity, unit);
-  return {
-    date: datetime.toISOString(),
-    cpu: casual.double(0.01, 1000),
-    mem: casual.double(0, 8 * 1000 * 1000 * 1000)
-  };
-}
-
-function getNResourceMetrics(n, unit, quantity) {
-  const result = [];
-
-  for (let i = 0; i < n; i++) {
-    result.push(getResourceMetrics(unit, quantity));
-  }
-
-  return result;
-}
-
 function getProcessName() {
   return casual.random_element(processNames);
 }
@@ -129,9 +110,6 @@ module.exports = {
         return pubsub.asyncIterator('watchNodeStatus');
       }
     },
-    watchResourceMetrics: {
-      subscribe: () => pubsub.asyncIterator('watchResourceMetrics')
-    }
   }),
   Query: () => ({
     me: () => ({
@@ -162,20 +140,6 @@ module.exports = {
         items: () => new MockList(40)
       };
     },
-    resourceMetrics: () => {
-      let interval = 0;
-      interval = setInterval(() => {
-        pubsub.publish('watchResourceMetrics', {
-          watchResourceMetrics: getNResourceMetrics(1, 'minute', 1)
-        });
-      }, 5000);
-      setTimeout(() => clearInterval(interval), 30000);
-      datetime = moment().subtract(15, 'minute');
-      const response = getNResourceMetrics(15, 'minute', 1);
-      datetime = moment();
-
-      return response;
-    }
   }),
   Mutation: () => ({
     createVersion: () => generateVersion({ id: 'V3', name: 'Version-C' }),

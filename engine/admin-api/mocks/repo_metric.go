@@ -6,36 +6,37 @@ package mocks
 
 import (
 	context "context"
-	gomock "github.com/golang/mock/gomock"
-	entity "github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	reflect "reflect"
 	time "time"
+
+	gomock "github.com/golang/mock/gomock"
+	entity "github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 )
 
-// MockMetricRepo is a mock of MetricRepo interface
+// MockMetricRepo is a mock of MetricRepo interface.
 type MockMetricRepo struct {
 	ctrl     *gomock.Controller
 	recorder *MockMetricRepoMockRecorder
 }
 
-// MockMetricRepoMockRecorder is the mock recorder for MockMetricRepo
+// MockMetricRepoMockRecorder is the mock recorder for MockMetricRepo.
 type MockMetricRepoMockRecorder struct {
 	mock *MockMetricRepo
 }
 
-// NewMockMetricRepo creates a new mock instance
+// NewMockMetricRepo creates a new mock instance.
 func NewMockMetricRepo(ctrl *gomock.Controller) *MockMetricRepo {
 	mock := &MockMetricRepo{ctrl: ctrl}
 	mock.recorder = &MockMetricRepoMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockMetricRepo) EXPECT() *MockMetricRepoMockRecorder {
 	return m.recorder
 }
 
-// GetMetrics mocks base method
+// GetMetrics mocks base method.
 func (m *MockMetricRepo) GetMetrics(ctx context.Context, startDate, endDate time.Time, versionName string) ([]entity.ClassificationMetric, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMetrics", ctx, startDate, endDate, versionName)
@@ -44,7 +45,7 @@ func (m *MockMetricRepo) GetMetrics(ctx context.Context, startDate, endDate time
 	return ret0, ret1
 }
 
-// GetMetrics indicates an expected call of GetMetrics
+// GetMetrics indicates an expected call of GetMetrics.
 func (mr *MockMetricRepoMockRecorder) GetMetrics(ctx, startDate, endDate, versionName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockMetricRepo)(nil).GetMetrics), ctx, startDate, endDate, versionName)

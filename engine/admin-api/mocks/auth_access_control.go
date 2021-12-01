@@ -5,35 +5,36 @@
 package mocks
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	auth "github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
-	reflect "reflect"
 )
 
-// MockAccessControl is a mock of AccessControl interface
+// MockAccessControl is a mock of AccessControl interface.
 type MockAccessControl struct {
 	ctrl     *gomock.Controller
 	recorder *MockAccessControlMockRecorder
 }
 
-// MockAccessControlMockRecorder is the mock recorder for MockAccessControl
+// MockAccessControlMockRecorder is the mock recorder for MockAccessControl.
 type MockAccessControlMockRecorder struct {
 	mock *MockAccessControl
 }
 
-// NewMockAccessControl creates a new mock instance
+// NewMockAccessControl creates a new mock instance.
 func NewMockAccessControl(ctrl *gomock.Controller) *MockAccessControl {
 	mock := &MockAccessControl{ctrl: ctrl}
 	mock.recorder = &MockAccessControlMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAccessControl) EXPECT() *MockAccessControlMockRecorder {
 	return m.recorder
 }
 
-// CheckPermission mocks base method
+// CheckPermission mocks base method.
 func (m *MockAccessControl) CheckPermission(userID string, resource auth.AccessControlResource, action auth.AccessControlAction) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CheckPermission", userID, resource, action)
@@ -41,13 +42,13 @@ func (m *MockAccessControl) CheckPermission(userID string, resource auth.AccessC
 	return ret0
 }
 
-// CheckPermission indicates an expected call of CheckPermission
+// CheckPermission indicates an expected call of CheckPermission.
 func (mr *MockAccessControlMockRecorder) CheckPermission(userID, resource, action interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckPermission", reflect.TypeOf((*MockAccessControl)(nil).CheckPermission), userID, resource, action)
 }
 
-// ReloadUserRoles mocks base method
+// ReloadUserRoles mocks base method.
 func (m *MockAccessControl) ReloadUserRoles() error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ReloadUserRoles")
@@ -55,7 +56,7 @@ func (m *MockAccessControl) ReloadUserRoles() error {
 	return ret0
 }
 
-// ReloadUserRoles indicates an expected call of ReloadUserRoles
+// ReloadUserRoles indicates an expected call of ReloadUserRoles.
 func (mr *MockAccessControlMockRecorder) ReloadUserRoles() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReloadUserRoles", reflect.TypeOf((*MockAccessControl)(nil).ReloadUserRoles))

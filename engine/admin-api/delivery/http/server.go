@@ -33,7 +33,6 @@ func NewApp(
 	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
-	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) *App {
 	e := echo.New()
 	e.HideBanner = true
@@ -74,7 +73,6 @@ func NewApp(
 		versionInteractor,
 		metricsInteractor,
 		authInteractor,
-		resourceMetricsInteractor,
 	)
 
 	middlewareErrorHandler := func(err error) error {

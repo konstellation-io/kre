@@ -5,7 +5,6 @@ package auth
 type AccessControlResource string
 
 const ResMetrics AccessControlResource = "metrics"
-const ResResourceMetrics AccessControlResource = "resource-metrics"
 const ResRuntime AccessControlResource = "runtimes"
 const ResVersion AccessControlResource = "versions"
 const ResSettings AccessControlResource = "settings"
@@ -15,7 +14,7 @@ const ResLogs AccessControlResource = "logs"
 
 func (e AccessControlResource) IsValid() bool {
 	switch e {
-	case ResMetrics, ResResourceMetrics, ResRuntime, ResVersion, ResSettings, ResUsers, ResAudit, ResLogs:
+	case ResMetrics, ResRuntime, ResVersion, ResSettings, ResUsers, ResAudit, ResLogs:
 		return true
 	}
 	return false

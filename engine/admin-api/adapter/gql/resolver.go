@@ -32,16 +32,15 @@ func init() {
 }
 
 type Resolver struct {
-	logger                    logging.Logger
-	runtimeInteractor         *usecase.RuntimeInteractor
-	userInteractor            *usecase.UserInteractor
-	settingInteractor         usecase.SettingInteracter
-	userActivityInteractor    usecase.UserActivityInteracter
-	versionInteractor         *usecase.VersionInteractor
-	metricsInteractor         *usecase.MetricsInteractor
-	authInteractor            usecase.AuthInteracter
-	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
-	cfg                       *config.Config
+	logger                 logging.Logger
+	runtimeInteractor      *usecase.RuntimeInteractor
+	userInteractor         *usecase.UserInteractor
+	settingInteractor      usecase.SettingInteracter
+	userActivityInteractor usecase.UserActivityInteracter
+	versionInteractor      *usecase.VersionInteractor
+	metricsInteractor      *usecase.MetricsInteractor
+	authInteractor         usecase.AuthInteracter
+	cfg                    *config.Config
 }
 
 func NewGraphQLResolver(
@@ -53,7 +52,6 @@ func NewGraphQLResolver(
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor usecase.AuthInteracter,
-	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 	cfg *config.Config,
 ) *Resolver {
 	return &Resolver{
@@ -65,7 +63,6 @@ func NewGraphQLResolver(
 		versionInteractor,
 		metricsInteractor,
 		authInteractor,
-		resourceMetricsInteractor,
 		cfg,
 	}
 }
@@ -359,16 +356,6 @@ func (r *queryResolver) Logs(
 	}, nil
 }
 
-func (r *queryResolver) ResourceMetrics(
-	ctx context.Context,
-	versionName string,
-	fromDate string,
-	toDate string,
-) ([]*entity.ResourceMetrics, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.resourceMetricsInteractor.Get(ctx, loggedUserID, versionName, fromDate, toDate)
-}
-
 func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
@@ -411,15 +398,6 @@ func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionName 
 func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, versionName, filters)
-}
-
-func (r *subscriptionResolver) WatchResourceMetrics(
-	ctx context.Context,
-	versionName string,
-	fromDate string,
-) (<-chan []*entity.ResourceMetrics, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.resourceMetricsInteractor.Watch(ctx, loggedUserID, versionName, fromDate)
 }
 
 func (r *userActivityResolver) Date(_ context.Context, obj *entity.UserActivity) (string, error) {

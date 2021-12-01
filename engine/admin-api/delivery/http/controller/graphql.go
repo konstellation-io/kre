@@ -17,16 +17,15 @@ import (
 const UserIDContextKey = "userID"
 
 type GraphQLController struct {
-	cfg                       *config.Config
-	logger                    logging.Logger
-	runtimeInteractor         *usecase.RuntimeInteractor
-	userInteractor            *usecase.UserInteractor
-	settingInteractor         usecase.SettingInteracter
-	userActivityInteractor    usecase.UserActivityInteracter
-	versionInteractor         *usecase.VersionInteractor
-	metricsInteractor         *usecase.MetricsInteractor
-	authInteractor            usecase.AuthInteracter
-	resourceMetricsInteractor *usecase.ResourceMetricsInteractor
+	cfg                    *config.Config
+	logger                 logging.Logger
+	runtimeInteractor      *usecase.RuntimeInteractor
+	userInteractor         *usecase.UserInteractor
+	settingInteractor      usecase.SettingInteracter
+	userActivityInteractor usecase.UserActivityInteracter
+	versionInteractor      *usecase.VersionInteractor
+	metricsInteractor      *usecase.MetricsInteractor
+	authInteractor         usecase.AuthInteracter
 }
 
 func NewGraphQLController(
@@ -39,7 +38,6 @@ func NewGraphQLController(
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
 	authInteractor usecase.AuthInteracter,
-	resourceMetricsInteractor *usecase.ResourceMetricsInteractor,
 ) *GraphQLController {
 	return &GraphQLController{
 		cfg,
@@ -51,7 +49,6 @@ func NewGraphQLController(
 		versionInteractor,
 		metricsInteractor,
 		authInteractor,
-		resourceMetricsInteractor,
 	}
 }
 
@@ -71,7 +68,6 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 		g.versionInteractor,
 		g.metricsInteractor,
 		g.authInteractor,
-		g.resourceMetricsInteractor,
 		g.cfg,
 	)
 
