@@ -1,4 +1,4 @@
-import { ErrorMessage, SpinnerCircular } from 'kwc';
+import { SpinnerCircular } from 'kwc';
 import {
   errorMorkflowsMock,
   nodeStatus,
@@ -10,7 +10,6 @@ import LogsPanel from './LogsPanel/LogsPanel';
 import { MockedProvider } from '@apollo/client/testing';
 import React from 'react';
 import Status from './Status';
-import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
 
 jest.mock('react-router', () => ({
@@ -43,6 +42,6 @@ describe('Status', () => {
   it('show error on error response', async () => {
     const wrapper = await mountApolloComponent(ErrorComponent, false);
 
-    expect(wrapper.exists(StatusTopInfoBar)).toBeFalsy();
+    expect(wrapper.exists(LogsPanel)).toBeFalsy();
   });
 });

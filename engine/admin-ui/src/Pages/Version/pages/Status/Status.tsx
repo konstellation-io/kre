@@ -14,7 +14,6 @@ import {
 
 import { NodeStatus } from 'Graphql/types/globalTypes';
 import React from 'react';
-import StatusTopInfoBar from './components/StatusTopInfoBar/StatusTopInfoBar';
 import { VersionRouteParams } from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
 import styles from './Status.module.scss';
@@ -72,7 +71,6 @@ function Status({ version, runtime }: Props) {
 
   return (
     <div className={styles.container}>
-      <StatusTopInfoBar />
       <WorkflowsManager
         workflows={data?.version.workflows || []}
         entrypointStatus={entrypointStatus}
