@@ -168,6 +168,7 @@ In order to start development on this project you will need these tools:
 - **gettext**: OS package to fill templates during deployment
 - **minikube**: the local version of Kubernetes to deploy KRE
 - **helm**: K8s package manager. Make sure you have v3+
+- **yq**: YAML processor. Make sure you have v4+
 
 *NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `.krectl.conf`. 
 

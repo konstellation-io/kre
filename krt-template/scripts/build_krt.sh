@@ -13,7 +13,7 @@ VERSION_DIR="greeter"
 # Please install yq binary from https://github.com/mikefarah/yq/releases and think twice before using Snap next time.
 
 echo -e "Reading current version: \c"
-CURRENT_VERSION=$(yq r ${VERSION_DIR}/krt.yml version)
+CURRENT_VERSION=$(yq e .version ${VERSION_DIR}/krt.yml)
 
 echo "${CURRENT_VERSION}"
 
@@ -38,7 +38,7 @@ cd build/${VERSION_DIR}
 
 cp  -r ../../${VERSION_DIR}/* .
 
-yq write --inplace -- ./krt.yml 'version' "${VERSION}"
+yq eval --inplace -- ".version = \"${VERSION}\"" ./krt.yml
 
 tar -zcf ../${VERSION}.krt  --exclude=*.krt --exclude=*.tar.gz *
 cd ../../
