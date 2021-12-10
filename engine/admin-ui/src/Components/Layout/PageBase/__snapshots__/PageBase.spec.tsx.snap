@@ -2292,7 +2292,7 @@ exports[`PageBase matches snapshot 1`] = `
                       <img
                         alt="konstellation"
                         className="konstellationText"
-                        src="/img/brand/konstellation.svg"
+                        src="/img/brand/konstellation.png"
                       />
                     </a>
                   </LinkAnchor>
