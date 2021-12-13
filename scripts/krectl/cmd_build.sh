@@ -80,28 +80,7 @@ setup_env() {
   SETUP_ENV=1
 }
 
-build_yarn_frontend() {
-  echo_build_header "admin-ui-builder"
-
-  # build UI statics
-  export DOCKER_BUILDKIT=1 # Needed to load Dockerfile.builder.dockerignore file
-  run docker build -t admin-ui-build:latest engine/admin-ui -f engine/admin-ui/Dockerfile.builder
-
-  # creates a container and extract UI statics to admin-ui/build folder
-  CONTAINER_ID=$(docker create admin-ui-build:latest)
-  run docker cp "${CONTAINER_ID}":/app/build engine/admin-ui
-
-  # clean up
-  run docker rm "${CONTAINER_ID}"
-  unset DOCKER_BUILDKIT
-}
-
 build_engine() {
-  # WARNING: This should always run outside minikube so docker can mount the volume correctly.
-  if [ "$SKIP_FRONTEND_BUILD" != "1" ]; then
-    build_yarn_frontend
-  fi
-
   setup_env
   build_image kre-admin-api engine/admin-api
   build_image kre-k8s-manager engine/k8s-manager
