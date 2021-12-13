@@ -6,35 +6,36 @@ package mocks
 
 import (
 	context "context"
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/engine/admin-api/domain/entity"
-	reflect "reflect"
 )
 
-// MockSettingInteracter is a mock of SettingInteracter interface
+// MockSettingInteracter is a mock of SettingInteracter interface.
 type MockSettingInteracter struct {
 	ctrl     *gomock.Controller
 	recorder *MockSettingInteracterMockRecorder
 }
 
-// MockSettingInteracterMockRecorder is the mock recorder for MockSettingInteracter
+// MockSettingInteracterMockRecorder is the mock recorder for MockSettingInteracter.
 type MockSettingInteracterMockRecorder struct {
 	mock *MockSettingInteracter
 }
 
-// NewMockSettingInteracter creates a new mock instance
+// NewMockSettingInteracter creates a new mock instance.
 func NewMockSettingInteracter(ctrl *gomock.Controller) *MockSettingInteracter {
 	mock := &MockSettingInteracter{ctrl: ctrl}
 	mock.recorder = &MockSettingInteracterMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockSettingInteracter) EXPECT() *MockSettingInteracterMockRecorder {
 	return m.recorder
 }
 
-// CreateDefaults mocks base method
+// CreateDefaults mocks base method.
 func (m *MockSettingInteracter) CreateDefaults(ctx context.Context) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDefaults", ctx)
@@ -42,42 +43,13 @@ func (m *MockSettingInteracter) CreateDefaults(ctx context.Context) error {
 	return ret0
 }
 
-// CreateDefaults indicates an expected call of CreateDefaults
+// CreateDefaults indicates an expected call of CreateDefaults.
 func (mr *MockSettingInteracterMockRecorder) CreateDefaults(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDefaults", reflect.TypeOf((*MockSettingInteracter)(nil).CreateDefaults), ctx)
 }
 
-// Update mocks base method
-func (m *MockSettingInteracter) Update(loggedUserID string, settings *entity.Settings, changes []entity.UserActivity) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", loggedUserID, settings, changes)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Update indicates an expected call of Update
-func (mr *MockSettingInteracterMockRecorder) Update(loggedUserID, settings, changes interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockSettingInteracter)(nil).Update), loggedUserID, settings, changes)
-}
-
-// GetUnprotected mocks base method
-func (m *MockSettingInteracter) GetUnprotected(ctx context.Context) (*entity.Settings, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUnprotected", ctx)
-	ret0, _ := ret[0].(*entity.Settings)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetUnprotected indicates an expected call of GetUnprotected
-func (mr *MockSettingInteracterMockRecorder) GetUnprotected(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnprotected", reflect.TypeOf((*MockSettingInteracter)(nil).GetUnprotected), ctx)
-}
-
-// Get mocks base method
+// Get mocks base method.
 func (m *MockSettingInteracter) Get(ctx context.Context, loggedUserID string) (*entity.Settings, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", ctx, loggedUserID)
@@ -86,8 +58,37 @@ func (m *MockSettingInteracter) Get(ctx context.Context, loggedUserID string) (*
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get
+// Get indicates an expected call of Get.
 func (mr *MockSettingInteracterMockRecorder) Get(ctx, loggedUserID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSettingInteracter)(nil).Get), ctx, loggedUserID)
+}
+
+// GetUnprotected mocks base method.
+func (m *MockSettingInteracter) GetUnprotected(ctx context.Context) (*entity.Settings, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUnprotected", ctx)
+	ret0, _ := ret[0].(*entity.Settings)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUnprotected indicates an expected call of GetUnprotected.
+func (mr *MockSettingInteracterMockRecorder) GetUnprotected(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnprotected", reflect.TypeOf((*MockSettingInteracter)(nil).GetUnprotected), ctx)
+}
+
+// Update mocks base method.
+func (m *MockSettingInteracter) Update(loggedUserID string, settings *entity.Settings, changes []entity.UserActivity) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", loggedUserID, settings, changes)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockSettingInteracterMockRecorder) Update(loggedUserID, settings, changes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockSettingInteracter)(nil).Update), loggedUserID, settings, changes)
 }

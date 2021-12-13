@@ -43,11 +43,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	resourceMetricsService, err := service.NewResourceMetricsService(cfg, logger)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
 	accessControl, err := auth.NewCasbinAccessControl(logger, userRepo)
@@ -118,15 +113,6 @@ func main() {
 		metricRepo,
 	)
 
-	resourceMetricsInteractor := usecase.NewResourceMetricsInteractor(
-		cfg,
-		logger,
-		runtimeRepo,
-		versionMongoRepo,
-		resourceMetricsService,
-		accessControl,
-	)
-
 	err = settingInteractor.CreateDefaults(context.Background())
 	if err != nil {
 		panic(err)
@@ -147,7 +133,6 @@ func main() {
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
-		resourceMetricsInteractor,
 	)
 	app.Start()
 }

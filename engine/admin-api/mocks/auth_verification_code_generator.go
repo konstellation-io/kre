@@ -5,34 +5,35 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
-// MockVerificationCodeGenerator is a mock of VerificationCodeGenerator interface
+// MockVerificationCodeGenerator is a mock of VerificationCodeGenerator interface.
 type MockVerificationCodeGenerator struct {
 	ctrl     *gomock.Controller
 	recorder *MockVerificationCodeGeneratorMockRecorder
 }
 
-// MockVerificationCodeGeneratorMockRecorder is the mock recorder for MockVerificationCodeGenerator
+// MockVerificationCodeGeneratorMockRecorder is the mock recorder for MockVerificationCodeGenerator.
 type MockVerificationCodeGeneratorMockRecorder struct {
 	mock *MockVerificationCodeGenerator
 }
 
-// NewMockVerificationCodeGenerator creates a new mock instance
+// NewMockVerificationCodeGenerator creates a new mock instance.
 func NewMockVerificationCodeGenerator(ctrl *gomock.Controller) *MockVerificationCodeGenerator {
 	mock := &MockVerificationCodeGenerator{ctrl: ctrl}
 	mock.recorder = &MockVerificationCodeGeneratorMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockVerificationCodeGenerator) EXPECT() *MockVerificationCodeGeneratorMockRecorder {
 	return m.recorder
 }
 
-// Generate mocks base method
+// Generate mocks base method.
 func (m *MockVerificationCodeGenerator) Generate() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Generate")
@@ -40,7 +41,7 @@ func (m *MockVerificationCodeGenerator) Generate() string {
 	return ret0
 }
 
-// Generate indicates an expected call of Generate
+// Generate indicates an expected call of Generate.
 func (mr *MockVerificationCodeGeneratorMockRecorder) Generate() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Generate", reflect.TypeOf((*MockVerificationCodeGenerator)(nil).Generate))

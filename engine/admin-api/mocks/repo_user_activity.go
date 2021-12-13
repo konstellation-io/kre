@@ -6,35 +6,36 @@ package mocks
 
 import (
 	context "context"
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/engine/admin-api/domain/entity"
-	reflect "reflect"
 )
 
-// MockUserActivityRepo is a mock of UserActivityRepo interface
+// MockUserActivityRepo is a mock of UserActivityRepo interface.
 type MockUserActivityRepo struct {
 	ctrl     *gomock.Controller
 	recorder *MockUserActivityRepoMockRecorder
 }
 
-// MockUserActivityRepoMockRecorder is the mock recorder for MockUserActivityRepo
+// MockUserActivityRepoMockRecorder is the mock recorder for MockUserActivityRepo.
 type MockUserActivityRepoMockRecorder struct {
 	mock *MockUserActivityRepo
 }
 
-// NewMockUserActivityRepo creates a new mock instance
+// NewMockUserActivityRepo creates a new mock instance.
 func NewMockUserActivityRepo(ctrl *gomock.Controller) *MockUserActivityRepo {
 	mock := &MockUserActivityRepo{ctrl: ctrl}
 	mock.recorder = &MockUserActivityRepoMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockUserActivityRepo) EXPECT() *MockUserActivityRepoMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
+// Create mocks base method.
 func (m *MockUserActivityRepo) Create(activity entity.UserActivity) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", activity)
@@ -42,13 +43,13 @@ func (m *MockUserActivityRepo) Create(activity entity.UserActivity) error {
 	return ret0
 }
 
-// Create indicates an expected call of Create
+// Create indicates an expected call of Create.
 func (mr *MockUserActivityRepoMockRecorder) Create(activity interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserActivityRepo)(nil).Create), activity)
 }
 
-// Get mocks base method
+// Get mocks base method.
 func (m *MockUserActivityRepo) Get(ctx context.Context, userIDs []string, types []entity.UserActivityType, versionIds []string, fromDate, toDate, lastID *string) ([]*entity.UserActivity, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", ctx, userIDs, types, versionIds, fromDate, toDate, lastID)
@@ -57,7 +58,7 @@ func (m *MockUserActivityRepo) Get(ctx context.Context, userIDs []string, types 
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get
+// Get indicates an expected call of Get.
 func (mr *MockUserActivityRepoMockRecorder) Get(ctx, userIDs, types, versionIds, fromDate, toDate, lastID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserActivityRepo)(nil).Get), ctx, userIDs, types, versionIds, fromDate, toDate, lastID)

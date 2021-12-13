@@ -5,34 +5,35 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
-// MockLoginLinkTransport is a mock of LoginLinkTransport interface
+// MockLoginLinkTransport is a mock of LoginLinkTransport interface.
 type MockLoginLinkTransport struct {
 	ctrl     *gomock.Controller
 	recorder *MockLoginLinkTransportMockRecorder
 }
 
-// MockLoginLinkTransportMockRecorder is the mock recorder for MockLoginLinkTransport
+// MockLoginLinkTransportMockRecorder is the mock recorder for MockLoginLinkTransport.
 type MockLoginLinkTransportMockRecorder struct {
 	mock *MockLoginLinkTransport
 }
 
-// NewMockLoginLinkTransport creates a new mock instance
+// NewMockLoginLinkTransport creates a new mock instance.
 func NewMockLoginLinkTransport(ctrl *gomock.Controller) *MockLoginLinkTransport {
 	mock := &MockLoginLinkTransport{ctrl: ctrl}
 	mock.recorder = &MockLoginLinkTransportMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockLoginLinkTransport) EXPECT() *MockLoginLinkTransportMockRecorder {
 	return m.recorder
 }
 
-// Send mocks base method
+// Send mocks base method.
 func (m *MockLoginLinkTransport) Send(recipient, verificationCode string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Send", recipient, verificationCode)
@@ -40,7 +41,7 @@ func (m *MockLoginLinkTransport) Send(recipient, verificationCode string) error 
 	return ret0
 }
 
-// Send indicates an expected call of Send
+// Send indicates an expected call of Send.
 func (mr *MockLoginLinkTransportMockRecorder) Send(recipient, verificationCode interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Send", reflect.TypeOf((*MockLoginLinkTransport)(nil).Send), recipient, verificationCode)
