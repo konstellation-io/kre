@@ -1,4 +1,4 @@
-FROM node:14 as builder
+FROM node:lts-slim as builder
 
 WORKDIR /app
 COPY package.json yarn.lock ./
