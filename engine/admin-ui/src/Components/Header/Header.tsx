@@ -35,7 +35,7 @@ const Header: FunctionComponent<Props> = ({
       >
         <img
           className={styles.konstellationText}
-          src={'/img/brand/konstellation.png'}
+          src={'/img/brand/konstellation.svg'}
           alt="konstellation"
         />
       </Link>
