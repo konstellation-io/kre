@@ -1,5 +1,4 @@
 .gitignore
-.gitlab-ci.yml
 build
 Dockerfile
 Dockerfile.local
