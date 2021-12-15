@@ -1,6 +1,7 @@
-mock-server
-Dockerfile
-README.md
-.gitlab-ci.yml
 .gitignore
+build
+Dockerfile
+Dockerfile.local
+mock-server
 node_modules
+README.md

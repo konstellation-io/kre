@@ -1,6 +1,15 @@
+FROM node:lts-slim as builder
+
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install
+COPY . .
+RUN yarn run build
+
+
 FROM nginx:stable-alpine
 
-COPY ./build /usr/share/nginx/html
+COPY --from=builder --chown=nginx:0 /app/build/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # implement changes required to run NGINX as an unprivileged user

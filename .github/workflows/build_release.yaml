@@ -61,12 +61,6 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Build Front
-        run: |
-          yarn install
-          yarn run build
-        working-directory: ./engine/admin-ui
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
