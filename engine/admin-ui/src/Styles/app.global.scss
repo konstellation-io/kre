@@ -11,7 +11,7 @@
   opacity: 0;
   z-index: 2;
   background-color: palette(base, 800);
-  border-radius: $grid-unit / 2;
+  border-radius: calc($grid-unit / 2);
   width: fit-content;
   height: fit-content;
 
