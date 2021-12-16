@@ -26,7 +26,7 @@ $color-bg: $bg-color-dark;
 .container {
   @include shadow(2);
 
-  border-radius: $grid-unit / 2;
+  border-radius: calc($grid-unit / 2);
   min-width: $grid-unit * 55;
   max-width: $grid-unit * 75;
   padding: 11px $padding-y;

@@ -34,7 +34,7 @@
 
   .icon {
     line-height: 33px;
-    margin-right: $grid-unit / 2;
+    margin-right: calc($grid-unit / 2);
 
     svg {
       width: 10px;

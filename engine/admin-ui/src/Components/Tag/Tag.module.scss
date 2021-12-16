@@ -8,7 +8,7 @@
   color: font-color(dark);
   background-color: palette(lowlight, 100);
   padding: 3px $grid-unit;
-  border-radius: $grid-unit / 2;
+  border-radius: calc($grid-unit / 2);
   margin-right: 1.5 * $grid-unit;
 
   &.WARNING {
