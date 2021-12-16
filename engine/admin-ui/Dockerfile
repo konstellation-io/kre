@@ -1,8 +1,8 @@
 FROM node:lts-slim as builder
 
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json yarn.lock .yarnrc ./
+RUN yarn install --verbose
 COPY . .
 RUN yarn run build
 
