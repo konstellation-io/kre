@@ -27,7 +27,7 @@ function useDocFile(fileUrl?: string | null) {
 
   if (fileUrl) {
     fetch(fileUrl)
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(
             `Unexpected status code: ${response.status} getting documentation file`
@@ -36,7 +36,7 @@ function useDocFile(fileUrl?: string | null) {
 
         return response.text();
       })
-      .then(text => setFile(text));
+      .then((text) => setFile(text));
   }
 
   return file;
@@ -89,8 +89,11 @@ function Documentation() {
       </div>
       <div className={styles.article}>
         <ReactMarkdown
-          source={file}
-          renderers={{ code: CodeBlock, link: CustomLink }}
+          children={file}
+          components={{
+            code: (props) => CodeBlock(props),
+            a: (props) => CustomLink(props),
+          }}
         />
       </div>
     </div>

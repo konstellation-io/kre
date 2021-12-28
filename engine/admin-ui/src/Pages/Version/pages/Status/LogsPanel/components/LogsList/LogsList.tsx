@@ -2,11 +2,11 @@ import { GetLogs, GetLogsVariables } from 'Graphql/subscriptions/types/GetLogs';
 import {
   GetServerLogs,
   GetServerLogs_logs_items,
-  GetServerLogsVariables
+  GetServerLogsVariables,
 } from 'Graphql/queries/types/GetServerLogs';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SpinnerCircular, SpinnerLinear } from 'kwc';
-import { Virtuoso, VirtuosoMethods } from 'react-virtuoso';
+import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { LogFilters } from 'Graphql/types/globalTypes';
 import LogItem from './LogItem';
 import LogListHeader from './LogListHeader';
@@ -36,11 +36,11 @@ function getLogsQueryFilters(
     nodeIds:
       filterValues?.nodes
         ?.map(({ workflowName, nodeNames }) =>
-          nodeNames.map(nodeName =>
+          nodeNames.map((nodeName) =>
             nodeNameToId.get(`${workflowName}${nodeName}`)
           )
         )
-        .flat() || []
+        .flat() || [],
   } as LogFilters;
 }
 
@@ -59,9 +59,9 @@ function LogsList({
   filterValues,
   logs,
   onNewLogs,
-  clearLogs
+  clearLogs,
 }: Props) {
-  const virtuoso = useRef<VirtuosoMethods>(null);
+  const virtuoso = useRef<VirtuosoHandle>(null);
   const [openedLogs, setOpenedLogs] = useState<boolean[]>([]);
 
   const dataLogsOpened = useReactiveVar(logsOpened);
@@ -82,16 +82,16 @@ function LogsList({
   >(GetServerLogsQuery, {
     variables: {
       versionName,
-      filters: formatFilters(filterValues)
+      filters: formatFilters(filterValues),
     },
-    onCompleted: data => {
+    onCompleted: (data) => {
       onNewLogs(data.logs.items.reverse());
       setNextPage(data.logs.cursor || '');
       handleSubscription();
       setOpenedLogs(new Array(data.logs.items.length).fill(false));
     },
     onError: handleSubscription,
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'no-cache',
   });
 
   function toggleAutoScrollActive() {
@@ -104,16 +104,16 @@ function LogsList({
       document: WatchNodeLogs,
       variables: {
         versionName,
-        filters: formatFilters(filterValues)
+        filters: formatFilters(filterValues),
       },
       updateQuery: (prev, { subscriptionData }) => {
         const newLog = get(subscriptionData.data, 'watchNodeLogs');
         onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
           ...oldLogs,
-          newLog
+          newLog,
         ]);
         return prev;
-      }
+      },
     });
 
   function handleSubscription() {
@@ -129,7 +129,7 @@ function LogsList({
       try {
         virtuoso.current.scrollToIndex({
           index: logs.length - 1,
-          align: 'end'
+          align: 'end',
         });
       } catch (err) {
         // virtuoso component not yet prepared
@@ -144,7 +144,7 @@ function LogsList({
       variables: {
         versionName,
         filters: formatFilters(filterValues),
-        cursor: nextPage
+        cursor: nextPage,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         const newData = fetchMoreResult && fetchMoreResult.logs;
@@ -152,12 +152,12 @@ function LogsList({
         if (newData) {
           onNewLogs((oldLogs: GetServerLogs_logs_items[]) => [
             ...newData.items.reverse(),
-            ...oldLogs
+            ...oldLogs,
           ]);
 
           setOpenedLogs([
             ...new Array(newData.items.length).fill(false),
-            ...openedLogs
+            ...openedLogs,
           ] as boolean[]);
 
           virtuoso.current?.adjustForPrependedItems(newData.items.length);
@@ -166,7 +166,7 @@ function LogsList({
         setNextPage(newData?.cursor || '');
         setRefetching(false);
         return prev;
-      }
+      },
     });
   }
 
@@ -196,7 +196,7 @@ function LogsList({
         ref={virtuoso}
         initialTopMostItemIndex={logs.length - 1}
         totalCount={logs.length}
-        item={index => {
+        itemContent={(index) => {
           const log = logs[index];
           return (
             <LogItem
