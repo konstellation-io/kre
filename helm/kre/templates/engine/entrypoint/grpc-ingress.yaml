@@ -68,8 +68,18 @@ spec:
     - host: entrypoint.{{ .Values.entrypoint.host }}
       http:
         paths:
+        {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: active-entrypoint
+                port:
+                  name: grpc
+        {{ else }}
           - path: /
             backend:
               serviceName: active-entrypoint
               servicePort: grpc
+        {{ end }}
 {{ end }}

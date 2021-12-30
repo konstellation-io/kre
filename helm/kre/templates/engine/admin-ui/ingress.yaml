@@ -65,7 +65,7 @@ spec:
                 name: admin-ui
                 port:
                   number: 80
-          {{ else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
+          {{ else }}
           - path: /
             backend:
               serviceName: admin-ui

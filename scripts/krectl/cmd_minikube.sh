@@ -37,7 +37,7 @@ minikube_start() {
         --kubernetes-version="$MINIKUBE_KUBERNETES_VERSION" \
         --disk-size="$MINIKUBE_DISK_SIZE" \
         --driver="$MINIKUBE_DRIVER" \
-        --extra-config=apiserver.authorization-mode=RBAC
+        #--extra-config=apiserver.authorization-mode=RBAC
 
       run minikube addons enable ingress -p "$MINIKUBE_PROFILE"
       run minikube addons enable registry -p "$MINIKUBE_PROFILE"

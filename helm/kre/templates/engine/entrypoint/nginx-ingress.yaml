@@ -50,8 +50,18 @@ spec:
     - host: proto.{{ .Values.entrypoint.host }}
       http:
         paths:
+        {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: active-entrypoint
+                port:
+                  name: web
+        {{ else }}
           - path: /
             backend:
               serviceName: active-entrypoint
               servicePort: web
+        {{ end }}
 {{ end }}
