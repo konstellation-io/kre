@@ -38,6 +38,12 @@ cmd_dev() {
         exit 0
       ;;
 
+      --clean)
+        # Prune Docker older than 12 hours
+        MINIKUBE_CLEAN=1
+        shift
+      ;;
+
       *)
         shift
       ;;
@@ -49,7 +55,12 @@ cmd_dev() {
   fi
 
   minikube_start
-  minikube_clean
+
+  if [ "$MINIKUBE_CLEAN" = "1" ]; then
+    minikube_clean
+  fi
+
+
   if [ "$SKIP_BUILD" = "0" ]; then
     cmd_build "$@"
   else
