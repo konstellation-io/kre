@@ -8,7 +8,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     runtime={
       Object {
         "__typename": "Runtime",
+        "creationDate": "creationDate",
+        "databaseUrl": "databaseUrl",
         "description": "Some Description",
+        "entrypointAddress": "entrypointAddress",
         "id": "runtimeId",
         "measurementsUrl": "measurementsUrl",
         "name": "runtimeName",
@@ -19,7 +22,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     runtime={
       Object {
         "__typename": "Runtime",
+        "creationDate": "creationDate",
+        "databaseUrl": "databaseUrl",
         "description": "Some Description",
+        "entrypointAddress": "entrypointAddress",
         "id": "runtimeId",
         "measurementsUrl": "measurementsUrl",
         "name": "runtimeName",
@@ -59,7 +65,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     runtime={
       Object {
         "__typename": "Runtime",
+        "creationDate": "creationDate",
+        "databaseUrl": "databaseUrl",
         "description": "Some Description",
+        "entrypointAddress": "entrypointAddress",
         "id": "runtimeId",
         "measurementsUrl": "measurementsUrl",
         "name": "runtimeName",

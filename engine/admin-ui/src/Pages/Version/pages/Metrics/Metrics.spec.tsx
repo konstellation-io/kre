@@ -17,7 +17,7 @@ jest.mock('react-router', () => ({
 
 // TODO: test GraphQL data
 describe('Metrics', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(<Metrics runtime={runtime} version={version} />);

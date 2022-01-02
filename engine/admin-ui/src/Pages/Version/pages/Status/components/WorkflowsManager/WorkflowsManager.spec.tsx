@@ -7,7 +7,7 @@ import WorkflowsManager from './WorkflowsManager';
 import { mount } from 'enzyme';
 import { workflow } from 'Mocks/version';
 
-const mocks = [];
+const mocks: any[] = [];
 
 function Wrapper() {
   return (
