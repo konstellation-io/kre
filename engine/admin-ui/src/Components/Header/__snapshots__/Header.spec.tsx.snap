@@ -214,9 +214,9 @@ exports[`Header matches snapshot 1`] = `
                 "addTypename": false,
                 "config": Object {
                   "addTypename": false,
+                  "canonizeResults": false,
                   "dataIdFromObject": [Function],
                   "resultCaching": true,
-                  "typePolicies": Object {},
                 },
                 "data": Root {
                   "canRead": [Function],
@@ -236,9 +236,9 @@ exports[`Header matches snapshot 1`] = `
                     "d": [Function],
                     "keyMaker": Trie {
                       "makeData": [Function],
-                      "weak": WeakMap {},
                       "weakness": true,
                     },
+                    "parent": null,
                   },
                   "policies": Policies {
                     "cache": [Circular],
@@ -246,7 +246,7 @@ exports[`Header matches snapshot 1`] = `
                       "cache": [Circular],
                       "dataIdFromObject": [Function],
                       "possibleTypes": undefined,
-                      "typePolicies": Object {},
+                      "typePolicies": undefined,
                     },
                     "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
@@ -272,17 +272,66 @@ exports[`Header matches snapshot 1`] = `
                   "rootIds": Object {
                     "ROOT_QUERY": 1,
                   },
-                  "sharedLayerGroup": CacheGroup {
-                    "caching": true,
-                    "d": [Function],
-                    "keyMaker": Trie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
-                  },
                   "storageTrie": Trie {
                     "makeData": [Function],
                     "weakness": true,
+                  },
+                  "stump": Stump {
+                    "canRead": [Function],
+                    "data": Object {},
+                    "getFieldValue": [Function],
+                    "group": CacheGroup {
+                      "caching": true,
+                      "d": [Function],
+                      "keyMaker": Trie {
+                        "makeData": [Function],
+                        "weak": WeakMap {},
+                        "weakness": true,
+                      },
+                      "parent": CacheGroup {
+                        "caching": true,
+                        "d": [Function],
+                        "keyMaker": Trie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
+                        "parent": null,
+                      },
+                    },
+                    "id": "EntityStore.Stump",
+                    "parent": [Circular],
+                    "policies": Policies {
+                      "cache": [Circular],
+                      "config": Object {
+                        "cache": [Circular],
+                        "dataIdFromObject": [Function],
+                        "possibleTypes": undefined,
+                        "typePolicies": undefined,
+                      },
+                      "fuzzySubtypes": Map {},
+                      "rootIdsByTypename": Object {
+                        "Mutation": "ROOT_MUTATION",
+                        "Query": "ROOT_QUERY",
+                        "Subscription": "ROOT_SUBSCRIPTION",
+                      },
+                      "rootTypenamesById": Object {
+                        "ROOT_MUTATION": "Mutation",
+                        "ROOT_QUERY": "Query",
+                        "ROOT_SUBSCRIPTION": "Subscription",
+                      },
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
+                      },
+                      "usingPossibleTypes": false,
+                    },
+                    "refs": Object {},
+                    "replay": [Function],
+                    "rootIds": Object {},
+                    "toReference": [Function],
                   },
                   "toReference": [Function],
                 },
@@ -291,18 +340,9 @@ exports[`Header matches snapshot 1`] = `
                 "makeVar": [Function],
                 "maybeBroadcastWatch": [Function],
                 "modify": [Function],
-                "optimisticData": Root {
+                "optimisticData": Stump {
                   "canRead": [Function],
-                  "data": Object {
-                    "ROOT_QUERY": Object {
-                      "__typename": "Query",
-                      "me": Object {
-                        "accessLevel": "ADMIN",
-                        "email": "user@konstellation.com",
-                        "id": "someId",
-                      },
-                    },
-                  },
+                  "data": Object {},
                   "getFieldValue": [Function],
                   "group": CacheGroup {
                     "caching": true,
@@ -312,6 +352,77 @@ exports[`Header matches snapshot 1`] = `
                       "weak": WeakMap {},
                       "weakness": true,
                     },
+                    "parent": CacheGroup {
+                      "caching": true,
+                      "d": [Function],
+                      "keyMaker": Trie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                      "parent": null,
+                    },
+                  },
+                  "id": "EntityStore.Stump",
+                  "parent": Root {
+                    "canRead": [Function],
+                    "data": Object {
+                      "ROOT_QUERY": Object {
+                        "__typename": "Query",
+                        "me": Object {
+                          "accessLevel": "ADMIN",
+                          "email": "user@konstellation.com",
+                          "id": "someId",
+                        },
+                      },
+                    },
+                    "getFieldValue": [Function],
+                    "group": CacheGroup {
+                      "caching": true,
+                      "d": [Function],
+                      "keyMaker": Trie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                      "parent": null,
+                    },
+                    "policies": Policies {
+                      "cache": [Circular],
+                      "config": Object {
+                        "cache": [Circular],
+                        "dataIdFromObject": [Function],
+                        "possibleTypes": undefined,
+                        "typePolicies": undefined,
+                      },
+                      "fuzzySubtypes": Map {},
+                      "rootIdsByTypename": Object {
+                        "Mutation": "ROOT_MUTATION",
+                        "Query": "ROOT_QUERY",
+                        "Subscription": "ROOT_SUBSCRIPTION",
+                      },
+                      "rootTypenamesById": Object {
+                        "ROOT_MUTATION": "Mutation",
+                        "ROOT_QUERY": "Query",
+                        "ROOT_SUBSCRIPTION": "Subscription",
+                      },
+                      "supertypeMap": Map {},
+                      "toBeAdded": Object {},
+                      "typePolicies": Object {
+                        "Query": Object {
+                          "fields": Object {},
+                        },
+                      },
+                      "usingPossibleTypes": false,
+                    },
+                    "refs": Object {},
+                    "rootIds": Object {
+                      "ROOT_QUERY": 1,
+                    },
+                    "storageTrie": Trie {
+                      "makeData": [Function],
+                      "weakness": true,
+                    },
+                    "stump": [Circular],
+                    "toReference": [Function],
                   },
                   "policies": Policies {
                     "cache": [Circular],
@@ -319,7 +430,7 @@ exports[`Header matches snapshot 1`] = `
                       "cache": [Circular],
                       "dataIdFromObject": [Function],
                       "possibleTypes": undefined,
-                      "typePolicies": Object {},
+                      "typePolicies": undefined,
                     },
                     "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
@@ -342,21 +453,8 @@ exports[`Header matches snapshot 1`] = `
                     "usingPossibleTypes": false,
                   },
                   "refs": Object {},
-                  "rootIds": Object {
-                    "ROOT_QUERY": 1,
-                  },
-                  "sharedLayerGroup": CacheGroup {
-                    "caching": true,
-                    "d": [Function],
-                    "keyMaker": Trie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
-                  },
-                  "storageTrie": Trie {
-                    "makeData": [Function],
-                    "weakness": true,
-                  },
+                  "replay": [Function],
+                  "rootIds": Object {},
                   "toReference": [Function],
                 },
                 "policies": Policies {
@@ -365,7 +463,7 @@ exports[`Header matches snapshot 1`] = `
                     "cache": [Circular],
                     "dataIdFromObject": [Function],
                     "possibleTypes": undefined,
-                    "typePolicies": Object {},
+                    "typePolicies": undefined,
                   },
                   "fuzzySubtypes": Map {},
                   "rootIdsByTypename": Object {
@@ -389,9 +487,32 @@ exports[`Header matches snapshot 1`] = `
                 },
                 "reset": [Function],
                 "storeReader": StoreReader {
+                  "canon": ObjectCanon {
+                    "empty": Object {},
+                    "keysByJSON": Map {
+                      "[]" => Object {
+                        "json": "[]",
+                        "sorted": Array [],
+                      },
+                    },
+                    "known": WeakSet {},
+                    "passes": WeakMap {},
+                    "pool": Trie {
+                      "data": Object {
+                        "keys": Object {
+                          "json": "[]",
+                          "sorted": Array [],
+                        },
+                      },
+                      "makeData": [Function],
+                      "weak": WeakMap {},
+                      "weakness": true,
+                    },
+                  },
                   "config": Object {
                     "addTypename": false,
                     "cache": [Circular],
+                    "canonizeResults": false,
                   },
                   "executeSelectionSet": [Function],
                   "executeSubSelectedArray": [Function],
@@ -400,9 +521,32 @@ exports[`Header matches snapshot 1`] = `
                 "storeWriter": StoreWriter {
                   "cache": [Circular],
                   "reader": StoreReader {
+                    "canon": ObjectCanon {
+                      "empty": Object {},
+                      "keysByJSON": Map {
+                        "[]" => Object {
+                          "json": "[]",
+                          "sorted": Array [],
+                        },
+                      },
+                      "known": WeakSet {},
+                      "passes": WeakMap {},
+                      "pool": Trie {
+                        "data": Object {
+                          "keys": Object {
+                            "json": "[]",
+                            "sorted": Array [],
+                          },
+                        },
+                        "makeData": [Function],
+                        "weak": WeakMap {},
+                        "weakness": true,
+                      },
+                    },
                     "config": Object {
                       "addTypename": false,
                       "cache": [Circular],
+                      "canonizeResults": false,
                     },
                     "executeSelectionSet": [Function],
                     "executeSubSelectedArray": [Function],
@@ -411,10 +555,21 @@ exports[`Header matches snapshot 1`] = `
                 },
                 "txCount": 0,
                 "typenameDocumentCache": Map {},
-                "watchDep": [Function],
                 "watches": Set {
                   Object {
                     "callback": [Function],
+                    "canonizeResults": undefined,
+                    "lastDiff": Object {
+                      "complete": true,
+                      "missing": undefined,
+                      "result": Object {
+                        "me": Object {
+                          "accessLevel": "ADMIN",
+                          "email": "user@konstellation.com",
+                          "id": "someId",
+                        },
+                      },
+                    },
                     "optimistic": true,
                     "query": Object {
                       "definitions": Array [
@@ -488,7 +643,463 @@ exports[`Header matches snapshot 1`] = `
                         "start": 0,
                       },
                     },
+                    "returnPartialData": true,
                     "variables": Object {},
+                    "watcher": QueryInfo {
+                      "cache": [Circular],
+                      "cancel": [Function],
+                      "dirty": false,
+                      "document": Object {
+                        "definitions": Array [
+                          Object {
+                            "directives": Array [],
+                            "kind": "OperationDefinition",
+                            "name": Object {
+                              "kind": "Name",
+                              "value": "GetMe",
+                            },
+                            "operation": "query",
+                            "selectionSet": Object {
+                              "kind": "SelectionSet",
+                              "selections": Array [
+                                Object {
+                                  "alias": undefined,
+                                  "arguments": Array [],
+                                  "directives": Array [],
+                                  "kind": "Field",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "me",
+                                  },
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "alias": undefined,
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "id",
+                                        },
+                                        "selectionSet": undefined,
+                                      },
+                                      Object {
+                                        "alias": undefined,
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "email",
+                                        },
+                                        "selectionSet": undefined,
+                                      },
+                                      Object {
+                                        "alias": undefined,
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "accessLevel",
+                                        },
+                                        "selectionSet": undefined,
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                            "variableDefinitions": Array [],
+                          },
+                        ],
+                        "kind": "Document",
+                        "loc": Object {
+                          "end": 75,
+                          "start": 0,
+                        },
+                      },
+                      "graphQLErrors": Array [],
+                      "lastDiff": Object {
+                        "diff": Object {
+                          "complete": true,
+                          "missing": undefined,
+                          "result": Object {
+                            "me": Object {
+                              "accessLevel": "ADMIN",
+                              "email": "user@konstellation.com",
+                              "id": "someId",
+                            },
+                          },
+                        },
+                        "options": Object {
+                          "canonizeResults": undefined,
+                          "optimistic": true,
+                          "query": Object {
+                            "definitions": Array [
+                              Object {
+                                "directives": Array [],
+                                "kind": "OperationDefinition",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "GetMe",
+                                },
+                                "operation": "query",
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "alias": undefined,
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "me",
+                                      },
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "id",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "email",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "accessLevel",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  ],
+                                },
+                                "variableDefinitions": Array [],
+                              },
+                            ],
+                            "kind": "Document",
+                            "loc": Object {
+                              "end": 75,
+                              "start": 0,
+                            },
+                          },
+                          "returnPartialData": true,
+                          "variables": Object {},
+                        },
+                      },
+                      "lastRequestId": 1,
+                      "lastWatch": [Circular],
+                      "lastWrite": Object {
+                        "dmCount": 0,
+                        "result": Object {
+                          "data": Object {
+                            "me": Object {
+                              "accessLevel": "ADMIN",
+                              "email": "user@konstellation.com",
+                              "id": "someId",
+                            },
+                          },
+                        },
+                        "variables": Object {},
+                      },
+                      "listeners": Set {
+                        [Function],
+                      },
+                      "networkError": null,
+                      "networkStatus": 7,
+                      "observableQuery": ObservableQuery {
+                        "_subscriber": [Function],
+                        "concast": Concast {
+                          "_subscriber": [Function],
+                          "addCount": 1,
+                          "cancel": [Function],
+                          "handlers": Object {
+                            "complete": [Function],
+                            "error": [Function],
+                            "next": [Function],
+                          },
+                          "latest": Array [
+                            "next",
+                            Object {
+                              "data": Object {
+                                "me": Object {
+                                  "accessLevel": "ADMIN",
+                                  "email": "user@konstellation.com",
+                                  "id": "someId",
+                                },
+                              },
+                              "loading": false,
+                              "networkStatus": 7,
+                            },
+                          ],
+                          "observers": Set {
+                            Object {
+                              "error": [Function],
+                              "next": [Function],
+                            },
+                          },
+                          "promise": Promise {},
+                          "reject": [Function],
+                          "resolve": [Function],
+                          "sources": Array [],
+                          "sub": null,
+                        },
+                        "initialFetchPolicy": "cache-first",
+                        "isTornDown": false,
+                        "last": Object {
+                          "result": Object {
+                            "data": Object {
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                            "loading": false,
+                            "networkStatus": 7,
+                          },
+                          "variables": Object {},
+                        },
+                        "observer": Object {
+                          "error": [Function],
+                          "next": [Function],
+                        },
+                        "observers": Set {
+                          SubscriptionObserver {
+                            "_subscription": Subscription {
+                              "_cleanup": [Function],
+                              "_observer": Object {
+                                "complete": undefined,
+                                "error": [Function],
+                                "next": [Function],
+                              },
+                              "_queue": undefined,
+                              "_state": "ready",
+                            },
+                          },
+                        },
+                        "options": Object {
+                          "fetchPolicy": "cache-first",
+                          "notifyOnNetworkStatusChange": false,
+                          "query": Object {
+                            "definitions": Array [
+                              Object {
+                                "directives": Array [],
+                                "kind": "OperationDefinition",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "GetMe",
+                                },
+                                "operation": "query",
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "alias": undefined,
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "me",
+                                      },
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "id",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "email",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "accessLevel",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  ],
+                                },
+                                "variableDefinitions": Array [],
+                              },
+                            ],
+                            "kind": "Document",
+                            "loc": Object {
+                              "end": 75,
+                              "start": 0,
+                            },
+                          },
+                          "variables": Object {},
+                        },
+                        "queryId": "1",
+                        "queryInfo": [Circular],
+                        "queryManager": QueryManager {
+                          "assumeImmutableResults": false,
+                          "cache": [Circular],
+                          "clientAwareness": Object {
+                            "name": undefined,
+                            "version": undefined,
+                          },
+                          "fetchCancelFns": Map {},
+                          "inFlightLinkObservables": Map {},
+                          "link": MockLink {
+                            "addTypename": false,
+                            "mockedResponsesByKey": Object {
+                              "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
+                            },
+                            "operation": Object {
+                              "extensions": Object {},
+                              "operationName": "GetMe",
+                              "query": Object {
+                                "definitions": Array [
+                                  Object {
+                                    "directives": Array [],
+                                    "kind": "OperationDefinition",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "GetMe",
+                                    },
+                                    "operation": "query",
+                                    "selectionSet": Object {
+                                      "kind": "SelectionSet",
+                                      "selections": Array [
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "me",
+                                          },
+                                          "selectionSet": Object {
+                                            "kind": "SelectionSet",
+                                            "selections": Array [
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "id",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "email",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "accessLevel",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                    "variableDefinitions": Array [],
+                                  },
+                                ],
+                                "kind": "Document",
+                                "loc": Object {
+                                  "end": 75,
+                                  "start": 0,
+                                },
+                              },
+                              "variables": Object {},
+                            },
+                          },
+                          "localState": LocalState {
+                            "cache": [Circular],
+                            "client": [Circular],
+                          },
+                          "mutationIdCounter": 1,
+                          "mutationStore": Object {},
+                          "onBroadcast": [Function],
+                          "queries": Map {
+                            "1" => [Circular],
+                          },
+                          "queryDeduplication": true,
+                          "queryIdCounter": 2,
+                          "requestIdCounter": 2,
+                          "ssrMode": false,
+                          "transformCache": WeakMap {},
+                        },
+                        "queryName": "GetMe",
+                        "subscriptions": Set {},
+                      },
+                      "oqListener": [Function],
+                      "queryId": "1",
+                      "stopped": false,
+                      "subscriptions": Set {},
+                      "variables": Object {},
+                    },
                   },
                 },
               },
@@ -583,9 +1194,9 @@ exports[`Header matches snapshot 1`] = `
                   "addTypename": false,
                   "config": Object {
                     "addTypename": false,
+                    "canonizeResults": false,
                     "dataIdFromObject": [Function],
                     "resultCaching": true,
-                    "typePolicies": Object {},
                   },
                   "data": Root {
                     "canRead": [Function],
@@ -605,9 +1216,9 @@ exports[`Header matches snapshot 1`] = `
                       "d": [Function],
                       "keyMaker": Trie {
                         "makeData": [Function],
-                        "weak": WeakMap {},
                         "weakness": true,
                       },
+                      "parent": null,
                     },
                     "policies": Policies {
                       "cache": [Circular],
@@ -615,7 +1226,7 @@ exports[`Header matches snapshot 1`] = `
                         "cache": [Circular],
                         "dataIdFromObject": [Function],
                         "possibleTypes": undefined,
-                        "typePolicies": Object {},
+                        "typePolicies": undefined,
                       },
                       "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
@@ -641,17 +1252,66 @@ exports[`Header matches snapshot 1`] = `
                     "rootIds": Object {
                       "ROOT_QUERY": 1,
                     },
-                    "sharedLayerGroup": CacheGroup {
-                      "caching": true,
-                      "d": [Function],
-                      "keyMaker": Trie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
-                    },
                     "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
+                    },
+                    "stump": Stump {
+                      "canRead": [Function],
+                      "data": Object {},
+                      "getFieldValue": [Function],
+                      "group": CacheGroup {
+                        "caching": true,
+                        "d": [Function],
+                        "keyMaker": Trie {
+                          "makeData": [Function],
+                          "weak": WeakMap {},
+                          "weakness": true,
+                        },
+                        "parent": CacheGroup {
+                          "caching": true,
+                          "d": [Function],
+                          "keyMaker": Trie {
+                            "makeData": [Function],
+                            "weakness": true,
+                          },
+                          "parent": null,
+                        },
+                      },
+                      "id": "EntityStore.Stump",
+                      "parent": [Circular],
+                      "policies": Policies {
+                        "cache": [Circular],
+                        "config": Object {
+                          "cache": [Circular],
+                          "dataIdFromObject": [Function],
+                          "possibleTypes": undefined,
+                          "typePolicies": undefined,
+                        },
+                        "fuzzySubtypes": Map {},
+                        "rootIdsByTypename": Object {
+                          "Mutation": "ROOT_MUTATION",
+                          "Query": "ROOT_QUERY",
+                          "Subscription": "ROOT_SUBSCRIPTION",
+                        },
+                        "rootTypenamesById": Object {
+                          "ROOT_MUTATION": "Mutation",
+                          "ROOT_QUERY": "Query",
+                          "ROOT_SUBSCRIPTION": "Subscription",
+                        },
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
+                        "typePolicies": Object {
+                          "Query": Object {
+                            "fields": Object {},
+                          },
+                        },
+                        "usingPossibleTypes": false,
+                      },
+                      "refs": Object {},
+                      "replay": [Function],
+                      "rootIds": Object {},
+                      "toReference": [Function],
                     },
                     "toReference": [Function],
                   },
@@ -660,18 +1320,9 @@ exports[`Header matches snapshot 1`] = `
                   "makeVar": [Function],
                   "maybeBroadcastWatch": [Function],
                   "modify": [Function],
-                  "optimisticData": Root {
+                  "optimisticData": Stump {
                     "canRead": [Function],
-                    "data": Object {
-                      "ROOT_QUERY": Object {
-                        "__typename": "Query",
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
+                    "data": Object {},
                     "getFieldValue": [Function],
                     "group": CacheGroup {
                       "caching": true,
@@ -681,6 +1332,77 @@ exports[`Header matches snapshot 1`] = `
                         "weak": WeakMap {},
                         "weakness": true,
                       },
+                      "parent": CacheGroup {
+                        "caching": true,
+                        "d": [Function],
+                        "keyMaker": Trie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
+                        "parent": null,
+                      },
+                    },
+                    "id": "EntityStore.Stump",
+                    "parent": Root {
+                      "canRead": [Function],
+                      "data": Object {
+                        "ROOT_QUERY": Object {
+                          "__typename": "Query",
+                          "me": Object {
+                            "accessLevel": "ADMIN",
+                            "email": "user@konstellation.com",
+                            "id": "someId",
+                          },
+                        },
+                      },
+                      "getFieldValue": [Function],
+                      "group": CacheGroup {
+                        "caching": true,
+                        "d": [Function],
+                        "keyMaker": Trie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
+                        "parent": null,
+                      },
+                      "policies": Policies {
+                        "cache": [Circular],
+                        "config": Object {
+                          "cache": [Circular],
+                          "dataIdFromObject": [Function],
+                          "possibleTypes": undefined,
+                          "typePolicies": undefined,
+                        },
+                        "fuzzySubtypes": Map {},
+                        "rootIdsByTypename": Object {
+                          "Mutation": "ROOT_MUTATION",
+                          "Query": "ROOT_QUERY",
+                          "Subscription": "ROOT_SUBSCRIPTION",
+                        },
+                        "rootTypenamesById": Object {
+                          "ROOT_MUTATION": "Mutation",
+                          "ROOT_QUERY": "Query",
+                          "ROOT_SUBSCRIPTION": "Subscription",
+                        },
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
+                        "typePolicies": Object {
+                          "Query": Object {
+                            "fields": Object {},
+                          },
+                        },
+                        "usingPossibleTypes": false,
+                      },
+                      "refs": Object {},
+                      "rootIds": Object {
+                        "ROOT_QUERY": 1,
+                      },
+                      "storageTrie": Trie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                      "stump": [Circular],
+                      "toReference": [Function],
                     },
                     "policies": Policies {
                       "cache": [Circular],
@@ -688,7 +1410,7 @@ exports[`Header matches snapshot 1`] = `
                         "cache": [Circular],
                         "dataIdFromObject": [Function],
                         "possibleTypes": undefined,
-                        "typePolicies": Object {},
+                        "typePolicies": undefined,
                       },
                       "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
@@ -711,21 +1433,8 @@ exports[`Header matches snapshot 1`] = `
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
-                    "rootIds": Object {
-                      "ROOT_QUERY": 1,
-                    },
-                    "sharedLayerGroup": CacheGroup {
-                      "caching": true,
-                      "d": [Function],
-                      "keyMaker": Trie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
-                    },
-                    "storageTrie": Trie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
+                    "replay": [Function],
+                    "rootIds": Object {},
                     "toReference": [Function],
                   },
                   "policies": Policies {
@@ -734,7 +1443,7 @@ exports[`Header matches snapshot 1`] = `
                       "cache": [Circular],
                       "dataIdFromObject": [Function],
                       "possibleTypes": undefined,
-                      "typePolicies": Object {},
+                      "typePolicies": undefined,
                     },
                     "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
@@ -758,9 +1467,32 @@ exports[`Header matches snapshot 1`] = `
                   },
                   "reset": [Function],
                   "storeReader": StoreReader {
+                    "canon": ObjectCanon {
+                      "empty": Object {},
+                      "keysByJSON": Map {
+                        "[]" => Object {
+                          "json": "[]",
+                          "sorted": Array [],
+                        },
+                      },
+                      "known": WeakSet {},
+                      "passes": WeakMap {},
+                      "pool": Trie {
+                        "data": Object {
+                          "keys": Object {
+                            "json": "[]",
+                            "sorted": Array [],
+                          },
+                        },
+                        "makeData": [Function],
+                        "weak": WeakMap {},
+                        "weakness": true,
+                      },
+                    },
                     "config": Object {
                       "addTypename": false,
                       "cache": [Circular],
+                      "canonizeResults": false,
                     },
                     "executeSelectionSet": [Function],
                     "executeSubSelectedArray": [Function],
@@ -769,9 +1501,32 @@ exports[`Header matches snapshot 1`] = `
                   "storeWriter": StoreWriter {
                     "cache": [Circular],
                     "reader": StoreReader {
+                      "canon": ObjectCanon {
+                        "empty": Object {},
+                        "keysByJSON": Map {
+                          "[]" => Object {
+                            "json": "[]",
+                            "sorted": Array [],
+                          },
+                        },
+                        "known": WeakSet {},
+                        "passes": WeakMap {},
+                        "pool": Trie {
+                          "data": Object {
+                            "keys": Object {
+                              "json": "[]",
+                              "sorted": Array [],
+                            },
+                          },
+                          "makeData": [Function],
+                          "weak": WeakMap {},
+                          "weakness": true,
+                        },
+                      },
                       "config": Object {
                         "addTypename": false,
                         "cache": [Circular],
+                        "canonizeResults": false,
                       },
                       "executeSelectionSet": [Function],
                       "executeSubSelectedArray": [Function],
@@ -780,10 +1535,21 @@ exports[`Header matches snapshot 1`] = `
                   },
                   "txCount": 0,
                   "typenameDocumentCache": Map {},
-                  "watchDep": [Function],
                   "watches": Set {
                     Object {
                       "callback": [Function],
+                      "canonizeResults": undefined,
+                      "lastDiff": Object {
+                        "complete": true,
+                        "missing": undefined,
+                        "result": Object {
+                          "me": Object {
+                            "accessLevel": "ADMIN",
+                            "email": "user@konstellation.com",
+                            "id": "someId",
+                          },
+                        },
+                      },
                       "optimistic": true,
                       "query": Object {
                         "definitions": Array [
@@ -857,7 +1623,460 @@ exports[`Header matches snapshot 1`] = `
                           "start": 0,
                         },
                       },
+                      "returnPartialData": true,
                       "variables": Object {},
+                      "watcher": QueryInfo {
+                        "cache": [Circular],
+                        "cancel": [Function],
+                        "dirty": false,
+                        "document": Object {
+                          "definitions": Array [
+                            Object {
+                              "directives": Array [],
+                              "kind": "OperationDefinition",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "GetMe",
+                              },
+                              "operation": "query",
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "alias": undefined,
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "me",
+                                    },
+                                    "selectionSet": Object {
+                                      "kind": "SelectionSet",
+                                      "selections": Array [
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "id",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "email",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "accessLevel",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                              "variableDefinitions": Array [],
+                            },
+                          ],
+                          "kind": "Document",
+                          "loc": Object {
+                            "end": 75,
+                            "start": 0,
+                          },
+                        },
+                        "graphQLErrors": Array [],
+                        "lastDiff": Object {
+                          "diff": Object {
+                            "complete": true,
+                            "missing": undefined,
+                            "result": Object {
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                          },
+                          "options": Object {
+                            "canonizeResults": undefined,
+                            "optimistic": true,
+                            "query": Object {
+                              "definitions": Array [
+                                Object {
+                                  "directives": Array [],
+                                  "kind": "OperationDefinition",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "GetMe",
+                                  },
+                                  "operation": "query",
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "alias": undefined,
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "me",
+                                        },
+                                        "selectionSet": Object {
+                                          "kind": "SelectionSet",
+                                          "selections": Array [
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "id",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "email",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "accessLevel",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    ],
+                                  },
+                                  "variableDefinitions": Array [],
+                                },
+                              ],
+                              "kind": "Document",
+                              "loc": Object {
+                                "end": 75,
+                                "start": 0,
+                              },
+                            },
+                            "returnPartialData": true,
+                            "variables": Object {},
+                          },
+                        },
+                        "lastRequestId": 1,
+                        "lastWatch": [Circular],
+                        "lastWrite": Object {
+                          "dmCount": 0,
+                          "result": Object {
+                            "data": Object {
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                          },
+                          "variables": Object {},
+                        },
+                        "listeners": Set {
+                          [Function],
+                        },
+                        "networkError": null,
+                        "networkStatus": 7,
+                        "observableQuery": ObservableQuery {
+                          "_subscriber": [Function],
+                          "concast": Concast {
+                            "_subscriber": [Function],
+                            "addCount": 1,
+                            "cancel": [Function],
+                            "handlers": Object {
+                              "complete": [Function],
+                              "error": [Function],
+                              "next": [Function],
+                            },
+                            "latest": Array [
+                              "next",
+                              Object {
+                                "data": Object {
+                                  "me": Object {
+                                    "accessLevel": "ADMIN",
+                                    "email": "user@konstellation.com",
+                                    "id": "someId",
+                                  },
+                                },
+                                "loading": false,
+                                "networkStatus": 7,
+                              },
+                            ],
+                            "observers": Set {
+                              Object {
+                                "error": [Function],
+                                "next": [Function],
+                              },
+                            },
+                            "promise": Promise {},
+                            "reject": [Function],
+                            "resolve": [Function],
+                            "sources": Array [],
+                            "sub": null,
+                          },
+                          "initialFetchPolicy": "cache-first",
+                          "isTornDown": false,
+                          "last": Object {
+                            "result": Object {
+                              "data": Object {
+                                "me": Object {
+                                  "accessLevel": "ADMIN",
+                                  "email": "user@konstellation.com",
+                                  "id": "someId",
+                                },
+                              },
+                              "loading": false,
+                              "networkStatus": 7,
+                            },
+                            "variables": Object {},
+                          },
+                          "observer": Object {
+                            "error": [Function],
+                            "next": [Function],
+                          },
+                          "observers": Set {
+                            SubscriptionObserver {
+                              "_subscription": Subscription {
+                                "_cleanup": [Function],
+                                "_observer": Object {
+                                  "complete": undefined,
+                                  "error": [Function],
+                                  "next": [Function],
+                                },
+                                "_queue": undefined,
+                                "_state": "ready",
+                              },
+                            },
+                          },
+                          "options": Object {
+                            "fetchPolicy": "cache-first",
+                            "notifyOnNetworkStatusChange": false,
+                            "query": Object {
+                              "definitions": Array [
+                                Object {
+                                  "directives": Array [],
+                                  "kind": "OperationDefinition",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "GetMe",
+                                  },
+                                  "operation": "query",
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "alias": undefined,
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "me",
+                                        },
+                                        "selectionSet": Object {
+                                          "kind": "SelectionSet",
+                                          "selections": Array [
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "id",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "email",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "accessLevel",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    ],
+                                  },
+                                  "variableDefinitions": Array [],
+                                },
+                              ],
+                              "kind": "Document",
+                              "loc": Object {
+                                "end": 75,
+                                "start": 0,
+                              },
+                            },
+                            "variables": Object {},
+                          },
+                          "queryId": "1",
+                          "queryInfo": [Circular],
+                          "queryManager": QueryManager {
+                            "assumeImmutableResults": false,
+                            "cache": [Circular],
+                            "clientAwareness": Object {
+                              "name": undefined,
+                              "version": undefined,
+                            },
+                            "fetchCancelFns": Map {},
+                            "inFlightLinkObservables": Map {},
+                            "link": MockLink {
+                              "addTypename": false,
+                              "mockedResponsesByKey": Object {
+                                "{\\"query\\":\\"query GetMe {\\\\n  me {\\\\n    id\\\\n    email\\\\n    accessLevel\\\\n  }\\\\n}\\\\n\\"}": Array [],
+                              },
+                              "operation": Object {
+                                "extensions": Object {},
+                                "operationName": "GetMe",
+                                "query": Object {
+                                  "definitions": Array [
+                                    Object {
+                                      "directives": Array [],
+                                      "kind": "OperationDefinition",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "GetMe",
+                                      },
+                                      "operation": "query",
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "me",
+                                            },
+                                            "selectionSet": Object {
+                                              "kind": "SelectionSet",
+                                              "selections": Array [
+                                                Object {
+                                                  "alias": undefined,
+                                                  "arguments": Array [],
+                                                  "directives": Array [],
+                                                  "kind": "Field",
+                                                  "name": Object {
+                                                    "kind": "Name",
+                                                    "value": "id",
+                                                  },
+                                                  "selectionSet": undefined,
+                                                },
+                                                Object {
+                                                  "alias": undefined,
+                                                  "arguments": Array [],
+                                                  "directives": Array [],
+                                                  "kind": "Field",
+                                                  "name": Object {
+                                                    "kind": "Name",
+                                                    "value": "email",
+                                                  },
+                                                  "selectionSet": undefined,
+                                                },
+                                                Object {
+                                                  "alias": undefined,
+                                                  "arguments": Array [],
+                                                  "directives": Array [],
+                                                  "kind": "Field",
+                                                  "name": Object {
+                                                    "kind": "Name",
+                                                    "value": "accessLevel",
+                                                  },
+                                                  "selectionSet": undefined,
+                                                },
+                                              ],
+                                            },
+                                          },
+                                        ],
+                                      },
+                                      "variableDefinitions": Array [],
+                                    },
+                                  ],
+                                  "kind": "Document",
+                                  "loc": Object {
+                                    "end": 75,
+                                    "start": 0,
+                                  },
+                                },
+                                "variables": Object {},
+                              },
+                            },
+                            "localState": [Circular],
+                            "mutationIdCounter": 1,
+                            "mutationStore": Object {},
+                            "onBroadcast": [Function],
+                            "queries": Map {
+                              "1" => [Circular],
+                            },
+                            "queryDeduplication": true,
+                            "queryIdCounter": 2,
+                            "requestIdCounter": 2,
+                            "ssrMode": false,
+                            "transformCache": WeakMap {},
+                          },
+                          "queryName": "GetMe",
+                          "subscriptions": Set {},
+                        },
+                        "oqListener": [Function],
+                        "queryId": "1",
+                        "stopped": false,
+                        "subscriptions": Set {},
+                        "variables": Object {},
+                      },
                     },
                   },
                 },
@@ -872,9 +2091,9 @@ exports[`Header matches snapshot 1`] = `
                   "addTypename": false,
                   "config": Object {
                     "addTypename": false,
+                    "canonizeResults": false,
                     "dataIdFromObject": [Function],
                     "resultCaching": true,
-                    "typePolicies": Object {},
                   },
                   "data": Root {
                     "canRead": [Function],
@@ -894,9 +2113,9 @@ exports[`Header matches snapshot 1`] = `
                       "d": [Function],
                       "keyMaker": Trie {
                         "makeData": [Function],
-                        "weak": WeakMap {},
                         "weakness": true,
                       },
+                      "parent": null,
                     },
                     "policies": Policies {
                       "cache": [Circular],
@@ -904,7 +2123,7 @@ exports[`Header matches snapshot 1`] = `
                         "cache": [Circular],
                         "dataIdFromObject": [Function],
                         "possibleTypes": undefined,
-                        "typePolicies": Object {},
+                        "typePolicies": undefined,
                       },
                       "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
@@ -930,17 +2149,66 @@ exports[`Header matches snapshot 1`] = `
                     "rootIds": Object {
                       "ROOT_QUERY": 1,
                     },
-                    "sharedLayerGroup": CacheGroup {
-                      "caching": true,
-                      "d": [Function],
-                      "keyMaker": Trie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
-                    },
                     "storageTrie": Trie {
                       "makeData": [Function],
                       "weakness": true,
+                    },
+                    "stump": Stump {
+                      "canRead": [Function],
+                      "data": Object {},
+                      "getFieldValue": [Function],
+                      "group": CacheGroup {
+                        "caching": true,
+                        "d": [Function],
+                        "keyMaker": Trie {
+                          "makeData": [Function],
+                          "weak": WeakMap {},
+                          "weakness": true,
+                        },
+                        "parent": CacheGroup {
+                          "caching": true,
+                          "d": [Function],
+                          "keyMaker": Trie {
+                            "makeData": [Function],
+                            "weakness": true,
+                          },
+                          "parent": null,
+                        },
+                      },
+                      "id": "EntityStore.Stump",
+                      "parent": [Circular],
+                      "policies": Policies {
+                        "cache": [Circular],
+                        "config": Object {
+                          "cache": [Circular],
+                          "dataIdFromObject": [Function],
+                          "possibleTypes": undefined,
+                          "typePolicies": undefined,
+                        },
+                        "fuzzySubtypes": Map {},
+                        "rootIdsByTypename": Object {
+                          "Mutation": "ROOT_MUTATION",
+                          "Query": "ROOT_QUERY",
+                          "Subscription": "ROOT_SUBSCRIPTION",
+                        },
+                        "rootTypenamesById": Object {
+                          "ROOT_MUTATION": "Mutation",
+                          "ROOT_QUERY": "Query",
+                          "ROOT_SUBSCRIPTION": "Subscription",
+                        },
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
+                        "typePolicies": Object {
+                          "Query": Object {
+                            "fields": Object {},
+                          },
+                        },
+                        "usingPossibleTypes": false,
+                      },
+                      "refs": Object {},
+                      "replay": [Function],
+                      "rootIds": Object {},
+                      "toReference": [Function],
                     },
                     "toReference": [Function],
                   },
@@ -949,18 +2217,9 @@ exports[`Header matches snapshot 1`] = `
                   "makeVar": [Function],
                   "maybeBroadcastWatch": [Function],
                   "modify": [Function],
-                  "optimisticData": Root {
+                  "optimisticData": Stump {
                     "canRead": [Function],
-                    "data": Object {
-                      "ROOT_QUERY": Object {
-                        "__typename": "Query",
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
+                    "data": Object {},
                     "getFieldValue": [Function],
                     "group": CacheGroup {
                       "caching": true,
@@ -970,6 +2229,77 @@ exports[`Header matches snapshot 1`] = `
                         "weak": WeakMap {},
                         "weakness": true,
                       },
+                      "parent": CacheGroup {
+                        "caching": true,
+                        "d": [Function],
+                        "keyMaker": Trie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
+                        "parent": null,
+                      },
+                    },
+                    "id": "EntityStore.Stump",
+                    "parent": Root {
+                      "canRead": [Function],
+                      "data": Object {
+                        "ROOT_QUERY": Object {
+                          "__typename": "Query",
+                          "me": Object {
+                            "accessLevel": "ADMIN",
+                            "email": "user@konstellation.com",
+                            "id": "someId",
+                          },
+                        },
+                      },
+                      "getFieldValue": [Function],
+                      "group": CacheGroup {
+                        "caching": true,
+                        "d": [Function],
+                        "keyMaker": Trie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
+                        "parent": null,
+                      },
+                      "policies": Policies {
+                        "cache": [Circular],
+                        "config": Object {
+                          "cache": [Circular],
+                          "dataIdFromObject": [Function],
+                          "possibleTypes": undefined,
+                          "typePolicies": undefined,
+                        },
+                        "fuzzySubtypes": Map {},
+                        "rootIdsByTypename": Object {
+                          "Mutation": "ROOT_MUTATION",
+                          "Query": "ROOT_QUERY",
+                          "Subscription": "ROOT_SUBSCRIPTION",
+                        },
+                        "rootTypenamesById": Object {
+                          "ROOT_MUTATION": "Mutation",
+                          "ROOT_QUERY": "Query",
+                          "ROOT_SUBSCRIPTION": "Subscription",
+                        },
+                        "supertypeMap": Map {},
+                        "toBeAdded": Object {},
+                        "typePolicies": Object {
+                          "Query": Object {
+                            "fields": Object {},
+                          },
+                        },
+                        "usingPossibleTypes": false,
+                      },
+                      "refs": Object {},
+                      "rootIds": Object {
+                        "ROOT_QUERY": 1,
+                      },
+                      "storageTrie": Trie {
+                        "makeData": [Function],
+                        "weakness": true,
+                      },
+                      "stump": [Circular],
+                      "toReference": [Function],
                     },
                     "policies": Policies {
                       "cache": [Circular],
@@ -977,7 +2307,7 @@ exports[`Header matches snapshot 1`] = `
                         "cache": [Circular],
                         "dataIdFromObject": [Function],
                         "possibleTypes": undefined,
-                        "typePolicies": Object {},
+                        "typePolicies": undefined,
                       },
                       "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
@@ -1000,21 +2330,8 @@ exports[`Header matches snapshot 1`] = `
                       "usingPossibleTypes": false,
                     },
                     "refs": Object {},
-                    "rootIds": Object {
-                      "ROOT_QUERY": 1,
-                    },
-                    "sharedLayerGroup": CacheGroup {
-                      "caching": true,
-                      "d": [Function],
-                      "keyMaker": Trie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
-                    },
-                    "storageTrie": Trie {
-                      "makeData": [Function],
-                      "weakness": true,
-                    },
+                    "replay": [Function],
+                    "rootIds": Object {},
                     "toReference": [Function],
                   },
                   "policies": Policies {
@@ -1023,7 +2340,7 @@ exports[`Header matches snapshot 1`] = `
                       "cache": [Circular],
                       "dataIdFromObject": [Function],
                       "possibleTypes": undefined,
-                      "typePolicies": Object {},
+                      "typePolicies": undefined,
                     },
                     "fuzzySubtypes": Map {},
                     "rootIdsByTypename": Object {
@@ -1047,9 +2364,32 @@ exports[`Header matches snapshot 1`] = `
                   },
                   "reset": [Function],
                   "storeReader": StoreReader {
+                    "canon": ObjectCanon {
+                      "empty": Object {},
+                      "keysByJSON": Map {
+                        "[]" => Object {
+                          "json": "[]",
+                          "sorted": Array [],
+                        },
+                      },
+                      "known": WeakSet {},
+                      "passes": WeakMap {},
+                      "pool": Trie {
+                        "data": Object {
+                          "keys": Object {
+                            "json": "[]",
+                            "sorted": Array [],
+                          },
+                        },
+                        "makeData": [Function],
+                        "weak": WeakMap {},
+                        "weakness": true,
+                      },
+                    },
                     "config": Object {
                       "addTypename": false,
                       "cache": [Circular],
+                      "canonizeResults": false,
                     },
                     "executeSelectionSet": [Function],
                     "executeSubSelectedArray": [Function],
@@ -1058,9 +2398,32 @@ exports[`Header matches snapshot 1`] = `
                   "storeWriter": StoreWriter {
                     "cache": [Circular],
                     "reader": StoreReader {
+                      "canon": ObjectCanon {
+                        "empty": Object {},
+                        "keysByJSON": Map {
+                          "[]" => Object {
+                            "json": "[]",
+                            "sorted": Array [],
+                          },
+                        },
+                        "known": WeakSet {},
+                        "passes": WeakMap {},
+                        "pool": Trie {
+                          "data": Object {
+                            "keys": Object {
+                              "json": "[]",
+                              "sorted": Array [],
+                            },
+                          },
+                          "makeData": [Function],
+                          "weak": WeakMap {},
+                          "weakness": true,
+                        },
+                      },
                       "config": Object {
                         "addTypename": false,
                         "cache": [Circular],
+                        "canonizeResults": false,
                       },
                       "executeSelectionSet": [Function],
                       "executeSubSelectedArray": [Function],
@@ -1069,10 +2432,21 @@ exports[`Header matches snapshot 1`] = `
                   },
                   "txCount": 0,
                   "typenameDocumentCache": Map {},
-                  "watchDep": [Function],
                   "watches": Set {
                     Object {
                       "callback": [Function],
+                      "canonizeResults": undefined,
+                      "lastDiff": Object {
+                        "complete": true,
+                        "missing": undefined,
+                        "result": Object {
+                          "me": Object {
+                            "accessLevel": "ADMIN",
+                            "email": "user@konstellation.com",
+                            "id": "someId",
+                          },
+                        },
+                      },
                       "optimistic": true,
                       "query": Object {
                         "definitions": Array [
@@ -1146,7 +2520,356 @@ exports[`Header matches snapshot 1`] = `
                           "start": 0,
                         },
                       },
+                      "returnPartialData": true,
                       "variables": Object {},
+                      "watcher": QueryInfo {
+                        "cache": [Circular],
+                        "cancel": [Function],
+                        "dirty": false,
+                        "document": Object {
+                          "definitions": Array [
+                            Object {
+                              "directives": Array [],
+                              "kind": "OperationDefinition",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "GetMe",
+                              },
+                              "operation": "query",
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "alias": undefined,
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "me",
+                                    },
+                                    "selectionSet": Object {
+                                      "kind": "SelectionSet",
+                                      "selections": Array [
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "id",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "email",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "accessLevel",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                              "variableDefinitions": Array [],
+                            },
+                          ],
+                          "kind": "Document",
+                          "loc": Object {
+                            "end": 75,
+                            "start": 0,
+                          },
+                        },
+                        "graphQLErrors": Array [],
+                        "lastDiff": Object {
+                          "diff": Object {
+                            "complete": true,
+                            "missing": undefined,
+                            "result": Object {
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                          },
+                          "options": Object {
+                            "canonizeResults": undefined,
+                            "optimistic": true,
+                            "query": Object {
+                              "definitions": Array [
+                                Object {
+                                  "directives": Array [],
+                                  "kind": "OperationDefinition",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "GetMe",
+                                  },
+                                  "operation": "query",
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "alias": undefined,
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "me",
+                                        },
+                                        "selectionSet": Object {
+                                          "kind": "SelectionSet",
+                                          "selections": Array [
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "id",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "email",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "accessLevel",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    ],
+                                  },
+                                  "variableDefinitions": Array [],
+                                },
+                              ],
+                              "kind": "Document",
+                              "loc": Object {
+                                "end": 75,
+                                "start": 0,
+                              },
+                            },
+                            "returnPartialData": true,
+                            "variables": Object {},
+                          },
+                        },
+                        "lastRequestId": 1,
+                        "lastWatch": [Circular],
+                        "lastWrite": Object {
+                          "dmCount": 0,
+                          "result": Object {
+                            "data": Object {
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                          },
+                          "variables": Object {},
+                        },
+                        "listeners": Set {
+                          [Function],
+                        },
+                        "networkError": null,
+                        "networkStatus": 7,
+                        "observableQuery": ObservableQuery {
+                          "_subscriber": [Function],
+                          "concast": Concast {
+                            "_subscriber": [Function],
+                            "addCount": 1,
+                            "cancel": [Function],
+                            "handlers": Object {
+                              "complete": [Function],
+                              "error": [Function],
+                              "next": [Function],
+                            },
+                            "latest": Array [
+                              "next",
+                              Object {
+                                "data": Object {
+                                  "me": Object {
+                                    "accessLevel": "ADMIN",
+                                    "email": "user@konstellation.com",
+                                    "id": "someId",
+                                  },
+                                },
+                                "loading": false,
+                                "networkStatus": 7,
+                              },
+                            ],
+                            "observers": Set {
+                              Object {
+                                "error": [Function],
+                                "next": [Function],
+                              },
+                            },
+                            "promise": Promise {},
+                            "reject": [Function],
+                            "resolve": [Function],
+                            "sources": Array [],
+                            "sub": null,
+                          },
+                          "initialFetchPolicy": "cache-first",
+                          "isTornDown": false,
+                          "last": Object {
+                            "result": Object {
+                              "data": Object {
+                                "me": Object {
+                                  "accessLevel": "ADMIN",
+                                  "email": "user@konstellation.com",
+                                  "id": "someId",
+                                },
+                              },
+                              "loading": false,
+                              "networkStatus": 7,
+                            },
+                            "variables": Object {},
+                          },
+                          "observer": Object {
+                            "error": [Function],
+                            "next": [Function],
+                          },
+                          "observers": Set {
+                            SubscriptionObserver {
+                              "_subscription": Subscription {
+                                "_cleanup": [Function],
+                                "_observer": Object {
+                                  "complete": undefined,
+                                  "error": [Function],
+                                  "next": [Function],
+                                },
+                                "_queue": undefined,
+                                "_state": "ready",
+                              },
+                            },
+                          },
+                          "options": Object {
+                            "fetchPolicy": "cache-first",
+                            "notifyOnNetworkStatusChange": false,
+                            "query": Object {
+                              "definitions": Array [
+                                Object {
+                                  "directives": Array [],
+                                  "kind": "OperationDefinition",
+                                  "name": Object {
+                                    "kind": "Name",
+                                    "value": "GetMe",
+                                  },
+                                  "operation": "query",
+                                  "selectionSet": Object {
+                                    "kind": "SelectionSet",
+                                    "selections": Array [
+                                      Object {
+                                        "alias": undefined,
+                                        "arguments": Array [],
+                                        "directives": Array [],
+                                        "kind": "Field",
+                                        "name": Object {
+                                          "kind": "Name",
+                                          "value": "me",
+                                        },
+                                        "selectionSet": Object {
+                                          "kind": "SelectionSet",
+                                          "selections": Array [
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "id",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "email",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                            Object {
+                                              "alias": undefined,
+                                              "arguments": Array [],
+                                              "directives": Array [],
+                                              "kind": "Field",
+                                              "name": Object {
+                                                "kind": "Name",
+                                                "value": "accessLevel",
+                                              },
+                                              "selectionSet": undefined,
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    ],
+                                  },
+                                  "variableDefinitions": Array [],
+                                },
+                              ],
+                              "kind": "Document",
+                              "loc": Object {
+                                "end": 75,
+                                "start": 0,
+                              },
+                            },
+                            "variables": Object {},
+                          },
+                          "queryId": "1",
+                          "queryInfo": [Circular],
+                          "queryManager": [Circular],
+                          "queryName": "GetMe",
+                          "subscriptions": Set {},
+                        },
+                        "oqListener": [Function],
+                        "queryId": "1",
+                        "stopped": false,
+                        "subscriptions": Set {},
+                        "variables": Object {},
+                      },
                     },
                   },
                 },
@@ -1244,9 +2967,9 @@ exports[`Header matches snapshot 1`] = `
                     "addTypename": false,
                     "config": Object {
                       "addTypename": false,
+                      "canonizeResults": false,
                       "dataIdFromObject": [Function],
                       "resultCaching": true,
-                      "typePolicies": Object {},
                     },
                     "data": Root {
                       "canRead": [Function],
@@ -1266,9 +2989,9 @@ exports[`Header matches snapshot 1`] = `
                         "d": [Function],
                         "keyMaker": Trie {
                           "makeData": [Function],
-                          "weak": WeakMap {},
                           "weakness": true,
                         },
+                        "parent": null,
                       },
                       "policies": Policies {
                         "cache": [Circular],
@@ -1276,7 +2999,7 @@ exports[`Header matches snapshot 1`] = `
                           "cache": [Circular],
                           "dataIdFromObject": [Function],
                           "possibleTypes": undefined,
-                          "typePolicies": Object {},
+                          "typePolicies": undefined,
                         },
                         "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
@@ -1302,17 +3025,66 @@ exports[`Header matches snapshot 1`] = `
                       "rootIds": Object {
                         "ROOT_QUERY": 1,
                       },
-                      "sharedLayerGroup": CacheGroup {
-                        "caching": true,
-                        "d": [Function],
-                        "keyMaker": Trie {
-                          "makeData": [Function],
-                          "weakness": true,
-                        },
-                      },
                       "storageTrie": Trie {
                         "makeData": [Function],
                         "weakness": true,
+                      },
+                      "stump": Stump {
+                        "canRead": [Function],
+                        "data": Object {},
+                        "getFieldValue": [Function],
+                        "group": CacheGroup {
+                          "caching": true,
+                          "d": [Function],
+                          "keyMaker": Trie {
+                            "makeData": [Function],
+                            "weak": WeakMap {},
+                            "weakness": true,
+                          },
+                          "parent": CacheGroup {
+                            "caching": true,
+                            "d": [Function],
+                            "keyMaker": Trie {
+                              "makeData": [Function],
+                              "weakness": true,
+                            },
+                            "parent": null,
+                          },
+                        },
+                        "id": "EntityStore.Stump",
+                        "parent": [Circular],
+                        "policies": Policies {
+                          "cache": [Circular],
+                          "config": Object {
+                            "cache": [Circular],
+                            "dataIdFromObject": [Function],
+                            "possibleTypes": undefined,
+                            "typePolicies": undefined,
+                          },
+                          "fuzzySubtypes": Map {},
+                          "rootIdsByTypename": Object {
+                            "Mutation": "ROOT_MUTATION",
+                            "Query": "ROOT_QUERY",
+                            "Subscription": "ROOT_SUBSCRIPTION",
+                          },
+                          "rootTypenamesById": Object {
+                            "ROOT_MUTATION": "Mutation",
+                            "ROOT_QUERY": "Query",
+                            "ROOT_SUBSCRIPTION": "Subscription",
+                          },
+                          "supertypeMap": Map {},
+                          "toBeAdded": Object {},
+                          "typePolicies": Object {
+                            "Query": Object {
+                              "fields": Object {},
+                            },
+                          },
+                          "usingPossibleTypes": false,
+                        },
+                        "refs": Object {},
+                        "replay": [Function],
+                        "rootIds": Object {},
+                        "toReference": [Function],
                       },
                       "toReference": [Function],
                     },
@@ -1321,18 +3093,9 @@ exports[`Header matches snapshot 1`] = `
                     "makeVar": [Function],
                     "maybeBroadcastWatch": [Function],
                     "modify": [Function],
-                    "optimisticData": Root {
+                    "optimisticData": Stump {
                       "canRead": [Function],
-                      "data": Object {
-                        "ROOT_QUERY": Object {
-                          "__typename": "Query",
-                          "me": Object {
-                            "accessLevel": "ADMIN",
-                            "email": "user@konstellation.com",
-                            "id": "someId",
-                          },
-                        },
-                      },
+                      "data": Object {},
                       "getFieldValue": [Function],
                       "group": CacheGroup {
                         "caching": true,
@@ -1342,6 +3105,77 @@ exports[`Header matches snapshot 1`] = `
                           "weak": WeakMap {},
                           "weakness": true,
                         },
+                        "parent": CacheGroup {
+                          "caching": true,
+                          "d": [Function],
+                          "keyMaker": Trie {
+                            "makeData": [Function],
+                            "weakness": true,
+                          },
+                          "parent": null,
+                        },
+                      },
+                      "id": "EntityStore.Stump",
+                      "parent": Root {
+                        "canRead": [Function],
+                        "data": Object {
+                          "ROOT_QUERY": Object {
+                            "__typename": "Query",
+                            "me": Object {
+                              "accessLevel": "ADMIN",
+                              "email": "user@konstellation.com",
+                              "id": "someId",
+                            },
+                          },
+                        },
+                        "getFieldValue": [Function],
+                        "group": CacheGroup {
+                          "caching": true,
+                          "d": [Function],
+                          "keyMaker": Trie {
+                            "makeData": [Function],
+                            "weakness": true,
+                          },
+                          "parent": null,
+                        },
+                        "policies": Policies {
+                          "cache": [Circular],
+                          "config": Object {
+                            "cache": [Circular],
+                            "dataIdFromObject": [Function],
+                            "possibleTypes": undefined,
+                            "typePolicies": undefined,
+                          },
+                          "fuzzySubtypes": Map {},
+                          "rootIdsByTypename": Object {
+                            "Mutation": "ROOT_MUTATION",
+                            "Query": "ROOT_QUERY",
+                            "Subscription": "ROOT_SUBSCRIPTION",
+                          },
+                          "rootTypenamesById": Object {
+                            "ROOT_MUTATION": "Mutation",
+                            "ROOT_QUERY": "Query",
+                            "ROOT_SUBSCRIPTION": "Subscription",
+                          },
+                          "supertypeMap": Map {},
+                          "toBeAdded": Object {},
+                          "typePolicies": Object {
+                            "Query": Object {
+                              "fields": Object {},
+                            },
+                          },
+                          "usingPossibleTypes": false,
+                        },
+                        "refs": Object {},
+                        "rootIds": Object {
+                          "ROOT_QUERY": 1,
+                        },
+                        "storageTrie": Trie {
+                          "makeData": [Function],
+                          "weakness": true,
+                        },
+                        "stump": [Circular],
+                        "toReference": [Function],
                       },
                       "policies": Policies {
                         "cache": [Circular],
@@ -1349,7 +3183,7 @@ exports[`Header matches snapshot 1`] = `
                           "cache": [Circular],
                           "dataIdFromObject": [Function],
                           "possibleTypes": undefined,
-                          "typePolicies": Object {},
+                          "typePolicies": undefined,
                         },
                         "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
@@ -1372,21 +3206,8 @@ exports[`Header matches snapshot 1`] = `
                         "usingPossibleTypes": false,
                       },
                       "refs": Object {},
-                      "rootIds": Object {
-                        "ROOT_QUERY": 1,
-                      },
-                      "sharedLayerGroup": CacheGroup {
-                        "caching": true,
-                        "d": [Function],
-                        "keyMaker": Trie {
-                          "makeData": [Function],
-                          "weakness": true,
-                        },
-                      },
-                      "storageTrie": Trie {
-                        "makeData": [Function],
-                        "weakness": true,
-                      },
+                      "replay": [Function],
+                      "rootIds": Object {},
                       "toReference": [Function],
                     },
                     "policies": Policies {
@@ -1395,7 +3216,7 @@ exports[`Header matches snapshot 1`] = `
                         "cache": [Circular],
                         "dataIdFromObject": [Function],
                         "possibleTypes": undefined,
-                        "typePolicies": Object {},
+                        "typePolicies": undefined,
                       },
                       "fuzzySubtypes": Map {},
                       "rootIdsByTypename": Object {
@@ -1419,9 +3240,32 @@ exports[`Header matches snapshot 1`] = `
                     },
                     "reset": [Function],
                     "storeReader": StoreReader {
+                      "canon": ObjectCanon {
+                        "empty": Object {},
+                        "keysByJSON": Map {
+                          "[]" => Object {
+                            "json": "[]",
+                            "sorted": Array [],
+                          },
+                        },
+                        "known": WeakSet {},
+                        "passes": WeakMap {},
+                        "pool": Trie {
+                          "data": Object {
+                            "keys": Object {
+                              "json": "[]",
+                              "sorted": Array [],
+                            },
+                          },
+                          "makeData": [Function],
+                          "weak": WeakMap {},
+                          "weakness": true,
+                        },
+                      },
                       "config": Object {
                         "addTypename": false,
                         "cache": [Circular],
+                        "canonizeResults": false,
                       },
                       "executeSelectionSet": [Function],
                       "executeSubSelectedArray": [Function],
@@ -1430,9 +3274,32 @@ exports[`Header matches snapshot 1`] = `
                     "storeWriter": StoreWriter {
                       "cache": [Circular],
                       "reader": StoreReader {
+                        "canon": ObjectCanon {
+                          "empty": Object {},
+                          "keysByJSON": Map {
+                            "[]" => Object {
+                              "json": "[]",
+                              "sorted": Array [],
+                            },
+                          },
+                          "known": WeakSet {},
+                          "passes": WeakMap {},
+                          "pool": Trie {
+                            "data": Object {
+                              "keys": Object {
+                                "json": "[]",
+                                "sorted": Array [],
+                              },
+                            },
+                            "makeData": [Function],
+                            "weak": WeakMap {},
+                            "weakness": true,
+                          },
+                        },
                         "config": Object {
                           "addTypename": false,
                           "cache": [Circular],
+                          "canonizeResults": false,
                         },
                         "executeSelectionSet": [Function],
                         "executeSubSelectedArray": [Function],
@@ -1441,10 +3308,21 @@ exports[`Header matches snapshot 1`] = `
                     },
                     "txCount": 0,
                     "typenameDocumentCache": Map {},
-                    "watchDep": [Function],
                     "watches": Set {
                       Object {
                         "callback": [Function],
+                        "canonizeResults": undefined,
+                        "lastDiff": Object {
+                          "complete": true,
+                          "missing": undefined,
+                          "result": Object {
+                            "me": Object {
+                              "accessLevel": "ADMIN",
+                              "email": "user@konstellation.com",
+                              "id": "someId",
+                            },
+                          },
+                        },
                         "optimistic": true,
                         "query": Object {
                           "definitions": Array [
@@ -1518,7 +3396,356 @@ exports[`Header matches snapshot 1`] = `
                             "start": 0,
                           },
                         },
+                        "returnPartialData": true,
                         "variables": Object {},
+                        "watcher": QueryInfo {
+                          "cache": [Circular],
+                          "cancel": [Function],
+                          "dirty": false,
+                          "document": Object {
+                            "definitions": Array [
+                              Object {
+                                "directives": Array [],
+                                "kind": "OperationDefinition",
+                                "name": Object {
+                                  "kind": "Name",
+                                  "value": "GetMe",
+                                },
+                                "operation": "query",
+                                "selectionSet": Object {
+                                  "kind": "SelectionSet",
+                                  "selections": Array [
+                                    Object {
+                                      "alias": undefined,
+                                      "arguments": Array [],
+                                      "directives": Array [],
+                                      "kind": "Field",
+                                      "name": Object {
+                                        "kind": "Name",
+                                        "value": "me",
+                                      },
+                                      "selectionSet": Object {
+                                        "kind": "SelectionSet",
+                                        "selections": Array [
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "id",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "email",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                          Object {
+                                            "alias": undefined,
+                                            "arguments": Array [],
+                                            "directives": Array [],
+                                            "kind": "Field",
+                                            "name": Object {
+                                              "kind": "Name",
+                                              "value": "accessLevel",
+                                            },
+                                            "selectionSet": undefined,
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  ],
+                                },
+                                "variableDefinitions": Array [],
+                              },
+                            ],
+                            "kind": "Document",
+                            "loc": Object {
+                              "end": 75,
+                              "start": 0,
+                            },
+                          },
+                          "graphQLErrors": Array [],
+                          "lastDiff": Object {
+                            "diff": Object {
+                              "complete": true,
+                              "missing": undefined,
+                              "result": Object {
+                                "me": Object {
+                                  "accessLevel": "ADMIN",
+                                  "email": "user@konstellation.com",
+                                  "id": "someId",
+                                },
+                              },
+                            },
+                            "options": Object {
+                              "canonizeResults": undefined,
+                              "optimistic": true,
+                              "query": Object {
+                                "definitions": Array [
+                                  Object {
+                                    "directives": Array [],
+                                    "kind": "OperationDefinition",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "GetMe",
+                                    },
+                                    "operation": "query",
+                                    "selectionSet": Object {
+                                      "kind": "SelectionSet",
+                                      "selections": Array [
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "me",
+                                          },
+                                          "selectionSet": Object {
+                                            "kind": "SelectionSet",
+                                            "selections": Array [
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "id",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "email",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "accessLevel",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                    "variableDefinitions": Array [],
+                                  },
+                                ],
+                                "kind": "Document",
+                                "loc": Object {
+                                  "end": 75,
+                                  "start": 0,
+                                },
+                              },
+                              "returnPartialData": true,
+                              "variables": Object {},
+                            },
+                          },
+                          "lastRequestId": 1,
+                          "lastWatch": [Circular],
+                          "lastWrite": Object {
+                            "dmCount": 0,
+                            "result": Object {
+                              "data": Object {
+                                "me": Object {
+                                  "accessLevel": "ADMIN",
+                                  "email": "user@konstellation.com",
+                                  "id": "someId",
+                                },
+                              },
+                            },
+                            "variables": Object {},
+                          },
+                          "listeners": Set {
+                            [Function],
+                          },
+                          "networkError": null,
+                          "networkStatus": 7,
+                          "observableQuery": ObservableQuery {
+                            "_subscriber": [Function],
+                            "concast": Concast {
+                              "_subscriber": [Function],
+                              "addCount": 1,
+                              "cancel": [Function],
+                              "handlers": Object {
+                                "complete": [Function],
+                                "error": [Function],
+                                "next": [Function],
+                              },
+                              "latest": Array [
+                                "next",
+                                Object {
+                                  "data": Object {
+                                    "me": Object {
+                                      "accessLevel": "ADMIN",
+                                      "email": "user@konstellation.com",
+                                      "id": "someId",
+                                    },
+                                  },
+                                  "loading": false,
+                                  "networkStatus": 7,
+                                },
+                              ],
+                              "observers": Set {
+                                Object {
+                                  "error": [Function],
+                                  "next": [Function],
+                                },
+                              },
+                              "promise": Promise {},
+                              "reject": [Function],
+                              "resolve": [Function],
+                              "sources": Array [],
+                              "sub": null,
+                            },
+                            "initialFetchPolicy": "cache-first",
+                            "isTornDown": false,
+                            "last": Object {
+                              "result": Object {
+                                "data": Object {
+                                  "me": Object {
+                                    "accessLevel": "ADMIN",
+                                    "email": "user@konstellation.com",
+                                    "id": "someId",
+                                  },
+                                },
+                                "loading": false,
+                                "networkStatus": 7,
+                              },
+                              "variables": Object {},
+                            },
+                            "observer": Object {
+                              "error": [Function],
+                              "next": [Function],
+                            },
+                            "observers": Set {
+                              SubscriptionObserver {
+                                "_subscription": Subscription {
+                                  "_cleanup": [Function],
+                                  "_observer": Object {
+                                    "complete": undefined,
+                                    "error": [Function],
+                                    "next": [Function],
+                                  },
+                                  "_queue": undefined,
+                                  "_state": "ready",
+                                },
+                              },
+                            },
+                            "options": Object {
+                              "fetchPolicy": "cache-first",
+                              "notifyOnNetworkStatusChange": false,
+                              "query": Object {
+                                "definitions": Array [
+                                  Object {
+                                    "directives": Array [],
+                                    "kind": "OperationDefinition",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "GetMe",
+                                    },
+                                    "operation": "query",
+                                    "selectionSet": Object {
+                                      "kind": "SelectionSet",
+                                      "selections": Array [
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "me",
+                                          },
+                                          "selectionSet": Object {
+                                            "kind": "SelectionSet",
+                                            "selections": Array [
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "id",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "email",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                              Object {
+                                                "alias": undefined,
+                                                "arguments": Array [],
+                                                "directives": Array [],
+                                                "kind": "Field",
+                                                "name": Object {
+                                                  "kind": "Name",
+                                                  "value": "accessLevel",
+                                                },
+                                                "selectionSet": undefined,
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                    "variableDefinitions": Array [],
+                                  },
+                                ],
+                                "kind": "Document",
+                                "loc": Object {
+                                  "end": 75,
+                                  "start": 0,
+                                },
+                              },
+                              "variables": Object {},
+                            },
+                            "queryId": "1",
+                            "queryInfo": [Circular],
+                            "queryManager": [Circular],
+                            "queryName": "GetMe",
+                            "subscriptions": Set {},
+                          },
+                          "oqListener": [Function],
+                          "queryId": "1",
+                          "stopped": false,
+                          "subscriptions": Set {},
+                          "variables": Object {},
+                        },
                       },
                     },
                   },
@@ -1533,9 +3760,9 @@ exports[`Header matches snapshot 1`] = `
                       "addTypename": false,
                       "config": Object {
                         "addTypename": false,
+                        "canonizeResults": false,
                         "dataIdFromObject": [Function],
                         "resultCaching": true,
-                        "typePolicies": Object {},
                       },
                       "data": Root {
                         "canRead": [Function],
@@ -1555,9 +3782,9 @@ exports[`Header matches snapshot 1`] = `
                           "d": [Function],
                           "keyMaker": Trie {
                             "makeData": [Function],
-                            "weak": WeakMap {},
                             "weakness": true,
                           },
+                          "parent": null,
                         },
                         "policies": Policies {
                           "cache": [Circular],
@@ -1565,7 +3792,7 @@ exports[`Header matches snapshot 1`] = `
                             "cache": [Circular],
                             "dataIdFromObject": [Function],
                             "possibleTypes": undefined,
-                            "typePolicies": Object {},
+                            "typePolicies": undefined,
                           },
                           "fuzzySubtypes": Map {},
                           "rootIdsByTypename": Object {
@@ -1591,17 +3818,66 @@ exports[`Header matches snapshot 1`] = `
                         "rootIds": Object {
                           "ROOT_QUERY": 1,
                         },
-                        "sharedLayerGroup": CacheGroup {
-                          "caching": true,
-                          "d": [Function],
-                          "keyMaker": Trie {
-                            "makeData": [Function],
-                            "weakness": true,
-                          },
-                        },
                         "storageTrie": Trie {
                           "makeData": [Function],
                           "weakness": true,
+                        },
+                        "stump": Stump {
+                          "canRead": [Function],
+                          "data": Object {},
+                          "getFieldValue": [Function],
+                          "group": CacheGroup {
+                            "caching": true,
+                            "d": [Function],
+                            "keyMaker": Trie {
+                              "makeData": [Function],
+                              "weak": WeakMap {},
+                              "weakness": true,
+                            },
+                            "parent": CacheGroup {
+                              "caching": true,
+                              "d": [Function],
+                              "keyMaker": Trie {
+                                "makeData": [Function],
+                                "weakness": true,
+                              },
+                              "parent": null,
+                            },
+                          },
+                          "id": "EntityStore.Stump",
+                          "parent": [Circular],
+                          "policies": Policies {
+                            "cache": [Circular],
+                            "config": Object {
+                              "cache": [Circular],
+                              "dataIdFromObject": [Function],
+                              "possibleTypes": undefined,
+                              "typePolicies": undefined,
+                            },
+                            "fuzzySubtypes": Map {},
+                            "rootIdsByTypename": Object {
+                              "Mutation": "ROOT_MUTATION",
+                              "Query": "ROOT_QUERY",
+                              "Subscription": "ROOT_SUBSCRIPTION",
+                            },
+                            "rootTypenamesById": Object {
+                              "ROOT_MUTATION": "Mutation",
+                              "ROOT_QUERY": "Query",
+                              "ROOT_SUBSCRIPTION": "Subscription",
+                            },
+                            "supertypeMap": Map {},
+                            "toBeAdded": Object {},
+                            "typePolicies": Object {
+                              "Query": Object {
+                                "fields": Object {},
+                              },
+                            },
+                            "usingPossibleTypes": false,
+                          },
+                          "refs": Object {},
+                          "replay": [Function],
+                          "rootIds": Object {},
+                          "toReference": [Function],
                         },
                         "toReference": [Function],
                       },
@@ -1610,18 +3886,9 @@ exports[`Header matches snapshot 1`] = `
                       "makeVar": [Function],
                       "maybeBroadcastWatch": [Function],
                       "modify": [Function],
-                      "optimisticData": Root {
+                      "optimisticData": Stump {
                         "canRead": [Function],
-                        "data": Object {
-                          "ROOT_QUERY": Object {
-                            "__typename": "Query",
-                            "me": Object {
-                              "accessLevel": "ADMIN",
-                              "email": "user@konstellation.com",
-                              "id": "someId",
-                            },
-                          },
-                        },
+                        "data": Object {},
                         "getFieldValue": [Function],
                         "group": CacheGroup {
                           "caching": true,
@@ -1631,6 +3898,77 @@ exports[`Header matches snapshot 1`] = `
                             "weak": WeakMap {},
                             "weakness": true,
                           },
+                          "parent": CacheGroup {
+                            "caching": true,
+                            "d": [Function],
+                            "keyMaker": Trie {
+                              "makeData": [Function],
+                              "weakness": true,
+                            },
+                            "parent": null,
+                          },
+                        },
+                        "id": "EntityStore.Stump",
+                        "parent": Root {
+                          "canRead": [Function],
+                          "data": Object {
+                            "ROOT_QUERY": Object {
+                              "__typename": "Query",
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                          },
+                          "getFieldValue": [Function],
+                          "group": CacheGroup {
+                            "caching": true,
+                            "d": [Function],
+                            "keyMaker": Trie {
+                              "makeData": [Function],
+                              "weakness": true,
+                            },
+                            "parent": null,
+                          },
+                          "policies": Policies {
+                            "cache": [Circular],
+                            "config": Object {
+                              "cache": [Circular],
+                              "dataIdFromObject": [Function],
+                              "possibleTypes": undefined,
+                              "typePolicies": undefined,
+                            },
+                            "fuzzySubtypes": Map {},
+                            "rootIdsByTypename": Object {
+                              "Mutation": "ROOT_MUTATION",
+                              "Query": "ROOT_QUERY",
+                              "Subscription": "ROOT_SUBSCRIPTION",
+                            },
+                            "rootTypenamesById": Object {
+                              "ROOT_MUTATION": "Mutation",
+                              "ROOT_QUERY": "Query",
+                              "ROOT_SUBSCRIPTION": "Subscription",
+                            },
+                            "supertypeMap": Map {},
+                            "toBeAdded": Object {},
+                            "typePolicies": Object {
+                              "Query": Object {
+                                "fields": Object {},
+                              },
+                            },
+                            "usingPossibleTypes": false,
+                          },
+                          "refs": Object {},
+                          "rootIds": Object {
+                            "ROOT_QUERY": 1,
+                          },
+                          "storageTrie": Trie {
+                            "makeData": [Function],
+                            "weakness": true,
+                          },
+                          "stump": [Circular],
+                          "toReference": [Function],
                         },
                         "policies": Policies {
                           "cache": [Circular],
@@ -1638,7 +3976,7 @@ exports[`Header matches snapshot 1`] = `
                             "cache": [Circular],
                             "dataIdFromObject": [Function],
                             "possibleTypes": undefined,
-                            "typePolicies": Object {},
+                            "typePolicies": undefined,
                           },
                           "fuzzySubtypes": Map {},
                           "rootIdsByTypename": Object {
@@ -1661,21 +3999,8 @@ exports[`Header matches snapshot 1`] = `
                           "usingPossibleTypes": false,
                         },
                         "refs": Object {},
-                        "rootIds": Object {
-                          "ROOT_QUERY": 1,
-                        },
-                        "sharedLayerGroup": CacheGroup {
-                          "caching": true,
-                          "d": [Function],
-                          "keyMaker": Trie {
-                            "makeData": [Function],
-                            "weakness": true,
-                          },
-                        },
-                        "storageTrie": Trie {
-                          "makeData": [Function],
-                          "weakness": true,
-                        },
+                        "replay": [Function],
+                        "rootIds": Object {},
                         "toReference": [Function],
                       },
                       "policies": Policies {
@@ -1684,7 +4009,7 @@ exports[`Header matches snapshot 1`] = `
                           "cache": [Circular],
                           "dataIdFromObject": [Function],
                           "possibleTypes": undefined,
-                          "typePolicies": Object {},
+                          "typePolicies": undefined,
                         },
                         "fuzzySubtypes": Map {},
                         "rootIdsByTypename": Object {
@@ -1708,9 +4033,32 @@ exports[`Header matches snapshot 1`] = `
                       },
                       "reset": [Function],
                       "storeReader": StoreReader {
+                        "canon": ObjectCanon {
+                          "empty": Object {},
+                          "keysByJSON": Map {
+                            "[]" => Object {
+                              "json": "[]",
+                              "sorted": Array [],
+                            },
+                          },
+                          "known": WeakSet {},
+                          "passes": WeakMap {},
+                          "pool": Trie {
+                            "data": Object {
+                              "keys": Object {
+                                "json": "[]",
+                                "sorted": Array [],
+                              },
+                            },
+                            "makeData": [Function],
+                            "weak": WeakMap {},
+                            "weakness": true,
+                          },
+                        },
                         "config": Object {
                           "addTypename": false,
                           "cache": [Circular],
+                          "canonizeResults": false,
                         },
                         "executeSelectionSet": [Function],
                         "executeSubSelectedArray": [Function],
@@ -1719,9 +4067,32 @@ exports[`Header matches snapshot 1`] = `
                       "storeWriter": StoreWriter {
                         "cache": [Circular],
                         "reader": StoreReader {
+                          "canon": ObjectCanon {
+                            "empty": Object {},
+                            "keysByJSON": Map {
+                              "[]" => Object {
+                                "json": "[]",
+                                "sorted": Array [],
+                              },
+                            },
+                            "known": WeakSet {},
+                            "passes": WeakMap {},
+                            "pool": Trie {
+                              "data": Object {
+                                "keys": Object {
+                                  "json": "[]",
+                                  "sorted": Array [],
+                                },
+                              },
+                              "makeData": [Function],
+                              "weak": WeakMap {},
+                              "weakness": true,
+                            },
+                          },
                           "config": Object {
                             "addTypename": false,
                             "cache": [Circular],
+                            "canonizeResults": false,
                           },
                           "executeSelectionSet": [Function],
                           "executeSubSelectedArray": [Function],
@@ -1730,10 +4101,21 @@ exports[`Header matches snapshot 1`] = `
                       },
                       "txCount": 0,
                       "typenameDocumentCache": Map {},
-                      "watchDep": [Function],
                       "watches": Set {
                         Object {
                           "callback": [Function],
+                          "canonizeResults": undefined,
+                          "lastDiff": Object {
+                            "complete": true,
+                            "missing": undefined,
+                            "result": Object {
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                          },
                           "optimistic": true,
                           "query": Object {
                             "definitions": Array [
@@ -1807,22 +4189,13 @@ exports[`Header matches snapshot 1`] = `
                               "start": 0,
                             },
                           },
+                          "returnPartialData": true,
                           "variables": Object {},
+                          "watcher": [Circular],
                         },
                       },
                     },
                     "cancel": [Function],
-                    "diff": Object {
-                      "complete": true,
-                      "missing": undefined,
-                      "result": Object {
-                        "me": Object {
-                          "accessLevel": "ADMIN",
-                          "email": "user@konstellation.com",
-                          "id": "someId",
-                        },
-                      },
-                    },
                     "dirty": false,
                     "document": Object {
                       "definitions": Array [
@@ -1897,9 +4270,112 @@ exports[`Header matches snapshot 1`] = `
                       },
                     },
                     "graphQLErrors": Array [],
+                    "lastDiff": Object {
+                      "diff": Object {
+                        "complete": true,
+                        "missing": undefined,
+                        "result": Object {
+                          "me": Object {
+                            "accessLevel": "ADMIN",
+                            "email": "user@konstellation.com",
+                            "id": "someId",
+                          },
+                        },
+                      },
+                      "options": Object {
+                        "canonizeResults": undefined,
+                        "optimistic": true,
+                        "query": Object {
+                          "definitions": Array [
+                            Object {
+                              "directives": Array [],
+                              "kind": "OperationDefinition",
+                              "name": Object {
+                                "kind": "Name",
+                                "value": "GetMe",
+                              },
+                              "operation": "query",
+                              "selectionSet": Object {
+                                "kind": "SelectionSet",
+                                "selections": Array [
+                                  Object {
+                                    "alias": undefined,
+                                    "arguments": Array [],
+                                    "directives": Array [],
+                                    "kind": "Field",
+                                    "name": Object {
+                                      "kind": "Name",
+                                      "value": "me",
+                                    },
+                                    "selectionSet": Object {
+                                      "kind": "SelectionSet",
+                                      "selections": Array [
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "id",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "email",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                        Object {
+                                          "alias": undefined,
+                                          "arguments": Array [],
+                                          "directives": Array [],
+                                          "kind": "Field",
+                                          "name": Object {
+                                            "kind": "Name",
+                                            "value": "accessLevel",
+                                          },
+                                          "selectionSet": undefined,
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                              "variableDefinitions": Array [],
+                            },
+                          ],
+                          "kind": "Document",
+                          "loc": Object {
+                            "end": 75,
+                            "start": 0,
+                          },
+                        },
+                        "returnPartialData": true,
+                        "variables": Object {},
+                      },
+                    },
                     "lastRequestId": 1,
                     "lastWatch": Object {
                       "callback": [Function],
+                      "canonizeResults": undefined,
+                      "lastDiff": Object {
+                        "complete": true,
+                        "missing": undefined,
+                        "result": Object {
+                          "me": Object {
+                            "accessLevel": "ADMIN",
+                            "email": "user@konstellation.com",
+                            "id": "someId",
+                          },
+                        },
+                      },
                       "optimistic": true,
                       "query": Object {
                         "definitions": Array [
@@ -1973,7 +4449,9 @@ exports[`Header matches snapshot 1`] = `
                           "start": 0,
                         },
                       },
+                      "returnPartialData": true,
                       "variables": Object {},
+                      "watcher": [Circular],
                     },
                     "lastWrite": Object {
                       "dmCount": 0,
@@ -1991,32 +4469,60 @@ exports[`Header matches snapshot 1`] = `
                     "listeners": Set {
                       [Function],
                     },
-                    "networkError": undefined,
+                    "networkError": null,
                     "networkStatus": 7,
                     "observableQuery": ObservableQuery {
                       "_subscriber": [Function],
-                      "isTornDown": false,
-                      "lastResult": Object {
-                        "data": Object {
-                          "me": Object {
-                            "accessLevel": "ADMIN",
-                            "email": "user@konstellation.com",
-                            "id": "someId",
+                      "concast": Concast {
+                        "_subscriber": [Function],
+                        "addCount": 1,
+                        "cancel": [Function],
+                        "handlers": Object {
+                          "complete": [Function],
+                          "error": [Function],
+                          "next": [Function],
+                        },
+                        "latest": Array [
+                          "next",
+                          Object {
+                            "data": Object {
+                              "me": Object {
+                                "accessLevel": "ADMIN",
+                                "email": "user@konstellation.com",
+                                "id": "someId",
+                              },
+                            },
+                            "loading": false,
+                            "networkStatus": 7,
+                          },
+                        ],
+                        "observers": Set {
+                          Object {
+                            "error": [Function],
+                            "next": [Function],
                           },
                         },
-                        "loading": false,
-                        "networkStatus": 7,
+                        "promise": Promise {},
+                        "reject": [Function],
+                        "resolve": [Function],
+                        "sources": Array [],
+                        "sub": null,
                       },
-                      "lastResultSnapshot": Object {
-                        "data": Object {
-                          "me": Object {
-                            "accessLevel": "ADMIN",
-                            "email": "user@konstellation.com",
-                            "id": "someId",
+                      "initialFetchPolicy": "cache-first",
+                      "isTornDown": false,
+                      "last": Object {
+                        "result": Object {
+                          "data": Object {
+                            "me": Object {
+                              "accessLevel": "ADMIN",
+                              "email": "user@konstellation.com",
+                              "id": "someId",
+                            },
                           },
+                          "loading": false,
+                          "networkStatus": 7,
                         },
-                        "loading": false,
-                        "networkStatus": 7,
+                        "variables": Object {},
                       },
                       "observer": Object {
                         "error": [Function],
@@ -2027,6 +4533,7 @@ exports[`Header matches snapshot 1`] = `
                           "_subscription": Subscription {
                             "_cleanup": [Function],
                             "_observer": Object {
+                              "complete": undefined,
                               "error": [Function],
                               "next": [Function],
                             },
@@ -2036,8 +4543,7 @@ exports[`Header matches snapshot 1`] = `
                         },
                       },
                       "options": Object {
-                        "context": undefined,
-                        "displayName": "Query",
+                        "fetchPolicy": "cache-first",
                         "notifyOnNetworkStatusChange": false,
                         "query": Object {
                           "definitions": Array [
@@ -2117,130 +4623,10 @@ exports[`Header matches snapshot 1`] = `
                       "queryInfo": [Circular],
                       "queryManager": [Circular],
                       "queryName": "GetMe",
-                      "reobserver": Reobserver {
-                        "concast": Concast {
-                          "_subscriber": [Function],
-                          "addCount": 1,
-                          "cancel": [Function],
-                          "handlers": Object {
-                            "complete": [Function],
-                            "error": [Function],
-                            "next": [Function],
-                          },
-                          "latest": Array [
-                            "next",
-                            Object {
-                              "data": Object {
-                                "me": Object {
-                                  "accessLevel": "ADMIN",
-                                  "email": "user@konstellation.com",
-                                  "id": "someId",
-                                },
-                              },
-                              "loading": false,
-                              "networkStatus": 7,
-                            },
-                          ],
-                          "observers": Set {
-                            Object {
-                              "error": [Function],
-                              "next": [Function],
-                            },
-                          },
-                          "promise": Promise {},
-                          "reject": [Function],
-                          "resolve": [Function],
-                          "sources": Array [],
-                          "sub": null,
-                        },
-                        "fetch": [Function],
-                        "observer": Object {
-                          "error": [Function],
-                          "next": [Function],
-                        },
-                        "options": Object {
-                          "context": undefined,
-                          "displayName": "Query",
-                          "notifyOnNetworkStatusChange": false,
-                          "query": Object {
-                            "definitions": Array [
-                              Object {
-                                "directives": Array [],
-                                "kind": "OperationDefinition",
-                                "name": Object {
-                                  "kind": "Name",
-                                  "value": "GetMe",
-                                },
-                                "operation": "query",
-                                "selectionSet": Object {
-                                  "kind": "SelectionSet",
-                                  "selections": Array [
-                                    Object {
-                                      "alias": undefined,
-                                      "arguments": Array [],
-                                      "directives": Array [],
-                                      "kind": "Field",
-                                      "name": Object {
-                                        "kind": "Name",
-                                        "value": "me",
-                                      },
-                                      "selectionSet": Object {
-                                        "kind": "SelectionSet",
-                                        "selections": Array [
-                                          Object {
-                                            "alias": undefined,
-                                            "arguments": Array [],
-                                            "directives": Array [],
-                                            "kind": "Field",
-                                            "name": Object {
-                                              "kind": "Name",
-                                              "value": "id",
-                                            },
-                                            "selectionSet": undefined,
-                                          },
-                                          Object {
-                                            "alias": undefined,
-                                            "arguments": Array [],
-                                            "directives": Array [],
-                                            "kind": "Field",
-                                            "name": Object {
-                                              "kind": "Name",
-                                              "value": "email",
-                                            },
-                                            "selectionSet": undefined,
-                                          },
-                                          Object {
-                                            "alias": undefined,
-                                            "arguments": Array [],
-                                            "directives": Array [],
-                                            "kind": "Field",
-                                            "name": Object {
-                                              "kind": "Name",
-                                              "value": "accessLevel",
-                                            },
-                                            "selectionSet": undefined,
-                                          },
-                                        ],
-                                      },
-                                    },
-                                  ],
-                                },
-                                "variableDefinitions": Array [],
-                              },
-                            ],
-                            "kind": "Document",
-                            "loc": Object {
-                              "end": 75,
-                              "start": 0,
-                            },
-                          },
-                          "variables": Object {},
-                        },
-                        "shouldFetch": [Function],
-                      },
                       "subscriptions": Set {},
                     },
                     "oqListener": [Function],
+                    "queryId": "1",
                     "stopped": false,
                     "subscriptions": Set {},
                     "variables": Object {},
@@ -2256,7 +4642,7 @@ exports[`Header matches snapshot 1`] = `
               "resetStore": [Function],
               "resetStoreCallbacks": Array [],
               "typeDefs": undefined,
-              "version": "3.3.19",
+              "version": "3.5.6",
               "watchQuery": [Function],
             }
           }

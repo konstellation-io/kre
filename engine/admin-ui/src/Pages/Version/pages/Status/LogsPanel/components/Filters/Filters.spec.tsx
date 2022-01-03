@@ -3,7 +3,7 @@ import Filters from './Filters';
 import { shallow } from 'enzyme';
 import * as apolloClient from '@apollo/client';
 
-apolloClient.useQuery = jest.fn(() => ({}));
+apolloClient.useQuery = () => ({});
 
 describe('Filters', () => {
   let wrapper: any;

@@ -18,16 +18,16 @@ const mocksLogTabs = {
   }
 };
 
-apolloClient.useQuery = jest.fn(() => mocksLogTabs);
-apolloClient.useApolloClient = jest.fn(() => ({ writeData: jest.fn() }));
-apolloClient.useReactiveVar = jest.fn(() => []);
+apolloClient.useQuery = () => mocksLogTabs;
+apolloClient.useApolloClient = () => ({ writeData: jest.fn() });
+apolloClient.useReactiveVar = () => [];
 
 jest.mock('Graphql/client/cache', () => ({}));
 
 jest.mock('react-router', () => ({
-  useLocation: jest.fn(() => ({
+  useLocation: () => ({
     pathname: ''
-  }))
+  }),
 }));
 
 describe('Logs', () => {
