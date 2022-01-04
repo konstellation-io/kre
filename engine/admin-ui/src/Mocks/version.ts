@@ -42,7 +42,7 @@ export const version: GetVersionConfStatus_versions = {
     email: 'user@domain.com'
   },
   config: {
-    vars: [],
+    __typename: 'VersionConfig',
     completed: false
   },
   hasDoc: false,
