@@ -1,6 +1,14 @@
-import { AccessLevel } from 'Graphql/types/globalTypes';
+import { AccessLevel } from '../Graphql/types/globalTypes';
 
-import GetUsers from 'Graphql/queries/getUsers';
+import GetUsers from '../Graphql/queries/getUsers';
+
+export const userMe = {
+  id: 'userMe',
+  email: 'admin@konstellation.io',
+  creationDate: '2022-01-01',
+  lastActivity: '2022-01-01',
+  accessLevel: AccessLevel.ADMIN
+}
 
 export const usersMock = {
   request: {

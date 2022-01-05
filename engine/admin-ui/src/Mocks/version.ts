@@ -1,12 +1,12 @@
-import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
+import { NodeStatus, VersionStatus } from '../Graphql/types/globalTypes';
 
-import GetConfigurationVariablesQuery from 'Graphql/queries/getConfigurationVariables';
-import GetVersionWorkflowsQuery from 'Graphql/queries/getVersionWorkflows';
-import NodeStatusSubscription from 'Graphql/subscriptions/watchVersionNodeStatus';
-import PublishVersionMutation from 'Graphql/mutations/publishVersion';
-import StartVersionMutation from 'Graphql/mutations/startVersion';
-import StopVersionMutation from 'Graphql/mutations/stopVersion';
-import UnpublishVersionMutation from 'Graphql/mutations/unpublishVersion';
+import GetConfigurationVariablesQuery from '../Graphql/queries/getConfigurationVariables';
+import GetVersionWorkflowsQuery from '../Graphql/queries/getVersionWorkflows';
+import NodeStatusSubscription from '../Graphql/subscriptions/watchVersionNodeStatus';
+import PublishVersionMutation from '../Graphql/mutations/publishVersion';
+import StartVersionMutation from '../Graphql/mutations/startVersion';
+import StopVersionMutation from '../Graphql/mutations/stopVersion';
+import UnpublishVersionMutation from '../Graphql/mutations/unpublishVersion';
 import {GetVersionWorkflows_version_workflows} from "../Graphql/queries/types/GetVersionWorkflows";
 import {
   GetVersionConfStatus_runtime,

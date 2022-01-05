@@ -92,7 +92,7 @@ function AddVersion() {
             <div className={styles.errorBox}>{validationErr}</div>
           )}
 
-          <div className={styles.content}>
+          <div className={styles.content} data-testid='uploadVersion'>
             <form>
               <FileUpload
                 name="addVersionFile"
@@ -113,7 +113,7 @@ function AddVersion() {
                   <SpinnerLinear />
                 </div>
               )}
-              <div className={styles.buttons}>
+              <div className={styles.buttons} data-testid='createVersion'>
                 <Button
                   primary
                   disabled={!!errors.addVersionFile || loading}
