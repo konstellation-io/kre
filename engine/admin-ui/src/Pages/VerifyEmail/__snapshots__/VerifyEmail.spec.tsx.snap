@@ -17,7 +17,7 @@ exports[`VerifyEmail matches snapshot 1`] = `
         animation="SUCCESS"
         label="DONE"
       >
-        <EmailIcon
+        <Memo(ForwardRef(EmailIcon))
           className="emailIcon icon-huge"
         />
       </Circle>

@@ -4705,8 +4705,6 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "$$typeof": Symbol(react.memo),
                           "compare": null,
-                          "displayName": "HomeIcon",
-                          "muiName": "SvgIcon",
                           "type": Object {
                             "$$typeof": Symbol(react.forward_ref),
                             "render": [Function],
@@ -4751,7 +4749,7 @@ exports[`Header matches snapshot 1`] = `
                               tabIndex={-1}
                               title=""
                             >
-                              <ForwardRef
+                              <ForwardRef(HomeIcon)
                                 className="icon-small"
                               >
                                 <WithStyles(ForwardRef(SvgIcon))
@@ -4785,7 +4783,7 @@ exports[`Header matches snapshot 1`] = `
                                     </svg>
                                   </ForwardRef(SvgIcon)>
                                 </WithStyles(ForwardRef(SvgIcon))>
-                              </ForwardRef>
+                              </ForwardRef(HomeIcon)>
                               <span>
                                 VERSIONS
                               </span>
@@ -4799,8 +4797,6 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "$$typeof": Symbol(react.memo),
                           "compare": null,
-                          "displayName": "VerifiedUserIcon",
-                          "muiName": "SvgIcon",
                           "type": Object {
                             "$$typeof": Symbol(react.forward_ref),
                             "render": [Function],
@@ -4845,7 +4841,7 @@ exports[`Header matches snapshot 1`] = `
                               tabIndex={-1}
                               title=""
                             >
-                              <ForwardRef
+                              <ForwardRef(VerifiedUserIcon)
                                 className="icon-small"
                               >
                                 <WithStyles(ForwardRef(SvgIcon))
@@ -4879,7 +4875,7 @@ exports[`Header matches snapshot 1`] = `
                                     </svg>
                                   </ForwardRef(SvgIcon)>
                                 </WithStyles(ForwardRef(SvgIcon))>
-                              </ForwardRef>
+                              </ForwardRef(VerifiedUserIcon)>
                               <span>
                                 SETTINGS
                               </span>
@@ -4893,8 +4889,6 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "$$typeof": Symbol(react.memo),
                           "compare": null,
-                          "displayName": "SupervisorAccountIcon",
-                          "muiName": "SvgIcon",
                           "type": Object {
                             "$$typeof": Symbol(react.forward_ref),
                             "render": [Function],
@@ -4939,7 +4933,7 @@ exports[`Header matches snapshot 1`] = `
                               tabIndex={-1}
                               title=""
                             >
-                              <ForwardRef
+                              <ForwardRef(SupervisorAccountIcon)
                                 className="icon-small"
                               >
                                 <WithStyles(ForwardRef(SvgIcon))
@@ -4973,7 +4967,7 @@ exports[`Header matches snapshot 1`] = `
                                     </svg>
                                   </ForwardRef(SvgIcon)>
                                 </WithStyles(ForwardRef(SvgIcon))>
-                              </ForwardRef>
+                              </ForwardRef(SupervisorAccountIcon)>
                               <span>
                                 USERS
                               </span>
@@ -4987,8 +4981,6 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "$$typeof": Symbol(react.memo),
                           "compare": null,
-                          "displayName": "EventNoteIcon",
-                          "muiName": "SvgIcon",
                           "type": Object {
                             "$$typeof": Symbol(react.forward_ref),
                             "render": [Function],
@@ -5033,7 +5025,7 @@ exports[`Header matches snapshot 1`] = `
                               tabIndex={-1}
                               title=""
                             >
-                              <ForwardRef
+                              <ForwardRef(EventNoteIcon)
                                 className="icon-small"
                               >
                                 <WithStyles(ForwardRef(SvgIcon))
@@ -5067,7 +5059,7 @@ exports[`Header matches snapshot 1`] = `
                                     </svg>
                                   </ForwardRef(SvgIcon)>
                                 </WithStyles(ForwardRef(SvgIcon))>
-                              </ForwardRef>
+                              </ForwardRef(EventNoteIcon)>
                               <span>
                                 AUDIT
                               </span>
@@ -5081,8 +5073,6 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "$$typeof": Symbol(react.memo),
                           "compare": null,
-                          "displayName": "PersonIcon",
-                          "muiName": "SvgIcon",
                           "type": Object {
                             "$$typeof": Symbol(react.forward_ref),
                             "render": [Function],
@@ -5127,7 +5117,7 @@ exports[`Header matches snapshot 1`] = `
                               tabIndex={-1}
                               title=""
                             >
-                              <ForwardRef
+                              <ForwardRef(PersonIcon)
                                 className="icon-small"
                               >
                                 <WithStyles(ForwardRef(SvgIcon))
@@ -5161,7 +5151,7 @@ exports[`Header matches snapshot 1`] = `
                                     </svg>
                                   </ForwardRef(SvgIcon)>
                                 </WithStyles(ForwardRef(SvgIcon))>
-                              </ForwardRef>
+                              </ForwardRef(PersonIcon)>
                               <span>
                                 PROFILE
                               </span>
@@ -5175,8 +5165,6 @@ exports[`Header matches snapshot 1`] = `
                         Object {
                           "$$typeof": Symbol(react.memo),
                           "compare": null,
-                          "displayName": "ExitToAppIcon",
-                          "muiName": "SvgIcon",
                           "type": Object {
                             "$$typeof": Symbol(react.forward_ref),
                             "render": [Function],
@@ -5207,7 +5195,7 @@ exports[`Header matches snapshot 1`] = `
                         tabIndex={-1}
                         title=""
                       >
-                        <ForwardRef
+                        <ForwardRef(ExitToAppIcon)
                           className="icon-small"
                         >
                           <WithStyles(ForwardRef(SvgIcon))
@@ -5241,7 +5229,7 @@ exports[`Header matches snapshot 1`] = `
                               </svg>
                             </ForwardRef(SvgIcon)>
                           </WithStyles(ForwardRef(SvgIcon))>
-                        </ForwardRef>
+                        </ForwardRef(ExitToAppIcon)>
                         <span>
                           LOGOUT
                         </span>

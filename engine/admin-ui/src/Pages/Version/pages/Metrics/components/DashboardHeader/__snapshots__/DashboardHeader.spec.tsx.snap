@@ -26,8 +26,6 @@ exports[`DashboardTitle matches snapshot 1`] = `
       Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
-        "displayName": "VisibilityIcon",
-        "muiName": "SvgIcon",
         "type": Object {
           "$$typeof": Symbol(react.forward_ref),
           "render": [Function],

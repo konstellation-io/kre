@@ -275,8 +275,6 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                         Object {
                           "$$typeof": Symbol(react.memo),
                           "compare": null,
-                          "displayName": "CloseIcon",
-                          "muiName": "SvgIcon",
                           "type": Object {
                             "$$typeof": Symbol(react.forward_ref),
                             "render": [Function],
@@ -299,7 +297,7 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                         tabIndex={-1}
                         title=""
                       >
-                        <ForwardRef
+                        <ForwardRef(CloseIcon)
                           className="icon-small"
                         >
                           <WithStyles(ForwardRef(SvgIcon))
@@ -333,7 +331,7 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                               </svg>
                             </ForwardRef(SvgIcon)>
                           </WithStyles(ForwardRef(SvgIcon))>
-                        </ForwardRef>
+                        </ForwardRef(CloseIcon)>
                         <span />
                       </div>
                     </P>
@@ -341,7 +339,7 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                   <div
                     className="varType"
                   >
-                    <ForwardRef
+                    <ForwardRef(InsertDriveFileIcon)
                       className="icon-regular"
                     >
                       <WithStyles(ForwardRef(SvgIcon))
@@ -375,13 +373,13 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                           </svg>
                         </ForwardRef(SvgIcon)>
                       </WithStyles(ForwardRef(SvgIcon))>
-                    </ForwardRef>
+                    </ForwardRef(InsertDriveFileIcon)>
                     File
                   </div>
                   <div
                     className="varKey"
                   >
-                    <ForwardRef
+                    <ForwardRef(VpnKeyIcon)
                       className="icon-regular"
                     >
                       <WithStyles(ForwardRef(SvgIcon))
@@ -415,7 +413,7 @@ exports[`ConfVarPanel matches snapshot 1`] = `
                           </svg>
                         </ForwardRef(SvgIcon)>
                       </WithStyles(ForwardRef(SvgIcon))>
-                    </ForwardRef>
+                    </ForwardRef(VpnKeyIcon)>
                     key
                   </div>
                 </div>

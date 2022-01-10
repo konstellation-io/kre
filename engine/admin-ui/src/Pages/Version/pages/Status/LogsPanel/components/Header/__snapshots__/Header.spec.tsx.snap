@@ -26,7 +26,7 @@ exports[`Logs Header matches snapshot 1`] = `
     <div
       title="Expand"
     >
-      <FullscreenIcon
+      <Memo(ForwardRef(FullscreenIcon))
         className="icon-regular"
       />
     </div>
@@ -34,7 +34,7 @@ exports[`Logs Header matches snapshot 1`] = `
       onClick={[MockFunction]}
       title="Close logs panel"
     >
-      <ExpandMoreIcon
+      <Memo(ForwardRef(ExpandMoreIcon))
         className="icon-regular"
       />
     </div>

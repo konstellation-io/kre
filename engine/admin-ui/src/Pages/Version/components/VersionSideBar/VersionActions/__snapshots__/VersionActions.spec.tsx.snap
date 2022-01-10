@@ -9,8 +9,6 @@ exports[`VersionActions matches snapshot 1`] = `
       Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
-        "displayName": "PauseCircleFilledIcon",
-        "muiName": "SvgIcon",
         "type": Object {
           "$$typeof": Symbol(react.forward_ref),
           "render": [Function],
@@ -34,8 +32,6 @@ exports[`VersionActions matches snapshot 1`] = `
       Object {
         "$$typeof": Symbol(react.memo),
         "compare": null,
-        "displayName": "PublishIcon",
-        "muiName": "SvgIcon",
         "type": Object {
           "$$typeof": Symbol(react.forward_ref),
           "render": [Function],

@@ -76,7 +76,7 @@ exports[`VariableRow matches snapshot 1`] = `
     <div
       className="typeCol"
     >
-      <CodeIcon
+      <Memo(ForwardRef(CodeIcon))
         className="icon-small"
       />
       <div
@@ -92,7 +92,7 @@ exports[`VariableRow matches snapshot 1`] = `
     <div
       className="variableCol"
     >
-      <VpnKeyIcon
+      <Memo(ForwardRef(VpnKeyIcon))
         className="icon-small"
       />
       <div>
