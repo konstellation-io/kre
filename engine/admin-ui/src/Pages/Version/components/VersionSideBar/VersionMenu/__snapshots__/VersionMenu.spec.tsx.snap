@@ -41,8 +41,8 @@ exports[`VersionMenu matches snapshot 1`] = `
         Object {
           "__typename": "Version",
           "config": Object {
+            "__typename": "VersionConfig",
             "completed": false,
-            "vars": Array [],
           },
           "creationAuthor": Object {
             "__typename": "User",
