@@ -7,15 +7,23 @@ import PublishVersionMutation from 'Graphql/mutations/publishVersion';
 import StartVersionMutation from 'Graphql/mutations/startVersion';
 import StopVersionMutation from 'Graphql/mutations/stopVersion';
 import UnpublishVersionMutation from 'Graphql/mutations/unpublishVersion';
+import {GetVersionWorkflows_version_workflows} from "../Graphql/queries/types/GetVersionWorkflows";
+import {
+  GetVersionConfStatus_runtime,
+  GetVersionConfStatus_versions
+} from "../Graphql/queries/types/GetVersionConfStatus";
 
-export const runtime = {
+export const runtime: GetVersionConfStatus_runtime = {
   id: 'runtimeId',
   name: 'runtimeName',
+  creationDate: 'creationDate',
+  databaseUrl: 'databaseUrl',
   description: 'Some Description',
   measurementsUrl: 'measurementsUrl',
+  entrypointAddress: 'entrypointAddress',
   __typename: 'Runtime'
 };
-export const version = {
+export const version: GetVersionConfStatus_versions = {
   __typename: 'Version',
   id: 'versionId',
   name: 'versionName',
@@ -34,13 +42,13 @@ export const version = {
     email: 'user@domain.com'
   },
   config: {
-    vars: [],
+    __typename: 'VersionConfig',
     completed: false
   },
   hasDoc: false,
   errors: []
 };
-export const workflow = {
+export const workflow: GetVersionWorkflows_version_workflows = {
   __typename: 'Workflow',
   id: 'workflowId',
   name: 'Workflow Nane',

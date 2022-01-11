@@ -29,8 +29,8 @@ exports[`VersionInfo matches snapshot 1`] = `
         Object {
           "__typename": "Version",
           "config": Object {
+            "__typename": "VersionConfig",
             "completed": false,
-            "vars": Array [],
           },
           "creationAuthor": Object {
             "__typename": "User",
@@ -86,7 +86,7 @@ exports[`VersionInfo matches snapshot 1`] = `
                   <div
                     className="creation"
                   >
-                    <ForwardRef
+                    <ForwardRef(TodayIcon)
                       className="icon-small"
                     >
                       <WithStyles(ForwardRef(SvgIcon))
@@ -120,7 +120,7 @@ exports[`VersionInfo matches snapshot 1`] = `
                           </svg>
                         </ForwardRef(SvgIcon)>
                       </WithStyles(ForwardRef(SvgIcon))>
-                    </ForwardRef>
+                    </ForwardRef(TodayIcon)>
                     <p
                       className="creationDate"
                     >

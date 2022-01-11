@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom';
-import React from 'react';
+import React, {
+  AnchorHTMLAttributes,
+  ClassAttributes,
+  PropsWithChildren,
+} from 'react';
+import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
 
-type CustomLinkProps = {
-  href: string;
-  children: JSX.Element[];
-};
-
-const CustomLink = ({href, children}: CustomLinkProps) => <Link to={href}>{children}</Link>;
+const CustomLink = ({
+  href,
+  children,
+}: PropsWithChildren<
+  ClassAttributes<HTMLAnchorElement> &
+    AnchorHTMLAttributes<HTMLAnchorElement> &
+    ReactMarkdownProps
+>) => <Link to={String(href)}>{children} Testing</Link>;
 
 export default CustomLink;

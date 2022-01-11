@@ -5,19 +5,19 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import * as apolloClient from '@apollo/client';
 
-apolloClient.useQuery = jest.fn(() => ({
+apolloClient.useQuery = () => ({
   data: {},
   loading: false,
   error: '',
   refetch: jest.fn()
-}));
+});
 jest.mock('react-router', () => ({
-  useParams: jest.fn(() => ({ versionName: '' }))
+  useParams: () => ({ versionName: '' }),
 }));
 
 // TODO: test GraphQL data
 describe('Metrics', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(<Metrics runtime={runtime} version={version} />);

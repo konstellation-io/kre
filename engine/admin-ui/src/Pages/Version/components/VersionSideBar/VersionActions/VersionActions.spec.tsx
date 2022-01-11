@@ -9,10 +9,10 @@ import { label } from 'Utils/testUtilsEnzyme';
 import { shallow } from 'enzyme';
 import * as apolloClient from '@apollo/client';
 
-apolloClient.useMutation = jest.fn(() => [jest.fn(), { loading: false }]);
+apolloClient.useMutation = () => [jest.fn(), { loading: false }];
 
 describe('VersionActions', () => {
-  let wrapper;
+  let wrapper: any;
 
   beforeEach(() => {
     wrapper = shallow(<VersionActions version={version} versions={[]} />);

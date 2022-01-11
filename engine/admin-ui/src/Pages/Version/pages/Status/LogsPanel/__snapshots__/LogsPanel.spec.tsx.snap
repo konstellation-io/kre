@@ -20,8 +20,6 @@ exports[`Logs matches snapshot 1`] = `
             "Icon": Object {
               "$$typeof": Symbol(react.memo),
               "compare": null,
-              "displayName": "ControlPointDuplicateIcon",
-              "muiName": "SvgIcon",
               "type": Object {
                 "$$typeof": Symbol(react.forward_ref),
                 "render": [Function],
@@ -34,8 +32,6 @@ exports[`Logs matches snapshot 1`] = `
             "Icon": Object {
               "$$typeof": Symbol(react.memo),
               "compare": null,
-              "displayName": "TabIcon",
-              "muiName": "SvgIcon",
               "type": Object {
                 "$$typeof": Symbol(react.forward_ref),
                 "render": [Function],
@@ -48,8 +44,6 @@ exports[`Logs matches snapshot 1`] = `
             "Icon": Object {
               "$$typeof": Symbol(react.memo),
               "compare": null,
-              "displayName": "ClearAllIcon",
-              "muiName": "SvgIcon",
               "type": Object {
                 "$$typeof": Symbol(react.forward_ref),
                 "render": [Function],
@@ -63,8 +57,6 @@ exports[`Logs matches snapshot 1`] = `
             "Icon": Object {
               "$$typeof": Symbol(react.memo),
               "compare": null,
-              "displayName": "CloseIcon",
-              "muiName": "SvgIcon",
               "type": Object {
                 "$$typeof": Symbol(react.forward_ref),
                 "render": [Function],

@@ -8,8 +8,6 @@ exports[`LogItem matches snapshot 1`] = `
         "Icon": Object {
           "$$typeof": Symbol(react.memo),
           "compare": null,
-          "displayName": "SubjectIcon",
-          "muiName": "SvgIcon",
           "type": Object {
             "$$typeof": Symbol(react.forward_ref),
             "render": [Function],
@@ -22,8 +20,6 @@ exports[`LogItem matches snapshot 1`] = `
         "Icon": Object {
           "$$typeof": Symbol(react.memo),
           "compare": null,
-          "displayName": "FileCopyIcon",
-          "muiName": "SvgIcon",
           "type": Object {
             "$$typeof": Symbol(react.forward_ref),
             "render": [Function],
@@ -78,7 +74,7 @@ exports[`LogItem matches snapshot 1`] = `
           className="expand"
           onClick={[Function]}
         >
-          <ArrowDownwardIcon
+          <Memo(ForwardRef(ArrowDownwardIcon))
             className="icon-regular"
           />
         </div>

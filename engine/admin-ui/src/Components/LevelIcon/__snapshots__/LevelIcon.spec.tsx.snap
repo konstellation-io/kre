@@ -4,7 +4,7 @@ exports[`LevelIcon matches snapshot 1`] = `
 <div
   className="levelIcon INFO"
 >
-  <InfoIcon
+  <Memo(ForwardRef(InfoIcon))
     className="icon-small"
   />
 </div>

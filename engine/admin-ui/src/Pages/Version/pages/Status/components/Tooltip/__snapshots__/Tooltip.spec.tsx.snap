@@ -80,8 +80,6 @@ exports[`Tooltip matches snapshot 1`] = `
                   Object {
                     "$$typeof": Symbol(react.memo),
                     "compare": null,
-                    "displayName": "FileCopyIcon",
-                    "muiName": "SvgIcon",
                     "type": Object {
                       "$$typeof": Symbol(react.forward_ref),
                       "render": [Function],
@@ -105,7 +103,7 @@ exports[`Tooltip matches snapshot 1`] = `
                   tabIndex={-1}
                   title=""
                 >
-                  <ForwardRef
+                  <ForwardRef(FileCopyIcon)
                     className="icon-small"
                   >
                     <WithStyles(ForwardRef(SvgIcon))
@@ -139,7 +137,7 @@ exports[`Tooltip matches snapshot 1`] = `
                         </svg>
                       </ForwardRef(SvgIcon)>
                     </WithStyles(ForwardRef(SvgIcon))>
-                  </ForwardRef>
+                  </ForwardRef(FileCopyIcon)>
                   <span />
                 </div>
               </P>

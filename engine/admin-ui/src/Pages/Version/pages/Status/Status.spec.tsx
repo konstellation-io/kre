@@ -13,9 +13,9 @@ import Status from './Status';
 import { mountApolloComponent } from 'Utils/testUtilsEnzyme';
 
 jest.mock('react-router', () => ({
-  useParams: jest.fn(() => ({
+  useParams: () => ({
     versionName: ''
-  }))
+  }),
 }));
 
 const mocks = [workflowsMock, nodeStatus];

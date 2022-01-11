@@ -56,7 +56,7 @@ function UserActivityList({ variables }: Props) {
 
       const lastId = usersActivityData && usersActivityData.slice(-1)[0].id;
 
-      fetchMore<string>({
+      fetchMore<GetUsersActivity, GetUsersActivityVariables & { lastId: string }>({
         query: GetUserActivityQuery,
         variables: { ...variables, lastId },
         updateQuery: (previousResult, { fetchMoreResult }) => {

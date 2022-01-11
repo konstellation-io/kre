@@ -6,7 +6,7 @@ import { mount } from 'enzyme';
 
 const mockDoLogout = jest.fn();
 
-jest.mock('Hooks/useEndpoint', () => jest.fn(() => [{}, mockDoLogout]));
+jest.mock('Hooks/useEndpoint', () => () => [{}, mockDoLogout]);
 
 const Wrapper = () => (
   <BrowserRouter>

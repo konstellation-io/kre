@@ -90,6 +90,7 @@ exports[`Filters matches snapshot 1`] = `
       formEndDate="2020-01-01"
       formStartDate="2020-01-01"
       selectedOption="2020-01-01"
+      updateFilters={[MockFunction]}
     />
   </ht>
 </div>

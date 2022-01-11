@@ -8,7 +8,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     runtime={
       Object {
         "__typename": "Runtime",
+        "creationDate": "creationDate",
+        "databaseUrl": "databaseUrl",
         "description": "Some Description",
+        "entrypointAddress": "entrypointAddress",
         "id": "runtimeId",
         "measurementsUrl": "measurementsUrl",
         "name": "runtimeName",
@@ -19,7 +22,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     runtime={
       Object {
         "__typename": "Runtime",
+        "creationDate": "creationDate",
+        "databaseUrl": "databaseUrl",
         "description": "Some Description",
+        "entrypointAddress": "entrypointAddress",
         "id": "runtimeId",
         "measurementsUrl": "measurementsUrl",
         "name": "runtimeName",
@@ -31,8 +37,8 @@ exports[`VersionSideBar matches snapshot 1`] = `
       Object {
         "__typename": "Version",
         "config": Object {
+          "__typename": "VersionConfig",
           "completed": false,
-          "vars": Array [],
         },
         "creationAuthor": Object {
           "__typename": "User",
@@ -59,7 +65,10 @@ exports[`VersionSideBar matches snapshot 1`] = `
     runtime={
       Object {
         "__typename": "Runtime",
+        "creationDate": "creationDate",
+        "databaseUrl": "databaseUrl",
         "description": "Some Description",
+        "entrypointAddress": "entrypointAddress",
         "id": "runtimeId",
         "measurementsUrl": "measurementsUrl",
         "name": "runtimeName",
@@ -69,8 +78,8 @@ exports[`VersionSideBar matches snapshot 1`] = `
       Object {
         "__typename": "Version",
         "config": Object {
+          "__typename": "VersionConfig",
           "completed": false,
-          "vars": Array [],
         },
         "creationAuthor": Object {
           "__typename": "User",
@@ -101,8 +110,8 @@ exports[`VersionSideBar matches snapshot 1`] = `
         Object {
           "__typename": "Version",
           "config": Object {
+            "__typename": "VersionConfig",
             "completed": false,
-            "vars": Array [],
           },
           "creationAuthor": Object {
             "__typename": "User",
