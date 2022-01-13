@@ -64,7 +64,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
     <VersionMenuItem key={`${props.label}-${props.to}`} {...props} />
   ));
 
-  return <div className={styles.wrapper}>{items}</div>;
+  return <div className={styles.wrapper} data-testid='sidebarLinks'>{items}</div>;
 }
 
 export default VersionMenu;

@@ -16,6 +16,10 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
+type InterceptorOptions = {
+  fixture: string;
+};
+
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -23,7 +27,7 @@ declare global {
        * Custom command to intercept GraphQl queries from the KDL.
        * @example cy.kstInterceptor('GetMe', {name: 'Jon Doe'})
        */
-      kstInterceptor(operation: string, responseObject: Object): Chainable;
+      kstInterceptor(operation: string, responseObject: Object, options?: InterceptorOptions): Chainable;
 
       /**
        * Custom command to get element by data-testid

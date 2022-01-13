@@ -39,7 +39,7 @@ function VersionsList({
           </Can>
         )}
       </div>
-      <ul className={styles.list}>
+      <ul className={styles.list} data-testid="projectsList">
         {versions.map(version => (
           <VersionInfo key={version.id} version={version} />
         ))}

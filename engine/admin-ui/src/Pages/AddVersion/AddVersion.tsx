@@ -38,6 +38,8 @@ function AddVersion() {
         const newVersion = updateResult.data
           .createVersion as GetVersionConfStatus_versions;
 
+        console.log(newVersion)
+
         cache.writeQuery({
           query: GetRuntimeAndVersionQuery,
           data: { versions: versions.concat([newVersion]) }
@@ -58,9 +60,11 @@ function AddVersion() {
 
   useEffect(() => {
     if (error) {
+      console.log(error)
       setError('addVersionFile', 'apolloError', error.toString());
 
       const err = error.graphQLErrors[0];
+      console.log(err)
       if (err.extensions?.code === 'krt_validation_error') {
         setValidationErr(err.extensions?.details);
       }
@@ -93,7 +97,7 @@ function AddVersion() {
           )}
 
           <div className={styles.content} data-testid='uploadVersion'>
-            <form>
+            <form data-testid='fileUpload'>
               <FileUpload
                 name="addVersionFile"
                 inputRef={register({

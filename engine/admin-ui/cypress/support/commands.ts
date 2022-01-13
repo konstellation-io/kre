@@ -8,10 +8,15 @@ import Chainable = Cypress.Chainable;
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-Cypress.Commands.add('kstInterceptor', (operation, responseObject): Chainable => (
+Cypress.Commands.add('kstInterceptor', (operation, responseObject, options): Chainable => (
   cy.intercept('/graphql', (req) => {
     const { operationName } = req.body;
-    if (operationName === operation) req.reply(responseObject);
+    if (operationName !== operation) return;
+    if (options) {
+      req.reply(options);
+      return;
+    }
+    req.reply(responseObject);
   })
 ));
 
