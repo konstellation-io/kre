@@ -41,6 +41,8 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
 All runners for different languages are located on [kre-runners repo](https://github.com/konstellation-io/kre-runners).
 
+Clone the `kre-runners` repository in a `runners` folder inside this repository, located at the root level.
+
 # Architecture
 
 KRE is designed based on a microservice pattern to be run on top of a Kubernetes cluster.
