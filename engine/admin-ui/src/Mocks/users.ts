@@ -2,6 +2,25 @@ import { AccessLevel } from '../Graphql/types/globalTypes';
 
 import GetUsers from '../Graphql/queries/getUsers';
 
+export const users = [
+  {
+    id: 'user1',
+    email: 'user1@konstellation.com',
+    accessLevel: AccessLevel.ADMIN,
+    creationDate: '2018-01-01',
+    lastActivity: '2018-01-01',
+    activeSessions: 4
+  },
+  {
+    id: 'user2',
+    email: 'user2@konstellation.com',
+    accessLevel: AccessLevel.MANAGER,
+    creationDate: '2018-01-01',
+    lastActivity: '2018-01-01',
+    activeSessions: 4
+  }
+];
+
 export const userMe = {
   id: 'userMe',
   email: 'admin@konstellation.io',
@@ -16,24 +35,7 @@ export const usersMock = {
   },
   result: {
     data: {
-      users: [
-        {
-          id: 'user1',
-          email: 'user1@konstellation.com',
-          accessLevel: AccessLevel.ADMIN,
-          creationDate: '2018-01-01',
-          lastActivity: '2018-01-01',
-          activeSessions: 4
-        },
-        {
-          id: 'user2',
-          email: 'user2@konstellation.com',
-          accessLevel: AccessLevel.MANAGER,
-          creationDate: '2018-01-01',
-          lastActivity: '2018-01-01',
-          activeSessions: 4
-        }
-      ]
+      users,
     }
   }
 };

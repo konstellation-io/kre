@@ -9,7 +9,6 @@ describe('Settings', () => {
   beforeEach(() => {
     cy.kstInterceptor('GetMe', { data: GetMeQuery });
     cy.kstInterceptor('GetVersionConfStatus', { data: GetVersionConfStatusQuery });
-    cy.kstInterceptor('GetVersionConfStatus', { data: GetVersionConfStatusQuery });
     cy.kstInterceptor('GetSettings', { data: GetSettingsQuery });
   });
 

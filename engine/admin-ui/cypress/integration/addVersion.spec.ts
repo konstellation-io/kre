@@ -56,7 +56,7 @@ describe('Add Version Behavior', () => {
     // });
     cy.get('input').attachFile('greeter-v1.krt');
     cy.getByTestId('createVersion').children().first().click();
-    cy.wait(50000)
+    // cy.wait(50000)
     cy.url().should('include', '/versions');
   });
 });
