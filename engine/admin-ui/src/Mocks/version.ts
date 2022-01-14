@@ -1,4 +1,4 @@
-import { NodeStatus, VersionStatus } from '../Graphql/types/globalTypes';
+import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
 
 import GetConfigurationVariablesQuery from '../Graphql/queries/getConfigurationVariables';
 import GetVersionWorkflowsQuery from '../Graphql/queries/getVersionWorkflows';

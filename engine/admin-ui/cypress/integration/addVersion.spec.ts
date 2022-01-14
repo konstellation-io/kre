@@ -1,5 +1,5 @@
-import GetMeQuery from '../../src/Mocks/GetMeQuery';
-import GetVersionConfStatusQuery from '../../src/Mocks/GetVersionConfStatusQuery';
+import GetMeQuery from 'Mocks/GetMeQuery';
+import GetVersionConfStatusQuery from 'Mocks/GetVersionConfStatusQuery';
 import 'cypress-file-upload';
 
 describe('Add Version Behavior', () => {

@@ -1,7 +1,7 @@
-import GetMeQuery from "../../src/Mocks/GetMeQuery";
-import GetVersionConfStatusQuery from "../../src/Mocks/GetVersionConfStatusQuery";
-import { users } from "../../src/Mocks/users";
-import CreateUserQuery from "../../src/Mocks/CreateUserQuery";
+import GetMeQuery from "Mocks/GetMeQuery";
+import GetVersionConfStatusQuery from "Mocks/GetVersionConfStatusQuery";
+import { users } from "Mocks/users";
+import CreateUserQuery from "Mocks/CreateUserQuery";
 
 describe('Users Page', () => {
   beforeEach(() => {

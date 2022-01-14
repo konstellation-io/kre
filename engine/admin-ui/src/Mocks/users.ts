@@ -1,6 +1,6 @@
 import { AccessLevel } from '../Graphql/types/globalTypes';
 
-import GetUsers from '../Graphql/queries/getUsers';
+import GetUsers from 'Graphql/queries/getUsers';
 
 export const users = [
   {

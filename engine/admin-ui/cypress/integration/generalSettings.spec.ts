@@ -1,9 +1,9 @@
-import GetMeQuery from "../../src/Mocks/GetMeQuery";
-import GetVersionConfStatusQuery from "../../src/Mocks/GetVersionConfStatusQuery";
-import GetSettingsQuery from "../../src/Mocks/GetSettingsQuery";
-import UpdateSettingsQuery from "../../src/Mocks/UpdateSettingsQuery";
-import GetDomainsQuery from "../../src/Mocks/GetDomainsQuery";
-import UpdateDomainsQuery from "../../src/Mocks/UpdateDomainsQuery";
+import GetMeQuery from "Mocks/GetMeQuery";
+import GetVersionConfStatusQuery from "Mocks/GetVersionConfStatusQuery";
+import GetSettingsQuery from "Mocks/GetSettingsQuery";
+import UpdateSettingsQuery from "Mocks/UpdateSettingsQuery";
+import GetDomainsQuery from "Mocks/GetDomainsQuery";
+import UpdateDomainsQuery from "Mocks/UpdateDomainsQuery";
 
 describe('Settings', () => {
   beforeEach(() => {

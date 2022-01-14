@@ -1,6 +1,6 @@
-import GetMeQuery from "../../src/Mocks/GetMeQuery";
-import GetVersionConfStatusQuery from "../../src/Mocks/GetVersionConfStatusQuery";
-import GetConfigurationVariablesQuery from "../../src/Mocks/GetConfigurationVariablesQuery";
+import GetMeQuery from "Mocks/GetMeQuery";
+import GetVersionConfStatusQuery from "Mocks/GetVersionConfStatusQuery";
+import GetConfigurationVariablesQuery from "Mocks/GetConfigurationVariablesQuery";
 
 describe('Version Navigation', () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('Version Navigation', () => {
     cy.getByTestId('versionSidebar').should('contain', 'versionName');
   });
 
-  it.only('should navigate to version predictions page', () => {
+  it('should navigate to version predictions page', () => {
     cy.kstInterceptor('GetMetrics', {}, { fixture: 'metrics.json' });
     cy.getByTestId('projectsList').first().click();
     cy.contains('PREDICTIONS').click();
