@@ -38,8 +38,6 @@ function AddVersion() {
         const newVersion = updateResult.data
           .createVersion as GetVersionConfStatus_versions;
 
-        console.log(newVersion)
-
         cache.writeQuery({
           query: GetRuntimeAndVersionQuery,
           data: { versions: versions.concat([newVersion]) }
