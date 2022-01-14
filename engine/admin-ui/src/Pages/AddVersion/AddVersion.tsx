@@ -60,11 +60,9 @@ function AddVersion() {
 
   useEffect(() => {
     if (error) {
-      console.log(error)
       setError('addVersionFile', 'apolloError', error.toString());
 
       const err = error.graphQLErrors[0];
-      console.log(err)
       if (err.extensions?.code === 'krt_validation_error') {
         setValidationErr(err.extensions?.details);
       }

@@ -25,7 +25,7 @@ describe('Users Page', () => {
     cy.get('table').should('contain', 'newuser@test.com');
   });
 
-  it('should create new user', () => {
+  it('should fail to create new user if email is invalidº', () => {
     cy.kstInterceptor('CreateUser', { data: CreateUserQuery });
     cy.contains('NEW USER').click();
     cy.getByTestId('input').type('invalid email');
