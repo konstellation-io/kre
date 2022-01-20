@@ -66,7 +66,7 @@ function Charts({ data, expanded, toggleExpanded, viewAllData }: Props) {
   };
 
   return (
-    <div className={styles.content}>
+    <div className={styles.content} data-testid='metricsPanel'>
       <div
         className={cx(styles.wrapper, {
           [styles.expanded]: expanded

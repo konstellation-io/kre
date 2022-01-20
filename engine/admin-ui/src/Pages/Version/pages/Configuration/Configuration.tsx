@@ -214,7 +214,7 @@ function Configuration() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid='versionConfigPanel'>
       <div className={styles.content}>
         <SettingsHeader>Configuration</SettingsHeader>
         <ConfVarPanel varPanel={varPanel} closePanel={closePanel} />

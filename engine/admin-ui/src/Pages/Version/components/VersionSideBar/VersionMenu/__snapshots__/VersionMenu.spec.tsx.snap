@@ -67,6 +67,7 @@ exports[`VersionMenu matches snapshot 1`] = `
     >
       <div
         className="wrapper"
+        data-testid="sidebarLinks"
       >
         <VersionMenuItem
           Icon={

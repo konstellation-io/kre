@@ -1,0 +1,296 @@
+{
+  "data": {
+    "metrics": {
+      "values": {
+        "accuracy": {
+          "total": 61,
+          "micro": 92,
+          "macro": 97,
+          "weighted": 3,
+          "__typename": "MetricsAccuracy"
+        },
+        "missing": 73,
+        "newLabels": 12,
+        "__typename": "MetricsValues"
+      },
+      "charts": {
+        "confusionMatrix": [
+          {
+            "x": "labelA",
+            "y": "labelA",
+            "z": "86",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelA",
+            "y": "labelB",
+            "z": "64",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelA",
+            "y": "labelC",
+            "z": "85",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelB",
+            "y": "labelA",
+            "z": "58",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelB",
+            "y": "labelB",
+            "z": "15",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelB",
+            "y": "labelC",
+            "z": "48",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelC",
+            "y": "labelA",
+            "z": "24",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelC",
+            "y": "labelB",
+            "z": "67",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "labelC",
+            "y": "labelC",
+            "z": "74",
+            "__typename": "MetricChartData"
+          }
+        ],
+        "seriesAccuracy": [
+          {
+            "x": "82",
+            "y": "labelA",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "39",
+            "y": "labelB",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "31",
+            "y": "labelC",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "45",
+            "y": "labelD",
+            "__typename": "MetricChartData"
+          }
+        ],
+        "seriesRecall": [
+          {
+            "x": "26",
+            "y": "labelA",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "25",
+            "y": "labelB",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "16",
+            "y": "labelC",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "28",
+            "y": "labelD",
+            "__typename": "MetricChartData"
+          }
+        ],
+        "seriesSupport": [
+          {
+            "x": "77",
+            "y": "labelA",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "20",
+            "y": "labelB",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "58",
+            "y": "labelC",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "63",
+            "y": "labelD",
+            "__typename": "MetricChartData"
+          }
+        ],
+        "successVsFails": [
+          {
+            "x": "01 Jan 2020",
+            "y": "10",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "02 Jan 2020",
+            "y": "96",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "03 Jan 2020",
+            "y": "87",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "04 Jan 2020",
+            "y": "14",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "05 Jan 2020",
+            "y": "43",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "06 Jan 2020",
+            "y": "24",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "07 Jan 2020",
+            "y": "",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "08 Jan 2020",
+            "y": "",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "09 Jan 2020",
+            "y": "",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "10 Jan 2020",
+            "y": "47",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "11 Jan 2020",
+            "y": "73",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "12 Jan 2020",
+            "y": "0",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "13 Jan 2020",
+            "y": "",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "14 Jan 2020",
+            "y": "26",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "15 Jan 2020",
+            "y": "77",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "16 Jan 2020",
+            "y": "46",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "17 Jan 2020",
+            "y": "12",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "18 Jan 2020",
+            "y": "75",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "19 Jan 2020",
+            "y": "32",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "20 Jan 2020",
+            "y": "60",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "21 Jan 2020",
+            "y": "83",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "22 Jan 2020",
+            "y": "12",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "23 Jan 2020",
+            "y": "75",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "24 Jan 2020",
+            "y": "24",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "25 Jan 2020",
+            "y": "95",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "26 Jan 2020",
+            "y": "56",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "27 Jan 2020",
+            "y": "43",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "28 Jan 2020",
+            "y": "0",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "29 Jan 2020",
+            "y": "51",
+            "__typename": "MetricChartData"
+          },
+          {
+            "x": "30 Jan 2020",
+            "y": "16",
+            "__typename": "MetricChartData"
+          }
+        ],
+        "__typename": "MetricsCharts"
+      },
+      "__typename": "Metrics"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "viewportWidth": 1600,
+  "viewportHeight": 990,
+  "screenshotOnRunFailure": true,
+  "video": false,
+  "defaultCommandTimeout": 30000,
+  "requestTimeout": 10000,
+  "supportFile": "cypress/support/index.ts",
+  "pluginsFile": "cypress/plugins/index.js"
+}

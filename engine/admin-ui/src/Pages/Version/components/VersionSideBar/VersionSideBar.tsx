@@ -28,7 +28,7 @@ function VersionSideBar({ runtime, versions, version }: VersionSideBarProps) {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} data-testid="versionSidebar">
       <BackButton runtime={runtime} />
       <RuntimeMenu runtime={runtime} />
       <VersionInfo version={version} />
