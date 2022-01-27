@@ -1340,6 +1340,7 @@ exports[`Workflow matches snapshot 1`] = `
                   >
                     <div
                       className="button"
+                      data-testid="openWorkflowLogs"
                       onClick={[Function]}
                       title="Open logs for this workflow"
                     >
