@@ -45,7 +45,7 @@ func main() {
 
 	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
 	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
-	accessControl, err := auth.NewCasbinAccessControl(logger, userRepo)
+	accessControl, err := auth.NewCasbinAccessControl(logger, userRepo, "./casbin_rbac_model.conf", "./casbin_rbac_policy.csv")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,8 +1,10 @@
 import { AccessLevel } from 'Graphql/types/globalTypes';
 
+const VIEWER_RULES = ['logs:view'];
+
 const MANAGER_RULES = [
+  ...VIEWER_RULES,
   'audit:view',
-  'logs:view',
   'runtime:edit',
   'version:edit'
 ];
@@ -16,7 +18,7 @@ const rules: {
   };
 } = {
   VIEWER: {
-    static: []
+    static: VIEWER_RULES
   },
   MANAGER: {
     static: MANAGER_RULES
