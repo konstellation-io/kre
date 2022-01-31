@@ -21,6 +21,7 @@ function WorkflowHeader({ name = 'Workflow', onWorkflowClick }: Props) {
           className={styles.button}
           onClick={() => onWorkflowClick()}
           title="Open logs for this workflow"
+          data-testid="openWorkflowLogs"
         >
           <SvgIcon className="icon-small">
             <path d={TERMINAL} />

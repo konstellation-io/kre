@@ -18,8 +18,8 @@ type CasbinAccessControl struct {
 	userRepo repository.UserRepo
 }
 
-func NewCasbinAccessControl(logger logging.Logger, userRepo repository.UserRepo) (*CasbinAccessControl, error) {
-	e, err := casbin.NewEnforcer("casbin_rbac_model.conf", "casbin_rbac_policy.csv")
+func NewCasbinAccessControl(logger logging.Logger, userRepo repository.UserRepo, modelPath, policyPath string) (*CasbinAccessControl, error) {
+	e, err := casbin.NewEnforcer(modelPath, policyPath)
 	if err != nil {
 		return nil, err
 	}

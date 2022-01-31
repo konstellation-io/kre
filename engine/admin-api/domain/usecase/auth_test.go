@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
 	"testing"
 	"time"
 
@@ -13,7 +14,13 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
+	usecaseauth "github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/mocks"
+)
+
+const (
+	rbacModelPath  = "../../casbin_rbac_model.conf"
+	rbacPolicyPath = "../../casbin_rbac_policy.csv"
 )
 
 type authSuite struct {
@@ -406,4 +413,90 @@ func TestVerifyAPIToken(t *testing.T) {
 	actualUserID, err := s.authInteractor.VerifyAPIToken(ctx, token)
 	require.NoError(t, err)
 	require.Equal(t, user.ID, actualUserID)
+}
+
+func TestCheckPermissionErr(t *testing.T) {
+	// GIVEN that there is a user with the viewer role
+	s := newAuthSuite(t)
+	defer s.ctrl.Finish()
+	ctx := context.Background()
+
+	user := entity.User{
+		ID:          "user1",
+		AccessLevel: entity.AccessLevelViewer,
+	}
+
+	users := []*entity.User{
+		&user,
+	}
+
+	// AND the user is in the repo
+	s.mocks.userRepo.EXPECT().GetAll(ctx, false).Return(users, nil)
+
+	// AND the RBAC is created with the policy
+	accessControl, err := auth.NewCasbinAccessControl(s.mocks.logger, s.mocks.userRepo, rbacModelPath, rbacPolicyPath)
+	require.NoError(t, err)
+
+	// WHEN the permissions to edit settings are checked
+	permissionError := accessControl.CheckPermission(user.ID, usecaseauth.ResSettings, usecaseauth.ActEdit)
+	// THEN there is an error
+	require.Error(t, permissionError)
+	// AND - The user doesn't have permissions to do the action
+}
+
+func TestCheckPermission(t *testing.T) {
+	// GIVEN that there is a user with the admin role
+	s := newAuthSuite(t)
+	defer s.ctrl.Finish()
+
+	user := entity.User{
+		ID:          "user1",
+		AccessLevel: entity.AccessLevelAdmin,
+	}
+	ctx := context.Background()
+
+	users := []*entity.User{
+		&user,
+	}
+
+	// AND the user is in the repo
+	s.mocks.userRepo.EXPECT().GetAll(ctx, false).Return(users, nil)
+
+	// AND the RBAC is created with the policy
+	accessControl, err := auth.NewCasbinAccessControl(s.mocks.logger, s.mocks.userRepo, rbacModelPath, rbacPolicyPath)
+	require.NoError(t, err)
+
+	// WHEN the permissions to edit settings are checked
+	res := accessControl.CheckPermission(user.ID, usecaseauth.ResSettings, usecaseauth.ActEdit)
+	// THEN there is not an error
+	require.NoError(t, res)
+	// AND - The user has permissions to do the action
+}
+
+func TestCheckViewerLogsPermission(t *testing.T) {
+	// GIVEN that there is a user with the admin role
+	s := newAuthSuite(t)
+	defer s.ctrl.Finish()
+	ctx := context.Background()
+
+	user := entity.User{
+		ID:          "user1",
+		AccessLevel: entity.AccessLevelViewer,
+	}
+
+	users := []*entity.User{
+		&user,
+	}
+
+	// AND the user is in the repo
+	s.mocks.userRepo.EXPECT().GetAll(ctx, false).Return(users, nil)
+	// AND the RBAC is created with the policy
+	accessControl, err := auth.NewCasbinAccessControl(s.mocks.logger, s.mocks.userRepo, rbacModelPath, rbacPolicyPath)
+	require.NoError(t, err)
+
+	// WHEN the permissions to view logs are checked
+	res := accessControl.CheckPermission(user.ID, usecaseauth.ResLogs, usecaseauth.ActView)
+	// THEN there is not an error
+	require.NoError(t, res)
+	// AND - The user with role viewer has permissions view logs
 }
