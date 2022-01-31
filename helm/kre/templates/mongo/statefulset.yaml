@@ -56,7 +56,7 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.prometheusOperator.tolerations }}
+    {{- with .Values.mongodb.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
