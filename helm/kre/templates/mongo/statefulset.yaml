@@ -48,6 +48,18 @@ spec:
           configMap:
             name: kre-mongo-init-script
             defaultMode: 0777
+    {{- with .Values.mongodb.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.mongodb.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.prometheusOperator.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ .Release.Name }}-mongo-pvc
