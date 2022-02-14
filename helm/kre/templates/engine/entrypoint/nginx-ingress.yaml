@@ -3,13 +3,13 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
-{{- if .Values.entrypoint.ingress.annotations }}
-{{ toYaml .Values.entrypoint.ingress.annotations | indent 4 }}
   annotations:
     {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: {{ include "runtime.name" . }}-clusterissuer-runtimes-entrypoints
     {{ end }}
+{{- if .Values.entrypoint.ingress.annotations }}
+{{ toYaml .Values.entrypoint.ingress.annotations | indent 4 }}
 {{- end }}
   labels:
     {{- include "kre.labels" . | nindent 4 }}
