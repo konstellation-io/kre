@@ -84,6 +84,8 @@ adminApi:
   tls:
     enabled: false
   host: api.kre.local
+  ingress:
+    annotations: {}
   storage:
     class: standard
     size: 1Gi
@@ -94,6 +96,8 @@ adminUI:
     repository: konstellation/kre-admin-ui
     tag: latest
     pullPolicy: IfNotPresent
+  ingress:
+    annotations: {}
   tls:
     enabled: false
   host: admin.kre.local
@@ -119,6 +123,11 @@ certManager:
 entrypoint:
   tls: false
   host: "local"
+  ingress:
+    annotations: {}
+  grpc:
+    ingress:
+      annotations: {}
 
 nats_streaming:
   replicas: 1

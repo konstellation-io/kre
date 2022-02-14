@@ -3,11 +3,14 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
+{{- if .Values.entrypoint.ingress.annotations }}
+{{ toYaml .Values.entrypoint.ingress.annotations | indent 4 }}
   annotations:
     {{ if .Values.entrypoint.tls }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: {{ include "runtime.name" . }}-clusterissuer-runtimes-entrypoints
     {{ end }}
+{{- end }}
   labels:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "runtime.fullname" . }}-entrypoint-web
@@ -39,6 +42,9 @@ metadata:
     {{ end }}
     nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
     nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
+{{- if .Values.entrypoint.ingress.annotations }}
+{{ toYaml .Values.entrypoint.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   {{ if .Values.entrypoint.tls -}}
   tls:

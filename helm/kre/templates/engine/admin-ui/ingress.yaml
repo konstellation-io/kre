@@ -11,6 +11,9 @@ metadata:
     {{ else -}}
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
+{{- if .Values.adminUI.ingress.annotations }}
+{{ toYaml .Values.adminUI.ingress.annotations | indent 4 }}
+{{- end }}
   labels:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ .Release.Name }}-admin-ui-route
@@ -43,6 +46,9 @@ metadata:
     {{ else -}}
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
+{{- if .Values.adminUI.ingress.annotations }}
+{{ toYaml .Values.adminUI.ingress.annotations | indent 4 }}
+{{- end }}
   labels:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ .Release.Name }}-admin-ui-ingress
