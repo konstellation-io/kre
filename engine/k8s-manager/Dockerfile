@@ -4,6 +4,7 @@ FROM grpc/go as protobuf
 WORKDIR /app
 
 COPY scripts scripts
+
 COPY proto proto
 
 RUN ./scripts/generate_proto.sh
