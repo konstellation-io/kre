@@ -8,6 +8,9 @@ metadata:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: {{ include "runtime.name" . }}-clusterissuer-runtimes-entrypoints
     {{ end }}
+{{- if .Values.entrypoint.grpc.ingress.annotations }}
+{{ toYaml .Values.entrypoint.grpc.ingress.annotations | indent 4 }}
+{{- end }}
   labels:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ template "runtime.fullname" . }}-entrypoint
@@ -56,7 +59,9 @@ metadata:
           return 204;
       }
       default_type application/grpc;
-
+{{- if .Values.entrypoint.grpc.ingress.annotations }}
+{{ toYaml .Values.entrypoint.grpc.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   {{ if .Values.entrypoint.tls -}}
   tls:

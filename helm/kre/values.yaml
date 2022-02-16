@@ -84,6 +84,8 @@ adminApi:
   tls:
     enabled: false
   host: api.kre.local
+  ingress:
+    annotations: {}
   storage:
     class: standard
     size: 1Gi
@@ -94,6 +96,8 @@ adminUI:
     repository: konstellation/kre-admin-ui
     tag: latest
     pullPolicy: IfNotPresent
+  ingress:
+    annotations: {}
   tls:
     enabled: false
   host: admin.kre.local
@@ -115,10 +119,26 @@ certManager:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: user@email.com
+  #dns01:
+  #  route53:
+  #    region: eu-west-1
+  #    accessKeyID: AIKEAGSEA90EXAMPLE
+  #    hostedZoneID: route53-zoneid
+  #    secretAccessKeySecretRef:
+  #      name: aws-secret
+  #      key: AWS_SECRET_ACCESS_KEY
+  http01:
+    ingress:
+      class: nginx
 
 entrypoint:
   tls: false
   host: "local"
+  ingress:
+    annotations: {}
+  grpc:
+    ingress:
+      annotations: {}
 
 nats_streaming:
   replicas: 1

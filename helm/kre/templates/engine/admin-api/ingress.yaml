@@ -11,6 +11,9 @@ metadata:
     {{ else -}}
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
+{{- if .Values.adminApi.ingress.annotations }}
+{{ toYaml .Values.adminApi.ingress.annotations | indent 4 }}
+{{- end }}
   labels:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ .Release.Name }}-admin-api-route
@@ -46,6 +49,9 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: 100000m
     nginx.org/client-max-body-size: 100000m
     nginx.org/websocket-services: admin-api
+{{- if .Values.adminApi.ingress.annotations }}
+{{ toYaml .Values.adminApi.ingress.annotations | indent 4 }}
+{{- end }}
   labels:
     {{- include "kre.labels" . | nindent 4 }}
     app: {{ .Release.Name }}-admin-api-ingress
