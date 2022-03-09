@@ -13,7 +13,7 @@ import {
 } from 'Graphql/subscriptions/types/WatchVersionNodeStatus';
 
 import { NodeStatus } from 'Graphql/types/globalTypes';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { VersionRouteParams } from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
 import styles from './Status.module.scss';
@@ -45,7 +45,6 @@ function Status({ version, runtime }: Props) {
     GetVersionWorkflowsVariables
   >(GetVersionWorkflowsQuery, {
     variables: { versionName },
-    onCompleted: () => subscribe()
   });
 
   const dataOpenedVersion = useReactiveVar(openedVersion);
@@ -65,6 +64,16 @@ function Status({ version, runtime }: Props) {
         return prev;
       }
     });
+
+  useEffect(
+    () => {
+      if(!loading && !error) {
+        const unsubscribe = subscribe();
+        return unsubscribe;
+      }
+    },
+    [loading, error, subscribe],
+  );
 
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
