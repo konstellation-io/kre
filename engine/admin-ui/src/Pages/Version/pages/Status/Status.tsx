@@ -68,7 +68,7 @@ function Status({ version, runtime }: Props) {
   useEffect(
     () => {
       if(!loading && !error) {
-        const unsubscribe = subscribe();
+        const unsubscribe = subscribe(); // NOSONAR
         return unsubscribe;
       }
     },
