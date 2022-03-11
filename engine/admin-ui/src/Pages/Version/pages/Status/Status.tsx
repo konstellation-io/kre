@@ -68,6 +68,8 @@ function Status({ version, runtime }: Props) {
   useEffect(
     () => {
       if(!loading && !error) {
+        // the useEffect return line executes when on component unmount, so we can't avoid using an additional
+        // variable for the unsubscribe functionality
         const unsubscribe = subscribe(); // NOSONAR
         return unsubscribe;
       }
