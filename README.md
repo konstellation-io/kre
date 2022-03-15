@@ -21,9 +21,9 @@
 # KRE (Konstellation Runtime Engine)
 
 Konstellation Runtime Engine is an application that allow to run AI/ML models for inference based on the content of a
- `.krt` file. 
+`.krt` file.
 
- ## Engine
+## Engine
 
 |  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
 | :---------: | :-----:   |  :---: |  :--------------------:  |
@@ -55,8 +55,9 @@ Below are described the main concepts of KRE.
 
 ## Engine
 
-Before installing KRE an already existing Kubernetes namespace is required as a general rule the name used to be `KRE` but can be any value. The installation process will deploy some
-components that are responsible to manage the full life cycle of AI solution.
+Before installing KRE an already existing Kubernetes namespace is required as a general rule the name used to be `KRE`
+but can be any value. The installation process will deploy some components that are responsible to manage the full life
+cycle of AI solution.
 
 The Engine is composed by the following components:
 
@@ -77,7 +78,7 @@ The base structure of a `kre.yaml` is as follows:
 ```yaml
 version: my-project-v1
 description: This is the new version that solves some problems.
-entrypoint: 
+entrypoint:
   proto: public_input.proto
   image: konstellation/kre-runtime-entrypoint:latest
 
@@ -89,21 +90,21 @@ config:
     - HTTPS_CERT
 
 nodes:
- - name: ETL
-   image: konstellation/kre-py:latest
-   src: src/etl/execute_etl.py
- 
- - name: Execute DL Model
-   image: konstellation/kre-py:latest
-   src: src/execute_model/execute_model.py
+  - name: ETL
+    image: konstellation/kre-py:latest
+    src: src/etl/execute_etl.py
 
- - name: Create Output
-   image: konstellation/kre-py:latest
-   src: src/output/output.py
+  - name: Execute DL Model
+    image: konstellation/kre-py:latest
+    src: src/execute_model/execute_model.py
 
- - name: Client Metrics
-   image: konstellation/kre-py:latest
-   src: src/client_metrics/client_metrics.py
+  - name: Create Output
+    image: konstellation/kre-py:latest
+    src: src/output/output.py
+
+  - name: Client Metrics
+    image: konstellation/kre-py:latest
+    src: src/client_metrics/client_metrics.py
 
 workflows:
   - name: New prediction
@@ -121,8 +122,8 @@ workflows:
 
 # Install
 
-KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. In order to install it 
-just need to add the chart repository, define your custom `values.yaml` and run one command.
+KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. In order to install it just
+need to add the chart repository, define your custom `values.yaml` and run one command.
 
 Let's start adding the repository to helm:
 
@@ -131,13 +132,14 @@ helm repo add konstellation-io https://charts.konstellation.io
 helm repo update
 ```
 
-Now define your custom `values.yaml`, you can get the default values using this command (this can be used as a template to customize yours later):
+Now define your custom `values.yaml`, you can get the default values using this command (this can be used as a template
+to customize yours later):
 
 ```bash
-helm show values konstellation.io/kre
+helm show values konstellation-io/kre
 ```
 
-Once you have the appropriate values, you can start the installation with the following command: 
+Once you have the appropriate values, you can start the installation with the following command:
 
 ```bash
 helm upgrade --install kre --namespace kre \
@@ -159,21 +161,18 @@ KRE allows a custom configuration to use parts that already exist in your infras
 | -------------------------- | ----- |
 | prometheusOperator.enabled | false |
 
-
-# Development 
-
+# Development
 
 ## Requirements
 
-In order to start development on this project you will need these tools: 
+In order to start development on this project you will need these tools:
 
 - **gettext**: OS package to fill templates during deployment
 - **minikube**: the local version of Kubernetes to deploy KRE
 - **helm**: K8s package manager. Make sure you have v3+
 - **yq**: YAML processor. Make sure you have v4+
 
-*NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `.krectl.conf`. 
-
+*NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `.krectl.conf`.
 
 ## Local Environment
 
@@ -244,19 +243,27 @@ You will see an output like this:
 
 # Versioning lifecycle
 
-In the development lifecycle of KLI there are three main stages depend if we are going to add a new feature, release a new version with some features or apply a fix to a current release.
+In the development lifecycle of KLI there are three main stages depend if we are going to add a new feature, release a
+new version with some features or apply a fix to a current release.
 
 ### Alphas
 
-In order to add new features just create a feature branch from main, and after the merger the Pull Request a workflow will run the tests and if everything passes a new alpha tag will be created (like *v0.0-alpha.0*), and a new release will be generated with this tag.
+In order to add new features just create a feature branch from main, and after the merger the Pull Request a workflow
+will run the tests and if everything passes a new alpha tag will be created (like *v0.0-alpha.0*), and a new release
+will be generated with this tag.
 
 ### Releases
 
-After some alpha versions we can create what we call a release, and to do that we have to run manual the Release Action. This workflow will create a new release branch and a new tag like *v0.0.0*. With this tag, a new release will be generated.
+After some alpha versions we can create what we call a release, and to do that we have to run manual the Release Action.
+This workflow will create a new release branch and a new tag like *v0.0.0*. With this tag, a new release will be
+generated.
 
 ### Fixes
 
-If we find out a bug in a release, we can apply a bugfix just by creating a fixed branch from the specific release branch, and creating a Pull Request to the same release branch. When the Pull Request is merged, after passing the tests, a new fix tag will be created just by increasing the patch number of the version, and a new release will be build and released.
+If we find out a bug in a release, we can apply a bugfix just by creating a fixed branch from the specific release
+branch, and creating a Pull Request to the same release branch. When the Pull Request is merged, after passing the
+tests, a new fix tag will be created just by increasing the patch number of the version, and a new release will be build
+and released.
 
 
 [admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=coverage
