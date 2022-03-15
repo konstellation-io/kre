@@ -18,6 +18,8 @@ type WaitForKind = int
 const (
 	WaitForDeployments WaitForKind = iota
 	WaitForConfigMaps
+	NodeSelectorKey   string = "konstellation.io/node-capability"
+	NodeSelectorValue string = "gpu"
 )
 
 var (
@@ -176,6 +178,8 @@ func (m *Manager) createNodeDeployment(
 					InitContainers: []apiv1.Container{
 						m.getKRTFilesDownloaderContainer(envVars),
 					},
+					NodeSelector: m.getNodeSelector(node.Gpu),
+					Tolerations:  m.getNodeTolerations(node.Gpu),
 					Containers: []apiv1.Container{
 						{
 							Name:            name,
@@ -206,6 +210,31 @@ func (m *Manager) createNodeDeployment(
 	})
 
 	return err
+}
+
+func (m *Manager) getNodeSelector(isGPUEnabled bool) map[string]string {
+	if !isGPUEnabled {
+		return map[string]string{}
+	}
+
+	return map[string]string{
+		NodeSelectorKey: NodeSelectorValue,
+	}
+}
+
+func (m *Manager) getNodeTolerations(isGPUEnabled bool) []apiv1.Toleration {
+	if !isGPUEnabled {
+		return []apiv1.Toleration{}
+	}
+
+	return []apiv1.Toleration{
+		{
+			Key:      NodeSelectorKey,
+			Operator: apiv1.TolerationOpEqual,
+			Value:    NodeSelectorValue,
+			Effect:   apiv1.TaintEffectNoSchedule,
+		},
+	}
 }
 
 func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) error {
