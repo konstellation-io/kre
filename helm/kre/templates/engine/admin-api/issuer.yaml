@@ -1,4 +1,4 @@
-{{- if .Values.certManager.enabled }}
+{{- if and .Values.certManager.enabled .Values.adminApi.tls.enabled }}
 {{ if .Capabilities.APIVersions.Has "cert-manager.io/v1alpha3" }}
 apiVersion: cert-manager.io/v1alpha3
 {{ else }}
@@ -22,4 +22,4 @@ spec:
       - http01:
         {{- toYaml . | nindent 10 }}
       {{- end }}
-  {{- end }}
+{{- end }}

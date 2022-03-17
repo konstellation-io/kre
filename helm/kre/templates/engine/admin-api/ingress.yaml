@@ -4,6 +4,7 @@ kind: Route
 metadata:
   name: {{ .Release.Name }}-admin-api-route
   annotations:
+    {{- if and .Values.certManager.enabled .Values.adminApi.tls.enabled }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/issuer: {{ .Release.Name }}-admin-api
     {{ if hasKey .Values.certManager "dns01" -}}
@@ -11,6 +12,7 @@ metadata:
     {{ else -}}
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
+    {{- end }}
 {{- if .Values.adminApi.ingress.annotations }}
 {{ toYaml .Values.adminApi.ingress.annotations | indent 4 }}
 {{- end }}
@@ -38,14 +40,16 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-admin-api-ingress
   annotations:
+    {{- if and .Values.certManager.enabled .Values.adminApi.tls.enabled }}
     kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.class: nginx
     cert-manager.io/issuer: {{ .Release.Name }}-admin-api
     {{ if hasKey .Values.certManager "dns01" -}}
     cert-manager.io/acme-challenge-type: "dns01"
     {{ else -}}
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
+    {{- end }}
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: 100000m
     nginx.org/client-max-body-size: 100000m
     nginx.org/websocket-services: admin-api

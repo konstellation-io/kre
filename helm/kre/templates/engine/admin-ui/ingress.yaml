@@ -4,6 +4,7 @@ kind: Route
 metadata:
   name: {{ .Release.Name }}-admin-ui-route
   annotations:
+    {{- if and .Values.certManager.enabled .Values.adminUI.tls.enabled }}
     kubernetes.io/tls-acme: "true"
     cert-manager.io/issuer: {{ .Release.Name }}-admin-ui
     {{ if hasKey .Values.certManager "dns01" -}}
@@ -11,6 +12,7 @@ metadata:
     {{ else -}}
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
+    {{- end }}
 {{- if .Values.adminUI.ingress.annotations }}
 {{ toYaml .Values.adminUI.ingress.annotations | indent 4 }}
 {{- end }}
@@ -38,14 +40,16 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-admin-ui-ingress
   annotations:
+    {{- if and .Values.certManager.enabled .Values.adminUI.tls.enabled }}
     kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.class: nginx
     cert-manager.io/issuer: {{ .Release.Name }}-admin-ui
     {{ if hasKey .Values.certManager "dns01" -}}
     cert-manager.io/acme-challenge-type: "dns01"
     {{ else -}}
     cert-manager.io/acme-challenge-type: "http01"
     {{ end }}
+    {{- end }}
+    kubernetes.io/ingress.class: nginx
 {{- if .Values.adminUI.ingress.annotations }}
 {{ toYaml .Values.adminUI.ingress.annotations | indent 4 }}
 {{- end }}
