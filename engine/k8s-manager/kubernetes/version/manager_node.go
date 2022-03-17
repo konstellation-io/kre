@@ -18,6 +18,8 @@ type WaitForKind = int
 const (
 	WaitForDeployments WaitForKind = iota
 	WaitForConfigMaps
+	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
+	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
 )
 
 var (
@@ -135,8 +137,8 @@ func (m *Manager) getNodeResourcesRequirements(isGPUEnabled bool) apiv1.Resource
 	limits := apiv1.ResourceList{}
 
 	if isGPUEnabled {
-		limits["nvidia.com/gpu"] = resource.MustParse("1")
-		requests["nvidia.com/gpu"] = resource.MustParse("1")
+		limits[ResourceNameNvidia] = resource.MustParse("1")
+		requests[ResourceNameNvidia] = resource.MustParse("1")
 	}
 
 	return apiv1.ResourceRequirements{
@@ -176,6 +178,8 @@ func (m *Manager) createNodeDeployment(
 					InitContainers: []apiv1.Container{
 						m.getKRTFilesDownloaderContainer(envVars),
 					},
+					NodeSelector: m.getNodeSelector(node.Gpu),
+					Tolerations:  m.getNodeTolerations(node.Gpu),
 					Containers: []apiv1.Container{
 						{
 							Name:            name,
@@ -206,6 +210,35 @@ func (m *Manager) createNodeDeployment(
 	})
 
 	return err
+}
+
+func (m *Manager) getNodeSelector(isGPUEnabled bool) map[string]string {
+	if !isGPUEnabled {
+		return map[string]string{}
+	}
+
+	return map[string]string{
+		ResourceNameKstGpu.String(): "true",
+	}
+}
+
+func (m *Manager) getNodeTolerations(isGPUEnabled bool) []apiv1.Toleration {
+	if !isGPUEnabled {
+		return []apiv1.Toleration{}
+	}
+
+	return []apiv1.Toleration{
+		{
+			Key:      ResourceNameKstGpu.String(),
+			Operator: apiv1.TolerationOpExists,
+			Effect:   apiv1.TaintEffectNoSchedule,
+		},
+		{
+			Key:      ResourceNameNvidia.String(),
+			Operator: apiv1.TolerationOpExists,
+			Effect:   apiv1.TaintEffectNoSchedule,
+		},
+	}
 }
 
 func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) error {
