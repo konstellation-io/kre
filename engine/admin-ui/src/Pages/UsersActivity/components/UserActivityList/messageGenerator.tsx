@@ -71,7 +71,7 @@ export default function getMessage(
   const versionLink =
     runtimeId && versionName ? (
       <Link
-        to={buildRoute(ROUTE.VERSION_STATUS, versionName)}
+        to={buildRoute.version(ROUTE.VERSION_STATUS, runtimeId, versionName)}
         className={cx(styles.link)}
       >
         {versionName}
@@ -84,7 +84,7 @@ export default function getMessage(
     runtimeId &&
     oldPublishedVersionName ? (
       <Link
-        to={buildRoute(ROUTE.VERSION_STATUS, oldPublishedVersionName)}
+        to={buildRoute.version(ROUTE.VERSION_STATUS, runtimeId, oldPublishedVersionName)}
         className={cx(styles.link)}
       >
         {oldPublishedVersionName}

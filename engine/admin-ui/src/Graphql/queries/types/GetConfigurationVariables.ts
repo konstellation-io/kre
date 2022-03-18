@@ -5,7 +5,7 @@
 
 import {
   VersionStatus,
-  ConfigurationVariableType
+  ConfigurationVariableType,
 } from './../../types/globalTypes';
 
 // ====================================================

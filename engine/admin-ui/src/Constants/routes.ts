@@ -1,6 +1,8 @@
-const VERSIONS = `/versions`;
-const VERSION = `${VERSIONS}/:versionName`;
 const SETTINGS = '/settings';
+const RUNTIMES = '/runtimes';
+const RUNTIME = `${RUNTIMES}/:runtimeId`;
+const VERSIONS = `${RUNTIME}/versions`;
+const VERSION = `${VERSIONS}/:versionName`;
 const ROUTE = {
   HOME: '/',
   LOGIN: '/login',
@@ -21,10 +23,14 @@ const ROUTE = {
   VERSION_DOCUMENTATION: `${VERSION}/documentation`,
   NEW_USER: '/new-user',
   NEW_API_TOKEN: `/new_api_token`,
-  NEW_VERSION: `/new_version`
+  NEW_VERSION: `/new_version`,
+  NEW_RUNTIME: '/new-runtime',
+  RUNTIMES,
+  RUNTIME,
 };
 
 export interface VersionRouteParams {
+  runtimeId: string;
   versionName: string;
 }
 

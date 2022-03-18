@@ -1,0 +1,28 @@
+@import 'Styles/colors';
+@import 'Styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
+.content {
+  height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.hexagons {
+  overflow: auto;
+  height: 100%;
+}
+
+.nRuntimes {
+  color: font-color(lowlight);
+}
+
+.addRuntime {
+  margin-left: 3 * $grid-unit;
+}

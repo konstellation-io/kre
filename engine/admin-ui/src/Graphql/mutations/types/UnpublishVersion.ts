@@ -5,7 +5,7 @@
 
 import {
   UnpublishVersionInput,
-  VersionStatus
+  VersionStatus,
 } from './../../types/globalTypes';
 
 // ====================================================
