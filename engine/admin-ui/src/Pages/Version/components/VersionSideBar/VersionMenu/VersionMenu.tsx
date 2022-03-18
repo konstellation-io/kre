@@ -57,7 +57,7 @@ function VersionMenu({ runtime, version }: VersionDetailsProps) {
   }
 
   itemProps.forEach(p => {
-    p.to = buildRoute(p.to, version.name);
+    p.to = buildRoute.version(p.to, runtime.id, version.name);
   });
 
   const items = itemProps.map(props => (

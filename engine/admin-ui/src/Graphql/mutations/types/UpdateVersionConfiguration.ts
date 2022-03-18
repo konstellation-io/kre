@@ -6,7 +6,7 @@
 import {
   UpdateConfigurationInput,
   ConfigurationVariableType,
-  VersionStatus
+  VersionStatus,
 } from './../../types/globalTypes';
 
 // ====================================================

@@ -6,7 +6,7 @@ import {
   ModalLayoutInfo,
   ModalLayoutJustify
 } from 'kwc';
-import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
+import {GetVersionConfStatus_runtime, GetVersionConfStatus_versions} from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import Tag, { TagTypes } from 'Components/Tag/Tag';
 
@@ -23,21 +23,22 @@ import cx from 'classnames';
 import { get } from 'lodash';
 import styles from './VersionActions.module.scss';
 import { useForm } from 'react-hook-form';
-import useVersionAction from '../../../utils/hooks';
+import useVersionAction from 'Pages/Version/utils/hooks';
 
 function verifyComment(value: string) {
   return CHECK.getValidationError([CHECK.isFieldNotEmpty(value)]);
 }
 
 type WarningProps = {
+  runtime: GetVersionConfStatus_runtime;
   publishedVersion: GetVersionConfStatus_versions;
 };
-function Warning({ publishedVersion }: WarningProps) {
+function Warning({ runtime, publishedVersion }: WarningProps) {
   return (
     <>
       <Tag type={TagTypes.WARNING}>WARNING</Tag>A published version already
       exists, publishing this version will unpublish the following version:{' '}
-      <Link to={buildRoute(ROUTE.VERSION, publishedVersion.name)}>
+      <Link to={buildRoute.version(ROUTE.VERSION, runtime.id, publishedVersion.name)}>
         <span
           className={styles.publishedVersion}
           title={publishedVersion.description}
@@ -67,12 +68,13 @@ type FormData = {
 };
 
 type Props = {
+  runtime: GetVersionConfStatus_runtime;
   versions: GetVersionConfStatus_versions[];
   version: GetVersionConfStatus_versions;
   quickActions?: boolean;
 };
 
-function VersionActions({ versions, version, quickActions = false }: Props) {
+function VersionActions({ runtime, versions, version, quickActions = false }: Props) {
   const { handleSubmit, setValue, register, unregister, errors } = useForm<
     FormData
   >({
@@ -252,7 +254,7 @@ function VersionActions({ versions, version, quickActions = false }: Props) {
           />
           {showWarning && (
             <ModalLayoutInfo className={styles.warning}>
-              <Warning publishedVersion={publishedVersion} />
+              <Warning runtime={runtime}  publishedVersion={publishedVersion} />
             </ModalLayoutInfo>
           )}
         </ModalContainer>

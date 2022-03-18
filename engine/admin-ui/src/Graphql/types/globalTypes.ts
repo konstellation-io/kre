@@ -10,26 +10,32 @@
 export enum AccessLevel {
   ADMIN = 'ADMIN',
   MANAGER = 'MANAGER',
-  VIEWER = 'VIEWER'
+  VIEWER = 'VIEWER',
 }
 
 export enum ConfigurationVariableType {
   FILE = 'FILE',
-  VARIABLE = 'VARIABLE'
+  VARIABLE = 'VARIABLE',
 }
 
 export enum LogLevel {
   DEBUG = 'DEBUG',
   ERROR = 'ERROR',
   INFO = 'INFO',
-  WARN = 'WARN'
+  WARN = 'WARN',
 }
 
 export enum NodeStatus {
   ERROR = 'ERROR',
   STARTED = 'STARTED',
   STARTING = 'STARTING',
-  STOPPED = 'STOPPED'
+  STOPPED = 'STOPPED',
+}
+
+export enum RuntimeStatus {
+  CREATING = 'CREATING',
+  ERROR = 'ERROR',
+  STARTED = 'STARTED',
 }
 
 export enum UserActivityType {
@@ -47,7 +53,7 @@ export enum UserActivityType {
   UNPUBLISH_VERSION = 'UNPUBLISH_VERSION',
   UPDATE_ACCESS_LEVELS = 'UPDATE_ACCESS_LEVELS',
   UPDATE_SETTING = 'UPDATE_SETTING',
-  UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION'
+  UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION',
 }
 
 export enum VersionStatus {
@@ -58,12 +64,18 @@ export enum VersionStatus {
   STARTED = 'STARTED',
   STARTING = 'STARTING',
   STOPPED = 'STOPPED',
-  STOPPING = 'STOPPING'
+  STOPPING = 'STOPPING',
 }
 
 export interface ConfigurationVariablesInput {
   key: string;
   value: string;
+}
+
+export interface CreateRuntimeInput {
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface CreateUserInput {

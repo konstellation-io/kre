@@ -4,6 +4,7 @@ type Query {
   me: User
   users: [User!]!
   runtime: Runtime!
+  runtimes: [Runtime!]!
   version(name: String!): Version!
   versions: [Version!]!
   settings: Settings!
@@ -28,6 +29,7 @@ type Query {
 }
 
 type Mutation {
+  createRuntime(input: CreateRuntimeInput!): Runtime!
   createVersion(input: CreateVersionInput!): Version!
   startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
@@ -47,6 +49,12 @@ type Subscription {
   watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionName: String!): Node!
   watchVersion: Version!
+}
+
+input CreateRuntimeInput {
+  id: String!
+  name: String!
+  description: String!
 }
 
 input CreateVersionInput {
@@ -154,6 +162,15 @@ type Runtime {
   measurementsUrl: String!
   databaseUrl: String!
   entrypointAddress: String!
+  status: RuntimeStatus!
+  publishedVersion: Version
+  creationAuthor: User!
+}
+
+enum RuntimeStatus {
+  CREATING
+  STARTED
+  ERROR
 }
 
 type Edge {

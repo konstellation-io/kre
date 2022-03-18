@@ -67,20 +67,20 @@ exports[`Settings matches snapshot 1`] = `
                   "paddingLeft": "20%",
                 }
               }
-              to="/versions"
+              to="/runtimes/:runtimeId/versions"
             >
               <Link
                 data-testid="buttonLink"
-                to="/versions"
+                to="/runtimes/:runtimeId/versions"
               >
                 <LinkAnchor
                   data-testid="buttonLink"
-                  href="/versions"
+                  href="/runtimes/:runtimeId/versions"
                   navigate={[Function]}
                 >
                   <a
                     data-testid="buttonLink"
-                    href="/versions"
+                    href="/runtimes/:runtimeId/versions"
                     onClick={[Function]}
                   >
                     <div
