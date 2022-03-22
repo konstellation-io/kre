@@ -13,7 +13,7 @@ import {
 } from 'Graphql/subscriptions/types/WatchVersionNodeStatus';
 
 import { NodeStatus } from 'Graphql/types/globalTypes';
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { VersionRouteParams } from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
 import styles from './Status.module.scss';
@@ -39,6 +39,8 @@ type Props = {
 function Status({ version, runtime }: Props) {
   const { versionName } = useParams<VersionRouteParams>();
   const { updateEntrypointStatus } = useOpenedVersion();
+
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const { data, loading, error, subscribeToMore } = useQuery<
     GetVersionWorkflows,
@@ -67,14 +69,15 @@ function Status({ version, runtime }: Props) {
 
   useEffect(
     () => {
-      if(!loading && !error) {
+      if(!loading && !error && !isSubscribed) {
         // the useEffect return line executes when on component unmount, so we can't avoid using an additional
         // variable for the unsubscribe functionality
         const unsubscribe = subscribe(); // NOSONAR
+        setIsSubscribed(true);
         return unsubscribe;
       }
     },
-    [loading, error, subscribe],
+    [loading, error],
   );
 
   if (error) return <ErrorMessage />;
