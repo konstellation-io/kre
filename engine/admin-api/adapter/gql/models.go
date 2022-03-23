@@ -12,6 +12,12 @@ type ConfigurationVariablesInput struct {
 	Value string `json:"value"`
 }
 
+type CreateRuntimeInput struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 type CreateUserInput struct {
 	Email       string             `json:"email"`
 	AccessLevel entity.AccessLevel `json:"accessLevel"`

@@ -23,6 +23,7 @@ type UserActivityInteracter interface {
 	RegisterLogin(userID string) error
 	RegisterLogout(userID string) error
 	RegisterCreateAction(userID string, version *entity.Version) error
+	RegisterCreateRuntime(userID string, runtime *entity.Runtime) error
 	RegisterStartAction(userID string, version *entity.Version, comment string) error
 	RegisterStopAction(userID string, version *entity.Version, comment string) error
 	RegisterPublishAction(userID string, version *entity.Version, prev *entity.Version, comment string) error
@@ -131,6 +132,24 @@ func (i *UserActivityInteractor) RegisterCreateAction(userID string, version *en
 		[]*entity.UserActivityVar{
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
+		})
+
+	return checkUserActivityError(i.logger, err)
+}
+
+func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
+	err := i.create(
+		userID,
+		entity.UserActivityTypeCreateRuntime,
+		[]*entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
 		})
 
 	return checkUserActivityError(i.logger, err)

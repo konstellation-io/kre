@@ -107,6 +107,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		CreateRuntime              func(childComplexity int, input CreateRuntimeInput) int
 		CreateUser                 func(childComplexity int, input CreateUserInput) int
 		CreateVersion              func(childComplexity int, input CreateVersionInput) int
 		DeleteAPIToken             func(childComplexity int, input DeleteAPITokenInput) int
@@ -144,6 +145,7 @@ type ComplexityRoot struct {
 		Me               func(childComplexity int) int
 		Metrics          func(childComplexity int, versionName string, startDate string, endDate string) int
 		Runtime          func(childComplexity int) int
+		Runtimes         func(childComplexity int) int
 		Settings         func(childComplexity int) int
 		UserActivityList func(childComplexity int, userEmail *string, types []entity.UserActivityType, versionNames []string, fromDate *string, toDate *string, lastID *string) int
 		Users            func(childComplexity int) int
@@ -152,6 +154,7 @@ type ComplexityRoot struct {
 	}
 
 	Runtime struct {
+		CreationAuthor    func(childComplexity int) int
 		CreationDate      func(childComplexity int) int
 		DatabaseURL       func(childComplexity int) int
 		Description       func(childComplexity int) int
@@ -159,6 +162,8 @@ type ComplexityRoot struct {
 		ID                func(childComplexity int) int
 		MeasurementsURL   func(childComplexity int) int
 		Name              func(childComplexity int) int
+		PublishedVersion  func(childComplexity int) int
+		Status            func(childComplexity int) int
 	}
 
 	Settings struct {
@@ -228,6 +233,7 @@ type ApiTokenResolver interface {
 	LastActivity(ctx context.Context, obj *entity.APIToken) (*string, error)
 }
 type MutationResolver interface {
+	CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error)
 	CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error)
 	StartVersion(ctx context.Context, input StartVersionInput) (*entity.Version, error)
 	StopVersion(ctx context.Context, input StopVersionInput) (*entity.Version, error)
@@ -246,6 +252,7 @@ type QueryResolver interface {
 	Me(ctx context.Context) (*entity.User, error)
 	Users(ctx context.Context) ([]*entity.User, error)
 	Runtime(ctx context.Context) (*entity.Runtime, error)
+	Runtimes(ctx context.Context) ([]*entity.Runtime, error)
 	Version(ctx context.Context, name string) (*entity.Version, error)
 	Versions(ctx context.Context) ([]*entity.Version, error)
 	Settings(ctx context.Context) (*entity.Settings, error)
@@ -258,6 +265,9 @@ type RuntimeResolver interface {
 	MeasurementsURL(ctx context.Context, obj *entity.Runtime) (string, error)
 	DatabaseURL(ctx context.Context, obj *entity.Runtime) (string, error)
 	EntrypointAddress(ctx context.Context, obj *entity.Runtime) (string, error)
+
+	PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error)
+	CreationAuthor(ctx context.Context, obj *entity.Runtime) (*entity.User, error)
 }
 type SubscriptionResolver interface {
 	WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
@@ -498,6 +508,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MetricsValues.NewLabels(childComplexity), true
+
+	case "Mutation.createRuntime":
+		if e.complexity.Mutation.CreateRuntime == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createRuntime_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateRuntime(childComplexity, args["input"].(CreateRuntimeInput)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -770,6 +792,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Runtime(childComplexity), true
 
+	case "Query.runtimes":
+		if e.complexity.Query.Runtimes == nil {
+			break
+		}
+
+		return e.complexity.Query.Runtimes(childComplexity), true
+
 	case "Query.settings":
 		if e.complexity.Query.Settings == nil {
 			break
@@ -814,6 +843,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Versions(childComplexity), true
+
+	case "Runtime.creationAuthor":
+		if e.complexity.Runtime.CreationAuthor == nil {
+			break
+		}
+
+		return e.complexity.Runtime.CreationAuthor(childComplexity), true
 
 	case "Runtime.creationDate":
 		if e.complexity.Runtime.CreationDate == nil {
@@ -863,6 +899,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Runtime.Name(childComplexity), true
+
+	case "Runtime.publishedVersion":
+		if e.complexity.Runtime.PublishedVersion == nil {
+			break
+		}
+
+		return e.complexity.Runtime.PublishedVersion(childComplexity), true
+
+	case "Runtime.status":
+		if e.complexity.Runtime.Status == nil {
+			break
+		}
+
+		return e.complexity.Runtime.Status(childComplexity), true
 
 	case "Settings.authAllowedDomains":
 		if e.complexity.Settings.AuthAllowedDomains == nil {
@@ -1220,6 +1270,7 @@ type Query {
   me: User
   users: [User!]!
   runtime: Runtime!
+  runtimes: [Runtime!]!
   version(name: String!): Version!
   versions: [Version!]!
   settings: Settings!
@@ -1244,6 +1295,7 @@ type Query {
 }
 
 type Mutation {
+  createRuntime(input: CreateRuntimeInput!): Runtime!
   createVersion(input: CreateVersionInput!): Version!
   startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
@@ -1263,6 +1315,12 @@ type Subscription {
   watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
   watchNodeStatus(versionName: String!): Node!
   watchVersion: Version!
+}
+
+input CreateRuntimeInput {
+  id: String!
+  name: String!
+  description: String!
 }
 
 input CreateVersionInput {
@@ -1370,6 +1428,15 @@ type Runtime {
   measurementsUrl: String!
   databaseUrl: String!
   entrypointAddress: String!
+  status: RuntimeStatus!
+  publishedVersion: Version
+  creationAuthor: User!
+}
+
+enum RuntimeStatus {
+  CREATING
+  STARTED
+  ERROR
 }
 
 type Edge {
@@ -1534,6 +1601,20 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createRuntime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 CreateRuntimeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNCreateRuntimeInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐCreateRuntimeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -2911,6 +2992,47 @@ func (ec *executionContext) _MetricsValues_newLabels(ctx context.Context, field 
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createRuntime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createRuntime_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateRuntime(rctx, args["input"].(CreateRuntimeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Runtime)
+	fc.Result = res
+	return ec.marshalNRuntime2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntime(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_createVersion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -3905,6 +4027,40 @@ func (ec *executionContext) _Query_runtime(ctx context.Context, field graphql.Co
 	return ec.marshalNRuntime2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntime(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_runtimes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Runtimes(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.Runtime)
+	fc.Result = res
+	return ec.marshalNRuntime2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntimeᚄ(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_version(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -4439,6 +4595,105 @@ func (ec *executionContext) _Runtime_entrypointAddress(ctx context.Context, fiel
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Runtime_status(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Runtime",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entity.RuntimeStatus)
+	fc.Result = res
+	return ec.marshalNRuntimeStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntimeStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Runtime_publishedVersion(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Runtime",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Runtime().PublishedVersion(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Version)
+	fc.Result = res
+	return ec.marshalOVersion2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Runtime_creationAuthor(ctx context.Context, field graphql.CollectedField, obj *entity.Runtime) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Runtime",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Runtime().CreationAuthor(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Settings_authAllowedDomains(ctx context.Context, field graphql.CollectedField, obj *entity.Settings) (ret graphql.Marshaler) {
@@ -6810,6 +7065,36 @@ func (ec *executionContext) unmarshalInputConfigurationVariablesInput(ctx contex
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputCreateRuntimeInput(ctx context.Context, obj interface{}) (CreateRuntimeInput, error) {
+	var it CreateRuntimeInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, obj interface{}) (CreateUserInput, error) {
 	var it CreateUserInput
 	var asMap = obj.(map[string]interface{})
@@ -7506,6 +7791,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "createRuntime":
+			out.Values[i] = ec._Mutation_createRuntime(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createVersion":
 			out.Values[i] = ec._Mutation_createVersion(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -7723,6 +8013,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "runtimes":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_runtimes(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "version":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -7896,6 +8200,36 @@ func (ec *executionContext) _Runtime(ctx context.Context, sel ast.SelectionSet, 
 					}
 				}()
 				res = ec._Runtime_entrypointAddress(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "status":
+			out.Values[i] = ec._Runtime_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "publishedVersion":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Runtime_publishedVersion(ctx, field, obj)
+				return res
+			})
+		case "creationAuthor":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Runtime_creationAuthor(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8761,6 +9095,10 @@ func (ec *executionContext) unmarshalNConfigurationVariablesInput2ᚖgithubᚗco
 	return &res, err
 }
 
+func (ec *executionContext) unmarshalNCreateRuntimeInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐCreateRuntimeInput(ctx context.Context, v interface{}) (CreateRuntimeInput, error) {
+	return ec.unmarshalInputCreateRuntimeInput(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNCreateUserInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐCreateUserInput(ctx context.Context, v interface{}) (CreateUserInput, error) {
 	return ec.unmarshalInputCreateUserInput(ctx, v)
 }
@@ -9126,6 +9464,43 @@ func (ec *executionContext) marshalNRuntime2githubᚗcomᚋkonstellationᚑioᚋ
 	return ec._Runtime(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalNRuntime2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntimeᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.Runtime) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNRuntime2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntime(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) marshalNRuntime2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntime(ctx context.Context, sel ast.SelectionSet, v *entity.Runtime) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -9134,6 +9509,21 @@ func (ec *executionContext) marshalNRuntime2ᚖgithubᚗcomᚋkonstellationᚑio
 		return graphql.Null
 	}
 	return ec._Runtime(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNRuntimeStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntimeStatus(ctx context.Context, v interface{}) (entity.RuntimeStatus, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	return entity.RuntimeStatus(tmp), err
+}
+
+func (ec *executionContext) marshalNRuntimeStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐRuntimeStatus(ctx context.Context, sel ast.SelectionSet, v entity.RuntimeStatus) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) marshalNSettings2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐSettings(ctx context.Context, sel ast.SelectionSet, v entity.Settings) graphql.Marshaler {
@@ -10023,6 +10413,17 @@ func (ec *executionContext) marshalOUserActivityType2ᚕgithubᚗcomᚋkonstella
 	}
 	wg.Wait()
 	return ret
+}
+
+func (ec *executionContext) marshalOVersion2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx context.Context, sel ast.SelectionSet, v entity.Version) graphql.Marshaler {
+	return ec._Version(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOVersion2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx context.Context, sel ast.SelectionSet, v *entity.Version) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Version(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

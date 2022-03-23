@@ -67,6 +67,20 @@ func NewGraphQLResolver(
 	}
 }
 
+func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
+	loggedUserID := ctx.Value("userID").(string)
+
+	runtime, _, err := r.runtimeInteractor.CreateRuntime(ctx, loggedUserID, input.ID, input.Name, input.Description)
+	if err != nil {
+		r.logger.Error("Error creating runtime: " + err.Error())
+		return nil, err
+	}
+
+	// TODO: Listen runtime creation
+
+	return runtime, nil
+}
+
 func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersionInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
 
@@ -304,6 +318,11 @@ func (r *queryResolver) Runtime(ctx context.Context) (*entity.Runtime, error) {
 	return r.runtimeInteractor.Get(ctx, loggedUserID)
 }
 
+func (r *queryResolver) Runtimes(ctx context.Context) ([]*entity.Runtime, error) {
+	loggedUserID := ctx.Value("userID").(string)
+	return r.runtimeInteractor.FindAll(ctx, loggedUserID)
+}
+
 func (r *queryResolver) Version(ctx context.Context, name string) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.versionInteractor.GetByName(ctx, loggedUserID, name)
@@ -356,8 +375,21 @@ func (r *queryResolver) Logs(
 	}, nil
 }
 
+func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
+	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
+	return userLoader.Load(runtime.Owner)
+}
+
 func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
+}
+
+func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
+	if obj.PublishedVersion != "" {
+		versionLoader := ctx.Value(middleware.VersionLoaderKey).(*dataloader.VersionLoader)
+		return versionLoader.Load(obj.PublishedVersion)
+	}
+	return nil, nil
 }
 
 func (r *runtimeResolver) MeasurementsURL(_ context.Context, obj *entity.Runtime) (string, error) {
