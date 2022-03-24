@@ -5,8 +5,5 @@ dependencies:
 - name: kapacitor
   repository: https://helm.influxdata.com/
   version: 1.4.0
-- name: prometheus-operator
-  repository: https://charts.helm.sh/stable
-  version: 9.3.1
-digest: sha256:29f746aed73533b724f0e4fb6b7fc01af56010e5702d5ad40a57c22053d67127
-generated: "2021-11-15T13:08:00.615537285+01:00"
+digest: sha256:db249b846168e7fc73d95525383cc803de9832f5c3d02c1bba908b0e4ab688d0
+generated: "2022-03-24T16:13:55.476415027+01:00"
