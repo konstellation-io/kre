@@ -86,6 +86,10 @@ adminApi:
   host: api.kre.local
   ingress:
     annotations: {}
+      ## If you need to configure a TLS certificate for the ingress object
+      ## you must add the issuer name here
+
+      # cert-manager.io/issuer: kre-issuer
   storage:
     class: standard
     size: 1Gi
@@ -98,6 +102,10 @@ adminUI:
     pullPolicy: IfNotPresent
   ingress:
     annotations: {}
+      ## If you need to configure a TLS certificate for the ingress object
+      ## you must add the issuer name here
+
+      # cert-manager.io/issuer: kre-issuer
   tls:
     enabled: false
   host: admin.kre.local
