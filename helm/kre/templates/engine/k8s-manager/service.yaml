@@ -13,5 +13,5 @@ spec:
       protocol: TCP
       targetPort: grpc
   selector:
-    {{- include "kre.labels" . | nindent 4 }}
     app: {{ .Release.Name }}-k8s-manager
+    release: {{ $.Release.Name | quote }}
