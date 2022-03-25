@@ -152,49 +152,24 @@ func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 	return err
 }
 
-func (m *Manager) switchEntrypointServiceName(fromName, toName, ns string) error {
-	m.logger.Infof("Switch entrypoint service name from %s to %s", fromName, toName)
+func (m *Manager) deleteEntrypointService(serviceName, ns string) error {
+	deletePolicy := metav1.DeletePropagationForeground
 
-	existingService, err := m.clientset.CoreV1().Services(ns).Get(fromName, metav1.GetOptions{})
-	if err != nil {
-		return err
-	}
+	m.logger.Info(fmt.Sprintf("Delete service with name %s", serviceName))
 
-	serviceLabels := map[string]string{
-		"type":         "entrypoint",
-		"version-name": toName,
-	}
-
-	existingService.ObjectMeta.Labels = serviceLabels
-	existingService.Spec.Selector = serviceLabels
-
-	_, err = m.clientset.CoreV1().Services(ns).Update(existingService)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return m.clientset.CoreV1().Services(ns).Delete(serviceName, &metav1.DeleteOptions{
+		PropagationPolicy:  &deletePolicy,
+		GracePeriodSeconds: new(int64),
+	})
 }
 
-func (m *Manager) deactivateEntrypointService(versionName, ns string) error {
-	toName := fmt.Sprintf("%s-entrypoint", versionName)
-	return m.switchEntrypointServiceName(activeEntrypoint, toName, ns)
-}
-
-func (m *Manager) activateEntrypointService(versionName, ns string) error {
-	toName := fmt.Sprintf("%s-entrypoint", versionName)
-	return m.switchEntrypointServiceName(toName, activeEntrypoint, ns)
-}
-
-func (m *Manager) createEntrypointService(versionName, ns string) (*apiv1.Service, error) {
-	m.logger.Info(fmt.Sprintf("Updating service in %s named %s", ns, versionName))
-
+func (m *Manager) createEntrypointService(versionName, serviceName, ns string) (*apiv1.Service, error) {
 	serviceLabels := map[string]string{
 		"type":         "entrypoint",
 		"version-name": versionName,
 	}
 
-	serviceName := fmt.Sprintf("%s-entrypoint", versionName)
+	m.logger.Info(fmt.Sprintf("Creating service for version %s with serviceName %s", versionName, serviceName))
 
 	existingService, err := m.clientset.CoreV1().Services(ns).Get(serviceName, metav1.GetOptions{})
 
