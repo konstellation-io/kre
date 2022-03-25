@@ -23,7 +23,10 @@ type Manager struct {
 	clientset *kubernetes.Clientset
 }
 
-const timeoutWaitingForVersionPODS = 10 * time.Minute
+const (
+	timeoutWaitingForVersionPODS = 10 * time.Minute
+	activeEntrypoint             = "active-entrypoint"
+)
 
 var ErrWaitingForVersionPODSTimeout = errors.New("[WaitForVersionPods] timeout waiting for version pods")
 
@@ -54,7 +57,17 @@ func (m *Manager) Start(req *versionpb.StartRequest) error {
 		return err
 	}
 
-	return m.createEntrypoint(req)
+	err = m.createEntrypoint(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = m.createEntrypointService(req.VersionName, m.config.Kubernetes.Namespace)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Stop calls kubernetes remove all version resources.
@@ -67,18 +80,18 @@ func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionName) error {
 	return m.deleteDeploymentsSync(ctx, req.Name, m.config.Kubernetes.Namespace)
 }
 
-// Publish calls kubernetes to create a new Version Object.
+// Publish calls kubernetes to change the name of the entrypoint service.
+// The service-name will be changed to `active-entrypoint`
 func (m *Manager) Publish(req *versionpb.VersionName) error {
 	m.logger.Infof("Publish version %s", req.Name)
-	_, err := m.createEntrypointService(req.Name, m.config.Kubernetes.Namespace)
-
-	return err
+	return m.activateEntrypointService(req.Name, m.config.Kubernetes.Namespace)
 }
 
-// Unpublish calls kubernetes remove access to this version.
+// Unpublish calls kubernetes to change the name of the entrypoint service.
+// The service-name will be changed to `VERSIONNAME-entrypoint`
 func (m *Manager) Unpublish(req *versionpb.VersionName) error {
 	m.logger.Infof("Deactivating version '%s'", req.Name)
-	return m.deleteEntrypointService(req.Name, m.config.Kubernetes.Namespace)
+	return m.deactivateEntrypointService(req.Name, m.config.Kubernetes.Namespace)
 }
 
 // UpdateConfig calls kubernetes to update a version config.
