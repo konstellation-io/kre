@@ -33,10 +33,6 @@ type Config struct {
 		Namespace string `envconfig:"POD_NAMESPACE"`
 	} `yaml:"kubernetes"`
 
-	Prometheus struct {
-		URL string `yaml:"url" envconfig:"KRE_PROMETHEUS_URL"`
-	} `yaml:"prometheus"`
-
 	NatsStreaming struct {
 		Storage struct {
 			ClassName string `yaml:"className" envconfig:"KRE_NATS_STORAGECLASS"`
