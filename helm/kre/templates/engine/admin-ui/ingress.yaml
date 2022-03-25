@@ -1,34 +1,3 @@
-{{ if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: {{ .Release.Name }}-admin-ui-route
-  annotations:
-    {{- if and .Values.certManager.enabled .Values.adminUI.tls.enabled }}
-    kubernetes.io/tls-acme: "true"
-    cert-manager.io/issuer: {{ .Release.Name }}-admin-ui
-    {{ if hasKey .Values.certManager "dns01" -}}
-    cert-manager.io/acme-challenge-type: "dns01"
-    {{ else -}}
-    cert-manager.io/acme-challenge-type: "http01"
-    {{ end }}
-    {{- end }}
-{{- if .Values.adminUI.ingress.annotations }}
-{{ toYaml .Values.adminUI.ingress.annotations | indent 4 }}
-{{- end }}
-  labels:
-    {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-admin-ui-route
-spec:
-  host: {{ .Values.adminUI.host }}
-  path: /  
-  port:
-    targetPort: web
-  to:
-    kind: Service
-    name: admin-ui
-    weight: 100
-{{ else }}
 {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
 apiVersion: networking.k8s.io/v1
 {{ else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
@@ -69,4 +38,3 @@ spec:
               serviceName: admin-ui
               servicePort: web
           {{ end }} 
-{{ end }}
