@@ -44,10 +44,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-{{/* vim: set filetype=mustache: */}}
-{{/*
-Expand the name of the chart.
-*/}}
 {{- define "runtime.name" -}}
 {{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -112,65 +108,4 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "kre-kapacitor.fullname" -}}
 {{- $name := default "kapacitor" .Values.kapacitor.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Create the default ingress controller annotations and let the user to specify custom ones
-*/}}
-{{- define "kre-admin-api.annotations" -}}
-kubernetes.io/ingress.class: nginx
-nginx.ingress.kubernetes.io/proxy-body-size: 100000m
-nginx.org/client-max-body-size: 100000m
-nginx.org/websocket-services: admin-api
-{{- if .Values.adminApi.ingress.annotations }}
-{{ toYaml .Values.adminApi.ingress.annotations }}
-{{- end }}
-{{- end -}}
-
-{{- define "kre-admin-ui.annotations" -}}
-kubernetes.io/ingress.class: nginx
-{{- if .Values.adminUI.ingress.annotations }}
-{{ toYaml .Values.adminUI.ingress.annotations }}
-{{- end }}
-{{- end -}}
-
-{{- define "kre-entrypoint.annotations" -}}
-kubernetes.io/ingress.class: nginx
-{{- if .Values.adminUI.ingress.annotations }}
-{{ toYaml .Values.adminUI.ingress.annotations }}
-{{- end }}
-{{- end -}}
-
-{{- define "kre-entrypoint.grpc.ingress.annotations" -}}
-kubernetes.io/ingress.class: "nginx"
-nginx.ingress.kubernetes.io/proxy-body-size: 16m
-nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-# Based on this snippet:
-#  https://github.com/kubernetes/ingress-nginx/issues/5609#issuecomment-634908849
-nginx.ingress.kubernetes.io/server-snippet: |
-  error_page 404 = @grpc_unimplemented;
-  error_page 502 503 = @grpc_unavailable;
-  location @grpc_unimplemented {
-      add_header grpc-status 12;
-      add_header grpc-message unimplemented;
-      return 204;
-  }
-  location @grpc_unavailable {
-      add_header grpc-status 14;
-      add_header grpc-message unavailable;
-      return 204;
-  }
-  default_type application/grpc;
-{{- if .Values.entrypoint.grpc.ingress.annotations }}
-{{ toYaml .Values.entrypoint.grpc.ingress.annotations }}
-{{- end }}
-{{- end -}}
-
-{{- define "kre-entrypoint.ingress.annotations" -}}
-kubernetes.io/ingress.class: "nginx"
-nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
-nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
-{{- if .Values.entrypoint.ingress.annotations }}
-{{ toYaml .Values.entrypoint.ingress.annotations }}
-{{- end }}
 {{- end -}}
