@@ -1,36 +1,29 @@
-{{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{ else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
-{{ else }}
+{{- else -}}
 apiVersion: extensions/v1beta1
-{{ end }}
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ template "runtime.fullname" . }}-entrypoint-web
+  {{- with .Values.entrypoint.ingress.annotations }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    {{- if and .Values.entrypoint.tls .Values.certManager.enabled }}
-    kubernetes.io/tls-acme: "true"
-    cert-manager.io/cluster-issuer: {{ include "runtime.name" . }}-clusterissuer-runtimes-entrypoints
-    {{- end }}
-    nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
-    nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
-{{- if .Values.entrypoint.ingress.annotations }}
-{{ toYaml .Values.entrypoint.ingress.annotations | indent 4 }}
-{{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  {{ if .Values.entrypoint.tls -}}
+  {{- if .Values.entrypoint.tls -}}
   tls:
     - hosts:
         - proto.{{ .Values.entrypoint.host }}
       secretName: proto.{{ .Values.entrypoint.host }}-tls
-  {{ end -}}
+  {{- end }}
   rules:
     - host: proto.{{ .Values.entrypoint.host }}
       http:
         paths:
-        {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+        {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
           - pathType: Prefix
             path: "/"
             backend:
@@ -38,9 +31,9 @@ spec:
                 name: active-entrypoint
                 port:
                   name: web
-        {{ else }}
+        {{- else }}
           - path: /
             backend:
               serviceName: active-entrypoint
               servicePort: web
-        {{ end }}
+        {{- end }}
