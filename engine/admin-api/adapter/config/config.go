@@ -11,6 +11,7 @@ import (
 
 // Config holds the configuration values for the application.
 type Config struct {
+	LogLevel        string `yaml:"logLevel" envconfig:"KRE_API_LOG_LEVEL" default:"DEBUG"`
 	DevelopmentMode bool   `yaml:"developmentMode" envconfig:"KRE_DEVELOPMENT_MODE"`
 	ReleaseName     string `yaml:"releaseName" envconfig:"KRE_RELEASE_NAME"`
 	BaseDomainName  string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`

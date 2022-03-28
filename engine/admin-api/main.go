@@ -4,8 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/konstellation-io/kre/libs/simplelogger"
-
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/mongodb"
@@ -14,11 +12,12 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/version"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
 func main() {
 	cfg := config.NewConfig()
-	logger := simplelogger.New(simplelogger.LevelDebug)
+	logger := logging.NewLogger(cfg.LogLevel)
 
 	db := mongodb.NewMongoDB(cfg, logger)
 	defer db.Disconnect()

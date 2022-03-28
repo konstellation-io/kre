@@ -1,15 +1,24 @@
 package logging
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/logging_${GOFILE} -package=mocks
+import (
+	"strings"
 
-// Logger defines how to logging in the application.
-type Logger interface {
-	Debug(msg string)
-	Info(msg string)
-	Warn(msg string)
-	Error(msg string)
-	Debugf(format string, a ...interface{})
-	Infof(format string, a ...interface{})
-	Warnf(format string, a ...interface{})
-	Errorf(format string, a ...interface{})
+	"github.com/konstellation-io/kre/libs/simplelogger"
+)
+
+func NewLogger(logLevel string) Logger {
+	var level simplelogger.LogLevel
+
+	switch strings.ToLower(logLevel) {
+	case "debug":
+		level = simplelogger.LevelDebug
+	case "info":
+		level = simplelogger.LevelInfo
+	case "warn":
+		level = simplelogger.LevelWarn
+	case "error":
+		level = simplelogger.LevelError
+	}
+
+	return simplelogger.New(level)
 }
