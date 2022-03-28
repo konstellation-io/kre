@@ -7,8 +7,6 @@
   - [Runtime](#runtime-1)
     - [KRT](#krt)
 - [Install](#install)
-  - [Custom Installation](#custom-installation)
-    - [Prometheus](#prometheus)
 - [Development](#development)
   - [Requirements](#requirements)
   - [Local Environment](#local-environment)
@@ -141,18 +139,6 @@ helm upgrade --install kre --namespace kre \
 ```
 
 ***NOTE***: The chart default values are also available in this [repository](./helm/kre/values.yaml).
-
-## Custom Installation
-
-KRE allows custom configurations to use existing parts already present in your infrastructure.
-
-### Prometheus
-
-- Prometheus will be installed by default. If you prefer using your own Prometheus installation, modify this helm parameter:
-
-|       Param                | Value |
-| -------------------------- | ----- |
-| prometheusOperator.enabled | false |
 
 # Development
 

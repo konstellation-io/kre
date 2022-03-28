@@ -65,9 +65,4 @@ rules:
       - jobs
     verbs:
       - "*"
-  - apiGroups:
-      - monitoring.coreos.com
-    resources:
-      - prometheusrules
-    verbs:
-      - "*"
+ 

@@ -6,8 +6,6 @@ server:
 kubernetes:
   k8sRuntimeOperator:
     version: latest
-prometheus:
-  url: http://localhost:9090
 nats_streaming:
   storage:
     className: "standard"

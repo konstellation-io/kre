@@ -33,8 +33,6 @@ data:
   KRE_AUTH_VERIFICATION_CODE_DURATION_IN_MINUTES: "{{ .Values.config.auth.verificationCodeDurationInMinutes }}"
   KRE_AUTH_SECURE_COOKIE: "{{ .Values.config.auth.secureCookie }}"
   KRE_AUTH_COOKIE_DOMAIN: "{{ .Values.config.auth.cookieDomain }}"
-  # Prometheus
-  KRE_PROMETHEUS_URL: "http://prometheus-operated:9090"
   # NATS Streaming
   KRE_NATS_STORAGECLASS: "{{ .Values.nats_streaming.storage.className }}"
   KRE_NATS_STORAGE_SIZE: "{{ .Values.nats_streaming.storage.size }}"
