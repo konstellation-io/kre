@@ -99,9 +99,28 @@ func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionName) error {
 func (m *Manager) Publish(req *versionpb.VersionName) error {
 	m.logger.Infof("Publish version %s", req.Name)
 
+	// check if there is an `active-entrypoint` service
+	activeService, err := m.getActiveEntrypointService(m.config.Kubernetes.Namespace)
+	if err != nil {
+		return err
+	}
+
+	// if there is an `active-entrypoint` create a normal service for that entrypoint
+	if activeService != nil {
+		activeVersionName := activeService.Labels[versionNameLabel]
+		activeServiceName := m.getVersionServiceName(activeVersionName)
+
+		m.logger.Debugf("There is an active entrypoint service with version name %s", activeVersionName)
+
+		_, err = m.createEntrypointService(activeVersionName, activeServiceName, m.config.Kubernetes.Namespace)
+		if err != nil {
+			return err
+		}
+	}
+
 	serviceName := m.getVersionServiceName(req.Name)
 
-	err := m.deleteEntrypointService(serviceName, m.config.Kubernetes.Namespace)
+	err = m.deleteEntrypointService(serviceName, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}

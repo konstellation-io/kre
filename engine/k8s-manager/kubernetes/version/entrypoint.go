@@ -15,6 +15,10 @@ import (
 
 type EntrypointConfig map[string]interface{}
 
+const (
+	versionNameLabel = "version-name"
+)
+
 func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
 	entrypointEnvVars := []apiv1.EnvVar{
 		{Name: "KRT_NATS_SUBJECTS_FILE", Value: natsSubjectsFilePath},
@@ -152,6 +156,19 @@ func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 	return err
 }
 
+func (m *Manager) getActiveEntrypointService(ns string) (*apiv1.Service, error) {
+	existingService, err := m.clientset.CoreV1().Services(ns).Get(activeEntrypoint, metav1.GetOptions{})
+	if err != nil && !errors.IsNotFound(err) {
+		return nil, err
+	}
+
+	if errors.IsNotFound(err) {
+		return nil, nil
+	}
+
+	return existingService, nil
+}
+
 func (m *Manager) deleteEntrypointService(serviceName, ns string) error {
 	deletePolicy := metav1.DeletePropagationForeground
 
@@ -165,8 +182,8 @@ func (m *Manager) deleteEntrypointService(serviceName, ns string) error {
 
 func (m *Manager) createEntrypointService(versionName, serviceName, ns string) (*apiv1.Service, error) {
 	serviceLabels := map[string]string{
-		"type":         "entrypoint",
-		"version-name": versionName,
+		"type":           "entrypoint",
+		versionNameLabel: versionName,
 	}
 
 	m.logger.Info(fmt.Sprintf("Creating service for version %s with serviceName %s", versionName, serviceName))
