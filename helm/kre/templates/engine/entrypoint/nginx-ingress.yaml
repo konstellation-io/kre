@@ -13,7 +13,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.entrypoint.tls -}}
+  {{- if .Values.entrypoint.tls }}
   tls:
     - hosts:
         - proto.{{ .Values.entrypoint.host }}
