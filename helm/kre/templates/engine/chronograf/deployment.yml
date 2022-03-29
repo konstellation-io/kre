@@ -10,14 +10,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "runtime.labels" . | nindent 6 }}
-      app: chronograf
+      {{- include "chronograf.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/engine/chronograf/config.yml") . | sha256sum }}
       labels:
-        {{- include "runtime.labels" . | nindent 8 }}
+        {{- include "chronograf.labels" . | nindent 8 }}
         app: chronograf
     spec:
       containers:

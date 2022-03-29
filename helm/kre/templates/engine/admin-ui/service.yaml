@@ -3,8 +3,7 @@ kind: Service
 metadata:
   name: admin-ui
   labels:
-    {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-admin-ui
+    {{- include "admin-ui.labels" . | nindent 4 }}
 spec:
   clusterIP: None
   ports:
@@ -13,6 +12,4 @@ spec:
       protocol: TCP
       targetPort: web
   selector:
-    {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-admin-ui
-    release: {{ $.Release.Name | quote }}
+    {{- include "admin-ui.selectorLabels" . | nindent 4 }}

@@ -3,8 +3,7 @@ kind: ConfigMap
 metadata:
   name: chronograf-config
   labels:
-    {{ include "runtime.labels" . | nindent 4 }}
-    app: chronograf
+    {{ include "chronograf.labels" . | nindent 4 }}
 data:
   kre_conn.src: |-
     {
