@@ -3,17 +3,17 @@ kind: StatefulSet
 metadata:
   name: kre-nats
   labels:
-    app: kre-nats
+    {{- include "nats-streaming.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.nats_streaming.replicas }}
   serviceName: kre-nats
   selector:
     matchLabels:
-      app: kre-nats
+      {{- include "nats-streaming.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: kre-nats
+        {{- include "nats-streaming.labels" . | nindent 8 }}
     spec:
       containers:
         - name: kre-nats-streaming

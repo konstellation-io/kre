@@ -3,9 +3,7 @@ kind: Service
 metadata:
   name: kre-mongo-0
   labels:
-    {{ include "runtime.labels" . | nindent 4 }}
-    app: kre-mongo
-    kre-app: kre-mongo
+    {{- include "mongodb.labels" . | nindent 4 }}
 spec:
   clusterIP: None
   ports:
@@ -13,4 +11,4 @@ spec:
       targetPort: 27017
       protocol: TCP
   selector:
-    app: kre-mongo
+    {{- include "mongodb.selectorLabels" . | nindent 4 }}

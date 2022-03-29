@@ -3,8 +3,7 @@ kind: ConfigMap
 metadata:
   name: kre-mongo-init-script
   labels:
-  {{- include "runtime.labels" . | nindent 4 }}
-
+  {{- include "mongodb.labels" . | nindent 4 }}
 data:
   init-engine-admin.js: |
     conn = new Mongo();

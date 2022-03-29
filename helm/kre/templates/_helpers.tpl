@@ -40,7 +40,7 @@ helm.sh/chart: {{ include "kre.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end -}}
+{{- end }}
 
 {{/*
 Admin API labels
@@ -107,7 +107,23 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Expand the name of the chart.
+nats labels
+*/}}
+{{- define "nats-streaming.labels" -}}
+{{ include "kre.labels" . }}
+{{ include "nats-streaming.selectorLabels" . }}
+{{- end }}
+
+{{/*
+nats selector labels
+*/}}
+{{- define "nats-streaming.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-nats-streaming
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Runtime Name
 */}}
 {{- define "runtime.name" -}}
 {{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
@@ -138,6 +154,38 @@ Runtime common labels
 app.kubernetes.io/name: {{ include "runtime.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
+
+{{/*
+MongoDB labels
+*/}}
+{{- define "mongodb.labels" -}}
+{{ include "kre.labels" . }}
+{{ include "mongodb.selectorLabels" . }}
+{{- end }}
+
+{{/*
+MongoDB selector labels
+*/}}
+{{- define "mongodb.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-mongodb
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Mongo Express labels
+*/}}
+{{- define "mongoExpress.labels" -}}
+{{ include "kre.labels" . }}
+{{ include "mongoExpress.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Mongo Express selector labels
+*/}}
+{{- define "mongoExpress.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-mongo-express
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 
 {{/*
 Create MongoDB URI.

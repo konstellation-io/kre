@@ -3,8 +3,7 @@ kind: Service
 metadata:
   name: k8s-manager
   labels:
-    {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-k8s-manager
+    {{- include "k8s-manager.labels" . | nindent 4 }}
 spec:
   clusterIP: None
   ports:
@@ -13,5 +12,4 @@ spec:
       protocol: TCP
       targetPort: grpc
   selector:
-    app: {{ .Release.Name }}-k8s-manager
-    release: {{ $.Release.Name | quote }}
+    {{- include "k8s-manager.selectorLabels" . | nindent 4 }}

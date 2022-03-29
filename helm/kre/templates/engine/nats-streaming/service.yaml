@@ -3,11 +3,10 @@ kind: Service
 metadata:
   name: kre-nats
   labels:
-    {{ include "runtime.labels" . | nindent 4 }}
-    app: kre-nats
+    {{- include "nats-streaming.labels" . | nindent 4 }}
 spec:
   selector:
-    app: kre-nats
+    {{- include "nats-streaming.selectorLabels" . | nindent 4}}
   ports:
     - name: nats
       protocol: TCP

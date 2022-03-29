@@ -7,11 +7,13 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ template "runtime.fullname" . }}-entrypoint
+  name: {{ include "runtime.fullname" . }}-entrypoint
   {{- with .Values.entrypoint.grpc.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  labels:
+    {{- include "kre.labels" . | nindent 4 }}
 spec:
   {{- if .Values.entrypoint.tls }}
   tls:

@@ -6,19 +6,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-k8s-manager
+  labels:
+    {{- include "k8s-manager.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-k8s-manager
-      release: {{ $.Release.Name | quote }}
+      {{- include "k8s-manager.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "kre.labels" . | nindent 8 }}
-        app: {{ .Release.Name }}-k8s-manager
-        release: {{ $.Release.Name | quote }}
-        type: admin
+        {{- include "k8s-manager.labels" . | nindent 8 }}
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
     spec:

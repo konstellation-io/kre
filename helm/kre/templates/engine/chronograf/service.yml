@@ -2,11 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: chronograf
-  labels: {{- include "chronograf.labels" . }}
+  labels:
+    {{- include "chronograf.labels" . | nindent 4 }}
 spec:
   ports:
     - port: 80
       targetPort: 8888
       name: server
   selector:
-    {{- include "chronograf.selectorLabels" . }}
+    {{- include "chronograf.selectorLabels" . | nindent 4 }}
