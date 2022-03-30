@@ -12,6 +12,8 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  labels:
+    {{- include "kre.labels" . | nindent 4 }}
 spec:
   {{- if .Values.entrypoint.tls }}
   tls:

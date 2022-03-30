@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-chronograf-pvc
   labels:
-    app: chronograf
+    {{- include "chronograf.labels" . | nindent 4 }}
   annotations:
     volume.beta.kubernetes.io/storage-class: {{ .Values.chronograf.persistence.storageClass }}
 spec:

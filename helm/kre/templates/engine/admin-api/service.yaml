@@ -3,8 +3,7 @@ kind: Service
 metadata:
   name: admin-api
   labels:
-    {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-admin-api
+    {{- include "admin-api.labels" . | nindent 4 }}
 spec:
   clusterIP: None
   ports:
@@ -13,6 +12,4 @@ spec:
       protocol: TCP
       targetPort: grpc
   selector:
-    {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-admin-api
-    release: {{ $.Release.Name | quote }}
+    {{- include "admin-api.selectorLabels" . | nindent 4 }}

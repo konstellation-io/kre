@@ -7,23 +7,17 @@ kind: StatefulSet
 metadata:
   name: kre-mongo
   labels:
-    {{ include "runtime.labels" . | nindent 4 }}
-    app: kre-mongo
-    kre-app: kre-mongo
+    {{- include "mongodb.labels" . | nindent 4 }}
 spec:
   replicas: 1
   serviceName: kre-mongo
   selector:
     matchLabels:
-      {{- include "runtime.labels" . | nindent 6 }}
-      app: kre-mongo
-      kre-app: kre-mongo
+      {{- include "mongodb.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{ include "runtime.labels" . | nindent 8 }}
-        app: kre-mongo
-        kre-app: kre-mongo
+        {{- include "mongodb.labels" . | nindent 8 }}
     spec:
       containers:
         - name: kre-mongo

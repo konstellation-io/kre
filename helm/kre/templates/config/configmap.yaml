@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-configmap
   labels:
     {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-admin-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
   KRE_RUNTIME_NAME: "{{ .Values.runtimeName }}"

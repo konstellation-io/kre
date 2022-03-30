@@ -6,19 +6,19 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: chronograf
+  labels:
+    {{- include "chronograf.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "runtime.labels" . | nindent 6 }}
-      app: chronograf
+      {{- include "chronograf.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/engine/chronograf/config.yml") . | sha256sum }}
       labels:
-        {{- include "runtime.labels" . | nindent 8 }}
-        app: chronograf
+        {{- include "chronograf.labels" . | nindent 8 }}
     spec:
       containers:
         - name: chronograf

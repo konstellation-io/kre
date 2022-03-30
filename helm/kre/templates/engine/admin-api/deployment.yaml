@@ -6,18 +6,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-admin-api
+  labels:
+    {{- include "admin-api.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-admin-api
-      release: {{ $.Release.Name | quote }}
+      {{- include "admin-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "kre.labels" . | nindent 8 }}
-        app: {{ .Release.Name }}-admin-api
-        release: {{ $.Release.Name | quote }}
+        {{- include "admin-api.labels" . | nindent 8 }}
         type: admin
       annotations:
         helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}

@@ -13,8 +13,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "kre.labels" . | nindent 4 }}
-    app: {{ .Release.Name }}-admin-api-ingress
+    {{- include "admin-api.labels" . | nindent 4 }}
 spec:
   {{- if .Values.adminApi.tls.enabled }}
   tls:

@@ -4,6 +4,8 @@ kind: Role
 metadata:
   namespace: {{ .Release.Namespace }}
   name: kre-admin
+  labels:
+    {{- include "k8s-manager.labels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""

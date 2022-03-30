@@ -6,17 +6,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: kre-mongo-express
+  labels:
+    {{ - include "mongoExpress.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "runtime.labels" . | nindent 6 }}
-      app: kre-mongo-express
+      {{- include "mongoExpress.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "runtime.labels" . | nindent 8 }}
-        app: kre-mongo-express
+        {{- include "mongoExpress.labels" . | nindent 8 }}
     spec:
       containers:
         - name: kre-mongo-express

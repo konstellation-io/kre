@@ -1,5 +1,8 @@
+## Provide a name in place of kre for `app.kubernetes.io/name` labels
+##
+nameOverride: ""
+
 developmentMode: false
-argocd: false
 
 runtimeName: "My Runtime"
 
