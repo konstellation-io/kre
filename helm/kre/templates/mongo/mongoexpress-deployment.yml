@@ -7,7 +7,7 @@ kind: Deployment
 metadata:
   name: kre-mongo-express
   labels:
-    {{ - include "mongoExpress.labels" . | nindent 4 }}
+    {{- include "mongoExpress.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
