@@ -15,6 +15,10 @@ import (
 
 type EntrypointConfig map[string]interface{}
 
+const (
+	versionNameLabel = "version-name"
+)
+
 func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
 	entrypointEnvVars := []apiv1.EnvVar{
 		{Name: "KRT_NATS_SUBJECTS_FILE", Value: natsSubjectsFilePath},
@@ -152,34 +156,44 @@ func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 	return err
 }
 
-func (m *Manager) deleteEntrypointService(versionName, ns string) error {
-	m.logger.Info(fmt.Sprintf("Deleting service in %s named %s", ns, versionName))
+func (m *Manager) getActiveEntrypointService(ns string) (*apiv1.Service, error) {
+	existingService, err := m.clientset.CoreV1().Services(ns).Get(activeEntrypoint, metav1.GetOptions{})
+	if err != nil && !errors.IsNotFound(err) {
+		return nil, err
+	}
 
-	gracePeriod := new(int64)
-	*gracePeriod = 0
+	if errors.IsNotFound(err) {
+		return nil, nil
+	}
 
+	return existingService, nil
+}
+
+func (m *Manager) deleteEntrypointService(serviceName, ns string) error {
 	deletePolicy := metav1.DeletePropagationForeground
 
-	return m.clientset.CoreV1().Services(ns).Delete("active-entrypoint", &metav1.DeleteOptions{
+	m.logger.Info(fmt.Sprintf("Delete service with name %s", serviceName))
+
+	return m.clientset.CoreV1().Services(ns).Delete(serviceName, &metav1.DeleteOptions{
 		PropagationPolicy:  &deletePolicy,
-		GracePeriodSeconds: gracePeriod,
+		GracePeriodSeconds: new(int64),
 	})
 }
 
-func (m *Manager) createEntrypointService(versionName, ns string) (*apiv1.Service, error) {
-	m.logger.Info(fmt.Sprintf("Updating service in %s named %s", ns, versionName))
-
+func (m *Manager) createEntrypointService(versionName, serviceName, ns string) (*apiv1.Service, error) {
 	serviceLabels := map[string]string{
-		"type":         "entrypoint",
-		"version-name": versionName,
+		"type":           "entrypoint",
+		versionNameLabel: versionName,
 	}
 
-	existingService, err := m.clientset.CoreV1().Services(ns).Get("active-entrypoint", metav1.GetOptions{})
+	m.logger.Info(fmt.Sprintf("Creating service for version %s with serviceName %s", versionName, serviceName))
+
+	existingService, err := m.clientset.CoreV1().Services(ns).Get(serviceName, metav1.GetOptions{})
 
 	if errors.IsNotFound(err) {
 		return m.clientset.CoreV1().Services(ns).Create(&apiv1.Service{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:   "active-entrypoint",
+				Name:   serviceName,
 				Labels: serviceLabels,
 			},
 			Spec: apiv1.ServiceSpec{
