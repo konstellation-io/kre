@@ -52,7 +52,7 @@ manual actions.
 
 ### From 1.X to 2.X
 
-This major version come with changes in resource labels, some labels that has changed are immutable and the resources
+This major version comes with changes in resource labels, some labels that has changed are immutable and the resources
 must be removed from the release namespace before applying the Chart upgrade.
 
 The commit that introduces the changes is [located here](https://github.com/konstellation-io/kre/pull/585).
