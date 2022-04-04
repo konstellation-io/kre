@@ -41,22 +41,9 @@ Each language has a specialized runner associated with it. They are located at
 the [kre-runners repo](https://github.com/konstellation-io/kre-runners). You must clone that repository in a folder
 named `runners` at the root level inside this repository.
 
-# KDL Server Chart
+# Helm Chart
 
-## Upgrading Chart
-
-### Upgrading an existing Release to a new major version
-
-A major chart version change (like v0.15.3 -> v1.0.0) indicates that there is an incompatible breaking change needing
-manual actions.
-
-### From 1.X to 2.X
-
-This major version comes with changes in resource labels, some labels that has changed are immutable and the resources
-associated with them must be removed from the release namespace before applying the Chart upgrade.
-
-The commit that introduces the changes is [located here](https://github.com/konstellation-io/kre/pull/585).
-
+Refer to chart's [README](helm/kre/README.md).
 # Architecture
 
 KRE design is based on a microservice pattern to be run on top of a Kubernetes cluster.
@@ -133,36 +120,6 @@ workflows:
       - Client Metrics
 
 ```
-
-# Install
-
-KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. In order to install it you
-just need to add the chart repository, define your custom `values.yaml` file and run one command.
-
-Let's start adding the repository to helm:
-
-```bash
-helm repo add konstellation-io https://charts.konstellation.io
-helm repo update
-```
-
-Now define your custom `values.yaml` file, you can get the default values using this command (this can be used as a
-template to customize yours later):
-
-```bash
-helm show values konstellation-io/kre
-```
-
-Once you have customized the values according to your needs, you can start the installation by executing the following
-command:
-
-```bash
-helm upgrade --install kre --namespace kre \
- --values ./custom-values.yaml \
- konstellation-io/kre
-```
-
-***NOTE***: The chart default values are also available in this [repository](./helm/kre/values.yaml).
 
 # Development
 
