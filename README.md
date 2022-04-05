@@ -37,8 +37,13 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
 ## Runners
 
-Each language has a specialized runner associated with it. They are located at the [kre-runners repo](https://github.com/konstellation-io/kre-runners). You must clone that repository in a folder named `runners` at the root level inside this repository.
+Each language has a specialized runner associated with it. They are located at
+the [kre-runners repo](https://github.com/konstellation-io/kre-runners). You must clone that repository in a folder
+named `runners` at the root level inside this repository.
 
+# Helm Chart
+
+Refer to chart's [README](helm/kre/README.md).
 # Architecture
 
 KRE design is based on a microservice pattern to be run on top of a Kubernetes cluster.
@@ -51,7 +56,9 @@ Below are described the main concepts of KRE.
 
 ## Engine
 
-Before installing KRE an already existing Kubernetes namespace is required. It will be named `kre` by convention, but feel free to use whatever you like. The installation process will deploy some components that are responsible of managing the full lifecycle of this AI solution.
+Before installing KRE an already existing Kubernetes namespace is required. It will be named `kre` by convention, but
+feel free to use whatever you like. The installation process will deploy some components that are responsible of
+managing the full lifecycle of this AI solution.
 
 The Engine is composed of the following components:
 
@@ -64,7 +71,8 @@ The Engine is composed of the following components:
 
 ### KRT
 
-_Konstellation Runtime Transport_ is a compressed file containing the definition of a runtime version, including the code that must be executed, and a YAML file called `kre.yaml` describing the desired workflows definitions.
+_Konstellation Runtime Transport_ is a compressed file containing the definition of a runtime version, including the
+code that must be executed, and a YAML file called `kre.yaml` describing the desired workflows definitions.
 
 The generic structure of a `kre.yaml` is as follows:
 
@@ -113,33 +121,6 @@ workflows:
 
 ```
 
-# Install
-
-KRE can be installed only on top of a Kubernetes cluster, and is packetized as a Helm Chart. In order to install it you just need to add the chart repository, define your custom `values.yaml` file and run one command.
-
-Let's start adding the repository to helm:
-
-```bash
-helm repo add konstellation-io https://charts.konstellation.io
-helm repo update
-```
-
-Now define your custom `values.yaml` file, you can get the default values using this command (this can be used as a template to customize yours later):
-
-```bash
-helm show values konstellation-io/kre
-```
-
-Once you have customized the values according to your needs, you can start the installation by executing the following command:
-
-```bash
-helm upgrade --install kre --namespace kre \
- --values ./custom-values.yaml \
- konstellation-io/kre
-```
-
-***NOTE***: The chart default values are also available in this [repository](./helm/kre/values.yaml).
-
 # Development
 
 ## Requirements
@@ -157,7 +138,8 @@ In order to start development on this project you will need these tools:
 
 This repo contains a tool called `./krectl.sh` to handle common actions you will need during development.
 
-All the configuration needed to run KRE locally can be found in `.krectl.conf` file. Usually you'd be ok with the default values. Check Minikube's parameters if you need to tweak the resources assigned to it.
+All the configuration needed to run KRE locally can be found in `.krectl.conf` file. Usually you'd be ok with the
+default values. Check Minikube's parameters if you need to tweak the resources assigned to it.
 
 Run help to get info for each command:
 
@@ -198,9 +180,11 @@ It will install everything in the namespace specified in your development `.krec
 
 First, remember to edit your `/etc/hosts`, see `./krectl.sh dev` output for more details.
 
-**NOTE**: If you have the [hostctl](https://github.com/guumaster/hostctl) tool installed, updating `/etc/hosts` will be done automatically too.
+**NOTE**: If you have the [hostctl](https://github.com/guumaster/hostctl) tool installed, updating `/etc/hosts` will be
+done automatically too.
 
-Now you can access the admin UI visiting the login URL that will be opened automatically by executing the following script:
+Now you can access the admin UI visiting the login URL that will be opened automatically by executing the following
+script:
 
 ```bash
 $ ./krectl.sh login [--new]
@@ -220,20 +204,27 @@ You will see an output like this:
 
 # Versioning lifecycle
 
-There are three stages in the development lifecycle of KRE there are three main stages depending on if we are going to add a new feature, release a new version with some features or apply a fix to a current release.
+There are three stages in the development lifecycle of KRE there are three main stages depending on if we are going to
+add a new feature, release a new version with some features or apply a fix to a current release.
 
 ### Alphas
 
-To add new features just create a feature branch from main, and after merging the Pull Request a workflow will run the tests. If all tests pass, a new `alpha` tag will be created (e.g *v0.0-alpha.0*), and a new release will be generated from this tag.
+To add new features just create a feature branch from main, and after merging the Pull Request a workflow will run the
+tests. If all tests pass, a new `alpha` tag will be created (e.g *v0.0-alpha.0*), and a new release will be generated
+from this tag.
 
 ### Releases
 
-After releasing a number of alpha versions, you would want to create a release version. This process must be triggered with the Release workflow, that is a manual process.
-This workflow will create a new release branch and a new tag following the pattern *v0.0.0*. Along this tag, a new release will be created.
+After releasing a number of alpha versions, you would want to create a release version. This process must be triggered
+with the Release workflow, that is a manual process. This workflow will create a new release branch and a new tag
+following the pattern *v0.0.0*. Along this tag, a new release will be created.
 
 ### Fixes
 
-If you find out a bug in a release, you can apply a bugfix just by creating a `fix` branch from the specific release branch, and create a Pull Request towards the same release branch. When merged, the tests will be run against it, and after passing all the tests, a new `fix tag` will be created increasing the patch portion of the version, and a new release will be build and released.
+If you find out a bug in a release, you can apply a bugfix just by creating a `fix` branch from the specific release
+branch, and create a Pull Request towards the same release branch. When merged, the tests will be run against it, and
+after passing all the tests, a new `fix tag` will be created increasing the patch portion of the version, and a new
+release will be build and released.
 
 
 [admin-ui-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_admin_ui&metric=coverage
