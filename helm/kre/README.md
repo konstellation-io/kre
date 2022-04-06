@@ -46,6 +46,13 @@ $ helm upgrade [RELEASE_NAME] konstellation.io/kre
 A major chart version change (like v0.15.3 -> v1.0.0) indicates that there is an incompatible breaking change needing
 manual actions.
 
+### From 2.X to 3.X
+
+* Removed `mongodb.mongodbUsername` and `mongodbPassword` from **values.yaml** in favour of `mongodb.auth.adminUser` and `mongodb.auth.adminpassword`
+* Removed other unused values from `values.yaml`.
+
+Check commit 1fab33b8351cae317753017373ac2dab4817c36f for more details.
+
 ### From 1.X to 2.X
 
 This major version comes with the following changes:
