@@ -2,7 +2,7 @@
   "id": "2",
   "cells": [
     {
-      "i": "3690a8a4-5e8b-4eda-91f5-93349e067593",
+      "i": "ca4febb5-7964-4581-a04a-3230761c6cea",
       "x": 7,
       "y": 0,
       "w": 5,
@@ -10,7 +10,7 @@
       "name": "Workflows processing time",
       "queries": [
         {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"workflow\", \"_value\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"workflow\"], valueColumn: \"_value\")",
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> keep(columns: [\"_time\", \"workflow\", \"_value\"])\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"workflow\"], valueColumn: \"_value\")\n  ",
           "queryConfig": {
             "database": "",
             "measurement": "",
@@ -22,7 +22,7 @@
               "tags": []
             },
             "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"workflow\", \"_value\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"workflow\"], valueColumn: \"_value\")",
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> keep(columns: [\"_time\", \"workflow\", \"_value\"])\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"workflow\"], valueColumn: \"_value\")\n  ",
             "range": null,
             "shifts": null
           },
@@ -32,10 +32,7 @@
       ],
       "axes": {
         "x": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -43,10 +40,7 @@
           "scale": "linear"
         },
         "y": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "Processing time (ms)",
           "prefix": "",
           "suffix": "",
@@ -54,10 +48,7 @@
           "scale": "linear"
         },
         "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -65,24 +56,24 @@
           "scale": "linear"
         }
       },
-      "type": "line",
+      "type": "bar",
       "colors": [
         {
-          "id": "050997b2-481c-43ac-82bc-e46bd2f10e33",
+          "id": "03486d0a-ec55-4798-b61b-f031a0ad5bf4",
           "type": "scale",
           "hex": "#31C0F6",
           "name": "Nineteen Eighty Four",
           "value": "0"
         },
         {
-          "id": "ef2b2eab-8db4-4de2-96fc-91b49e826562",
+          "id": "567fee98-e5fb-4f72-999e-ec155d5211cb",
           "type": "scale",
           "hex": "#A500A5",
           "name": "Nineteen Eighty Four",
           "value": "0"
         },
         {
-          "id": "5279a1cb-b653-4889-8ff7-b8e670bef024",
+          "id": "5e648d36-c4de-47eb-95e0-26968dfb1e86",
           "type": "scale",
           "hex": "#FF7E27",
           "name": "Nineteen Eighty Four",
@@ -102,7 +93,17 @@
       },
       "fieldOptions": [
         {
-          "internalName": "time",
+          "internalName": "_time",
+          "displayName": "",
+          "visible": true
+        },
+        {
+          "internalName": "go-descriptor",
+          "displayName": "",
+          "visible": true
+        },
+        {
+          "internalName": "go-greeting",
           "displayName": "",
           "visible": true
         }
@@ -115,11 +116,11 @@
       "note": "",
       "noteVisibility": "default",
       "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/3690a8a4-5e8b-4eda-91f5-93349e067593"
+        "self": "/chronograf/v1/dashboards/4/cells/ca4febb5-7964-4581-a04a-3230761c6cea"
       }
     },
     {
-      "i": "a9919758-deb9-4fbc-a118-8009fbfbf1db",
+      "i": "6998b729-37e2-424a-8500-489a2dc09bc0",
       "x": 6,
       "y": 5,
       "w": 6,
@@ -149,10 +150,7 @@
       ],
       "axes": {
         "x": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -160,10 +158,7 @@
           "scale": "linear"
         },
         "y": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -171,10 +166,7 @@
           "scale": "linear"
         },
         "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -243,11 +235,11 @@
       "note": "",
       "noteVisibility": "default",
       "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/a9919758-deb9-4fbc-a118-8009fbfbf1db"
+        "self": "/chronograf/v1/dashboards/4/cells/6998b729-37e2-424a-8500-489a2dc09bc0"
       }
     },
     {
-      "i": "e192f4d3-93a2-43a3-a7ae-3c69e5b33ee3",
+      "i": "1ec3bfb0-7800-427d-9fe6-8643cfc9470c",
       "x": 0,
       "y": 5,
       "w": 6,
@@ -277,10 +269,7 @@
       ],
       "axes": {
         "x": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -288,10 +277,7 @@
           "scale": "linear"
         },
         "y": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -299,10 +285,7 @@
           "scale": "linear"
         },
         "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -371,11 +354,11 @@
       "note": "",
       "noteVisibility": "default",
       "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/e192f4d3-93a2-43a3-a7ae-3c69e5b33ee3"
+        "self": "/chronograf/v1/dashboards/4/cells/1ec3bfb0-7800-427d-9fe6-8643cfc9470c"
       }
     },
     {
-      "i": "0711800b-0f87-4386-b2f3-7d00000b3a1f",
+      "i": "d395361b-73f5-48fa-87a5-dfd984610a50",
       "x": 2,
       "y": 0,
       "w": 5,
@@ -383,7 +366,7 @@
       "name": "Requests evolution",
       "queries": [
         {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"tracking_id\"])\n  |> map(fn: (r) => ({ r with _value: 1 }))\n  |> group()\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> keep(columns: [\"_time\"])\n  |> map(fn: (r) => ({ r with _value: 1 }))\n  |> group()\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
           "queryConfig": {
             "database": "",
             "measurement": "",
@@ -395,7 +378,7 @@
               "tags": []
             },
             "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> keep(columns: [\"_time\", \"tracking_id\"])\n  |> map(fn: (r) => ({ r with _value: 1 }))\n  |> group()\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> keep(columns: [\"_time\"])\n  |> map(fn: (r) => ({ r with _value: 1 }))\n  |> group()\n  |> aggregateWindow(every: autoInterval, fn: sum)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
             "range": null,
             "shifts": null
           },
@@ -405,10 +388,7 @@
       ],
       "axes": {
         "x": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -416,10 +396,7 @@
           "scale": "linear"
         },
         "y": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "#Requests",
           "prefix": "",
           "suffix": "",
@@ -427,10 +404,7 @@
           "scale": "linear"
         },
         "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -441,21 +415,21 @@
       "type": "line",
       "colors": [
         {
-          "id": "050997b2-481c-43ac-82bc-e46bd2f10e33",
+          "id": "03486d0a-ec55-4798-b61b-f031a0ad5bf4",
           "type": "scale",
           "hex": "#31C0F6",
           "name": "Nineteen Eighty Four",
           "value": "0"
         },
         {
-          "id": "ef2b2eab-8db4-4de2-96fc-91b49e826562",
+          "id": "567fee98-e5fb-4f72-999e-ec155d5211cb",
           "type": "scale",
           "hex": "#A500A5",
           "name": "Nineteen Eighty Four",
           "value": "0"
         },
         {
-          "id": "5279a1cb-b653-4889-8ff7-b8e670bef024",
+          "id": "5e648d36-c4de-47eb-95e0-26968dfb1e86",
           "type": "scale",
           "hex": "#FF7E27",
           "name": "Nineteen Eighty Four",
@@ -475,7 +449,12 @@
       },
       "fieldOptions": [
         {
-          "internalName": "time",
+          "internalName": "_value",
+          "displayName": "",
+          "visible": true
+        },
+        {
+          "internalName": "_time",
           "displayName": "",
           "visible": true
         }
@@ -488,11 +467,11 @@
       "note": "",
       "noteVisibility": "default",
       "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/0711800b-0f87-4386-b2f3-7d00000b3a1f"
+        "self": "/chronograf/v1/dashboards/4/cells/d395361b-73f5-48fa-87a5-dfd984610a50"
       }
     },
     {
-      "i": "0259e4ce-9201-475c-9c67-68bb22c0a82d",
+      "i": "7210b06e-3969-49fd-a1f6-4275d9eb41fe",
       "x": 0,
       "y": 0,
       "w": 2,
@@ -500,7 +479,7 @@
       "name": "Total requests",
       "queries": [
         {
-          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> group()\n  |> count()",
+          "query": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> group()\n  |> count()",
           "queryConfig": {
             "database": "",
             "measurement": "",
@@ -512,7 +491,7 @@
               "tags": []
             },
             "areTagsAccepted": false,
-            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\")\n  |> group()\n  |> count()",
+            "rawText": "from(bucket: \"kre/autogen\")\n  |> range(start: dashboardTime)\n  |> filter(fn: (r) => r._measurement == \"workflow_elapsed_time\" and (r._field == \"elapsed_ms\"))\n  |> group()\n  |> count()",
             "range": null,
             "shifts": null
           },
@@ -522,10 +501,7 @@
       ],
       "axes": {
         "x": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -533,10 +509,7 @@
           "scale": "linear"
         },
         "y": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": " requests",
@@ -544,10 +517,7 @@
           "scale": "linear"
         },
         "y2": {
-          "bounds": [
-            "",
-            ""
-          ],
+          "bounds": ["", ""],
           "label": "",
           "prefix": "",
           "suffix": "",
@@ -591,7 +561,7 @@
       "note": "",
       "noteVisibility": "default",
       "links": {
-        "self": "/chronograf/v1/dashboards/1/cells/0259e4ce-9201-475c-9c67-68bb22c0a82d"
+        "self": "/chronograf/v1/dashboards/4/cells/7210b06e-3969-49fd-a1f6-4275d9eb41fe"
       }
     }
   ],
