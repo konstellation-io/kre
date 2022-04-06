@@ -90,6 +90,11 @@ app.kubernetes.io/name: {{ include "kre.name" . }}-chronograf
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/* Fullname suffixed with k8s-manager */}}
+{{- define "k8s-manager.fullname" -}}
+{{- printf "%s-k8s-manager" (include "kre.fullname" .) -}}
+{{- end }}
+
 {{/*
 k8s manager labels
 */}}
@@ -105,6 +110,15 @@ k8s manager selector labels
 app.kubernetes.io/name: {{ include "kre.name" . }}-k8s-manager
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/* Create the name of k8s-manager service account to use */}}
+{{- define "k8s-manager.serviceAccountName" -}}
+{{- if .Values.k8sManager.serviceAccount.create -}}
+    {{ default (include "k8s-manager.fullname" .) .Values.k8sManager.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.k8sManager.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
 
 {{/*
 nats labels
