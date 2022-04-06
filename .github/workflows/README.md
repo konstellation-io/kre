@@ -52,6 +52,7 @@ Builds a new release for the last created tag. This workflow build each componen
 with the same version tag. It also does a release for the KDL Helm Chart with the new artifacts versions.
 
 Conditions:
+
 - On tag creation with `v*.*.*`
 
 ## Fix
