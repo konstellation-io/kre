@@ -71,8 +71,8 @@ This major version comes with the following changes:
 
 * **Prometheus Operator have been removed**: Application functionallity has been decoupled from Prometheus so this component is no longer necessary. Use [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for platform monitoring if needed.
 
-## Chart values
-You can check all possible helm values in the official [documentation](https://konstellation-io.github.io/website/docs/kre/installation/customization/)
+## Chart customization
+You can check all requirements and possible chart values [here](./CHART.md).
 
 ## Ingress controller
 

@@ -1,0 +1,9 @@
+repos:
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: v1.8.1
+    hooks:
+      - id: helm-docs
+        args:
+          - --chart-search-root=./helm/kre
+          - --template-files=CHART.md.gotmpl
+          - --output-file=CHART.md
