@@ -34,14 +34,14 @@ type DataProcessor struct {
 	cfg    *config.Config
 	logger logging.Logger
 	mongoM mongodb.MongoManager
-	natsM  nats.NATSManager
+	natsM  nats.Manager
 }
 
 func NewDataProcessor(
 	cfg *config.Config,
 	logger logging.Logger,
 	mongoM mongodb.MongoManager,
-	natsM nats.NATSManager,
+	natsM nats.Manager,
 ) *DataProcessor {
 	return &DataProcessor{
 		cfg:    cfg,

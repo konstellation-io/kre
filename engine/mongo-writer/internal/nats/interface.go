@@ -6,7 +6,7 @@ import (
 	nc "github.com/nats-io/nats.go"
 )
 
-type NATSManager interface {
+type Manager interface {
 	Connect() error
 	Disconnect()
 	SubscribeToChannel(channel string) chan *nc.Msg
