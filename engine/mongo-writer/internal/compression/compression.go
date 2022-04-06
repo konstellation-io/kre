@@ -3,7 +3,7 @@ package compression
 import (
 	"bytes"
 	"compress/gzip"
-	"io/ioutil"
+	"io"
 )
 
 const (
@@ -11,12 +11,12 @@ const (
 	gzipID2 = 0x8b
 )
 
-// isCompressed checks if the input string is compressed.
+// IsCompressed checks if the input string is compressed.
 func IsCompressed(data []byte) bool {
 	return data[0] == gzipID1 && data[1] == gzipID2
 }
 
-// uncompress opens gzip and return uncompressed []byte.
+// Uncompress opens gzip and return uncompressed []byte.
 func Uncompress(data []byte) ([]byte, error) {
 	rd := bytes.NewReader(data)
 
@@ -27,5 +27,5 @@ func Uncompress(data []byte) ([]byte, error) {
 
 	defer gr.Close()
 
-	return ioutil.ReadAll(gr)
+	return io.ReadAll(gr)
 }
