@@ -18,7 +18,7 @@ type LogsProcessor struct {
 	cfg             *config.Config
 	logger          logging.Logger
 	mongoM          mongodb.MongoManager
-	natsM           nats.NATSManager
+	natsM           nats.Manager
 	fluentbitParser parser.FluentbitMsgParser
 }
 
@@ -26,7 +26,7 @@ func NewLogsProcessor(
 	cfg *config.Config,
 	logger logging.Logger,
 	mongoM mongodb.MongoManager,
-	natsM nats.NATSManager,
+	natsM nats.Manager,
 	fluentbitParser parser.FluentbitMsgParser,
 ) *LogsProcessor {
 	return &LogsProcessor{

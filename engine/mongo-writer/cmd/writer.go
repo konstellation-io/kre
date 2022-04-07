@@ -24,14 +24,14 @@ type Writer struct {
 	cfg    *config.Config
 	logger logging.Logger
 	mongoM mongodb.MongoManager
-	natsM  nats.NATSManager
+	natsM  nats.Manager
 }
 
 func NewWriter(
 	cfg *config.Config,
 	logger logging.Logger,
 	mongoM mongodb.MongoManager,
-	natsM nats.NATSManager,
+	natsM nats.Manager,
 ) *Writer {
 	return &Writer{cfg: cfg, logger: logger, mongoM: mongoM, natsM: natsM}
 }
@@ -92,7 +92,7 @@ func (w *Writer) disconnectClients() {
 
 // startShowingStats logs every N sec the stats.
 func (w *Writer) startShowingStats(ctx context.Context) {
-	var msgProcessed int64 = 0
+	var msgProcessed int64
 
 	for {
 		select {

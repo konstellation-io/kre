@@ -26,7 +26,7 @@ type logProcessorSuite struct {
 type logProcessorMocks struct {
 	logger   *logging.MockLogger
 	mongoM   *mongodb.MockMongoManager
-	natsM    *nats.MockNATSManager
+	natsM    *nats.MockManager
 	fbParser *parser.MockFluentbitMsgParser
 }
 
@@ -39,7 +39,7 @@ func newLogProcessorSuite(t *testing.T) *logProcessorSuite {
 	logging.AddLoggerExpects(logger)
 
 	mongoM := mongodb.NewMockMongoManager(ctrl)
-	natsM := nats.NewMockNATSManager(ctrl)
+	natsM := nats.NewMockManager(ctrl)
 	fbParser := parser.NewMockFluentbitMsgParser(ctrl)
 
 	logProcessor := processor.NewLogsProcessor(cfg, logger, mongoM, natsM, fbParser)
