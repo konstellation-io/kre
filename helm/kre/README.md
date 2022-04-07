@@ -46,6 +46,13 @@ $ helm upgrade [RELEASE_NAME] konstellation.io/kre
 A major chart version change (like v0.15.3 -> v1.0.0) indicates that there is an incompatible breaking change needing
 manual actions.
 
+### From 2.X to 3.X
+
+* Removed `mongodb.mongodbUsername` and `mongodb.mongodbPassword` from **values.yaml** in favour of `mongodb.auth.adminUser` and `mongodb.auth.adminpassword`
+* Removed other unused values from `values.yaml`.
+
+Check this [commit](https://github.com/konstellation-io/kre/pull/593/commits/1fab33b8351cae317753017373ac2dab4817c36f) for more details.
+
 ### From 1.X to 2.X
 
 This major version comes with the following changes:
@@ -71,8 +78,8 @@ This major version comes with the following changes:
 
 * **Prometheus Operator have been removed**: Application functionallity has been decoupled from Prometheus so this component is no longer necessary. Use [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for platform monitoring if needed.
 
-## Chart values
-You can check all possible helm values in the official [documentation](https://konstellation-io.github.io/website/docs/kre/installation/customization/)
+## Chart customization
+You can check all requirements and possible chart values [here](./CHART.md).
 
 ## Ingress controller
 

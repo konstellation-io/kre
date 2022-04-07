@@ -127,12 +127,22 @@ workflows:
 
 In order to start development on this project you will need these tools:
 
-- **gettext**: OS package to fill templates during deployment
-- **minikube**: the local version of Kubernetes to deploy KRE
-- **helm**: K8s package manager. Make sure you have v3+
-- **yq**: YAML processor. Make sure you have v4+
+- **[gettext](https://www.gnu.org/software/gettext/)**: OS package to fill templates during deployment
+- **[minikube](https://github.com/kubernetes/minikube)**: the local version of Kubernetes to deploy KRE
+- **[helm](https://helm.sh/)**: K8s package manager. Make sure you have v3+
+- **[helm-docs](https://github.com/norwoodj/helm-docs)**: Helm doc auto-generation tool
+- **[yq](https://github.com/mikefarah/yq)**: YAML processor. Make sure you have v4+
+- **[pre-commit](https://pre-commit.com/)**: Pre-commit hooks execution tool ensures the best practices are followed before commiting any change
 
-*NOTE*: If you still have Helm v2 update variable `$HELM_VERSION` in file `.krectl.conf`.
+## Pre-commit hooks setup
+
+From the repository root execute the following commands:
+```bash
+pre-commit install
+pre-commit install-hooks
+```
+
+**Note**: Contributing commits that had not passed the required hooks will be rejected.
 
 ## Local Environment
 
