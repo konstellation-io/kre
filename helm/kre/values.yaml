@@ -8,10 +8,8 @@ developmentMode: false
 runtimeName: "My Runtime"
 
 rbac:
-  # -- Whether to create a Service Account for RBAC
-  createServiceAccount: true
-  # -- The Service Account name
-  serviceAccount: k8s-manager
+  # -- Whether to create the roles for the services that could use custom Service Accounts
+  create: true
 
 mongodb:
   auth:
@@ -186,6 +184,14 @@ k8sManager:
     tag: latest
     # -- Image pull policy
     pullPolicy: IfNotPresent
+  serviceAccount:
+    # -- Whether to create the Service Account
+    create: true
+    # -- The name of the service account.
+    # @default: A pre-generated name based on the chart relase fullname sufixed by `-k8s-manager`
+    name: ""
+    # -- The Service Account annotations
+    annotations: {}
 
 mongoWriter:
   image:

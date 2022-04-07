@@ -63,6 +63,9 @@
 | k8sManager.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | k8sManager.image.repository | string | `"konstellation/kre-k8s-manager"` | Image repository |
 | k8sManager.image.tag | string | `"latest"` | Image tag |
+| k8sManager.serviceAccount.annotations | object | `{}` | The Service Account annotations |
+| k8sManager.serviceAccount.create | bool | `true` | Whether to create the Service Account |
+| k8sManager.serviceAccount.name | string | `""` | The name of the service account. @default: A pre-generated name based on the chart relase fullname sufixed by `-k8s-manager` |
 | kapacitor.enabled | bool | `false` | Whether to enable Kapacitor |
 | kapacitor.persistence.enabled | bool | `false` | Whether to enable persistence [Details](https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml) |
 | mongoWriter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
@@ -79,6 +82,5 @@
 | nats_streaming.replicas | int | `1` | Number of replicas |
 | nats_streaming.storage.className | string | `"standard"` | Storage class name |
 | nats_streaming.storage.size | string | `"1Gi"` | Storage size |
-| rbac.createServiceAccount | bool | `true` | Whether to create a Service Account for RBAC |
-| rbac.serviceAccount | string | `"k8s-manager"` | The Service Account name |
+| rbac.create | bool | `true` | Whether to create the roles for the services that could use custom Service Accounts |
 | runtimeName | string | `"My Runtime"` | Runtime name |
