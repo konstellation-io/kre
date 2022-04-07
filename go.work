@@ -4,7 +4,6 @@ use (
 	./engine/admin-api/
 	./engine/k8s-manager/
 	./engine/mongo-writer/
-	./krt-template/greeter/src/go-greeter/
 	./libs/krt-utils/
 	./libs/simplelogger/
 	./tests/acceptance/
