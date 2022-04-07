@@ -51,7 +51,7 @@ manual actions.
 * Removed `mongodb.mongodbUsername` and `mongodb.mongodbPassword` from **values.yaml** in favour of `mongodb.auth.adminUser` and `mongodb.auth.adminpassword`
 * Removed other unused values from `values.yaml`.
 
-Check commit 1fab33b8351cae317753017373ac2dab4817c36f for more details.
+Check this [commit](https://github.com/konstellation-io/kre/pull/593/commits/1fab33b8351cae317753017373ac2dab4817c36f) for more details.
 
 ### From 1.X to 2.X
 
