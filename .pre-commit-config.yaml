@@ -7,3 +7,4 @@ repos:
           - --chart-search-root=./helm/kre
           - --template-files=CHART.md.gotmpl
           - --output-file=CHART.md
+    

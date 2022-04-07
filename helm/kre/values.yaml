@@ -155,6 +155,7 @@ adminUI:
       ## Using the following default annotations ensures its correct operation.
       ## Ref: https://kubernetes.github.io/ingress-nginx/
       ##
+      
       kubernetes.io/ingress.class: nginx
 
       ## If additional annotations are needed to configure it, provide an additional
