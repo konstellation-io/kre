@@ -1,45 +1,36 @@
-## Provide a name in place of kre for `app.kubernetes.io/name` labels
-##
+# -- Provide a name in place of kre for `app.kubernetes.io/name` labels
 nameOverride: ""
 
+# -- Whether to setup developement mode
 developmentMode: false
 
+# -- Runtime name
 runtimeName: "My Runtime"
 
 rbac:
+  # -- Whether to create a Service Account for RBAC
   createServiceAccount: true
+  # -- The Service Account name
   serviceAccount: k8s-manager
 
 mongodb:
-  service:
-    name: "mongodb"
   auth:
+    # -- MongoDB admin username
     adminUser: "admin"
+    # -- MongoDB admin password
     adminPassword: "123456"
-  mongodbUsername: "admin"
-  mongodbPassword: "123456"
-  storage:
-    className: standard
-    size: 3G
-  volumePermissions:
-    enabled: false
-    image:
-      registry: docker.io
-      repository: debian
-      tag: buster-slim
-  initConfigMap:
-    name: kre-mongo-init-script
   persistentVolume:
-    enabled: true
+    # -- Storage class name
     storageClass: standard
+    # -- Storgae size
     size: 5Gi
 
-  ## Define which Nodes the Pods are scheduled on.
+  # -- Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
 
-  ## Assign custom affinity rules to the MongoDB pods
+  # -- Assign custom affinity rules to the MongoDB pods
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   affinity: {}
@@ -53,7 +44,7 @@ mongodb:
     #         - e2e-az1
     #         - e2e-az2
 
-  ## Tolerations for use with node taints
+  # -- Tolerations for use with node taints
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
@@ -64,31 +55,54 @@ mongodb:
 
 # Config from kre/helm
 config:
+  # -- Base domain name for Admin API and K8S Manager apps
   baseDomainName: "local"
   admin:
+    # -- Api Hostname for Admin UI and Admin API
     apiHost: api.kre.local
+    # -- Frontend Base URL for Admin API
     frontendBaseURL: http://admin.kre.local
+    # -- Whether to enable CORS on Admin API
     corsEnabled: true
+    # -- Email address for sending notifications
     userEmail: dev@local.local
   smtp:
+    # -- Whether to enable SMTP server connection
     enabled: false
+    # -- SMTP server user
+    user: ""
+    # -- SMTP server password
+    pass: ""
   auth:
+    # -- Verification login link duration
     verificationCodeDurationInMinutes: 1
+    # -- JWT Sign secret
     jwtSignSecret: jwt_secret
+    # -- API token secret
     apiTokenSecret: api_token_secret
+    # -- Whether to enable secure cookie for Admin API
     secureCookie: false
+    # -- Admin API secure cookie domain
     cookieDomain: kre.local
 
 adminApi:
+  # -- Default application log level
   logLevel: INFO
   image:
+    # -- Image repository
     repository: konstellation/kre-admin-api
+    # -- Image tag
     tag: latest
+    # -- Image pull policy
     pullPolicy: IfNotPresent
   tls:
+    # -- Whether to enable TLS
     enabled: false
+  # -- Hostname
   host: api.kre.local
   ingress:
+    # -- Ingress annotations
+    # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
       ## This Chart has been developed using Nginx Ingress Controller by default.
       ## Using the following default annotations ensures its correct operation.
@@ -117,23 +131,31 @@ adminApi:
       # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
       # kubernetes.io/ingress.class: traefik
       
-      
   storage:
+    # -- Storage class name
     class: standard
+    # -- Storage class size
     size: 1Gi
+    # -- Persistent volume mount point. This will define Admin API app workdir too.
     path: /admin-api-files
 
 adminUI:
   image:
+    # -- Image repository
     repository: konstellation/kre-admin-ui
+    # -- Image tag
     tag: latest
+    # -- Image pull policy
     pullPolicy: IfNotPresent
   ingress:
+    # -- Ingress annotations
+    # @default -- See `adminUI.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
       ## This Chart has been developed using Nginx Ingress Controller by default.
       ## Using the following default annotations ensures its correct operation.
       ## Ref: https://kubernetes.github.io/ingress-nginx/
       ##
+      
       kubernetes.io/ingress.class: nginx
 
       ## If additional annotations are needed to configure it, provide an additional
@@ -151,25 +173,37 @@ adminUI:
       # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
       # kubernetes.io/ingress.class: traefik
   tls:
+    # -- Whether to enable TLS
     enabled: false
+  # -- Hostname
   host: admin.kre.local
 
 k8sManager:
   image:
+    # -- Image repository
     repository: konstellation/kre-k8s-manager
+    # -- Image tag
     tag: latest
+    # -- Image pull policy
     pullPolicy: IfNotPresent
 
 mongoWriter:
   image:
+    # -- Image repository
     repository: konstellation/kre-mongo-writer
+    # -- Image tag
     tag: latest
+    # -- Image pull policy
     pullPolicy: IfNotPresent
 
 entrypoint:
+  # -- Wether to enable tls
   tls: false
+  # -- Hostname
   host: "local"
   ingress:
+    # -- Ingress annotations
+    # @default -- See `entrypoint.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
       ## This Chart has been developed using Nginx Ingress Controller by default.
       ## Using the following default annotations ensures its correct operation.
@@ -192,10 +226,11 @@ entrypoint:
       ## For example, when the ingress controller is Traefik instead of Nginx:
       ##
       # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
-      # kubernetes.io/ingress.class: traefik
 
   grpc:
     ingress:
+      # -- GRPC Ingress annotations
+      # @default -- See `entrypoint.grpc.ingress.annotations` in [values.yaml](./values.yaml) 
       annotations:
         ## This Chart has been developed using Nginx Ingress Controller by default.
         ## Using the following default annotations ensures its correct operation.
@@ -238,43 +273,58 @@ entrypoint:
         # traefik.ingress.kubernetes.io/service.serversscheme: h2c
 
 nats_streaming:
+  # -- Number of replicas
   replicas: 1
   storage:
+    # -- Storage class name
     className: standard
+    # -- Storage size
     size: 1Gi
 
 chronograf:
   persistence:
+    # -- Whether to enable persistence
     enabled: true
+    # -- Storage class name
     storageClass: "standard"
+    # -- Access mode for the volume
     accessMode: ReadWriteOnce
+    # -- Storage size
     size: 2Gi
 
 influxdb:
   image:
+    # -- Image tag
     tag: 1.8.1
   config:
+    # -- [Details](https://docs.influxdata.com/influxdb/v1.8/administration/config/#http)
     http:
       enabled: true
       flux-enabled: true
       auth-enabled: false
   persistence:
+    # -- Whether to enable persistence. See https://github.com/influxdata/helm-charts/tree/master/charts/influxdb#configure-the-chart for more info
     enabled: true
+    # -- Storage class name
     storageClass: "standard"
+    # -- Access mode for the volume
     accessMode: ReadWriteOnce
+    # -- Storage size
     size: 10Gi
   initScripts:
+    # -- Boolean flag to enable and disable initscripts. See https://github.com/influxdata/helm-charts/tree/master/charts/influxdb#configure-the-chart for more info
     enabled: true
+    # -- Init scripts
     scripts:
       init.iql: |+
         CREATE DATABASE "kre"
 
-  ## Define which Nodes the Pods are scheduled on.
+  # -- Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
 
-  ## Assign custom affinity rules to the InfluxDB pods
+  # -- Assign custom affinity rules to the InfluxDB pods
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   affinity: {}
@@ -282,13 +332,13 @@ influxdb:
     #   requiredDuringSchedulingIgnoredDuringExecution:
     #     nodeSelectorTerms:
     #     - matchExpressions:
-    #       - key: kubernetes.io/e2e-az-name
+    #       - key: kuberHELMnetes.io/e2e-az-name
     #         operator: In
     #         values:
     #         - e2e-az1
     #         - e2e-az2
 
-  ## Tolerations for use with node taints
+  # -- Tolerations for use with node taints
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
@@ -300,6 +350,7 @@ influxdb:
 ## Using default values from https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml
 ##
 kapacitor:
+  # -- Whether to enable Kapacitor
   enabled: false
 
   ## If kapacitor enabled, set influxURL=http://<chart_release>-influxdb:8086
@@ -308,7 +359,11 @@ kapacitor:
   #influxURL: http://kre-local-influxdb:8086
   
   ## Persistence is disabled by default
-  #
+  ##
+  persistence:
+    # -- Whether to enable persistence [Details](https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml)
+    enabled: false
+
   # persistence:
   #   enabled: true
   #   storageClass: default
