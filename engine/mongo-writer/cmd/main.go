@@ -11,7 +11,7 @@ func main() {
 	cfg := config.NewConfig()
 	logger := logging.NewLogger(cfg.LogLevel)
 	mongoM := mongodb.NewMongoManager(cfg, logger)
-	natsM := nats.NewNATSManager(cfg, logger)
+	natsM := nats.NewManager(cfg, logger)
 
 	writer := NewWriter(cfg, logger, mongoM, natsM)
 	writer.Start()
