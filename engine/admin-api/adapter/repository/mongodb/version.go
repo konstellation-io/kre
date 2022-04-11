@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo/gridfs"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"io/ioutil"
 	"time"
+
+	"go.mongodb.org/mongo-driver/mongo/gridfs"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -32,11 +33,37 @@ func NewVersionRepoMongoDB(
 	client *mongo.Client,
 ) *VersionRepoMongoDB {
 	collection := client.Database(cfg.MongoDB.DBName).Collection("versions")
-	return &VersionRepoMongoDB{
+	versions := &VersionRepoMongoDB{
 		cfg,
 		logger,
 		collection,
 		client,
+	}
+
+	versions.createIndexes()
+
+	return versions
+}
+
+func (r *VersionRepoMongoDB) createIndexes() {
+	indexes := []mongo.IndexModel{
+		{
+			Keys: bson.M{
+				"runtimeId": 1,
+			},
+		},
+		{
+			Keys: bson.M{
+				"name":      1,
+				"runtimeId": 1,
+			},
+			Options: options.Index().SetUnique(true),
+		},
+	}
+
+	_, err := r.collection.Indexes().CreateMany(context.Background(), indexes)
+	if err != nil {
+		r.logger.Errorf("error creating version indexes: %s", err)
 	}
 }
 
@@ -66,9 +93,9 @@ func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {
 	return v, err
 }
 
-func (r *VersionRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Version, error) {
+func (r *VersionRepoMongoDB) GetByName(ctx context.Context, runtimeId, name string) (*entity.Version, error) {
 	v := &entity.Version{}
-	filter := bson.D{{"name", name}}
+	filter := bson.D{{"name", name}, {"runtimeId", runtimeId}}
 
 	err := r.collection.FindOne(ctx, filter).Decode(v)
 	if err == mongo.ErrNoDocuments {
@@ -106,6 +133,27 @@ func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
 	}
 
 	return nil
+}
+
+func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	var versions []*entity.Version
+	cur, err := r.collection.Find(ctx, bson.M{"runtimeId": runtimeID})
+	if err != nil {
+		return versions, err
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var v entity.Version
+		err = cur.Decode(&v)
+		if err != nil {
+			return versions, err
+		}
+		versions = append(versions, &v)
+	}
+
+	return versions, nil
 }
 
 func (r *VersionRepoMongoDB) GetAll() ([]*entity.Version, error) {

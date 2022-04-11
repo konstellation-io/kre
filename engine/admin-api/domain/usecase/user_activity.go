@@ -1,6 +1,6 @@
 package usecase
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/usecase_${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/usecase_${GOFILE} -package=mocks
 
 import (
 	"context"
@@ -22,6 +22,7 @@ type UserActivityInteracter interface {
 		versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	RegisterLogin(userID string) error
 	RegisterLogout(userID string) error
+	RegisterCreateRuntime(userID string, runtime *entity.Runtime) error
 	RegisterCreateAction(userID string, version *entity.Version) error
 	RegisterStartAction(userID string, version *entity.Version, comment string) error
 	RegisterStopAction(userID string, version *entity.Version, comment string) error
@@ -124,11 +125,30 @@ func (i *UserActivityInteractor) RegisterLogout(userID string) error {
 	return checkUserActivityError(i.logger, err)
 }
 
+func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
+	err := i.create(
+		userID,
+		entity.UserActivityTypeCreateRuntime,
+		[]*entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
+		})
+
+	return checkUserActivityError(i.logger, err)
+}
+
 func (i *UserActivityInteractor) RegisterCreateAction(userID string, version *entity.Version) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: version.RuntimeID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 		})
@@ -141,6 +161,7 @@ func (i *UserActivityInteractor) RegisterStartAction(userID string, version *ent
 		userID,
 		entity.UserActivityTypeStartVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: version.RuntimeID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -154,6 +175,7 @@ func (i *UserActivityInteractor) RegisterStopAction(userID string, version *enti
 		userID,
 		entity.UserActivityTypeStopVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: version.RuntimeID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -166,6 +188,7 @@ func (i *UserActivityInteractor) RegisterPublishAction(userID string, version *e
 		userID,
 		entity.UserActivityTypePublishVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: version.RuntimeID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "OLD_PUBLISHED_VERSION_ID", Value: prev.ID},
@@ -180,6 +203,7 @@ func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, version 
 		userID,
 		entity.UserActivityTypeUnpublishVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: version.RuntimeID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},

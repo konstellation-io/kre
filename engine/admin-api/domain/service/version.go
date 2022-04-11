@@ -1,6 +1,6 @@
 package service
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/service_${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/service_${GOFILE} -package=mocks
 
 import (
 	"context"
@@ -14,5 +14,5 @@ type VersionService interface {
 	Unpublish(*entity.Version) error
 	Publish(*entity.Version) error
 	UpdateConfig(*entity.Version) error
-	WatchNodeStatus(ctx context.Context, versionName string) (<-chan *entity.Node, error)
+	WatchNodeStatus(ctx context.Context, runtimeId, versionName string) (<-chan *entity.Node, error)
 }

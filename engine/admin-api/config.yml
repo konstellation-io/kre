@@ -17,7 +17,7 @@ auth:
   secureCookie: false
   cookieDomain: "kre.local"
 mongodb:
-  address: "mongodb://admin:123456@mongodb:27017/admin"
+  address: "mongodb://admin:123456@localhost:27017/admin?replicaSet=rs0"
   dbName: "kre"
   dataDbName: "data"
   krtBucket: "krt"

@@ -117,7 +117,8 @@ type VersionConfig struct {
 }
 
 type Version struct {
-	ID string `bson:"_id"`
+	ID        string `bson:"_id"`
+	RuntimeID string `bson:"runtimeId"`
 
 	Name        string `bson:"name"`
 	Description string `bson:"description"`

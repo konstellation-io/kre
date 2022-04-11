@@ -83,6 +83,7 @@ func TestCreateNewVersion(t *testing.T) {
 	defer s.ctrl.Finish()
 
 	userID := "user1"
+	runtimeID := "run-1"
 
 	userFound := &entity.User{
 		ID:    userID,
@@ -91,6 +92,7 @@ func TestCreateNewVersion(t *testing.T) {
 
 	version := &entity.Version{
 		ID:                userID,
+		RuntimeID:         runtimeID,
 		Name:              "version-1",
 		Description:       "",
 		CreationDate:      time.Time{},
@@ -110,17 +112,85 @@ func TestCreateNewVersion(t *testing.T) {
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
 	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(4)
-	s.mocks.versionRepo.EXPECT().GetAll().Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
 	s.mocks.versionRepo.EXPECT().SetStatus(gomock.Any(), version.ID, entity.VersionStatusCreated).Return(nil)
 	s.mocks.versionRepo.EXPECT().UploadKRTFile(version, gomock.Any()).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
-	_, statusCh, err := s.versionInteractor.Create(context.Background(), userFound.ID, file)
+	_, statusCh, err := s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
 	require.Nil(t, err)
 
 	actual := <-statusCh
 	expected := version
 	expected.Status = entity.VersionStatusCreated
+	require.Equal(t, expected, actual)
+}
+
+func TestGetByName(t *testing.T) {
+	s := newVersionSuite(t)
+	defer s.ctrl.Finish()
+
+	ctx := context.Background()
+
+	userID := "user1"
+	runtimeID := "runtime-1"
+	versionName := "version-name"
+
+	expected := &entity.Version{
+		ID:                "version-id",
+		RuntimeID:         runtimeID,
+		Name:              versionName,
+		Description:       "",
+		CreationDate:      time.Time{},
+		CreationAuthor:    "",
+		PublicationDate:   nil,
+		PublicationUserID: nil,
+		Status:            entity.VersionStatusCreated,
+		Config:            entity.VersionConfig{},
+		Entrypoint:        entity.Entrypoint{},
+		Workflows:         nil,
+	}
+
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit).Return(nil)
+	s.mocks.versionRepo.EXPECT().GetByName(ctx, runtimeID, versionName).Return(expected, nil)
+
+	actual, err := s.versionInteractor.GetByName(ctx, userID, runtimeID, versionName)
+
+	require.Nil(t, err)
+	require.Equal(t, expected, actual)
+}
+
+func TestGetByIDs(t *testing.T) {
+	s := newVersionSuite(t)
+	defer s.ctrl.Finish()
+
+	versionID := "version-id"
+	runtimeID := "runtime-1"
+	versionName := "version-name"
+
+	expected := []*entity.Version{
+		{
+			ID:                versionID,
+			RuntimeID:         runtimeID,
+			Name:              versionName,
+			Description:       "",
+			CreationDate:      time.Time{},
+			CreationAuthor:    "",
+			PublicationDate:   nil,
+			PublicationUserID: nil,
+			Status:            entity.VersionStatusCreated,
+			Config:            entity.VersionConfig{},
+			Entrypoint:        entity.Entrypoint{},
+			Workflows:         nil,
+		},
+	}
+
+	idsToSearch := []string{runtimeID}
+	s.mocks.versionRepo.EXPECT().GetByIDs(idsToSearch).Return(expected, nil)
+
+	actual, err := s.versionInteractor.GetByIDs(idsToSearch)
+
+	require.Nil(t, err)
 	require.Equal(t, expected, actual)
 }

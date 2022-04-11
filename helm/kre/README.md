@@ -49,9 +49,11 @@ manual actions.
 ### From 2.X to 3.X
 
 * Removed `mongodb.mongodbUsername` and `mongodb.mongodbPassword` from **values.yaml** in favour of `mongodb.auth.adminUser` and `mongodb.auth.adminpassword`
+* Removed `rbac.createServiceAccount` and `rbac.serviceAccount`
+* Added `rbac.create` (defaults to true) and added Service Account related block under `k8sManager.serviceAccount`
 * Removed other unused values from `values.yaml`.
 
-Check this [commit](https://github.com/konstellation-io/kre/pull/593/commits/1fab33b8351cae317753017373ac2dab4817c36f) for more details.
+Check commits [1fab33b](https://github.com/konstellation-io/kre/pull/593/commits/1fab33b8351cae317753017373ac2dab4817c36f) and [a280847](https://github.com/konstellation-io/kre/pull/598/commits/59e7365350d67d30984a2554a28d0241cf74f13e) for more details.
 
 ### From 1.X to 2.X
 
