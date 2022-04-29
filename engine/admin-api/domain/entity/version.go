@@ -62,12 +62,13 @@ type Edge struct {
 }
 
 type Node struct {
-	ID     string     `bson:"id"`
-	Name   string     `bson:"name"`
-	Image  string     `bson:"image"`
-	Src    string     `bson:"src"`
-	GPU    bool       `bson:"gpu"`
-	Status NodeStatus `bson:"-"` // This field value is calculated in k8s
+	ID       string     `bson:"id"`
+	Name     string     `bson:"name"`
+	Image    string     `bson:"image"`
+	Src      string     `bson:"src"`
+	GPU      bool       `bson:"gpu"`
+	Replicas int32      `bson:"replicas" default:"1"`
+	Status   NodeStatus `bson:"-"` // This field value is calculated in k8s
 }
 
 type NodeStatus string

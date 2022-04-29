@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package version;
-option go_package = "versionpb";
+option go_package = "./versionpb";
 
 message Config {
   string key = 1;
@@ -21,6 +21,7 @@ message Workflow {
     string image = 3;
     string src = 4;
     bool gpu = 5;
+    int32 replicas = 6;
   }
 
   message Edge {

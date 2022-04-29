@@ -12,10 +12,11 @@ type Krt struct {
 
 // Node contains data about a version's node
 type Node struct {
-	Name  string `yaml:"name" validate:"required,resource-name,lt=20"`
-	Image string `yaml:"image" validate:"required"`
-	Src   string `yaml:"src" validate:"required"`
-	GPU   bool   `yaml:"gpu"`
+	Name     string `yaml:"name" validate:"required,resource-name,lt=20"`
+	Image    string `yaml:"image" validate:"required"`
+	Src      string `yaml:"src" validate:"required"`
+	GPU      bool   `yaml:"gpu"`
+	Replicas int32  `yaml:"replicas" default:"1"`
 }
 
 // Workflow contains data about a version's workflow

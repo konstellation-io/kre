@@ -1,7 +1,7 @@
 #!/bin/sh
 
 for PROTO_FILE in proto/**/*.proto; do
-  protoc --go_out=plugins=grpc:. "$PROTO_FILE"
+  protoc --go-grpc_out=proto "$PROTO_FILE"
 done
 
 if [ -d "../admin-api" ]; then

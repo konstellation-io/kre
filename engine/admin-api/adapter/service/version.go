@@ -130,11 +130,12 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
 		for j, n := range w.Nodes {
 			nodes[j] = &versionpb.Workflow_Node{
-				Id:    n.ID,
-				Name:  n.Name,
-				Image: n.Image,
-				Src:   n.Src,
-				Gpu:   n.GPU,
+				Id:       n.ID,
+				Name:     n.Name,
+				Image:    n.Image,
+				Src:      n.Src,
+				Gpu:      n.GPU,
+				Replicas: n.Replicas,
 			}
 		}
 		edges := make([]*versionpb.Workflow_Edge, len(w.Edges))

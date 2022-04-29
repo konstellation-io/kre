@@ -158,7 +158,11 @@ func (m *Manager) createNodeDeployment(
 	envVars := m.getNodeEnvVars(req, config)
 	labels := m.getNodeLabels(req.VersionName, node)
 
-	m.logger.Infof("Creating node deployment with name \"%s\" and image \"%s\"", name, node.Image)
+	m.logger.Infof("Creating node deployment with name \"%s\", image \"%s\" and \"%d\" replicas",
+		name,
+		node.Image,
+		node.Replicas,
+	)
 
 	_, err := m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -167,6 +171,7 @@ func (m *Manager) createNodeDeployment(
 			Labels:    labels,
 		},
 		Spec: appsv1.DeploymentSpec{
+			Replicas: &node.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},

@@ -19,6 +19,7 @@ type VersionService struct {
 	logger  *simplelogger.SimpleLogger
 	manager *version.Manager
 	watcher *kubernetes.Watcher
+	versionpb.UnimplementedVersionServiceServer
 }
 
 // NewVersionService instantiates the GRPC server implementation.
@@ -33,6 +34,7 @@ func NewVersionService(
 		logger,
 		manager,
 		watcher,
+		versionpb.UnimplementedVersionServiceServer{},
 	}
 }
 

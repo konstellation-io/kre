@@ -308,12 +308,18 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				return nil, fmt.Errorf("error creating workflows. Node '%s' not found", name)
 			}
 
+			replicas := int32(1)
+			if nodeInfo.Replicas != 0 {
+				replicas = nodeInfo.Replicas
+			}
+
 			node := &entity.Node{
-				ID:    i.idGenerator.NewID(),
-				Name:  name,
-				Image: nodeInfo.Image,
-				Src:   nodeInfo.Src,
-				GPU:   nodeInfo.GPU,
+				ID:       i.idGenerator.NewID(),
+				Name:     name,
+				Image:    nodeInfo.Image,
+				Src:      nodeInfo.Src,
+				GPU:      nodeInfo.GPU,
+				Replicas: replicas,
 			}
 
 			if previousN != nil {
