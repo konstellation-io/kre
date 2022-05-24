@@ -358,6 +358,11 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
+	runtime, err := i.runtimeRepo.Get(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	if !v.CanBeStarted() {
 		return nil, nil, ErrInvalidVersionStatusBeforeStarting
 	}
@@ -382,7 +387,7 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
-	go i.changeStatusAndNotify(v, entity.VersionStatusStarted, notifyStatusCh)
+	go i.changeStatusAndNotify(v, entity.VersionStatusStarted, notifyStatusCh, runtime)
 
 	return v, notifyStatusCh, nil
 }
@@ -401,6 +406,11 @@ func (i *VersionInteractor) Stop(
 	i.logger.Infof("The user %s is stopping version %s", loggedUserID, versionName)
 
 	v, err := i.versionRepo.GetByName(ctx, versionName)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	runtime, err := i.runtimeRepo.Get(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -425,7 +435,7 @@ func (i *VersionInteractor) Stop(
 		return nil, nil, err
 	}
 
-	go i.changeStatusAndNotify(v, entity.VersionStatusStopped, notifyStatusCh)
+	go i.changeStatusAndNotify(v, entity.VersionStatusStopped, notifyStatusCh, runtime)
 
 	return v, notifyStatusCh, nil
 }
@@ -434,6 +444,7 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	version *entity.Version,
 	status entity.VersionStatus,
 	notifyStatusCh chan *entity.Version,
+	runtime *entity.Runtime,
 ) {
 	// WARNING: This function doesn't handle error because there is no  ERROR status defined for a Version
 	ctx, cancel := context.WithTimeout(context.Background(), i.cfg.Application.VersionStatusTimeout)
@@ -444,7 +455,7 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	}()
 
 	if status == entity.VersionStatusStarted {
-		err := i.versionService.Start(ctx, version)
+		err := i.versionService.Start(ctx, version, runtime)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}

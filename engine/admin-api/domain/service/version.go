@@ -9,7 +9,7 @@ import (
 )
 
 type VersionService interface {
-	Start(context.Context, *entity.Version) error
+	Start(context.Context, *entity.Version, *entity.Runtime) error
 	Stop(context.Context, *entity.Version) error
 	Unpublish(*entity.Version) error
 	Publish(*entity.Version) error

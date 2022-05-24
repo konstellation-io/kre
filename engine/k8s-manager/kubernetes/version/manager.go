@@ -51,7 +51,7 @@ func (m *Manager) Start(req *versionpb.StartRequest) error {
 		return err
 	}
 
-	err = m.createVersionConfFiles(req.VersionName, m.config.Kubernetes.Namespace, req.Workflows)
+	err = m.createVersionConfFiles(req.RuntimeId, req.VersionName, m.config.Kubernetes.Namespace, req.Workflows)
 	if err != nil {
 		return err
 	}

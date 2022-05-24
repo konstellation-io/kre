@@ -35,7 +35,7 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 }
 
 // Start creates the version resources in k8s
-func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version) error {
+func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version, runtime *entity.Runtime) error {
 	configVars := versionToConfig(version)
 	wf := versionToWorkflows(version)
 
@@ -52,6 +52,7 @@ func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version) e
 			ProtoFile: version.Entrypoint.ProtoFile,
 			Image:     version.Entrypoint.Image,
 		},
+		RuntimeId: runtime.ID,
 	}
 
 	_, err := k.client.Start(ctx, &req)

@@ -37,8 +37,8 @@ type WorkflowConfig map[string]NodeConfig
 
 type NodeConfig map[string]string
 
-func getFirstNodeNATSInput(versionName, workflowEntrypoint string) string {
-	return fmt.Sprintf("%s-%s-entrypoint", versionName, workflowEntrypoint)
+func getStreamSubjectName(runtimeID, versionName, workflowEntrypoint, nodeName string) string {
+	return fmt.Sprintf("%s-%s-%s.%s", runtimeID, versionName, workflowEntrypoint, nodeName)
 }
 
 func (m *Manager) createAllNodeDeployments(req *versionpb.StartRequest) error {
@@ -73,6 +73,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_NODE_NAME":         n.GetName(),
 			"KRT_HANDLER_PATH":      n.Src,
 			"KRT_NATS_MONGO_WRITER": natsMongoWriterSubject,
+			"KRT_NATS_STREAM":       fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
 		}
 	}
 
@@ -80,8 +81,8 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		fromNode := wconf[e.FromNode]
 		toNode := wconf[e.ToNode]
 
-		fromNode["KRT_NATS_OUTPUT"] = e.Id
-		toNode["KRT_NATS_INPUT"] = e.Id
+		fromNode["KRT_NATS_OUTPUT"] = getStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
+		toNode["KRT_NATS_INPUT"] = getStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
 	}
 
 	var (
@@ -100,10 +101,11 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	}
 
 	// First node input is the workflow entrypoint
-	firstNode["KRT_NATS_INPUT"] = getFirstNodeNATSInput(req.GetVersionName(), workflow.Entrypoint)
 
-	// Last node output is empty to reply to entrypoint
-	lastNode["KRT_NATS_OUTPUT"] = ""
+	firstNode["KRT_NATS_INPUT"] = getStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), firstNode["KRT_NODE_NAME"])
+
+	// Last node output is entrypoint
+	lastNode["KRT_NATS_OUTPUT"] = getStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint")
 
 	return wconf
 }

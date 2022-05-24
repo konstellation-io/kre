@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package version;
-option go_package = "versionpb";
+option go_package = "./versionpb";
 
 message Config {
   string key = 1;
@@ -46,6 +46,7 @@ message StartRequest {
   string mongo_krt_bucket = 7;
   string influx_uri = 8;
   Entrypoint entrypoint = 9; // deprecated: this will be deleted with https://github.com/konstellation-io/kre/issues/152
+  string runtime_id = 10;
 }
 
 message VersionName {

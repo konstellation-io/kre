@@ -18,6 +18,7 @@ func (m *Manager) getCommonEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
 		{Name: "KRT_MONGO_BUCKET", Value: req.GetMongoKrtBucket()},
 		{Name: "KRT_BASE_PATH", Value: basePathKRT},
 		{Name: "KRT_NATS_SERVER", Value: natsURL},
+		{Name: "KRT_RUNTIME_ID", Value: req.GetRuntimeId()},
 	}
 }
 
@@ -54,10 +55,10 @@ func (m *Manager) deleteVersionKRTConf(versionName, ns string) error {
 	return m.clientset.CoreV1().ConfigMaps(ns).Delete(m.getVersionKRTConfName(versionName), &metav1.DeleteOptions{})
 }
 
-func (m *Manager) createVersionConfFiles(versionName, ns string, workflows []*versionpb.Workflow) error {
+func (m *Manager) createVersionConfFiles(runtimeID, versionName, ns string, workflows []*versionpb.Workflow) error {
 	m.logger.Info("Creating version config files...")
 
-	natsSubjectJSON, err := m.generateNATSSubjects(versionName, workflows)
+	natsSubjectJSON, err := m.generateNATSSubjects(runtimeID, versionName, workflows)
 	if err != nil {
 		return err
 	}
