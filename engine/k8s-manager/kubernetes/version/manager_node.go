@@ -67,13 +67,15 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 
 	for _, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
-			"KRT_WORKFLOW_ID":       workflow.GetId(),
-			"KRT_WORKFLOW_NAME":     workflow.GetName(),
-			"KRT_NODE_ID":           n.GetId(),
-			"KRT_NODE_NAME":         n.GetName(),
-			"KRT_HANDLER_PATH":      n.Src,
-			"KRT_NATS_MONGO_WRITER": natsMongoWriterSubject,
-			"KRT_NATS_STREAM":       fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
+			"KRT_WORKFLOW_ID":             workflow.GetId(),
+			"KRT_WORKFLOW_NAME":           workflow.GetName(),
+			"KRT_NODE_ID":                 n.GetId(),
+			"KRT_NODE_NAME":               n.GetName(),
+			"KRT_HANDLER_PATH":            n.Src,
+			"KRT_NATS_MONGO_WRITER":       natsMongoWriterSubject,
+			"KRT_NATS_STREAM":             fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
+			"KRT_IS_LAST_NODE":            fmt.Sprintf("%t", false),
+			"KRT_NATS_ENTRYPOINT_SUBJECT": getStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint"),
 		}
 	}
 
@@ -99,6 +101,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		firstNode = wconf[workflow.Edges[0].FromNode]
 		lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
 	}
+	lastNode["KRT_IS_LAST_NODE"] = fmt.Sprintf("%t", true)
 
 	// First node input is the workflow entrypoint
 
