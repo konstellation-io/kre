@@ -3,12 +3,14 @@ import GetVersionConfStatusQuery from "Mocks/GetVersionConfStatusQuery";
 import GetConfigurationVariablesQuery from "Mocks/GetConfigurationVariablesQuery";
 import {AccessLevel} from "../../src/Graphql/types/globalTypes";
 import GetVersionWorkflowsQuery from "../../src/Mocks/GetVersionWorkflowsQuery";
+import GetRuntimes from "../../src/Mocks/GetRuntimesQuery";
 
 describe('Version Navigation', () => {
   beforeEach(() => {
     cy.kstInterceptor('GetMe', {data: GetMeQuery});
     cy.kstInterceptor('GetVersionConfStatus', {data: GetVersionConfStatusQuery});
-    cy.visit('http://dev-admin.kre.local:3000/versions');
+    cy.kstInterceptor('GetRuntimes', {data: GetRuntimes });
+    cy.visit('http://dev-admin.kre.local:3000/runtimes/runtime-id/versions');
   });
 
   it('should show version on versions list', () => {
