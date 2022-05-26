@@ -2620,6 +2620,7 @@ exports[`AddRuntime matches snapshot 1`] = `
               />
               <div
                 className="content"
+                data-testid="runtimeCreationInputs"
               >
                 <it
                   autoFocus={true}
