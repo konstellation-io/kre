@@ -3,6 +3,8 @@ package mongodb
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
@@ -10,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 const logsCollectionName = "logs"
@@ -142,6 +143,14 @@ func (n *NodeLogMongoDBRepo) PaginatedSearch(ctx context.Context, searchOpts *en
 
 	if len(searchOpts.Levels) > 0 {
 		filter["level"] = bson.M{"$in": searchOpts.Levels}
+	}
+
+	if len(searchOpts.VersionsIDs) > 0 {
+		filter["versionId"] = bson.M{"$in": searchOpts.VersionsIDs}
+	}
+
+	if len(searchOpts.WorkflowsNames) > 0 {
+		filter["workflowName"] = bson.M{"$in": searchOpts.WorkflowsNames}
 	}
 
 	if searchOpts.Cursor != nil {

@@ -78,6 +78,20 @@ func (mr *MockUserActivityInteracterMockRecorder) RegisterCreateAction(userID, v
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterCreateAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterCreateAction), userID, version)
 }
 
+// RegisterCreateRuntime mocks base method.
+func (m *MockUserActivityInteracter) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterCreateRuntime", userID, runtime)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RegisterCreateRuntime indicates an expected call of RegisterCreateRuntime.
+func (mr *MockUserActivityInteracterMockRecorder) RegisterCreateRuntime(userID, runtime interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterCreateRuntime", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterCreateRuntime), userID, runtime)
+}
+
 // RegisterCreateUser mocks base method.
 func (m *MockUserActivityInteracter) RegisterCreateUser(userID string, createdUser *entity.User) {
 	m.ctrl.T.Helper()

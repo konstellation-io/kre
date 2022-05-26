@@ -47,6 +47,7 @@ func NewApp(
 			Format: logFormat,
 		}),
 		kremiddleware.NewUserLoader(userInteractor),
+		kremiddleware.NewVersionLoader(versionInteractor),
 	)
 
 	if cfg.Admin.CORSEnabled {
