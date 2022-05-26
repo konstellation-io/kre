@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-  subscription WatchVersionNodeStatus($versionName: String!) {
-    watchNodeStatus(versionName: $versionName) {
+  subscription WatchVersionNodeStatus($versionName: String!, $runtimeId: ID!) {
+    watchNodeStatus(versionName: $versionName, runtimeId: $runtimeId) {
       id
       status
     }

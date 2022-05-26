@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-  query GetVersionConfStatus {
-    runtime {
+  query GetVersionConfStatus($runtimeId: ID!) {
+    runtime(id: $runtimeId) {
       id
       name
       description
@@ -12,7 +12,7 @@ export default gql`
       entrypointAddress
     }
 
-    versions {
+    versions(runtimeId: $runtimeId) {
       id
       name
       description

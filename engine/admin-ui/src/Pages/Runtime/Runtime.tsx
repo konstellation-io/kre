@@ -12,12 +12,17 @@ import styles from './Runtime.module.scss';
 import { useQuery } from '@apollo/client';
 
 import GetRuntimeAndVersionQuery from 'Graphql/queries/getRuntimeAndVersions';
+import {buildRoute} from "../../Utils/routes";
 
 function Runtime() {
-  const { versionName } = useParams<VersionRouteParams>();
+  const { runtimeId, versionName } = useParams<VersionRouteParams>();
   const location = useLocation();
   const { data, loading, error } = useQuery<GetVersionConfStatus>(
-    GetRuntimeAndVersionQuery
+    GetRuntimeAndVersionQuery, {
+      variables: {
+        runtimeId,
+      },
+    },
   );
 
   function getContent(): ReactElement | null {
@@ -60,14 +65,21 @@ function Runtime() {
     );
   }
 
-  const isUserInVersions: boolean = location.pathname === ROUTE.VERSIONS;
+  const newVersionRoute = buildRoute.runtime(ROUTE.NEW_VERSION, runtimeId);
+
+  const versionsPath: string = buildRoute.runtime(
+    ROUTE.VERSIONS,
+    runtimeId
+  );
+
+  const isUserInVersions: boolean = location.pathname === versionsPath;
 
   return (
     <PageBase
       headerChildren={
         (isUserInVersions && (
           <Can perform="version:edit">
-            <Button label="ADD VERSION" height={40} to={ROUTE.NEW_VERSION} />
+            <Button label="ADD VERSION" height={40} to={newVersionRoute} />
           </Can>
         )) ||
         null

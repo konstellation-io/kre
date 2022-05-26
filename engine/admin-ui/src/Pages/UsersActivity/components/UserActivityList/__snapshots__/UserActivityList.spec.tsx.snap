@@ -6,6 +6,19 @@ exports[`messageGenerator show right CREATE_VERSION message 1`] = `
     className="message"
   >
     New Version created:
+    <Link
+      className="link"
+      to="/runtimes/runtimeId/versions/versionName/status"
+    >
+      versionName
+    </Link>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeId
+    </Link>
   </div>
 </div>
 `;
@@ -36,12 +49,32 @@ exports[`messageGenerator show right PUBLISH_VERSION message 1`] = `
     className="message"
   >
     The version
+    <Link
+      className="link"
+      to="/runtimes/runtimeId/versions/versionName/status"
+    >
+      versionName
+    </Link>
     Have been
     <Highlight
       type="published"
     >
       Published
     </Highlight>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeId
+    </Link>
+    . Previous published version: 
+    <Link
+      className="link"
+      to="/runtimes/runtimeId/versions/oldVersionName/status"
+    >
+      oldVersionName
+    </Link>
   </div>
 </div>
 `;
@@ -52,12 +85,25 @@ exports[`messageGenerator show right START_VERSION message 1`] = `
     className="message"
   >
     The version
+    <Link
+      className="link"
+      to="/runtimes/runtimeId/versions/versionName/status"
+    >
+      versionName
+    </Link>
     Have been
     <Highlight
       type="started"
     >
       Started
     </Highlight>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeId
+    </Link>
   </div>
 </div>
 `;
@@ -68,12 +114,25 @@ exports[`messageGenerator show right STOP_VERSION message 1`] = `
     className="message"
   >
     The version
+    <Link
+      className="link"
+      to="/runtimes/runtimeId/versions/versionName/status"
+    >
+      versionName
+    </Link>
     Have been
     <Highlight
       type="stopped"
     >
       Stopped
     </Highlight>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeId
+    </Link>
   </div>
 </div>
 `;
@@ -84,12 +143,25 @@ exports[`messageGenerator show right UNPUBLISH_VERSION message 1`] = `
     className="message"
   >
     The version
+    <Link
+      className="link"
+      to="/runtimes/runtimeId/versions/versionName/status"
+    >
+      versionName
+    </Link>
     Have been
     <Highlight
       type="unpublished"
     >
       Unpublished
     </Highlight>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeId
+    </Link>
   </div>
 </div>
 `;
@@ -125,6 +197,19 @@ exports[`messageGenerator show right UPDATE_VERSION_CONFIGURATION message 1`] = 
       confA, confB, confC
     </Highlight>
     from version
+    <Link
+      className="link"
+      to="/runtimes/runtimeId/versions/versionName/status"
+    >
+      versionName
+    </Link>
+    at Runtime
+    <Link
+      className="link"
+      to="/runtimes/runtimeId"
+    >
+      runtimeId
+    </Link>
   </div>
 </div>
 `;

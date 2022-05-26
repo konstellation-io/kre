@@ -10,29 +10,30 @@
 export enum AccessLevel {
   ADMIN = 'ADMIN',
   MANAGER = 'MANAGER',
-  VIEWER = 'VIEWER'
+  VIEWER = 'VIEWER',
 }
 
 export enum ConfigurationVariableType {
   FILE = 'FILE',
-  VARIABLE = 'VARIABLE'
+  VARIABLE = 'VARIABLE',
 }
 
 export enum LogLevel {
   DEBUG = 'DEBUG',
   ERROR = 'ERROR',
   INFO = 'INFO',
-  WARN = 'WARN'
+  WARN = 'WARN',
 }
 
 export enum NodeStatus {
   ERROR = 'ERROR',
   STARTED = 'STARTED',
   STARTING = 'STARTING',
-  STOPPED = 'STOPPED'
+  STOPPED = 'STOPPED',
 }
 
 export enum UserActivityType {
+  CREATE_RUNTIME = 'CREATE_RUNTIME',
   CREATE_USER = 'CREATE_USER',
   CREATE_VERSION = 'CREATE_VERSION',
   DELETE_API_TOKEN = 'DELETE_API_TOKEN',
@@ -47,7 +48,7 @@ export enum UserActivityType {
   UNPUBLISH_VERSION = 'UNPUBLISH_VERSION',
   UPDATE_ACCESS_LEVELS = 'UPDATE_ACCESS_LEVELS',
   UPDATE_SETTING = 'UPDATE_SETTING',
-  UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION'
+  UPDATE_VERSION_CONFIGURATION = 'UPDATE_VERSION_CONFIGURATION',
 }
 
 export enum VersionStatus {
@@ -58,12 +59,18 @@ export enum VersionStatus {
   STARTED = 'STARTED',
   STARTING = 'STARTING',
   STOPPED = 'STOPPED',
-  STOPPING = 'STOPPING'
+  STOPPING = 'STOPPING',
 }
 
 export interface ConfigurationVariablesInput {
   key: string;
   value: string;
+}
+
+export interface CreateRuntimeInput {
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface CreateUserInput {
@@ -73,6 +80,7 @@ export interface CreateUserInput {
 
 export interface CreateVersionInput {
   file: any;
+  runtimeId: string;
 }
 
 export interface DeleteApiTokenInput {
@@ -89,11 +97,14 @@ export interface LogFilters {
   search?: string | null;
   levels?: LogLevel[] | null;
   nodeIds?: string[] | null;
+  versionsIds?: string[] | null;
+  workflowsNames?: string[] | null;
 }
 
 export interface PublishVersionInput {
   versionName: string;
   comment: string;
+  runtimeId: string;
 }
 
 export interface SettingsInput {
@@ -104,16 +115,19 @@ export interface SettingsInput {
 export interface StartVersionInput {
   versionName: string;
   comment: string;
+  runtimeId: string;
 }
 
 export interface StopVersionInput {
   versionName: string;
   comment: string;
+  runtimeId: string;
 }
 
 export interface UnpublishVersionInput {
   versionName: string;
   comment: string;
+  runtimeId: string;
 }
 
 export interface UpdateAccessLevelInput {
@@ -124,6 +138,7 @@ export interface UpdateAccessLevelInput {
 
 export interface UpdateConfigurationInput {
   versionName: string;
+  runtimeId: string;
   configurationVariables: ConfigurationVariablesInput[];
 }
 

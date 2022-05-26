@@ -34,7 +34,7 @@ function VersionSideBar({ runtime, versions, version }: VersionSideBarProps) {
       <VersionInfo version={version} />
       <VersionMenu runtime={runtime} version={version} />
       <Can perform="version:edit">
-        <VersionActions versions={versions} version={version} />
+        <VersionActions runtime={runtime} versions={versions} version={version} />
       </Can>
     </div>
   );

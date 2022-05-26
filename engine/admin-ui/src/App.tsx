@@ -40,15 +40,17 @@ import { useQuery } from '@apollo/client';
 
 import GetMeQuery from 'Graphql/queries/getMe';
 import GetRuntimeQuery from 'Graphql/queries/getRuntimeAndVersions';
+import Dashboard from 'Pages/Dashboard/Dashboard';
+import AddRuntime from 'Pages/AddRuntime/AddRuntime';
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);
-  const { data: runtimeData, loading: runtimeLoading } = useQuery<
-    GetVersionConfStatus
-  >(GetRuntimeQuery);
+  // const { data: runtimeData, loading: runtimeLoading } = useQuery<
+  //   GetVersionConfStatus
+  // >(GetRuntimeQuery);
   const { login } = useLogin();
 
-  if (loading || runtimeLoading || !runtimeData) {
+  if (loading) {
     return (
       <div className="splash">
         <SpinnerCircular />
@@ -56,7 +58,7 @@ function ProtectedRoutes() {
     );
   }
 
-  if (error || !data || !data.me || !runtimeData.runtime) {
+  if (error || !data || !data.me) {
     return <ErrorMessage />;
   }
 
@@ -76,7 +78,7 @@ function ProtectedRoutes() {
           <Route path={ROUTE.NEW_API_TOKEN} component={AddApiToken} />
           <Route path={ROUTE.NEW_VERSION} component={AddVersion} />
 
-          <Redirect exact from={ROUTE.HOME} to={ROUTE.VERSIONS} />
+          <Route exact path={ROUTE.HOME} component={Dashboard} />
 
           <Route exact path={ROUTE.LOGS} component={Logs} />
           <Route
@@ -88,7 +90,16 @@ function ProtectedRoutes() {
             ]}
             component={Runtime}
           />
+          <Redirect
+            exact
+            from={ROUTE.VERSION}
+            to={ROUTE.VERSION_STATUS}
+          />
+          <Redirect exact from={ROUTE.RUNTIME} to={ROUTE.VERSIONS} />
+          <Redirect exact from={ROUTE.RUNTIMES} to={ROUTE.HOME} />
+
           <Route path={ROUTE.VERSIONS} component={Runtime} />
+          <Route path={ROUTE.NEW_RUNTIME} component={AddRuntime} />
 
           <Route path={ROUTE.SETTINGS} component={Settings} />
           <Route path={ROUTE.PROFILE} component={Profile} />

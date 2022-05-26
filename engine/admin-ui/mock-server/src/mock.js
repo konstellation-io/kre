@@ -119,6 +119,7 @@ module.exports = {
       apiTokens: () => new MockList([2, 5])
     }),
     users: () => new MockList([20, 30]),
+    runtimes: () => new MockList([4, 8]),
     alerts: () => new MockList([1, 4]),
     versions: () => [
       generateVersion({ id: 'V1', name: 'Version-A', status: 'PUBLISHED' }),

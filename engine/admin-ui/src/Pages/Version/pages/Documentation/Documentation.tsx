@@ -45,11 +45,11 @@ function useDocFile(fileUrl?: string | null) {
 function Documentation() {
   const [loading, setLoading] = useState<boolean>(true);
   const location = useLocation();
-  const params = useParams<VersionRouteParams>();
+  const { runtimeId, versionName } = useParams<VersionRouteParams>();
 
-  const baseUrl = buildRoute(ROUTES.VERSION_DOCUMENTATION, params.versionName);
+  const baseUrl = buildRoute.version(ROUTES.VERSION_DOCUMENTATION, runtimeId, versionName);
   const docPath = location.pathname.replace(baseUrl, '');
-  const apiDocUrl = `${API_BASE_URL}/static/version/${params.versionName}/docs/${docPath}`;
+  const apiDocUrl = `${API_BASE_URL}/static/version/${versionName}/docs/${docPath}`;
   const file = useDocFile(apiDocUrl);
 
   useEffect(() => {

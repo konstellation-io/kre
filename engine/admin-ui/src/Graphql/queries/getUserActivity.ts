@@ -6,7 +6,7 @@ export default gql`
     $fromDate: String
     $toDate: String
     $types: [UserActivityType!]
-    $versionNames: [String!]
+    $versionIds: [String!]
     $lastId: String
   ) {
     userActivityList(
@@ -14,7 +14,7 @@ export default gql`
       fromDate: $fromDate
       toDate: $toDate
       types: $types
-      versionNames: $versionNames
+      versionIds: $versionIds
       lastId: $lastId
     ) {
       id
