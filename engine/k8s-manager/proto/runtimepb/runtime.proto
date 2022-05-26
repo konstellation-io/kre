@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package runtime;
+option go_package = "./runtimepb";
+
+message Runtime {
+  message MongoConf {
+    string username = 1;
+    string password = 2;
+    string sharedKey = 3;
+  }
+
+  message MinioConf {
+    string accessKey = 1;
+    string secretKey = 2;
+  }
+
+  string name = 1;
+  string namespace = 2;
+  MinioConf minio = 3;
+  MongoConf mongo = 4;
+}
+
+message Request {
+  Runtime runtime = 1;
+}
+
+message Response {
+  string message = 2;
+}
+
+service RuntimeService {
+  rpc Create (Request) returns (Response) {};
+};

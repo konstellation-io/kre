@@ -124,10 +124,10 @@ func (w *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait ti
 	return waitChan, nil
 }
 
-func (w *Watcher) WatchNodeStatus(versionName string, statusCh chan<- entity.Node) chan struct{} {
+func (w *Watcher) WatchNodeStatus(runtimeId, versionName string, statusCh chan<- entity.Node) chan struct{} {
 	w.logger.Debugf("[WatchNodeStatus] watching '%s'", versionName)
 
-	labelSelector := fmt.Sprintf("version-name=%s,type in (node, entrypoint)", versionName)
+	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeId, versionName)
 	resolver := node.NodeStatusResolver{
 		Out:        statusCh,
 		Logger:     w.logger,

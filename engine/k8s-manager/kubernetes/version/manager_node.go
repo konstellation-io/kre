@@ -37,8 +37,8 @@ type WorkflowConfig map[string]NodeConfig
 
 type NodeConfig map[string]string
 
-func getFirstNodeNATSInput(versionName, workflowEntrypoint string) string {
-	return fmt.Sprintf("%s-%s-entrypoint", versionName, workflowEntrypoint)
+func getFirstNodeNATSInput(runtimeId, versionName, workflowEntrypoint string) string {
+	return fmt.Sprintf("%s-%s-%s-entrypoint", runtimeId, versionName, workflowEntrypoint)
 }
 
 func (m *Manager) createAllNodeDeployments(req *versionpb.StartRequest) error {
@@ -100,7 +100,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	}
 
 	// First node input is the workflow entrypoint
-	firstNode["KRT_NATS_INPUT"] = getFirstNodeNATSInput(req.GetVersionName(), workflow.Entrypoint)
+	firstNode["KRT_NATS_INPUT"] = getFirstNodeNATSInput(req.RuntimeId, req.GetVersionName(), workflow.Entrypoint)
 
 	// Last node output is empty to reply to entrypoint
 	lastNode["KRT_NATS_OUTPUT"] = ""
@@ -123,9 +123,10 @@ func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []
 	return append(m.getCommonEnvVars(req), envVars...)
 }
 
-func (m *Manager) getNodeLabels(versionName string, node *versionpb.Workflow_Node) map[string]string {
+func (m *Manager) getNodeLabels(runtimeId, versionName string, node *versionpb.Workflow_Node) map[string]string {
 	return map[string]string{
 		"type":         "node",
+		"runtime-id":   runtimeId,
 		"version-name": versionName,
 		"node-name":    node.Name,
 		"node-id":      node.Id,
@@ -153,10 +154,11 @@ func (m *Manager) createNodeDeployment(
 	config NodeConfig,
 ) error {
 	versionName := req.VersionName
+	runtimeId := req.RuntimeId
 	ns := m.config.Kubernetes.Namespace
-	name := fmt.Sprintf("%s-%s-%s", versionName, node.Name, node.Id)
+	name := fmt.Sprintf("%s-%s-%s-%s", req.RuntimeId, versionName, node.Name, node.Id)
 	envVars := m.getNodeEnvVars(req, config)
-	labels := m.getNodeLabels(req.VersionName, node)
+	labels := m.getNodeLabels(runtimeId, versionName, node)
 
 	m.logger.Infof("Creating node deployment with name \"%s\" and image \"%s\"", name, node.Image)
 
@@ -190,7 +192,7 @@ func (m *Manager) createNodeDeployment(
 								{
 									ConfigMapRef: &apiv1.ConfigMapEnvSource{
 										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: m.getVersionKRTConfName(versionName),
+											Name: m.getVersionKRTConfName(runtimeId, versionName),
 										},
 									},
 								},
@@ -203,7 +205,7 @@ func (m *Manager) createNodeDeployment(
 						},
 						m.getFluentBitContainer(envVars),
 					},
-					Volumes: m.getCommonVolumes(versionName),
+					Volumes: m.getCommonVolumes(runtimeId, versionName),
 				},
 			},
 		},
@@ -241,7 +243,7 @@ func (m *Manager) getNodeTolerations(isGPUEnabled bool) []apiv1.Toleration {
 	}
 }
 
-func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) error {
+func (m *Manager) restartPodsSync(ctx context.Context, runtimeId, versionName, ns string) error {
 	gracePeriodZero := int64(0)
 	deletePolicy := metav1.DeletePropagationForeground
 	deleteOptions := &metav1.DeleteOptions{
@@ -250,7 +252,7 @@ func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) e
 	}
 
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Pod",
 		},
@@ -312,15 +314,15 @@ func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) e
 	}
 }
 
-func (m *Manager) getVersionNameLabelSelector(versionName string) string {
-	return fmt.Sprintf("version-name=%s", versionName)
+func (m *Manager) getVersionNameLabelSelector(runtimeId, versionName string) string {
+	return fmt.Sprintf("runtime-id=%s,version-name=%s", runtimeId, versionName)
 }
 
-func (m *Manager) deleteDeploymentsSync(ctx context.Context, versionName, ns string) error {
+func (m *Manager) deleteDeploymentsSync(ctx context.Context, runtimeId, versionName, ns string) error {
 	deployments := m.clientset.AppsV1().Deployments(ns)
 
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Deployment",
 		},
@@ -356,7 +358,7 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, versionName, ns str
 		}
 	}
 
-	m.deleteDeploymentPODs(ns, deleteOptions, versionName)
+	m.deleteDeploymentPODs(ns, deleteOptions, runtimeId, versionName)
 
 	w, err := deployments.Watch(listOptions)
 	if err != nil {
@@ -368,12 +370,12 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, versionName, ns str
 
 // In order to delete the Deployments is mandatory to delete theirs associated PODs because
 // the "Deleted" event of a deployment is not received until their PODs are deleted.
-func (m *Manager) deleteDeploymentPODs(ns string, deleteOptions *metav1.DeleteOptions, versionName string) {
+func (m *Manager) deleteDeploymentPODs(ns string, deleteOptions *metav1.DeleteOptions, runtimeId, versionName string) {
 	pods := m.clientset.CoreV1().Pods(ns)
 	deletePodsPolicy := metav1.DeletePropagationBackground
 	deleteOptions.PropagationPolicy = &deletePodsPolicy
 	podList, _ := pods.List(metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Pod",
 		},
@@ -386,9 +388,9 @@ func (m *Manager) deleteDeploymentPODs(ns string, deleteOptions *metav1.DeleteOp
 	}
 }
 
-func (m *Manager) deleteConfigMapsSync(ctx context.Context, versionName, ns string) error {
+func (m *Manager) deleteConfigMapsSync(ctx context.Context, runtimeId, versionName, ns string) error {
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "ConfigMap",
 		},

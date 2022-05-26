@@ -3,7 +3,7 @@ module github.com/konstellation-io/kre/engine/k8s-manager
 go 1.18
 
 require (
-	github.com/golang/protobuf v1.4.2
+	github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611081512-198d96c2a13a
 	google.golang.org/grpc v1.33.2
@@ -16,6 +16,7 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
+	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-cmp v0.5.0 // indirect
 	github.com/google/gofuzz v1.0.0 // indirect
 	github.com/googleapis/gnostic v0.0.0-20170729233727-0c5108395e2d // indirect
