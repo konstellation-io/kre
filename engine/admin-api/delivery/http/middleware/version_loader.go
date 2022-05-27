@@ -20,27 +20,7 @@ func NewVersionLoader(versionInteractor *usecase.VersionInteractor) echo.Middlew
 			versionLoader := dataloader.NewVersionLoader(dataloader.VersionLoaderConfig{
 				Wait:     50 * time.Millisecond,
 				MaxBatch: 1000,
-				Fetch: func(keys []string) ([]*entity.Version, []error) {
-					versions, err := versionInteractor.GetByIDs(keys)
-					if err != nil {
-						return nil, err
-					}
-
-					// The result array must preserve the order of the keys arrays
-					result := make([]*entity.Version, len(keys))
-					for idx, key := range keys {
-						var ver *entity.Version
-						for _, v := range versions {
-							if v.ID == key {
-								ver = v
-								break
-							}
-						}
-						result[idx] = ver
-					}
-
-					return result, nil
-				},
+				Fetch:    fetch(versionInteractor),
 			})
 			ctx := context.WithValue(r.Context(), VersionLoaderKey, versionLoader)
 
@@ -50,4 +30,33 @@ func NewVersionLoader(versionInteractor *usecase.VersionInteractor) echo.Middlew
 			return next(c)
 		}
 	}
+}
+
+func fetch(versionInteractor *usecase.VersionInteractor) func(keys []string) ([]*entity.Version, []error) {
+	return func(keys []string) ([]*entity.Version, []error) {
+		versions, err := versionInteractor.GetByIDs(keys)
+		if err != nil {
+			return nil, err
+		}
+
+		result := constructVersions(keys, versions)
+
+		return result, nil
+	}
+}
+
+func constructVersions(keys []string, versions []*entity.Version) []*entity.Version {
+	// The result array must preserve the order of the keys arrays
+	result := make([]*entity.Version, len(keys))
+	for idx, key := range keys {
+		var ver *entity.Version
+		for _, v := range versions {
+			if v.ID == key {
+				ver = v
+				break
+			}
+		}
+		result[idx] = ver
+	}
+	return result
 }
