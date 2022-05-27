@@ -6,7 +6,7 @@ import {
 } from 'Graphql/queries/types/GetRuntimes';
 import React, { ReactElement } from 'react';
 
-import { ApolloError } from '@apollo/client';
+import { useQuery, ApolloError } from '@apollo/client';
 import Can from 'Components/Can/Can';
 import Hexagon from 'Components/Shape/Hexagon/Hexagon';
 import HexagonBorder from 'Components/Shape/Hexagon/HexagonBorder';
@@ -20,7 +20,6 @@ import { checkPermission } from 'rbac-rules';
 import { get } from 'lodash';
 import styles from './Dashboard.module.scss';
 import { useHistory } from 'react-router';
-import { useQuery } from '@apollo/client';
 import useUserAccess from 'Hooks/useUserAccess';
 import GetRuntimesQuery from 'Graphql/queries/getRuntimes';
 
