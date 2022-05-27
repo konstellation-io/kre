@@ -14,7 +14,6 @@ import AddApiToken from 'Pages/AddApiToken/AddApiToken';
 import AddUser from 'Pages/AddUser/AddUser';
 import AddVersion from 'Pages/AddVersion/AddVersion';
 import { GetMe } from 'Graphql/queries/types/GetMe';
-import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { GlobalHotKeys } from 'react-hotkeys';
 import Login from 'Pages/Login/Login';
 import Logs from 'Pages/Logs/Logs';
@@ -39,15 +38,11 @@ import useLogs from 'Graphql/hooks/useLogs';
 import { useQuery } from '@apollo/client';
 
 import GetMeQuery from 'Graphql/queries/getMe';
-import GetRuntimeQuery from 'Graphql/queries/getRuntimeAndVersions';
 import Dashboard from 'Pages/Dashboard/Dashboard';
 import AddRuntime from 'Pages/AddRuntime/AddRuntime';
 
 function ProtectedRoutes() {
   const { data, error, loading } = useQuery<GetMe>(GetMeQuery);
-  // const { data: runtimeData, loading: runtimeLoading } = useQuery<
-  //   GetVersionConfStatus
-  // >(GetRuntimeQuery);
   const { login } = useLogin();
 
   if (loading) {
