@@ -51,9 +51,8 @@ function validateRuntimeID(value: string): string | boolean {
 function getErrorText(errorType: FieldError | undefined) {
   if (!errorType) return '';
 
-  switch (errorType.type) {
-    case 'required':
-      return 'This field cannot be empty';
+  if (errorType.type === 'required') {
+    return 'This field cannot be required';
   }
 }
 
@@ -118,7 +117,7 @@ function AddRuntime() {
     }
   });
 
-  function onCompleteAddRuntime(updatedData: CreateRuntime) {
+  function onCompleteAddRuntime(_updatedData: CreateRuntime) {
     history.push(ROUTE.HOME);
   }
 
@@ -132,7 +131,7 @@ function AddRuntime() {
       .toLowerCase()
       .replace(SPACES_REGEXP, '-')
       .replace(INVALID_ID_CHARS_REGEXP, '')
-      .substr(0, ID_MAX_LENGTH);
+      .substring(0, ID_MAX_LENGTH);
 
     setValue('id', id);
   }

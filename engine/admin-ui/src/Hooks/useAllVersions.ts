@@ -43,20 +43,20 @@ export default function useAllVersions() {
               query: GetVersionsQuery,
               variables: { runtimeId }
             })
-            .then(({ data }) => ({
+            .then(({ data: resData }) => ({
               runtime: {
                 id: runtimeId,
                 name: runtimeName
               },
-              versions: data
-                ? data.versions.map(({ id, name }) => ({
+              versions: resData
+                ? resData.versions.map(({ id, name }) => ({
                     id,
                     name
                   }))
                 : []
             }))
-            .catch(error => {
-              setError(error);
+            .catch(err => {
+              setError(err);
               return null;
             })
         );
