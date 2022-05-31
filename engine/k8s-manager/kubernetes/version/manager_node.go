@@ -80,8 +80,8 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		fromNode := wconf[e.FromNode]
 		toNode := wconf[e.ToNode]
 
-		fromNode["KRT_NATS_OUTPUT"] = e.Id
-		toNode["KRT_NATS_INPUT"] = e.Id
+		fromNode["KRT_NATS_OUTPUT"] = fmt.Sprintf("%s-%s", req.RuntimeId, e.Id)
+		toNode["KRT_NATS_INPUT"] = fmt.Sprintf("%s-%s", req.RuntimeId, e.Id)
 	}
 
 	var (
