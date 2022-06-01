@@ -281,6 +281,7 @@ input LogFilters {
   search: String
   levels: [LogLevel!]
   nodeIds: [ID!]
+  runtimesIds: [ID!]
   versionsIds: [ID!]
   workflowsNames: [ID!]
 }

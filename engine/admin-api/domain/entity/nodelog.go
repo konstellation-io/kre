@@ -23,6 +23,7 @@ type SearchLogsOptions struct {
 	Levels         []LogLevel
 	NodeIDs        []string
 	Cursor         *string
+	RuntimesIDs    []string
 	VersionsIDs    []string
 	WorkflowsNames []string
 }
@@ -38,6 +39,7 @@ type LogFilters struct {
 	Search         *string    `json:"search"`
 	Levels         []LogLevel `json:"levels"`
 	NodeIDs        []string   `json:"nodeIds"`
+	RuntimesIDs    []string   `json:"runtimesIds"`
 	VersionsIDs    []string   `json:"versionsIds"`
 	WorkflowsNames []string   `json:"workflowsNames"`
 }

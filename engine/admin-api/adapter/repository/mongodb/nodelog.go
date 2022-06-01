@@ -37,6 +37,9 @@ func (n *NodeLogMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Coll
 		{
 			Keys: bson.D{{"date", 1}},
 		},
+		{
+			Keys: bson.D{{"date", 1}, {"nodeId1", 1}, {"runtimeId", 1}, {"versionId", 1}},
+		},
 	})
 
 	return err
@@ -60,6 +63,10 @@ func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionName stri
 		conditions := bson.A{
 			bson.D{{"operationType", "insert"}},
 			bson.D{{"fullDocument.versionName", versionName}},
+		}
+
+		if len(filters.RuntimesIDs) > 0 {
+			conditions = append(conditions, bson.D{{"fullDocument.runtimeId", bson.M{"$in": filters.RuntimesIDs}}})
 		}
 
 		if len(filters.NodeIDs) > 0 {
@@ -143,6 +150,10 @@ func (n *NodeLogMongoDBRepo) PaginatedSearch(ctx context.Context, searchOpts *en
 
 	if len(searchOpts.Levels) > 0 {
 		filter["level"] = bson.M{"$in": searchOpts.Levels}
+	}
+
+	if len(searchOpts.RuntimesIDs) > 0 {
+		filter["runtimeId"] = bson.M{"$in": searchOpts.RuntimesIDs}
 	}
 
 	if len(searchOpts.VersionsIDs) > 0 {

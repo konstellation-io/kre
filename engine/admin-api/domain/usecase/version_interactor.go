@@ -650,6 +650,7 @@ func (i *VersionInteractor) SearchLogs(
 		Search:         filters.Search,
 		NodeIDs:        filters.NodeIDs,
 		Levels:         filters.Levels,
+		RuntimesIDs:    filters.RuntimesIDs,
 		VersionsIDs:    filters.VersionsIDs,
 		WorkflowsNames: filters.WorkflowsNames,
 	}
