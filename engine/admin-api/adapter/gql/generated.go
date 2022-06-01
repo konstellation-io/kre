@@ -144,7 +144,7 @@ type ComplexityRoot struct {
 	Query struct {
 		Logs             func(childComplexity int, versionName string, filters entity.LogFilters, cursor *string) int
 		Me               func(childComplexity int) int
-		Metrics          func(childComplexity int, versionName string, startDate string, endDate string) int
+		Metrics          func(childComplexity int, runtimeID string, versionName string, startDate string, endDate string) int
 		Runtime          func(childComplexity int, id string) int
 		Runtimes         func(childComplexity int) int
 		Settings         func(childComplexity int) int
@@ -258,7 +258,7 @@ type QueryResolver interface {
 	Settings(ctx context.Context) (*entity.Settings, error)
 	UserActivityList(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	Logs(ctx context.Context, versionName string, filters entity.LogFilters, cursor *string) (*LogPage, error)
-	Metrics(ctx context.Context, versionName string, startDate string, endDate string) (*entity.Metrics, error)
+	Metrics(ctx context.Context, runtimeID string, versionName string, startDate string, endDate string) (*entity.Metrics, error)
 }
 type RuntimeResolver interface {
 	CreationDate(ctx context.Context, obj *entity.Runtime) (string, error)
@@ -782,7 +782,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Metrics(childComplexity, args["versionName"].(string), args["startDate"].(string), args["endDate"].(string)), true
+		return e.complexity.Query.Metrics(childComplexity, args["runtimeId"].(string), args["versionName"].(string), args["startDate"].(string), args["endDate"].(string)), true
 
 	case "Query.runtime":
 		if e.complexity.Query.Runtime == nil {
@@ -1295,6 +1295,7 @@ type Query {
     cursor: String
   ): LogPage!
   metrics(
+    runtimeId: ID!
     versionName: String!
     startDate: String!
     endDate: String!
@@ -1526,6 +1527,7 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
+  CREATE_RUNTIME
   CREATE_VERSION
   PUBLISH_VERSION
   UNPUBLISH_VERSION
@@ -1875,32 +1877,41 @@ func (ec *executionContext) field_Query_metrics_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionName"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("versionName"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	if tmp, ok := rawArgs["runtimeId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runtimeId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionName"] = arg0
+	args["runtimeId"] = arg0
 	var arg1 string
-	if tmp, ok := rawArgs["startDate"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startDate"))
+	if tmp, ok := rawArgs["versionName"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("versionName"))
 		arg1, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["startDate"] = arg1
+	args["versionName"] = arg1
 	var arg2 string
-	if tmp, ok := rawArgs["endDate"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endDate"))
+	if tmp, ok := rawArgs["startDate"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startDate"))
 		arg2, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["endDate"] = arg2
+	args["startDate"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["endDate"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endDate"))
+		arg3, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["endDate"] = arg3
 	return args, nil
 }
 
@@ -5570,7 +5581,7 @@ func (ec *executionContext) _Query_metrics(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Metrics(rctx, fc.Args["versionName"].(string), fc.Args["startDate"].(string), fc.Args["endDate"].(string))
+		return ec.resolvers.Query().Metrics(rctx, fc.Args["runtimeId"].(string), fc.Args["versionName"].(string), fc.Args["startDate"].(string), fc.Args["endDate"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

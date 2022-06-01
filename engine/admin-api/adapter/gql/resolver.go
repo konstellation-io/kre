@@ -305,9 +305,9 @@ func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
 	return r.userInteractor.GetByID(loggedUserID)
 }
 
-func (r *queryResolver) Metrics(ctx context.Context, versionName, startDate, endDate string) (*entity.Metrics, error) {
+func (r *queryResolver) Metrics(ctx context.Context, runtimeId, versionName, startDate, endDate string) (*entity.Metrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, versionName, startDate, endDate)
+	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, runtimeId, versionName, startDate, endDate)
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {

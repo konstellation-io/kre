@@ -13,6 +13,7 @@ type MetricRepo interface {
 		ctx context.Context,
 		startDate time.Time,
 		endDate time.Time,
+		runtimeId string,
 		versionName string,
 	) ([]entity.ClassificationMetric, error)
 }

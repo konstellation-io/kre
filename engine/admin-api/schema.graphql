@@ -27,6 +27,7 @@ type Query {
     cursor: String
   ): LogPage!
   metrics(
+    runtimeId: ID!
     versionName: String!
     startDate: String!
     endDate: String!
@@ -258,6 +259,7 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
+  CREATE_RUNTIME
   CREATE_VERSION
   PUBLISH_VERSION
   UNPUBLISH_VERSION
