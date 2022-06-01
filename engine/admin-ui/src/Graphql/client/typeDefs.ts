@@ -13,6 +13,7 @@ export interface LogPanelFilters {
   nodes?: NodeSelection[];
   search?: string;
   levels?: LogLevel[] | null;
+  runtimesIds?: string[] | null;
   versionsIds?: string[] | null;
   workflowsNames?: string[] | null;
   __typename: 'logTabFilters';
