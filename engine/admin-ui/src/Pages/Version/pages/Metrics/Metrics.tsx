@@ -42,12 +42,13 @@ type Props = {
 function Metrics({ runtime, version }: Props) {
   const [viewAllData, setViewAllData] = useState<boolean>(false);
 
-  const { versionName } = useParams<VersionRouteParams>();
+  const { versionName, runtimeId } = useParams<VersionRouteParams>();
   const { data, loading, error, refetch } = useQuery<
     GetMetrics,
     GetMetricsVariables
   >(GetMetricsQuery, {
     variables: {
+      runtimeId,
       versionName,
       startDate: DEFAULT_DATES.startDate.toISOString(),
       endDate: DEFAULT_DATES.endDate.toISOString()
