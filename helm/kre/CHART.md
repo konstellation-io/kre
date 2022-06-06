@@ -48,6 +48,10 @@
 | config.smtp.user | string | `""` | SMTP server user |
 | developmentMode | bool | `false` | Whether to setup developement mode |
 | influxdb.address | string | `"http://kre-influxdb/"` |  |
+| entrypoint.grpc.ingress.annotations | object | See `entrypoint.grpc.ingress.annotations` in [values.yaml](./values.yaml)  | GRPC Ingress annotations |
+| entrypoint.host | string | `"local"` | Hostname |
+| entrypoint.ingress.annotations | object | See `entrypoint.ingress.annotations` in [values.yaml](./values.yaml)  | Ingress annotations |
+| entrypoint.tls | bool | `false` | Whether to enable tls |
 | influxdb.affinity | object | `{}` | Assign custom affinity rules to the InfluxDB pods |
 | influxdb.config.http | object | `{"auth-enabled":false,"enabled":true,"flux-enabled":true}` | [Details](https://docs.influxdata.com/influxdb/v1.8/administration/config/#http) |
 | influxdb.image.tag | string | `"1.8.1"` | Image tag |
@@ -85,7 +89,20 @@
 | mongodb.persistentVolume.storageClass | string | `"standard"` | Storage class name |
 | mongodb.tolerations | list | `[]` | Tolerations for use with node taints |
 | nameOverride | string | `""` | Provide a name in place of kre for `app.kubernetes.io/name` labels |
-| nats_streaming.replicas | int | `1` | Number of replicas |
-| nats_streaming.storage.className | string | `"standard"` | Storage class name |
-| nats_streaming.storage.size | string | `"1Gi"` | Storage size |
+| nats.affinity | object | `{}` | Assign custom affinity rules to the InfluxDB pods |
+| nats.client.port | int | `4222` | Port for client connections |
+| nats.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
+| nats.image.repository | string | `"nats"` | Image repository |
+| nats.image.tag | string | `"2.8.4"` | Image tag |
+| nats.jetstream.memStorage.enabled | bool | `true` | Whether to enable memory storage for Jetstream |
+| nats.jetstream.memStorage.size | string | `"1Gi"` | Memory storage max size for JetStream |
+| nats.jetstream.storage.enabled | bool | `true` | Whether to enable a PersistentVolumeClaim for Jetstream |
+| nats.jetstream.storage.size | string | `"1Gi"` | Storage size for the Jetstream PersistentVolumeClaim. Notice this is also used for the Jetstream storage limit configuration even if PVC creation is disabled |
+| nats.jetstream.storage.storageClassName | string | `"standard"` | Storage class name for the Jetstream PersistentVolumeClaim |
+| nats.jetstream.storage.storageDirectory | string | `"/data"` | Directory to use for JetStream storage when using a PersistentVolumeClaim |
+| nats.logging.debug | bool | `false` | Whether to enable logging debug mode |
+| nats.logging.logtime | bool | `true` | Timestamp log entries |
+| nats.logging.trace | bool | `false` | Whether to enable logging trace mode |
+| nats.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. |
+| nats.tolerations | list | `[]` | Tolerations for use with node taints |
 | rbac.create | bool | `true` | Whether to create the roles for the services that could use custom Service Accounts |

@@ -200,6 +200,39 @@ k8sManager:
   generatedEntrypoints:
     # -- Wether to enable tls
     tls: false
+
+entrypoint:
+  # -- Whether to enable tls
+  tls: false
+  # -- Hostname
+  host: "local"
+  ingress:
+    # -- Ingress annotations
+    # @default -- See `entrypoint.ingress.annotations` in [values.yaml](./values.yaml) 
+    annotations:
+      ## This Chart has been developed using Nginx Ingress Controller by default.
+      ## Using the following default annotations ensures its correct operation.
+      ## Ref: https://kubernetes.github.io/ingress-nginx/
+      ##
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
+      nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
+
+      ## If additional annotations are needed to configure it, provide an additional
+      ## file ensuring they are appended to the default ones.
+      ##
+      ## Example:
+      ##
+      # kubernetes.io/ingress.class: nginx
+      # cert-manager.io/issuer: your-issuer
+
+      ## Ensure different annotations are provided when another ingress controller is being used
+      ## (for example, through an additional values.yaml)
+      ## For example, when the ingress controller is Traefik instead of Nginx:
+      ##
+      # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+
+  grpc:
     ingress:
       # -- The ingressClassName to use for the enypoints' generated ingresses
       className: "nginx"
@@ -258,14 +291,67 @@ mongoWriter:
     # -- Image pull policy
     pullPolicy: IfNotPresent
 
-nats_streaming:
-  # -- Number of replicas
-  replicas: 1
-  storage:
-    # -- Storage class name
-    className: standard
-    # -- Storage size
-    size: 1Gi
+nats:
+  image:
+    # -- Image repository
+    repository: nats
+    # -- Image tag
+    tag: 2.8.4
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+  client:
+    # -- Port for client connections
+    port: 4222
+  jetstream:
+    storage:
+      # -- Whether to enable a PersistentVolumeClaim for Jetstream
+      enabled: true
+      # -- Storage class name for the Jetstream PersistentVolumeClaim
+      storageClassName: standard
+      # -- Storage size for the Jetstream PersistentVolumeClaim. Notice this is also used for the Jetstream storage limit configuration even if PVC creation is disabled
+      size: 1Gi
+      # -- Directory to use for JetStream storage when using a PersistentVolumeClaim
+      storageDirectory: /data
+    memStorage:
+      # -- Whether to enable memory storage for Jetstream
+      enabled: true
+      # -- Memory storage max size for JetStream
+      size: 1Gi
+  logging:
+    # -- Whether to enable logging debug mode
+    debug: false
+    # -- Whether to enable logging trace mode
+    trace: false
+    # -- Timestamp log entries
+    logtime: true
+ 
+  # -- Define which Nodes the Pods are scheduled on.
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  # -- Assign custom affinity rules to the InfluxDB pods
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  affinity: {}
+    # nodeAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     nodeSelectorTerms:
+    #     - matchExpressions:
+    #       - key: kuberHELMnetes.io/e2e-az-name
+    #         operator: In
+    #         values:
+    #         - e2e-az1
+    #         - e2e-az2
+
+  # -- Tolerations for use with node taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  # - key: "key"
+  #   operator: "Equal"
+  #   value: "value"
+  #   effect: "NoSchedule"
 
 chronograf:
   persistence:

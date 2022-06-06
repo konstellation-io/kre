@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nats-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nats.labels" . | nindent 4 }}
+data:
+  nats.conf: |
+    # NATS Clients Port
+    port: {{ .Values.nats.client.port }}
+
+    ###############
+    #             #
+    # Monitoring  #
+    #             #
+    ###############
+    http: 8222
+    server_name: $POD_NAME
+    
+    ###################################
+    #                                 #
+    # NATS JetStream                  #
+    #                                 #
+    ###################################
+    jetstream {
+      {{- if .Values.nats.jetstream.storage.enabled }}
+      store_dir: {{ .Values.nats.jetstream.storage.storageDirectory }}
+      {{- end }}
+
+      {{- if .Values.nats.jetstream.memStorage.enabled }}
+      max_mem: {{ .Values.nats.jetstream.memStorage.size }}
+      {{- end }}
+
+      max_file_store: {{ .Values.nats.jetstream.storage.size }}
+    }
+
+    ###################################
+    #                                 #
+    # Logging config                  #
+    #                                 #
+    ###################################
+    {{- with .Values.nats.logging.debug }}
+    debug: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.logging.trace }}
+    trace:  {{ . }}
+    {{- end }}
+    {{- with .Values.nats.logging.logtime }}
+    logtime: {{ . }}
+    {{- end }}

@@ -123,16 +123,16 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{/*
 nats labels
 */}}
-{{- define "nats-streaming.labels" -}}
+{{- define "nats.labels" -}}
 {{ include "kre.labels" . }}
-{{ include "nats-streaming.selectorLabels" . }}
+{{ include "nats.selectorLabels" . }}
 {{- end }}
 
 {{/*
 nats selector labels
 */}}
-{{- define "nats-streaming.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kre.name" . }}-nats-streaming
+{{- define "nats.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-nats
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
