@@ -60,22 +60,7 @@ func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionName stri
 			I: 0,
 		})
 
-		conditions := bson.A{
-			bson.D{{"operationType", "insert"}},
-			bson.D{{"fullDocument.versionName", versionName}},
-		}
-
-		if len(filters.RuntimesIDs) > 0 {
-			conditions = append(conditions, bson.D{{"fullDocument.runtimeId", bson.M{"$in": filters.RuntimesIDs}}})
-		}
-
-		if len(filters.NodeIDs) > 0 {
-			conditions = append(conditions, bson.D{{"fullDocument.nodeId", bson.M{"$in": filters.NodeIDs}}})
-		}
-
-		if len(filters.Levels) > 0 {
-			conditions = append(conditions, bson.D{{"fullDocument.level", bson.M{"$in": filters.Levels}}})
-		}
+		conditions := n.getSearchConditions(versionName, filters)
 
 		pipeline := mongo.Pipeline{bson.D{
 			{
@@ -115,6 +100,26 @@ func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionName stri
 	}()
 
 	return logsCh, nil
+}
+
+func (n *NodeLogMongoDBRepo) getSearchConditions(versionName string, filters entity.LogFilters) bson.A {
+	conditions := bson.A{
+		bson.D{{"operationType", "insert"}},
+		bson.D{{"fullDocument.versionName", versionName}},
+	}
+
+	if len(filters.RuntimesIDs) > 0 {
+		conditions = append(conditions, bson.D{{"fullDocument.runtimeId", bson.M{"$in": filters.RuntimesIDs}}})
+	}
+
+	if len(filters.NodeIDs) > 0 {
+		conditions = append(conditions, bson.D{{"fullDocument.nodeId", bson.M{"$in": filters.NodeIDs}}})
+	}
+
+	if len(filters.Levels) > 0 {
+		conditions = append(conditions, bson.D{{"fullDocument.level", bson.M{"$in": filters.Levels}}})
+	}
+	return conditions
 }
 
 func (n *NodeLogMongoDBRepo) PaginatedSearch(ctx context.Context, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error) {
