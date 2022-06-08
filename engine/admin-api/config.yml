@@ -21,6 +21,8 @@ mongodb:
   dbName: "kre"
   dataDbName: "data"
   krtBucket: "krt"
+influxdb:
+  address: "http://localhost:8086"
 k8s:
   namespace: ""
 services:

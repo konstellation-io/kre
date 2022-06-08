@@ -47,6 +47,9 @@ type Config struct {
 		DataDBName string `yaml:"dataDbName"`
 		KRTBucket  string `yaml:"krtBucket"`
 	} `yaml:"mongodb"`
+	InfluxDB struct {
+		Address string `yaml:"address" envconfig:"KRE_INFLUXDB_ADDRESS"`
+	} `yaml:"influxdb"`
 	K8s struct {
 		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
 	} `yaml:"k8s"`

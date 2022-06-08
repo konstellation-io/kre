@@ -265,7 +265,7 @@ func (i *VersionInteractor) completeVersionCreation(
 
 func (i *VersionInteractor) saveKRTDashboards(ctx context.Context, dashboardsFolder string, runtime *entity.Runtime, versionCreated *entity.Version, contentErrors []error) []error {
 	if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
-		err := i.storeDashboards(ctx, dashboardsFolder, runtime, versionCreated.Name)
+		err := i.storeDashboards(ctx, dashboardsFolder, runtime.ID, versionCreated.Name)
 		if err != nil {
 			errorMessage := "error creating dashboard"
 			contentErrors = append(contentErrors, fmt.Errorf(errorMessage))

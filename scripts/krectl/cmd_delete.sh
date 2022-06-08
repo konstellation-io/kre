@@ -82,6 +82,16 @@ delete_runtime() {
     (run kubectl -n "$NS" delete configmap $CONFIG_NAMES --grace-period=0 --force || true )
 
   mongo_script "$RUNTIME" | execute_mongo_script
+
+  delete_influx_database "$RUNTIME"
+}
+
+delete_influx_database() {
+  RUNTIME=$1
+  INFLUX_POD=$(get_influx_pod)
+  COMMAND="DROP DATABASE $RUNTIME"
+
+  kubectl exec -n kre -it "$INFLUX_POD" -- influx -execute "DROP DATABASE $RUNTIME"
 }
 
 # shellcheck disable=SC2120

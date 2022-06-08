@@ -43,5 +43,6 @@ data:
   KRE_CHRONOGRAF_STORAGECLASS: "{{ .Values.chronograf.persistence.storageClass }}"
   KRE_CHRONOGRAF_STORAGE_SIZE: "{{ .Values.chronograf.persistence.size }}"
   #InfluxDB
+  KRE_INFLUXDB_ADDRESS: {{ include "runtime.influxURL" . }}
   KRE_INFLUXDB_STORAGECLASS: "{{ .Values.influxdb.persistence.storageClass }}"
   KRE_INFLUXDB_STORAGE_SIZE: "{{ .Values.influxdb.persistence.size }}"

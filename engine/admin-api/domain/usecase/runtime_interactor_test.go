@@ -26,6 +26,7 @@ type runtimeSuite struct {
 type runtimeSuiteMocks struct {
 	logger            *mocks.MockLogger
 	runtimeRepo       *mocks.MockRuntimeRepo
+	measurementRepo   *mocks.MockMeasurementRepo
 	userActivityRepo  *mocks.MockUserActivityRepo
 	userRepo          *mocks.MockUserRepo
 	passwordGenerator *mocks.MockPasswordGenerator
@@ -44,6 +45,7 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
+	measurementRepo := mocks.NewMockMeasurementRepo(ctrl)
 	passwordGenerator := mocks.NewMockPasswordGenerator(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 
@@ -65,6 +67,7 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		cfg,
 		logger,
 		runtimeRepo,
+		measurementRepo,
 		userActivity,
 		passwordGenerator,
 		accessControl,
@@ -76,6 +79,7 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		mocks: &runtimeSuiteMocks{
 			logger,
 			runtimeRepo,
+			measurementRepo,
 			userActivityRepo,
 			userRepo,
 			passwordGenerator,
@@ -125,6 +129,7 @@ func TestCreateNewRuntime(t *testing.T) {
 	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeId).Return(nil, usecase.ErrRuntimeNotFound)
 	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrRuntimeNotFound)
 	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
+	s.mocks.measurementRepo.EXPECT().CreateDatabase(newRuntimeId).Return(nil)
 
 	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
 	"log"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
@@ -36,6 +37,7 @@ func main() {
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 	nodeLogRepo := mongodb.NewNodeLogMongoDBRepo(cfg, logger, mongodbClient)
 	metricRepo := mongodb.NewMetricMongoDBRepo(cfg, logger, mongodbClient)
+	measurementRepo := influx.NewMeasurementRepoInfluxDB(cfg, logger)
 
 	versionService, err := service.NewK8sVersionClient(cfg, logger)
 	if err != nil {
@@ -73,6 +75,7 @@ func main() {
 		cfg,
 		logger,
 		runtimeRepo,
+		measurementRepo,
 		userActivityInteractor,
 		passwordGenerator,
 		accessControl,

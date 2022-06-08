@@ -24,6 +24,7 @@ type RuntimeInteractor struct {
 	cfg               *config.Config
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
+	measurementRepo   repository.MeasurementRepo
 	userActivity      UserActivityInteracter
 	passwordGenerator runtime.PasswordGenerator
 	accessControl     auth.AccessControl
@@ -34,6 +35,7 @@ func NewRuntimeInteractor(
 	cfg *config.Config,
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
+	measurementRepo repository.MeasurementRepo,
 	userActivity UserActivityInteracter,
 	passwordGenerator runtime.PasswordGenerator,
 	accessControl auth.AccessControl,
@@ -42,6 +44,7 @@ func NewRuntimeInteractor(
 		cfg,
 		logger,
 		runtimeRepo,
+		measurementRepo,
 		userActivity,
 		passwordGenerator,
 		accessControl,
@@ -93,6 +96,13 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 		return nil, err
 	}
 	i.logger.Info("Runtime stored in the database with ID=" + createdRuntime.ID)
+
+	err = i.measurementRepo.CreateDatabase(createdRuntime.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	i.logger.Info("Measurement database created for runtime with ID=" + createdRuntime.ID)
 
 	return createdRuntime, nil
 }
