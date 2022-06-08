@@ -22,6 +22,7 @@ func TestFluentbitMsgParser_Parse(t *testing.T) {
       "versionName": "greeter-v1",
       "nodeName": "entrypoint",
       "nodeId": "entrypoint",
+			"runtimeId":    "runtime-id",
       "workflowName": "entrypoint",
       "workflowId": "entrypoint"
     }
@@ -37,6 +38,7 @@ func TestFluentbitMsgParser_Parse(t *testing.T) {
       "versionName": "greeter-v1",
       "nodeName": "entrypoint",
       "nodeId": "entrypoint",
+			"runtimeId":    "runtime-id",
       "workflowName": "entrypoint",
       "workflowId": "entrypoint"
     }
@@ -52,6 +54,7 @@ func TestFluentbitMsgParser_Parse(t *testing.T) {
       "versionName": "greeter-v1",
       "nodeName": "entrypoint",
       "nodeId": "entrypoint",
+			"runtimeId":    "runtime-id",
       "workflowName": "entrypoint",
       "workflowId": "entrypoint"
     }
@@ -69,6 +72,7 @@ func TestFluentbitMsgParser_Parse(t *testing.T) {
 			NodeID:       "entrypoint",
 			NodeName:     "entrypoint",
 			VersionID:    "60d0b4d389a76e646f1f66b7",
+			RuntimeID:    "runtime-id",
 			VersionName:  "greeter-v1",
 		},
 		{
@@ -80,6 +84,7 @@ func TestFluentbitMsgParser_Parse(t *testing.T) {
 			NodeID:       "entrypoint",
 			NodeName:     "entrypoint",
 			VersionID:    "60d0b4d389a76e646f1f66b7",
+			RuntimeID:    "runtime-id",
 			VersionName:  "greeter-v1",
 		},
 		{
@@ -91,6 +96,7 @@ func TestFluentbitMsgParser_Parse(t *testing.T) {
 			NodeID:       "entrypoint",
 			NodeName:     "entrypoint",
 			VersionID:    "60d0b4d389a76e646f1f66b7",
+			RuntimeID:    "runtime-id",
 			VersionName:  "greeter-v1",
 		},
 	}
