@@ -96,10 +96,11 @@ func TestCreateNewVersion(t *testing.T) {
 		ID: runtimeID,
 	}
 
+	versionName := "price-estimator-v1"
 	version := &entity.Version{
 		ID:                userID,
 		RuntimeID:         runtimeID,
-		Name:              "version-1",
+		Name:              versionName,
 		Description:       "",
 		CreationDate:      time.Time{},
 		CreationAuthor:    "",
@@ -120,6 +121,7 @@ func TestCreateNewVersion(t *testing.T) {
 	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(4)
 	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(runtime, nil)
 	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByName(ctx, runtimeID, versionName).Return(nil, usecase.ErrVersionNotFound)
 	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
 	s.mocks.versionRepo.EXPECT().SetStatus(gomock.Any(), version.ID, entity.VersionStatusCreated).Return(nil)
 	s.mocks.versionRepo.EXPECT().UploadKRTFile(version, gomock.Any()).Return(nil)
@@ -132,6 +134,54 @@ func TestCreateNewVersion(t *testing.T) {
 	expected := version
 	expected.Status = entity.VersionStatusCreated
 	require.Equal(t, expected, actual)
+}
+
+func TestCreateNewVersion_FailsIfVersionNameIsDuplicated(t *testing.T) {
+	s := newVersionSuite(t)
+	defer s.ctrl.Finish()
+
+	ctx := context.Background()
+
+	userID := "user1"
+	runtimeID := "run-1"
+
+	userFound := &entity.User{
+		ID:    userID,
+		Email: "test@test.com",
+	}
+
+	runtime := &entity.Runtime{
+		ID: runtimeID,
+	}
+
+	versionName := "price-estimator-v1"
+	version := &entity.Version{
+		ID:                userID,
+		RuntimeID:         runtimeID,
+		Name:              versionName,
+		Description:       "",
+		CreationDate:      time.Time{},
+		CreationAuthor:    "",
+		PublicationDate:   nil,
+		PublicationUserID: nil,
+		Status:            "",
+		Config:            entity.VersionConfig{},
+		Entrypoint:        entity.Entrypoint{},
+		Workflows:         nil,
+	}
+
+	file, err := os.Open("../../test_assets/price-estimator-v1.krt")
+	if err != nil {
+		t.Error(err)
+	}
+
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
+	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(runtime, nil)
+	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByName(ctx, runtimeID, versionName).Return(version, nil)
+
+	_, _, err = s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
+	require.Error(t, usecase.ErrVersionDuplicated, err)
 }
 
 func TestGetByName(t *testing.T) {

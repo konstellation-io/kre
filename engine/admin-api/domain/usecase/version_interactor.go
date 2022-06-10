@@ -167,6 +167,14 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 		return nil, nil, err
 	}
 
+	duplicatedVersion, err := i.versionRepo.GetByName(ctx, runtimeID, krtYml.Version)
+	if err != nil && !errors.Is(err, ErrVersionNotFound) {
+		return nil, nil, fmt.Errorf("error version repo GetByName: %w", err)
+	}
+	if duplicatedVersion != nil {
+		return nil, nil, ErrVersionDuplicated
+	}
+
 	workflows, err := i.generateWorkflows(krtYml)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error generating workflows: %w", err)
