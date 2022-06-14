@@ -99,14 +99,16 @@ adminApi:
   # -- Hostname
   host: api.kre.local
   ingress:
+    ## This Chart has been developed using Nginx Ingress Controller by default.
+    ## Using the following default annotations ensures its correct operation.
+    ## Ref: https://kubernetes.github.io/ingress-nginx/
+    ##
+
+    # -- The name of the ingress class to use
+    className: nginx
     # -- Ingress annotations
     # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
-      kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/proxy-body-size: 100000m
       nginx.org/client-max-body-size: 100000m
       nginx.org/websocket-services: admin-api
@@ -116,7 +118,6 @@ adminApi:
       ##
       ## Example:
       ##
-      # kubernetes.io/ingress.class: nginx
       # nginx.ingress.kubernetes.io/proxy-body-size: 100000m
       # nginx.org/client-max-body-size: 100000m
       # nginx.org/websocket-services: admin-api
@@ -146,16 +147,15 @@ adminUI:
     # -- Image pull policy
     pullPolicy: IfNotPresent
   ingress:
-    # -- Ingress annotations
-    # @default -- See `adminUI.ingress.annotations` in [values.yaml](./values.yaml) 
-    annotations:
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
-      
-      kubernetes.io/ingress.class: nginx
+    ## This Chart has been developed using Nginx Ingress Controller by default.
+    ## Using the following default annotations ensures its correct operation.
+    ## Ref: https://kubernetes.github.io/ingress-nginx/
+    ##
 
+    # -- The name of the ingress class to use
+    className: nginx
+    # -- Ingress annotations
+    annotations: {}
       ## If additional annotations are needed to configure it, provide an additional
       ## file ensuring they are appended to the default ones.
       ##
@@ -208,14 +208,16 @@ entrypoint:
   # -- Hostname
   host: "local"
   ingress:
+    ## This Chart has been developed using Nginx Ingress Controller by default.
+    ## Using the following default annotations ensures its correct operation.
+    ## Ref: https://kubernetes.github.io/ingress-nginx/
+    ##
+
+    # -- The name of the ingress class to use
+    className: nginx
     # -- Ingress annotations
     # @default -- See `entrypoint.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
-      kubernetes.io/ingress.class: "nginx"
       nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
       nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
 
@@ -224,7 +226,6 @@ entrypoint:
       ##
       ## Example:
       ##
-      # kubernetes.io/ingress.class: nginx
       # cert-manager.io/issuer: your-issuer
 
       ## Ensure different annotations are provided when another ingress controller is being used
@@ -235,14 +236,16 @@ entrypoint:
 
   grpc:
     ingress:
+      ## This Chart has been developed using Nginx Ingress Controller by default.
+      ## Using the following default annotations ensures its correct operation.
+      ## Ref: https://kubernetes.github.io/ingress-nginx/
+      ##
+
+      # -- The name of the ingress class to use
+      className: nginx
       # -- GRPC Ingress annotations
       # @default -- See `entrypoint.grpc.ingress.annotations` in [values.yaml](./values.yaml) 
       annotations:
-        ## This Chart has been developed using Nginx Ingress Controller by default.
-        ## Using the following default annotations ensures its correct operation.
-        ## Ref: https://kubernetes.github.io/ingress-nginx/
-        ##
-        kubernetes.io/ingress.class: "nginx"
         nginx.ingress.kubernetes.io/proxy-body-size: 16m
         nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
         # Based on this snippet:
@@ -267,7 +270,6 @@ entrypoint:
         ##
         ## Example:
         ##
-        # kubernetes.io/ingress.class: nginx
         # cert-manager.io/issuer: your-issuer
 
         ## Ensure different annotations are provided when another ingress controller is being used

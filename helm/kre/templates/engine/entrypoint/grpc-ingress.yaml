@@ -1,3 +1,8 @@
+{{- if and .Values.entrypoint.grpc.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.entrypoint.grpc.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.entrypoint.grpc.ingress.annotations "kubernetes.io/ingress.class" .Values.entrypoint.grpc.ingress.className }}
+  {{- end }}
+{{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
 {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -15,6 +20,9 @@ metadata:
   labels:
     {{- include "kre.labels" . | nindent 4 }}
 spec:
+  {{- if and .Values.entrypoint.grpc.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.entrypoint.grpc.ingress.className }}
+  {{- end }}
   {{- if .Values.entrypoint.tls }}
   tls:
     - hosts:
@@ -25,17 +33,17 @@ spec:
     - host: entrypoint.{{ .Values.entrypoint.host }}
       http:
         paths:
-        {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-          - pathType: Prefix
-            path: "/"
+          - path: "/"
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
             backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: active-entrypoint
                 port:
                   name: grpc
-        {{- else }}
-          - path: /
-            backend:
+              {{- else }}
               serviceName: active-entrypoint
               servicePort: grpc
-        {{- end }}
+              {{- end }}
