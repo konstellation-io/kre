@@ -2,7 +2,6 @@ package processor
 
 import (
 	"context"
-
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/config"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/logging"
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/mongodb"
@@ -42,13 +41,15 @@ func (l *LogsProcessor) ProcessMsgs(ctx context.Context, logsCh chan *nc.Msg) {
 	for msg := range logsCh {
 		l.natsM.IncreaseTotalMsgs(1)
 
+		runtime := getRuntimeFromSubject(l.cfg.Nats.LogsSubjectWildcard, msg.Subject)
+
 		msgs, err := l.fluentbitParser.Parse(msg.Data)
 		if err != nil {
 			l.logger.Errorf("Error parsing Fluentbit msg: %s", err)
 			continue
 		}
 
-		err = l.mongoM.InsertMany(ctx, l.cfg.MongoDB.LogsDBName, LogsCollName, msgs)
+		err = l.mongoM.InsertMany(ctx, runtime, LogsCollName, msgs)
 		if err != nil {
 			l.logger.Errorf("Error inserting msg: %s", err)
 		}

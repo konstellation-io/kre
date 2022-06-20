@@ -55,13 +55,15 @@ func (d *DataProcessor) ProcessMsgs(ctx context.Context, dataCh chan *nc.Msg) {
 	for msg := range dataCh {
 		d.natsM.IncreaseTotalMsgs(1)
 
+		runtime := getRuntimeFromSubject(d.cfg.Nats.DataSubjectWildcard, msg.Subject)
+
 		dataMsg, err := d.getData(msg)
 		if err != nil {
 			d.errorResponse(msg, err)
 			continue
 		}
 
-		err = d.mongoM.InsertOne(ctx, d.cfg.MongoDB.DataDBName, dataMsg.Coll, dataMsg.Doc)
+		err = d.mongoM.InsertOne(ctx, runtime, dataMsg.Coll, dataMsg.Doc)
 		if err != nil {
 			d.errorResponse(msg, fmt.Errorf("%w: %s", ErrInserting, err))
 			continue
