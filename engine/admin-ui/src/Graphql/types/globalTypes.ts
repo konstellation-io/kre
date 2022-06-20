@@ -97,7 +97,6 @@ export interface LogFilters {
   search?: string | null;
   levels?: LogLevel[] | null;
   nodeIds?: string[] | null;
-  runtimesIds?: string[] | null;
   versionsIds?: string[] | null;
   workflowsNames?: string[] | null;
 }
