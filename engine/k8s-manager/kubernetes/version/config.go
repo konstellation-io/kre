@@ -98,7 +98,7 @@ func (m *Manager) createVersionConfFiles(runtimeId, versionName, ns string, work
     Regex ^(?<logtime>\d{4}\-\d{2}\-\d{2}T\d{1,2}\:\d{1,2}\:\d{1,2}(\.\d+Z|\+0000)) (?<level>(ERROR|WARN|INFO|DEBUG)) (?<capture>.*)
 `,
 
-			"fluent-bit.conf": `
+			"fluent-bit.conf": fmt.Sprintf(`
 [SERVICE]
     Flush        1
     Verbose      1
@@ -115,7 +115,7 @@ func (m *Manager) createVersionConfFiles(runtimeId, versionName, ns string, work
 
 [INPUT]
     Name        tail
-    Tag         mongo_writer_logs
+    Tag         mongo_writer_logs.%s
     Buffer_Chunk_Size 1k
     Path        /var/log/app/*.log
     Multiline On
@@ -141,7 +141,7 @@ func (m *Manager) createVersionConfFiles(runtimeId, versionName, ns string, work
     Match *
     Host  kre-nats
     Port  4222
-`,
+`, runtimeId),
 		},
 	})
 

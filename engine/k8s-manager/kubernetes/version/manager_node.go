@@ -72,7 +72,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_NODE_ID":           n.GetId(),
 			"KRT_NODE_NAME":         n.GetName(),
 			"KRT_HANDLER_PATH":      n.Src,
-			"KRT_NATS_MONGO_WRITER": natsMongoWriterSubject,
+			"KRT_NATS_MONGO_WRITER": natsDataSubjectPrefix + req.RuntimeId,
 		}
 	}
 
