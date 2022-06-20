@@ -97,8 +97,6 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 	}
 	i.logger.Info("Runtime stored in the database with ID=" + createdRuntime.ID)
 
-	i.runtimeRepo.CreateDatabase(ctx, r)
-
 	err = i.measurementRepo.CreateDatabase(createdRuntime.ID)
 	if err != nil {
 		return nil, err
