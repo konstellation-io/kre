@@ -21,11 +21,12 @@ type NodeLogMongoDBRepo struct {
 	cfg        *config.Config
 	logger     logging.Logger
 	collection *mongo.Collection
+	client     *mongo.Client
 }
 
 func NewNodeLogMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mongo.Client) *NodeLogMongoDBRepo {
 	collection := client.Database(cfg.MongoDB.DBName).Collection(logsCollectionName)
-	return &NodeLogMongoDBRepo{cfg: cfg, logger: logger, collection: collection}
+	return &NodeLogMongoDBRepo{cfg: cfg, logger: logger, collection: collection, client: client}
 }
 
 func (n *NodeLogMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Collection) error {
@@ -47,7 +48,8 @@ func (n *NodeLogMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Coll
 
 // TODO use the Search filter: https://jira.mongodb.org/browse/NODE-2162
 // you cannot use a $text matcher on a change stream
-func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, runtimeId, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+	collection := n.client.Database(runtimeId).Collection(logsCollectionName)
 	logsCh := make(chan *entity.NodeLog, 1)
 
 	go func() {
@@ -71,7 +73,7 @@ func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, versionName stri
 
 		n.logger.Debugf("Creating a mongodb watcher for logs")
 
-		stream, err := n.collection.Watch(ctx, pipeline, opts)
+		stream, err := collection.Watch(ctx, pipeline, opts)
 		if err != nil {
 			n.logger.Errorf("Error creating the MongoDB watcher for logs: %w", err)
 			return
@@ -122,10 +124,15 @@ func (n *NodeLogMongoDBRepo) getSearchConditions(versionName string, filters ent
 	return conditions
 }
 
-func (n *NodeLogMongoDBRepo) PaginatedSearch(ctx context.Context, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error) {
+func (n *NodeLogMongoDBRepo) PaginatedSearch(
+	ctx context.Context,
+	runtimeId string,
+	searchOpts *entity.SearchLogsOptions,
+) (*entity.SearchLogsResult, error) {
+	collection := n.client.Database(runtimeId).Collection(logsCollectionName)
 	result := entity.SearchLogsResult{}
 
-	err := n.ensureIndexes(ctx, n.collection)
+	err := n.ensureIndexes(ctx, collection)
 	if err != nil {
 		return &result, err
 	}
@@ -157,10 +164,6 @@ func (n *NodeLogMongoDBRepo) PaginatedSearch(ctx context.Context, searchOpts *en
 		filter["level"] = bson.M{"$in": searchOpts.Levels}
 	}
 
-	if len(searchOpts.RuntimesIDs) > 0 {
-		filter["runtimeId"] = bson.M{"$in": searchOpts.RuntimesIDs}
-	}
-
 	if len(searchOpts.VersionsIDs) > 0 {
 		filter["versionId"] = bson.M{"$in": searchOpts.VersionsIDs}
 	}
@@ -179,7 +182,7 @@ func (n *NodeLogMongoDBRepo) PaginatedSearch(ctx context.Context, searchOpts *en
 
 	n.logger.Debugf("Logs filter = %#v", filter)
 
-	cur, err := n.collection.Find(ctx, filter, opts)
+	cur, err := collection.Find(ctx, filter, opts)
 	if err != nil {
 		return &result, err
 	}

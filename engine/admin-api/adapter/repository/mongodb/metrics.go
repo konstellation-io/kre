@@ -15,14 +15,13 @@ import (
 const metricsCollectionName = "classificationMetrics"
 
 type MetricsMongoDBRepo struct {
-	cfg        *config.Config
-	logger     logging.Logger
-	collection *mongo.Collection
+	cfg    *config.Config
+	logger logging.Logger
+	client *mongo.Client
 }
 
 func NewMetricMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mongo.Client) *MetricsMongoDBRepo {
-	collection := client.Database(cfg.MongoDB.DataDBName).Collection(metricsCollectionName)
-	return &MetricsMongoDBRepo{cfg: cfg, logger: logger, collection: collection}
+	return &MetricsMongoDBRepo{cfg: cfg, logger: logger, client: client}
 }
 
 func (m *MetricsMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Collection) error {
@@ -37,8 +36,11 @@ func (m *MetricsMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Coll
 }
 
 func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, runtimeId, versionName string) ([]entity.ClassificationMetric, error) {
+	database := fmt.Sprintf("%s-data", runtimeId)
+	collection := m.client.Database(database).Collection(metricsCollectionName)
+
 	var result []entity.ClassificationMetric
-	err := m.ensureIndexes(ctx, m.collection)
+	err := m.ensureIndexes(ctx, collection)
 	if err != nil {
 		return result, err
 	}
@@ -52,13 +54,12 @@ func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time
 			"$gte": startDate.Format(time.RFC3339),
 			"$lte": endDate.Format(time.RFC3339),
 		},
-		"runtimeId":   runtimeId,
 		"versionName": versionName,
 	}
 
 	m.logger.Debugf("Finding metrics with filter = %#v", filter)
 
-	cur, err := m.collection.Find(ctx, filter, opts)
+	cur, err := collection.Find(ctx, filter, opts)
 	if err != nil {
 		return result, err
 	}

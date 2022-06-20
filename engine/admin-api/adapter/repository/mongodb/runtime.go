@@ -17,6 +17,7 @@ type RuntimeRepoMongoDB struct {
 	cfg        *config.Config
 	logger     logging.Logger
 	collection *mongo.Collection
+	client     *mongo.Client
 }
 
 func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo.Client) *RuntimeRepoMongoDB {
@@ -25,6 +26,7 @@ func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mo
 		cfg,
 		logger,
 		collection,
+		client,
 	}
 }
 

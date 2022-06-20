@@ -10,6 +10,7 @@ import (
 
 type RuntimeRepo interface {
 	Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error)
+	CreateDatabase(ctx context.Context, runtime *entity.Runtime) error
 	Get(ctx context.Context) (*entity.Runtime, error)
 	FindAll(ctx context.Context) ([]*entity.Runtime, error)
 	GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error)

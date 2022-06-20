@@ -36,31 +36,31 @@ func (m *MockNodeLogRepository) EXPECT() *MockNodeLogRepositoryMockRecorder {
 }
 
 // PaginatedSearch mocks base method.
-func (m *MockNodeLogRepository) PaginatedSearch(ctx context.Context, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error) {
+func (m *MockNodeLogRepository) PaginatedSearch(ctx context.Context, runtimeId string, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PaginatedSearch", ctx, searchOpts)
+	ret := m.ctrl.Call(m, "PaginatedSearch", ctx, runtimeId, searchOpts)
 	ret0, _ := ret[0].(*entity.SearchLogsResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // PaginatedSearch indicates an expected call of PaginatedSearch.
-func (mr *MockNodeLogRepositoryMockRecorder) PaginatedSearch(ctx, searchOpts interface{}) *gomock.Call {
+func (mr *MockNodeLogRepositoryMockRecorder) PaginatedSearch(ctx, runtimeId, searchOpts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PaginatedSearch", reflect.TypeOf((*MockNodeLogRepository)(nil).PaginatedSearch), ctx, searchOpts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PaginatedSearch", reflect.TypeOf((*MockNodeLogRepository)(nil).PaginatedSearch), ctx, runtimeId, searchOpts)
 }
 
 // WatchNodeLogs mocks base method.
-func (m *MockNodeLogRepository) WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (m *MockNodeLogRepository) WatchNodeLogs(ctx context.Context, runtimeId, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WatchNodeLogs", ctx, versionName, filters)
+	ret := m.ctrl.Call(m, "WatchNodeLogs", ctx, runtimeId, versionName, filters)
 	ret0, _ := ret[0].(<-chan *entity.NodeLog)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // WatchNodeLogs indicates an expected call of WatchNodeLogs.
-func (mr *MockNodeLogRepositoryMockRecorder) WatchNodeLogs(ctx, versionName, filters interface{}) *gomock.Call {
+func (mr *MockNodeLogRepositoryMockRecorder) WatchNodeLogs(ctx, runtimeId, versionName, filters interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WatchNodeLogs", reflect.TypeOf((*MockNodeLogRepository)(nil).WatchNodeLogs), ctx, versionName, filters)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WatchNodeLogs", reflect.TypeOf((*MockNodeLogRepository)(nil).WatchNodeLogs), ctx, runtimeId, versionName, filters)
 }

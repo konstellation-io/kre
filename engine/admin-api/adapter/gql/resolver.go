@@ -24,11 +24,9 @@ import (
 )
 
 var versionStatusChannels map[string]chan *entity.Version
-var runtimeCreatedChannels map[string]chan *entity.Runtime
 var mux *sync.RWMutex
 
 func init() {
-	runtimeCreatedChannels = map[string]chan *entity.Runtime{}
 	versionStatusChannels = map[string]chan *entity.Version{}
 	mux = &sync.RWMutex{}
 }
@@ -244,7 +242,7 @@ func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input
 		}
 	}
 
-	return r.versionInteractor.UpdateVersionConfig(ctx, loggedUserID, v, config)
+	return r.versionInteractor.UpdateVersionConfig(ctx, loggedUserID, input.RuntimeID, v, config)
 }
 
 func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {
@@ -355,13 +353,13 @@ func (r *queryResolver) UserActivityList(
 
 func (r *queryResolver) Logs(
 	ctx context.Context,
-	versionName string,
+	runtimeId string,
 	filters entity.LogFilters,
 	cursor *string,
 ) (*LogPage, error) {
 	loggedUserID := ctx.Value("userID").(string)
 
-	searchResult, err := r.versionInteractor.SearchLogs(ctx, loggedUserID, filters, cursor)
+	searchResult, err := r.versionInteractor.SearchLogs(ctx, loggedUserID, runtimeId, filters, cursor)
 	if err != nil {
 		return nil, err
 	}
@@ -388,8 +386,7 @@ func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (
 
 func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
 	if obj.PublishedVersion != "" {
-		versionLoader := ctx.Value(middleware.VersionLoaderKey).(*dataloader.VersionLoader)
-		return versionLoader.Load(obj.PublishedVersion)
+		return r.versionInteractor.GetByID(obj.ID, obj.PublishedVersion)
 	}
 	return nil, nil
 }
@@ -429,9 +426,9 @@ func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionName,
 	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, runtimeID, versionName)
 }
 
-func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, runtimeId, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, versionName, filters)
+	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeId, versionName, filters)
 }
 
 func (r *userActivityResolver) Date(_ context.Context, obj *entity.UserActivity) (string, error) {

@@ -122,9 +122,9 @@ func TestCreateNewVersion(t *testing.T) {
 	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(runtime, nil)
 	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().GetByName(ctx, runtimeID, versionName).Return(nil, usecase.ErrVersionNotFound)
-	s.mocks.versionRepo.EXPECT().Create(userID, gomock.Any()).Return(version, nil)
-	s.mocks.versionRepo.EXPECT().SetStatus(gomock.Any(), version.ID, entity.VersionStatusCreated).Return(nil)
-	s.mocks.versionRepo.EXPECT().UploadKRTFile(version, gomock.Any()).Return(nil)
+	s.mocks.versionRepo.EXPECT().Create(userID, runtimeID, gomock.Any()).Return(version, nil)
+	s.mocks.versionRepo.EXPECT().SetStatus(ctx, runtimeID, version.ID, entity.VersionStatusCreated).Return(nil)
+	s.mocks.versionRepo.EXPECT().UploadKRTFile(runtimeID, version, gomock.Any()).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 
 	_, statusCh, err := s.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
@@ -244,9 +244,9 @@ func TestGetByIDs(t *testing.T) {
 	}
 
 	idsToSearch := []string{runtimeID}
-	s.mocks.versionRepo.EXPECT().GetByIDs(idsToSearch).Return(expected, nil)
+	s.mocks.versionRepo.EXPECT().GetByIDs(runtimeID, idsToSearch).Return(expected, nil)
 
-	actual, err := s.versionInteractor.GetByIDs(idsToSearch)
+	actual, err := s.versionInteractor.GetByIDs(runtimeID, idsToSearch)
 
 	require.Nil(t, err)
 	require.Equal(t, expected, actual)

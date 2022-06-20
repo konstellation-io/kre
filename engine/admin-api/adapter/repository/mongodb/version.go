@@ -21,10 +21,9 @@ import (
 )
 
 type VersionRepoMongoDB struct {
-	cfg        *config.Config
-	logger     logging.Logger
-	collection *mongo.Collection
-	client     *mongo.Client
+	cfg    *config.Config
+	logger logging.Logger
+	client *mongo.Client
 }
 
 func NewVersionRepoMongoDB(
@@ -32,47 +31,51 @@ func NewVersionRepoMongoDB(
 	logger logging.Logger,
 	client *mongo.Client,
 ) *VersionRepoMongoDB {
-	collection := client.Database(cfg.MongoDB.DBName).Collection("versions")
 	versions := &VersionRepoMongoDB{
 		cfg,
 		logger,
-		collection,
 		client,
 	}
-
-	versions.createIndexes()
 
 	return versions
 }
 
-func (r *VersionRepoMongoDB) createIndexes() {
+func (r *VersionRepoMongoDB) createIndexes(collection *mongo.Collection) error {
 	indexes := []mongo.IndexModel{
 		{
 			Keys: bson.M{
-				"runtimeId": 1,
-			},
-		},
-		{
-			Keys: bson.M{
-				"name":      1,
-				"runtimeId": 1,
+				"name": 1,
 			},
 			Options: options.Index().SetUnique(true),
 		},
 	}
 
-	_, err := r.collection.Indexes().CreateMany(context.Background(), indexes)
+	_, err := collection.Indexes().CreateMany(context.Background(), indexes)
 	if err != nil {
-		r.logger.Errorf("error creating version indexes: %s", err)
+		return fmt.Errorf("error creating version indexes: %s", err)
 	}
+	return nil
 }
 
-func (r *VersionRepoMongoDB) Create(userID string, newVersion *entity.Version) (*entity.Version, error) {
+func (r *VersionRepoMongoDB) CreateDatabase(runtimeId string) error {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
+	err := r.createIndexes(collection)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *VersionRepoMongoDB) Create(userID, runtimeId string, newVersion *entity.Version) (*entity.Version, error) {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
 	newVersion.ID = primitive.NewObjectID().Hex()
 	newVersion.CreationDate = time.Now().UTC()
 	newVersion.CreationAuthor = userID
 	newVersion.Status = entity.VersionStatusCreating
-	res, err := r.collection.InsertOne(context.Background(), newVersion)
+	res, err := collection.InsertOne(context.Background(), newVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -81,11 +84,13 @@ func (r *VersionRepoMongoDB) Create(userID string, newVersion *entity.Version) (
 	return newVersion, nil
 }
 
-func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {
-	v := &entity.Version{}
-	filter := bson.D{{"_id", id}}
+func (r *VersionRepoMongoDB) GetByID(runtimeId, versionId string) (*entity.Version, error) {
+	collection := r.client.Database(runtimeId).Collection("versions")
 
-	err := r.collection.FindOne(context.Background(), filter).Decode(v)
+	v := &entity.Version{}
+	filter := bson.D{{"_id", versionId}}
+
+	err := collection.FindOne(context.Background(), filter).Decode(v)
 	if err == mongo.ErrNoDocuments {
 		return v, usecase.ErrVersionNotFound
 	}
@@ -94,10 +99,12 @@ func (r *VersionRepoMongoDB) GetByID(id string) (*entity.Version, error) {
 }
 
 func (r *VersionRepoMongoDB) GetByName(ctx context.Context, runtimeId, name string) (*entity.Version, error) {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
 	v := &entity.Version{}
 	filter := bson.D{{"name", name}, {"runtimeId", runtimeId}}
 
-	err := r.collection.FindOne(ctx, filter).Decode(v)
+	err := collection.FindOne(ctx, filter).Decode(v)
 	if err == mongo.ErrNoDocuments {
 		return nil, usecase.ErrVersionNotFound
 	}
@@ -106,9 +113,11 @@ func (r *VersionRepoMongoDB) GetByName(ctx context.Context, runtimeId, name stri
 }
 
 func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error) {
+	collection := r.client.Database(r.cfg.MongoDB.DBName).Collection("versions")
+
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
-	cur, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": ids}})
+	cur, err := collection.Find(ctx, bson.M{"_id": bson.M{"$in": ids}})
 	if err != nil {
 		return versions, []error{err}
 	}
@@ -126,8 +135,10 @@ func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error)
 	return versions, nil
 }
 
-func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
-	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": version.ID}, version)
+func (r *VersionRepoMongoDB) Update(runtimeId string, version *entity.Version) error {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
+	_, err := collection.ReplaceOne(context.Background(), bson.M{"_id": version.ID}, version)
 	if err != nil {
 		return err
 	}
@@ -135,10 +146,12 @@ func (r *VersionRepoMongoDB) Update(version *entity.Version) error {
 	return nil
 }
 
-func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]*entity.Version, error) {
+func (r *VersionRepoMongoDB) GetByRuntime(runtimeId string) ([]*entity.Version, error) {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
-	cur, err := r.collection.Find(ctx, bson.M{"runtimeId": runtimeID})
+	cur, err := collection.Find(ctx, bson.M{"runtimeId": runtimeId})
 	if err != nil {
 		return versions, err
 	}
@@ -156,10 +169,12 @@ func (r *VersionRepoMongoDB) GetByRuntime(runtimeID string) ([]*entity.Version, 
 	return versions, nil
 }
 
-func (r *VersionRepoMongoDB) GetAll() ([]*entity.Version, error) {
+func (r *VersionRepoMongoDB) GetAll(runtimeId string) ([]*entity.Version, error) {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
-	cur, err := r.collection.Find(ctx, bson.M{})
+	cur, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		return versions, err
 	}
@@ -177,8 +192,10 @@ func (r *VersionRepoMongoDB) GetAll() ([]*entity.Version, error) {
 	return versions, nil
 }
 
-func (r *VersionRepoMongoDB) SetHasDoc(ctx context.Context, versionID string, hasDoc bool) error {
-	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"hasDoc": hasDoc}})
+func (r *VersionRepoMongoDB) SetHasDoc(ctx context.Context, runtimeId, versionID string, hasDoc bool) error {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
+	result, err := collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"hasDoc": hasDoc}})
 	if err != nil {
 		return err
 	}
@@ -190,8 +207,10 @@ func (r *VersionRepoMongoDB) SetHasDoc(ctx context.Context, versionID string, ha
 	return nil
 }
 
-func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, versionID string, status entity.VersionStatus) error {
-	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"status": status}})
+func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, runtimeId, versionID string, status entity.VersionStatus) error {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
+	result, err := collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"status": status}})
 	if err != nil {
 		return err
 	}
@@ -203,12 +222,14 @@ func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, versionID string, st
 	return nil
 }
 
-func (r *VersionRepoMongoDB) SetErrors(ctx context.Context, version *entity.Version, errorMessages []string) (*entity.Version, error) {
+func (r *VersionRepoMongoDB) SetErrors(ctx context.Context, runtimeId string, version *entity.Version, errorMessages []string) (*entity.Version, error) {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
 	version.Status = entity.VersionStatusError
 	version.Errors = errorMessages
 
 	elem := bson.M{"$set": bson.M{"status": version.Status, "errors": version.Errors}}
-	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": version.ID}, elem)
+	result, err := collection.UpdateOne(ctx, bson.M{"_id": version.ID}, elem)
 	if err != nil {
 		return nil, err
 	}
@@ -220,14 +241,14 @@ func (r *VersionRepoMongoDB) SetErrors(ctx context.Context, version *entity.Vers
 	return version, nil
 }
 
-func (r *VersionRepoMongoDB) UploadKRTFile(version *entity.Version, file string) error {
+func (r *VersionRepoMongoDB) UploadKRTFile(runtimeId string, version *entity.Version, file string) error {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("reading KRT file at %s: %w", file, err)
 	}
 
 	bucket, err := gridfs.NewBucket(
-		r.client.Database(r.cfg.MongoDB.DBName),
+		r.client.Database(runtimeId),
 		options.GridFSBucket().SetName(r.cfg.MongoDB.KRTBucket),
 	)
 	if err != nil {
@@ -254,7 +275,9 @@ func (r *VersionRepoMongoDB) UploadKRTFile(version *entity.Version, file string)
 	return nil
 }
 
-func (r *VersionRepoMongoDB) ClearPublishedVersion(ctx context.Context) (*entity.Version, error) {
+func (r *VersionRepoMongoDB) ClearPublishedVersion(ctx context.Context, runtimeId string) (*entity.Version, error) {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
 	oldPublishedVersion := &entity.Version{}
 
 	filter := bson.M{"status": entity.VersionStatusPublished}
@@ -266,7 +289,7 @@ func (r *VersionRepoMongoDB) ClearPublishedVersion(ctx context.Context) (*entity
 		},
 	}
 
-	result := r.collection.FindOneAndUpdate(ctx, filter, upd)
+	result := collection.FindOneAndUpdate(ctx, filter, upd)
 	err := result.Decode(oldPublishedVersion)
 
 	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {

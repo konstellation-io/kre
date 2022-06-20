@@ -23,7 +23,6 @@ type SearchLogsOptions struct {
 	Levels         []LogLevel
 	NodeIDs        []string
 	Cursor         *string
-	RuntimesIDs    []string
 	VersionsIDs    []string
 	WorkflowsNames []string
 }

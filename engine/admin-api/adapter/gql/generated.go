@@ -142,7 +142,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Logs             func(childComplexity int, versionName string, filters entity.LogFilters, cursor *string) int
+		Logs             func(childComplexity int, runtimeID string, filters entity.LogFilters, cursor *string) int
 		Me               func(childComplexity int) int
 		Metrics          func(childComplexity int, runtimeID string, versionName string, startDate string, endDate string) int
 		Runtime          func(childComplexity int, id string) int
@@ -172,7 +172,7 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
-		WatchNodeLogs   func(childComplexity int, versionName string, filters entity.LogFilters) int
+		WatchNodeLogs   func(childComplexity int, runtimeID string, versionName string, filters entity.LogFilters) int
 		WatchNodeStatus func(childComplexity int, versionName string, runtimeID string) int
 		WatchVersion    func(childComplexity int) int
 	}
@@ -257,7 +257,7 @@ type QueryResolver interface {
 	Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error)
 	Settings(ctx context.Context) (*entity.Settings, error)
 	UserActivityList(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
-	Logs(ctx context.Context, versionName string, filters entity.LogFilters, cursor *string) (*LogPage, error)
+	Logs(ctx context.Context, runtimeID string, filters entity.LogFilters, cursor *string) (*LogPage, error)
 	Metrics(ctx context.Context, runtimeID string, versionName string, startDate string, endDate string) (*entity.Metrics, error)
 }
 type RuntimeResolver interface {
@@ -269,7 +269,7 @@ type RuntimeResolver interface {
 	CreationAuthor(ctx context.Context, obj *entity.Runtime) (*entity.User, error)
 }
 type SubscriptionResolver interface {
-	WatchNodeLogs(ctx context.Context, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
+	WatchNodeLogs(ctx context.Context, runtimeID string, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
 	WatchNodeStatus(ctx context.Context, versionName string, runtimeID string) (<-chan *entity.Node, error)
 	WatchVersion(ctx context.Context) (<-chan *entity.Version, error)
 }
@@ -763,7 +763,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Logs(childComplexity, args["versionName"].(string), args["filters"].(entity.LogFilters), args["cursor"].(*string)), true
+		return e.complexity.Query.Logs(childComplexity, args["runtimeId"].(string), args["filters"].(entity.LogFilters), args["cursor"].(*string)), true
 
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
@@ -940,7 +940,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Subscription.WatchNodeLogs(childComplexity, args["versionName"].(string), args["filters"].(entity.LogFilters)), true
+		return e.complexity.Subscription.WatchNodeLogs(childComplexity, args["runtimeId"].(string), args["versionName"].(string), args["filters"].(entity.LogFilters)), true
 
 	case "Subscription.watchNodeStatus":
 		if e.complexity.Subscription.WatchNodeStatus == nil {
@@ -1290,7 +1290,7 @@ type Query {
     lastId: String
   ): [UserActivity!]!
   logs(
-    versionName: String!
+    runtimeId: ID!
     filters: LogFilters!
     cursor: String
   ): LogPage!
@@ -1320,7 +1320,7 @@ type Mutation {
 }
 
 type Subscription {
-  watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
+  watchNodeLogs(runtimeId: ID!, versionName: String!, filters: LogFilters!): NodeLog!
   watchNodeStatus(
     versionName: String!
     runtimeId: ID!
@@ -1845,14 +1845,14 @@ func (ec *executionContext) field_Query_logs_args(ctx context.Context, rawArgs m
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["versionName"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("versionName"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	if tmp, ok := rawArgs["runtimeId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runtimeId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionName"] = arg0
+	args["runtimeId"] = arg0
 	var arg1 entity.LogFilters
 	if tmp, ok := rawArgs["filters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filters"))
@@ -2034,23 +2034,32 @@ func (ec *executionContext) field_Subscription_watchNodeLogs_args(ctx context.Co
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
+	if tmp, ok := rawArgs["runtimeId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runtimeId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["runtimeId"] = arg0
+	var arg1 string
 	if tmp, ok := rawArgs["versionName"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("versionName"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["versionName"] = arg0
-	var arg1 entity.LogFilters
+	args["versionName"] = arg1
+	var arg2 entity.LogFilters
 	if tmp, ok := rawArgs["filters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filters"))
-		arg1, err = ec.unmarshalNLogFilters2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐLogFilters(ctx, tmp)
+		arg2, err = ec.unmarshalNLogFilters2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐLogFilters(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["filters"] = arg1
+	args["filters"] = arg2
 	return args, nil
 }
 
@@ -5521,7 +5530,7 @@ func (ec *executionContext) _Query_logs(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Logs(rctx, fc.Args["versionName"].(string), fc.Args["filters"].(entity.LogFilters), fc.Args["cursor"].(*string))
+		return ec.resolvers.Query().Logs(rctx, fc.Args["runtimeId"].(string), fc.Args["filters"].(entity.LogFilters), fc.Args["cursor"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6292,7 +6301,7 @@ func (ec *executionContext) _Subscription_watchNodeLogs(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().WatchNodeLogs(rctx, fc.Args["versionName"].(string), fc.Args["filters"].(entity.LogFilters))
+		return ec.resolvers.Subscription().WatchNodeLogs(rctx, fc.Args["runtimeId"].(string), fc.Args["versionName"].(string), fc.Args["filters"].(entity.LogFilters))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
