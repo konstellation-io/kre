@@ -184,7 +184,6 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 	cfg := fillNewConfWithExisting(existingConfig, krtYml)
 
 	versionCreated, err := i.versionRepo.Create(loggedUserID, runtimeID, &entity.Version{
-		RuntimeID:   runtimeID,
 		Name:        krtYml.Version,
 		Description: krtYml.Description,
 		Config:      cfg,
@@ -265,7 +264,7 @@ func (i *VersionInteractor) completeVersionCreation(
 	versionCreated.Status = entity.VersionStatusCreated
 	notifyStatusCh <- versionCreated
 
-	err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, versionCreated)
+	err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, runtime.ID, versionCreated)
 	if err != nil {
 		i.logger.Errorf("error registering activity: %s", err)
 	}
@@ -392,7 +391,7 @@ func (i *VersionInteractor) Start(
 	v.Status = entity.VersionStatusStarting
 	notifyStatusCh <- v
 
-	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, v, comment)
+	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, runtimeId, v, comment)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -436,7 +435,7 @@ func (i *VersionInteractor) Stop(
 	v.Status = entity.VersionStatusStopping
 	notifyStatusCh <- v
 
-	err = i.userActivityInteractor.RegisterStopAction(loggedUserID, v, comment)
+	err = i.userActivityInteractor.RegisterStopAction(loggedUserID, runtimeId, v, comment)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -461,14 +460,14 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	}()
 
 	if status == entity.VersionStatusStarted {
-		err := i.versionService.Start(ctx, version)
+		err := i.versionService.Start(ctx, runtimeId, version)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
 	}
 
 	if status == entity.VersionStatusStopped {
-		err := i.versionService.Stop(ctx, version)
+		err := i.versionService.Stop(ctx, runtimeId, version)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
@@ -500,7 +499,7 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ru
 		return nil, ErrInvalidVersionStatusBeforePublishing
 	}
 
-	err = i.versionService.Publish(v)
+	err = i.versionService.Publish(runtimeId, v)
 	if err != nil {
 		return nil, err
 	}
@@ -519,7 +518,7 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID string, ru
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterPublishAction(loggedUserID, v, previousPublishedVersion, comment)
+	err = i.userActivityInteractor.RegisterPublishAction(loggedUserID, runtimeId, v, previousPublishedVersion, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -544,7 +543,7 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, 
 		return nil, ErrInvalidVersionStatusBeforeUnpublishing
 	}
 
-	err = i.versionService.Unpublish(v)
+	err = i.versionService.Unpublish(runtimeId, v)
 	if err != nil {
 		return nil, err
 	}
@@ -557,7 +556,7 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID string, 
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterUnpublishAction(loggedUserID, v, comment)
+	err = i.userActivityInteractor.RegisterUnpublishAction(loggedUserID, runtimeId, v, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -588,7 +587,7 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 
 	// No need to restart PODs if there are no resources running
 	if isStarted {
-		err = i.versionService.UpdateConfig(version)
+		err = i.versionService.UpdateConfig(runtimeId, version)
 		if err != nil {
 			return nil, err
 		}

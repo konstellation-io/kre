@@ -35,6 +35,20 @@ func (m *MockNodeLogRepository) EXPECT() *MockNodeLogRepositoryMockRecorder {
 	return m.recorder
 }
 
+// CreateIndexes mocks base method.
+func (m *MockNodeLogRepository) CreateIndexes(ctx context.Context, runtimeId string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateIndexes", ctx, runtimeId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateIndexes indicates an expected call of CreateIndexes.
+func (mr *MockNodeLogRepositoryMockRecorder) CreateIndexes(ctx, runtimeId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockNodeLogRepository)(nil).CreateIndexes), ctx, runtimeId)
+}
+
 // PaginatedSearch mocks base method.
 func (m *MockNodeLogRepository) PaginatedSearch(ctx context.Context, runtimeId string, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error) {
 	m.ctrl.T.Helper()

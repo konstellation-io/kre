@@ -35,12 +35,12 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 }
 
 // Start creates the version resources in k8s
-func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version) error {
+func (k *K8sVersionClient) Start(ctx context.Context, runtimeId string, version *entity.Version) error {
 	configVars := versionToConfig(version)
 	wf := versionToWorkflows(version)
 
 	req := versionpb.StartRequest{
-		RuntimeId:      version.RuntimeID,
+		RuntimeId:      runtimeId,
 		VersionId:      version.ID,
 		VersionName:    version.Name,
 		Config:         configVars,
@@ -59,10 +59,10 @@ func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version) e
 	return err
 }
 
-func (k *K8sVersionClient) Stop(ctx context.Context, version *entity.Version) error {
+func (k *K8sVersionClient) Stop(ctx context.Context, runtimeId string, version *entity.Version) error {
 	req := versionpb.VersionInfo{
 		Name:      version.Name,
-		RuntimeId: version.RuntimeID,
+		RuntimeId: runtimeId,
 	}
 
 	_, err := k.client.Stop(ctx, &req)
@@ -73,11 +73,11 @@ func (k *K8sVersionClient) Stop(ctx context.Context, version *entity.Version) er
 	return nil
 }
 
-func (k *K8sVersionClient) UpdateConfig(version *entity.Version) error {
+func (k *K8sVersionClient) UpdateConfig(runtimeId string, version *entity.Version) error {
 	configVars := versionToConfig(version)
 
 	req := versionpb.UpdateConfigRequest{
-		RuntimeId:   version.RuntimeID,
+		RuntimeId:   runtimeId,
 		VersionName: version.Name,
 		Config:      configVars,
 	}
@@ -89,10 +89,10 @@ func (k *K8sVersionClient) UpdateConfig(version *entity.Version) error {
 	return err
 }
 
-func (k *K8sVersionClient) Unpublish(version *entity.Version) error {
+func (k *K8sVersionClient) Unpublish(runtimeId string, version *entity.Version) error {
 	req := versionpb.VersionInfo{
 		Name:      version.Name,
-		RuntimeId: version.RuntimeID,
+		RuntimeId: runtimeId,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
@@ -102,10 +102,10 @@ func (k *K8sVersionClient) Unpublish(version *entity.Version) error {
 	return err
 }
 
-func (k *K8sVersionClient) Publish(version *entity.Version) error {
+func (k *K8sVersionClient) Publish(runtimeId string, version *entity.Version) error {
 	req := versionpb.VersionInfo{
 		Name:      version.Name,
-		RuntimeId: version.RuntimeID,
+		RuntimeId: runtimeId,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)

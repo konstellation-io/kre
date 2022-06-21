@@ -36,6 +36,20 @@ func (m *MockMetricRepo) EXPECT() *MockMetricRepoMockRecorder {
 	return m.recorder
 }
 
+// CreateIndexes mocks base method.
+func (m *MockMetricRepo) CreateIndexes(ctx context.Context, runtimeId string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateIndexes", ctx, runtimeId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateIndexes indicates an expected call of CreateIndexes.
+func (mr *MockMetricRepoMockRecorder) CreateIndexes(ctx, runtimeId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockMetricRepo)(nil).CreateIndexes), ctx, runtimeId)
+}
+
 // GetMetrics mocks base method.
 func (m *MockMetricRepo) GetMetrics(ctx context.Context, startDate, endDate time.Time, runtimeId, versionName string) ([]entity.ClassificationMetric, error) {
 	m.ctrl.T.Helper()

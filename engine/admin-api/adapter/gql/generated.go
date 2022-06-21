@@ -1549,7 +1549,6 @@ input LogFilters {
   search: String
   levels: [LogLevel!]
   nodeIds: [ID!]
-  runtimesIds: [ID!]
   versionsIds: [ID!]
   workflowsNames: [ID!]
 }
@@ -10020,14 +10019,6 @@ func (ec *executionContext) unmarshalInputLogFilters(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nodeIds"))
 			it.NodeIDs, err = ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "runtimesIds":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runtimesIds"))
-			it.RuntimesIDs, err = ec.unmarshalOID2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}

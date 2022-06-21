@@ -99,7 +99,6 @@ func TestCreateNewVersion(t *testing.T) {
 	versionName := "price-estimator-v1"
 	version := &entity.Version{
 		ID:                userID,
-		RuntimeID:         runtimeID,
 		Name:              versionName,
 		Description:       "",
 		CreationDate:      time.Time{},
@@ -157,7 +156,6 @@ func TestCreateNewVersion_FailsIfVersionNameIsDuplicated(t *testing.T) {
 	versionName := "price-estimator-v1"
 	version := &entity.Version{
 		ID:                userID,
-		RuntimeID:         runtimeID,
 		Name:              versionName,
 		Description:       "",
 		CreationDate:      time.Time{},
@@ -196,7 +194,6 @@ func TestGetByName(t *testing.T) {
 
 	expected := &entity.Version{
 		ID:                "version-id",
-		RuntimeID:         runtimeID,
 		Name:              versionName,
 		Description:       "",
 		CreationDate:      time.Time{},
@@ -213,40 +210,6 @@ func TestGetByName(t *testing.T) {
 	s.mocks.versionRepo.EXPECT().GetByName(ctx, runtimeID, versionName).Return(expected, nil)
 
 	actual, err := s.versionInteractor.GetByName(ctx, userID, runtimeID, versionName)
-
-	require.Nil(t, err)
-	require.Equal(t, expected, actual)
-}
-
-func TestGetByIDs(t *testing.T) {
-	s := newVersionSuite(t)
-	defer s.ctrl.Finish()
-
-	versionID := "version-id"
-	runtimeID := "runtime-1"
-	versionName := "version-name"
-
-	expected := []*entity.Version{
-		{
-			ID:                versionID,
-			RuntimeID:         runtimeID,
-			Name:              versionName,
-			Description:       "",
-			CreationDate:      time.Time{},
-			CreationAuthor:    "",
-			PublicationDate:   nil,
-			PublicationUserID: nil,
-			Status:            entity.VersionStatusCreated,
-			Config:            entity.VersionConfig{},
-			Entrypoint:        entity.Entrypoint{},
-			Workflows:         nil,
-		},
-	}
-
-	idsToSearch := []string{runtimeID}
-	s.mocks.versionRepo.EXPECT().GetByIDs(runtimeID, idsToSearch).Return(expected, nil)
-
-	actual, err := s.versionInteractor.GetByIDs(runtimeID, idsToSearch)
 
 	require.Nil(t, err)
 	require.Equal(t, expected, actual)

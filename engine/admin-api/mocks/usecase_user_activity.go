@@ -65,17 +65,17 @@ func (mr *MockUserActivityInteracterMockRecorder) NewUpdateSettingVars(settingNa
 }
 
 // RegisterCreateAction mocks base method.
-func (m *MockUserActivityInteracter) RegisterCreateAction(userID string, version *entity.Version) error {
+func (m *MockUserActivityInteracter) RegisterCreateAction(userID, runtimeId string, version *entity.Version) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterCreateAction", userID, version)
+	ret := m.ctrl.Call(m, "RegisterCreateAction", userID, runtimeId, version)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RegisterCreateAction indicates an expected call of RegisterCreateAction.
-func (mr *MockUserActivityInteracterMockRecorder) RegisterCreateAction(userID, version interface{}) *gomock.Call {
+func (mr *MockUserActivityInteracterMockRecorder) RegisterCreateAction(userID, runtimeId, version interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterCreateAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterCreateAction), userID, version)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterCreateAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterCreateAction), userID, runtimeId, version)
 }
 
 // RegisterCreateRuntime mocks base method.
@@ -161,17 +161,17 @@ func (mr *MockUserActivityInteracterMockRecorder) RegisterLogout(userID interfac
 }
 
 // RegisterPublishAction mocks base method.
-func (m *MockUserActivityInteracter) RegisterPublishAction(userID string, version, prev *entity.Version, comment string) error {
+func (m *MockUserActivityInteracter) RegisterPublishAction(userID, runtimeId string, version, prev *entity.Version, comment string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterPublishAction", userID, version, prev, comment)
+	ret := m.ctrl.Call(m, "RegisterPublishAction", userID, runtimeId, version, prev, comment)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RegisterPublishAction indicates an expected call of RegisterPublishAction.
-func (mr *MockUserActivityInteracterMockRecorder) RegisterPublishAction(userID, version, prev, comment interface{}) *gomock.Call {
+func (mr *MockUserActivityInteracterMockRecorder) RegisterPublishAction(userID, runtimeId, version, prev, comment interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterPublishAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterPublishAction), userID, version, prev, comment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterPublishAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterPublishAction), userID, runtimeId, version, prev, comment)
 }
 
 // RegisterRemoveUsers mocks base method.
@@ -199,45 +199,45 @@ func (mr *MockUserActivityInteracterMockRecorder) RegisterRevokeSessions(userID,
 }
 
 // RegisterStartAction mocks base method.
-func (m *MockUserActivityInteracter) RegisterStartAction(userID string, version *entity.Version, comment string) error {
+func (m *MockUserActivityInteracter) RegisterStartAction(userID, runtimeId string, version *entity.Version, comment string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterStartAction", userID, version, comment)
+	ret := m.ctrl.Call(m, "RegisterStartAction", userID, runtimeId, version, comment)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RegisterStartAction indicates an expected call of RegisterStartAction.
-func (mr *MockUserActivityInteracterMockRecorder) RegisterStartAction(userID, version, comment interface{}) *gomock.Call {
+func (mr *MockUserActivityInteracterMockRecorder) RegisterStartAction(userID, runtimeId, version, comment interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterStartAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterStartAction), userID, version, comment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterStartAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterStartAction), userID, runtimeId, version, comment)
 }
 
 // RegisterStopAction mocks base method.
-func (m *MockUserActivityInteracter) RegisterStopAction(userID string, version *entity.Version, comment string) error {
+func (m *MockUserActivityInteracter) RegisterStopAction(userID, runtimeId string, version *entity.Version, comment string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterStopAction", userID, version, comment)
+	ret := m.ctrl.Call(m, "RegisterStopAction", userID, runtimeId, version, comment)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RegisterStopAction indicates an expected call of RegisterStopAction.
-func (mr *MockUserActivityInteracterMockRecorder) RegisterStopAction(userID, version, comment interface{}) *gomock.Call {
+func (mr *MockUserActivityInteracterMockRecorder) RegisterStopAction(userID, runtimeId, version, comment interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterStopAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterStopAction), userID, version, comment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterStopAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterStopAction), userID, runtimeId, version, comment)
 }
 
 // RegisterUnpublishAction mocks base method.
-func (m *MockUserActivityInteracter) RegisterUnpublishAction(userID string, version *entity.Version, comment string) error {
+func (m *MockUserActivityInteracter) RegisterUnpublishAction(userID, runtimeId string, version *entity.Version, comment string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterUnpublishAction", userID, version, comment)
+	ret := m.ctrl.Call(m, "RegisterUnpublishAction", userID, runtimeId, version, comment)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RegisterUnpublishAction indicates an expected call of RegisterUnpublishAction.
-func (mr *MockUserActivityInteracterMockRecorder) RegisterUnpublishAction(userID, version, comment interface{}) *gomock.Call {
+func (mr *MockUserActivityInteracterMockRecorder) RegisterUnpublishAction(userID, runtimeId, version, comment interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUnpublishAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterUnpublishAction), userID, version, comment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUnpublishAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterUnpublishAction), userID, runtimeId, version, comment)
 }
 
 // RegisterUpdateAccessLevels mocks base method.

@@ -93,10 +93,6 @@ func (n *NodeLogMongoDBRepo) getSearchConditions(versionName string, filters ent
 		bson.D{{"fullDocument.versionName", versionName}},
 	}
 
-	if len(filters.RuntimesIDs) > 0 {
-		conditions = append(conditions, bson.D{{"fullDocument.runtimeId", bson.M{"$in": filters.RuntimesIDs}}})
-	}
-
 	if len(filters.NodeIDs) > 0 {
 		conditions = append(conditions, bson.D{{"fullDocument.nodeId", bson.M{"$in": filters.NodeIDs}}})
 	}

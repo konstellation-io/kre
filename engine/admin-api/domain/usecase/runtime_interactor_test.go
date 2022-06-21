@@ -27,6 +27,9 @@ type runtimeSuiteMocks struct {
 	logger            *mocks.MockLogger
 	runtimeRepo       *mocks.MockRuntimeRepo
 	measurementRepo   *mocks.MockMeasurementRepo
+	versionRepo       *mocks.MockVersionRepo
+	metricRepo        *mocks.MockMetricRepo
+	nodeLogRepo       *mocks.MockNodeLogRepository
 	userActivityRepo  *mocks.MockUserActivityRepo
 	userRepo          *mocks.MockUserRepo
 	passwordGenerator *mocks.MockPasswordGenerator
@@ -46,6 +49,9 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	measurementRepo := mocks.NewMockMeasurementRepo(ctrl)
+	versionRepo := mocks.NewMockVersionRepo(ctrl)
+	metricRepo := mocks.NewMockMetricRepo(ctrl)
+	nodeLogRepo := mocks.NewMockNodeLogRepository(ctrl)
 	passwordGenerator := mocks.NewMockPasswordGenerator(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 
@@ -68,6 +74,9 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		logger,
 		runtimeRepo,
 		measurementRepo,
+		versionRepo,
+		metricRepo,
+		nodeLogRepo,
 		userActivity,
 		passwordGenerator,
 		accessControl,
@@ -80,6 +89,9 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 			logger,
 			runtimeRepo,
 			measurementRepo,
+			versionRepo,
+			metricRepo,
+			nodeLogRepo,
 			userActivityRepo,
 			userRepo,
 			passwordGenerator,
@@ -130,6 +142,9 @@ func TestCreateNewRuntime(t *testing.T) {
 	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrRuntimeNotFound)
 	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
 	s.mocks.measurementRepo.EXPECT().CreateDatabase(newRuntimeId).Return(nil)
+	s.mocks.versionRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
+	s.mocks.metricRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
+	s.mocks.nodeLogRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
 
 	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
 
