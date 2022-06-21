@@ -14,7 +14,6 @@ type LogMsg struct {
 	WorkflowName string `bson:"workflowName"`
 	NodeID       string `bson:"nodeId"`
 	NodeName     string `bson:"nodeName"`
-	RuntimeID    string `bson:"runtimeId"`
 	VersionID    string `bson:"versionId"`
 	VersionName  string `bson:"versionName"`
 }
@@ -74,7 +73,6 @@ func (f *fluentbitMsgParser) Parse(data []byte) ([]LogMsg, error) {
 			WorkflowName: msgData["workflowName"].(string),
 			NodeID:       msgData["nodeId"].(string),
 			NodeName:     msgData["nodeName"].(string),
-			RuntimeID:    msgData["runtimeId"].(string),
 			VersionID:    msgData["versionId"].(string),
 			VersionName:  msgData["versionName"].(string),
 		}

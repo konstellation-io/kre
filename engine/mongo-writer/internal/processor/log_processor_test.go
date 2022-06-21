@@ -62,10 +62,11 @@ func TestDataProcessor_ProcessMsgs(t *testing.T) {
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
+	runtimeId := "runtime-id"
 
 	logsCh := make(chan *nc.Msg, 1)
 	testMsg := &nc.Msg{
-		Subject: "test",
+		Subject: s.cfg.Nats.DataSubjectWildcard + runtimeId,
 		Data:    []byte("test"),
 	}
 
@@ -77,7 +78,7 @@ func TestDataProcessor_ProcessMsgs(t *testing.T) {
 
 	s.mocks.natsM.EXPECT().IncreaseTotalMsgs(expectedCalls).Return()
 	s.mocks.fbParser.EXPECT().Parse(testMsg.Data).Return(fbOutput, nil)
-	s.mocks.mongoM.EXPECT().InsertMany(ctx, s.cfg.MongoDB.LogsDBName, processor.LogsCollName, fbOutput)
+	s.mocks.mongoM.EXPECT().InsertMany(ctx, runtimeId, processor.LogsCollName, fbOutput)
 
 	go s.logProcessor.ProcessMsgs(ctx, logsCh)
 
