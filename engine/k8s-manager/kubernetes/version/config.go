@@ -124,7 +124,6 @@ func (m *Manager) createVersionConfFiles(runtimeId, versionName, ns string, work
 [FILTER]
     Name record_modifier
     Match *
-    Record runtimeId ${KRT_RUNTIME_ID}
     Record versionId ${KRT_VERSION_ID}
     Record versionName ${KRT_VERSION}
     Record nodeName ${KRT_NODE_NAME}
