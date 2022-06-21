@@ -20,6 +20,8 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
+const versionsCollectionName = "versions"
+
 type VersionRepoMongoDB struct {
 	cfg    *config.Config
 	logger logging.Logger
@@ -41,7 +43,7 @@ func NewVersionRepoMongoDB(
 }
 
 func (r *VersionRepoMongoDB) CreateIndexes(ctx context.Context, runtimeId string) error {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	indexes := []mongo.IndexModel{
 		{
@@ -61,7 +63,7 @@ func (r *VersionRepoMongoDB) CreateIndexes(ctx context.Context, runtimeId string
 }
 
 func (r *VersionRepoMongoDB) Create(userID, runtimeId string, newVersion *entity.Version) (*entity.Version, error) {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	newVersion.ID = primitive.NewObjectID().Hex()
 	newVersion.CreationDate = time.Now().UTC()
@@ -77,7 +79,7 @@ func (r *VersionRepoMongoDB) Create(userID, runtimeId string, newVersion *entity
 }
 
 func (r *VersionRepoMongoDB) GetByID(runtimeId, versionId string) (*entity.Version, error) {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	v := &entity.Version{}
 	filter := bson.D{{"_id", versionId}}
@@ -91,7 +93,7 @@ func (r *VersionRepoMongoDB) GetByID(runtimeId, versionId string) (*entity.Versi
 }
 
 func (r *VersionRepoMongoDB) GetByName(ctx context.Context, runtimeId, name string) (*entity.Version, error) {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	v := &entity.Version{}
 	filter := bson.D{{"name", name}, {"runtimeId", runtimeId}}
@@ -105,7 +107,7 @@ func (r *VersionRepoMongoDB) GetByName(ctx context.Context, runtimeId, name stri
 }
 
 func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error) {
-	collection := r.client.Database(r.cfg.MongoDB.DBName).Collection("versions")
+	collection := r.client.Database(r.cfg.MongoDB.DBName).Collection(versionsCollectionName)
 
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
@@ -128,7 +130,7 @@ func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error)
 }
 
 func (r *VersionRepoMongoDB) Update(runtimeId string, version *entity.Version) error {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	_, err := collection.ReplaceOne(context.Background(), bson.M{"_id": version.ID}, version)
 	if err != nil {
@@ -139,7 +141,7 @@ func (r *VersionRepoMongoDB) Update(runtimeId string, version *entity.Version) e
 }
 
 func (r *VersionRepoMongoDB) GetByRuntime(runtimeId string) ([]*entity.Version, error) {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
@@ -162,7 +164,7 @@ func (r *VersionRepoMongoDB) GetByRuntime(runtimeId string) ([]*entity.Version, 
 }
 
 func (r *VersionRepoMongoDB) GetAll(runtimeId string) ([]*entity.Version, error) {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
@@ -185,7 +187,7 @@ func (r *VersionRepoMongoDB) GetAll(runtimeId string) ([]*entity.Version, error)
 }
 
 func (r *VersionRepoMongoDB) SetHasDoc(ctx context.Context, runtimeId, versionID string, hasDoc bool) error {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	result, err := collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"hasDoc": hasDoc}})
 	if err != nil {
@@ -200,7 +202,7 @@ func (r *VersionRepoMongoDB) SetHasDoc(ctx context.Context, runtimeId, versionID
 }
 
 func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, runtimeId, versionID string, status entity.VersionStatus) error {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	result, err := collection.UpdateOne(ctx, bson.M{"_id": versionID}, bson.M{"$set": bson.M{"status": status}})
 	if err != nil {
@@ -215,7 +217,7 @@ func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, runtimeId, versionID
 }
 
 func (r *VersionRepoMongoDB) SetErrors(ctx context.Context, runtimeId string, version *entity.Version, errorMessages []string) (*entity.Version, error) {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	version.Status = entity.VersionStatusError
 	version.Errors = errorMessages
@@ -268,7 +270,7 @@ func (r *VersionRepoMongoDB) UploadKRTFile(runtimeId string, version *entity.Ver
 }
 
 func (r *VersionRepoMongoDB) ClearPublishedVersion(ctx context.Context, runtimeId string) (*entity.Version, error) {
-	collection := r.client.Database(runtimeId).Collection("versions")
+	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	oldPublishedVersion := &entity.Version{}
 
