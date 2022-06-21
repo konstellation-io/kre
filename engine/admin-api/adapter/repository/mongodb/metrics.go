@@ -24,26 +24,11 @@ func NewMetricMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mon
 	return &MetricsMongoDBRepo{cfg: cfg, logger: logger, client: client}
 }
 
-func (m *MetricsMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Collection) error {
-	m.logger.Infof("MongoDB creating indexes for %s collection...", metricsCollectionName)
-	_, err := coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{
-			Keys: bson.D{{"date", 1}, {"versionName", 1}, {"runtimeId", 1}},
-		},
-	})
-
-	return err
-}
-
 func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, runtimeId, versionName string) ([]entity.ClassificationMetric, error) {
 	database := fmt.Sprintf("%s-data", runtimeId)
 	collection := m.client.Database(database).Collection(metricsCollectionName)
 
 	var result []entity.ClassificationMetric
-	err := m.ensureIndexes(ctx, collection)
-	if err != nil {
-		return result, err
-	}
 
 	opts := &options.FindOptions{
 		Sort: bson.D{{"_id", 1}},
@@ -76,4 +61,18 @@ func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time
 	m.logger.Infof("Found %d metrics", len(result))
 
 	return result, nil
+}
+
+func (m *MetricsMongoDBRepo) CreateIndexes(ctx context.Context, runtimeId string) error {
+	collection := m.client.Database(runtimeId).Collection(metricsCollectionName)
+	m.logger.Infof("MongoDB creating indexes for %s collection...", metricsCollectionName)
+	_, err := collection.Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys: bson.D{{"date", 1}, {"versionName", 1}},
+		},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

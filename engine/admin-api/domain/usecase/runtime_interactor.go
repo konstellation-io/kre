@@ -25,6 +25,9 @@ type RuntimeInteractor struct {
 	logger            logging.Logger
 	runtimeRepo       repository.RuntimeRepo
 	measurementRepo   repository.MeasurementRepo
+	versionRepo       repository.VersionRepo
+	metricRepo        repository.MetricRepo
+	nodeLogRepo       repository.NodeLogRepository
 	userActivity      UserActivityInteracter
 	passwordGenerator runtime.PasswordGenerator
 	accessControl     auth.AccessControl
@@ -36,6 +39,9 @@ func NewRuntimeInteractor(
 	logger logging.Logger,
 	runtimeRepo repository.RuntimeRepo,
 	measurementRepo repository.MeasurementRepo,
+	versionRepo repository.VersionRepo,
+	metricRepo repository.MetricRepo,
+	nodeLogRepo repository.NodeLogRepository,
 	userActivity UserActivityInteracter,
 	passwordGenerator runtime.PasswordGenerator,
 	accessControl auth.AccessControl,
@@ -45,6 +51,9 @@ func NewRuntimeInteractor(
 		logger,
 		runtimeRepo,
 		measurementRepo,
+		versionRepo,
+		metricRepo,
+		nodeLogRepo,
 		userActivity,
 		passwordGenerator,
 		accessControl,
@@ -102,9 +111,28 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 		return nil, err
 	}
 
+	err = i.createDatabaseIndexes(ctx, runtimeID)
+	if err != nil {
+		return nil, err
+	}
+
 	i.logger.Info("Measurement database created for runtime with ID=" + createdRuntime.ID)
 
 	return createdRuntime, nil
+}
+
+func (i *RuntimeInteractor) createDatabaseIndexes(ctx context.Context, runtimeId string) error {
+	err := i.metricRepo.CreateIndexes(ctx, runtimeId)
+	if err != nil {
+		return err
+	}
+
+	err = i.nodeLogRepo.CreateIndexes(ctx, runtimeId)
+	if err != nil {
+		return err
+	}
+
+	return i.versionRepo.CreateIndexes(ctx, runtimeId)
 }
 
 // EnsureRuntimeIsCreated creates the runtime in the DB if not exits

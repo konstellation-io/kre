@@ -17,16 +17,30 @@ type RuntimeRepoMongoDB struct {
 	cfg        *config.Config
 	logger     logging.Logger
 	collection *mongo.Collection
-	client     *mongo.Client
 }
 
 func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo.Client) *RuntimeRepoMongoDB {
 	collection := client.Database(cfg.MongoDB.DBName).Collection("runtimes")
-	return &RuntimeRepoMongoDB{
+
+	runtimeRepo := &RuntimeRepoMongoDB{
 		cfg,
 		logger,
 		collection,
-		client,
+	}
+
+	runtimeRepo.createIndexes()
+
+	return runtimeRepo
+}
+
+func (r *RuntimeRepoMongoDB) createIndexes() {
+	_, err := r.collection.Indexes().CreateOne(context.Background(), mongo.IndexModel{
+		Keys: bson.M{
+			"name": 1,
+		},
+	})
+	if err != nil {
+		r.logger.Errorf("error creating runtime collection indexes: %s", err)
 	}
 }
 

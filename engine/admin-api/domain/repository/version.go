@@ -10,7 +10,7 @@ import (
 
 type VersionRepo interface {
 	Create(userID, runtimeId string, version *entity.Version) (*entity.Version, error)
-	CreateDatabase(runtimeId string) error
+	CreateIndexes(ctx context.Context, runtimeId string) error
 	GetByID(runtimeId, versionId string) (*entity.Version, error)
 	GetByName(ctx context.Context, runtimeId, name string) (*entity.Version, error)
 	GetByIDs(ids []string) ([]*entity.Version, []error)

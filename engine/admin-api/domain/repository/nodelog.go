@@ -10,4 +10,5 @@ import (
 type NodeLogRepository interface {
 	WatchNodeLogs(ctx context.Context, runtimeId, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error)
 	PaginatedSearch(ctx context.Context, runtimeId string, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error)
+	CreateIndexes(ctx context.Context, runtimeId string) error
 }

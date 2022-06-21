@@ -40,7 +40,9 @@ func NewVersionRepoMongoDB(
 	return versions
 }
 
-func (r *VersionRepoMongoDB) createIndexes(collection *mongo.Collection) error {
+func (r *VersionRepoMongoDB) CreateIndexes(ctx context.Context, runtimeId string) error {
+	collection := r.client.Database(runtimeId).Collection("versions")
+
 	indexes := []mongo.IndexModel{
 		{
 			Keys: bson.M{
@@ -50,17 +52,7 @@ func (r *VersionRepoMongoDB) createIndexes(collection *mongo.Collection) error {
 		},
 	}
 
-	_, err := collection.Indexes().CreateMany(context.Background(), indexes)
-	if err != nil {
-		return fmt.Errorf("error creating version indexes: %s", err)
-	}
-	return nil
-}
-
-func (r *VersionRepoMongoDB) CreateDatabase(runtimeId string) error {
-	collection := r.client.Database(runtimeId).Collection("versions")
-
-	err := r.createIndexes(collection)
+	_, err := collection.Indexes().CreateMany(ctx, indexes)
 	if err != nil {
 		return err
 	}

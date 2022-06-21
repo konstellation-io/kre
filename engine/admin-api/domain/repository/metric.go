@@ -16,4 +16,5 @@ type MetricRepo interface {
 		runtimeId string,
 		versionName string,
 	) ([]entity.ClassificationMetric, error)
+	CreateIndexes(ctx context.Context, runtimeId string) error
 }
