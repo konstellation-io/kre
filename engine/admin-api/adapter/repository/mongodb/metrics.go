@@ -13,6 +13,7 @@ import (
 )
 
 const metricsCollectionName = "classificationMetrics"
+const databseNameSuffix = "data"
 
 type MetricsMongoDBRepo struct {
 	cfg    *config.Config
@@ -25,7 +26,7 @@ func NewMetricMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mon
 }
 
 func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, runtimeId, versionName string) ([]entity.ClassificationMetric, error) {
-	database := fmt.Sprintf("%s-data", runtimeId)
+	database := m.getDatabaseName(runtimeId)
 	collection := m.client.Database(database).Collection(metricsCollectionName)
 
 	var result []entity.ClassificationMetric
@@ -64,7 +65,8 @@ func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time
 }
 
 func (m *MetricsMongoDBRepo) CreateIndexes(ctx context.Context, runtimeId string) error {
-	collection := m.client.Database(runtimeId).Collection(metricsCollectionName)
+	database := m.getDatabaseName(runtimeId)
+	collection := m.client.Database(database).Collection(metricsCollectionName)
 	m.logger.Infof("MongoDB creating indexes for %s collection...", metricsCollectionName)
 	_, err := collection.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
@@ -75,4 +77,8 @@ func (m *MetricsMongoDBRepo) CreateIndexes(ctx context.Context, runtimeId string
 		return err
 	}
 	return nil
+}
+
+func (m *MetricsMongoDBRepo) getDatabaseName(runtimeID string) string {
+	return fmt.Sprintf("%s-%s", runtimeID, databseNameSuffix)
 }
