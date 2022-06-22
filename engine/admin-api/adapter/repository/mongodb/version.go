@@ -96,7 +96,7 @@ func (r *VersionRepoMongoDB) GetByName(ctx context.Context, runtimeId, name stri
 	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
 	v := &entity.Version{}
-	filter := bson.D{{"name", name}, {"runtimeId", runtimeId}}
+	filter := bson.M{"name": name}
 
 	err := collection.FindOne(ctx, filter).Decode(v)
 	if err == mongo.ErrNoDocuments {
@@ -145,7 +145,7 @@ func (r *VersionRepoMongoDB) GetByRuntime(runtimeId string) ([]*entity.Version, 
 
 	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
 	var versions []*entity.Version
-	cur, err := collection.Find(ctx, bson.M{"runtimeId": runtimeId})
+	cur, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		return versions, err
 	}
