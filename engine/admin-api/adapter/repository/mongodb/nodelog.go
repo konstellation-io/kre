@@ -18,15 +18,13 @@ const logsCollectionName = "logs"
 const logSearchPageSize = 40
 
 type NodeLogMongoDBRepo struct {
-	cfg        *config.Config
-	logger     logging.Logger
-	collection *mongo.Collection
-	client     *mongo.Client
+	cfg    *config.Config
+	logger logging.Logger
+	client *mongo.Client
 }
 
 func NewNodeLogMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mongo.Client) *NodeLogMongoDBRepo {
-	collection := client.Database(cfg.MongoDB.DBName).Collection(logsCollectionName)
-	return &NodeLogMongoDBRepo{cfg: cfg, logger: logger, collection: collection, client: client}
+	return &NodeLogMongoDBRepo{cfg: cfg, logger: logger, client: client}
 }
 
 // TODO use the Search filter: https://jira.mongodb.org/browse/NODE-2162
