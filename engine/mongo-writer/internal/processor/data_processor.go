@@ -56,6 +56,7 @@ func (d *DataProcessor) ProcessMsgs(ctx context.Context, dataCh chan *nc.Msg) {
 		d.natsM.IncreaseTotalMsgs(1)
 
 		runtime := getRuntimeFromSubject(d.cfg.Nats.DataSubjectWildcard, msg.Subject)
+		database := runtime + "-data"
 
 		dataMsg, err := d.getData(msg)
 		if err != nil {
@@ -63,7 +64,7 @@ func (d *DataProcessor) ProcessMsgs(ctx context.Context, dataCh chan *nc.Msg) {
 			continue
 		}
 
-		err = d.mongoM.InsertOne(ctx, runtime, dataMsg.Coll, dataMsg.Doc)
+		err = d.mongoM.InsertOne(ctx, database, dataMsg.Coll, dataMsg.Doc)
 		if err != nil {
 			d.errorResponse(msg, fmt.Errorf("%w: %s", ErrInserting, err))
 			continue
