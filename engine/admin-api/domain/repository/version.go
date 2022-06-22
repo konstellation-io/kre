@@ -13,7 +13,6 @@ type VersionRepo interface {
 	CreateIndexes(ctx context.Context, runtimeId string) error
 	GetByID(runtimeId, versionId string) (*entity.Version, error)
 	GetByName(ctx context.Context, runtimeId, name string) (*entity.Version, error)
-	GetByIDs(ids []string) ([]*entity.Version, []error)
 	GetByRuntime(runtimeId string) ([]*entity.Version, error)
 	Update(runtimeId string, version *entity.Version) error
 	SetHasDoc(ctx context.Context, runtimeId, versionID string, hasDoc bool) error

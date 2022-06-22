@@ -109,21 +109,6 @@ func (mr *MockVersionRepoMockRecorder) GetByID(runtimeId, versionId interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockVersionRepo)(nil).GetByID), runtimeId, versionId)
 }
 
-// GetByIDs mocks base method.
-func (m *MockVersionRepo) GetByIDs(ids []string) ([]*entity.Version, []error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByIDs", ids)
-	ret0, _ := ret[0].([]*entity.Version)
-	ret1, _ := ret[1].([]error)
-	return ret0, ret1
-}
-
-// GetByIDs indicates an expected call of GetByIDs.
-func (mr *MockVersionRepoMockRecorder) GetByIDs(ids interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByIDs", reflect.TypeOf((*MockVersionRepo)(nil).GetByIDs), ids)
-}
-
 // GetByName mocks base method.
 func (m *MockVersionRepo) GetByName(ctx context.Context, runtimeId, name string) (*entity.Version, error) {
 	m.ctrl.T.Helper()

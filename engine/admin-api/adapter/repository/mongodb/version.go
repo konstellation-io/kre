@@ -106,29 +106,6 @@ func (r *VersionRepoMongoDB) GetByName(ctx context.Context, runtimeId, name stri
 	return v, err
 }
 
-func (r *VersionRepoMongoDB) GetByIDs(ids []string) ([]*entity.Version, []error) {
-	collection := r.client.Database(r.cfg.MongoDB.DBName).Collection(versionsCollectionName)
-
-	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
-	var versions []*entity.Version
-	cur, err := collection.Find(ctx, bson.M{"_id": bson.M{"$in": ids}})
-	if err != nil {
-		return versions, []error{err}
-	}
-	defer cur.Close(ctx)
-
-	for cur.Next(ctx) {
-		var v entity.Version
-		err = cur.Decode(&v)
-		if err != nil {
-			return versions, []error{err}
-		}
-		versions = append(versions, &v)
-	}
-
-	return versions, nil
-}
-
 func (r *VersionRepoMongoDB) Update(runtimeId string, version *entity.Version) error {
 	collection := r.client.Database(runtimeId).Collection(versionsCollectionName)
 
