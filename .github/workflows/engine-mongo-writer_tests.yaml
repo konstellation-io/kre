@@ -23,7 +23,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.45.2
+          version: v1.46.2
           working-directory: ./engine/mongo-writer
           args: --timeout 5m
   test:
