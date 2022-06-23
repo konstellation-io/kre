@@ -3,10 +3,10 @@ module github.com/konstellation-io/kre/engine/k8s-manager
 go 1.18
 
 require (
-	github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611081512-198d96c2a13a
 	google.golang.org/grpc v1.33.2
+	google.golang.org/protobuf v1.25.0
 	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.0.0-20191115135540-bbc9463b57e5
 	k8s.io/apimachinery v0.0.0-20191116203941-08e4eafd6d11
@@ -38,7 +38,6 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20200726014623-da3ae01ef02d // indirect
-	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
