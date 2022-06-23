@@ -3,20 +3,14 @@ scalar Upload
 type Query {
   me: User
   users: [User!]!
-  runtime(id: ID!): Runtime!
-  runtimes: [Runtime!]!
-  version(
-    name: String!
-    runtimeId: ID!
-  ): Version!
-  versions(
-    runtimeId: ID!
-  ): [Version!]!
+  runtime: Runtime!
+  version(name: String!): Version!
+  versions: [Version!]!
   settings: Settings!
   userActivityList(
     userEmail: String
     types: [UserActivityType!]
-    versionIds: [String!]
+    versionNames: [String!]
     fromDate: String
     toDate: String
     lastId: String
@@ -34,7 +28,6 @@ type Query {
 }
 
 type Mutation {
-  createRuntime(input: CreateRuntimeInput!): Runtime!
   createVersion(input: CreateVersionInput!): Version!
   startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
@@ -52,46 +45,32 @@ type Mutation {
 
 type Subscription {
   watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
-  watchNodeStatus(
-    versionName: String!
-    runtimeId: ID!
-  ): Node!
+  watchNodeStatus(versionName: String!): Node!
   watchVersion: Version!
-}
-
-input CreateRuntimeInput {
-  id: String!
-  name: String!
-  description: String!
 }
 
 input CreateVersionInput {
   file: Upload!
-  runtimeId: ID!
 }
 
 input StartVersionInput {
   versionName : String!
   comment: String!
-  runtimeId: ID!
 }
 
 input StopVersionInput {
   versionName: String!
   comment: String!
-  runtimeId: ID!
 }
 
 input PublishVersionInput {
   versionName: String!
   comment: String!
-  runtimeId: ID!
 }
 
 input UnpublishVersionInput {
   versionName: String!
   comment: String!
-  runtimeId: ID!
 }
 
 input CreateUserInput {
@@ -164,7 +143,6 @@ input ConfigurationVariablesInput {
 
 input UpdateConfigurationInput {
   versionName: String!
-  runtimeId: ID!
   configurationVariables: [ConfigurationVariablesInput!]!
 }
 
@@ -176,8 +154,6 @@ type Runtime {
   measurementsUrl: String!
   databaseUrl: String!
   entrypointAddress: String!
-  publishedVersion: Version
-  creationAuthor: User!
 }
 
 type Edge {
@@ -258,7 +234,6 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
-  CREATE_RUNTIME
   CREATE_VERSION
   PUBLISH_VERSION
   UNPUBLISH_VERSION
@@ -280,8 +255,6 @@ input LogFilters {
   search: String
   levels: [LogLevel!]
   nodeIds: [ID!]
-  versionsIds: [ID!]
-  workflowsNames: [ID!]
 }
 
 enum LogLevel {
