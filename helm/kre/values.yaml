@@ -324,7 +324,7 @@ influxdb:
     scripts:
       init.iql: |+
         CREATE DATABASE "kre"
-
+  address: http://kre-influxdb/
   # -- Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##

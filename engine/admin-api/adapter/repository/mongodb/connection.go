@@ -28,7 +28,7 @@ func NewMongoDB(cfg *config.Config, logger logging.Logger) *MongoDB {
 }
 
 func (m *MongoDB) Connect() *mongo.Client {
-	m.logger.Info("MongoDB connecting...")
+	m.logger.Infof("MongoDB connecting at %s", m.cfg.MongoDB.Address)
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(m.cfg.MongoDB.Address))
 	if err != nil {

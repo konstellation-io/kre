@@ -6,7 +6,7 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 )
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/repo_${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/repo_${GOFILE} -package=mocks
 
 type SessionRepo interface {
 	Create(session entity.Session) error

@@ -1,11 +1,11 @@
 package service
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/service_${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/service_${GOFILE} -package=mocks
 
 import (
 	"context"
 )
 
 type DashboardService interface {
-	Create(ctx context.Context, version, dashboardPath string) error
+	Create(ctx context.Context, runtimeId, version, dashboardPath string) error
 }
