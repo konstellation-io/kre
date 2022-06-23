@@ -126,14 +126,16 @@ type Props = {
   updateFilters: Function;
   versionName: string;
   resetFilters: (e?: MouseEvent<HTMLDivElement>) => void;
+  runtimeId: string;
 };
 function AppliedFilters({
   filters,
   updateFilters,
   resetFilters,
-  versionName
+  versionName,
+  runtimeId,
 }: Props) {
-  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionName);
+  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionName, runtimeId);
   const activeFilters = getActiveFilters(filters);
   const filtersFormatted = extractWorkflowsAndNodes(
     activeFilters,

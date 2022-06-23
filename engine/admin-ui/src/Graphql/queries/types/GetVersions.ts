@@ -20,3 +20,7 @@ export interface GetVersions_versions {
 export interface GetVersions {
   versions: GetVersions_versions[];
 }
+
+export interface GetVersionsVariables {
+  runtimeId: string;
+}

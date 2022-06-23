@@ -33,6 +33,7 @@ function getLogsQueryFilters(
     endDate: filterValues.endDate,
     search: filterValues.search,
     levels: filterValues.levels,
+    runtimesIds: filterValues?.runtimesIds ?? [],
     nodeIds:
       filterValues?.nodes
         ?.map(({ workflowName, nodeNames }) =>
@@ -41,6 +42,7 @@ function getLogsQueryFilters(
           )
         )
         .flat() || [],
+    versionsIds: filterValues?.versionsIds || [],
   } as LogFilters;
 }
 
@@ -66,7 +68,7 @@ function LogsList({
 
   const dataLogsOpened = useReactiveVar(logsOpened);
 
-  const { nodeNameToId } = useWorkflowsAndNodes(versionName);
+  const { nodeNameToId } = useWorkflowsAndNodes(versionName, runtimeId);
   const [autoScrollActive, setAutoScrollActive] = useState(true);
   const [nextPage, setNextPage] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ function LogsList({
     GetServerLogsVariables
   >(GetServerLogsQuery, {
     variables: {
-      versionName,
+      runtimeId,
       filters: formatFilters(filterValues),
     },
     onCompleted: (data) => {
@@ -103,6 +105,7 @@ function LogsList({
     subscribeToMore<GetLogs, GetLogsVariables>({
       document: WatchNodeLogs,
       variables: {
+        runtimeId,
         versionName,
         filters: formatFilters(filterValues),
       },
@@ -142,7 +145,7 @@ function LogsList({
     setRefetching(true);
     fetchMore({
       variables: {
-        versionName,
+        runtimeId,
         filters: formatFilters(filterValues),
         cursor: nextPage,
       },

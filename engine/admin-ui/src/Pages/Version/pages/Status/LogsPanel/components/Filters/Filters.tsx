@@ -56,9 +56,10 @@ type Props = {
   versionName: string;
   updateFilters: Function;
   filterValues: LogPanelFilters;
+  runtimeId: string;
 };
-function Filters({ updateFilters, filterValues, versionName }: Props) {
-  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionName);
+function Filters({ updateFilters, filterValues, versionName, runtimeId }: Props) {
+  const { workflowsAndNodesNames } = useWorkflowsAndNodes(versionName, runtimeId);
 
   const levelOptions = levelsOrdered.map(
     (level: LogLevel) =>

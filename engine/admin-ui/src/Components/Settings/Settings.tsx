@@ -74,10 +74,10 @@ function Settings({ label }: Props) {
     };
   }
 
-  const versionsButton = (
+  const runtimesButton = (
     <Button
-      {...getBaseProps('Versions')}
-      to={ROUTE.VERSIONS}
+      {...getBaseProps('Runtimes')}
+      to={ROUTE.RUNTIMES }
       Icon={VersionsIcon}
     />
   );
@@ -109,7 +109,7 @@ function Settings({ label }: Props) {
     />
   );
 
-  const buttons: JSX.Element[] = [versionsButton];
+  const buttons: JSX.Element[] = [runtimesButton];
   if (checkPermission(accessLevel, 'settings:edit')) {
     buttons.push(settingsButton);
   }

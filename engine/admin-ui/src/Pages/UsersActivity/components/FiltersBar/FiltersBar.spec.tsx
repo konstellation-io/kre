@@ -11,12 +11,11 @@ function Wrapper({ mocks }: any) {
   return (
     <MockedProvider mocks={mocks} addTypename={false}>
       <FiltersBar
-        onSubmit={jest.fn()}
-        types={['a', 'b', 'c']}
-        users={['1', '2', '3']}
-        runtimeAndVersions={runtimeAndVersions}
+        setAndSubmit={jest.fn()}
+        runtimesAndVersions={[runtimeAndVersions]}
         errors={{}}
         watch={jest.fn()}
+        reset={jest.fn()}
       />
     </MockedProvider>
   );

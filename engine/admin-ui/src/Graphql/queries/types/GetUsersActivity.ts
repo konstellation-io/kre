@@ -38,6 +38,6 @@ export interface GetUsersActivityVariables {
   fromDate?: string | null;
   toDate?: string | null;
   types?: UserActivityType[] | null;
-  versionNames?: string[] | null;
+  versionIds?: string[] | null;
   lastId?: string | null;
 }

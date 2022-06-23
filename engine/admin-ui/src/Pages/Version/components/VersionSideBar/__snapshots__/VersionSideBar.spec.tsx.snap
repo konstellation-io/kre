@@ -107,6 +107,18 @@ exports[`VersionSideBar matches snapshot 1`] = `
     perform="version:edit"
   >
     <VersionActions
+      runtime={
+        Object {
+          "__typename": "Runtime",
+          "creationDate": "creationDate",
+          "databaseUrl": "databaseUrl",
+          "description": "Some Description",
+          "entrypointAddress": "entrypointAddress",
+          "id": "runtimeId",
+          "measurementsUrl": "measurementsUrl",
+          "name": "runtimeName",
+        }
+      }
       version={
         Object {
           "__typename": "Version",

@@ -56,3 +56,7 @@ export interface GetVersionConfStatus {
   runtime: GetVersionConfStatus_runtime;
   versions: GetVersionConfStatus_versions[];
 }
+
+export interface GetVersionConfStatusVariables {
+  runtimeId: string;
+}
