@@ -15,10 +15,6 @@ type Config struct {
 
 	BaseDomainName string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`
 
-	SharedStorageClass string `yaml:"sharedStorageClass" envconfig:"KRE_SHARED_STORAGECLASS"`
-
-	SharedStorageSize string `yaml:"sharedStorageSize" envconfig:"KRE_SHARED_STORAGE_SIZE"`
-
 	Entrypoint struct {
 		RequestTimeout string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINT_REQUEST_TIMEOUT"`
 	} `yaml:"entrypoint"`
