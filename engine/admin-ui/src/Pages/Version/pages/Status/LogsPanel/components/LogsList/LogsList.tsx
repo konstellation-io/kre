@@ -33,7 +33,6 @@ function getLogsQueryFilters(
     endDate: filterValues.endDate,
     search: filterValues.search,
     levels: filterValues.levels,
-    runtimesIds: filterValues?.runtimesIds ?? [],
     nodeIds:
       filterValues?.nodes
         ?.map(({ workflowName, nodeNames }) =>
