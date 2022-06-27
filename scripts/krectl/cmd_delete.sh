@@ -52,7 +52,7 @@ delete_version() {
     echo_info "Deleting versions configs" && \
     (run kubectl -n "$NS" delete configmap $CONFIG_NAMES --grace-period=0 --force || true )
 
-#  mongo_script "$RUNTIME" "$VERSION" | execute_mongo_script "$RUNTIME"
+  mongo_script "$RUNTIME" "$VERSION" | execute_mongo_script
 }
 
 # shellcheck disable=SC2086
@@ -64,6 +64,8 @@ delete_runtime() {
   mongo_script() {
     echo "db.getCollection('runtimes').remove({ \"_id\": \"$1\" });"
     echo "use $RUNTIME;"
+    echo "db.dropDatabase();"
+    echo "use $RUNTIME-data;"
     echo "db.dropDatabase();"
   }
   echo_info "Deleting runtime '$RUNTIME' on $NS"
@@ -83,7 +85,7 @@ delete_runtime() {
     echo_info "Deleting runtime configs" && \
     (run kubectl -n "$NS" delete configmap $CONFIG_NAMES --grace-period=0 --force || true )
 
-#  mongo_script "$RUNTIME" | execute_mongo_script $MONGO_DB
+  mongo_script "$RUNTIME" | execute_mongo_script
 
   delete_influx_database "$RUNTIME"
 }
@@ -98,12 +100,12 @@ delete_influx_database() {
 
 # shellcheck disable=SC2120
 execute_mongo_script() {
-  DATABASE=$1
+#  DATABASE=$1
   if [ "$MONGO_POD" = "" ]; then
     MONGO_POD=$(get_mongo_pod)
   fi
 
   check_not_empty "MONGO_POD" "error finding MongoDB pod on '$NAMESPACE'\n"
 
-  run kubectl exec -n kre -it "$MONGO_POD" -- mongo --quiet -u "$MONGO_USER" -p "$MONGO_PASS" "$DATABASE"
+  run kubectl exec -n kre -it "$MONGO_POD" -- mongo --quiet -u "$MONGO_USER" -p "$MONGO_PASS" "$MONGO_DB" --authenticationDatabase admin "$@"
 }
