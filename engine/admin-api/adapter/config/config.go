@@ -56,9 +56,6 @@ type Config struct {
 	Services struct {
 		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
 	} `yaml:"services"`
-	Runtime struct {
-		Name string `yaml:"name" envconfig:"KRE_RUNTIME_NAME"`
-	} `yaml:"runtime"`
 }
 
 var once sync.Once

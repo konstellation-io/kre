@@ -4,9 +4,6 @@ nameOverride: ""
 # -- Whether to setup developement mode
 developmentMode: false
 
-# -- Runtime name
-runtimeName: "My Runtime"
-
 rbac:
   # -- Whether to create the roles for the services that could use custom Service Accounts
   create: true

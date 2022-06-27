@@ -8,7 +8,6 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
-  KRE_RUNTIME_NAME: "{{ .Values.runtimeName }}"
   KRE_RELEASE_NAME: "{{ .Release.Name }}"
   # Runtime Entrypoint TLS
   KRE_ENTRYPOINT_TLS: "{{ .Values.entrypoint.tls }}"

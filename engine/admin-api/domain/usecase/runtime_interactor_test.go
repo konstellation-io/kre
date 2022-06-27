@@ -37,8 +37,7 @@ type runtimeSuiteMocks struct {
 }
 
 const (
-	k8sNamespace       = "kre-test"
-	defaultRuntimeName = "kre-test-runtime"
+	k8sNamespace = "kre-test"
 )
 
 func newRuntimeSuite(t *testing.T) *runtimeSuite {
@@ -67,7 +66,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	cfg := &config.Config{}
 
 	cfg.K8s.Namespace = k8sNamespace
-	cfg.Runtime.Name = defaultRuntimeName
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(
 		cfg,
@@ -270,27 +268,6 @@ func TestCreateNewRuntime_FailsIfCreateRuntimeFails(t *testing.T) {
 
 	require.Error(t, err)
 	require.Nil(t, runtime)
-}
-
-func TestEnsureRuntimeIsCreated(t *testing.T) {
-	s := newRuntimeSuite(t)
-	defer s.ctrl.Finish()
-
-	ctx := context.Background()
-
-	defaultRuntime := &entity.Runtime{
-		ID:           k8sNamespace,
-		Name:         defaultRuntimeName,
-		Description:  "Runtime description...",
-		CreationDate: time.Time{},
-	}
-
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, k8sNamespace).Return(nil, usecase.ErrRuntimeNotFound)
-	s.mocks.runtimeRepo.EXPECT().Create(ctx, defaultRuntime).Return(defaultRuntime, nil)
-
-	err := s.runtimeInteractor.EnsureRuntimeIsCreated(ctx)
-
-	require.Nil(t, err)
 }
 
 func TestGetByID(t *testing.T) {

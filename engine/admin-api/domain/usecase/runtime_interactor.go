@@ -135,34 +135,6 @@ func (i *RuntimeInteractor) createDatabaseIndexes(ctx context.Context, runtimeId
 	return i.versionRepo.CreateIndexes(ctx, runtimeId)
 }
 
-// EnsureRuntimeIsCreated creates the runtime in the DB if not exits
-func (i *RuntimeInteractor) EnsureRuntimeIsCreated(ctx context.Context) error {
-	r, err := i.runtimeRepo.GetByID(ctx, i.cfg.K8s.Namespace)
-	if err != nil && !errors.Is(err, ErrRuntimeNotFound) {
-		return err
-	}
-
-	if r != nil {
-		// NOTE: There already a runtime created
-		return nil
-	}
-
-	r = &entity.Runtime{
-		ID:          i.cfg.K8s.Namespace,
-		Name:        strings.TrimSpace(i.cfg.Runtime.Name),
-		Description: "Runtime description...",
-	}
-
-	createdRuntime, err := i.runtimeRepo.Create(ctx, r)
-	if err != nil {
-		i.logger.Errorf("Error creating runtime: %s", err)
-		return err
-	}
-	i.logger.Info("Runtime stored in the database with ID=" + createdRuntime.ID)
-
-	return nil
-}
-
 // Get return the current Runtime
 func (i *RuntimeInteractor) Get(ctx context.Context, loggedUserID string) (*entity.Runtime, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResRuntime, auth.ActView); err != nil {

@@ -83,4 +83,3 @@
 | nats_streaming.storage.className | string | `"standard"` | Storage class name |
 | nats_streaming.storage.size | string | `"1Gi"` | Storage size |
 | rbac.create | bool | `true` | Whether to create the roles for the services that could use custom Service Accounts |
-| runtimeName | string | `"My Runtime"` | Runtime name |

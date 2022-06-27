@@ -123,11 +123,6 @@ func main() {
 		panic(err)
 	}
 
-	err = runtimeInteractor.EnsureRuntimeIsCreated(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
 	app := http.NewApp(
 		cfg,
 		logger,
