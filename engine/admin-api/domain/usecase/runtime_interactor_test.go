@@ -272,27 +272,6 @@ func TestCreateNewRuntime_FailsIfCreateRuntimeFails(t *testing.T) {
 	require.Nil(t, runtime)
 }
 
-func TestEnsureRuntimeIsCreated(t *testing.T) {
-	s := newRuntimeSuite(t)
-	defer s.ctrl.Finish()
-
-	ctx := context.Background()
-
-	defaultRuntime := &entity.Runtime{
-		ID:           k8sNamespace,
-		Name:         defaultRuntimeName,
-		Description:  "Runtime description...",
-		CreationDate: time.Time{},
-	}
-
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, k8sNamespace).Return(nil, usecase.ErrRuntimeNotFound)
-	s.mocks.runtimeRepo.EXPECT().Create(ctx, defaultRuntime).Return(defaultRuntime, nil)
-
-	err := s.runtimeInteractor.EnsureRuntimeIsCreated(ctx)
-
-	require.Nil(t, err)
-}
-
 func TestGetByID(t *testing.T) {
 	s := newRuntimeSuite(t)
 	defer s.ctrl.Finish()
