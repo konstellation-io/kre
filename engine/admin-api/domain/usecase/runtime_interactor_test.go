@@ -37,8 +37,7 @@ type runtimeSuiteMocks struct {
 }
 
 const (
-	k8sNamespace       = "kre-test"
-	defaultRuntimeName = "kre-test-runtime"
+	k8sNamespace = "kre-test"
 )
 
 func newRuntimeSuite(t *testing.T) *runtimeSuite {
@@ -67,7 +66,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	cfg := &config.Config{}
 
 	cfg.K8s.Namespace = k8sNamespace
-	cfg.Runtime.Name = defaultRuntimeName
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(
 		cfg,
