@@ -150,7 +150,6 @@ function useLogs() {
       filters: {
         ...getDefaultFilters(),
         nodes,
-        runtimesIds: [runtimeId],
         versionsIds: [versionId],
         workflowsNames: nodes.map(node => node.workflowName)
       }
