@@ -66,6 +66,9 @@
 | k8sManager.serviceAccount.annotations | object | `{}` | The Service Account annotations |
 | k8sManager.serviceAccount.create | bool | `true` | Whether to create the Service Account |
 | k8sManager.serviceAccount.name | string | `""` | The name of the service account. @default: A pre-generated name based on the chart relase fullname sufixed by `-k8s-manager` |
+| k8sManager.krtFilesDownloader.image.repository | string | `""` | Image repository for `krt-files-downloader` |
+| k8sManager.krtFilesDownloader.image.tag        | string | `""` | Image tag for `krt-files-downloader` |
+| k8sManager.krtFilesDownloader.image.pullPolicy | string | `""` | Image pull policy for `krt-files-downloader` |
 | kapacitor.enabled | bool | `false` | Whether to enable Kapacitor |
 | kapacitor.persistence.enabled | bool | `false` | Whether to enable persistence [Details](https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml) |
 | mongoWriter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
