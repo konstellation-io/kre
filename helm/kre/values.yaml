@@ -189,6 +189,14 @@ k8sManager:
     name: ""
     # -- The Service Account annotations
     annotations: {}
+  krtFilesDownloader:
+    image:
+      # -- Image repository for `krt-files-downloader`
+      repository: konstellation/krt-files-downloader
+      # -- Image tag for `krt-files-downloader`
+      tag: latest
+      # -- Image pull policy for `krt-files-downloader`
+      pullPolicy: Always
 
 mongoWriter:
   image:

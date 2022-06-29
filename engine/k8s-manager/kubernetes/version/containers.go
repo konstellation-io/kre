@@ -1,6 +1,9 @@
 package version
 
-import apiv1 "k8s.io/api/core/v1"
+import (
+	"fmt"
+	apiv1 "k8s.io/api/core/v1"
+)
 
 func (m *Manager) getFluentBitContainer(envVars []apiv1.EnvVar) apiv1.Container {
 	return apiv1.Container{
@@ -39,8 +42,8 @@ func (m *Manager) getFluentBitContainer(envVars []apiv1.EnvVar) apiv1.Container 
 func (m *Manager) getKRTFilesDownloaderContainer(envVars []apiv1.EnvVar) apiv1.Container {
 	return apiv1.Container{
 		Name:            "krt-files-downloader",
-		Image:           "konstellation/krt-files-downloader:latest",
-		ImagePullPolicy: apiv1.PullIfNotPresent,
+		Image:           fmt.Sprintf("%s:%s", m.config.KrtFilesDownloader.Image, m.config.KrtFilesDownloader.Tag),
+		ImagePullPolicy: apiv1.PullPolicy(m.config.KrtFilesDownloader.PullPolicy),
 		Env:             envVars,
 		VolumeMounts: []apiv1.VolumeMount{
 			m.getKRTFilesVolumeMount(),

@@ -60,6 +60,11 @@ type Config struct {
 			Size         string `yaml:"size" envconfig:"KRE_INFLUXDB_STORAGE_SIZE"`
 		} `yaml:"persistentVolume"`
 	} `yaml:"influxdb"`
+	KrtFilesDownloader struct {
+		Image      string `yaml:"image" envconfig:"KRE_KRT_FILES_DOWNLOADER_IMAGE"`
+		Tag        string `yaml:"tag" envconfig:"KRE_KRT_FILES_DOWNLOADER_TAG"`
+		PullPolicy string `yaml:"pullPolicy" envconfig:"KRE_KRT_FILES_DOWNLOADER_PULL_POLICY"`
+	} `yaml:"krtFilesDownloader"`
 }
 
 // NewConfig will read the config.yml file and override values with env vars.
