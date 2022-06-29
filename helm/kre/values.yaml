@@ -1,3 +1,4 @@
+# -- Whether to setup developement mode
 developmentMode: false
 argocd: false
 
@@ -107,6 +108,14 @@ k8sManager:
     repository: konstellation/kre-k8s-manager
     tag: latest
     pullPolicy: IfNotPresent
+  krtFilesDownloader:
+    image:
+      # -- Image repository for `krt-files-downloader`
+      repository: konstellation/krt-files-downloader
+      # -- Image tag for `krt-files-downloader`
+      tag: latest
+      # -- Image pull policy for `krt-files-downloader`
+      pullPolicy: Always
 
 mongoWriter:
   image:

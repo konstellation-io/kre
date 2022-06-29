@@ -47,3 +47,7 @@ data:
   #InfluxDB
   KRE_INFLUXDB_STORAGECLASS: "{{ .Values.influxdb.persistence.storageClass }}"
   KRE_INFLUXDB_STORAGE_SIZE: "{{ .Values.influxdb.persistence.size }}"
+  #KRTFilesDownloader
+  KRE_KRT_FILES_DOWNLOADER_IMAGE: "{{ .Values.k8sManager.krtFilesDownloader.image.repository }}"
+  KRE_KRT_FILES_DOWNLOADER_TAG: "{{ .Values.k8sManager.krtFilesDownloader.image.tag }}"
+  KRE_KRT_FILES_DOWNLOADER_PULL_POLICY: "{{ .Values.k8sManager.krtFilesDownloader.image.pullPolicy }}"
