@@ -235,3 +235,12 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default "kapacitor" .Values.kapacitor.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+
+{{- define "kre-entrypoint.certificate-name" -}}
+{{- if .Values.entrypoints.ingress.tls.secretName -}}
+{{- .Values.entrypoints.ingress.tls.secretName -}}
+{{- else -}}
+{{- printf "%s-entrypoint-tls-secret" (include "kre.fullname" . ) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}

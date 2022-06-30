@@ -9,8 +9,7 @@ metadata:
 data:
   KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
   KRE_RELEASE_NAME: "{{ .Release.Name }}"
-  # Runtime Entrypoint TLS
-  KRE_ENTRYPOINT_TLS: "{{ .Values.entrypoint.tls }}"
+
   # Admin
   KRE_ADMIN_FRONTEND_BASE_URL: "{{ .Values.config.admin.frontendBaseURL }}"
   KRE_ADMIN_API_BASE_URL: "{{ $protocol }}://{{ .Values.config.admin.apiHost }}"
@@ -19,7 +18,12 @@ data:
   # K8S MANAGER
   KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
   KRE_ENTRYPOINT_REQUEST_TIMEOUT: "30"
-
+  KRE_ENTRYPOINT_BASE64_INGRESSES_ANNOTATIONS: {{ .Values.entrypoints.ingress.annotations | toYaml | b64enc }}
+  KRE_ENTRYPOINTS_TLS: "{{ .Values.entrypoints.tls }}"
+  {{- if .Values.entrypoints.tls }}
+  KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: "{{ include "kre-entrypoint.certificate-name" . }}"
+  {{- end }}
+  
   # SMTP
   KRE_SMTP_ENABLED: "{{ .Values.config.smtp.enabled }}"
   {{- if .Values.config.smtp.enabled }}
