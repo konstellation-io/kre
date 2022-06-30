@@ -18,12 +18,12 @@ data:
   # K8S MANAGER
   KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
   KRE_ENTRYPOINT_REQUEST_TIMEOUT: "30"
-  KRE_ENTRYPOINT_BASE64_INGRESSES_ANNOTATIONS: {{ .Values.entrypoints.ingress.annotations | toYaml | b64enc }}
-  KRE_ENTRYPOINTS_TLS: "{{ .Values.entrypoints.tls }}"
-  {{- if .Values.entrypoints.tls }}
-  KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: "{{ include "kre-entrypoint.certificate-name" . }}"
+  KRE_ENTRYPOINT_BASE64_INGRESSES_ANNOTATIONS: {{ .Values.k8sManager.generatedEntrypoints.ingress.annotations | toYaml | b64enc }}
+  KRE_ENTRYPOINTS_TLS: "{{ .Values.k8sManager.generatedEntrypoints.tls }}"
+  {{- if .Values.k8sManager.generatedEntrypoints.tls }}
+  KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: {{ include "kre-entrypoint.tls-secret" . }}
   {{- end }}
-  
+
   # SMTP
   KRE_SMTP_ENABLED: "{{ .Values.config.smtp.enabled }}"
   {{- if .Values.config.smtp.enabled }}
