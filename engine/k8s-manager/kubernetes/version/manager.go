@@ -25,7 +25,7 @@ type Manager struct {
 
 const (
 	timeoutWaitingForVersionPODS = 10 * time.Minute
-	activeEntrypoint             = "active-entrypoint"
+	activeEntrypointSuffix       = "active-entrypoint"
 )
 
 var ErrWaitingForVersionPODSTimeout = errors.New("[WaitForVersionPods] timeout waiting for version pods")
@@ -100,7 +100,7 @@ func (m *Manager) Publish(req *versionpb.VersionInfo) error {
 	m.logger.Infof("Publish version '%s' on runtime '%s'", req.Name, req.RuntimeId)
 
 	// check if there is an `active-entrypoint` service
-	activeService, err := m.getActiveEntrypointService(m.config.Kubernetes.Namespace)
+	activeService, err := m.getActiveEntrypointService(req.RuntimeId, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func (m *Manager) Publish(req *versionpb.VersionInfo) error {
 		return err
 	}
 
-	_, err = m.createEntrypointService(req.RuntimeId, req.Name, activeEntrypoint, m.config.Kubernetes.Namespace)
+	_, err = m.createActiveEntrypointService(req.RuntimeId, req.Name, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}
@@ -138,7 +138,7 @@ func (m *Manager) Publish(req *versionpb.VersionInfo) error {
 func (m *Manager) Unpublish(req *versionpb.VersionInfo) error {
 	m.logger.Infof("Deactivating version '%s' on runtime '%s'", req.Name, req.RuntimeId)
 
-	err := m.deleteEntrypointService(activeEntrypoint, m.config.Kubernetes.Namespace)
+	err := m.deleteEntrypointService(activeEntrypointSuffix, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}

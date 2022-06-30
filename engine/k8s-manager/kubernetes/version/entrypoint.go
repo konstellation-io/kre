@@ -159,8 +159,9 @@ func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 	return err
 }
 
-func (m *Manager) getActiveEntrypointService(ns string) (*apiv1.Service, error) {
-	existingService, err := m.clientset.CoreV1().Services(ns).Get(activeEntrypoint, metav1.GetOptions{})
+func (m *Manager) getActiveEntrypointService(runtimeId, ns string) (*apiv1.Service, error) {
+	serviceName := fmt.Sprintf("%s-%s", runtimeId, activeEntrypointSuffix)
+	existingService, err := m.clientset.CoreV1().Services(ns).Get(serviceName, metav1.GetOptions{})
 	if err != nil && !errors.IsNotFound(err) {
 		return nil, err
 	}
@@ -181,6 +182,11 @@ func (m *Manager) deleteEntrypointService(serviceName, ns string) error {
 		PropagationPolicy:  &deletePolicy,
 		GracePeriodSeconds: new(int64),
 	})
+}
+
+func (m *Manager) createActiveEntrypointService(runtimeId, versionName, ns string) (*apiv1.Service, error) {
+	serviceName := fmt.Sprintf("%s-%s", runtimeId, activeEntrypointSuffix)
+	return m.createEntrypointService(runtimeId, versionName, serviceName, ns)
 }
 
 func (m *Manager) createEntrypointService(runtimeId, versionName, serviceName, ns string) (*apiv1.Service, error) {
