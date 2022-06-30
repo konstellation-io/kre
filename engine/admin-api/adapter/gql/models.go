@@ -12,13 +12,20 @@ type ConfigurationVariablesInput struct {
 	Value string `json:"value"`
 }
 
+type CreateRuntimeInput struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 type CreateUserInput struct {
 	Email       string             `json:"email"`
 	AccessLevel entity.AccessLevel `json:"accessLevel"`
 }
 
 type CreateVersionInput struct {
-	File graphql.Upload `json:"file"`
+	File      graphql.Upload `json:"file"`
+	RuntimeID string         `json:"runtimeId"`
 }
 
 type DeleteAPITokenInput struct {
@@ -37,6 +44,7 @@ type LogPage struct {
 type PublishVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
+	RuntimeID   string `json:"runtimeId"`
 }
 
 type SettingsInput struct {
@@ -47,16 +55,19 @@ type SettingsInput struct {
 type StartVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
+	RuntimeID   string `json:"runtimeId"`
 }
 
 type StopVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
+	RuntimeID   string `json:"runtimeId"`
 }
 
 type UnpublishVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
+	RuntimeID   string `json:"runtimeId"`
 }
 
 type UpdateAccessLevelInput struct {
@@ -67,6 +78,7 @@ type UpdateAccessLevelInput struct {
 
 type UpdateConfigurationInput struct {
 	VersionName            string                         `json:"versionName"`
+	RuntimeID              string                         `json:"runtimeId"`
 	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
 }
 

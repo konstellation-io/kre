@@ -37,7 +37,7 @@ type Props = {
 };
 
 function Status({ version, runtime }: Props) {
-  const { versionName } = useParams<VersionRouteParams>();
+  const { versionName, runtimeId } = useParams<VersionRouteParams>();
   const { updateEntrypointStatus } = useOpenedVersion();
 
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -46,7 +46,7 @@ function Status({ version, runtime }: Props) {
     GetVersionWorkflows,
     GetVersionWorkflowsVariables
   >(GetVersionWorkflowsQuery, {
-    variables: { versionName },
+    variables: { versionName, runtimeId},
   });
 
   const dataOpenedVersion = useReactiveVar(openedVersion);
@@ -56,7 +56,7 @@ function Status({ version, runtime }: Props) {
   const subscribe = () =>
     subscribeToMore<WatchVersionNodeStatus, WatchVersionNodeStatusVariables>({
       document: VersionNodeStatusSubscription,
-      variables: { versionName },
+      variables: { versionName, runtimeId },
       updateQuery: (prev, { subscriptionData }) => {
         const node = subscriptionData.data.watchNodeStatus;
         if (node.id === 'entrypoint') {

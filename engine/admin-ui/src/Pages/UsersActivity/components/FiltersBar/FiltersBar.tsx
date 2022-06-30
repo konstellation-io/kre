@@ -23,6 +23,7 @@ import styles from './FiltersBar.module.scss';
 import { useQuery } from '@apollo/client';
 
 import GetUsersQuery from 'Graphql/queries/getUsers';
+import {VersionsData} from "../../../../Hooks/useAllVersions";
 
 const customLabels = new Map([
   [UserActivityType.LOGIN, <CustomLabel>Login</CustomLabel>],
@@ -87,14 +88,14 @@ type FormFieldProps = {
     field: string,
     newValue: string | GroupSelectData | Moment | UserActivityType[]
   ) => void;
-  runtimeAndVersions: GetVersionConfStatus;
+  runtimesAndVersions: VersionsData[];
   watch: Function;
   errors: FieldErrors<UserActivityFormData>;
   reset: Function;
 };
 function FiltersBar({
   setAndSubmit,
-  runtimeAndVersions,
+  runtimesAndVersions,
   watch,
   errors,
   reset
@@ -115,11 +116,12 @@ function FiltersBar({
     setAndSubmit('types', newtypes);
   }
 
-  const versionOptions = {
-    [runtimeAndVersions.runtime.name]: runtimeAndVersions.versions.map(
-      v => v.name
-    )
-  };
+  const versionOptions = Object.fromEntries(
+    runtimesAndVersions.map(({ runtime: { name: runtimeName }, versions }) => [
+      runtimeName,
+      versions.map(v => v.name)
+    ])
+  );
 
   return (
     <form className={styles.formField}>

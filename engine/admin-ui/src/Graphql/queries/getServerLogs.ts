@@ -2,11 +2,11 @@ import { gql } from '@apollo/client';
 
 export default gql`
   query GetServerLogs(
-    $versionName: String!
+    $runtimeId: ID!
     $filters: LogFilters!
     $cursor: String
   ) {
-    logs(filters: $filters, versionName: $versionName, cursor: $cursor) {
+    logs(filters: $filters, runtimeId: $runtimeId, cursor: $cursor) {
       items {
         id
         date

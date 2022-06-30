@@ -209,6 +209,12 @@ Create MongoDB URI.
 {{- end -}}
 
 {{/*
+Create InfluxDB URL.
+*/}}
+{{- define "runtime.influxURL" -}}
+  {{- printf "http://%s-influxdb:8086" .Release.Name -}}
+{{- end -}}
+{{/*
 Create a default fully qualified InfluxDB service name for InfluxDB.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}

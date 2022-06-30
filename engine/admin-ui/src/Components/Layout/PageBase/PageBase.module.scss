@@ -1,6 +1,7 @@
 @import 'Styles/mixins';
 
 .content {
+  display: flex;
   height: 100%;
   overflow: hidden;
   transition: padding ease 0.4s;

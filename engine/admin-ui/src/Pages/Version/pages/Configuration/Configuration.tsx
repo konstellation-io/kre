@@ -66,6 +66,7 @@ export type VersionConfigurationFormData = {
 };
 
 function Configuration() {
+  const { runtimeId } = useParams<VersionRouteParams>();
   const [varPanel, setVarPanel] = useState<ConfVarPanelInfo | null>(null);
   const [initialConfiguration, setInitialConfiguration] = useState<
     ConfigurationVariable[]
@@ -80,7 +81,7 @@ function Configuration() {
     GetConfigurationVariables,
     GetConfigurationVariablesVariables
   >(GetConfVariablesQuery, {
-    variables: { versionName }
+    variables: { versionName, runtimeId }
   });
   const [updateConfiguration, { loading: mutationLoading }] = useMutation<
     UpdateVersionConfiguration,
@@ -174,6 +175,7 @@ function Configuration() {
         variables: {
           input: {
             versionName,
+            runtimeId,
             configurationVariables: formatConfVars(configurationVariables)
           } as UpdateConfigurationInput
         } as UpdateVersionConfigurationVariables
