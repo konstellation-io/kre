@@ -22,17 +22,21 @@ func (m *Manager) ensureIngressCreated(ctx context.Context, name, runtimeID, act
 	if err != nil {
 		return err
 	}
+
 	if ingressExists {
 		return nil
 	}
+
 	ingress, err := m.getIngressDefinition(runtimeID, name, activeServiceName)
 	if err != nil {
 		return err
 	}
+
 	_, err = m.clientset.NetworkingV1().Ingresses(m.config.Kubernetes.Namespace).Create(ctx, ingress, metav1.CreateOptions{})
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
