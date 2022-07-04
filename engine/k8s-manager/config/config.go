@@ -15,8 +15,15 @@ type Config struct {
 
 	BaseDomainName string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`
 
+	ReleaseName string `yaml:"releaseName" envconfig:"KRE_RELEASE_NAME"`
+
 	Entrypoint struct {
-		RequestTimeout string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINT_REQUEST_TIMEOUT"`
+		RequestTimeout           string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINT_REQUEST_TIMEOUT"`
+		IngressAnnotationsBase64 string `yaml:"ingressAnnotationsBase64" envconfig:"KRE_ENTRYPOINT_BASE64_INGRESSES_ANNOTATIONS"`
+		TLS                      struct {
+			IsEnabled      bool   `yaml:"isEnabled" envconfig:"KRE_ENTRYPOINTS_TLS"`
+			CertSecretName string `yaml:"secretName" envconfig:"KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME"`
+		} `yaml:"tls"`
 	} `yaml:"entrypoint"`
 
 	Server struct {
