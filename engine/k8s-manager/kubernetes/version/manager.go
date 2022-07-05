@@ -25,7 +25,7 @@ type Manager struct {
 
 const (
 	timeoutWaitingForVersionPODS = 10 * time.Minute
-	activeEntrypoint             = "active-entrypoint"
+	activeEntrypointSuffix       = "active-entrypoint"
 )
 
 var ErrWaitingForVersionPODSTimeout = errors.New("[WaitForVersionPods] timeout waiting for version pods")
@@ -43,31 +43,31 @@ func New(cfg *config.Config, logger *simplelogger.SimpleLogger, clientset *kuber
 }
 
 // Start request k8s to create all version resources like deployments and config maps associated with the version.
-func (m *Manager) Start(req *versionpb.StartRequest) error {
+func (m *Manager) Start(ctx context.Context, req *versionpb.StartRequest) error {
 	m.logger.Infof("Starting version \"%s\"", req.VersionName)
 
-	err := m.createVersionKRTConf(req.RuntimeId, req.VersionName, m.config.Kubernetes.Namespace, req.Config)
+	err := m.createVersionKRTConf(ctx, req.RuntimeId, req.VersionName, m.config.Kubernetes.Namespace, req.Config)
 	if err != nil {
 		return err
 	}
 
-	err = m.createVersionConfFiles(req.RuntimeId, req.VersionName, m.config.Kubernetes.Namespace, req.Workflows)
+	err = m.createVersionConfFiles(ctx, req.RuntimeId, req.VersionName, m.config.Kubernetes.Namespace, req.Workflows)
 	if err != nil {
 		return err
 	}
 
-	err = m.createAllNodeDeployments(req)
+	err = m.createAllNodeDeployments(ctx, req)
 	if err != nil {
 		return err
 	}
 
-	err = m.createEntrypoint(req)
+	err = m.createEntrypoint(ctx, req)
 	if err != nil {
 		return err
 	}
 
 	serviceName := m.getVersionServiceName(req.RuntimeId, req.VersionName)
-	_, err = m.createEntrypointService(req.RuntimeId, req.VersionName, serviceName, m.config.Kubernetes.Namespace)
+	_, err = m.createEntrypointService(ctx, req.RuntimeId, req.VersionName, serviceName, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 
 	serviceName := m.getVersionServiceName(req.RuntimeId, req.Name)
 
-	err = m.deleteEntrypointService(serviceName, m.config.Kubernetes.Namespace)
+	err = m.deleteEntrypointService(ctx, serviceName)
 	if err != nil {
 		return err
 	}
@@ -96,11 +96,18 @@ func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 
 // Publish calls kubernetes to change the name of the entrypoint service.
 // The service-name will be changed to `active-entrypoint`
-func (m *Manager) Publish(req *versionpb.VersionInfo) error {
+func (m *Manager) Publish(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Publish version '%s' on runtime '%s'", req.Name, req.RuntimeId)
 
+	activeServiceName := fmt.Sprintf("%s-%s", req.RuntimeId, activeEntrypointSuffix)
+	ingressName := fmt.Sprintf("%s-%s-entrypoint", m.config.ReleaseName, req.RuntimeId)
+
+	err := m.ensureIngressCreated(ctx, ingressName, req.RuntimeId, activeServiceName)
+	if err != nil {
+		return err
+	}
 	// check if there is an `active-entrypoint` service
-	activeService, err := m.getActiveEntrypointService(m.config.Kubernetes.Namespace)
+	activeService, err := m.getActiveEntrypointService(ctx, activeServiceName)
 	if err != nil {
 		return err
 	}
@@ -112,7 +119,7 @@ func (m *Manager) Publish(req *versionpb.VersionInfo) error {
 
 		m.logger.Debugf("There is an active entrypoint service with version name %s", activeVersionName)
 
-		_, err = m.createEntrypointService(req.RuntimeId, activeVersionName, activeServiceName, m.config.Kubernetes.Namespace)
+		_, err = m.createEntrypointService(ctx, req.RuntimeId, activeVersionName, activeServiceName, m.config.Kubernetes.Namespace)
 		if err != nil {
 			return err
 		}
@@ -120,12 +127,12 @@ func (m *Manager) Publish(req *versionpb.VersionInfo) error {
 
 	serviceName := m.getVersionServiceName(req.RuntimeId, req.Name)
 
-	err = m.deleteEntrypointService(serviceName, m.config.Kubernetes.Namespace)
+	err = m.deleteEntrypointService(ctx, serviceName)
 	if err != nil {
 		return err
 	}
 
-	_, err = m.createEntrypointService(req.RuntimeId, req.Name, activeEntrypoint, m.config.Kubernetes.Namespace)
+	_, err = m.createActiveEntrypointService(ctx, req.RuntimeId, req.Name, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}
@@ -135,17 +142,16 @@ func (m *Manager) Publish(req *versionpb.VersionInfo) error {
 
 // Unpublish calls kubernetes to change the name of the entrypoint service.
 // The service-name will be changed to `VERSIONNAME-entrypoint`
-func (m *Manager) Unpublish(req *versionpb.VersionInfo) error {
+func (m *Manager) Unpublish(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Deactivating version '%s' on runtime '%s'", req.Name, req.RuntimeId)
-
-	err := m.deleteEntrypointService(activeEntrypoint, m.config.Kubernetes.Namespace)
+	err := m.deleteActiveEntrypointService(ctx, req.RuntimeId)
 	if err != nil {
 		return err
 	}
 
 	serviceName := m.getVersionServiceName(req.RuntimeId, req.Name)
 
-	_, err = m.createEntrypointService(req.RuntimeId, req.Name, serviceName, m.config.Kubernetes.Namespace)
+	_, err = m.createEntrypointService(ctx, req.RuntimeId, req.Name, serviceName, m.config.Kubernetes.Namespace)
 	if err != nil {
 		return err
 	}
@@ -159,12 +165,12 @@ func (m *Manager) UpdateConfig(ctx context.Context, req *versionpb.UpdateConfigR
 	versionName := req.VersionName
 	ns := m.config.Kubernetes.Namespace
 
-	err := m.deleteVersionKRTConf(req.RuntimeId, versionName, ns)
+	err := m.deleteVersionKRTConf(ctx, req.RuntimeId, versionName, ns)
 	if err != nil {
 		return err
 	}
 
-	err = m.createVersionKRTConf(req.RuntimeId, versionName, ns, req.Config)
+	err = m.createVersionKRTConf(ctx, req.RuntimeId, versionName, ns, req.Config)
 	if err != nil {
 		return err
 	}

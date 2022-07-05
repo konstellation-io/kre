@@ -42,7 +42,7 @@ func NewVersionService(
 func (v *VersionService) Start(ctx context.Context, req *versionpb.StartRequest) (*versionpb.Response, error) {
 	fmt.Println("Start request received")
 
-	err := v.manager.Start(req)
+	err := v.manager.Start(ctx, req)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -86,10 +86,10 @@ func (v *VersionService) Stop(ctx context.Context, req *versionpb.VersionInfo) (
 	}, nil
 }
 
-func (v *VersionService) Publish(_ context.Context, req *versionpb.VersionInfo) (*versionpb.Response, error) {
+func (v *VersionService) Publish(ctx context.Context, req *versionpb.VersionInfo) (*versionpb.Response, error) {
 	fmt.Println("Publish request received")
 
-	err := v.manager.Publish(req)
+	err := v.manager.Publish(ctx, req)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -100,10 +100,10 @@ func (v *VersionService) Publish(_ context.Context, req *versionpb.VersionInfo) 
 	}, nil
 }
 
-func (v *VersionService) Unpublish(_ context.Context, req *versionpb.VersionInfo) (*versionpb.Response, error) {
+func (v *VersionService) Unpublish(ctx context.Context, req *versionpb.VersionInfo) (*versionpb.Response, error) {
 	fmt.Println("Unpublish request received")
 
-	err := v.manager.Unpublish(req)
+	err := v.manager.Unpublish(ctx, req)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
