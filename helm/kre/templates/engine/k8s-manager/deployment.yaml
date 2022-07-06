@@ -10,7 +10,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "kre.labels" . | nindent 6 }}
+      {{- include "kre.selectorLabels" . | nindent 6 }}
       app: {{ .Release.Name }}-k8s-manager
   template:
     metadata:
