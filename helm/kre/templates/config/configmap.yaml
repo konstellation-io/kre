@@ -23,6 +23,9 @@ data:
   {{- if .Values.k8sManager.generatedEntrypoints.tls }}
   KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: {{ include "kre-entrypoint.tls-secret" . }}
   {{- end }}
+  {{- if and .Values.k8sManager.generatedEntrypoints.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  KRE_ENTRYPOINTS_INGRESS_CLASS_NAME: {{ .Values.adminApi.ingress.className }}
+  {{- end }}
 
   # SMTP
   KRE_SMTP_ENABLED: "{{ .Values.config.smtp.enabled }}"

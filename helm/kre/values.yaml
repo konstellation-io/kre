@@ -96,6 +96,8 @@ adminApi:
   # -- Hostname
   host: api.kre.local
   ingress:
+    # -- The ingressClassName to use for the Ingress
+    className: ""
     # -- Ingress annotations
     # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
@@ -143,6 +145,8 @@ adminUI:
     # -- Image pull policy
     pullPolicy: IfNotPresent
   ingress:
+    # -- The ingressClassName to use for the Ingress
+    className: ""
     # -- Ingress annotations
     # @default -- See `adminUI.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
@@ -201,6 +205,8 @@ k8sManager:
     # -- Wether to enable tls
     tls: false
     ingress:
+      # -- The ingressClassName to use for the Ingress
+      className: ""
       # -- The annotations that all the generated ingresses for the entrypoints will have
       # @default -- See `entrypoints.ingress.annotations` in [values.yaml](./values.yaml) 
       annotations:
