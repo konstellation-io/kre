@@ -35,16 +35,18 @@ Create chart name used by the chart label.
 Common labels
 */}}
 {{- define "kre.labels" -}}
-app.kubernetes.io/name: {{ include "kre.name" . }}
+{{ include "kre.selectorLabels" . }}
 helm.sh/chart: {{ include "kre.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-
+{{- define "kre.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
 
 
 
