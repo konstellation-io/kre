@@ -72,12 +72,6 @@ func (m *Manager) getIngressDefinition(runtimeID, name, activeServiceName string
 		},
 		Spec: m.getIngressSpec(entrypointHost, activeServiceName),
 	}
-	if m.config.Entrypoint.TLS.IsEnabled {
-		ingress.Spec.TLS = []v1.IngressTLS{{
-			Hosts:      []string{entrypointHost},
-			SecretName: m.config.Entrypoint.TLS.CertSecretName,
-		}}
-	}
 	return ingress, nil
 }
 
@@ -122,5 +116,19 @@ func (m *Manager) getIngressSpec(entrypointHost, activeServiceName string) v1.In
 		spec.IngressClassName = &m.config.Entrypoint.IngressClassName
 	}
 
+	if m.config.Entrypoint.TLS.IsEnabled {
+		spec.TLS = []v1.IngressTLS{{
+			Hosts:      []string{entrypointHost},
+			SecretName: m.getTLSCertSecretName(entrypointHost),
+		}}
+	}
+
 	return spec
+}
+
+func (m *Manager) getTLSCertSecretName(entrypointHost string) string {
+	if m.config.Entrypoint.TLS.CertSecretName != "" {
+		return m.config.Entrypoint.TLS.CertSecretName
+	}
+	return fmt.Sprintf("%s-tls", entrypointHost)
 }
