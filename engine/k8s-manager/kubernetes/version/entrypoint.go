@@ -1,6 +1,7 @@
 package version
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -72,7 +73,7 @@ func (m *Manager) getEntrypointLabels(runtimeId, versionName string) map[string]
 	}
 }
 
-func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
+func (m *Manager) createEntrypoint(ctx context.Context, req *versionpb.StartRequest) error {
 	m.logger.Info("Creating entrypoint deployment")
 
 	versionName := req.VersionName
@@ -85,7 +86,7 @@ func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 
 	m.logger.Info(fmt.Sprintf("Creating entrypoint deployment in %s named %s from image %s", ns, versionName, img))
 
-	_, err := m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
+	_, err := m.clientset.AppsV1().Deployments(ns).Create(ctx, &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("%s-%s-entrypoint", runtimeId, versionName),
 			Namespace: ns,
@@ -158,13 +159,13 @@ func (m *Manager) createEntrypoint(req *versionpb.StartRequest) error {
 				},
 			},
 		},
-	})
+	}, metav1.CreateOptions{})
 
 	return err
 }
 
-func (m *Manager) getActiveEntrypointService(ns string) (*apiv1.Service, error) {
-	existingService, err := m.clientset.CoreV1().Services(ns).Get(activeEntrypoint, metav1.GetOptions{})
+func (m *Manager) getActiveEntrypointService(ctx context.Context, activeServiceName string) (*apiv1.Service, error) {
+	existingService, err := m.clientset.CoreV1().Services(m.config.Kubernetes.Namespace).Get(ctx, activeServiceName, metav1.GetOptions{})
 	if err != nil && !errors.IsNotFound(err) {
 		return nil, err
 	}
@@ -176,18 +177,28 @@ func (m *Manager) getActiveEntrypointService(ns string) (*apiv1.Service, error) 
 	return existingService, nil
 }
 
-func (m *Manager) deleteEntrypointService(serviceName, ns string) error {
+func (m *Manager) deleteActiveEntrypointService(ctx context.Context, runtimeID string) error {
+	name := fmt.Sprintf("%s-%s", runtimeID, activeEntrypointSuffix)
+	return m.deleteEntrypointService(ctx, name)
+}
+
+func (m *Manager) deleteEntrypointService(ctx context.Context, serviceName string) error {
 	deletePolicy := metav1.DeletePropagationForeground
 
 	m.logger.Info(fmt.Sprintf("Delete service with name %s", serviceName))
 
-	return m.clientset.CoreV1().Services(ns).Delete(serviceName, &metav1.DeleteOptions{
+	return m.clientset.CoreV1().Services(m.config.Kubernetes.Namespace).Delete(ctx, serviceName, metav1.DeleteOptions{
 		PropagationPolicy:  &deletePolicy,
 		GracePeriodSeconds: new(int64),
 	})
 }
 
-func (m *Manager) createEntrypointService(runtimeId, versionName, serviceName, ns string) (*apiv1.Service, error) {
+func (m *Manager) createActiveEntrypointService(ctx context.Context, runtimeId, versionName, ns string) (*apiv1.Service, error) {
+	serviceName := fmt.Sprintf("%s-%s", runtimeId, activeEntrypointSuffix)
+	return m.createEntrypointService(ctx, runtimeId, versionName, serviceName, ns)
+}
+
+func (m *Manager) createEntrypointService(ctx context.Context, runtimeId, versionName, serviceName, ns string) (*apiv1.Service, error) {
 	serviceLabels := map[string]string{
 		"type":           "entrypoint",
 		versionNameLabel: versionName,
@@ -196,10 +207,10 @@ func (m *Manager) createEntrypointService(runtimeId, versionName, serviceName, n
 
 	m.logger.Info(fmt.Sprintf("Creating service for version %s on runtime %s with serviceName %s", versionName, runtimeId, serviceName))
 
-	existingService, err := m.clientset.CoreV1().Services(ns).Get(serviceName, metav1.GetOptions{})
+	existingService, err := m.clientset.CoreV1().Services(ns).Get(ctx, serviceName, metav1.GetOptions{})
 
 	if errors.IsNotFound(err) {
-		return m.clientset.CoreV1().Services(ns).Create(&apiv1.Service{
+		return m.clientset.CoreV1().Services(ns).Create(ctx, &apiv1.Service{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:   serviceName,
 				Labels: serviceLabels,
@@ -222,7 +233,7 @@ func (m *Manager) createEntrypointService(runtimeId, versionName, serviceName, n
 				},
 				Selector: serviceLabels,
 			},
-		})
+		}, metav1.CreateOptions{})
 	}
 
 	if err != nil {
@@ -232,5 +243,5 @@ func (m *Manager) createEntrypointService(runtimeId, versionName, serviceName, n
 	existingService.ObjectMeta.Labels = serviceLabels
 	existingService.Spec.Selector = serviceLabels
 
-	return m.clientset.CoreV1().Services(ns).Update(existingService)
+	return m.clientset.CoreV1().Services(ns).Update(ctx, existingService, metav1.UpdateOptions{})
 }

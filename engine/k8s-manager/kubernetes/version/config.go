@@ -1,6 +1,7 @@
 package version
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
@@ -30,7 +31,7 @@ func (m *Manager) getVersionKRTConfName(runtimeId, versionName string) string {
 // createVersionKRTConf creates a config-map in k8s with all config values defined in the krt.yml.
 // This config-map will be regenerated when the values are changed in manager.UpdateConfig and the
 // version PODs will be restarted in order to get the new config values.
-func (m *Manager) createVersionKRTConf(runtimeId, versionName, ns string, krtConfigs []*versionpb.Config) error {
+func (m *Manager) createVersionKRTConf(ctx context.Context, runtimeId, versionName, ns string, krtConfigs []*versionpb.Config) error {
 	m.logger.Info("Creating version krt configurations...")
 
 	values := map[string]string{}
@@ -38,7 +39,7 @@ func (m *Manager) createVersionKRTConf(runtimeId, versionName, ns string, krtCon
 		values[c.Key] = c.Value
 	}
 
-	_, err := m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
+	_, err := m.clientset.CoreV1().ConfigMaps(ns).Create(ctx, &apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: m.getVersionKRTConfName(runtimeId, versionName),
 			Labels: map[string]string{
@@ -48,16 +49,16 @@ func (m *Manager) createVersionKRTConf(runtimeId, versionName, ns string, krtCon
 			},
 		},
 		Data: values,
-	})
+	}, metav1.CreateOptions{})
 
 	return err
 }
 
-func (m *Manager) deleteVersionKRTConf(runtimeID, versionName, ns string) error {
-	return m.clientset.CoreV1().ConfigMaps(ns).Delete(m.getVersionKRTConfName(runtimeID, versionName), &metav1.DeleteOptions{})
+func (m *Manager) deleteVersionKRTConf(ctx context.Context, runtimeID, versionName, ns string) error {
+	return m.clientset.CoreV1().ConfigMaps(ns).Delete(ctx, m.getVersionKRTConfName(runtimeID, versionName), metav1.DeleteOptions{})
 }
 
-func (m *Manager) createVersionConfFiles(runtimeID, versionName, ns string, workflows []*versionpb.Workflow) error {
+func (m *Manager) createVersionConfFiles(ctx context.Context, runtimeID, versionName, ns string, workflows []*versionpb.Workflow) error {
 	m.logger.Info("Creating version config files...")
 
 	natsSubjectJSON, err := m.generateNATSSubjects(runtimeID, versionName, workflows)
@@ -65,7 +66,7 @@ func (m *Manager) createVersionConfFiles(runtimeID, versionName, ns string, work
 		return err
 	}
 
-	_, err = m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
+	_, err = m.clientset.CoreV1().ConfigMaps(ns).Create(ctx, &apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: fmt.Sprintf("%s-%s-conf-files", runtimeID, versionName),
 			Labels: map[string]string{
@@ -143,7 +144,7 @@ func (m *Manager) createVersionConfFiles(runtimeID, versionName, ns string, work
     Port  4222
 `, runtimeID),
 		},
-	})
+	}, metav1.CreateOptions{})
 
 	return err
 }

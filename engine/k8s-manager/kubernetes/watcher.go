@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/konstellation-io/kre/engine/k8s-manager/config"
@@ -35,18 +36,18 @@ func NewWatcher(config *config.Config, logger *simplelogger.SimpleLogger, client
 
 const timeout = 5 * time.Minute
 
-func (w *Watcher) WaitForRuntimePods(ns string) error {
-	mongoChan, err := w.waitForPodRunning(ns, []string{"kre-app=kre-mongo"}, timeout)
+func (w *Watcher) WaitForRuntimePods(ctx context.Context, ns string) error {
+	mongoChan, err := w.waitForPodRunning(ctx, ns, []string{"kre-app=kre-mongo"}, timeout)
 	if err != nil {
 		return err
 	}
 
-	natsChan, err := w.waitForPodRunning(ns, []string{"app=kre-nats"}, timeout)
+	natsChan, err := w.waitForPodRunning(ctx, ns, []string{"app=kre-nats"}, timeout)
 	if err != nil {
 		return err
 	}
 
-	kreOperatorChan, err := w.waitForPodRunning(ns, []string{"name=k8s-runtime-operator"}, timeout)
+	kreOperatorChan, err := w.waitForPodRunning(ctx, ns, []string{"name=k8s-runtime-operator"}, timeout)
 	if err != nil {
 		return err
 	}
@@ -80,13 +81,13 @@ func (w *Watcher) WaitForRuntimePods(ns string) error {
 	return nil
 }
 
-func (w *Watcher) waitForPodRunning(ns string, podLabels []string, timeToWait time.Duration) (chan bool, error) {
+func (w *Watcher) waitForPodRunning(ctx context.Context, ns string, podLabels []string, timeToWait time.Duration) (chan bool, error) {
 	waitChan := make(chan bool)
 
 	labelSelector := strings.Join(podLabels, ",")
 	w.logger.Debugf("Creating watcher for POD with labels: %s\n", labelSelector)
 
-	watch, err := w.clientset.CoreV1().Pods(ns).Watch(metav1.ListOptions{
+	watch, err := w.clientset.CoreV1().Pods(ns).Watch(ctx, metav1.ListOptions{
 		LabelSelector: labelSelector,
 	})
 	if err != nil {
