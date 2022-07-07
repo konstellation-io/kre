@@ -120,7 +120,6 @@ func (m *Manager) getIngressSpec(entrypointHost, activeServiceName string) v1.In
 
 	if m.config.Entrypoint.IngressClassName != "" {
 		spec.IngressClassName = &m.config.Entrypoint.IngressClassName
-		m.logger.Infof("Ingress class name: %s", &spec.IngressClassName)
 	}
 
 	return spec
