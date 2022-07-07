@@ -60,9 +60,14 @@ func (k *K8sVersionClient) Start(ctx context.Context, runtimeID string, version 
 }
 
 func (k *K8sVersionClient) Stop(ctx context.Context, runtimeID string, version *entity.Version) error {
+	workflowEntrypoints := make([]string, 0)
+	for _, w := range version.Workflows {
+		workflowEntrypoints = append(workflowEntrypoints, w.Entrypoint)
+	}
 	req := versionpb.VersionInfo{
 		Name:      version.Name,
 		RuntimeId: runtimeID,
+		Workflows: workflowEntrypoints,
 	}
 
 	_, err := k.client.Stop(ctx, &req)

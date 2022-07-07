@@ -55,6 +55,7 @@ func (m *Manager) Start(req *versionpb.StartRequest) error {
 	if err != nil {
 		return err
 	}
+	// here
 
 	err = m.createAllNodeDeployments(req)
 	if err != nil {
@@ -78,6 +79,13 @@ func (m *Manager) Start(req *versionpb.StartRequest) error {
 // Stop calls kubernetes remove all version resources.
 func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Stop version %s on runtime %s", req.Name, req.RuntimeId)
+
+	for _, workflow := range req.Workflows {
+		err := deleteNatsStream(req.RuntimeId, req.Name, workflow)
+		if err != nil {
+			return err
+		}
+	}
 
 	err := m.deleteConfigMapsSync(ctx, req.RuntimeId, req.Name, m.config.Kubernetes.Namespace)
 	if err != nil {

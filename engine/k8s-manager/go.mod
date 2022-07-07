@@ -5,9 +5,10 @@ go 1.18
 require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20200611081512-198d96c2a13a
+	github.com/nats-io/nats.go v1.16.0
 	google.golang.org/grpc v1.33.2
 	google.golang.org/protobuf v1.25.0
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20191115135540-bbc9463b57e5
 	k8s.io/apimachinery v0.0.0-20191116203941-08e4eafd6d11
 	k8s.io/client-go v0.0.0-20191115215802-0a8a1d7b7fae
@@ -26,14 +27,18 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
+	github.com/nats-io/nkeys v0.3.0 // indirect
+	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/testify v1.6.1 // indirect
-	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
+	github.com/stretchr/testify v1.7.1 // indirect
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45 // indirect
-	golang.org/x/sys v0.0.0-20210510120138-977fb7262007 // indirect
-	golang.org/x/text v0.3.3 // indirect
+	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
+	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1 // indirect
+	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.5.0 // indirect

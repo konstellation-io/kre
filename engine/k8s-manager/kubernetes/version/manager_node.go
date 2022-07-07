@@ -37,6 +37,10 @@ type WorkflowConfig map[string]NodeConfig
 
 type NodeConfig map[string]string
 
+func getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
+	return fmt.Sprintf("%s-%s-%s", runtimeID, versionName, workflowEntrypoint)
+}
+
 func getStreamSubjectName(runtimeID, versionName, workflowEntrypoint, nodeName string) string {
 	return fmt.Sprintf("%s-%s-%s.%s", runtimeID, versionName, workflowEntrypoint, nodeName)
 }
