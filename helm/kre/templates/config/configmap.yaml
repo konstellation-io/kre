@@ -20,8 +20,8 @@ data:
   KRE_ENTRYPOINT_REQUEST_TIMEOUT: "30"
   KRE_ENTRYPOINT_BASE64_INGRESSES_ANNOTATIONS: {{ .Values.k8sManager.generatedEntrypoints.ingress.annotations | toYaml | b64enc }}
   KRE_ENTRYPOINTS_TLS: "{{ .Values.k8sManager.generatedEntrypoints.tls }}"
-  {{- if .Values.k8sManager.generatedEntrypoints.tls }}
-  KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: {{ include "kre-entrypoint.tls-secret" . }}
+  {{- if and .Values.k8sManager.generatedEntrypoints.tls .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
+  KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
   {{- end }}
   {{- if and .Values.k8sManager.generatedEntrypoints.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   KRE_ENTRYPOINTS_INGRESS_CLASS_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.className }}
