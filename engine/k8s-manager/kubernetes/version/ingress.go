@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-
 	"gopkg.in/yaml.v2"
 	v1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -40,6 +39,15 @@ func (m *Manager) ensureIngressCreated(ctx context.Context, name, runtimeID, act
 	return nil
 }
 
+func (m *Manager) deleteIngress(ctx context.Context, name string) error {
+	m.logger.Infof("Deleting ingress %s", name)
+	err := m.clientset.NetworkingV1().Ingresses(m.config.Kubernetes.Namespace).Delete(ctx, name, metav1.DeleteOptions{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *Manager) checkIngressExists(ctx context.Context, name string) (bool, error) {
 	_, err := m.clientset.NetworkingV1().Ingresses(m.config.Kubernetes.Namespace).Get(ctx, name, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
@@ -71,12 +79,6 @@ func (m *Manager) getIngressDefinition(runtimeID, name, activeServiceName string
 			Annotations: annotations,
 		},
 		Spec: m.getIngressSpec(entrypointHost, activeServiceName),
-	}
-	if m.config.Entrypoint.TLS.IsEnabled {
-		ingress.Spec.TLS = []v1.IngressTLS{{
-			Hosts:      []string{entrypointHost},
-			SecretName: m.config.Entrypoint.TLS.CertSecretName,
-		}}
 	}
 	return ingress, nil
 }
@@ -122,5 +124,23 @@ func (m *Manager) getIngressSpec(entrypointHost, activeServiceName string) v1.In
 		spec.IngressClassName = &m.config.Entrypoint.IngressClassName
 	}
 
+	if m.config.Entrypoint.TLS.IsEnabled {
+		spec.TLS = []v1.IngressTLS{{
+			Hosts:      []string{entrypointHost},
+			SecretName: m.getTLSCertSecretName(entrypointHost),
+		}}
+	}
+
 	return spec
+}
+
+func (m *Manager) getTLSCertSecretName(entrypointHost string) string {
+	if m.config.Entrypoint.TLS.CertSecretName != "" {
+		return m.config.Entrypoint.TLS.CertSecretName
+	}
+	return fmt.Sprintf("%s-tls", entrypointHost)
+}
+
+func (m *Manager) getIngressName(runtimeID string) string {
+	return fmt.Sprintf("%s-%s-entrypoint", m.config.ReleaseName, runtimeID)
 }

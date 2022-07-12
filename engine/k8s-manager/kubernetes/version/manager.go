@@ -108,7 +108,7 @@ func (m *Manager) Publish(ctx context.Context, req *versionpb.VersionInfo) error
 	m.logger.Infof("Publish version '%s' on runtime '%s'", req.Name, req.RuntimeId)
 
 	activeServiceName := fmt.Sprintf("%s-%s", req.RuntimeId, activeEntrypointSuffix)
-	ingressName := fmt.Sprintf("%s-%s-entrypoint", m.config.ReleaseName, req.RuntimeId)
+	ingressName := m.getIngressName(req.RuntimeId)
 
 	err := m.ensureIngressCreated(ctx, ingressName, req.RuntimeId, activeServiceName)
 	if err != nil {
@@ -152,7 +152,14 @@ func (m *Manager) Publish(ctx context.Context, req *versionpb.VersionInfo) error
 // The service-name will be changed to `VERSIONNAME-entrypoint`
 func (m *Manager) Unpublish(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Deactivating version '%s' on runtime '%s'", req.Name, req.RuntimeId)
-	err := m.deleteActiveEntrypointService(ctx, req.RuntimeId)
+
+	ingressName := m.getIngressName(req.RuntimeId)
+	err := m.deleteIngress(ctx, ingressName)
+	if err != nil {
+		return err
+	}
+
+	err = m.deleteActiveEntrypointService(ctx, req.RuntimeId)
 	if err != nil {
 		return err
 	}
