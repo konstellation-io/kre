@@ -55,7 +55,6 @@ func (m *Manager) Start(ctx context.Context, req *versionpb.StartRequest) error 
 	if err != nil {
 		return err
 	}
-	// here
 
 	err = m.createAllNodeDeployments(ctx, req)
 	if err != nil {

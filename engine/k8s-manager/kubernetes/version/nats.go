@@ -7,7 +7,7 @@ import (
 
 func createNatsStream(runtimeID, versionName, ns string, workflow *versionpb.Workflow) error {
 	// TODO
-	// Currently the endpoint is the responsible of the creation of the streams nad their wildcard sybjects
+	// Currently the endpoint is the responsible of the creation of the streams and their wildcard subjects
 	return nil
 }
 
