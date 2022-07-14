@@ -32,8 +32,8 @@ const (
 
 var ErrWaitingForVersionPODSTimeout = errors.New("[WaitForVersionPods] timeout waiting for version pods")
 
-func (m *Manager) getVersionServiceName(runtimeId, versionName string) string {
-	return fmt.Sprintf("%s-%s-entrypoint", runtimeId, versionName)
+func (m *Manager) getVersionServiceName(runtimeID, versionName string) string {
+	return fmt.Sprintf("%s-%s-entrypoint", runtimeID, versionName)
 }
 
 func New(cfg *config.Config,
@@ -198,8 +198,8 @@ func (m *Manager) UpdateConfig(ctx context.Context, req *versionpb.UpdateConfigR
 	return m.restartPodsSync(ctx, req.RuntimeId, versionName, ns)
 }
 
-func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeId, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {
-	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s' and runtime '%s'", ns, versionName, runtimeId)
+func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeID, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {
+	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s' and runtime '%s'", ns, versionName, runtimeID)
 
 	nodes := []string{"entrypoint"}
 
@@ -209,7 +209,7 @@ func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeId, versionName
 		}
 	}
 
-	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeId, versionName)
+	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeID, versionName)
 	waitCh := make(chan struct{}, 1)
 	resolver := NewStatusResolver(m.logger, nodes, waitCh)
 
@@ -230,7 +230,7 @@ func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeId, versionName
 			return ErrWaitingForVersionPODSTimeout
 
 		case <-waitCh:
-			m.logger.Debugf("[WaitForVersionPods] all version pods for '%s-%s' are running", runtimeId, versionName)
+			m.logger.Debugf("[WaitForVersionPods] all version pods for '%s-%s' are running", runtimeID, versionName)
 			return nil
 		}
 	}
