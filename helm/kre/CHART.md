@@ -16,7 +16,7 @@
 | adminApi.image.repository | string | `"konstellation/kre-admin-api"` | Image repository |
 | adminApi.image.tag | string | `"latest"` | Image tag |
 | adminApi.ingress.annotations | object | See `adminApi.ingress.annotations` in [values.yaml](./values.yaml)  | Ingress annotations |
-| adminApi.ingress.className | string | `"nginx"` | The ingressClassName to use for the Ingress |
+| adminApi.ingress.className | string | `"nginx"` | The name of the ingress class to use |
 | adminApi.logLevel | string | `"INFO"` | Default application log level |
 | adminApi.storage.class | string | `"standard"` | Storage class name |
 | adminApi.storage.path | string | `"/admin-api-files"` | Persistent volume mount point. This will define Admin API app workdir too. |
@@ -26,8 +26,8 @@
 | adminUI.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | adminUI.image.repository | string | `"konstellation/kre-admin-ui"` | Image repository |
 | adminUI.image.tag | string | `"latest"` | Image tag |
-| adminUI.ingress.annotations | object | See `adminUI.ingress.annotations` in [values.yaml](./values.yaml)  | Ingress annotations |
-| adminUI.ingress.className | string | `"nginx"` | The ingressClassName to use for the Ingress |
+| adminUI.ingress.annotations | object | `{}` | Ingress annotations |
+| adminUI.ingress.className | string | `"nginx"` | The name of the ingress class to use |
 | adminUI.tls.enabled | bool | `false` | Whether to enable TLS |
 | chronograf.persistence.accessMode | string | `"ReadWriteOnce"` | Access mode for the volume |
 | chronograf.persistence.enabled | bool | `true` | Whether to enable persistence |

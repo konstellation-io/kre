@@ -96,7 +96,6 @@ adminApi:
   # -- Hostname
   host: api.kre.local
   ingress:
-<<<<<<< HEAD
     ## This Chart has been developed using Nginx Ingress Controller by default.
     ## Using the following default annotations ensures its correct operation.
     ## Ref: https://kubernetes.github.io/ingress-nginx/
@@ -107,17 +106,6 @@ adminApi:
     # -- Ingress annotations
     # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
-=======
-    # -- The ingressClassName to use for the Ingress
-    className: "nginx"
-    # -- Ingress annotations
-    # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
-    annotations:
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
->>>>>>> main
       nginx.ingress.kubernetes.io/proxy-body-size: 100000m
       nginx.org/client-max-body-size: 100000m
       nginx.org/websocket-services: admin-api
@@ -160,16 +148,6 @@ adminUI:
     ## Using the following default annotations ensures its correct operation.
     ## Ref: https://kubernetes.github.io/ingress-nginx/
     ##
-    # -- The ingressClassName to use for the Ingress
-    className: "nginx"
-    # -- Ingress annotations
-    # @default -- See `adminUI.ingress.annotations` in [values.yaml](./values.yaml) 
-    annotations: {}
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
-
     # -- The name of the ingress class to use
     className: nginx
     # -- Ingress annotations
