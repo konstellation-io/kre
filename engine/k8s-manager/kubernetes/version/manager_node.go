@@ -70,7 +70,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_HANDLER_PATH":            n.Src,
 			"KRT_NATS_MONGO_WRITER":       natsDataSubjectPrefix + req.RuntimeId,
 			"KRT_NATS_STREAM":             fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
-			"KRT_IS_LAST_NODE":            fmt.Sprintf("false"),
+			"KRT_IS_LAST_NODE":            "false",
 			"KRT_NATS_ENTRYPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint"),
 		}
 	}
@@ -97,7 +97,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		firstNode = wconf[workflow.Edges[0].FromNode]
 		lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
 	}
-	lastNode["KRT_IS_LAST_NODE"] = fmt.Sprintf("%t", true)
+	lastNode["KRT_IS_LAST_NODE"] = "true"
 
 	// First node input is the workflow entrypoint
 	firstNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), firstNode["KRT_NODE_NAME"])
