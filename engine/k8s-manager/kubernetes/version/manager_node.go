@@ -70,7 +70,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_HANDLER_PATH":            n.Src,
 			"KRT_NATS_MONGO_WRITER":       natsDataSubjectPrefix + req.RuntimeId,
 			"KRT_NATS_STREAM":             fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
-			"KRT_IS_LAST_NODE":            fmt.Sprintf("%t", false),
+			"KRT_IS_LAST_NODE":            fmt.Sprintf("false"),
 			"KRT_NATS_ENTRYPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint"),
 		}
 	}
