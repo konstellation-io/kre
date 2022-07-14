@@ -1,111 +1,94 @@
-# kre
+# KRE helm chart
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![AppVersion: 1.0](https://img.shields.io/badge/AppVersion-1.0-informational?style=flat-square)
+Installs KRE kubernetes manifests.
 
-KRE
+## Prerequisites
 
-## Requirements
+* Kubernetes 1.19+
+* Nginx ingress controller. See [Ingress Controller](#ingress-controller).
+* Helm 3+
 
-| Repository | Name | Version |
-|------------|------|---------|
-| https://helm.influxdata.com/ | kapacitor | 1.4.0 |
-| https://influxdata.github.io/helm-charts | influxdb | 4.8.1 |
+## Install chart
+```bash
+$ helm repo add konstellation-io https://charts.konstellation.io
+$ helm repo update
+$ helm install [RELEASE_NAME] konstellation-io/kre
+```
 
-## Values
+*See [helm repo](https://helm.sh/docs/helm/helm_repo/) and [helm install](https://helm.sh/docs/helm/helm_install/) for command documentation.*
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| adminApi.host | string | `"api.kre.local"` | Hostname |
-| adminApi.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
-| adminApi.image.repository | string | `"konstellation/kre-admin-api"` | Image repository |
-| adminApi.image.tag | string | `"latest"` | Image tag |
-| adminApi.ingress.annotations | object | See `adminApi.ingress.annotations` in [values.yaml](./values.yaml)  | Ingress annotations |
-| adminApi.ingress.className | string | `"nginx"` | The ingressClassName to use for the Ingress |
-| adminApi.logLevel | string | `"INFO"` | Default application log level |
-| adminApi.storage.class | string | `"standard"` | Storage class name |
-| adminApi.storage.path | string | `"/admin-api-files"` | Persistent volume mount point. This will define Admin API app workdir too. |
-| adminApi.storage.size | string | `"1Gi"` | Storage class size |
-| adminApi.tls.enabled | bool | `false` | Whether to enable TLS |
-| adminUI.host | string | `"admin.kre.local"` | Hostname |
-| adminUI.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
-| adminUI.image.repository | string | `"konstellation/kre-admin-ui"` | Image repository |
-| adminUI.image.tag | string | `"latest"` | Image tag |
-| adminUI.ingress.annotations | object | See `adminUI.ingress.annotations` in [values.yaml](./values.yaml)  | Ingress annotations |
-| adminUI.ingress.className | string | `"nginx"` | The ingressClassName to use for the Ingress |
-| adminUI.tls.enabled | bool | `false` | Whether to enable TLS |
-| chronograf.persistence.accessMode | string | `"ReadWriteOnce"` | Access mode for the volume |
-| chronograf.persistence.enabled | bool | `true` | Whether to enable persistence |
-| chronograf.persistence.size | string | `"2Gi"` | Storage size |
-| chronograf.persistence.storageClass | string | `"standard"` | Storage class name |
-| config.admin.apiHost | string | `"api.kre.local"` | Api Hostname for Admin UI and Admin API |
-| config.admin.corsEnabled | bool | `true` | Whether to enable CORS on Admin API |
-| config.admin.frontendBaseURL | string | `"http://admin.kre.local"` | Frontend Base URL for Admin API |
-| config.admin.userEmail | string | `"dev@local.local"` | Email address for sending notifications |
-| config.auth.apiTokenSecret | string | `"api_token_secret"` | API token secret |
-| config.auth.cookieDomain | string | `"kre.local"` | Admin API secure cookie domain |
-| config.auth.jwtSignSecret | string | `"jwt_secret"` | JWT Sign secret |
-| config.auth.secureCookie | bool | `false` | Whether to enable secure cookie for Admin API |
-| config.auth.verificationCodeDurationInMinutes | int | `1` | Verification login link duration |
-| config.baseDomainName | string | `"local"` | Base domain name for Admin API and K8S Manager apps |
-| config.smtp.enabled | bool | `false` | Whether to enable SMTP server connection |
-| config.smtp.pass | string | `""` | SMTP server password |
-| config.smtp.user | string | `""` | SMTP server user |
-| developmentMode | bool | `false` | Whether to setup developement mode |
-| influxdb.address | string | `"http://kre-influxdb/"` |  |
-| influxdb.affinity | object | `{}` | Assign custom affinity rules to the InfluxDB pods # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ # |
-| influxdb.config.http | object | `{"auth-enabled":false,"enabled":true,"flux-enabled":true}` | [Details](https://docs.influxdata.com/influxdb/v1.8/administration/config/#http) |
-| influxdb.image.tag | string | `"1.8.1"` | Image tag |
-| influxdb.initScripts.enabled | bool | `true` | Boolean flag to enable and disable initscripts. See https://github.com/influxdata/helm-charts/tree/master/charts/influxdb#configure-the-chart for more info |
-| influxdb.initScripts.scripts | object | `{"init.iql":"CREATE DATABASE \"kre\"\n"}` | Init scripts |
-| influxdb.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. # ref: https://kubernetes.io/docs/user-guide/node-selection/ # |
-| influxdb.persistence.accessMode | string | `"ReadWriteOnce"` | Access mode for the volume |
-| influxdb.persistence.enabled | bool | `true` | Whether to enable persistence. See https://github.com/influxdata/helm-charts/tree/master/charts/influxdb#configure-the-chart for more info |
-| influxdb.persistence.size | string | `"10Gi"` | Storage size |
-| influxdb.persistence.storageClass | string | `"standard"` | Storage class name |
-| influxdb.tolerations | list | `[]` | Tolerations for use with node taints # ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ # |
-| k8sManager.generatedEntrypoints.ingress.annotations | object | See `entrypoints.ingress.annotations` in [values.yaml](./values.yaml)  | The annotations that all the generated ingresses for the entrypoints will have |
-| k8sManager.generatedEntrypoints.ingress.className | string | `"nginx"` | The ingressClassName to use for the enypoints' generated ingresses |
-| k8sManager.generatedEntrypoints.ingress.tls.secretName | string | If not defined, every created ingress will use an autogenerated certificate name based on the deployed runtimeId and .Values.config.baseDomainName. | TLS certificate secret name. If defined, wildcard for the current application domain must be used. |
-| k8sManager.generatedEntrypoints.tls | bool | `false` | Wether to enable tls |
-| k8sManager.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
-| k8sManager.image.repository | string | `"konstellation/kre-k8s-manager"` | Image repository |
-| k8sManager.image.tag | string | `"latest"` | Image tag |
-| k8sManager.krtFilesDownloader.image.pullPolicy | string | `"Always"` | Image pull policy |
-| k8sManager.krtFilesDownloader.image.repository | string | `"konstellation/krt-files-downloader"` | Image repository |
-| k8sManager.krtFilesDownloader.image.tag | string | `"latest"` | Image tag |
-| k8sManager.serviceAccount.annotations | object | `{}` | The Service Account annotations |
-| k8sManager.serviceAccount.create | bool | `true` | Whether to create the Service Account |
-| k8sManager.serviceAccount.name | string | `""` | The name of the service account. @default: A pre-generated name based on the chart relase fullname sufixed by `-k8s-manager` |
-| kapacitor.enabled | bool | `false` | Whether to enable Kapacitor |
-| kapacitor.persistence.enabled | bool | `false` | Whether to enable persistence [Details](https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml) |
-| mongoWriter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
-| mongoWriter.image.repository | string | `"konstellation/kre-mongo-writer"` | Image repository |
-| mongoWriter.image.tag | string | `"latest"` | Image tag |
-| mongodb.affinity | object | `{}` | Assign custom affinity rules to the MongoDB pods # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ # |
-| mongodb.auth.adminPassword | string | `"123456"` | MongoDB admin password |
-| mongodb.auth.adminUser | string | `"admin"` | MongoDB admin username |
-| mongodb.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. # ref: https://kubernetes.io/docs/user-guide/node-selection/ # |
-| mongodb.persistentVolume.size | string | `"5Gi"` | Storgae size |
-| mongodb.persistentVolume.storageClass | string | `"standard"` | Storage class name |
-| mongodb.tolerations | list | `[]` | Tolerations for use with node taints # ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ # |
-| nameOverride | string | `""` | Provide a name in place of kre for `app.kubernetes.io/name` labels |
-| nats.affinity | object | `{}` | Assign custom affinity rules to the InfluxDB pods # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ # |
-| nats.client.port | int | `4222` | Port for client connections |
-| nats.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
-| nats.image.repository | string | `"nats"` | Image repository |
-| nats.image.tag | string | `"2.8.4"` | Image tag |
-| nats.jetstream.memStorage.enabled | bool | `true` | Whether to enable memory storage for Jetstream |
-| nats.jetstream.memStorage.size | string | `"1Gi"` | Memory storage max size for JetStream |
-| nats.jetstream.storage.enabled | bool | `true` | Whether to enable a PersistentVolumeClaim for Jetstream |
-| nats.jetstream.storage.size | string | `"1Gi"` | Storage size for the Jetstream PersistentVolumeClaim. Notice this is also used for the Jetstream storage limit configuration even if PVC creation is disabled |
-| nats.jetstream.storage.storageClassName | string | `"standard"` | Storage class name for the Jetstream PersistentVolumeClaim |
-| nats.jetstream.storage.storageDirectory | string | `"/data"` | Directory to use for JetStream storage when using a PersistentVolumeClaim |
-| nats.logging.debug | bool | `false` | Whether to enable logging debug mode |
-| nats.logging.logtime | bool | `true` | Timestamp log entries |
-| nats.logging.trace | bool | `false` | Whether to enable logging trace mode |
-| nats.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. # ref: https://kubernetes.io/docs/user-guide/node-selection/ # |
-| nats.tolerations | list | `[]` | Tolerations for use with node taints # ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ # |
-| rbac.create | bool | `true` | Whether to create the roles for the services that could use custom Service Accounts |
+## Dependencies
 
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
+By default this chart installs [InfluxDB](https://github.com/influxdata/helm-charts/tree/master/charts/influxdb) and [Kapacitor](https://github.com/influxdata/helm-charts/tree/master/charts/kapacitor) chart as dependency.
+
+However, **Kapacitor** is an optional dependency. To disable a it during installation, set `kapacitor.enabled`, to `false`.
+
+## Uninstall chart
+
+```bash
+$ helm uninstall [RELEASE_NAME]
+```
+
+This removes all the Kubernetes components associated with the chart and deletes the release.
+
+*See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command documentation.*
+
+## Upgrading Chart
+
+```bash
+$ helm upgrade [RELEASE_NAME] konstellation.io/kre
+```
+
+*See [helm upgrade](https://helm.sh/docs/helm/helm_upgrade/) for command documentation.* 
+
+### Upgrading an existing Release to a new major version
+
+A major chart version change (like v0.15.3 -> v1.0.0) indicates that there is an incompatible breaking change needing
+manual actions.
+
+### From 2.X to 3.X
+
+* Removed `mongodb.mongodbUsername` and `mongodb.mongodbPassword` from **values.yaml** in favour of `mongodb.auth.adminUser` and `mongodb.auth.adminpassword`
+* Removed `rbac.createServiceAccount` and `rbac.serviceAccount`
+* Added `rbac.create` (defaults to true) and added Service Account related block under `k8sManager.serviceAccount`
+* Removed other unused values from `values.yaml`.
+
+Check commits [1fab33b](https://github.com/konstellation-io/kre/pull/593/commits/1fab33b8351cae317753017373ac2dab4817c36f) and [a280847](https://github.com/konstellation-io/kre/pull/598/commits/59e7365350d67d30984a2554a28d0241cf74f13e) for more details.
+
+### From 1.X to 2.X
+
+This major version comes with the following changes:
+* **Resource label refactor**: Labels have changed for some resources, so the following resources must be manually deleted before updating.
+
+    Affected deployment resources:
+    * Admin UI
+    * Admin API
+    * Chronograf
+    * k8s-manager
+    * MongoDB 
+    * MongoExpress
+
+    Affected statefulset resources:
+    * MongoDB
+    * NATS
+
+    The commit that introduces the changes is [located here](https://github.com/konstellation-io/kre/pull/585).
+
+* **Ingress annotations are taken from values.yaml**: Now default ingress annotations are specified from [values.yaml](values.yaml) file. If additional ingress annotations are required, those must be appended to the default ones via extra values files or by using the `--set` argument.
+
+* **Openshift routes have been removed**: All Openshift route manifests have been removed from chart. Extend it if you are planning to install it on Openshift platforms.
+
+* **Prometheus Operator have been removed**: Application functionallity has been decoupled from Prometheus so this component is no longer necessary. Use [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for platform monitoring if needed.
+
+## Chart customization
+You can check all requirements and possible chart values [here](./CHART.md).
+
+## Ingress controller
+
+This Chart has been developed using **Nginx Ingress Controller**. So using the default ingress annotations ensures its correct operation. .
+
+*See [values.yaml](values.yaml) file and [Nginx Ingress controller](https://kubernetes.github.io/ingress-nginx/) for additional documentation**.
+
+However, users could use any other ingress controller (for example, [Traefik](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)). In that case, ingress configurations equivalent to the default ones must be povided.
+
+Notice that even using equivalent ingress configurations the correct operation of the appliance is not guaranteed.
