@@ -42,33 +42,9 @@ type Config struct {
 	} `yaml:"kubernetes"`
 
 	NatsStreaming struct {
-		URL     string `yaml:"url" envconfig:"KRE_NATS_URL"`
-		Storage struct {
-			ClassName string `yaml:"className" envconfig:"KRE_NATS_STORAGECLASS"`
-			Size      string `yaml:"size" envconfig:"KRE_NATS_STORAGE_SIZE"`
-		} `yaml:"storage"`
+		URL string `yaml:"url" envconfig:"KRE_NATS_URL"`
 	} `yaml:"nats_streaming"`
 
-	MongoDB struct {
-		PersistentVolume struct {
-			StorageClass string `yaml:"storageClass" envconfig:"KRE_MONGODB_STORAGECLASS"`
-			Size         string `yaml:"size" envconfig:"KRE_MONGODB_STORAGE_SIZE"`
-		} `yaml:"persistentVolume"`
-	} `yaml:"mongo"`
-
-	Chronograf struct {
-		PersistentVolume struct {
-			StorageClass string `yaml:"storageClass" envconfig:"KRE_CHRONOGRAF_STORAGECLASS"`
-			Size         string `yaml:"size" envconfig:"KRE_CHRONOGRAF_STORAGE_SIZE"`
-		} `yaml:"persistentVolume"`
-	} `yaml:"chronograf"`
-
-	InfluxDB struct {
-		PersistentVolume struct {
-			StorageClass string `yaml:"storageClass" envconfig:"KRE_INFLUXDB_STORAGECLASS"`
-			Size         string `yaml:"size" envconfig:"KRE_INFLUXDB_STORAGE_SIZE"`
-		} `yaml:"persistentVolume"`
-	} `yaml:"influxdb"`
 	KrtFilesDownloader struct {
 		Image      string `yaml:"image" envconfig:"KRE_KRT_FILES_DOWNLOADER_IMAGE"`
 		Tag        string `yaml:"tag" envconfig:"KRE_KRT_FILES_DOWNLOADER_TAG"`
