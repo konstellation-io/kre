@@ -18,9 +18,9 @@ type Config struct {
 	ReleaseName string `yaml:"releaseName" envconfig:"KRE_RELEASE_NAME"`
 
 	Entrypoint struct {
-		RequestTimeout           string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINT_REQUEST_TIMEOUT"`
+		RequestTimeout           string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINTS_REQUEST_TIMEOUT"`
 		IngressClassName         string `yaml:"ingressClassName" envconfig:"KRE_ENTRYPOINTS_INGRESS_CLASS_NAME"`
-		IngressAnnotationsBase64 string `yaml:"ingressAnnotationsBase64" envconfig:"KRE_ENTRYPOINT_BASE64_INGRESSES_ANNOTATIONS"`
+		IngressAnnotationsBase64 string `yaml:"ingressAnnotationsBase64" envconfig:"KRE_ENTRYPOINTS_BASE64_INGRESSES_ANNOTATIONS"`
 		TLS                      struct {
 			IsEnabled      bool   `yaml:"isEnabled" envconfig:"KRE_ENTRYPOINTS_TLS"`
 			CertSecretName string `yaml:"secretName" envconfig:"KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME"`
