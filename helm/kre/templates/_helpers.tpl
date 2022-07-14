@@ -137,6 +137,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+nats url
+*/}}
+{{- define "nats.url" -}}
+{{- printf "%s-nats:%d" .Release.Name (.Values.nats.client.port | int) -}}
+{{- end -}}
+
+{{/*
 Runtime Name
 */}}
 {{- define "runtime.name" -}}

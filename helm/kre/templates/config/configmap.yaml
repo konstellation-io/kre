@@ -42,6 +42,7 @@ data:
   # NATS Streaming
   KRE_NATS_STORAGECLASS: "{{ .Values.nats.jetstream.storage.storageClassName }}"
   KRE_NATS_STORAGE_SIZE: "{{ .Values.nats.jetstream.storage.size }}"
+  KRE_NATS_URL: "{{ include "nats.url" . }}"
   # MongoDB
   KRE_MONGODB_STORAGECLASS: "{{ .Values.mongodb.persistentVolume.storageClass }}"
   KRE_MONGODB_STORAGE_SIZE: "{{ .Values.mongodb.persistentVolume.size }}"
