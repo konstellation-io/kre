@@ -22,6 +22,3 @@ go mod tidy
 
 cd ../acceptance/test_krt/runtime-test-v1/src/go-runner/
 go mod tidy
-
-cd ../..
-go work sync
