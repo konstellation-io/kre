@@ -11,7 +11,7 @@ import (
 type Config struct {
 	LogLevel string `yaml:"logLevel" envconfig:"MONGO_WRITER_LOG_LEVEL"`
 	Nats     struct {
-		Server              string `yaml:"server" envconfig:"KRT_NATS_SERVER"`
+		Server              string `yaml:"server" envconfig:"KRE_NATS_URL"`
 		LogsSubjectWildcard string `default:"mongo_writer_logs.*"`
 		DataSubjectWildcard string `default:"mongo_writer_data.*"`
 	} `yaml:"nats"`

@@ -76,7 +76,7 @@ Example:
 - Create a port-forward for the runtime NATS instance.
 - Configure the environment vars:
 ```
-KRT_NATS_SERVER=localhost:4222
+KRE_NATS_URL=localhost:4222
 KRE_RUNTIME_MONGO_URI=mongodb://admin:123456@0.0.0.0:27017/admin?connect=direct
 ```
 Notice the `?connect=direct` param in the MongoDB uri!
