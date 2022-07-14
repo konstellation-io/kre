@@ -42,6 +42,7 @@ type Config struct {
 	} `yaml:"kubernetes"`
 
 	NatsStreaming struct {
+		URL     string `yaml:"url" envconfig:"KRE_NATS_URL"`
 		Storage struct {
 			ClassName string `yaml:"className" envconfig:"KRE_NATS_STORAGECLASS"`
 			Size      string `yaml:"size" envconfig:"KRE_NATS_STORAGE_SIZE"`

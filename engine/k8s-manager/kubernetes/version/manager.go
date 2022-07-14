@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/konstellation-io/kre/engine/k8s-manager/nats"
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
@@ -18,9 +19,10 @@ import (
 )
 
 type Manager struct {
-	config    *config.Config
-	logger    *simplelogger.SimpleLogger
-	clientset *kubernetes.Clientset
+	config      *config.Config
+	logger      *simplelogger.SimpleLogger
+	clientset   *kubernetes.Clientset
+	natsManager nats.Manager
 }
 
 const (
@@ -34,11 +36,15 @@ func (m *Manager) getVersionServiceName(runtimeId, versionName string) string {
 	return fmt.Sprintf("%s-%s-entrypoint", runtimeId, versionName)
 }
 
-func New(cfg *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Manager {
+func New(cfg *config.Config,
+	logger *simplelogger.SimpleLogger,
+	clientset *kubernetes.Clientset,
+	nm *nats.NatsManager) *Manager {
 	return &Manager{
 		cfg,
 		logger,
 		clientset,
+		nm,
 	}
 }
 
@@ -80,7 +86,7 @@ func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Stop version %s on runtime %s", req.Name, req.RuntimeId)
 
 	for _, workflow := range req.Workflows {
-		err := deleteNatsStream(req.RuntimeId, req.Name, workflow)
+		err := m.natsManager.DeleteNatsStream(req.RuntimeId, req.Name, workflow)
 		if err != nil {
 			return err
 		}

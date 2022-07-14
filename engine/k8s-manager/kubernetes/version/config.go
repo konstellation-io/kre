@@ -19,7 +19,7 @@ func (m *Manager) getCommonEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
 		{Name: "KRT_MONGO_DB_NAME", Value: req.GetMongoDbName()},
 		{Name: "KRT_MONGO_BUCKET", Value: req.GetMongoKrtBucket()},
 		{Name: "KRT_BASE_PATH", Value: basePathKRT},
-		{Name: "KRT_NATS_SERVER", Value: natsURL},
+		{Name: "KRT_NATS_SERVER", Value: m.config.NatsStreaming.URL},
 		{Name: "KRT_RUNTIME_ID", Value: req.GetRuntimeId()},
 	}
 }
