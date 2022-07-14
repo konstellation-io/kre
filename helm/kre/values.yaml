@@ -4,9 +4,6 @@ nameOverride: ""
 # -- Whether to setup developement mode
 developmentMode: false
 
-# -- Runtime name
-runtimeName: "My Runtime"
-
 rbac:
   # -- Whether to create the roles for the services that could use custom Service Accounts
   create: true
@@ -99,6 +96,7 @@ adminApi:
   # -- Hostname
   host: api.kre.local
   ingress:
+<<<<<<< HEAD
     ## This Chart has been developed using Nginx Ingress Controller by default.
     ## Using the following default annotations ensures its correct operation.
     ## Ref: https://kubernetes.github.io/ingress-nginx/
@@ -109,6 +107,17 @@ adminApi:
     # -- Ingress annotations
     # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations:
+=======
+    # -- The ingressClassName to use for the Ingress
+    className: "nginx"
+    # -- Ingress annotations
+    # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
+    annotations:
+      ## This Chart has been developed using Nginx Ingress Controller by default.
+      ## Using the following default annotations ensures its correct operation.
+      ## Ref: https://kubernetes.github.io/ingress-nginx/
+      ##
+>>>>>>> main
       nginx.ingress.kubernetes.io/proxy-body-size: 100000m
       nginx.org/client-max-body-size: 100000m
       nginx.org/websocket-services: admin-api
@@ -151,6 +160,15 @@ adminUI:
     ## Using the following default annotations ensures its correct operation.
     ## Ref: https://kubernetes.github.io/ingress-nginx/
     ##
+    # -- The ingressClassName to use for the Ingress
+    className: "nginx"
+    # -- Ingress annotations
+    # @default -- See `adminUI.ingress.annotations` in [values.yaml](./values.yaml) 
+    annotations: {}
+      ## This Chart has been developed using Nginx Ingress Controller by default.
+      ## Using the following default annotations ensures its correct operation.
+      ## Ref: https://kubernetes.github.io/ingress-nginx/
+      ##
 
     # -- The name of the ingress class to use
     className: nginx
@@ -192,60 +210,27 @@ k8sManager:
     name: ""
     # -- The Service Account annotations
     annotations: {}
-
-mongoWriter:
-  image:
-    # -- Image repository
-    repository: konstellation/kre-mongo-writer
-    # -- Image tag
-    tag: latest
-    # -- Image pull policy
-    pullPolicy: IfNotPresent
-
-entrypoint:
-  # -- Wether to enable tls
-  tls: false
-  # -- Hostname
-  host: "local"
-  ingress:
-    ## This Chart has been developed using Nginx Ingress Controller by default.
-    ## Using the following default annotations ensures its correct operation.
-    ## Ref: https://kubernetes.github.io/ingress-nginx/
-    ##
-
-    # -- The name of the ingress class to use
-    className: nginx
-    # -- Ingress annotations
-    # @default -- See `entrypoint.ingress.annotations` in [values.yaml](./values.yaml) 
-    annotations:
-      nginx.ingress.kubernetes.io/default-backend: runtime-default-backend
-      nginx.ingress.kubernetes.io/custom-http-errors: "404,503,502"
-
-      ## If additional annotations are needed to configure it, provide an additional
-      ## file ensuring they are appended to the default ones.
-      ##
-      ## Example:
-      ##
-      # cert-manager.io/issuer: your-issuer
-
-      ## Ensure different annotations are provided when another ingress controller is being used
-      ## (for example, through an additional values.yaml)
-      ## For example, when the ingress controller is Traefik instead of Nginx:
-      ##
-      # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
-
-  grpc:
+  krtFilesDownloader:
+    image:
+      # -- Image repository
+      repository: konstellation/krt-files-downloader
+      # -- Image tag
+      tag: latest
+      # -- Image pull policy
+      pullPolicy: Always
+  generatedEntrypoints:
+    # -- Wether to enable tls
+    tls: false
     ingress:
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
-
-      # -- The name of the ingress class to use
-      className: nginx
-      # -- GRPC Ingress annotations
-      # @default -- See `entrypoint.grpc.ingress.annotations` in [values.yaml](./values.yaml) 
+      # -- The ingressClassName to use for the enypoints' generated ingresses
+      className: "nginx"
+      # -- The annotations that all the generated ingresses for the entrypoints will have
+      # @default -- See `entrypoints.ingress.annotations` in [values.yaml](./values.yaml) 
       annotations:
+        ## This Chart has been developed using Nginx Ingress Controller by default.
+        ## Using the following default annotations ensures its correct operation.
+        ## Ref: https://kubernetes.github.io/ingress-nginx/
+        ##
         nginx.ingress.kubernetes.io/proxy-body-size: 16m
         nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
         # Based on this snippet:
@@ -279,6 +264,19 @@ entrypoint:
         # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
         # kubernetes.io/ingress.class: traefik
         # traefik.ingress.kubernetes.io/service.serversscheme: h2c
+      tls:
+        # -- TLS certificate secret name. If defined, wildcard for the current application domain must be used.
+        # @default -- If not defined, every created ingress will use an autogenerated certificate name based on the deployed runtimeId and .Values.config.baseDomainName.
+        secretName: ""
+
+mongoWriter:
+  image:
+    # -- Image repository
+    repository: konstellation/kre-mongo-writer
+    # -- Image tag
+    tag: latest
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
 
 nats_streaming:
   # -- Number of replicas
@@ -326,7 +324,7 @@ influxdb:
     scripts:
       init.iql: |+
         CREATE DATABASE "kre"
-
+  address: http://kre-influxdb/
   # -- Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##

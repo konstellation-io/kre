@@ -38,8 +38,8 @@ func CreateDashboardService(cfg *config.Config, logger logging.Logger) domainSer
 	return &Chronograf{cfg, logger, client}
 }
 
-func (c *Chronograf) Create(ctx context.Context, version, dashboardPath string) error {
-	c.logger.Infof("Creating dashboard: \"%s\" for version: \"%s\"", dashboardPath, version)
+func (c *Chronograf) Create(ctx context.Context, runtimeId, version, dashboardPath string) error {
+	c.logger.Infof("Creating dashboard: \"%s\" for version: \"%s\" in runtime \"%s\"", dashboardPath, version, runtimeId)
 
 	data, err := os.Open(dashboardPath)
 	if err != nil {
@@ -58,7 +58,7 @@ func (c *Chronograf) Create(ctx context.Context, version, dashboardPath string) 
 		return fmt.Errorf("error unmarshalling Chronograf dashboard definition: %w", err)
 	}
 
-	dashboard.Name = fmt.Sprintf("%s-%s", version, dashboard.Name)
+	dashboard.Name = fmt.Sprintf("%s-%s-%s", runtimeId, version, dashboard.Name)
 	requestByte, err := json.Marshal(dashboard)
 	if err != nil {
 		return fmt.Errorf("error marshalling Chronograf dashboard definition: %w", err)

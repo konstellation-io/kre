@@ -47,15 +47,15 @@ type Config struct {
 		DataDBName string `yaml:"dataDbName"`
 		KRTBucket  string `yaml:"krtBucket"`
 	} `yaml:"mongodb"`
+	InfluxDB struct {
+		Address string `yaml:"address" envconfig:"KRE_INFLUXDB_ADDRESS"`
+	} `yaml:"influxdb"`
 	K8s struct {
 		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
 	} `yaml:"k8s"`
 	Services struct {
 		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
 	} `yaml:"services"`
-	Runtime struct {
-		Name string `yaml:"name" envconfig:"KRE_RUNTIME_NAME"`
-	} `yaml:"runtime"`
 }
 
 var once sync.Once

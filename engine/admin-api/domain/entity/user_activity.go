@@ -9,6 +9,7 @@ type UserActivityType string
 const (
 	UserActivityTypeLogin                      UserActivityType = "LOGIN"
 	UserActivityTypeLogout                     UserActivityType = "LOGOUT"
+	UserActivityTypeCreateRuntime              UserActivityType = "CREATE_RUNTIME"
 	UserActivityTypeCreateVersion              UserActivityType = "CREATE_VERSION"
 	UserActivityTypePublishVersion             UserActivityType = "PUBLISH_VERSION"
 	UserActivityTypeUnpublishVersion           UserActivityType = "UNPUBLISH_VERSION"

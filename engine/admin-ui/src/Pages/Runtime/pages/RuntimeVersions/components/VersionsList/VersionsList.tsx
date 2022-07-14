@@ -1,10 +1,12 @@
 import React from 'react';
 import styles from './VersionsList.module.scss';
 import { Button } from 'kwc';
-import ROUTE from 'Constants/routes';
+import ROUTE, {VersionRouteParams} from 'Constants/routes';
 import VersionInfo from '../VersionInfo/VersionInfo';
 import Can from 'Components/Can/Can';
 import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
+import { buildRoute } from "Utils/routes";
+import { useParams } from "react-router-dom";
 
 type Props = {
   title: string;
@@ -20,6 +22,8 @@ function VersionsList({
 }: Props) {
   if (!versions.length) return null;
 
+  const { runtimeId } = useParams<VersionRouteParams>();
+
   function getTitle() {
     return hideNumberOnTitle ? title : `${title} (${versions.length})`;
   }
@@ -32,7 +36,7 @@ function VersionsList({
           <Can perform="version:edit">
             <Button
               label="ADD VERSION"
-              to={ROUTE.NEW_VERSION}
+              to={buildRoute.version(ROUTE.NEW_VERSION, runtimeId)}
               primary
               height={30}
             />

@@ -1,6 +1,6 @@
 package usecase
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/usecase_${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/usecase_${GOFILE} -package=mocks
 
 import (
 	"context"
@@ -22,11 +22,12 @@ type UserActivityInteracter interface {
 		versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	RegisterLogin(userID string) error
 	RegisterLogout(userID string) error
-	RegisterCreateAction(userID string, version *entity.Version) error
-	RegisterStartAction(userID string, version *entity.Version, comment string) error
-	RegisterStopAction(userID string, version *entity.Version, comment string) error
-	RegisterPublishAction(userID string, version *entity.Version, prev *entity.Version, comment string) error
-	RegisterUnpublishAction(userID string, version *entity.Version, comment string) error
+	RegisterCreateRuntime(userID string, runtime *entity.Runtime) error
+	RegisterCreateAction(userID, runtimeId string, version *entity.Version) error
+	RegisterStartAction(userID, runtimeId string, version *entity.Version, comment string) error
+	RegisterStopAction(userID, runtimeId string, version *entity.Version, comment string) error
+	RegisterPublishAction(userID, runtimeId string, version *entity.Version, prev *entity.Version, comment string) error
+	RegisterUnpublishAction(userID, runtimeId string, version *entity.Version, comment string) error
 	RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error
 	RegisterCreateUser(userID string, createdUser *entity.User)
 	RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string)
@@ -124,11 +125,30 @@ func (i *UserActivityInteractor) RegisterLogout(userID string) error {
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterCreateAction(userID string, version *entity.Version) error {
+func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
+	err := i.create(
+		userID,
+		entity.UserActivityTypeCreateRuntime,
+		[]*entity.UserActivityVar{
+			{
+				Key:   "RUNTIME_ID",
+				Value: runtime.ID,
+			},
+			{
+				Key:   "RUNTIME_NAME",
+				Value: runtime.Name,
+			},
+		})
+
+	return checkUserActivityError(i.logger, err)
+}
+
+func (i *UserActivityInteractor) RegisterCreateAction(userID, runtimeId string, version *entity.Version) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: runtimeId},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 		})
@@ -136,11 +156,12 @@ func (i *UserActivityInteractor) RegisterCreateAction(userID string, version *en
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStartAction(userID string, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterStartAction(userID, runtimeId string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeStartVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: runtimeId},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -149,11 +170,12 @@ func (i *UserActivityInteractor) RegisterStartAction(userID string, version *ent
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStopAction(userID string, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterStopAction(userID, runtimeId string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeStopVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: runtimeId},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -161,11 +183,12 @@ func (i *UserActivityInteractor) RegisterStopAction(userID string, version *enti
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterPublishAction(userID string, version *entity.Version, prev *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterPublishAction(userID, runtimeId string, version *entity.Version, prev *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypePublishVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: runtimeId},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "OLD_PUBLISHED_VERSION_ID", Value: prev.ID},
@@ -175,11 +198,12 @@ func (i *UserActivityInteractor) RegisterPublishAction(userID string, version *e
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterUnpublishAction(userID string, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterUnpublishAction(userID, runtimeId string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeUnpublishVersion,
 		[]*entity.UserActivityVar{
+			{Key: "RUNTIME_ID", Value: runtimeId},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},

@@ -4,6 +4,7 @@ import cx from 'classnames';
 import styles from './PageBase.module.scss';
 import { useReactiveVar } from '@apollo/client';
 import { logTabs } from '../../../Graphql/client/cache';
+import NavigationBar from "../../NavigationBar/NavigationBar";
 
 type PageBaseProps = {
   children: ReactElement | ReactElement[] | null;
@@ -32,6 +33,7 @@ function PageBase({
           [styles.withLogs]: opened
         })}
       >
+        <NavigationBar/>
         {children}
       </div>
     </>

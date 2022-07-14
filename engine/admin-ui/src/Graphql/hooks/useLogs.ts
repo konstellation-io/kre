@@ -149,7 +149,9 @@ function useLogs() {
       uniqueId: newLogTabId,
       filters: {
         ...getDefaultFilters(),
-        nodes
+        nodes,
+        versionsIds: [versionId],
+        workflowsNames: nodes.map(node => node.workflowName)
       }
     };
 

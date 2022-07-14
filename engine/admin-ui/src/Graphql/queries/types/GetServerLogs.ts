@@ -32,7 +32,7 @@ export interface GetServerLogs {
 }
 
 export interface GetServerLogsVariables {
-  versionName: string;
+  runtimeId: string;
   filters: LogFilters;
   cursor?: string | null;
 }

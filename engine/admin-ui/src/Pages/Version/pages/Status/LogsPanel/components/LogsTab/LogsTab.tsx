@@ -20,7 +20,7 @@ function LogsTab({
   runtimeId,
   versionName,
   uniqueId = '',
-  filterValues
+  filterValues,
 }: Props) {
   const { updateTabFilters, resetTabFilters } = useLogs();
 
@@ -49,12 +49,14 @@ function LogsTab({
         updateFilters={updateFilters}
         filterValues={filterValues}
         versionName={versionName}
+        runtimeId={runtimeId}
       />
       <AppliedFilters
         filters={displayableFilters}
         updateFilters={updateFilters}
         versionName={versionName}
         resetFilters={resetFilters}
+        runtimeId={runtimeId}
       />
       <LogsList
         logs={logs}

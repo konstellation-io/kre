@@ -36,17 +36,31 @@ func (m *MockMetricRepo) EXPECT() *MockMetricRepoMockRecorder {
 	return m.recorder
 }
 
-// GetMetrics mocks base method.
-func (m *MockMetricRepo) GetMetrics(ctx context.Context, startDate, endDate time.Time, versionName string) ([]entity.ClassificationMetric, error) {
+// CreateIndexes mocks base method.
+func (m *MockMetricRepo) CreateIndexes(ctx context.Context, runtimeId string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMetrics", ctx, startDate, endDate, versionName)
+	ret := m.ctrl.Call(m, "CreateIndexes", ctx, runtimeId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateIndexes indicates an expected call of CreateIndexes.
+func (mr *MockMetricRepoMockRecorder) CreateIndexes(ctx, runtimeId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockMetricRepo)(nil).CreateIndexes), ctx, runtimeId)
+}
+
+// GetMetrics mocks base method.
+func (m *MockMetricRepo) GetMetrics(ctx context.Context, startDate, endDate time.Time, runtimeId, versionName string) ([]entity.ClassificationMetric, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMetrics", ctx, startDate, endDate, runtimeId, versionName)
 	ret0, _ := ret[0].([]entity.ClassificationMetric)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetMetrics indicates an expected call of GetMetrics.
-func (mr *MockMetricRepoMockRecorder) GetMetrics(ctx, startDate, endDate, versionName interface{}) *gomock.Call {
+func (mr *MockMetricRepoMockRecorder) GetMetrics(ctx, startDate, endDate, runtimeId, versionName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockMetricRepo)(nil).GetMetrics), ctx, startDate, endDate, versionName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockMetricRepo)(nil).GetMetrics), ctx, startDate, endDate, runtimeId, versionName)
 }

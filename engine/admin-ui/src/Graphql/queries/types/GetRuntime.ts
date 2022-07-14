@@ -16,3 +16,7 @@ export interface GetRuntime_runtime {
 export interface GetRuntime {
   runtime: GetRuntime_runtime;
 }
+
+export interface GetRuntimeVariables {
+  runtimeId: string;
+}

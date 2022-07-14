@@ -8,10 +8,8 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
-  KRE_RUNTIME_NAME: "{{ .Values.runtimeName }}"
   KRE_RELEASE_NAME: "{{ .Release.Name }}"
-  # Runtime Entrypoint TLS
-  KRE_ENTRYPOINT_TLS: "{{ .Values.entrypoint.tls }}"
+
   # Admin
   KRE_ADMIN_FRONTEND_BASE_URL: "{{ .Values.config.admin.frontendBaseURL }}"
   KRE_ADMIN_API_BASE_URL: "{{ $protocol }}://{{ .Values.config.admin.apiHost }}"
@@ -20,6 +18,14 @@ data:
   # K8S MANAGER
   KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
   KRE_ENTRYPOINT_REQUEST_TIMEOUT: "30"
+  KRE_ENTRYPOINT_BASE64_INGRESSES_ANNOTATIONS: {{ .Values.k8sManager.generatedEntrypoints.ingress.annotations | toYaml | b64enc }}
+  KRE_ENTRYPOINTS_TLS: "{{ .Values.k8sManager.generatedEntrypoints.tls }}"
+  {{- if and .Values.k8sManager.generatedEntrypoints.tls .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
+  KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
+  {{- end }}
+  {{- if and .Values.k8sManager.generatedEntrypoints.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  KRE_ENTRYPOINTS_INGRESS_CLASS_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.className }}
+  {{- end }}
 
   # SMTP
   KRE_SMTP_ENABLED: "{{ .Values.config.smtp.enabled }}"
@@ -43,5 +49,10 @@ data:
   KRE_CHRONOGRAF_STORAGECLASS: "{{ .Values.chronograf.persistence.storageClass }}"
   KRE_CHRONOGRAF_STORAGE_SIZE: "{{ .Values.chronograf.persistence.size }}"
   #InfluxDB
+  KRE_INFLUXDB_ADDRESS: {{ include "runtime.influxURL" . }}
   KRE_INFLUXDB_STORAGECLASS: "{{ .Values.influxdb.persistence.storageClass }}"
   KRE_INFLUXDB_STORAGE_SIZE: "{{ .Values.influxdb.persistence.size }}"
+  #KRTFilesDownloader
+  KRE_KRT_FILES_DOWNLOADER_IMAGE: "{{ .Values.k8sManager.krtFilesDownloader.image.repository }}"
+  KRE_KRT_FILES_DOWNLOADER_TAG: "{{ .Values.k8sManager.krtFilesDownloader.image.tag }}"
+  KRE_KRT_FILES_DOWNLOADER_PULL_POLICY: "{{ .Values.k8sManager.krtFilesDownloader.image.pullPolicy }}"

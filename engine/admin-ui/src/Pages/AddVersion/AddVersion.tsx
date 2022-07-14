@@ -9,7 +9,7 @@ import {
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { useEffect, useState } from 'react';
 
-import ROUTE from 'Constants/routes';
+import ROUTE, {RuntimeRouteParams} from 'Constants/routes';
 import { get } from 'lodash';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddVersion.module.scss';
@@ -19,9 +19,12 @@ import { useMutation } from '@apollo/client';
 
 import AddVersionMutation from 'Graphql/mutations/addVersion';
 import GetRuntimeAndVersionQuery from 'Graphql/queries/getRuntimeAndVersions';
+import { useParams } from "react-router-dom";
+import { buildRoute } from "Utils/routes";
 
 function AddVersion() {
   const history = useHistory();
+  const { runtimeId } = useParams<RuntimeRouteParams>();
   const { register, handleSubmit, errors, setError, clearError } = useForm();
   const [addVersion, { loading, error }] = useMutation<
     CreateVersion,
@@ -31,7 +34,10 @@ function AddVersion() {
     update(cache, updateResult) {
       if (updateResult.data) {
         const cacheResult = cache.readQuery<GetVersionConfStatus>({
-          query: GetRuntimeAndVersionQuery
+          query: GetRuntimeAndVersionQuery,
+          variables: {
+            runtimeId: runtimeId,
+          }
         });
 
         const versions = cacheResult?.versions || [];
@@ -40,6 +46,7 @@ function AddVersion() {
 
         cache.writeQuery({
           query: GetRuntimeAndVersionQuery,
+          variables: { runtimeId },
           data: { versions: versions.concat([newVersion]) }
         });
       }
@@ -53,7 +60,7 @@ function AddVersion() {
     const versionCreatedId = updatedData.createVersion.id;
     console.log(`${versionCreatedId} version created`);
 
-    history.push(ROUTE.VERSIONS);
+    history.push(buildRoute.version(ROUTE.VERSION, runtimeId, updatedData.createVersion.name), runtimeId);
   }
 
   useEffect(() => {
@@ -78,7 +85,7 @@ function AddVersion() {
   }
 
   function onSubmit(formData: any) {
-    addVersion(mutationPayloadHelper({ file: formData.addVersionFile[0] }));
+    addVersion(mutationPayloadHelper({ file: formData.addVersionFile[0], runtimeId }));
   }
 
   return (

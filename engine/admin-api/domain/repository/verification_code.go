@@ -1,6 +1,6 @@
 package repository
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/repo_${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/repo_${GOFILE} -package=mocks
 
 import (
 	"time"

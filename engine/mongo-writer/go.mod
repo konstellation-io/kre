@@ -7,17 +7,17 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20210609143120-29dc7b6f00c5
 	github.com/nats-io/nats.go v1.10.0
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.1
 	go.mongodb.org/mongo-driver v1.3.5
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/google/go-cmp v0.5.0 // indirect
+	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/klauspost/compress v1.10.10 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/nats-io/jwt v0.3.2 // indirect
@@ -29,10 +29,11 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v0.0.0-20180714160509-73f8eece6fdc // indirect
-	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
+	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/text v0.3.3 // indirect
-	google.golang.org/protobuf v1.25.0 // indirect
+	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
+	golang.org/x/text v0.3.7 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

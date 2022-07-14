@@ -6,7 +6,7 @@ describe('Add Version Behavior', () => {
   beforeEach(() => {
     cy.kstInterceptor('GetMe', { data: GetMeQuery });
     cy.kstInterceptor('GetVersionConfStatus', { data: GetVersionConfStatusQuery });
-    cy.visit('http://dev-admin.kre.local:3000/new_version');
+    cy.visit('http://dev-admin.kre.local:3000/runtimes/runtime-id/new_version  ');
   });
 
   it('should show add version page', () => {

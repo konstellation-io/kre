@@ -35,15 +35,15 @@ func (m *MockDashboardService) EXPECT() *MockDashboardServiceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockDashboardService) Create(ctx context.Context, version, dashboardPath string) error {
+func (m *MockDashboardService) Create(ctx context.Context, runtimeId, version, dashboardPath string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, version, dashboardPath)
+	ret := m.ctrl.Call(m, "Create", ctx, runtimeId, version, dashboardPath)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockDashboardServiceMockRecorder) Create(ctx, version, dashboardPath interface{}) *gomock.Call {
+func (mr *MockDashboardServiceMockRecorder) Create(ctx, runtimeId, version, dashboardPath interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDashboardService)(nil).Create), ctx, version, dashboardPath)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDashboardService)(nil).Create), ctx, runtimeId, version, dashboardPath)
 }

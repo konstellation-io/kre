@@ -2,7 +2,7 @@ import CalendarIcon from '@material-ui/icons/Today';
 import EmailIcon from '@material-ui/icons/Email';
 import { GetVersionConfStatus_versions } from 'Graphql/queries/types/GetVersionConfStatus';
 import { Link } from 'react-router-dom';
-import ROUTE from 'Constants/routes';
+import ROUTE, {VersionRouteParams} from 'Constants/routes';
 import React from 'react';
 import TimeIcon from '@material-ui/icons/AccessTime';
 import { VersionStatus } from 'Graphql/types/globalTypes';
@@ -11,6 +11,7 @@ import cx from 'classnames';
 import InfoField from './InfoField';
 import { formatDate } from 'Utils/format';
 import styles from './VersionInfo.module.scss';
+import { useParams } from 'react-router';
 
 type Props = {
   version: GetVersionConfStatus_versions;
@@ -18,8 +19,9 @@ type Props = {
 function VersionInfo({ version }: Props) {
   const isPublishedVersion = version.status === VersionStatus.PUBLISHED;
   const hasErrors = version.status === VersionStatus.ERROR;
+  const { runtimeId } = useParams<VersionRouteParams>();
 
-  const versionPath = buildRoute(ROUTE.VERSION_STATUS, version.name);
+  const versionPath = buildRoute.version(ROUTE.VERSION_STATUS, runtimeId, version.name);
 
   const errors = version.errors.map((error: string, index: number) => (
     <p key={index} className={styles.versionError}>
