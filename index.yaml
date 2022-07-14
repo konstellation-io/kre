@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   kre:
   - apiVersion: v2
+    appVersion: v5.0.0
+    created: "2022-07-14T08:28:34.561891877Z"
+    dependencies:
+    - name: influxdb
+      repository: https://influxdata.github.io/helm-charts
+      version: 4.8.1
+    - condition: kapacitor.enabled
+      name: kapacitor
+      repository: https://helm.influxdata.com/
+      version: 1.4.0
+    description: KRE
+    digest: 50535592d0ebed630e408c9b8a45f0c02b4fa5cc5be98e551d8b4da55b477ef0
+    name: kre
+    urls:
+    - https://github.com/konstellation-io/kre/releases/download/kre-5.0.0/kre-5.0.0.tgz
+    version: 5.0.0
+  - apiVersion: v2
     appVersion: v3.0.0
     created: "2022-04-11T10:26:22.977192829Z"
     dependencies:
