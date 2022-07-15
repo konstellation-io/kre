@@ -70,7 +70,7 @@ Admin UI labels
 Admin UI selector labels
 */}}
 {{- define "admin-ui.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kre.name" . }}-admin-ui 
+app.kubernetes.io/name: {{ include "kre.name" . }}-admin-ui
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

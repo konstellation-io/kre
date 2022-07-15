@@ -32,7 +32,7 @@ jobs:
           path: |
             ./engine/admin-ui/coverage
             ./engine/admin-ui/test-report.xml
-  
+
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest

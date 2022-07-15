@@ -39,7 +39,7 @@ This removes all the Kubernetes components associated with the chart and deletes
 $ helm upgrade [RELEASE_NAME] konstellation.io/kre
 ```
 
-*See [helm upgrade](https://helm.sh/docs/helm/helm_upgrade/) for command documentation.* 
+*See [helm upgrade](https://helm.sh/docs/helm/helm_upgrade/) for command documentation.*
 
 ### Upgrading an existing Release to a new major version
 
@@ -65,9 +65,9 @@ This major version comes with the following changes:
     * Admin API
     * Chronograf
     * k8s-manager
-    * MongoDB 
+    * MongoDB
     * MongoExpress
-    
+
     Affected statefulset resources:
     * MongoDB
     * NATS

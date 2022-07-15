@@ -104,12 +104,12 @@ adminApi:
     # -- The name of the ingress class to use
     className: nginx
     # -- Ingress annotations
-    # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
+    # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml)
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: 100000m
       nginx.org/client-max-body-size: 100000m
       nginx.org/websocket-services: admin-api
-      
+
       ## If additional annotations are needed to configure it, provide an additional
       ## file ensuring they are appended to the default ones.
       ##
@@ -126,7 +126,7 @@ adminApi:
       ##
       # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
       # kubernetes.io/ingress.class: traefik
-      
+
   storage:
     # -- Storage class name
     class: standard
@@ -203,7 +203,7 @@ k8sManager:
       # -- The ingressClassName to use for the enypoints' generated ingresses
       className: "nginx"
       # -- The annotations that all the generated ingresses for the entrypoints will have
-      # @default -- See `entrypoints.ingress.annotations` in [values.yaml](./values.yaml) 
+      # @default -- See `entrypoints.ingress.annotations` in [values.yaml](./values.yaml)
       annotations:
         ## This Chart has been developed using Nginx Ingress Controller by default.
         ## Using the following default annotations ensures its correct operation.
@@ -227,7 +227,7 @@ k8sManager:
               return 204;
           }
           default_type application/grpc;
-        
+
         ## If additional annotations are needed to configure it, provide an additional
         ## file ensuring they are appended to the default ones.
         ##
@@ -341,7 +341,7 @@ kapacitor:
   ## Where <chart_release> is the release name by with the chart is deployed
   #
   #influxURL: http://kre-local-influxdb:8086
-  
+
   ## Persistence is disabled by default
   ##
   persistence:

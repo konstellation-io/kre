@@ -30,7 +30,7 @@ jobs:
         with:
           name: coverage-report
           path: engine/admin-api/coverage.out
-  
+
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest

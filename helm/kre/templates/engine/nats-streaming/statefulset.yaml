@@ -45,5 +45,3 @@ spec:
         resources:
           requests:
             storage: {{ .Values.nats_streaming.storage.size }}
-
-

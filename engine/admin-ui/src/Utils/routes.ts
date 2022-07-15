@@ -8,4 +8,3 @@ export const buildRoute = {
       .replace(':versionName', versionName)
   )
 };
-

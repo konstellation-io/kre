@@ -90,7 +90,7 @@ data:
       db.createUser({
         user: "$ME_CONFIG_MONGODB_AUTH_USERNAME",
         pwd: "$ME_CONFIG_MONGODB_AUTH_PASSWORD",
-        roles: [{role: "read", db: "data"}], 
-        mechanisms:["SCRAM-SHA-1"] 
+        roles: [{role: "read", db: "data"}],
+        mechanisms:["SCRAM-SHA-1"]
       });
     EOF
