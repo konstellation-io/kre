@@ -9,7 +9,9 @@ metadata:
   labels:
     {{- include "admin-api.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.adminApi.ingress.className }}
   ingressClassName: {{ .Values.adminApi.ingress.className }}
+  {{- end }}
   {{- if .Values.adminApi.tls.enabled }}
   tls:
     - hosts:
@@ -21,9 +23,16 @@ spec:
       http:
         paths:
           - path: "/"
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
+            {{- end }}
             backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: admin-api
                 port:
                   name: grpc
+              {{- else }}
+              serviceName: admin-api
+              servicePort: grpc
+              {{- end }}

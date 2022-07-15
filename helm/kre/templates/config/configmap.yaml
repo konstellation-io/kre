@@ -23,7 +23,7 @@ data:
   {{- if and .Values.k8sManager.generatedEntrypoints.tls .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
   KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
   {{- end }}
-  {{- if and .Values.k8sManager.generatedEntrypoints.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  {{- if .Values.k8sManager.generatedEntrypoints.ingress.className }}
   KRE_ENTRYPOINTS_INGRESS_CLASS_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.className }}
   {{- end }}
 

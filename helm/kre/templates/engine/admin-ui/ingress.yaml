@@ -9,7 +9,7 @@ metadata:
   labels:
     {{- include "admin-ui.labels" . | nindent 4 }}
 spec:
-  {{- if and .Values.adminUI.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  {{- if .Values.adminUI.ingress.className }}
   ingressClassName: {{ .Values.adminUI.ingress.className }}
   {{- end }}
   {{- if .Values.adminUI.tls.enabled }}
