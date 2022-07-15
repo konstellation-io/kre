@@ -131,7 +131,8 @@
       "!<rootDir>/src/store.ts",
       "!<rootDir>/src/index.tsx",
       "!<rootDir>/src/react-app-env.d.ts",
-      "!<rootDir>/src/Constants/mock.ts"
+      "!<rootDir>/src/Constants/mock.ts",
+      "!<rootDir>/src/'.*__snapshots__/.*'"
     ],
     "coverageThreshold": {
       "global": {

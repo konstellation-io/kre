@@ -68,7 +68,7 @@ exports[`messageGenerator show right PUBLISH_VERSION message 1`] = `
     >
       runtimeId
     </Link>
-    . Previous published version:
+    . Previous published version: 
     <Link
       className="link"
       to="/runtimes/runtimeId/versions/oldVersionName/status"
