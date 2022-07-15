@@ -4,9 +4,16 @@ Installs KRE kubernetes manifests.
 
 ## Prerequisites
 
-* Kubernetes 1.19+
 * Nginx ingress controller. See [Ingress Controller](#ingress-controller).
 * Helm 3+
+
+### Chart compatibility matrix
+
+|     KRE Version     | Kubernetes Version |
+|:-------------------:|:------------------:|
+|  0.x.y <= X < 1.x.y |        1.16        |
+| 1.x.y <= X <= 5.x.y |  1.19 <= X <= 1.21 |
+|      X >= 6.x.y     |      X >= 1.19     |
 
 ## Install chart
 ```bash
