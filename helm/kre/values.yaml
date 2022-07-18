@@ -96,19 +96,20 @@ adminApi:
   # -- Hostname
   host: api.kre.local
   ingress:
-    # -- The ingressClassName to use for the Ingress
-    className: "nginx"
+    ## This Chart has been developed using Nginx Ingress Controller by default.
+    ## Using the following default annotations ensures its correct operation.
+    ## Ref: https://kubernetes.github.io/ingress-nginx/
+    ##
+
+    # -- The name of the ingress class to use
+    className: nginx
     # -- Ingress annotations
-    # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml) 
+    # @default -- See `adminApi.ingress.annotations` in [values.yaml](./values.yaml)
     annotations:
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
       nginx.ingress.kubernetes.io/proxy-body-size: 100000m
       nginx.org/client-max-body-size: 100000m
       nginx.org/websocket-services: admin-api
-      
+
       ## If additional annotations are needed to configure it, provide an additional
       ## file ensuring they are appended to the default ones.
       ##
@@ -125,7 +126,7 @@ adminApi:
       ##
       # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
       # kubernetes.io/ingress.class: traefik
-      
+
   storage:
     # -- Storage class name
     class: standard
@@ -143,16 +144,14 @@ adminUI:
     # -- Image pull policy
     pullPolicy: IfNotPresent
   ingress:
-    # -- The ingressClassName to use for the Ingress
-    className: "nginx"
+    ## This Chart has been developed using Nginx Ingress Controller by default.
+    ## Using the following default annotations ensures its correct operation.
+    ## Ref: https://kubernetes.github.io/ingress-nginx/
+    ##
+    # -- The name of the ingress class to use
+    className: nginx
     # -- Ingress annotations
-    # @default -- See `adminUI.ingress.annotations` in [values.yaml](./values.yaml) 
     annotations: {}
-      ## This Chart has been developed using Nginx Ingress Controller by default.
-      ## Using the following default annotations ensures its correct operation.
-      ## Ref: https://kubernetes.github.io/ingress-nginx/
-      ##
-
       ## If additional annotations are needed to configure it, provide an additional
       ## file ensuring they are appended to the default ones.
       ##
@@ -204,7 +203,7 @@ k8sManager:
       # -- The ingressClassName to use for the enypoints' generated ingresses
       className: "nginx"
       # -- The annotations that all the generated ingresses for the entrypoints will have
-      # @default -- See `entrypoints.ingress.annotations` in [values.yaml](./values.yaml) 
+      # @default -- See `entrypoints.ingress.annotations` in [values.yaml](./values.yaml)
       annotations:
         ## This Chart has been developed using Nginx Ingress Controller by default.
         ## Using the following default annotations ensures its correct operation.
@@ -228,13 +227,12 @@ k8sManager:
               return 204;
           }
           default_type application/grpc;
-        
+
         ## If additional annotations are needed to configure it, provide an additional
         ## file ensuring they are appended to the default ones.
         ##
         ## Example:
         ##
-        # kubernetes.io/ingress.class: nginx
         # cert-manager.io/issuer: your-issuer
 
         ## Ensure different annotations are provided when another ingress controller is being used
@@ -291,7 +289,7 @@ nats:
     trace: false
     # -- Timestamp log entries
     logtime: true
- 
+
   # -- Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -396,7 +394,7 @@ kapacitor:
   ## Where <chart_release> is the release name by with the chart is deployed
   #
   #influxURL: http://kre-local-influxdb:8086
-  
+
   ## Persistence is disabled by default
   ##
   persistence:

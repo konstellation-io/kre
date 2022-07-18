@@ -9,8 +9,8 @@ It is subscribed to two NATS subjects:
 ### "mongo_writer" message
 
 The received messages in "mongo_writer" subject are JSONs with two fields:
-- **coll**: String with the collection name. 
-- **doc**: Object to persist. 
+- **coll**: String with the collection name.
+- **doc**: Object to persist.
 
 Example:
 ```json
@@ -88,7 +88,7 @@ Notice the `?connect=direct` param in the MongoDB uri!
 Then you can execute the workflow using gcurl:
 ```
 grpcurl -plaintext -d '{"name": "John"}' localhost:9001 entrypoint.Entrypoint/Greet
-``` 
+```
 ## Testing
 
 To create new tests install [GoMock](https://github.com/golang/mock). Mocks used on tests are generated with

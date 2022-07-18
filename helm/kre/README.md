@@ -4,9 +4,16 @@ Installs KRE kubernetes manifests.
 
 ## Prerequisites
 
-* Kubernetes 1.19+
 * Nginx ingress controller. See [Ingress Controller](#ingress-controller).
 * Helm 3+
+
+### Chart compatibility matrix
+
+|     KRE Version     | Kubernetes Version |
+|:-------------------:|:------------------:|
+|  0.x.y <= X < 1.x.y |        1.16        |
+| 1.x.y <= X <= 5.x.y |  1.19 <= X <= 1.21 |
+|      X >= 6.x.y     |      X >= 1.19     |
 
 ## Install chart
 ```bash
@@ -39,7 +46,7 @@ This removes all the Kubernetes components associated with the chart and deletes
 $ helm upgrade [RELEASE_NAME] konstellation.io/kre
 ```
 
-*See [helm upgrade](https://helm.sh/docs/helm/helm_upgrade/) for command documentation.* 
+*See [helm upgrade](https://helm.sh/docs/helm/helm_upgrade/) for command documentation.*
 
 ### Upgrading an existing Release to a new major version
 
@@ -65,7 +72,7 @@ This major version comes with the following changes:
     * Admin API
     * Chronograf
     * k8s-manager
-    * MongoDB 
+    * MongoDB
     * MongoExpress
 
     Affected statefulset resources:

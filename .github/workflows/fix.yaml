@@ -8,7 +8,7 @@ on:
       - "ENGINE k8s-manager Tests"
       - "ENGINE mongo-writer Tests"
     branches: ["release-*"]
-    types: 
+    types:
       - completed
 
 jobs:

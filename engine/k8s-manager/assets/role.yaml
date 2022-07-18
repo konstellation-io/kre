@@ -65,4 +65,3 @@ rules:
       - jobs
     verbs:
       - "*"
- 

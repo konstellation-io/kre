@@ -27,7 +27,7 @@ minikube_start() {
     ;;
     Stopped)
       echo_check "Restarting minikube profile"
-      minikube start -p "$MINIKUBE_PROFILE"
+      minikube start -p "$MINIKUBE_PROFILE" --kubernetes-version="$MINIKUBE_KUBERNETES_VERSION"
     ;;
     *)
       echo_wait "Creating new minikube profile"
