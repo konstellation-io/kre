@@ -258,14 +258,67 @@ mongoWriter:
     # -- Image pull policy
     pullPolicy: IfNotPresent
 
-nats_streaming:
-  # -- Number of replicas
-  replicas: 1
-  storage:
-    # -- Storage class name
-    className: standard
-    # -- Storage size
-    size: 1Gi
+nats:
+  image:
+    # -- Image repository
+    repository: nats
+    # -- Image tag
+    tag: 2.8.4
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+  client:
+    # -- Port for client connections
+    port: 4222
+  jetstream:
+    storage:
+      # -- Whether to enable a PersistentVolumeClaim for Jetstream
+      enabled: true
+      # -- Storage class name for the Jetstream PersistentVolumeClaim
+      storageClassName: standard
+      # -- Storage size for the Jetstream PersistentVolumeClaim. Notice this is also used for the Jetstream storage limit configuration even if PVC creation is disabled
+      size: 1Gi
+      # -- Directory to use for JetStream storage when using a PersistentVolumeClaim
+      storageDirectory: /data
+    memStorage:
+      # -- Whether to enable memory storage for Jetstream
+      enabled: true
+      # -- Memory storage max size for JetStream
+      size: 1Gi
+  logging:
+    # -- Whether to enable logging debug mode
+    debug: false
+    # -- Whether to enable logging trace mode
+    trace: false
+    # -- Timestamp log entries
+    logtime: true
+ 
+  # -- Define which Nodes the Pods are scheduled on.
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  # -- Assign custom affinity rules to the InfluxDB pods
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  affinity: {}
+    # nodeAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     nodeSelectorTerms:
+    #     - matchExpressions:
+    #       - key: kuberHELMnetes.io/e2e-az-name
+    #         operator: In
+    #         values:
+    #         - e2e-az1
+    #         - e2e-az2
+
+  # -- Tolerations for use with node taints
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  # - key: "key"
+  #   operator: "Equal"
+  #   value: "value"
+  #   effect: "NoSchedule"
 
 chronograf:
   persistence:

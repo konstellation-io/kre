@@ -67,7 +67,7 @@ This major version comes with the following changes:
     * k8s-manager
     * MongoDB 
     * MongoExpress
-    
+
     Affected statefulset resources:
     * MongoDB
     * NATS
