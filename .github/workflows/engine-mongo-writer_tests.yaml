@@ -40,7 +40,7 @@ jobs:
         run: go test ./... -cover -v -coverprofile=coverage.out
         working-directory: ./engine/mongo-writer
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: engine/mongo-writer/coverage.out

@@ -25,7 +25,7 @@ jobs:
         run: go test ./... -cover -v -coverprofile=coverage.out
         working-directory: ./engine/k8s-manager
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: engine/k8s-manager/coverage.out
