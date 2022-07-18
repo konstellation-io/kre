@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-nats
+  labels:
+    {{- include "nats.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  serviceName: {{ .Release.Name }}-nats
+  selector:
+    matchLabels:
+      {{- include "nats.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nats.labels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/engine/nats/configmap.yaml") . | sha256sum }}
+    spec:
+      {{- with .Values.nats.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nats.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nats.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: kre-nats-jetstream
+          image: {{ .Values.nats.image.repository }}:{{ .Values.nats.image.tag }}
+          imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          ports:
+            - containerPort: {{ .Values.nats.client.port }}
+              name: client
+            - containerPort: 8222
+              name: monitor
+            - containerPort: 7777
+              name: metrics
+          command:
+            - "nats-server"
+            - "--config"
+            - "/etc/nats-config/nats.conf"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nats-config
+            {{- if .Values.nats.jetstream.storage.enabled }}
+            - mountPath: {{ .Values.nats.jetstream.storage.storageDirectory }}
+              name: {{ .Release.Name }}-nats
+            {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-nats-config
+        - name: pid
+          emptyDir: {}
+  {{- if .Values.nats.jetstream.storage.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Release.Name }}-nats
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.nats.jetstream.storage.storageClassName }}
+        resources:
+          requests:
+            storage: {{ .Values.nats.jetstream.storage.size }}
+  {{- end }}

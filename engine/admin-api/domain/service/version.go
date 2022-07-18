@@ -9,10 +9,10 @@ import (
 )
 
 type VersionService interface {
-	Start(context.Context, string, *entity.Version) error
-	Stop(context.Context, string, *entity.Version) error
-	Unpublish(string, *entity.Version) error
-	Publish(string, *entity.Version) error
-	UpdateConfig(string, *entity.Version) error
+	Start(ctx context.Context, runtimeID string, version *entity.Version) error
+	Stop(ctx context.Context, runtimeID string, version *entity.Version) error
+	Unpublish(runtimeID string, version *entity.Version) error
+	Publish(runtimeID string, version *entity.Version) error
+	UpdateConfig(runtimeID string, version *entity.Version) error
 	WatchNodeStatus(ctx context.Context, runtimeId, versionName string) (<-chan *entity.Node, error)
 }

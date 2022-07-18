@@ -130,6 +130,10 @@ func (i *VersionInteractor) copyStreamToTempFile(krtFile io.Reader) (*os.File, e
 	}
 
 	_, err = io.Copy(tmpFile, krtFile)
+	if err != nil {
+		return nil, fmt.Errorf("error copying temp file for version: %w", err)
+	}
+
 	i.logger.Infof("Created temp file: %s", tmpFile.Name())
 
 	return tmpFile, nil
@@ -578,7 +582,7 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 
 	newConfig, newConfigIsComplete := generateNewConfig(version.Config.Vars, config)
 
-	if isStarted && newConfigIsComplete == false {
+	if isStarted && !newConfigIsComplete {
 		return nil, ErrUpdatingStartedVersionConfig
 	}
 

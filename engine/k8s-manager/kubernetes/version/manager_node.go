@@ -37,10 +37,6 @@ type WorkflowConfig map[string]NodeConfig
 
 type NodeConfig map[string]string
 
-func getFirstNodeNATSInput(runtimeId, versionName, workflowEntrypoint string) string {
-	return fmt.Sprintf("%s-%s-%s-entrypoint", runtimeId, versionName, workflowEntrypoint)
-}
-
 func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.StartRequest) error {
 	m.logger.Infof("Creating deployments for all nodes")
 
@@ -67,12 +63,15 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 
 	for _, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
-			"KRT_WORKFLOW_ID":       workflow.GetId(),
-			"KRT_WORKFLOW_NAME":     workflow.GetName(),
-			"KRT_NODE_ID":           n.GetId(),
-			"KRT_NODE_NAME":         n.GetName(),
-			"KRT_HANDLER_PATH":      n.Src,
-			"KRT_NATS_MONGO_WRITER": natsDataSubjectPrefix + req.RuntimeId,
+			"KRT_WORKFLOW_ID":             workflow.GetId(),
+			"KRT_WORKFLOW_NAME":           workflow.GetName(),
+			"KRT_NODE_ID":                 n.GetId(),
+			"KRT_NODE_NAME":               n.GetName(),
+			"KRT_HANDLER_PATH":            n.Src,
+			"KRT_NATS_MONGO_WRITER":       natsDataSubjectPrefix + req.RuntimeId,
+			"KRT_NATS_STREAM":             fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
+			"KRT_IS_LAST_NODE":            "false",
+			"KRT_NATS_ENTRYPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint"),
 		}
 	}
 
@@ -80,8 +79,8 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		fromNode := wconf[e.FromNode]
 		toNode := wconf[e.ToNode]
 
-		fromNode["KRT_NATS_OUTPUT"] = fmt.Sprintf("%s-%s", req.RuntimeId, e.Id)
-		toNode["KRT_NATS_INPUT"] = fmt.Sprintf("%s-%s", req.RuntimeId, e.Id)
+		fromNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
+		toNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
 	}
 
 	var (
@@ -98,12 +97,13 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		firstNode = wconf[workflow.Edges[0].FromNode]
 		lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
 	}
+	lastNode["KRT_IS_LAST_NODE"] = "true"
 
 	// First node input is the workflow entrypoint
-	firstNode["KRT_NATS_INPUT"] = getFirstNodeNATSInput(req.RuntimeId, req.GetVersionName(), workflow.Entrypoint)
+	firstNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), firstNode["KRT_NODE_NAME"])
 
-	// Last node output is empty to reply to entrypoint
-	lastNode["KRT_NATS_OUTPUT"] = ""
+	// Last node output is entrypoint
+	lastNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint")
 
 	return wconf
 }

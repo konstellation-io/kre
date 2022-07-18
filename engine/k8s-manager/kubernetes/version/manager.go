@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/konstellation-io/kre/engine/k8s-manager/nats"
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
@@ -18,9 +19,10 @@ import (
 )
 
 type Manager struct {
-	config    *config.Config
-	logger    *simplelogger.SimpleLogger
-	clientset *kubernetes.Clientset
+	config      *config.Config
+	logger      *simplelogger.SimpleLogger
+	clientset   *kubernetes.Clientset
+	natsManager nats.Manager
 }
 
 const (
@@ -30,15 +32,19 @@ const (
 
 var ErrWaitingForVersionPODSTimeout = errors.New("[WaitForVersionPods] timeout waiting for version pods")
 
-func (m *Manager) getVersionServiceName(runtimeId, versionName string) string {
-	return fmt.Sprintf("%s-%s-entrypoint", runtimeId, versionName)
+func (m *Manager) getVersionServiceName(runtimeID, versionName string) string {
+	return fmt.Sprintf("%s-%s-entrypoint", runtimeID, versionName)
 }
 
-func New(cfg *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Manager {
+func New(cfg *config.Config,
+	logger *simplelogger.SimpleLogger,
+	clientset *kubernetes.Clientset,
+	nm *nats.NatsManager) *Manager {
 	return &Manager{
 		cfg,
 		logger,
 		clientset,
+		nm,
 	}
 }
 
@@ -78,6 +84,13 @@ func (m *Manager) Start(ctx context.Context, req *versionpb.StartRequest) error 
 // Stop calls kubernetes remove all version resources.
 func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Stop version %s on runtime %s", req.Name, req.RuntimeId)
+
+	for _, workflow := range req.Workflows {
+		err := m.natsManager.DeleteNatsStream(req.RuntimeId, req.Name, workflow)
+		if err != nil {
+			return err
+		}
+	}
 
 	err := m.deleteConfigMapsSync(ctx, req.RuntimeId, req.Name, m.config.Kubernetes.Namespace)
 	if err != nil {
@@ -185,8 +198,8 @@ func (m *Manager) UpdateConfig(ctx context.Context, req *versionpb.UpdateConfigR
 	return m.restartPodsSync(ctx, req.RuntimeId, versionName, ns)
 }
 
-func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeId, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {
-	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s' and runtime '%s'", ns, versionName, runtimeId)
+func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeID, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {
+	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s' and runtime '%s'", ns, versionName, runtimeID)
 
 	nodes := []string{"entrypoint"}
 
@@ -196,7 +209,7 @@ func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeId, versionName
 		}
 	}
 
-	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeId, versionName)
+	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeID, versionName)
 	waitCh := make(chan struct{}, 1)
 	resolver := NewStatusResolver(m.logger, nodes, waitCh)
 
@@ -217,7 +230,7 @@ func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeId, versionName
 			return ErrWaitingForVersionPODSTimeout
 
 		case <-waitCh:
-			m.logger.Debugf("[WaitForVersionPods] all version pods for '%s-%s' are running", runtimeId, versionName)
+			m.logger.Debugf("[WaitForVersionPods] all version pods for '%s-%s' are running", runtimeID, versionName)
 			return nil
 		}
 	}

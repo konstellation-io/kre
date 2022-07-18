@@ -52,6 +52,7 @@ message StartRequest {
 message VersionInfo {
   string name = 1;
   string runtime_id = 2;
+  repeated string workflows = 3;
 }
 
 message UpdateConfigRequest {
