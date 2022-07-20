@@ -19,5 +19,7 @@ spec:
           image: {{ .Values.mongoWriter.image.repository }}:{{ .Values.mongoWriter.image.tag }}
           imagePullPolicy: {{ .Values.mongoWriter.image.pullPolicy }}
           envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
             - secretRef:
                 name: {{ .Release.Name }}-secrets
