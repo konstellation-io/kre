@@ -23,6 +23,7 @@ var (
 type RuntimeInteractor struct {
 	cfg               *config.Config
 	logger            logging.Logger
+	adminRepo         repository.AdminRepo
 	runtimeRepo       repository.RuntimeRepo
 	measurementRepo   repository.MeasurementRepo
 	versionRepo       repository.VersionRepo
@@ -37,6 +38,7 @@ type RuntimeInteractor struct {
 func NewRuntimeInteractor(
 	cfg *config.Config,
 	logger logging.Logger,
+	adminRepo repository.AdminRepo,
 	runtimeRepo repository.RuntimeRepo,
 	measurementRepo repository.MeasurementRepo,
 	versionRepo repository.VersionRepo,
@@ -49,6 +51,7 @@ func NewRuntimeInteractor(
 	return &RuntimeInteractor{
 		cfg,
 		logger,
+		adminRepo,
 		runtimeRepo,
 		measurementRepo,
 		versionRepo,
@@ -116,6 +119,10 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 		return nil, err
 	}
 
+	err = i.adminRepo.GrantRuntimeData(ctx, runtimeID)
+	if err != nil {
+		return nil, err
+	}
 	i.logger.Info("Measurement database created for runtime with ID=" + createdRuntime.ID)
 
 	return createdRuntime, nil

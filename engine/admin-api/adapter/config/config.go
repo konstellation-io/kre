@@ -42,10 +42,10 @@ type Config struct {
 		CookieDomain                      string `yaml:"cookieDomain" envconfig:"KRE_AUTH_COOKIE_DOMAIN"`
 	} `yaml:"auth"`
 	MongoDB struct {
-		Address    string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
-		DBName     string `yaml:"dbName"`
-		DataDBName string `yaml:"dataDbName"`
-		KRTBucket  string `yaml:"krtBucket"`
+		Address         string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
+		DBName          string `yaml:"dbName"`
+		RuntimeDataUser string `yaml:"runtimeDataUser" envconfig:"KRE_MONGODB_RUNTIME_DATA_USER"`
+		KRTBucket       string `yaml:"krtBucket"`
 	} `yaml:"mongodb"`
 	InfluxDB struct {
 		Address string `yaml:"address" envconfig:"KRE_INFLUXDB_ADDRESS"`
