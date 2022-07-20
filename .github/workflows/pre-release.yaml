@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Generate a pre-release
-        uses: intelygenz/action-product-version-tags@v0.1.8
+        uses: intelygenz/action-product-version-tags@v0.2.1
         with:
           current-major: 6
           prefix: "release-"
