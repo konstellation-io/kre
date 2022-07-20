@@ -27,9 +27,13 @@ spec:
             - "--replSet=rs0"
           envFrom:
             - secretRef:
-                name: kre-mongo-secret
-            - secretRef:
-                name: kre-mongo-express-secret
+                name: {{ .Release.Name }}-mongo
+          env:
+            - name: ME_CONFIG_MONGODB_AUTH_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-mongo
+                  key: ME_CONFIG_MONGODB_AUTH_DATABASE
           ports:
             - containerPort: 27017
           volumeMounts:
@@ -40,7 +44,7 @@ spec:
       volumes:
         - name: init-scripts
           configMap:
-            name: kre-mongo-init-script
+            name: {{ .Release.Name }}-mongo-init
             defaultMode: 0777
     {{- with .Values.mongodb.nodeSelector }}
       nodeSelector:

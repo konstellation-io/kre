@@ -14,6 +14,12 @@ mongodb:
     adminUser: "admin"
     # -- MongoDB admin password
     adminPassword: "123456"
+    # -- MongoExpress runtime admin user username for runtime databases. This only is taken into account on MongoDB first initialisation.
+    mongoExpressRuntimeAdminUser: "kre-runtime-data"
+    # -- MongoExpress runtime admin user password for runtime databases. This only is taken into account on MongoDB first initialisation.
+    # @default -- If not provided a random password will be generated
+    mongoExpressRuntimeAdminPassword: ""
+
   persistentVolume:
     # -- Storage class name
     storageClass: standard

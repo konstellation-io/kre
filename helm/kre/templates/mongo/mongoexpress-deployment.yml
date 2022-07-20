@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kre-mongo-express
+  name: {{ .Release.Name }}-mongoexpress
   labels:
     {{- include "mongoExpress.labels" . | nindent 4 }}
 spec:
@@ -18,19 +18,10 @@ spec:
         - name: kre-mongo-express
           image: mongo-express:0.54.0
           imagePullPolicy: IfNotPresent
-          env:
-            - name: ME_CONFIG_MONGODB_SERVER
-              value: "kre-mongo-0"
-            - name: ME_CONFIG_OPTIONS_READONLY
-              value: "true"
-            - name: ME_CONFIG_MONGODB_ENABLE_ADMIN
-              value: "false"
-            - name: ME_CONFIG_MONGODB_AUTH_DATABASE
-              value: "data"
-            - name: ME_CONFIG_SITE_BASEURL
-              value: /database/{{ .Release.Namespace }}
           envFrom:
             - secretRef:
                 name: kre-mongo-express-secret
+            - configMapRef:
+                name: {{ .Release.Name }}-mongo
           ports:
             - containerPort: 8081
