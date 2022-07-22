@@ -53,6 +53,31 @@ $ helm upgrade [RELEASE_NAME] konstellation.io/kre
 A major chart version change (like v0.15.3 -> v1.0.0) indicates that there is an incompatible breaking change needing
 manual actions.
 
+### From 6.X to 7.X
+
+* MongoDB kubernetes resources have been renamed. That also renames the generated mongodb PVC that stores the MongoDB data. A database data migration will be necessary if you come from previous KRE releases.
+* The Mongo Express credentials Kubernetes secret has been modified. This secret will only be created if you are deploying the chart for the first time because it uses Helm hooks to avoid secret recreation on chart's upgrades. If you come from a previous release of KRE, execute the following script before uograding:
+
+```shell
+#!/bin/bash
+RELEASE_NAME=<release_name>
+NAMESPACE=<release_namespace>
+ME_CONFIG_MONGODB_ADMINUSERNAME=$(kubectl -n $NAMESPACE get secret kre-mongo-express-secret -o jsonpath='{.data.ME_CONFIG_MONGODB_AUTH_USERNAME}'| base64 -d)
+ME_CONFIG_MONGODB_ADMINPASSWORD=$(kubectl -n $NAMESPACE get secret kre-mongo-express-secret -o jsonpath='{.data.ME_CONFIG_MONGODB_AUTH_PASSWORD}'| base64 -d)
+kubectl create secret -n $NAMESPACE generic --from-literal ME_CONFIG_MONGODB_ADMINUSERNAME=$ME_CONFIG_MONGODB_ADMINUSERNAME --from-literal ME_CONFIG_MONGODB_ADMINPASSWORD=$ME_CONFIG_MONGODB_ADMINPASSWORD $RELEASE_NAME-mongo-express -o yaml --dry-run=client | kubectl apply -f -
+kubectl -n $NAMESPACE annotate secret $RELEASE_NAME-mongo-express helm.sh/hook='pre-install' helm.sh/hook-delete-policy='before-hook-creation'
+```
+
+### From 5.X to 6.X
+
+* Minimal Kubernetes supported version is now **v1.19.x**
+
+### From 3.X to 5.X
+
+* Moved `.Values.entrypoints` block to `.Values.k8sManager.generatedEntrypoints` in `values.yaml`.
+
+* k8s-manager Service Account settings have been moved to `k8sManager.serviceAccount` in `values.yaml`
+
 ### From 2.X to 3.X
 
 * Removed `mongodb.mongodbUsername` and `mongodb.mongodbPassword` from **values.yaml** in favour of `mongodb.auth.adminUser` and `mongodb.auth.adminpassword`
