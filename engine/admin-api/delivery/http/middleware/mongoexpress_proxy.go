@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"regexp"
 
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/labstack/echo"
 )
 

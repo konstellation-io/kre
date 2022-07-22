@@ -27,9 +27,9 @@ func NewAdminRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mong
 	}
 }
 
-func (a *AdminRepoMongoDB) GrantRuntimeData(ctx context.Context, runtimeID string) error {
+func (a *AdminRepoMongoDB) GrantReadPermission(ctx context.Context, runtimeDataDB string) error {
 	res := a.db.RunCommand(ctx, bson.D{
-		{"grantRolesToUser", "kre-runtime-data"}, {"roles", []bson.M{{"role": "read", "db": runtimeID + "-data"}}},
+		{"grantRolesToUser", a.cfg.MongoDB.RuntimeDataUser}, {"roles", []bson.M{{"role": "read", "db": runtimeDataDB}}},
 	})
 	if res.Err() != nil {
 		return res.Err()

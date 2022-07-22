@@ -113,17 +113,19 @@ func (i *RuntimeInteractor) CreateRuntime(ctx context.Context, loggedUserID, run
 	if err != nil {
 		return nil, err
 	}
+	i.logger.Info("Measurement database created for runtime with ID=" + createdRuntime.ID)
 
 	err = i.createDatabaseIndexes(ctx, runtimeID)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.adminRepo.GrantRuntimeData(ctx, runtimeID)
+	runtimeDataDB := createdRuntime.ID + "-data"
+	err = i.adminRepo.GrantReadPermission(ctx, runtimeDataDB)
 	if err != nil {
 		return nil, err
 	}
-	i.logger.Info("Measurement database created for runtime with ID=" + createdRuntime.ID)
+	i.logger.Infof("Granted read permissions for \"%s\" database " + runtimeDataDB)
 
 	return createdRuntime, nil
 }

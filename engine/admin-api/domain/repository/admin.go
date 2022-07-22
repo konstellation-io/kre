@@ -7,5 +7,5 @@ import (
 )
 
 type AdminRepo interface {
-	GrantRuntimeData(ctx context.Context, runtimeID string) error
+	GrantReadPermission(ctx context.Context, runtimeDataDB string) error
 }
