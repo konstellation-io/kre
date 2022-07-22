@@ -55,8 +55,8 @@ manual actions.
 
 ### From 6.X to 7.X
 
-* MongoDB kubernetes resources have been renamed. That also renames the generated mongodb PVC that stores the MongoDB data. A database data migration will be necessary if you come from previous KRE releases.
-* The Mongo Express credentials Kubernetes secret has been modified. This secret will only be created if you are deploying the chart for the first time because it uses Helm hooks to avoid secret recreation on chart's upgrades. If you come from a previous release of KRE, execute the following script before uograding:
+* MongoDB Kubernetes resources have been renamed. That also renames the generated mongodb PVC that stores the MongoDB data. A database data migration will be necessary if you come from previous KRE releases.
+* The Mongo Express credentials Kubernetes secret has been modified. This secret will only be created if you are deploying the chart for the first time because it uses Helm hooks to avoid secret recreation on chart's upgrades. If you come from a previous release of KRE, execute the following script before upgrading:
 
 ```shell
 #!/bin/bash
