@@ -212,7 +212,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create MongoDB URI.
 */}}
 {{- define "runtime.mongoURI" -}}
-  {{- printf "mongodb://%s:%s@kre-mongo-0:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword -}}
+  {{- printf "mongodb://%s:%s@%s-mongo-0.%s-mongo:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword $.Release.Name $.Release.Name -}}
 {{- end -}}
 
 {{/*

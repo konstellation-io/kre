@@ -1,16 +1,12 @@
-{{ if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
-  {{ else if .Capabilities.APIVersions.Has "apps/v1beta1" }}
-apiVersion: apps/v1beta1
-  {{ end }}
 kind: StatefulSet
 metadata:
-  name: kre-mongo
+  name: {{ .Release.Name }}-mongo
   labels:
     {{- include "mongodb.labels" . | nindent 4 }}
 spec:
   replicas: 1
-  serviceName: kre-mongo
+  serviceName: "{{ .Release.Name }}-mongo"
   selector:
     matchLabels:
       {{- include "mongodb.selectorLabels" . | nindent 6 }}
@@ -20,7 +16,7 @@ spec:
         {{- include "mongodb.labels" . | nindent 8 }}
     spec:
       containers:
-        - name: kre-mongo
+        - name: mongo
           image: mongo:4.2.8
           imagePullPolicy: IfNotPresent
           args:
@@ -28,7 +24,13 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ .Release.Name }}-mongo
+            - secretRef:
+                name: {{ .Release.Name }}-mongo-express
           env:
+            - name: MONGO_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: ME_CONFIG_MONGODB_AUTH_DATABASE
               valueFrom:
                 configMapKeyRef:

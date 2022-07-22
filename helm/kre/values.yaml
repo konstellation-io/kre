@@ -25,6 +25,8 @@ mongodb:
     storageClass: standard
     # -- Storgae size
     size: 5Gi
+    # -- Use an existing persistent volume claim. Useful for database migrations.
+    existingClaim: ""
 
   # -- Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/

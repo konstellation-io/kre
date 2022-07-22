@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "mongoExpress.labels" . | nindent 4 }}
 data:
-  ME_CONFIG_MONGODB_SERVER: "kre-mongo-0"
+  ME_CONFIG_MONGODB_SERVER: "{{ .Release.Name }}-mongo"
   ME_CONFIG_OPTIONS_READONLY: "true"
   ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
   ME_CONFIG_MONGODB_AUTH_DATABASE: "admin"

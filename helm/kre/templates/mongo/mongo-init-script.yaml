@@ -79,14 +79,14 @@ data:
     	  _id: "rs0",
     	  version: 1,
     	  members: [
-    	    { _id: 0, host : "kre-mongo-0:27017" },
+    	    { _id: 0, host : "$MONGO_NODE_NAME.{{ .Release.Name }}-mongo.{{ .Release.Namespace }}.svc.cluster.local:27017" },
     	  ]
     	});
       wait_rs_ready = 15000;
       sleep(wait_rs_ready);
-      db.auth('admin', $MONGO_INITDB_ROOT_PASSWORD)
-      db = db.getSiblingDB('$ME_CONFIG_MONGODB_AUTH_DATABASE')
-      db.createUser({
+      admin_db = db.getSiblingDB("$ME_CONFIG_MONGODB_AUTH_DATABASE")
+      admin_db.auth("$MONGO_INITDB_ROOT_USERNAME", "$MONGO_INITDB_ROOT_PASSWORD")
+      admin_db.createUser({
         user: "$ME_CONFIG_MONGODB_ADMINUSERNAME",
         pwd: "$ME_CONFIG_MONGODB_ADMINPASSWORD",
         roles: [],

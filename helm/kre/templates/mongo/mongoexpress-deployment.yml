@@ -20,7 +20,7 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
-                name: kre-mongo-express-secret
+                name: {{ .Release.Name }}-mongo-express
             - configMapRef:
                 name: {{ .Release.Name }}-mongo
           ports:
