@@ -137,10 +137,17 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+nats host
+*/}}
+{{- define "nats.host" -}}
+{{- printf "%s-nats" .Release.Name -}}
+{{- end }}
+
+{{/*
 nats url
 */}}
 {{- define "nats.url" -}}
-{{- printf "%s-nats:%d" .Release.Name (.Values.nats.client.port | int) -}}
+{{- printf "%s:%d" (include "nats.host" .) (.Values.nats.client.port | int) -}}
 {{- end -}}
 
 {{/*

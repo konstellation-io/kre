@@ -140,9 +140,9 @@ func (m *Manager) createVersionConfFiles(ctx context.Context, runtimeID, version
 [OUTPUT]
     Name  nats
     Match *
-    Host  kre-nats
+    Host  %s
     Port  4222
-`, runtimeID),
+`, runtimeID, m.config.NatsStreaming.Host),
 		},
 	}, metav1.CreateOptions{})
 
