@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name }}-mongo
+  name: {{ include "mongo.name" . }}
   labels:
     {{- include "mongodb.labels" . | nindent 4 }}
 spec:
   replicas: 1
-  serviceName: "{{ .Release.Name }}-mongo"
+  serviceName: "{{ include "mongo.name" . }}"
   selector:
     matchLabels:
       {{- include "mongodb.selectorLabels" . | nindent 6 }}
@@ -23,9 +23,9 @@ spec:
             - "--replSet=rs0"
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-mongo
+                name: {{ include "mongo.name" . }}
             - secretRef:
-                name: {{ .Release.Name }}-mongo-express
+                name: {{ include "mongoExpress.name" . }}
           env:
             - name: MONGO_NODE_NAME
               valueFrom:
@@ -34,19 +34,19 @@ spec:
             - name: ME_CONFIG_MONGODB_AUTH_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Release.Name }}-mongo
+                  name: {{ include "mongo.name" . }}
                   key: ME_CONFIG_MONGODB_AUTH_DATABASE
           ports:
             - containerPort: 27017
           volumeMounts:
-            - name: {{ .Release.Name }}-mongo-pvc
+            - name: {{ include "mongo.name" . }}-pvc
               mountPath: "/data/db"
             - name: init-scripts
               mountPath: /docker-entrypoint-initdb.d/
       volumes:
         - name: init-scripts
           configMap:
-            name: {{ .Release.Name }}-mongo-init
+            name: {{ include "mongo.name" . }}-init
             defaultMode: 0777
     {{- with .Values.mongodb.nodeSelector }}
       nodeSelector:
@@ -62,7 +62,7 @@ spec:
     {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ .Release.Name }}-mongo-pvc
+        name: {{ include "mongo.name" . }}-pvc
       spec:
         accessModes:
           - ReadWriteOnce

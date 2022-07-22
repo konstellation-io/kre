@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-mongo-init
+  name: {{ include "mongo.name" . }}-init
   labels:
   {{- include "mongodb.labels" . | nindent 4 }}
 data:
@@ -79,7 +79,7 @@ data:
     	  _id: "rs0",
     	  version: 1,
     	  members: [
-    	    { _id: 0, host : "$MONGO_NODE_NAME.{{ .Release.Name }}-mongo.{{ .Release.Namespace }}.svc.cluster.local:27017" },
+    	    { _id: 0, host : "$MONGO_NODE_NAME.{{ include "mongo.name" . }}.{{ .Release.Namespace }}.svc.cluster.local:27017" },
     	  ]
     	});
       wait_rs_ready = 15000;

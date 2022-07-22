@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-mongoexpress
+  name: {{ include "mongoExpress.name" . }}
   labels:
     {{- include "mongoExpress.labels" . | nindent 4 }}
 spec:
@@ -20,8 +20,8 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-mongo-express
+                name: {{ include "mongoExpress.name" . }}
             - configMapRef:
-                name: {{ .Release.Name }}-mongo
+                name: {{ include "mongo.name" . }}
           ports:
             - containerPort: 8081

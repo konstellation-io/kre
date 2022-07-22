@@ -177,6 +177,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
+Mongo name
+*/}}
+{{- define "mongo.name" -}}
+{{ printf "%s-mongo" $.Release.Name }}
+{{- end }}
+
+{{/*
 MongoDB labels
 */}}
 {{- define "mongodb.labels" -}}
@@ -190,6 +197,13 @@ MongoDB selector labels
 {{- define "mongodb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "kre.name" . }}-mongodb
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Mongo Express name
+*/}}
+{{- define "mongoExpress.name" -}}
+{{ printf "%s-mongo-express" $.Release.Name }}
 {{- end }}
 
 {{/*

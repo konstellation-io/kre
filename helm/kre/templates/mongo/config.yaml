@@ -1,11 +1,11 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ .Release.Name }}-mongo
+  name: {{ include "mongo.name" . }}
   labels:
     {{- include "mongoExpress.labels" . | nindent 4 }}
 data:
-  ME_CONFIG_MONGODB_SERVER: "{{ .Release.Name }}-mongo"
+  ME_CONFIG_MONGODB_SERVER: "{{ include "mongo.name" . }}"
   ME_CONFIG_OPTIONS_READONLY: "true"
   ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
   ME_CONFIG_MONGODB_AUTH_DATABASE: "admin"
