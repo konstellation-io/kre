@@ -7,7 +7,6 @@ WORKDIR /app
 COPY . .
 RUN cd cmd && go build -o ../mongo-writer .
 
-
 FROM alpine:3.10.2
 
 # Create kre user.
