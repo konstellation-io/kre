@@ -137,10 +137,17 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+nats host
+*/}}
+{{- define "nats.host" -}}
+{{- printf "%s-nats" .Release.Name -}}
+{{- end }}
+
+{{/*
 nats url
 */}}
 {{- define "nats.url" -}}
-{{- printf "%s-nats:%d" .Release.Name (.Values.nats.client.port | int) -}}
+{{- printf "%s:%d" (include "nats.host" .) (.Values.nats.client.port | int) -}}
 {{- end -}}
 
 {{/*
@@ -177,6 +184,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
+Mongo name
+*/}}
+{{- define "mongo.name" -}}
+{{ printf "%s-mongo" $.Release.Name }}
+{{- end }}
+
+{{/*
 MongoDB labels
 */}}
 {{- define "mongodb.labels" -}}
@@ -190,6 +204,13 @@ MongoDB selector labels
 {{- define "mongodb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "kre.name" . }}-mongodb
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Mongo Express name
+*/}}
+{{- define "mongoExpress.name" -}}
+{{ printf "%s-mongo-express" $.Release.Name }}
 {{- end }}
 
 {{/*
@@ -212,7 +233,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create MongoDB URI.
 */}}
 {{- define "runtime.mongoURI" -}}
-  {{- printf "mongodb://%s:%s@kre-mongo-0:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword -}}
+  {{- printf "mongodb://%s:%s@%s-mongo-0.%s-mongo:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword $.Release.Name $.Release.Name -}}
 {{- end -}}
 
 {{/*

@@ -80,7 +80,10 @@
 | mongodb.affinity | object | `{}` | Assign custom affinity rules to the MongoDB pods |
 | mongodb.auth.adminPassword | string | `"123456"` | MongoDB admin password |
 | mongodb.auth.adminUser | string | `"admin"` | MongoDB admin username |
+| mongodb.auth.mongoExpressRuntimeAdminPassword | string | If not provided a random password will be generated | MongoExpress runtime admin user password for runtime databases. This only is taken into account on MongoDB first initialisation. |
+| mongodb.auth.mongoExpressRuntimeAdminUser | string | `"kre-runtime-data"` | MongoExpress runtime admin user username for runtime databases. This only is taken into account on MongoDB first initialisation. |
 | mongodb.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. |
+| mongodb.persistentVolume.existingClaim | string | `""` | Use an existing persistent volume claim. Useful for database migrations. |
 | mongodb.persistentVolume.size | string | `"5Gi"` | Storgae size |
 | mongodb.persistentVolume.storageClass | string | `"standard"` | Storage class name |
 | mongodb.tolerations | list | `[]` | Tolerations for use with node taints |

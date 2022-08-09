@@ -125,7 +125,7 @@ func NewApp(
 	d := e.Group("/database")
 	d.Use(jwtCookieMiddleware)
 	d.Use(sessionMiddleware)
-	d.Use(kremiddleware.MongoExpressProxy())
+	d.Use(kremiddleware.MongoExpressProxy(cfg.MongoDB.MongoExpressAddress))
 
 	return &App{
 		e,

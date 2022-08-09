@@ -42,7 +42,9 @@ type Config struct {
 	} `yaml:"kubernetes"`
 
 	NatsStreaming struct {
-		URL string `yaml:"url" envconfig:"KRE_NATS_URL"`
+		URL  string `yaml:"url" envconfig:"KRE_NATS_URL"`
+		Host string `yaml:"host" envconfig:"KRE_NATS_HOST"`
+		Port string `yaml:"port" envconfig:"KRE_NATS_PORT"`
 	} `yaml:"nats_streaming"`
 
 	KrtFilesDownloader struct {
