@@ -142,7 +142,7 @@ func (m *Manager) createVersionConfFiles(ctx context.Context, runtimeID, version
     Match *
     Host  %s
     Port  %s
-`, runtimeID, m.config.NatsStreaming.Port, m.config.NatsStreaming.Host),
+`, runtimeID, m.config.NatsStreaming.Host, m.config.NatsStreaming.Port),
 		},
 	}, metav1.CreateOptions{})
 
