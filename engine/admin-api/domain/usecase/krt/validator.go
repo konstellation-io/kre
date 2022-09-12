@@ -30,8 +30,6 @@ type ValidatorV1 struct {
 	logger logging.Logger
 }
 
-// checkrequirements
-// checkDesignRequirements
 func (v *ValidatorV1) CheckSpec(krt *Krt) error {
 	v.logger.Info("Validating KRT workflows")
 	if err := v.validateWorkflows(krt); err != nil {
