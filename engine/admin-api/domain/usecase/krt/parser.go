@@ -16,7 +16,7 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
-func ProcessYaml(logger logging.Logger, krtFilePath, dstDir string) (*Krt, error) {
+func ProcessAndValidateKrt(logger logging.Logger, valuesValidator ValuesValidator, krtFilePath, dstDir string) (*Krt, error) {
 	p := Parser{
 		logger,
 		dstDir,
@@ -26,6 +26,12 @@ func ProcessYaml(logger logging.Logger, krtFilePath, dstDir string) (*Krt, error
 	if err != nil {
 		return nil, err
 	}
+
+	err = valuesValidator.Run(k)
+	if err != nil {
+		return nil, err
+	}
+
 	err = p.ValidateYaml(k)
 	if err != nil {
 		return nil, err
