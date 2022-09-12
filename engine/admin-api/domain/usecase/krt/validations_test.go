@@ -144,9 +144,10 @@ func TestYamlFieldsValidator_Run(t *testing.T) {
 		},
 	}
 
+	fieldsValidator := krt.NewYamlFieldsValidator()
+
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			fieldsValidator := krt.NewYamlFieldsValidator()
 			err := fieldsValidator.Run(tc.krtYaml)
 			if tc.wantError {
 				assert.EqualError(t, err, tc.errorString)
