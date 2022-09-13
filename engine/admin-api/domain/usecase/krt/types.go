@@ -2,11 +2,12 @@ package krt
 
 // Krt contains data about a version
 type Krt struct {
+	KrtVersion  string     `yaml:"krtVersion" validate:"omitempty,krt-version"`
 	Version     string     `yaml:"version" validate:"required,resource-name,lt=20"`
 	Description string     `yaml:"description" validate:"required"`
 	Entrypoint  Entrypoint `yaml:"entrypoint" validate:"required"`
 	Config      Config     `yaml:"config" validate:"required"`
-	Nodes       []Node     `yaml:"nodes"` //v1 retrocompatibility
+	Nodes       []Node     `yaml:"nodes" validate:"required,dive,min=1"` //v1 retrocompatibility
 	Workflows   []Workflow `yaml:"workflows" validate:"required,dive,min=1"`
 }
 
@@ -23,7 +24,7 @@ type Node struct {
 type Workflow struct {
 	Name       string   `yaml:"name" validate:"required,resource-name,lt=20"`
 	Entrypoint string   `yaml:"entrypoint" validate:"required"`
-	Sequential []string `yaml:"sequential"` //v1 retrocompatibility
+	Sequential []string `yaml:"sequential" validate:"excluded_if=KrtVersion v2"` //v1 retrocompatibility
 	Nodes      []Node   `yaml:"nodes"`      //v2, once v1 deprecated make required and min 1
 	ExitPoint  string   `yaml:"exitPoint"`  //v2, once v1 deprecated make required
 }
