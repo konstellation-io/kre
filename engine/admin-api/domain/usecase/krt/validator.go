@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	VersionV1 = "v1"
 	VersionV2 = "v2"
 )
 

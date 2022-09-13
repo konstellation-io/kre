@@ -23,7 +23,7 @@ type Node struct {
 type Workflow struct {
 	Name       string   `yaml:"name" validate:"required,resource-name,lt=20"`
 	Entrypoint string   `yaml:"entrypoint" validate:"required"`
-	Sequential []string `yaml:"sequential" validate:"required"`
+	Sequential []string `yaml:"sequential" validate:"excluded_if=KrtVersion v2"`
 }
 
 type Entrypoint struct {

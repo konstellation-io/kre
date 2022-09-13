@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	validKrtVersion    = krt.VersionV2
+	validKrtVersion    = krt.VersionV1
 	validVersionName   = "test"
 	invalidVersionName = "this version name length is higher than the maximum"
 	validDescription   = "Test description"
@@ -157,6 +157,26 @@ func TestYamlValuesValidator_Run(t *testing.T) {
 			},
 			wantError:   true,
 			errorString: "Key: 'Krt.KrtVersion' Error:Field validation for 'KrtVersion' failed on the 'krt-version' tag",
+		},
+		{
+			name: "sequential field is incompatible with KrtVersion v2",
+			krtYaml: &krt.Krt{
+				KrtVersion:  krt.VersionV2,
+				Version:     validVersionName,
+				Description: validDescription,
+				Entrypoint:  validEntrypoint,
+				Config:      validConfig,
+				Nodes:       validNodes,
+				Workflows: []krt.Workflow{
+					{
+						Name:       "workflow",
+						Entrypoint: "entrypoint",
+						Sequential: []string{"test-node"},
+					},
+				},
+			},
+			wantError:   true,
+			errorString: "Key: 'Krt.Workflows[0].Sequential' Error:Field validation for 'Sequential' failed on the 'excluded_if' tag",
 		},
 	}
 
