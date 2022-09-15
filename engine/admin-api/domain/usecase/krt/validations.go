@@ -31,6 +31,50 @@ func init() {
 		_, ok := validKrtVersions[fl.Field().String()]
 		return ok
 	})
+
+	krtValidator.RegisterStructValidation(v1Validations, Krt{})
+}
+
+func v1Validations(sl validator.StructLevel) {
+	krtYaml := sl.Current().Interface().(Krt)
+
+	if krtYaml.KrtVersion == VersionV1 || krtYaml.KrtVersion == "" {
+		for i, node := range krtYaml.Nodes {
+			if node.Subscriptions != nil {
+				fieldName := fmt.Sprintf("nodes[%d].subscriptions", i)
+				sl.ReportError(krtYaml.Nodes[i].Subscriptions, fieldName, "Subscriptions", "v1-nodes", "")
+			}
+		}
+		for i, workflow := range krtYaml.Workflows {
+			if workflow.ExitPoint != "" {
+				sl.ReportError(krtYaml.Workflows[i].Nodes, "nodes", "Nodes", "v1-workflows", "")
+			}
+			if workflow.Nodes != nil {
+				sl.ReportError(krtYaml.Workflows[i].Nodes, "nodes", "Nodes", "v1-workflows", "")
+			}
+
+			if len(workflow.Sequential) < 1 {
+				fieldName := fmt.Sprintf("workflows[%d].sequential", i)
+				sl.ReportError(workflow.Sequential, fieldName, "Sequential", "v1-workflows", "")
+			}
+		}
+	}
+
+	if krtYaml.KrtVersion == VersionV2 {
+		for i, workflow := range krtYaml.Workflows {
+			if workflow.Sequential != nil {
+				fieldName := fmt.Sprintf("workflows[%d].sequential", i)
+				sl.ReportError(krtYaml.Workflows[i].Sequential, fieldName, "Sequential", "v2-workflows", "")
+			}
+			for j, node := range workflow.Nodes {
+				if len(node.Subscriptions) < 1 {
+					fieldName := fmt.Sprintf("workflows[%d].nodes[%d].subscriptions", i, j)
+					sl.ReportError(krtYaml.Workflows[i].Nodes[j].Subscriptions, fieldName, "Subscriptions", "v2-workflows", "")
+				}
+			}
+		}
+	}
+
 }
 
 type ValuesValidator interface {
