@@ -7,44 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	validKrtVersion    = krt.VersionV1
-	validVersionName   = "test"
-	invalidVersionName = "this version name length is higher than the maximum"
-	validDescription   = "Test description"
-	validProto         = "valid.proto"
-	invalidProto       = "invalid"
-)
-
-var (
-	validEntrypoint = krt.Entrypoint{
-		Proto: validProto,
-		Image: "validImage",
-	}
-	invalidProtoEntrypoint = krt.Entrypoint{
-		Proto: invalidProto,
-		Image: "validImage",
-	}
-	invalidEntrypointWithoutProto = krt.Entrypoint{
-		Image: "validImage",
-	}
-	invalidEntrypointWithoutImage = krt.Entrypoint{
-		Proto: validProto,
-	}
-	validConfigVars   = []string{"VALID_VAR"}
-	invalidConfigVars = []string{"invalid_var"}
-	validConfig       = krt.Config{
-		Variables: validConfigVars,
-		Files:     nil,
-	}
-	invalidVarsConfig = krt.Config{
-		Variables: invalidConfigVars,
-		Files:     nil,
-	}
-	validNodes     = []krt.Node{}
-	validWorkflows = []krt.Workflow{}
-)
-
 func TestYamlValuesValidator_Run(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -53,130 +15,128 @@ func TestYamlValuesValidator_Run(t *testing.T) {
 		errorString string
 	}{
 		{
-			name: "KRT YAML values successfully validated",
-			krtYaml: &krt.Krt{
-				KrtVersion:  validKrtVersion,
-				Version:     validVersionName,
-				Description: validDescription,
-				Entrypoint:  validEntrypoint,
-				Config:      validConfig,
-				Nodes:       validNodes,
-				Workflows:   validWorkflows,
-			},
+			name:        "KRT YAML values successfully validated",
+			krtYaml:     NewKrtBuilder().V1().Build(),
 			wantError:   false,
 			errorString: "",
 		},
 		{
-			name: "KRT YAML invalid version name",
-			krtYaml: &krt.Krt{
-				Version:     invalidVersionName,
-				Description: validDescription,
-				Entrypoint:  validEntrypoint,
-				Config:      validConfig,
-				Nodes:       validNodes,
-				Workflows:   validWorkflows,
-			},
+			name:        "KRT YAML invalid version name",
+			krtYaml:     NewKrtBuilder().V1().WithVersion("this version name length is higher than the maximum").Build(),
 			wantError:   true,
 			errorString: "Key: 'Krt.Version' Error:Field validation for 'Version' failed on the 'resource-name' tag",
 		},
 		{
-			name: "KRT YAML without required description",
-			krtYaml: &krt.Krt{
-				KrtVersion: validKrtVersion,
-				Version:    validVersionName,
-				Entrypoint: validEntrypoint,
-				Config:     validConfig,
-				Nodes:      validNodes,
-				Workflows:  validWorkflows,
-			},
+			name:        "KRT YAML without required description",
+			krtYaml:     NewKrtBuilder().V1().WithDescription("").Build(),
 			wantError:   true,
 			errorString: "Key: 'Krt.Description' Error:Field validation for 'Description' failed on the 'required' tag",
 		},
 		{
-			name: "KRT YAML with invalid proto in entrypoint",
-			krtYaml: &krt.Krt{
-				Version:     validVersionName,
-				Description: validDescription,
-				Entrypoint:  invalidProtoEntrypoint,
-				Config:      validConfig,
-				Nodes:       validNodes,
-				Workflows:   validWorkflows,
-			},
+			name:        "KRT YAML with invalid proto in entrypoint",
+			krtYaml:     NewKrtBuilder().V1().WithEntrypointProto("invalid").Build(),
 			wantError:   true,
 			errorString: "Key: 'Krt.Entrypoint.Proto' Error:Field validation for 'Proto' failed on the 'endswith' tag",
 		},
 		{
-			name: "KRT YAML without required proto in entrypoint",
-			krtYaml: &krt.Krt{
-				Version:     validVersionName,
-				Description: validDescription,
-				Entrypoint:  invalidEntrypointWithoutProto,
-				Config:      validConfig,
-				Nodes:       validNodes,
-				Workflows:   validWorkflows,
-			},
+			name:        "KRT YAML without required proto in entrypoint",
+			krtYaml:     NewKrtBuilder().V1().WithEntrypointProto("").Build(),
 			wantError:   true,
 			errorString: "Key: 'Krt.Entrypoint.Proto' Error:Field validation for 'Proto' failed on the 'required' tag",
 		},
 		{
-			name: "KRT YAML without required image in entrypoint",
-			krtYaml: &krt.Krt{
-				Version:     validVersionName,
-				Description: validDescription,
-				Entrypoint:  invalidEntrypointWithoutImage,
-				Config:      validConfig,
-				Nodes:       validNodes,
-				Workflows:   validWorkflows,
-			},
+			name:        "KRT YAML without required image in entrypoint",
+			krtYaml:     NewKrtBuilder().V1().WithEntrypointImage("").Build(),
 			wantError:   true,
 			errorString: "Key: 'Krt.Entrypoint.Image' Error:Field validation for 'Image' failed on the 'required' tag",
 		},
 		{
-			name: "KRT YAML with invalid vars in config",
-			krtYaml: &krt.Krt{
-				Version:     validVersionName,
-				Description: validDescription,
-				Entrypoint:  validEntrypoint,
-				Config:      invalidVarsConfig,
-				Nodes:       validNodes,
-				Workflows:   validWorkflows,
-			},
+			name:        "KRT YAML with invalid vars in config",
+			krtYaml:     NewKrtBuilder().V1().WithConfigVars([]string{"invalid-var"}).Build(),
 			wantError:   true,
 			errorString: "Key: 'Krt.Config.Variables[0]' Error:Field validation for 'Variables[0]' failed on the 'env' tag",
 		},
 		{
-			name: "KRT YAML with invalid KRT Version",
-			krtYaml: &krt.Krt{
-				KrtVersion:  "invalid-krt-version",
-				Version:     validVersionName,
-				Description: validDescription,
-				Entrypoint:  validEntrypoint,
-				Config:      validConfig,
-				Nodes:       validNodes,
-				Workflows:   validWorkflows,
-			},
+			name:        "KRT YAML with invalid KRT Version",
+			krtYaml:     NewKrtBuilder().WithKrtVersion("invalid-version").Build(),
 			wantError:   true,
 			errorString: "Key: 'Krt.KrtVersion' Error:Field validation for 'KrtVersion' failed on the 'krt-version' tag",
 		},
 		{
-			name: "sequential field is incompatible with KrtVersion v2",
-			krtYaml: &krt.Krt{
-				KrtVersion:  krt.VersionV2,
-				Version:     validVersionName,
-				Description: validDescription,
-				Entrypoint:  validEntrypoint,
-				Config:      validConfig,
-				Nodes:       validNodes,
-				Workflows: []krt.Workflow{
-					{
-						Name:       "workflow",
-						Entrypoint: "entrypoint",
-						Sequential: []string{"test-node"},
-					},
-				},
-			},
+			name:        "sequential field is incompatible with KrtVersion v2",
+			krtYaml:     NewKrtBuilder().V2().WithWorkflowsSequential([]string{"afd"}).Build(),
 			wantError:   true,
-			errorString: "Key: 'Krt.Workflows[0].Sequential' Error:Field validation for 'Sequential' failed on the 'excluded_if' tag",
+			errorString: "Key: 'Krt.workflows[0].sequential' Error:Field validation for 'workflows[0].sequential' failed on the 'v2-workflows' tag",
+		},
+		{
+			name: "subscribe field is incompatible with KrtVersion v1",
+			krtYaml: NewKrtBuilder().V1().WithNodes([]krt.Node{
+				{
+					Name:          "test-node",
+					Image:         "test-image",
+					Src:           "test-src",
+					GPU:           false,
+					Subscriptions: []string{"node-a"},
+				},
+			}).Build(),
+			wantError:   true,
+			errorString: "Key: 'Krt.nodes[0].subscriptions' Error:Field validation for 'nodes[0].subscriptions' failed on the 'v1-nodes' tag",
+		},
+		{
+			name: "subscribe field is required with KrtVersion v2",
+			krtYaml: NewKrtBuilder().V2().WithWorkflowsNodes([]krt.Node{
+				{
+					Name:  "node-b",
+					Image: "test-image",
+					Src:   "test-src",
+				},
+			}).Build(),
+			wantError:   true,
+			errorString: "Key: 'Krt.workflows[0].nodes[0].subscriptions' Error:Field validation for 'workflows[0].nodes[0].subscriptions' failed on the 'v2-workflows' tag",
+		},
+		{
+			name: "a node is at least subscribed to another in v2",
+			krtYaml: NewKrtBuilder().V2().WithWorkflowsNodes([]krt.Node{
+				{
+					Name:          "test-node",
+					Image:         "test-image",
+					Src:           "test-src",
+					GPU:           false,
+					Subscriptions: []string{},
+				},
+			}).Build(),
+			wantError:   true,
+			errorString: "Key: 'Krt.workflows[0].nodes[0].subscriptions' Error:Field validation for 'workflows[0].nodes[0].subscriptions' failed on the 'v2-workflows' tag",
+		},
+		{
+			name: "workflows nodes field is incompatible with KrtVersion v1",
+			krtYaml: NewKrtBuilder().V1().WithWorkflowsNodes([]krt.Node{
+				{
+					Name:  "node-b",
+					Image: "test-image",
+					Src:   "test-src",
+				},
+			}).Build(),
+			wantError:   true,
+			errorString: "Key: 'Krt.nodes' Error:Field validation for 'nodes' failed on the 'v1-workflows' tag",
+		},
+		{
+			name: "subscribe field is required with KrtVersion v2",
+			krtYaml: NewKrtBuilder().V2().WithWorkflowsNodes([]krt.Node{
+				{
+					Name:  "node-b",
+					Image: "test-image",
+					Src:   "test-src",
+				},
+			}).Build(),
+			wantError:   true,
+			errorString: "Key: 'Krt.workflows[0].nodes[0].subscriptions' Error:Field validation for 'workflows[0].nodes[0].subscriptions' failed on the 'v2-workflows' tag",
+		},
+		{
+			name:        "a workflows sequential definitions has at least one node v1",
+			krtYaml:     NewKrtBuilder().V1().WithWorkflowsSequential([]string{}).Build(),
+			wantError:   true,
+			errorString: "Key: 'Krt.workflows[0].sequential' Error:Field validation for 'workflows[0].sequential' failed on the 'v1-workflows' tag",
 		},
 	}
 
