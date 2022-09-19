@@ -98,6 +98,7 @@ type Workflow struct {
 	Entrypoint string `bson:"entrypoint"`
 	Nodes      []Node `bson:"nodes"`
 	Edges      []Edge `bson:"edges"` // v1 retrocompatibility
+	ExitPoint  string `bson:"exitPoint"`
 }
 
 type Entrypoint struct {
@@ -119,6 +120,7 @@ type VersionConfig struct {
 
 type Version struct {
 	ID          string `bson:"_id"`
+	KrtVersion  string `bson:"krtVersion"`
 	Name        string `bson:"name"`
 	Description string `bson:"description"`
 
