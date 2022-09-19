@@ -24,9 +24,9 @@ type Node struct {
 type Workflow struct {
 	Name       string   `yaml:"name" validate:"required,resource-name,lt=20"`
 	Entrypoint string   `yaml:"entrypoint" validate:"required"`
-	Sequential []string `yaml:"sequential" validate:"excluded_unless=KrtVersion v1"` //v1 retrocompatibility
-	Nodes      []Node   `yaml:"nodes" validate:"dive,min=1,required"`                //v2
-	ExitPoint  string   `yaml:"exitPoint"`                                           //v2, once v1 deprecated make required
+	Sequential []string `yaml:"sequential"`            //v1 retrocompatibility
+	Nodes      []Node   `yaml:"nodes" validate:"dive"` //v2
+	ExitPoint  string   `yaml:"exitPoint"`             //v2, once v1 deprecated make required
 }
 
 type Entrypoint struct {

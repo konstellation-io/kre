@@ -169,6 +169,7 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 }
 
 func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, runtimeID, versionName string) (<-chan *entity.Node, error) {
+	fmt.Println("you are here")
 	stream, err := k.client.WatchNodeStatus(ctx, &versionpb.NodeStatusRequest{
 		VersionName: versionName,
 		RuntimeId:   runtimeID,

@@ -103,20 +103,20 @@ function Workflow({
       style={{ width: containerWidth }}
     >
       <WorkflowHeader name={workflow.name} onWorkflowClick={onWorkflowClick} />
-      <div ref={chartRef} className={styles.chartContainer}>
-        <WorkflowChart
-          width={width}
-          height={height}
-          data={data}
-          workflowStatus={workflowStatus}
-          entrypointStatus={entrypointStatus}
-          entrypointAddress={entrypointAddress}
-          onInnerNodeClick={onInnerNodeClick}
-          onInputNodeClick={onInputNodeClick}
-          tooltipRefs={tooltipRefs}
-          enableNodeClicks={checkPermission(accessLevel, 'logs:view')}
-        />
-      </div>
+      {/*<div ref={chartRef} className={styles.chartContainer}>*/}
+      {/*  <WorkflowChart*/}
+      {/*    width={width}*/}
+      {/*    height={height}*/}
+      {/*    data={data}*/}
+      {/*    workflowStatus={workflowStatus}*/}
+      {/*    entrypointStatus={entrypointStatus}*/}
+      {/*    entrypointAddress={entrypointAddress}*/}
+      {/*    onInnerNodeClick={onInnerNodeClick}*/}
+      {/*    onInputNodeClick={onInputNodeClick}*/}
+      {/*    tooltipRefs={tooltipRefs}*/}
+      {/*    enableNodeClicks={checkPermission(accessLevel, 'logs:view')}*/}
+      {/*  />*/}
+      {/*</div>*/}
     </div>
   );
 }

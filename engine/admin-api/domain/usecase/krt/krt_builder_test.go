@@ -1,6 +1,8 @@
 package krt_test
 
-import "github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
+import (
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
+)
 
 type KrtBuilder struct {
 	krtYaml *krt.Krt
