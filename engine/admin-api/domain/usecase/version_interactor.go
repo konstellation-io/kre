@@ -421,6 +421,10 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
+	if v.KrtVersion == "" || v.KrtVersion == krt.VersionV1 {
+		version.TranslateToKrtVersionV2(v)
+	}
+
 	if !v.CanBeStarted() {
 		return nil, nil, ErrInvalidVersionStatusBeforeStarting
 	}

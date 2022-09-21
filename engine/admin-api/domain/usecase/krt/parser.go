@@ -38,10 +38,6 @@ func ProcessAndValidateKrt(
 		return nil, err
 	}
 
-	if krt.KrtVersion == VersionV1 || krt.KrtVersion == "" {
-		convertKrt(krt)
-	}
-
 	return krt, nil
 }
 
