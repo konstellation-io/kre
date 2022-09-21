@@ -25,7 +25,8 @@ func NewValidator(logger logging.Logger, krtVersion string, fieldsValidator Valu
 		}
 	}
 	return &ValidatorV1{
-		logger: logger,
+		logger:          logger,
+		fieldsValidator: fieldsValidator,
 	}
 }
 
@@ -55,6 +56,7 @@ func (v *ValidatorV1) CheckExecutables(krt *Krt) error {
 }
 
 func (v *ValidatorV1) validateSchema(krtYaml *Krt) error {
+	v.logger.Infof("Validating krt.yml schema")
 	var errorMessages []string
 	for _, node := range krtYaml.Nodes {
 		if node.Subscriptions != nil {
@@ -74,7 +76,10 @@ func (v *ValidatorV1) validateSchema(krtYaml *Krt) error {
 			errorMessages = append(errorMessages, fmt.Sprintf("- Workflows require at least one node"))
 		}
 	}
-	return fmt.Errorf(strings.Join(errorMessages, "\n"))
+	if len(errorMessages) > 0 {
+		return fmt.Errorf(strings.Join(errorMessages, "\n"))
+	}
+	return nil
 }
 
 // validateWorkflows checks if the nodes from all workflows are definded and exist in krt spec
