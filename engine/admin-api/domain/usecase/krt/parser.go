@@ -27,23 +27,22 @@ func ProcessAndValidateKrt(
 		dstDir,
 	}
 
-	k, err := p.ParseKrtYaml(krtFilePath)
+	krt, err := p.ParseKrtYaml(krtFilePath)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("here")
-	krtValidator := NewValidator(logger, k.KrtVersion, valuesValidator)
-	err = krtValidator.Run(k)
+	krtValidator := NewValidator(logger, krt.KrtVersion, valuesValidator)
+	err = krtValidator.Run(krt)
 	if err != nil {
 		return nil, err
 	}
 
-	//err = p.ValidateYaml(k)
-	//if err != nil {
-	//	return nil, err
-	//}
-	return k, nil
+	if krt.KrtVersion == VersionV1 || krt.KrtVersion == "" {
+		convertKrt(krt)
+	}
+
+	return krt, nil
 }
 
 func ProcessContent(logger logging.Logger, krtYml *Krt, krtFilePath, dstDir string) []error {
@@ -82,6 +81,10 @@ func (p *Parser) ParseKrtYaml(krtFilePath string) (*Krt, error) {
 	krt, err := generateKrt(krtYamlPath)
 	if err != nil {
 		return nil, fmt.Errorf("error on KRT Yaml parsing: %w", err)
+	}
+
+	if krt.KrtVersion == "" {
+		krt.KrtVersion = VersionV1
 	}
 
 	return krt, nil

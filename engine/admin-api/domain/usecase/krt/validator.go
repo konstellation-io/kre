@@ -113,7 +113,7 @@ func (v *ValidatorV2) Run(krtYaml *Krt) error {
 		}
 		for _, node := range workflow.Nodes {
 			if len(node.Subscriptions) < 1 {
-				errorMessages = append(errorMessages, fmt.Sprintf("- Workflows require at least one node"))
+				errorMessages = append(errorMessages, fmt.Sprintf("- Node %s require at least one subscription", node.Name))
 			}
 		}
 		if len(errorMessages) > 0 {
