@@ -6,9 +6,7 @@ import (
 
 // TranslateToKrtVersionV2 will convert a v1 krt version to v2
 func TranslateToKrtVersionV2(version *entity.Version) {
-	var workflows = make([]*entity.Workflow, 0)
 	for _, workflow := range version.Workflows {
-
 		var nodesInWorkflow = make([]entity.Node, 0)
 		for idx, node := range workflow.Nodes {
 			if idx == 0 { // first node subscribes to entrypoint
@@ -21,5 +19,4 @@ func TranslateToKrtVersionV2(version *entity.Version) {
 		workflow.Nodes = nodesInWorkflow
 		workflow.ExitPoint = workflow.Nodes[len(workflow.Nodes)-1].Name
 	}
-	version.Workflows = workflows
 }
