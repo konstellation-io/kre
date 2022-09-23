@@ -2,9 +2,9 @@ package version
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 	appsv1 "k8s.io/api/apps/v1"
@@ -86,7 +86,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		nodeConfig["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, n.GetName())
 
 		// input from desired subscriptions
-		nodeConfig["KRT_NATS_INPUTS"] = m.marshallSubscriptions(runtimeID, versionName, entrypointName, n.GetSubscriptions())
+		nodeConfig["KRT_NATS_INPUTS"] = m.joinSubscriptions(runtimeID, versionName, entrypointName, n.GetSubscriptions())
 
 		if n.GetName() == workflow.ExitPoint {
 			nodeConfig["KRT_IS_EXITPOINT"] = "true"
@@ -96,16 +96,12 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	return wconf
 }
 
-func (m *Manager) marshallSubscriptions(runtimeID, versionName, entrypointName string, subscriptions []string) string {
+// joinSubscriptions will form all subscriptions complete subject names and join them in a comma separated string
+func (m *Manager) joinSubscriptions(runtimeID, versionName, entrypointName string, subscriptions []string) string {
 	for i, sub := range subscriptions {
 		subscriptions[i] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, sub)
 	}
-	subs, err := json.Marshal(subscriptions)
-	if err != nil {
-		m.logger.Errorf("could not marshall subscriptions info: %s", err.Error())
-		return ""
-	}
-	return string(subs)
+	return strings.Join(subscriptions, ",")
 }
 
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
