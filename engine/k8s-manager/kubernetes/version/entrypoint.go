@@ -49,7 +49,7 @@ func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, err
 			return "", fmt.Errorf("workflow %s has no nodes", w.Name)
 		}
 
-		exitpointSubject, ok := w.StreamInfo.NodesSubjects[w.ExitPoint]
+		exitpointSubject, ok := w.StreamInfo.NodesSubjects[w.Exitpoint]
 		if !ok {
 			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.ExitPoint)
 		}
@@ -75,10 +75,6 @@ func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, err
 	m.logger.Infof("NATS subjects generated: %s", ns)
 
 	return ns, nil
-}
-
-func (m *Manager) getSubjectName(stream, nodeName string) string {
-	return fmt.Sprintf("%s.%s", stream, nodeName)
 }
 
 func (m *Manager) getEntrypointLabels(runtimeId, versionName string) map[string]string {
