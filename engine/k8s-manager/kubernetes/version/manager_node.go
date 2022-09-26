@@ -22,7 +22,6 @@ const (
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
 	entrypointNodeName                    = "entrypoint"
-	exitpointNodeName                     = "exit-point"
 )
 
 var (
@@ -73,6 +72,17 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	}
 
 	for _, n := range workflow.Nodes {
+		// output to its own subject
+		outputSubject, ok := workflow.StreamInfo.NodesSubjects[n.Name]
+		if !ok {
+			return nil, fmt.Errorf("error obtainint subject for node \"%s\"", n.Name)
+		}
+
+		// input from desired subscriptions
+		inputSubjects, err := m.joinSubscriptionSubjects(workflow.StreamInfo.NodesSubjects, n.Subscriptions)
+		if err != nil {
+			return nil, err
+		}
 		wconf[n.Id] = NodeConfig{
 			"KRT_WORKFLOW_ID":            workflow.GetId(),
 			"KRT_WORKFLOW_NAME":          workflow.GetName(),
@@ -81,46 +91,35 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_HANDLER_PATH":           n.Src,
 			"KRT_NATS_MONGO_WRITER":      natsDataSubjectPrefix + runtimeID,
 			"KRT_NATS_STREAM":            workflow.StreamInfo.Stream,
-			"KRT_IS_EXITPOINT":           "false",
+			"KRT_IS_EXITPOINT":           m.isExitpoint(n.GetName(), workflow.Exitpoint),
 			"KRT_NATS_EXITPOINT_SUBJECT": exitpointSubject,
-		}
-
-		nodeConfig := wconf[n.Id]
-
-		// output to its own subject
-		outputSubject, ok := workflow.StreamInfo.NodesSubjects[n.Name]
-		if !ok {
-			return nil, fmt.Errorf("error obtainint subject for node \"%s\"", n.Name)
-		}
-		nodeConfig["KRT_NATS_OUTPUT"] = outputSubject
-
-		// input from desired subscriptions
-		subjectsToSubscribe, err := m.getSubscriptionSubjects(workflow.StreamInfo.NodesSubjects, n.Subscriptions)
-		if err != nil {
-			return nil, err
-		}
-
-		nodeConfig["KRT_NATS_INPUTS"] = strings.Join(subjectsToSubscribe, ",")
-
-		if n.Name == workflow.Exitpoint {
-			nodeConfig["KRT_IS_EXITPOINT"] = "true"
+			"KRT_NATS_OUTPUT":            outputSubject,
+			"KRT_NATS_INPUTS":            inputSubjects,
 		}
 	}
 
 	return wconf, nil
 }
 
-// getSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
-func (m *Manager) getSubscriptionSubjects(nodesSubjects map[string]string, nodesToSubscribe []string) ([]string, error) {
+func (m *Manager) isExitpoint(nodeName, workflowExitpoint string) string {
+	if nodeName == workflowExitpoint {
+		return "true"
+	} else {
+		return "false"
+	}
+}
+
+// joinSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
+func (m *Manager) joinSubscriptionSubjects(nodesSubjects map[string]string, nodesToSubscribe []string) (string, error) {
 	subjectsToSubscribe := make([]string, 0, len(nodesToSubscribe))
 	for _, node := range nodesToSubscribe {
 		subject, ok := nodesSubjects[node]
 		if !ok {
-			return nil, fmt.Errorf("error obtaining subject for node \"%s\"", node)
+			return "", fmt.Errorf("error obtaining subject for node \"%s\"", node)
 		}
 		subjectsToSubscribe = append(subjectsToSubscribe, subject)
 	}
-	return subjectsToSubscribe, nil
+	return strings.Join(subjectsToSubscribe, ","), nil
 }
 
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
