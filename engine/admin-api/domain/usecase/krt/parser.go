@@ -97,22 +97,6 @@ func (p *Parser) Extract(krtFilePath string) error {
 	return nil
 }
 
-//func (p *Parser) ValidateYaml(krt *Krt) error {
-//	p.logger.Info("Validating KRT file")
-//	err := validateYaml(krt)
-//	if err != nil {
-//		return err
-//	}
-//
-//	p.logger.Info("Validating KRT workflows")
-//	err = validateWorkflows(krt)
-//	if err != nil {
-//		return fmt.Errorf("error on KRT Workflow validation: %w", err)
-//	}
-//
-//	return nil
-//}
-
 func (p *Parser) ValidateContent(krt *Krt) []error {
 	p.logger.Info("Validating KRT src paths")
 	errors := validateSrcPaths(krt, p.dstDir)
