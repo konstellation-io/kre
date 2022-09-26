@@ -40,7 +40,7 @@ message Workflow {
   string entrypoint = 3;
   repeated Node nodes = 4;
   repeated Edge edges = 5;
-  string exit_point = 6;
+  string exitpoint = 6;
   StreamInfo stream_info = 7;
 }
 

@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
-	"strings"
 )
 
 type WaitForKind = int
@@ -20,6 +21,8 @@ const (
 	WaitForConfigMaps
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
+	entrypointNodeName                    = "entrypoint"
+	exitpointNodeName                     = "exit-point"
 )
 
 var (
@@ -64,7 +67,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	wconf := WorkflowConfig{}
 	runtimeID := req.RuntimeId
 
-	exitpointSubject, ok := workflow.StreamInfo.NodesSubjects[workflow.ExitPoint]
+	exitpointSubject, ok := workflow.StreamInfo.NodesSubjects[workflow.Exitpoint]
 	if !ok {
 		return nil, fmt.Errorf("error obtaining workflow \"%s\" exitpoint's subject", workflow.Name)
 	}
@@ -99,7 +102,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 
 		nodeConfig["KRT_NATS_INPUTS"] = strings.Join(subjectsToSubscribe, ",")
 
-		if n.Name == workflow.ExitPoint {
+		if n.Name == workflow.Exitpoint {
 			nodeConfig["KRT_IS_EXITPOINT"] = "true"
 		}
 	}
