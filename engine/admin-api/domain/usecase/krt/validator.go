@@ -64,7 +64,7 @@ func (v *ValidatorV1) validateSchema(krtYaml *Krt) error {
 		}
 	}
 	for _, workflow := range krtYaml.Workflows {
-		if workflow.ExitPoint != "" {
+		if workflow.Exitpoint != "" {
 			errorMessages = append(errorMessages, fmt.Sprintf("- The field \"workflow.exitpoint\" is incompatible with version v1"))
 
 		}

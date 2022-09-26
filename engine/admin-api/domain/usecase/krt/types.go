@@ -26,7 +26,7 @@ type Workflow struct {
 	Entrypoint string   `yaml:"entrypoint" validate:"required"`
 	Sequential []string `yaml:"sequential"`            //v1 retrocompatibility
 	Nodes      []Node   `yaml:"nodes" validate:"dive"` //v2
-	ExitPoint  string   `yaml:"exitPoint"`             //v2, once v1 deprecated make required
+	Exitpoint  string   `yaml:"exitpoint"`             //v2, once v1 deprecated make required
 }
 
 type Entrypoint struct {

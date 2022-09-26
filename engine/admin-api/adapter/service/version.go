@@ -154,7 +154,7 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
-			ExitPoint:  w.ExitPoint,
+			Exitpoint:  w.Exitpoint,
 		}
 	}
 

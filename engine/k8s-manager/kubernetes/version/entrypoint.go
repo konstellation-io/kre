@@ -48,7 +48,7 @@ func (m *Manager) generateNATSSubjects(runtimeID, versionName string, workflows 
 		if len(w.Nodes) <= 0 {
 			return "", fmt.Errorf("workflow %s has no nodes", w.Name)
 		}
-		natsSubjects[w.Entrypoint] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, w.GetEntrypoint(), w.ExitPoint)
+		natsSubjects[w.Entrypoint] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, w.GetEntrypoint(), w.Exitpoint)
 	}
 
 	natsSubjectJSON, err := json.Marshal(natsSubjects)

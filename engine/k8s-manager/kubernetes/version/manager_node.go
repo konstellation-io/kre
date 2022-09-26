@@ -22,7 +22,7 @@ const (
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
 	entrypointNodeName                    = "entrypoint"
-	exitPointNodeName                     = "exit-point"
+	exitpointNodeName                     = "exit-point"
 )
 
 var (
@@ -77,7 +77,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_NATS_MONGO_WRITER":      natsDataSubjectPrefix + runtimeID,
 			"KRT_NATS_STREAM":            fmt.Sprintf("%s-%s-%s", runtimeID, versionName, entrypointName),
 			"KRT_IS_EXITPOINT":           "false",
-			"KRT_NATS_EXITPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, workflow.ExitPoint),
+			"KRT_NATS_EXITPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, workflow.Exitpoint),
 		}
 
 		nodeConfig := wconf[n.Id]
@@ -88,7 +88,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		// input from desired subscriptions
 		nodeConfig["KRT_NATS_INPUTS"] = m.joinSubscriptions(runtimeID, versionName, entrypointName, n.GetSubscriptions())
 
-		if n.GetName() == workflow.ExitPoint {
+		if n.GetName() == workflow.Exitpoint {
 			nodeConfig["KRT_IS_EXITPOINT"] = "true"
 		}
 	}

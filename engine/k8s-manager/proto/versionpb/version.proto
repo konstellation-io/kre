@@ -35,7 +35,7 @@ message Workflow {
   string entrypoint = 3;
   repeated Node nodes = 4;
   repeated Edge edges = 5;
-  string exitPoint = 6;
+  string exitpoint = 6;
 }
 
 message StartRequest {

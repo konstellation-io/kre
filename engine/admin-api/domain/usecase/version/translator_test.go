@@ -60,7 +60,7 @@ var testWorkflow1 = entity.Workflow{
 	Entrypoint: "TestEntrypoint",
 	Nodes:      []entity.Node{testNode1, testNode2, testNode3},
 	Edges:      []entity.Edge{edge1, edge2},
-	ExitPoint:  "",
+	Exitpoint:  "",
 }
 
 func TestTranslateToKrtVersionV2(t *testing.T) {
@@ -80,7 +80,7 @@ func TestTranslateToKrtVersionV2(t *testing.T) {
 	require.Len(t, testVersion.Workflows, 1)
 	testWorkflow := testVersion.Workflows[0]
 
-	require.Equal(t, testNode3.Name, testWorkflow.ExitPoint)
+	require.Equal(t, testNode3.Name, testWorkflow.Exitpoint)
 
 	for idx, node := range testWorkflow.Nodes {
 		require.Len(t, node.Subscriptions, 1)
