@@ -13,14 +13,12 @@ type Manager interface {
 }
 
 type NatsManager struct {
-	//config *config.Config
 	logger logging.Logger
 	client nats.Client
 }
 
 func NewNatsManager(logger logging.Logger, client nats.Client) *NatsManager {
 	return &NatsManager{
-		//config: config,
 		logger: logger,
 		client: client,
 	}
@@ -53,6 +51,7 @@ func (m *NatsManager) CreateStreams(
 func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
 	return fmt.Sprintf("%s-%s-%s", runtimeID, versionName, workflowEntrypoint)
 }
+
 func (m *NatsManager) getNodesSubjects(stream string, nodes []string) map[string]string {
 	const entrypointNodeName = "entrypoint"
 	nodesSubjects := map[string]string{entrypointNodeName: m.getSubjectName(stream, entrypointNodeName)}

@@ -29,16 +29,6 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	//natsConn, err := nats.Connect(cfg.NatsStreaming.URL)
-	//if err != nil {
-	//	log.Fatalf("Failed connecting to NATS: %v", err)
-	//}
-	//
-	//js, err := natsConn.JetStream()
-	//if err != nil {
-	//	log.Fatalf("Failed connecting to NATS JetStream: %v", err)
-	//}
-
 	natsClient := nats.New(logger)
 	err = natsClient.Connect(cfg.NatsStreaming.URL)
 	if err != nil {
