@@ -116,10 +116,16 @@ func (v *ValidatorV2) Run(krtYaml *Krt) error {
 		if workflow.Sequential != nil {
 			errorMessages = append(errorMessages, fmt.Sprintf("- Field \"sequential\" is incompatible with krt version v2"))
 		}
+
+		existingNodes := make(map[string]bool, len(workflow.Nodes))
 		for _, node := range workflow.Nodes {
+			existingNodes[node.Name] = true
 			if len(node.Subscriptions) < 1 {
 				errorMessages = append(errorMessages, fmt.Sprintf("- Node %s require at least one subscription", node.Name))
 			}
+		}
+		if _, ok := existingNodes[workflow.Exitpoint]; !ok {
+			errorMessages = append(errorMessages, fmt.Sprintf("- Exitpoint node %s not found in nodes list", workflow.Exitpoint))
 		}
 		if len(errorMessages) > 0 {
 			return fmt.Errorf(strings.Join(errorMessages, "\n"))
