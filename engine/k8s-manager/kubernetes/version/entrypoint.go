@@ -38,7 +38,11 @@ func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvV
 // generateSubjects creates a JSON containing the NATS subjects the entrypoint must subscribe to for each workflow
 // example:
 //   {
-//      "Workflow1": "runtimeName-versionName-workflowEntrypoint1.exitpointName1",
+//      "Workflow1": {
+//				"stream": "runtimeName-versionName-workflowEntrypoint1"
+//     		"input_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
+//     		"output_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
+//   		},
 //      "Workflow2": "runtimeName-versionName-workflowEntrypoint2.exitpointName2"
 //   }
 func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, error) {
@@ -51,12 +55,12 @@ func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, err
 
 		exitpointSubject, ok := w.StreamInfo.NodesSubjects[w.Exitpoint]
 		if !ok {
-			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.ExitPoint)
+			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.Exitpoint)
 		}
 		// TODO: refactor magic string
 		entrypointSubject, ok := w.StreamInfo.NodesSubjects["entrypoint"]
 		if !ok {
-			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.ExitPoint)
+			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.Exitpoint)
 		}
 		natsSubjects[w.Entrypoint] = map[string]string{
 			"stream":         w.StreamInfo.Stream,
