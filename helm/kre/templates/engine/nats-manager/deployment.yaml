@@ -23,8 +23,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-nats-manager-config
-{{/*            - secretRef:*/}}
-{{/*                name: {{ .Release.Name }}-nats-secrets*/}}
 
           env:
             - name: KRE_NATS_MANAGER_PORT
