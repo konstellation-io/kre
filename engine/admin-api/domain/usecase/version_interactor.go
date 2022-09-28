@@ -166,7 +166,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 		return nil, nil, fmt.Errorf("error creating temp krt file for version: %w", err)
 	}
 
-	krtYml, err := krt.ProcessYaml(i.logger, tmpKrtFile.Name(), tmpDir)
+	krtYml, err := krt.ProcessAndValidateKrt(i.logger, tmpKrtFile.Name(), tmpDir)
 	if err != nil {
 		return nil, nil, err
 	}
