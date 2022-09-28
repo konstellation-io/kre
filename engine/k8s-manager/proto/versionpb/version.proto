@@ -30,12 +30,18 @@ message Workflow {
     string toNode = 3;
   }
 
+  message StreamInfo {
+    string stream = 1;
+    map<string, string> nodes_subjects = 2;
+  }
+
   string id = 1;
   string name = 2;
   string entrypoint = 3;
   repeated Node nodes = 4;
   repeated Edge edges = 5;
-  string exitPoint = 6;
+  string exit_point = 6;
+  StreamInfo stream_info = 7;
 }
 
 message StartRequest {
