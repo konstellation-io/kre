@@ -35,20 +35,34 @@ func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvV
 	return append(m.getCommonEnvVars(req), entrypointEnvVars...)
 }
 
-// generateNATSSubjects creates a JSON containing the NATS subjects the entrypoint must subscribe to for each workflow
+// generateSubjects creates a JSON containing the NATS subjects the entrypoint must subscribe to for each workflow
 // example:
 //   {
 //      "Workflow1": "runtimeName-versionName-workflowEntrypoint1.exitpointName1",
 //      "Workflow2": "runtimeName-versionName-workflowEntrypoint2.exitpointName2"
 //   }
-func (m *Manager) generateNATSSubjects(runtimeID, versionName string, workflows []*versionpb.Workflow) (string, error) {
-	natsSubjects := map[string]string{}
+func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, error) {
+	natsSubjects := map[string]map[string]string{} // TODO: refactor to struct
 
 	for _, w := range workflows {
 		if len(w.Nodes) <= 0 {
 			return "", fmt.Errorf("workflow %s has no nodes", w.Name)
 		}
-		natsSubjects[w.Entrypoint] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, w.GetEntrypoint(), w.ExitPoint)
+
+		exitpointSubject, ok := w.StreamInfo.NodesSubjects[w.ExitPoint]
+		if !ok {
+			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.ExitPoint)
+		}
+		// TODO: refactor magic string
+		entrypointSubject, ok := w.StreamInfo.NodesSubjects["entrypoint"]
+		if !ok {
+			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.ExitPoint)
+		}
+		natsSubjects[w.Entrypoint] = map[string]string{
+			"stream":         w.StreamInfo.Stream,
+			"input_subject":  exitpointSubject,
+			"output_subject": entrypointSubject,
+		}
 	}
 
 	natsSubjectJSON, err := json.Marshal(natsSubjects)
@@ -61,6 +75,10 @@ func (m *Manager) generateNATSSubjects(runtimeID, versionName string, workflows 
 	m.logger.Infof("NATS subjects generated: %s", ns)
 
 	return ns, nil
+}
+
+func (m *Manager) getSubjectName(stream, nodeName string) string {
+	return fmt.Sprintf("%s.%s", stream, nodeName)
 }
 
 func (m *Manager) getEntrypointLabels(runtimeId, versionName string) map[string]string {

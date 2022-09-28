@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/konstellation-io/kre/engine/k8s-manager/nats"
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
@@ -19,10 +18,9 @@ import (
 )
 
 type Manager struct {
-	config      *config.Config
-	logger      *simplelogger.SimpleLogger
-	clientset   *kubernetes.Clientset
-	natsManager nats.Manager
+	config    *config.Config
+	logger    *simplelogger.SimpleLogger
+	clientset *kubernetes.Clientset
 }
 
 const (
@@ -39,12 +37,11 @@ func (m *Manager) getVersionServiceName(runtimeID, versionName string) string {
 func New(cfg *config.Config,
 	logger *simplelogger.SimpleLogger,
 	clientset *kubernetes.Clientset,
-	nm *nats.NatsManager) *Manager {
+) *Manager {
 	return &Manager{
 		cfg,
 		logger,
 		clientset,
-		nm,
 	}
 }
 
@@ -84,13 +81,6 @@ func (m *Manager) Start(ctx context.Context, req *versionpb.StartRequest) error 
 // Stop calls kubernetes remove all version resources.
 func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Stop version %s on runtime %s", req.Name, req.RuntimeId)
-
-	for _, workflow := range req.Workflows {
-		err := m.natsManager.DeleteNatsStream(req.RuntimeId, req.Name, workflow)
-		if err != nil {
-			return err
-		}
-	}
 
 	err := m.deleteConfigMapsSync(ctx, req.RuntimeId, req.Name, m.config.Kubernetes.Namespace)
 	if err != nil {

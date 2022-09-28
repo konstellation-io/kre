@@ -1,5 +1,5 @@
 # Generate proto
-FROM grpc/go as protobuf
+FROM namely/protoc-all as protobuf
 
 WORKDIR /app
 

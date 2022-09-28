@@ -4,14 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
-
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
+	"strings"
 )
 
 type WaitForKind = int
@@ -21,8 +20,6 @@ const (
 	WaitForConfigMaps
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
-	entrypointNodeName                    = "entrypoint"
-	exitPointNodeName                     = "exit-point"
 )
 
 var (
@@ -44,8 +41,10 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 	m.logger.Infof("Creating deployments for all nodes")
 
 	for _, w := range req.Workflows {
-		workflowConfig := m.generateWorkflowConfig(req, w)
-
+		workflowConfig, err := m.generateWorkflowConfig(req, w)
+		if err != nil {
+			return err
+		}
 		for _, n := range w.Nodes {
 			err := m.createNodeDeployment(ctx, req, n, workflowConfig[n.Id])
 			if err != nil {
@@ -59,13 +58,16 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 	return nil
 }
 
-func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) WorkflowConfig {
+func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) (WorkflowConfig, error) {
 	m.logger.Infof("Generating workflow \"%s\" config", workflow.Name)
 
 	wconf := WorkflowConfig{}
 	runtimeID := req.RuntimeId
-	versionName := req.VersionName
-	entrypointName := workflow.GetEntrypoint()
+
+	exitpointSubject, ok := workflow.StreamInfo.NodesSubjects[workflow.ExitPoint]
+	if !ok {
+		return nil, fmt.Errorf("error obtaining workflow \"%s\" exitpoint's subject", workflow.Name)
+	}
 
 	for _, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
@@ -75,33 +77,47 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_NODE_NAME":              n.GetName(),
 			"KRT_HANDLER_PATH":           n.Src,
 			"KRT_NATS_MONGO_WRITER":      natsDataSubjectPrefix + runtimeID,
-			"KRT_NATS_STREAM":            fmt.Sprintf("%s-%s-%s", runtimeID, versionName, entrypointName),
+			"KRT_NATS_STREAM":            workflow.StreamInfo.Stream,
 			"KRT_IS_EXITPOINT":           "false",
-			"KRT_NATS_EXITPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, workflow.ExitPoint),
+			"KRT_NATS_EXITPOINT_SUBJECT": exitpointSubject,
 		}
 
 		nodeConfig := wconf[n.Id]
 
 		// output to its own subject
-		nodeConfig["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, n.GetName())
+		outputSubject, ok := workflow.StreamInfo.NodesSubjects[n.Name]
+		if !ok {
+			return nil, fmt.Errorf("error obtainint subject for node \"%s\"", n.Name)
+		}
+		nodeConfig["KRT_NATS_OUTPUT"] = outputSubject
 
 		// input from desired subscriptions
-		nodeConfig["KRT_NATS_INPUTS"] = m.joinSubscriptions(runtimeID, versionName, entrypointName, n.GetSubscriptions())
+		subjectsToSubscribe, err := m.getSubscriptionSubjects(workflow.StreamInfo.NodesSubjects, n.Subscriptions)
+		if err != nil {
+			return nil, err
+		}
 
-		if n.GetName() == workflow.ExitPoint {
+		nodeConfig["KRT_NATS_INPUTS"] = strings.Join(subjectsToSubscribe, ",")
+
+		if n.Name == workflow.ExitPoint {
 			nodeConfig["KRT_IS_EXITPOINT"] = "true"
 		}
 	}
 
-	return wconf
+	return wconf, nil
 }
 
-// joinSubscriptions will form all subscriptions complete subject names and join them in a comma separated string
-func (m *Manager) joinSubscriptions(runtimeID, versionName, entrypointName string, subscriptions []string) string {
-	for i, sub := range subscriptions {
-		subscriptions[i] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, sub)
+// getSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
+func (m *Manager) getSubscriptionSubjects(nodesSubjects map[string]string, nodesToSubscribe []string) ([]string, error) {
+	subjectsToSubscribe := make([]string, 0, len(nodesToSubscribe))
+	for _, node := range nodesToSubscribe {
+		subject, ok := nodesSubjects[node]
+		if !ok {
+			return nil, fmt.Errorf("error obtaining subject for node \"%s\"", node)
+		}
+		subjectsToSubscribe = append(subjectsToSubscribe, subject)
 	}
-	return strings.Join(subscriptions, ",")
+	return subjectsToSubscribe, nil
 }
 
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
