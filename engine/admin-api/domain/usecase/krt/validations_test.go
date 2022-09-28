@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	validKrtVersion    = krt.VersionV1
 	validVersionName   = "test"
 	invalidVersionName = "this version name length is higher than the maximum"
 	validDescription   = "Test description"
@@ -54,6 +55,7 @@ func TestYamlValuesValidator_Run(t *testing.T) {
 		{
 			name: "KRT YAML values successfully validated",
 			krtYaml: &krt.Krt{
+				KrtVersion:  validKrtVersion,
 				Version:     validVersionName,
 				Description: validDescription,
 				Entrypoint:  validEntrypoint,
@@ -80,6 +82,7 @@ func TestYamlValuesValidator_Run(t *testing.T) {
 		{
 			name: "KRT YAML without required description",
 			krtYaml: &krt.Krt{
+				KrtVersion: validKrtVersion,
 				Version:    validVersionName,
 				Entrypoint: validEntrypoint,
 				Config:     validConfig,
@@ -140,6 +143,40 @@ func TestYamlValuesValidator_Run(t *testing.T) {
 			},
 			wantError:   true,
 			errorString: "Key: 'Krt.Config.Variables[0]' Error:Field validation for 'Variables[0]' failed on the 'env' tag",
+		},
+		{
+			name: "KRT YAML with invalid KRT Version",
+			krtYaml: &krt.Krt{
+				KrtVersion:  "invalid-krt-version",
+				Version:     validVersionName,
+				Description: validDescription,
+				Entrypoint:  validEntrypoint,
+				Config:      validConfig,
+				Nodes:       validNodes,
+				Workflows:   validWorkflows,
+			},
+			wantError:   true,
+			errorString: "Key: 'Krt.KrtVersion' Error:Field validation for 'KrtVersion' failed on the 'krt-version' tag",
+		},
+		{
+			name: "sequential field is incompatible with KrtVersion v2",
+			krtYaml: &krt.Krt{
+				KrtVersion:  krt.VersionV2,
+				Version:     validVersionName,
+				Description: validDescription,
+				Entrypoint:  validEntrypoint,
+				Config:      validConfig,
+				Nodes:       validNodes,
+				Workflows: []krt.Workflow{
+					{
+						Name:       "workflow",
+						Entrypoint: "entrypoint",
+						Sequential: []string{"test-node"},
+					},
+				},
+			},
+			wantError:   true,
+			errorString: "Key: 'Krt.Workflows[0].Sequential' Error:Field validation for 'Sequential' failed on the 'excluded_if' tag",
 		},
 	}
 

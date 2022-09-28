@@ -2,6 +2,7 @@ package krt
 
 // Krt contains data about a version
 type Krt struct {
+	KrtVersion  string     `yaml:"krtVersion" validate:"omitempty,krt-version"`
 	Version     string     `yaml:"version" validate:"required,resource-name,lt=20"`
 	Description string     `yaml:"description" validate:"required"`
 	Entrypoint  Entrypoint `yaml:"entrypoint" validate:"required"`
