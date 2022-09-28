@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"io"
 	"time"
 
@@ -140,19 +141,13 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
 		for j, n := range w.Nodes {
 			nodes[j] = &versionpb.Workflow_Node{
-				Id:    n.ID,
-				Name:  n.Name,
-				Image: n.Image,
-				Src:   n.Src,
-				Gpu:   n.GPU,
-			}
-		}
-		edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
-		for k, e := range w.Edges {
-			edges[k] = &versionpb.Workflow_Edge{
-				Id:       e.ID,
-				FromNode: e.FromNode,
-				ToNode:   e.ToNode,
+				Id:            n.ID,
+				Name:          n.Name,
+				Image:         n.Image,
+				Src:           n.Src,
+				Gpu:           n.GPU,
+				Subscriptions: n.Subscriptions,
+				ExitPoint:     w.ExitPoint,
 			}
 		}
 
@@ -161,7 +156,18 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
-			Edges:      edges,
+		}
+
+		if version.KrtVersion == krt.VersionV1 {
+			edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
+			for k, e := range w.Edges {
+				edges[k] = &versionpb.Workflow_Edge{
+					Id:       e.ID,
+					FromNode: e.FromNode,
+					ToNode:   e.ToNode,
+				}
+			}
+			wf[i].Edges = edges
 		}
 	}
 
@@ -169,6 +175,7 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 }
 
 func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, runtimeID, versionName string) (<-chan *entity.Node, error) {
+	fmt.Println("you are here")
 	stream, err := k.client.WatchNodeStatus(ctx, &versionpb.NodeStatusRequest{
 		VersionName: versionName,
 		RuntimeId:   runtimeID,
