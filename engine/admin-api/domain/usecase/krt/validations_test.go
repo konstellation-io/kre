@@ -1,9 +1,9 @@
 package krt_test
 
 import (
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"testing"
 
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -16,7 +16,12 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
-func ProcessAndValidateKrt(logger logging.Logger, valuesValidator ValuesValidator, krtFilePath, dstDir string) (*Krt, error) {
+func ProcessAndValidateKrt(
+	logger logging.Logger,
+	valuesValidator ValuesValidator,
+	krtFilePath,
+	dstDir string,
+) (*Krt, error) {
 	p := Parser{
 		logger,
 		dstDir,
@@ -27,15 +32,17 @@ func ProcessAndValidateKrt(logger logging.Logger, valuesValidator ValuesValidato
 		return nil, err
 	}
 
-	err = valuesValidator.Run(k)
+	fmt.Println("here")
+	krtValidator := NewValidator(logger, k.KrtVersion, valuesValidator)
+	err = krtValidator.Run(k)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.ValidateYaml(k)
-	if err != nil {
-		return nil, err
-	}
+	//err = p.ValidateYaml(k)
+	//if err != nil {
+	//	return nil, err
+	//}
 	return k, nil
 }
 
@@ -91,21 +98,21 @@ func (p *Parser) Extract(krtFilePath string) error {
 	return nil
 }
 
-func (p *Parser) ValidateYaml(krt *Krt) error {
-	p.logger.Info("Validating KRT file")
-	err := ValidateYaml(krt)
-	if err != nil {
-		return err
-	}
-
-	p.logger.Info("Validating KRT workflows")
-	err = validateWorkflows(krt)
-	if err != nil {
-		return fmt.Errorf("error on KRT Workflow validation: %w", err)
-	}
-
-	return nil
-}
+//func (p *Parser) ValidateYaml(krt *Krt) error {
+//	p.logger.Info("Validating KRT file")
+//	err := validateYaml(krt)
+//	if err != nil {
+//		return err
+//	}
+//
+//	p.logger.Info("Validating KRT workflows")
+//	err = validateWorkflows(krt)
+//	if err != nil {
+//		return fmt.Errorf("error on KRT Workflow validation: %w", err)
+//	}
+//
+//	return nil
+//}
 
 func (p *Parser) ValidateContent(krt *Krt) []error {
 	p.logger.Info("Validating KRT src paths")
