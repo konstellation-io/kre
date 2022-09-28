@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nats-manager
+  labels:
+    {{- include "nats-manager.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "nats-manager.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nats-manager.labels" . | nindent 8 }}
+      annotations:
+        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-nats-manager
+          image: {{ .Values.natsManager.image.repository }}:{{ .Values.natsManager.image.tag }}
+          imagePullPolicy: {{ .Values.natsManager.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-nats-manager-config
+{{/*            - secretRef:*/}}
+{{/*                name: {{ .Release.Name }}-nats-secrets*/}}
+
+          env:
+            - name: KRE_NATS_MANAGER_PORT
+              value: "50051"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+          ports:
+            - containerPort: 50051
+              protocol: TCP
+              name: grpc
