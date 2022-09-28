@@ -124,8 +124,6 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 			}
 		}
 
-		fmt.Println(err)
-
 		return nil, err
 	}
 
