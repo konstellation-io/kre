@@ -22,7 +22,6 @@ message Workflow {
     string src = 4;
     bool gpu = 5;
     repeated string subscriptions = 6;
-    string exitPoint = 7;
   }
 
   message Edge {
@@ -36,6 +35,7 @@ message Workflow {
   string entrypoint = 3;
   repeated Node nodes = 4;
   repeated Edge edges = 5;
+  string exitPoint = 6;
 }
 
 message StartRequest {

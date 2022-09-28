@@ -63,82 +63,37 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	m.logger.Infof("Generating workflow \"%s\" config", workflow.Name)
 
 	wconf := WorkflowConfig{}
+	runtimeID := req.RuntimeId
+	versionName := req.VersionName
+	entrypointName := workflow.GetEntrypoint()
 
 	for _, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
-			"KRT_WORKFLOW_ID":             workflow.GetId(),
-			"KRT_WORKFLOW_NAME":           workflow.GetName(),
-			"KRT_NODE_ID":                 n.GetId(),
-			"KRT_NODE_NAME":               n.GetName(),
-			"KRT_HANDLER_PATH":            n.Src,
-			"KRT_NATS_MONGO_WRITER":       natsDataSubjectPrefix + req.RuntimeId,
-			"KRT_NATS_STREAM":             fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
-			"KRT_IS_LAST_NODE":            "false",                                                                                                          // to be deprecated
-			"KRT_NATS_ENTRYPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), entrypointNodeName), // to be deprecated
+			"KRT_WORKFLOW_ID":            workflow.GetId(),
+			"KRT_WORKFLOW_NAME":          workflow.GetName(),
+			"KRT_NODE_ID":                n.GetId(),
+			"KRT_NODE_NAME":              n.GetName(),
+			"KRT_HANDLER_PATH":           n.Src,
+			"KRT_NATS_MONGO_WRITER":      natsDataSubjectPrefix + runtimeID,
+			"KRT_NATS_STREAM":            fmt.Sprintf("%s-%s-%s", runtimeID, versionName, entrypointName),
+			"KRT_IS_EXITPOINT":           "false",
+			"KRT_NATS_EXITPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, workflow.ExitPoint),
 		}
-	}
 
-	if len(workflow.Edges) > 0 { // retrocompatibility v1
-		m.setupWorkflowConfigRetro(wconf, workflow.Edges, workflow, req.RuntimeId, req.VersionName)
-	} else {
-		m.setupWorkflowConfig(wconf, workflow, req.RuntimeId, req.VersionName)
-	}
-
-	return wconf
-}
-
-func (m *Manager) setupWorkflowConfigRetro(wconf WorkflowConfig, edges []*versionpb.Workflow_Edge, workflow *versionpb.Workflow, runtimeID, versionName string) {
-	for _, e := range workflow.Edges {
-		fromNode := wconf[e.FromNode]
-		toNode := wconf[e.ToNode]
-
-		fromNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
-		toNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
-
-		var (
-			firstNode NodeConfig
-			lastNode  NodeConfig
-		)
-
-		totalEdges := len(workflow.Edges)
-
-		if totalEdges == 0 {
-			firstNode = wconf[workflow.Nodes[0].Id]
-			lastNode = wconf[workflow.Nodes[0].Id]
-		} else {
-			firstNode = wconf[workflow.Edges[0].FromNode]
-			lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
-		}
-		lastNode["KRT_IS_LAST_NODE"] = "true"
-
-		// First node input is the workflow entrypoint
-		firstNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), firstNode["KRT_NODE_NAME"])
-
-		// Last node output is entrypoint
-		lastNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), entrypointNodeName)
-	}
-}
-
-func (m *Manager) setupWorkflowConfig(wconf WorkflowConfig, workflow *versionpb.Workflow, runtimeID, versionName string) {
-	for _, n := range workflow.Nodes {
 		nodeConfig := wconf[n.Id]
 
 		// output to its own subject
-		nodeConfig["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), n.GetName())
+		nodeConfig["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, n.GetName())
 
-		// input from desired subscriptions, for the case of the entrypoint we will exclude all subjects and write down the exit-point
-		nodeConfig["KRT_NATS_INPUTS"] = m.marshallSubscriptions(runtimeID, versionName, workflow.GetEntrypoint(), m.filterSubscriptions(n.GetName(), n.GetSubscriptions()))
-		nodeConfig["KRT_NATS_INPUT"] = ""
-	}
-}
+		// input from desired subscriptions
+		nodeConfig["KRT_NATS_INPUTS"] = m.marshallSubscriptions(runtimeID, versionName, entrypointName, n.GetSubscriptions())
 
-// filterSubscriptions will ensure the entrypoint only has the exit-point as a subscription
-func (m *Manager) filterSubscriptions(nodeName string, subscriptions []string) []string {
-	if nodeName == entrypointNodeName {
-		subscriptions = []string{exitPointNodeName}
+		if n.GetName() == workflow.ExitPoint {
+			nodeConfig["KRT_IS_EXITPOINT"] = "true"
+		}
 	}
 
-	return subscriptions
+	return wconf
 }
 
 func (m *Manager) marshallSubscriptions(runtimeID, versionName, entrypointName string, subscriptions []string) string {
