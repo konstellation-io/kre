@@ -2,6 +2,7 @@ package version
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -20,6 +21,8 @@ const (
 	WaitForConfigMaps
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
+	entrypointNodeName                    = "entrypoint"
+	exitPointNodeName                     = "exit-point"
 )
 
 var (
@@ -70,42 +73,83 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_HANDLER_PATH":            n.Src,
 			"KRT_NATS_MONGO_WRITER":       natsDataSubjectPrefix + req.RuntimeId,
 			"KRT_NATS_STREAM":             fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
-			"KRT_IS_LAST_NODE":            "false",
-			"KRT_NATS_ENTRYPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint"),
+			"KRT_IS_LAST_NODE":            "false",                                                                                                          // to be deprecated
+			"KRT_NATS_ENTRYPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), entrypointNodeName), // to be deprecated
 		}
 	}
 
+	if len(workflow.Edges) > 0 { // retrocompatibility v1
+		m.setupWorkflowConfigRetro(wconf, workflow.Edges, workflow, req.RuntimeId, req.VersionName)
+	} else {
+		m.setupWorkflowConfig(wconf, workflow, req.RuntimeId, req.VersionName)
+	}
+
+	return wconf
+}
+
+func (m *Manager) setupWorkflowConfigRetro(wconf WorkflowConfig, edges []*versionpb.Workflow_Edge, workflow *versionpb.Workflow, runtimeID, versionName string) {
 	for _, e := range workflow.Edges {
 		fromNode := wconf[e.FromNode]
 		toNode := wconf[e.ToNode]
 
-		fromNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
-		toNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
+		fromNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
+		toNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
+
+		var (
+			firstNode NodeConfig
+			lastNode  NodeConfig
+		)
+
+		totalEdges := len(workflow.Edges)
+
+		if totalEdges == 0 {
+			firstNode = wconf[workflow.Nodes[0].Id]
+			lastNode = wconf[workflow.Nodes[0].Id]
+		} else {
+			firstNode = wconf[workflow.Edges[0].FromNode]
+			lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
+		}
+		lastNode["KRT_IS_LAST_NODE"] = "true"
+
+		// First node input is the workflow entrypoint
+		firstNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), firstNode["KRT_NODE_NAME"])
+
+		// Last node output is entrypoint
+		lastNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), entrypointNodeName)
+	}
+}
+
+func (m *Manager) setupWorkflowConfig(wconf WorkflowConfig, workflow *versionpb.Workflow, runtimeID, versionName string) {
+	for _, n := range workflow.Nodes {
+		nodeConfig := wconf[n.Id]
+
+		// output to its own subject
+		nodeConfig["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, workflow.GetEntrypoint(), n.GetName())
+
+		// input from desired subscriptions, for the case of the entrypoint we will exclude all subjects and write down the exit-point
+		nodeConfig["KRT_NATS_INPUTS"] = m.marshallSubscriptions(runtimeID, versionName, workflow.GetEntrypoint(), m.filterSubscriptions(n.GetName(), n.GetSubscriptions()))
+	}
+}
+
+// filterSubscriptions will ensure the entrypoint only has the exit-point as a subscription
+func (m *Manager) filterSubscriptions(nodeName string, subscriptions []string) []string {
+	if nodeName == entrypointNodeName {
+		subscriptions = []string{exitPointNodeName}
 	}
 
-	var (
-		firstNode NodeConfig
-		lastNode  NodeConfig
-	)
+	return subscriptions
+}
 
-	totalEdges := len(workflow.Edges)
-
-	if totalEdges == 0 {
-		firstNode = wconf[workflow.Nodes[0].Id]
-		lastNode = wconf[workflow.Nodes[0].Id]
-	} else {
-		firstNode = wconf[workflow.Edges[0].FromNode]
-		lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
+func (m *Manager) marshallSubscriptions(runtimeID, versionName, entrypointName string, subscriptions []string) string {
+	for i, sub := range subscriptions {
+		subscriptions[i] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, entrypointName, sub)
 	}
-	lastNode["KRT_IS_LAST_NODE"] = "true"
-
-	// First node input is the workflow entrypoint
-	firstNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), firstNode["KRT_NODE_NAME"])
-
-	// Last node output is entrypoint
-	lastNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint")
-
-	return wconf
+	subs, err := json.Marshal(subscriptions)
+	if err != nil {
+		m.logger.Errorf("could not marshall subscriptions info: %s", err.Error())
+		return ""
+	}
+	return string(subs)
 }
 
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
