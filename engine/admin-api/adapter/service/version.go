@@ -11,6 +11,7 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/service/proto/versionpb"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
@@ -154,7 +155,23 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
-			ExitPoint:  w.ExitPoint,
+			Exitpoint:  w.Exitpoint,
+			StreamInfo: &versionpb.Workflow_StreamInfo{
+				Stream:        workflowStreamInfo.Stream,
+				NodesSubjects: workflowStreamInfo.NodesSubjects,
+			},
+		}
+
+		if version.KrtVersion == krt.VersionV1 {
+			edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
+			for k, e := range w.Edges {
+				edges[k] = &versionpb.Workflow_Edge{
+					Id:       e.ID,
+					FromNode: e.FromNode,
+					ToNode:   e.ToNode,
+				}
+			}
+			wf[i].Edges = edges
 		}
 	}
 

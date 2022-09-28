@@ -337,7 +337,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
-			ExitPoint:  w.ExitPoint,
+			Exitpoint:  w.Exitpoint,
 		})
 	}
 
