@@ -26,6 +26,24 @@ func init() {
 	})
 }
 
+type FieldsValidator interface {
+	Run(yaml interface{}) error
+}
+
+type YamlFieldsValidator struct {
+	validator *validator.Validate
+}
+
+func NewYamlFieldsValidator() *YamlFieldsValidator {
+	return &YamlFieldsValidator{
+		validator: krtValidator,
+	}
+}
+
+func (k *YamlFieldsValidator) Run(yaml interface{}) error {
+	return k.validator.Struct(yaml)
+}
+
 func ValidateYaml(krt *Krt) error {
 	err := krtValidator.Struct(krt)
 	if err != nil {
