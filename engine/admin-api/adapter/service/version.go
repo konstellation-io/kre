@@ -6,8 +6,6 @@ import (
 	"io"
 	"time"
 
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
-
 	"google.golang.org/grpc"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
@@ -157,18 +155,6 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
 			ExitPoint:  w.ExitPoint,
-		}
-
-		if version.KrtVersion == krt.VersionV1 {
-			edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
-			for k, e := range w.Edges {
-				edges[k] = &versionpb.Workflow_Edge{
-					Id:       e.ID,
-					FromNode: e.FromNode,
-					ToNode:   e.ToNode,
-				}
-			}
-			wf[i].Edges = edges
 		}
 	}
 

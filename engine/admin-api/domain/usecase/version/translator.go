@@ -19,4 +19,5 @@ func TranslateToKrtVersionV2(version *entity.Version) {
 		workflow.Nodes = nodesInWorkflow
 		workflow.ExitPoint = workflow.Nodes[len(workflow.Nodes)-1].Name
 	}
+	// TODO exitpoint is our dummy exitpoint
 }
