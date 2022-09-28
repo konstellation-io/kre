@@ -2,13 +2,15 @@ package krt
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"os"
 	"path"
 	"regexp"
+
+	"github.com/go-playground/validator/v10"
 )
 
 var krtValidator *validator.Validate
+var validKrtVersions = map[string]bool{"v1": true, "v2": true}
 
 func init() {
 	krtValidator = validator.New()
@@ -24,23 +26,28 @@ func init() {
 	_ = krtValidator.RegisterValidation("env", func(fl validator.FieldLevel) bool {
 		return reEnvVar.MatchString(fl.Field().String())
 	})
+
+	_ = krtValidator.RegisterValidation("krt-version", func(fl validator.FieldLevel) bool {
+		_, ok := validKrtVersions[fl.Field().String()]
+		return ok
+	})
 }
 
-type FieldsValidator interface {
+type ValuesValidator interface {
 	Run(yaml interface{}) error
 }
 
-type YamlFieldsValidator struct {
+type YamlValuesValidator struct {
 	validator *validator.Validate
 }
 
-func NewYamlFieldsValidator() *YamlFieldsValidator {
-	return &YamlFieldsValidator{
+func NewYamlValuesValidator() *YamlValuesValidator {
+	return &YamlValuesValidator{
 		validator: krtValidator,
 	}
 }
 
-func (k *YamlFieldsValidator) Run(yaml interface{}) error {
+func (k *YamlValuesValidator) Run(yaml interface{}) error {
 	return k.validator.Struct(yaml)
 }
 
