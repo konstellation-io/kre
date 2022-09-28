@@ -22,6 +22,7 @@ message Workflow {
     string src = 4;
     bool gpu = 5;
     repeated string subscriptions = 6;
+    string exitPoint = 7;
   }
 
   message Edge {

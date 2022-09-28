@@ -128,6 +128,7 @@ func (m *Manager) setupWorkflowConfig(wconf WorkflowConfig, workflow *versionpb.
 
 		// input from desired subscriptions, for the case of the entrypoint we will exclude all subjects and write down the exit-point
 		nodeConfig["KRT_NATS_INPUTS"] = m.marshallSubscriptions(runtimeID, versionName, workflow.GetEntrypoint(), m.filterSubscriptions(n.GetName(), n.GetSubscriptions()))
+		nodeConfig["KRT_NATS_INPUT"] = ""
 	}
 }
 
