@@ -166,7 +166,8 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 		return nil, nil, fmt.Errorf("error creating temp krt file for version: %w", err)
 	}
 
-	krtYml, err := krt.ProcessAndValidateKrt(i.logger, tmpKrtFile.Name(), tmpDir)
+	valuesValidator := krt.NewYamlValuesValidator()
+	krtYml, err := krt.ProcessAndValidateKrt(i.logger, valuesValidator, tmpKrtFile.Name(), tmpDir)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -188,6 +189,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 	cfg := fillNewConfWithExisting(existingConfig, krtYml)
 
 	versionCreated, err := i.versionRepo.Create(loggedUserID, runtimeID, &entity.Version{
+		KrtVersion:  krtYml.KrtVersion,
 		Name:        krtYml.Version,
 		Description: krtYml.Description,
 		Config:      cfg,
@@ -305,10 +307,52 @@ func (i *VersionInteractor) saveKRTDoc(runtimeId, docFolder string, versionCreat
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
+	if krtYml.KrtVersion == "" || krtYml.KrtVersion == krt.VersionV1 {
+		return i.generateWorkflowsV1(krtYml)
+	}
 	var workflows []*entity.Workflow
 	if len(krtYml.Workflows) == 0 {
-		return workflows, nil
+		return workflows, fmt.Errorf("error generating workflows: there are no defined workflows")
 	}
+
+	for _, w := range krtYml.Workflows {
+		var nodes []entity.Node
+
+		if len(w.Nodes) == 0 {
+			return nil, fmt.Errorf("error generating workflows: workflow \"%s\" doesn't have nodes defined", w.Name)
+		}
+
+		for _, node := range w.Nodes {
+			nodes = append(nodes, entity.Node{
+				ID:            i.idGenerator.NewID(),
+				Name:          node.Name,
+				Image:         node.Image,
+				Src:           node.Src,
+				GPU:           node.GPU,
+				Subscriptions: node.Subscriptions,
+			})
+		}
+		workflows = append(workflows, &entity.Workflow{
+			ID:         i.idGenerator.NewID(),
+			Name:       w.Name,
+			Entrypoint: w.Entrypoint,
+			Nodes:      nodes,
+		})
+	}
+
+	return workflows, nil
+}
+
+func (i *VersionInteractor) generateWorkflowsV1(krtYml *krt.Krt) ([]*entity.Workflow, error) {
+	var workflows []*entity.Workflow
+	if len(krtYml.Workflows) == 0 {
+		return workflows, fmt.Errorf("error generating workflows: there are no defined workflows")
+	}
+
+	if len(krtYml.Nodes) == 0 {
+		return nil, fmt.Errorf("error generating workflows: there are no defined nodes")
+	}
+
 	nodesMap := map[string]krt.Node{}
 	for _, n := range krtYml.Nodes {
 		nodesMap[n.Name] = n

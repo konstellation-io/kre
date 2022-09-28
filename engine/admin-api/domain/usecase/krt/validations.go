@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -37,29 +38,6 @@ func init() {
 
 func v1Validations(sl validator.StructLevel) {
 	krtYaml := sl.Current().Interface().(Krt)
-
-	if krtYaml.KrtVersion == VersionV1 || krtYaml.KrtVersion == "" {
-		for i, node := range krtYaml.Nodes {
-			if node.Subscriptions != nil {
-				fieldName := fmt.Sprintf("nodes[%d].subscriptions", i)
-				sl.ReportError(krtYaml.Nodes[i].Subscriptions, fieldName, "Subscriptions", "v1-nodes", "")
-			}
-		}
-		for i, workflow := range krtYaml.Workflows {
-			if workflow.ExitPoint != "" {
-				sl.ReportError(krtYaml.Workflows[i].Nodes, "nodes", "Nodes", "v1-workflows", "")
-			}
-			if workflow.Nodes != nil {
-				sl.ReportError(krtYaml.Workflows[i].Nodes, "nodes", "Nodes", "v1-workflows", "")
-			}
-
-			if len(workflow.Sequential) < 1 {
-				fieldName := fmt.Sprintf("workflows[%d].sequential", i)
-				sl.ReportError(workflow.Sequential, fieldName, "Sequential", "v1-workflows", "")
-			}
-		}
-	}
-
 	if krtYaml.KrtVersion == VersionV2 {
 		for i, workflow := range krtYaml.Workflows {
 			if workflow.Sequential != nil {
@@ -92,15 +70,44 @@ func NewYamlValuesValidator() *YamlValuesValidator {
 }
 
 func (k *YamlValuesValidator) Run(yaml interface{}) error {
-	return k.validator.Struct(yaml)
+	err := k.validator.Struct(yaml)
+	if err != nil {
+		return k.formatError(err)
+	}
+	return nil
 }
 
-func ValidateYaml(krt *Krt) error {
-	err := krtValidator.Struct(krt)
-	if err != nil {
-		return err
-	}
+func (k *YamlValuesValidator) formatError(err error) error {
+	if errs, ok := err.(validator.ValidationErrors); ok {
+		errorMessages := []string{"The krt.yml file contains the following validation errors:"}
+		hasResNameErr := false
 
+		for _, e := range errs {
+			location := strings.Replace(e.Namespace(), "Krt.", "", 1)
+			switch e.Tag() {
+			case "required":
+				errorMessages = append(errorMessages, fmt.Sprintf("  - The field \"%s\" is required", location))
+			case "lt":
+				errorMessages = append(errorMessages, fmt.Sprintf("  - Invalid length \"%s\" at \"%s\" must be lower than %s", e.Value(), location, e.Param()))
+			case "lte":
+				errorMessages = append(errorMessages, fmt.Sprintf("  - Invalid length \"%s\" at \"%s\" must be lower or equal than %s", e.Value(), location, e.Param()))
+			case "gt":
+				errorMessages = append(errorMessages, fmt.Sprintf("  - Invalid length \"%s\" at \"%s\" must be greater than %s", e.Value(), location, e.Param()))
+			case "gte":
+				errorMessages = append(errorMessages, fmt.Sprintf("  - Invalid length \"%s\" at \"%s\" must be greater or equal than %s", e.Value(), location, e.Param()))
+			case "resource-name":
+				errorMessages = append(errorMessages, fmt.Sprintf("  - Invalid resource name \"%s\" at \"%s\"", e.Value(), location))
+				hasResNameErr = true
+			default:
+				errorMessages = append(errorMessages, fmt.Sprintf("  - %s", e))
+			}
+		}
+
+		if hasResNameErr {
+			errorMessages = append(errorMessages, "The resource names must contain only lowercase alphanumeric characters or '-', e.g. my-resource-name.")
+		}
+		return fmt.Errorf(strings.Join(errorMessages, "\n"))
+	}
 	return nil
 }
 
