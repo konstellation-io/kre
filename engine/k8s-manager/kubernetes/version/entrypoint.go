@@ -35,10 +35,11 @@ func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvV
 	return append(m.getCommonEnvVars(req), entrypointEnvVars...)
 }
 
-// generateNATSSubjects creates a JSON containing the NATS input subjects of each workflow like:
+// generateNATSSubjects creates a JSON containing the NATS subjects the entrypoint must subscribe to for each workflow
+// example:
 //   {
-//      "Workflow1": "runtimeName-versionName-workflowEntrypoint1.nodeName",
-//      "Workflow2": "runtimeName-versionName-workflowEntrypoint2.nodeName"
+//      "Workflow1": "runtimeName-versionName-workflowEntrypoint1.exitpointName1",
+//      "Workflow2": "runtimeName-versionName-workflowEntrypoint2.exitpointName2"
 //   }
 func (m *Manager) generateNATSSubjects(runtimeID, versionName string, workflows []*versionpb.Workflow) (string, error) {
 	natsSubjects := map[string]string{}
@@ -47,8 +48,7 @@ func (m *Manager) generateNATSSubjects(runtimeID, versionName string, workflows 
 		if len(w.Nodes) <= 0 {
 			return "", fmt.Errorf("workflow %s has no nodes", w.Name)
 		}
-		firtstNodeName := w.Nodes[0].Name
-		natsSubjects[w.Entrypoint] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, w.GetEntrypoint(), firtstNodeName)
+		natsSubjects[w.Entrypoint] = m.natsManager.GetStreamSubjectName(runtimeID, versionName, w.GetEntrypoint(), w.ExitPoint)
 	}
 
 	natsSubjectJSON, err := json.Marshal(natsSubjects)
