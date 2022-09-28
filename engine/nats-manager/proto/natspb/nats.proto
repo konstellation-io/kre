@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package nats;
+option go_package = "./natspb";
+
+message CreateStreamsRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated Workflow workflows = 3;
+}
+
+message DeleteStreamsRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated string workflows = 3;
+}
+
+message Workflow {
+  string name = 1;
+  string entrypoint = 2;
+  repeated string nodes = 3;
+}
+
+message StreamInfo {
+  string stream = 1;
+  map<string, string> nodes_subjects = 2;
+}
+
+
+message CreateStreamsResponse {
+  string message = 1;
+  map<string, StreamInfo> workflows_streams = 2;
+}
+
+message DeleteStreamsResponse {
+  string message = 1;
+}
+
+service NatsManagerService {
+  rpc CreateStreams (CreateStreamsRequest) returns (CreateStreamsResponse);
+  rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteStreamsResponse);
+};
