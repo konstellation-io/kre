@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"io"
 	"time"
+
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 
 	"google.golang.org/grpc"
 
@@ -147,7 +148,6 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 				Src:           n.Src,
 				Gpu:           n.GPU,
 				Subscriptions: n.Subscriptions,
-				ExitPoint:     w.ExitPoint,
 			}
 		}
 
@@ -156,6 +156,7 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
+			ExitPoint:  w.ExitPoint,
 		}
 
 		if version.KrtVersion == krt.VersionV1 {
@@ -175,7 +176,6 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 }
 
 func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, runtimeID, versionName string) (<-chan *entity.Node, error) {
-	fmt.Println("you are here")
 	stream, err := k.client.WatchNodeStatus(ctx, &versionpb.NodeStatusRequest{
 		VersionName: versionName,
 		RuntimeId:   runtimeID,

@@ -337,6 +337,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 			Name:       w.Name,
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
+			ExitPoint:  w.ExitPoint,
 		})
 	}
 
@@ -418,6 +419,10 @@ func (i *VersionInteractor) Start(
 	v, err := i.versionRepo.GetByName(ctx, runtimeId, versionName)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if v.KrtVersion == "" || v.KrtVersion == krt.VersionV1 {
+		version.TranslateToKrtVersionV2(v)
 	}
 
 	if !v.CanBeStarted() {
