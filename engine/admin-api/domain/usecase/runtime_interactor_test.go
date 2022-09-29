@@ -25,7 +25,6 @@ type runtimeSuite struct {
 
 type runtimeSuiteMocks struct {
 	logger            *mocks.MockLogger
-	adminRepo         *mocks.MockAdminRepo
 	runtimeRepo       *mocks.MockRuntimeRepo
 	measurementRepo   *mocks.MockMeasurementRepo
 	versionRepo       *mocks.MockVersionRepo
@@ -45,7 +44,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
-	adminRepo := mocks.NewMockAdminRepo(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
@@ -72,7 +70,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	runtimeInteractor := usecase.NewRuntimeInteractor(
 		cfg,
 		logger,
-		adminRepo,
 		runtimeRepo,
 		measurementRepo,
 		versionRepo,
@@ -88,7 +85,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		runtimeInteractor: runtimeInteractor,
 		mocks: &runtimeSuiteMocks{
 			logger,
-			adminRepo,
 			runtimeRepo,
 			measurementRepo,
 			versionRepo,
@@ -131,7 +127,6 @@ func TestCreateNewRuntime(t *testing.T) {
 	newRuntimeId := "runtime-id"
 	newRuntimeName := "runtime-name"
 	newRuntimeDescription := "This is a runtime description"
-	runtimeDataDatabase := newRuntimeId + "-data"
 	expectedRuntime := &entity.Runtime{
 		ID:           newRuntimeId,
 		Name:         newRuntimeName,
@@ -148,7 +143,6 @@ func TestCreateNewRuntime(t *testing.T) {
 	s.mocks.versionRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
 	s.mocks.metricRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
 	s.mocks.nodeLogRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
-	s.mocks.adminRepo.EXPECT().GrantReadPermission(ctx, runtimeDataDatabase).Return(nil)
 
 	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
 
