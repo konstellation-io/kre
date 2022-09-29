@@ -184,29 +184,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
-Mongo name
-*/}}
-{{- define "mongo.name" -}}
-{{ printf "%s-mongo" $.Release.Name }}
-{{- end }}
-
-{{/*
-MongoDB labels
-*/}}
-{{- define "mongodb.labels" -}}
-{{ include "kre.labels" . }}
-{{ include "mongodb.selectorLabels" . }}
-{{- end }}
-
-{{/*
-MongoDB selector labels
-*/}}
-{{- define "mongodb.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kre.name" . }}-mongodb
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
 Mongo Express name
 */}}
 {{- define "mongoExpress.name" -}}
@@ -228,13 +205,6 @@ Mongo Express selector labels
 app.kubernetes.io/name: {{ include "kre.name" . }}-mongo-express
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create MongoDB URI.
-*/}}
-{{- define "runtime.mongoURI" -}}
-  {{- printf "mongodb://%s:%s@%s-mongo-0.%s-mongo:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword $.Release.Name $.Release.Name -}}
-{{- end -}}
 
 {{/*
 Create InfluxDB URL.

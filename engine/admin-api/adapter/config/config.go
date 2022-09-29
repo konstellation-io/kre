@@ -42,7 +42,7 @@ type Config struct {
 		CookieDomain                      string `yaml:"cookieDomain" envconfig:"KRE_AUTH_COOKIE_DOMAIN"`
 	} `yaml:"auth"`
 	MongoDB struct {
-		Address             string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
+		Address             string `yaml:"address" envconfig:"KRE_MONGODB_URI"`
 		DBName              string `yaml:"dbName"`
 		RuntimeDataUser     string `yaml:"runtimeDataUser" envconfig:"KRE_MONGODB_MONGOEXPRESS_USERNAME"`
 		KRTBucket           string `yaml:"krtBucket"`

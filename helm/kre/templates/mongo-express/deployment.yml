@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mongoExpress.name" . }}
+  labels:
+    {{- include "mongoExpress.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mongoExpress.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mongoExpress.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: mongo-express
+        image: {{ .Values.mongoExpress.image.repository }}:{{ .Values.mongoExpress.image.tag }}
+        imagePullPolicy: {{ .Values.mongoExpress.image.pullPolicy }}
+        env:
+        - name: ME_CONFIG_MONGODB_URL
+          {{- if .Values.mongoExpress.connectionString.secretName }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.mongoExpress.connectionString.secretName }}
+              key: {{ .Values.mongoExpress.connectionString.secretKey }}
+          {{- else }}
+          value: {{ .Values.mongoExpress.connectionString.uri }}
+          {{- end }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "mongoExpress.name" . }}
+        ports:
+          - containerPort: 8081
