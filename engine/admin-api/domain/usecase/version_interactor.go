@@ -49,6 +49,7 @@ type VersionInteractor struct {
 	versionRepo            repository.VersionRepo
 	runtimeRepo            repository.RuntimeRepo
 	versionService         service.VersionService
+	natsManagerService     service.NatsManagerService
 	userActivityInteractor UserActivityInteracter
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
@@ -64,6 +65,7 @@ func NewVersionInteractor(
 	versionRepo repository.VersionRepo,
 	runtimeRepo repository.RuntimeRepo,
 	versionService service.VersionService,
+	natsManagerService service.NatsManagerService,
 	userActivityInteractor UserActivityInteracter,
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
@@ -77,6 +79,7 @@ func NewVersionInteractor(
 		versionRepo,
 		runtimeRepo,
 		versionService,
+		natsManagerService,
 		userActivityInteractor,
 		accessControl,
 		idGenerator,
@@ -166,7 +169,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 		return nil, nil, fmt.Errorf("error creating temp krt file for version: %w", err)
 	}
 
-	valuesValidator := krt.NewYamlValuesValidator()
+	valuesValidator := krt.NewYamlFieldsValidator()
 	krtYml, err := krt.ProcessAndValidateKrt(i.logger, valuesValidator, tmpKrtFile.Name(), tmpDir)
 	if err != nil {
 		return nil, nil, err
@@ -513,14 +516,22 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	}()
 
 	if status == entity.VersionStatusStarted {
-		err := i.versionService.Start(ctx, runtimeId, version)
+		workflowsStreams, err := i.natsManagerService.CreateStreams(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+		err = i.versionService.Start(ctx, runtimeId, version, workflowsStreams)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
 	}
 
 	if status == entity.VersionStatusStopped {
-		err := i.versionService.Stop(ctx, runtimeId, version)
+		err := i.natsManagerService.DeleteStreams(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+		err = i.versionService.Stop(ctx, runtimeId, version)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}

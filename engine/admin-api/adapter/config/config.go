@@ -55,7 +55,8 @@ type Config struct {
 		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
 	} `yaml:"k8s"`
 	Services struct {
-		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
+		K8sManager  string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
+		NatsManager string `yaml:"natsManager" envconfig:"KRE_SERVICES_NATS_MANAGER"`
 	} `yaml:"services"`
 }
 
