@@ -36,9 +36,17 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 }
 
 // Start creates the version resources in k8s
-func (k *K8sVersionClient) Start(ctx context.Context, runtimeID string, version *entity.Version) error {
+func (k *K8sVersionClient) Start(
+	ctx context.Context,
+	runtimeID string,
+	version *entity.Version,
+	workflowToStream entity.WorkflowsStreams,
+) error {
 	configVars := versionToConfig(version)
-	wf := versionToWorkflows(version)
+	wf, err := versionToWorkflows(version, workflowToStream)
+	if err != nil {
+		return err
+	}
 
 	req := versionpb.StartRequest{
 		RuntimeId:      runtimeID,
@@ -56,7 +64,7 @@ func (k *K8sVersionClient) Start(ctx context.Context, runtimeID string, version 
 		},
 	}
 
-	_, err := k.client.Start(ctx, &req)
+	_, err = k.client.Start(ctx, &req)
 	return err
 }
 
@@ -134,7 +142,7 @@ func versionToConfig(version *entity.Version) []*versionpb.Config {
 	return configVars
 }
 
-func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
+func versionToWorkflows(version *entity.Version, workflowToStream entity.WorkflowsStreams) ([]*versionpb.Workflow, error) {
 	wf := make([]*versionpb.Workflow, len(version.Workflows))
 
 	for i, w := range version.Workflows {
@@ -148,6 +156,11 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 				Gpu:           n.GPU,
 				Subscriptions: n.Subscriptions,
 			}
+		}
+
+		workflowStreamInfo, ok := workflowToStream[w.Name]
+		if !ok {
+			return nil, fmt.Errorf("error obtaining stream for workflow \"%s\"", w.Name)
 		}
 
 		wf[i] = &versionpb.Workflow{
@@ -175,7 +188,7 @@ func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
 		}
 	}
 
-	return wf
+	return wf, nil
 }
 
 func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, runtimeID, versionName string) (<-chan *entity.Node, error) {
