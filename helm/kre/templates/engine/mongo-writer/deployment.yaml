@@ -23,3 +23,13 @@ spec:
                 name: {{ .Release.Name }}-configmap
             - secretRef:
                 name: {{ .Release.Name }}-secrets
+          env:
+          - name: KRE_RUNTIME_MONGO_URI
+            {{- if .Values.config.mongodb.connectionString.secretName }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.config.mongodb.connectionString.secretName }}
+                key: {{ .Values.config.mongodb.connectionString.secretKey }}
+            {{- else }}
+            value: {{ .Values.config.mongodb.connectionString.uri }}
+            {{- end }}
