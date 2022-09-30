@@ -43,9 +43,9 @@
 | config.auth.secureCookie | bool | `false` | Whether to enable secure cookie for Admin API |
 | config.auth.verificationCodeDurationInMinutes | int | `1` | Verification login link duration |
 | config.baseDomainName | string | `"local"` | Base domain name for Admin API and K8S Manager apps |
-| config.mongodb.secretKey | string | `""` | If specfied in combination with `config.mongodb.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string. |
-| config.mongodb.secretName | string | `""` | If specified, the name of the secret that contains a key with the MongoDB connection string. |
-| config.mongodb.uri | string | `"mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"` | MongoDB connection uri. `config.mongodb.connectionString.secretName` in combination with `config.mongodb.connectionString.secretKey` have precedence over this. |
+| config.mongodb.connectionString.secretKey | string | `""` | If specfied in combination with `config.mongodb.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string. |
+| config.mongodb.connectionString.secretName | string | `""` | If specified, the name of the secret that contains a key with the MongoDB connection string. |
+| config.mongodb.connectionString.uri | string | `"mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"` | MongoDB connection uri. `config.mongodb.connectionString.secretName` in combination with `config.mongodb.connectionString.secretKey` have precedence over this. |
 | config.smtp.enabled | bool | `false` | Whether to enable SMTP server connection |
 | config.smtp.pass | string | `""` | SMTP server password |
 | config.smtp.user | string | `""` | SMTP server user |

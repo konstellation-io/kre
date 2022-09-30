@@ -56,12 +56,13 @@ config:
     # -- Admin API secure cookie domain
     cookieDomain: kre.local
   mongodb:
-    # -- MongoDB connection uri. `config.mongodb.connectionString.secretName` in combination with `config.mongodb.connectionString.secretKey` have precedence over this.
-    uri: "mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"
-    # -- If specified, the name of the secret that contains a key with the MongoDB connection string.
-    secretName: ""
-    # -- If specfied in combination with `config.mongodb.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string.
-    secretKey: ""
+    connectionString:
+      # -- MongoDB connection uri. `config.mongodb.connectionString.secretName` in combination with `config.mongodb.connectionString.secretKey` have precedence over this.
+      uri: "mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"
+      # -- If specified, the name of the secret that contains a key with the MongoDB connection string.
+      secretName: ""
+      # -- If specfied in combination with `config.mongodb.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string.
+      secretKey: ""
 
 adminApi:
   # -- Default application log level
