@@ -11,7 +11,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 
@@ -20,6 +19,7 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/middleware"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
@@ -86,38 +86,10 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 
 	version, notifyCh, err := r.versionInteractor.Create(ctx, loggedUserID, input.RuntimeID, input.File.File)
 	if err != nil {
-		if errs, ok := err.(validator.ValidationErrors); ok {
-			details := "The krt.yml file contains the following validation errors:"
-			hasResNameErr := false
-
-			for _, e := range errs {
-				location := strings.Replace(e.Namespace(), "Krt.", "", 1)
-				switch e.Tag() {
-				case "required":
-					details += fmt.Sprintf("\n  - The field \"%s\" is required", location)
-				case "lt":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be lower than %s", e.Value(), location, e.Param())
-				case "lte":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be lower or equal than %s", e.Value(), location, e.Param())
-				case "gt":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be greater than %s", e.Value(), location, e.Param())
-				case "gte":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be greater or equal than %s", e.Value(), location, e.Param())
-				case "resource-name":
-					details += fmt.Sprintf("\n  - Invalid resource name \"%s\" at \"%s\"", e.Value(), location)
-					hasResNameErr = true
-				default:
-					details += fmt.Sprintf("\n  - %s", e)
-				}
-			}
-
-			if hasResNameErr {
-				details += "\nThe resource names must contain only lowercase alphanumeric characters or '-', e.g. my-resource-name."
-			}
-
+		if errs, ok := err.(validator.ValidationError); ok {
 			extensions := make(map[string]interface{})
 			extensions["code"] = "krt_validation_error"
-			extensions["details"] = details
+			extensions["details"] = errs.Messages
 			return nil, &gqlerror.Error{
 				Message:    "the krt.yml file contains errors",
 				Extensions: extensions,
