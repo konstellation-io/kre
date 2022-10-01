@@ -46,10 +46,7 @@ func (n *NatsManagerClient) CreateStreams(ctx context.Context, runtimeID string,
 	}
 
 	workflowsStreams := make(entity.WorkflowsStreams, len(res.WorkflowsStreams))
-	fmt.Println("STREAMS CREATED")
 	for workflow, streamInfo := range res.WorkflowsStreams {
-		fmt.Println("stream: " + streamInfo.Stream)
-		fmt.Printf("nodes: %+v\n", streamInfo.NodesSubjects)
 		workflowsStreams[workflow] = &entity.StreamInfo{
 			Stream:        streamInfo.Stream,
 			NodesSubjects: streamInfo.NodesSubjects,

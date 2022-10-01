@@ -1,5 +1,10 @@
 package krt
 
+const (
+	VersionV1 = "v1"
+	VersionV2 = "v2"
+)
+
 // Krt contains data about a version
 type Krt struct {
 	KrtVersion  string     `yaml:"krtVersion" validate:"omitempty,krt-version"`
@@ -37,4 +42,8 @@ type Entrypoint struct {
 type Config struct {
 	Variables []string `yaml:"variables" validate:"dive,env"`
 	Files     []string `yaml:"files"`
+}
+
+func (k Krt) IsKrtVersionV1() bool {
+	return k.KrtVersion == "" || k.KrtVersion == VersionV1
 }

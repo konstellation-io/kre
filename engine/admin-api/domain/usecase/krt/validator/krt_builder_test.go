@@ -1,4 +1,4 @@
-package krt_test
+package validator_test
 
 import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
@@ -57,6 +57,7 @@ func (k *KrtBuilder) V2() *KrtBuilder {
 		{
 			Name:       "valid-workflow",
 			Entrypoint: "valid-entrypoint",
+			Exitpoint:  "test-node",
 			Nodes: []krt.Node{
 				{
 					Name:          "test-node",
@@ -124,6 +125,11 @@ func (k *KrtBuilder) WithWorkflowsSequential(sequential []string) *KrtBuilder {
 
 func (k *KrtBuilder) WithWorkflowsNodes(nodes []krt.Node) *KrtBuilder {
 	k.krtYaml.Workflows[0].Nodes = nodes
+	return k
+}
+
+func (k *KrtBuilder) WithWorkflowsExitpoint(exitpoint string) *KrtBuilder {
+	k.krtYaml.Workflows[0].Exitpoint = exitpoint
 	return k
 }
 

@@ -1,9 +1,11 @@
-package krt
+package parser
 
 import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"io"
 	"io/ioutil"
 	"os"
@@ -18,30 +20,30 @@ import (
 
 func ProcessAndValidateKrt(
 	logger logging.Logger,
-	valuesValidator ValuesValidator,
+	valuesValidator validator.FieldsValidator,
 	krtFilePath,
 	dstDir string,
-) (*Krt, error) {
+) (*krt.Krt, error) {
 	p := Parser{
 		logger,
 		dstDir,
 	}
 
-	krt, err := p.ParseKrtYaml(krtFilePath)
+	k, err := p.ParseKrtYaml(krtFilePath)
 	if err != nil {
 		return nil, err
 	}
 
-	krtValidator := NewValidator(logger, krt.KrtVersion, valuesValidator)
-	err = krtValidator.Run(krt)
+	krtValidator := validator.NewValidator(logger, valuesValidator, k.KrtVersion)
+	err = krtValidator.Run(k)
 	if err != nil {
 		return nil, err
 	}
 
-	return krt, nil
+	return k, nil
 }
 
-func ProcessContent(logger logging.Logger, krtYml *Krt, krtFilePath, dstDir string) []error {
+func ProcessContent(logger logging.Logger, krtYml *krt.Krt, krtFilePath, dstDir string) []error {
 	p := Parser{
 		logger,
 		dstDir,
@@ -65,7 +67,7 @@ type Metadata struct {
 	files    []string
 }
 
-func (p *Parser) ParseKrtYaml(krtFilePath string) (*Krt, error) {
+func (p *Parser) ParseKrtYaml(krtFilePath string) (*krt.Krt, error) {
 	p.logger.Info("Decompressing KRT file...")
 	krtYamlPath, err := p.extractKrtYaml(krtFilePath, p.dstDir)
 	if err != nil {
@@ -74,16 +76,16 @@ func (p *Parser) ParseKrtYaml(krtFilePath string) (*Krt, error) {
 	p.logger.Infof("Extracted file: %s", krtYamlPath)
 
 	p.logger.Info("Parsing KRT file")
-	krt, err := generateKrt(krtYamlPath)
+	k, err := generateKrt(krtYamlPath)
 	if err != nil {
 		return nil, fmt.Errorf("error on KRT Yaml parsing: %w", err)
 	}
 
-	if krt.KrtVersion == "" {
-		krt.KrtVersion = VersionV1
+	if k.KrtVersion == "" {
+		k.KrtVersion = krt.VersionV1
 	}
 
-	return krt, nil
+	return k, nil
 }
 
 func (p *Parser) Extract(krtFilePath string) error {
@@ -97,9 +99,9 @@ func (p *Parser) Extract(krtFilePath string) error {
 	return nil
 }
 
-func (p *Parser) ValidateContent(krt *Krt) []error {
+func (p *Parser) ValidateContent(krt *krt.Krt) []error {
 	p.logger.Info("Validating KRT src paths")
-	errors := validateSrcPaths(krt, p.dstDir)
+	errors := validator.ValidateSrcPaths(krt, p.dstDir)
 	if len(errors) > 0 {
 		errors = append([]error{fmt.Errorf("error on KRT Src validation")}, errors...)
 	}
@@ -107,19 +109,19 @@ func (p *Parser) ValidateContent(krt *Krt) []error {
 	return errors
 }
 
-func generateKrt(yamlFile string) (*Krt, error) {
-	var krt Krt
+func generateKrt(yamlFile string) (*krt.Krt, error) {
+	var k krt.Krt
 	krtYmlFile, err := ioutil.ReadFile(yamlFile)
 	if err != nil {
 		return nil, fmt.Errorf("error reading file %s: %w", yamlFile, err)
 	}
 
-	err = yaml.Unmarshal(krtYmlFile, &krt)
+	err = yaml.Unmarshal(krtYmlFile, &k)
 	if err != nil {
 		return nil, fmt.Errorf("error Unmarshal yaml file: %w", err)
 	}
 
-	return &krt, nil
+	return &k, nil
 }
 
 func (p *Parser) extractKrtYaml(krtFilePath, dstDir string) (string, error) {

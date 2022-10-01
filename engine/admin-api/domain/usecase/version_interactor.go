@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/parser"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"io"
 	"io/ioutil"
 	"os"
@@ -169,8 +171,8 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 		return nil, nil, fmt.Errorf("error creating temp krt file for version: %w", err)
 	}
 
-	valuesValidator := krt.NewYamlFieldsValidator()
-	krtYml, err := krt.ProcessAndValidateKrt(i.logger, valuesValidator, tmpKrtFile.Name(), tmpDir)
+	valuesValidator := validator.NewYamlFieldsValidator()
+	krtYml, err := parser.ProcessAndValidateKrt(i.logger, valuesValidator, tmpKrtFile.Name(), tmpDir)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -240,7 +242,7 @@ func (i *VersionInteractor) completeVersionCreation(
 		}
 	}()
 
-	contentErrors := krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
+	contentErrors := parser.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
 	if len(contentErrors) > 0 {
 		errorMessage := "error processing krt"
 		contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)

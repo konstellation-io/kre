@@ -36,10 +36,10 @@ func (m *MockNatsManagerService) EXPECT() *MockNatsManagerServiceMockRecorder {
 }
 
 // CreateStreams mocks base method.
-func (m *MockNatsManagerService) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) (map[string]string, error) {
+func (m *MockNatsManagerService) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) (entity.WorkflowsStreams, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateStreams", ctx, runtimeID, version)
-	ret0, _ := ret[0].(map[string]string)
+	ret0, _ := ret[0].(entity.WorkflowsStreams)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
