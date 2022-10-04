@@ -4,8 +4,8 @@
 
 | Repository | Name | Version |
 |------------|------|---------|
+| https://helm.influxdata.com/ | influxdb | 4.8.1 |
 | https://helm.influxdata.com/ | kapacitor | 1.4.0 |
-| https://influxdata.github.io/helm-charts | influxdb | 4.8.1 |
 
 ## Values
 
@@ -43,6 +43,9 @@
 | config.auth.secureCookie | bool | `false` | Whether to enable secure cookie for Admin API |
 | config.auth.verificationCodeDurationInMinutes | int | `1` | Verification login link duration |
 | config.baseDomainName | string | `"local"` | Base domain name for Admin API and K8S Manager apps |
+| config.mongodb.connectionString.secretKey | string | `""` | If specfied in combination with `config.mongodb.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string. |
+| config.mongodb.connectionString.secretName | string | `""` | If specified, the name of the secret that contains a key with the MongoDB connection string. |
+| config.mongodb.connectionString.uri | string | `"mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"` | MongoDB connection uri. `config.mongodb.connectionString.secretName` in combination with `config.mongodb.connectionString.secretKey` have precedence over this. |
 | config.smtp.enabled | bool | `false` | Whether to enable SMTP server connection |
 | config.smtp.pass | string | `""` | SMTP server password |
 | config.smtp.user | string | `""` | SMTP server user |
@@ -74,19 +77,15 @@
 | k8sManager.serviceAccount.name | string | `""` | The name of the service account. @default: A pre-generated name based on the chart relase fullname sufixed by `-k8s-manager` |
 | kapacitor.enabled | bool | `false` | Whether to enable Kapacitor |
 | kapacitor.persistence.enabled | bool | `false` | Whether to enable persistence [Details](https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml) |
+| mongoExpress.connectionString.secretKey | string | `""` | If specfied in combination with `mongoExpress.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string. |
+| mongoExpress.connectionString.secretName | string | `""` | If specified, the name of the secret that contains a key with the MongoDB connection string. |
+| mongoExpress.connectionString.uri | string | `"mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"` | MongoDB connection uri. `mongoExpress.connectionString.secretName` in combination with `mongoExpress.connectionString.secretKey` have precedence over this. |
+| mongoExpress.image.pullPolicy | string | `"IfNotPresent"` | The image pull policy |
+| mongoExpress.image.repository | string | `"mongo-express"` | The image repository |
+| mongoExpress.image.tag | string | `"0.54.0"` | The image tag |
 | mongoWriter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | mongoWriter.image.repository | string | `"konstellation/kre-mongo-writer"` | Image repository |
 | mongoWriter.image.tag | string | `"latest"` | Image tag |
-| mongodb.affinity | object | `{}` | Assign custom affinity rules to the MongoDB pods |
-| mongodb.auth.adminPassword | string | `"123456"` | MongoDB admin password |
-| mongodb.auth.adminUser | string | `"admin"` | MongoDB admin username |
-| mongodb.auth.mongoExpressRuntimeAdminPassword | string | If not provided a random password will be generated | MongoExpress runtime admin user password for runtime databases. This only is taken into account on MongoDB first initialisation. |
-| mongodb.auth.mongoExpressRuntimeAdminUser | string | `"kre-runtime-data"` | MongoExpress runtime admin user username for runtime databases. This only is taken into account on MongoDB first initialisation. |
-| mongodb.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. |
-| mongodb.persistentVolume.existingClaim | string | `""` | Use an existing persistent volume claim. Useful for database migrations. |
-| mongodb.persistentVolume.size | string | `"5Gi"` | Storgae size |
-| mongodb.persistentVolume.storageClass | string | `"standard"` | Storage class name |
-| mongodb.tolerations | list | `[]` | Tolerations for use with node taints |
 | nameOverride | string | `""` | Provide a name in place of kre for `app.kubernetes.io/name` labels |
 | nats.affinity | object | `{}` | Assign custom affinity rules to the InfluxDB pods |
 | nats.client.port | int | `4222` | Port for client connections |

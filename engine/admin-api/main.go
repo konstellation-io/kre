@@ -25,7 +25,6 @@ func main() {
 	mongodbClient := db.Connect()
 
 	verificationCodeRepo := mongodb.NewVerificationCodeRepoMongoDB(cfg, logger, mongodbClient)
-	adminRepo := mongodb.NewAdminRepoMongoDB(cfg, logger, mongodbClient)
 	userRepo := mongodb.NewUserRepoMongoDB(cfg, logger, mongodbClient)
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
@@ -75,7 +74,6 @@ func main() {
 	runtimeInteractor := usecase.NewRuntimeInteractor(
 		cfg,
 		logger,
-		adminRepo,
 		runtimeRepo,
 		measurementRepo,
 		versionMongoRepo,

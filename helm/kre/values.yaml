@@ -8,53 +8,21 @@ rbac:
   # -- Whether to create the roles for the services that could use custom Service Accounts
   create: true
 
-mongodb:
-  auth:
-    # -- MongoDB admin username
-    adminUser: "admin"
-    # -- MongoDB admin password
-    adminPassword: "123456"
-    # -- MongoExpress runtime admin user username for runtime databases. This only is taken into account on MongoDB first initialisation.
-    mongoExpressRuntimeAdminUser: "kre-runtime-data"
-    # -- MongoExpress runtime admin user password for runtime databases. This only is taken into account on MongoDB first initialisation.
-    # @default -- If not provided a random password will be generated
-    mongoExpressRuntimeAdminPassword: ""
-
-  persistentVolume:
-    # -- Storage class name
-    storageClass: standard
-    # -- Storgae size
-    size: 5Gi
-    # -- Use an existing persistent volume claim. Useful for database migrations.
-    existingClaim: ""
-
-  # -- Define which Nodes the Pods are scheduled on.
-  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  nodeSelector: {}
-
-  # -- Assign custom affinity rules to the MongoDB pods
-  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  ##
-  affinity: {}
-    # nodeAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #     nodeSelectorTerms:
-    #     - matchExpressions:
-    #       - key: kubernetes.io/e2e-az-name
-    #         operator: In
-    #         values:
-    #         - e2e-az1
-    #         - e2e-az2
-
-  # -- Tolerations for use with node taints
-  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
-  tolerations: []
-  # - key: "key"
-  #   operator: "Equal"
-  #   value: "value"
-  #   effect: "NoSchedule"
+mongoExpress:
+  image:
+    # -- The image repository
+    repository: mongo-express
+    # -- The image tag
+    tag: "0.54.0"
+    # -- The image pull policy
+    pullPolicy: IfNotPresent
+  connectionString:
+    # -- MongoDB connection uri. `mongoExpress.connectionString.secretName` in combination with `mongoExpress.connectionString.secretKey` have precedence over this.
+    uri: "mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"
+    # -- If specified, the name of the secret that contains a key with the MongoDB connection string.
+    secretName: ""
+    # -- If specfied in combination with `mongoExpress.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string.
+    secretKey: ""
 
 # Config from kre/helm
 config:
@@ -87,6 +55,14 @@ config:
     secureCookie: false
     # -- Admin API secure cookie domain
     cookieDomain: kre.local
+  mongodb:
+    connectionString:
+      # -- MongoDB connection uri. `config.mongodb.connectionString.secretName` in combination with `config.mongodb.connectionString.secretKey` have precedence over this.
+      uri: "mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"
+      # -- If specified, the name of the secret that contains a key with the MongoDB connection string.
+      secretName: ""
+      # -- If specfied in combination with `config.mongodb.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string.
+      secretKey: ""
 
 adminApi:
   # -- Default application log level
