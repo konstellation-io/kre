@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/parser"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"io"
 	"io/ioutil"
 	"os"
@@ -19,6 +17,8 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/service"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/parser"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/version"
 )
@@ -58,6 +58,7 @@ type VersionInteractor struct {
 	docGenerator           version.DocGenerator
 	dashboardService       service.DashboardService
 	nodeLogRepo            repository.NodeLogRepository
+	translator             version.Translator
 }
 
 // NewVersionInteractor creates a new interactor
@@ -75,6 +76,7 @@ func NewVersionInteractor(
 	dashboardService service.DashboardService,
 	nodeLogRepo repository.NodeLogRepository,
 ) *VersionInteractor {
+	translator := version.NewTranslator(idGenerator)
 	return &VersionInteractor{
 		cfg,
 		logger,
@@ -88,6 +90,7 @@ func NewVersionInteractor(
 		docGenerator,
 		dashboardService,
 		nodeLogRepo,
+		translator,
 	}
 }
 
@@ -427,7 +430,7 @@ func (i *VersionInteractor) Start(
 	}
 
 	if v.KrtVersion == "" || v.KrtVersion == krt.VersionV1 {
-		version.TranslateToKrtVersionV2(v)
+		i.translator.TranslateToKrtVersionV2(v)
 	}
 
 	if !v.CanBeStarted() {
