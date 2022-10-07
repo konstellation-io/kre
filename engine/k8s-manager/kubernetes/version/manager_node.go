@@ -71,7 +71,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		return nil, fmt.Errorf("error obtaining workflow \"%s\" exitpoint's subject", workflow.Name)
 	}
 
-	for _, n := range workflow.Nodes {
+	for idx, n := range workflow.Nodes {
 		// output to its own subject
 		outputSubject, ok := workflow.StreamInfo.NodesSubjects[n.Name]
 		if !ok {
@@ -95,6 +95,12 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_NATS_EXITPOINT_SUBJECT": exitpointSubject,
 			"KRT_NATS_OUTPUT":            outputSubject,
 			"KRT_NATS_INPUTS":            inputSubjects,
+		}
+
+		// retrocompatibility konstellation-exitpoint config
+		if n.Name == "konstellation-exitpoint" {
+			nodeConfig := wconf[n.Id]
+			nodeConfig["KRT_LAST_NODE_NAME"] = workflow.Nodes[idx-1].Name
 		}
 	}
 
