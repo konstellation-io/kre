@@ -15,7 +15,7 @@ spec:
         {{- include "admin-ui.labels" . | nindent 8 }}
         type: admin
       annotations:
-        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
+        checksum/config: {{ include (print $.Template.BasePath "/engine/admin-ui/configmap.yaml") . | sha256sum }}
     spec:
       containers:
         - name: {{ .Release.Name }}-admin-ui
@@ -32,4 +32,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ .Release.Name }}-admin-ui-configmap
+            name: {{ .Release.Name }}-admin-ui

@@ -1,35 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo-writer
+  name: {{ .Release.Name }}-mongo-writer
+  labels:
+    {{- include "mongo-writer.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "runtime.labels" . | nindent 6 }}
-      app: mongo-writer
+      {{- include "mongo-writer.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/engine/mongo-writer/configmap.yaml") . | sha256sum }}
       labels:
-        {{- include "runtime.labels" . | nindent 8 }}
-        app: mongo-writer
+        {{- include "mongo-writer.labels" . | nindent 8 }}
     spec:
       containers:
-        - name: {{ .Release.Name }}-mongo-writer
+        - name: mongo-writer
           image: {{ .Values.mongoWriter.image.repository }}:{{ .Values.mongoWriter.image.tag }}
           imagePullPolicy: {{ .Values.mongoWriter.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-configmap
-            - secretRef:
-                name: {{ .Release.Name }}-secrets
+                name: {{ .Release.Name }}-mongo-writer
           env:
           - name: KRE_RUNTIME_MONGO_URI
-            {{- if .Values.config.mongodb.connectionString.secretName }}
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.config.mongodb.connectionString.secretName }}
                 key: {{ .Values.config.mongodb.connectionString.secretKey }}
-            {{- else }}
-            value: {{ .Values.config.mongodb.connectionString.uri }}
-            {{- end }}
