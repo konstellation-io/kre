@@ -2,6 +2,7 @@ package manager
 
 import (
 	"fmt"
+
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
 	"github.com/konstellation-io/kre/engine/nats-manager/nats"
 	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
@@ -36,7 +37,7 @@ func (m *NatsManager) CreateStreams(
 	for _, workflow := range workflows {
 		stream := m.getStreamName(runtimeID, versionName, workflow.Entrypoint)
 		nodesSubjects := m.getNodesSubjects(stream, workflow.Nodes)
-		subjects := m.getSubjects(nodesSubjects)
+		subjects := []string{stream + ".*", stream + ".*" + ".*"}
 		err := m.client.CreateStream(stream, subjects)
 		if err != nil {
 			return nil, fmt.Errorf("error creating stream \"%s\": %w", stream, err)
