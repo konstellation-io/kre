@@ -39,11 +39,10 @@ func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvV
 // example:
 //   {
 //      "Workflow1": {
-//				"stream": "runtimeName-versionName-workflowEntrypoint1"
+//				"stream": "runtimeName-versionName-workflowEntrypoint1",
 //     		"input_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
-//     		"output_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
-//   		},
-//      "Workflow2": "runtimeName-versionName-workflowEntrypoint2.exitpointName2"
+//     		"output_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1"
+//   		}
 //   }
 func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, error) {
 	natsSubjects := map[string]map[string]string{} // TODO: refactor to struct
