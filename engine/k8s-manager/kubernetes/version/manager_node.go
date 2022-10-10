@@ -79,7 +79,7 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 		}
 
 		// input from desired subscriptions
-		inputSubjects, err := m.joinSubscriptionSubjects(workflow.StreamInfo.NodesSubjects, n.Subscriptions)
+		inputSubjects, err := m.joinSubscriptionSubjects(workflow.StreamInfo.Stream, n.Subscriptions)
 		if err != nil {
 			return nil, err
 		}
@@ -116,14 +116,10 @@ func (m *Manager) isExitpoint(nodeName, workflowExitpoint string) string {
 }
 
 // joinSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
-func (m *Manager) joinSubscriptionSubjects(nodesSubjects map[string]string, nodesToSubscribe []string) (string, error) {
-	subjectsToSubscribe := make([]string, 0, len(nodesToSubscribe))
-	for _, node := range nodesToSubscribe {
-		subject, ok := nodesSubjects[node]
-		if !ok {
-			return "", fmt.Errorf("error obtaining subject for node \"%s\"", node)
-		}
-		subjectsToSubscribe = append(subjectsToSubscribe, subject)
+func (m *Manager) joinSubscriptionSubjects(stream string, nodeSubscriptions []string) (string, error) {
+	subjectsToSubscribe := make([]string, 0, len(nodeSubscriptions))
+	for _, subscription := range nodeSubscriptions {
+		subjectsToSubscribe = append(subjectsToSubscribe, fmt.Sprintf("%s.%s", stream, subscription))
 	}
 	return strings.Join(subjectsToSubscribe, ","), nil
 }
