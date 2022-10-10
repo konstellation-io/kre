@@ -4,6 +4,7 @@ use (
 	./engine/admin-api/
 	./engine/k8s-manager/
 	./engine/mongo-writer/
+	./engine/nats-manager
 	./libs/krt-utils/
 	./libs/simplelogger/
 	./tests/acceptance/
