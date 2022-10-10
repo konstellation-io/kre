@@ -64,7 +64,7 @@ func (m *NatsManager) getNodesSubjects(stream string, nodes []string) map[string
 func (m *NatsManager) getSubjects(nodesSubjects map[string]string) []string {
 	subjects := make([]string, 0, len(nodesSubjects))
 	for _, subject := range nodesSubjects {
-		subjects = append(subjects, subject)
+		subjects = append(subjects, subject+".*")
 	}
 	return subjects
 }
