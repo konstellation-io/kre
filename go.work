@@ -1,12 +1,12 @@
 go 1.18
 
 use (
-	./engine/admin-api/
-	./engine/k8s-manager/
-	./engine/mongo-writer/
-	./engine/nats-manager
-	./libs/krt-utils/
-	./libs/simplelogger/
-	./tests/acceptance/
-	./tests/acceptance/test_krt/runtime-test-v1/src/go-runner/
+	engine/admin-api
+	engine/k8s-manager
+	engine/mongo-writer
+	engine/nats-manager
+	libs/krt-utils
+	libs/simplelogger
+	tests/acceptance
+	tests/acceptance/test_krt/runtime-test-v1/src/go-runner
 )
