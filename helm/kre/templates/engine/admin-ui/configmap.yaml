@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-admin-ui-configmap
+  name: {{ .Release.Name }}-admin-ui
   labels:
     {{- include "admin-ui.labels" . | nindent 4 }}
 data:

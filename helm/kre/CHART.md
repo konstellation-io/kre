@@ -43,9 +43,8 @@
 | config.auth.secureCookie | bool | `false` | Whether to enable secure cookie for Admin API |
 | config.auth.verificationCodeDurationInMinutes | int | `1` | Verification login link duration |
 | config.baseDomainName | string | `"local"` | Base domain name for Admin API and K8S Manager apps |
-| config.mongodb.connectionString.secretKey | string | `""` | If specfied in combination with `config.mongodb.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string. |
-| config.mongodb.connectionString.secretName | string | `""` | If specified, the name of the secret that contains a key with the MongoDB connection string. |
-| config.mongodb.connectionString.uri | string | `"mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"` | MongoDB connection uri. `config.mongodb.connectionString.secretName` in combination with `config.mongodb.connectionString.secretKey` have precedence over this. |
+| config.mongodb.connectionString.secretKey | string | `""` | The name of the secret key that contains the MongoDB connection string. |
+| config.mongodb.connectionString.secretName | string | `""` | The name of the secret that contains a key with the MongoDB connection string. |
 | config.smtp.enabled | bool | `false` | Whether to enable SMTP server connection |
 | config.smtp.pass | string | `""` | SMTP server password |
 | config.smtp.user | string | `""` | SMTP server user |
@@ -77,9 +76,8 @@
 | k8sManager.serviceAccount.name | string | `""` | The name of the service account. @default: A pre-generated name based on the chart relase fullname sufixed by `-k8s-manager` |
 | kapacitor.enabled | bool | `false` | Whether to enable Kapacitor |
 | kapacitor.persistence.enabled | bool | `false` | Whether to enable persistence [Details](https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml) |
-| mongoExpress.connectionString.secretKey | string | `""` | If specfied in combination with `mongoExpress.connectionString.secretName`, the name of the secret key that contains the MongoDB connection string. |
-| mongoExpress.connectionString.secretName | string | `""` | If specified, the name of the secret that contains a key with the MongoDB connection string. |
-| mongoExpress.connectionString.uri | string | `"mongodb://user:password@mongodb0.example.com:27017,mongodb1.example.com:27017,mongodb2.example.com:27017/admin?replicaSet=myRepl"` | MongoDB connection uri. `mongoExpress.connectionString.secretName` in combination with `mongoExpress.connectionString.secretKey` have precedence over this. |
+| mongoExpress.connectionString.secretKey | string | `""` | The name of the secret key that contains the MongoDB connection string. |
+| mongoExpress.connectionString.secretName | string | `""` | The name of the secret that contains a key with the MongoDB connection string. |
 | mongoExpress.image.pullPolicy | string | `"IfNotPresent"` | The image pull policy |
 | mongoExpress.image.repository | string | `"mongo-express"` | The image repository |
 | mongoExpress.image.tag | string | `"0.54.0"` | The image tag |

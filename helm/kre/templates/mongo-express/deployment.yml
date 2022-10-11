@@ -11,6 +11,8 @@ spec:
       {{- include "mongoExpress.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/mongo-express/configmap.yaml") . | sha256sum }}
       labels:
         {{- include "mongoExpress.labels" . | nindent 8 }}
     spec:
@@ -20,14 +22,10 @@ spec:
         imagePullPolicy: {{ .Values.mongoExpress.image.pullPolicy }}
         env:
         - name: ME_CONFIG_MONGODB_URL
-          {{- if .Values.mongoExpress.connectionString.secretName }}
           valueFrom:
             secretKeyRef:
               name: {{ .Values.mongoExpress.connectionString.secretName }}
               key: {{ .Values.mongoExpress.connectionString.secretKey }}
-          {{- else }}
-          value: {{ .Values.mongoExpress.connectionString.uri }}
-          {{- end }}
         envFrom:
         - configMapRef:
             name: {{ include "mongoExpress.name" . }}

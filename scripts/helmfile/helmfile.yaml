@@ -34,7 +34,7 @@ releases:
     needs:
     - kre/mongodb-operator
 
-  - name: "kre-local"
+  - name: "{{ requiredEnv "RELEASE_NAME" }}"
     <<: *default
     chart: ../../helm/kre
     needs:

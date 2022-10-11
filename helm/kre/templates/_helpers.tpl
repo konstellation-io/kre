@@ -150,38 +150,22 @@ nats url
 {{- printf "%s:%d" (include "nats.host" .) (.Values.nats.client.port | int) -}}
 {{- end -}}
 
-{{/*
-Runtime Name
-*/}}
-{{- define "runtime.name" -}}
-{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+mongo-writer labels
 */}}
-{{- define "runtime.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{- define "mongo-writer.labels" -}}
+{{ include "kre.labels" . }}
+{{ include "mongo-writer.selectorLabels" . }}
+{{- end }}
 
 {{/*
-Runtime common labels
+mongo-writer selector labels
 */}}
-{{- define "runtime.labels" -}}
-app.kubernetes.io/name: {{ include "runtime.name" . }}
+{{- define "mongo-writer.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-mongo-writer
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end -}}
+{{- end }}
 
 {{/*
 Mongo Express name
@@ -209,7 +193,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{/*
 Create InfluxDB URL.
 */}}
-{{- define "runtime.influxURL" -}}
+{{- define "kre-influxdb.influxURL" -}}
   {{- printf "http://%s-influxdb:8086" .Release.Name -}}
 {{- end -}}
 {{/*
