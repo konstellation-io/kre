@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "apollo-server": "^2.17.0",
+    "apollo-server": "^2.25.4",
     "apollo-server-express": "^2.9.7",
     "casual": "^1.6.2",
     "cors": "^2.8.5",
