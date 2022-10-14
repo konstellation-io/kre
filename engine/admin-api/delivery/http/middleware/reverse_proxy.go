@@ -15,18 +15,11 @@ type GetTargetURL = func(req *http.Request) (*url.URL, error)
 // NewReverseProxyWithDynamicURLTarget creates a reverse proxy Echo middleware
 // that instead of having a static list of target URLs gets the target URL dynamically
 // depending of the request information.
-func NewReverseProxyWithDynamicURLTarget(getTargetURL GetTargetURL) echo.MiddlewareFunc {
+func NewReverseProxyWithDynamicURLTarget(targetURL *url.URL) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) (err error) {
 			req := c.Request()
 			res := c.Response()
-
-			targetURL, err := getTargetURL(req)
-			if err != nil {
-				c.Logger().Errorf("invalid target URL=%s", err)
-				c.Error(echo.NewHTTPError(http.StatusBadRequest))
-				return
-			}
 
 			// Fix header
 			if req.Header.Get(echo.HeaderXRealIP) == "" {
