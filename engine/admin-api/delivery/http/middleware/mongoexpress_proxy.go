@@ -14,6 +14,6 @@ var databaseURLRegexp = regexp.MustCompile("^/database/([^/]+)")
 // The incoming request are like: "<api_base_url>/database/<runtime-name>/*"
 // and the destination URLs: "http://kre-mongo-express.<k8s-namespace>/database/<runtime-name>/*"
 func MongoExpressProxy(mongoExpressAddress string) echo.MiddlewareFunc {
-	detinationURL, _ := url.Parse(mongoExpressAddress)
-	return NewReverseProxyWithDynamicURLTarget(detinationURL)
+	destinationURL, _ := url.Parse(mongoExpressAddress)
+	return NewReverseProxyWithDynamicURLTarget(destinationURL)
 }
