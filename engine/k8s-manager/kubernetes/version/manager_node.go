@@ -66,11 +66,6 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	wconf := WorkflowConfig{}
 	runtimeID := req.RuntimeId
 
-	exitpointSubject, ok := workflow.StreamInfo.NodesSubjects[workflow.Exitpoint]
-	if !ok {
-		return nil, fmt.Errorf("error obtaining workflow \"%s\" exitpoint's subject", workflow.Name)
-	}
-
 	for idx, n := range workflow.Nodes {
 		// output to its own subject
 		outputSubject, ok := workflow.StreamInfo.NodesSubjects[n.Name]
@@ -84,17 +79,16 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			return nil, err
 		}
 		wconf[n.Id] = NodeConfig{
-			"KRT_WORKFLOW_ID":            workflow.GetId(),
-			"KRT_WORKFLOW_NAME":          workflow.GetName(),
-			"KRT_NODE_ID":                n.GetId(),
-			"KRT_NODE_NAME":              n.GetName(),
-			"KRT_HANDLER_PATH":           n.Src,
-			"KRT_NATS_MONGO_WRITER":      natsDataSubjectPrefix + runtimeID,
-			"KRT_NATS_STREAM":            workflow.StreamInfo.Stream,
-			"KRT_IS_EXITPOINT":           m.isExitpoint(n.GetName(), workflow.Exitpoint),
-			"KRT_NATS_EXITPOINT_SUBJECT": exitpointSubject,
-			"KRT_NATS_OUTPUT":            outputSubject,
-			"KRT_NATS_INPUTS":            inputSubjects,
+			"KRT_WORKFLOW_ID":       workflow.GetId(),
+			"KRT_WORKFLOW_NAME":     workflow.GetName(),
+			"KRT_NODE_ID":           n.GetId(),
+			"KRT_NODE_NAME":         n.GetName(),
+			"KRT_HANDLER_PATH":      n.Src,
+			"KRT_NATS_MONGO_WRITER": natsDataSubjectPrefix + runtimeID,
+			"KRT_NATS_STREAM":       workflow.StreamInfo.Stream,
+			"KRT_IS_EXITPOINT":      m.isExitpoint(n.GetName(), workflow.Exitpoint),
+			"KRT_NATS_OUTPUT":       outputSubject,
+			"KRT_NATS_INPUTS":       inputSubjects,
 		}
 
 		// retrocompatibility konstellation-exitpoint config
