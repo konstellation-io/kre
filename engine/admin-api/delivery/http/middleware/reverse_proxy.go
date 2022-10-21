@@ -2,12 +2,13 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/labstack/echo"
 	"io"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+
+	"github.com/labstack/echo/v4"
 )
 
 type GetTargetURL = func(req *http.Request) (*url.URL, error)

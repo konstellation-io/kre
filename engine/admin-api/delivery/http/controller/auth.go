@@ -10,7 +10,7 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"

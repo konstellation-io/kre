@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"regexp"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 var measurementsURLRegexp = regexp.MustCompile("^/measurements/([^/]+)")

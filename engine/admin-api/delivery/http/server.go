@@ -7,8 +7,11 @@ import (
 	kremiddleware "github.com/konstellation-io/kre/engine/admin-api/delivery/http/middleware"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+
+	"github.com/labstack/echo-contrib/prometheus"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	// "github.com/labstack/echo/v4"
 )
 
 // App is the top-level struct.
@@ -126,6 +129,10 @@ func NewApp(
 	d.Use(jwtCookieMiddleware)
 	d.Use(sessionMiddleware)
 	d.Use(kremiddleware.MongoExpressProxy(cfg.MongoDB.MongoExpressAddress))
+
+	// Enable metrics middleware
+	p := prometheus.NewPrometheus("echo", nil)
+	p.Use(e)
 
 	return &App{
 		e,
