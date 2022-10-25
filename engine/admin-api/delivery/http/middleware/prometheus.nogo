@@ -1,0 +1,74 @@
+// package middleware
+
+// import (
+// 	"fmt"
+
+// 	"github.com/labstack/echo/v4"
+
+// 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
+// 	"github.com/labstack/echo-contrib/prometheus"
+// 	prom "github.com/prometheus/client_golang/prometheus"
+// )
+
+// // var Metric = prometheus.NewMetric(m, "echo")
+
+// // var totalRequests = prometheus.NewCounterVec(
+// // 	prometheus.CounterOpts{
+// // 		Name: "http_requests_total",
+// // 		Help: "Number of get requests.",
+// // 	},
+// // 	[]string{"path"},
+// // )
+
+// var myCounter = prom.NewGauge(prom.GaugeOpts{
+// 	Name:        "my_handler_executions",
+// 	Help:        "Counts executions of my handler function.",
+// 	ConstLabels: prom.Labels{"version": "1234"},
+// })
+
+// var CustomMetrics = []*prometheus.Metric{
+// 	{
+// 		ID:          "reqTotal",
+// 		Name:        "http_requests_total",
+// 		Description: "Total number of HTTP requests made.",
+// 		Type:        "counter",
+// 		// Args:        []string{"path"},
+// 		//   Buckets         []float64
+// 	},
+// }
+
+// func NewGraphQlMetricsMiddleware(logger logging.Logger) echo.MiddlewareFunc {
+// 	return func(next echo.HandlerFunc) echo.HandlerFunc {
+// 		return func(c echo.Context) (err error) {
+// 			req := c.Request()
+// 			res := c.Response()
+
+// 			myCounter.Inc()
+
+// 			fmt.Println("req: ", req)
+// 			fmt.Println("res: ", res)
+
+// 			// // Fix header
+// 			// if req.Header.Get(echo.HeaderXRealIP) == "" {
+// 			// 	req.Header.Set(echo.HeaderXRealIP, c.RealIP())
+// 			// }
+// 			// if req.Header.Get(echo.HeaderXForwardedProto) == "" {
+// 			// 	req.Header.Set(echo.HeaderXForwardedProto, c.Scheme())
+// 			// }
+// 			// if c.IsWebSocket() && req.Header.Get(echo.HeaderXForwardedFor) == "" { // For HTTP, it is automatically set by Go HTTP reverse proxy.
+// 			// 	req.Header.Set(echo.HeaderXForwardedFor, c.RealIP())
+// 			// }
+
+// 			// // Proxy
+// 			// switch {
+// 			// case c.IsWebSocket():
+// 			// 	proxyRaw(targetURL, c).ServeHTTP(res, req)
+// 			// case req.Header.Get(echo.HeaderAccept) == "text/event-stream":
+// 			// default:
+// 			// 	proxyHTTP(targetURL, c).ServeHTTP(res, req)
+// 			// }
+
+// 			return nil
+// 		}
+// 	}
+// }

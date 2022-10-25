@@ -1,5 +1,7 @@
 #!/bin/sh
 
+MONGO_URI=$(kubectl get secret -n kre mongodb-database-admin-connection-string -o jsonpath="{.data.connectionString\.standard}" | base64 -d)
+
 cmd_delete() {
     TYPE=$1
     shift
@@ -107,5 +109,5 @@ execute_mongo_script() {
 
   check_not_empty "MONGO_POD" "error finding MongoDB pod on '$NAMESPACE'\n"
 
-  run kubectl exec -n kre -it "$MONGO_POD" -- mongo --quiet -u "$MONGO_USER" -p "$MONGO_PASS" "$MONGO_DB" --authenticationDatabase admin "$@"
+  run kubectl exec -n kre -it "$MONGO_POD" -c mongod -- mongo --quiet "${MONGO_URI}" "$@"
 }

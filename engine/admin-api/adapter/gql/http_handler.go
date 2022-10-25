@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/99designs/gqlgen-contrib/prometheus"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
@@ -37,6 +38,8 @@ func NewHttpHandler(
 		cfg,
 	)
 
+	prometheus.Register()
+
 	var mb int64 = 1 << 20
 	maxUploadSize := 500 * mb
 	maxMemory := 500 * mb
@@ -46,6 +49,7 @@ func NewHttpHandler(
 	srv.AddTransport(transport.GET{})
 	srv.AddTransport(transport.POST{})
 
+	srv.Use(prometheus.Tracer{})
 	srv.Use(extension.Introspection{})
 
 	srv.AddTransport(transport.Websocket{

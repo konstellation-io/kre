@@ -8,10 +8,8 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 
-	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	// "github.com/labstack/echo/v4"
 )
 
 // App is the top-level struct.
@@ -108,6 +106,8 @@ func NewApp(
 
 	sessionMiddleware := kremiddleware.NewSessionMiddleware(cfg, logger, authInteractor)
 
+	// graphQLMetricsMiddleware := kremiddleware.NewGraphQlMetricsMiddleware(logger)
+
 	e.POST("/api/v1/auth/signin", authController.SignIn)
 	e.POST("/api/v1/auth/token/signin", authController.SignInWithAPIToken)
 	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
@@ -117,6 +117,7 @@ func NewApp(
 	r.Use(jwtCookieMiddleware)
 	r.Use(jwtHeaderMiddleware)
 	r.Use(sessionMiddleware)
+	// r.Use(graphQLMetricsMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 
@@ -131,8 +132,8 @@ func NewApp(
 	d.Use(kremiddleware.MongoExpressProxy(cfg.MongoDB.MongoExpressAddress))
 
 	// Enable metrics middleware
-	p := prometheus.NewPrometheus("echo", nil)
-	p.Use(e)
+	// p := prometheus.NewPrometheus("admin_api", nil, kremiddleware.CustomMetrics)
+	// p.Use(e)
 
 	return &App{
 		e,
