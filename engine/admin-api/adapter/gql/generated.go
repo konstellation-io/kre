@@ -125,9 +125,10 @@ type ComplexityRoot struct {
 	}
 
 	Node struct {
-		ID     func(childComplexity int) int
-		Name   func(childComplexity int) int
-		Status func(childComplexity int) int
+		ID            func(childComplexity int) int
+		Name          func(childComplexity int) int
+		Status        func(childComplexity int) int
+		Subscriptions func(childComplexity int) int
 	}
 
 	NodeLog struct {
@@ -221,10 +222,11 @@ type ComplexityRoot struct {
 	}
 
 	Workflow struct {
-		Edges func(childComplexity int) int
-		ID    func(childComplexity int) int
-		Name  func(childComplexity int) int
-		Nodes func(childComplexity int) int
+		Edges     func(childComplexity int) int
+		Exitpoint func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Nodes     func(childComplexity int) int
 	}
 }
 
@@ -697,6 +699,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Node.Status(childComplexity), true
 
+	case "Node.subscriptions":
+		if e.complexity.Node.Subscriptions == nil {
+			break
+		}
+
+		return e.complexity.Node.Subscriptions(childComplexity), true
+
 	case "NodeLog.date":
 		if e.complexity.NodeLog.Date == nil {
 			break
@@ -1164,6 +1173,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Workflow.Edges(childComplexity), true
 
+	case "Workflow.exitpoint":
+		if e.complexity.Workflow.Exitpoint == nil {
+			break
+		}
+
+		return e.complexity.Workflow.Exitpoint(childComplexity), true
+
 	case "Workflow.id":
 		if e.complexity.Workflow.ID == nil {
 			break
@@ -1459,6 +1475,7 @@ type Node {
   id: ID!
   name: String!
   status: NodeStatus!
+  subscriptions: [String!]
 }
 
 enum NodeStatus {
@@ -1471,6 +1488,7 @@ enum NodeStatus {
 type Workflow {
   id: ID!
   name: String!
+  exitpoint: String!
   nodes: [Node!]!
   edges: [Edge!]!
 }
@@ -4640,6 +4658,47 @@ func (ec *executionContext) fieldContext_Node_status(ctx context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Node_subscriptions(ctx context.Context, field graphql.CollectedField, obj *entity.Node) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Node_subscriptions(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Subscriptions, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Node_subscriptions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Node",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _NodeLog_id(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_NodeLog_id(ctx, field)
 	if err != nil {
@@ -6424,6 +6483,8 @@ func (ec *executionContext) fieldContext_Subscription_watchNodeStatus(ctx contex
 				return ec.fieldContext_Node_name(ctx, field)
 			case "status":
 				return ec.fieldContext_Node_status(ctx, field)
+			case "subscriptions":
+				return ec.fieldContext_Node_subscriptions(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Node", field.Name)
 		},
@@ -7588,6 +7649,8 @@ func (ec *executionContext) fieldContext_Version_workflows(ctx context.Context, 
 				return ec.fieldContext_Workflow_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Workflow_name(ctx, field)
+			case "exitpoint":
+				return ec.fieldContext_Workflow_exitpoint(ctx, field)
 			case "nodes":
 				return ec.fieldContext_Workflow_nodes(ctx, field)
 			case "edges":
@@ -7918,6 +7981,50 @@ func (ec *executionContext) fieldContext_Workflow_name(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Workflow_exitpoint(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Workflow_exitpoint(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Exitpoint, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Workflow_exitpoint(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Workflow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Workflow_nodes(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Workflow_nodes(ctx, field)
 	if err != nil {
@@ -7963,6 +8070,8 @@ func (ec *executionContext) fieldContext_Workflow_nodes(ctx context.Context, fie
 				return ec.fieldContext_Node_name(ctx, field)
 			case "status":
 				return ec.fieldContext_Node_status(ctx, field)
+			case "subscriptions":
+				return ec.fieldContext_Node_subscriptions(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Node", field.Name)
 		},
@@ -10947,6 +11056,10 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "subscriptions":
+
+			out.Values[i] = ec._Node_subscriptions(ctx, field, obj)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -11946,6 +12059,13 @@ func (ec *executionContext) _Workflow(ctx context.Context, sel ast.SelectionSet,
 		case "name":
 
 			out.Values[i] = ec._Workflow_name(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "exitpoint":
+
+			out.Values[i] = ec._Workflow_exitpoint(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
