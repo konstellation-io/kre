@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/client';
 
 import GetVersionWorkflowsQuery from 'Graphql/queries/getVersionWorkflows';
 
-export const NODE_NAME_ENTRYPOINT = 'Entry points';
+export const NODE_NAME_ENTRYPOINT = 'entrypoint';
 
 export default function useWorkflowsAndNodes(versionName: string, runtimeId: string) {
   const { data } = useQuery<GetVersionWorkflows, GetVersionWorkflowsVariables>(
