@@ -1,36 +1,28 @@
+import React, { useRef } from 'react';
+import {checkPermission} from 'rbac-rules';
+import {cloneDeep} from 'lodash';
+import cx from 'classnames';
 import {
   GetVersionWorkflows_version_workflows,
-  GetVersionWorkflows_version_workflows_edges,
   GetVersionWorkflows_version_workflows_nodes
 } from 'Graphql/queries/types/GetVersionWorkflows';
-import { NodeStatus, VersionStatus } from 'Graphql/types/globalTypes';
-import React, { useEffect, useRef, useState } from 'react';
-
-import { NODE_NAME_ENTRYPOINT } from 'Hooks/useWorkflowsAndNodes';
-import { NodeSelection } from 'Graphql/client/typeDefs';
-import { TooltipRefs } from '../WorkflowsManager/WorkflowsManager';
-import WorkflowChart from './WorkflowChart';
-import WorkflowHeader from './WorkflowHeader';
-import { checkPermission } from 'rbac-rules';
-import { cloneDeep } from 'lodash';
-import cx from 'classnames';
-import { getWorkflowState } from '../../states';
-import styles from './Workflow.module.scss';
+import {NodeSelection} from 'Graphql/client/typeDefs';
 import useLogs from 'Graphql/hooks/useLogs';
-import useRenderOnResize from 'Hooks/useRenderOnResize';
+import {NodeStatus, VersionStatus} from 'Graphql/types/globalTypes';
 import useUserAccess from 'Hooks/useUserAccess';
+import {NODE_NAME_ENTRYPOINT} from 'Hooks/useWorkflowsAndNodes';
+import WorkflowHeader from './WorkflowHeader';
+import styles from './Workflow.module.scss';
+import {getWorkflowState} from '../../states';
+import BranchedWorkflowChart from '../BranchedWorkflowChart/BranchedWorkflowChart';
 
 export type Node = GetVersionWorkflows_version_workflows_nodes;
-export interface Edge extends GetVersionWorkflows_version_workflows_edges {
-  status?: NodeStatus;
-}
 interface Workflow extends GetVersionWorkflows_version_workflows {
   nodes: Node[];
-  edges: Edge[];
 }
 
-const BASE_WIDTH = 323;
-const NODE_WIDTH = 160;
+const BASE_WIDTH = 1000;
+const BASE_HEIGHT = 500;
 
 const ENTRYPOINT_SELECTION = {
   workflowName: '',
@@ -43,7 +35,6 @@ type Props = {
   workflowStatus: VersionStatus;
   entrypointStatus: NodeStatus;
   entrypointAddress: string;
-  tooltipRefs: TooltipRefs;
 };
 
 function Workflow({
@@ -51,18 +42,10 @@ function Workflow({
   workflowStatus,
   entrypointStatus,
   entrypointAddress,
-  tooltipRefs
 }: Props) {
   const { createLogsTab } = useLogs();
   const { accessLevel } = useUserAccess();
-  const [containerWidth, setContainerWidth] = useState<number>(0);
   const chartRef = useRef<HTMLDivElement>(null);
-  const dimensions = useRenderOnResize({ container: chartRef });
-
-  // Sets container width.
-  useEffect(() => {
-    setContainerWidth(BASE_WIDTH + workflow.nodes.length * NODE_WIDTH);
-  }, [setContainerWidth, workflow.nodes]);
 
   function createTab(nodes: NodeSelection[]) {
     createLogsTab(nodes);
@@ -94,29 +77,27 @@ function Workflow({
   }
 
   const data = cloneDeep(workflow);
-  const { width, height } = dimensions;
   const status = getWorkflowState(workflowStatus, data.nodes, entrypointStatus);
 
   return (
     <div
       className={cx(styles.workflowContainer, styles[status])}
-      style={{ width: containerWidth }}
+      style={{ width: BASE_WIDTH, height: BASE_HEIGHT }}
     >
       <WorkflowHeader name={workflow.name} onWorkflowClick={onWorkflowClick} />
-      {/*<div ref={chartRef} className={styles.chartContainer}>*/}
-      {/*  <WorkflowChart*/}
-      {/*    width={width}*/}
-      {/*    height={height}*/}
-      {/*    data={data}*/}
-      {/*    workflowStatus={workflowStatus}*/}
-      {/*    entrypointStatus={entrypointStatus}*/}
-      {/*    entrypointAddress={entrypointAddress}*/}
-      {/*    onInnerNodeClick={onInnerNodeClick}*/}
-      {/*    onInputNodeClick={onInputNodeClick}*/}
-      {/*    tooltipRefs={tooltipRefs}*/}
-      {/*    enableNodeClicks={checkPermission(accessLevel, 'logs:view')}*/}
-      {/*  />*/}
-      {/*</div>*/}
+      <div ref={chartRef} className={styles.chartContainer}>
+        <BranchedWorkflowChart
+          width={BASE_WIDTH}
+          height={BASE_HEIGHT}
+          workflow={workflow}
+          workflowStatus={workflowStatus}
+          entrypointStatus={entrypointStatus}
+          entrypointAddress={entrypointAddress}
+          onInnerNodeClick={onInnerNodeClick}
+          onInputNodeClick={onInputNodeClick}
+          enableNodeClicks={checkPermission(accessLevel, 'logs:view')}
+        />
+      </div>
     </div>
   );
 }
