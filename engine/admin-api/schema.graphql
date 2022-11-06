@@ -191,6 +191,7 @@ type Node {
   id: ID!
   name: String!
   status: NodeStatus!
+  subscriptions: [String!]
 }
 
 enum NodeStatus {
@@ -203,12 +204,19 @@ enum NodeStatus {
 type Workflow {
   id: ID!
   name: String!
+  exitpoint: String
   nodes: [Node!]!
-  edges: [Edge!]!
+  edges: [Edge!]
+}
+
+enum KrtVersion {
+  v1,
+  v2
 }
 
 type Version {
   id: ID!
+  krtVersion: KrtVersion
   name: String!
   description: String!
   status: VersionStatus!
