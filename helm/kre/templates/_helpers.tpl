@@ -150,59 +150,20 @@ nats url
 {{- printf "%s:%d" (include "nats.host" .) (.Values.nats.client.port | int) -}}
 {{- end -}}
 
-{{/*
-Runtime Name
-*/}}
-{{- define "runtime.name" -}}
-{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+mongo-writer labels
 */}}
-{{- define "runtime.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Runtime common labels
-*/}}
-{{- define "runtime.labels" -}}
-app.kubernetes.io/name: {{ include "runtime.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end -}}
-
-{{/*
-Mongo name
-*/}}
-{{- define "mongo.name" -}}
-{{ printf "%s-mongo" $.Release.Name }}
-{{- end }}
-
-{{/*
-MongoDB labels
-*/}}
-{{- define "mongodb.labels" -}}
+{{- define "mongo-writer.labels" -}}
 {{ include "kre.labels" . }}
-{{ include "mongodb.selectorLabels" . }}
+{{ include "mongo-writer.selectorLabels" . }}
 {{- end }}
 
 {{/*
-MongoDB selector labels
+mongo-writer selector labels
 */}}
-{{- define "mongodb.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kre.name" . }}-mongodb
+{{- define "mongo-writer.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-mongo-writer
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
@@ -230,16 +191,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create MongoDB URI.
-*/}}
-{{- define "runtime.mongoURI" -}}
-  {{- printf "mongodb://%s:%s@%s-mongo-0.%s-mongo:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword $.Release.Name $.Release.Name -}}
-{{- end -}}
-
-{{/*
 Create InfluxDB URL.
 */}}
-{{- define "runtime.influxURL" -}}
+{{- define "kre-influxdb.influxURL" -}}
   {{- printf "http://%s-influxdb:8086" .Release.Name -}}
 {{- end -}}
 {{/*

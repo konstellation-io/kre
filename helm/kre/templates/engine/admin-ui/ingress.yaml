@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-admin-ui-ingress
+  name: {{ .Release.Name }}-admin-ui
   {{- with .Values.adminUI.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -26,6 +26,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: admin-ui
+                name: {{ .Release.Name }}-admin-ui
                 port:
                   name: web

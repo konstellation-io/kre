@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-k8s-manager
+  labels:
+    {{- include "k8s-manager.labels" . | nindent 4 }}
+data:
+  KRE_API_LOG_LEVEL: {{ .Values.adminApi.logLevel }}
+  KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
+  KRE_RELEASE_NAME: "{{ .Release.Name }}"
+  KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
+  KRE_ENTRYPOINTS_REQUEST_TIMEOUT: "30"
+  KRE_ENTRYPOINTS_BASE64_INGRESSES_ANNOTATIONS: {{ .Values.k8sManager.generatedEntrypoints.ingress.annotations | toYaml | b64enc }}
+  KRE_ENTRYPOINTS_TLS: "{{ .Values.k8sManager.generatedEntrypoints.tls }}"
+    {{- if and .Values.k8sManager.generatedEntrypoints.tls .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
+  KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
+  {{- end }}
+  {{- if .Values.k8sManager.generatedEntrypoints.ingress.className }}
+  KRE_ENTRYPOINTS_INGRESS_CLASS_NAME: {{ .Values.k8sManager.generatedEntrypoints.ingress.className }}
+  {{- end }}
+  KRE_NATS_URL: "{{ include "nats.url" . }}"
+  KRE_NATS_HOST: "{{ include "nats.host" . }}"
+  KRE_KRT_FILES_DOWNLOADER_IMAGE: "{{ .Values.k8sManager.krtFilesDownloader.image.repository }}"
+  KRE_KRT_FILES_DOWNLOADER_TAG: "{{ .Values.k8sManager.krtFilesDownloader.image.tag }}"
+  KRE_KRT_FILES_DOWNLOADER_PULL_POLICY: "{{ .Values.k8sManager.krtFilesDownloader.image.pullPolicy }}"

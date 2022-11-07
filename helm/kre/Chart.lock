@@ -1,9 +1,9 @@
 dependencies:
 - name: influxdb
-  repository: https://influxdata.github.io/helm-charts
+  repository: https://helm.influxdata.com/
   version: 4.8.1
 - name: kapacitor
   repository: https://helm.influxdata.com/
   version: 1.4.0
-digest: sha256:db249b846168e7fc73d95525383cc803de9832f5c3d02c1bba908b0e4ab688d0
-generated: "2022-03-24T16:13:55.476415027+01:00"
+digest: sha256:0e6885c1249a4b7932f8eef0d5dab70260ad3f30e087aac6d6e5c7c006c69d74
+generated: "2022-09-27T16:59:44.569177316+02:00"

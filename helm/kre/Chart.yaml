@@ -6,7 +6,7 @@ version: 0.0.1
 dependencies:
   - name: influxdb
     version: "4.8.1"
-    repository: https://influxdata.github.io/helm-charts
+    repository: https://helm.influxdata.com/
   - name: kapacitor
     version: "1.4.0"
     repository: https://helm.influxdata.com/

@@ -5,10 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 
 	domainService "github.com/konstellation-io/kre/engine/admin-api/domain/service"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
@@ -66,8 +67,8 @@ func (c *Chronograf) Create(ctx context.Context, runtimeId, version, dashboardPa
 
 	requestReader := bytes.NewReader(requestByte)
 
-	chronografURL := fmt.Sprintf("http://chronograf.%s/measurements/%s/chronograf/v1/dashboards",
-		c.cfg.K8s.Namespace, c.cfg.K8s.Namespace)
+	chronografURL := fmt.Sprintf("%s/measurements/%s/chronograf/v1/dashboards",
+		c.cfg.Chronograf.Address, c.cfg.K8s.Namespace)
 
 	r, err := http.NewRequest(http.MethodPost, chronografURL, requestReader)
 	if err != nil {

@@ -9,31 +9,31 @@ jobs:
   docker-admin-api:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       # check commit if folder engine/admin-api have any changes
       # set an env var with true or false is changes
       # if false just update docker image tag
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Get Version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> ${GITHUB_OUTPUT}
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/admin-api
           file: ./engine/admin-api/Dockerfile
@@ -44,7 +44,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/admin-api
           file: ./engine/admin-api/Dockerfile
@@ -57,18 +57,18 @@ jobs:
   docker-admin-ui:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -79,7 +79,7 @@ jobs:
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/admin-ui
           file: ./engine/admin-ui/Dockerfile
@@ -90,7 +90,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/admin-ui
           file: ./engine/admin-ui/Dockerfile
@@ -103,29 +103,29 @@ jobs:
   docker-k8s-manager:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Get Version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> ${GITHUB_OUTPUT}
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/k8s-manager
           file: ./engine/k8s-manager/Dockerfile
@@ -136,7 +136,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/k8s-manager
           file: ./engine/k8s-manager/Dockerfile
@@ -149,29 +149,29 @@ jobs:
   docker-mongo-writer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Get Version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> ${GITHUB_OUTPUT}
 
       - name: Push to Docker Hub RELEASES
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/mongo-writer
           file: ./engine/mongo-writer/Dockerfile
@@ -182,7 +182,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./engine/mongo-writer
           file: ./engine/mongo-writer/Dockerfile
@@ -202,7 +202,7 @@ jobs:
       - docker-mongo-writer
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -216,8 +216,8 @@ jobs:
         run: |
           # format version X.X.X
           RELEASE_VERSION=`echo "${GITHUB_REF#refs/tags/}" | sed -e 's/v//g' | sed -e 's/-alpha.*/.0/g'`
-          echo ::set-output name=RELEASE_VERSION::${RELEASE_VERSION}
-          echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+          echo "RELEASE_VERSION=${RELEASE_VERSION}" >> ${GITHUB_OUTPUT}
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> ${GITHUB_OUTPUT}
 
       - uses: chrisdickinson/setup-yq@latest
       - name: Replace component version with YQ
@@ -233,7 +233,7 @@ jobs:
           yq w -i helm/kre/Chart.yaml 'version' ${{ steps.get_version.outputs.RELEASE_VERSION }}
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.0.0
+        uses: helm/chart-releaser-action@v1.4.1
         with:
           charts_dir: 'helm'
           charts_repo_url: 'https://charts.konstellation.io'

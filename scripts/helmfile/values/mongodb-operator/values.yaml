@@ -1,0 +1,2 @@
+community-operator-crds:
+  enabled: true

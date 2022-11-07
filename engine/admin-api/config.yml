@@ -23,6 +23,8 @@ mongodb:
   krtBucket: "krt"
 influxdb:
   address: "http://localhost:8086"
+chronograf:
+  address: "http://localhost:8888"
 k8s:
   namespace: ""
 services:

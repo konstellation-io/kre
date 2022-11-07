@@ -1,0 +1,41 @@
+helmDefaults:
+  createNamespace: true
+  atomic: false
+  verify: false
+  wait: true
+  timeout: 3600
+  disableValidation: true
+
+templates:
+  default: &default
+    # This prevents helmfile exiting when it encounters a missing file
+    # Valid values are "Error", "Warn", "Info", "Debug". The default is "Error"
+    # Use "Debug" to make missing files errors invisible at the default log level(--log-level=INFO)
+    missingFileHandler: Warn
+    namespace: kre
+    values:
+    - "values/{{`{{ .Release.Name }}`}}/values.yaml.gotmpl"
+    - "values/{{`{{ .Release.Name }}`}}/values.yaml"
+
+repositories:
+  - name: mongodb
+    url: https://mongodb.github.io/helm-charts
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
+releases:
+  - name: "mongodb-operator"
+    <<: *default
+    chart: mongodb/community-operator
+
+  - name: "mongodb-database"
+    <<: *default
+    chart: bedag/raw
+    needs:
+    - kre/mongodb-operator
+
+  - name: "{{ requiredEnv "RELEASE_NAME" }}"
+    <<: *default
+    chart: ../../helm/kre
+    needs:
+    - kre/mongodb-database

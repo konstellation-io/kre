@@ -90,18 +90,7 @@ create_namespace() {
 }
 
 deploy_helm_chart() {
-  KRE_INFLUX_URL="http://${RELEASE_NAME}-influxdb:8086"
+  export KRE_INFLUX_URL="http://${RELEASE_NAME}-influxdb:8086"
   echo_info "📦 Applying helm chart..."
-  run helm dep update helm/kre
-  run helm upgrade \
-    --wait \
-    --install "${RELEASE_NAME}" \
-    --namespace "${NAMESPACE}" \
-    --set developmentMode="${DEVELOPMENT_MODE}" \
-    --set config.admin.apiHost="${KRE_ADMIN_API_HOST}" \
-    --set config.admin.frontBaseURL="${KRE_ADMIN_FRONTEND_BASE_URL}" \
-    --set mongodb.volumePermissions.enabled="${DEVELOPMENT_MODE}" \
-    --set kapacitor.enabled=true \
-    --set kapacitor.influxURL="${KRE_INFLUX_URL}" \
-    helm/kre
+  helmfile -f scripts/helmfile/helmfile.yaml apply --skip-cleanup
 }

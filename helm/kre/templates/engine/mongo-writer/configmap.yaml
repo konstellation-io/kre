@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-mongo-writer
+  labels:
+    {{- include "mongo-writer.labels" . | nindent 4 }}
+data:
+  KRE_NATS_URL: "{{ include "nats.url" . }}"
+  KRE_PORT: "50051"
