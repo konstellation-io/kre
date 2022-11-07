@@ -95,6 +95,7 @@ build_engine() {
 
 build_runners() {
   build_image kre-entrypoint runners/kre-entrypoint
+  build_exitpoint_image kre-exitpoint runners/kre-exitpoint
   build_image kre-py runners/kre-py
   build_image kre-go runners/kre-go
   build_image krt-files-downloader runners/krt-files-downloader
@@ -106,6 +107,14 @@ build_image() {
   echo_build_header "$NAME"
 
   run docker build -t konstellation/"${NAME}":latest "$FOLDER"
+}
+
+build_exitpoint_image() {
+  NAME=$1
+  FOLDER=$2
+  echo_build_header "$NAME"
+
+  run docker build -f $FOLDER/Dockerfile.local -t konstellation/"${NAME}":latest "$FOLDER"
 }
 
 echo_build_header() {
