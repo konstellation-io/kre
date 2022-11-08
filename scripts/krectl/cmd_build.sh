@@ -114,7 +114,7 @@ build_exitpoint_image() {
   FOLDER=$2
   echo_build_header "$NAME"
 
-  run docker build -f $FOLDER/Dockerfile.local -t konstellation/"${NAME}":latest "$FOLDER"
+  run docker build -f $FOLDER/Dockerfile -t konstellation/"${NAME}":latest "$FOLDER"
 }
 
 echo_build_header() {
