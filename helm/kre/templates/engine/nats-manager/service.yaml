@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nats-manager
+  name: {{ .Release.Name }}-nats-manager
   labels:
     {{- include "nats-manager.labels" . | nindent 4 }}
 spec:
