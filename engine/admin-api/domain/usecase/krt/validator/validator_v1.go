@@ -3,6 +3,8 @@ package validator
 import (
 	"errors"
 	"fmt"
+
+	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
@@ -94,7 +96,7 @@ func (v *ValidatorV1) getNodesValidationErrors(nodes []krt.Node) []error {
 	var errs []error
 	for _, node := range nodes {
 		if node.Subscriptions != nil {
-			errs = append(errs, fmt.Errorf("field Subscriptions in node \"%s\" is incompatible with version %s", node.Name, krt.VersionV1))
+			errs = append(errs, fmt.Errorf("field Subscriptions in node \"%s\" is incompatible with version %s", node.Name, entity.KRTVersionV1))
 		}
 	}
 	return errs

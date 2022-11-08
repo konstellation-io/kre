@@ -319,7 +319,7 @@ func (i *VersionInteractor) saveKRTDoc(runtimeId, docFolder string, versionCreat
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
-	if krtYml.KrtVersion == "" || krtYml.KrtVersion == krt.VersionV1 {
+	if krtYml.KrtVersion == "" || krtYml.KrtVersion == entity.KRTVersionV1.String() {
 		return i.generateWorkflowsV1(krtYml)
 	}
 	var workflows []*entity.Workflow
@@ -433,7 +433,7 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
-	if v.KrtVersion == "" || v.KrtVersion == krt.VersionV1 {
+	if v.KrtVersion == "" || v.KrtVersion == entity.KRTVersionV1 {
 		i.translator.TranslateToKrtVersionV2(v)
 	}
 

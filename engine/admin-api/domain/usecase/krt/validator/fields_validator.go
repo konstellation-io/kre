@@ -3,11 +3,13 @@ package validator
 import (
 	"errors"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"os"
 	"path"
 	"regexp"
 	"strings"
+
+	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -15,7 +17,6 @@ import (
 //go:generate mockgen -source=${GOFILE} -destination=../../../../mocks/${GOFILE} -package=mocks
 
 var krtValidator *validator.Validate
-var validKrtVersions = map[string]bool{"v1": true, "v2": true}
 
 func init() {
 	krtValidator = validator.New()
@@ -33,7 +34,7 @@ func init() {
 	})
 
 	_ = krtValidator.RegisterValidation("krt-version", func(fl validator.FieldLevel) bool {
-		_, ok := validKrtVersions[fl.Field().String()]
+		_, ok := entity.ParseKRTVersionFromString(fl.Field().String())
 		return ok
 	})
 }

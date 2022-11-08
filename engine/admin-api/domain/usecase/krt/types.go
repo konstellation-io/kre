@@ -1,9 +1,6 @@
 package krt
 
-const (
-	VersionV1 = "v1"
-	VersionV2 = "v2"
-)
+import "github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 
 // Krt contains data about a version
 type Krt struct {
@@ -45,5 +42,5 @@ type Config struct {
 }
 
 func (k Krt) IsKrtVersionV1() bool {
-	return k.KrtVersion == "" || k.KrtVersion == VersionV1
+	return k.KrtVersion == "" || k.KrtVersion == entity.KRTVersionV1.String()
 }

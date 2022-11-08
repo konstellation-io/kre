@@ -1,6 +1,7 @@
 package validator_test
 
 import (
+	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 )
 
@@ -32,7 +33,7 @@ func NewKrtBuilder() *KrtBuilder {
 }
 
 func (k *KrtBuilder) V1() *KrtBuilder {
-	k.krtYaml.KrtVersion = krt.VersionV1
+	k.krtYaml.KrtVersion = entity.KRTVersionV1.String()
 	k.krtYaml.Nodes = []krt.Node{
 		{
 			Name:  "test-node",
@@ -52,7 +53,7 @@ func (k *KrtBuilder) V1() *KrtBuilder {
 }
 
 func (k *KrtBuilder) V2() *KrtBuilder {
-	k.krtYaml.KrtVersion = krt.VersionV2
+	k.krtYaml.KrtVersion = entity.KRTVersionV2.String()
 	k.krtYaml.Workflows = []krt.Workflow{
 		{
 			Name:       "valid-workflow",

@@ -4,14 +4,16 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 
 	"gopkg.in/yaml.v2"
 
@@ -34,7 +36,12 @@ func ProcessAndValidateKrt(
 		return nil, err
 	}
 
-	krtValidator := validator.NewValidator(logger, valuesValidator, k.KrtVersion)
+	krtVersion, ok := entity.ParseKRTVersionFromString(k.KrtVersion)
+	if !ok {
+		return nil, fmt.Errorf("krtVersion is not valid: %s", k.KrtVersion)
+	}
+
+	krtValidator := validator.NewValidator(logger, valuesValidator, krtVersion)
 	err = krtValidator.Run(k)
 	if err != nil {
 		return nil, err
@@ -82,7 +89,7 @@ func (p *Parser) ParseKrtYaml(krtFilePath string) (*krt.Krt, error) {
 	}
 
 	if k.KrtVersion == "" {
-		k.KrtVersion = krt.VersionV1
+		k.KrtVersion = entity.KRTVersionV1.String()
 	}
 
 	return k, nil

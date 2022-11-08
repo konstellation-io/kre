@@ -1,8 +1,10 @@
 package validator_test
 
 import (
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"testing"
+
+	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -67,7 +69,7 @@ func TestValidatorV2_Run(t *testing.T) {
 
 	mocks.AddLoggerExpects(logger)
 
-	validator := validator.NewValidator(logger, fieldsValidator, krt.VersionV2)
+	validator := validator.NewValidator(logger, fieldsValidator, entity.KRTVersionV2)
 
 	for _, tc := range tests {
 		fieldsValidator.EXPECT().Run(tc.krtYaml).Return(nil)
