@@ -92,6 +92,34 @@ func (e NodeStatus) String() string {
 	return string(e)
 }
 
+type KrtVersion string
+
+const (
+	KRTVersionV1 KrtVersion = "v1"
+	KRTVersionV2 KrtVersion = "v2"
+)
+
+func (e KrtVersion) IsValid() bool {
+	switch e {
+	case KRTVersionV1, KRTVersionV2:
+		return true
+	}
+	return false
+}
+
+func (e KrtVersion) String() string {
+	return string(e)
+}
+
+func ParseKRTVersionFromString(str string) (KrtVersion, bool) {
+	var krtVersionMap = map[string]KrtVersion{
+		"v1": KRTVersionV1,
+		"v2": KRTVersionV2,
+	}
+	c, ok := krtVersionMap[str]
+	return c, ok
+}
+
 type Workflow struct {
 	ID         string `bson:"id"`
 	Name       string `bson:"name"`
@@ -119,10 +147,10 @@ type VersionConfig struct {
 }
 
 type Version struct {
-	ID          string `bson:"_id"`
-	KrtVersion  string `bson:"krtVersion"`
-	Name        string `bson:"name"`
-	Description string `bson:"description"`
+	ID          string     `bson:"_id"`
+	KrtVersion  KrtVersion `bson:"krtVersion"`
+	Name        string     `bson:"name"`
+	Description string     `bson:"description"`
 
 	CreationDate   time.Time `bson:"creationDate"`
 	CreationAuthor string    `bson:"creationAuthor"`

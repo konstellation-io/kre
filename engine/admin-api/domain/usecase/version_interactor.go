@@ -196,8 +196,12 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 	existingConfig := readExistingConf(versions)
 	cfg := fillNewConfWithExisting(existingConfig, krtYml)
 
+	krtVersion, ok := entity.ParseKRTVersionFromString(krtYml.KrtVersion)
+	if !ok {
+		return nil, nil, fmt.Errorf("error krtVersion input from krt.yml not valid: %s", krtYml.KrtVersion)
+	}
 	versionCreated, err := i.versionRepo.Create(loggedUserID, runtimeID, &entity.Version{
-		KrtVersion:  krtYml.KrtVersion,
+		KrtVersion:  krtVersion,
 		Name:        krtYml.Version,
 		Description: krtYml.Description,
 		Config:      cfg,
