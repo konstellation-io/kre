@@ -1,15 +1,18 @@
 package http
 
 import (
+	"log"
+
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/controller"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/httperrors"
 	kremiddleware "github.com/konstellation-io/kre/engine/admin-api/delivery/http/middleware"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
-
+	prometheusEcho "github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	prometheusClient "github.com/prometheus/client_golang/prometheus"
 )
 
 // App is the top-level struct.
@@ -39,6 +42,9 @@ func NewApp(
 	e.HideBanner = true
 	e.HidePort = true
 	e.Validator = newCustomValidator()
+
+	// Enable metrics middleware
+	prometheusEcho := prometheusEcho.NewPrometheus("admin_api", kremiddleware.UrlSkipper)
 
 	e.Static("/static", cfg.Admin.StoragePath)
 
@@ -106,7 +112,7 @@ func NewApp(
 
 	sessionMiddleware := kremiddleware.NewSessionMiddleware(cfg, logger, authInteractor)
 
-	// graphQLMetricsMiddleware := kremiddleware.NewGraphQlMetricsMiddleware(logger)
+	graphQLMetricsMiddleware := kremiddleware.NewGraphQlMetricsMiddleware()
 
 	e.POST("/api/v1/auth/signin", authController.SignIn)
 	e.POST("/api/v1/auth/token/signin", authController.SignInWithAPIToken)
@@ -117,7 +123,7 @@ func NewApp(
 	r.Use(jwtCookieMiddleware)
 	r.Use(jwtHeaderMiddleware)
 	r.Use(sessionMiddleware)
-	// r.Use(graphQLMetricsMiddleware)
+	r.Use(graphQLMetricsMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
 	r.GET("/playground", graphQLController.PlaygroundHandler)
 
@@ -131,9 +137,11 @@ func NewApp(
 	d.Use(sessionMiddleware)
 	d.Use(kremiddleware.MongoExpressProxy(cfg.MongoDB.MongoExpressAddress))
 
-	// Enable metrics middleware
-	// p := prometheus.NewPrometheus("admin_api", nil, kremiddleware.CustomMetrics)
-	// p.Use(e)
+	if err := prometheusClient.Register(kremiddleware.TotalRequestCounter); err != nil {
+		log.Fatal("Error registering Prometheus metric: %v", err.Error())
+	}
+
+	prometheusEcho.Use(e)
 
 	return &App{
 		e,
