@@ -525,11 +525,15 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	}()
 
 	if status == entity.VersionStatusStarted {
-		workflowsStreams, err := i.natsManagerService.CreateStreams(ctx, runtimeId, version)
+		err := i.natsManagerService.CreateStreams(ctx, runtimeId, version)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
-		err = i.versionService.Start(ctx, runtimeId, version, workflowsStreams)
+		worklfowsStreamConfig, err := i.natsManagerService.GetVersionNatsConfig(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+		err = i.versionService.Start(ctx, runtimeId, version, worklfowsStreamConfig)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}

@@ -36,12 +36,11 @@ func (m *MockNatsManagerService) EXPECT() *MockNatsManagerServiceMockRecorder {
 }
 
 // CreateStreams mocks base method.
-func (m *MockNatsManagerService) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) (entity.WorkflowsStreams, error) {
+func (m *MockNatsManagerService) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateStreams", ctx, runtimeID, version)
-	ret0, _ := ret[0].(entity.WorkflowsStreams)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateStreams indicates an expected call of CreateStreams.
@@ -62,4 +61,19 @@ func (m *MockNatsManagerService) DeleteStreams(ctx context.Context, runtimeID st
 func (mr *MockNatsManagerServiceMockRecorder) DeleteStreams(ctx, runtimeID, version interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStreams", reflect.TypeOf((*MockNatsManagerService)(nil).DeleteStreams), ctx, runtimeID, version)
+}
+
+// GetVersionNatsConfig mocks base method.
+func (m *MockNatsManagerService) GetVersionNatsConfig(ctx context.Context, runtimeID string, version *entity.Version) (entity.VersionStreamConfig, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetVersionNatsConfig", ctx, runtimeID, version)
+	ret0, _ := ret[0].(entity.VersionStreamConfig)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetVersionNatsConfig indicates an expected call of GetVersionNatsConfig.
+func (mr *MockNatsManagerServiceMockRecorder) GetVersionNatsConfig(ctx, runtimeID, version interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersionNatsConfig", reflect.TypeOf((*MockNatsManagerService)(nil).GetVersionNatsConfig), ctx, runtimeID, version)
 }

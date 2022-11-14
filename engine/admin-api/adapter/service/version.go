@@ -40,7 +40,7 @@ func (k *K8sVersionClient) Start(
 	ctx context.Context,
 	runtimeID string,
 	version *entity.Version,
-	workflowToStream entity.WorkflowsStreams,
+	workflowToStream entity.VersionStreamConfig,
 ) error {
 	configVars := versionToConfig(version)
 	wf, err := versionToWorkflows(version, workflowToStream)
@@ -142,25 +142,28 @@ func versionToConfig(version *entity.Version) []*versionpb.Config {
 	return configVars
 }
 
-func versionToWorkflows(version *entity.Version, workflowToStream entity.WorkflowsStreams) ([]*versionpb.Workflow, error) {
+func versionToWorkflows(version *entity.Version, versionStreamConfig entity.VersionStreamConfig) ([]*versionpb.Workflow, error) {
 	wf := make([]*versionpb.Workflow, len(version.Workflows))
 
 	for i, w := range version.Workflows {
+		workflowStreamConfig, ok := versionStreamConfig[w.Name]
+		if !ok {
+			return nil, fmt.Errorf("error obtaining stream for workflow \"%s\"", w.Name)
+		}
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
 		for j, n := range w.Nodes {
+			nodeStreamConfig, ok := workflowStreamConfig.Nodes[n.Name]
+			if !ok {
+				return nil, fmt.Errorf("error obtaining stream config for node \"%s\" in workflow \"%s\"", n.Name, w.Name)
+			}
 			nodes[j] = &versionpb.Workflow_Node{
 				Id:            n.ID,
 				Name:          n.Name,
 				Image:         n.Image,
 				Src:           n.Src,
 				Gpu:           n.GPU,
-				Subscriptions: n.Subscriptions,
+				Subscriptions: nodeStreamConfig.Subscriptions,
 			}
-		}
-
-		workflowStreamInfo, ok := workflowToStream[w.Name]
-		if !ok {
-			return nil, fmt.Errorf("error obtaining stream for workflow \"%s\"", w.Name)
 		}
 
 		wf[i] = &versionpb.Workflow{
@@ -169,10 +172,7 @@ func versionToWorkflows(version *entity.Version, workflowToStream entity.Workflo
 			Entrypoint: w.Entrypoint,
 			Nodes:      nodes,
 			Exitpoint:  w.Exitpoint,
-			StreamInfo: &versionpb.Workflow_StreamInfo{
-				Stream:        workflowStreamInfo.Stream,
-				NodesSubjects: workflowStreamInfo.NodesSubjects,
-			},
+			Stream:     workflowStreamConfig.Stream,
 		}
 
 		if version.KrtVersion == krt.VersionV1 {
