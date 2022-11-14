@@ -245,3 +245,12 @@ func (m *Manager) watchResources(ns, labelSelector string, handlers cache.Resour
 
 	return stopCh
 }
+
+func (m *Manager) findNodeSubject(nodes []*versionpb.Workflow_Node, nodeToFind string) (string, error) {
+	for _, node := range nodes {
+		if node.Name == nodeToFind {
+			return node.Subject, nil
+		}
+	}
+	return "", fmt.Errorf("error finding subject for node \"%s\"", nodeToFind)
+}

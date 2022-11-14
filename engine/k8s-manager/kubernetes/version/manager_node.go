@@ -67,17 +67,6 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 	runtimeID := req.RuntimeId
 
 	for idx, n := range workflow.Nodes {
-		// output to its own subject
-		outputSubject, ok := workflow.StreamInfo.NodesSubjects[n.Name]
-		if !ok {
-			return nil, fmt.Errorf("error obtainint subject for node \"%s\"", n.Name)
-		}
-
-		// input from desired subscriptions
-		inputSubjects, err := m.joinSubscriptionSubjects(workflow.StreamInfo.Stream, n.Subscriptions)
-		if err != nil {
-			return nil, err
-		}
 		wconf[n.Id] = NodeConfig{
 			"KRT_WORKFLOW_ID":       workflow.GetId(),
 			"KRT_WORKFLOW_NAME":     workflow.GetName(),
@@ -85,10 +74,10 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_NODE_NAME":         n.GetName(),
 			"KRT_HANDLER_PATH":      n.Src,
 			"KRT_NATS_MONGO_WRITER": natsDataSubjectPrefix + runtimeID,
-			"KRT_NATS_STREAM":       workflow.StreamInfo.Stream,
+			"KRT_NATS_STREAM":       workflow.Stream,
 			"KRT_IS_EXITPOINT":      m.isExitpoint(n.GetName(), workflow.Exitpoint),
-			"KRT_NATS_OUTPUT":       outputSubject,
-			"KRT_NATS_INPUTS":       inputSubjects,
+			"KRT_NATS_OUTPUT":       n.Subject,
+			"KRT_NATS_INPUTS":       m.joinSubscriptionSubjects(n.Subscriptions),
 		}
 
 		// retrocompatibility konstellation-exitpoint config
@@ -110,12 +99,12 @@ func (m *Manager) isExitpoint(nodeName, workflowExitpoint string) string {
 }
 
 // joinSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
-func (m *Manager) joinSubscriptionSubjects(stream string, nodeSubscriptions []string) (string, error) {
+func (m *Manager) joinSubscriptionSubjects(nodeSubscriptions []string) string {
 	subjectsToSubscribe := make([]string, 0, len(nodeSubscriptions))
 	for _, subscription := range nodeSubscriptions {
-		subjectsToSubscribe = append(subjectsToSubscribe, fmt.Sprintf("%s.%s", stream, subscription))
+		subjectsToSubscribe = append(subjectsToSubscribe, subscription)
 	}
-	return strings.Join(subjectsToSubscribe, ","), nil
+	return strings.Join(subjectsToSubscribe, ",")
 }
 
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
