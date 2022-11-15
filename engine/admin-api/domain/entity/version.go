@@ -113,8 +113,8 @@ func (e KrtVersion) String() string {
 
 func ParseKRTVersionFromString(str string) (KrtVersion, bool) {
 	var krtVersionMap = map[string]KrtVersion{
-		"v1": KRTVersionV1,
-		"v2": KRTVersionV2,
+		KRTVersionV1.String(): KRTVersionV1,
+		KRTVersionV2.String(): KRTVersionV2,
 	}
 	c, ok := krtVersionMap[str]
 	return c, ok
