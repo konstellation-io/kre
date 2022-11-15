@@ -15,28 +15,43 @@ message DeleteStreamsRequest {
   repeated string workflows = 3;
 }
 
+message GetVersionNatsConfigRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated Workflow workflows = 3;
+}
+
+message MutationResponse {
+  string message = 1;
+}
+
+message GetVersionNatsConfigResponse {
+  map<string, WorkflowNatsConfig> workflows = 1;
+}
+
 message Workflow {
   string name = 1;
   string entrypoint = 2;
-  repeated string nodes = 3;
+  repeated Node nodes = 3;
 }
 
-message StreamInfo {
+message Node {
+  string name = 1;
+  repeated string subscriptions = 2;
+}
+
+message WorkflowNatsConfig {
   string stream = 1;
-  map<string, string> nodes_subjects = 2;
+  map<string, NodeNatsConfig> nodes = 2;
 }
 
-
-message CreateStreamsResponse {
-  string message = 1;
-  map<string, StreamInfo> workflows_streams = 2;
-}
-
-message DeleteStreamsResponse {
-  string message = 1;
+message NodeNatsConfig {
+  string subject = 1;
+  repeated string subscriptions = 2;
 }
 
 service NatsManagerService {
-  rpc CreateStreams (CreateStreamsRequest) returns (CreateStreamsResponse);
-  rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteStreamsResponse);
+  rpc CreateStreams (CreateStreamsRequest) returns (MutationResponse);
+  rpc DeleteStreams (DeleteStreamsRequest) returns (MutationResponse);
+  rpc GetVersionNatsConfig (GetVersionNatsConfigRequest) returns (GetVersionNatsConfigResponse);
 };

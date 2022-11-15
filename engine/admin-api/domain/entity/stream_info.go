@@ -1,6 +1,16 @@
 package entity
 
-type WorkflowsStreams map[string]*StreamInfo
+type VersionStreamConfig map[string]WorkflowStreamConfig
+
+type WorkflowStreamConfig struct {
+	Stream string
+	Nodes  map[string]NodeStreamConfig
+}
+
+type NodeStreamConfig struct {
+	Subject       string
+	Subscriptions []string
+}
 
 type StreamInfo struct {
 	Stream        string

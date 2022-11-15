@@ -33,26 +33,19 @@ func NewNatsManagerClient(cfg *config.Config, logger logging.Logger) (*NatsManag
 }
 
 // CreateStreams calls nats-manager to create NATS streams for given version
-func (n *NatsManagerClient) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) (entity.WorkflowsStreams, error) {
+func (n *NatsManagerClient) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
 	req := natspb.CreateStreamsRequest{
 		RuntimeId:   runtimeID,
 		VersionName: version.Name,
 		Workflows:   n.getWorkflowsFromVersion(version),
 	}
 
-	res, err := n.client.CreateStreams(ctx, &req)
+	_, err := n.client.CreateStreams(ctx, &req)
 	if err != nil {
-		return nil, fmt.Errorf("error creating streams: %w", err)
+		return fmt.Errorf("error creating streams: %w", err)
 	}
 
-	workflowsStreams := make(entity.WorkflowsStreams, len(res.WorkflowsStreams))
-	for workflow, streamInfo := range res.WorkflowsStreams {
-		workflowsStreams[workflow] = &entity.StreamInfo{
-			Stream:        streamInfo.Stream,
-			NodesSubjects: streamInfo.NodesSubjects,
-		}
-	}
-	return workflowsStreams, err
+	return err
 }
 
 // DeleteStreams calls nats-manager to delete NATS streams for given version
@@ -71,12 +64,50 @@ func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string,
 	return nil
 }
 
+// GetVersionNatsConfig calls nats-manager to retrieve NATS streams configuration for given version
+func (n *NatsManagerClient) GetVersionNatsConfig(
+	ctx context.Context,
+	runtimeID string,
+	version *entity.Version,
+) (entity.VersionStreamConfig, error) {
+	req := natspb.GetVersionNatsConfigRequest{
+		RuntimeId:   runtimeID,
+		VersionName: version.Name,
+		Workflows:   n.getWorkflowsFromVersion(version),
+	}
+
+	res, err := n.client.GetVersionNatsConfig(ctx, &req)
+	if err != nil {
+		return nil, fmt.Errorf("error getting NATS streams configuration for version '%s': %w", version.Name, err)
+	}
+
+	versionNatsConfig := make(entity.VersionStreamConfig, len(res.Workflows))
+	for workflowName, workflowInfo := range res.Workflows {
+		nodesNatsConfig := make(map[string]entity.NodeStreamConfig, len(workflowInfo.Nodes))
+		for nodeName, nodeInfo := range workflowInfo.Nodes {
+			nodesNatsConfig[nodeName] = entity.NodeStreamConfig{
+				Subject:       nodeInfo.Subject,
+				Subscriptions: nodeInfo.Subscriptions,
+			}
+		}
+		versionNatsConfig[workflowName] = entity.WorkflowStreamConfig{
+			Stream: workflowInfo.Stream,
+			Nodes:  nodesNatsConfig,
+		}
+	}
+
+	return versionNatsConfig, nil
+}
+
 func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) []*natspb.Workflow {
 	var workflows []*natspb.Workflow
 	for _, w := range version.Workflows {
-		var nodes []string
+		nodes := make([]*natspb.Node, 0, len(w.Nodes))
 		for _, node := range w.Nodes {
-			nodes = append(nodes, node.Name)
+			nodes = append(nodes, &natspb.Node{
+				Name:          node.Name,
+				Subscriptions: node.Subscriptions,
+			})
 		}
 		workflows = append(workflows, &natspb.Workflow{
 			Entrypoint: w.Entrypoint,

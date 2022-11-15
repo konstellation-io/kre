@@ -52,17 +52,18 @@ func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, err
 			return "", fmt.Errorf("workflow %s has no nodes", w.Name)
 		}
 
-		exitpointSubject, ok := w.StreamInfo.NodesSubjects[w.Exitpoint]
-		if !ok {
-			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.Exitpoint)
+		exitpointSubject, err := m.findNodeSubject(w.Nodes, w.Exitpoint)
+		if err != nil {
+			return "", err
 		}
-		// TODO: refactor magic string
-		entrypointSubject, ok := w.StreamInfo.NodesSubjects["entrypoint"]
-		if !ok {
-			return "", fmt.Errorf("error obtaining subject for exitpoint node \"%s\"", w.Exitpoint)
+
+		entrypointSubject, err := m.findNodeSubject(w.Nodes, entrypointNodeName)
+		if err != nil {
+			return "", err
 		}
+
 		natsSubjects[w.Entrypoint] = map[string]string{
-			"stream":         w.StreamInfo.Stream,
+			"stream":         w.Stream,
 			"input_subject":  exitpointSubject,
 			"output_subject": entrypointSubject,
 		}

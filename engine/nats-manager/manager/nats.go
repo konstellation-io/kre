@@ -9,8 +9,13 @@ import (
 )
 
 type Manager interface {
-	CreateStreams(runtimeID, versionName string, workflows []*natspb.Workflow) (map[string]*natspb.StreamInfo, error)
+	CreateStreams(runtimeID, versionName string, workflows []*natspb.Workflow) error
 	DeleteStreams(runtimeID, versionName string, workflows []string) error
+	GetVersionNatsConfig(
+		runtimeID,
+		versionName string,
+		workflows []*natspb.Workflow,
+	) (map[string]*natspb.WorkflowNatsConfig, error)
 }
 
 type NatsManager struct {
@@ -29,49 +34,19 @@ func (m *NatsManager) CreateStreams(
 	runtimeID,
 	versionName string,
 	workflows []*natspb.Workflow,
-) (map[string]*natspb.StreamInfo, error) {
+) error {
 	if len(workflows) <= 0 {
-		return nil, fmt.Errorf("no workflows defined")
+		return fmt.Errorf("no workflows defined")
 	}
-	workflowToStream := make(map[string]*natspb.StreamInfo, len(workflows))
 	for _, workflow := range workflows {
 		stream := m.getStreamName(runtimeID, versionName, workflow.Entrypoint)
-		nodesSubjects := m.getNodesSubjects(stream, workflow.Nodes)
-		subjects := []string{stream + ".*", stream + ".*" + ".*"}
+		subjects := m.getNodesSubjects(stream, workflow.Nodes)
 		err := m.client.CreateStream(stream, subjects)
 		if err != nil {
-			return nil, fmt.Errorf("error creating stream \"%s\": %w", stream, err)
-		}
-		workflowToStream[workflow.Name] = &natspb.StreamInfo{
-			Stream:        stream,
-			NodesSubjects: nodesSubjects,
+			return fmt.Errorf("error creating stream \"%s\": %w", stream, err)
 		}
 	}
-	return workflowToStream, nil
-}
-func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
-	return fmt.Sprintf("%s-%s-%s", runtimeID, versionName, workflowEntrypoint)
-}
-
-func (m *NatsManager) getNodesSubjects(stream string, nodes []string) map[string]string {
-	const entrypointNodeName = "entrypoint"
-	nodesSubjects := map[string]string{entrypointNodeName: m.getSubjectName(stream, entrypointNodeName)}
-	for _, node := range nodes {
-		nodesSubjects[node] = m.getSubjectName(stream, node)
-	}
-	return nodesSubjects
-}
-
-func (m *NatsManager) getSubjects(nodesSubjects map[string]string) []string {
-	subjects := make([]string, 0, len(nodesSubjects))
-	for _, subject := range nodesSubjects {
-		subjects = append(subjects, subject+".*")
-	}
-	return subjects
-}
-
-func (m *NatsManager) getSubjectName(stream, node string) string {
-	return fmt.Sprintf("%s.%s", stream, node)
+	return nil
 }
 
 func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []string) error {
@@ -83,4 +58,66 @@ func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []s
 		}
 	}
 	return nil
+}
+
+func (m *NatsManager) GetVersionNatsConfig(
+	runtimeID,
+	versionName string,
+	workflows []*natspb.Workflow,
+) (map[string]*natspb.WorkflowNatsConfig, error) {
+	workflowsConfig := make(map[string]*natspb.WorkflowNatsConfig, len(workflows))
+	for _, workflow := range workflows {
+		stream := m.getStreamName(runtimeID, versionName, workflow.Entrypoint)
+		nodesConfig := make(map[string]*natspb.NodeNatsConfig, len(workflow.Nodes))
+		for _, node := range workflow.Nodes {
+			nodesConfig[node.Name] = &natspb.NodeNatsConfig{
+				Subject:       m.getSubjectName(stream, node.Name),
+				Subscriptions: m.getSubjectsToSubscribe(stream, node.Subscriptions),
+			}
+		}
+		workflowsConfig[workflow.Name] = &natspb.WorkflowNatsConfig{
+			Stream: stream,
+			Nodes:  nodesConfig,
+		}
+	}
+
+	return workflowsConfig, nil
+}
+
+func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
+	return fmt.Sprintf("%s-%s-%s", runtimeID, versionName, workflowEntrypoint)
+}
+
+func (m *NatsManager) getNodesSubjects(stream string, nodes []*natspb.Node) []string {
+	const entrypointNodeName = "entrypoint"
+	subjects := []string{m.getSubjectName(stream, entrypointNodeName)}
+	for _, node := range nodes {
+		nodeSubject := m.getSubjectName(stream, node.Name)
+		nodeSubsubject := nodeSubject + ".*"
+		subjects = append(subjects, nodeSubject, nodeSubsubject)
+	}
+	return subjects
+}
+
+func (m *NatsManager) getSubjects(nodesSubjects map[string][]string) []string {
+	subjects := make([]string, 0, len(nodesSubjects))
+	for _, nodeSubjects := range nodesSubjects {
+		for _, nodeSubject := range nodeSubjects {
+			subjects = append(subjects, nodeSubject)
+		}
+	}
+	return subjects
+}
+
+func (m *NatsManager) getSubjectName(stream, node string) string {
+	return fmt.Sprintf("%s.%s", stream, node)
+}
+
+func (m *NatsManager) getSubjectsToSubscribe(stream string, subscriptions []string) []string {
+	subjectsToSubscribe := make([]string, 0, len(subscriptions))
+	for _, nodeToSubscribe := range subscriptions {
+		fmt.Println()
+		subjectsToSubscribe = append(subjectsToSubscribe, m.getSubjectName(stream, nodeToSubscribe))
+	}
+	return subjectsToSubscribe
 }

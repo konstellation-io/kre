@@ -33,27 +33,85 @@ func TestCreateStreams(t *testing.T) {
 		{
 			Name:       workflowName,
 			Entrypoint: workflowEntrypoint,
-			Nodes:      []string{testNode},
+			Nodes: []*natspb.Node{
+				{
+					Name:          testNode,
+					Subscriptions: nil,
+				},
+			},
 		},
 	}
+	subjectsToCreate := []string{
+		entrypointSubject,
+		testNodeSubject,
+		testNodeSubject + ".*",
+	}
 
-	expected := map[string]*natspb.StreamInfo{
-		workflowName: {
-			Stream: streamName,
-			NodesSubjects: map[string]string{
-				testNode:     testNodeSubject,
-				"entrypoint": entrypointSubject,
+	client.EXPECT().CreateStream(streamName, subjectsToCreate).Return(nil)
+	actualErr := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	require.Nil(t, actualErr)
+}
+
+func TestCreateStreams_ClientFails(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	logger := mocks.NewMockLogger(ctrl)
+	client := mocks.NewMockClient(ctrl)
+	natsManager := manager.NewNatsManager(logger, client)
+
+	const (
+		runtimeID           = "test-runtime"
+		versionName         = "test-version"
+		workflowName        = "test-workflow"
+		workflowEntrypoint  = "TestWorkflow"
+		streamName          = "test-runtime-test-version-TestWorkflow"
+		testNode            = "test-node"
+		testNodeSubject     = "test-runtime-test-version-TestWorkflow.test-node"
+		testNodeSubsubjects = "test-runtime-test-version-TestWorkflow.test-node.*"
+		entrypointSubject   = "test-runtime-test-version-TestWorkflow.entrypoint"
+	)
+
+	workflows := []*natspb.Workflow{
+		{
+			Name:       workflowName,
+			Entrypoint: workflowEntrypoint,
+			Nodes: []*natspb.Node{
+				{
+					Name:          testNode,
+					Subscriptions: nil,
+				},
 			},
 		},
 	}
 
-	client.EXPECT().CreateStream(streamName, []string{entrypointSubject, testNodeSubject}).Return(nil)
-	actual, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
-	require.Nil(t, err)
-	require.EqualValues(t, expected, actual)
+	expectedError := fmt.Errorf("stream already exists")
+
+	client.EXPECT().CreateStream(streamName, []string{entrypointSubject, testNodeSubject, testNodeSubsubjects}).Return(fmt.Errorf("stream already exists"))
+	err := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	require.Error(t, expectedError, err)
 }
 
-func TestCreateStreams_ClientFails(t *testing.T) {
+func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	logger := mocks.NewMockLogger(ctrl)
+	client := mocks.NewMockClient(ctrl)
+	natsManager := manager.NewNatsManager(logger, client)
+
+	const (
+		runtimeID   = "test-runtime"
+		versionName = "test-version"
+	)
+
+	var workflows []*natspb.Workflow
+
+	err := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	require.EqualError(t, err, "no workflows defined")
+}
+
+func TestGetVersionNatsConfig(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -76,34 +134,28 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 		{
 			Name:       workflowName,
 			Entrypoint: workflowEntrypoint,
-			Nodes:      []string{testNode},
+			Nodes: []*natspb.Node{
+				{
+					Name:          testNode,
+					Subscriptions: []string{workflowEntrypoint},
+				},
+			},
 		},
 	}
 
-	expectedError := fmt.Errorf("stream already exists")
+	expectedConfiguration := map[string]*natspb.WorkflowNatsConfig{
+		workflowName: {
+			Stream: streamName,
+			Nodes: map[string]*natspb.NodeNatsConfig{
+				testNode: {
+					Subject:       testNodeSubject,
+					Subscriptions: []string{streamName + "." + workflowEntrypoint},
+				},
+			},
+		},
+	}
 
-	client.EXPECT().CreateStream(streamName, []string{entrypointSubject, testNodeSubject}).Return(fmt.Errorf("stream already exists"))
-	res, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
-	require.Error(t, expectedError, err)
-	require.Nil(t, res)
-}
-
-func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	logger := mocks.NewMockLogger(ctrl)
-	client := mocks.NewMockClient(ctrl)
-	natsManager := manager.NewNatsManager(logger, client)
-
-	const (
-		runtimeID   = "test-runtime"
-		versionName = "test-version"
-	)
-
-	var workflows []*natspb.Workflow
-
-	res, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
-	require.EqualError(t, err, "no workflows defined")
-	require.Nil(t, res)
+	actual, err := natsManager.GetVersionNatsConfig(runtimeID, versionName, workflows)
+	require.Nil(t, err)
+	require.EqualValues(t, expectedConfiguration, actual)
 }
