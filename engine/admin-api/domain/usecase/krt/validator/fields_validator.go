@@ -63,7 +63,6 @@ func (k *YamlFieldsValidator) getErrorMessages(err error) []error {
 		return nil
 	}
 	if errs, ok := err.(validator.ValidationErrors); ok {
-		//errorMessages := []string{"The krt.yml file contains the following validation errors:"}
 		hasResNameErr := false
 		var errorMessages []error
 
