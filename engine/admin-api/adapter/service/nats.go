@@ -102,7 +102,12 @@ func (n *NatsManagerClient) GetVersionNatsConfig(
 func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) []*natspb.Workflow {
 	var workflows []*natspb.Workflow
 	for _, w := range version.Workflows {
-		nodes := make([]*natspb.Node, 0, len(w.Nodes))
+		nodes := []*natspb.Node{
+			{
+				Name:          "entrypoint",
+				Subscriptions: []string{w.Exitpoint},
+			},
+		}
 		for _, node := range w.Nodes {
 			nodes = append(nodes, &natspb.Node{
 				Name:          node.Name,
