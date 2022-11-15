@@ -89,8 +89,7 @@ func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint s
 }
 
 func (m *NatsManager) getNodesSubjects(stream string, nodes []*natspb.Node) []string {
-	const entrypointNodeName = "entrypoint"
-	subjects := []string{m.getSubjectName(stream, entrypointNodeName)}
+	subjects := make([]string, 0, len(nodes))
 	for _, node := range nodes {
 		nodeSubject := m.getSubjectName(stream, node.Name)
 		nodeSubsubject := nodeSubject + ".*"

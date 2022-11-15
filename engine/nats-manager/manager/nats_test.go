@@ -26,7 +26,6 @@ func TestCreateStreams(t *testing.T) {
 		streamName         = "test-runtime-test-version-TestWorkflow"
 		testNode           = "test-node"
 		testNodeSubject    = "test-runtime-test-version-TestWorkflow.test-node"
-		entrypointSubject  = "test-runtime-test-version-TestWorkflow.entrypoint"
 	)
 
 	workflows := []*natspb.Workflow{
@@ -42,7 +41,6 @@ func TestCreateStreams(t *testing.T) {
 		},
 	}
 	subjectsToCreate := []string{
-		entrypointSubject,
 		testNodeSubject,
 		testNodeSubject + ".*",
 	}
@@ -69,7 +67,6 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 		testNode            = "test-node"
 		testNodeSubject     = "test-runtime-test-version-TestWorkflow.test-node"
 		testNodeSubsubjects = "test-runtime-test-version-TestWorkflow.test-node.*"
-		entrypointSubject   = "test-runtime-test-version-TestWorkflow.entrypoint"
 	)
 
 	workflows := []*natspb.Workflow{
@@ -87,7 +84,7 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 
 	expectedError := fmt.Errorf("stream already exists")
 
-	client.EXPECT().CreateStream(streamName, []string{entrypointSubject, testNodeSubject, testNodeSubsubjects}).Return(fmt.Errorf("stream already exists"))
+	client.EXPECT().CreateStream(streamName, []string{testNodeSubject, testNodeSubsubjects}).Return(fmt.Errorf("stream already exists"))
 	err := natsManager.CreateStreams(runtimeID, versionName, workflows)
 	require.Error(t, expectedError, err)
 }
@@ -127,7 +124,6 @@ func TestGetVersionNatsConfig(t *testing.T) {
 		streamName         = "test-runtime-test-version-TestWorkflow"
 		testNode           = "test-node"
 		testNodeSubject    = "test-runtime-test-version-TestWorkflow.test-node"
-		entrypointSubject  = "test-runtime-test-version-TestWorkflow.entrypoint"
 	)
 
 	workflows := []*natspb.Workflow{

@@ -20,10 +20,11 @@ type NatsManagerClient struct {
 
 func NewNatsManagerClient(cfg *config.Config, logger logging.Logger) (*NatsManagerClient, error) {
 	cc, err := grpc.Dial(cfg.Services.NatsManager, grpc.WithInsecure())
-	client := natspb.NewNatsManagerServiceClient(cc)
 	if err != nil {
 		return nil, err
 	}
+
+	client := natspb.NewNatsManagerServiceClient(cc)
 
 	return &NatsManagerClient{
 		cfg,
@@ -102,7 +103,12 @@ func (n *NatsManagerClient) GetVersionNatsConfig(
 func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) []*natspb.Workflow {
 	var workflows []*natspb.Workflow
 	for _, w := range version.Workflows {
-		nodes := make([]*natspb.Node, 0, len(w.Nodes))
+		nodes := []*natspb.Node{
+			{
+				Name:          "entrypoint",
+				Subscriptions: []string{w.Exitpoint},
+			},
+		}
 		for _, node := range w.Nodes {
 			nodes = append(nodes, &natspb.Node{
 				Name:          node.Name,

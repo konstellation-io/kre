@@ -38,7 +38,7 @@ func ProcessAndValidateKrt(
 
 	krtVersion, ok := entity.ParseKRTVersionFromString(k.KrtVersion)
 	if !ok {
-		return nil, fmt.Errorf("krtVersion is not valid: %s", k.KrtVersion)
+		return nil, fmt.Errorf("krtVersion \"%s\" is not valid", k.KrtVersion)
 	}
 
 	krtValidator := validator.NewValidator(logger, valuesValidator, krtVersion)
@@ -88,6 +88,7 @@ func (p *Parser) ParseKrtYaml(krtFilePath string) (*krt.Krt, error) {
 		return nil, fmt.Errorf("error on KRT Yaml parsing: %w", err)
 	}
 
+	// TODO krt-v1: deprecate retrocompatibility
 	if k.KrtVersion == "" {
 		k.KrtVersion = entity.KRTVersionV1.String()
 	}

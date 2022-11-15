@@ -39,10 +39,10 @@ func (k *K8sVersionClient) Start(
 	ctx context.Context,
 	runtimeID string,
 	version *entity.Version,
-	workflowToStream entity.VersionStreamConfig,
+	versionStreamConfig entity.VersionStreamConfig,
 ) error {
 	configVars := versionToConfig(version)
-	wf, err := versionToWorkflows(version, workflowToStream)
+	wf, err := versionToWorkflows(version, versionStreamConfig)
 	if err != nil {
 		return err
 	}
@@ -151,9 +151,9 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 		}
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
 		for j, n := range w.Nodes {
-			nodeStreamConfig, ok := workflowStreamConfig.Nodes[n.Name]
-			if !ok {
-				return nil, fmt.Errorf("error obtaining stream config for node \"%s\" in workflow \"%s\"", n.Name, w.Name)
+			nodeStreamConfig, err := workflowStreamConfig.GetNodeConfig(n.Name)
+			if err != nil {
+				return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
 			}
 			nodes[j] = &versionpb.Workflow_Node{
 				Id:            n.ID,
@@ -162,18 +162,28 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 				Src:           n.Src,
 				Gpu:           n.GPU,
 				Subscriptions: nodeStreamConfig.Subscriptions,
+				Subject:       nodeStreamConfig.Subject,
 			}
 		}
 
-		wf[i] = &versionpb.Workflow{
-			Id:         w.ID,
-			Name:       w.Name,
-			Entrypoint: w.Entrypoint,
-			Nodes:      nodes,
-			Exitpoint:  w.Exitpoint,
-			Stream:     workflowStreamConfig.Stream,
+		entrypointSubject, err := workflowStreamConfig.GetEntrypointSubject()
+		if err != nil {
+			return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
 		}
 
+		wf[i] = &versionpb.Workflow{
+			Id:   w.ID,
+			Name: w.Name,
+			Entrypoint: &versionpb.Workflow_Entrypoint{
+				Name:    w.Entrypoint,
+				Subject: entrypointSubject,
+			},
+			Nodes:     nodes,
+			Exitpoint: w.Exitpoint,
+			Stream:    workflowStreamConfig.Stream,
+		}
+
+		// TODO krt-v1: deprecate retrocompatibility
 		if version.KrtVersion == entity.KRTVersionV1 {
 			edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
 			for k, e := range w.Edges {

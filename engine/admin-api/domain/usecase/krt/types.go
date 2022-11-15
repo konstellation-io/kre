@@ -9,7 +9,7 @@ type Krt struct {
 	Description string     `yaml:"description" validate:"required"`
 	Entrypoint  Entrypoint `yaml:"entrypoint" validate:"required"`
 	Config      Config     `yaml:"config" validate:"required"`
-	Nodes       []Node     `yaml:"nodes" validate:"excluded_unless=krtVersion v1,dive,min=1"` //v1 retrocompatibility
+	Nodes       []Node     `yaml:"nodes" validate:"excluded_unless=krtVersion v1,dive,min=1"` // TODO krt-v1: deprecate retrocompatibility
 	Workflows   []Workflow `yaml:"workflows" validate:"required,dive,min=1"`
 }
 
@@ -41,6 +41,6 @@ type Config struct {
 	Files     []string `yaml:"files"`
 }
 
-func (k Krt) IsKrtVersionV1() bool {
+func (k Krt) IsKrtVersionV1() bool { // TODO krt-v1: deprecate retrocompatibility
 	return k.KrtVersion == "" || k.KrtVersion == entity.KRTVersionV1.String()
 }
