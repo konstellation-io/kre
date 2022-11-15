@@ -95,7 +95,7 @@ func (e NodeStatus) String() string {
 type KrtVersion string
 
 const (
-	KRTVersionV1 KrtVersion = "v1"
+	KRTVersionV1 KrtVersion = "v1" // TODO krt-v1: deprecate retrocompatibility
 	KRTVersionV2 KrtVersion = "v2"
 )
 
@@ -125,7 +125,7 @@ type Workflow struct {
 	Name       string `bson:"name"`
 	Entrypoint string `bson:"entrypoint"`
 	Nodes      []Node `bson:"nodes"`
-	Edges      []Edge `bson:"edges"` // v1 retrocompatibility
+	Edges      []Edge `bson:"edges"` // TODO krt-v1: deprecate retrocompatibility
 	Exitpoint  string `bson:"exitpoint"`
 }
 

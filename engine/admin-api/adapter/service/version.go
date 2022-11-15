@@ -183,6 +183,7 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 			Stream:    workflowStreamConfig.Stream,
 		}
 
+		// TODO krt-v1: deprecate retrocompatibility
 		if version.KrtVersion == entity.KRTVersionV1 {
 			edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
 			for k, e := range w.Edges {
