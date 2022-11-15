@@ -31,9 +31,14 @@ message Workflow {
     string toNode = 3;
   }
 
+  message Entrypoint {
+    string name = 1;
+    string subject = 2;
+  }
+
   string id = 1;
   string name = 2;
-  string entrypoint = 3;
+  Entrypoint entrypoint = 3;
   repeated Node nodes = 4;
   repeated Edge edges = 5;
   string exitpoint = 6;

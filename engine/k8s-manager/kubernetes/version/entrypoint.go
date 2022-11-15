@@ -57,15 +57,10 @@ func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, err
 			return "", err
 		}
 
-		entrypointSubject, err := m.findNodeSubject(w.Nodes, entrypointNodeName)
-		if err != nil {
-			return "", err
-		}
-
-		natsSubjects[w.Entrypoint] = map[string]string{
+		natsSubjects[w.Entrypoint.Name] = map[string]string{
 			"stream":         w.Stream,
 			"input_subject":  exitpointSubject,
-			"output_subject": entrypointSubject,
+			"output_subject": w.Entrypoint.Subject,
 		}
 	}
 
