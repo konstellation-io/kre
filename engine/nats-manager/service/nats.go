@@ -37,7 +37,7 @@ func (n *NatsService) CreateStreams(_ context.Context, req *natspb.CreateStreams
 
 	err := n.manager.CreateStreams(req.RuntimeId, req.VersionName, req.Workflows)
 	if err != nil {
-		n.logger.Errorf("Error creating streams: %w", err)
+		n.logger.Errorf("Error creating streams: %s", err)
 		return nil, err
 	}
 	return &natspb.MutationResponse{
@@ -51,7 +51,7 @@ func (n *NatsService) DeleteStreams(_ context.Context, req *natspb.DeleteStreams
 
 	err := n.manager.DeleteStreams(req.RuntimeId, req.VersionName, req.Workflows)
 	if err != nil {
-		n.logger.Errorf("Error deleting streams: %w", err)
+		n.logger.Errorf("Error deleting streams: %s", err)
 		return nil, err
 	}
 
@@ -69,7 +69,7 @@ func (n *NatsService) GetVersionNatsConfig(
 
 	workflowNatsConfig, err := n.manager.GetVersionNatsConfig(req.RuntimeId, req.VersionName, req.Workflows)
 	if err != nil {
-		n.logger.Errorf("Error getting nats configuration for version \"%s\": %w", req.VersionName, err)
+		n.logger.Errorf("Error getting nats configuration for version \"%s\": %s", req.VersionName, err)
 		return nil, err
 	}
 
