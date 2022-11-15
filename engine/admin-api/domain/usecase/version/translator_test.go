@@ -66,6 +66,7 @@ var testWorkflow1 = entity.Workflow{
 }
 
 func TestTranslateToKrtVersionV2(t *testing.T) {
+	// GIVEN a mocked test version krtV1
 	var testVersion = entity.Version{
 		ID:          "mockID",
 		KrtVersion:  "",
@@ -77,12 +78,15 @@ func TestTranslateToKrtVersionV2(t *testing.T) {
 		},
 	}
 
+	// WHEN we translate said version to krtV2
 	translator := version.NewTranslator(adapterVersion.NewIDGenerator())
 	translator.TranslateToKrtVersionV2(&testVersion)
 
+	// THEN expect a single wokflow has been translated
 	require.Len(t, testVersion.Workflows, 1)
 	testWorkflow := testVersion.Workflows[0]
 
+	// AND the konstellation default exitpoint has been assigned as the workflow's exitpoint
 	require.Equal(t, "konstellation-exitpoint", testWorkflow.Exitpoint)
 
 	for idx := 0; idx != len(testWorkflow.Nodes)-1; idx++ {
@@ -90,14 +94,16 @@ func TestTranslateToKrtVersionV2(t *testing.T) {
 		require.Len(t, node.Subscriptions, 1)
 		subscription := node.Subscriptions[0]
 		if idx == 0 {
-			require.Equal(t, "entrypoint", subscription) // first node should be subscribed to entrypoint
+			// AND the first node has been subscribed to the entrypoint
+			require.Equal(t, "entrypoint", subscription)
 		} else {
-			require.Equal(t, testWorkflow.Nodes[idx-1].Name, subscription) // following nodes should be subcribed to previous node
+			// AND the following nodes except exitpoint have been subscribed to the previous node
+			require.Equal(t, testWorkflow.Nodes[idx-1].Name, subscription)
 		}
 	}
 
-	// exitpoint is subscribed to all
+	// AND exitpoint has been subscribed to all
 	node := testWorkflow.Nodes[len(testWorkflow.Nodes)-1]
 	exitpointSubscritpions := []string{testNode1.Name, testNode2.Name, testNode3.Name}
-	require.Equal(t, exitpointSubscritpions, node.Subscriptions) // following nodes should be subcribed to previous node
+	require.Equal(t, exitpointSubscritpions, node.Subscriptions)
 }
