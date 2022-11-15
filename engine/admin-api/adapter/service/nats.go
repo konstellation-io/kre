@@ -20,10 +20,11 @@ type NatsManagerClient struct {
 
 func NewNatsManagerClient(cfg *config.Config, logger logging.Logger) (*NatsManagerClient, error) {
 	cc, err := grpc.Dial(cfg.Services.NatsManager, grpc.WithInsecure())
-	client := natspb.NewNatsManagerServiceClient(cc)
 	if err != nil {
 		return nil, err
 	}
+
+	client := natspb.NewNatsManagerServiceClient(cc)
 
 	return &NatsManagerClient{
 		cfg,
