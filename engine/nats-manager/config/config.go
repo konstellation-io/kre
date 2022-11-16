@@ -20,18 +20,7 @@ type Config struct {
 // NewConfig will read the config.yml file and override values with env vars.
 func NewConfig() *Config {
 	var err error
-	//f, err := os.Open("config.yml")
-	//if err != nil {
-	//	panic(err)
-	//}
-
 	cfg := &Config{}
-	//decoder := yaml.NewDecoder(f)
-	//
-	//err = decoder.Decode(cfg)
-	//if err != nil {
-	//	panic(err)
-	//}
 
 	err = envconfig.Process("", cfg)
 	if err != nil {
