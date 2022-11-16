@@ -105,7 +105,7 @@ func ValidateSrcPaths(krt *krt.Krt, dstDir string) []error {
 	for _, node := range krt.Nodes {
 		nodeFile := path.Join(dstDir, node.Src)
 		if !fileExists(nodeFile) {
-			errors = append(errors, fmt.Errorf("error src File %s for node %s not exists ", node.Src, node.Name))
+			errors = append(errors, fmt.Errorf("error src file \"%s\" for node \"%s\" does not exists ", node.Src, node.Name))
 		}
 	}
 
