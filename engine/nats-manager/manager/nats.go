@@ -115,7 +115,6 @@ func (m *NatsManager) getSubjectName(stream, node string) string {
 func (m *NatsManager) getSubjectsToSubscribe(stream string, subscriptions []string) []string {
 	subjectsToSubscribe := make([]string, 0, len(subscriptions))
 	for _, nodeToSubscribe := range subscriptions {
-		fmt.Println()
 		subjectsToSubscribe = append(subjectsToSubscribe, m.getSubjectName(stream, nodeToSubscribe))
 	}
 	return subjectsToSubscribe
