@@ -10,11 +10,11 @@ rbac:
 
 mongoExpress:
   image:
-    # -- The image repository
+    # -- Image repository
     repository: mongo-express
-    # -- The image tag
+    # -- Image tag
     tag: "0.54.0"
-    # -- The image pull policy
+    # -- Image pull policy
     pullPolicy: IfNotPresent
   connectionString:
     # -- The name of the secret that contains a key with the MongoDB connection string.
@@ -299,6 +299,13 @@ nats:
   #   effect: "NoSchedule"
 
 chronograf:
+  image:
+    # -- Image repository
+    repository: chronograf
+    # -- Image tag
+    tag: 1.8.4
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
   persistence:
     # -- Whether to enable persistence
     enabled: true
