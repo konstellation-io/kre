@@ -225,13 +225,13 @@ module.exports = {
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
     sessionLifetimeInDays: () => casual.integer(1, 99)
   }),
-  Workflow: () => workflow_krtV1,
-  // Workflow: () => ({
-  //   name: casual.random_element(workflowNames),
-  //   exitpoint: "exitpoint",
-  //   nodes: () => getNodes(),
-  //   edges: () => new MockList([1, 4])
-  // }),
+  // Workflow: () => workflow_krtV1,
+  Workflow: () => ({
+    name: casual.random_element(workflowNames),
+    exitpoint: "exitpoint",
+    nodes: () => getNodes(),
+    edges: () => new MockList([1, 4])
+  }),
   Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
   // Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
   Node: () => {
@@ -259,10 +259,10 @@ const nodeStatuses = [
 
 const getNodes = () => {
   return casual.random_element([
-    // mockWorkflow1,
-    // mockWorkflow2,
-    // mockWorkflow3,
-    // mockWorkflow4,
+    mockWorkflow1,
+    mockWorkflow2,
+    mockWorkflow3,
+    mockWorkflow4,
     workflow_krtV1.nodes,
   ])
 }

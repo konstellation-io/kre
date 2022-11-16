@@ -73,7 +73,6 @@ export const version: GetVersionConfStatus_versions = {
   },
   hasDoc: false,
   errors: [],
-  // workflows: [workflow]
 };
 
 export const confVarsMock = {
