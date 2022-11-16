@@ -26,7 +26,7 @@ type Node struct {
 type Workflow struct {
 	Name       string   `yaml:"name" validate:"required,resource-name,lt=20"`
 	Entrypoint string   `yaml:"entrypoint" validate:"required"`
-	Sequential []string `yaml:"sequential"`            //v1 retrocompatibility
+	Sequential []string `yaml:"sequential"`            // TODO krt-v1: deprecate retrocompatibility
 	Nodes      []Node   `yaml:"nodes" validate:"dive"` //v2
 	Exitpoint  string   `yaml:"exitpoint"`             //v2, once v1 deprecated make required
 }
