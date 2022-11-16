@@ -124,7 +124,6 @@ function drawNameLabel(ctx: CanvasRenderingContext2D, nodeName: string, x: numbe
   ctx.lineWidth = 0.6
   const rectangleLength = nodeName.length * 2.2 + 10
   const rectanglePosition = x - rectangleLength / 2
-  // ctx.rect(rectanglePosition,y-20, rectangleLength, 9)
   ctx.strokeStyle = styles.colotTextLabel;
   ctx.fillStyle = styles.colorLabelBg;
   drawRectangle(ctx, {x: rectanglePosition, y: y - 22, w: rectangleLength, h: 9, r: 2})
