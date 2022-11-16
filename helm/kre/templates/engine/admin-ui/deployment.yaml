@@ -17,6 +17,18 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/engine/admin-ui/configmap.yaml") . | sha256sum }}
     spec:
+      {{- with .Values.adminUI.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.adminUI.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.adminUI.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Release.Name }}-admin-ui
           image: {{ .Values.adminUI.image.repository }}:{{ .Values.adminUI.image.tag }}

@@ -11,7 +11,6 @@ spec:
       {{- include "admin-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-
       labels:
         {{- include "admin-api.labels" . | nindent 8 }}
         type: admin
@@ -19,6 +18,18 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/engine/admin-api/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/engine/admin-api/secret.yaml") . | sha256sum }}
     spec:
+      {{- with .Values.adminApi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.adminApi.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.adminApi.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         fsGroup: 10001
       initContainers:
