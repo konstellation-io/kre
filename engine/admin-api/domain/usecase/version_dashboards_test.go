@@ -31,6 +31,7 @@ func newVersionDashboardsSuite(t *testing.T) *versionDashboardsSuite {
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	versionService := mocks.NewMockVersionService(ctrl)
+	natsManagerService := mocks.NewMockNatsManagerService(ctrl)
 	userActivityInteractor := mocks.NewMockUserActivityInteracter(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	idGenerator := mocks.NewMockIDGenerator(ctrl)
@@ -39,7 +40,7 @@ func newVersionDashboardsSuite(t *testing.T) *versionDashboardsSuite {
 
 	mocks.AddLoggerExpects(logger)
 
-	versionInteractor := NewVersionInteractor(cfg, logger, versionRepo, runtimeRepo, versionService, userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
+	versionInteractor := NewVersionInteractor(cfg, logger, versionRepo, runtimeRepo, versionService, natsManagerService, userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
 
 	return &versionDashboardsSuite{ctrl: ctrl,
 		versionInteractor: versionInteractor,

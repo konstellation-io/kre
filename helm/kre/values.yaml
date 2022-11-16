@@ -386,3 +386,12 @@ kapacitor:
   #   storageClass: default
   #   accessMode: ReadWriteOnce
   #   size: 1Gi
+
+natsManager:
+  image:
+    # -- Image repository
+    repository: konstellation/kre-nats-manager
+    # -- Image tag
+    tag: latest
+    # -- Image pull policy
+    pullPolicy: IfNotPresent

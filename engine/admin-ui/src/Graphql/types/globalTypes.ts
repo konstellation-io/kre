@@ -18,6 +18,11 @@ export enum ConfigurationVariableType {
   VARIABLE = 'VARIABLE',
 }
 
+export enum KrtVersion {
+  v1 = 'v1',
+  v2 = 'v2',
+}
+
 export enum LogLevel {
   DEBUG = 'DEBUG',
   ERROR = 'ERROR',
