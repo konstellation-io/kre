@@ -65,7 +65,7 @@ func (n *NatsService) GetVersionNatsConfig(
 	_ context.Context,
 	req *natspb.GetVersionNatsConfigRequest,
 ) (*natspb.GetVersionNatsConfigResponse, error) {
-	n.logger.Info("Stop request received")
+	n.logger.Info("GetVersionNatsConfig request received")
 
 	workflowNatsConfig, err := n.manager.GetVersionNatsConfig(req.RuntimeId, req.VersionName, req.Workflows)
 	if err != nil {
