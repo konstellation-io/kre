@@ -7,6 +7,7 @@ on:
       - "ENGINE admin-ui Tests"
       - "ENGINE k8s-manager Tests"
       - "ENGINE mongo-writer Tests"
+      - "ENGINE nats-manager Tests"
     branches: [main]
     types:
       - completed
