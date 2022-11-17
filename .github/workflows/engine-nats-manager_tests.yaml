@@ -1,0 +1,52 @@
+name: ENGINE nats-manager Tests
+
+on:
+  push:
+    branches-ignore:
+      - "v*"
+    tags-ignore:
+      - v*
+    paths:
+      - "engine/nats-manager/**/*"
+      - ".github/workflows/admin-nats-manager*"
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18.x
+      - name: Test
+        run: go test ./... -cover -v -coverprofile=coverage.out
+        working-directory: ./engine/nats-manager
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: engine/nats-manager/coverage.out
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Download code coverage results
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report
+          path: engine/nats-manager
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: engine/nats-manager
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_K8S_MANAGER }}
