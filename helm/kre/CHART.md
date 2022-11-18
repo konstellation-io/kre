@@ -29,6 +29,9 @@
 | adminUI.ingress.annotations | object | `{}` | Ingress annotations |
 | adminUI.ingress.className | string | `"nginx"` | The name of the ingress class to use |
 | adminUI.tls.enabled | bool | `false` | Whether to enable TLS |
+| chronograf.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
+| chronograf.image.repository | string | `"chronograf"` | Image repository |
+| chronograf.image.tag | string | `"1.8.4"` | Image tag |
 | chronograf.persistence.accessMode | string | `"ReadWriteOnce"` | Access mode for the volume |
 | chronograf.persistence.enabled | bool | `true` | Whether to enable persistence |
 | chronograf.persistence.size | string | `"2Gi"` | Storage size |
@@ -78,9 +81,9 @@
 | kapacitor.persistence.enabled | bool | `false` | Whether to enable persistence [Details](https://github.com/influxdata/helm-charts/blob/master/charts/kapacitor/values.yaml) |
 | mongoExpress.connectionString.secretKey | string | `""` | The name of the secret key that contains the MongoDB connection string. |
 | mongoExpress.connectionString.secretName | string | `""` | The name of the secret that contains a key with the MongoDB connection string. |
-| mongoExpress.image.pullPolicy | string | `"IfNotPresent"` | The image pull policy |
-| mongoExpress.image.repository | string | `"mongo-express"` | The image repository |
-| mongoExpress.image.tag | string | `"0.54.0"` | The image tag |
+| mongoExpress.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
+| mongoExpress.image.repository | string | `"mongo-express"` | Image repository |
+| mongoExpress.image.tag | string | `"0.54.0"` | Image tag |
 | mongoWriter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | mongoWriter.image.repository | string | `"konstellation/kre-mongo-writer"` | Image repository |
 | mongoWriter.image.tag | string | `"latest"` | Image tag |
