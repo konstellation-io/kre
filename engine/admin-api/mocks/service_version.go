@@ -50,17 +50,17 @@ func (mr *MockVersionServiceMockRecorder) Publish(runtimeID, version interface{}
 }
 
 // Start mocks base method.
-func (m *MockVersionService) Start(ctx context.Context, runtimeID string, version *entity.Version) error {
+func (m *MockVersionService) Start(ctx context.Context, runtimeID string, version *entity.Version, versionStreamConfig entity.VersionStreamConfig) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Start", ctx, runtimeID, version)
+	ret := m.ctrl.Call(m, "Start", ctx, runtimeID, version, versionStreamConfig)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Start indicates an expected call of Start.
-func (mr *MockVersionServiceMockRecorder) Start(ctx, runtimeID, version interface{}) *gomock.Call {
+func (mr *MockVersionServiceMockRecorder) Start(ctx, runtimeID, version, versionStreamConfig interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockVersionService)(nil).Start), ctx, runtimeID, version)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockVersionService)(nil).Start), ctx, runtimeID, version, versionStreamConfig)
 }
 
 // Stop mocks base method.

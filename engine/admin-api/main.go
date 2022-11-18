@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
 	"log"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/mongodb"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/runtime"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/service"
@@ -40,6 +40,11 @@ func main() {
 	measurementRepo := influx.NewMeasurementRepoInfluxDB(cfg, logger)
 
 	versionService, err := service.NewK8sVersionClient(cfg, logger)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	natsManagerService, err := service.NewNatsManagerClient(cfg, logger)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,6 +108,7 @@ func main() {
 		versionMongoRepo,
 		runtimeRepo,
 		versionService,
+		natsManagerService,
 		userActivityInteractor,
 		accessControl,
 		idGenerator,

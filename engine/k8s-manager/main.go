@@ -12,7 +12,6 @@ import (
 	"github.com/konstellation-io/kre/engine/k8s-manager/config"
 	"github.com/konstellation-io/kre/engine/k8s-manager/kubernetes"
 	"github.com/konstellation-io/kre/engine/k8s-manager/kubernetes/version"
-	"github.com/konstellation-io/kre/engine/k8s-manager/nats"
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 	"github.com/konstellation-io/kre/engine/k8s-manager/service"
 )
@@ -33,9 +32,7 @@ func main() {
 
 	watcher := kubernetes.NewWatcher(cfg, logger, clientset)
 
-	natsManager := nats.NewNatsManager(cfg, logger)
-
-	versionManager := version.New(cfg, logger, clientset, natsManager)
+	versionManager := version.New(cfg, logger, clientset)
 	versionService := service.NewVersionService(cfg, logger, versionManager, watcher)
 
 	versionpb.RegisterVersionServiceServer(s, versionService)

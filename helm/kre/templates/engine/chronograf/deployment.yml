@@ -30,8 +30,8 @@ spec:
       {{- end }}
       containers:
         - name: chronograf
-          image: "chronograf:1.8.4"
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.chronograf.image.repository }}:{{ .Values.chronograf.image.tag }}
+          imagePullPolicy: {{ .Values.chronograf.image.pullPolicy }}
           ports:
             - containerPort: 8888
               name: api

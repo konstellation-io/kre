@@ -42,6 +42,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	versionService := mocks.NewMockVersionService(ctrl)
+	natsManagerService := mocks.NewMockNatsManagerService(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	userRepo := mocks.NewMockUserRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
@@ -59,7 +60,7 @@ func newVersionSuite(t *testing.T) *versionSuite {
 		accessControl,
 	)
 
-	versionInteractor := usecase.NewVersionInteractor(cfg, logger, versionRepo, runtimeRepo, versionService, userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
+	versionInteractor := usecase.NewVersionInteractor(cfg, logger, versionRepo, runtimeRepo, versionService, natsManagerService, userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
 
 	return &versionSuite{
 		ctrl: ctrl,

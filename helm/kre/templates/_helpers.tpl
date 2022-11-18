@@ -217,3 +217,24 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default "kapacitor" .Values.kapacitor.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/* Fullname suffixed with nats-manager */}}
+{{- define "nats-manager.fullname" -}}
+{{- printf "%s-nats-manager" (include "kre.fullname" .) -}}
+{{- end }}
+
+{{/*
+nats manager labels
+*/}}
+{{- define "nats-manager.labels" -}}
+{{ include "kre.labels" . }}
+{{ include "nats-manager.selectorLabels" . }}
+{{- end }}
+
+{{/*
+nats manager selector labels
+*/}}
+{{- define "nats-manager.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-nats-manager
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

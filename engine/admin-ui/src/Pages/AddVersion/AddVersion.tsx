@@ -54,7 +54,7 @@ function AddVersion() {
     onCompleted
   });
 
-  const [validationErr, setValidationErr] = useState<string>('');
+  const [validationErrs, setValidationErrs] = useState<string[]>([]);
 
   function onCompleted(updatedData: CreateVersion) {
     const versionCreatedId = updatedData.createVersion.id;
@@ -69,7 +69,7 @@ function AddVersion() {
 
       const err = error.graphQLErrors[0];
       if (err.extensions?.code === 'krt_validation_error') {
-        setValidationErr(err.extensions?.details);
+        setValidationErrs(err.extensions?.details);
       }
     } else {
       clearError('addVersionFile');
@@ -78,7 +78,7 @@ function AddVersion() {
 
   function onChange() {
     clearError('addVersionFile');
-    setValidationErr('');
+    setValidationErrs([]);
   }
   function onCancelClick() {
     history.goBack();
@@ -88,6 +88,17 @@ function AddVersion() {
     addVersion(mutationPayloadHelper({ file: formData.addVersionFile[0], runtimeId }));
   }
 
+  function getValidationErrors() {
+    return (
+      <div className={styles.errorBox}>
+        The krt.yml file contains the following validation errors:
+        <ul>
+          {validationErrs.map((err: string) => <li>{err}</li>)}
+        </ul>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.bg}>
       <div className={styles.grid}>
@@ -95,9 +106,7 @@ function AddVersion() {
           <h1>Add Version</h1>
           <p className={styles.subtitle} />
 
-          {validationErr && (
-            <div className={styles.errorBox}>{validationErr}</div>
-          )}
+          {validationErrs.length > 0 && getValidationErrors()}
 
           <div className={styles.content} data-testid='uploadVersion'>
             <form data-testid='fileUpload'>

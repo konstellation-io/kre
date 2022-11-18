@@ -54,7 +54,7 @@ get_admin_api_pod() {
 }
 
 get_mongo_pod() {
-  kubectl -n ${NAMESPACE} get pod -l app.kubernetes.io/name=kre-mongodb -o custom-columns=":metadata.name" --no-headers
+  kubectl -n ${NAMESPACE} get pod -l app=mongodb-database-svc -o custom-columns=":metadata.name" --no-headers
 }
 
 get_influx_pod() {

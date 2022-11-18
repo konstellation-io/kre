@@ -17,6 +17,8 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/service"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/parser"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/version"
 )
@@ -49,12 +51,14 @@ type VersionInteractor struct {
 	versionRepo            repository.VersionRepo
 	runtimeRepo            repository.RuntimeRepo
 	versionService         service.VersionService
+	natsManagerService     service.NatsManagerService
 	userActivityInteractor UserActivityInteracter
 	accessControl          auth.AccessControl
 	idGenerator            version.IDGenerator
 	docGenerator           version.DocGenerator
 	dashboardService       service.DashboardService
 	nodeLogRepo            repository.NodeLogRepository
+	translator             version.Translator
 }
 
 // NewVersionInteractor creates a new interactor
@@ -64,6 +68,7 @@ func NewVersionInteractor(
 	versionRepo repository.VersionRepo,
 	runtimeRepo repository.RuntimeRepo,
 	versionService service.VersionService,
+	natsManagerService service.NatsManagerService,
 	userActivityInteractor UserActivityInteracter,
 	accessControl auth.AccessControl,
 	idGenerator version.IDGenerator,
@@ -71,18 +76,21 @@ func NewVersionInteractor(
 	dashboardService service.DashboardService,
 	nodeLogRepo repository.NodeLogRepository,
 ) *VersionInteractor {
+	translator := version.NewTranslator(idGenerator)
 	return &VersionInteractor{
 		cfg,
 		logger,
 		versionRepo,
 		runtimeRepo,
 		versionService,
+		natsManagerService,
 		userActivityInteractor,
 		accessControl,
 		idGenerator,
 		docGenerator,
 		dashboardService,
 		nodeLogRepo,
+		translator,
 	}
 }
 
@@ -166,7 +174,8 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 		return nil, nil, fmt.Errorf("error creating temp krt file for version: %w", err)
 	}
 
-	krtYml, err := krt.ProcessYaml(i.logger, tmpKrtFile.Name(), tmpDir)
+	valuesValidator := validator.NewYamlFieldsValidator()
+	krtYml, err := parser.ProcessAndValidateKrt(i.logger, valuesValidator, tmpKrtFile.Name(), tmpDir)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -187,7 +196,12 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 	existingConfig := readExistingConf(versions)
 	cfg := fillNewConfWithExisting(existingConfig, krtYml)
 
+	krtVersion, ok := entity.ParseKRTVersionFromString(krtYml.KrtVersion)
+	if !ok {
+		return nil, nil, fmt.Errorf("error krtVersion input from krt.yml not valid: %s", krtYml.KrtVersion)
+	}
 	versionCreated, err := i.versionRepo.Create(loggedUserID, runtimeID, &entity.Version{
+		KrtVersion:  krtVersion,
 		Name:        krtYml.Version,
 		Description: krtYml.Description,
 		Config:      cfg,
@@ -235,7 +249,7 @@ func (i *VersionInteractor) completeVersionCreation(
 		}
 	}()
 
-	contentErrors := krt.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
+	contentErrors := parser.ProcessContent(i.logger, krtYml, tmpKrtFile.Name(), tmpDir)
 	if len(contentErrors) > 0 {
 		errorMessage := "error processing krt"
 		contentErrors = append([]error{fmt.Errorf(errorMessage)}, contentErrors...)
@@ -305,10 +319,53 @@ func (i *VersionInteractor) saveKRTDoc(runtimeId, docFolder string, versionCreat
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
+	if krtYml.IsKrtVersionV1() {
+		return i.generateWorkflowsV1(krtYml)
+	}
 	var workflows []*entity.Workflow
 	if len(krtYml.Workflows) == 0 {
-		return workflows, nil
+		return workflows, fmt.Errorf("error generating workflows: there are no defined workflows")
 	}
+
+	for _, w := range krtYml.Workflows {
+		var nodes []entity.Node
+
+		if len(w.Nodes) == 0 {
+			return nil, fmt.Errorf("error generating workflows: workflow \"%s\" doesn't have nodes defined", w.Name)
+		}
+
+		for _, node := range w.Nodes {
+			nodes = append(nodes, entity.Node{
+				ID:            i.idGenerator.NewID(),
+				Name:          node.Name,
+				Image:         node.Image,
+				Src:           node.Src,
+				GPU:           node.GPU,
+				Subscriptions: node.Subscriptions,
+			})
+		}
+		workflows = append(workflows, &entity.Workflow{
+			ID:         i.idGenerator.NewID(),
+			Name:       w.Name,
+			Entrypoint: w.Entrypoint,
+			Nodes:      nodes,
+			Exitpoint:  w.Exitpoint,
+		})
+	}
+
+	return workflows, nil
+}
+
+func (i *VersionInteractor) generateWorkflowsV1(krtYml *krt.Krt) ([]*entity.Workflow, error) {
+	var workflows []*entity.Workflow
+	if len(krtYml.Workflows) == 0 {
+		return workflows, fmt.Errorf("error generating workflows: there are no defined workflows")
+	}
+
+	if len(krtYml.Nodes) == 0 {
+		return nil, fmt.Errorf("error generating workflows: there are no defined nodes")
+	}
+
 	nodesMap := map[string]krt.Node{}
 	for _, n := range krtYml.Nodes {
 		nodesMap[n.Name] = n
@@ -374,6 +431,10 @@ func (i *VersionInteractor) Start(
 	v, err := i.versionRepo.GetByName(ctx, runtimeId, versionName)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if v.KrtVersion == "" || v.KrtVersion == entity.KRTVersionV1 {
+		i.translator.TranslateToKrtVersionV2(v)
 	}
 
 	if !v.CanBeStarted() {
@@ -464,14 +525,26 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	}()
 
 	if status == entity.VersionStatusStarted {
-		err := i.versionService.Start(ctx, runtimeId, version)
+		err := i.natsManagerService.CreateStreams(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+		worklfowsStreamConfig, err := i.natsManagerService.GetVersionNatsConfig(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+		err = i.versionService.Start(ctx, runtimeId, version, worklfowsStreamConfig)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
 	}
 
 	if status == entity.VersionStatusStopped {
-		err := i.versionService.Stop(ctx, runtimeId, version)
+		err := i.natsManagerService.DeleteStreams(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		}
+		err = i.versionService.Stop(ctx, runtimeId, version)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
