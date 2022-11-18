@@ -53,6 +53,17 @@ $ helm upgrade [RELEASE_NAME] konstellation.io/kre
 A major chart version change (like v0.15.3 -> v1.0.0) indicates that there is an incompatible breaking change needing
 manual actions.
 
+### From 7.X to 8.X
+
+* The MongoDB database that was being deployed within the chart has been removed. An external database is needed now. If you come from previous versions of this chart, a MongoDB data migration is necessary. Ref: https://www.mongodb.com/docs/manual/tutorial/backup-and-restore-tools/
+
+Changes in `values.yaml`:
+
+* `mongodb` has been removed in favour of `config.mongodb`
+* `mongoExpress` has been added
+
+See [MongoDB](#mongodb) for related info.
+
 ### From 6.X to 7.X
 
 * MongoDB Kubernetes resources have been renamed. That also renames the generated mongodb PVC that stores the MongoDB data. A database data migration will be necessary if you come from previous KRE releases.
@@ -124,3 +135,19 @@ This Chart has been developed using **Nginx Ingress Controller**. So using the d
 However, users could use any other ingress controller (for example, [Traefik](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)). In that case, ingress configurations equivalent to the default ones must be povided.
 
 Notice that even using equivalent ingress configurations the correct operation of the appliance is not guaranteed.
+
+## MongoDB
+
+This chart needs an external MongoDB compatible database to work. Following user and permissions are recomended for a correct and secure application opration:
+
+* User **kre**
+  * Purposse: KRE main database user
+  * Database: **admin**
+  * Attached Roles:
+    * *userAdminAnyDatabase* (admin)
+    * *readWriteAnyDatabase* (admin)
+    * *dbAdminAnyDatabase* (admin)
+* User: **mongoexpress**
+  * Database: **admin**
+  * Attached Roles:
+    * *readAnyDatabase* (admin)
