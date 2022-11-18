@@ -35,8 +35,6 @@ function BranchedWorkflowChart({
   const maxNodesSubs = getMaxNodesSubs(workflow?.nodes);
   const myGraphRef = useRef<ForceGraphMethods>();
 
-  console.log(workflow)
-
   useEffect(() => {
     myGraphRef.current?.d3Force('link', forceLink().distance(maxNodesSubs > 1 ? 90 / maxNodesSubs: 40));
     myGraphRef.current?.d3Force('charge', forceManyBody().strength(-50*maxNodesSubs));
