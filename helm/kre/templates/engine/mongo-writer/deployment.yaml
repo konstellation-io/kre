@@ -16,6 +16,18 @@ spec:
       labels:
         {{- include "mongo-writer.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.mongoWriter.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mongoWriter.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mongoWriter.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: mongo-writer
           image: {{ .Values.mongoWriter.image.repository }}:{{ .Values.mongoWriter.image.tag }}

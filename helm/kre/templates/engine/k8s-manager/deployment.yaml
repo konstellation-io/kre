@@ -17,6 +17,18 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/engine/k8s-manager/configmap.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ include "k8s-manager.serviceAccountName" . }}
+      {{- with .Values.k8sManager.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.k8sManager.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.k8sManager.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Release.Name }}-k8s-manager
           image: {{ .Values.k8sManager.image.repository }}:{{ .Values.k8sManager.image.tag }}

@@ -16,6 +16,18 @@ spec:
       labels:
         {{- include "mongoExpress.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.mongoExpress.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mongoExpress.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mongoExpress.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: mongo-express
         image: {{ .Values.mongoExpress.image.repository }}:{{ .Values.mongoExpress.image.tag }}
