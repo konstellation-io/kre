@@ -84,6 +84,7 @@ function Status({ version, runtime }: Props) {
       .map(workflow => (
         {
           ...workflow,
+          exitpoint: "exitpoint",
           nodes: [
             ...workflow.nodes
               .map((node) => {
@@ -91,7 +92,7 @@ function Status({ version, runtime }: Props) {
                 const nodeName = edgeToNode && workflow.nodes.find(n => n.id === edgeToNode.fromNode)?.name
                 return {
                   ...node,
-                  subscriptions: edgeToNode && nodeName ? [nodeName]: [],
+                  subscriptions: edgeToNode && nodeName ? [nodeName]: ["entrypoint"],
                 }
               }),
             {
