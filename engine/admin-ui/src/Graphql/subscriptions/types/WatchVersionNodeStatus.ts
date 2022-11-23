@@ -12,6 +12,7 @@ import { NodeStatus } from './../../types/globalTypes';
 export interface WatchVersionNodeStatus_watchNodeStatus {
   __typename: 'Node';
   id: string;
+  name: string;
   status: NodeStatus;
 }
 

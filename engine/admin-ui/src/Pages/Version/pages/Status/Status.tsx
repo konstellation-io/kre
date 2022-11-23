@@ -34,6 +34,8 @@ type Props = {
   runtime?: GetVersionConfStatus_runtime;
 };
 
+const defaultExitpointV1 = "konstellation-exitpoint";
+
 function Status({ version, runtime }: Props) {
   const { versionName, runtimeId } = useParams<VersionRouteParams>();
   const { updateEntrypointStatus } = useOpenedVersion();
@@ -51,6 +53,8 @@ function Status({ version, runtime }: Props) {
   const entrypointStatus =
     dataOpenedVersion.entrypointStatus || NodeStatus.STOPPED;
 
+  const [exitpointStatus, setExitpointStatus] = useState<NodeStatus>(NodeStatus.STOPPED);
+
   const subscribe = () =>
     subscribeToMore<WatchVersionNodeStatus, WatchVersionNodeStatusVariables>({
       document: VersionNodeStatusSubscription,
@@ -59,6 +63,9 @@ function Status({ version, runtime }: Props) {
         const node = subscriptionData.data.watchNodeStatus;
         if (node.id === 'entrypoint') {
           updateEntrypointStatus(node.status);
+        }
+        if (node.name === defaultExitpointV1) {
+          setExitpointStatus(node.status)
         }
 
         return prev;
@@ -84,7 +91,7 @@ function Status({ version, runtime }: Props) {
       .map(workflow => (
         {
           ...workflow,
-          exitpoint: "exitpoint",
+          exitpoint: defaultExitpointV1,
           nodes: [
             ...workflow.nodes
               .map((node) => {
@@ -98,8 +105,8 @@ function Status({ version, runtime }: Props) {
             {
               __typename: 'Node' as 'Node',
               id: 'exitpoint',
-              name: 'exitpoint',
-              status: NodeStatus.STOPPED,
+              name: defaultExitpointV1,
+              status: exitpointStatus,
               subscriptions: workflow.nodes.map(node => node.name),
             },
           ]
