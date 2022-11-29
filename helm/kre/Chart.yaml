@@ -8,6 +8,6 @@ dependencies:
     version: "4.8.1"
     repository: https://helm.influxdata.com/
   - name: kapacitor
-    version: "1.4.0"
+    version: "1.4.6"
     repository: https://helm.influxdata.com/
     condition: kapacitor.enabled

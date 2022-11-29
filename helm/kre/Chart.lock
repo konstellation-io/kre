@@ -4,6 +4,6 @@ dependencies:
   version: 4.8.1
 - name: kapacitor
   repository: https://helm.influxdata.com/
-  version: 1.4.0
-digest: sha256:0e6885c1249a4b7932f8eef0d5dab70260ad3f30e087aac6d6e5c7c006c69d74
-generated: "2022-09-27T16:59:44.569177316+02:00"
+  version: 1.4.6
+digest: sha256:732f875e494d559a731234ab57252231c8b269752e520267a4ea156e5a725c70
+generated: "2022-11-29T13:44:13.088918953+01:00"

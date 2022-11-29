@@ -1,0 +1,10 @@
+version: 0.146.0
+dependencies:
+- name: community-operator
+  repository: https://mongodb.github.io/helm-charts
+  version: 0.7.6
+- name: raw
+  repository: https://bedag.github.io/helm-charts/
+  version: 1.1.0
+digest: sha256:9932c7a1402270716551ae6d79feb083338b5e6e18a035fa3f955a681582ea50
+generated: "2022-11-29T13:44:18.869539602+01:00"
