@@ -279,6 +279,11 @@ jobs:
           yq w -i helm/kre/Chart.yaml 'appVersion' ${{ steps.get_version.outputs.VERSION }}
           yq w -i helm/kre/Chart.yaml 'version' ${{ steps.get_version.outputs.RELEASE_VERSION }}
 
+      - name: Add repositories
+        run:  |
+          helm repo add influxdata https://helm.influxdata.com/
+          helm repo update
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.1
         with:
