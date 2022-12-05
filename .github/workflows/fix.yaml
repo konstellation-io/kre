@@ -10,6 +10,12 @@ on:
     branches: ["release-*"]
     types:
       - completed
+  push:
+    branches: ["release-*"]
+    paths:
+      - "helm/**/*"
+      - ".github/workflows/build_release.yaml"
+
 
 jobs:
   create-fix:
