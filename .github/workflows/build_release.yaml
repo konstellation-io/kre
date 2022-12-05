@@ -75,7 +75,7 @@ jobs:
 
       - name: Get Version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> ${GITHUB_OUTPUT}
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
