@@ -34,7 +34,20 @@ releases:
     needs:
     - kre/mongodb-operator
 
-  - name: "{{ requiredEnv "RELEASE_NAME" }}"
+  - name: prometheus
+    <<: *default
+    namespace: monitoring
+    chart: prometheus-community/kube-prometheus-stack
+    version: 39.13.3
+
+  - name: monitoring-resources
+    <<: *default
+    chart: "bedag/raw"
+    namespace: monitoring
+    needs:
+      - prometheus
+
+  - name: "{{ env "RELEASE_NAME" | default "kre-local" }}"
     <<: *default
     chart: ../../helm/kre
     needs:

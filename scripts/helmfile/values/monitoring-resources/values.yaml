@@ -1,0 +1,21 @@
+resources:
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    name: kre-admin-api-monitoring
+    namespace: kre
+  spec:
+    endpoints:
+    - honorLabels: true
+      path: /metrics
+      port: grpc
+      scheme: http
+      scrapeTimeout: 15s
+    jobLabel: monitoring
+    namespaceSelector:
+      matchNames:
+      - kre
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: kre-local
+        app.kubernetes.io/name: kre-admin-api

@@ -62,12 +62,12 @@
 | config.smtp.user | string | `""` | SMTP server user |
 | developmentMode | bool | `false` | Whether to setup developement mode |
 | influxdb.address | string | `"http://kre-influxdb/"` |  |
-| influxdb.affinity | object | `{}` | Assign custom affinity rules to the InfluxDB pods |
+| influxdb.affinity | object | `{}` | Assign custom affinity rules to the InfluxDB pods # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ # |
 | influxdb.config.http | object | `{"auth-enabled":false,"enabled":true,"flux-enabled":true}` | [Details](https://docs.influxdata.com/influxdb/v1.8/administration/config/#http) |
 | influxdb.image.tag | string | `"1.8.1"` | Image tag |
 | influxdb.initScripts.enabled | bool | `true` | Boolean flag to enable and disable initscripts. See https://github.com/influxdata/helm-charts/tree/master/charts/influxdb#configure-the-chart for more info |
 | influxdb.initScripts.scripts | object | `{"init.iql":"CREATE DATABASE \"kre\"\n"}` | Init scripts |
-| influxdb.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. |
+| influxdb.nodeSelector | object | `{}` | Define which Nodes the Pods are scheduled on. # ref: https://kubernetes.io/docs/user-guide/node-selection/ # |
 | influxdb.persistence.accessMode | string | `"ReadWriteOnce"` | Access mode for the volume |
 | influxdb.persistence.enabled | bool | `true` | Whether to enable persistence. See https://github.com/influxdata/helm-charts/tree/master/charts/influxdb#configure-the-chart for more info |
 | influxdb.persistence.size | string | `"10Gi"` | Storage size |

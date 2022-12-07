@@ -1,0 +1,25 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+grafana:
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: "default"
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      admin-api:
+        json: |
+{{ readFile "dashboards/admin-api.json" | indent 10 }}
+      velero:
+        json: |
+{{ readFile "dashboards/velero.json" | indent 10 }}
