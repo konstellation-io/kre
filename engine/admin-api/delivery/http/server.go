@@ -138,7 +138,7 @@ func NewApp(
 	d.Use(kremiddleware.MongoExpressProxy(cfg.MongoDB.MongoExpressAddress))
 
 	if err := prometheusClient.Register(kremiddleware.TotalRequestCounter); err != nil {
-		log.Fatal("Error registering Prometheus metric: %v", err.Error())
+		log.Fatal("Error registering Prometheus metric: %w", err.Error())
 	}
 
 	prometheusEcho.Use(e)
