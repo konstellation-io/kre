@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -17,11 +18,20 @@ const (
 	LevelDebug
 )
 
-var levelNames = []string{
-	"ERROR",
-	"WARN",
-	"INFO",
-	"DEBUG",
+const DefaultLogLevel = LevelInfo
+
+var stringToLogLevel = map[string]LogLevel{
+	"ERROR": LevelError,
+	"WARN":  LevelWarn,
+	"INFO":  LevelInfo,
+	"DEBUG": LevelDebug,
+}
+
+var logLevelToString = map[LogLevel]string{
+	LevelError: "ERROR",
+	LevelWarn:  "WARN",
+	LevelInfo:  "INFO",
+	LevelDebug: "DEBUG",
 }
 
 var lineBreakRE = regexp.MustCompile(`\r?\n`)
@@ -50,7 +60,7 @@ func New(level LogLevel) *SimpleLogger {
 	}
 }
 
-// New creates a new SimpleLogger instance.
+// NewWithWriter creates a new SimpleLogger instance.
 func NewWithWriter(level LogLevel, writer io.Writer) *SimpleLogger {
 	return &SimpleLogger{
 		level,
@@ -64,7 +74,7 @@ func (l *SimpleLogger) printLog(level LogLevel, msg string) {
 	}
 
 	t := time.Now().Format(time.RFC3339Nano)
-	_, _ = fmt.Fprintf(l.writer, "%s %s %s\n", t, levelNames[level], lineBreakRE.ReplaceAllLiteralString(msg, " "))
+	_, _ = fmt.Fprintf(l.writer, "%s %s %s\n", t, logLevelToString[level], lineBreakRE.ReplaceAllLiteralString(msg, " "))
 }
 
 func (l *SimpleLogger) Debug(msg string) {
@@ -97,4 +107,13 @@ func (l *SimpleLogger) Warnf(format string, a ...interface{}) {
 
 func (l *SimpleLogger) Errorf(format string, a ...interface{}) {
 	l.printLog(LevelError, fmt.Sprintf(format, a...))
+}
+
+// ConvertLogLevelFromString convert string to LogLevel type. If the string is not valid, the returned LogLevel is INFO.
+func ConvertLogLevelFromString(logLevel string) LogLevel {
+	level, ok := stringToLogLevel[strings.ToUpper(logLevel)]
+	if !ok {
+		return DefaultLogLevel
+	}
+	return level
 }
