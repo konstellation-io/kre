@@ -9,7 +9,7 @@ import {
 } from 'Graphql/queries/types/GetVersionConfStatus';
 import React, { useEffect, useState } from 'react';
 
-import ROUTE from 'Constants/routes';
+import ROUTE, {RuntimeRouteParams} from 'Constants/routes';
 import { get } from 'lodash';
 import { mutationPayloadHelper } from 'Utils/formUtils';
 import styles from './AddVersion.module.scss';
@@ -19,9 +19,12 @@ import { useMutation } from '@apollo/client';
 
 import AddVersionMutation from 'Graphql/mutations/addVersion';
 import GetRuntimeAndVersionQuery from 'Graphql/queries/getRuntimeAndVersions';
+import { useParams } from "react-router-dom";
+import { buildRoute } from "Utils/routes";
 
 function AddVersion() {
   const history = useHistory();
+  const { runtimeId } = useParams<RuntimeRouteParams>();
   const { register, handleSubmit, errors, setError, clearError } = useForm();
   const [addVersion, { loading, error }] = useMutation<
     CreateVersion,
@@ -31,7 +34,10 @@ function AddVersion() {
     update(cache, updateResult) {
       if (updateResult.data) {
         const cacheResult = cache.readQuery<GetVersionConfStatus>({
-          query: GetRuntimeAndVersionQuery
+          query: GetRuntimeAndVersionQuery,
+          variables: {
+            runtimeId: runtimeId,
+          }
         });
 
         const versions = cacheResult?.versions || [];
@@ -40,6 +46,7 @@ function AddVersion() {
 
         cache.writeQuery({
           query: GetRuntimeAndVersionQuery,
+          variables: { runtimeId },
           data: { versions: versions.concat([newVersion]) }
         });
       }
@@ -47,13 +54,13 @@ function AddVersion() {
     onCompleted
   });
 
-  const [validationErr, setValidationErr] = useState<string>('');
+  const [validationErrs, setValidationErrs] = useState<string[]>([]);
 
   function onCompleted(updatedData: CreateVersion) {
     const versionCreatedId = updatedData.createVersion.id;
     console.log(`${versionCreatedId} version created`);
 
-    history.push(ROUTE.VERSIONS);
+    history.push(buildRoute.version(ROUTE.VERSION, runtimeId, updatedData.createVersion.name), runtimeId);
   }
 
   useEffect(() => {
@@ -62,7 +69,7 @@ function AddVersion() {
 
       const err = error.graphQLErrors[0];
       if (err.extensions?.code === 'krt_validation_error') {
-        setValidationErr(err.extensions?.details);
+        setValidationErrs(err.extensions?.details);
       }
     } else {
       clearError('addVersionFile');
@@ -71,14 +78,25 @@ function AddVersion() {
 
   function onChange() {
     clearError('addVersionFile');
-    setValidationErr('');
+    setValidationErrs([]);
   }
   function onCancelClick() {
     history.goBack();
   }
 
   function onSubmit(formData: any) {
-    addVersion(mutationPayloadHelper({ file: formData.addVersionFile[0] }));
+    addVersion(mutationPayloadHelper({ file: formData.addVersionFile[0], runtimeId }));
+  }
+
+  function getValidationErrors() {
+    return (
+      <div className={styles.errorBox}>
+        The krt.yml file contains the following validation errors:
+        <ul>
+          {validationErrs.map((err: string) => <li>{err}</li>)}
+        </ul>
+      </div>
+    );
   }
 
   return (
@@ -88,9 +106,7 @@ function AddVersion() {
           <h1>Add Version</h1>
           <p className={styles.subtitle} />
 
-          {validationErr && (
-            <div className={styles.errorBox}>{validationErr}</div>
-          )}
+          {validationErrs.length > 0 && getValidationErrors()}
 
           <div className={styles.content} data-testid='uploadVersion'>
             <form data-testid='fileUpload'>

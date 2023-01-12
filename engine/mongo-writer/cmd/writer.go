@@ -16,8 +16,6 @@ import (
 	"github.com/konstellation-io/kre/engine/mongo-writer/internal/processor"
 )
 
-const natsSubjectLogs = "mongo_writer_logs"
-const natsSubjectData = "mongo_writer"
 const showStatsSeconds = 5
 
 type Writer struct {
@@ -45,8 +43,8 @@ func (w *Writer) Start() {
 
 	fluentbitParser := parser.NewFluentbitMsgParser()
 
-	logsCh := w.natsM.SubscribeToChannel(natsSubjectLogs)
-	dataCh := w.natsM.SubscribeToChannel(natsSubjectData)
+	logsCh := w.natsM.SubscribeToChannel(w.cfg.Nats.LogsSubjectWildcard)
+	dataCh := w.natsM.SubscribeToChannel(w.cfg.Nats.DataSubjectWildcard)
 
 	defer close(logsCh)
 	defer close(dataCh)

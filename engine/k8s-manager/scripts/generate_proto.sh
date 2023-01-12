@@ -1,7 +1,10 @@
 #!/bin/sh
 
 for PROTO_FILE in proto/**/*.proto; do
-  protoc --go-grpc_out=proto "$PROTO_FILE"
+  protoc -I=./proto/versionpb/ \
+  --go_out=proto/versionpb --go_opt=paths=source_relative \
+  --go-grpc_out=proto/versionpb --go-grpc_opt=paths=source_relative \
+  $PROTO_FILE
 done
 
 if [ -d "../admin-api" ]; then

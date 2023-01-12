@@ -1,5 +1,5 @@
 # Generate proto
-FROM grpc/go as protobuf
+FROM namely/protoc-all as protobuf
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN ./scripts/generate_proto.sh
 
 
 # Build k8s-manager
-FROM golang:1.14.12-alpine3.12 as builder
+FROM golang:1.18.3-alpine3.16 as builder
 
 ENV CGO_ENABLED=0
 

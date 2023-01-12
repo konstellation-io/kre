@@ -1,8 +1,4 @@
-{{ if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
-  {{ else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
-apiVersion: extensions/v1beta1
-  {{ end }}
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-admin-api
@@ -19,8 +15,21 @@ spec:
         {{- include "admin-api.labels" . | nindent 8 }}
         type: admin
       annotations:
-        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
+        checksum/config: {{ include (print $.Template.BasePath "/engine/admin-api/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/engine/admin-api/secret.yaml") . | sha256sum }}
     spec:
+      {{- with .Values.adminApi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.adminApi.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.adminApi.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         fsGroup: 10001
       initContainers:
@@ -35,25 +44,24 @@ spec:
             - name: admin-api-pv-storage
               mountPath: {{ .Values.adminApi.storage.path }}
       containers:
-        - name: {{ .Release.Name }}-admin-api
+        - name: admin-api
           image: {{ .Values.adminApi.image.repository }}:{{ .Values.adminApi.image.tag }}
           imagePullPolicy: {{ .Values.adminApi.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-configmap
+                name: {{ .Release.Name }}-admin-api
             - secretRef:
-                name: {{ .Release.Name }}-secrets
+                name: {{ .Release.Name }}-admin-api
           env:
-            - name: KRE_ADMIN_STORAGE_PATH
-              value: {{ .Values.adminApi.storage.path }}
-            - name: KRE_ADMIN_API_ADDRESS
-              value: ":8080"
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: KRE_API_LOG_LEVEL
-              value: {{ .Values.adminApi.logLevel }}
+            - name: KRE_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.mongodb.connectionString.secretName }}
+                  key: {{ .Values.config.mongodb.connectionString.secretKey }}
           ports:
             - containerPort: 8080
               protocol: TCP

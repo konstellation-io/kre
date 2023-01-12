@@ -1,10 +1,23 @@
 repos:
-  - repo: https://github.com/norwoodj/helm-docs
-    rev: v1.8.1
-    hooks:
-      - id: helm-docs
-        args:
-          - --chart-search-root=./helm/kre
-          - --template-files=CHART.md.gotmpl
-          - --output-file=CHART.md
-    
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.3.0
+  # exclude: '*snap'
+  hooks:
+    - id: check-added-large-files
+    - id: trailing-whitespace
+      exclude: .*snap
+    - id: check-merge-conflict
+    - id: check-symlinks
+    - id: end-of-file-fixer
+- repo: https://github.com/zricethezav/gitleaks
+  rev: v8.8.12
+  hooks:
+    - id: gitleaks
+- repo: https://github.com/norwoodj/helm-docs
+  rev: v1.11.0
+  hooks:
+    - id: helm-docs
+      args:
+        - --chart-search-root=./helm/kre
+        - --template-files=CHART.md.gotmpl
+        - --output-file=CHART.md

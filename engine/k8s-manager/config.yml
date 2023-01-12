@@ -7,6 +7,9 @@ kubernetes:
   k8sRuntimeOperator:
     version: latest
 nats_streaming:
+  url: "kre-nats:4222"
+  host: "kre-nats"
+  port: "4222"
   storage:
     className: "standard"
     size: 1G

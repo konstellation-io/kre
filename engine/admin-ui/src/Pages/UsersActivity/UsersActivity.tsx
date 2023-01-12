@@ -4,10 +4,8 @@ import SelectionsBar, {
   VersionChip
 } from './components/SelectionsBar/SelectionsBar';
 import { registerMany, unregisterMany } from 'Utils/react-forms';
-
 import FiltersBar from './components/FiltersBar/FiltersBar';
 import { GetUsersActivityVariables } from 'Graphql/queries/types/GetUsersActivity';
-import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus';
 import { Moment } from 'moment';
 import PageBase from 'Components/Layout/PageBase/PageBase';
 import SettingsHeader from '../Settings/components/SettingsHeader/SettingsHeader';
@@ -16,9 +14,7 @@ import { UserActivityType } from 'Graphql/types/globalTypes';
 import cx from 'classnames';
 import styles from './UsersActivity.module.scss';
 import { useForm } from 'react-hook-form';
-import { useQuery } from '@apollo/client';
-
-import GetRuntimeAndVersionsQuery from 'Graphql/queries/getRuntimeAndVersions';
+import useAllVersions from "Hooks/useAllVersions";
 
 export type UserActivityFormData = {
   types: UserActivityType[];
@@ -37,10 +33,6 @@ const DEFAULT_FILTERS: UserActivityFormData = {
 };
 
 function UsersActivity() {
-  const { data, loading, error } = useQuery<GetVersionConfStatus>(
-    GetRuntimeAndVersionsQuery
-  );
-
   const { register, unregister, setValue, errors, watch, reset } = useForm<
     UserActivityFormData
   >({ defaultValues: DEFAULT_FILTERS });
@@ -52,8 +44,12 @@ function UsersActivity() {
     return () => unregisterMany(unregister, fields);
   }, [register, unregister]);
 
-  if (loading || !data) return <SpinnerCircular />;
-  if (error) return <ErrorMessage />;
+  const {
+    data: versionsData,
+    loading: versionsLoading,
+    error: versionsError,
+    getVersionId
+  } = useAllVersions();
 
   function setAndSubmit(
     field: string,
@@ -62,9 +58,11 @@ function UsersActivity() {
     setValue(field, newValue);
   }
 
-  function getVersionNames(versionsSelection: GroupSelectData): string[] {
+  function getVersionIds(versionsSelection: GroupSelectData): string[] {
     return Object.entries(versionsSelection)
-      .map(([_, versionNames]) => versionNames)
+      .map(([runtimeName, versionNames]) =>
+        versionNames.map(versionName => getVersionId(runtimeName, versionName))
+      )
       .flat();
   }
 
@@ -74,7 +72,7 @@ function UsersActivity() {
       fromDate: formData.fromDate?.toISOString(),
       toDate: formData.toDate?.toISOString(),
       types: formData.types,
-      versionNames: getVersionNames(formData.versionIds),
+      versionIds: getVersionIds(formData.versionIds),
       lastId: null
     };
 
@@ -103,6 +101,17 @@ function UsersActivity() {
     }
   }
 
+  function renderContent() {
+    if (versionsLoading) return <SpinnerCircular />;
+    if (versionsError) return <ErrorMessage />;
+
+    return (
+      <div className={styles.listContainer}>
+        <UserActivityList variables={getQueryVariables(watch())} />
+      </div>
+    );
+  }
+
   return (
     <PageBase>
       <div className={styles.container} data-testid="settingsContainer">
@@ -110,7 +119,7 @@ function UsersActivity() {
           <SettingsHeader>User Audit</SettingsHeader>
           <FiltersBar
             setAndSubmit={setAndSubmit}
-            runtimeAndVersions={data}
+            runtimesAndVersions={versionsData ?? []}
             watch={watch}
             errors={errors}
             reset={reset}
@@ -120,12 +129,10 @@ function UsersActivity() {
               userEmail: watch('userEmail'),
               versionIds: watch('versionIds')
             }}
-            runtimeAndVersions={data}
+            runtimesAndVersions={versionsData ?? []}
             onRemoveFilter={onRemoveFilter}
           />
-          <div className={styles.listContainer}>
-            <UserActivityList variables={getQueryVariables(watch())} />
-          </div>
+          {renderContent()}
         </div>
       </div>
     </PageBase>

@@ -35,11 +35,20 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 }
 
 // Start creates the version resources in k8s
-func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version) error {
+func (k *K8sVersionClient) Start(
+	ctx context.Context,
+	runtimeID string,
+	version *entity.Version,
+	versionStreamConfig entity.VersionStreamConfig,
+) error {
 	configVars := versionToConfig(version)
-	wf := versionToWorkflows(version)
+	wf, err := versionToWorkflows(version, versionStreamConfig)
+	if err != nil {
+		return err
+	}
 
 	req := versionpb.StartRequest{
+		RuntimeId:      runtimeID,
 		VersionId:      version.ID,
 		VersionName:    version.Name,
 		Config:         configVars,
@@ -54,13 +63,19 @@ func (k *K8sVersionClient) Start(ctx context.Context, version *entity.Version) e
 		},
 	}
 
-	_, err := k.client.Start(ctx, &req)
+	_, err = k.client.Start(ctx, &req)
 	return err
 }
 
-func (k *K8sVersionClient) Stop(ctx context.Context, version *entity.Version) error {
-	req := versionpb.VersionName{
-		Name: version.Name,
+func (k *K8sVersionClient) Stop(ctx context.Context, runtimeID string, version *entity.Version) error {
+	workflowEntrypoints := make([]string, 0)
+	for _, w := range version.Workflows {
+		workflowEntrypoints = append(workflowEntrypoints, w.Entrypoint)
+	}
+	req := versionpb.VersionInfo{
+		Name:      version.Name,
+		RuntimeId: runtimeID,
+		Workflows: workflowEntrypoints,
 	}
 
 	_, err := k.client.Stop(ctx, &req)
@@ -71,10 +86,11 @@ func (k *K8sVersionClient) Stop(ctx context.Context, version *entity.Version) er
 	return nil
 }
 
-func (k *K8sVersionClient) UpdateConfig(version *entity.Version) error {
+func (k *K8sVersionClient) UpdateConfig(runtimeID string, version *entity.Version) error {
 	configVars := versionToConfig(version)
 
 	req := versionpb.UpdateConfigRequest{
+		RuntimeId:   runtimeID,
 		VersionName: version.Name,
 		Config:      configVars,
 	}
@@ -86,9 +102,10 @@ func (k *K8sVersionClient) UpdateConfig(version *entity.Version) error {
 	return err
 }
 
-func (k *K8sVersionClient) Unpublish(version *entity.Version) error {
-	req := versionpb.VersionName{
-		Name: version.Name,
+func (k *K8sVersionClient) Unpublish(runtimeID string, version *entity.Version) error {
+	req := versionpb.VersionInfo{
+		Name:      version.Name,
+		RuntimeId: runtimeID,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
@@ -98,9 +115,10 @@ func (k *K8sVersionClient) Unpublish(version *entity.Version) error {
 	return err
 }
 
-func (k *K8sVersionClient) Publish(version *entity.Version) error {
-	req := versionpb.VersionName{
-		Name: version.Name,
+func (k *K8sVersionClient) Publish(runtimeID string, version *entity.Version) error {
+	req := versionpb.VersionInfo{
+		Name:      version.Name,
+		RuntimeId: runtimeID,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
@@ -123,45 +141,70 @@ func versionToConfig(version *entity.Version) []*versionpb.Config {
 	return configVars
 }
 
-func versionToWorkflows(version *entity.Version) []*versionpb.Workflow {
+func versionToWorkflows(version *entity.Version, versionStreamConfig entity.VersionStreamConfig) ([]*versionpb.Workflow, error) {
 	wf := make([]*versionpb.Workflow, len(version.Workflows))
 
 	for i, w := range version.Workflows {
+		workflowStreamConfig, ok := versionStreamConfig[w.Name]
+		if !ok {
+			return nil, fmt.Errorf("error obtaining stream for workflow \"%s\"", w.Name)
+		}
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
 		for j, n := range w.Nodes {
+			nodeStreamConfig, err := workflowStreamConfig.GetNodeConfig(n.Name)
+			if err != nil {
+				return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
+			}
 			nodes[j] = &versionpb.Workflow_Node{
-				Id:       n.ID,
-				Name:     n.Name,
-				Image:    n.Image,
-				Src:      n.Src,
-				Gpu:      n.GPU,
-				Replicas: n.Replicas,
+				Id:            n.ID,
+				Name:          n.Name,
+				Image:         n.Image,
+				Src:           n.Src,
+				Gpu:           n.GPU,
+				Subscriptions: nodeStreamConfig.Subscriptions,
+				Subject:       nodeStreamConfig.Subject,
+				Replicas:      n.Replicas,
 			}
 		}
-		edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
-		for k, e := range w.Edges {
-			edges[k] = &versionpb.Workflow_Edge{
-				Id:       e.ID,
-				FromNode: e.FromNode,
-				ToNode:   e.ToNode,
-			}
+
+		entrypointSubject, err := workflowStreamConfig.GetEntrypointSubject()
+		if err != nil {
+			return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
 		}
 
 		wf[i] = &versionpb.Workflow{
-			Id:         w.ID,
-			Name:       w.Name,
-			Entrypoint: w.Entrypoint,
-			Nodes:      nodes,
-			Edges:      edges,
+			Id:   w.ID,
+			Name: w.Name,
+			Entrypoint: &versionpb.Workflow_Entrypoint{
+				Name:    w.Entrypoint,
+				Subject: entrypointSubject,
+			},
+			Nodes:     nodes,
+			Exitpoint: w.Exitpoint,
+			Stream:    workflowStreamConfig.Stream,
+		}
+
+		// TODO krt-v1: deprecate retrocompatibility
+		if version.KrtVersion == entity.KRTVersionV1 {
+			edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
+			for k, e := range w.Edges {
+				edges[k] = &versionpb.Workflow_Edge{
+					Id:       e.ID,
+					FromNode: e.FromNode,
+					ToNode:   e.ToNode,
+				}
+			}
+			wf[i].Edges = edges
 		}
 	}
 
-	return wf
+	return wf, nil
 }
 
-func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, versionName string) (<-chan *entity.Node, error) {
+func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, runtimeID, versionName string) (<-chan *entity.Node, error) {
 	stream, err := k.client.WatchNodeStatus(ctx, &versionpb.NodeStatusRequest{
 		VersionName: versionName,
+		RuntimeId:   runtimeID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("version status opening stream: %w", err)

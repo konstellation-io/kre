@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import ROUTE from 'Constants/routes';
 import React from 'react';
 import styles from './BackButton.module.scss';
+import { buildRoute } from "Utils/routes";
 
 type BackButtonProps = {
   runtime: GetVersionConfStatus_runtime;
@@ -15,7 +16,7 @@ type BackButtonProps = {
 
 function BackButton({ runtime }: BackButtonProps) {
   return (
-    <Link to={ROUTE.VERSIONS}>
+    <Link to={buildRoute.runtime(ROUTE.RUNTIME, runtime.id)}>
       <div className={styles.backSection}>
         <IconArrowBack className="icon-regular" />
         <div className={styles.runtimeHexagon}>

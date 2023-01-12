@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: chronograf-config
+  name: {{ .Release.Name }}-chronograf
   labels:
     {{- include "chronograf.labels" . | nindent 4 }}
 data:

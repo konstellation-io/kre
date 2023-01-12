@@ -33,7 +33,7 @@ exports[`Filters matches snapshot 1`] = `
         options={
           Object {
             "": Array [
-              "Entry points",
+              "entrypoint",
             ],
           }
         }

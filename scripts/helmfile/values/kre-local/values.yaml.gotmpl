@@ -1,0 +1,16 @@
+developmentMode: {{ requiredEnv "DEVELOPMENT_MODE" }}
+config:
+  admin:
+    apiHost: {{ requiredEnv "KRE_ADMIN_API_HOST" | quote }}
+    frontendBaseURL: {{ requiredEnv "KRE_ADMIN_FRONTEND_BASE_URL" | quote }}
+  mongodb:
+    connectionString:
+      secretName: mongodb-database-kre-connection-string
+      secretKey: connectionString.standard
+mongoExpress:
+  connectionString:
+    secretName: mongodb-database-mongoexpress-connection-string
+    secretKey: connectionString.standard
+kapacitor:
+  enabled: true
+  influxURL: {{ requiredEnv "KRE_INFLUX_URL" | quote }}

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+
 	"github.com/konstellation-io/kre/engine/k8s-manager/entity"
 	"github.com/konstellation-io/kre/engine/k8s-manager/kubernetes"
 
@@ -42,19 +43,19 @@ func NewVersionService(
 func (v *VersionService) Start(ctx context.Context, req *versionpb.StartRequest) (*versionpb.Response, error) {
 	fmt.Println("Start request received")
 
-	err := v.manager.Start(req)
+	err := v.manager.Start(ctx, req)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 
-	err = v.manager.WaitForVersionPods(ctx, req.VersionName, v.config.Kubernetes.Namespace, req.Workflows)
+	err = v.manager.WaitForVersionPods(ctx, req.RuntimeId, req.VersionName, v.config.Kubernetes.Namespace, req.Workflows)
 	if err != nil {
 		return nil, err
 	}
 
 	return &versionpb.Response{
-		Message: fmt.Sprintf("Version '%s' started", req.VersionName),
+		Message: fmt.Sprintf("Version '%s' on runtime %s started", req.VersionName, req.RuntimeId),
 	}, nil
 }
 
@@ -72,7 +73,7 @@ func (v *VersionService) UpdateConfig(ctx context.Context, req *versionpb.Update
 	}, nil
 }
 
-func (v *VersionService) Stop(ctx context.Context, req *versionpb.VersionName) (*versionpb.Response, error) {
+func (v *VersionService) Stop(ctx context.Context, req *versionpb.VersionInfo) (*versionpb.Response, error) {
 	fmt.Println("Stop request received")
 
 	err := v.manager.Stop(ctx, req)
@@ -86,10 +87,10 @@ func (v *VersionService) Stop(ctx context.Context, req *versionpb.VersionName) (
 	}, nil
 }
 
-func (v *VersionService) Publish(_ context.Context, req *versionpb.VersionName) (*versionpb.Response, error) {
+func (v *VersionService) Publish(ctx context.Context, req *versionpb.VersionInfo) (*versionpb.Response, error) {
 	fmt.Println("Publish request received")
 
-	err := v.manager.Publish(req)
+	err := v.manager.Publish(ctx, req)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -100,10 +101,10 @@ func (v *VersionService) Publish(_ context.Context, req *versionpb.VersionName) 
 	}, nil
 }
 
-func (v *VersionService) Unpublish(_ context.Context, req *versionpb.VersionName) (*versionpb.Response, error) {
+func (v *VersionService) Unpublish(ctx context.Context, req *versionpb.VersionInfo) (*versionpb.Response, error) {
 	fmt.Println("Unpublish request received")
 
-	err := v.manager.Unpublish(req)
+	err := v.manager.Unpublish(ctx, req)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -117,9 +118,10 @@ func (v *VersionService) Unpublish(_ context.Context, req *versionpb.VersionName
 func (v *VersionService) WatchNodeStatus(req *versionpb.NodeStatusRequest, stream versionpb.VersionService_WatchNodeStatusServer) error {
 	v.logger.Info("[MonitoringService.WatchNodeStatus] starting watcher...")
 
+	runtimeId := req.GetRuntimeId()
 	versionName := req.GetVersionName()
 	nodeCh := make(chan entity.Node, 1)
-	stopCh := v.watcher.WatchNodeStatus(versionName, nodeCh)
+	stopCh := v.watcher.WatchNodeStatus(runtimeId, versionName, nodeCh)
 	defer close(stopCh) // The k8s informer opened in WatchNodeStatus will be stopped when stopCh is closed.
 
 	for {

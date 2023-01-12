@@ -1,19 +1,22 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-  query GetVersionWorkflows($versionName: String!) {
-    version(name: $versionName) {
+  query GetVersionWorkflows($versionName: String!, $runtimeId: ID!) {
+    version(name: $versionName, runtimeId: $runtimeId) {
       id
+      krtVersion
       name
       status
       creationDate
       workflows {
         id
         name
+        exitpoint
         nodes {
           id
           name
           status
+          subscriptions
         }
         edges {
           id

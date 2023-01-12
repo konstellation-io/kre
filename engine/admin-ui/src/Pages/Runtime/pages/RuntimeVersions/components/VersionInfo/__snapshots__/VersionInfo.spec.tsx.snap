@@ -54,14 +54,14 @@ exports[`VersionInfo matches snapshot 1`] = `
       }
     >
       <Link
-        to="/versions/versionName/status"
+        to="/runtimes//versions/versionName/status"
       >
         <LinkAnchor
-          href="/versions/versionName/status"
+          href="/runtimes//versions/versionName/status"
           navigate={[Function]}
         >
           <a
-            href="/versions/versionName/status"
+            href="/runtimes//versions/versionName/status"
             onClick={[Function]}
           >
             <div

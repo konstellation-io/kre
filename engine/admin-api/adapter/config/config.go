@@ -42,20 +42,26 @@ type Config struct {
 		CookieDomain                      string `yaml:"cookieDomain" envconfig:"KRE_AUTH_COOKIE_DOMAIN"`
 	} `yaml:"auth"`
 	MongoDB struct {
-		Address    string `yaml:"address" envconfig:"KRE_MONGODB_ADDRESS"`
-		DBName     string `yaml:"dbName"`
-		DataDBName string `yaml:"dataDbName"`
-		KRTBucket  string `yaml:"krtBucket"`
+		Address             string `yaml:"address" envconfig:"KRE_MONGODB_URI"`
+		DBName              string `yaml:"dbName"`
+		RuntimeDataUser     string `yaml:"runtimeDataUser" envconfig:"KRE_MONGODB_MONGOEXPRESS_USERNAME"`
+		KRTBucket           string `yaml:"krtBucket"`
+		MongoExpressAddress string `yaml:"mongoExpressAddress" envconfig:"KRE_MONGODB_MONGOEXPRESS_ADDRESS"`
 	} `yaml:"mongodb"`
+	InfluxDB struct {
+		Address string `yaml:"address" envconfig:"KRE_INFLUXDB_ADDRESS"`
+	} `yaml:"influxdb"`
+	Chronograf struct {
+		Address string `yaml:"address" envconfig:"KRE_CHRONOGRAF_ADDRESS"`
+	} `yaml:"chronograf"`
+
 	K8s struct {
 		Namespace string `yaml:"namespace" envconfig:"POD_NAMESPACE"`
 	} `yaml:"k8s"`
 	Services struct {
-		K8sManager string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
+		K8sManager  string `yaml:"k8sManager" envconfig:"KRE_SERVICES_K8S_MANAGER"`
+		NatsManager string `yaml:"natsManager" envconfig:"KRE_SERVICES_NATS_MANAGER"`
 	} `yaml:"services"`
-	Runtime struct {
-		Name string `yaml:"name" envconfig:"KRE_RUNTIME_NAME"`
-	} `yaml:"runtime"`
 }
 
 var once sync.Once

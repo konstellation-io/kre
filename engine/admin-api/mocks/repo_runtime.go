@@ -50,6 +50,21 @@ func (mr *MockRuntimeRepoMockRecorder) Create(ctx, runtime interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRuntimeRepo)(nil).Create), ctx, runtime)
 }
 
+// FindAll mocks base method.
+func (m *MockRuntimeRepo) FindAll(ctx context.Context) ([]*entity.Runtime, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll", ctx)
+	ret0, _ := ret[0].([]*entity.Runtime)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockRuntimeRepoMockRecorder) FindAll(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockRuntimeRepo)(nil).FindAll), ctx)
+}
+
 // Get mocks base method.
 func (m *MockRuntimeRepo) Get(ctx context.Context) (*entity.Runtime, error) {
 	m.ctrl.T.Helper()
@@ -63,4 +78,34 @@ func (m *MockRuntimeRepo) Get(ctx context.Context) (*entity.Runtime, error) {
 func (mr *MockRuntimeRepoMockRecorder) Get(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockRuntimeRepo)(nil).Get), ctx)
+}
+
+// GetByID mocks base method.
+func (m *MockRuntimeRepo) GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", ctx, runtimeID)
+	ret0, _ := ret[0].(*entity.Runtime)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MockRuntimeRepoMockRecorder) GetByID(ctx, runtimeID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockRuntimeRepo)(nil).GetByID), ctx, runtimeID)
+}
+
+// GetByName mocks base method.
+func (m *MockRuntimeRepo) GetByName(ctx context.Context, name string) (*entity.Runtime, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByName", ctx, name)
+	ret0, _ := ret[0].(*entity.Runtime)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByName indicates an expected call of GetByName.
+func (mr *MockRuntimeRepoMockRecorder) GetByName(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockRuntimeRepo)(nil).GetByName), ctx, name)
 }

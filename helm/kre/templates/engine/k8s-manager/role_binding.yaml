@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: k8s-manager
+  name: {{ .Release.Name }}-k8s-manager
   labels:
     {{- include "k8s-manager.labels" . | nindent 4 }}
 subjects:
@@ -12,6 +12,6 @@ subjects:
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: kre-admin
+  name: {{ .Release.Name }}-k8s-manager
   apiGroup: rbac.authorization.k8s.io
 {{- end }}

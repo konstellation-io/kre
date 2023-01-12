@@ -1,6 +1,6 @@
 package auth
 
-//go:generate mockgen -source=${GOFILE} -destination=$PWD/mocks/auth_${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../../mocks/auth_${GOFILE} -package=mocks
 
 type VerificationCodeGenerator interface {
 	Generate() string

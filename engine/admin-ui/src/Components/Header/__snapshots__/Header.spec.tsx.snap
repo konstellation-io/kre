@@ -4712,27 +4712,27 @@ exports[`Header matches snapshot 1`] = `
                         }
                       }
                       align="left"
-                      key="buttonVersions"
-                      label="VERSIONS"
+                      key="buttonRuntimes"
+                      label="RUNTIMES"
                       style={
                         Object {
                           "paddingLeft": "20%",
                         }
                       }
-                      to="/versions"
+                      to="/runtimes"
                     >
                       <Link
                         data-testid="buttonLink"
-                        to="/versions"
+                        to="/runtimes"
                       >
                         <LinkAnchor
                           data-testid="buttonLink"
-                          href="/versions"
+                          href="/runtimes"
                           navigate={[Function]}
                         >
                           <a
                             data-testid="buttonLink"
-                            href="/versions"
+                            href="/runtimes"
                             onClick={[Function]}
                           >
                             <div
@@ -4785,7 +4785,7 @@ exports[`Header matches snapshot 1`] = `
                                 </WithStyles(ForwardRef(SvgIcon))>
                               </ForwardRef(HomeIcon)>
                               <span>
-                                VERSIONS
+                                RUNTIMES
                               </span>
                             </div>
                           </a>

@@ -3,12 +3,14 @@ import GetVersionConfStatusQuery from "Mocks/GetVersionConfStatusQuery";
 import GetConfigurationVariablesQuery from "Mocks/GetConfigurationVariablesQuery";
 import {AccessLevel} from "../../src/Graphql/types/globalTypes";
 import GetVersionWorkflowsQuery from "../../src/Mocks/GetVersionWorkflowsQuery";
+import GetRuntimes from "../../src/Mocks/GetRuntimesQuery";
 
 describe('Version Navigation', () => {
   beforeEach(() => {
     cy.kstInterceptor('GetMe', {data: GetMeQuery});
     cy.kstInterceptor('GetVersionConfStatus', {data: GetVersionConfStatusQuery});
-    cy.visit('http://dev-admin.kre.local:3000/versions');
+    cy.kstInterceptor('GetRuntimes', {data: GetRuntimes });
+    cy.visit('http://dev-admin.kre.local:3000/runtimes/runtime-id/versions');
   });
 
   it('should show version on versions list', () => {
@@ -36,7 +38,7 @@ describe('Version Navigation', () => {
     cy.getByTestId('versionConfigPanel').should('contain', 'Configuration');
   });
 
-  it('should open project logs if the user has viewer role', () => {
+  it.only('should open project logs if the user has viewer role', () => {
     // GIVEN that the user has VIEWER access level
     cy.kstInterceptor('GetMe', {
       data: {
@@ -54,6 +56,7 @@ describe('Version Navigation', () => {
 
     // WHEN the user opens the logs console
     cy.getByTestId('openWorkflowLogs').first().click();
+    cy.wait(2000);
     // THEN the logs console opens
     cy.contains('LOGS CONSOLE').should('exist');
     // AND

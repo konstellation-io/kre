@@ -3,7 +3,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { VersionStatus, NodeStatus } from './../../types/globalTypes';
+import {
+  KrtVersion,
+  VersionStatus,
+  NodeStatus,
+} from './../../types/globalTypes';
 
 // ====================================================
 // GraphQL query operation: GetVersionWorkflows
@@ -14,6 +18,7 @@ export interface GetVersionWorkflows_version_workflows_nodes {
   id: string;
   name: string;
   status: NodeStatus;
+  subscriptions: string[] | null;
 }
 
 export interface GetVersionWorkflows_version_workflows_edges {
@@ -27,8 +32,9 @@ export interface GetVersionWorkflows_version_workflows {
   __typename: 'Workflow';
   id: string;
   name: string;
+  exitpoint: string | null;
   nodes: GetVersionWorkflows_version_workflows_nodes[];
-  edges: GetVersionWorkflows_version_workflows_edges[];
+  edges: GetVersionWorkflows_version_workflows_edges[] | null;
 }
 
 export interface GetVersionWorkflows_version_config {
@@ -39,6 +45,7 @@ export interface GetVersionWorkflows_version_config {
 export interface GetVersionWorkflows_version {
   __typename: 'Version';
   id: string;
+  krtVersion: KrtVersion | null;
   name: string;
   status: VersionStatus;
   creationDate: string;
@@ -52,4 +59,5 @@ export interface GetVersionWorkflows {
 
 export interface GetVersionWorkflowsVariables {
   versionName: string;
+  runtimeId: string;
 }

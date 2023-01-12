@@ -9,6 +9,7 @@
 - [Install](#install)
 - [Development](#development)
   - [Requirements](#requirements)
+  - [Basic usage](#basic-usage)
   - [Local Environment](#local-environment)
     - [Login](#login)
   - [Versioning lifecycle](#Versioning-lifecycle)
@@ -145,6 +146,13 @@ pre-commit install-hooks
 **Note**: Contributing commits that had not passed the required hooks will be rejected.
 
 ## Local Environment
+
+### Requirements
+
+* [Minikube](https://minikube.sigs.k8s.io/docs/start/) >= 1.26
+* [Docker](https://docs.docker.com/get-docker/) >= 18.9, if used as driver for Minikube. Check [this](https://minikube.sigs.k8s.io/docs/drivers/) for a complete list of drivers for Minikube
+
+### Basic usage
 
 This repo contains a tool called `./krectl.sh` to handle common actions you will need during development.
 

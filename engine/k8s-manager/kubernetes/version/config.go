@@ -1,6 +1,7 @@
 package version
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
@@ -11,24 +12,26 @@ import (
 func (m *Manager) getCommonEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
 	return []apiv1.EnvVar{
 		{Name: "KRT_INFLUX_URI", Value: req.GetInfluxUri()},
+		{Name: "KRT_RUNTIME_ID", Value: req.GetRuntimeId()},
 		{Name: "KRT_VERSION_ID", Value: req.GetVersionId()},
 		{Name: "KRT_VERSION", Value: req.GetVersionName()},
 		{Name: "KRT_MONGO_URI", Value: req.GetMongoUri()},
 		{Name: "KRT_MONGO_DB_NAME", Value: req.GetMongoDbName()},
 		{Name: "KRT_MONGO_BUCKET", Value: req.GetMongoKrtBucket()},
 		{Name: "KRT_BASE_PATH", Value: basePathKRT},
-		{Name: "KRT_NATS_SERVER", Value: natsURL},
+		{Name: "KRT_NATS_SERVER", Value: m.config.NatsStreaming.URL},
+		{Name: "KRT_RUNTIME_ID", Value: req.GetRuntimeId()},
 	}
 }
 
-func (m *Manager) getVersionKRTConfName(versionName string) string {
-	return fmt.Sprintf("%s-krt-conf", versionName)
+func (m *Manager) getVersionKRTConfName(runtimeId, versionName string) string {
+	return fmt.Sprintf("%s-%s-krt-conf", runtimeId, versionName)
 }
 
 // createVersionKRTConf creates a config-map in k8s with all config values defined in the krt.yml.
 // This config-map will be regenerated when the values are changed in manager.UpdateConfig and the
 // version PODs will be restarted in order to get the new config values.
-func (m *Manager) createVersionKRTConf(versionName, ns string, krtConfigs []*versionpb.Config) error {
+func (m *Manager) createVersionKRTConf(ctx context.Context, runtimeId, versionName, ns string, krtConfigs []*versionpb.Config) error {
 	m.logger.Info("Creating version krt configurations...")
 
 	values := map[string]string{}
@@ -36,38 +39,40 @@ func (m *Manager) createVersionKRTConf(versionName, ns string, krtConfigs []*ver
 		values[c.Key] = c.Value
 	}
 
-	_, err := m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
+	_, err := m.clientset.CoreV1().ConfigMaps(ns).Create(ctx, &apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: m.getVersionKRTConfName(versionName),
+			Name: m.getVersionKRTConfName(runtimeId, versionName),
 			Labels: map[string]string{
 				"type":         "version",
 				"version-name": versionName,
+				"runtime-id":   runtimeId,
 			},
 		},
 		Data: values,
-	})
+	}, metav1.CreateOptions{})
 
 	return err
 }
 
-func (m *Manager) deleteVersionKRTConf(versionName, ns string) error {
-	return m.clientset.CoreV1().ConfigMaps(ns).Delete(m.getVersionKRTConfName(versionName), &metav1.DeleteOptions{})
+func (m *Manager) deleteVersionKRTConf(ctx context.Context, runtimeID, versionName, ns string) error {
+	return m.clientset.CoreV1().ConfigMaps(ns).Delete(ctx, m.getVersionKRTConfName(runtimeID, versionName), metav1.DeleteOptions{})
 }
 
-func (m *Manager) createVersionConfFiles(versionName, ns string, workflows []*versionpb.Workflow) error {
+func (m *Manager) createVersionConfFiles(ctx context.Context, runtimeID, versionName, ns string, workflows []*versionpb.Workflow) error {
 	m.logger.Info("Creating version config files...")
 
-	natsSubjectJSON, err := m.generateNATSSubjects(versionName, workflows)
+	natsSubjectJSON, err := m.generateSubjects(workflows)
 	if err != nil {
 		return err
 	}
 
-	_, err = m.clientset.CoreV1().ConfigMaps(ns).Create(&apiv1.ConfigMap{
+	_, err = m.clientset.CoreV1().ConfigMaps(ns).Create(ctx, &apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-conf-files", versionName),
+			Name: fmt.Sprintf("%s-%s-conf-files", runtimeID, versionName),
 			Labels: map[string]string{
 				"type":         "version",
 				"version-name": versionName,
+				"runtime-id":   runtimeID,
 			},
 		},
 		Data: map[string]string{
@@ -95,7 +100,7 @@ func (m *Manager) createVersionConfFiles(versionName, ns string, workflows []*ve
     Regex ^(?<logtime>\d{4}\-\d{2}\-\d{2}T\d{1,2}\:\d{1,2}\:\d{1,2}(\.\d+Z|\+0000)) (?<level>(ERROR|WARN|INFO|DEBUG)) (?<capture>.*)
 `,
 
-			"fluent-bit.conf": `
+			"fluent-bit.conf": fmt.Sprintf(`
 [SERVICE]
     Flush        1
     Verbose      1
@@ -112,7 +117,7 @@ func (m *Manager) createVersionConfFiles(versionName, ns string, workflows []*ve
 
 [INPUT]
     Name        tail
-    Tag         mongo_writer_logs
+    Tag         mongo_writer_logs.%s
     Buffer_Chunk_Size 1k
     Path        /var/log/app/*.log
     Multiline On
@@ -135,11 +140,11 @@ func (m *Manager) createVersionConfFiles(versionName, ns string, workflows []*ve
 [OUTPUT]
     Name  nats
     Match *
-    Host  kre-nats
-    Port  4222
-`,
+    Host  %s
+    Port  %s
+`, runtimeID, m.config.NatsStreaming.Host, m.config.NatsStreaming.Port),
 		},
-	})
+	}, metav1.CreateOptions{})
 
 	return err
 }

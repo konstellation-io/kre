@@ -6011,87 +6011,76 @@ exports[`FiltersBar matches snapshot 1`] = `
     >
       <FiltersBar
         errors={Object {}}
-        onSubmit={[MockFunction]}
-        runtimeAndVersions={
-          Object {
-            "runtime": Object {
-              "__typename": "Runtime",
-              "creationDate": "creationDate",
-              "databaseUrl": "databaseUrl",
-              "description": "Some Description",
-              "entrypointAddress": "entrypointAddress",
-              "id": "runtimeId",
-              "measurementsUrl": "measurementsUrl",
-              "name": "runtimeName",
+        reset={[MockFunction]}
+        runtimesAndVersions={
+          Array [
+            Object {
+              "runtime": Object {
+                "__typename": "Runtime",
+                "creationDate": "creationDate",
+                "databaseUrl": "databaseUrl",
+                "description": "Some Description",
+                "entrypointAddress": "entrypointAddress",
+                "id": "runtimeId",
+                "measurementsUrl": "measurementsUrl",
+                "name": "runtimeName",
+              },
+              "versions": Array [
+                Object {
+                  "__typename": "Version",
+                  "config": Object {
+                    "__typename": "VersionConfig",
+                    "completed": false,
+                  },
+                  "creationAuthor": Object {
+                    "__typename": "User",
+                    "email": "user@domain.com",
+                    "id": "userId",
+                  },
+                  "creationDate": "2020/01/01",
+                  "description": "versionDescription",
+                  "errors": Array [],
+                  "hasDoc": false,
+                  "id": "versionId",
+                  "name": "versionName",
+                  "publicationAuthor": Object {
+                    "__typename": "User",
+                    "email": "user@domain.com",
+                    "id": "userId",
+                  },
+                  "publicationDate": "2020/01/01",
+                  "status": "STARTED",
+                },
+                Object {
+                  "__typename": "Version",
+                  "config": Object {
+                    "__typename": "VersionConfig",
+                    "completed": false,
+                  },
+                  "creationAuthor": Object {
+                    "__typename": "User",
+                    "email": "user@domain.com",
+                    "id": "userId",
+                  },
+                  "creationDate": "2020/01/01",
+                  "description": "versionDescription",
+                  "errors": Array [],
+                  "hasDoc": false,
+                  "id": "versionId",
+                  "name": "versionName",
+                  "publicationAuthor": Object {
+                    "__typename": "User",
+                    "email": "user@domain.com",
+                    "id": "userId",
+                  },
+                  "publicationDate": "2020/01/01",
+                  "status": "STARTED",
+                },
+              ],
             },
-            "versions": Array [
-              Object {
-                "__typename": "Version",
-                "config": Object {
-                  "__typename": "VersionConfig",
-                  "completed": false,
-                },
-                "creationAuthor": Object {
-                  "__typename": "User",
-                  "email": "user@domain.com",
-                  "id": "userId",
-                },
-                "creationDate": "2020/01/01",
-                "description": "versionDescription",
-                "errors": Array [],
-                "hasDoc": false,
-                "id": "versionId",
-                "name": "versionName",
-                "publicationAuthor": Object {
-                  "__typename": "User",
-                  "email": "user@domain.com",
-                  "id": "userId",
-                },
-                "publicationDate": "2020/01/01",
-                "status": "STARTED",
-              },
-              Object {
-                "__typename": "Version",
-                "config": Object {
-                  "__typename": "VersionConfig",
-                  "completed": false,
-                },
-                "creationAuthor": Object {
-                  "__typename": "User",
-                  "email": "user@domain.com",
-                  "id": "userId",
-                },
-                "creationDate": "2020/01/01",
-                "description": "versionDescription",
-                "errors": Array [],
-                "hasDoc": false,
-                "id": "versionId",
-                "name": "versionName",
-                "publicationAuthor": Object {
-                  "__typename": "User",
-                  "email": "user@domain.com",
-                  "id": "userId",
-                },
-                "publicationDate": "2020/01/01",
-                "status": "STARTED",
-              },
-            ],
-          }
-        }
-        types={
-          Array [
-            "a",
-            "b",
-            "c",
           ]
         }
-        users={
-          Array [
-            "1",
-            "2",
-            "3",
-          ]
-        }
+        setAndSubmit={[MockFunction]}
         watch={
           [MockFunction] {
             "calls": Array [
@@ -6434,6 +6423,13 @@ exports[`FiltersBar matches snapshot 1`] = `
               onChange={[Function]}
               options={
                 Array [
+                  Object {
+                    "Icon": <Memo(ActivityIcon)
+                      activityType="CREATE_RUNTIME"
+                      invert={true}
+                    />,
+                    "label": "CREATE_RUNTIME",
+                  },
                   Object {
                     "Icon": <Memo(ActivityIcon)
                       activityType="CREATE_USER"

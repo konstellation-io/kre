@@ -4,6 +4,7 @@ import { GetVersionConfStatus } from 'Graphql/queries/types/GetVersionConfStatus
 import React from 'react';
 import { isEmpty } from 'lodash';
 import styles from './SelectionsBar.module.scss';
+import {VersionsData} from "../../../../Hooks/useAllVersions";
 
 type Filter = [string, string | { [key: string]: string }];
 export type VersionChip = {
@@ -53,19 +54,21 @@ type Props = {
     userEmail: string;
     versionIds: GroupSelectData;
   };
-  runtimeAndVersions: GetVersionConfStatus;
+  runtimesAndVersions: VersionsData[];
   onRemoveFilter: (filter: string, value: string | VersionChip) => void;
 };
 function SelectionsBar({
   filterValues,
-  runtimeAndVersions,
+  runtimesAndVersions,
   onRemoveFilter
 }: Props) {
-  const versionOptions = {
-    [runtimeAndVersions.runtime.name]: runtimeAndVersions.versions.map(
-      v => v.name
-    )
-  };
+  const versionOptions = Object.fromEntries(
+    runtimesAndVersions.map(({ runtime: { name: runtimeName }, versions }) => [
+      runtimeName,
+      versions.map(v => v.name)
+    ])
+  );
+
 
   const filtersFormatted: Filter[] = [
     ['userEmail', filterValues.userEmail],

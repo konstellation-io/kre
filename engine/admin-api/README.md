@@ -2,7 +2,7 @@
 
 ## Architecture
 
-The constraints in the Clean Architecture are :
+The constraints in the Clean Architecture are:
 
 - **Independent of Frameworks**: The architecture does not depend on the existence of some library of feature laden
   software. This allows you to use such frameworks as tools, rather than having to cram your system into their limited
@@ -78,4 +78,3 @@ $ ./scripts/generate_dataloaders.sh
 ```
 
 If you want to create a new one, remember adding it to the previous script.
-

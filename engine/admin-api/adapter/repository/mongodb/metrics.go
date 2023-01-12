@@ -13,35 +13,23 @@ import (
 )
 
 const metricsCollectionName = "classificationMetrics"
+const databseNameSuffix = "data"
 
 type MetricsMongoDBRepo struct {
-	cfg        *config.Config
-	logger     logging.Logger
-	collection *mongo.Collection
+	cfg    *config.Config
+	logger logging.Logger
+	client *mongo.Client
 }
 
 func NewMetricMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mongo.Client) *MetricsMongoDBRepo {
-	collection := client.Database(cfg.MongoDB.DataDBName).Collection(metricsCollectionName)
-	return &MetricsMongoDBRepo{cfg: cfg, logger: logger, collection: collection}
+	return &MetricsMongoDBRepo{cfg: cfg, logger: logger, client: client}
 }
 
-func (m *MetricsMongoDBRepo) ensureIndexes(ctx context.Context, coll *mongo.Collection) error {
-	m.logger.Infof("MongoDB creating indexes for %s collection...", metricsCollectionName)
-	_, err := coll.Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{
-			Keys: bson.D{{"date", 1}, {"versionName", 1}},
-		},
-	})
+func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, runtimeId, versionName string) ([]entity.ClassificationMetric, error) {
+	database := m.getDatabaseName(runtimeId)
+	collection := m.client.Database(database).Collection(metricsCollectionName)
 
-	return err
-}
-
-func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, versionName string) ([]entity.ClassificationMetric, error) {
 	var result []entity.ClassificationMetric
-	err := m.ensureIndexes(ctx, m.collection)
-	if err != nil {
-		return result, err
-	}
 
 	opts := &options.FindOptions{
 		Sort: bson.D{{"_id", 1}},
@@ -57,7 +45,7 @@ func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time
 
 	m.logger.Debugf("Finding metrics with filter = %#v", filter)
 
-	cur, err := m.collection.Find(ctx, filter, opts)
+	cur, err := collection.Find(ctx, filter, opts)
 	if err != nil {
 		return result, err
 	}
@@ -74,4 +62,23 @@ func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time
 	m.logger.Infof("Found %d metrics", len(result))
 
 	return result, nil
+}
+
+func (m *MetricsMongoDBRepo) CreateIndexes(ctx context.Context, runtimeId string) error {
+	database := m.getDatabaseName(runtimeId)
+	collection := m.client.Database(database).Collection(metricsCollectionName)
+	m.logger.Infof("MongoDB creating indexes for %s collection...", metricsCollectionName)
+	_, err := collection.Indexes().CreateMany(ctx, []mongo.IndexModel{
+		{
+			Keys: bson.D{{"date", 1}, {"versionName", 1}},
+		},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *MetricsMongoDBRepo) getDatabaseName(runtimeID string) string {
+	return fmt.Sprintf("%s-%s", runtimeID, databseNameSuffix)
 }

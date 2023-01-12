@@ -6,6 +6,7 @@ import (
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/mongodb"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/runtime"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/service"
@@ -36,8 +37,14 @@ func main() {
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 	nodeLogRepo := mongodb.NewNodeLogMongoDBRepo(cfg, logger, mongodbClient)
 	metricRepo := mongodb.NewMetricMongoDBRepo(cfg, logger, mongodbClient)
+	measurementRepo := influx.NewMeasurementRepoInfluxDB(cfg, logger)
 
 	versionService, err := service.NewK8sVersionClient(cfg, logger)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	natsManagerService, err := service.NewNatsManagerClient(cfg, logger)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,6 +80,10 @@ func main() {
 		cfg,
 		logger,
 		runtimeRepo,
+		measurementRepo,
+		versionMongoRepo,
+		metricRepo,
+		nodeLogRepo,
 		userActivityInteractor,
 		passwordGenerator,
 		accessControl,
@@ -97,6 +108,7 @@ func main() {
 		versionMongoRepo,
 		runtimeRepo,
 		versionService,
+		natsManagerService,
 		userActivityInteractor,
 		accessControl,
 		idGenerator,
@@ -113,11 +125,6 @@ func main() {
 	)
 
 	err = settingInteractor.CreateDefaults(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
-	err = runtimeInteractor.EnsureRuntimeIsCreated(context.Background())
 	if err != nil {
 		panic(err)
 	}

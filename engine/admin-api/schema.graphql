@@ -3,24 +3,22 @@ scalar Upload
 type Query {
   me: User
   users: [User!]!
-  runtime: Runtime!
-  version(name: String!): Version!
-  versions: [Version!]!
+  runtime(id: ID!): Runtime!
+  runtimes: [Runtime!]!
+  version(name: String!, runtimeId: ID!): Version!
+  versions(runtimeId: ID!): [Version!]!
   settings: Settings!
   userActivityList(
     userEmail: String
     types: [UserActivityType!]
-    versionNames: [String!]
+    versionIds: [String!]
     fromDate: String
     toDate: String
     lastId: String
   ): [UserActivity!]!
-  logs(
-    versionName: String!
-    filters: LogFilters!
-    cursor: String
-  ): LogPage!
+  logs(runtimeId: ID!, filters: LogFilters!, cursor: String): LogPage!
   metrics(
+    runtimeId: ID!
     versionName: String!
     startDate: String!
     endDate: String!
@@ -28,6 +26,7 @@ type Query {
 }
 
 type Mutation {
+  createRuntime(input: CreateRuntimeInput!): Runtime!
   createVersion(input: CreateVersionInput!): Version!
   startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
@@ -44,33 +43,48 @@ type Mutation {
 }
 
 type Subscription {
-  watchNodeLogs(versionName: String!, filters: LogFilters!): NodeLog!
-  watchNodeStatus(versionName: String!): Node!
+  watchNodeLogs(
+    runtimeId: ID!
+    versionName: String!
+    filters: LogFilters!
+  ): NodeLog!
+  watchNodeStatus(versionName: String!, runtimeId: ID!): Node!
   watchVersion: Version!
+}
+
+input CreateRuntimeInput {
+  id: String!
+  name: String!
+  description: String!
 }
 
 input CreateVersionInput {
   file: Upload!
+  runtimeId: ID!
 }
 
 input StartVersionInput {
-  versionName : String!
+  versionName: String!
   comment: String!
+  runtimeId: ID!
 }
 
 input StopVersionInput {
   versionName: String!
   comment: String!
+  runtimeId: ID!
 }
 
 input PublishVersionInput {
   versionName: String!
   comment: String!
+  runtimeId: ID!
 }
 
 input UnpublishVersionInput {
   versionName: String!
   comment: String!
+  runtimeId: ID!
 }
 
 input CreateUserInput {
@@ -143,6 +157,7 @@ input ConfigurationVariablesInput {
 
 input UpdateConfigurationInput {
   versionName: String!
+  runtimeId: ID!
   configurationVariables: [ConfigurationVariablesInput!]!
 }
 
@@ -154,6 +169,8 @@ type Runtime {
   measurementsUrl: String!
   databaseUrl: String!
   entrypointAddress: String!
+  publishedVersion: Version
+  creationAuthor: User!
 }
 
 type Edge {
@@ -166,6 +183,7 @@ type Node {
   id: ID!
   name: String!
   status: NodeStatus!
+  subscriptions: [String!]
 }
 
 enum NodeStatus {
@@ -178,12 +196,19 @@ enum NodeStatus {
 type Workflow {
   id: ID!
   name: String!
+  exitpoint: String
   nodes: [Node!]!
-  edges: [Edge!]!
+  edges: [Edge!]
+}
+
+enum KrtVersion {
+  v1
+  v2
 }
 
 type Version {
   id: ID!
+  krtVersion: KrtVersion
   name: String!
   description: String!
   status: VersionStatus!
@@ -234,6 +259,7 @@ type UserActivity {
 enum UserActivityType {
   LOGIN
   LOGOUT
+  CREATE_RUNTIME
   CREATE_VERSION
   PUBLISH_VERSION
   UNPUBLISH_VERSION
@@ -255,6 +281,8 @@ input LogFilters {
   search: String
   levels: [LogLevel!]
   nodeIds: [ID!]
+  versionsIds: [ID!]
+  workflowsNames: [ID!]
 }
 
 enum LogLevel {

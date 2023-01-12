@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 	appsv1 "k8s.io/api/apps/v1"
@@ -20,6 +21,7 @@ const (
 	WaitForConfigMaps
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
+	entrypointNodeName                    = "entrypoint"
 )
 
 var (
@@ -37,18 +39,16 @@ type WorkflowConfig map[string]NodeConfig
 
 type NodeConfig map[string]string
 
-func getFirstNodeNATSInput(versionName, workflowEntrypoint string) string {
-	return fmt.Sprintf("%s-%s-entrypoint", versionName, workflowEntrypoint)
-}
-
-func (m *Manager) createAllNodeDeployments(req *versionpb.StartRequest) error {
+func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.StartRequest) error {
 	m.logger.Infof("Creating deployments for all nodes")
 
 	for _, w := range req.Workflows {
-		workflowConfig := m.generateWorkflowConfig(req, w)
-
+		workflowConfig, err := m.generateWorkflowConfig(req, w)
+		if err != nil {
+			return err
+		}
 		for _, n := range w.Nodes {
-			err := m.createNodeDeployment(req, n, workflowConfig[n.Id])
+			err := m.createNodeDeployment(ctx, req, n, workflowConfig[n.Id])
 			if err != nil {
 				return err
 			}
@@ -60,52 +60,51 @@ func (m *Manager) createAllNodeDeployments(req *versionpb.StartRequest) error {
 	return nil
 }
 
-func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) WorkflowConfig {
+func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) (WorkflowConfig, error) {
 	m.logger.Infof("Generating workflow \"%s\" config", workflow.Name)
 
 	wconf := WorkflowConfig{}
+	runtimeID := req.RuntimeId
 
-	for _, n := range workflow.Nodes {
+	for idx, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
 			"KRT_WORKFLOW_ID":       workflow.GetId(),
 			"KRT_WORKFLOW_NAME":     workflow.GetName(),
 			"KRT_NODE_ID":           n.GetId(),
 			"KRT_NODE_NAME":         n.GetName(),
 			"KRT_HANDLER_PATH":      n.Src,
-			"KRT_NATS_MONGO_WRITER": natsMongoWriterSubject,
+			"KRT_NATS_MONGO_WRITER": natsDataSubjectPrefix + runtimeID,
+			"KRT_NATS_STREAM":       workflow.Stream,
+			"KRT_IS_EXITPOINT":      m.isExitpoint(n.GetName(), workflow.Exitpoint),
+			"KRT_NATS_OUTPUT":       n.Subject,
+			"KRT_NATS_INPUTS":       m.joinSubscriptionSubjects(n.Subscriptions),
+		}
+
+		// retrocompatibility konstellation-exitpoint config
+		if n.Name == "konstellation-exitpoint" {
+			nodeConfig := wconf[n.Id]
+			nodeConfig["KRT_LAST_NODE_NAME"] = workflow.Nodes[idx-1].Name
 		}
 	}
 
-	for _, e := range workflow.Edges {
-		fromNode := wconf[e.FromNode]
-		toNode := wconf[e.ToNode]
+	return wconf, nil
+}
 
-		fromNode["KRT_NATS_OUTPUT"] = e.Id
-		toNode["KRT_NATS_INPUT"] = e.Id
-	}
-
-	var (
-		firstNode NodeConfig
-		lastNode  NodeConfig
-	)
-
-	totalEdges := len(workflow.Edges)
-
-	if totalEdges == 0 {
-		firstNode = wconf[workflow.Nodes[0].Id]
-		lastNode = wconf[workflow.Nodes[0].Id]
+func (m *Manager) isExitpoint(nodeName, workflowExitpoint string) string {
+	if nodeName == workflowExitpoint {
+		return "true"
 	} else {
-		firstNode = wconf[workflow.Edges[0].FromNode]
-		lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
+		return "false"
 	}
+}
 
-	// First node input is the workflow entrypoint
-	firstNode["KRT_NATS_INPUT"] = getFirstNodeNATSInput(req.GetVersionName(), workflow.Entrypoint)
-
-	// Last node output is empty to reply to entrypoint
-	lastNode["KRT_NATS_OUTPUT"] = ""
-
-	return wconf
+// joinSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
+func (m *Manager) joinSubscriptionSubjects(nodeSubscriptions []string) string {
+	subjectsToSubscribe := make([]string, 0, len(nodeSubscriptions))
+	for _, subscription := range nodeSubscriptions {
+		subjectsToSubscribe = append(subjectsToSubscribe, subscription)
+	}
+	return strings.Join(subjectsToSubscribe, ",")
 }
 
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
@@ -123,9 +122,10 @@ func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []
 	return append(m.getCommonEnvVars(req), envVars...)
 }
 
-func (m *Manager) getNodeLabels(versionName string, node *versionpb.Workflow_Node) map[string]string {
+func (m *Manager) getNodeLabels(runtimeId, versionName string, node *versionpb.Workflow_Node) map[string]string {
 	return map[string]string{
 		"type":         "node",
+		"runtime-id":   runtimeId,
 		"version-name": versionName,
 		"node-name":    node.Name,
 		"node-id":      node.Id,
@@ -148,15 +148,17 @@ func (m *Manager) getNodeResourcesRequirements(isGPUEnabled bool) apiv1.Resource
 }
 
 func (m *Manager) createNodeDeployment(
+	ctx context.Context,
 	req *versionpb.StartRequest,
 	node *versionpb.Workflow_Node,
 	config NodeConfig,
 ) error {
 	versionName := req.VersionName
+	runtimeId := req.RuntimeId
 	ns := m.config.Kubernetes.Namespace
-	name := fmt.Sprintf("%s-%s-%s", versionName, node.Name, node.Id)
+	name := fmt.Sprintf("%s-%s-%s-%s", req.RuntimeId, versionName, node.Name, node.Id)
 	envVars := m.getNodeEnvVars(req, config)
-	labels := m.getNodeLabels(req.VersionName, node)
+	labels := m.getNodeLabels(runtimeId, versionName, node)
 
 	m.logger.Infof("Creating node deployment with name \"%s\", image \"%s\" and \"%d\" replicas",
 		name,
@@ -164,55 +166,57 @@ func (m *Manager) createNodeDeployment(
 		node.Replicas,
 	)
 
-	_, err := m.clientset.AppsV1().Deployments(ns).Create(&appsv1.Deployment{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: ns,
-			Labels:    labels,
-		},
-		Spec: appsv1.DeploymentSpec{
-			Replicas: &node.Replicas,
-			Selector: &metav1.LabelSelector{
-				MatchLabels: labels,
+	_, err := m.clientset.AppsV1().Deployments(ns).Create(
+		ctx,
+		&appsv1.Deployment{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      name,
+				Namespace: ns,
+				Labels:    labels,
 			},
-			Template: apiv1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: labels,
+			Spec: appsv1.DeploymentSpec{
+				Replicas: &node.Replicas,
+				Selector: &metav1.LabelSelector{
+					MatchLabels: labels,
 				},
-				Spec: apiv1.PodSpec{
-					InitContainers: []apiv1.Container{
-						m.getKRTFilesDownloaderContainer(envVars),
+				Template: apiv1.PodTemplateSpec{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: labels,
 					},
-					NodeSelector: m.getNodeSelector(node.Gpu),
-					Tolerations:  m.getNodeTolerations(node.Gpu),
-					Containers: []apiv1.Container{
-						{
-							Name:            name,
-							Image:           node.Image,
-							ImagePullPolicy: apiv1.PullIfNotPresent,
-							Env:             envVars,
-							EnvFrom: []apiv1.EnvFromSource{
-								{
-									ConfigMapRef: &apiv1.ConfigMapEnvSource{
-										LocalObjectReference: apiv1.LocalObjectReference{
-											Name: m.getVersionKRTConfName(versionName),
+					Spec: apiv1.PodSpec{
+						InitContainers: []apiv1.Container{
+							m.getKRTFilesDownloaderContainer(envVars),
+						},
+						NodeSelector: m.getNodeSelector(node.Gpu),
+						Tolerations:  m.getNodeTolerations(node.Gpu),
+						Containers: []apiv1.Container{
+							{
+								Name:            name,
+								Image:           node.Image,
+								ImagePullPolicy: apiv1.PullIfNotPresent,
+								Env:             envVars,
+								EnvFrom: []apiv1.EnvFromSource{
+									{
+										ConfigMapRef: &apiv1.ConfigMapEnvSource{
+											LocalObjectReference: apiv1.LocalObjectReference{
+												Name: m.getVersionKRTConfName(runtimeId, versionName),
+											},
 										},
 									},
 								},
+								VolumeMounts: []apiv1.VolumeMount{
+									m.getKRTFilesVolumeMount(),
+									m.getAppLogVolumeMount(),
+								},
+								Resources: m.getNodeResourcesRequirements(node.Gpu),
 							},
-							VolumeMounts: []apiv1.VolumeMount{
-								m.getKRTFilesVolumeMount(),
-								m.getAppLogVolumeMount(),
-							},
-							Resources: m.getNodeResourcesRequirements(node.Gpu),
+							m.getFluentBitContainer(envVars),
 						},
-						m.getFluentBitContainer(envVars),
+						Volumes: m.getCommonVolumes(runtimeId, versionName),
 					},
-					Volumes: m.getCommonVolumes(versionName),
 				},
 			},
-		},
-	})
+		}, metav1.CreateOptions{})
 
 	return err
 }
@@ -246,16 +250,16 @@ func (m *Manager) getNodeTolerations(isGPUEnabled bool) []apiv1.Toleration {
 	}
 }
 
-func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) error {
+func (m *Manager) restartPodsSync(ctx context.Context, runtimeId, versionName, ns string) error {
 	gracePeriodZero := int64(0)
 	deletePolicy := metav1.DeletePropagationForeground
-	deleteOptions := &metav1.DeleteOptions{
+	deleteOptions := metav1.DeleteOptions{
 		PropagationPolicy:  &deletePolicy,
 		GracePeriodSeconds: &gracePeriodZero,
 	}
 
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Pod",
 		},
@@ -263,7 +267,7 @@ func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) e
 
 	pods := m.clientset.CoreV1().Pods(ns)
 
-	list, err := pods.List(listOptions)
+	list, err := pods.List(ctx, listOptions)
 	if err != nil {
 		return err
 	}
@@ -276,14 +280,14 @@ func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) e
 		return nil
 	}
 
-	w, err := pods.Watch(listOptions)
+	w, err := pods.Watch(ctx, listOptions)
 	if err != nil {
 		return err
 	}
 
 	watchResults := w.ResultChan()
 
-	err = pods.DeleteCollection(deleteOptions, listOptions)
+	err = pods.DeleteCollection(ctx, deleteOptions, listOptions)
 	if err != nil {
 		return err
 	}
@@ -317,21 +321,21 @@ func (m *Manager) restartPodsSync(ctx context.Context, versionName, ns string) e
 	}
 }
 
-func (m *Manager) getVersionNameLabelSelector(versionName string) string {
-	return fmt.Sprintf("version-name=%s", versionName)
+func (m *Manager) getVersionNameLabelSelector(runtimeId, versionName string) string {
+	return fmt.Sprintf("runtime-id=%s,version-name=%s", runtimeId, versionName)
 }
 
-func (m *Manager) deleteDeploymentsSync(ctx context.Context, versionName, ns string) error {
+func (m *Manager) deleteDeploymentsSync(ctx context.Context, runtimeId, versionName, ns string) error {
 	deployments := m.clientset.AppsV1().Deployments(ns)
 
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Deployment",
 		},
 	}
 
-	list, err := deployments.List(listOptions)
+	list, err := deployments.List(ctx, listOptions)
 	if err != nil {
 		return err
 	}
@@ -345,7 +349,7 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, versionName, ns str
 
 	gracePeriodZero := int64(0)
 	deletePolicy := metav1.DeletePropagationForeground
-	deleteOptions := &metav1.DeleteOptions{
+	deleteOptions := metav1.DeleteOptions{
 		PropagationPolicy:  &deletePolicy,
 		GracePeriodSeconds: &gracePeriodZero,
 	}
@@ -355,15 +359,15 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, versionName, ns str
 
 		m.logger.Infof("Deleting deployment '%s'...", d.Name)
 
-		err = deployments.Delete(d.Name, deleteOptions)
+		err = deployments.Delete(ctx, d.Name, deleteOptions)
 		if err != nil {
 			return err
 		}
 	}
 
-	m.deleteDeploymentPODs(ns, deleteOptions, versionName)
+	m.deleteDeploymentPODs(ctx, ns, deleteOptions, runtimeId, versionName)
 
-	w, err := deployments.Watch(listOptions)
+	w, err := deployments.Watch(ctx, listOptions)
 	if err != nil {
 		return err
 	}
@@ -373,12 +377,12 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, versionName, ns str
 
 // In order to delete the Deployments is mandatory to delete theirs associated PODs because
 // the "Deleted" event of a deployment is not received until their PODs are deleted.
-func (m *Manager) deleteDeploymentPODs(ns string, deleteOptions *metav1.DeleteOptions, versionName string) {
+func (m *Manager) deleteDeploymentPODs(ctx context.Context, ns string, deleteOptions metav1.DeleteOptions, runtimeId, versionName string) {
 	pods := m.clientset.CoreV1().Pods(ns)
 	deletePodsPolicy := metav1.DeletePropagationBackground
 	deleteOptions.PropagationPolicy = &deletePodsPolicy
-	podList, _ := pods.List(metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+	podList, _ := pods.List(ctx, metav1.ListOptions{
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Pod",
 		},
@@ -387,13 +391,13 @@ func (m *Manager) deleteDeploymentPODs(ns string, deleteOptions *metav1.DeleteOp
 	m.logger.Infof("There are %d PODs to delete", len(podList.Items))
 
 	for i := range podList.Items {
-		_ = pods.Delete(podList.Items[i].Name, deleteOptions)
+		_ = pods.Delete(ctx, podList.Items[i].Name, deleteOptions)
 	}
 }
 
-func (m *Manager) deleteConfigMapsSync(ctx context.Context, versionName, ns string) error {
+func (m *Manager) deleteConfigMapsSync(ctx context.Context, runtimeId, versionName, ns string) error {
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "ConfigMap",
 		},
@@ -401,7 +405,7 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, versionName, ns stri
 
 	configMaps := m.clientset.CoreV1().ConfigMaps(ns)
 
-	list, err := configMaps.List(listOptions)
+	list, err := configMaps.List(ctx, listOptions)
 	if err != nil {
 		return err
 	}
@@ -415,7 +419,7 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, versionName, ns stri
 
 	gracePeriodZero := int64(0)
 	deletePolicy := metav1.DeletePropagationForeground
-	deleteOptions := &metav1.DeleteOptions{
+	deleteOptions := metav1.DeleteOptions{
 		PropagationPolicy:  &deletePolicy,
 		GracePeriodSeconds: &gracePeriodZero,
 	}
@@ -425,13 +429,13 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, versionName, ns stri
 
 		m.logger.Infof("Deleting configmap '%s'...", c.Name)
 
-		err = configMaps.Delete(c.Name, deleteOptions)
+		err = configMaps.Delete(ctx, c.Name, deleteOptions)
 		if err != nil {
 			return err
 		}
 	}
 
-	w, err := configMaps.Watch(listOptions)
+	w, err := configMaps.Watch(ctx, listOptions)
 	if err != nil {
 		return err
 	}

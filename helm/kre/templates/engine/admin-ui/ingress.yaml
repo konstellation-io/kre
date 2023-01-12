@@ -1,13 +1,7 @@
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-admin-ui-ingress
+  name: {{ .Release.Name }}-admin-ui
   {{- with .Values.adminUI.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -15,6 +9,9 @@ metadata:
   labels:
     {{- include "admin-ui.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.adminUI.ingress.className }}
+  ingressClassName: {{ .Values.adminUI.ingress.className }}
+  {{- end }}
   {{- if .Values.adminUI.tls.enabled }}
   tls:
     - hosts:
@@ -25,17 +22,10 @@ spec:
     - host: {{ .Values.adminUI.host }}
       http:
         paths:
-          {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-          - pathType: Prefix
-            path: "/"
+          - path: "/"
+            pathType: Prefix
             backend:
               service:
-                name: admin-ui
+                name: {{ .Release.Name }}-admin-ui
                 port:
-                  number: 80
-          {{- else }}
-          - path: /
-            backend:
-              serviceName: admin-ui
-              servicePort: web
-          {{- end }} 
+                  name: web

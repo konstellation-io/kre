@@ -9,8 +9,8 @@ It is subscribed to two NATS subjects:
 ### "mongo_writer" message
 
 The received messages in "mongo_writer" subject are JSONs with two fields:
-- **coll**: String with the collection name. 
-- **doc**: Object to persist. 
+- **coll**: String with the collection name.
+- **doc**: Object to persist.
 
 Example:
 ```json
@@ -76,7 +76,7 @@ Example:
 - Create a port-forward for the runtime NATS instance.
 - Configure the environment vars:
 ```
-KRT_NATS_SERVER=localhost:4222
+KRE_NATS_URL=localhost:4222
 KRE_RUNTIME_MONGO_URI=mongodb://admin:123456@0.0.0.0:27017/admin?connect=direct
 ```
 Notice the `?connect=direct` param in the MongoDB uri!
@@ -88,7 +88,7 @@ Notice the `?connect=direct` param in the MongoDB uri!
 Then you can execute the workflow using gcurl:
 ```
 grpcurl -plaintext -d '{"name": "John"}' localhost:9001 entrypoint.Entrypoint/Greet
-``` 
+```
 ## Testing
 
 To create new tests install [GoMock](https://github.com/golang/mock). Mocks used on tests are generated with

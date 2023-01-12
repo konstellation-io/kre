@@ -15,8 +15,16 @@ type Config struct {
 
 	BaseDomainName string `yaml:"baseDomainName" envconfig:"KRE_BASE_DOMAIN_NAME"`
 
+	ReleaseName string `yaml:"releaseName" envconfig:"KRE_RELEASE_NAME"`
+
 	Entrypoint struct {
-		RequestTimeout string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINT_REQUEST_TIMEOUT"`
+		RequestTimeout           string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINTS_REQUEST_TIMEOUT"`
+		IngressClassName         string `yaml:"ingressClassName" envconfig:"KRE_ENTRYPOINTS_INGRESS_CLASS_NAME"`
+		IngressAnnotationsBase64 string `yaml:"ingressAnnotationsBase64" envconfig:"KRE_ENTRYPOINTS_BASE64_INGRESSES_ANNOTATIONS"`
+		TLS                      struct {
+			IsEnabled      bool   `yaml:"isEnabled" envconfig:"KRE_ENTRYPOINTS_TLS"`
+			CertSecretName string `yaml:"secretName" envconfig:"KRE_ENTRYPOINTS_TLS_CERT_SECRET_NAME"`
+		} `yaml:"tls"`
 	} `yaml:"entrypoint"`
 
 	Server struct {
@@ -34,32 +42,16 @@ type Config struct {
 	} `yaml:"kubernetes"`
 
 	NatsStreaming struct {
-		Storage struct {
-			ClassName string `yaml:"className" envconfig:"KRE_NATS_STORAGECLASS"`
-			Size      string `yaml:"size" envconfig:"KRE_NATS_STORAGE_SIZE"`
-		} `yaml:"storage"`
+		URL  string `yaml:"url" envconfig:"KRE_NATS_URL"`
+		Host string `yaml:"host" envconfig:"KRE_NATS_HOST"`
+		Port string `yaml:"port" envconfig:"KRE_NATS_PORT"`
 	} `yaml:"nats_streaming"`
 
-	MongoDB struct {
-		PersistentVolume struct {
-			StorageClass string `yaml:"storageClass" envconfig:"KRE_MONGODB_STORAGECLASS"`
-			Size         string `yaml:"size" envconfig:"KRE_MONGODB_STORAGE_SIZE"`
-		} `yaml:"persistentVolume"`
-	} `yaml:"mongo"`
-
-	Chronograf struct {
-		PersistentVolume struct {
-			StorageClass string `yaml:"storageClass" envconfig:"KRE_CHRONOGRAF_STORAGECLASS"`
-			Size         string `yaml:"size" envconfig:"KRE_CHRONOGRAF_STORAGE_SIZE"`
-		} `yaml:"persistentVolume"`
-	} `yaml:"chronograf"`
-
-	InfluxDB struct {
-		PersistentVolume struct {
-			StorageClass string `yaml:"storageClass" envconfig:"KRE_INFLUXDB_STORAGECLASS"`
-			Size         string `yaml:"size" envconfig:"KRE_INFLUXDB_STORAGE_SIZE"`
-		} `yaml:"persistentVolume"`
-	} `yaml:"influxdb"`
+	KrtFilesDownloader struct {
+		Image      string `yaml:"image" envconfig:"KRE_KRT_FILES_DOWNLOADER_IMAGE"`
+		Tag        string `yaml:"tag" envconfig:"KRE_KRT_FILES_DOWNLOADER_TAG"`
+		PullPolicy string `yaml:"pullPolicy" envconfig:"KRE_KRT_FILES_DOWNLOADER_PULL_POLICY"`
+	} `yaml:"krtFilesDownloader"`
 }
 
 // NewConfig will read the config.yml file and override values with env vars.

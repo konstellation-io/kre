@@ -29,7 +29,7 @@ function Version({ versions, version, runtime }: Props) {
         runtimeId: runtime.id,
         runtimeName: runtime.name,
         versionId: version.id,
-        versionName: version.name
+        versionName: version.name,
       });
     }
   }, [version, runtime, updateVersion]);

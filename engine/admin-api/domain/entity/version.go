@@ -62,13 +62,14 @@ type Edge struct {
 }
 
 type Node struct {
-	ID       string     `bson:"id"`
-	Name     string     `bson:"name"`
-	Image    string     `bson:"image"`
-	Src      string     `bson:"src"`
-	GPU      bool       `bson:"gpu"`
-	Replicas int32      `bson:"replicas" default:"1"`
-	Status   NodeStatus `bson:"-"` // This field value is calculated in k8s
+	ID            string     `bson:"id"`
+	Name          string     `bson:"name"`
+	Image         string     `bson:"image"`
+	Src           string     `bson:"src"`
+	GPU           bool       `bson:"gpu"`
+	Subscriptions []string   `bson:"subscriptions"`
+	Replicas      int32      `bson:"replicas" default:"1"`
+	Status        NodeStatus `bson:"-"` // This field value is calculated in k8s
 }
 
 type NodeStatus string
@@ -92,12 +93,41 @@ func (e NodeStatus) String() string {
 	return string(e)
 }
 
+type KrtVersion string
+
+const (
+	KRTVersionV1 KrtVersion = "v1" // TODO krt-v1: deprecate retrocompatibility
+	KRTVersionV2 KrtVersion = "v2"
+)
+
+func (e KrtVersion) IsValid() bool {
+	switch e {
+	case KRTVersionV1, KRTVersionV2:
+		return true
+	}
+	return false
+}
+
+func (e KrtVersion) String() string {
+	return string(e)
+}
+
+func ParseKRTVersionFromString(str string) (KrtVersion, bool) {
+	var krtVersionMap = map[string]KrtVersion{
+		KRTVersionV1.String(): KRTVersionV1,
+		KRTVersionV2.String(): KRTVersionV2,
+	}
+	c, ok := krtVersionMap[str]
+	return c, ok
+}
+
 type Workflow struct {
 	ID         string `bson:"id"`
 	Name       string `bson:"name"`
 	Entrypoint string `bson:"entrypoint"`
 	Nodes      []Node `bson:"nodes"`
-	Edges      []Edge `bson:"edges"`
+	Edges      []Edge `bson:"edges"` // TODO krt-v1: deprecate retrocompatibility
+	Exitpoint  string `bson:"exitpoint"`
 }
 
 type Entrypoint struct {
@@ -118,10 +148,10 @@ type VersionConfig struct {
 }
 
 type Version struct {
-	ID string `bson:"_id"`
-
-	Name        string `bson:"name"`
-	Description string `bson:"description"`
+	ID          string     `bson:"_id"`
+	KrtVersion  KrtVersion `bson:"krtVersion"`
+	Name        string     `bson:"name"`
+	Description string     `bson:"description"`
 
 	CreationDate   time.Time `bson:"creationDate"`
 	CreationAuthor string    `bson:"creationAuthor"`

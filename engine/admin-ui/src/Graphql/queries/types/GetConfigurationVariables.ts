@@ -5,7 +5,7 @@
 
 import {
   VersionStatus,
-  ConfigurationVariableType
+  ConfigurationVariableType,
 } from './../../types/globalTypes';
 
 // ====================================================
@@ -37,4 +37,5 @@ export interface GetConfigurationVariables {
 
 export interface GetConfigurationVariablesVariables {
   versionName: string;
+  runtimeId: string;
 }

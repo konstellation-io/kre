@@ -21,7 +21,9 @@ message Workflow {
     string image = 3;
     string src = 4;
     bool gpu = 5;
-    int32 replicas = 6;
+    repeated string subscriptions = 6;
+    string subject = 7;
+    int32 replicas = 8;
   }
 
   message Edge {
@@ -30,11 +32,18 @@ message Workflow {
     string toNode = 3;
   }
 
+  message Entrypoint {
+    string name = 1;
+    string subject = 2;
+  }
+
   string id = 1;
   string name = 2;
-  string entrypoint = 3;
+  Entrypoint entrypoint = 3;
   repeated Node nodes = 4;
   repeated Edge edges = 5;
+  string exitpoint = 6;
+  string stream = 7;
 }
 
 message StartRequest {
@@ -47,15 +56,19 @@ message StartRequest {
   string mongo_krt_bucket = 7;
   string influx_uri = 8;
   Entrypoint entrypoint = 9; // deprecated: this will be deleted with https://github.com/konstellation-io/kre/issues/152
+  string runtime_id = 10;
 }
 
-message VersionName {
+message VersionInfo {
   string name = 1;
+  string runtime_id = 2;
+  repeated string workflows = 3;
 }
 
 message UpdateConfigRequest {
   string version_name = 1;
   repeated Config config = 2;
+  string runtime_id = 3;
 }
 
 message Response {
@@ -64,6 +77,7 @@ message Response {
 
 message NodeStatusRequest {
   string versionName = 1;
+  string runtimeId = 2;
 }
 
 message NodeStatusResponse {
@@ -74,9 +88,9 @@ message NodeStatusResponse {
 
 service VersionService {
   rpc Start (StartRequest) returns (Response);
-  rpc Stop (VersionName) returns (Response);
-  rpc Publish (VersionName) returns (Response);
-  rpc Unpublish (VersionName) returns (Response);
+  rpc Stop (VersionInfo) returns (Response);
+  rpc Publish (VersionInfo) returns (Response);
+  rpc Unpublish (VersionInfo) returns (Response);
   rpc UpdateConfig (UpdateConfigRequest) returns (Response);
   rpc WatchNodeStatus (NodeStatusRequest) returns (stream NodeStatusResponse);
 };

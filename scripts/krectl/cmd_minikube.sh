@@ -27,7 +27,7 @@ minikube_start() {
     ;;
     Stopped)
       echo_check "Restarting minikube profile"
-      minikube start -p "$MINIKUBE_PROFILE"
+      minikube start -p "$MINIKUBE_PROFILE" --kubernetes-version="$MINIKUBE_KUBERNETES_VERSION"
     ;;
     *)
       echo_wait "Creating new minikube profile"
@@ -54,7 +54,11 @@ get_admin_api_pod() {
 }
 
 get_mongo_pod() {
-  kubectl -n ${NAMESPACE} get pod -l app.kubernetes.io/name=kre-mongodb -o custom-columns=":metadata.name" --no-headers
+  kubectl -n ${NAMESPACE} get pod -l app=mongodb-database-svc -o custom-columns=":metadata.name" --no-headers
+}
+
+get_influx_pod() {
+  kubectl -n ${NAMESPACE} get pod -l app.kubernetes.io/name=influxdb -o custom-columns=":metadata.name" --no-headers
 }
 
 minikube_stop() {

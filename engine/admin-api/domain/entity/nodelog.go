@@ -17,12 +17,14 @@ type NodeLog struct {
 }
 
 type SearchLogsOptions struct {
-	StartDate time.Time
-	EndDate   time.Time
-	Search    *string
-	Levels    []LogLevel
-	NodeIDs   []string
-	Cursor    *string
+	StartDate      time.Time
+	EndDate        time.Time
+	Search         *string
+	Levels         []LogLevel
+	NodeIDs        []string
+	Cursor         *string
+	VersionsIDs    []string
+	WorkflowsNames []string
 }
 
 type SearchLogsResult struct {
@@ -31,11 +33,13 @@ type SearchLogsResult struct {
 }
 
 type LogFilters struct {
-	StartDate string     `json:"startDate"`
-	EndDate   *string    `json:"endDate"`
-	Search    *string    `json:"search"`
-	Levels    []LogLevel `json:"levels"`
-	NodeIDs   []string   `json:"nodeIds"`
+	StartDate      string     `json:"startDate"`
+	EndDate        *string    `json:"endDate"`
+	Search         *string    `json:"search"`
+	Levels         []LogLevel `json:"levels"`
+	NodeIDs        []string   `json:"nodeIds"`
+	VersionsIDs    []string   `json:"versionsIds"`
+	WorkflowsNames []string   `json:"workflowsNames"`
 }
 
 type LogLevel string

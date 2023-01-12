@@ -20,10 +20,10 @@ go test ./...
 `golangci-lint` is a fast Go linters runner. It runs linters in parallel, uses caching, supports yaml config, has
 integrations with all major IDE and has dozens of linters included.
 
-As you can see in the `.golangci.yml` config file of this repo, we enable more linters than the default and 
+As you can see in the `.golangci.yml` config file of this repo, we enable more linters than the default and
 have more strict settings.
 
-To run `golangci-lint` execute: 
+To run `golangci-lint` execute:
 ```
 golangci-lint run
 ```

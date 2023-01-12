@@ -18,19 +18,19 @@ This repo contains tools to create and validate KRT files.
 func main() {
   // Create a validator instance
   v := validator.New()
-  
+
   // If you have the filename, use ParseFile
   krtFile, err := v.ParseFile("/path/to/krt.yaml")
   if err != nil {
     log.Fatal(err)
   }
-  
+
   // Check valid format
   errs := v.Validate(krtFile)
   if errs != nil {
     log.Fatal(errs)
   }
-  
+
   // Check all content is valid
   errs := v.ValidateContent(krtFile, "/home/test/krt")
   if errs != nil {
@@ -40,17 +40,17 @@ func main() {
 ```
 
 - KRT builder
-```go  
+```go
 package main
 
 func main() {
   b := builder.New()
-  
+
   err := builder.Build()
   if err != nil {
     log.Fatal(err)
-  } 
-  
+  }
+
 }
 ```
 
