@@ -310,3 +310,5 @@ release will be build and released.
 [mongo-writer-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_mongo_writer
 
 Some changes
+
+More changes
