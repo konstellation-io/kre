@@ -272,6 +272,7 @@ const mockWorkflow1 = [
     id: "id-etl",
     name: "etl",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "etl",
       "entrypoint"
@@ -281,6 +282,7 @@ const mockWorkflow1 = [
     id: "id-email-classificator",
     name: "email-classificator",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "etl"
     ],
@@ -289,6 +291,7 @@ const mockWorkflow1 = [
     id: "id-repairs-handler",
     name: "repairs-handler",
     status: casual.random_element(nodeStatuses),
+    replicas:  2,
     subscriptions: [
       "email-classificator"
     ],
@@ -297,6 +300,7 @@ const mockWorkflow1 = [
     id: "id-metrics",
     name: "metrics",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "email-classificator"
     ],
@@ -305,6 +309,7 @@ const mockWorkflow1 = [
     id: "id-exitpoint",
     name: "exitpoint",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "etl",
       "metrics",
@@ -317,6 +322,7 @@ const mockWorkflow2 = [
     id: "id-etl",
     name: "etl",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "entrypoint"
     ],
@@ -325,6 +331,7 @@ const mockWorkflow2 = [
     id: "id-email-classificator",
     name: "email-classificator",
     status: casual.random_element(nodeStatuses),
+    replicas:  2,
     subscriptions: [
       "etl"
     ],
@@ -333,6 +340,7 @@ const mockWorkflow2 = [
     id: "id-repairs-handler",
     name: "repairs-handler",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "email-classificator"
     ],
@@ -341,6 +349,7 @@ const mockWorkflow2 = [
     id: "id-metrics",
     name: "metrics",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "repairs-handler"
     ],
@@ -349,6 +358,7 @@ const mockWorkflow2 = [
     id: "id-exitpoint",
     name: "exitpoint",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "metrics",
       "etl",
@@ -363,6 +373,7 @@ const mockWorkflow3 = [
     id: "id-etl",
     name: "etl",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "entrypoint"
     ],
@@ -371,6 +382,7 @@ const mockWorkflow3 = [
     id: "id-email-classificator",
     name: "email-classificator",
     status: casual.random_element(nodeStatuses),
+    replicas:  2,
     subscriptions: [
       "etl"
     ],
@@ -379,6 +391,7 @@ const mockWorkflow3 = [
     id: "id-repairs-handler",
     name: "repairs-handler",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "email-classificator"
     ],
@@ -387,6 +400,7 @@ const mockWorkflow3 = [
     id: "id-metrics",
     name: "metrics",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "repairs-handler"
     ],
@@ -395,6 +409,7 @@ const mockWorkflow3 = [
     id: "id-exitpoint",
     name: "exitpoint",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "metrics",
     ],
@@ -406,6 +421,7 @@ const mockWorkflow4 = [
     id: "id-etl",
     name: "etl",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "entrypoint"
     ],
@@ -414,6 +430,7 @@ const mockWorkflow4 = [
     id: "id-email-classificator",
     name: "email-classificator",
     status: casual.random_element(nodeStatuses),
+    replicas:  2,
     subscriptions: [
       "etl"
     ],
@@ -422,6 +439,7 @@ const mockWorkflow4 = [
     id: "id-repairs-handler",
     name: "repairs-handler",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "email-classificator"
     ],
@@ -430,6 +448,7 @@ const mockWorkflow4 = [
     id: "id-metrics",
     name: "metrics",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "repairs-handler"
     ],
@@ -438,6 +457,7 @@ const mockWorkflow4 = [
     id: "id-metrics-2",
     name: "metrics-2",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "metrics",
     ],
@@ -446,6 +466,7 @@ const mockWorkflow4 = [
     id: "exitpoint",
     name: "exitpoint",
     status: casual.random_element(nodeStatuses),
+    replicas:  1,
     subscriptions: [
       "metrics",
       "metrics-2",
