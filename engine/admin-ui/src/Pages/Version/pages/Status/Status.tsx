@@ -101,6 +101,7 @@ function Status({ version, runtime }: Props) {
               name: 'exitpoint',
               status: NodeStatus.STOPPED,
               subscriptions: workflow.nodes.map(node => node.name),
+              replicas: 1
             },
           ]
         }
