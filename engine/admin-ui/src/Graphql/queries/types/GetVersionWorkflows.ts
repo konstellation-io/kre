@@ -19,6 +19,7 @@ export interface GetVersionWorkflows_version_workflows_nodes {
   name: string;
   status: NodeStatus;
   subscriptions: string[] | null;
+  replicas: number;
 }
 
 export interface GetVersionWorkflows_version_workflows_edges {
