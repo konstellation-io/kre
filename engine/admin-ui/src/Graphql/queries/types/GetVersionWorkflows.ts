@@ -21,20 +21,12 @@ export interface GetVersionWorkflows_version_workflows_nodes {
   subscriptions: string[] | null;
 }
 
-export interface GetVersionWorkflows_version_workflows_edges {
-  __typename: 'Edge';
-  id: string;
-  fromNode: string;
-  toNode: string;
-}
-
 export interface GetVersionWorkflows_version_workflows {
   __typename: 'Workflow';
   id: string;
   name: string;
   exitpoint: string | null;
   nodes: GetVersionWorkflows_version_workflows_nodes[];
-  edges: GetVersionWorkflows_version_workflows_edges[] | null;
 }
 
 export interface GetVersionWorkflows_version_config {

@@ -38,14 +38,6 @@ export const workflow: GetVersionWorkflows_version_workflows = {
       subscriptions: []
     }
   ],
-  edges: [
-    {
-      __typename: 'Edge',
-      id: 'edgeId',
-      fromNode: 'node1',
-      toNode: 'node2'
-    }
-  ]
 };
 
 
@@ -137,13 +129,6 @@ export const workflowsMock = {
                 status: 'STARTED'
               }
             ],
-            edges: [
-              {
-                id: 'edge01',
-                fromNode: 'node01',
-                toNode: 'node02'
-              }
-            ]
           }
         ]
       }

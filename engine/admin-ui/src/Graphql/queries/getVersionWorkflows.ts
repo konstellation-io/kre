@@ -18,11 +18,6 @@ export default gql`
           status
           subscriptions
         }
-        edges {
-          id
-          fromNode
-          toNode
-        }
       }
       config {
         completed

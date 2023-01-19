@@ -14,11 +14,10 @@ function Wrapper() {
     <BrowserRouter>
       <MockedProvider mocks={mocks} addTypename={false}>
         <Workflow
-          workflowStatus={VersionStatus.STARTED}
-          entrypointAddress="some-address"
-          entrypointStatus={NodeStatus.STARTED}
           workflow={workflow}
-          tooltipRefs={null}
+          workflowStatus={VersionStatus.STARTED}
+          entrypointStatus={NodeStatus.STARTED}
+          entrypointAddress="some-address"
         />
       </MockedProvider>
     </BrowserRouter>
