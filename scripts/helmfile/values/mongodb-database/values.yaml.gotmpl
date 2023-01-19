@@ -70,3 +70,25 @@ resources:
         db: "admin"
       scramCredentialsSecretName: {{ .Release.Name }}-kre
       connectionStringSecretName: {{ .Release.Name}}-kre-connection-string
+
+    statefulSet:
+      spec:
+        template:
+            spec:
+                containers:
+                  - name: mongod
+                    resources:
+                      limits:
+                        cpu: "1"
+                        memory: 2048Mi
+                      requests:
+                        cpu: "0.1"
+                        memory: 200Mi
+                  - name: mongodb-agent
+                    resources:
+                      limits:
+                        cpu: "0.5"
+                        memory: 512Mi
+                      requests:
+                        cpu: "0.1"
+                        memory: 200Mi

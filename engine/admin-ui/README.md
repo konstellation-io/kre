@@ -19,7 +19,28 @@ Priority by scripts:
 To run the application in your local machine start the [Mock Server](mock-server/README.md).
 To start the development server run:
 
+```bash
+yarn install
+yarn start
 ```
+
+Configure the `config.json` file located in `admin-ui/public/config` with the API-BASE:
+```json
+{
+  "API_BASE_URL": "http://localhost:4000"
+}
+```
+
+Add the next registers to your hosts file if they are not already defined:
+```
+127.0.0.1 dev-admin.kre.local
+192.168.49.2 admin.kre.local
+192.168.49.2 api.kre.local
+```
+
+Then start the application by running the next command from the `admin-ui` folder:
+```bash
+yarn install
 yarn start
 ```
 

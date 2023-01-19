@@ -319,7 +319,7 @@ func (i *VersionInteractor) saveKRTDoc(runtimeId, docFolder string, versionCreat
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
-	if krtYml.IsKrtVersionV1() {
+	if krtYml.IsKrtVersionV1() { // TODO: deprecate krt-v1
 		return i.generateWorkflowsV1(krtYml)
 	}
 	var workflows []*entity.Workflow
@@ -335,6 +335,11 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 		}
 
 		for _, node := range w.Nodes {
+			replicas := int32(1)
+			if node.Replicas != 0 {
+				replicas = node.Replicas
+			}
+
 			nodes = append(nodes, entity.Node{
 				ID:            i.idGenerator.NewID(),
 				Name:          node.Name,
@@ -342,6 +347,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				Src:           node.Src,
 				GPU:           node.GPU,
 				Subscriptions: node.Subscriptions,
+				Replicas:      replicas,
 			})
 		}
 		workflows = append(workflows, &entity.Workflow{
@@ -382,12 +388,18 @@ func (i *VersionInteractor) generateWorkflowsV1(krtYml *krt.Krt) ([]*entity.Work
 				return nil, fmt.Errorf("error creating workflows. Node '%s' not found", name)
 			}
 
+			replicas := int32(1)
+			if nodeInfo.Replicas != 0 {
+				replicas = nodeInfo.Replicas
+			}
+
 			node := &entity.Node{
-				ID:    i.idGenerator.NewID(),
-				Name:  name,
-				Image: nodeInfo.Image,
-				Src:   nodeInfo.Src,
-				GPU:   nodeInfo.GPU,
+				ID:       i.idGenerator.NewID(),
+				Name:     name,
+				Image:    nodeInfo.Image,
+				Src:      nodeInfo.Src,
+				GPU:      nodeInfo.GPU,
+				Replicas: replicas,
 			}
 
 			if previousN != nil {
