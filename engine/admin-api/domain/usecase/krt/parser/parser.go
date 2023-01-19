@@ -88,10 +88,6 @@ func (p *Parser) ParseKrtYaml(krtFilePath string) (*krt.Krt, error) {
 		return nil, fmt.Errorf("error on KRT Yaml parsing: %w", err)
 	}
 
-	p.logger.Infof("++++++++++++++++++++++++++++")
-	p.logger.Infof("%v+", k)
-	p.logger.Infof("++++++++++++++++++++++++++++")
-
 	for _, node := range k.Workflows[0].Nodes {
 		p.logger.Infof("Number of replicas: %d", node.Replicas)
 	}

@@ -261,8 +261,6 @@ func (i *VersionInteractor) completeVersionCreation(
 	docFolder := path.Join(tmpDir, "docs")
 	contentErrors = i.saveKRTDoc(runtime.ID, docFolder, versionCreated, contentErrors, ctx)
 
-	i.logger.Infof("%v+", krtYml)
-
 	err := i.versionRepo.UploadKRTFile(runtime.ID, versionCreated, tmpKrtFile.Name())
 	if err != nil {
 		errorMessage := "error storing KRT file"
