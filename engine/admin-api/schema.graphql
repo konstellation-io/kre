@@ -173,12 +173,6 @@ type Runtime {
   creationAuthor: User!
 }
 
-type Edge {
-  id: ID!
-  fromNode: ID!
-  toNode: ID!
-}
-
 type Node {
   id: ID!
   name: String!
@@ -196,19 +190,18 @@ enum NodeStatus {
 type Workflow {
   id: ID!
   name: String!
+  entrypoint: String
   exitpoint: String
   nodes: [Node!]!
-  edges: [Edge!]
 }
 
 enum KrtVersion {
-  v1
   v2
 }
 
 type Version {
   id: ID!
-  krtVersion: KrtVersion
+  krtVersion: KrtVersion!
   name: String!
   description: String!
   status: VersionStatus!

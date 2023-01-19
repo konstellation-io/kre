@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path"
 )
 
@@ -11,7 +11,7 @@ func (i *VersionInteractor) storeDashboards(ctx context.Context, dashboardsFolde
 	i.logger.Infof("Storing dashboards for version \"%s\" in runtime \"%s\"", version, runtimeId)
 
 	var errors []error = nil
-	d, err := ioutil.ReadDir(dashboardsFolder)
+	d, err := os.ReadDir(dashboardsFolder)
 	if err != nil {
 		errors = append([]error{fmt.Errorf("error listing dashboards files: %w", err)}, errors...)
 	}

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -58,7 +57,6 @@ type VersionInteractor struct {
 	docGenerator           version.DocGenerator
 	dashboardService       service.DashboardService
 	nodeLogRepo            repository.NodeLogRepository
-	translator             version.Translator
 }
 
 // NewVersionInteractor creates a new interactor
@@ -76,7 +74,6 @@ func NewVersionInteractor(
 	dashboardService service.DashboardService,
 	nodeLogRepo repository.NodeLogRepository,
 ) *VersionInteractor {
-	translator := version.NewTranslator(idGenerator)
 	return &VersionInteractor{
 		cfg,
 		logger,
@@ -90,7 +87,6 @@ func NewVersionInteractor(
 		docGenerator,
 		dashboardService,
 		nodeLogRepo,
-		translator,
 	}
 }
 
@@ -131,7 +127,7 @@ func (i *VersionInteractor) GetByRuntime(loggedUserID, runtimeID string) ([]*ent
 }
 
 func (i *VersionInteractor) copyStreamToTempFile(krtFile io.Reader) (*os.File, error) {
-	tmpFile, err := ioutil.TempFile("", "version")
+	tmpFile, err := os.CreateTemp("", "version")
 
 	if err != nil {
 		return nil, fmt.Errorf("error creating temp file for version: %w", err)
@@ -163,7 +159,7 @@ func (i *VersionInteractor) Create(ctx context.Context, loggedUserID string, run
 		return nil, nil, ErrVersionDuplicated
 	}
 
-	tmpDir, err := ioutil.TempDir("", "version")
+	tmpDir, err := os.MkdirTemp("", "version")
 	if err != nil {
 		return nil, nil, fmt.Errorf("error creating temp dir for version: %w", err)
 	}
@@ -319,9 +315,6 @@ func (i *VersionInteractor) saveKRTDoc(runtimeId, docFolder string, versionCreat
 }
 
 func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workflow, error) {
-	if krtYml.IsKrtVersionV1() {
-		return i.generateWorkflowsV1(krtYml)
-	}
 	var workflows []*entity.Workflow
 	if len(krtYml.Workflows) == 0 {
 		return workflows, fmt.Errorf("error generating workflows: there are no defined workflows")
@@ -356,64 +349,6 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 	return workflows, nil
 }
 
-func (i *VersionInteractor) generateWorkflowsV1(krtYml *krt.Krt) ([]*entity.Workflow, error) {
-	var workflows []*entity.Workflow
-	if len(krtYml.Workflows) == 0 {
-		return workflows, fmt.Errorf("error generating workflows: there are no defined workflows")
-	}
-
-	if len(krtYml.Nodes) == 0 {
-		return nil, fmt.Errorf("error generating workflows: there are no defined nodes")
-	}
-
-	nodesMap := map[string]krt.Node{}
-	for _, n := range krtYml.Nodes {
-		nodesMap[n.Name] = n
-	}
-
-	for _, w := range krtYml.Workflows {
-		var nodes []entity.Node
-		var edges []entity.Edge
-
-		var previousN *entity.Node
-		for _, name := range w.Sequential {
-			nodeInfo, ok := nodesMap[name]
-			if !ok {
-				return nil, fmt.Errorf("error creating workflows. Node '%s' not found", name)
-			}
-
-			node := &entity.Node{
-				ID:    i.idGenerator.NewID(),
-				Name:  name,
-				Image: nodeInfo.Image,
-				Src:   nodeInfo.Src,
-				GPU:   nodeInfo.GPU,
-			}
-
-			if previousN != nil {
-				e := entity.Edge{
-					ID:       i.idGenerator.NewID(),
-					FromNode: previousN.ID,
-					ToNode:   node.ID,
-				}
-				edges = append(edges, e)
-			}
-
-			nodes = append(nodes, *node)
-			previousN = node
-		}
-
-		workflows = append(workflows, &entity.Workflow{
-			ID:         i.idGenerator.NewID(),
-			Name:       w.Name,
-			Entrypoint: w.Entrypoint,
-			Nodes:      nodes,
-			Edges:      edges,
-		})
-	}
-	return workflows, nil
-}
-
 // Start create the resources of the given Version
 func (i *VersionInteractor) Start(
 	ctx context.Context,
@@ -431,10 +366,6 @@ func (i *VersionInteractor) Start(
 	v, err := i.versionRepo.GetByName(ctx, runtimeId, versionName)
 	if err != nil {
 		return nil, nil, err
-	}
-
-	if v.KrtVersion == "" || v.KrtVersion == entity.KRTVersionV1 {
-		i.translator.TranslateToKrtVersionV2(v)
 	}
 
 	if !v.CanBeStarted() {
@@ -526,14 +457,17 @@ func (i *VersionInteractor) changeStatusAndNotify(
 
 	if status == entity.VersionStatusStarted {
 		err := i.natsManagerService.CreateStreams(ctx, runtimeId, version)
+		i.logger.Info("First check -----------------")
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
 		worklfowsStreamConfig, err := i.natsManagerService.GetVersionNatsConfig(ctx, runtimeId, version)
+		i.logger.Info("Second check -----------------")
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
 		err = i.versionService.Start(ctx, runtimeId, version, worklfowsStreamConfig)
+		i.logger.Info("First check -----------------")
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
 		}
