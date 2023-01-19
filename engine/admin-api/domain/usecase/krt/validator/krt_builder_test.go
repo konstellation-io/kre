@@ -32,26 +32,6 @@ func NewKrtBuilder() *KrtBuilder {
 	}
 }
 
-func (k *KrtBuilder) V1() *KrtBuilder {
-	k.krtYaml.KrtVersion = entity.KRTVersionV1.String()
-	k.krtYaml.Nodes = []krt.Node{
-		{
-			Name:  "test-node",
-			Image: "test/image",
-			Src:   "src/test",
-			GPU:   false,
-		},
-	}
-	k.krtYaml.Workflows = []krt.Workflow{
-		{
-			Name:       "valid-workflow",
-			Entrypoint: "valid-entrypoint",
-			Sequential: []string{"test-node"},
-		},
-	}
-	return k
-}
-
 func (k *KrtBuilder) V2() *KrtBuilder {
 	k.krtYaml.KrtVersion = entity.KRTVersionV2.String()
 	k.krtYaml.Workflows = []krt.Workflow{
@@ -109,18 +89,8 @@ func (k *KrtBuilder) WithConfigVars(vars []string) *KrtBuilder {
 	return k
 }
 
-func (k *KrtBuilder) WithNodes(nodes []krt.Node) *KrtBuilder {
-	k.krtYaml.Nodes = nodes
-	return k
-}
-
 func (k *KrtBuilder) WithWorkflows(workflows []krt.Workflow) *KrtBuilder {
 	k.krtYaml.Workflows = workflows
-	return k
-}
-
-func (k *KrtBuilder) WithWorkflowsSequential(sequential []string) *KrtBuilder {
-	k.krtYaml.Workflows[0].Sequential = sequential
 	return k
 }
 

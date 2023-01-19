@@ -43,6 +43,7 @@ func (k *K8sVersionClient) Start(
 ) error {
 	configVars := versionToConfig(version)
 	wf, err := versionToWorkflows(version, versionStreamConfig)
+	k.logger.Info("First start check +++++++++++++++")
 	if err != nil {
 		return err
 	}
@@ -63,6 +64,7 @@ func (k *K8sVersionClient) Start(
 		},
 	}
 
+	k.logger.Info("Second start check +++++++++++++++")
 	_, err = k.client.Start(ctx, &req)
 	return err
 }
@@ -182,19 +184,6 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 			Nodes:     nodes,
 			Exitpoint: w.Exitpoint,
 			Stream:    workflowStreamConfig.Stream,
-		}
-
-		// TODO krt-v1: deprecate retrocompatibility
-		if version.KrtVersion == entity.KRTVersionV1 {
-			edges := make([]*versionpb.Workflow_Edge, len(w.Edges))
-			for k, e := range w.Edges {
-				edges[k] = &versionpb.Workflow_Edge{
-					Id:       e.ID,
-					FromNode: e.FromNode,
-					ToNode:   e.ToNode,
-				}
-			}
-			wf[i].Edges = edges
 		}
 	}
 

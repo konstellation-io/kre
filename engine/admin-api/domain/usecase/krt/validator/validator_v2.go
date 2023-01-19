@@ -2,6 +2,7 @@ package validator
 
 import (
 	"fmt"
+
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
@@ -34,10 +35,6 @@ func (v *ValidatorV2) Run(krtYaml *krt.Krt) error {
 func (v *ValidatorV2) getWorkflowsValidationErrors(workflows []krt.Workflow) []error {
 	var validationErrors []error
 	for _, workflow := range workflows {
-		if workflow.Sequential != nil {
-			validationErrors = append(validationErrors, fmt.Errorf("field \"sequential\" is incompatible with krt version v2"))
-		}
-
 		existingNodes := make(map[string]bool, len(workflow.Nodes))
 		for _, node := range workflow.Nodes {
 			existingNodes[node.Name] = true

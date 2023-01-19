@@ -102,10 +102,12 @@ func (k *YamlFieldsValidator) getErrorMessages(err error) []error {
 
 func ValidateSrcPaths(krt *krt.Krt, dstDir string) []error {
 	var errors []error = nil
-	for _, node := range krt.Nodes {
-		nodeFile := path.Join(dstDir, node.Src)
-		if !fileExists(nodeFile) {
-			errors = append(errors, fmt.Errorf("error src file \"%s\" for node \"%s\" does not exists ", node.Src, node.Name))
+	for _, workflow := range krt.Workflows {
+		for _, node := range workflow.Nodes {
+			nodeFile := path.Join(dstDir, node.Src)
+			if !fileExists(nodeFile) {
+				errors = append(errors, fmt.Errorf("error src file \"%s\" for node \"%s\" does not exists ", node.Src, node.Name))
+			}
 		}
 	}
 
@@ -118,21 +120,4 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
-}
-
-func validateWorkflows(k *krt.Krt) error {
-	nodeList := map[string]int{}
-	for _, node := range k.Nodes {
-		nodeList[node.Name] = 1
-	}
-
-	for _, workflow := range k.Workflows {
-		for _, nodeName := range workflow.Sequential {
-			if _, ok := nodeList[nodeName]; !ok {
-				return fmt.Errorf("node in sequential not found: %s", nodeName)
-			}
-		}
-	}
-
-	return nil
 }
