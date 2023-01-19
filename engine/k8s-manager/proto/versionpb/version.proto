@@ -25,12 +25,6 @@ message Workflow {
     string subject = 7;
   }
 
-  message Edge {
-    string id = 1;
-    string fromNode = 2;
-    string toNode = 3;
-  }
-
   message Entrypoint {
     string name = 1;
     string subject = 2;
@@ -40,9 +34,8 @@ message Workflow {
   string name = 2;
   Entrypoint entrypoint = 3;
   repeated Node nodes = 4;
-  repeated Edge edges = 5;
-  string exitpoint = 6;
-  string stream = 7;
+  string exitpoint = 5;
+  string stream = 6;
 }
 
 message StartRequest {
