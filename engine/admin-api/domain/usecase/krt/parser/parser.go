@@ -88,10 +88,6 @@ func (p *Parser) ParseKrtYaml(krtFilePath string) (*krt.Krt, error) {
 		return nil, fmt.Errorf("error on KRT Yaml parsing: %w", err)
 	}
 
-	for _, node := range k.Workflows[0].Nodes {
-		p.logger.Infof("Number of replicas: %d", node.Replicas)
-	}
-
 	// TODO krt-v1: deprecate retrocompatibility
 	if k.KrtVersion == "" {
 		k.KrtVersion = entity.KRTVersionV1.String()
