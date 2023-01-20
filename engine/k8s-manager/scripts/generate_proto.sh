@@ -14,4 +14,3 @@ if [ -d "../admin-api" ]; then
     cp "$PB_FILE" "../admin-api/adapter/service/proto/${DST}/"
   done
 fi
-
