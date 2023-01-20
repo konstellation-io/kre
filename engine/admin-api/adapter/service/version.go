@@ -43,7 +43,6 @@ func (k *K8sVersionClient) Start(
 ) error {
 	configVars := versionToConfig(version)
 	wf, err := versionToWorkflows(version, versionStreamConfig)
-	k.logger.Info("First start check +++++++++++++++")
 	if err != nil {
 		return err
 	}
@@ -64,7 +63,6 @@ func (k *K8sVersionClient) Start(
 		},
 	}
 
-	k.logger.Info("Second start check +++++++++++++++")
 	_, err = k.client.Start(ctx, &req)
 	return err
 }
