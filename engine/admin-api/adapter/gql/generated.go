@@ -121,6 +121,7 @@ type ComplexityRoot struct {
 	Node struct {
 		ID            func(childComplexity int) int
 		Name          func(childComplexity int) int
+		Replicas      func(childComplexity int) int
 		Status        func(childComplexity int) int
 		Subscriptions func(childComplexity int) int
 	}
@@ -665,6 +666,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Node.Name(childComplexity), true
+
+	case "Node.replicas":
+		if e.complexity.Node.Replicas == nil {
+			break
+		}
+
+		return e.complexity.Node.Replicas(childComplexity), true
 
 	case "Node.status":
 		if e.complexity.Node.Status == nil {
@@ -1443,6 +1451,7 @@ type Node {
   name: String!
   status: NodeStatus!
   subscriptions: [String!]
+  replicas: Int!
 }
 
 enum NodeStatus {
@@ -4551,6 +4560,50 @@ func (ec *executionContext) fieldContext_Node_subscriptions(ctx context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Node_replicas(ctx context.Context, field graphql.CollectedField, obj *entity.Node) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Node_replicas(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Replicas, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalNInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Node_replicas(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Node",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _NodeLog_id(ctx context.Context, field graphql.CollectedField, obj *entity.NodeLog) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_NodeLog_id(ctx, field)
 	if err != nil {
@@ -6343,6 +6396,8 @@ func (ec *executionContext) fieldContext_Subscription_watchNodeStatus(ctx contex
 				return ec.fieldContext_Node_status(ctx, field)
 			case "subscriptions":
 				return ec.fieldContext_Node_subscriptions(ctx, field)
+			case "replicas":
+				return ec.fieldContext_Node_replicas(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Node", field.Name)
 		},
@@ -8014,6 +8069,8 @@ func (ec *executionContext) fieldContext_Workflow_nodes(ctx context.Context, fie
 				return ec.fieldContext_Node_status(ctx, field)
 			case "subscriptions":
 				return ec.fieldContext_Node_subscriptions(ctx, field)
+			case "replicas":
+				return ec.fieldContext_Node_replicas(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Node", field.Name)
 		},
@@ -10908,6 +10965,13 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = ec._Node_subscriptions(ctx, field, obj)
 
+		case "replicas":
+
+			out.Values[i] = ec._Node_replicas(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -12522,6 +12586,21 @@ func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}
 
 func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v interface{}) (int32, error) {
+	res, err := graphql.UnmarshalInt32(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	res := graphql.MarshalInt32(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

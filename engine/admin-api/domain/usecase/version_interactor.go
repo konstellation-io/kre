@@ -328,6 +328,11 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 		}
 
 		for _, node := range w.Nodes {
+			replicas := int32(1)
+			if node.Replicas != 0 {
+				replicas = node.Replicas
+			}
+
 			nodes = append(nodes, entity.Node{
 				ID:            i.idGenerator.NewID(),
 				Name:          node.Name,
@@ -335,6 +340,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				Src:           node.Src,
 				GPU:           node.GPU,
 				Subscriptions: node.Subscriptions,
+				Replicas:      replicas,
 			})
 		}
 		workflows = append(workflows, &entity.Workflow{

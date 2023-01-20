@@ -178,6 +178,7 @@ type Node {
   name: String!
   status: NodeStatus!
   subscriptions: [String!]
+  replicas: Int!
 }
 
 enum NodeStatus {
