@@ -16,7 +16,8 @@ type Node struct {
 	Image         string   `yaml:"image" validate:"required"`
 	Src           string   `yaml:"src" validate:"required"`
 	GPU           bool     `yaml:"gpu"`
-	Subscriptions []string `yaml:"subscriptions"`
+	Subscriptions []string `yaml:"subscriptions"` //v2
+	Replicas      int32    `yaml:"replicas"`
 }
 
 // Workflow contains data about a version's workflow
