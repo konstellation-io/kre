@@ -78,8 +78,6 @@ function Status({ version, runtime }: Props) {
     [loading, error],
   );
 
-  // TODO: Delete this logic when krtVersion v1 is deprecated
-
   const getWorkflows = () => {
     if (!data) return [];
     return data.version.workflows;
