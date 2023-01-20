@@ -17,6 +17,7 @@ export default gql`
           name
           status
           subscriptions
+          replicas
         }
       }
       config {

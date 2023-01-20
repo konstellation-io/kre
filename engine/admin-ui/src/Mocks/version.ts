@@ -35,7 +35,8 @@ export const workflow: GetVersionWorkflows_version_workflows = {
       id: 'nodeId',
       name: 'Node Name',
       status: NodeStatus.STARTED,
-      subscriptions: []
+      subscriptions: [],
+      replicas: 1,
     }
   ],
 };
@@ -121,12 +122,14 @@ export const workflowsMock = {
               {
                 id: 'node01',
                 name: 'one node',
-                status: 'STARTED'
+                status: 'STARTED',
+                replicas: 1
               },
               {
                 id: 'node02',
                 name: 'another node',
-                status: 'STARTED'
+                status: 'STARTED',
+                replicas: 1
               }
             ],
           }

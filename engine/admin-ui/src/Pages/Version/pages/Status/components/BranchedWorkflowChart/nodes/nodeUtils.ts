@@ -9,6 +9,7 @@ export interface NodeWithStatus {
   name: string;
   status: NodeStatus;
   subscriptions?: string[] | null;
+  replicas: number;
 }
 
 interface ForcePostitions {
@@ -29,11 +30,12 @@ export function getGraphData(workflow: GetVersionWorkflows_version_workflows, en
     id: "entrypoint",
     name: "entrypoint",
     status: entrypointStatus,
+    replicas: 1,
   }
   const nodes: NodeWithStatus[] = [
     entrypointNode,
     ...workflow.nodes
-      .map((node) => ({ id: node.id, name: node.name, status: node.status})),
+      .map((node) => ({ id: node.id, name: node.name, status: node.status, replicas: node.replicas})),
   ]
   const links = [ {source: workflow.exitpoint ?? 'exitpoint', target: 'entrypoint'}, ...workflow.nodes
     .map((node) => getNodeLinks(node))
