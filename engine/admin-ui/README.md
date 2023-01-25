@@ -22,10 +22,7 @@ Priority by scripts:
 To run the application in your local machine start the [Mock Server](mock-server/README.md).
 To start the development server run:
 
-<<<<<<< HEAD
 ```sh
-=======
-```bash
 yarn install
 yarn start
 ```
