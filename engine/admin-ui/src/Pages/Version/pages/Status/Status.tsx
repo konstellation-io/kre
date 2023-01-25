@@ -78,44 +78,9 @@ function Status({ version, runtime }: Props) {
     [loading, error],
   );
 
-  // TODO: Delete this logic when krtVersion v1 is deprecated
-  const getNodesWithSubscriptionsFromEdges = (workflows: GetVersionWorkflows_version_workflows[]) => (
-    workflows
-      .map(workflow => (
-        {
-          ...workflow,
-          exitpoint: "exitpoint",
-          nodes: [
-            ...workflow.nodes
-              .map((node) => {
-                const edgeToNode = workflow.edges?.find(edge => edge.toNode === node.id);
-                const nodeName = edgeToNode && workflow.nodes.find(n => n.id === edgeToNode.fromNode)?.name
-                return {
-                  ...node,
-                  subscriptions: edgeToNode && nodeName ? [nodeName]: ["entrypoint"],
-                }
-              }),
-            {
-              __typename: 'Node' as 'Node',
-              id: 'exitpoint',
-              name: 'exitpoint',
-              status: NodeStatus.STOPPED,
-              subscriptions: workflow.nodes.map(node => node.name),
-              replicas: 1
-            },
-          ]
-        }
-      ))
-  )
-
   const getWorkflows = () => {
     if (!data) return [];
-
-    if (data.version.krtVersion === KrtVersion.v2) {
-      return data.version.workflows;
-    }
-
-    return getNodesWithSubscriptionsFromEdges(data.version.workflows)
+    return data.version.workflows;
   }
 
   if (error) return <ErrorMessage />;

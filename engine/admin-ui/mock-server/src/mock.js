@@ -230,7 +230,6 @@ module.exports = {
     name: casual.random_element(workflowNames),
     exitpoint: "exitpoint",
     nodes: () => getNodes(),
-    edges: () => new MockList([1, 4])
   }),
   Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
   // Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
@@ -476,28 +475,3 @@ const mockWorkflow4 = [
     ],
   },
 ]
-
-const workflow_krtV1 = {
-  id: 'workflow01',
-  name: 'workflow01',
-  exitpoint: 'exitpoint',
-  nodes: [
-    {
-      id: 'node01',
-      name: 'one node',
-      status: 'STARTED'
-    },
-    {
-      id: 'node02',
-      name: 'another node',
-      status: 'STARTED'
-    }
-  ],
-  edges: [
-    {
-      id: 'edge01',
-      fromNode: 'node01',
-      toNode: 'node02'
-    }
-  ]
-}

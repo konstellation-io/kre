@@ -19,11 +19,6 @@ export default gql`
           subscriptions
           replicas
         }
-        edges {
-          id
-          fromNode
-          toNode
-        }
       }
       config {
         completed
