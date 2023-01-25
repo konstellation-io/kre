@@ -64,12 +64,6 @@ type ComplexityRoot struct {
 		Value func(childComplexity int) int
 	}
 
-	Edge struct {
-		FromNode func(childComplexity int) int
-		ID       func(childComplexity int) int
-		ToNode   func(childComplexity int) int
-	}
-
 	LogPage struct {
 		Cursor func(childComplexity int) int
 		Items  func(childComplexity int) int
@@ -224,11 +218,11 @@ type ComplexityRoot struct {
 	}
 
 	Workflow struct {
-		Edges     func(childComplexity int) int
-		Exitpoint func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Nodes     func(childComplexity int) int
+		Entrypoint func(childComplexity int) int
+		Exitpoint  func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Nodes      func(childComplexity int) int
 	}
 }
 
@@ -357,27 +351,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ConfigurationVariable.Value(childComplexity), true
-
-	case "Edge.fromNode":
-		if e.complexity.Edge.FromNode == nil {
-			break
-		}
-
-		return e.complexity.Edge.FromNode(childComplexity), true
-
-	case "Edge.id":
-		if e.complexity.Edge.ID == nil {
-			break
-		}
-
-		return e.complexity.Edge.ID(childComplexity), true
-
-	case "Edge.toNode":
-		if e.complexity.Edge.ToNode == nil {
-			break
-		}
-
-		return e.complexity.Edge.ToNode(childComplexity), true
 
 	case "LogPage.cursor":
 		if e.complexity.LogPage.Cursor == nil {
@@ -1182,12 +1155,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.VersionConfig.Vars(childComplexity), true
 
-	case "Workflow.edges":
-		if e.complexity.Workflow.Edges == nil {
+	case "Workflow.entrypoint":
+		if e.complexity.Workflow.Entrypoint == nil {
 			break
 		}
 
-		return e.complexity.Workflow.Edges(childComplexity), true
+		return e.complexity.Workflow.Entrypoint(childComplexity), true
 
 	case "Workflow.exitpoint":
 		if e.complexity.Workflow.Exitpoint == nil {
@@ -1473,12 +1446,6 @@ type Runtime {
   creationAuthor: User!
 }
 
-type Edge {
-  id: ID!
-  fromNode: ID!
-  toNode: ID!
-}
-
 type Node {
   id: ID!
   name: String!
@@ -1497,19 +1464,18 @@ enum NodeStatus {
 type Workflow {
   id: ID!
   name: String!
+  entrypoint: String
   exitpoint: String
   nodes: [Node!]!
-  edges: [Edge!]
 }
 
 enum KrtVersion {
-  v1
   v2
 }
 
 type Version {
   id: ID!
-  krtVersion: KrtVersion
+  krtVersion: KrtVersion!
   name: String!
   description: String!
   status: VersionStatus!
@@ -2457,138 +2423,6 @@ func (ec *executionContext) fieldContext_ConfigurationVariable_type(ctx context.
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ConfigurationVariableType does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Edge_id(ctx context.Context, field graphql.CollectedField, obj *entity.Edge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Edge_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Edge_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Edge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Edge_fromNode(ctx context.Context, field graphql.CollectedField, obj *entity.Edge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Edge_fromNode(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.FromNode, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Edge_fromNode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Edge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Edge_toNode(ctx context.Context, field graphql.CollectedField, obj *entity.Edge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Edge_toNode(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ToNode, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Edge_toNode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Edge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7374,11 +7208,14 @@ func (ec *executionContext) _Version_krtVersion(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(entity.KrtVersion)
 	fc.Result = res
-	return ec.marshalOKrtVersion2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐKrtVersion(ctx, field.Selections, res)
+	return ec.marshalNKrtVersion2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐKrtVersion(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Version_krtVersion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7771,12 +7608,12 @@ func (ec *executionContext) fieldContext_Version_workflows(ctx context.Context, 
 				return ec.fieldContext_Workflow_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Workflow_name(ctx, field)
+			case "entrypoint":
+				return ec.fieldContext_Workflow_entrypoint(ctx, field)
 			case "exitpoint":
 				return ec.fieldContext_Workflow_exitpoint(ctx, field)
 			case "nodes":
 				return ec.fieldContext_Workflow_nodes(ctx, field)
-			case "edges":
-				return ec.fieldContext_Workflow_edges(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Workflow", field.Name)
 		},
@@ -8103,6 +7940,47 @@ func (ec *executionContext) fieldContext_Workflow_name(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Workflow_entrypoint(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Workflow_entrypoint(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Entrypoint, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Workflow_entrypoint(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Workflow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Workflow_exitpoint(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Workflow_exitpoint(ctx, field)
 	if err != nil {
@@ -8195,55 +8073,6 @@ func (ec *executionContext) fieldContext_Workflow_nodes(ctx context.Context, fie
 				return ec.fieldContext_Node_replicas(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Node", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Workflow_edges(ctx context.Context, field graphql.CollectedField, obj *entity.Workflow) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Workflow_edges(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]entity.Edge)
-	fc.Result = res
-	return ec.marshalOEdge2ᚕgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐEdgeᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Workflow_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Workflow",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Edge_id(ctx, field)
-			case "fromNode":
-				return ec.fieldContext_Edge_fromNode(ctx, field)
-			case "toNode":
-				return ec.fieldContext_Edge_toNode(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Edge", field.Name)
 		},
 	}
 	return fc, nil
@@ -10689,48 +10518,6 @@ func (ec *executionContext) _ConfigurationVariable(ctx context.Context, sel ast.
 	return out
 }
 
-var edgeImplementors = []string{"Edge"}
-
-func (ec *executionContext) _Edge(ctx context.Context, sel ast.SelectionSet, obj *entity.Edge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, edgeImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Edge")
-		case "id":
-
-			out.Values[i] = ec._Edge_id(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "fromNode":
-
-			out.Values[i] = ec._Edge_fromNode(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "toNode":
-
-			out.Values[i] = ec._Edge_toNode(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var logPageImplementors = []string{"LogPage"}
 
 func (ec *executionContext) _LogPage(ctx context.Context, sel ast.SelectionSet, obj *LogPage) graphql.Marshaler {
@@ -12002,6 +11789,9 @@ func (ec *executionContext) _Version(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = ec._Version_krtVersion(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "name":
 
 			out.Values[i] = ec._Version_name(ctx, field, obj)
@@ -12192,6 +11982,10 @@ func (ec *executionContext) _Workflow(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "entrypoint":
+
+			out.Values[i] = ec._Workflow_entrypoint(ctx, field, obj)
+
 		case "exitpoint":
 
 			out.Values[i] = ec._Workflow_exitpoint(ctx, field, obj)
@@ -12203,10 +11997,6 @@ func (ec *executionContext) _Workflow(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "edges":
-
-			out.Values[i] = ec._Workflow_edges(ctx, field, obj)
-
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -12737,10 +12527,6 @@ func (ec *executionContext) unmarshalNDeleteApiTokenInput2githubᚗcomᚋkonstel
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNEdge2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐEdge(ctx context.Context, sel ast.SelectionSet, v entity.Edge) graphql.Marshaler {
-	return ec._Edge(ctx, sel, &v)
-}
-
 func (ec *executionContext) unmarshalNGenerateApiTokenInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐGenerateAPITokenInput(ctx context.Context, v interface{}) (GenerateAPITokenInput, error) {
 	res, err := ec.unmarshalInputGenerateApiTokenInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -12815,6 +12601,22 @@ func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v interface
 
 func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
 	res := graphql.MarshalInt32(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNKrtVersion2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐKrtVersion(ctx context.Context, v interface{}) (entity.KrtVersion, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := entity.KrtVersion(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNKrtVersion2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐKrtVersion(ctx context.Context, sel ast.SelectionSet, v entity.KrtVersion) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -13841,53 +13643,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOEdge2ᚕgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐEdgeᚄ(ctx context.Context, sel ast.SelectionSet, v []entity.Edge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNEdge2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐEdge(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
 func (ec *executionContext) unmarshalOID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
 	if v == nil {
 		return nil, nil
@@ -13939,17 +13694,6 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	res := graphql.MarshalInt(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOKrtVersion2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐKrtVersion(ctx context.Context, v interface{}) (entity.KrtVersion, error) {
-	tmp, err := graphql.UnmarshalString(v)
-	res := entity.KrtVersion(tmp)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOKrtVersion2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐKrtVersion(ctx context.Context, sel ast.SelectionSet, v entity.KrtVersion) graphql.Marshaler {
-	res := graphql.MarshalString(string(v))
 	return res
 }
 

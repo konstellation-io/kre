@@ -96,13 +96,12 @@ func (e NodeStatus) String() string {
 type KrtVersion string
 
 const (
-	KRTVersionV1 KrtVersion = "v1" // TODO krt-v1: deprecate retrocompatibility
 	KRTVersionV2 KrtVersion = "v2"
 )
 
 func (e KrtVersion) IsValid() bool {
 	switch e {
-	case KRTVersionV1, KRTVersionV2:
+	case KRTVersionV2:
 		return true
 	}
 	return false
@@ -114,7 +113,6 @@ func (e KrtVersion) String() string {
 
 func ParseKRTVersionFromString(str string) (KrtVersion, bool) {
 	var krtVersionMap = map[string]KrtVersion{
-		KRTVersionV1.String(): KRTVersionV1,
 		KRTVersionV2.String(): KRTVersionV2,
 	}
 	c, ok := krtVersionMap[str]
@@ -126,7 +124,6 @@ type Workflow struct {
 	Name       string `bson:"name"`
 	Entrypoint string `bson:"entrypoint"`
 	Nodes      []Node `bson:"nodes"`
-	Edges      []Edge `bson:"edges"` // TODO krt-v1: deprecate retrocompatibility
 	Exitpoint  string `bson:"exitpoint"`
 }
 

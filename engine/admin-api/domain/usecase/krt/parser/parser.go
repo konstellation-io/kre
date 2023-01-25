@@ -11,7 +11,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 
@@ -36,12 +35,7 @@ func ProcessAndValidateKrt(
 		return nil, err
 	}
 
-	krtVersion, ok := entity.ParseKRTVersionFromString(k.KrtVersion)
-	if !ok {
-		return nil, fmt.Errorf("krtVersion \"%s\" is not valid", k.KrtVersion)
-	}
-
-	krtValidator := validator.NewValidator(logger, valuesValidator, krtVersion)
+	krtValidator := validator.NewValidator(logger, valuesValidator)
 	err = krtValidator.Run(k)
 	if err != nil {
 		return nil, err
@@ -86,11 +80,6 @@ func (p *Parser) ParseKrtYaml(krtFilePath string) (*krt.Krt, error) {
 	k, err := generateKrt(krtYamlPath)
 	if err != nil {
 		return nil, fmt.Errorf("error on KRT Yaml parsing: %w", err)
-	}
-
-	// TODO krt-v1: deprecate retrocompatibility
-	if k.KrtVersion == "" {
-		k.KrtVersion = entity.KRTVersionV1.String()
 	}
 
 	return k, nil
