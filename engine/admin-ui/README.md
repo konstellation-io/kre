@@ -44,7 +44,6 @@ Add the next registers to your hosts file if they are not already defined:
 Then start the application by running the next command from the `admin-ui` folder:
 ```bash
 yarn install
->>>>>>> main
 yarn start
 ```
 
