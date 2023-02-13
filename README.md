@@ -24,17 +24,18 @@ Konstellation Runtime Engine is an application that allow to run AI/ML models fo
 
 ## Engine
 
-|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
-| :---------: | :-----:   |  :---: |  :--------------------:  |
-|  Admin UI  | [![coverage][admin-ui-coverage]][admin-ui-coverage-link] | [![bugs][admin-ui-bugs]][admin-ui-bugs-link] | [![mr][admin-ui-mr]][admin-ui-mr-link] |
-|  Admin API  | [![coverage][admin-api-coverage]][admin-api-coverage-link] | [![bugs][admin-api-bugs]][admin-api-bugs-link] | [![mr][admin-api-mr]][admin-api-mr-link] |
-|  K8s Manager | [![coverage][k8s-manager-coverage]][k8s-manager-coverage-link] | [![bugs][k8s-manager-bugs]][k8s-manager-bugs-link] | [![mr][k8s-manager-mr]][k8s-manager-mr-link] |
+|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |  Go report  |
+| :---------: | :-----:   |  :---: |  :--------------------:  |  :---: |
+|  Admin UI  | [![coverage][admin-ui-coverage]][admin-ui-coverage-link] | [![bugs][admin-ui-bugs]][admin-ui-bugs-link] | [![mr][admin-ui-mr]][admin-ui-mr-link] | - | 
+|  Admin API  | [![coverage][admin-api-coverage]][admin-api-coverage-link] | [![bugs][admin-api-bugs]][admin-api-bugs-link] | [![mr][admin-api-mr]][admin-api-mr-link] | [![report][admin-api-report-badge]][admin-api-report-link] | 
+|  K8s Manager | [![coverage][k8s-manager-coverage]][k8s-manager-coverage-link] | [![bugs][k8s-manager-bugs]][k8s-manager-bugs-link] | [![mr][k8s-manager-mr]][k8s-manager-mr-link] | [![report][k8s-manager-report-badge]][k8s-manager-report-badge] |
+|  NATS Manager | [![coverage][nats-manager-coverage]][nats-manager-coverage-link] | [![bugs][nats-manager-bugs]][nats-manager-bugs-link] | [![mr][nats-manager-mr]][nats-manager-mr-link] | [![report][nats-manager-report-badge]][nats-manager-report-badge] |
 
 ## Runtime
 
-|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |
-| :---------: | :-----:   |  :---: |  :--------------------:  |
-|  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] |
+|  Component  | Coverage  |  Bugs  |  Maintainability Rating  |  Go report  |
+| :---------: | :-----:   |  :---: |  :--------------------:  |  :---: |
+|  Mongo Writer  | [![coverage][mongo-writer-coverage]][mongo-writer-coverage-link] | [![bugs][mongo-writer-bugs]][mongo-writer-bugs-link] | [![mr][mongo-writer-mr]][mongo-writer-mr-link] | [![report][mongo-writer-report-badge]][mongo-writer-report-badge] | 
 
 ## Runners
 
@@ -293,6 +294,22 @@ release will be build and released.
 
 [k8s-manager-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_k8s_manager
 
+[nats-manager-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_nats-manager&metric=coverage
+
+[nats-manager-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_nats-manager
+
+[nats-manager-bugs]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_nats-manager&metric=bugs
+
+[nats-manager-bugs-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_nats-manager
+
+[nats-manager-loc]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_nats-manager&metric=ncloc
+
+[nats-manager-loc-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_nats-manager
+
+[nats-manager-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_nats-manager&metric=sqale_rating
+
+[nats-manager-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_nats-manager
+
 [mongo-writer-coverage]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=coverage
 
 [mongo-writer-coverage-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_mongo_writer
@@ -308,3 +325,19 @@ release will be build and released.
 [mongo-writer-mr]: https://sonarcloud.io/api/project_badges/measure?project=konstellation-io_kre_mongo_writer&metric=sqale_rating
 
 [mongo-writer-mr-link]: https://sonarcloud.io/dashboard?id=konstellation-io_kre_mongo_writer
+
+[admin-api-report-badge]: https://goreportcard.com/badge/github.com/konstellation-io/kre/engine/admin-api
+
+[admin-api-report-link]: https://goreportcard.com/report/github.com/konstellation-io/kli/engine/admin-api
+
+[k8s-manager-report-badge]: https://goreportcard.com/badge/github.com/konstellation-io/kre/engine/k8s-manager
+
+[k8s-manager-report-link]: https://goreportcard.com/report/github.com/konstellation-io/kli/engine/k8s-manager
+
+[nats-manager-report-badge]: https://goreportcard.com/badge/github.com/konstellation-io/kre/engine/nats-manager
+
+[nats-manager-report-link]: https://goreportcard.com/report/github.com/konstellation-io/kli/engine/nats-manager
+
+[mongo-writer-report-badge]: https://goreportcard.com/badge/github.com/konstellation-io/kre/engine/nats-manager
+
+[mongo-writer-report-link]: https://goreportcard.com/report/github.com/konstellation-io/kli/engine/nats-manager
