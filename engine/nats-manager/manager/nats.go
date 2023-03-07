@@ -10,6 +10,7 @@ import (
 
 type Manager interface {
 	CreateStreams(runtimeID, versionName string, workflows []*natspb.Workflow) error
+	CreateObjectStore(runtimeID, versionName string, workflows []*natspb.Workflow) error
 	DeleteStreams(runtimeID, versionName string, workflows []string) error
 	GetVersionNatsConfig(
 		runtimeID,
@@ -49,6 +50,34 @@ func (m *NatsManager) CreateStreams(
 	return nil
 }
 
+func (m *NatsManager) CreateObjectStore(
+	runtimeID,
+	versionName string,
+	workflows []*natspb.Workflow,
+) error {
+	if len(workflows) <= 0 {
+		return fmt.Errorf("no workflows defined")
+	}
+
+	for _, workflow := range workflows {
+		for _, node := range workflow.Nodes {
+			if node.ObjectStore != nil {
+				objectStore := m.getObjectStoreName(runtimeID, versionName, workflow.Name, *node.ObjectStore)
+				err := m.client.CreateObjectStore(objectStore)
+				if err != nil {
+					return fmt.Errorf("error creating object store %q: %w", objectStore, err)
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName, nodeObjectStore string) string {
+	return fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeObjectStore)
+}
+
 func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []string) error {
 	for _, workflow := range workflows {
 		stream := m.getStreamName(runtimeID, versionName, workflow)
@@ -73,6 +102,11 @@ func (m *NatsManager) GetVersionNatsConfig(
 			nodesConfig[node.Name] = &natspb.NodeNatsConfig{
 				Subject:       m.getSubjectName(stream, node.Name),
 				Subscriptions: m.getSubjectsToSubscribe(stream, node.Subscriptions),
+			}
+
+			if node.ObjectStore != nil {
+				objStoreName := m.getObjectStoreName(runtimeID, versionName, workflow.Name, *node.ObjectStore)
+				nodesConfig[node.Name].ObjectStore = &objStoreName
 			}
 		}
 		workflowsConfig[workflow.Name] = &natspb.WorkflowNatsConfig{

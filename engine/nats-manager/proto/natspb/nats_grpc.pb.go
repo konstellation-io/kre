@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NatsManagerServiceClient interface {
 	CreateStreams(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error)
+	CreateObjectStore(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error)
 	DeleteStreams(ctx context.Context, in *DeleteStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error)
 	GetVersionNatsConfig(ctx context.Context, in *GetVersionNatsConfigRequest, opts ...grpc.CallOption) (*GetVersionNatsConfigResponse, error)
 }
@@ -38,6 +39,15 @@ func NewNatsManagerServiceClient(cc grpc.ClientConnInterface) NatsManagerService
 func (c *natsManagerServiceClient) CreateStreams(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error) {
 	out := new(MutationResponse)
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateStreams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *natsManagerServiceClient) CreateObjectStore(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error) {
+	out := new(MutationResponse)
+	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateObjectStore", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,6 +77,7 @@ func (c *natsManagerServiceClient) GetVersionNatsConfig(ctx context.Context, in 
 // for forward compatibility
 type NatsManagerServiceServer interface {
 	CreateStreams(context.Context, *CreateStreamsRequest) (*MutationResponse, error)
+	CreateObjectStore(context.Context, *CreateStreamsRequest) (*MutationResponse, error)
 	DeleteStreams(context.Context, *DeleteStreamsRequest) (*MutationResponse, error)
 	GetVersionNatsConfig(context.Context, *GetVersionNatsConfigRequest) (*GetVersionNatsConfigResponse, error)
 	mustEmbedUnimplementedNatsManagerServiceServer()
@@ -78,6 +89,9 @@ type UnimplementedNatsManagerServiceServer struct {
 
 func (UnimplementedNatsManagerServiceServer) CreateStreams(context.Context, *CreateStreamsRequest) (*MutationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStreams not implemented")
+}
+func (UnimplementedNatsManagerServiceServer) CreateObjectStore(context.Context, *CreateStreamsRequest) (*MutationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateObjectStore not implemented")
 }
 func (UnimplementedNatsManagerServiceServer) DeleteStreams(context.Context, *DeleteStreamsRequest) (*MutationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStreams not implemented")
@@ -112,6 +126,24 @@ func _NatsManagerService_CreateStreams_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NatsManagerServiceServer).CreateStreams(ctx, req.(*CreateStreamsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NatsManagerService_CreateObjectStore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStreamsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NatsManagerServiceServer).CreateObjectStore(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/nats.NatsManagerService/CreateObjectStore",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NatsManagerServiceServer).CreateObjectStore(ctx, req.(*CreateStreamsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -162,6 +194,10 @@ var NatsManagerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateStreams",
 			Handler:    _NatsManagerService_CreateStreams_Handler,
+		},
+		{
+			MethodName: "CreateObjectStore",
+			Handler:    _NatsManagerService_CreateObjectStore_Handler,
 		},
 		{
 			MethodName: "DeleteStreams",

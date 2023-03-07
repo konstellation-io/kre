@@ -1,6 +1,7 @@
 package nats
 
 import (
+	"errors"
 	"fmt"
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
 	"github.com/nats-io/nats.go"
@@ -11,6 +12,7 @@ import (
 type Client interface {
 	Connect(url string) error
 	CreateStream(stream string, subjects []string) error
+	CreateObjectStore(objectStore string) error
 	DeleteStream(stream string) error
 }
 
@@ -50,6 +52,34 @@ func (n *NatsClient) CreateStream(stream string, subjects []string) error {
 
 	_, err := n.js.AddStream(streamCfg)
 	return err
+}
+
+func (n *NatsClient) CreateObjectStore(objectStore string) error {
+	n.logger.Infof("Creating object store %q", objectStore)
+	//_, err := n.js.ObjectStore(objectStore)
+	//if err == nil {
+	//	n.logger.Infof("Object store %q already exists", objectStore)
+	//
+	//	return nil
+	//}
+	//
+	//if !errors.Is(err, nats.ErrObjectNotFound) {
+	//	return err
+	//}
+
+	_, err := n.js.CreateObjectStore(&nats.ObjectStoreConfig{
+		Bucket:  objectStore,
+		Storage: nats.FileStorage,
+	})
+	if err != nil {
+		if errors.Is(err, nats.ErrStreamNameAlreadyInUse) {
+			n.logger.Infof("Object store %q already exists", objectStore)
+			return nil
+		}
+		return fmt.Errorf("error creating the object store: %s", err)
+	}
+
+	return nil
 }
 
 func (n *NatsClient) DeleteStream(stream string) error {

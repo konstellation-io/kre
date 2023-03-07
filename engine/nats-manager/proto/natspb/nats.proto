@@ -38,6 +38,7 @@ message Workflow {
 message Node {
   string name = 1;
   repeated string subscriptions = 2;
+  optional string object_store = 3;
 }
 
 message WorkflowNatsConfig {
@@ -48,10 +49,12 @@ message WorkflowNatsConfig {
 message NodeNatsConfig {
   string subject = 1;
   repeated string subscriptions = 2;
+  optional string object_store = 3;
 }
 
 service NatsManagerService {
   rpc CreateStreams (CreateStreamsRequest) returns (MutationResponse);
+  rpc CreateObjectStore (CreateStreamsRequest) returns (MutationResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (MutationResponse);
   rpc GetVersionNatsConfig (GetVersionNatsConfigRequest) returns (GetVersionNatsConfigResponse);
 };

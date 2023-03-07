@@ -35,6 +35,20 @@ func (m *MockNatsManagerService) EXPECT() *MockNatsManagerServiceMockRecorder {
 	return m.recorder
 }
 
+// CreateObjectStores mocks base method.
+func (m *MockNatsManagerService) CreateObjectStores(ctx context.Context, runtimeID string, version *entity.Version) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateObjectStores", ctx, runtimeID, version)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateObjectStores indicates an expected call of CreateObjectStores.
+func (mr *MockNatsManagerServiceMockRecorder) CreateObjectStores(ctx, runtimeID, version interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateObjectStores", reflect.TypeOf((*MockNatsManagerService)(nil).CreateObjectStores), ctx, runtimeID, version)
+}
+
 // CreateStreams mocks base method.
 func (m *MockNatsManagerService) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
 	m.ctrl.T.Helper()

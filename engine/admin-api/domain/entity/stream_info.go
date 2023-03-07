@@ -29,6 +29,7 @@ func (w *WorkflowStreamConfig) GetEntrypointSubject() (string, error) {
 
 type NodeStreamConfig struct {
 	Subject       string
+	ObjectStore   *string
 	Subscriptions []string
 }
 

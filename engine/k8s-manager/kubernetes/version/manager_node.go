@@ -68,16 +68,21 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 
 	for idx, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
-			"KRT_WORKFLOW_ID":       workflow.GetId(),
-			"KRT_WORKFLOW_NAME":     workflow.GetName(),
-			"KRT_NODE_ID":           n.GetId(),
-			"KRT_NODE_NAME":         n.GetName(),
-			"KRT_HANDLER_PATH":      n.Src,
-			"KRT_NATS_MONGO_WRITER": natsDataSubjectPrefix + runtimeID,
-			"KRT_NATS_STREAM":       workflow.Stream,
-			"KRT_IS_EXITPOINT":      m.isExitpoint(n.GetName(), workflow.Exitpoint),
-			"KRT_NATS_OUTPUT":       n.Subject,
-			"KRT_NATS_INPUTS":       m.joinSubscriptionSubjects(n.Subscriptions),
+			"KRT_WORKFLOW_ID":          workflow.GetId(),
+			"KRT_WORKFLOW_NAME":        workflow.GetName(),
+			"KRT_NODE_ID":              n.GetId(),
+			"KRT_NODE_NAME":            n.GetName(),
+			"KRT_HANDLER_PATH":         n.Src,
+			"KRT_NATS_MONGO_WRITER":    natsDataSubjectPrefix + runtimeID,
+			"KRT_NATS_STREAM":          workflow.Stream,
+			"KRT_IS_EXITPOINT":         m.isExitpoint(n.GetName(), workflow.Exitpoint),
+			"KRT_NATS_OUTPUT":          n.Subject,
+			"KRT_NATS_INPUTS":          m.joinSubscriptionSubjects(n.Subscriptions),
+			"KRT_NATS_KEY_VALUE_STORE": "test",
+		}
+
+		if n.ObjectStore != nil {
+			wconf[n.Id]["KRT_NATS_OBJECT_STORE"] = *n.ObjectStore
 		}
 
 		// retrocompatibility konstellation-exitpoint config

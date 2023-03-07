@@ -69,6 +69,7 @@ type Node struct {
 	GPU           bool       `bson:"gpu"`
 	Subscriptions []string   `bson:"subscriptions"`
 	Replicas      int32      `bson:"replicas" default:"1"`
+	ObjectStore   *string    `bson:"objectStore"`
 	Status        NodeStatus `bson:"-"` // This field value is calculated in k8s
 }
 

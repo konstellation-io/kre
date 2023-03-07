@@ -24,6 +24,7 @@ message Workflow {
     repeated string subscriptions = 6;
     string subject = 7;
     int32 replicas = 8;
+    optional string object_store = 9;
   }
 
   message Entrypoint {

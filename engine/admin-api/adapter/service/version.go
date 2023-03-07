@@ -163,6 +163,7 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 				Gpu:           n.GPU,
 				Subscriptions: nodeStreamConfig.Subscriptions,
 				Subject:       nodeStreamConfig.Subject,
+				ObjectStore:   nodeStreamConfig.ObjectStore,
 				Replicas:      n.Replicas,
 			}
 		}

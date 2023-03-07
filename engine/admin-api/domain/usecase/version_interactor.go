@@ -341,6 +341,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				GPU:           node.GPU,
 				Subscriptions: node.Subscriptions,
 				Replicas:      replicas,
+				ObjectStore:   node.ObjectStore,
 			})
 		}
 		workflows = append(workflows, &entity.Workflow{
@@ -464,11 +465,17 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	if status == entity.VersionStatusStarted {
 		err := i.natsManagerService.CreateStreams(ctx, runtimeId, version)
 		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error creating streams for version %q: %s", version.Name, status, err)
 		}
+
+		err = i.natsManagerService.CreateObjectStores(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error creating objects stores for version %q: %s", version.Name, status, err)
+		}
+
 		worklfowsStreamConfig, err := i.natsManagerService.GetVersionNatsConfig(ctx, runtimeId, version)
 		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error getting stream configuration for version %q: %s", version.Name, status, err)
 		}
 		err = i.versionService.Start(ctx, runtimeId, version, worklfowsStreamConfig)
 		if err != nil {

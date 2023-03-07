@@ -49,6 +49,23 @@ func (n *NatsManagerClient) CreateStreams(ctx context.Context, runtimeID string,
 	return err
 }
 
+// CreateObjectStores calls nats-manager to create NATS Object Stores for given version
+func (n *NatsManagerClient) CreateObjectStores(ctx context.Context, runtimeID string, version *entity.Version) error {
+	fmt.Println("in natsmanagerclient createobjectstores")
+	req := natspb.CreateStreamsRequest{
+		RuntimeId:   runtimeID,
+		VersionName: version.Name,
+		Workflows:   n.getWorkflowsFromVersion(version),
+	}
+
+	_, err := n.client.CreateObjectStore(ctx, &req)
+	if err != nil {
+		return fmt.Errorf("error creating objects stores: %w", err)
+	}
+
+	return err
+}
+
 // DeleteStreams calls nats-manager to delete NATS streams for given version
 func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
 	req := natspb.DeleteStreamsRequest{
@@ -89,6 +106,7 @@ func (n *NatsManagerClient) GetVersionNatsConfig(
 			nodesNatsConfig[nodeName] = entity.NodeStreamConfig{
 				Subject:       nodeInfo.Subject,
 				Subscriptions: nodeInfo.Subscriptions,
+				ObjectStore:   nodeInfo.ObjectStore,
 			}
 		}
 		versionNatsConfig[workflowName] = entity.WorkflowStreamConfig{
@@ -113,6 +131,7 @@ func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) []*
 			nodes = append(nodes, &natspb.Node{
 				Name:          node.Name,
 				Subscriptions: node.Subscriptions,
+				ObjectStore:   node.ObjectStore,
 			})
 		}
 		workflows = append(workflows, &natspb.Workflow{

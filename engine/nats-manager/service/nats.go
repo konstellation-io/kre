@@ -33,7 +33,7 @@ func NewNatsService(
 
 // CreateStreams create streams for given workflows
 func (n *NatsService) CreateStreams(_ context.Context, req *natspb.CreateStreamsRequest) (*natspb.MutationResponse, error) {
-	n.logger.Info("Start request received")
+	n.logger.Info("CreateStreams request received")
 
 	err := n.manager.CreateStreams(req.RuntimeId, req.VersionName, req.Workflows)
 	if err != nil {
@@ -42,6 +42,20 @@ func (n *NatsService) CreateStreams(_ context.Context, req *natspb.CreateStreams
 	}
 	return &natspb.MutationResponse{
 		Message: fmt.Sprintf("Streams and subjects for version '%s' on runtime %s created", req.VersionName, req.RuntimeId),
+	}, nil
+}
+
+// CreateObjectStore
+func (n *NatsService) CreateObjectStore(_ context.Context, req *natspb.CreateStreamsRequest) (*natspb.MutationResponse, error) {
+	n.logger.Info("CreateObjectStore request received")
+
+	err := n.manager.CreateObjectStore(req.RuntimeId, req.VersionName, req.Workflows)
+	if err != nil {
+		n.logger.Errorf("Error creating object store: %s", err)
+		return nil, err
+	}
+	return &natspb.MutationResponse{
+		Message: fmt.Sprintf("Object stores for version '%s' on runtime %s created", req.VersionName, req.RuntimeId),
 	}, nil
 }
 
