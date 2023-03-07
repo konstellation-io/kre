@@ -46,6 +46,7 @@ func (k *KrtBuilder) V2() *KrtBuilder {
 					Src:           "src/test",
 					GPU:           false,
 					Subscriptions: []string{"entrypoint"},
+					ObjectStore:   nil,
 				},
 			},
 		},

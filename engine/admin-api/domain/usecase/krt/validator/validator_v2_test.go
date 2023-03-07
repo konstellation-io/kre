@@ -48,6 +48,7 @@ func TestValidatorV2_Run(t *testing.T) {
 					Src:           "test/src",
 					GPU:           false,
 					Subscriptions: []string{"entrypoint"},
+					ObjectStore:   nil,
 				}},
 			}}).Build(),
 			wantError:   true,

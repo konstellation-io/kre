@@ -47,6 +47,20 @@ func (mr *MockClientMockRecorder) Connect(url interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Connect", reflect.TypeOf((*MockClient)(nil).Connect), url)
 }
 
+// CreateObjectStore mocks base method.
+func (m *MockClient) CreateObjectStore(objectStore string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateObjectStore", objectStore)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateObjectStore indicates an expected call of CreateObjectStore.
+func (mr *MockClientMockRecorder) CreateObjectStore(objectStore interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateObjectStore", reflect.TypeOf((*MockClient)(nil).CreateObjectStore), objectStore)
+}
+
 // CreateStream mocks base method.
 func (m *MockClient) CreateStream(stream string, subjects []string) error {
 	m.ctrl.T.Helper()

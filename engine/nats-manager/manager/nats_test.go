@@ -2,17 +2,17 @@ package manager_test
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/kre/engine/nats-manager/manager"
 	"github.com/konstellation-io/kre/engine/nats-manager/mocks"
 	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestCreateStreams(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
 	logger := mocks.NewMockLogger(ctrl)
 	client := mocks.NewMockClient(ctrl)
@@ -52,7 +52,6 @@ func TestCreateStreams(t *testing.T) {
 
 func TestCreateStreams_ClientFails(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
 	logger := mocks.NewMockLogger(ctrl)
 	client := mocks.NewMockClient(ctrl)
@@ -91,7 +90,6 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 
 func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
 	logger := mocks.NewMockLogger(ctrl)
 	client := mocks.NewMockClient(ctrl)
@@ -110,7 +108,6 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 
 func TestGetVersionNatsConfig(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
 	logger := mocks.NewMockLogger(ctrl)
 	client := mocks.NewMockClient(ctrl)
@@ -154,4 +151,44 @@ func TestGetVersionNatsConfig(t *testing.T) {
 	actual, err := natsManager.GetVersionNatsConfig(runtimeID, versionName, workflows)
 	require.Nil(t, err)
 	require.EqualValues(t, expectedConfiguration, actual)
+}
+
+func TestCreateObjectStore(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	logger := mocks.NewMockLogger(ctrl)
+	client := mocks.NewMockClient(ctrl)
+	natsManager := manager.NewNatsManager(logger, client)
+	var testObjectStore = new(string)
+
+	const (
+		runtimeID          = "test-runtime"
+		versionName        = "test-version"
+		workflowName       = "test-workflow"
+		workflowEntrypoint = "TestWorkflow"
+		testNode           = "test-node"
+		nodeObjectStore    = "testObjectStore"
+	)
+
+	*testObjectStore = nodeObjectStore
+
+	ObjectStoreToCreate := fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeObjectStore)
+
+	workflows := []*natspb.Workflow{
+		{
+			Name:       workflowName,
+			Entrypoint: workflowEntrypoint,
+			Nodes: []*natspb.Node{
+				{
+					Name:          testNode,
+					Subscriptions: nil,
+					ObjectStore:   testObjectStore,
+				},
+			},
+		},
+	}
+
+	client.EXPECT().CreateObjectStore(ObjectStoreToCreate).Return(nil)
+	actualErr := natsManager.CreateObjectStore(runtimeID, versionName, workflows)
+	require.Nil(t, actualErr)
 }
