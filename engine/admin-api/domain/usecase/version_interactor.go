@@ -333,7 +333,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				replicas = node.Replicas
 			}
 
-			nodes = append(nodes, entity.Node{
+			nodeToAppend := entity.Node{
 				ID:            i.idGenerator.NewID(),
 				Name:          node.Name,
 				Image:         node.Image,
@@ -341,8 +341,19 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				GPU:           node.GPU,
 				Subscriptions: node.Subscriptions,
 				Replicas:      replicas,
-				ObjectStore:   node.ObjectStore,
-			})
+			}
+
+			if node.ObjectStore != nil {
+				if node.ObjectStore.Scope == "" {
+					node.ObjectStore.Scope = krt.ObjectStoreConfigDefaultScope
+				}
+				nodeToAppend.ObjectStore = &entity.ObjectStoreConfig{
+					Name:  node.ObjectStore.Name,
+					Scope: node.ObjectStore.Scope,
+				}
+			}
+
+			nodes = append(nodes, nodeToAppend)
 		}
 		workflows = append(workflows, &entity.Workflow{
 			ID:         i.idGenerator.NewID(),

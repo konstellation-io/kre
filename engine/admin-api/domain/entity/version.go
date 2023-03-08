@@ -62,15 +62,20 @@ type Edge struct {
 }
 
 type Node struct {
-	ID            string     `bson:"id"`
-	Name          string     `bson:"name"`
-	Image         string     `bson:"image"`
-	Src           string     `bson:"src"`
-	GPU           bool       `bson:"gpu"`
-	Subscriptions []string   `bson:"subscriptions"`
-	Replicas      int32      `bson:"replicas" default:"1"`
-	ObjectStore   *string    `bson:"objectStore"`
-	Status        NodeStatus `bson:"-"` // This field value is calculated in k8s
+	ID            string             `bson:"id"`
+	Name          string             `bson:"name"`
+	Image         string             `bson:"image"`
+	Src           string             `bson:"src"`
+	GPU           bool               `bson:"gpu"`
+	Subscriptions []string           `bson:"subscriptions"`
+	Replicas      int32              `bson:"replicas" default:"1"`
+	ObjectStore   *ObjectStoreConfig `bson:"objectStore"`
+	Status        NodeStatus         `bson:"-"` // This field value is calculated in k8s
+}
+
+type ObjectStoreConfig struct {
+	Name  string `bson:"name"`
+	Scope string `bson:"scope"`
 }
 
 type NodeStatus string

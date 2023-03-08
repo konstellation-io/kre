@@ -153,7 +153,7 @@ func TestGetVersionNatsConfig(t *testing.T) {
 	require.EqualValues(t, expectedConfiguration, actual)
 }
 
-func TestCreateObjectStore(t *testing.T) {
+func TestCreateObjectStore_ScopeProject(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
@@ -168,9 +168,53 @@ func TestCreateObjectStore(t *testing.T) {
 		testNode           = "test-node"
 	)
 
-	nodeObjectStore := "testObjectStore"
+	nodeObjectStore := natspb.Node_ObjectStore{
+		Name:  "testObjectStore",
+		Scope: natspb.Node_SCOPE_PROJECT,
+	}
 
-	objectStoreToCreate := fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeObjectStore)
+	objectStoreToCreate := fmt.Sprintf("object-store_%s_%s_%s", runtimeID, versionName, nodeObjectStore.Name)
+
+	workflows := []*natspb.Workflow{
+		{
+			Name:       workflowName,
+			Entrypoint: workflowEntrypoint,
+			Nodes: []*natspb.Node{
+				{
+					Name:          testNode,
+					Subscriptions: nil,
+					ObjectStore:   &nodeObjectStore,
+				},
+			},
+		},
+	}
+
+	client.EXPECT().CreateObjectStore(objectStoreToCreate).Return(nil)
+	actualErr := natsManager.CreateObjectStore(runtimeID, versionName, workflows)
+	require.Nil(t, actualErr)
+}
+
+func TestCreateObjectStore_ScopeWorkflow(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	logger := mocks.NewMockLogger(ctrl)
+	client := mocks.NewMockClient(ctrl)
+	natsManager := manager.NewNatsManager(logger, client)
+
+	const (
+		runtimeID          = "test-runtime"
+		versionName        = "test-version"
+		workflowName       = "test-workflow"
+		workflowEntrypoint = "TestWorkflow"
+		testNode           = "test-node"
+	)
+
+	nodeObjectStore := natspb.Node_ObjectStore{
+		Name:  "testObjectStore",
+		Scope: natspb.Node_SCOPE_WORKFLOW,
+	}
+
+	objectStoreToCreate := fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeObjectStore.Name)
 
 	workflows := []*natspb.Workflow{
 		{

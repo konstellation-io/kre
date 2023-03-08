@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"errors"
 	"fmt"
 
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
@@ -62,8 +63,11 @@ func (m *NatsManager) CreateObjectStore(
 	for _, workflow := range workflows {
 		for _, node := range workflow.Nodes {
 			if node.ObjectStore != nil {
-				objectStore := m.getObjectStoreName(runtimeID, versionName, workflow.Name, *node.ObjectStore)
-				err := m.client.CreateObjectStore(objectStore)
+				objectStore, err := m.getObjectStoreName(runtimeID, versionName, workflow.Name, node.ObjectStore)
+				if err != nil {
+					return err
+				}
+				err = m.client.CreateObjectStore(objectStore)
 				if err != nil {
 					return fmt.Errorf("error creating object store %q: %w", objectStore, err)
 				}
@@ -74,8 +78,15 @@ func (m *NatsManager) CreateObjectStore(
 	return nil
 }
 
-func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName, nodeObjectStore string) string {
-	return fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeObjectStore)
+func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName string, objectStore *natspb.Node_ObjectStore) (string, error) {
+	switch objectStore.Scope {
+	case natspb.Node_SCOPE_PROJECT:
+		return fmt.Sprintf("object-store_%s_%s_%s", runtimeID, versionName, objectStore.Name), nil
+	case natspb.Node_SCOPE_WORKFLOW:
+		return fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, objectStore.Name), nil
+	default:
+		return "", errors.New("invalid object store scope")
+	}
 }
 
 func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []string) error {
@@ -105,7 +116,10 @@ func (m *NatsManager) GetVersionNatsConfig(
 			}
 
 			if node.ObjectStore != nil {
-				objStoreName := m.getObjectStoreName(runtimeID, versionName, workflow.Name, *node.ObjectStore)
+				objStoreName, err := m.getObjectStoreName(runtimeID, versionName, workflow.Name, node.ObjectStore)
+				if err != nil {
+					return nil, err
+				}
 				nodesConfig[node.Name].ObjectStore = &objStoreName
 			}
 		}
@@ -128,16 +142,6 @@ func (m *NatsManager) getNodesSubjects(stream string, nodes []*natspb.Node) []st
 		nodeSubject := m.getSubjectName(stream, node.Name)
 		nodeSubsubject := nodeSubject + ".*"
 		subjects = append(subjects, nodeSubject, nodeSubsubject)
-	}
-	return subjects
-}
-
-func (m *NatsManager) getSubjects(nodesSubjects map[string][]string) []string {
-	subjects := make([]string, 0, len(nodesSubjects))
-	for _, nodeSubjects := range nodesSubjects {
-		for _, nodeSubject := range nodeSubjects {
-			subjects = append(subjects, nodeSubject)
-		}
 	}
 	return subjects
 }

@@ -36,9 +36,19 @@ message Workflow {
 }
 
 message Node {
+  enum ObjectStoreScope{
+    SCOPE_WORKFLOW = 0;
+    SCOPE_PROJECT = 1;
+  }
+
+  message ObjectStore {
+    string name = 1;
+    ObjectStoreScope scope = 2;
+  }
+
   string name = 1;
   repeated string subscriptions = 2;
-  optional string object_store = 3;
+  optional ObjectStore object_store = 3;
 }
 
 message WorkflowNatsConfig {
