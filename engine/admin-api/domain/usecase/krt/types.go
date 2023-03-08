@@ -43,5 +43,5 @@ const ObjectStoreConfigDefaultScope = "workflow"
 
 type ObjectStoreConfig struct {
 	Name  string `yaml:"name"`
-	Scope string `yaml:"scope,omitempty" validate:"workflow|project"`
+	Scope string `yaml:"scope,omitempty" validate:"oneof=workflow project"`
 }
