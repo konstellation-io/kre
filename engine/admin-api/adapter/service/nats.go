@@ -51,7 +51,6 @@ func (n *NatsManagerClient) CreateStreams(ctx context.Context, runtimeID string,
 
 // CreateObjectStores calls nats-manager to create NATS Object Stores for given version
 func (n *NatsManagerClient) CreateObjectStores(ctx context.Context, runtimeID string, version *entity.Version) error {
-	fmt.Println("in natsmanagerclient createobjectstores")
 	req := natspb.CreateStreamsRequest{
 		RuntimeId:   runtimeID,
 		VersionName: version.Name,
