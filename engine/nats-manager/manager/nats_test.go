@@ -159,7 +159,6 @@ func TestCreateObjectStore(t *testing.T) {
 	logger := mocks.NewMockLogger(ctrl)
 	client := mocks.NewMockClient(ctrl)
 	natsManager := manager.NewNatsManager(logger, client)
-	var testObjectStore = new(string)
 
 	const (
 		runtimeID          = "test-runtime"
@@ -167,12 +166,11 @@ func TestCreateObjectStore(t *testing.T) {
 		workflowName       = "test-workflow"
 		workflowEntrypoint = "TestWorkflow"
 		testNode           = "test-node"
-		nodeObjectStore    = "testObjectStore"
 	)
 
-	*testObjectStore = nodeObjectStore
+	nodeObjectStore := "testObjectStore"
 
-	ObjectStoreToCreate := fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeObjectStore)
+	objectStoreToCreate := fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeObjectStore)
 
 	workflows := []*natspb.Workflow{
 		{
@@ -182,13 +180,13 @@ func TestCreateObjectStore(t *testing.T) {
 				{
 					Name:          testNode,
 					Subscriptions: nil,
-					ObjectStore:   testObjectStore,
+					ObjectStore:   &nodeObjectStore,
 				},
 			},
 		},
 	}
 
-	client.EXPECT().CreateObjectStore(ObjectStoreToCreate).Return(nil)
+	client.EXPECT().CreateObjectStore(objectStoreToCreate).Return(nil)
 	actualErr := natsManager.CreateObjectStore(runtimeID, versionName, workflows)
 	require.Nil(t, actualErr)
 }
