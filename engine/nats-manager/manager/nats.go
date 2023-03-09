@@ -1,7 +1,6 @@
 package manager
 
 import (
-	"errors"
 	"fmt"
 
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
@@ -63,6 +62,9 @@ func (m *NatsManager) CreateObjectStore(
 	for _, workflow := range workflows {
 		for _, node := range workflow.Nodes {
 			if node.ObjectStore != nil {
+				if node.ObjectStore.Name == "" {
+					return ErrInvalidObjectStoreName
+				}
 				objectStore, err := m.getObjectStoreName(runtimeID, versionName, workflow.Name, node.ObjectStore)
 				if err != nil {
 					return err
@@ -85,7 +87,7 @@ func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName st
 	case natspb.Node_SCOPE_WORKFLOW:
 		return fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, objectStore.Name), nil
 	default:
-		return "", errors.New("invalid object store scope")
+		return "", ErrInvalidObjectStoreScope
 	}
 }
 
