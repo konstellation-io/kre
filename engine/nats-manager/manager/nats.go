@@ -11,12 +11,13 @@ import (
 type Manager interface {
 	CreateStreams(runtimeID, versionName string, workflows []*natspb.Workflow) error
 	CreateObjectStore(runtimeID, versionName string, workflows []*natspb.Workflow) error
+	CreateKeyValueStores(runtimeID, versionName string, workflows []*natspb.Workflow) error
 	DeleteStreams(runtimeID, versionName string, workflows []string) error
 	GetVersionNatsConfig(
 		runtimeID,
 		versionName string,
 		workflows []*natspb.Workflow,
-	) (map[string]*natspb.WorkflowNatsConfig, error)
+	) (*natspb.ProjectNatsConfig, error)
 }
 
 type NatsManager struct {
@@ -91,6 +92,64 @@ func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName st
 	}
 }
 
+type Scope string
+
+const (
+	ScopeProject  Scope = "project"
+	ScopeWorkflow Scope = "workflow"
+	ScopeNode     Scope = "node"
+)
+
+func (m *NatsManager) CreateKeyValueStores(
+	runtimeID,
+	versionName string,
+	workflows []*natspb.Workflow,
+) error {
+	if len(workflows) <= 0 {
+		return fmt.Errorf("no workflows defined")
+	}
+
+	// create key-value store for project
+	keyValueStore := m.getKeyValueStoreName(runtimeID, versionName, "", "", ScopeProject)
+	err := m.client.CreateKeyValueStore(keyValueStore)
+	if err != nil {
+		return fmt.Errorf("error creating key-value store %q: %w", keyValueStore, err)
+	}
+
+	for _, workflow := range workflows {
+		// create key-value store for workflow
+		keyValueStore := m.getKeyValueStoreName(runtimeID, versionName, workflow.Name, "", ScopeWorkflow)
+		err := m.client.CreateKeyValueStore(keyValueStore)
+		if err != nil {
+			return fmt.Errorf("error creating key-value store %q: %w", keyValueStore, err)
+		}
+
+		for _, node := range workflow.Nodes {
+			// create key-value store for node
+			keyValueStore := m.getKeyValueStoreName(runtimeID, versionName, workflow.Name, node.Name, ScopeNode)
+			err := m.client.CreateKeyValueStore(keyValueStore)
+			if err != nil {
+				return fmt.Errorf("error creating key-value store %q: %w", keyValueStore, err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func (m *NatsManager) getKeyValueStoreName(runtimeID, versionName, workflowName, nodeName string, scope Scope) string {
+	switch scope {
+	case ScopeProject:
+		return fmt.Sprintf("key-store_%s_%s", runtimeID, versionName)
+	case ScopeWorkflow:
+		return fmt.Sprintf("key-store_%s_%s_%s", runtimeID, versionName, workflowName)
+	case ScopeNode:
+		return fmt.Sprintf("key-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeName)
+	default:
+		return fmt.Sprintf("key-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeName)
+	}
+}
+
 func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []string) error {
 	for _, workflow := range workflows {
 		stream := m.getStreamName(runtimeID, versionName, workflow)
@@ -106,7 +165,7 @@ func (m *NatsManager) GetVersionNatsConfig(
 	runtimeID,
 	versionName string,
 	workflows []*natspb.Workflow,
-) (map[string]*natspb.WorkflowNatsConfig, error) {
+) (*natspb.ProjectNatsConfig, error) {
 	workflowsConfig := make(map[string]*natspb.WorkflowNatsConfig, len(workflows))
 	for _, workflow := range workflows {
 		stream := m.getStreamName(runtimeID, versionName, workflow.Entrypoint)
@@ -115,6 +174,7 @@ func (m *NatsManager) GetVersionNatsConfig(
 			nodesConfig[node.Name] = &natspb.NodeNatsConfig{
 				Subject:       m.getSubjectName(stream, node.Name),
 				Subscriptions: m.getSubjectsToSubscribe(stream, node.Subscriptions),
+				KeyValueStore: m.getKeyValueStoreName(runtimeID, versionName, workflow.Name, node.Name, ScopeNode),
 			}
 
 			if node.ObjectStore != nil {
@@ -126,12 +186,18 @@ func (m *NatsManager) GetVersionNatsConfig(
 			}
 		}
 		workflowsConfig[workflow.Name] = &natspb.WorkflowNatsConfig{
-			Stream: stream,
-			Nodes:  nodesConfig,
+			Stream:        stream,
+			KeyValueStore: m.getKeyValueStoreName(runtimeID, versionName, workflow.Name, "", ScopeWorkflow),
+			Nodes:         nodesConfig,
 		}
 	}
 
-	return workflowsConfig, nil
+	projectConfig := &natspb.ProjectNatsConfig{
+		KeyValueStore: m.getKeyValueStoreName(runtimeID, versionName, "", "", ScopeProject),
+		Workflows:     workflowsConfig,
+	}
+
+	return projectConfig, nil
 }
 
 func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {

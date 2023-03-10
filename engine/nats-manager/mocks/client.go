@@ -47,6 +47,20 @@ func (mr *MockClientMockRecorder) Connect(url interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Connect", reflect.TypeOf((*MockClient)(nil).Connect), url)
 }
 
+// CreateKeyValueStore mocks base method.
+func (m *MockClient) CreateKeyValueStore(keyValueStore string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateKeyValueStore", keyValueStore)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateKeyValueStore indicates an expected call of CreateKeyValueStore.
+func (mr *MockClientMockRecorder) CreateKeyValueStore(keyValueStore interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateKeyValueStore", reflect.TypeOf((*MockClient)(nil).CreateKeyValueStore), keyValueStore)
+}
+
 // CreateObjectStore mocks base method.
 func (m *MockClient) CreateObjectStore(objectStore string) error {
 	m.ctrl.T.Helper()

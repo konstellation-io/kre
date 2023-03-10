@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type NatsManagerServiceClient interface {
 	CreateStreams(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error)
 	CreateObjectStore(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error)
+	CreateKeyValuesStores(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error)
 	DeleteStreams(ctx context.Context, in *DeleteStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error)
 	GetVersionNatsConfig(ctx context.Context, in *GetVersionNatsConfigRequest, opts ...grpc.CallOption) (*GetVersionNatsConfigResponse, error)
 }
@@ -54,6 +55,15 @@ func (c *natsManagerServiceClient) CreateObjectStore(ctx context.Context, in *Cr
 	return out, nil
 }
 
+func (c *natsManagerServiceClient) CreateKeyValuesStores(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error) {
+	out := new(MutationResponse)
+	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateKeyValuesStores", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *natsManagerServiceClient) DeleteStreams(ctx context.Context, in *DeleteStreamsRequest, opts ...grpc.CallOption) (*MutationResponse, error) {
 	out := new(MutationResponse)
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/DeleteStreams", in, out, opts...)
@@ -78,6 +88,7 @@ func (c *natsManagerServiceClient) GetVersionNatsConfig(ctx context.Context, in 
 type NatsManagerServiceServer interface {
 	CreateStreams(context.Context, *CreateStreamsRequest) (*MutationResponse, error)
 	CreateObjectStore(context.Context, *CreateStreamsRequest) (*MutationResponse, error)
+	CreateKeyValuesStores(context.Context, *CreateStreamsRequest) (*MutationResponse, error)
 	DeleteStreams(context.Context, *DeleteStreamsRequest) (*MutationResponse, error)
 	GetVersionNatsConfig(context.Context, *GetVersionNatsConfigRequest) (*GetVersionNatsConfigResponse, error)
 	mustEmbedUnimplementedNatsManagerServiceServer()
@@ -92,6 +103,9 @@ func (UnimplementedNatsManagerServiceServer) CreateStreams(context.Context, *Cre
 }
 func (UnimplementedNatsManagerServiceServer) CreateObjectStore(context.Context, *CreateStreamsRequest) (*MutationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateObjectStore not implemented")
+}
+func (UnimplementedNatsManagerServiceServer) CreateKeyValuesStores(context.Context, *CreateStreamsRequest) (*MutationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateKeyValuesStores not implemented")
 }
 func (UnimplementedNatsManagerServiceServer) DeleteStreams(context.Context, *DeleteStreamsRequest) (*MutationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStreams not implemented")
@@ -148,6 +162,24 @@ func _NatsManagerService_CreateObjectStore_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NatsManagerService_CreateKeyValuesStores_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStreamsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NatsManagerServiceServer).CreateKeyValuesStores(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/nats.NatsManagerService/CreateKeyValuesStores",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NatsManagerServiceServer).CreateKeyValuesStores(ctx, req.(*CreateStreamsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NatsManagerService_DeleteStreams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteStreamsRequest)
 	if err := dec(in); err != nil {
@@ -198,6 +230,10 @@ var NatsManagerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateObjectStore",
 			Handler:    _NatsManagerService_CreateObjectStore_Handler,
+		},
+		{
+			MethodName: "CreateKeyValuesStores",
+			Handler:    _NatsManagerService_CreateKeyValuesStores_Handler,
 		},
 		{
 			MethodName: "DeleteStreams",

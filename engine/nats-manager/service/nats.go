@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+
 	"github.com/konstellation-io/kre/engine/nats-manager/config"
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
 	"github.com/konstellation-io/kre/engine/nats-manager/manager"
@@ -81,13 +82,13 @@ func (n *NatsService) GetVersionNatsConfig(
 ) (*natspb.GetVersionNatsConfigResponse, error) {
 	n.logger.Info("GetVersionNatsConfig request received")
 
-	workflowNatsConfig, err := n.manager.GetVersionNatsConfig(req.RuntimeId, req.VersionName, req.Workflows)
+	projectNatsConfig, err := n.manager.GetVersionNatsConfig(req.RuntimeId, req.VersionName, req.Workflows)
 	if err != nil {
 		n.logger.Errorf("Error getting nats configuration for version \"%s\": %s", req.VersionName, err)
 		return nil, err
 	}
 
 	return &natspb.GetVersionNatsConfigResponse{
-		Workflows: workflowNatsConfig,
+		ProjectConfig: projectNatsConfig,
 	}, nil
 }

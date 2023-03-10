@@ -26,7 +26,7 @@ message MutationResponse {
 }
 
 message GetVersionNatsConfigResponse {
-  map<string, WorkflowNatsConfig> workflows = 1;
+  ProjectNatsConfig project_config = 2;
 }
 
 message Workflow {
@@ -51,20 +51,28 @@ message Node {
   optional ObjectStore object_store = 3;
 }
 
+message ProjectNatsConfig {
+  string key_value_store = 1;
+  map<string, WorkflowNatsConfig> workflows = 2;
+}
+
 message WorkflowNatsConfig {
   string stream = 1;
-  map<string, NodeNatsConfig> nodes = 2;
+  string key_value_store = 2;
+  map<string, NodeNatsConfig> nodes = 3;
 }
 
 message NodeNatsConfig {
   string subject = 1;
   repeated string subscriptions = 2;
   optional string object_store = 3;
+  string key_value_store = 4;
 }
 
 service NatsManagerService {
   rpc CreateStreams (CreateStreamsRequest) returns (MutationResponse);
   rpc CreateObjectStore (CreateStreamsRequest) returns (MutationResponse);
+  rpc CreateKeyValuesStores (CreateStreamsRequest) returns (MutationResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (MutationResponse);
   rpc GetVersionNatsConfig (GetVersionNatsConfigRequest) returns (GetVersionNatsConfigResponse);
 };

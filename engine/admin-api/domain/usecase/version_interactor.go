@@ -484,10 +484,16 @@ func (i *VersionInteractor) changeStatusAndNotify(
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error creating objects stores for version %q: %s", version.Name, status, err)
 		}
 
+		err = i.natsManagerService.CreateKeyValueStores(ctx, runtimeId, version)
+		if err != nil {
+			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error creating key-value stores for version %q: %s", version.Name, status, err)
+		}
+
 		worklfowsStreamConfig, err := i.natsManagerService.GetVersionNatsConfig(ctx, runtimeId, version)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error getting stream configuration for version %q: %s", version.Name, status, err)
 		}
+
 		err = i.versionService.Start(ctx, runtimeId, version, worklfowsStreamConfig)
 		if err != nil {
 			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)

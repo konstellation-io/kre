@@ -145,7 +145,8 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 	wf := make([]*versionpb.Workflow, len(version.Workflows))
 
 	for i, w := range version.Workflows {
-		workflowStreamConfig, ok := versionStreamConfig[w.Name]
+		workflowStreamConfig, ok := versionStreamConfig.Workflows[w.Name]
+		// seguir por aqui, falta añadir toda la configuracion del key value store hasta que llegue al node manager
 		if !ok {
 			return nil, fmt.Errorf("error obtaining stream for workflow \"%s\"", w.Name)
 		}

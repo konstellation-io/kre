@@ -76,6 +76,27 @@ func (n *NatsManagerClient) CreateObjectStores(ctx context.Context, runtimeID st
 	return err
 }
 
+// CreateKeyValueStores calls nats-manager to create NATS Key-Value Stores for given version
+func (n *NatsManagerClient) CreateKeyValueStores(ctx context.Context, runtimeID string, version *entity.Version) error {
+	workflows, err := n.getWorkflowsFromVersion(version)
+	if err != nil {
+		return err
+	}
+
+	req := natspb.CreateStreamsRequest{
+		RuntimeId:   runtimeID,
+		VersionName: version.Name,
+		Workflows:   workflows,
+	}
+
+	_, err = n.client.CreateKeyValuesStores(ctx, &req)
+	if err != nil {
+		return fmt.Errorf("error creating key-value stores: %w", err)
+	}
+
+	return err
+}
+
 // DeleteStreams calls nats-manager to delete NATS streams for given version
 func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
 	req := natspb.DeleteStreamsRequest{
@@ -100,7 +121,7 @@ func (n *NatsManagerClient) GetVersionNatsConfig(
 ) (entity.VersionStreamConfig, error) {
 	workflows, err := n.getWorkflowsFromVersion(version)
 	if err != nil {
-		return nil, err
+		return entity.VersionStreamConfig{}, err
 	}
 
 	req := natspb.GetVersionNatsConfigRequest{
@@ -111,23 +132,30 @@ func (n *NatsManagerClient) GetVersionNatsConfig(
 
 	res, err := n.client.GetVersionNatsConfig(ctx, &req)
 	if err != nil {
-		return nil, fmt.Errorf("error getting NATS streams configuration for version '%s': %w", version.Name, err)
+		return entity.VersionStreamConfig{}, fmt.Errorf("error getting NATS streams configuration for version '%s': %w", version.Name, err)
 	}
 
-	versionNatsConfig := make(entity.VersionStreamConfig, len(res.Workflows))
-	for workflowName, workflowInfo := range res.Workflows {
+	workflowNatsConfigs := make(map[string]entity.WorkflowStreamConfig, len(res.ProjectConfig.Workflows))
+	for workflowName, workflowInfo := range res.ProjectConfig.Workflows {
 		nodesNatsConfig := make(map[string]entity.NodeStreamConfig, len(workflowInfo.Nodes))
 		for nodeName, nodeInfo := range workflowInfo.Nodes {
 			nodesNatsConfig[nodeName] = entity.NodeStreamConfig{
 				Subject:       nodeInfo.Subject,
 				Subscriptions: nodeInfo.Subscriptions,
 				ObjectStore:   nodeInfo.ObjectStore,
+				KeyValueStore: nodeInfo.KeyValueStore,
 			}
 		}
-		versionNatsConfig[workflowName] = entity.WorkflowStreamConfig{
-			Stream: workflowInfo.Stream,
-			Nodes:  nodesNatsConfig,
+		workflowNatsConfigs[workflowName] = entity.WorkflowStreamConfig{
+			Stream:        workflowInfo.Stream,
+			KeyValueStore: workflowInfo.KeyValueStore,
+			Nodes:         nodesNatsConfig,
 		}
+	}
+
+	versionNatsConfig := entity.VersionStreamConfig{
+		KeyValueStore: res.ProjectConfig.KeyValueStore,
+		Workflows:     workflowNatsConfigs,
 	}
 
 	return versionNatsConfig, nil
