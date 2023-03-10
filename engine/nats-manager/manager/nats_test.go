@@ -2,6 +2,7 @@ package manager_test
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -114,31 +115,52 @@ func TestGetVersionNatsConfig(t *testing.T) {
 		testNodeSubject    = "test-runtime-test-version-TestWorkflow.test-node"
 	)
 
-	workflows := []*natspb.Workflow{
-		NewWorkflowBuilder().
-			WithName(workflowName).
-			WithEntrypoint(workflowEntrypoint).
-			WithNodeName(testNode).
-			WithNodeSubscriptions([]string{entrypointNodeName}).
-			Build(),
-	}
-
-	expectedConfiguration := map[string]*natspb.WorkflowNatsConfig{
-		workflowName: {
-			Stream: streamName,
-			Nodes: map[string]*natspb.NodeNatsConfig{
-				testNode: {
-					Subject:       testNodeSubject,
-					Subscriptions: []string{fmt.Sprintf("%s.%s", streamName, entrypointNodeName)},
-					ObjectStore:   nil,
+	testCases := []struct {
+		name                  string
+		workflows             []*natspb.Workflow
+		expectedConfiguration map[string]*natspb.WorkflowNatsConfig
+		wantError             bool
+	}{
+		{
+			name: "Workflow with no object store",
+			workflows: []*natspb.Workflow{
+				NewWorkflowBuilder().
+					WithName(workflowName).
+					WithEntrypoint(workflowEntrypoint).
+					WithNodes(
+						[]*natspb.Node{
+							{
+								Name:          testNode,
+								Subscriptions: []string{entrypointNodeName},
+							},
+						}).
+					Build(),
+			},
+			expectedConfiguration: map[string]*natspb.WorkflowNatsConfig{
+				workflowName: {
+					Stream: streamName,
+					Nodes: map[string]*natspb.NodeNatsConfig{
+						testNode: {
+							Subject:       testNodeSubject,
+							Subscriptions: []string{fmt.Sprintf("%s.%s", streamName, entrypointNodeName)},
+						},
+					},
 				},
 			},
+			wantError: false,
 		},
 	}
 
-	actual, err := natsManager.GetVersionNatsConfig(runtimeID, versionName, workflows)
-	require.Nil(t, err)
-	require.EqualValues(t, expectedConfiguration, actual)
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			workflowConfig, err := natsManager.GetVersionNatsConfig(runtimeID, versionName, tc.workflows)
+			if tc.wantError {
+				assert.Error(t, err)
+				return
+			}
+			assert.Equal(t, tc.expectedConfiguration, workflowConfig)
+		})
+	}
 }
 
 func TestCreateObjectStore(t *testing.T) {
