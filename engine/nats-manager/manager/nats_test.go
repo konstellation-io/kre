@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/kre/engine/nats-manager/manager"
 	"github.com/konstellation-io/kre/engine/nats-manager/mocks"
 	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
-	"github.com/stretchr/testify/require"
 )
 
 func TestCreateStreams(t *testing.T) {
@@ -44,7 +43,7 @@ func TestCreateStreams(t *testing.T) {
 
 	client.EXPECT().CreateStream(streamName, subjectsToCreate).Return(nil)
 	actualErr := natsManager.CreateStreams(runtimeID, versionName, workflows)
-	require.Nil(t, actualErr)
+	assert.Nil(t, actualErr)
 }
 
 func TestCreateStreams_ClientFails(t *testing.T) {
@@ -77,7 +76,7 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 
 	client.EXPECT().CreateStream(streamName, []string{testNodeSubject, testNodeSubsubjects}).Return(fmt.Errorf("stream already exists"))
 	err := natsManager.CreateStreams(runtimeID, versionName, workflows)
-	require.Error(t, expectedError, err)
+	assert.Error(t, expectedError, err)
 }
 
 func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
@@ -95,7 +94,7 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 	var workflows []*natspb.Workflow
 
 	err := natsManager.CreateStreams(runtimeID, versionName, workflows)
-	require.EqualError(t, err, "no workflows defined")
+	assert.EqualError(t, err, "no workflows defined")
 }
 
 func TestGetVersionNatsConfig(t *testing.T) {
@@ -187,7 +186,7 @@ func TestCreateObjectStore(t *testing.T) {
 		clientError          bool
 	}{
 		{
-			name: "ScopeProject",
+			name: "Object store with project scope",
 			workflows: []*natspb.Workflow{
 				NewWorkflowBuilder().
 					WithNodeObjectStore(
@@ -203,7 +202,7 @@ func TestCreateObjectStore(t *testing.T) {
 			wantedError:          nil,
 		},
 		{
-			name: "ScopeWorkflow",
+			name: "Object store with workflow scope",
 			workflows: []*natspb.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
@@ -222,7 +221,7 @@ func TestCreateObjectStore(t *testing.T) {
 			wantedError: nil,
 		},
 		{
-			name: "InvalidName",
+			name: "Invalid object store name",
 			workflows: []*natspb.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
@@ -238,7 +237,7 @@ func TestCreateObjectStore(t *testing.T) {
 			wantedError:          manager.ErrInvalidObjectStoreName,
 		},
 		{
-			name: "InvalidScope",
+			name: "Invalid object store scope",
 			workflows: []*natspb.Workflow{
 				NewWorkflowBuilder().
 					WithNodeObjectStore(
@@ -254,7 +253,7 @@ func TestCreateObjectStore(t *testing.T) {
 			wantedError:          manager.ErrInvalidObjectStoreScope,
 		},
 		{
-			name: "NoObjectStoreToConfigure",
+			name: "Node without object store",
 			workflows: []*natspb.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
@@ -265,7 +264,7 @@ func TestCreateObjectStore(t *testing.T) {
 			wantedError:          nil,
 		},
 		{
-			name: "MultipleWorkflowsSample",
+			name: "Multiple workflows with different workflow scoped object store",
 			workflows: []*natspb.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
@@ -294,7 +293,65 @@ func TestCreateObjectStore(t *testing.T) {
 			wantedError: nil,
 		},
 		{
-			name: "MultipleNodesInWorkflowSample",
+			name: "Multiple workflows with the same project scoped object store",
+			workflows: []*natspb.Workflow{
+				NewWorkflowBuilder().
+					WithName(testWorkflowName).
+					WithNodeObjectStore(
+						&natspb.Node_ObjectStore{
+							Name:  testObjectStore,
+							Scope: natspb.Node_SCOPE_PROJECT,
+						},
+					).
+					Build(),
+				NewWorkflowBuilder().
+					WithName("another-workflow").
+					WithNodeObjectStore(
+						&natspb.Node_ObjectStore{
+							Name:  testObjectStore,
+							Scope: natspb.Node_SCOPE_PROJECT,
+						},
+					).
+					Build(),
+			},
+			expectedObjectStores: []string{
+				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+			},
+			wantError:   false,
+			wantedError: nil,
+		},
+		{
+			name: "Multiple workflows with different project scoped object store",
+			workflows: []*natspb.Workflow{
+				NewWorkflowBuilder().
+					WithName(testWorkflowName).
+					WithNodeObjectStore(
+						&natspb.Node_ObjectStore{
+							Name:  testObjectStore,
+							Scope: natspb.Node_SCOPE_PROJECT,
+						},
+					).
+					Build(),
+				NewWorkflowBuilder().
+					WithName("another-workflow").
+					WithNodeObjectStore(
+						&natspb.Node_ObjectStore{
+							Name:  "another-object-store",
+							Scope: natspb.Node_SCOPE_PROJECT,
+						},
+					).
+					Build(),
+			},
+			expectedObjectStores: []string{
+				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("object-store_%s_%s_another-object-store", testRuntimeID, testVersionName),
+			},
+			wantError:   false,
+			wantedError: nil,
+		},
+		{
+			name: "Multiple nodes in workflow with same workflow scoped object store",
 			workflows: []*natspb.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
@@ -325,6 +382,102 @@ func TestCreateObjectStore(t *testing.T) {
 			wantError:   false,
 			wantedError: nil,
 		},
+		{
+			name: "Multiple nodes in workflow with different workflow scoped object store",
+			workflows: []*natspb.Workflow{
+				NewWorkflowBuilder().
+					WithName(testWorkflowName).
+					WithNodes(
+						[]*natspb.Node{
+							{
+								Name: "test-node-1",
+								ObjectStore: &natspb.Node_ObjectStore{
+									Name:  testObjectStore,
+									Scope: natspb.Node_SCOPE_WORKFLOW,
+								},
+							},
+							{
+								Name: "test-node-2",
+								ObjectStore: &natspb.Node_ObjectStore{
+									Name:  "another-object-store",
+									Scope: natspb.Node_SCOPE_WORKFLOW,
+								},
+							},
+						},
+					).
+					Build(),
+			},
+			expectedObjectStores: []string{
+				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("object-store_%s_%s_%s_another-object-store", testRuntimeID, testVersionName, testWorkflowName),
+			},
+			wantError:   false,
+			wantedError: nil,
+		},
+		{
+			name: "Multiple nodes in workflow with same project scoped object store",
+			workflows: []*natspb.Workflow{
+				NewWorkflowBuilder().
+					WithName(testWorkflowName).
+					WithNodes(
+						[]*natspb.Node{
+							{
+								Name: "test-node-1",
+								ObjectStore: &natspb.Node_ObjectStore{
+									Name:  testObjectStore,
+									Scope: natspb.Node_SCOPE_PROJECT,
+								},
+							},
+							{
+								Name: "test-node-2",
+								ObjectStore: &natspb.Node_ObjectStore{
+									Name:  testObjectStore,
+									Scope: natspb.Node_SCOPE_PROJECT,
+								},
+							},
+						},
+					).
+					Build(),
+			},
+			expectedObjectStores: []string{
+				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+			},
+			wantError:   false,
+			wantedError: nil,
+		},
+		{
+			name: "Multiple nodes in workflow with different project scoped object store",
+			workflows: []*natspb.Workflow{
+				NewWorkflowBuilder().
+					WithName(testWorkflowName).
+					WithNodes(
+						[]*natspb.Node{
+							{
+								Name: "test-node-1",
+								ObjectStore: &natspb.Node_ObjectStore{
+									Name:  testObjectStore,
+									Scope: natspb.Node_SCOPE_PROJECT,
+								},
+							},
+							{
+								Name: "test-node-2",
+								ObjectStore: &natspb.Node_ObjectStore{
+									Name:  "another-object-store",
+									Scope: natspb.Node_SCOPE_PROJECT,
+								},
+							},
+						},
+					).
+					Build(),
+			},
+			expectedObjectStores: []string{
+				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("object-store_%s_%s_another-object-store", testRuntimeID, testVersionName),
+			},
+			wantError:   false,
+			wantedError: nil,
+		},
 	}
 
 	for _, tc := range tests {
@@ -334,10 +487,10 @@ func TestCreateObjectStore(t *testing.T) {
 			}
 			err := natsManager.CreateObjectStore(testRuntimeID, testVersionName, tc.workflows)
 			if tc.wantError {
-				require.ErrorIs(t, err, tc.wantedError)
+				assert.ErrorIs(t, err, tc.wantedError)
 				return
 			}
-			require.Nil(t, err)
+			assert.Nil(t, err)
 		})
 	}
 }
