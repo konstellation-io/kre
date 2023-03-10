@@ -25,6 +25,7 @@ message Workflow {
     string subject = 7;
     int32 replicas = 8;
     optional string object_store = 9;
+    string key_value_store = 10;
   }
 
   message Entrypoint {
@@ -38,6 +39,7 @@ message Workflow {
   repeated Node nodes = 4;
   string exitpoint = 5;
   string stream = 6;
+  string key_value_store = 7;
 }
 
 message StartRequest {
@@ -51,6 +53,7 @@ message StartRequest {
   string influx_uri = 8;
   Entrypoint entrypoint = 9; // deprecated: this will be deleted with https://github.com/konstellation-io/kre/issues/152
   string runtime_id = 10;
+  string key_value_store = 11;
 }
 
 message VersionInfo {

@@ -61,6 +61,7 @@ func (k *K8sVersionClient) Start(
 			ProtoFile: version.Entrypoint.ProtoFile,
 			Image:     version.Entrypoint.Image,
 		},
+		KeyValueStore: versionStreamConfig.KeyValueStore,
 	}
 
 	_, err = k.client.Start(ctx, &req)
@@ -146,7 +147,6 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 
 	for i, w := range version.Workflows {
 		workflowStreamConfig, ok := versionStreamConfig.Workflows[w.Name]
-		// seguir por aqui, falta añadir toda la configuracion del key value store hasta que llegue al node manager
 		if !ok {
 			return nil, fmt.Errorf("error obtaining stream for workflow \"%s\"", w.Name)
 		}
@@ -165,6 +165,7 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 				Subscriptions: nodeStreamConfig.Subscriptions,
 				Subject:       nodeStreamConfig.Subject,
 				ObjectStore:   nodeStreamConfig.ObjectStore,
+				KeyValueStore: nodeStreamConfig.KeyValueStore,
 				Replicas:      n.Replicas,
 			}
 		}
@@ -181,9 +182,10 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 				Name:    w.Entrypoint,
 				Subject: entrypointSubject,
 			},
-			Nodes:     nodes,
-			Exitpoint: w.Exitpoint,
-			Stream:    workflowStreamConfig.Stream,
+			Nodes:         nodes,
+			Exitpoint:     w.Exitpoint,
+			Stream:        workflowStreamConfig.Stream,
+			KeyValueStore: workflowStreamConfig.KeyValueStore,
 		}
 	}
 
