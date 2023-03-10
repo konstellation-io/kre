@@ -75,6 +75,21 @@ func (n *NatsService) DeleteStreams(_ context.Context, req *natspb.DeleteStreams
 	}, nil
 }
 
+// CreateKeyValueStores create key value stores for given workflows
+func (n *NatsService) CreateKeyValueStores(_ context.Context, req *natspb.CreateStreamsRequest) (*natspb.MutationResponse, error) {
+	n.logger.Info("CreateKeyValueStores request received")
+
+	err := n.manager.CreateKeyValueStores(req.RuntimeId, req.VersionName, req.Workflows)
+	if err != nil {
+		n.logger.Errorf("Error creating key value stores: %s", err)
+		return nil, err
+	}
+
+	return &natspb.MutationResponse{
+		Message: fmt.Sprintf("Key value stores for version '%s' on runtime %s created", req.VersionName, req.RuntimeId),
+	}, nil
+}
+
 // GetVersionNatsConfig returns nats configuration for given version, including subjects to subscribe for each node
 func (n *NatsService) GetVersionNatsConfig(
 	_ context.Context,

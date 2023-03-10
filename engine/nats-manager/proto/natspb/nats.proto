@@ -72,7 +72,7 @@ message NodeNatsConfig {
 service NatsManagerService {
   rpc CreateStreams (CreateStreamsRequest) returns (MutationResponse);
   rpc CreateObjectStore (CreateStreamsRequest) returns (MutationResponse);
-  rpc CreateKeyValuesStores (CreateStreamsRequest) returns (MutationResponse);
+  rpc CreateKeyValueStores (CreateStreamsRequest) returns (MutationResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (MutationResponse);
   rpc GetVersionNatsConfig (GetVersionNatsConfigRequest) returns (GetVersionNatsConfigResponse);
 };

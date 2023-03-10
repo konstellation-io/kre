@@ -89,7 +89,7 @@ func (n *NatsManagerClient) CreateKeyValueStores(ctx context.Context, runtimeID 
 		Workflows:   workflows,
 	}
 
-	_, err = n.client.CreateKeyValuesStores(ctx, &req)
+	_, err = n.client.CreateKeyValueStores(ctx, &req)
 	if err != nil {
 		return fmt.Errorf("error creating key-value stores: %w", err)
 	}

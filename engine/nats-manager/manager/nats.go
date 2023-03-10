@@ -109,6 +109,8 @@ func (m *NatsManager) CreateKeyValueStores(
 		return fmt.Errorf("no workflows defined")
 	}
 
+	m.logger.Info("Creating key-value stores")
+
 	// create key-value store for project
 	keyValueStore := m.getKeyValueStoreName(runtimeID, versionName, "", "", ScopeProject)
 	err := m.client.CreateKeyValueStore(keyValueStore)
