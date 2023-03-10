@@ -2,8 +2,9 @@ package manager_test
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/kre/engine/nats-manager/manager"
@@ -328,8 +329,8 @@ func TestCreateObjectStore(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			for _, expecterObjStore := range tc.expectedObjectStores {
-				client.EXPECT().CreateObjectStore(expecterObjStore).Return(tc.wantedError)
+			for _, expectedObjStore := range tc.expectedObjectStores {
+				client.EXPECT().CreateObjectStore(expectedObjStore).Return(tc.wantedError)
 			}
 			err := natsManager.CreateObjectStore(testRuntimeID, testVersionName, tc.workflows)
 			if tc.wantError {
