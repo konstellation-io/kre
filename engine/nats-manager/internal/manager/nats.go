@@ -5,7 +5,7 @@ import (
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
-	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
+	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
 )
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/${GOFILE} -package=mocks

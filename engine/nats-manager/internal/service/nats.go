@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/config"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/manager"
-	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
 	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
 )
 
@@ -106,14 +106,18 @@ func (n *NatsService) dtoToNodes(dtoNodes []*natspb.Node) []*entity.Node {
 	nodes := make([]*entity.Node, 0, len(dtoNodes))
 
 	for _, dtoNode := range dtoNodes {
-		nodes = append(nodes, &entity.Node{
+		node := &entity.Node{
 			Name:          dtoNode.Name,
 			Subscriptions: dtoNode.Subscriptions,
-			ObjectStore: &entity.ObjectStore{
+		}
+
+		if dtoNode.ObjectStore != nil {
+			node.ObjectStore = &entity.ObjectStore{
 				Name:  dtoNode.ObjectStore.Name,
 				Scope: entity.ObjectStoreScope(dtoNode.ObjectStore.Scope),
-			},
-		})
+			}
+		}
+		nodes = append(nodes, node)
 	}
 
 	return nodes
@@ -126,8 +130,9 @@ func (n *NatsService) workflowsStreamConfigToDto(
 
 	for workflow, cfg := range workflows {
 		workflowsStreamCfg[workflow] = &natspb.CreateStreamResponse_WorkflowStreamConfig{
-			Stream: cfg.Stream,
-			Nodes:  n.nodesStreamConfigToDto(cfg.Nodes),
+			Stream:            cfg.Stream,
+			Nodes:             n.nodesStreamConfigToDto(cfg.Nodes),
+			EntrypointSubject: cfg.EntrypointSubject,
 		}
 	}
 

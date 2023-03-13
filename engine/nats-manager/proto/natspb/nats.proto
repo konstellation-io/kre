@@ -50,6 +50,7 @@ message CreateStreamResponse {
   message WorkflowStreamConfig {
     string stream = 1;
     map<string, NodeStreamConfig> nodes = 2;
+    string entrypoint_subject = 3;
   }
 
   map<string, WorkflowStreamConfig> workflows = 1;
@@ -62,7 +63,6 @@ message CreateObjectStoreResponse {
 
   map<string, WorkflowObjectStoreConfig> workflows = 1;
 }
-
 
 service NatsManagerService {
   rpc CreateStreams (CreationRequest) returns (CreateStreamResponse);

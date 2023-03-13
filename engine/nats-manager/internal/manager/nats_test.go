@@ -135,73 +135,6 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 	assert.EqualError(t, err, "no workflows defined")
 }
 
-//
-//func TestGetVersionNatsConfig(t *testing.T) {
-//	ctrl := gomock.NewController(t)
-//
-//	logger := mocks.NewMockLogger(ctrl)
-//	client := mocks.NewMockClient(ctrl)
-//	natsManager := manager.NewNatsManager(logger, client)
-//
-//	const (
-//		runtimeID          = "test-runtime"
-//		versionName        = "test-version"
-//		workflowName       = "test-workflow"
-//		workflowEntrypoint = "TestWorkflow"
-//		entrypointNodeName = "entrypoint-node"
-//		streamName         = "test-runtime-test-version-TestWorkflow"
-//		testNode           = "test-node"
-//		testNodeSubject    = "test-runtime-test-version-TestWorkflow.test-node"
-//	)
-//
-//	testCases := []struct {
-//		name                  string
-//		workflows             []*entity.Workflow
-//		expectedConfiguration map[string]*entity.WorkflowNatsConfig
-//		wantError             bool
-//	}{
-//		{
-//			name: "Workflow with no object store",
-//			workflows: []*entity.Workflow{
-//				NewWorkflowBuilder().
-//					WithName(workflowName).
-//					WithEntrypoint(workflowEntrypoint).
-//					WithNodes(
-//						[]*entity.Node{
-//							{
-//								Name:          testNode,
-//								Subscriptions: []string{entrypointNodeName},
-//							},
-//						}).
-//					Build(),
-//			},
-//			expectedConfiguration: map[string]*entity.WorkflowNatsConfig{
-//				workflowName: {
-//					Stream: streamName,
-//					Nodes: map[string]*natspb.NodeNatsConfig{
-//						testNode: {
-//							Subject:       testNodeSubject,
-//							Subscriptions: []string{fmt.Sprintf("%s.%s", streamName, entrypointNodeName)},
-//						},
-//					},
-//				},
-//			},
-//			wantError: false,
-//		},
-//	}
-//
-//	for _, tc := range testCases {
-//		t.Run(tc.name, func(t *testing.T) {
-//			workflowConfig, err := natsManager.GetVersionNatsConfig(runtimeID, versionName, tc.workflows)
-//			if tc.wantError {
-//				assert.Error(t, err)
-//				return
-//			}
-//			assert.Equal(t, tc.expectedConfiguration, workflowConfig)
-//		})
-//	}
-//}
-//
 func TestCreateObjectStore(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
@@ -530,7 +463,6 @@ func TestCreateObjectStore(t *testing.T) {
 				assert.ErrorIs(t, err, tc.wantedError)
 				return
 			}
-			//assert.NotNil(t, workflowsObjectStoresConfig)
 			assert.Nil(t, err)
 		})
 	}

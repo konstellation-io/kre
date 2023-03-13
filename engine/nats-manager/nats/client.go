@@ -3,7 +3,7 @@ package nats
 import (
 	"fmt"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
-	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
 	"github.com/nats-io/nats.go"
 )
 
@@ -33,14 +33,14 @@ func (n *NatsClient) Connect(url string) error {
 }
 
 func (n *NatsClient) CreateStream(streamConfig *entity.StreamConfig) error {
-	n.logger.Infof("Creating stream \"%s\"", streamConfig.Stream)
+	n.logger.Infof("Creating stream  %q", streamConfig.Stream)
 
 	subjects := n.getNodesSubjects(streamConfig.Nodes)
 
 	streamCfg := &nats.StreamConfig{
 		Name:        streamConfig.Stream,
 		Description: "",
-		Subjects:    append(subjects, streamConfig.EntrypointSubject),
+		Subjects:    append(subjects),
 		Retention:   nats.InterestPolicy,
 	}
 
@@ -75,6 +75,8 @@ func (n *NatsClient) getNodesSubjects(nodes entity.NodesStreamConfig) []string {
 		subSubject := nodeCfg.Subject + ".*"
 		subjects = append(subjects, nodeCfg.Subject, subSubject)
 	}
+
+	fmt.Println(subjects)
 
 	return subjects
 }
