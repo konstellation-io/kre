@@ -2,6 +2,7 @@ package manager_test
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -9,8 +10,30 @@ import (
 
 	"github.com/konstellation-io/kre/engine/nats-manager/manager"
 	"github.com/konstellation-io/kre/engine/nats-manager/mocks"
-	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
 )
+
+type streamConfigMatcher struct {
+	expectedStreamConfig *manager.StreamConfig
+}
+
+func newStreamConfigMatcher(expectedStreamConfig *manager.StreamConfig) *streamConfigMatcher {
+	return &streamConfigMatcher{
+		expectedStreamConfig: expectedStreamConfig,
+	}
+}
+
+func (m streamConfigMatcher) String() string {
+	return fmt.Sprintf("is equal to %v", m.expectedStreamConfig)
+}
+
+func (m streamConfigMatcher) Matches(actual interface{}) bool {
+	actualCfg, ok := actual.(*manager.StreamConfig)
+	if !ok {
+		return false
+	}
+
+	return reflect.DeepEqual(actualCfg, m.expectedStreamConfig)
+}
 
 func TestCreateStreams(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -26,24 +49,39 @@ func TestCreateStreams(t *testing.T) {
 		workflowEntrypoint = "TestWorkflow"
 		streamName         = "test-runtime-test-version-TestWorkflow"
 		testNode           = "test-node"
-		testNodeSubject    = "test-runtime-test-version-TestWorkflow.test-node"
 	)
 
-	workflows := []*natspb.Workflow{
+	testNodeSubject := fmt.Sprintf("%s.%s", streamName, testNode)
+	testEntrypointSubject := fmt.Sprintf("%s.entrypoint", streamName)
+
+	workflows := []*manager.Workflow{
 		NewWorkflowBuilder().
 			WithName(workflowName).
 			WithEntrypoint(workflowEntrypoint).
 			WithNodeName(testNode).
 			Build(),
 	}
-	subjectsToCreate := []string{
-		testNodeSubject,
-		testNodeSubject + ".*",
+
+	expectedWorkflowsStreamsCfg := manager.WorkflowsStreamsConfig{
+		workflowName: &manager.StreamConfig{
+			Stream: streamName,
+			Nodes: manager.NodesStreamConfig{
+				testNode: manager.NodeStreamConfig{
+					Subject:       testNodeSubject,
+					Subscriptions: []string{},
+				},
+			},
+			EntrypointSubject: testEntrypointSubject,
+		},
 	}
 
-	client.EXPECT().CreateStream(streamName, subjectsToCreate).Return(nil)
-	actualErr := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	customMatcher := newStreamConfigMatcher(expectedWorkflowsStreamsCfg[workflowName])
+
+	client.EXPECT().CreateStream(customMatcher).Return(nil)
+	workflowsStreamsCfg, actualErr := natsManager.CreateStreams(runtimeID, versionName, workflows)
 	assert.Nil(t, actualErr)
+
+	assert.Equal(t, expectedWorkflowsStreamsCfg, workflowsStreamsCfg)
 }
 
 func TestCreateStreams_ClientFails(t *testing.T) {
@@ -54,17 +92,14 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 	natsManager := manager.NewNatsManager(logger, client)
 
 	const (
-		runtimeID           = "test-runtime"
-		versionName         = "test-version"
-		workflowName        = "test-workflow"
-		workflowEntrypoint  = "TestWorkflow"
-		streamName          = "test-runtime-test-version-TestWorkflow"
-		testNode            = "test-node"
-		testNodeSubject     = "test-runtime-test-version-TestWorkflow.test-node"
-		testNodeSubsubjects = "test-runtime-test-version-TestWorkflow.test-node.*"
+		runtimeID          = "test-runtime"
+		versionName        = "test-version"
+		workflowName       = "test-workflow"
+		workflowEntrypoint = "TestWorkflow"
+		testNode           = "test-node"
 	)
 
-	workflows := []*natspb.Workflow{
+	workflows := []*manager.Workflow{
 		NewWorkflowBuilder().
 			WithName(workflowName).
 			WithEntrypoint(workflowEntrypoint).
@@ -74,9 +109,10 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 
 	expectedError := fmt.Errorf("stream already exists")
 
-	client.EXPECT().CreateStream(streamName, []string{testNodeSubject, testNodeSubsubjects}).Return(fmt.Errorf("stream already exists"))
-	err := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	client.EXPECT().CreateStream(gomock.Any()).Return(fmt.Errorf("stream already exists"))
+	workflowsStreamsConfig, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
 	assert.Error(t, expectedError, err)
+	assert.Nil(t, workflowsStreamsConfig)
 }
 
 func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
@@ -91,78 +127,79 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 		versionName = "test-version"
 	)
 
-	var workflows []*natspb.Workflow
+	var workflows []*manager.Workflow
 
-	err := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	_, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
 	assert.EqualError(t, err, "no workflows defined")
 }
 
-func TestGetVersionNatsConfig(t *testing.T) {
-	ctrl := gomock.NewController(t)
-
-	logger := mocks.NewMockLogger(ctrl)
-	client := mocks.NewMockClient(ctrl)
-	natsManager := manager.NewNatsManager(logger, client)
-
-	const (
-		runtimeID          = "test-runtime"
-		versionName        = "test-version"
-		workflowName       = "test-workflow"
-		workflowEntrypoint = "TestWorkflow"
-		entrypointNodeName = "entrypoint-node"
-		streamName         = "test-runtime-test-version-TestWorkflow"
-		testNode           = "test-node"
-		testNodeSubject    = "test-runtime-test-version-TestWorkflow.test-node"
-	)
-
-	testCases := []struct {
-		name                  string
-		workflows             []*natspb.Workflow
-		expectedConfiguration map[string]*natspb.WorkflowNatsConfig
-		wantError             bool
-	}{
-		{
-			name: "Workflow with no object store",
-			workflows: []*natspb.Workflow{
-				NewWorkflowBuilder().
-					WithName(workflowName).
-					WithEntrypoint(workflowEntrypoint).
-					WithNodes(
-						[]*natspb.Node{
-							{
-								Name:          testNode,
-								Subscriptions: []string{entrypointNodeName},
-							},
-						}).
-					Build(),
-			},
-			expectedConfiguration: map[string]*natspb.WorkflowNatsConfig{
-				workflowName: {
-					Stream: streamName,
-					Nodes: map[string]*natspb.NodeNatsConfig{
-						testNode: {
-							Subject:       testNodeSubject,
-							Subscriptions: []string{fmt.Sprintf("%s.%s", streamName, entrypointNodeName)},
-						},
-					},
-				},
-			},
-			wantError: false,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			workflowConfig, err := natsManager.GetVersionNatsConfig(runtimeID, versionName, tc.workflows)
-			if tc.wantError {
-				assert.Error(t, err)
-				return
-			}
-			assert.Equal(t, tc.expectedConfiguration, workflowConfig)
-		})
-	}
-}
-
+//
+//func TestGetVersionNatsConfig(t *testing.T) {
+//	ctrl := gomock.NewController(t)
+//
+//	logger := mocks.NewMockLogger(ctrl)
+//	client := mocks.NewMockClient(ctrl)
+//	natsManager := manager.NewNatsManager(logger, client)
+//
+//	const (
+//		runtimeID          = "test-runtime"
+//		versionName        = "test-version"
+//		workflowName       = "test-workflow"
+//		workflowEntrypoint = "TestWorkflow"
+//		entrypointNodeName = "entrypoint-node"
+//		streamName         = "test-runtime-test-version-TestWorkflow"
+//		testNode           = "test-node"
+//		testNodeSubject    = "test-runtime-test-version-TestWorkflow.test-node"
+//	)
+//
+//	testCases := []struct {
+//		name                  string
+//		workflows             []*manager.Workflow
+//		expectedConfiguration map[string]*manager.WorkflowNatsConfig
+//		wantError             bool
+//	}{
+//		{
+//			name: "Workflow with no object store",
+//			workflows: []*manager.Workflow{
+//				NewWorkflowBuilder().
+//					WithName(workflowName).
+//					WithEntrypoint(workflowEntrypoint).
+//					WithNodes(
+//						[]*manager.Node{
+//							{
+//								Name:          testNode,
+//								Subscriptions: []string{entrypointNodeName},
+//							},
+//						}).
+//					Build(),
+//			},
+//			expectedConfiguration: map[string]*manager.WorkflowNatsConfig{
+//				workflowName: {
+//					Stream: streamName,
+//					Nodes: map[string]*natspb.NodeNatsConfig{
+//						testNode: {
+//							Subject:       testNodeSubject,
+//							Subscriptions: []string{fmt.Sprintf("%s.%s", streamName, entrypointNodeName)},
+//						},
+//					},
+//				},
+//			},
+//			wantError: false,
+//		},
+//	}
+//
+//	for _, tc := range testCases {
+//		t.Run(tc.name, func(t *testing.T) {
+//			workflowConfig, err := natsManager.GetVersionNatsConfig(runtimeID, versionName, tc.workflows)
+//			if tc.wantError {
+//				assert.Error(t, err)
+//				return
+//			}
+//			assert.Equal(t, tc.expectedConfiguration, workflowConfig)
+//		})
+//	}
+//}
+//
 func TestCreateObjectStore(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
@@ -179,7 +216,7 @@ func TestCreateObjectStore(t *testing.T) {
 
 	tests := []struct {
 		name                 string
-		workflows            []*natspb.Workflow
+		workflows            []*manager.Workflow
 		expectedObjectStores []string
 		wantError            bool
 		wantedError          error
@@ -187,12 +224,12 @@ func TestCreateObjectStore(t *testing.T) {
 	}{
 		{
 			name: "Object store with project scope",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
-							Scope: natspb.Node_SCOPE_PROJECT,
+							Scope: manager.ScopeProject,
 						},
 					).
 					Build(),
@@ -203,13 +240,13 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Object store with workflow scope",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
-							Scope: natspb.Node_SCOPE_WORKFLOW,
+							Scope: manager.ScopeWorkflow,
 						},
 					).
 					Build(),
@@ -222,12 +259,12 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Invalid object store name",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
-							Scope: natspb.Node_SCOPE_WORKFLOW,
+						&manager.ObjectStore{
+							Scope: manager.ScopeWorkflow,
 						},
 					).
 					Build(),
@@ -238,10 +275,10 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Invalid object store scope",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
 							Scope: -1,
 						},
@@ -254,7 +291,7 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Node without object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					Build(),
@@ -265,22 +302,22 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple workflows with different workflow scoped object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
-							Scope: natspb.Node_SCOPE_WORKFLOW,
+							Scope: manager.ScopeWorkflow,
 						},
 					).
 					Build(),
 				NewWorkflowBuilder().
 					WithName("another-workflow").
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
-							Scope: natspb.Node_SCOPE_WORKFLOW,
+							Scope: manager.ScopeWorkflow,
 						},
 					).
 					Build(),
@@ -294,22 +331,22 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple workflows with the same project scoped object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
-							Scope: natspb.Node_SCOPE_PROJECT,
+							Scope: manager.ScopeProject,
 						},
 					).
 					Build(),
 				NewWorkflowBuilder().
 					WithName("another-workflow").
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
-							Scope: natspb.Node_SCOPE_PROJECT,
+							Scope: manager.ScopeProject,
 						},
 					).
 					Build(),
@@ -323,22 +360,22 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple workflows with different project scoped object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  testObjectStore,
-							Scope: natspb.Node_SCOPE_PROJECT,
+							Scope: manager.ScopeProject,
 						},
 					).
 					Build(),
 				NewWorkflowBuilder().
 					WithName("another-workflow").
 					WithNodeObjectStore(
-						&natspb.Node_ObjectStore{
+						&manager.ObjectStore{
 							Name:  "another-object-store",
-							Scope: natspb.Node_SCOPE_PROJECT,
+							Scope: manager.ScopeProject,
 						},
 					).
 					Build(),
@@ -352,23 +389,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with same workflow scoped object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*natspb.Node{
+						[]*manager.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  testObjectStore,
-									Scope: natspb.Node_SCOPE_WORKFLOW,
+									Scope: manager.ScopeWorkflow,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  testObjectStore,
-									Scope: natspb.Node_SCOPE_WORKFLOW,
+									Scope: manager.ScopeWorkflow,
 								},
 							},
 						},
@@ -384,23 +421,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with different workflow scoped object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*natspb.Node{
+						[]*manager.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  testObjectStore,
-									Scope: natspb.Node_SCOPE_WORKFLOW,
+									Scope: manager.ScopeWorkflow,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  "another-object-store",
-									Scope: natspb.Node_SCOPE_WORKFLOW,
+									Scope: manager.ScopeWorkflow,
 								},
 							},
 						},
@@ -416,23 +453,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with same project scoped object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*natspb.Node{
+						[]*manager.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  testObjectStore,
-									Scope: natspb.Node_SCOPE_PROJECT,
+									Scope: manager.ScopeProject,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  testObjectStore,
-									Scope: natspb.Node_SCOPE_PROJECT,
+									Scope: manager.ScopeProject,
 								},
 							},
 						},
@@ -448,23 +485,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with different project scoped object store",
-			workflows: []*natspb.Workflow{
+			workflows: []*manager.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*natspb.Node{
+						[]*manager.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  testObjectStore,
-									Scope: natspb.Node_SCOPE_PROJECT,
+									Scope: manager.ScopeProject,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &natspb.Node_ObjectStore{
+								ObjectStore: &manager.ObjectStore{
 									Name:  "another-object-store",
-									Scope: natspb.Node_SCOPE_PROJECT,
+									Scope: manager.ScopeProject,
 								},
 							},
 						},
@@ -485,11 +522,13 @@ func TestCreateObjectStore(t *testing.T) {
 			for _, expectedObjStore := range tc.expectedObjectStores {
 				client.EXPECT().CreateObjectStore(expectedObjStore).Return(tc.wantedError)
 			}
-			err := natsManager.CreateObjectStore(testRuntimeID, testVersionName, tc.workflows)
+
+			_, err := natsManager.CreateObjectStores(testRuntimeID, testVersionName, tc.workflows)
 			if tc.wantError {
 				assert.ErrorIs(t, err, tc.wantedError)
 				return
 			}
+			//assert.NotNil(t, workflowsObjectStoresConfig)
 			assert.Nil(t, err)
 		})
 	}

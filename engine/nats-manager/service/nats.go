@@ -31,36 +31,48 @@ func NewNatsService(
 	}
 }
 
-// CreateStreams create streams for given workflows
-func (n *NatsService) CreateStreams(_ context.Context, req *natspb.CreateStreamsRequest) (*natspb.MutationResponse, error) {
+// CreateStreams create streams for given workflows.
+func (n *NatsService) CreateStreams(
+	_ context.Context,
+	req *natspb.CreationRequest,
+) (*natspb.CreateStreamResponse, error) {
 	n.logger.Info("CreateStreams request received")
 
-	err := n.manager.CreateStreams(req.RuntimeId, req.VersionName, req.Workflows)
+	workflows := n.dtoToWorkflows(req.Workflows)
+
+	streamConfig, err := n.manager.CreateStreams(req.RuntimeId, req.VersionName, workflows)
 	if err != nil {
 		n.logger.Errorf("Error creating streams: %s", err)
 		return nil, err
 	}
-	return &natspb.MutationResponse{
-		Message: fmt.Sprintf("Streams and subjects for version '%s' on runtime %s created", req.VersionName, req.RuntimeId),
+
+	return &natspb.CreateStreamResponse{
+		Workflows: n.workflowsStreamConfigToDto(streamConfig),
 	}, nil
 }
 
-// CreateObjectStore
-func (n *NatsService) CreateObjectStore(_ context.Context, req *natspb.CreateStreamsRequest) (*natspb.MutationResponse, error) {
-	n.logger.Info("CreateObjectStore request received")
+// CreateObjectStores creates object stores for given workflows.
+func (n *NatsService) CreateObjectStores(
+	_ context.Context,
+	req *natspb.CreationRequest,
+) (*natspb.CreateObjectStoreResponse, error) {
+	n.logger.Info("CreateObjectStores request received")
 
-	err := n.manager.CreateObjectStore(req.RuntimeId, req.VersionName, req.Workflows)
+	err := n.manager.CreateObjectStore(req.RuntimeId, req.VersionName, n.dtoToWorkflows(req.Workflows))
 	if err != nil {
 		n.logger.Errorf("Error creating object store: %s", err)
 		return nil, err
 	}
-	return &natspb.MutationResponse{
-		Message: fmt.Sprintf("Object stores for version '%s' on runtime %s created", req.VersionName, req.RuntimeId),
+	return &natspb.CreateObjectStoreResponse{
+		Workflows: nil,
 	}, nil
 }
 
-// DeleteStreams delete streams for given workflows
-func (n *NatsService) DeleteStreams(_ context.Context, req *natspb.DeleteStreamsRequest) (*natspb.MutationResponse, error) {
+// DeleteStreams delete streams for given workflows.
+func (n *NatsService) DeleteStreams(
+	_ context.Context,
+	req *natspb.DeleteStreamsRequest,
+) (*natspb.DeleteResponse, error) {
 	n.logger.Info("Stop request received")
 
 	err := n.manager.DeleteStreams(req.RuntimeId, req.VersionName, req.Workflows)
@@ -69,25 +81,87 @@ func (n *NatsService) DeleteStreams(_ context.Context, req *natspb.DeleteStreams
 		return nil, err
 	}
 
-	return &natspb.MutationResponse{
+	return &natspb.DeleteResponse{
 		Message: fmt.Sprintf("Streams and subjects for version '%s' on runtime %s deleted", req.VersionName, req.RuntimeId),
 	}, nil
 }
 
-// GetVersionNatsConfig returns nats configuration for given version, including subjects to subscribe for each node
-func (n *NatsService) GetVersionNatsConfig(
-	_ context.Context,
-	req *natspb.GetVersionNatsConfigRequest,
-) (*natspb.GetVersionNatsConfigResponse, error) {
-	n.logger.Info("GetVersionNatsConfig request received")
+//
+//// GetVersionNatsConfig returns nats configuration for given version, including subjects to subscribe for each node
+//func (n *NatsService) GetVersionNatsConfig(
+//	_ context.Context,
+//	req *natspb.GetVersionNatsConfigRequest,
+//) (*natspb.GetVersionNatsConfigResponse, error) {
+//	n.logger.Info("GetVersionNatsConfig request received")
+//
+//	workflowNatsConfig, err := n.manager.GetVersionNatsConfig(req.RuntimeId, req.VersionName, req.Workflows)
+//	if err != nil {
+//		n.logger.Errorf("Error getting nats configuration for version \"%s\": %s", req.VersionName, err)
+//		return nil, err
+//	}
+//
+//	return &natspb.GetVersionNatsConfigResponse{
+//		Workflows: workflowNatsConfig,
+//	}, nil
+//}
 
-	workflowNatsConfig, err := n.manager.GetVersionNatsConfig(req.RuntimeId, req.VersionName, req.Workflows)
-	if err != nil {
-		n.logger.Errorf("Error getting nats configuration for version \"%s\": %s", req.VersionName, err)
-		return nil, err
+func (n *NatsService) dtoToWorkflows(dtoWorkflows []*natspb.Workflow) []*manager.Workflow {
+	workflows := make([]*manager.Workflow, 0, len(dtoWorkflows))
+
+	for _, dtoWorkflow := range dtoWorkflows {
+		workflows = append(workflows, &manager.Workflow{
+			Name:       dtoWorkflow.Name,
+			Entrypoint: dtoWorkflow.Entrypoint,
+			Nodes:      n.dtoToNodes(dtoWorkflow.Nodes),
+		})
 	}
 
-	return &natspb.GetVersionNatsConfigResponse{
-		Workflows: workflowNatsConfig,
-	}, nil
+	return workflows
+}
+
+func (n *NatsService) dtoToNodes(dtoNodes []*natspb.Node) []*manager.Node {
+	nodes := make([]*manager.Node, 0, len(dtoNodes))
+
+	for _, dtoNode := range dtoNodes {
+		nodes = append(nodes, &manager.Node{
+			Name:          dtoNode.Name,
+			Subscriptions: dtoNode.Subscriptions,
+			ObjectStore: &manager.ObjectStore{
+				Name:  dtoNode.ObjectStore.Name,
+				Scope: manager.ObjectStoreScope(dtoNode.ObjectStore.Scope),
+			},
+		})
+	}
+
+	return nodes
+}
+
+func (n *NatsService) workflowsStreamConfigToDto(
+	workflows manager.WorkflowsStreamsConfig,
+) map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig {
+	workflowsStreamCfg := map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig{}
+
+	for workflow, cfg := range workflows {
+		workflowsStreamCfg[workflow] = &natspb.CreateStreamResponse_WorkflowStreamConfig{
+			Stream: cfg.Stream,
+			Nodes:  n.nodesStreamConfigToDto(cfg.Nodes),
+		}
+	}
+
+	return workflowsStreamCfg
+}
+
+func (n *NatsService) nodesStreamConfigToDto(
+	nodes manager.NodesStreamConfig,
+) map[string]*natspb.CreateStreamResponse_NodeStreamConfig {
+	nodesStreamCfg := map[string]*natspb.CreateStreamResponse_NodeStreamConfig{}
+
+	for node, cfg := range nodes {
+		nodesStreamCfg[node] = &natspb.CreateStreamResponse_NodeStreamConfig{
+			Subject:       cfg.Subject,
+			Subscriptions: cfg.Subscriptions,
+		}
+	}
+
+	return nodesStreamCfg
 }

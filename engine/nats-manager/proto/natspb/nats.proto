@@ -3,7 +3,7 @@ syntax = "proto3";
 package nats;
 option go_package = "./natspb";
 
-message CreateStreamsRequest {
+message CreationRequest {
   string runtime_id = 1;
   string version_name = 2;
   repeated Workflow workflows = 3;
@@ -15,18 +15,8 @@ message DeleteStreamsRequest {
   repeated string workflows = 3;
 }
 
-message GetVersionNatsConfigRequest {
-  string runtime_id = 1;
-  string version_name = 2;
-  repeated Workflow workflows = 3;
-}
-
-message MutationResponse {
+message DeleteResponse {
   string message = 1;
-}
-
-message GetVersionNatsConfigResponse {
-  map<string, WorkflowNatsConfig> workflows = 1;
 }
 
 message Workflow {
@@ -51,20 +41,35 @@ message Node {
   optional ObjectStore object_store = 3;
 }
 
-message WorkflowNatsConfig {
-  string stream = 1;
-  map<string, NodeNatsConfig> nodes = 2;
+message CreateStreamResponse {
+  message NodeStreamConfig {
+    string subject = 1;
+    repeated string subscriptions = 2;
+  }
+
+  message WorkflowStreamConfig {
+    string stream = 1;
+    map<string, NodeStreamConfig> nodes = 2;
+  }
+
+  map<string, WorkflowStreamConfig> workflows = 1;
 }
 
-message NodeNatsConfig {
-  string subject = 1;
-  repeated string subscriptions = 2;
-  optional string object_store = 3;
+message CreateObjectStoreResponse {
+  message NodeObjectStoreConfig {
+    string object_store = 1;
+  }
+
+  message WorkflowObjectStoreConfig {
+    map<string, NodeObjectStoreConfig> nodes = 1;
+  }
+
+  map<string, WorkflowObjectStoreConfig> workflows = 1;
 }
+
 
 service NatsManagerService {
-  rpc CreateStreams (CreateStreamsRequest) returns (MutationResponse);
-  rpc CreateObjectStore (CreateStreamsRequest) returns (MutationResponse);
-  rpc DeleteStreams (DeleteStreamsRequest) returns (MutationResponse);
-  rpc GetVersionNatsConfig (GetVersionNatsConfigRequest) returns (GetVersionNatsConfigResponse);
+  rpc CreateStreams (CreationRequest) returns (CreateStreamResponse);
+  rpc CreateObjectStores (CreationRequest) returns (CreateObjectStoreResponse);
+  rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteResponse);
 };

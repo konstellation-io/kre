@@ -3,17 +3,9 @@ package nats
 import (
 	"fmt"
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
+	"github.com/konstellation-io/kre/engine/nats-manager/manager"
 	"github.com/nats-io/nats.go"
 )
-
-//go:generate mockgen -source=${GOFILE} -destination=../mocks/${GOFILE} -package=mocks
-
-type Client interface {
-	Connect(url string) error
-	CreateStream(stream string, subjects []string) error
-	CreateObjectStore(objectStore string) error
-	DeleteStream(stream string) error
-}
 
 type NatsClient struct {
 	js     nats.JetStreamContext
@@ -40,12 +32,15 @@ func (n *NatsClient) Connect(url string) error {
 	return nil
 }
 
-func (n *NatsClient) CreateStream(stream string, subjects []string) error {
-	n.logger.Infof("Creating stream \"%s\"", stream)
+func (n *NatsClient) CreateStream(streamConfig *manager.StreamConfig) error {
+	n.logger.Infof("Creating stream \"%s\"", streamConfig.Stream)
+
+	subjects := n.getNodesSubjects(streamConfig.Nodes)
+
 	streamCfg := &nats.StreamConfig{
-		Name:        stream,
+		Name:        streamConfig.Stream,
 		Description: "",
-		Subjects:    subjects,
+		Subjects:    append(subjects, streamConfig.EntrypointSubject),
 		Retention:   nats.InterestPolicy,
 	}
 
@@ -71,4 +66,15 @@ func (n *NatsClient) DeleteStream(stream string) error {
 	n.logger.Infof("Deleting stream \"%s\"", stream)
 	err := n.js.DeleteStream(stream)
 	return err
+}
+
+func (n *NatsClient) getNodesSubjects(nodes manager.NodesStreamConfig) []string {
+	subjects := make([]string, 0, len(nodes)*2)
+
+	for _, nodeCfg := range nodes {
+		subSubject := nodeCfg.Subject + ".*"
+		subjects = append(subjects, nodeCfg.Subject, subSubject)
+	}
+
+	return subjects
 }
