@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type NatsManagerServiceClient interface {
 	CreateStreams(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateStreamResponse, error)
 	CreateObjectStores(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateObjectStoreResponse, error)
+	CreateKeyValueStores(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateKeyValueStoreResponse, error)
 	DeleteStreams(ctx context.Context, in *DeleteStreamsRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 }
 
@@ -53,6 +54,15 @@ func (c *natsManagerServiceClient) CreateObjectStores(ctx context.Context, in *C
 	return out, nil
 }
 
+func (c *natsManagerServiceClient) CreateKeyValueStores(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateKeyValueStoreResponse, error) {
+	out := new(CreateKeyValueStoreResponse)
+	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateKeyValueStores", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *natsManagerServiceClient) DeleteStreams(ctx context.Context, in *DeleteStreamsRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
 	out := new(DeleteResponse)
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/DeleteStreams", in, out, opts...)
@@ -68,6 +78,7 @@ func (c *natsManagerServiceClient) DeleteStreams(ctx context.Context, in *Delete
 type NatsManagerServiceServer interface {
 	CreateStreams(context.Context, *CreationRequest) (*CreateStreamResponse, error)
 	CreateObjectStores(context.Context, *CreationRequest) (*CreateObjectStoreResponse, error)
+	CreateKeyValueStores(context.Context, *CreationRequest) (*CreateKeyValueStoreResponse, error)
 	DeleteStreams(context.Context, *DeleteStreamsRequest) (*DeleteResponse, error)
 	mustEmbedUnimplementedNatsManagerServiceServer()
 }
@@ -81,6 +92,9 @@ func (UnimplementedNatsManagerServiceServer) CreateStreams(context.Context, *Cre
 }
 func (UnimplementedNatsManagerServiceServer) CreateObjectStores(context.Context, *CreationRequest) (*CreateObjectStoreResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateObjectStores not implemented")
+}
+func (UnimplementedNatsManagerServiceServer) CreateKeyValueStores(context.Context, *CreationRequest) (*CreateKeyValueStoreResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateKeyValueStores not implemented")
 }
 func (UnimplementedNatsManagerServiceServer) DeleteStreams(context.Context, *DeleteStreamsRequest) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStreams not implemented")
@@ -134,6 +148,24 @@ func _NatsManagerService_CreateObjectStores_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NatsManagerService_CreateKeyValueStores_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NatsManagerServiceServer).CreateKeyValueStores(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/nats.NatsManagerService/CreateKeyValueStores",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NatsManagerServiceServer).CreateKeyValueStores(ctx, req.(*CreationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NatsManagerService_DeleteStreams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteStreamsRequest)
 	if err := dec(in); err != nil {
@@ -166,6 +198,10 @@ var NatsManagerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateObjectStores",
 			Handler:    _NatsManagerService_CreateObjectStores_Handler,
+		},
+		{
+			MethodName: "CreateKeyValueStores",
+			Handler:    _NatsManagerService_CreateKeyValueStores_Handler,
 		},
 		{
 			MethodName: "DeleteStreams",

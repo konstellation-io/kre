@@ -64,8 +64,19 @@ message CreateObjectStoreResponse {
   map<string, WorkflowObjectStoreConfig> workflows = 1;
 }
 
+message CreateKeyValueStoreResponse {
+  message WorkflowKeyValueStoreConfig {
+    string keyValueStore = 1;
+    map<string, string> nodes = 2;
+  }
+
+  string keyValueStore = 1;
+  map<string, WorkflowKeyValueStoreConfig> workflows = 2;
+}
+
 service NatsManagerService {
   rpc CreateStreams (CreationRequest) returns (CreateStreamResponse);
   rpc CreateObjectStores (CreationRequest) returns (CreateObjectStoreResponse);
+  rpc CreateKeyValueStores (CreationRequest) returns (CreateKeyValueStoreResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteResponse);
 };

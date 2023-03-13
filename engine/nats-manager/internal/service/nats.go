@@ -70,6 +70,20 @@ func (n *NatsService) CreateObjectStores(
 	}, nil
 }
 
+func (n *NatsService) CreateKeyValueStores(
+	_ context.Context,
+	req *natspb.CreationRequest,
+) (*natspb.CreateKeyValueStoreResponse, error) {
+	n.logger.Info("CreateKeyValueStores request received")
+
+	keyValueStores, err := n.manager.CreateKeyValueStores(req.RuntimeId, req.VersionName, n.dtoToWorkflows(req.Workflows))
+	if err != nil {
+		n.logger.Errorf("Error creating object store: %s", err)
+		return nil, err
+	}
+	return n.keyValueStoresToDto(keyValueStores), nil
+}
+
 // DeleteStreams delete streams for given workflows.
 func (n *NatsService) DeleteStreams(
 	_ context.Context,
@@ -114,7 +128,7 @@ func (n *NatsService) dtoToNodes(dtoNodes []*natspb.Node) []*entity.Node {
 		if dtoNode.ObjectStore != nil {
 			node.ObjectStore = &entity.ObjectStore{
 				Name:  dtoNode.ObjectStore.Name,
-				Scope: entity.ObjectStoreScope(dtoNode.ObjectStore.Scope),
+				Scope: entity.StoreScope(dtoNode.ObjectStore.Scope),
 			}
 		}
 		nodes = append(nodes, node)
@@ -166,4 +180,20 @@ func (n *NatsService) workflowsObjStoreToDto(
 	}
 
 	return workflowsConfig
+}
+
+func (n *NatsService) keyValueStoresToDto(stores *entity.VersionKeyValueStores) *natspb.CreateKeyValueStoreResponse {
+	workflowsStores := map[string]*natspb.CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig{}
+
+	for workflow, storesConfig := range stores.WorkflowsStores {
+		workflowsStores[workflow] = &natspb.CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig{
+			KeyValueStore: storesConfig.WorkflowStore,
+			Nodes:         storesConfig.Nodes,
+		}
+	}
+
+	return &natspb.CreateKeyValueStoreResponse{
+		KeyValueStore: stores.ProjectStore,
+		Workflows:     workflowsStores,
+	}
 }
