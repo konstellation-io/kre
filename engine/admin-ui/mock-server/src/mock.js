@@ -24,7 +24,7 @@ const generateVersion = (
 ) => ({
   id,
   name,
-  krtVersion: 'v1',
+  krtVersion: 'v2',
   description: casual.sentence,
   status,
   creationDate: casual.moment.toISOString(),
@@ -225,14 +225,11 @@ module.exports = {
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
     sessionLifetimeInDays: () => casual.integer(1, 99)
   }),
-  // Workflow: () => workflow_krtV1,
   Workflow: () => ({
     name: casual.random_element(workflowNames),
     exitpoint: "exitpoint",
     nodes: () => getNodes(),
   }),
-  Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
-  // Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
   Node: () => {
     const _id = casual.uuid;
     setTimeout(() => {
@@ -262,7 +259,6 @@ const getNodes = () => {
     mockWorkflow2,
     mockWorkflow3,
     mockWorkflow4,
-    workflow_krtV1.nodes,
   ])
 }
 

@@ -20,7 +20,7 @@ export interface GetConfigurationVariables_version_config_vars {
 }
 
 export interface GetConfigurationVariables_version_config {
-  __typename: 'VersionConfig';
+  __typename: 'VersionUserConfig';
   vars: GetConfigurationVariables_version_config_vars[];
 }
 
