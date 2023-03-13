@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	manager "github.com/konstellation-io/kre/engine/nats-manager/manager"
+	entity "github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 )
 
 // MockClient is a mock of Client interface.
@@ -49,7 +49,7 @@ func (mr *MockClientMockRecorder) CreateObjectStore(objectStore interface{}) *go
 }
 
 // CreateStream mocks base method.
-func (m *MockClient) CreateStream(streamConfig *manager.StreamConfig) error {
+func (m *MockClient) CreateStream(streamConfig *entity.StreamConfig) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateStream", streamConfig)
 	ret0, _ := ret[0].(error)
@@ -74,70 +74,4 @@ func (m *MockClient) DeleteStream(stream string) error {
 func (mr *MockClientMockRecorder) DeleteStream(stream interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStream", reflect.TypeOf((*MockClient)(nil).DeleteStream), stream)
-}
-
-// MockManager is a mock of Manager interface.
-type MockManager struct {
-	ctrl     *gomock.Controller
-	recorder *MockManagerMockRecorder
-}
-
-// MockManagerMockRecorder is the mock recorder for MockManager.
-type MockManagerMockRecorder struct {
-	mock *MockManager
-}
-
-// NewMockManager creates a new mock instance.
-func NewMockManager(ctrl *gomock.Controller) *MockManager {
-	mock := &MockManager{ctrl: ctrl}
-	mock.recorder = &MockManagerMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockManager) EXPECT() *MockManagerMockRecorder {
-	return m.recorder
-}
-
-// CreateObjectStore mocks base method.
-func (m *MockManager) CreateObjectStore(runtimeID, versionName string, workflows []*manager.Workflow) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateObjectStore", runtimeID, versionName, workflows)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// CreateObjectStore indicates an expected call of CreateObjectStore.
-func (mr *MockManagerMockRecorder) CreateObjectStore(runtimeID, versionName, workflows interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateObjectStore", reflect.TypeOf((*MockManager)(nil).CreateObjectStore), runtimeID, versionName, workflows)
-}
-
-// CreateStreams mocks base method.
-func (m *MockManager) CreateStreams(runtimeID, versionName string, workflows []*manager.Workflow) (manager.WorkflowsStreamsConfig, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateStreams", runtimeID, versionName, workflows)
-	ret0, _ := ret[0].(manager.WorkflowsStreamsConfig)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateStreams indicates an expected call of CreateStreams.
-func (mr *MockManagerMockRecorder) CreateStreams(runtimeID, versionName, workflows interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateStreams", reflect.TypeOf((*MockManager)(nil).CreateStreams), runtimeID, versionName, workflows)
-}
-
-// DeleteStreams mocks base method.
-func (m *MockManager) DeleteStreams(runtimeID, versionName string, workflows []string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteStreams", runtimeID, versionName, workflows)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteStreams indicates an expected call of DeleteStreams.
-func (mr *MockManagerMockRecorder) DeleteStreams(runtimeID, versionName, workflows interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStreams", reflect.TypeOf((*MockManager)(nil).DeleteStreams), runtimeID, versionName, workflows)
 }

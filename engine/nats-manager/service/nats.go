@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/nats-manager/config"
+
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/config"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/manager"
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
-	"github.com/konstellation-io/kre/engine/nats-manager/manager"
 	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
 )
 
@@ -13,7 +15,7 @@ import (
 type NatsService struct {
 	config  *config.Config
 	logger  logging.Logger
-	manager manager.Manager
+	manager *manager.NatsManager
 	natspb.UnimplementedNatsManagerServiceServer
 }
 
@@ -21,7 +23,7 @@ type NatsService struct {
 func NewNatsService(
 	cfg *config.Config,
 	logger logging.Logger,
-	manager manager.Manager,
+	manager *manager.NatsManager,
 ) *NatsService {
 	return &NatsService{
 		cfg,
@@ -58,13 +60,13 @@ func (n *NatsService) CreateObjectStores(
 ) (*natspb.CreateObjectStoreResponse, error) {
 	n.logger.Info("CreateObjectStores request received")
 
-	err := n.manager.CreateObjectStore(req.RuntimeId, req.VersionName, n.dtoToWorkflows(req.Workflows))
+	objectStores, err := n.manager.CreateObjectStores(req.RuntimeId, req.VersionName, n.dtoToWorkflows(req.Workflows))
 	if err != nil {
 		n.logger.Errorf("Error creating object store: %s", err)
 		return nil, err
 	}
 	return &natspb.CreateObjectStoreResponse{
-		Workflows: nil,
+		Workflows: n.workflowsObjStoreToDto(objectStores),
 	}, nil
 }
 
@@ -86,30 +88,11 @@ func (n *NatsService) DeleteStreams(
 	}, nil
 }
 
-//
-//// GetVersionNatsConfig returns nats configuration for given version, including subjects to subscribe for each node
-//func (n *NatsService) GetVersionNatsConfig(
-//	_ context.Context,
-//	req *natspb.GetVersionNatsConfigRequest,
-//) (*natspb.GetVersionNatsConfigResponse, error) {
-//	n.logger.Info("GetVersionNatsConfig request received")
-//
-//	workflowNatsConfig, err := n.manager.GetVersionNatsConfig(req.RuntimeId, req.VersionName, req.Workflows)
-//	if err != nil {
-//		n.logger.Errorf("Error getting nats configuration for version \"%s\": %s", req.VersionName, err)
-//		return nil, err
-//	}
-//
-//	return &natspb.GetVersionNatsConfigResponse{
-//		Workflows: workflowNatsConfig,
-//	}, nil
-//}
-
-func (n *NatsService) dtoToWorkflows(dtoWorkflows []*natspb.Workflow) []*manager.Workflow {
-	workflows := make([]*manager.Workflow, 0, len(dtoWorkflows))
+func (n *NatsService) dtoToWorkflows(dtoWorkflows []*natspb.Workflow) []*entity.Workflow {
+	workflows := make([]*entity.Workflow, 0, len(dtoWorkflows))
 
 	for _, dtoWorkflow := range dtoWorkflows {
-		workflows = append(workflows, &manager.Workflow{
+		workflows = append(workflows, &entity.Workflow{
 			Name:       dtoWorkflow.Name,
 			Entrypoint: dtoWorkflow.Entrypoint,
 			Nodes:      n.dtoToNodes(dtoWorkflow.Nodes),
@@ -119,16 +102,16 @@ func (n *NatsService) dtoToWorkflows(dtoWorkflows []*natspb.Workflow) []*manager
 	return workflows
 }
 
-func (n *NatsService) dtoToNodes(dtoNodes []*natspb.Node) []*manager.Node {
-	nodes := make([]*manager.Node, 0, len(dtoNodes))
+func (n *NatsService) dtoToNodes(dtoNodes []*natspb.Node) []*entity.Node {
+	nodes := make([]*entity.Node, 0, len(dtoNodes))
 
 	for _, dtoNode := range dtoNodes {
-		nodes = append(nodes, &manager.Node{
+		nodes = append(nodes, &entity.Node{
 			Name:          dtoNode.Name,
 			Subscriptions: dtoNode.Subscriptions,
-			ObjectStore: &manager.ObjectStore{
+			ObjectStore: &entity.ObjectStore{
 				Name:  dtoNode.ObjectStore.Name,
-				Scope: manager.ObjectStoreScope(dtoNode.ObjectStore.Scope),
+				Scope: entity.ObjectStoreScope(dtoNode.ObjectStore.Scope),
 			},
 		})
 	}
@@ -137,7 +120,7 @@ func (n *NatsService) dtoToNodes(dtoNodes []*natspb.Node) []*manager.Node {
 }
 
 func (n *NatsService) workflowsStreamConfigToDto(
-	workflows manager.WorkflowsStreamsConfig,
+	workflows entity.WorkflowsStreamsConfig,
 ) map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig {
 	workflowsStreamCfg := map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig{}
 
@@ -152,7 +135,7 @@ func (n *NatsService) workflowsStreamConfigToDto(
 }
 
 func (n *NatsService) nodesStreamConfigToDto(
-	nodes manager.NodesStreamConfig,
+	nodes entity.NodesStreamConfig,
 ) map[string]*natspb.CreateStreamResponse_NodeStreamConfig {
 	nodesStreamCfg := map[string]*natspb.CreateStreamResponse_NodeStreamConfig{}
 
@@ -164,4 +147,18 @@ func (n *NatsService) nodesStreamConfigToDto(
 	}
 
 	return nodesStreamCfg
+}
+
+func (n *NatsService) workflowsObjStoreToDto(
+	workflowsObjStores entity.WorkflowsObjectStoresConfig,
+) map[string]*natspb.CreateObjectStoreResponse_WorkflowObjectStoreConfig {
+	workflowsConfig := map[string]*natspb.CreateObjectStoreResponse_WorkflowObjectStoreConfig{}
+
+	for workflow, objectStoresConfig := range workflowsObjStores {
+		workflowsConfig[workflow] = &natspb.CreateObjectStoreResponse_WorkflowObjectStoreConfig{
+			Nodes: objectStoresConfig.Nodes,
+		}
+	}
+
+	return workflowsConfig
 }

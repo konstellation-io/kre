@@ -2,8 +2,8 @@ package nats
 
 import (
 	"fmt"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
-	"github.com/konstellation-io/kre/engine/nats-manager/manager"
 	"github.com/nats-io/nats.go"
 )
 
@@ -32,7 +32,7 @@ func (n *NatsClient) Connect(url string) error {
 	return nil
 }
 
-func (n *NatsClient) CreateStream(streamConfig *manager.StreamConfig) error {
+func (n *NatsClient) CreateStream(streamConfig *entity.StreamConfig) error {
 	n.logger.Infof("Creating stream \"%s\"", streamConfig.Stream)
 
 	subjects := n.getNodesSubjects(streamConfig.Nodes)
@@ -68,7 +68,7 @@ func (n *NatsClient) DeleteStream(stream string) error {
 	return err
 }
 
-func (n *NatsClient) getNodesSubjects(nodes manager.NodesStreamConfig) []string {
+func (n *NatsClient) getNodesSubjects(nodes entity.NodesStreamConfig) []string {
 	subjects := make([]string, 0, len(nodes)*2)
 
 	for _, nodeCfg := range nodes {

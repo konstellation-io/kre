@@ -1,129 +1,28 @@
 package manager
 
 import (
-	"errors"
 	"fmt"
+
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
 	logging "github.com/konstellation-io/kre/engine/nats-manager/logger"
-	"regexp"
 )
 
-//go:generate mockgen -source=${GOFILE} -destination=../mocks/${GOFILE} -package=mocks
+//go:generate mockgen -source=${GOFILE} -destination=../../mocks/${GOFILE} -package=mocks
 
 type Client interface {
 	//Connect(url string) error
-	CreateStream(streamConfig *StreamConfig) error
+	CreateStream(streamConfig *entity.StreamConfig) error
 	CreateObjectStore(objectStore string) error
 	DeleteStream(stream string) error
-}
-
-type Node struct {
-	Name          string
-	Subscriptions []string
-	ObjectStore   *ObjectStore
-}
-
-func (n Node) Validate() error {
-	if n.Name == "" {
-		return errors.New("node name cannot be empty")
-	}
-
-	if n.ObjectStore == nil {
-		return nil
-	}
-
-	if err := n.ObjectStore.Validate(); err != nil {
-		return fmt.Errorf("invalid node object store: %w", err)
-	}
-
-	return nil
-}
-
-type ObjectStoreScope int
-
-const entrypointNodeName = "entrypoint"
-
-const (
-	ScopeWorkflow = iota
-	ScopeProject
-)
-
-type ObjectStore struct {
-	Name  string
-	Scope ObjectStoreScope
-}
-
-func (o ObjectStore) Validate() error {
-	isValidName, _ := regexp.MatchString("^[a-z0-9]([-a-z0-9]*[a-z0-9])?$", o.Name)
-
-	if !isValidName {
-		return ErrInvalidObjectStoreName
-	}
-
-	switch o.Scope {
-	case ScopeProject, ScopeWorkflow:
-		return nil
-	default:
-		return ErrInvalidObjectStoreScope
-	}
-}
-
-type Workflow struct {
-	Name       string
-	Entrypoint string
-	Nodes      []*Node
-}
-
-func (w *Workflow) Validate() error {
-	if w.Name == "" {
-		return errors.New("workflow name cannot be empty")
-	}
-
-	if w.Entrypoint == "" {
-		return errors.New("workflow entrypoint service cannot be empty")
-	}
-
-	for _, node := range w.Nodes {
-		if err := node.Validate(); err != nil {
-			return fmt.Errorf("invalid node: %w", err)
-		}
-	}
-
-	return nil
-}
-
-type NodeStreamConfig struct {
-	Subject       string
-	Subscriptions []string
-}
-
-type NodesStreamConfig map[string]NodeStreamConfig
-
-type StreamConfig struct {
-	Stream            string
-	Nodes             NodesStreamConfig
-	EntrypointSubject string
-}
-
-type WorkflowsStreamsConfig map[string]*StreamConfig
-
-type NodesObjectStoresConfig map[string]string
-
-type WorkflowObjectStoresConfig struct {
-	Nodes NodesObjectStoresConfig
-}
-
-type WorkflowsObjectStoresConfig map[string]*WorkflowObjectStoresConfig
-
-type Manager interface {
-	CreateStreams(runtimeID, versionName string, workflows []*Workflow) (WorkflowsStreamsConfig, error)
-	CreateObjectStore(runtimeID, versionName string, workflows []*Workflow) error
-	DeleteStreams(runtimeID, versionName string, workflows []string) error
 }
 
 type NatsManager struct {
 	logger logging.Logger
 	client Client
 }
+
+const entrypointNodeName = "entrypoint"
 
 func NewNatsManager(logger logging.Logger, client Client) *NatsManager {
 	return &NatsManager{
@@ -135,19 +34,19 @@ func NewNatsManager(logger logging.Logger, client Client) *NatsManager {
 func (m *NatsManager) CreateStreams(
 	runtimeID,
 	versionName string,
-	workflows []*Workflow,
-) (WorkflowsStreamsConfig, error) {
+	workflows []*entity.Workflow,
+) (entity.WorkflowsStreamsConfig, error) {
 	if len(workflows) <= 0 {
 		return nil, fmt.Errorf("no workflows defined")
 	}
 
-	workflowsStreamsConfig := WorkflowsStreamsConfig{}
+	workflowsStreamsConfig := entity.WorkflowsStreamsConfig{}
 
 	for _, workflow := range workflows {
 		stream := m.getStreamName(runtimeID, versionName, workflow.Entrypoint)
 		nodesStreamConfig := m.getNodesStreamConfig(stream, workflow.Nodes)
 
-		streamConfig := &StreamConfig{
+		streamConfig := &entity.StreamConfig{
 			Stream:            stream,
 			Nodes:             nodesStreamConfig,
 			EntrypointSubject: m.getSubjectName(stream, entrypointNodeName),
@@ -167,8 +66,8 @@ func (m *NatsManager) CreateStreams(
 func (m *NatsManager) CreateObjectStores(
 	runtimeID,
 	versionName string,
-	workflows []*Workflow,
-) (WorkflowsObjectStoresConfig, error) {
+	workflows []*entity.Workflow,
+) (entity.WorkflowsObjectStoresConfig, error) {
 	if len(workflows) <= 0 {
 		return nil, fmt.Errorf("no workflows defined")
 	}
@@ -177,15 +76,15 @@ func (m *NatsManager) CreateObjectStores(
 		return nil, fmt.Errorf("error validating worklfows: %w", err)
 	}
 
-	workflowsObjectStoresConfig := WorkflowsObjectStoresConfig{}
+	workflowsObjectStoresConfig := entity.WorkflowsObjectStoresConfig{}
 
 	for _, workflow := range workflows {
-		nodesObjectStoresConfig := NodesObjectStoresConfig{}
+		nodesObjectStoresConfig := entity.NodesObjectStoresConfig{}
 
 		for _, node := range workflow.Nodes {
 			if node.ObjectStore != nil {
 				if node.ObjectStore.Name == "" {
-					return nil, ErrInvalidObjectStoreName
+					return nil, errors.ErrInvalidObjectStoreName
 				}
 
 				objectStore, err := m.getObjectStoreName(runtimeID, versionName, workflow.Name, node.ObjectStore)
@@ -201,7 +100,7 @@ func (m *NatsManager) CreateObjectStores(
 				nodesObjectStoresConfig[node.Name] = objectStore
 			}
 		}
-		workflowsObjectStoresConfig[workflow.Name] = &WorkflowObjectStoresConfig{
+		workflowsObjectStoresConfig[workflow.Name] = &entity.WorkflowObjectStoresConfig{
 			Nodes: nodesObjectStoresConfig,
 		}
 	}
@@ -209,14 +108,14 @@ func (m *NatsManager) CreateObjectStores(
 	return workflowsObjectStoresConfig, nil
 }
 
-func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName string, objectStore *ObjectStore) (string, error) {
+func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName string, objectStore *entity.ObjectStore) (string, error) {
 	switch objectStore.Scope {
-	case ScopeProject:
+	case entity.ScopeProject:
 		return fmt.Sprintf("object-store_%s_%s_%s", runtimeID, versionName, objectStore.Name), nil
-	case ScopeWorkflow:
+	case entity.ScopeWorkflow:
 		return fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, objectStore.Name), nil
 	default:
-		return "", ErrInvalidObjectStoreScope
+		return "", errors.ErrInvalidObjectStoreScope
 	}
 }
 
@@ -268,10 +167,10 @@ func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint s
 	return fmt.Sprintf("%s-%s-%s", runtimeID, versionName, workflowEntrypoint)
 }
 
-func (m *NatsManager) getNodesStreamConfig(stream string, nodes []*Node) NodesStreamConfig {
-	nodesConfig := NodesStreamConfig{}
+func (m *NatsManager) getNodesStreamConfig(stream string, nodes []*entity.Node) entity.NodesStreamConfig {
+	nodesConfig := entity.NodesStreamConfig{}
 	for _, node := range nodes {
-		nodesConfig[node.Name] = NodeStreamConfig{
+		nodesConfig[node.Name] = entity.NodeStreamConfig{
 			Subject:       m.getSubjectName(stream, node.Name),
 			Subscriptions: m.getSubjectsToSubscribe(stream, node.Subscriptions),
 		}
@@ -291,7 +190,7 @@ func (m *NatsManager) getSubjectsToSubscribe(stream string, subscriptions []stri
 	return subjectsToSubscribe
 }
 
-func (m *NatsManager) validateWorkflows(workflows []*Workflow) error {
+func (m *NatsManager) validateWorkflows(workflows []*entity.Workflow) error {
 	for _, workflow := range workflows {
 		if err := workflow.Validate(); err != nil {
 			return err

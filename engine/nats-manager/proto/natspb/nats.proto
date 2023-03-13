@@ -56,12 +56,8 @@ message CreateStreamResponse {
 }
 
 message CreateObjectStoreResponse {
-  message NodeObjectStoreConfig {
-    string object_store = 1;
-  }
-
   message WorkflowObjectStoreConfig {
-    map<string, NodeObjectStoreConfig> nodes = 1;
+    map<string, string> nodes = 1;
   }
 
   map<string, WorkflowObjectStoreConfig> workflows = 1;

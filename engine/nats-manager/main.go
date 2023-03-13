@@ -4,8 +4,9 @@ import (
 	"log"
 	"net"
 
-	"github.com/konstellation-io/kre/engine/nats-manager/config"
-	"github.com/konstellation-io/kre/engine/nats-manager/manager"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/config"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/manager"
+
 	"github.com/konstellation-io/kre/engine/nats-manager/nats"
 	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
 	"github.com/konstellation-io/kre/engine/nats-manager/service"

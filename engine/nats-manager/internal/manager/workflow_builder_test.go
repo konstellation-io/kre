@@ -1,19 +1,19 @@
 package manager_test
 
 import (
-	"github.com/konstellation-io/kre/engine/nats-manager/manager"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 )
 
 type WorkflowBuilder struct {
-	workflow *manager.Workflow
+	workflow *entity.Workflow
 }
 
 func NewWorkflowBuilder() *WorkflowBuilder {
 	return &WorkflowBuilder{
-		&manager.Workflow{
+		&entity.Workflow{
 			Name:       "defaultWorkflow",
 			Entrypoint: "defaultEntrypoint",
-			Nodes: []*manager.Node{
+			Nodes: []*entity.Node{
 				{
 					Name: "defaultNode",
 				},
@@ -22,7 +22,7 @@ func NewWorkflowBuilder() *WorkflowBuilder {
 	}
 }
 
-func (w *WorkflowBuilder) Build() *manager.Workflow {
+func (w *WorkflowBuilder) Build() *entity.Workflow {
 	return w.workflow
 }
 
@@ -46,12 +46,12 @@ func (w *WorkflowBuilder) WithNodeSubscriptions(subscriptions []string) *Workflo
 	return w
 }
 
-func (w *WorkflowBuilder) WithNodeObjectStore(objectStore *manager.ObjectStore) *WorkflowBuilder {
+func (w *WorkflowBuilder) WithNodeObjectStore(objectStore *entity.ObjectStore) *WorkflowBuilder {
 	w.workflow.Nodes[0].ObjectStore = objectStore
 	return w
 }
 
-func (w *WorkflowBuilder) WithNodes(nodes []*manager.Node) *WorkflowBuilder {
+func (w *WorkflowBuilder) WithNodes(nodes []*entity.Node) *WorkflowBuilder {
 	w.workflow.Nodes = nodes
 	return w
 }

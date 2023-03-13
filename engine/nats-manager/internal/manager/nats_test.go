@@ -8,15 +8,17 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/konstellation-io/kre/engine/nats-manager/manager"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/manager"
 	"github.com/konstellation-io/kre/engine/nats-manager/mocks"
 )
 
 type streamConfigMatcher struct {
-	expectedStreamConfig *manager.StreamConfig
+	expectedStreamConfig *entity.StreamConfig
 }
 
-func newStreamConfigMatcher(expectedStreamConfig *manager.StreamConfig) *streamConfigMatcher {
+func newStreamConfigMatcher(expectedStreamConfig *entity.StreamConfig) *streamConfigMatcher {
 	return &streamConfigMatcher{
 		expectedStreamConfig: expectedStreamConfig,
 	}
@@ -27,7 +29,7 @@ func (m streamConfigMatcher) String() string {
 }
 
 func (m streamConfigMatcher) Matches(actual interface{}) bool {
-	actualCfg, ok := actual.(*manager.StreamConfig)
+	actualCfg, ok := actual.(*entity.StreamConfig)
 	if !ok {
 		return false
 	}
@@ -54,7 +56,7 @@ func TestCreateStreams(t *testing.T) {
 	testNodeSubject := fmt.Sprintf("%s.%s", streamName, testNode)
 	testEntrypointSubject := fmt.Sprintf("%s.entrypoint", streamName)
 
-	workflows := []*manager.Workflow{
+	workflows := []*entity.Workflow{
 		NewWorkflowBuilder().
 			WithName(workflowName).
 			WithEntrypoint(workflowEntrypoint).
@@ -62,11 +64,11 @@ func TestCreateStreams(t *testing.T) {
 			Build(),
 	}
 
-	expectedWorkflowsStreamsCfg := manager.WorkflowsStreamsConfig{
-		workflowName: &manager.StreamConfig{
+	expectedWorkflowsStreamsCfg := entity.WorkflowsStreamsConfig{
+		workflowName: &entity.StreamConfig{
 			Stream: streamName,
-			Nodes: manager.NodesStreamConfig{
-				testNode: manager.NodeStreamConfig{
+			Nodes: entity.NodesStreamConfig{
+				testNode: entity.NodeStreamConfig{
 					Subject:       testNodeSubject,
 					Subscriptions: []string{},
 				},
@@ -99,7 +101,7 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 		testNode           = "test-node"
 	)
 
-	workflows := []*manager.Workflow{
+	workflows := []*entity.Workflow{
 		NewWorkflowBuilder().
 			WithName(workflowName).
 			WithEntrypoint(workflowEntrypoint).
@@ -127,7 +129,7 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 		versionName = "test-version"
 	)
 
-	var workflows []*manager.Workflow
+	var workflows []*entity.Workflow
 
 	_, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
 	assert.EqualError(t, err, "no workflows defined")
@@ -154,18 +156,18 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 //
 //	testCases := []struct {
 //		name                  string
-//		workflows             []*manager.Workflow
-//		expectedConfiguration map[string]*manager.WorkflowNatsConfig
+//		workflows             []*entity.Workflow
+//		expectedConfiguration map[string]*entity.WorkflowNatsConfig
 //		wantError             bool
 //	}{
 //		{
 //			name: "Workflow with no object store",
-//			workflows: []*manager.Workflow{
+//			workflows: []*entity.Workflow{
 //				NewWorkflowBuilder().
 //					WithName(workflowName).
 //					WithEntrypoint(workflowEntrypoint).
 //					WithNodes(
-//						[]*manager.Node{
+//						[]*entity.Node{
 //							{
 //								Name:          testNode,
 //								Subscriptions: []string{entrypointNodeName},
@@ -173,7 +175,7 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 //						}).
 //					Build(),
 //			},
-//			expectedConfiguration: map[string]*manager.WorkflowNatsConfig{
+//			expectedConfiguration: map[string]*entity.WorkflowNatsConfig{
 //				workflowName: {
 //					Stream: streamName,
 //					Nodes: map[string]*natspb.NodeNatsConfig{
@@ -216,7 +218,7 @@ func TestCreateObjectStore(t *testing.T) {
 
 	tests := []struct {
 		name                 string
-		workflows            []*manager.Workflow
+		workflows            []*entity.Workflow
 		expectedObjectStores []string
 		wantError            bool
 		wantedError          error
@@ -224,12 +226,12 @@ func TestCreateObjectStore(t *testing.T) {
 	}{
 		{
 			name: "Object store with project scope",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
-							Scope: manager.ScopeProject,
+							Scope: entity.ScopeProject,
 						},
 					).
 					Build(),
@@ -240,13 +242,13 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Object store with workflow scope",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
-							Scope: manager.ScopeWorkflow,
+							Scope: entity.ScopeWorkflow,
 						},
 					).
 					Build(),
@@ -259,26 +261,26 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Invalid object store name",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&manager.ObjectStore{
-							Scope: manager.ScopeWorkflow,
+						&entity.ObjectStore{
+							Scope: entity.ScopeWorkflow,
 						},
 					).
 					Build(),
 			},
 			expectedObjectStores: nil,
 			wantError:            true,
-			wantedError:          manager.ErrInvalidObjectStoreName,
+			wantedError:          errors.ErrInvalidObjectStoreName,
 		},
 		{
 			name: "Invalid object store scope",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
 							Scope: -1,
 						},
@@ -287,11 +289,11 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			expectedObjectStores: nil,
 			wantError:            true,
-			wantedError:          manager.ErrInvalidObjectStoreScope,
+			wantedError:          errors.ErrInvalidObjectStoreScope,
 		},
 		{
 			name: "Node without object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					Build(),
@@ -302,22 +304,22 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple workflows with different workflow scoped object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
-							Scope: manager.ScopeWorkflow,
+							Scope: entity.ScopeWorkflow,
 						},
 					).
 					Build(),
 				NewWorkflowBuilder().
 					WithName("another-workflow").
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
-							Scope: manager.ScopeWorkflow,
+							Scope: entity.ScopeWorkflow,
 						},
 					).
 					Build(),
@@ -331,22 +333,22 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple workflows with the same project scoped object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
-							Scope: manager.ScopeProject,
+							Scope: entity.ScopeProject,
 						},
 					).
 					Build(),
 				NewWorkflowBuilder().
 					WithName("another-workflow").
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
-							Scope: manager.ScopeProject,
+							Scope: entity.ScopeProject,
 						},
 					).
 					Build(),
@@ -360,22 +362,22 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple workflows with different project scoped object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  testObjectStore,
-							Scope: manager.ScopeProject,
+							Scope: entity.ScopeProject,
 						},
 					).
 					Build(),
 				NewWorkflowBuilder().
 					WithName("another-workflow").
 					WithNodeObjectStore(
-						&manager.ObjectStore{
+						&entity.ObjectStore{
 							Name:  "another-object-store",
-							Scope: manager.ScopeProject,
+							Scope: entity.ScopeProject,
 						},
 					).
 					Build(),
@@ -389,23 +391,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with same workflow scoped object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*manager.Node{
+						[]*entity.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  testObjectStore,
-									Scope: manager.ScopeWorkflow,
+									Scope: entity.ScopeWorkflow,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  testObjectStore,
-									Scope: manager.ScopeWorkflow,
+									Scope: entity.ScopeWorkflow,
 								},
 							},
 						},
@@ -421,23 +423,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with different workflow scoped object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*manager.Node{
+						[]*entity.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  testObjectStore,
-									Scope: manager.ScopeWorkflow,
+									Scope: entity.ScopeWorkflow,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  "another-object-store",
-									Scope: manager.ScopeWorkflow,
+									Scope: entity.ScopeWorkflow,
 								},
 							},
 						},
@@ -453,23 +455,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with same project scoped object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*manager.Node{
+						[]*entity.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  testObjectStore,
-									Scope: manager.ScopeProject,
+									Scope: entity.ScopeProject,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  testObjectStore,
-									Scope: manager.ScopeProject,
+									Scope: entity.ScopeProject,
 								},
 							},
 						},
@@ -485,23 +487,23 @@ func TestCreateObjectStore(t *testing.T) {
 		},
 		{
 			name: "Multiple nodes in workflow with different project scoped object store",
-			workflows: []*manager.Workflow{
+			workflows: []*entity.Workflow{
 				NewWorkflowBuilder().
 					WithName(testWorkflowName).
 					WithNodes(
-						[]*manager.Node{
+						[]*entity.Node{
 							{
 								Name: "test-node-1",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  testObjectStore,
-									Scope: manager.ScopeProject,
+									Scope: entity.ScopeProject,
 								},
 							},
 							{
 								Name: "test-node-2",
-								ObjectStore: &manager.ObjectStore{
+								ObjectStore: &entity.ObjectStore{
 									Name:  "another-object-store",
-									Scope: manager.ScopeProject,
+									Scope: entity.ScopeProject,
 								},
 							},
 						},
