@@ -109,6 +109,7 @@ func (r *mutationResolver) StartVersion(ctx context.Context, input StartVersionI
 
 	v, notifyCh, err := r.versionInteractor.Start(ctx, loggedUserID, input.RuntimeID, input.VersionName, input.Comment)
 	if err != nil {
+		r.logger.Errorf("[mutationResolver.StartVersion] errors starting version: %s", err)
 		return nil, err
 	}
 
@@ -198,23 +199,23 @@ func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInp
 	return settings, nil
 }
 
-func (r *mutationResolver) UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error) {
+func (r *mutationResolver) UpdateVersionUserConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	v, err := r.versionInteractor.GetByName(ctx, loggedUserID, input.RuntimeID, input.VersionName)
 	if err != nil {
 		return nil, err
 	}
 
-	config := make([]*entity.ConfigurationVariable, len(input.ConfigurationVariables))
+	cfg := make([]*entity.ConfigurationVariable, len(input.ConfigurationVariables))
 
 	for i, c := range input.ConfigurationVariables {
-		config[i] = &entity.ConfigurationVariable{
+		cfg[i] = &entity.ConfigurationVariable{
 			Key:   c.Key,
 			Value: c.Value,
 		}
 	}
 
-	return r.versionInteractor.UpdateVersionConfig(ctx, loggedUserID, input.RuntimeID, v, config)
+	return r.versionInteractor.UpdateVersionConfig(ctx, loggedUserID, input.RuntimeID, v, cfg)
 }
 
 func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {

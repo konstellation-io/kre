@@ -62,18 +62,18 @@ type Edge struct {
 }
 
 type Node struct {
-	ID            string             `bson:"id"`
-	Name          string             `bson:"name"`
-	Image         string             `bson:"image"`
-	Src           string             `bson:"src"`
-	GPU           bool               `bson:"gpu"`
-	Subscriptions []string           `bson:"subscriptions"`
-	Replicas      int32              `bson:"replicas" default:"1"`
-	ObjectStore   *ObjectStoreConfig `bson:"objectStore"`
-	Status        NodeStatus         `bson:"-"` // This field value is calculated in k8s
+	ID            string       `bson:"id"`
+	Name          string       `bson:"name"`
+	Image         string       `bson:"image"`
+	Src           string       `bson:"src"`
+	GPU           bool         `bson:"gpu"`
+	Subscriptions []string     `bson:"subscriptions"`
+	Replicas      int32        `bson:"replicas" default:"1"`
+	ObjectStore   *ObjectStore `bson:"objectStore,omitempty"`
+	Status        NodeStatus   `bson:"-"` // This field value is calculated in k8s
 }
 
-type ObjectStoreConfig struct {
+type ObjectStore struct {
 	Name  string `bson:"name"`
 	Scope string `bson:"scope"`
 }
@@ -131,6 +131,7 @@ type Workflow struct {
 	Entrypoint string `bson:"entrypoint"`
 	Nodes      []Node `bson:"nodes"`
 	Exitpoint  string `bson:"exitpoint"`
+	Stream     string `bson:"-"`
 }
 
 type Entrypoint struct {
@@ -145,7 +146,7 @@ type ConfigurationVariable struct {
 	Type  ConfigurationVariableType `bson:"type"`
 }
 
-type VersionConfig struct {
+type VersionUserConfig struct {
 	Completed bool                     `bson:"completed"`
 	Vars      []*ConfigurationVariable `bson:"vars"`
 }
@@ -164,9 +165,9 @@ type Version struct {
 
 	Status VersionStatus `bson:"status"`
 
-	Config     VersionConfig `bson:"config"`
-	Entrypoint Entrypoint    `bson:"entrypoint"`
-	Workflows  []*Workflow   `bson:"workflows"`
+	Config     VersionUserConfig `bson:"config"`
+	Entrypoint Entrypoint        `bson:"entrypoint"`
+	Workflows  []*Workflow       `bson:"workflows"`
 
 	HasDoc bool     `bson:"hasDoc"`
 	Errors []string `bson:"errors"`

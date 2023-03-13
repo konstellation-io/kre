@@ -347,7 +347,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 				if node.ObjectStore.Scope == "" {
 					node.ObjectStore.Scope = krt.ObjectStoreConfigDefaultScope
 				}
-				nodeToAppend.ObjectStore = &entity.ObjectStoreConfig{
+				nodeToAppend.ObjectStore = &entity.ObjectStore{
 					Name:  node.ObjectStore.Name,
 					Scope: node.ObjectStore.Scope,
 				}
@@ -379,7 +379,7 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
-	i.logger.Infof("The user %s is starting version %s", loggedUserID, versionName)
+	i.logger.Infof("The user %q is starting version %q", loggedUserID, versionName)
 
 	v, err := i.versionRepo.GetByName(ctx, runtimeId, versionName)
 	if err != nil {
@@ -410,7 +410,19 @@ func (i *VersionInteractor) Start(
 		return nil, nil, err
 	}
 
-	go i.changeStatusAndNotify(runtimeId, v, entity.VersionStatusStarted, notifyStatusCh)
+	versionStreamCfg, err := i.natsManagerService.CreateStreams(ctx, runtimeId, v)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating streams for version %q: %w", v.Name, err)
+	}
+
+	objectStoreCfg, err := i.natsManagerService.CreateObjectStores(ctx, runtimeId, v)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating objects stores for version %q: %w", v.Name, err)
+	}
+
+	versionCfg := entity.NewVersionConfig(versionStreamCfg, objectStoreCfg)
+
+	go i.startAndNotify(runtimeId, v, versionCfg, notifyStatusCh)
 
 	return v, notifyStatusCh, nil
 }
@@ -454,15 +466,20 @@ func (i *VersionInteractor) Stop(
 		return nil, nil, err
 	}
 
-	go i.changeStatusAndNotify(runtimeId, v, entity.VersionStatusStopped, notifyStatusCh)
+	err = i.natsManagerService.DeleteStreams(ctx, runtimeId, v)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error stopping version %q: %w", v.Name, err)
+	}
+
+	go i.stopAndNotify(runtimeId, v, notifyStatusCh)
 
 	return v, notifyStatusCh, nil
 }
 
-func (i *VersionInteractor) changeStatusAndNotify(
+func (i *VersionInteractor) startAndNotify(
 	runtimeId string,
 	version *entity.Version,
-	status entity.VersionStatus,
+	versionConfig *entity.VersionConfig,
 	notifyStatusCh chan *entity.Version,
 ) {
 	// WARNING: This function doesn't handle error because there is no  ERROR status defined for a Version
@@ -470,48 +487,47 @@ func (i *VersionInteractor) changeStatusAndNotify(
 	defer func() {
 		cancel()
 		close(notifyStatusCh)
-		i.logger.Debug("[versionInteractor.changeStatusAndNotify] channel closed")
+		i.logger.Debug("[versionInteractor.startAndNotify] channel closed")
 	}()
 
-	if status == entity.VersionStatusStarted {
-		err := i.natsManagerService.CreateStreams(ctx, runtimeId, version)
-		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error creating streams for version %q: %s", version.Name, status, err)
-		}
-
-		err = i.natsManagerService.CreateObjectStores(ctx, runtimeId, version)
-		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error creating objects stores for version %q: %s", version.Name, status, err)
-		}
-
-		worklfowsStreamConfig, err := i.natsManagerService.GetVersionNatsConfig(ctx, runtimeId, version)
-		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error getting stream configuration for version %q: %s", version.Name, status, err)
-		}
-		err = i.versionService.Start(ctx, runtimeId, version, worklfowsStreamConfig)
-		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
-		}
-	}
-
-	if status == entity.VersionStatusStopped {
-		err := i.natsManagerService.DeleteStreams(ctx, runtimeId, version)
-		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
-		}
-		err = i.versionService.Stop(ctx, runtimeId, version)
-		if err != nil {
-			i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
-		}
-	}
-
-	err := i.versionRepo.SetStatus(ctx, runtimeId, version.ID, status)
+	err := i.versionService.Start(ctx, runtimeId, version, versionConfig)
 	if err != nil {
-		i.logger.Errorf("[versionInteractor.Start] error setting version status '%s'[status:%s]: %s", version.Name, status, err)
+		i.logger.Errorf("[versionInteractor.startAndNotify] error starting version %q: %s", version.Name, err)
 	}
-	version.Status = status
+
+	err = i.versionRepo.SetStatus(ctx, runtimeId, version.ID, entity.VersionStatusStarted)
+	if err != nil {
+		i.logger.Errorf("[versionInteractor.startAndNotify] error starting version %q: %s", version.Name, err)
+	}
+	version.Status = entity.VersionStatusStarted
 	notifyStatusCh <- version
-	i.logger.Infof("[versionInteractor.Start] '%s' version status changed to %s", version.Name, status)
+	i.logger.Infof("[versionInteractor.startAndNotify] version %q started", version.Name)
+}
+
+func (i *VersionInteractor) stopAndNotify(
+	runtimeId string,
+	version *entity.Version,
+	notifyStatusCh chan *entity.Version,
+) {
+	// WARNING: This function doesn't handle error because there is no  ERROR status defined for a Version
+	ctx, cancel := context.WithTimeout(context.Background(), i.cfg.Application.VersionStatusTimeout)
+	defer func() {
+		cancel()
+		close(notifyStatusCh)
+		i.logger.Debug("[versionInteractor.stopAndNotify] channel closed")
+	}()
+	err := i.versionService.Stop(ctx, runtimeId, version)
+	if err != nil {
+		i.logger.Errorf("[versionInteractor.stopAndNotify] error stopping version %q: %s", version.Name, err)
+	}
+
+	err = i.versionRepo.SetStatus(ctx, runtimeId, version.ID, entity.VersionStatusStopped)
+	if err != nil {
+		i.logger.Errorf("[versionInteractor.stopAndNotify] error stopping version %q: %s", version.Name, err)
+	}
+	version.Status = entity.VersionStatusStopped
+	notifyStatusCh <- version
+	i.logger.Infof("[versionInteractor.stopAndNotify] version %q stopped", version.Name)
 }
 
 // Publish set a Version as published on DB and K8s
