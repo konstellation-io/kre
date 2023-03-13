@@ -22,7 +22,7 @@ COPY . .
 RUN rm -rf /app/proto
 COPY --from=protobuf /app/proto/ /app/proto/
 
-RUN go build -o nats-manager .
+RUN go build -o nats-manager ./cmd
 
 
 # Final image

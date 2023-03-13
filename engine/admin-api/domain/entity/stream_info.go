@@ -4,21 +4,22 @@ import "fmt"
 
 const entrypointNodeName = "entrypoint"
 
-type VersionStreamConfig struct {
+type VersionStreamsConfig struct {
 	KeyValueStore string
-	Workflows     map[string]WorkflowStreamConfig
+	Workflows map[string]*WorkflowStreamConfig
 }
 
 type WorkflowStreamConfig struct {
 	Stream        string
 	KeyValueStore string
-	Nodes         map[string]NodeStreamConfig
+	Nodes         map[string]*NodeStreamConfig
+	EntrypointSubject string
 }
 
-func (w *WorkflowStreamConfig) GetNodeConfig(nodeName string) (NodeStreamConfig, error) {
+func (w *WorkflowStreamConfig) GetNodeConfig(nodeName string) (*NodeStreamConfig, error) {
 	nodeConfig, ok := w.Nodes[nodeName]
 	if !ok {
-		return NodeStreamConfig{}, fmt.Errorf("error obtaining stream config for node \"%s\"", nodeName)
+		return nil, fmt.Errorf("error obtaining stream config for node %q", nodeName)
 	}
 	return nodeConfig, nil
 }

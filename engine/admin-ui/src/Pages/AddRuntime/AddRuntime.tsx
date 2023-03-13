@@ -52,7 +52,7 @@ function getErrorText(errorType: FieldError | undefined) {
   if (!errorType) return '';
 
   if (errorType.type === 'required') {
-    return 'This field cannot be required';
+    return 'This field cannot be empty';
   }
 }
 

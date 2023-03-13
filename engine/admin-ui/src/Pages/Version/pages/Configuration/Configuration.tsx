@@ -118,7 +118,7 @@ function Configuration() {
 
   // TODO: CHECK FOR ERRORS
   function onCompleteUpdate(d: UpdateVersionConfiguration) {
-    updateConfigurationVariables(d.updateVersionConfiguration.config.vars);
+    updateConfigurationVariables(d.updateVersionUserConfiguration.config.vars);
   }
 
   function getContent() {

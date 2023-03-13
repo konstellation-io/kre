@@ -33,7 +33,7 @@ export interface GetVersionConfStatus_versions_publicationAuthor {
 }
 
 export interface GetVersionConfStatus_versions_config {
-  __typename: 'VersionConfig';
+  __typename: 'VersionUserConfig';
   completed: boolean;
 }
 

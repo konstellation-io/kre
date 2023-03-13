@@ -33,7 +33,7 @@ type Mutation {
   publishVersion(input: PublishVersionInput!): Version!
   unpublishVersion(input: UnpublishVersionInput!): Version!
   updateSettings(input: SettingsInput!): Settings!
-  updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
+  updateVersionUserConfiguration(input: UpdateConfigurationInput!): Version!
   removeUsers(input: UsersInput!): [User!]!
   updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
   revokeUserSessions(input: UsersInput!): [User!]!
@@ -211,12 +211,12 @@ type Version {
   publicationDate: String
   publicationAuthor: User
   workflows: [Workflow!]!
-  config: VersionConfig!
+  config: VersionUserConfig!
   hasDoc: Boolean
   errors: [String!]!
 }
 
-type VersionConfig {
+type VersionUserConfig {
   vars: [ConfigurationVariable!]!
   completed: Boolean!
 }
