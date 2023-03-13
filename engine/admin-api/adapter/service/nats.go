@@ -91,7 +91,7 @@ func (n *NatsManagerClient) CreateKeyValueStores(ctx context.Context, runtimeID 
 		return err
 	}
 
-	req := natspb.CreateStreamsRequest{
+	req := natspb.CreationRequest{
 		RuntimeId:   runtimeID,
 		VersionName: version.Name,
 		Workflows:   workflows,

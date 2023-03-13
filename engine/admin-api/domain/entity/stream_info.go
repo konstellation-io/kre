@@ -6,13 +6,13 @@ const entrypointNodeName = "entrypoint"
 
 type VersionStreamsConfig struct {
 	KeyValueStore string
-	Workflows map[string]*WorkflowStreamConfig
+	Workflows     map[string]*WorkflowStreamConfig
 }
 
 type WorkflowStreamConfig struct {
-	Stream        string
-	KeyValueStore string
-	Nodes         map[string]*NodeStreamConfig
+	Stream            string
+	KeyValueStore     string
+	Nodes             map[string]*NodeStreamConfig
 	EntrypointSubject string
 }
 
