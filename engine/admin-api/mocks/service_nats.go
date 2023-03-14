@@ -36,11 +36,12 @@ func (m *MockNatsManagerService) EXPECT() *MockNatsManagerServiceMockRecorder {
 }
 
 // CreateKeyValueStores mocks base method.
-func (m *MockNatsManagerService) CreateKeyValueStores(ctx context.Context, runtimeID string, version *entity.Version) error {
+func (m *MockNatsManagerService) CreateKeyValueStores(ctx context.Context, runtimeID string, version *entity.Version) (*entity.KeyValueStoresConfig, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateKeyValueStores", ctx, runtimeID, version)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(*entity.KeyValueStoresConfig)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CreateKeyValueStores indicates an expected call of CreateKeyValueStores.

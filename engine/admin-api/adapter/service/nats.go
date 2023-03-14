@@ -85,10 +85,14 @@ func (n *NatsManagerClient) CreateObjectStores(
 }
 
 // CreateKeyValueStores calls nats-manager to create NATS Key-Value Stores for given version
-func (n *NatsManagerClient) CreateKeyValueStores(ctx context.Context, runtimeID string, version *entity.Version) error {
+func (n *NatsManagerClient) CreateKeyValueStores(
+	ctx context.Context,
+	runtimeID string,
+	version *entity.Version,
+) (*entity.KeyValueStoresConfig, error) {
 	workflows, err := n.getWorkflowsFromVersion(version)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req := natspb.CreationRequest{
@@ -97,12 +101,12 @@ func (n *NatsManagerClient) CreateKeyValueStores(ctx context.Context, runtimeID 
 		Workflows:   workflows,
 	}
 
-	_, err = n.client.CreateKeyValueStores(ctx, &req)
+	res, err := n.client.CreateKeyValueStores(ctx, &req)
 	if err != nil {
-		return fmt.Errorf("error creating key-value stores: %w", err)
+		return nil, fmt.Errorf("error creating key-value stores: %w", err)
 	}
 
-	return err
+	return n.dtoToVersionKeyValueStoreConfig(res.Workflows), err
 }
 
 // DeleteStreams calls nats-manager to delete NATS streams for given version
@@ -167,8 +171,8 @@ func (n *NatsManagerClient) getWorkflowsEntrypoints(version *entity.Version) []s
 func (n *NatsManagerClient) dtoToVersionStreamConfig(
 	workflows map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig,
 ) *entity.VersionStreamsConfig {
-
 	workflowsConfig := map[string]*entity.WorkflowStreamConfig{}
+
 	for workflow, streamCfg := range workflows {
 		workflowsConfig[workflow] = &entity.WorkflowStreamConfig{
 			Stream:            streamCfg.Stream,
@@ -208,6 +212,23 @@ func (n *NatsManagerClient) dtoToVersionObjectStoreConfig(
 
 	return &entity.VersionObjectStoresConfig{
 		Workflows: workflowsObjStoreConfig,
+	}
+}
+
+func (n *NatsManagerClient) dtoToVersionKeyValueStoreConfig(
+	workflows map[string]*natspb.CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig,
+) *entity.KeyValueStoresConfig {
+	workflowsKVConfig := map[string]*entity.WorkflowKeyValueStores{}
+
+	for workflow, kvStoreCfg := range workflows {
+		workflowsKVConfig[workflow] = &entity.WorkflowKeyValueStores{
+			WorkflowKeyValueStore: kvStoreCfg.KeyValueStore,
+			NodesKeyValueStores:   kvStoreCfg.Nodes,
+		}
+	}
+
+	return &entity.KeyValueStoresConfig{
+		WorkflowsKeyValueStores: workflowsKVConfig,
 	}
 }
 

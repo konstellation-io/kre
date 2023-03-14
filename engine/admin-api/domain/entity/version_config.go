@@ -10,10 +10,11 @@ type VersionConfig struct {
 	KeyValueStoresConfig *KeyValueStoresConfig
 }
 
-func NewVersionConfig(streamsConfig *VersionStreamsConfig, objectStoresConfig *VersionObjectStoresConfig) *VersionConfig {
+func NewVersionConfig(streamsConfig *VersionStreamsConfig, objectStoresConfig *VersionObjectStoresConfig, keyValueStoresConfig *KeyValueStoresConfig) *VersionConfig {
 	return &VersionConfig{
-		StreamsConfig:      streamsConfig,
-		ObjectStoresConfig: objectStoresConfig,
+		StreamsConfig:        streamsConfig,
+		ObjectStoresConfig:   objectStoresConfig,
+		KeyValueStoresConfig: keyValueStoresConfig,
 	}
 }
 

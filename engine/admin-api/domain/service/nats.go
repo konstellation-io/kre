@@ -11,6 +11,6 @@ import (
 type NatsManagerService interface {
 	CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) (*entity.VersionStreamsConfig, error)
 	CreateObjectStores(ctx context.Context, runtimeID string, version *entity.Version) (*entity.VersionObjectStoresConfig, error)
-	CreateKeyValueStores(ctx context.Context, runtimeID string, version *entity.Version) error
+	CreateKeyValueStores(ctx context.Context, runtimeID string, version *entity.Version) (*entity.KeyValueStoresConfig, error)
 	DeleteStreams(ctx context.Context, runtimeID string, version *entity.Version) error
 }

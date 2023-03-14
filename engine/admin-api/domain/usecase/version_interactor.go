@@ -420,12 +420,12 @@ func (i *VersionInteractor) Start(
 		return nil, nil, fmt.Errorf("error creating objects stores for version %q: %w", v.Name, err)
 	}
 
-	err = i.natsManagerService.CreateKeyValueStores(ctx, runtimeId, version)
+	kvStoreCfg, err := i.natsManagerService.CreateKeyValueStores(ctx, runtimeId, v)
 	if err != nil {
-		i.logger.Errorf("[versionInteractor.changeStatusAndNotify] error creating key-value stores for version %q: %s", version.Name, status, err)
+		return nil, nil, fmt.Errorf("error creating key-value stores for version %q: %w", v.Name, err)
 	}
 
-	versionCfg := entity.NewVersionConfig(versionStreamCfg, objectStoreCfg)
+	versionCfg := entity.NewVersionConfig(versionStreamCfg, objectStoreCfg, kvStoreCfg)
 
 	go i.startAndNotify(runtimeId, v, versionCfg, notifyStatusCh)
 
