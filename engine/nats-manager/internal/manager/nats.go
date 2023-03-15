@@ -136,7 +136,7 @@ func (m *NatsManager) CreateKeyValueStores(
 	workflows []*entity.Workflow,
 ) (*entity.VersionKeyValueStores, error) {
 	if len(workflows) <= 0 {
-		return nil, fmt.Errorf("no workflows defined")
+		return nil, errors.ErrNoWorkflowsDefined
 	}
 
 	m.logger.Info("Creating key-value stores")
