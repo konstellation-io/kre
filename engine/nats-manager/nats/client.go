@@ -2,8 +2,9 @@ package nats
 
 import (
 	"fmt"
+
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
-	"github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
+	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
 	"github.com/nats-io/nats.go"
 )
 
@@ -40,7 +41,7 @@ func (n *NatsClient) CreateStream(streamConfig *entity.StreamConfig) error {
 	streamCfg := &nats.StreamConfig{
 		Name:        streamConfig.Stream,
 		Description: "",
-		Subjects:    append(subjects),
+		Subjects:    subjects,
 		Retention:   nats.InterestPolicy,
 	}
 
@@ -62,9 +63,30 @@ func (n *NatsClient) CreateObjectStore(objectStore string) error {
 	return nil
 }
 
+// GetObjectStoresNames returns the list of object stores.
+//
+// Caution: ObjectStore's names returned from nats client have a "OBJ_" prefix that needs to be discarded.
+// This method removes the prefix and returns the list of object stores names.
+func (n *NatsClient) GetObjectStoresNames() []string {
+	namesChannel := n.js.ObjectStoreNames()
+
+	names := make([]string, 0)
+	for name := range namesChannel {
+		names = append(names, name[4:])
+	}
+
+	return names
+}
+
 func (n *NatsClient) DeleteStream(stream string) error {
-	n.logger.Infof("Deleting stream \"%s\"", stream)
+	n.logger.Infof("Deleting stream %q", stream)
 	err := n.js.DeleteStream(stream)
+	return err
+}
+
+func (n *NatsClient) DeleteObjectStore(objectStore string) error {
+	n.logger.Infof("Deleting object store %q", objectStore)
+	err := n.js.DeleteObjectStore(objectStore)
 	return err
 }
 

@@ -75,3 +75,17 @@ func (mr *MockClientMockRecorder) DeleteStream(stream interface{}) *gomock.Call 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStream", reflect.TypeOf((*MockClient)(nil).DeleteStream), stream)
 }
+
+// GetObjectStoresNames mocks base method.
+func (m *MockClient) GetObjectStoresNames() []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetObjectStoresNames")
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// GetObjectStoresNames indicates an expected call of GetObjectStoresNames.
+func (mr *MockClientMockRecorder) GetObjectStoresNames() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjectStoresNames", reflect.TypeOf((*MockClient)(nil).GetObjectStoresNames))
+}

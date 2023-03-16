@@ -15,6 +15,11 @@ message DeleteStreamsRequest {
   repeated string workflows = 3;
 }
 
+message DeleteObjectStoresRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+}
+
 message DeleteResponse {
   string message = 1;
 }
@@ -68,4 +73,5 @@ service NatsManagerService {
   rpc CreateStreams (CreationRequest) returns (CreateStreamResponse);
   rpc CreateObjectStores (CreationRequest) returns (CreateObjectStoreResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteResponse);
+  rpc DeleteObjectStores (DeleteObjectStoresRequest) returns (DeleteResponse);
 };

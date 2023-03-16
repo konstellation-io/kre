@@ -2,6 +2,7 @@ package manager
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
@@ -14,7 +15,9 @@ type Client interface {
 	//Connect(url string) error
 	CreateStream(streamConfig *entity.StreamConfig) error
 	CreateObjectStore(objectStore string) error
+	GetObjectStoresNames() []string
 	DeleteStream(stream string) error
+	DeleteObjectStore(stream string) error
 }
 
 type NatsManager struct {
@@ -124,9 +127,30 @@ func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []s
 		stream := m.getStreamName(runtimeID, versionName, workflow)
 		err := m.client.DeleteStream(stream)
 		if err != nil {
-			return fmt.Errorf("error deleting stream \"%s\": %w", stream, err)
+			return fmt.Errorf("error deleting stream %q: %w", stream, err)
 		}
 	}
+	return nil
+}
+
+func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
+	allObjectStores := m.client.GetObjectStoresNames()
+
+	regex, err := regexp.Compile(fmt.Sprintf("object-store_%s_%s_.*", runtimeID, versionName))
+	if err != nil {
+		return fmt.Errorf("error compiling regex: %w", err)
+	}
+
+	for _, objectStore := range allObjectStores {
+		if regex.MatchString(objectStore) {
+			m.logger.Debugf("Obtained OBS name: %s", objectStore)
+			err := m.client.DeleteObjectStore(objectStore)
+			if err != nil {
+				return fmt.Errorf("error deleting object store %q: %w", objectStore, err)
+			}
+		}
+	}
+
 	return nil
 }
 

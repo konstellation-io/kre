@@ -3,7 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
+
+	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/config"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
@@ -75,7 +76,7 @@ func (n *NatsService) DeleteStreams(
 	_ context.Context,
 	req *natspb.DeleteStreamsRequest,
 ) (*natspb.DeleteResponse, error) {
-	n.logger.Info("Stop request received")
+	n.logger.Info("Delete streams request received")
 
 	err := n.manager.DeleteStreams(req.RuntimeId, req.VersionName, req.Workflows)
 	if err != nil {
@@ -85,6 +86,24 @@ func (n *NatsService) DeleteStreams(
 
 	return &natspb.DeleteResponse{
 		Message: fmt.Sprintf("Streams and subjects for version '%s' on runtime %s deleted", req.VersionName, req.RuntimeId),
+	}, nil
+}
+
+// DeleteObjectStores delete object stores for given workflows.
+func (n *NatsService) DeleteObjectStores(
+	_ context.Context,
+	req *natspb.DeleteObjectStoresRequest,
+) (*natspb.DeleteResponse, error) {
+	n.logger.Info("Delete object stores request received")
+
+	err := n.manager.DeleteObjectStores(req.RuntimeId, req.VersionName)
+	if err != nil {
+		n.logger.Errorf("Error deleting object stores: %s", err)
+		return nil, err
+	}
+
+	return &natspb.DeleteResponse{
+		Message: fmt.Sprintf("Object stores for version '%s' on runtime %s deleted", req.VersionName, req.RuntimeId),
 	}, nil
 }
 
