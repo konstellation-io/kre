@@ -1,11 +1,14 @@
 package validator
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
+
+var ErrRepeatedNodeName = errors.New("node names should be unique per workflows")
 
 type ValidatorV2 struct {
 	logger          logging.Logger
@@ -37,9 +40,16 @@ func (v *ValidatorV2) getWorkflowsValidationErrors(workflows []krt.Workflow) []e
 	for _, workflow := range workflows {
 		existingNodes := make(map[string]bool, len(workflow.Nodes))
 		for _, node := range workflow.Nodes {
+
+			nodeNameAlreadyInUse := existingNodes[node.Name]
+
+			if nodeNameAlreadyInUse {
+				validationErrors = append(validationErrors, ErrRepeatedNodeName)
+			}
+
 			existingNodes[node.Name] = true
 			if len(node.Subscriptions) < 1 {
-				validationErrors = append(validationErrors, fmt.Errorf("node \"%s\" requires at least one subscription", node.Name))
+				validationErrors = append(validationErrors, fmt.Errorf("node %q requires at least one subscription", node.Name))
 			}
 		}
 

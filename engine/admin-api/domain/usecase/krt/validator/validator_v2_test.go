@@ -59,6 +59,27 @@ func TestValidatorV2_Run(t *testing.T) {
 			wantError:   true,
 			errorString: "exitpoint node \"inexistent-node\" not found in workflow \"valid-workflow\" nodes",
 		},
+		{
+			name: "fails if node name is not unique in workflow",
+			krtYaml: NewKrtBuilder().
+				V2().
+				WithWorkflowsNodes([]krt.Node{
+					{
+						Name:          "test-node",
+						Image:         "test-image",
+						Src:           "test/src",
+						Subscriptions: []string{"entrypoint"},
+					},
+					{
+						Name:          "test-node",
+						Image:         "test-image-2",
+						Src:           "test-2/src",
+						Subscriptions: []string{"entrypoint"},
+					},
+				}).Build(),
+			wantError:   true,
+			errorString: validator.ErrRepeatedNodeName.Error(),
+		},
 	}
 
 	ctrl := gomock.NewController(t)
