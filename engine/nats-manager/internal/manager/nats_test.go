@@ -155,7 +155,7 @@ func TestCreateObjectStore(t *testing.T) {
 		expectedObjectStores []string
 		wantError            bool
 		wantedError          error
-		clientError          bool
+		expectLog            bool
 	}{
 		{
 			name: "Object store with project scope",
@@ -172,6 +172,7 @@ func TestCreateObjectStore(t *testing.T) {
 			expectedObjectStores: []string{fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore)},
 			wantError:            false,
 			wantedError:          nil,
+			expectLog:            false,
 		},
 		{
 			name: "Object store with workflow scope",
@@ -191,6 +192,7 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 		{
 			name: "Invalid object store name",
@@ -207,6 +209,7 @@ func TestCreateObjectStore(t *testing.T) {
 			expectedObjectStores: nil,
 			wantError:            true,
 			wantedError:          errors.ErrInvalidObjectStoreName,
+			expectLog:            false,
 		},
 		{
 			name: "Invalid object store scope",
@@ -223,6 +226,7 @@ func TestCreateObjectStore(t *testing.T) {
 			expectedObjectStores: nil,
 			wantError:            true,
 			wantedError:          errors.ErrInvalidObjectStoreScope,
+			expectLog:            false,
 		},
 		{
 			name: "Node without object store",
@@ -234,6 +238,7 @@ func TestCreateObjectStore(t *testing.T) {
 			expectedObjectStores: nil,
 			wantError:            false,
 			wantedError:          nil,
+			expectLog:            true,
 		},
 		{
 			name: "Multiple workflows with different workflow scoped object store",
@@ -263,6 +268,7 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 		{
 			name: "Multiple workflows with the same project scoped object store",
@@ -292,6 +298,7 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 		{
 			name: "Multiple workflows with different project scoped object store",
@@ -321,6 +328,7 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 		{
 			name: "Multiple nodes in workflow with same workflow scoped object store",
@@ -353,6 +361,7 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 		{
 			name: "Multiple nodes in workflow with different workflow scoped object store",
@@ -385,6 +394,7 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 		{
 			name: "Multiple nodes in workflow with same project scoped object store",
@@ -417,6 +427,7 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 		{
 			name: "Multiple nodes in workflow with different project scoped object store",
@@ -449,11 +460,15 @@ func TestCreateObjectStore(t *testing.T) {
 			},
 			wantError:   false,
 			wantedError: nil,
+			expectLog:   false,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			if tc.expectLog {
+				logger.EXPECT().Info(gomock.Any()).Return().AnyTimes().MaxTimes(1)
+			}
 			for _, expectedObjStore := range tc.expectedObjectStores {
 				client.EXPECT().CreateObjectStore(expectedObjStore).Return(tc.wantedError)
 			}
