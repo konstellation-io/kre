@@ -62,6 +62,20 @@ func (mr *MockClientMockRecorder) CreateStream(streamConfig interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateStream", reflect.TypeOf((*MockClient)(nil).CreateStream), streamConfig)
 }
 
+// DeleteObjectStore mocks base method.
+func (m *MockClient) DeleteObjectStore(stream string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteObjectStore", stream)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteObjectStore indicates an expected call of DeleteObjectStore.
+func (mr *MockClientMockRecorder) DeleteObjectStore(stream interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteObjectStore", reflect.TypeOf((*MockClient)(nil).DeleteObjectStore), stream)
+}
+
 // DeleteStream mocks base method.
 func (m *MockClient) DeleteStream(stream string) error {
 	m.ctrl.T.Helper()

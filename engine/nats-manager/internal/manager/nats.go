@@ -81,11 +81,14 @@ func (m *NatsManager) CreateObjectStores(
 
 	workflowsObjectStoresConfig := entity.WorkflowsObjectStoresConfig{}
 
+	atLeastOneObjectStore := false
+
 	for _, workflow := range workflows {
 		nodesObjectStoresConfig := entity.NodesObjectStoresConfig{}
 
 		for _, node := range workflow.Nodes {
 			if node.ObjectStore != nil {
+				atLeastOneObjectStore = true
 				if node.ObjectStore.Name == "" {
 					return nil, errors.ErrInvalidObjectStoreName
 				}
@@ -106,6 +109,10 @@ func (m *NatsManager) CreateObjectStores(
 		workflowsObjectStoresConfig[workflow.Name] = &entity.WorkflowObjectStoresConfig{
 			Nodes: nodesObjectStoresConfig,
 		}
+	}
+
+	if !atLeastOneObjectStore {
+		m.logger.Info("No object stores defined, skipping")
 	}
 
 	return workflowsObjectStoresConfig, nil
