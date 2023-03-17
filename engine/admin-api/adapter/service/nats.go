@@ -117,12 +117,8 @@ func (n *NatsManagerClient) DeleteObjectStores(ctx context.Context, runtimeID, v
 func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) ([]*natspb.Workflow, error) {
 	var workflows []*natspb.Workflow
 	for _, w := range version.Workflows {
-		nodes := []*natspb.Node{
-			{
-				Name:          "entrypoint",
-				Subscriptions: []string{w.Exitpoint},
-			},
-		}
+		nodes := make([]*natspb.Node, 0, len(w.Nodes))
+
 		for _, node := range w.Nodes {
 			nodeToAppend := natspb.Node{
 				Name:          node.Name,

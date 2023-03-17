@@ -2,7 +2,6 @@ package nats
 
 import (
 	"fmt"
-
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
 	"github.com/nats-io/nats.go"
@@ -13,24 +12,25 @@ type NatsClient struct {
 	logger logging.Logger
 }
 
-func New(logger logging.Logger) *NatsClient {
+func New(logger logging.Logger, js nats.JetStreamContext) *NatsClient {
 	return &NatsClient{
 		logger: logger,
+		js:     js,
 	}
 }
 
-func (n *NatsClient) Connect(url string) error {
-	n.logger.Info("Connecting to NATS...")
+func InitJetStreamConnection(url string) (nats.JetStreamContext, error) {
 	natsConn, err := nats.Connect(url)
 	if err != nil {
-		return fmt.Errorf("error connecting to NATS: %w", err)
+		return nil, fmt.Errorf("error connecting to NATS: %w", err)
 	}
+
 	js, err := natsConn.JetStream()
 	if err != nil {
-		return fmt.Errorf("error connecting to NATS JetStream: %w", err)
+		return nil, fmt.Errorf("error connecting to NATS JetStream: %w", err)
 	}
-	n.js = js
-	return nil
+
+	return js, nil
 }
 
 func (n *NatsClient) CreateStream(streamConfig *entity.StreamConfig) error {
@@ -41,7 +41,7 @@ func (n *NatsClient) CreateStream(streamConfig *entity.StreamConfig) error {
 	streamCfg := &nats.StreamConfig{
 		Name:        streamConfig.Stream,
 		Description: "",
-		Subjects:    subjects,
+		Subjects:    append(subjects, streamConfig.EntrypointSubject),
 		Retention:   nats.InterestPolicy,
 	}
 
@@ -57,7 +57,7 @@ func (n *NatsClient) CreateObjectStore(objectStore string) error {
 		Storage: nats.FileStorage,
 	})
 	if err != nil {
-		return fmt.Errorf("error creating the object store: %s", err)
+		return fmt.Errorf("error creating the object store: %w", err)
 	}
 
 	return nil
@@ -68,14 +68,14 @@ func (n *NatsClient) CreateObjectStore(objectStore string) error {
 // Caution: ObjectStore's names returned from nats client have a "OBJ_" prefix that needs to be discarded.
 // This method removes the prefix and returns the list of object stores names.
 func (n *NatsClient) GetObjectStoresNames() []string {
-	namesChannel := n.js.ObjectStoreNames()
+	objectStoresCh := n.js.ObjectStores()
 
-	names := make([]string, 0)
-	for name := range namesChannel {
-		names = append(names, name[4:])
+	var objectStores []string
+	for objectStore := range objectStoresCh {
+		objectStores = append(objectStores, objectStore.Bucket())
 	}
 
-	return names
+	return objectStores
 }
 
 func (n *NatsClient) DeleteStream(stream string) error {
@@ -108,8 +108,6 @@ func (n *NatsClient) getNodesSubjects(nodes entity.NodesStreamConfig) []string {
 		subSubject := nodeCfg.Subject + ".*"
 		subjects = append(subjects, nodeCfg.Subject, subSubject)
 	}
-
-	fmt.Println(subjects)
 
 	return subjects
 }
