@@ -57,7 +57,7 @@ func (m *NatsManager) CreateStreams(
 
 		err := m.client.CreateStream(streamConfig)
 		if err != nil {
-			return nil, fmt.Errorf("error creating stream \"%s\": %w", stream, err)
+			return nil, fmt.Errorf("error creating stream %q: %w", stream, err)
 		}
 
 		workflowsStreamsConfig[workflow.Name] = streamConfig

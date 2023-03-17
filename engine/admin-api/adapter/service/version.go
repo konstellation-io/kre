@@ -80,7 +80,7 @@ func (k *K8sVersionClient) Stop(ctx context.Context, runtimeID string, version *
 
 	_, err := k.client.Stop(ctx, &req)
 	if err != nil {
-		return fmt.Errorf("stop version '%s' error: %w", version.Name, err)
+		return fmt.Errorf("stop version %q error: %w", version.Name, err)
 	}
 
 	return nil
@@ -147,7 +147,7 @@ func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionCo
 	for i, w := range version.Workflows {
 		workflowStreamConfig, err := versionConfig.GetWorkflowStreamConfig(w.Name)
 		if err != nil {
-			return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
+			return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
 		}
 
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
@@ -155,7 +155,7 @@ func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionCo
 
 			nodeStreamCfg, err := workflowStreamConfig.GetNodeStreamConfig(n.Name)
 			if err != nil {
-				return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
+				return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
 			}
 
 			nodes[j] = &versionpb.Workflow_Node{

@@ -141,7 +141,7 @@ func (a *AuthInteractor) SignIn(ctx context.Context, email string, verificationC
 			a.logger.Warn("All emails are allowed for sign-up, set allowed domains in security settings")
 		}
 
-		a.logger.Infof("The user '%s' doesn't exist, creating in the database...", email)
+		a.logger.Infof("The user %q doesn't exist, creating in the database...", email)
 
 		createdUser, err := a.userRepo.Create(context.Background(), email, entity.AccessLevelViewer)
 		if err != nil {
@@ -179,12 +179,12 @@ func (a *AuthInteractor) isDomainAllowed(settings *entity.Settings, email string
 
 	for _, d := range settings.AuthAllowedDomains {
 		if d == domain {
-			a.logger.Infof("Email domain '%s' is allowed", domain)
+			a.logger.Infof("Email domain %q is allowed", domain)
 			return true
 		}
 	}
 
-	a.logger.Infof("Email domain '%s' is not in the allowed domain list", domain)
+	a.logger.Infof("Email domain %q is not in the allowed domain list", domain)
 
 	return false
 }

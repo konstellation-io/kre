@@ -70,24 +70,24 @@ func (k *YamlFieldsValidator) getErrorMessages(err error) []error {
 			location := strings.Replace(e.Namespace(), "Krt.", "", 1)
 			switch e.Tag() {
 			case "required":
-				errorMessages = append(errorMessages, fmt.Errorf("the field \"%s\" is required", location))
+				errorMessages = append(errorMessages, fmt.Errorf("the field %q is required", location))
 			case "lt":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid length \"%s\" at \"%s\" must be lower than %s", e.Value(), location, e.Param()))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid length %q at %q must be lower than %s", e.Value(), location, e.Param()))
 			case "lte":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid length \"%s\" at \"%s\" must be lower or equal than %s", e.Value(), location, e.Param()))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid length %q at %q must be lower or equal than %s", e.Value(), location, e.Param()))
 			case "gt":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid length \"%s\" at \"%s\" must be greater than %s", e.Value(), location, e.Param()))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid length %q at %q must be greater than %s", e.Value(), location, e.Param()))
 			case "gte":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid length \"%s\" at \"%s\" must be greater or equal than %s", e.Value(), location, e.Param()))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid length %q at %q must be greater or equal than %s", e.Value(), location, e.Param()))
 			case "resource-name":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid resource name \"%s\" at \"%s\"", e.Value(), location))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid resource name %q at %q", e.Value(), location))
 				hasResNameErr = true
 			case "endswith":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid value \"%s\" at \"%s\" must end with %s", e.Value(), location, e.Param()))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid value %q at %q must end with %s", e.Value(), location, e.Param()))
 			case "env":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid value \"%s\" at env var \"%s\" must contain only capital letters, numbers, and underscores", e.Value(), location))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid value %q at env var %q must contain only capital letters, numbers, and underscores", e.Value(), location))
 			case "krt-version":
-				errorMessages = append(errorMessages, fmt.Errorf("invalid value \"%s\" at krtVersion \"%s\"", e.Value(), location))
+				errorMessages = append(errorMessages, fmt.Errorf("invalid value %q at krtVersion %q", e.Value(), location))
 			default:
 				errorMessages = append(errorMessages, fmt.Errorf("%s", e))
 			}
@@ -106,7 +106,7 @@ func ValidateSrcPaths(krt *krt.Krt, dstDir string) []error {
 		for _, node := range workflow.Nodes {
 			nodeFile := path.Join(dstDir, node.Src)
 			if !fileExists(nodeFile) {
-				errors = append(errors, fmt.Errorf("error src file \"%s\" for node \"%s\" does not exists ", node.Src, node.Name))
+				errors = append(errors, fmt.Errorf("error src file %q for node %q does not exists ", node.Src, node.Name))
 			}
 		}
 	}

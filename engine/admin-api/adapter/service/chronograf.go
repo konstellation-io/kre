@@ -40,7 +40,7 @@ func CreateDashboardService(cfg *config.Config, logger logging.Logger) domainSer
 }
 
 func (c *Chronograf) Create(ctx context.Context, runtimeId, version, dashboardPath string) error {
-	c.logger.Infof("Creating dashboard: \"%s\" for version: \"%s\" in runtime \"%s\"", dashboardPath, version, runtimeId)
+	c.logger.Infof("Creating dashboard: %q for version: %q in runtime %q", dashboardPath, version, runtimeId)
 
 	data, err := os.Open(dashboardPath)
 	if err != nil {

@@ -53,7 +53,7 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 				return err
 			}
 
-			m.logger.Infof("Created deployment for node \"%s\"", n.Name)
+			m.logger.Infof("Created deployment for node %q", n.Name)
 		}
 	}
 
@@ -61,7 +61,7 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 }
 
 func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) (WorkflowConfig, error) {
-	m.logger.Infof("Generating workflow \"%s\" config", workflow.Name)
+	m.logger.Infof("Generating workflow %q config", workflow.Name)
 
 	wconf := WorkflowConfig{}
 	runtimeID := req.RuntimeId
@@ -164,7 +164,7 @@ func (m *Manager) createNodeDeployment(
 	envVars := m.getNodeEnvVars(req, config)
 	labels := m.getNodeLabels(runtimeId, versionName, node)
 
-	m.logger.Infof("Creating node deployment with name \"%s\", image \"%s\" and \"%d\" replicas",
+	m.logger.Infof("Creating node deployment with name %q, image %q and \"%d\" replicas",
 		name,
 		node.Image,
 		node.Replicas,
@@ -310,7 +310,7 @@ func (m *Manager) restartPodsSync(ctx context.Context, runtimeId, versionName, n
 			if event.Type == watch.Modified && pod.Status.Phase == apiv1.PodRunning {
 				numOfEvents++
 				if numOfEvents == expectedNumOfEvents {
-					m.logger.Infof("All PODs for version '%s' has been restarted", versionName)
+					m.logger.Infof("All PODs for version %q has been restarted", versionName)
 					w.Stop()
 
 					return nil
@@ -361,7 +361,7 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, runtimeId, versionN
 	for i := range list.Items {
 		d := list.Items[i]
 
-		m.logger.Infof("Deleting deployment '%s'...", d.Name)
+		m.logger.Infof("Deleting deployment %q...", d.Name)
 
 		err = deployments.Delete(ctx, d.Name, deleteOptions)
 		if err != nil {
@@ -431,7 +431,7 @@ func (m *Manager) deleteConfigMapsSync(ctx context.Context, runtimeId, versionNa
 	for i := range list.Items {
 		c := list.Items[i]
 
-		m.logger.Infof("Deleting configmap '%s'...", c.Name)
+		m.logger.Infof("Deleting configmap %q...", c.Name)
 
 		err = configMaps.Delete(ctx, c.Name, deleteOptions)
 		if err != nil {
@@ -465,10 +465,10 @@ func (m *Manager) waitForDeletions(
 			switch kind {
 			case WaitForConfigMaps:
 				c := event.Object.(*apiv1.ConfigMap)
-				m.logger.Infof("Configmap '%s' deleted", c.Name)
+				m.logger.Infof("Configmap %q deleted", c.Name)
 			case WaitForDeployments:
 				d := event.Object.(*appsv1.Deployment)
-				m.logger.Infof("Deployment '%s' deleted", d.Name)
+				m.logger.Infof("Deployment %q deleted", d.Name)
 			}
 
 			numberOfDeletions--

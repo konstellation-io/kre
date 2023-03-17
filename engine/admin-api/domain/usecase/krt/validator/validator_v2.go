@@ -39,7 +39,7 @@ func (v *ValidatorV2) getWorkflowsValidationErrors(workflows []krt.Workflow) []e
 		for _, node := range workflow.Nodes {
 			existingNodes[node.Name] = true
 			if len(node.Subscriptions) < 1 {
-				validationErrors = append(validationErrors, fmt.Errorf("node \"%s\" requires at least one subscription", node.Name))
+				validationErrors = append(validationErrors, fmt.Errorf("node %q requires at least one subscription", node.Name))
 			}
 		}
 
@@ -57,10 +57,10 @@ func (v *ValidatorV2) CheckExecutables(krt *krt.Krt) error {
 
 func (v *ValidatorV2) validateExitpoint(workflow krt.Workflow, nodes map[string]bool) error {
 	if workflow.Exitpoint == "" {
-		return fmt.Errorf("missing exitpoint in workflow \"%s\"", workflow.Name)
+		return fmt.Errorf("missing exitpoint in workflow %q", workflow.Name)
 	} else {
 		if !isNodeDefined(nodes, workflow.Exitpoint) {
-			return fmt.Errorf("exitpoint node \"%s\" not found in workflow \"%s\" nodes", workflow.Exitpoint, workflow.Name)
+			return fmt.Errorf("exitpoint node %q not found in workflow %q nodes", workflow.Exitpoint, workflow.Name)
 		}
 	}
 	return nil

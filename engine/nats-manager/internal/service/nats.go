@@ -85,7 +85,7 @@ func (n *NatsService) DeleteStreams(
 	}
 
 	return &natspb.DeleteResponse{
-		Message: fmt.Sprintf("Streams and subjects for version '%s' on runtime %s deleted", req.VersionName, req.RuntimeId),
+		Message: fmt.Sprintf("Streams and subjects for version %q on runtime %s deleted", req.VersionName, req.RuntimeId),
 	}, nil
 }
 
@@ -103,7 +103,7 @@ func (n *NatsService) DeleteObjectStores(
 	}
 
 	return &natspb.DeleteResponse{
-		Message: fmt.Sprintf("Object stores for version '%s' on runtime %s deleted", req.VersionName, req.RuntimeId),
+		Message: fmt.Sprintf("Object stores for version %q on runtime %s deleted", req.VersionName, req.RuntimeId),
 	}, nil
 }
 
