@@ -85,16 +85,15 @@ func (n *NatsManagerClient) CreateObjectStores(
 }
 
 // DeleteStreams calls nats-manager to delete NATS streams for given version
-func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
+func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, versionName string) error {
 	req := natspb.DeleteStreamsRequest{
 		RuntimeId:   runtimeID,
-		VersionName: version.Name,
-		Workflows:   n.getWorkflowsEntrypoints(version),
+		VersionName: versionName,
 	}
 
 	_, err := n.client.DeleteStreams(ctx, &req)
 	if err != nil {
-		return fmt.Errorf("error deleting version %q NATS streams: %w", version.Name, err)
+		return fmt.Errorf("error deleting version %q NATS streams: %w", versionName, err)
 	}
 
 	return nil

@@ -16,6 +16,7 @@ type Client interface {
 	CreateStream(streamConfig *entity.StreamConfig) error
 	CreateObjectStore(objectStore string) error
 	GetObjectStoresNames() []string
+	GetStreamsNames() []string
 	DeleteStream(stream string) error
 	DeleteObjectStore(stream string) error
 }
@@ -129,12 +130,21 @@ func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName st
 	}
 }
 
-func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []string) error {
-	for _, workflow := range workflows {
-		stream := m.getStreamName(runtimeID, versionName, workflow)
-		err := m.client.DeleteStream(stream)
-		if err != nil {
-			return fmt.Errorf("error deleting stream %q: %w", stream, err)
+func (m *NatsManager) DeleteStreams(runtimeID, versionName string) error {
+	all_streams := m.client.GetStreamsNames()
+
+	regex, err := regexp.Compile(fmt.Sprintf("%s-%s-.*", runtimeID, versionName))
+	if err != nil {
+		return fmt.Errorf("error compiling regex: %w", err)
+	}
+
+	for _, stream := range all_streams {
+		if regex.MatchString(stream) {
+			m.logger.Debugf("Obtained stream name: %s", stream)
+			err := m.client.DeleteStream(stream)
+			if err != nil {
+				return fmt.Errorf("error deleting stream %q: %w", stream, err)
+			}
 		}
 	}
 	return nil
@@ -150,7 +160,7 @@ func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
 
 	for _, objectStore := range allObjectStores {
 		if regex.MatchString(objectStore) {
-			m.logger.Debugf("Obtained OBS name: %s", objectStore)
+			m.logger.Debugf("Obtained OBJStore name: %s", objectStore)
 			err := m.client.DeleteObjectStore(objectStore)
 			if err != nil {
 				return fmt.Errorf("error deleting object store %q: %w", objectStore, err)

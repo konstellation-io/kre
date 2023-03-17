@@ -466,7 +466,7 @@ func (i *VersionInteractor) Stop(
 		return nil, nil, err
 	}
 
-	err = i.natsManagerService.DeleteStreams(ctx, runtimeId, v)
+	err = i.natsManagerService.DeleteStreams(ctx, runtimeId, versionName)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error stopping version %q: %w", versionName, err)
 	}

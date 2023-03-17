@@ -103,3 +103,17 @@ func (mr *MockClientMockRecorder) GetObjectStoresNames() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjectStoresNames", reflect.TypeOf((*MockClient)(nil).GetObjectStoresNames))
 }
+
+// GetStreamsNames mocks base method.
+func (m *MockClient) GetStreamsNames() []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStreamsNames")
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// GetStreamsNames indicates an expected call of GetStreamsNames.
+func (mr *MockClientMockRecorder) GetStreamsNames() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStreamsNames", reflect.TypeOf((*MockClient)(nil).GetStreamsNames))
+}

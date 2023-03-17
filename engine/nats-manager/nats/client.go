@@ -90,6 +90,17 @@ func (n *NatsClient) DeleteObjectStore(objectStore string) error {
 	return err
 }
 
+// GetStreamsNames returns the list of streams' names.
+func (n *NatsClient) GetStreamsNames() []string {
+	namesChannel := n.js.StreamNames()
+	names := make([]string, 0)
+	for name := range namesChannel {
+		names = append(names, name)
+	}
+
+	return names
+}
+
 func (n *NatsClient) getNodesSubjects(nodes entity.NodesStreamConfig) []string {
 	subjects := make([]string, 0, len(nodes)*2)
 

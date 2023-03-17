@@ -78,7 +78,7 @@ func (n *NatsService) DeleteStreams(
 ) (*natspb.DeleteResponse, error) {
 	n.logger.Info("Delete streams request received")
 
-	err := n.manager.DeleteStreams(req.RuntimeId, req.VersionName, req.Workflows)
+	err := n.manager.DeleteStreams(req.RuntimeId, req.VersionName)
 	if err != nil {
 		n.logger.Errorf("Error deleting streams: %s", err)
 		return nil, err

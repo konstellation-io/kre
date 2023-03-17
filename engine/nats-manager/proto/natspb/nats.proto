@@ -12,7 +12,6 @@ message CreationRequest {
 message DeleteStreamsRequest {
   string runtime_id = 1;
   string version_name = 2;
-  repeated string workflows = 3;
 }
 
 message DeleteObjectStoresRequest {
