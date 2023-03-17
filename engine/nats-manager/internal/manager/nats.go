@@ -171,39 +171,6 @@ func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
 	return nil
 }
 
-//
-//func (m *NatsManager) GetVersionNatsConfig(
-//	runtimeID,
-//	versionName string,
-//	workflows []*natspb.Workflow,
-//) (map[string]*natspb.WorkflowNatsConfig, error) {
-//	workflowsConfig := make(map[string]*natspb.WorkflowNatsConfig, len(workflows))
-//	for _, workflow := range workflows {
-//		stream := m.getStreamName(runtimeID, versionName, workflow.Entrypoint)
-//		nodesConfig := make(map[string]*natspb.NodeNatsConfig, len(workflow.Nodes))
-//		for _, node := range workflow.Nodes {
-//			nodesConfig[node.Name] = &natspb.NodeNatsConfig{
-//				Subject:       m.getSubjectName(stream, node.Name),
-//				Subscriptions: m.getSubjectsToSubscribe(stream, node.Subscriptions),
-//			}
-//
-//			if node.ObjectStore != nil {
-//				objStoreName, err := m.getObjectStoreName(runtimeID, versionName, workflow.Name, node.ObjectStore)
-//				if err != nil {
-//					return nil, err
-//				}
-//				nodesConfig[node.Name].ObjectStore = &objStoreName
-//			}
-//		}
-//		workflowsConfig[workflow.Name] = &natspb.WorkflowNatsConfig{
-//			Stream: stream,
-//			Nodes:  nodesConfig,
-//		}
-//	}
-//
-//	return workflowsConfig, nil
-//}
-
 func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
 	return fmt.Sprintf("%s-%s-%s", runtimeID, versionName, workflowEntrypoint)
 }
