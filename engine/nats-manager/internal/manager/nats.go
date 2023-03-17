@@ -160,7 +160,7 @@ func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
 
 	for _, objectStore := range allObjectStores {
 		if regex.MatchString(objectStore) {
-			m.logger.Debugf("Obtained OBJStore name: %s", objectStore)
+			m.logger.Debugf("Obtained object store name: %s", objectStore)
 			err := m.client.DeleteObjectStore(objectStore)
 			if err != nil {
 				return fmt.Errorf("error deleting object store %q: %w", objectStore, err)
