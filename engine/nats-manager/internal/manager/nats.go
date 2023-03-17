@@ -12,7 +12,6 @@ import (
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/${GOFILE} -package=mocks
 
 type Client interface {
-	//Connect(url string) error
 	CreateStream(streamConfig *entity.StreamConfig) error
 	CreateObjectStore(objectStore string) error
 	GetObjectStoresNames() []string
