@@ -11,7 +11,7 @@ type WorkflowBuilder struct {
 func NewWorkflowBuilder() *WorkflowBuilder {
 	return &WorkflowBuilder{
 		&entity.Workflow{
-			Name:       "defaultWorkflow",
+			Name:       "test-workflow",
 			Entrypoint: "defaultEntrypoint",
 			Nodes: []*entity.Node{
 				{

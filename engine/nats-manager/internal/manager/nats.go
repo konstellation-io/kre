@@ -90,9 +90,6 @@ func (m *NatsManager) CreateObjectStores(
 		for _, node := range workflow.Nodes {
 			if node.ObjectStore != nil {
 				atLeastOneObjectStore = true
-				if node.ObjectStore.Name == "" {
-					return nil, errors.ErrInvalidObjectStoreName
-				}
 
 				objectStore, err := m.getObjectStoreName(runtimeID, versionName, workflow.Name, node.ObjectStore)
 				if err != nil {

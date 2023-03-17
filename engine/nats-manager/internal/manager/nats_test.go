@@ -201,6 +201,7 @@ func TestCreateObjectStore(t *testing.T) {
 					WithName(testWorkflowName).
 					WithNodeObjectStore(
 						&entity.ObjectStore{
+							Name:  "",
 							Scope: entity.ScopeWorkflow,
 						},
 					).
@@ -461,6 +462,21 @@ func TestCreateObjectStore(t *testing.T) {
 			wantError:     false,
 			wantedError:   nil,
 			expectInfoLog: false,
+		},
+		{
+			name: "nats client error",
+			workflows: []*entity.Workflow{
+				NewWorkflowBuilder().
+					WithNodeObjectStore(&entity.ObjectStore{
+						Name:  testObjectStore,
+						Scope: entity.ScopeWorkflow,
+					}).Build()},
+			expectedObjectStores: []string{
+				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+			},
+			wantError:     true,
+			wantedError:   fmt.Errorf("nats client error"),
+			expectInfoLog: true,
 		},
 	}
 
