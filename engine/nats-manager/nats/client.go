@@ -64,9 +64,6 @@ func (n *NatsClient) CreateObjectStore(objectStore string) error {
 }
 
 // GetObjectStoresNames returns the list of object stores.
-//
-// Caution: ObjectStore's names returned from nats client have a "OBJ_" prefix that needs to be discarded.
-// This method removes the prefix and returns the list of object stores names.
 func (n *NatsClient) GetObjectStoresNames() []string {
 	objectStoresCh := n.js.ObjectStores()
 
