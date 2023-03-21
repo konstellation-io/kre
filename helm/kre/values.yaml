@@ -281,7 +281,7 @@ nats:
       # -- Whether to enable memory storage for Jetstream
       enabled: true
       # -- Memory storage max size for JetStream
-      size: 2Gi
+      size: 40Gi
   logging:
     # -- Whether to enable logging debug mode
     debug: false
