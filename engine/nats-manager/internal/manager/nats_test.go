@@ -37,7 +37,7 @@ func (m streamConfigMatcher) Matches(actual interface{}) bool {
 	return reflect.DeepEqual(actualCfg, m.expectedStreamConfig)
 }
 
-func TestCreateStreams(t *testing.T) {
+func TestCreateDeleteStreams(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
@@ -45,28 +45,28 @@ func TestCreateStreams(t *testing.T) {
 	natsManager := manager.NewNatsManager(logger, client)
 
 	const (
-		runtimeID          = "test-runtime"
-		versionName        = "test-version"
-		workflowName       = "test-workflow"
-		workflowEntrypoint = "TestWorkflow"
-		streamName         = "test-runtime-test-version-TestWorkflow"
-		testNode           = "test-node"
+		testRuntimeID          = "test-runtime"
+		testVersionName        = "test-version"
+		testWorkflowName       = "test-workflow"
+		testWorkflowEntrypoint = "TestWorkflow"
+		testStreamName         = "test-runtime-test-version-TestWorkflow"
+		testNode               = "test-node"
 	)
 
-	testNodeSubject := fmt.Sprintf("%s.%s", streamName, testNode)
-	testEntrypointSubject := fmt.Sprintf("%s.entrypoint", streamName)
+	testNodeSubject := fmt.Sprintf("%s.%s", testStreamName, testNode)
+	testEntrypointSubject := fmt.Sprintf("%s.entrypoint", testStreamName)
 
 	workflows := []*entity.Workflow{
 		NewWorkflowBuilder().
-			WithName(workflowName).
-			WithEntrypoint(workflowEntrypoint).
+			WithName(testWorkflowName).
+			WithEntrypoint(testWorkflowEntrypoint).
 			WithNodeName(testNode).
 			Build(),
 	}
 
 	expectedWorkflowsStreamsCfg := entity.WorkflowsStreamsConfig{
-		workflowName: &entity.StreamConfig{
-			Stream: streamName,
+		testWorkflowName: &entity.StreamConfig{
+			Stream: testStreamName,
 			Nodes: entity.NodesStreamConfig{
 				testNode: entity.NodeStreamConfig{
 					Subject:       testNodeSubject,
@@ -77,13 +77,19 @@ func TestCreateStreams(t *testing.T) {
 		},
 	}
 
-	customMatcher := newStreamConfigMatcher(expectedWorkflowsStreamsCfg[workflowName])
+	customMatcher := newStreamConfigMatcher(expectedWorkflowsStreamsCfg[testWorkflowName])
 
 	client.EXPECT().CreateStream(customMatcher).Return(nil)
-	workflowsStreamsCfg, actualErr := natsManager.CreateStreams(runtimeID, versionName, workflows)
-	assert.Nil(t, actualErr)
+	workflowsStreamsCfg, err := natsManager.CreateStreams(testRuntimeID, testVersionName, workflows)
+	assert.Nil(t, err)
 
 	assert.Equal(t, expectedWorkflowsStreamsCfg, workflowsStreamsCfg)
+
+	client.EXPECT().GetStreamsNames().Return([]string{testStreamName})
+	logger.EXPECT().Debugf("Obtained stream name: %s", testStreamName).MaxTimes(1)
+	client.EXPECT().DeleteStream(testStreamName).Return(nil)
+	err = natsManager.DeleteStreams(testRuntimeID, testVersionName)
+	assert.Nil(t, err)
 }
 
 func TestCreateStreams_ClientFails(t *testing.T) {
@@ -94,17 +100,17 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 	natsManager := manager.NewNatsManager(logger, client)
 
 	const (
-		runtimeID          = "test-runtime"
-		versionName        = "test-version"
-		workflowName       = "test-workflow"
-		workflowEntrypoint = "TestWorkflow"
-		testNode           = "test-node"
+		testRuntimeID          = "test-runtime"
+		testVersionName        = "test-version"
+		testWorkflowName       = "test-workflow"
+		testWorkflowEntrypoint = "TestWorkflow"
+		testNode               = "test-node"
 	)
 
 	workflows := []*entity.Workflow{
 		NewWorkflowBuilder().
-			WithName(workflowName).
-			WithEntrypoint(workflowEntrypoint).
+			WithName(testWorkflowName).
+			WithEntrypoint(testWorkflowEntrypoint).
 			WithNodeName(testNode).
 			Build(),
 	}
@@ -112,7 +118,7 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 	expectedError := fmt.Errorf("stream already exists")
 
 	client.EXPECT().CreateStream(gomock.Any()).Return(fmt.Errorf("stream already exists"))
-	workflowsStreamsConfig, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	workflowsStreamsConfig, err := natsManager.CreateStreams(testRuntimeID, testVersionName, workflows)
 	assert.Error(t, expectedError, err)
 	assert.Nil(t, workflowsStreamsConfig)
 }
@@ -125,17 +131,17 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 	natsManager := manager.NewNatsManager(logger, client)
 
 	const (
-		runtimeID   = "test-runtime"
-		versionName = "test-version"
+		testRuntimeID   = "test-runtime"
+		testVersionName = "test-version"
 	)
 
 	var workflows []*entity.Workflow
 
-	_, err := natsManager.CreateStreams(runtimeID, versionName, workflows)
+	_, err := natsManager.CreateStreams(testRuntimeID, testVersionName, workflows)
 	assert.EqualError(t, err, "no workflows defined")
 }
 
-func TestCreateObjectStore(t *testing.T) {
+func TestCreateDeleteObjectStore(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
@@ -483,7 +489,7 @@ func TestCreateObjectStore(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			if tc.expectInfoLog {
-				logger.EXPECT().Info(gomock.Any()).Return().AnyTimes().MaxTimes(1)
+				logger.EXPECT().Info("No object stores defined, skipping").MaxTimes(1)
 			}
 			for _, expectedObjStore := range tc.expectedObjectStores {
 				client.EXPECT().CreateObjectStore(expectedObjStore).Return(tc.wantedError)
@@ -494,6 +500,14 @@ func TestCreateObjectStore(t *testing.T) {
 				assert.ErrorIs(t, err, tc.wantedError)
 				return
 			}
+			assert.Nil(t, err)
+
+			client.EXPECT().GetObjectStoresNames().Return(tc.expectedObjectStores)
+			for _, expectedObjStore := range tc.expectedObjectStores {
+				logger.EXPECT().Debugf("Obtained object store name: %s", expectedObjStore).MaxTimes(1)
+				client.EXPECT().DeleteObjectStore(expectedObjStore).Return(nil)
+			}
+			err = natsManager.DeleteObjectStores(testRuntimeID, testVersionName)
 			assert.Nil(t, err)
 		})
 	}

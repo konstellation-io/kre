@@ -127,14 +127,14 @@ func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName st
 }
 
 func (m *NatsManager) DeleteStreams(runtimeID, versionName string) error {
-	all_streams := m.client.GetStreamsNames()
+	allStreams := m.client.GetStreamsNames()
 
 	regex, err := regexp.Compile(fmt.Sprintf("%s-%s-.*", runtimeID, versionName))
 	if err != nil {
 		return fmt.Errorf("error compiling regex: %w", err)
 	}
 
-	for _, stream := range all_streams {
+	for _, stream := range allStreams {
 		if regex.MatchString(stream) {
 			m.logger.Debugf("Obtained stream name: %s", stream)
 			err := m.client.DeleteStream(stream)

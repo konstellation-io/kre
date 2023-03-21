@@ -78,7 +78,7 @@ func (n *NatsManagerClient) CreateObjectStores(
 
 	res, err := n.client.CreateObjectStores(ctx, &req)
 	if err != nil {
-		return nil, fmt.Errorf("error creating objects stores: %w", err)
+		return nil, fmt.Errorf("error creating object stores: %w", err)
 	}
 
 	return n.dtoToVersionObjectStoreConfig(res.Workflows), err

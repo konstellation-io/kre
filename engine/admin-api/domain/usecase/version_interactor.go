@@ -417,7 +417,7 @@ func (i *VersionInteractor) Start(
 
 	objectStoreCfg, err := i.natsManagerService.CreateObjectStores(ctx, runtimeId, v)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error creating objects stores for version %q: %w", v.Name, err)
+		return nil, nil, fmt.Errorf("error creating object stores for version %q: %w", v.Name, err)
 	}
 
 	versionCfg := entity.NewVersionConfig(versionStreamCfg, objectStoreCfg)
