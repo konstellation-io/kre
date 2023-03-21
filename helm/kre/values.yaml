@@ -394,7 +394,7 @@ nats:
       # -- Storage class name for the Jetstream PersistentVolumeClaim
       storageClassName: standard
       # -- Storage size for the Jetstream PersistentVolumeClaim. Notice this is also used for the Jetstream storage limit configuration even if PVC creation is disabled
-      size: 10Gi
+      size: 5Gi
       # -- Directory to use for JetStream storage when using a PersistentVolumeClaim
       storageDirectory: /data
     memStorage:
