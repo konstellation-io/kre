@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chronograf
+  name: {{ .Release.Name }}-chronograf
   labels:
     {{- include "chronograf.labels" . | nindent 4 }}
 spec:
@@ -16,10 +16,22 @@ spec:
       labels:
         {{- include "chronograf.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.chronograf.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.chronograf.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.chronograf.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: chronograf
-          image: "chronograf:1.8.4"
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.chronograf.image.repository }}:{{ .Values.chronograf.image.tag }}
+          imagePullPolicy: {{ .Values.chronograf.image.pullPolicy }}
           ports:
             - containerPort: 8888
               name: api
@@ -41,4 +53,4 @@ spec:
             claimName: {{ .Release.Name }}-chronograf-pvc
         - name: config
           configMap:
-            name: chronograf-config
+            name: {{ .Release.Name }}-chronograf

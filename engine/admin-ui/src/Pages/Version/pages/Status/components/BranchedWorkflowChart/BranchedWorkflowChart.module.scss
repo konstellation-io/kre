@@ -1,0 +1,16 @@
+@import 'Styles/variables';
+@import 'Styles/colors';
+@import 'Styles/mixins';
+
+:export {
+  colorLabelBg: palette(base, 400);
+  colorLabelBorder: palette(base, 200);
+  colorNodeBg: palette(base, 600);
+  colorStatusStarted: $color-status-up;
+  colorStatusError: $color-error;
+  colorStatusStopped: $color-status-down;
+  colorStatusLoading: $color-status-changing;
+  colorHighlight: palette(highlight);
+  colorAlert: palette(alert);
+  colorTextLabel: font-color(lowlight);
+}

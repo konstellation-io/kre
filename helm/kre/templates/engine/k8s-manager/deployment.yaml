@@ -14,27 +14,33 @@ spec:
       labels:
         {{- include "k8s-manager.labels" . | nindent 8 }}
       annotations:
-        helm.sh/restart-deployment: {{ randAlphaNum 5 | quote }}
+        checksum/config: {{ include (print $.Template.BasePath "/engine/k8s-manager/configmap.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ include "k8s-manager.serviceAccountName" . }}
+      {{- with .Values.k8sManager.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.k8sManager.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.k8sManager.tolerations }}
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Release.Name }}-k8s-manager
           image: {{ .Values.k8sManager.image.repository }}:{{ .Values.k8sManager.image.tag }}
           imagePullPolicy: {{ .Values.k8sManager.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-configmap
-            - secretRef:
-                name: {{ .Release.Name }}-secrets
-
+                name: {{ .Release.Name }}-k8s-manager
           env:
-            - name: KRE_PORT
-              value: "50051"
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-
           ports:
             - containerPort: 50051
               protocol: TCP

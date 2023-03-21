@@ -24,11 +24,12 @@ const generateVersion = (
 ) => ({
   id,
   name,
+  krtVersion: 'v1',
   description: casual.sentence,
   status,
   creationDate: casual.moment.toISOString(),
   publicationDate: casual.moment.toISOString(),
-  workflows: () => new MockList(2)
+  workflows: () => new MockList(1)
 });
 
 let datetime = moment().subtract(24, 'hour');
@@ -224,19 +225,22 @@ module.exports = {
     authAllowedDomains: () => new MockList([2, 6], () => casual.domain),
     sessionLifetimeInDays: () => casual.integer(1, 99)
   }),
+  // Workflow: () => workflow_krtV1,
   Workflow: () => ({
     name: casual.random_element(workflowNames),
-    nodes: () => new MockList([1, 4]),
-    edges: () => new MockList([1, 4])
+    exitpoint: "exitpoint",
+    nodes: () => getNodes(),
   }),
   Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
+  // Edge: () => ({ id: casual.uuid, fromNode: casual.uuid, toNode: casual.uuid }),
   Node: () => {
     const _id = casual.uuid;
     setTimeout(() => {
       pubsub.publish('watchNodeStatus', {
         watchNodeStatus: {
           id: _id,
-          status: casual.random_element(['STARTED', 'ERROR'])
+          status: casual.random_element(['STARTED', 'ERROR']),
+          // subscriptions: Array(casual.integer(0, 3)).map(_ => casual.uuid)
         }
       });
     }, casual.integer(2000, 10000));
@@ -244,3 +248,230 @@ module.exports = {
   },
   MetricChartData: () => new MockList([5, 10])
 };
+
+const nodeStatuses = [
+  "STARTED",
+  "STOPPED",
+  "ERROR",
+  "STARTING"
+]
+
+const getNodes = () => {
+  return casual.random_element([
+    mockWorkflow1,
+    mockWorkflow2,
+    mockWorkflow3,
+    mockWorkflow4,
+    workflow_krtV1.nodes,
+  ])
+}
+
+const mockWorkflow1 = [
+  {
+    id: "id-etl",
+    name: "etl",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "etl",
+      "entrypoint"
+    ],
+  },
+  {
+    id: "id-email-classificator",
+    name: "email-classificator",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "etl"
+    ],
+  },
+  {
+    id: "id-repairs-handler",
+    name: "repairs-handler",
+    status: casual.random_element(nodeStatuses),
+    replicas:  2,
+    subscriptions: [
+      "email-classificator"
+    ],
+  },
+  {
+    id: "id-metrics",
+    name: "metrics",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "email-classificator"
+    ],
+  },
+  {
+    id: "id-exitpoint",
+    name: "exitpoint",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "etl",
+      "metrics",
+    ],
+  },
+];
+
+const mockWorkflow2 = [
+  {
+    id: "id-etl",
+    name: "etl",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "entrypoint"
+    ],
+  },
+  {
+    id: "id-email-classificator",
+    name: "email-classificator",
+    status: casual.random_element(nodeStatuses),
+    replicas:  2,
+    subscriptions: [
+      "etl"
+    ],
+  },
+  {
+    id: "id-repairs-handler",
+    name: "repairs-handler",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "email-classificator"
+    ],
+  },
+  {
+    id: "id-metrics",
+    name: "metrics",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "repairs-handler"
+    ],
+  },
+  {
+    id: "id-exitpoint",
+    name: "exitpoint",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "metrics",
+      "etl",
+      "email-classificator",
+      "repairs-handler",
+    ],
+  },
+]
+
+const mockWorkflow3 = [
+  {
+    id: "id-etl",
+    name: "etl",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "entrypoint"
+    ],
+  },
+  {
+    id: "id-email-classificator",
+    name: "email-classificator",
+    status: casual.random_element(nodeStatuses),
+    replicas:  2,
+    subscriptions: [
+      "etl"
+    ],
+  },
+  {
+    id: "id-repairs-handler",
+    name: "repairs-handler",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "email-classificator"
+    ],
+  },
+  {
+    id: "id-metrics",
+    name: "metrics",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "repairs-handler"
+    ],
+  },
+  {
+    id: "id-exitpoint",
+    name: "exitpoint",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "metrics",
+    ],
+  },
+]
+
+const mockWorkflow4 = [
+  {
+    id: "id-etl",
+    name: "etl",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "entrypoint"
+    ],
+  },
+  {
+    id: "id-email-classificator",
+    name: "email-classificator",
+    status: casual.random_element(nodeStatuses),
+    replicas:  2,
+    subscriptions: [
+      "etl"
+    ],
+  },
+  {
+    id: "id-repairs-handler",
+    name: "repairs-handler",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "email-classificator"
+    ],
+  },
+  {
+    id: "id-metrics",
+    name: "metrics",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "repairs-handler"
+    ],
+  },
+  {
+    id: "id-metrics-2",
+    name: "metrics-2",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "metrics",
+    ],
+  },
+  {
+    id: "exitpoint",
+    name: "exitpoint",
+    status: casual.random_element(nodeStatuses),
+    replicas:  1,
+    subscriptions: [
+      "metrics",
+      "metrics-2",
+      "etl",
+      "email-classificator",
+      "repairs-handler",
+    ],
+  },
+]

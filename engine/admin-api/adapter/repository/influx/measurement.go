@@ -23,7 +23,7 @@ func NewMeasurementRepoInfluxDB(cfg *config.Config, logger logging.Logger) *Meas
 }
 
 func (m *MeasurementRepoInfluxDB) CreateDatabase(runtimeId string) error {
-	createDatabaseCommand := "CREATE DATABASE " + runtimeId
+	createDatabaseCommand := fmt.Sprintf("CREATE DATABASE \"%s\"", runtimeId)
 	query, err := m.generateQuery(createDatabaseCommand)
 	if err != nil {
 		return err

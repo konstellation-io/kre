@@ -1,10 +1,8 @@
-import { ErrorMessage, SpinnerCircular } from 'kwc';
-import {
-  GetVersionConfStatus_runtime,
-  GetVersionConfStatus_versions
-} from 'Graphql/queries/types/GetVersionConfStatus';
+import {ErrorMessage, SpinnerCircular} from 'kwc';
+import {GetVersionConfStatus_runtime, GetVersionConfStatus_versions} from 'Graphql/queries/types/GetVersionConfStatus';
 import {
   GetVersionWorkflows,
+  GetVersionWorkflows_version_workflows,
   GetVersionWorkflowsVariables
 } from 'Graphql/queries/types/GetVersionWorkflows';
 import {
@@ -12,18 +10,18 @@ import {
   WatchVersionNodeStatusVariables
 } from 'Graphql/subscriptions/types/WatchVersionNodeStatus';
 
-import { NodeStatus } from 'Graphql/types/globalTypes';
+import {KrtVersion, NodeStatus} from 'Graphql/types/globalTypes';
 import React, {useEffect, useState} from 'react';
-import { VersionRouteParams } from 'Constants/routes';
+import {VersionRouteParams} from 'Constants/routes';
 import WorkflowsManager from './components/WorkflowsManager/WorkflowsManager';
 import styles from './Status.module.scss';
 import useOpenedVersion from 'Graphql/hooks/useOpenedVersion';
-import { useParams } from 'react-router';
-import { useQuery, useReactiveVar } from '@apollo/client';
+import {useParams} from 'react-router';
+import {useQuery, useReactiveVar} from '@apollo/client';
 
 import GetVersionWorkflowsQuery from 'Graphql/queries/getVersionWorkflows';
 import VersionNodeStatusSubscription from 'Graphql/subscriptions/watchVersionNodeStatus';
-import { openedVersion } from '../../../../Graphql/client/cache';
+import {openedVersion} from 'Graphql/client/cache';
 
 export type Node = {
   id: string;
@@ -80,13 +78,18 @@ function Status({ version, runtime }: Props) {
     [loading, error],
   );
 
+  const getWorkflows = () => {
+    if (!data) return [];
+    return data.version.workflows;
+  }
+
   if (error) return <ErrorMessage />;
   if (loading) return <SpinnerCircular />;
 
   return (
     <div className={styles.container}>
       <WorkflowsManager
-        workflows={data?.version.workflows || []}
+        workflows={getWorkflows() || []}
         entrypointStatus={entrypointStatus}
         entrypointAddress={runtime?.entrypointAddress || ''}
         versionStatus={version?.status}

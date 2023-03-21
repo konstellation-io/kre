@@ -137,59 +137,41 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-nats url
+nats host
 */}}
-{{- define "nats.url" -}}
-{{- printf "%s-nats:%d" .Release.Name (.Values.nats.client.port | int) -}}
-{{- end -}}
-
-{{/*
-Runtime Name
-*/}}
-{{- define "runtime.name" -}}
-{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "runtime.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Runtime common labels
-*/}}
-{{- define "runtime.labels" -}}
-app.kubernetes.io/name: {{ include "runtime.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end -}}
-
-{{/*
-MongoDB labels
-*/}}
-{{- define "mongodb.labels" -}}
-{{ include "kre.labels" . }}
-{{ include "mongodb.selectorLabels" . }}
+{{- define "nats.host" -}}
+{{- printf "%s-nats" .Release.Name -}}
 {{- end }}
 
 {{/*
-MongoDB selector labels
+nats url
 */}}
-{{- define "mongodb.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kre.name" . }}-mongodb
+{{- define "nats.url" -}}
+{{- printf "%s:%d" (include "nats.host" .) (.Values.nats.client.port | int) -}}
+{{- end -}}
+
+
+{{/*
+mongo-writer labels
+*/}}
+{{- define "mongo-writer.labels" -}}
+{{ include "kre.labels" . }}
+{{ include "mongo-writer.selectorLabels" . }}
+{{- end }}
+
+{{/*
+mongo-writer selector labels
+*/}}
+{{- define "mongo-writer.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-mongo-writer
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Mongo Express name
+*/}}
+{{- define "mongoExpress.name" -}}
+{{ printf "%s-mongo-express" $.Release.Name }}
 {{- end }}
 
 {{/*
@@ -209,16 +191,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create MongoDB URI.
-*/}}
-{{- define "runtime.mongoURI" -}}
-  {{- printf "mongodb://%s:%s@kre-mongo-0:27017/admin?replicaSet=rs0" $.Values.mongodb.auth.adminUser $.Values.mongodb.auth.adminPassword -}}
-{{- end -}}
-
-{{/*
 Create InfluxDB URL.
 */}}
-{{- define "runtime.influxURL" -}}
+{{- define "kre-influxdb.influxURL" -}}
   {{- printf "http://%s-influxdb:8086" .Release.Name -}}
 {{- end -}}
 {{/*
@@ -242,3 +217,24 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default "kapacitor" .Values.kapacitor.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/* Fullname suffixed with nats-manager */}}
+{{- define "nats-manager.fullname" -}}
+{{- printf "%s-nats-manager" (include "kre.fullname" .) -}}
+{{- end }}
+
+{{/*
+nats manager labels
+*/}}
+{{- define "nats-manager.labels" -}}
+{{ include "kre.labels" . }}
+{{ include "nats-manager.selectorLabels" . }}
+{{- end }}
+
+{{/*
+nats manager selector labels
+*/}}
+{{- define "nats-manager.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kre.name" . }}-nats-manager
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

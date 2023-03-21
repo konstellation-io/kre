@@ -61,7 +61,7 @@ func (m *Manager) deleteVersionKRTConf(ctx context.Context, runtimeID, versionNa
 func (m *Manager) createVersionConfFiles(ctx context.Context, runtimeID, versionName, ns string, workflows []*versionpb.Workflow) error {
 	m.logger.Info("Creating version config files...")
 
-	natsSubjectJSON, err := m.generateNATSSubjects(runtimeID, versionName, workflows)
+	natsSubjectJSON, err := m.generateSubjects(workflows)
 	if err != nil {
 		return err
 	}
@@ -140,9 +140,9 @@ func (m *Manager) createVersionConfFiles(ctx context.Context, runtimeID, version
 [OUTPUT]
     Name  nats
     Match *
-    Host  kre-nats
-    Port  4222
-`, runtimeID),
+    Host  %s
+    Port  %s
+`, runtimeID, m.config.NatsStreaming.Host, m.config.NatsStreaming.Port),
 		},
 	}, metav1.CreateOptions{})
 

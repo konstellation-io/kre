@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nats-manager-config
+  labels:
+    {{- include "kre.labels" . | nindent 4 }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  KRE_DEVELOPMENT_MODE: "{{ .Values.developmentMode }}"
+  KRE_RELEASE_NAME: "{{ .Release.Name }}"
+
+  # NATS Streaming
+  KRE_NATS_URL: "{{ include "nats.url" . }}"

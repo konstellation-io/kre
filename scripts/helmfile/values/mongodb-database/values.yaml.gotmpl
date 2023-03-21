@@ -1,0 +1,94 @@
+resources:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: {{ .Release.Name }}-admin-password
+  type: Opaque
+  data:
+    password: {{ "123456" | b64enc | quote }}
+
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: {{ .Release.Name }}-kre-password
+  type: Opaque
+  data:
+    password: {{ "123456" | b64enc | quote }}
+
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: {{ .Release.Name }}-mongoexpress-password
+  type: Opaque
+  data:
+    password: {{ "123456" | b64enc | quote }}
+
+- apiVersion: mongodbcommunity.mongodb.com/v1
+  kind: MongoDBCommunity
+  metadata:
+    name: {{ .Release.Name }}
+  spec:
+    members: 1
+    type: ReplicaSet
+    version: "4.2.8"
+    security:
+      authentication:
+        modes: ["SCRAM", "SCRAM-SHA-1"]
+    users:
+    - name: admin
+      db: admin
+      passwordSecretRef:
+        name: {{ .Release.Name }}-admin-password
+        key: password
+      roles:
+      - name: root
+        db: admin
+      scramCredentialsSecretName: {{ .Release.Name }}-admin
+      connectionStringSecretName: {{ .Release.Name}}-admin-connection-string
+    - name: mongoexpress
+      db: admin
+      passwordSecretRef:
+        name: {{ .Release.Name }}-mongoexpress-password
+        key: password
+      scramCredentialsSecretName: {{ .Release.Name }}-mongoexpress
+      connectionStringSecretName: {{ .Release.Name}}-mongoexpress-connection-string
+      roles:
+      - name: "readAnyDatabase"
+        db: "admin"
+
+    - name: kre
+      db: admin
+      passwordSecretRef:
+        name: {{ .Release.Name }}-kre-password
+        key: password
+      roles:
+      - name: "userAdminAnyDatabase"
+        db: "admin"
+      - name: "readWriteAnyDatabase"
+        db: "admin"
+      - name: "dbAdminAnyDatabase"
+        db: "admin"
+      scramCredentialsSecretName: {{ .Release.Name }}-kre
+      connectionStringSecretName: {{ .Release.Name}}-kre-connection-string
+
+    statefulSet:
+      spec:
+        template:
+            spec:
+                containers:
+                  - name: mongod
+                    resources:
+                      limits:
+                        cpu: "1"
+                        memory: 2048Mi
+                      requests:
+                        cpu: "0.1"
+                        memory: 200Mi
+                  - name: mongodb-agent
+                    resources:
+                      limits:
+                        cpu: "0.5"
+                        memory: 512Mi
+                      requests:
+                        cpu: "0.1"
+                        memory: 200Mi

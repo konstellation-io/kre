@@ -120,12 +120,12 @@ func NewApp(
 	m := e.Group("/measurements")
 	m.Use(jwtCookieMiddleware)
 	m.Use(sessionMiddleware)
-	m.Use(kremiddleware.ChronografProxy())
+	m.Use(kremiddleware.ChronografProxy(cfg.Chronograf.Address))
 
 	d := e.Group("/database")
 	d.Use(jwtCookieMiddleware)
 	d.Use(sessionMiddleware)
-	d.Use(kremiddleware.MongoExpressProxy())
+	d.Use(kremiddleware.MongoExpressProxy(cfg.MongoDB.MongoExpressAddress))
 
 	return &App{
 		e,

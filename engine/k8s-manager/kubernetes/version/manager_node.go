@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
 	appsv1 "k8s.io/api/apps/v1"
@@ -20,6 +21,7 @@ const (
 	WaitForConfigMaps
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
+	entrypointNodeName                    = "entrypoint"
 )
 
 var (
@@ -41,8 +43,10 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 	m.logger.Infof("Creating deployments for all nodes")
 
 	for _, w := range req.Workflows {
-		workflowConfig := m.generateWorkflowConfig(req, w)
-
+		workflowConfig, err := m.generateWorkflowConfig(req, w)
+		if err != nil {
+			return err
+		}
 		for _, n := range w.Nodes {
 			err := m.createNodeDeployment(ctx, req, n, workflowConfig[n.Id])
 			if err != nil {
@@ -56,56 +60,51 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 	return nil
 }
 
-func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) WorkflowConfig {
+func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) (WorkflowConfig, error) {
 	m.logger.Infof("Generating workflow \"%s\" config", workflow.Name)
 
 	wconf := WorkflowConfig{}
+	runtimeID := req.RuntimeId
 
-	for _, n := range workflow.Nodes {
+	for idx, n := range workflow.Nodes {
 		wconf[n.Id] = NodeConfig{
-			"KRT_WORKFLOW_ID":             workflow.GetId(),
-			"KRT_WORKFLOW_NAME":           workflow.GetName(),
-			"KRT_NODE_ID":                 n.GetId(),
-			"KRT_NODE_NAME":               n.GetName(),
-			"KRT_HANDLER_PATH":            n.Src,
-			"KRT_NATS_MONGO_WRITER":       natsDataSubjectPrefix + req.RuntimeId,
-			"KRT_NATS_STREAM":             fmt.Sprintf("%s-%s-%s", req.RuntimeId, req.VersionName, workflow.GetEntrypoint()),
-			"KRT_IS_LAST_NODE":            "false",
-			"KRT_NATS_ENTRYPOINT_SUBJECT": m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint"),
+			"KRT_WORKFLOW_ID":       workflow.GetId(),
+			"KRT_WORKFLOW_NAME":     workflow.GetName(),
+			"KRT_NODE_ID":           n.GetId(),
+			"KRT_NODE_NAME":         n.GetName(),
+			"KRT_HANDLER_PATH":      n.Src,
+			"KRT_NATS_MONGO_WRITER": natsDataSubjectPrefix + runtimeID,
+			"KRT_NATS_STREAM":       workflow.Stream,
+			"KRT_IS_EXITPOINT":      m.isExitpoint(n.GetName(), workflow.Exitpoint),
+			"KRT_NATS_OUTPUT":       n.Subject,
+			"KRT_NATS_INPUTS":       m.joinSubscriptionSubjects(n.Subscriptions),
+		}
+
+		// retrocompatibility konstellation-exitpoint config
+		if n.Name == "konstellation-exitpoint" {
+			nodeConfig := wconf[n.Id]
+			nodeConfig["KRT_LAST_NODE_NAME"] = workflow.Nodes[idx-1].Name
 		}
 	}
 
-	for _, e := range workflow.Edges {
-		fromNode := wconf[e.FromNode]
-		toNode := wconf[e.ToNode]
+	return wconf, nil
+}
 
-		fromNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
-		toNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), toNode["KRT_NODE_NAME"])
-	}
-
-	var (
-		firstNode NodeConfig
-		lastNode  NodeConfig
-	)
-
-	totalEdges := len(workflow.Edges)
-
-	if totalEdges == 0 {
-		firstNode = wconf[workflow.Nodes[0].Id]
-		lastNode = wconf[workflow.Nodes[0].Id]
+func (m *Manager) isExitpoint(nodeName, workflowExitpoint string) string {
+	if nodeName == workflowExitpoint {
+		return "true"
 	} else {
-		firstNode = wconf[workflow.Edges[0].FromNode]
-		lastNode = wconf[workflow.Edges[len(workflow.Edges)-1].ToNode]
+		return "false"
 	}
-	lastNode["KRT_IS_LAST_NODE"] = "true"
+}
 
-	// First node input is the workflow entrypoint
-	firstNode["KRT_NATS_INPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), firstNode["KRT_NODE_NAME"])
-
-	// Last node output is entrypoint
-	lastNode["KRT_NATS_OUTPUT"] = m.natsManager.GetStreamSubjectName(req.RuntimeId, req.VersionName, workflow.GetEntrypoint(), "entrypoint")
-
-	return wconf
+// joinSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
+func (m *Manager) joinSubscriptionSubjects(nodeSubscriptions []string) string {
+	subjectsToSubscribe := make([]string, 0, len(nodeSubscriptions))
+	for _, subscription := range nodeSubscriptions {
+		subjectsToSubscribe = append(subjectsToSubscribe, subscription)
+	}
+	return strings.Join(subjectsToSubscribe, ",")
 }
 
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
@@ -161,7 +160,11 @@ func (m *Manager) createNodeDeployment(
 	envVars := m.getNodeEnvVars(req, config)
 	labels := m.getNodeLabels(runtimeId, versionName, node)
 
-	m.logger.Infof("Creating node deployment with name \"%s\" and image \"%s\"", name, node.Image)
+	m.logger.Infof("Creating node deployment with name \"%s\", image \"%s\" and \"%d\" replicas",
+		name,
+		node.Image,
+		node.Replicas,
+	)
 
 	_, err := m.clientset.AppsV1().Deployments(ns).Create(
 		ctx,
@@ -172,6 +175,7 @@ func (m *Manager) createNodeDeployment(
 				Labels:    labels,
 			},
 			Spec: appsv1.DeploymentSpec{
+				Replicas: &node.Replicas,
 				Selector: &metav1.LabelSelector{
 					MatchLabels: labels,
 				},

@@ -23,6 +23,25 @@ export const runtime: GetVersionConfStatus_runtime = {
   entrypointAddress: 'entrypointAddress',
   __typename: 'Runtime'
 };
+
+export const workflow: GetVersionWorkflows_version_workflows = {
+  __typename: 'Workflow',
+  id: 'workflowId',
+  name: 'Workflow Nane',
+  exitpoint: 'exitpoint',
+  nodes: [
+    {
+      __typename: 'Node',
+      id: 'nodeId',
+      name: 'Node Name',
+      status: NodeStatus.STARTED,
+      subscriptions: [],
+      replicas: 1,
+    }
+  ],
+};
+
+
 export const version: GetVersionConfStatus_versions = {
   __typename: 'Version',
   id: 'versionId',
@@ -46,28 +65,7 @@ export const version: GetVersionConfStatus_versions = {
     completed: false
   },
   hasDoc: false,
-  errors: []
-};
-export const workflow: GetVersionWorkflows_version_workflows = {
-  __typename: 'Workflow',
-  id: 'workflowId',
-  name: 'Workflow Nane',
-  nodes: [
-    {
-      __typename: 'Node',
-      id: 'nodeId',
-      name: 'Node Name',
-      status: NodeStatus.STARTED
-    }
-  ],
-  edges: [
-    {
-      __typename: 'Edge',
-      id: 'edgeId',
-      fromNode: 'node1',
-      toNode: 'node2'
-    }
-  ]
+  errors: [],
 };
 
 export const confVarsMock = {
@@ -114,6 +112,7 @@ export const workflowsMock = {
     data: {
       version: {
         name: 'version01',
+        krtVersion: 'v1',
         status: 'STARTED',
         configurationCompleted: true,
         workflows: [
@@ -123,21 +122,16 @@ export const workflowsMock = {
               {
                 id: 'node01',
                 name: 'one node',
-                status: 'STARTED'
+                status: 'STARTED',
+                replicas: 1
               },
               {
                 id: 'node02',
                 name: 'another node',
-                status: 'STARTED'
+                status: 'STARTED',
+                replicas: 1
               }
             ],
-            edges: [
-              {
-                id: 'edge01',
-                fromNode: 'node01',
-                toNode: 'node02'
-              }
-            ]
           }
         ]
       }

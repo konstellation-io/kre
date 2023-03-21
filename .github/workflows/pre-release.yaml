@@ -7,6 +7,7 @@ on:
       - "ENGINE admin-ui Tests"
       - "ENGINE k8s-manager Tests"
       - "ENGINE mongo-writer Tests"
+      - "ENGINE nats-manager Tests"
     branches: [main]
     types:
       - completed
@@ -16,11 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Generate a pre-release
         uses: intelygenz/action-product-version-tags@v0.1.8
         with:
-          current-major: 6
+          current-major: 8
           prefix: "release-"
           mode: 'pre-release'
           pre-release: 'alpha'
