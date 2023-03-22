@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/logging"
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/config"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"

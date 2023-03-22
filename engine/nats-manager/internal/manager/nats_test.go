@@ -3,6 +3,7 @@ package manager_test
 import (
 	"fmt"
 	"reflect"
+	"regexp"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -41,6 +42,7 @@ func TestCreateDeleteStreams(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
+	mocks.AddLoggerExpects(logger)
 	client := mocks.NewMockClient(ctrl)
 	natsManager := manager.NewNatsManager(logger, client)
 
@@ -96,6 +98,7 @@ func TestCreateStreams_ClientFails(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
+	mocks.AddLoggerExpects(logger)
 	client := mocks.NewMockClient(ctrl)
 	natsManager := manager.NewNatsManager(logger, client)
 
@@ -145,6 +148,7 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
+	mocks.AddLoggerExpects(logger)
 	client := mocks.NewMockClient(ctrl)
 	natsManager := manager.NewNatsManager(logger, client)
 
@@ -502,9 +506,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 			}
 			assert.Nil(t, err)
 
-			client.EXPECT().GetObjectStoresNames().Return(tc.expectedObjectStores)
+			filter := regexp.MustCompile(fmt.Sprintf(fmt.Sprintf("object-store_%s_%s_.*", testRuntimeID, testVersionName)))
+
+			client.EXPECT().GetObjectStoreNames(filter).Return(tc.expectedObjectStores, nil)
 			for _, expectedObjStore := range tc.expectedObjectStores {
-				logger.EXPECT().Debugf("Obtained object store name: %s", expectedObjStore).MaxTimes(1)
 				client.EXPECT().DeleteObjectStore(expectedObjStore).Return(nil)
 			}
 			err = natsManager.DeleteObjectStores(testRuntimeID, testVersionName)

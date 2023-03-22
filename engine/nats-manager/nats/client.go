@@ -1,10 +1,14 @@
 package nats
 
 import (
+	"errors"
 	"fmt"
-	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
-	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
+	"regexp"
+
 	"github.com/nats-io/nats.go"
+
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/logging"
 )
 
 type NatsClient struct {
@@ -63,16 +67,31 @@ func (n *NatsClient) CreateObjectStore(objectStore string) error {
 	return nil
 }
 
-// GetObjectStoresNames returns the list of object stores.
-func (n *NatsClient) GetObjectStoresNames() []string {
+// GetObjectStoreNames returns the list of object stores.
+// The optional param `optFilter` accepts 0 or 1 value.
+func (n *NatsClient) GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string, error) {
+	if len(optFilter) > 1 {
+		return nil, errors.New("optFilter param accepts 0 or 1 value")
+	}
+
+	var regexpFilter *regexp.Regexp
+	if len(optFilter) == 1 {
+		regexpFilter = optFilter[0]
+	}
+
 	objectStoresCh := n.js.ObjectStores()
 
 	var objectStores []string
 	for objectStore := range objectStoresCh {
-		objectStores = append(objectStores, objectStore.Bucket())
+		objStoreName := objectStore.Bucket()
+
+		nameMatchFilter := regexpFilter == nil || regexpFilter.MatchString(objStoreName)
+		if nameMatchFilter {
+			objectStores = append(objectStores, objStoreName)
+		}
 	}
 
-	return objectStores
+	return objectStores, nil
 }
 
 func (n *NatsClient) DeleteStream(stream string) error {

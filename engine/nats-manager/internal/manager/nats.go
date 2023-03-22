@@ -6,7 +6,7 @@ import (
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
-	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
+	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logging"
 )
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/${GOFILE} -package=mocks
@@ -14,7 +14,7 @@ import (
 type Client interface {
 	CreateStream(streamConfig *entity.StreamConfig) error
 	CreateObjectStore(objectStore string) error
-	GetObjectStoresNames() []string
+	GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string, error)
 	GetStreamsNames() []string
 	DeleteStream(stream string) error
 	DeleteObjectStore(stream string) error
@@ -136,7 +136,8 @@ func (m *NatsManager) DeleteStreams(runtimeID, versionName string) error {
 
 	for _, stream := range allStreams {
 		if regex.MatchString(stream) {
-			m.logger.Debugf("Obtained stream name: %s", stream)
+			m.logger.Debugf("Deleting stream %q", stream)
+
 			err := m.client.DeleteStream(stream)
 			if err != nil {
 				return fmt.Errorf("error deleting stream %q: %w", stream, err)
@@ -147,20 +148,22 @@ func (m *NatsManager) DeleteStreams(runtimeID, versionName string) error {
 }
 
 func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
-	allObjectStores := m.client.GetObjectStoresNames()
-
-	regex, err := regexp.Compile(fmt.Sprintf("object-store_%s_%s_.*", runtimeID, versionName))
+	versionObjStoreRegExp, err := regexp.Compile(fmt.Sprintf("object-store_%s_%s_.*", runtimeID, versionName))
 	if err != nil {
 		return fmt.Errorf("error compiling regex: %w", err)
 	}
 
+	allObjectStores, err := m.client.GetObjectStoreNames(versionObjStoreRegExp)
+	if err != nil {
+		return fmt.Errorf("error getting object store names: %w", err)
+	}
+
 	for _, objectStore := range allObjectStores {
-		if regex.MatchString(objectStore) {
-			m.logger.Debugf("Obtained object store name: %s", objectStore)
-			err := m.client.DeleteObjectStore(objectStore)
-			if err != nil {
-				return fmt.Errorf("error deleting object store %q: %w", objectStore, err)
-			}
+		m.logger.Debugf("Deleting object store %q", objectStore)
+
+		err := m.client.DeleteObjectStore(objectStore)
+		if err != nil {
+			return fmt.Errorf("error deleting object store %q: %w", objectStore, err)
 		}
 	}
 

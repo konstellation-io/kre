@@ -6,6 +6,7 @@ package mocks
 
 import (
 	reflect "reflect"
+	regexp "regexp"
 
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
@@ -90,18 +91,23 @@ func (mr *MockClientMockRecorder) DeleteStream(stream interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStream", reflect.TypeOf((*MockClient)(nil).DeleteStream), stream)
 }
 
-// GetObjectStoresNames mocks base method.
-func (m *MockClient) GetObjectStoresNames() []string {
+// GetObjectStoreNames mocks base method.
+func (m *MockClient) GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetObjectStoresNames")
+	varargs := []interface{}{}
+	for _, a := range optFilter {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjectStoreNames", varargs...)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// GetObjectStoresNames indicates an expected call of GetObjectStoresNames.
-func (mr *MockClientMockRecorder) GetObjectStoresNames() *gomock.Call {
+// GetObjectStoreNames indicates an expected call of GetObjectStoreNames.
+func (mr *MockClientMockRecorder) GetObjectStoreNames(optFilter ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjectStoresNames", reflect.TypeOf((*MockClient)(nil).GetObjectStoresNames))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjectStoreNames", reflect.TypeOf((*MockClient)(nil).GetObjectStoreNames), optFilter...)
 }
 
 // GetStreamsNames mocks base method.

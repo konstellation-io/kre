@@ -5,6 +5,7 @@ package nats_test
 import (
 	"context"
 	"log"
+	"regexp"
 	"testing"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
@@ -245,23 +246,87 @@ func (s *ClientTestSuite) TestNatsClient_DeleteObjectStore_ObjectStoreNotFound()
 	assert.ErrorIs(t, err, natslib.ErrStreamNotFound)
 }
 
-func (s *ClientTestSuite) TestNatsClient_GetObjectStoresNames() {
+func (s *ClientTestSuite) TestNatsClient_GetObjectStoresNames_WithoutFilter() {
 	t := s.T()
 
-	expectedObjectStores := []string{
-		"test-project_test-version_test-workflow",
-		"test-project_test-version_test-workflow_test-name",
+	testObjectStore1 := "test-object-store-1"
+	testObjectStore2 := "test-object-store-2"
+	objectStoreWithOtherFormat := "another-obj-store"
+
+	testCases := []struct {
+		name                 string
+		optFilter            []*regexp.Regexp
+		existingObjectStores []string
+		expectedObjectStores []string
+		wantError            bool
+	}{
+		{
+			name: "Get object store names without filter",
+			existingObjectStores: []string{
+				testObjectStore1,
+				testObjectStore2,
+				objectStoreWithOtherFormat,
+			},
+			expectedObjectStores: []string{
+				testObjectStore1,
+				testObjectStore2,
+			},
+			optFilter: []*regexp.Regexp{regexp.MustCompile("test-object-.*")},
+			wantError: false,
+		},
+		{
+			name: "Get object store names with regex filter",
+			existingObjectStores: []string{
+				testObjectStore1,
+				testObjectStore2,
+				objectStoreWithOtherFormat,
+			},
+			expectedObjectStores: []string{
+				testObjectStore1,
+				testObjectStore2,
+				objectStoreWithOtherFormat,
+			},
+			optFilter: nil,
+			wantError: false,
+		},
+		{
+			name: "Get object store names with regex filter",
+			existingObjectStores: []string{
+				testObjectStore1,
+				testObjectStore2,
+				objectStoreWithOtherFormat,
+			},
+			expectedObjectStores: nil,
+			optFilter:            []*regexp.Regexp{regexp.MustCompile(""), regexp.MustCompile("")},
+			wantError:            true,
+		},
 	}
 
-	for _, objStore := range expectedObjectStores {
-		_, err := s.js.CreateObjectStore(&natslib.ObjectStoreConfig{
-			Bucket:  objStore,
-			Storage: natslib.FileStorage,
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			for _, objStore := range tc.existingObjectStores {
+				_, err := s.js.CreateObjectStore(&natslib.ObjectStoreConfig{
+					Bucket:  objStore,
+					Storage: natslib.FileStorage,
+				})
+				assert.NoError(t, err)
+			}
+
+			var objectStores []string
+			var err error
+			if tc.optFilter == nil {
+				objectStores, err = s.natsClient.GetObjectStoreNames()
+			} else {
+				objectStores, err = s.natsClient.GetObjectStoreNames(tc.optFilter...)
+			}
+
+			if tc.wantError {
+				assert.Error(t, err)
+				return
+			}
+
+			assert.NoError(t, err)
+			assert.ElementsMatch(t, tc.expectedObjectStores, objectStores)
 		})
-		assert.NoError(t, err)
 	}
-
-	objectStores := s.natsClient.GetObjectStoresNames()
-
-	assert.Equal(t, expectedObjectStores, objectStores)
 }
