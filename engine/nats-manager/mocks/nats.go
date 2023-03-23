@@ -111,15 +111,20 @@ func (mr *MockClientMockRecorder) GetObjectStoreNames(optFilter ...interface{}) 
 }
 
 // GetStreamsNames mocks base method.
-func (m *MockClient) GetStreamsNames() []string {
+func (m *MockClient) GetStreamsNames(optFilter ...*regexp.Regexp) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStreamsNames")
+	varargs := []interface{}{}
+	for _, a := range optFilter {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetStreamsNames", varargs...)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetStreamsNames indicates an expected call of GetStreamsNames.
-func (mr *MockClientMockRecorder) GetStreamsNames() *gomock.Call {
+func (mr *MockClientMockRecorder) GetStreamsNames(optFilter ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStreamsNames", reflect.TypeOf((*MockClient)(nil).GetStreamsNames))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStreamsNames", reflect.TypeOf((*MockClient)(nil).GetStreamsNames), optFilter...)
 }

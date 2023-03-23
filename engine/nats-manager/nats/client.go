@@ -1,13 +1,13 @@
 package nats
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 
 	"github.com/nats-io/nats.go"
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/logging"
 )
 
@@ -71,7 +71,7 @@ func (n *NatsClient) CreateObjectStore(objectStore string) error {
 // The optional param `optFilter` accepts 0 or 1 value.
 func (n *NatsClient) GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string, error) {
 	if len(optFilter) > 1 {
-		return nil, errors.New("optFilter param accepts 0 or 1 value")
+		return nil, errors.ErrNoOptFilter
 	}
 
 	var regexpFilter *regexp.Regexp
@@ -80,8 +80,8 @@ func (n *NatsClient) GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string,
 	}
 
 	objectStoresCh := n.js.ObjectStores()
+	objectStores := make([]string, 0)
 
-	var objectStores []string
 	for objectStore := range objectStoresCh {
 		objStoreName := objectStore.Bucket()
 
@@ -107,14 +107,27 @@ func (n *NatsClient) DeleteObjectStore(objectStore string) error {
 }
 
 // GetStreamsNames returns the list of streams' names.
-func (n *NatsClient) GetStreamsNames() []string {
-	namesChannel := n.js.StreamNames()
-	names := make([]string, 0)
-	for name := range namesChannel {
-		names = append(names, name)
+func (n *NatsClient) GetStreamsNames(optFilter ...*regexp.Regexp) ([]string, error) {
+	if len(optFilter) > 1 {
+		return nil, errors.ErrNoOptFilter
 	}
 
-	return names
+	var regexpFilter *regexp.Regexp
+	if len(optFilter) == 1 {
+		regexpFilter = optFilter[0]
+	}
+
+	streamsChannel := n.js.StreamNames()
+	streams := make([]string, 0)
+
+	for streamName := range streamsChannel {
+		nameMatchFilter := regexpFilter == nil || regexpFilter.MatchString(streamName)
+		if nameMatchFilter {
+			streams = append(streams, streamName)
+		}
+	}
+
+	return streams, nil
 }
 
 func (n *NatsClient) getNodesSubjects(nodes entity.NodesStreamConfig) []string {
