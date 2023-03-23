@@ -3,6 +3,28 @@ syntax = "proto3";
 package nats;
 option go_package = "./natspb";
 
+enum ObjectStoreScope{
+  SCOPE_WORKFLOW = 0;
+  SCOPE_PROJECT = 1;
+}
+
+message ObjectStore {
+  string name = 1;
+  ObjectStoreScope scope = 2;
+}
+
+message Node {
+  string name = 1;
+  repeated string subscriptions = 2;
+  optional ObjectStore object_store = 3;
+}
+
+message Workflow {
+  string name = 1;
+  string entrypoint = 2;
+  repeated Node nodes = 3;
+}
+
 message CreationRequest {
   string runtime_id = 1;
   string version_name = 2;
@@ -17,32 +39,6 @@ message DeleteStreamsRequest {
 message DeleteObjectStoresRequest {
   string runtime_id = 1;
   string version_name = 2;
-}
-
-message DeleteResponse {
-  string message = 1;
-}
-
-message Workflow {
-  string name = 1;
-  string entrypoint = 2;
-  repeated Node nodes = 3;
-}
-
-message Node {
-  enum ObjectStoreScope{
-    SCOPE_WORKFLOW = 0;
-    SCOPE_PROJECT = 1;
-  }
-
-  message ObjectStore {
-    string name = 1;
-    ObjectStoreScope scope = 2;
-  }
-
-  string name = 1;
-  repeated string subscriptions = 2;
-  optional ObjectStore object_store = 3;
 }
 
 message CreateStreamResponse {
@@ -66,6 +62,10 @@ message CreateObjectStoreResponse {
   }
 
   map<string, WorkflowObjectStoreConfig> workflows = 1;
+}
+
+message DeleteResponse {
+  string message = 1;
 }
 
 service NatsManagerService {

@@ -129,7 +129,7 @@ func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) ([]
 				if err != nil {
 					return nil, err
 				}
-				nodeToAppend.ObjectStore = &natspb.Node_ObjectStore{
+				nodeToAppend.ObjectStore = &natspb.ObjectStore{
 					Name:  node.ObjectStore.Name,
 					Scope: scope,
 				}
@@ -200,13 +200,13 @@ func (n *NatsManagerClient) dtoToVersionObjectStoreConfig(
 	}
 }
 
-func translateObjectStoreEnum(scope string) (natspb.Node_ObjectStoreScope, error) {
+func translateObjectStoreEnum(scope string) (natspb.ObjectStoreScope, error) {
 	switch scope {
 	case "project":
-		return natspb.Node_SCOPE_PROJECT, nil
+		return natspb.ObjectStoreScope_SCOPE_PROJECT, nil
 	case "workflow":
-		return natspb.Node_SCOPE_WORKFLOW, nil
+		return natspb.ObjectStoreScope_SCOPE_WORKFLOW, nil
 	default:
-		return natspb.Node_SCOPE_WORKFLOW, errors.New("invalid object store scope")
+		return natspb.ObjectStoreScope_SCOPE_WORKFLOW, errors.New("invalid object store scope")
 	}
 }
