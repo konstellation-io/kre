@@ -38,7 +38,7 @@ func (m streamConfigMatcher) Matches(actual interface{}) bool {
 	return reflect.DeepEqual(actualCfg, m.expectedStreamConfig)
 }
 
-func TestCreateDeleteStreams(t *testing.T) {
+func TestCreateStreams(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
@@ -46,14 +46,12 @@ func TestCreateDeleteStreams(t *testing.T) {
 	client := mocks.NewMockClient(ctrl)
 	natsManager := manager.NewNatsManager(logger, client)
 
-	const (
-		testRuntimeID          = "test-runtime"
-		testVersionName        = "test-version"
-		testWorkflowName       = "test-workflow"
-		testWorkflowEntrypoint = "TestWorkflow"
-		testStreamName         = "test-runtime-test-version-TestWorkflow"
-		testNode               = "test-node"
-	)
+	testRuntimeID := "test-runtime"
+	testVersionName := "test-version"
+	testWorkflowName := "test-workflow"
+	testWorkflowEntrypoint := "TestWorkflow"
+	testStreamName := "test-runtime_test-version_TestWorkflow"
+	testNode := "test-node"
 
 	testNodeSubject := fmt.Sprintf("%s.%s", testStreamName, testNode)
 	testEntrypointSubject := fmt.Sprintf("%s.entrypoint", testStreamName)
@@ -84,13 +82,25 @@ func TestCreateDeleteStreams(t *testing.T) {
 	client.EXPECT().CreateStream(customMatcher).Return(nil)
 	workflowsStreamsCfg, err := natsManager.CreateStreams(testRuntimeID, testVersionName, workflows)
 	assert.Nil(t, err)
-
 	assert.Equal(t, expectedWorkflowsStreamsCfg, workflowsStreamsCfg)
+}
 
-	client.EXPECT().GetStreamsNames().Return([]string{testStreamName})
-	logger.EXPECT().Debugf("Obtained stream name: %s", testStreamName).MaxTimes(1)
+func TestDeleteStreams(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	logger := mocks.NewMockLogger(ctrl)
+	mocks.AddLoggerExpects(logger)
+	client := mocks.NewMockClient(ctrl)
+	natsManager := manager.NewNatsManager(logger, client)
+
+	testRuntimeID := "test-runtime"
+	testVersionName := "test-version"
+	testStreamName := "test-runtime_test-version_TestWorkflow"
+	expectedVersionStreamPattern := regexp.MustCompile(fmt.Sprintf("^%s_%s_.*", testRuntimeID, testVersionName))
+
+	client.EXPECT().GetStreamNames(expectedVersionStreamPattern).Return([]string{testStreamName}, nil)
 	client.EXPECT().DeleteStream(testStreamName).Return(nil)
-	err = natsManager.DeleteStreams(testRuntimeID, testVersionName)
+	err := natsManager.DeleteStreams(testRuntimeID, testVersionName)
 	assert.Nil(t, err)
 }
 
@@ -133,10 +143,8 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 	client := mocks.NewMockClient(ctrl)
 	natsManager := manager.NewNatsManager(logger, client)
 
-	const (
-		testRuntimeID   = "test-runtime"
-		testVersionName = "test-version"
-	)
+	testRuntimeID := "test-runtime"
+	testVersionName := "test-version"
 
 	var workflows []*entity.Workflow
 
@@ -144,7 +152,7 @@ func TestCreateStreams_FailsIfNoWorkflowsAreDefined(t *testing.T) {
 	assert.EqualError(t, err, "no workflows defined")
 }
 
-func TestCreateDeleteObjectStore(t *testing.T) {
+func TestCreateObjectStore(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
@@ -152,12 +160,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 	client := mocks.NewMockClient(ctrl)
 	natsManager := manager.NewNatsManager(logger, client)
 
-	const (
-		testRuntimeID    = "test-runtime"
-		testVersionName  = "test-version"
-		testWorkflowName = "test-workflow"
-		testObjectStore  = "test-object-store"
-	)
+	testRuntimeID := "test-runtime"
+	testVersionName := "test-version"
+	testWorkflowName := "test-workflow"
+	testObjectStore := "test-object-store"
 
 	tests := []struct {
 		name                 string
@@ -165,7 +171,6 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 		expectedObjectStores []string
 		wantError            bool
 		wantedError          error
-		expectInfoLog        bool
 	}{
 		{
 			name: "Object store with project scope",
@@ -179,10 +184,8 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					).
 					Build(),
 			},
-			expectedObjectStores: []string{fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore)},
+			expectedObjectStores: []string{fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore)},
 			wantError:            false,
-			wantedError:          nil,
-			expectInfoLog:        false,
 		},
 		{
 			name: "Object store with workflow scope",
@@ -198,11 +201,9 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "Invalid object store name",
@@ -220,7 +221,6 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 			expectedObjectStores: nil,
 			wantError:            true,
 			wantedError:          errors.ErrInvalidObjectStoreName,
-			expectInfoLog:        false,
 		},
 		{
 			name: "Invalid object store scope",
@@ -237,7 +237,6 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 			expectedObjectStores: nil,
 			wantError:            true,
 			wantedError:          errors.ErrInvalidObjectStoreScope,
-			expectInfoLog:        false,
 		},
 		{
 			name: "Node without object store",
@@ -248,8 +247,6 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 			},
 			expectedObjectStores: nil,
 			wantError:            false,
-			wantedError:          nil,
-			expectInfoLog:        true,
 		},
 		{
 			name: "Multiple workflows with different workflow scoped object store",
@@ -274,12 +271,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
-				fmt.Sprintf("object-store_%s_%s_another-workflow_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("%s_%s_another-workflow_%s", testRuntimeID, testVersionName, testObjectStore),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "Multiple workflows with the same project scoped object store",
@@ -304,12 +299,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
-				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "Multiple workflows with different project scoped object store",
@@ -334,12 +327,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
-				fmt.Sprintf("object-store_%s_%s_another-object-store", testRuntimeID, testVersionName),
+				fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("%s_%s_another-object-store", testRuntimeID, testVersionName),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "Multiple nodes in workflow with same workflow scoped object store",
@@ -367,12 +358,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
-				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "Multiple nodes in workflow with different workflow scoped object store",
@@ -400,12 +389,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
-				fmt.Sprintf("object-store_%s_%s_%s_another-object-store", testRuntimeID, testVersionName, testWorkflowName),
+				fmt.Sprintf("%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s_another-object-store", testRuntimeID, testVersionName, testWorkflowName),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "Multiple nodes in workflow with same project scoped object store",
@@ -433,12 +420,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
-				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "Multiple nodes in workflow with different project scoped object store",
@@ -466,12 +451,10 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 					Build(),
 			},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
-				fmt.Sprintf("object-store_%s_%s_another-object-store", testRuntimeID, testVersionName),
+				fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore),
+				fmt.Sprintf("%s_%s_another-object-store", testRuntimeID, testVersionName),
 			},
-			wantError:     false,
-			wantedError:   nil,
-			expectInfoLog: false,
+			wantError: false,
 		},
 		{
 			name: "nats client error",
@@ -482,19 +465,15 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 						Scope: entity.ScopeWorkflow,
 					}).Build()},
 			expectedObjectStores: []string{
-				fmt.Sprintf("object-store_%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
 			},
-			wantError:     true,
-			wantedError:   fmt.Errorf("nats client error"),
-			expectInfoLog: true,
+			wantError:   true,
+			wantedError: fmt.Errorf("nats client error"),
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			if tc.expectInfoLog {
-				logger.EXPECT().Info("No object stores defined, skipping").MaxTimes(1)
-			}
 			for _, expectedObjStore := range tc.expectedObjectStores {
 				client.EXPECT().CreateObjectStore(expectedObjStore).Return(tc.wantedError)
 			}
@@ -505,14 +484,55 @@ func TestCreateDeleteObjectStore(t *testing.T) {
 				return
 			}
 			assert.Nil(t, err)
+		})
+	}
+}
 
-			filter := regexp.MustCompile(fmt.Sprintf(fmt.Sprintf("object-store_%s_%s_.*", testRuntimeID, testVersionName)))
+func TestDeleteObjectStore(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	logger := mocks.NewMockLogger(ctrl)
+	mocks.AddLoggerExpects(logger)
+	client := mocks.NewMockClient(ctrl)
+	natsManager := manager.NewNatsManager(logger, client)
+
+	testRuntimeID := "test-runtime"
+	testVersionName := "test-version"
+	testWorkflowName := "test-workflow"
+	testObjectStore := "test-object-store"
+
+	tests := []struct {
+		name                 string
+		expectedObjectStores []string
+		wantError            bool
+		wantedError          error
+	}{
+		{
+			name:                 "Project with 1 object store",
+			expectedObjectStores: []string{fmt.Sprintf("%s_%s_%s", testRuntimeID, testVersionName, testObjectStore)},
+			wantError:            false,
+			wantedError:          nil,
+		},
+		{
+			name: "Project with multiple object stores",
+			expectedObjectStores: []string{
+				fmt.Sprintf("%s_%s_%s_%s", testRuntimeID, testVersionName, testWorkflowName, testObjectStore),
+				fmt.Sprintf("%s_%s_%s_another-object-store", testRuntimeID, testVersionName, testWorkflowName),
+			},
+			wantError:   false,
+			wantedError: nil,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			filter := regexp.MustCompile(fmt.Sprintf("^%s_%s_.*", testRuntimeID, testVersionName))
 
 			client.EXPECT().GetObjectStoreNames(filter).Return(tc.expectedObjectStores, nil)
 			for _, expectedObjStore := range tc.expectedObjectStores {
 				client.EXPECT().DeleteObjectStore(expectedObjStore).Return(nil)
 			}
-			err = natsManager.DeleteObjectStores(testRuntimeID, testVersionName)
+			err := natsManager.DeleteObjectStores(testRuntimeID, testVersionName)
 			assert.Nil(t, err)
 		})
 	}
