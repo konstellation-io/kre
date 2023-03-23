@@ -3,6 +3,7 @@ package manager
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
@@ -110,16 +111,16 @@ func (m *NatsManager) CreateObjectStores(
 func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName string, objectStore *entity.ObjectStore) (string, error) {
 	switch objectStore.Scope {
 	case entity.ScopeProject:
-		return fmt.Sprintf("%s_%s_%s", runtimeID, versionName, objectStore.Name), nil
+		return m.joinWithUnderscores(runtimeID, versionName, objectStore.Name), nil
 	case entity.ScopeWorkflow:
-		return fmt.Sprintf("%s_%s_%s_%s", runtimeID, versionName, workflowName, objectStore.Name), nil
+		return m.joinWithUnderscores(runtimeID, versionName, workflowName, objectStore.Name), nil
 	default:
 		return "", errors.ErrInvalidObjectStoreScope
 	}
 }
 
 func (m *NatsManager) DeleteStreams(runtimeID, versionName string) error {
-	versionStreamsRegExp, err := regexp.Compile(fmt.Sprintf("^%s_%s_.*", runtimeID, versionName))
+	versionStreamsRegExp, err := m.getVersionStreamFilter(runtimeID, versionName)
 	if err != nil {
 		return fmt.Errorf("error compiling regex: %w", err)
 	}
@@ -128,27 +129,17 @@ func (m *NatsManager) DeleteStreams(runtimeID, versionName string) error {
 	if err != nil {
 		return fmt.Errorf("error getting streams: %w", err)
 	}
-
-	regex, err := regexp.Compile(fmt.Sprintf("^%s_%s_.*", runtimeID, versionName))
-	if err != nil {
-		return fmt.Errorf("error compiling regex: %w", err)
-	}
-
 	for _, stream := range allStreams {
-		if regex.MatchString(stream) {
-			m.logger.Debugf("Deleting stream %q", stream)
-
-			err := m.client.DeleteStream(stream)
-			if err != nil {
-				return fmt.Errorf("error deleting stream %q: %w", stream, err)
-			}
+		err := m.client.DeleteStream(stream)
+		if err != nil {
+			return fmt.Errorf("error deleting stream %q: %w", stream, err)
 		}
 	}
 	return nil
 }
 
 func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
-	versionObjStoreRegExp, err := regexp.Compile(fmt.Sprintf("^%s_%s_.*", runtimeID, versionName))
+	versionObjStoreRegExp, err := m.getVersionStreamFilter(runtimeID, versionName)
 	if err != nil {
 		return fmt.Errorf("error compiling regex: %w", err)
 	}
@@ -171,7 +162,7 @@ func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
 }
 
 func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
-	return fmt.Sprintf("%s_%s_%s", runtimeID, versionName, workflowEntrypoint)
+	return m.joinWithUnderscores(runtimeID, versionName, workflowEntrypoint)
 }
 
 func (m *NatsManager) getNodesStreamConfig(stream string, nodes []*entity.Node) entity.NodesStreamConfig {
@@ -204,4 +195,12 @@ func (m *NatsManager) validateWorkflows(workflows []*entity.Workflow) error {
 		}
 	}
 	return nil
+}
+
+func (m *NatsManager) getVersionStreamFilter(runtimeID, versionName string) (*regexp.Regexp, error) {
+	return regexp.Compile(fmt.Sprintf("^%s", m.joinWithUnderscores(runtimeID, versionName, ".*")))
+}
+
+func (m *NatsManager) joinWithUnderscores(elements ...string) string {
+	return strings.Join(elements, "_")
 }
