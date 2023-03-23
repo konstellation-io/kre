@@ -106,8 +106,9 @@ func (n *NatsClient) DeleteObjectStore(objectStore string) error {
 	return err
 }
 
-// GetStreamsNames returns the list of streams' names.
-func (n *NatsClient) GetStreamsNames(optFilter ...*regexp.Regexp) ([]string, error) {
+// GetStreamNames returns the list of streams' names.
+// The optional param `optFilter` accepts 0 or 1 value.
+func (n *NatsClient) GetStreamNames(optFilter ...*regexp.Regexp) ([]string, error) {
 	if len(optFilter) > 1 {
 		return nil, errors.ErrNoOptFilter
 	}

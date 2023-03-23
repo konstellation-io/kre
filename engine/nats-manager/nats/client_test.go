@@ -4,13 +4,13 @@ package nats_test
 
 import (
 	"context"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
 	"log"
 	"regexp"
 	"testing"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	natslib "github.com/nats-io/nats.go"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -80,11 +80,17 @@ func (s *ClientTestSuite) AfterTest(_, _ string) {
 			log.Fatalf("error deleting stream %q: %s", stream, err)
 		}
 	}
+
+	objStores := s.js.ObjectStoreNames()
+	for objStore := range objStores {
+		err := s.js.DeleteObjectStore(objStore)
+		if err != nil {
+			log.Fatalf("error deleting object store %q: %s", objStore, err)
+		}
+	}
 }
 
 func (s *ClientTestSuite) TestNatsClient_CreateStream() {
-	t := s.T()
-
 	testNodeSubject := "test-stream-test-subject"
 	testEntrypointSubject := "test-stream-entrypoint"
 
@@ -99,7 +105,7 @@ func (s *ClientTestSuite) TestNatsClient_CreateStream() {
 	}
 
 	err := s.natsClient.CreateStream(streamConfig)
-	assert.NoError(t, err)
+	s.Require().NoError(err)
 
 	expectedSubjects := []string{
 		testNodeSubject,
@@ -111,17 +117,15 @@ func (s *ClientTestSuite) TestNatsClient_CreateStream() {
 
 	amountOfStreams := 0
 	for stream := range streams {
-		assert.Equal(t, streamConfig.Stream, stream.Config.Name)
-		assert.Equal(t, expectedSubjects, stream.Config.Subjects)
+		s.Assert().Equal(streamConfig.Stream, stream.Config.Name)
+		s.Assert().Equal(expectedSubjects, stream.Config.Subjects)
 		amountOfStreams++
 	}
 
-	assert.Equal(t, 1, amountOfStreams)
+	s.Assert().Equal(1, amountOfStreams)
 }
 
 func (s *ClientTestSuite) TestNatsClient_CreateStream_ErrorIfStreamAlreadyExists() {
-	t := s.T()
-
 	testStream := "test-stream"
 	testNodeSubject := "test-stream-test-subject"
 
@@ -139,116 +143,100 @@ func (s *ClientTestSuite) TestNatsClient_CreateStream_ErrorIfStreamAlreadyExists
 		Name:      testStream,
 		Retention: natslib.InterestPolicy,
 	})
-	assert.NoError(t, err)
+	s.Require().NoError(err)
 
 	err = s.natsClient.CreateStream(streamConfig)
-	assert.ErrorIs(t, err, natslib.ErrStreamNameAlreadyInUse)
+	s.Assert().ErrorIs(err, natslib.ErrStreamNameAlreadyInUse)
 }
 
 func (s *ClientTestSuite) TestNatsClient_DeleteStream() {
-	t := s.T()
-
 	testStream := "test-stream"
 
 	_, err := s.js.AddStream(&natslib.StreamConfig{
 		Name:      testStream,
 		Retention: natslib.InterestPolicy,
 	})
-	assert.NoError(t, err)
+	s.Require().NoError(err)
 
 	err = s.natsClient.DeleteStream(testStream)
-	assert.NoError(t, err)
+	s.Assert().NoError(err)
 
 	streams := s.js.Streams()
 
-	assert.Nil(t, <-streams)
+	s.Assert().Nil(<-streams)
 }
 
 func (s *ClientTestSuite) TestNatsClient_DeleteStream_ErrorIfStreamDoesntExist() {
-	t := s.T()
-
 	testStream := "test-stream"
 
 	err := s.natsClient.DeleteStream(testStream)
-	assert.Error(t, err, natslib.ErrStreamNotFound)
+	s.Assert().Error(err, natslib.ErrStreamNotFound)
 }
 
 func (s *ClientTestSuite) TestNatsClient_CreateObjectStore() {
-	t := s.T()
-
 	testObjectStore := "test-objstore"
 
 	err := s.natsClient.CreateObjectStore(testObjectStore)
-	assert.NoError(t, err)
+	s.Assert().NoError(err)
 
 	objectStores := s.js.ObjectStores()
 
 	objectStore := <-objectStores
-	assert.Equal(t, testObjectStore, objectStore.Bucket())
+	s.Assert().Equal(testObjectStore, objectStore.Bucket())
 
-	assert.Equal(t, nil, <-objectStores)
+	s.Assert().Equal(nil, <-objectStores)
 }
 
 func (s *ClientTestSuite) TestNatsClient_CreateObjectStore_NoErrorWhenObjectStoreAlreadyExistsWithSameConfig() {
-	t := s.T()
-
 	testObjectStore := "test-objstore"
 
 	_, err := s.js.CreateObjectStore(&natslib.ObjectStoreConfig{
 		Bucket:  testObjectStore,
 		Storage: natslib.FileStorage,
 	})
-	assert.NoError(t, err)
+	s.Require().NoError(err)
 
 	err = s.natsClient.CreateObjectStore(testObjectStore)
-	assert.NoError(t, err)
+	s.Assert().NoError(err)
 }
 
 func (s *ClientTestSuite) TestNatsClient_CreateObjectStore_ErrorWhenObjectStoreAlreadyExistsWithDiffConfig() {
-	t := s.T()
-
 	testObjectStore := "test-objstore"
 
 	_, err := s.js.CreateObjectStore(&natslib.ObjectStoreConfig{
 		Bucket:  testObjectStore,
 		Storage: natslib.MemoryStorage,
 	})
-	assert.NoError(t, err)
+	s.Require().NoError(err)
 
 	err = s.natsClient.CreateObjectStore(testObjectStore)
-	assert.ErrorIs(t, err, natslib.ErrStreamNameAlreadyInUse)
+	s.Assert().ErrorIs(err, natslib.ErrStreamNameAlreadyInUse)
 }
 
 func (s *ClientTestSuite) TestNatsClient_DeleteObjectStore() {
-	t := s.T()
-
 	testObjectStore := "test-objstore"
 
 	_, err := s.js.CreateObjectStore(&natslib.ObjectStoreConfig{
 		Bucket:  testObjectStore,
 		Storage: natslib.FileStorage,
 	})
-	assert.NoError(t, err)
+	s.Require().NoError(err)
 
 	err = s.natsClient.DeleteObjectStore(testObjectStore)
-	assert.NoError(t, err)
+	s.Assert().NoError(err)
 
 	objectStores := s.js.ObjectStores()
-	assert.Nil(t, <-objectStores)
+	s.Assert().Nil(<-objectStores)
 }
 
 func (s *ClientTestSuite) TestNatsClient_DeleteObjectStore_ObjectStoreNotFound() {
-	t := s.T()
-
 	testObjectStore := "test-objstore"
 
 	err := s.natsClient.DeleteObjectStore(testObjectStore)
-	assert.ErrorIs(t, err, natslib.ErrStreamNotFound)
+	s.Assert().ErrorIs(err, natslib.ErrStreamNotFound)
 }
 
-func (s *ClientTestSuite) TestNatsClient_GetObjectStoresNames_WithoutFilter() {
-	t := s.T()
-
+func (s *ClientTestSuite) TestNatsClient_GetObjectStoresNames() {
 	testObjectStore1 := "test-object-store-1"
 	testObjectStore2 := "test-object-store-2"
 	objectStoreWithOtherFormat := "another-obj-store"
@@ -259,6 +247,7 @@ func (s *ClientTestSuite) TestNatsClient_GetObjectStoresNames_WithoutFilter() {
 		existingObjectStores []string
 		expectedObjectStores []string
 		wantError            bool
+		expectedError        error
 	}{
 		{
 			name: "Get object store names without filter",
@@ -299,17 +288,18 @@ func (s *ClientTestSuite) TestNatsClient_GetObjectStoresNames_WithoutFilter() {
 			expectedObjectStores: nil,
 			optFilter:            []*regexp.Regexp{regexp.MustCompile(""), regexp.MustCompile("")},
 			wantError:            true,
+			expectedError:        errors.ErrNoOptFilter,
 		},
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		s.Run(tc.name, func() {
 			for _, objStore := range tc.existingObjectStores {
 				_, err := s.js.CreateObjectStore(&natslib.ObjectStoreConfig{
 					Bucket:  objStore,
 					Storage: natslib.FileStorage,
 				})
-				assert.NoError(t, err)
+				s.Require().NoError(err)
 			}
 
 			var objectStores []string
@@ -321,12 +311,118 @@ func (s *ClientTestSuite) TestNatsClient_GetObjectStoresNames_WithoutFilter() {
 			}
 
 			if tc.wantError {
-				assert.Error(t, err)
+				s.Assert().ErrorIs(err, tc.expectedError)
 				return
 			}
 
-			assert.NoError(t, err)
-			assert.ElementsMatch(t, tc.expectedObjectStores, objectStores)
+			s.Assert().NoError(err)
+			s.Assert().ElementsMatch(tc.expectedObjectStores, objectStores)
 		})
 	}
+}
+
+func (s *ClientTestSuite) TestNatsClient_GetStreamNames() {
+	testStream1 := "test-stream-1"
+	testStream2 := "test-stream-2"
+	streamWithOtherFormat := "another-stream"
+
+	testCases := []struct {
+		name            string
+		optFilter       []*regexp.Regexp
+		existingStreams []string
+		expectedStreams []string
+		wantError       bool
+		expectedError   error
+	}{
+		{
+			name: "Get stream names without filter",
+			existingStreams: []string{
+				testStream1,
+				testStream2,
+				streamWithOtherFormat,
+			},
+			expectedStreams: []string{
+				testStream1,
+				testStream2,
+			},
+			optFilter: []*regexp.Regexp{regexp.MustCompile("test-stream-.*")},
+			wantError: false,
+		},
+		{
+			name: "Get stream names with regex filter",
+			existingStreams: []string{
+				testStream1,
+				testStream2,
+				streamWithOtherFormat,
+			},
+			expectedStreams: []string{
+				testStream1,
+				testStream2,
+				streamWithOtherFormat,
+			},
+			optFilter: nil,
+			wantError: false,
+		},
+		{
+			name: "Get stream names with regex filter",
+			existingStreams: []string{
+				testStream1,
+				testStream2,
+				streamWithOtherFormat,
+			},
+			expectedStreams: nil,
+			optFilter:       []*regexp.Regexp{regexp.MustCompile(""), regexp.MustCompile("")},
+			wantError:       true,
+			expectedError:   errors.ErrNoOptFilter,
+		},
+	}
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			for _, streamName := range tc.existingStreams {
+				_, err := s.js.AddStream(&natslib.StreamConfig{
+					Name: streamName,
+				})
+				s.Require().NoError(err)
+			}
+
+			var streams []string
+			var err error
+			if tc.optFilter == nil {
+				streams, err = s.natsClient.GetStreamNames()
+			} else {
+				streams, err = s.natsClient.GetStreamNames(tc.optFilter...)
+			}
+
+			if tc.wantError {
+				s.Assert().ErrorIs(err, tc.expectedError)
+				return
+			}
+
+			s.Assert().NoError(err)
+			s.Assert().ElementsMatch(tc.expectedStreams, streams)
+		})
+	}
+}
+
+func (s *ClientTestSuite) TestNatsClient_GetStreamNames_DoesntReturnObjectStores() {
+	testStreamName := "runtime-id_version-id_workflows-id"
+
+	_, err := s.js.CreateObjectStore(&natslib.ObjectStoreConfig{
+		Bucket:  testStreamName,
+		Storage: natslib.MemoryStorage,
+	})
+	s.Require().NoError(err)
+
+	_, err = s.js.AddStream(&natslib.StreamConfig{
+		Name:     testStreamName,
+		Subjects: []string{testStreamName + ".*"},
+	})
+	s.Require().NoError(err)
+
+	actualStreams, err := s.natsClient.GetStreamNames(regexp.MustCompile("^runtime-id_version-id_.*"))
+	s.Assert().NoError(err)
+	expectedStreams := []string{testStreamName}
+
+	s.Assert().ElementsMatch(expectedStreams, actualStreams)
 }
