@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NatsManagerServiceClient interface {
-	CreateStreams(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateStreamResponse, error)
-	CreateObjectStores(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateObjectStoreResponse, error)
+	CreateStreams(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*CreateStreamsResponse, error)
+	CreateObjectStores(ctx context.Context, in *CreateObjectStoresRequest, opts ...grpc.CallOption) (*CreateObjectStoresResponse, error)
 	DeleteStreams(ctx context.Context, in *DeleteStreamsRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 	DeleteObjectStores(ctx context.Context, in *DeleteObjectStoresRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 }
@@ -36,8 +36,8 @@ func NewNatsManagerServiceClient(cc grpc.ClientConnInterface) NatsManagerService
 	return &natsManagerServiceClient{cc}
 }
 
-func (c *natsManagerServiceClient) CreateStreams(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateStreamResponse, error) {
-	out := new(CreateStreamResponse)
+func (c *natsManagerServiceClient) CreateStreams(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*CreateStreamsResponse, error) {
+	out := new(CreateStreamsResponse)
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateStreams", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -45,8 +45,8 @@ func (c *natsManagerServiceClient) CreateStreams(ctx context.Context, in *Creati
 	return out, nil
 }
 
-func (c *natsManagerServiceClient) CreateObjectStores(ctx context.Context, in *CreationRequest, opts ...grpc.CallOption) (*CreateObjectStoreResponse, error) {
-	out := new(CreateObjectStoreResponse)
+func (c *natsManagerServiceClient) CreateObjectStores(ctx context.Context, in *CreateObjectStoresRequest, opts ...grpc.CallOption) (*CreateObjectStoresResponse, error) {
+	out := new(CreateObjectStoresResponse)
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateObjectStores", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -76,8 +76,8 @@ func (c *natsManagerServiceClient) DeleteObjectStores(ctx context.Context, in *D
 // All implementations must embed UnimplementedNatsManagerServiceServer
 // for forward compatibility
 type NatsManagerServiceServer interface {
-	CreateStreams(context.Context, *CreationRequest) (*CreateStreamResponse, error)
-	CreateObjectStores(context.Context, *CreationRequest) (*CreateObjectStoreResponse, error)
+	CreateStreams(context.Context, *CreateStreamsRequest) (*CreateStreamsResponse, error)
+	CreateObjectStores(context.Context, *CreateObjectStoresRequest) (*CreateObjectStoresResponse, error)
 	DeleteStreams(context.Context, *DeleteStreamsRequest) (*DeleteResponse, error)
 	DeleteObjectStores(context.Context, *DeleteObjectStoresRequest) (*DeleteResponse, error)
 	mustEmbedUnimplementedNatsManagerServiceServer()
@@ -87,10 +87,10 @@ type NatsManagerServiceServer interface {
 type UnimplementedNatsManagerServiceServer struct {
 }
 
-func (UnimplementedNatsManagerServiceServer) CreateStreams(context.Context, *CreationRequest) (*CreateStreamResponse, error) {
+func (UnimplementedNatsManagerServiceServer) CreateStreams(context.Context, *CreateStreamsRequest) (*CreateStreamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStreams not implemented")
 }
-func (UnimplementedNatsManagerServiceServer) CreateObjectStores(context.Context, *CreationRequest) (*CreateObjectStoreResponse, error) {
+func (UnimplementedNatsManagerServiceServer) CreateObjectStores(context.Context, *CreateObjectStoresRequest) (*CreateObjectStoresResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateObjectStores not implemented")
 }
 func (UnimplementedNatsManagerServiceServer) DeleteStreams(context.Context, *DeleteStreamsRequest) (*DeleteResponse, error) {
@@ -113,7 +113,7 @@ func RegisterNatsManagerServiceServer(s grpc.ServiceRegistrar, srv NatsManagerSe
 }
 
 func _NatsManagerService_CreateStreams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreationRequest)
+	in := new(CreateStreamsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -125,13 +125,13 @@ func _NatsManagerService_CreateStreams_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/nats.NatsManagerService/CreateStreams",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NatsManagerServiceServer).CreateStreams(ctx, req.(*CreationRequest))
+		return srv.(NatsManagerServiceServer).CreateStreams(ctx, req.(*CreateStreamsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _NatsManagerService_CreateObjectStores_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreationRequest)
+	in := new(CreateObjectStoresRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func _NatsManagerService_CreateObjectStores_Handler(srv interface{}, ctx context
 		FullMethod: "/nats.NatsManagerService/CreateObjectStores",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NatsManagerServiceServer).CreateObjectStores(ctx, req.(*CreationRequest))
+		return srv.(NatsManagerServiceServer).CreateObjectStores(ctx, req.(*CreateObjectStoresRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

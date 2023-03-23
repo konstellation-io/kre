@@ -45,7 +45,7 @@ func (n *NatsManagerClient) CreateStreams(
 		return nil, err
 	}
 
-	req := natspb.CreationRequest{
+	req := natspb.CreateStreamsRequest{
 		RuntimeId:   runtimeID,
 		VersionName: version.Name,
 		Workflows:   workflows,
@@ -70,7 +70,7 @@ func (n *NatsManagerClient) CreateObjectStores(
 		return nil, err
 	}
 
-	req := natspb.CreationRequest{
+	req := natspb.CreateObjectStoresRequest{
 		RuntimeId:   runtimeID,
 		VersionName: version.Name,
 		Workflows:   workflows,
@@ -154,7 +154,7 @@ func (n *NatsManagerClient) getWorkflowsEntrypoints(version *entity.Version) []s
 }
 
 func (n *NatsManagerClient) dtoToVersionStreamConfig(
-	workflows map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig,
+	workflows map[string]*natspb.CreateStreamsResponse_WorkflowStreamConfig,
 ) *entity.VersionStreamsConfig {
 
 	workflowsConfig := map[string]*entity.WorkflowStreamConfig{}
@@ -172,7 +172,7 @@ func (n *NatsManagerClient) dtoToVersionStreamConfig(
 }
 
 func (n *NatsManagerClient) dtoToNodesStreamConfig(
-	nodes map[string]*natspb.CreateStreamResponse_NodeStreamConfig,
+	nodes map[string]*natspb.CreateStreamsResponse_NodeStreamConfig,
 ) map[string]*entity.NodeStreamConfig {
 	nodesStreamCfg := map[string]*entity.NodeStreamConfig{}
 
@@ -187,7 +187,7 @@ func (n *NatsManagerClient) dtoToNodesStreamConfig(
 }
 
 func (n *NatsManagerClient) dtoToVersionObjectStoreConfig(
-	workflows map[string]*natspb.CreateObjectStoreResponse_WorkflowObjectStoreConfig,
+	workflows map[string]*natspb.CreateObjectStoresResponse_WorkflowObjectStoreConfig,
 ) *entity.VersionObjectStoresConfig {
 	workflowsObjStoreConfig := entity.WorkflowsObjectStoresConfig{}
 

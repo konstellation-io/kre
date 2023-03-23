@@ -25,7 +25,13 @@ message Workflow {
   repeated Node nodes = 3;
 }
 
-message CreationRequest {
+message CreateStreamsRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated Workflow workflows = 3;
+}
+
+message CreateObjectStoresRequest {
   string runtime_id = 1;
   string version_name = 2;
   repeated Workflow workflows = 3;
@@ -41,7 +47,7 @@ message DeleteObjectStoresRequest {
   string version_name = 2;
 }
 
-message CreateStreamResponse {
+message CreateStreamsResponse {
   message NodeStreamConfig {
     string subject = 1;
     repeated string subscriptions = 2;
@@ -56,7 +62,7 @@ message CreateStreamResponse {
   map<string, WorkflowStreamConfig> workflows = 1;
 }
 
-message CreateObjectStoreResponse {
+message CreateObjectStoresResponse {
   message WorkflowObjectStoreConfig {
     map<string, string> nodes = 1;
   }
@@ -69,8 +75,8 @@ message DeleteResponse {
 }
 
 service NatsManagerService {
-  rpc CreateStreams (CreationRequest) returns (CreateStreamResponse);
-  rpc CreateObjectStores (CreationRequest) returns (CreateObjectStoreResponse);
+  rpc CreateStreams (CreateStreamsRequest) returns (CreateStreamsResponse);
+  rpc CreateObjectStores (CreateObjectStoresRequest) returns (CreateObjectStoresResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteResponse);
   rpc DeleteObjectStores (DeleteObjectStoresRequest) returns (DeleteResponse);
 };

@@ -37,8 +37,8 @@ func NewNatsService(
 // CreateStreams create streams for given workflows.
 func (n *NatsService) CreateStreams(
 	_ context.Context,
-	req *natspb.CreationRequest,
-) (*natspb.CreateStreamResponse, error) {
+	req *natspb.CreateStreamsRequest,
+) (*natspb.CreateStreamsResponse, error) {
 	n.logger.Info("CreateStreams request received")
 
 	workflows := n.dtoToWorkflows(req.Workflows)
@@ -49,7 +49,7 @@ func (n *NatsService) CreateStreams(
 		return nil, err
 	}
 
-	return &natspb.CreateStreamResponse{
+	return &natspb.CreateStreamsResponse{
 		Workflows: n.workflowsStreamConfigToDto(streamConfig),
 	}, nil
 }
@@ -57,8 +57,8 @@ func (n *NatsService) CreateStreams(
 // CreateObjectStores creates object stores for given workflows.
 func (n *NatsService) CreateObjectStores(
 	_ context.Context,
-	req *natspb.CreationRequest,
-) (*natspb.CreateObjectStoreResponse, error) {
+	req *natspb.CreateObjectStoresRequest,
+) (*natspb.CreateObjectStoresResponse, error) {
 	n.logger.Info("CreateObjectStores request received")
 
 	objectStores, err := n.manager.CreateObjectStores(req.RuntimeId, req.VersionName, n.dtoToWorkflows(req.Workflows))
@@ -66,7 +66,7 @@ func (n *NatsService) CreateObjectStores(
 		n.logger.Errorf("Error creating object store: %s", err)
 		return nil, err
 	}
-	return &natspb.CreateObjectStoreResponse{
+	return &natspb.CreateObjectStoresResponse{
 		Workflows: n.workflowsObjStoreToDto(objectStores),
 	}, nil
 }
@@ -144,11 +144,11 @@ func (n *NatsService) dtoToNodes(dtoNodes []*natspb.Node) []*entity.Node {
 
 func (n *NatsService) workflowsStreamConfigToDto(
 	workflows entity.WorkflowsStreamsConfig,
-) map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig {
-	workflowsStreamCfg := map[string]*natspb.CreateStreamResponse_WorkflowStreamConfig{}
+) map[string]*natspb.CreateStreamsResponse_WorkflowStreamConfig {
+	workflowsStreamCfg := map[string]*natspb.CreateStreamsResponse_WorkflowStreamConfig{}
 
 	for workflow, cfg := range workflows {
-		workflowsStreamCfg[workflow] = &natspb.CreateStreamResponse_WorkflowStreamConfig{
+		workflowsStreamCfg[workflow] = &natspb.CreateStreamsResponse_WorkflowStreamConfig{
 			Stream:            cfg.Stream,
 			Nodes:             n.nodesStreamConfigToDto(cfg.Nodes),
 			EntrypointSubject: cfg.EntrypointSubject,
@@ -160,11 +160,11 @@ func (n *NatsService) workflowsStreamConfigToDto(
 
 func (n *NatsService) nodesStreamConfigToDto(
 	nodes entity.NodesStreamConfig,
-) map[string]*natspb.CreateStreamResponse_NodeStreamConfig {
-	nodesStreamCfg := map[string]*natspb.CreateStreamResponse_NodeStreamConfig{}
+) map[string]*natspb.CreateStreamsResponse_NodeStreamConfig {
+	nodesStreamCfg := map[string]*natspb.CreateStreamsResponse_NodeStreamConfig{}
 
 	for node, cfg := range nodes {
-		nodesStreamCfg[node] = &natspb.CreateStreamResponse_NodeStreamConfig{
+		nodesStreamCfg[node] = &natspb.CreateStreamsResponse_NodeStreamConfig{
 			Subject:       cfg.Subject,
 			Subscriptions: cfg.Subscriptions,
 		}
@@ -175,11 +175,11 @@ func (n *NatsService) nodesStreamConfigToDto(
 
 func (n *NatsService) workflowsObjStoreToDto(
 	workflowsObjStores entity.WorkflowsObjectStoresConfig,
-) map[string]*natspb.CreateObjectStoreResponse_WorkflowObjectStoreConfig {
-	workflowsConfig := map[string]*natspb.CreateObjectStoreResponse_WorkflowObjectStoreConfig{}
+) map[string]*natspb.CreateObjectStoresResponse_WorkflowObjectStoreConfig {
+	workflowsConfig := map[string]*natspb.CreateObjectStoresResponse_WorkflowObjectStoreConfig{}
 
 	for workflow, objectStoresConfig := range workflowsObjStores {
-		workflowsConfig[workflow] = &natspb.CreateObjectStoreResponse_WorkflowObjectStoreConfig{
+		workflowsConfig[workflow] = &natspb.CreateObjectStoresResponse_WorkflowObjectStoreConfig{
 			Nodes: objectStoresConfig.Nodes,
 		}
 	}
