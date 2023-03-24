@@ -35,7 +35,7 @@ func ProcessAndValidateKrt(
 		return nil, err
 	}
 
-	krtValidator := validator.NewValidator(logger, valuesValidator)
+	krtValidator := validator.NewKrtValidator(logger, valuesValidator)
 	err = krtValidator.Run(k)
 	if err != nil {
 		return nil, err

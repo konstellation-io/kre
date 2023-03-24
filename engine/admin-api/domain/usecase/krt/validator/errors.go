@@ -1,6 +1,11 @@
 package validator
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
+
+var ErrRepeatedNodeName = errors.New("node names should be unique per workflows")
 
 type ValidationError struct {
 	Messages []string
