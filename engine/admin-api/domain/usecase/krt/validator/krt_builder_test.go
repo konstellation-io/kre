@@ -12,6 +12,7 @@ type KrtBuilder struct {
 func NewKrtBuilder() *KrtBuilder {
 	return &KrtBuilder{
 		krtYaml: &krt.Krt{
+			KrtVersion:  entity.KRTVersionV2.String(),
 			Version:     "version-name",
 			Description: "Test description",
 			Entrypoint: krt.Entrypoint{
@@ -26,33 +27,20 @@ func NewKrtBuilder() *KrtBuilder {
 				{
 					Name:       "valid-workflow",
 					Entrypoint: "valid-entrypoint",
+					Exitpoint:  "test-node",
+					Nodes: []krt.Node{
+						{
+							Name:          "test-node",
+							Image:         "test/image",
+							Src:           "src/test",
+							GPU:           false,
+							Subscriptions: []string{"entrypoint"},
+						},
+					},
 				},
 			},
 		},
 	}
-}
-
-func (k *KrtBuilder) V2() *KrtBuilder {
-	k.krtYaml.KrtVersion = entity.KRTVersionV2.String()
-	k.krtYaml.Workflows = []krt.Workflow{
-		{
-			Name:       "valid-workflow",
-			Entrypoint: "valid-entrypoint",
-			Exitpoint:  "test-node",
-			Nodes: []krt.Node{
-				{
-					Name:          "test-node",
-					Image:         "test/image",
-					Src:           "src/test",
-					GPU:           false,
-					Subscriptions: []string{"entrypoint"},
-					ObjectStore:   nil,
-				},
-			},
-		},
-	}
-
-	return k
 }
 
 func (k *KrtBuilder) WithKrtVersion(krtVersion string) *KrtBuilder {

@@ -42,18 +42,18 @@ type NodeConfig map[string]string
 func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.StartRequest) error {
 	m.logger.Infof("Creating deployments for all nodes")
 
-	for _, w := range req.Workflows {
-		workflowConfig, err := m.generateWorkflowConfig(req, w)
+	for _, workflow := range req.Workflows {
+		workflowConfig, err := m.generateWorkflowConfig(req, workflow)
 		if err != nil {
 			return err
 		}
-		for _, n := range w.Nodes {
-			err := m.createNodeDeployment(ctx, req, n, workflowConfig[n.Id])
+		for _, node := range workflow.Nodes {
+			err := m.createNodeDeployment(ctx, req, node, workflow.Name, workflowConfig[node.Id])
 			if err != nil {
 				return err
 			}
 
-			m.logger.Infof("Created deployment for node %q", n.Name)
+			m.logger.Infof("Created deployment for node %q", node.Name)
 		}
 	}
 
@@ -155,12 +155,13 @@ func (m *Manager) createNodeDeployment(
 	ctx context.Context,
 	req *versionpb.StartRequest,
 	node *versionpb.Workflow_Node,
+	workflowName string,
 	config NodeConfig,
 ) error {
 	versionName := req.VersionName
 	runtimeId := req.RuntimeId
 	ns := m.config.Kubernetes.Namespace
-	name := fmt.Sprintf("%s-%s-%s-%s", req.RuntimeId, versionName, node.Name, node.Id)
+	name := fmt.Sprintf("%s-%s-%s-%s", req.RuntimeId, versionName, workflowName, node.Name)
 	envVars := m.getNodeEnvVars(req, config)
 	labels := m.getNodeLabels(runtimeId, versionName, node)
 
