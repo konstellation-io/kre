@@ -3,20 +3,20 @@ syntax = "proto3";
 package nats;
 option go_package = "./natspb";
 
-message CreationRequest {
-  string runtime_id = 1;
-  string version_name = 2;
-  repeated Workflow workflows = 3;
+enum ObjectStoreScope{
+  SCOPE_WORKFLOW = 0;
+  SCOPE_PROJECT = 1;
 }
 
-message DeleteStreamsRequest {
-  string runtime_id = 1;
-  string version_name = 2;
-  repeated string workflows = 3;
+message ObjectStore {
+  string name = 1;
+  ObjectStoreScope scope = 2;
 }
 
-message DeleteResponse {
-  string message = 1;
+message Node {
+  string name = 1;
+  repeated string subscriptions = 2;
+  optional ObjectStore object_store = 3;
 }
 
 message Workflow {
@@ -25,23 +25,35 @@ message Workflow {
   repeated Node nodes = 3;
 }
 
-message Node {
-  enum ObjectStoreScope{
-    SCOPE_WORKFLOW = 0;
-    SCOPE_PROJECT = 1;
-  }
-
-  message ObjectStore {
-    string name = 1;
-    ObjectStoreScope scope = 2;
-  }
-
-  string name = 1;
-  repeated string subscriptions = 2;
-  optional ObjectStore object_store = 3;
+message CreateStreamsRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated Workflow workflows = 3;
 }
 
-message CreateStreamResponse {
+message CreateObjectStoresRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated Workflow workflows = 3;
+}
+
+message CreateKeyValueStoresRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated Workflow workflows = 3;
+}
+
+message DeleteStreamsRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+}
+
+message DeleteObjectStoresRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+}
+
+message CreateStreamsResponse {
   message NodeStreamConfig {
     string subject = 1;
     repeated string subscriptions = 2;
@@ -56,12 +68,16 @@ message CreateStreamResponse {
   map<string, WorkflowStreamConfig> workflows = 1;
 }
 
-message CreateObjectStoreResponse {
+message CreateObjectStoresResponse {
   message WorkflowObjectStoreConfig {
     map<string, string> nodes = 1;
   }
 
   map<string, WorkflowObjectStoreConfig> workflows = 1;
+}
+
+message DeleteResponse {
+  string message = 1;
 }
 
 message CreateKeyValueStoreResponse {
@@ -75,8 +91,9 @@ message CreateKeyValueStoreResponse {
 }
 
 service NatsManagerService {
-  rpc CreateStreams (CreationRequest) returns (CreateStreamResponse);
-  rpc CreateObjectStores (CreationRequest) returns (CreateObjectStoreResponse);
-  rpc CreateKeyValueStores (CreationRequest) returns (CreateKeyValueStoreResponse);
+  rpc CreateStreams (CreateStreamsRequest) returns (CreateStreamsResponse);
+  rpc CreateObjectStores (CreateObjectStoresRequest) returns (CreateObjectStoresResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteResponse);
+  rpc DeleteObjectStores (DeleteObjectStoresRequest) returns (DeleteResponse);
+  rpc CreateKeyValueStores (CreateKeyValueStoresRequest) returns (CreateKeyValueStoreResponse);
 };

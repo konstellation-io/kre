@@ -88,7 +88,7 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 		} else if m.Error == MetricsMissingValuesKey {
 			missingValues += 1
 		} else if m.Error != "" {
-			i.logger.Errorf("unexpected metric error value = '%s'", m.Error)
+			i.logger.Errorf("unexpected metric error value = %q", m.Error)
 		} else {
 			totalNoErrors += 1
 
@@ -266,7 +266,7 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.Classificati
 
 		d, err := time.Parse(metricTimeFormat, m.Date)
 		if err != nil {
-			i.logger.Errorf("invalid metric date = '%s': %s\n", m.Date, err.Error())
+			i.logger.Errorf("invalid metric date = %q: %s\n", m.Date, err.Error())
 			continue
 		}
 		group := int(d.Sub(start).Hours()) / interval
@@ -305,7 +305,7 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.Classificati
 func (i *MetricsInteractor) getMetricTruncatedDate(date string) (time.Time, error) {
 	d, e := time.Parse(metricTimeFormat, date)
 	if e != nil {
-		return time.Time{}, fmt.Errorf("invalid metric date '%s': %w", date, e)
+		return time.Time{}, fmt.Errorf("invalid metric date %q: %w", date, e)
 	}
 	d = d.Truncate(time.Hour)
 	return d, nil

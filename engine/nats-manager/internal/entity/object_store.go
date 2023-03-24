@@ -6,7 +6,7 @@ import (
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
 )
 
-type StoreScope int
+type ObjectStoreScope int
 
 const (
 	ScopeWorkflow = iota
@@ -16,7 +16,7 @@ const (
 
 type ObjectStore struct {
 	Name  string
-	Scope StoreScope
+	Scope ObjectStoreScope
 }
 
 func (o *ObjectStore) Validate() error {

@@ -11,9 +11,9 @@ type VersionStreamsConfig struct {
 
 type WorkflowStreamConfig struct {
 	Stream            string
-	KeyValueStore     string
 	Nodes             map[string]*NodeStreamConfig
 	EntrypointSubject string
+	KeyValueStore     string
 }
 
 func (w *WorkflowStreamConfig) GetNodeConfig(nodeName string) (*NodeStreamConfig, error) {

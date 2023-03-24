@@ -65,7 +65,7 @@ func (n *ManagerImpl) SubscribeToChannel(channel string) chan *nc.Msg {
 
 	sub, err := n.nc.ChanSubscribe(channel, msgCh)
 	if err != nil {
-		n.logger.Errorf("Error subscribing to '%s' NATS channel: %s", channel, err)
+		n.logger.Errorf("Error subscribing to %q NATS channel: %s", channel, err)
 		os.Exit(1)
 	}
 

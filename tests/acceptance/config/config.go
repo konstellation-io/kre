@@ -25,7 +25,7 @@ func NewConfig() Config {
 func getStringFromEnvVar(envVarKey string) string {
 	v := os.Getenv(envVarKey)
 	if v == "" {
-		log.Fatalf("\"%s\" env var is not present", envVarKey)
+		log.Fatalf("%q env var is not present", envVarKey)
 	}
 
 	return v

@@ -324,7 +324,7 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 		var nodes []entity.Node
 
 		if len(w.Nodes) == 0 {
-			return nil, fmt.Errorf("error generating workflows: workflow \"%s\" doesn't have nodes defined", w.Name)
+			return nil, fmt.Errorf("error generating workflows: workflow %q doesn't have nodes defined", w.Name)
 		}
 
 		for _, node := range w.Nodes {
@@ -471,9 +471,14 @@ func (i *VersionInteractor) Stop(
 		return nil, nil, err
 	}
 
-	err = i.natsManagerService.DeleteStreams(ctx, runtimeId, v)
+	err = i.natsManagerService.DeleteStreams(ctx, runtimeId, versionName)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error stopping version %q: %w", v.Name, err)
+		return nil, nil, fmt.Errorf("error stopping version %q: %w", versionName, err)
+	}
+
+	err = i.natsManagerService.DeleteObjectStores(ctx, runtimeId, versionName)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error stopping version %q: %w", versionName, err)
 	}
 
 	go i.stopAndNotify(runtimeId, v, notifyStatusCh)
@@ -731,7 +736,7 @@ func (i *VersionInteractor) setStatusError(
 		errorMessages[idx] = err.Error()
 	}
 
-	i.logger.Errorf("The version \"%s\" has the following errors: %s", version.Name, strings.Join(errorMessages, "\n"))
+	i.logger.Errorf("The version %q has the following errors: %s", version.Name, strings.Join(errorMessages, "\n"))
 	versionWithError, err := i.versionRepo.SetErrors(ctx, runtimeId, version, errorMessages)
 	if err != nil {
 		i.logger.Errorf("error saving version error state: %s", err)

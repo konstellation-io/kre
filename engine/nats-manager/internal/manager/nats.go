@@ -2,10 +2,12 @@ package manager
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
 	"github.com/konstellation-io/kre/engine/nats-manager/internal/errors"
-	logging "github.com/konstellation-io/kre/engine/nats-manager/internal/logger"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/logging"
 )
 
 //go:generate mockgen -source=${GOFILE} -destination=../../mocks/${GOFILE} -package=mocks
@@ -13,8 +15,11 @@ import (
 type Client interface {
 	CreateStream(streamConfig *entity.StreamConfig) error
 	CreateObjectStore(objectStore string) error
-	CreateKeyValueStore(keyValueStore string) error
+	GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string, error)
+	GetStreamNames(optFilter ...*regexp.Regexp) ([]string, error)
 	DeleteStream(stream string) error
+	DeleteObjectStore(stream string) error
+	CreateKeyValueStore(keyValueStore string) error
 }
 
 type NatsManager struct {
@@ -54,7 +59,7 @@ func (m *NatsManager) CreateStreams(
 
 		err := m.client.CreateStream(streamConfig)
 		if err != nil {
-			return nil, fmt.Errorf("error creating stream \"%s\": %w", stream, err)
+			return nil, fmt.Errorf("error creating stream %q: %w", stream, err)
 		}
 
 		workflowsStreamsConfig[workflow.Name] = streamConfig
@@ -83,10 +88,6 @@ func (m *NatsManager) CreateObjectStores(
 
 		for _, node := range workflow.Nodes {
 			if node.ObjectStore != nil {
-				if node.ObjectStore.Name == "" {
-					return nil, errors.ErrInvalidObjectStoreName
-				}
-
 				objectStore, err := m.getObjectStoreName(runtimeID, versionName, workflow.Name, node.ObjectStore)
 				if err != nil {
 					return nil, err
@@ -111,23 +112,58 @@ func (m *NatsManager) CreateObjectStores(
 func (m *NatsManager) getObjectStoreName(runtimeID, versionName, workflowName string, objectStore *entity.ObjectStore) (string, error) {
 	switch objectStore.Scope {
 	case entity.ScopeProject:
-		return fmt.Sprintf("object-store_%s_%s_%s", runtimeID, versionName, objectStore.Name), nil
+		return m.joinWithUnderscores(runtimeID, versionName, objectStore.Name), nil
 	case entity.ScopeWorkflow:
-		return fmt.Sprintf("object-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, objectStore.Name), nil
+		return m.joinWithUnderscores(runtimeID, versionName, workflowName, objectStore.Name), nil
 	default:
 		return "", errors.ErrInvalidObjectStoreScope
 	}
 }
 
-func (m *NatsManager) DeleteStreams(runtimeID, versionName string, workflows []string) error {
-	for _, workflow := range workflows {
-		stream := m.getStreamName(runtimeID, versionName, workflow)
+func (m *NatsManager) DeleteStreams(runtimeID, versionName string) error {
+	versionStreamsRegExp, err := m.getVersionStreamFilter(runtimeID, versionName)
+	if err != nil {
+		return fmt.Errorf("error compiling regex: %w", err)
+	}
+
+	allStreams, err := m.client.GetStreamNames(versionStreamsRegExp)
+	if err != nil {
+		return fmt.Errorf("error getting streams: %w", err)
+	}
+	for _, stream := range allStreams {
 		err := m.client.DeleteStream(stream)
 		if err != nil {
-			return fmt.Errorf("error deleting stream \"%s\": %w", stream, err)
+			return fmt.Errorf("error deleting stream %q: %w", stream, err)
 		}
 	}
 	return nil
+}
+
+func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
+	versionObjStoreRegExp, err := m.getVersionStreamFilter(runtimeID, versionName)
+	if err != nil {
+		return fmt.Errorf("error compiling regex: %w", err)
+	}
+
+	allObjectStores, err := m.client.GetObjectStoreNames(versionObjStoreRegExp)
+	if err != nil {
+		return fmt.Errorf("error getting object store names: %w", err)
+	}
+
+	for _, objectStore := range allObjectStores {
+		m.logger.Debugf("Deleting object store %q", objectStore)
+
+		err := m.client.DeleteObjectStore(objectStore)
+		if err != nil {
+			return fmt.Errorf("error deleting object store %q: %w", objectStore, err)
+		}
+	}
+
+	return nil
+}
+
+func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
+	return m.joinWithUnderscores(runtimeID, versionName, workflowEntrypoint)
 }
 
 func (m *NatsManager) CreateKeyValueStores(
@@ -196,7 +232,7 @@ func (m *NatsManager) CreateKeyValueStores(
 
 func (m *NatsManager) getKeyValueStoreName(
 	runtimeID, versionName, workflowName, nodeName string,
-	keyValueStore entity.StoreScope,
+	keyValueStore entity.ObjectStoreScope,
 ) (string, error) {
 	switch keyValueStore {
 	case entity.ScopeProject:
@@ -208,10 +244,6 @@ func (m *NatsManager) getKeyValueStoreName(
 	default:
 		return "", errors.ErrInvalidKeyValueStoreScope
 	}
-}
-
-func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
-	return fmt.Sprintf("%s-%s-%s", runtimeID, versionName, workflowEntrypoint)
 }
 
 func (m *NatsManager) getNodesStreamConfig(stream string, nodes []*entity.Node) entity.NodesStreamConfig {
@@ -244,4 +276,12 @@ func (m *NatsManager) validateWorkflows(workflows []*entity.Workflow) error {
 		}
 	}
 	return nil
+}
+
+func (m *NatsManager) getVersionStreamFilter(runtimeID, versionName string) (*regexp.Regexp, error) {
+	return regexp.Compile(fmt.Sprintf("^%s", m.joinWithUnderscores(runtimeID, versionName, ".*")))
+}
+
+func (m *NatsManager) joinWithUnderscores(elements ...string) string {
+	return strings.Join(elements, "_")
 }

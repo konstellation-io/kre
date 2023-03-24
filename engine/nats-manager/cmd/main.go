@@ -27,13 +27,15 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
-
-	natsClient := nats.New(logger)
-	err = natsClient.Connect(cfg.NatsStreaming.URL)
+	logger.Info("Connecting to NATS...")
+	js, err := nats.InitJetStreamConnection(cfg.NatsStreaming.URL)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	natsClient := nats.New(logger, js)
+
+	grpcServer := grpc.NewServer()
 
 	natsManager := manager.NewNatsManager(logger, natsClient)
 	natsService := service.NewNatsService(cfg, logger, natsManager)

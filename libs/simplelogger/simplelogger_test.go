@@ -31,7 +31,7 @@ func captureOutput(f func()) string {
 
 func assertEqual(t *testing.T, output, expectedOutput string) {
 	if output != expectedOutput {
-		t.Fatalf("Output: \"%s\" is not equal to: \"%s\"", output, expectedOutput)
+		t.Fatalf("Output: %q is not equal to: %q", output, expectedOutput)
 	}
 }
 
@@ -39,7 +39,7 @@ func assertLoggedMsg(t *testing.T, output, level, msg string) {
 	expectedOutput := fmt.Sprintf("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+\\+\\d{2}:\\d{2} %s %s\n", level, msg)
 	match, _ := regexp.MatchString(expectedOutput, output)
 	if !match {
-		t.Fatalf("Output: \"%s\" Does not match: \"%s\"", output, expectedOutput)
+		t.Fatalf("Output: %q Does not match: %q", output, expectedOutput)
 	}
 }
 

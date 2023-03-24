@@ -47,7 +47,7 @@ func New(cfg *config.Config,
 
 // Start request k8s to create all version resources like deployments and config maps associated with the version.
 func (m *Manager) Start(ctx context.Context, req *versionpb.StartRequest) error {
-	m.logger.Infof("Starting version \"%s\"", req.VersionName)
+	m.logger.Infof("Starting version %q", req.VersionName)
 
 	err := m.createVersionKRTConf(ctx, req.RuntimeId, req.VersionName, m.config.Kubernetes.Namespace, req.Config)
 	if err != nil {
@@ -100,7 +100,7 @@ func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 // Publish calls kubernetes to change the name of the entrypoint service.
 // The service-name will be changed to `active-entrypoint`
 func (m *Manager) Publish(ctx context.Context, req *versionpb.VersionInfo) error {
-	m.logger.Infof("Publish version '%s' on runtime '%s'", req.Name, req.RuntimeId)
+	m.logger.Infof("Publish version %q on runtime %q", req.Name, req.RuntimeId)
 
 	activeServiceName := fmt.Sprintf("%s-%s", req.RuntimeId, activeEntrypointSuffix)
 	ingressName := m.getIngressName(req.RuntimeId)
@@ -146,7 +146,7 @@ func (m *Manager) Publish(ctx context.Context, req *versionpb.VersionInfo) error
 // Unpublish calls kubernetes to change the name of the entrypoint service.
 // The service-name will be changed to `VERSIONNAME-entrypoint`
 func (m *Manager) Unpublish(ctx context.Context, req *versionpb.VersionInfo) error {
-	m.logger.Infof("Deactivating version '%s' on runtime '%s'", req.Name, req.RuntimeId)
+	m.logger.Infof("Deactivating version %q on runtime %q", req.Name, req.RuntimeId)
 
 	ingressName := m.getIngressName(req.RuntimeId)
 	err := m.deleteIngress(ctx, ingressName)
@@ -189,7 +189,7 @@ func (m *Manager) UpdateConfig(ctx context.Context, req *versionpb.UpdateConfigR
 }
 
 func (m *Manager) WaitForVersionPods(ctx context.Context, runtimeID, versionName, ns string, versionWorkflows []*versionpb.Workflow) error {
-	m.logger.Debugf("[WaitForVersionPods] watching ns '%s' for version '%s' and runtime '%s'", ns, versionName, runtimeID)
+	m.logger.Debugf("[WaitForVersionPods] watching ns %q for version %q and runtime %q", ns, versionName, runtimeID)
 
 	nodes := []string{"entrypoint"}
 
@@ -252,5 +252,5 @@ func (m *Manager) findNodeSubject(nodes []*versionpb.Workflow_Node, nodeToFind s
 			return node.Subject, nil
 		}
 	}
-	return "", fmt.Errorf("error finding subject for node \"%s\"", nodeToFind)
+	return "", fmt.Errorf("error finding subject for node %q", nodeToFind)
 }

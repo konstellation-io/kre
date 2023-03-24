@@ -5,17 +5,23 @@ import (
 )
 
 type VersionConfig struct {
-	StreamsConfig        *VersionStreamsConfig
-	ObjectStoresConfig   *VersionObjectStoresConfig
+	KeyValueStore string
+
+	StreamsConfig      *VersionStreamsConfig
+	ObjectStoresConfig *VersionObjectStoresConfig
 	KeyValueStoresConfig *KeyValueStoresConfig
 }
 
 func NewVersionConfig(streamsConfig *VersionStreamsConfig, objectStoresConfig *VersionObjectStoresConfig, keyValueStoresConfig *KeyValueStoresConfig) *VersionConfig {
 	return &VersionConfig{
-		StreamsConfig:        streamsConfig,
-		ObjectStoresConfig:   objectStoresConfig,
+		StreamsConfig:      streamsConfig,
+		ObjectStoresConfig: objectStoresConfig,
 		KeyValueStoresConfig: keyValueStoresConfig,
 	}
+}
+
+func (w *WorkflowStreamConfig) GetNodeStreamConfig(node string) (*NodeStreamConfig, error) {
+	return w.GetNodeConfig(node)
 }
 
 func (v *VersionConfig) GetNodeObjectStoreConfig(workflow, node string) *string {

@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/konstellation-io/kre/engine/k8s-manager/config"
 	"github.com/konstellation-io/kre/engine/k8s-manager/entity"
 	"github.com/konstellation-io/kre/engine/k8s-manager/kubernetes/node"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/tools/cache"
-	"strings"
-	"time"
 
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	v1 "k8s.io/api/core/v1"
@@ -74,7 +75,7 @@ func (w *Watcher) WaitForRuntimePods(ctx context.Context, ns string) error {
 	}
 
 	if len(failedPods) > 0 {
-		return fmt.Errorf("%w: elapsed time %s missing PODs \"%s\" in Namespace \"%s\"",
+		return fmt.Errorf("%w: elapsed time %s missing PODs %q in Namespace %q",
 			ErrWaitForPODsRunningTimeout, timeout, failedPods, ns)
 	}
 
@@ -105,7 +106,7 @@ func (w *Watcher) waitForPodRunning(ctx context.Context, ns string, podLabels []
 				pod := event.Object.(*v1.Pod)
 
 				if pod.Status.Phase == v1.PodRunning {
-					w.logger.Debugf("The POD with labels \"%s\" is running\n", labelSelector)
+					w.logger.Debugf("The POD with labels %q is running\n", labelSelector)
 					watch.Stop()
 					waitChan <- true
 					close(waitChan)
@@ -126,7 +127,7 @@ func (w *Watcher) waitForPodRunning(ctx context.Context, ns string, podLabels []
 }
 
 func (w *Watcher) WatchNodeStatus(runtimeId, versionName string, statusCh chan<- entity.Node) chan struct{} {
-	w.logger.Debugf("[WatchNodeStatus] watching '%s'", versionName)
+	w.logger.Debugf("[WatchNodeStatus] watching %q", versionName)
 
 	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeId, versionName)
 	resolver := node.NodeStatusResolver{

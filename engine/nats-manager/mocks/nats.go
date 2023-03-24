@@ -6,6 +6,7 @@ package mocks
 
 import (
 	reflect "reflect"
+	regexp "regexp"
 
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/konstellation-io/kre/engine/nats-manager/internal/entity"
@@ -32,20 +33,6 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
-}
-
-// Connect mocks base method.
-func (m *MockClient) Connect(url string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Connect", url)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Connect indicates an expected call of Connect.
-func (mr *MockClientMockRecorder) Connect(url interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Connect", reflect.TypeOf((*MockClient)(nil).Connect), url)
 }
 
 // CreateKeyValueStore mocks base method.
@@ -90,6 +77,20 @@ func (mr *MockClientMockRecorder) CreateStream(streamConfig interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateStream", reflect.TypeOf((*MockClient)(nil).CreateStream), streamConfig)
 }
 
+// DeleteObjectStore mocks base method.
+func (m *MockClient) DeleteObjectStore(stream string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteObjectStore", stream)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteObjectStore indicates an expected call of DeleteObjectStore.
+func (mr *MockClientMockRecorder) DeleteObjectStore(stream interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteObjectStore", reflect.TypeOf((*MockClient)(nil).DeleteObjectStore), stream)
+}
+
 // DeleteStream mocks base method.
 func (m *MockClient) DeleteStream(stream string) error {
 	m.ctrl.T.Helper()
@@ -102,4 +103,42 @@ func (m *MockClient) DeleteStream(stream string) error {
 func (mr *MockClientMockRecorder) DeleteStream(stream interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStream", reflect.TypeOf((*MockClient)(nil).DeleteStream), stream)
+}
+
+// GetObjectStoreNames mocks base method.
+func (m *MockClient) GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range optFilter {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetObjectStoreNames", varargs...)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetObjectStoreNames indicates an expected call of GetObjectStoreNames.
+func (mr *MockClientMockRecorder) GetObjectStoreNames(optFilter ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjectStoreNames", reflect.TypeOf((*MockClient)(nil).GetObjectStoreNames), optFilter...)
+}
+
+// GetStreamNames mocks base method.
+func (m *MockClient) GetStreamNames(optFilter ...*regexp.Regexp) ([]string, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range optFilter {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetStreamNames", varargs...)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStreamNames indicates an expected call of GetStreamNames.
+func (mr *MockClientMockRecorder) GetStreamNames(optFilter ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStreamNames", reflect.TypeOf((*MockClient)(nil).GetStreamNames), optFilter...)
 }
