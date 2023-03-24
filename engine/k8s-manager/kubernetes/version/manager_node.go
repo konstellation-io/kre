@@ -80,6 +80,10 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 			"KRT_NATS_INPUTS":       m.joinSubscriptionSubjects(n.Subscriptions),
 		}
 
+		if n.ObjectStore != nil {
+			wconf[n.Id]["KRT_NATS_OBJECT_STORE"] = *n.ObjectStore
+		}
+
 		// retrocompatibility konstellation-exitpoint config
 		if n.Name == "konstellation-exitpoint" {
 			nodeConfig := wconf[n.Id]

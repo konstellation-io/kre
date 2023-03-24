@@ -118,7 +118,7 @@ func (suite *VersionInteractorSuite) TestCreateNewVersion() {
 		PublicationDate:   nil,
 		PublicationUserID: nil,
 		Status:            "",
-		Config:            entity.VersionConfig{},
+		Config:            entity.VersionUserConfig{},
 		Entrypoint:        entity.Entrypoint{},
 		Workflows:         nil,
 	}
@@ -169,7 +169,7 @@ func (suite *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDu
 		PublicationDate:   nil,
 		PublicationUserID: nil,
 		Status:            "",
-		Config:            entity.VersionConfig{},
+		Config:            entity.VersionUserConfig{},
 		Entrypoint:        entity.Entrypoint{},
 		Workflows:         nil,
 	}
@@ -200,7 +200,7 @@ func (suite *VersionInteractorSuite) TestGetByName() {
 		PublicationDate:   nil,
 		PublicationUserID: nil,
 		Status:            entity.VersionStatusCreated,
-		Config:            entity.VersionConfig{},
+		Config:            entity.VersionUserConfig{},
 		Entrypoint:        entity.Entrypoint{},
 		Workflows:         nil,
 	}

@@ -223,7 +223,7 @@ func (r *VersionRepoMongoDB) UploadKRTFile(runtimeId string, version *entity.Ver
 		options.GridFSBucket().SetName(r.cfg.MongoDB.KRTBucket),
 	)
 	if err != nil {
-		return fmt.Errorf("creating bucket \"%s\" to store KRT files: %w", r.cfg.MongoDB.DBName, err)
+		return fmt.Errorf("creating bucket %q to store KRT files: %w", r.cfg.MongoDB.DBName, err)
 	}
 
 	filename := fmt.Sprintf("%s.krt", version.Name)
@@ -241,7 +241,7 @@ func (r *VersionRepoMongoDB) UploadKRTFile(runtimeId string, version *entity.Ver
 		return fmt.Errorf("writing into the KRT upload stream: %w", err)
 
 	}
-	r.logger.Infof("Uploaded %d bytes of \"%s\" to GridFS successfully", filename, fileSize)
+	r.logger.Infof("Uploaded %d bytes of %q to GridFS successfully", filename, fileSize)
 
 	return nil
 }

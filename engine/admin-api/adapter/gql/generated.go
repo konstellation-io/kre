@@ -102,20 +102,20 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateRuntime              func(childComplexity int, input CreateRuntimeInput) int
-		CreateUser                 func(childComplexity int, input CreateUserInput) int
-		CreateVersion              func(childComplexity int, input CreateVersionInput) int
-		DeleteAPIToken             func(childComplexity int, input DeleteAPITokenInput) int
-		GenerateAPIToken           func(childComplexity int, input GenerateAPITokenInput) int
-		PublishVersion             func(childComplexity int, input PublishVersionInput) int
-		RemoveUsers                func(childComplexity int, input UsersInput) int
-		RevokeUserSessions         func(childComplexity int, input UsersInput) int
-		StartVersion               func(childComplexity int, input StartVersionInput) int
-		StopVersion                func(childComplexity int, input StopVersionInput) int
-		UnpublishVersion           func(childComplexity int, input UnpublishVersionInput) int
-		UpdateAccessLevel          func(childComplexity int, input UpdateAccessLevelInput) int
-		UpdateSettings             func(childComplexity int, input SettingsInput) int
-		UpdateVersionConfiguration func(childComplexity int, input UpdateConfigurationInput) int
+		CreateRuntime                  func(childComplexity int, input CreateRuntimeInput) int
+		CreateUser                     func(childComplexity int, input CreateUserInput) int
+		CreateVersion                  func(childComplexity int, input CreateVersionInput) int
+		DeleteAPIToken                 func(childComplexity int, input DeleteAPITokenInput) int
+		GenerateAPIToken               func(childComplexity int, input GenerateAPITokenInput) int
+		PublishVersion                 func(childComplexity int, input PublishVersionInput) int
+		RemoveUsers                    func(childComplexity int, input UsersInput) int
+		RevokeUserSessions             func(childComplexity int, input UsersInput) int
+		StartVersion                   func(childComplexity int, input StartVersionInput) int
+		StopVersion                    func(childComplexity int, input StopVersionInput) int
+		UnpublishVersion               func(childComplexity int, input UnpublishVersionInput) int
+		UpdateAccessLevel              func(childComplexity int, input UpdateAccessLevelInput) int
+		UpdateSettings                 func(childComplexity int, input SettingsInput) int
+		UpdateVersionUserConfiguration func(childComplexity int, input UpdateConfigurationInput) int
 	}
 
 	Node struct {
@@ -212,7 +212,7 @@ type ComplexityRoot struct {
 		Workflows         func(childComplexity int) int
 	}
 
-	VersionConfig struct {
+	VersionUserConfig struct {
 		Completed func(childComplexity int) int
 		Vars      func(childComplexity int) int
 	}
@@ -238,7 +238,7 @@ type MutationResolver interface {
 	PublishVersion(ctx context.Context, input PublishVersionInput) (*entity.Version, error)
 	UnpublishVersion(ctx context.Context, input UnpublishVersionInput) (*entity.Version, error)
 	UpdateSettings(ctx context.Context, input SettingsInput) (*entity.Settings, error)
-	UpdateVersionConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error)
+	UpdateVersionUserConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error)
 	RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error)
 	UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error)
 	RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error)
@@ -641,17 +641,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateSettings(childComplexity, args["input"].(SettingsInput)), true
 
-	case "Mutation.updateVersionConfiguration":
-		if e.complexity.Mutation.UpdateVersionConfiguration == nil {
+	case "Mutation.updateVersionUserConfiguration":
+		if e.complexity.Mutation.UpdateVersionUserConfiguration == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateVersionConfiguration_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_updateVersionUserConfiguration_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateVersionConfiguration(childComplexity, args["input"].(UpdateConfigurationInput)), true
+		return e.complexity.Mutation.UpdateVersionUserConfiguration(childComplexity, args["input"].(UpdateConfigurationInput)), true
 
 	case "Node.id":
 		if e.complexity.Node.ID == nil {
@@ -1141,19 +1141,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Version.Workflows(childComplexity), true
 
-	case "VersionConfig.completed":
-		if e.complexity.VersionConfig.Completed == nil {
+	case "VersionUserConfig.completed":
+		if e.complexity.VersionUserConfig.Completed == nil {
 			break
 		}
 
-		return e.complexity.VersionConfig.Completed(childComplexity), true
+		return e.complexity.VersionUserConfig.Completed(childComplexity), true
 
-	case "VersionConfig.vars":
-		if e.complexity.VersionConfig.Vars == nil {
+	case "VersionUserConfig.vars":
+		if e.complexity.VersionUserConfig.Vars == nil {
 			break
 		}
 
-		return e.complexity.VersionConfig.Vars(childComplexity), true
+		return e.complexity.VersionUserConfig.Vars(childComplexity), true
 
 	case "Workflow.entrypoint":
 		if e.complexity.Workflow.Entrypoint == nil {
@@ -1306,7 +1306,7 @@ type Mutation {
   publishVersion(input: PublishVersionInput!): Version!
   unpublishVersion(input: UnpublishVersionInput!): Version!
   updateSettings(input: SettingsInput!): Settings!
-  updateVersionConfiguration(input: UpdateConfigurationInput!): Version!
+  updateVersionUserConfiguration(input: UpdateConfigurationInput!): Version!
   removeUsers(input: UsersInput!): [User!]!
   updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
   revokeUserSessions(input: UsersInput!): [User!]!
@@ -1484,12 +1484,12 @@ type Version {
   publicationDate: String
   publicationAuthor: User
   workflows: [Workflow!]!
-  config: VersionConfig!
+  config: VersionUserConfig!
   hasDoc: Boolean
   errors: [String!]!
 }
 
-type VersionConfig {
+type VersionUserConfig {
   vars: [ConfigurationVariable!]!
   completed: Boolean!
 }
@@ -1809,7 +1809,7 @@ func (ec *executionContext) field_Mutation_updateSettings_args(ctx context.Conte
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateVersionConfiguration_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_updateVersionUserConfiguration_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 UpdateConfigurationInput
@@ -3900,8 +3900,8 @@ func (ec *executionContext) fieldContext_Mutation_updateSettings(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updateVersionConfiguration(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateVersionConfiguration(ctx, field)
+func (ec *executionContext) _Mutation_updateVersionUserConfiguration(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateVersionUserConfiguration(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -3914,7 +3914,7 @@ func (ec *executionContext) _Mutation_updateVersionConfiguration(ctx context.Con
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateVersionConfiguration(rctx, fc.Args["input"].(UpdateConfigurationInput))
+		return ec.resolvers.Mutation().UpdateVersionUserConfiguration(rctx, fc.Args["input"].(UpdateConfigurationInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3931,7 +3931,7 @@ func (ec *executionContext) _Mutation_updateVersionConfiguration(ctx context.Con
 	return ec.marshalNVersion2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersion(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updateVersionConfiguration(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_updateVersionUserConfiguration(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -3976,7 +3976,7 @@ func (ec *executionContext) fieldContext_Mutation_updateVersionConfiguration(ctx
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateVersionConfiguration_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_updateVersionUserConfiguration_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -7647,9 +7647,9 @@ func (ec *executionContext) _Version_config(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entity.VersionConfig)
+	res := resTmp.(entity.VersionUserConfig)
 	fc.Result = res
-	return ec.marshalNVersionConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersionConfig(ctx, field.Selections, res)
+	return ec.marshalNVersionUserConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersionUserConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Version_config(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7661,11 +7661,11 @@ func (ec *executionContext) fieldContext_Version_config(ctx context.Context, fie
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "vars":
-				return ec.fieldContext_VersionConfig_vars(ctx, field)
+				return ec.fieldContext_VersionUserConfig_vars(ctx, field)
 			case "completed":
-				return ec.fieldContext_VersionConfig_completed(ctx, field)
+				return ec.fieldContext_VersionUserConfig_completed(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type VersionConfig", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type VersionUserConfig", field.Name)
 		},
 	}
 	return fc, nil
@@ -7756,8 +7756,8 @@ func (ec *executionContext) fieldContext_Version_errors(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _VersionConfig_vars(ctx context.Context, field graphql.CollectedField, obj *entity.VersionConfig) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_VersionConfig_vars(ctx, field)
+func (ec *executionContext) _VersionUserConfig_vars(ctx context.Context, field graphql.CollectedField, obj *entity.VersionUserConfig) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VersionUserConfig_vars(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7787,9 +7787,9 @@ func (ec *executionContext) _VersionConfig_vars(ctx context.Context, field graph
 	return ec.marshalNConfigurationVariable2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐConfigurationVariableᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_VersionConfig_vars(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_VersionUserConfig_vars(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "VersionConfig",
+		Object:     "VersionUserConfig",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -7808,8 +7808,8 @@ func (ec *executionContext) fieldContext_VersionConfig_vars(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _VersionConfig_completed(ctx context.Context, field graphql.CollectedField, obj *entity.VersionConfig) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_VersionConfig_completed(ctx, field)
+func (ec *executionContext) _VersionUserConfig_completed(ctx context.Context, field graphql.CollectedField, obj *entity.VersionUserConfig) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VersionUserConfig_completed(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7839,9 +7839,9 @@ func (ec *executionContext) _VersionConfig_completed(ctx context.Context, field 
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_VersionConfig_completed(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_VersionUserConfig_completed(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "VersionConfig",
+		Object:     "VersionUserConfig",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -10856,10 +10856,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateVersionConfiguration":
+		case "updateVersionUserConfiguration":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateVersionConfiguration(ctx, field)
+				return ec._Mutation_updateVersionUserConfiguration(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -11923,26 +11923,26 @@ func (ec *executionContext) _Version(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
-var versionConfigImplementors = []string{"VersionConfig"}
+var versionUserConfigImplementors = []string{"VersionUserConfig"}
 
-func (ec *executionContext) _VersionConfig(ctx context.Context, sel ast.SelectionSet, obj *entity.VersionConfig) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, versionConfigImplementors)
+func (ec *executionContext) _VersionUserConfig(ctx context.Context, sel ast.SelectionSet, obj *entity.VersionUserConfig) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, versionUserConfigImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("VersionConfig")
+			out.Values[i] = graphql.MarshalString("VersionUserConfig")
 		case "vars":
 
-			out.Values[i] = ec._VersionConfig_vars(ctx, field, obj)
+			out.Values[i] = ec._VersionUserConfig_vars(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
 		case "completed":
 
-			out.Values[i] = ec._VersionConfig_completed(ctx, field, obj)
+			out.Values[i] = ec._VersionUserConfig_completed(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -13290,10 +13290,6 @@ func (ec *executionContext) marshalNVersion2ᚖgithubᚗcomᚋkonstellationᚑio
 	return ec._Version(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNVersionConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersionConfig(ctx context.Context, sel ast.SelectionSet, v entity.VersionConfig) graphql.Marshaler {
-	return ec._VersionConfig(ctx, sel, &v)
-}
-
 func (ec *executionContext) unmarshalNVersionStatus2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersionStatus(ctx context.Context, v interface{}) (entity.VersionStatus, error) {
 	tmp, err := graphql.UnmarshalString(v)
 	res := entity.VersionStatus(tmp)
@@ -13308,6 +13304,10 @@ func (ec *executionContext) marshalNVersionStatus2githubᚗcomᚋkonstellation�
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNVersionUserConfig2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐVersionUserConfig(ctx context.Context, sel ast.SelectionSet, v entity.VersionUserConfig) graphql.Marshaler {
+	return ec._VersionUserConfig(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNWorkflow2ᚕᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋdomainᚋentityᚐWorkflowᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.Workflow) graphql.Marshaler {

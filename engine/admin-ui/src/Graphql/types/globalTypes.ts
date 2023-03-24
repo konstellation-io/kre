@@ -19,7 +19,6 @@ export enum ConfigurationVariableType {
 }
 
 export enum KrtVersion {
-  v1 = 'v1',
   v2 = 'v2',
 }
 

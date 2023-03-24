@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"google.golang.org/grpc"
@@ -34,86 +35,106 @@ func NewNatsManagerClient(cfg *config.Config, logger logging.Logger) (*NatsManag
 }
 
 // CreateStreams calls nats-manager to create NATS streams for given version
-func (n *NatsManagerClient) CreateStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
+func (n *NatsManagerClient) CreateStreams(
+	ctx context.Context,
+	runtimeID string,
+	version *entity.Version,
+) (*entity.VersionStreamsConfig, error) {
+	workflows, err := n.getWorkflowsFromVersion(version)
+	if err != nil {
+		return nil, err
+	}
+
 	req := natspb.CreateStreamsRequest{
 		RuntimeId:   runtimeID,
 		VersionName: version.Name,
-		Workflows:   n.getWorkflowsFromVersion(version),
+		Workflows:   workflows,
 	}
 
-	_, err := n.client.CreateStreams(ctx, &req)
+	res, err := n.client.CreateStreams(ctx, &req)
 	if err != nil {
-		return fmt.Errorf("error creating streams: %w", err)
+		return nil, fmt.Errorf("error creating streams: %w", err)
 	}
 
-	return err
+	return n.dtoToVersionStreamConfig(res.Workflows), err
+}
+
+// CreateObjectStores calls nats-manager to create NATS Object Stores for given version
+func (n *NatsManagerClient) CreateObjectStores(
+	ctx context.Context,
+	runtimeID string,
+	version *entity.Version,
+) (*entity.VersionObjectStoresConfig, error) {
+	workflows, err := n.getWorkflowsFromVersion(version)
+	if err != nil {
+		return nil, err
+	}
+
+	req := natspb.CreateObjectStoresRequest{
+		RuntimeId:   runtimeID,
+		VersionName: version.Name,
+		Workflows:   workflows,
+	}
+
+	res, err := n.client.CreateObjectStores(ctx, &req)
+	if err != nil {
+		return nil, fmt.Errorf("error creating object stores: %w", err)
+	}
+
+	return n.dtoToVersionObjectStoreConfig(res.Workflows), err
 }
 
 // DeleteStreams calls nats-manager to delete NATS streams for given version
-func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, version *entity.Version) error {
+func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, versionName string) error {
 	req := natspb.DeleteStreamsRequest{
 		RuntimeId:   runtimeID,
-		VersionName: version.Name,
-		Workflows:   n.getWorkflowsEntrypoints(version),
+		VersionName: versionName,
 	}
 
 	_, err := n.client.DeleteStreams(ctx, &req)
 	if err != nil {
-		return fmt.Errorf("error deleting version '%s' NATS streams: %w", version.Name, err)
+		return fmt.Errorf("error deleting version %q NATS streams: %w", versionName, err)
 	}
 
 	return nil
 }
 
-// GetVersionNatsConfig calls nats-manager to retrieve NATS streams configuration for given version
-func (n *NatsManagerClient) GetVersionNatsConfig(
-	ctx context.Context,
-	runtimeID string,
-	version *entity.Version,
-) (entity.VersionStreamConfig, error) {
-	req := natspb.GetVersionNatsConfigRequest{
+// DeleteObjectStores calls nats-manager to delete NATS Object Stores for given version
+func (n *NatsManagerClient) DeleteObjectStores(ctx context.Context, runtimeID, versionName string) error {
+	req := natspb.DeleteObjectStoresRequest{
 		RuntimeId:   runtimeID,
-		VersionName: version.Name,
-		Workflows:   n.getWorkflowsFromVersion(version),
+		VersionName: versionName,
 	}
 
-	res, err := n.client.GetVersionNatsConfig(ctx, &req)
+	_, err := n.client.DeleteObjectStores(ctx, &req)
 	if err != nil {
-		return nil, fmt.Errorf("error getting NATS streams configuration for version '%s': %w", version.Name, err)
+		return fmt.Errorf("error deleting version %q NATS object stores: %w", versionName, err)
 	}
 
-	versionNatsConfig := make(entity.VersionStreamConfig, len(res.Workflows))
-	for workflowName, workflowInfo := range res.Workflows {
-		nodesNatsConfig := make(map[string]entity.NodeStreamConfig, len(workflowInfo.Nodes))
-		for nodeName, nodeInfo := range workflowInfo.Nodes {
-			nodesNatsConfig[nodeName] = entity.NodeStreamConfig{
-				Subject:       nodeInfo.Subject,
-				Subscriptions: nodeInfo.Subscriptions,
-			}
-		}
-		versionNatsConfig[workflowName] = entity.WorkflowStreamConfig{
-			Stream: workflowInfo.Stream,
-			Nodes:  nodesNatsConfig,
-		}
-	}
-
-	return versionNatsConfig, nil
+	return nil
 }
 
-func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) []*natspb.Workflow {
+func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) ([]*natspb.Workflow, error) {
 	var workflows []*natspb.Workflow
 	for _, w := range version.Workflows {
-		nodes := []*natspb.Node{
-			{
-				Name:          "entrypoint",
-				Subscriptions: []string{w.Exitpoint},
-			},
-		}
+		nodes := make([]*natspb.Node, 0, len(w.Nodes))
+
 		for _, node := range w.Nodes {
-			nodes = append(nodes, &natspb.Node{
+			nodeToAppend := natspb.Node{
 				Name:          node.Name,
 				Subscriptions: node.Subscriptions,
-			})
+			}
+			if node.ObjectStore != nil {
+				scope, err := translateObjectStoreEnum(node.ObjectStore.Scope)
+				if err != nil {
+					return nil, err
+				}
+				nodeToAppend.ObjectStore = &natspb.ObjectStore{
+					Name:  node.ObjectStore.Name,
+					Scope: scope,
+				}
+			}
+			nodes = append(nodes, &nodeToAppend)
 		}
 		workflows = append(workflows, &natspb.Workflow{
 			Entrypoint: w.Entrypoint,
@@ -121,7 +142,7 @@ func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) []*
 			Nodes:      nodes,
 		})
 	}
-	return workflows
+	return workflows, nil
 }
 
 func (n *NatsManagerClient) getWorkflowsEntrypoints(version *entity.Version) []string {
@@ -130,4 +151,62 @@ func (n *NatsManagerClient) getWorkflowsEntrypoints(version *entity.Version) []s
 		workflowsEntrypoints = append(workflowsEntrypoints, workflow.Entrypoint)
 	}
 	return workflowsEntrypoints
+}
+
+func (n *NatsManagerClient) dtoToVersionStreamConfig(
+	workflows map[string]*natspb.CreateStreamsResponse_WorkflowStreamConfig,
+) *entity.VersionStreamsConfig {
+
+	workflowsConfig := map[string]*entity.WorkflowStreamConfig{}
+	for workflow, streamCfg := range workflows {
+		workflowsConfig[workflow] = &entity.WorkflowStreamConfig{
+			Stream:            streamCfg.Stream,
+			Nodes:             n.dtoToNodesStreamConfig(streamCfg.Nodes),
+			EntrypointSubject: streamCfg.EntrypointSubject,
+		}
+	}
+
+	return &entity.VersionStreamsConfig{
+		Workflows: workflowsConfig,
+	}
+}
+
+func (n *NatsManagerClient) dtoToNodesStreamConfig(
+	nodes map[string]*natspb.CreateStreamsResponse_NodeStreamConfig,
+) map[string]*entity.NodeStreamConfig {
+	nodesStreamCfg := map[string]*entity.NodeStreamConfig{}
+
+	for node, subjectCfg := range nodes {
+		nodesStreamCfg[node] = &entity.NodeStreamConfig{
+			Subject:       subjectCfg.Subject,
+			Subscriptions: subjectCfg.Subscriptions,
+		}
+	}
+
+	return nodesStreamCfg
+}
+
+func (n *NatsManagerClient) dtoToVersionObjectStoreConfig(
+	workflows map[string]*natspb.CreateObjectStoresResponse_WorkflowObjectStoreConfig,
+) *entity.VersionObjectStoresConfig {
+	workflowsObjStoreConfig := entity.WorkflowsObjectStoresConfig{}
+
+	for workflow, objStoreCfg := range workflows {
+		workflowsObjStoreConfig[workflow] = objStoreCfg.Nodes
+	}
+
+	return &entity.VersionObjectStoresConfig{
+		Workflows: workflowsObjStoreConfig,
+	}
+}
+
+func translateObjectStoreEnum(scope string) (natspb.ObjectStoreScope, error) {
+	switch scope {
+	case "project":
+		return natspb.ObjectStoreScope_SCOPE_PROJECT, nil
+	case "workflow":
+		return natspb.ObjectStoreScope_SCOPE_WORKFLOW, nil
+	default:
+		return natspb.ObjectStoreScope_SCOPE_WORKFLOW, errors.New("invalid object store scope")
+	}
 }

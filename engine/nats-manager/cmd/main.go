@@ -4,15 +4,15 @@ import (
 	"log"
 	"net"
 
-	"github.com/konstellation-io/kre/engine/nats-manager/config"
-	"github.com/konstellation-io/kre/engine/nats-manager/manager"
-	"github.com/konstellation-io/kre/engine/nats-manager/nats"
-	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
-	"github.com/konstellation-io/kre/engine/nats-manager/service"
-
 	"github.com/konstellation-io/kre/libs/simplelogger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/config"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/manager"
+	"github.com/konstellation-io/kre/engine/nats-manager/internal/service"
+	"github.com/konstellation-io/kre/engine/nats-manager/nats"
+	"github.com/konstellation-io/kre/engine/nats-manager/proto/natspb"
 )
 
 func main() {
@@ -27,13 +27,15 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
-
-	natsClient := nats.New(logger)
-	err = natsClient.Connect(cfg.NatsStreaming.URL)
+	logger.Info("Connecting to NATS...")
+	js, err := nats.InitJetStreamConnection(cfg.NatsStreaming.URL)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	natsClient := nats.New(logger, js)
+
+	grpcServer := grpc.NewServer()
 
 	natsManager := manager.NewNatsManager(logger, natsClient)
 	natsService := service.NewNatsService(cfg, logger, natsManager)

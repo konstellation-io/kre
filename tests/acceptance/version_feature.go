@@ -73,7 +73,7 @@ func (r *TestRunner) theAPIClientCallsToTheWorkflowTestAt(entrypointAddress stri
 func (r *TestRunner) theWorkflowResponseContainsAPropertyEqualTo(propName, expectedValue string) error {
 	if r.State["last_response."+propName] != expectedValue {
 		// nolint:goerr113
-		return fmt.Errorf("the workflow response property \"%s\" contains an unexpected value \"%s\", should be \"%s\"",
+		return fmt.Errorf("the workflow response property %q contains an unexpected value %q, should be %q",
 			propName, r.State[propName], expectedValue)
 	}
 

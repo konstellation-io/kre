@@ -2,10 +2,11 @@ package influx
 
 import (
 	"fmt"
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 	"net/http"
 	"net/url"
+
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
 const queryEndpoint = "/query"
@@ -23,7 +24,7 @@ func NewMeasurementRepoInfluxDB(cfg *config.Config, logger logging.Logger) *Meas
 }
 
 func (m *MeasurementRepoInfluxDB) CreateDatabase(runtimeId string) error {
-	createDatabaseCommand := fmt.Sprintf("CREATE DATABASE \"%s\"", runtimeId)
+	createDatabaseCommand := fmt.Sprintf("CREATE DATABASE %q", runtimeId)
 	query, err := m.generateQuery(createDatabaseCommand)
 	if err != nil {
 		return err
@@ -38,7 +39,7 @@ func (m *MeasurementRepoInfluxDB) CreateDatabase(runtimeId string) error {
 		return fmt.Errorf("influxdb database creation status: %d", response.StatusCode)
 	}
 
-	m.logger.Infof("influxdb database \"%s\" successfully created", runtimeId)
+	m.logger.Infof("influxdb database %q successfully created", runtimeId)
 	return nil
 }
 

@@ -72,9 +72,9 @@ func readExistingConf(versions []*entity.Version) map[string]string {
 	return currentConfig
 }
 
-func fillNewConfWithExisting(currentConfig map[string]string, krtYml *krt.Krt) entity.VersionConfig {
+func fillNewConfWithExisting(currentConfig map[string]string, krtYml *krt.Krt) entity.VersionUserConfig {
 	// mark config as completed unless it finds an empty value
-	conf := entity.VersionConfig{
+	conf := entity.VersionUserConfig{
 		Completed: true,
 		Vars:      []*entity.ConfigurationVariable{},
 	}
@@ -89,7 +89,7 @@ func fillNewConfWithExisting(currentConfig map[string]string, krtYml *krt.Krt) e
 	return conf
 }
 
-func appendConfValue(conf *entity.VersionConfig, currentConfig map[string]string, key string, varType entity.ConfigurationVariableType) {
+func appendConfValue(conf *entity.VersionUserConfig, currentConfig map[string]string, key string, varType entity.ConfigurationVariableType) {
 	val := ""
 	if previousVal, ok := currentConfig[key]; ok {
 		val = previousVal

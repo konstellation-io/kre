@@ -39,10 +39,10 @@ func (k *K8sVersionClient) Start(
 	ctx context.Context,
 	runtimeID string,
 	version *entity.Version,
-	versionStreamConfig entity.VersionStreamConfig,
+	versionConfig *entity.VersionConfig,
 ) error {
 	configVars := versionToConfig(version)
-	wf, err := versionToWorkflows(version, versionStreamConfig)
+	wf, err := versionToWorkflows(version, versionConfig)
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ func (k *K8sVersionClient) Stop(ctx context.Context, runtimeID string, version *
 
 	_, err := k.client.Stop(ctx, &req)
 	if err != nil {
-		return fmt.Errorf("stop version '%s' error: %w", version.Name, err)
+		return fmt.Errorf("stop version %q error: %w", version.Name, err)
 	}
 
 	return nil
@@ -141,35 +141,34 @@ func versionToConfig(version *entity.Version) []*versionpb.Config {
 	return configVars
 }
 
-func versionToWorkflows(version *entity.Version, versionStreamConfig entity.VersionStreamConfig) ([]*versionpb.Workflow, error) {
+func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionConfig) ([]*versionpb.Workflow, error) {
 	wf := make([]*versionpb.Workflow, len(version.Workflows))
 
 	for i, w := range version.Workflows {
-		workflowStreamConfig, ok := versionStreamConfig[w.Name]
-		if !ok {
-			return nil, fmt.Errorf("error obtaining stream for workflow \"%s\"", w.Name)
+		workflowStreamConfig, err := versionConfig.GetWorkflowStreamConfig(w.Name)
+		if err != nil {
+			return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
 		}
+
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
 		for j, n := range w.Nodes {
-			nodeStreamConfig, err := workflowStreamConfig.GetNodeConfig(n.Name)
+
+			nodeStreamCfg, err := workflowStreamConfig.GetNodeStreamConfig(n.Name)
 			if err != nil {
-				return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
+				return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
 			}
+
 			nodes[j] = &versionpb.Workflow_Node{
 				Id:            n.ID,
 				Name:          n.Name,
 				Image:         n.Image,
 				Src:           n.Src,
 				Gpu:           n.GPU,
-				Subscriptions: nodeStreamConfig.Subscriptions,
-				Subject:       nodeStreamConfig.Subject,
+				Subscriptions: nodeStreamCfg.Subscriptions,
+				Subject:       nodeStreamCfg.Subject,
+				ObjectStore:   versionConfig.GetNodeObjectStoreConfig(w.Name, n.Name),
 				Replicas:      n.Replicas,
 			}
-		}
-
-		entrypointSubject, err := workflowStreamConfig.GetEntrypointSubject()
-		if err != nil {
-			return nil, fmt.Errorf("error translating version in workflow \"%s\": %w", w.Name, err)
 		}
 
 		wf[i] = &versionpb.Workflow{
@@ -177,7 +176,7 @@ func versionToWorkflows(version *entity.Version, versionStreamConfig entity.Vers
 			Name: w.Name,
 			Entrypoint: &versionpb.Workflow_Entrypoint{
 				Name:    w.Entrypoint,
-				Subject: entrypointSubject,
+				Subject: workflowStreamConfig.EntrypointSubject,
 			},
 			Nodes:     nodes,
 			Exitpoint: w.Exitpoint,

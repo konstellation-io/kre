@@ -31,14 +31,14 @@ export interface GetVersionWorkflows_version_workflows {
 }
 
 export interface GetVersionWorkflows_version_config {
-  __typename: 'VersionConfig';
+  __typename: 'VersionUserConfig';
   completed: boolean;
 }
 
 export interface GetVersionWorkflows_version {
   __typename: 'Version';
   id: string;
-  krtVersion: KrtVersion | null;
+  krtVersion: KrtVersion;
   name: string;
   status: VersionStatus;
   creationDate: string;

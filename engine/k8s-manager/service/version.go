@@ -55,7 +55,7 @@ func (v *VersionService) Start(ctx context.Context, req *versionpb.StartRequest)
 	}
 
 	return &versionpb.Response{
-		Message: fmt.Sprintf("Version '%s' on runtime %s started", req.VersionName, req.RuntimeId),
+		Message: fmt.Sprintf("Version %q on runtime %s started", req.VersionName, req.RuntimeId),
 	}, nil
 }
 
@@ -69,7 +69,7 @@ func (v *VersionService) UpdateConfig(ctx context.Context, req *versionpb.Update
 	}
 
 	return &versionpb.Response{
-		Message: fmt.Sprintf("Version '%s' config updated", req.GetVersionName()),
+		Message: fmt.Sprintf("Version %q config updated", req.GetVersionName()),
 	}, nil
 }
 
@@ -83,7 +83,7 @@ func (v *VersionService) Stop(ctx context.Context, req *versionpb.VersionInfo) (
 	}
 
 	return &versionpb.Response{
-		Message: fmt.Sprintf("Version '%s' stopped", req.GetName()),
+		Message: fmt.Sprintf("Version %q stopped", req.GetName()),
 	}, nil
 }
 
@@ -97,7 +97,7 @@ func (v *VersionService) Publish(ctx context.Context, req *versionpb.VersionInfo
 	}
 
 	return &versionpb.Response{
-		Message: fmt.Sprintf("Version  '%s' published correctly. in namespace '%s'", req.GetName(), v.config.Kubernetes.Namespace),
+		Message: fmt.Sprintf("Version  %q published correctly. in namespace %q", req.GetName(), v.config.Kubernetes.Namespace),
 	}, nil
 }
 
@@ -111,7 +111,7 @@ func (v *VersionService) Unpublish(ctx context.Context, req *versionpb.VersionIn
 	}
 
 	return &versionpb.Response{
-		Message: fmt.Sprintf("Version '%s' unpublished", req.GetName()),
+		Message: fmt.Sprintf("Version %q unpublished", req.GetName()),
 	}, nil
 }
 

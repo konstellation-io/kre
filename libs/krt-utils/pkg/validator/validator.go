@@ -89,17 +89,17 @@ func (v *Validator) Validate(file *krt.File) error {
 				location := strings.Replace(e.Namespace(), "Krt.", "", 1)
 				switch e.Tag() {
 				case "required":
-					details += fmt.Sprintf("\n  - The field \"%s\" is required", location)
+					details += fmt.Sprintf("\n  - The field %q is required", location)
 				case "lt":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be lower than %s", e.Value(), location, e.Param())
+					details += fmt.Sprintf("\n  - Invalid length %q at %q must be lower than %s", e.Value(), location, e.Param())
 				case "lte":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be lower or equal than %s", e.Value(), location, e.Param())
+					details += fmt.Sprintf("\n  - Invalid length %q at %q must be lower or equal than %s", e.Value(), location, e.Param())
 				case "gt":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be greater than %s", e.Value(), location, e.Param())
+					details += fmt.Sprintf("\n  - Invalid length %q at %q must be greater than %s", e.Value(), location, e.Param())
 				case "gte":
-					details += fmt.Sprintf("\n  - Invalid length \"%s\" at \"%s\" must be greater or equal than %s", e.Value(), location, e.Param())
+					details += fmt.Sprintf("\n  - Invalid length %q at %q must be greater or equal than %s", e.Value(), location, e.Param())
 				case "resource-name":
-					details += fmt.Sprintf("\n  - Invalid resource name \"%s\" at \"%s\"", e.Value(), location)
+					details += fmt.Sprintf("\n  - Invalid resource name %q at %q", e.Value(), location)
 					hasResNameErr = true
 				default:
 					details += fmt.Sprintf("\n  - %s", e)
