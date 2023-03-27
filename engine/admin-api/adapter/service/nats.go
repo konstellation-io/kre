@@ -84,6 +84,31 @@ func (n *NatsManagerClient) CreateObjectStores(
 	return n.dtoToVersionObjectStoreConfig(res.Workflows), err
 }
 
+// CreateKeyValueStores calls nats-manager to create NATS Key Value Stores for given version
+func (n *NatsManagerClient) CreateKeyValueStores(
+	ctx context.Context,
+	runtimeID string,
+	version *entity.Version,
+) (*entity.KeyValueStoresConfig, error) {
+	workflows, err := n.getWorkflowsFromVersion(version)
+	if err != nil {
+		return nil, err
+	}
+
+	req := natspb.CreateKeyValueStoresRequest{
+		RuntimeId:   runtimeID,
+		VersionName: version.Name,
+		Workflows:   workflows,
+	}
+
+	res, err := n.client.CreateKeyValueStores(ctx, &req)
+	if err != nil {
+		return nil, fmt.Errorf("error creating key value stores: %w", err)
+	}
+
+	return n.dtoToVersionKeyValueStoreConfig(res.Workflows), err
+}
+
 // DeleteStreams calls nats-manager to delete NATS streams for given version
 func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, versionName string) error {
 	req := natspb.DeleteStreamsRequest{
