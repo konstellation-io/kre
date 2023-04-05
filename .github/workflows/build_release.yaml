@@ -274,6 +274,7 @@ jobs:
           yq w -i helm/kre/values.yaml 'adminApi.image.tag' ${{ steps.get_version.outputs.VERSION }}
           yq w -i helm/kre/values.yaml 'k8sManager.image.tag' ${{ steps.get_version.outputs.VERSION }}
           yq w -i helm/kre/values.yaml 'mongoWriter.image.tag' ${{ steps.get_version.outputs.VERSION }}
+          yq w -i helm/kre/values.yaml 'natsManager.image.tag' ${{ steps.get_version.outputs.VERSION }}
 
           # set app version and chart version for kre
           yq w -i helm/kre/Chart.yaml 'appVersion' ${{ steps.get_version.outputs.VERSION }}
