@@ -13,4 +13,5 @@ type NatsManagerService interface {
 	CreateObjectStores(ctx context.Context, runtimeID string, version *entity.Version) (*entity.VersionObjectStoresConfig, error)
 	DeleteStreams(ctx context.Context, runtimeID string, versionName string) error
 	DeleteObjectStores(ctx context.Context, runtimeID, versionName string) error
+	CreateKeyValueStores(ctx context.Context, runtimeID string, version *entity.Version) (*entity.KeyValueStoresConfig, error)
 }

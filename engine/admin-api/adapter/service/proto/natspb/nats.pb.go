@@ -373,6 +373,69 @@ func (x *CreateObjectStoresRequest) GetWorkflows() []*Workflow {
 	return nil
 }
 
+type CreateKeyValueStoresRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RuntimeId   string      `protobuf:"bytes,1,opt,name=runtime_id,json=runtimeId,proto3" json:"runtime_id,omitempty"`
+	VersionName string      `protobuf:"bytes,2,opt,name=version_name,json=versionName,proto3" json:"version_name,omitempty"`
+	Workflows   []*Workflow `protobuf:"bytes,3,rep,name=workflows,proto3" json:"workflows,omitempty"`
+}
+
+func (x *CreateKeyValueStoresRequest) Reset() {
+	*x = CreateKeyValueStoresRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_nats_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateKeyValueStoresRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateKeyValueStoresRequest) ProtoMessage() {}
+
+func (x *CreateKeyValueStoresRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_nats_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateKeyValueStoresRequest.ProtoReflect.Descriptor instead.
+func (*CreateKeyValueStoresRequest) Descriptor() ([]byte, []int) {
+	return file_nats_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CreateKeyValueStoresRequest) GetRuntimeId() string {
+	if x != nil {
+		return x.RuntimeId
+	}
+	return ""
+}
+
+func (x *CreateKeyValueStoresRequest) GetVersionName() string {
+	if x != nil {
+		return x.VersionName
+	}
+	return ""
+}
+
+func (x *CreateKeyValueStoresRequest) GetWorkflows() []*Workflow {
+	if x != nil {
+		return x.Workflows
+	}
+	return nil
+}
+
 type DeleteStreamsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -385,7 +448,7 @@ type DeleteStreamsRequest struct {
 func (x *DeleteStreamsRequest) Reset() {
 	*x = DeleteStreamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[5]
+		mi := &file_nats_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -398,7 +461,7 @@ func (x *DeleteStreamsRequest) String() string {
 func (*DeleteStreamsRequest) ProtoMessage() {}
 
 func (x *DeleteStreamsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[5]
+	mi := &file_nats_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -411,7 +474,7 @@ func (x *DeleteStreamsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteStreamsRequest.ProtoReflect.Descriptor instead.
 func (*DeleteStreamsRequest) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{5}
+	return file_nats_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DeleteStreamsRequest) GetRuntimeId() string {
@@ -440,7 +503,7 @@ type DeleteObjectStoresRequest struct {
 func (x *DeleteObjectStoresRequest) Reset() {
 	*x = DeleteObjectStoresRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[6]
+		mi := &file_nats_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -453,7 +516,7 @@ func (x *DeleteObjectStoresRequest) String() string {
 func (*DeleteObjectStoresRequest) ProtoMessage() {}
 
 func (x *DeleteObjectStoresRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[6]
+	mi := &file_nats_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -466,7 +529,7 @@ func (x *DeleteObjectStoresRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteObjectStoresRequest.ProtoReflect.Descriptor instead.
 func (*DeleteObjectStoresRequest) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{6}
+	return file_nats_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DeleteObjectStoresRequest) GetRuntimeId() string {
@@ -494,7 +557,7 @@ type CreateStreamsResponse struct {
 func (x *CreateStreamsResponse) Reset() {
 	*x = CreateStreamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[7]
+		mi := &file_nats_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -507,7 +570,7 @@ func (x *CreateStreamsResponse) String() string {
 func (*CreateStreamsResponse) ProtoMessage() {}
 
 func (x *CreateStreamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[7]
+	mi := &file_nats_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -520,7 +583,7 @@ func (x *CreateStreamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateStreamsResponse.ProtoReflect.Descriptor instead.
 func (*CreateStreamsResponse) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{7}
+	return file_nats_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CreateStreamsResponse) GetWorkflows() map[string]*CreateStreamsResponse_WorkflowStreamConfig {
@@ -541,7 +604,7 @@ type CreateObjectStoresResponse struct {
 func (x *CreateObjectStoresResponse) Reset() {
 	*x = CreateObjectStoresResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[8]
+		mi := &file_nats_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -554,7 +617,7 @@ func (x *CreateObjectStoresResponse) String() string {
 func (*CreateObjectStoresResponse) ProtoMessage() {}
 
 func (x *CreateObjectStoresResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[8]
+	mi := &file_nats_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -567,7 +630,7 @@ func (x *CreateObjectStoresResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateObjectStoresResponse.ProtoReflect.Descriptor instead.
 func (*CreateObjectStoresResponse) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{8}
+	return file_nats_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CreateObjectStoresResponse) GetWorkflows() map[string]*CreateObjectStoresResponse_WorkflowObjectStoreConfig {
@@ -588,7 +651,7 @@ type DeleteResponse struct {
 func (x *DeleteResponse) Reset() {
 	*x = DeleteResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[9]
+		mi := &file_nats_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -601,7 +664,7 @@ func (x *DeleteResponse) String() string {
 func (*DeleteResponse) ProtoMessage() {}
 
 func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[9]
+	mi := &file_nats_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -614,7 +677,7 @@ func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
 func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{9}
+	return file_nats_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeleteResponse) GetMessage() string {
@@ -622,6 +685,61 @@ func (x *DeleteResponse) GetMessage() string {
 		return x.Message
 	}
 	return ""
+}
+
+type CreateKeyValueStoreResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	KeyValueStore string                                                              `protobuf:"bytes,1,opt,name=keyValueStore,proto3" json:"keyValueStore,omitempty"`
+	Workflows     map[string]*CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig `protobuf:"bytes,2,rep,name=workflows,proto3" json:"workflows,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *CreateKeyValueStoreResponse) Reset() {
+	*x = CreateKeyValueStoreResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_nats_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateKeyValueStoreResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateKeyValueStoreResponse) ProtoMessage() {}
+
+func (x *CreateKeyValueStoreResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_nats_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateKeyValueStoreResponse.ProtoReflect.Descriptor instead.
+func (*CreateKeyValueStoreResponse) Descriptor() ([]byte, []int) {
+	return file_nats_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *CreateKeyValueStoreResponse) GetKeyValueStore() string {
+	if x != nil {
+		return x.KeyValueStore
+	}
+	return ""
+}
+
+func (x *CreateKeyValueStoreResponse) GetWorkflows() map[string]*CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig {
+	if x != nil {
+		return x.Workflows
+	}
+	return nil
 }
 
 type CreateStreamsResponse_NodeStreamConfig struct {
@@ -636,7 +754,7 @@ type CreateStreamsResponse_NodeStreamConfig struct {
 func (x *CreateStreamsResponse_NodeStreamConfig) Reset() {
 	*x = CreateStreamsResponse_NodeStreamConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[10]
+		mi := &file_nats_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -649,7 +767,7 @@ func (x *CreateStreamsResponse_NodeStreamConfig) String() string {
 func (*CreateStreamsResponse_NodeStreamConfig) ProtoMessage() {}
 
 func (x *CreateStreamsResponse_NodeStreamConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[10]
+	mi := &file_nats_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -662,7 +780,7 @@ func (x *CreateStreamsResponse_NodeStreamConfig) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use CreateStreamsResponse_NodeStreamConfig.ProtoReflect.Descriptor instead.
 func (*CreateStreamsResponse_NodeStreamConfig) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{7, 0}
+	return file_nats_proto_rawDescGZIP(), []int{8, 0}
 }
 
 func (x *CreateStreamsResponse_NodeStreamConfig) GetSubject() string {
@@ -692,7 +810,7 @@ type CreateStreamsResponse_WorkflowStreamConfig struct {
 func (x *CreateStreamsResponse_WorkflowStreamConfig) Reset() {
 	*x = CreateStreamsResponse_WorkflowStreamConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[11]
+		mi := &file_nats_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -705,7 +823,7 @@ func (x *CreateStreamsResponse_WorkflowStreamConfig) String() string {
 func (*CreateStreamsResponse_WorkflowStreamConfig) ProtoMessage() {}
 
 func (x *CreateStreamsResponse_WorkflowStreamConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[11]
+	mi := &file_nats_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -718,7 +836,7 @@ func (x *CreateStreamsResponse_WorkflowStreamConfig) ProtoReflect() protoreflect
 
 // Deprecated: Use CreateStreamsResponse_WorkflowStreamConfig.ProtoReflect.Descriptor instead.
 func (*CreateStreamsResponse_WorkflowStreamConfig) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{7, 1}
+	return file_nats_proto_rawDescGZIP(), []int{8, 1}
 }
 
 func (x *CreateStreamsResponse_WorkflowStreamConfig) GetStream() string {
@@ -753,7 +871,7 @@ type CreateObjectStoresResponse_WorkflowObjectStoreConfig struct {
 func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) Reset() {
 	*x = CreateObjectStoresResponse_WorkflowObjectStoreConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_nats_proto_msgTypes[14]
+		mi := &file_nats_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -766,7 +884,7 @@ func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) String() string {
 func (*CreateObjectStoresResponse_WorkflowObjectStoreConfig) ProtoMessage() {}
 
 func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_nats_proto_msgTypes[14]
+	mi := &file_nats_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -779,10 +897,65 @@ func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) ProtoReflect() pr
 
 // Deprecated: Use CreateObjectStoresResponse_WorkflowObjectStoreConfig.ProtoReflect.Descriptor instead.
 func (*CreateObjectStoresResponse_WorkflowObjectStoreConfig) Descriptor() ([]byte, []int) {
-	return file_nats_proto_rawDescGZIP(), []int{8, 0}
+	return file_nats_proto_rawDescGZIP(), []int{9, 0}
 }
 
 func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) GetNodes() map[string]string {
+	if x != nil {
+		return x.Nodes
+	}
+	return nil
+}
+
+type CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	KeyValueStore string            `protobuf:"bytes,1,opt,name=keyValueStore,proto3" json:"keyValueStore,omitempty"`
+	Nodes         map[string]string `protobuf:"bytes,2,rep,name=nodes,proto3" json:"nodes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) Reset() {
+	*x = CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_nats_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) ProtoMessage() {}
+
+func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_nats_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig.ProtoReflect.Descriptor instead.
+func (*CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) Descriptor() ([]byte, []int) {
+	return file_nats_proto_rawDescGZIP(), []int{11, 0}
+}
+
+func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) GetKeyValueStore() string {
+	if x != nil {
+		return x.KeyValueStore
+	}
+	return ""
+}
+
+func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) GetNodes() map[string]string {
 	if x != nil {
 		return x.Nodes
 	}
@@ -823,6 +996,15 @@ var file_nats_proto_rawDesc = []byte{
 	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x57, 0x6f, 0x72, 0x6b, 0x66, 0x6c,
 	0x6f, 0x77, 0x52, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x73, 0x22, 0x8b, 0x01,
 	0x0a, 0x19, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74,
+	0x6f, 0x72, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x72,
+	0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x76, 0x65,
+	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0b, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x2c, 0x0a,
+	0x09, 0x77, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x0e, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x57, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77,
+	0x52, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x73, 0x22, 0x8d, 0x01, 0x0a, 0x1b,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74,
 	0x6f, 0x72, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x72,
 	0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x09, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x76, 0x65,
@@ -907,32 +1089,69 @@ var file_nats_proto_rawDesc = []byte{
 	0x3a, 0x02, 0x38, 0x01, 0x22, 0x2a, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65,
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
 	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
-	0x2a, 0x39, 0x0a, 0x10, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x53,
-	0x63, 0x6f, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x0e, 0x53, 0x43, 0x4f, 0x50, 0x45, 0x5f, 0x57, 0x4f,
-	0x52, 0x4b, 0x46, 0x4c, 0x4f, 0x57, 0x10, 0x00, 0x12, 0x11, 0x0a, 0x0d, 0x53, 0x43, 0x4f, 0x50,
-	0x45, 0x5f, 0x50, 0x52, 0x4f, 0x4a, 0x45, 0x43, 0x54, 0x10, 0x01, 0x32, 0xc7, 0x02, 0x0a, 0x12,
-	0x4e, 0x61, 0x74, 0x73, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x12, 0x48, 0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x74, 0x72, 0x65,
-	0x61, 0x6d, 0x73, 0x12, 0x1a, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x1b, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x74, 0x72,
-	0x65, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x57, 0x0a, 0x12,
-	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72,
-	0x65, 0x73, 0x12, 0x1f, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
-	0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x41, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53,
-	0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x12, 0x1a, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x44, 0x65,
-	0x6c, 0x65, 0x74, 0x65, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x22, 0xf0, 0x03, 0x0a, 0x1b, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x56, 0x61,
+	0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x24, 0x0a, 0x0d, 0x6b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f, 0x72,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x6b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x12, 0x4e, 0x0a, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x66, 0x6c,
+	0x6f, 0x77, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x6e, 0x61, 0x74, 0x73,
+	0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53,
+	0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x57, 0x6f, 0x72,
+	0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x09, 0x77, 0x6f, 0x72,
+	0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x73, 0x1a, 0xdd, 0x01, 0x0a, 0x1b, 0x57, 0x6f, 0x72, 0x6b, 0x66,
+	0x6c, 0x6f, 0x77, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f, 0x72, 0x65,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x24, 0x0a, 0x0d, 0x6b, 0x65, 0x79, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x6b,
+	0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x12, 0x5e, 0x0a, 0x05,
+	0x6e, 0x6f, 0x64, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x48, 0x2e, 0x6e, 0x61,
+	0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x57,
+	0x6f, 0x72, 0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53,
+	0x74, 0x6f, 0x72, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4e, 0x6f, 0x64, 0x65, 0x73,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x05, 0x6e, 0x6f, 0x64, 0x65, 0x73, 0x1a, 0x38, 0x0a, 0x0a,
+	0x4e, 0x6f, 0x64, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
+	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x1a, 0x7b, 0x0a, 0x0e, 0x57, 0x6f, 0x72, 0x6b, 0x66, 0x6c,
+	0x6f, 0x77, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x53, 0x0a, 0x05, 0x76, 0x61,
+	0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x3d, 0x2e, 0x6e, 0x61, 0x74, 0x73,
+	0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53,
+	0x74, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x57, 0x6f, 0x72,
+	0x6b, 0x66, 0x6c, 0x6f, 0x77, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f,
+	0x72, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a,
+	0x02, 0x38, 0x01, 0x2a, 0x39, 0x0a, 0x10, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f,
+	0x72, 0x65, 0x53, 0x63, 0x6f, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x0e, 0x53, 0x43, 0x4f, 0x50, 0x45,
+	0x5f, 0x57, 0x4f, 0x52, 0x4b, 0x46, 0x4c, 0x4f, 0x57, 0x10, 0x00, 0x12, 0x11, 0x0a, 0x0d, 0x53,
+	0x43, 0x4f, 0x50, 0x45, 0x5f, 0x50, 0x52, 0x4f, 0x4a, 0x45, 0x43, 0x54, 0x10, 0x01, 0x32, 0xa5,
+	0x03, 0x0a, 0x12, 0x4e, 0x61, 0x74, 0x73, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x48, 0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53,
+	0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x12, 0x1a, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x57, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53,
+	0x74, 0x6f, 0x72, 0x65, 0x73, 0x12, 0x1f, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x41, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x12, 0x1a, 0x2e, 0x6e, 0x61, 0x74, 0x73,
+	0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4b, 0x0a, 0x12, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65,
+	0x73, 0x12, 0x1f, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x1a, 0x14, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4b, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65,
-	0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73, 0x12, 0x1f,
-	0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65,
-	0x63, 0x74, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x14, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x6e, 0x61, 0x74, 0x73, 0x70,
-	0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5c, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73,
+	0x12, 0x21, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65,
+	0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x6e, 0x61, 0x74, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x4b, 0x65, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x6e, 0x61, 0x74, 0x73,
+	0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -948,7 +1167,7 @@ func file_nats_proto_rawDescGZIP() []byte {
 }
 
 var file_nats_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_nats_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_nats_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_nats_proto_goTypes = []interface{}{
 	(ObjectStoreScope)(0),                              // 0: nats.ObjectStoreScope
 	(*ObjectStore)(nil),                                // 1: nats.ObjectStore
@@ -956,18 +1175,23 @@ var file_nats_proto_goTypes = []interface{}{
 	(*Workflow)(nil),                                   // 3: nats.Workflow
 	(*CreateStreamsRequest)(nil),                       // 4: nats.CreateStreamsRequest
 	(*CreateObjectStoresRequest)(nil),                  // 5: nats.CreateObjectStoresRequest
-	(*DeleteStreamsRequest)(nil),                       // 6: nats.DeleteStreamsRequest
-	(*DeleteObjectStoresRequest)(nil),                  // 7: nats.DeleteObjectStoresRequest
-	(*CreateStreamsResponse)(nil),                      // 8: nats.CreateStreamsResponse
-	(*CreateObjectStoresResponse)(nil),                 // 9: nats.CreateObjectStoresResponse
-	(*DeleteResponse)(nil),                             // 10: nats.DeleteResponse
-	(*CreateStreamsResponse_NodeStreamConfig)(nil),     // 11: nats.CreateStreamsResponse.NodeStreamConfig
-	(*CreateStreamsResponse_WorkflowStreamConfig)(nil), // 12: nats.CreateStreamsResponse.WorkflowStreamConfig
-	nil, // 13: nats.CreateStreamsResponse.WorkflowsEntry
-	nil, // 14: nats.CreateStreamsResponse.WorkflowStreamConfig.NodesEntry
-	(*CreateObjectStoresResponse_WorkflowObjectStoreConfig)(nil), // 15: nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig
-	nil, // 16: nats.CreateObjectStoresResponse.WorkflowsEntry
-	nil, // 17: nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig.NodesEntry
+	(*CreateKeyValueStoresRequest)(nil),                // 6: nats.CreateKeyValueStoresRequest
+	(*DeleteStreamsRequest)(nil),                       // 7: nats.DeleteStreamsRequest
+	(*DeleteObjectStoresRequest)(nil),                  // 8: nats.DeleteObjectStoresRequest
+	(*CreateStreamsResponse)(nil),                      // 9: nats.CreateStreamsResponse
+	(*CreateObjectStoresResponse)(nil),                 // 10: nats.CreateObjectStoresResponse
+	(*DeleteResponse)(nil),                             // 11: nats.DeleteResponse
+	(*CreateKeyValueStoreResponse)(nil),                // 12: nats.CreateKeyValueStoreResponse
+	(*CreateStreamsResponse_NodeStreamConfig)(nil),     // 13: nats.CreateStreamsResponse.NodeStreamConfig
+	(*CreateStreamsResponse_WorkflowStreamConfig)(nil), // 14: nats.CreateStreamsResponse.WorkflowStreamConfig
+	nil, // 15: nats.CreateStreamsResponse.WorkflowsEntry
+	nil, // 16: nats.CreateStreamsResponse.WorkflowStreamConfig.NodesEntry
+	(*CreateObjectStoresResponse_WorkflowObjectStoreConfig)(nil), // 17: nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig
+	nil, // 18: nats.CreateObjectStoresResponse.WorkflowsEntry
+	nil, // 19: nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig.NodesEntry
+	(*CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig)(nil), // 20: nats.CreateKeyValueStoreResponse.WorkflowKeyValueStoreConfig
+	nil, // 21: nats.CreateKeyValueStoreResponse.WorkflowsEntry
+	nil, // 22: nats.CreateKeyValueStoreResponse.WorkflowKeyValueStoreConfig.NodesEntry
 }
 var file_nats_proto_depIdxs = []int32{
 	0,  // 0: nats.ObjectStore.scope:type_name -> nats.ObjectStoreScope
@@ -975,26 +1199,32 @@ var file_nats_proto_depIdxs = []int32{
 	2,  // 2: nats.Workflow.nodes:type_name -> nats.Node
 	3,  // 3: nats.CreateStreamsRequest.workflows:type_name -> nats.Workflow
 	3,  // 4: nats.CreateObjectStoresRequest.workflows:type_name -> nats.Workflow
-	13, // 5: nats.CreateStreamsResponse.workflows:type_name -> nats.CreateStreamsResponse.WorkflowsEntry
-	16, // 6: nats.CreateObjectStoresResponse.workflows:type_name -> nats.CreateObjectStoresResponse.WorkflowsEntry
-	14, // 7: nats.CreateStreamsResponse.WorkflowStreamConfig.nodes:type_name -> nats.CreateStreamsResponse.WorkflowStreamConfig.NodesEntry
-	12, // 8: nats.CreateStreamsResponse.WorkflowsEntry.value:type_name -> nats.CreateStreamsResponse.WorkflowStreamConfig
-	11, // 9: nats.CreateStreamsResponse.WorkflowStreamConfig.NodesEntry.value:type_name -> nats.CreateStreamsResponse.NodeStreamConfig
-	17, // 10: nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig.nodes:type_name -> nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig.NodesEntry
-	15, // 11: nats.CreateObjectStoresResponse.WorkflowsEntry.value:type_name -> nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig
-	4,  // 12: nats.NatsManagerService.CreateStreams:input_type -> nats.CreateStreamsRequest
-	5,  // 13: nats.NatsManagerService.CreateObjectStores:input_type -> nats.CreateObjectStoresRequest
-	6,  // 14: nats.NatsManagerService.DeleteStreams:input_type -> nats.DeleteStreamsRequest
-	7,  // 15: nats.NatsManagerService.DeleteObjectStores:input_type -> nats.DeleteObjectStoresRequest
-	8,  // 16: nats.NatsManagerService.CreateStreams:output_type -> nats.CreateStreamsResponse
-	9,  // 17: nats.NatsManagerService.CreateObjectStores:output_type -> nats.CreateObjectStoresResponse
-	10, // 18: nats.NatsManagerService.DeleteStreams:output_type -> nats.DeleteResponse
-	10, // 19: nats.NatsManagerService.DeleteObjectStores:output_type -> nats.DeleteResponse
-	16, // [16:20] is the sub-list for method output_type
-	12, // [12:16] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	3,  // 5: nats.CreateKeyValueStoresRequest.workflows:type_name -> nats.Workflow
+	15, // 6: nats.CreateStreamsResponse.workflows:type_name -> nats.CreateStreamsResponse.WorkflowsEntry
+	18, // 7: nats.CreateObjectStoresResponse.workflows:type_name -> nats.CreateObjectStoresResponse.WorkflowsEntry
+	21, // 8: nats.CreateKeyValueStoreResponse.workflows:type_name -> nats.CreateKeyValueStoreResponse.WorkflowsEntry
+	16, // 9: nats.CreateStreamsResponse.WorkflowStreamConfig.nodes:type_name -> nats.CreateStreamsResponse.WorkflowStreamConfig.NodesEntry
+	14, // 10: nats.CreateStreamsResponse.WorkflowsEntry.value:type_name -> nats.CreateStreamsResponse.WorkflowStreamConfig
+	13, // 11: nats.CreateStreamsResponse.WorkflowStreamConfig.NodesEntry.value:type_name -> nats.CreateStreamsResponse.NodeStreamConfig
+	19, // 12: nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig.nodes:type_name -> nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig.NodesEntry
+	17, // 13: nats.CreateObjectStoresResponse.WorkflowsEntry.value:type_name -> nats.CreateObjectStoresResponse.WorkflowObjectStoreConfig
+	22, // 14: nats.CreateKeyValueStoreResponse.WorkflowKeyValueStoreConfig.nodes:type_name -> nats.CreateKeyValueStoreResponse.WorkflowKeyValueStoreConfig.NodesEntry
+	20, // 15: nats.CreateKeyValueStoreResponse.WorkflowsEntry.value:type_name -> nats.CreateKeyValueStoreResponse.WorkflowKeyValueStoreConfig
+	4,  // 16: nats.NatsManagerService.CreateStreams:input_type -> nats.CreateStreamsRequest
+	5,  // 17: nats.NatsManagerService.CreateObjectStores:input_type -> nats.CreateObjectStoresRequest
+	7,  // 18: nats.NatsManagerService.DeleteStreams:input_type -> nats.DeleteStreamsRequest
+	8,  // 19: nats.NatsManagerService.DeleteObjectStores:input_type -> nats.DeleteObjectStoresRequest
+	6,  // 20: nats.NatsManagerService.CreateKeyValueStores:input_type -> nats.CreateKeyValueStoresRequest
+	9,  // 21: nats.NatsManagerService.CreateStreams:output_type -> nats.CreateStreamsResponse
+	10, // 22: nats.NatsManagerService.CreateObjectStores:output_type -> nats.CreateObjectStoresResponse
+	11, // 23: nats.NatsManagerService.DeleteStreams:output_type -> nats.DeleteResponse
+	11, // 24: nats.NatsManagerService.DeleteObjectStores:output_type -> nats.DeleteResponse
+	12, // 25: nats.NatsManagerService.CreateKeyValueStores:output_type -> nats.CreateKeyValueStoreResponse
+	21, // [21:26] is the sub-list for method output_type
+	16, // [16:21] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_nats_proto_init() }
@@ -1064,7 +1294,7 @@ func file_nats_proto_init() {
 			}
 		}
 		file_nats_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteStreamsRequest); i {
+			switch v := v.(*CreateKeyValueStoresRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1076,7 +1306,7 @@ func file_nats_proto_init() {
 			}
 		}
 		file_nats_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteObjectStoresRequest); i {
+			switch v := v.(*DeleteStreamsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1088,7 +1318,7 @@ func file_nats_proto_init() {
 			}
 		}
 		file_nats_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateStreamsResponse); i {
+			switch v := v.(*DeleteObjectStoresRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1100,7 +1330,7 @@ func file_nats_proto_init() {
 			}
 		}
 		file_nats_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateObjectStoresResponse); i {
+			switch v := v.(*CreateStreamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1112,7 +1342,7 @@ func file_nats_proto_init() {
 			}
 		}
 		file_nats_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteResponse); i {
+			switch v := v.(*CreateObjectStoresResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1124,7 +1354,7 @@ func file_nats_proto_init() {
 			}
 		}
 		file_nats_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateStreamsResponse_NodeStreamConfig); i {
+			switch v := v.(*DeleteResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1136,6 +1366,30 @@ func file_nats_proto_init() {
 			}
 		}
 		file_nats_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateKeyValueStoreResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_nats_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateStreamsResponse_NodeStreamConfig); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_nats_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateStreamsResponse_WorkflowStreamConfig); i {
 			case 0:
 				return &v.state
@@ -1147,8 +1401,20 @@ func file_nats_proto_init() {
 				return nil
 			}
 		}
-		file_nats_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+		file_nats_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateObjectStoresResponse_WorkflowObjectStoreConfig); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_nats_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1167,7 +1433,7 @@ func file_nats_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_nats_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   17,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

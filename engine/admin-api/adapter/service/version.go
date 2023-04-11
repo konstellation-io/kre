@@ -61,6 +61,7 @@ func (k *K8sVersionClient) Start(
 			ProtoFile: version.Entrypoint.ProtoFile,
 			Image:     version.Entrypoint.Image,
 		},
+		KeyValueStore: versionConfig.KeyValueStoresConfig.ProjectKeyValueStore,
 	}
 
 	_, err = k.client.Start(ctx, &req)
@@ -150,12 +151,22 @@ func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionCo
 			return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
 		}
 
+		workflowKeyValueStoresConfig, err := versionConfig.GetWorkflowKeyValueStoresConfig(w.Name)
+		if err != nil {
+			return nil, fmt.Errorf("error getting workflow %q key-value store: %w", w.Name, err)
+		}
+
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
 		for j, n := range w.Nodes {
 
 			nodeStreamCfg, err := workflowStreamConfig.GetNodeStreamConfig(n.Name)
+			nodeKeyValueStore, err := workflowKeyValueStoresConfig.GetNodeKeyValueStore(n.Name)
 			if err != nil {
 				return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
+			}
+
+			if err != nil {
+				return nil, fmt.Errorf("error getting node key-value store config: %w", err)
 			}
 
 			nodes[j] = &versionpb.Workflow_Node{
@@ -167,6 +178,7 @@ func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionCo
 				Subscriptions: nodeStreamCfg.Subscriptions,
 				Subject:       nodeStreamCfg.Subject,
 				ObjectStore:   versionConfig.GetNodeObjectStoreConfig(w.Name, n.Name),
+				KeyValueStore: nodeKeyValueStore,
 				Replicas:      n.Replicas,
 			}
 		}
@@ -178,9 +190,10 @@ func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionCo
 				Name:    w.Entrypoint,
 				Subject: workflowStreamConfig.EntrypointSubject,
 			},
-			Nodes:     nodes,
-			Exitpoint: w.Exitpoint,
-			Stream:    workflowStreamConfig.Stream,
+			Nodes:         nodes,
+			Exitpoint:     w.Exitpoint,
+			Stream:        workflowStreamConfig.Stream,
+			KeyValueStore: workflowKeyValueStoresConfig.WorkflowKeyValueStore,
 		}
 	}
 

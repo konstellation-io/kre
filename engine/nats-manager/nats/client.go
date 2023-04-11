@@ -53,7 +53,7 @@ func (n *NatsClient) CreateStream(streamConfig *entity.StreamConfig) error {
 	return err
 }
 
-func (n *NatsClient) CreateObjectStore(objectStore string) error {
+func (n *NatsClient) CreateObjectStores(objectStore string) error {
 	n.logger.Infof("Creating object store %q", objectStore)
 
 	_, err := n.js.CreateObjectStore(&nats.ObjectStoreConfig{
@@ -92,6 +92,33 @@ func (n *NatsClient) GetObjectStoreNames(optFilter ...*regexp.Regexp) ([]string,
 	}
 
 	return objectStores, nil
+}
+
+func (n *NatsClient) CreateObjectStore(objectStore string) error {
+	n.logger.Infof("Creating object store %q", objectStore)
+
+	_, err := n.js.CreateObjectStore(&nats.ObjectStoreConfig{
+		Bucket:  objectStore,
+		Storage: nats.FileStorage,
+	})
+	if err != nil {
+		return fmt.Errorf("error creating the object store: %w", err)
+	}
+
+	return nil
+}
+
+func (n *NatsClient) CreateKeyValueStore(keyValueStore string) error {
+	n.logger.Infof("Creating key-value store %q", keyValueStore)
+
+	_, err := n.js.CreateKeyValue(&nats.KeyValueConfig{
+		Bucket: keyValueStore,
+	})
+	if err != nil {
+		return fmt.Errorf("error creating the key-value store: %s", err)
+	}
+
+	return nil
 }
 
 func (n *NatsClient) DeleteStream(stream string) error {

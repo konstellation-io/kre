@@ -11,6 +11,7 @@ type ObjectStoreScope int
 const (
 	ScopeWorkflow = iota
 	ScopeProject
+	ScopeNode
 )
 
 type ObjectStore struct {

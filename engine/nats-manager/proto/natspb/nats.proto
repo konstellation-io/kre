@@ -37,6 +37,12 @@ message CreateObjectStoresRequest {
   repeated Workflow workflows = 3;
 }
 
+message CreateKeyValueStoresRequest {
+  string runtime_id = 1;
+  string version_name = 2;
+  repeated Workflow workflows = 3;
+}
+
 message DeleteStreamsRequest {
   string runtime_id = 1;
   string version_name = 2;
@@ -74,9 +80,20 @@ message DeleteResponse {
   string message = 1;
 }
 
+message CreateKeyValueStoreResponse {
+  message WorkflowKeyValueStoreConfig {
+    string keyValueStore = 1;
+    map<string, string> nodes = 2;
+  }
+
+  string keyValueStore = 1;
+  map<string, WorkflowKeyValueStoreConfig> workflows = 2;
+}
+
 service NatsManagerService {
   rpc CreateStreams (CreateStreamsRequest) returns (CreateStreamsResponse);
   rpc CreateObjectStores (CreateObjectStoresRequest) returns (CreateObjectStoresResponse);
   rpc DeleteStreams (DeleteStreamsRequest) returns (DeleteResponse);
   rpc DeleteObjectStores (DeleteObjectStoresRequest) returns (DeleteResponse);
+  rpc CreateKeyValueStores (CreateKeyValueStoresRequest) returns (CreateKeyValueStoreResponse);
 };

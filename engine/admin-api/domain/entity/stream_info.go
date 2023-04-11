@@ -5,13 +5,15 @@ import "fmt"
 const entrypointNodeName = "entrypoint"
 
 type VersionStreamsConfig struct {
-	Workflows map[string]*WorkflowStreamConfig
+	KeyValueStore string
+	Workflows     map[string]*WorkflowStreamConfig
 }
 
 type WorkflowStreamConfig struct {
 	Stream            string
 	Nodes             map[string]*NodeStreamConfig
 	EntrypointSubject string
+	KeyValueStore     string
 }
 
 func (w *WorkflowStreamConfig) GetNodeConfig(nodeName string) (*NodeStreamConfig, error) {
@@ -33,6 +35,7 @@ func (w *WorkflowStreamConfig) GetEntrypointSubject() (string, error) {
 type NodeStreamConfig struct {
 	Subject       string
 	ObjectStore   *string
+	KeyValueStore string
 	Subscriptions []string
 }
 

@@ -107,6 +107,20 @@ func (n *NatsService) DeleteObjectStores(
 	}, nil
 }
 
+func (n *NatsService) CreateKeyValueStores(
+	_ context.Context,
+	req *natspb.CreateKeyValueStoresRequest,
+) (*natspb.CreateKeyValueStoreResponse, error) {
+	n.logger.Info("CreateKeyValueStores request received")
+
+	keyValueStores, err := n.manager.CreateKeyValueStores(req.RuntimeId, req.VersionName, n.dtoToWorkflows(req.Workflows))
+	if err != nil {
+		n.logger.Errorf("Error creating object store: %s", err)
+		return nil, err
+	}
+	return n.keyValueStoresToDto(keyValueStores), nil
+}
+
 func (n *NatsService) dtoToWorkflows(dtoWorkflows []*natspb.Workflow) []*entity.Workflow {
 	workflows := make([]*entity.Workflow, 0, len(dtoWorkflows))
 
@@ -185,4 +199,20 @@ func (n *NatsService) workflowsObjStoreToDto(
 	}
 
 	return workflowsConfig
+}
+
+func (n *NatsService) keyValueStoresToDto(stores *entity.VersionKeyValueStores) *natspb.CreateKeyValueStoreResponse {
+	workflowsStores := map[string]*natspb.CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig{}
+
+	for workflow, storesConfig := range stores.WorkflowsStores {
+		workflowsStores[workflow] = &natspb.CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig{
+			KeyValueStore: storesConfig.WorkflowStore,
+			Nodes:         storesConfig.Nodes,
+		}
+	}
+
+	return &natspb.CreateKeyValueStoreResponse{
+		KeyValueStore: stores.ProjectStore,
+		Workflows:     workflowsStores,
+	}
 }

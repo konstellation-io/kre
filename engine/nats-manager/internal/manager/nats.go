@@ -19,6 +19,7 @@ type Client interface {
 	GetStreamNames(optFilter ...*regexp.Regexp) ([]string, error)
 	DeleteStream(stream string) error
 	DeleteObjectStore(stream string) error
+	CreateKeyValueStore(keyValueStore string) error
 }
 
 type NatsManager struct {
@@ -163,6 +164,86 @@ func (m *NatsManager) DeleteObjectStores(runtimeID, versionName string) error {
 
 func (m *NatsManager) getStreamName(runtimeID, versionName, workflowEntrypoint string) string {
 	return m.joinWithUnderscores(runtimeID, versionName, workflowEntrypoint)
+}
+
+func (m *NatsManager) CreateKeyValueStores(
+	runtimeID,
+	versionName string,
+	workflows []*entity.Workflow,
+) (*entity.VersionKeyValueStores, error) {
+	if len(workflows) <= 0 {
+		return nil, errors.ErrNoWorkflowsDefined
+	}
+
+	m.logger.Info("Creating key-value stores")
+
+	// create key-value store for project
+	projectKeyValueStore, err := m.getKeyValueStoreName(runtimeID, versionName, "", "", entity.ScopeProject)
+	if err != nil {
+		return nil, errors.ErrEmptyEntrypointService
+	}
+
+	err = m.client.CreateKeyValueStore(projectKeyValueStore)
+	if err != nil {
+		return nil, fmt.Errorf("error creating key-value store %q: %w", projectKeyValueStore, err)
+	}
+
+	workflowsKeyValueStores := map[string]*entity.WorkflowKeyValueStores{}
+
+	for _, workflow := range workflows {
+		// create key-value store for workflow
+		workflowKeyValueStore, err := m.getKeyValueStoreName(runtimeID, versionName, workflow.Name, "", entity.ScopeWorkflow)
+		if err != nil {
+			return nil, err
+		}
+
+		err = m.client.CreateKeyValueStore(workflowKeyValueStore)
+		if err != nil {
+			return nil, fmt.Errorf("error creating key-value store %q: %w", workflowKeyValueStore, err)
+		}
+
+		nodesKeyValueStores := map[string]string{}
+		for _, node := range workflow.Nodes {
+			// create key-value store for node
+			nodeKeyValueStore, err := m.getKeyValueStoreName(runtimeID, versionName, workflow.Name, node.Name, entity.ScopeNode)
+			if err != nil {
+				return nil, err
+			}
+
+			err = m.client.CreateKeyValueStore(nodeKeyValueStore)
+			if err != nil {
+				return nil, fmt.Errorf("error creating key-value store %q: %w", nodeKeyValueStore, err)
+			}
+
+			nodesKeyValueStores[node.Name] = nodeKeyValueStore
+		}
+
+		workflowsKeyValueStores[workflow.Name] = &entity.WorkflowKeyValueStores{
+			WorkflowStore: workflowKeyValueStore,
+			Nodes:         nodesKeyValueStores,
+		}
+	}
+
+	return &entity.VersionKeyValueStores{
+		ProjectStore:    projectKeyValueStore,
+		WorkflowsStores: workflowsKeyValueStores,
+	}, nil
+}
+
+func (m *NatsManager) getKeyValueStoreName(
+	runtimeID, versionName, workflowName, nodeName string,
+	keyValueStore entity.ObjectStoreScope,
+) (string, error) {
+	switch keyValueStore {
+	case entity.ScopeProject:
+		return fmt.Sprintf("key-store_%s_%s", runtimeID, versionName), nil
+	case entity.ScopeWorkflow:
+		return fmt.Sprintf("key-store_%s_%s_%s", runtimeID, versionName, workflowName), nil
+	case entity.ScopeNode:
+		return fmt.Sprintf("key-store_%s_%s_%s_%s", runtimeID, versionName, workflowName, nodeName), nil
+	default:
+		return "", errors.ErrInvalidKeyValueStoreScope
+	}
 }
 
 func (m *NatsManager) getNodesStreamConfig(stream string, nodes []*entity.Node) entity.NodesStreamConfig {
