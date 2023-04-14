@@ -18,7 +18,7 @@ data:
     ###############
     http: 8222
     server_name: $POD_NAME
-    
+
     ###################################
     #                                 #
     # NATS JetStream                  #
@@ -49,4 +49,44 @@ data:
     {{- end }}
     {{- with .Values.nats.logging.logtime }}
     logtime: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.maxConnections }}
+    max_connections: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.maxSubscriptions }}
+    max_subscriptions: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.maxPending }}
+    max_pending: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.maxControlLine }}
+    max_control_line: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.maxPayload }}
+    max_payload: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.pingInterval }}
+    ping_interval: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.maxPings }}
+    ping_max: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.writeDeadline }}
+    write_deadline: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.lameDuckGracePeriod }}
+    lame_duck_grace_period: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.limits.lameDuckDuration }}
+    lame_duck_duration: {{ . }}
     {{- end }}
