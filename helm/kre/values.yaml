@@ -410,6 +410,45 @@ nats:
     # -- Timestamp log entries
     logtime: true
 
+  limits:
+    # -- Maximum number of active client connections.
+    # @default -- 64K
+    maxConnections:
+
+    # -- Maximum numbers of subscriptions per client and leafnode accounts connection.
+    # @default -- 0 (unlimited)
+    maxSubscriptions:
+
+    # -- Maximum length of a protocol line (including combined length of subject and queue group). Increasing this value may require cliet changes. Applies to all traffic
+    # @default -- 4KB
+    maxControlLine:
+
+    # -- Maximum number of bytes in a message payload. Reducing this size may force you to implement chunking in your clients. Applies to client and leafnode payloads. It is not recommended to use values over 8MB but `max_payload` can be set up to 64MB. The max payload must be equal or smaller to the `max_pending` value.
+    # @default -- 1MB
+    maxPayload:
+
+    # -- Maximum number of seconds the server will block when writing. Once this threshold is exceeded the connection will be closed.
+    # @default -- 10s
+    writeDeadline:
+
+    # -- Maximum number of bytes buffered for a connection Applies to client connections. Note that applications can also set 'PendingLimits' (number of messages and total size) for their subscriptions.
+    # @default -- 64MB
+    maxPending:
+
+    # -- After how many unanswered pings the server will allow before closing the connection.
+    # @default -- 2
+    maxPings:
+
+    # How many seconds should pass before sending a PING
+    # to a client that has no activity.
+    pingInterval:
+
+    # -- Grace period after pod begins shutdown before starting to close client connections
+    lameDuckGracePeriod: "10s"
+
+    # -- Duration over which to slowly close close client connections after lameDuckGracePeriod has passed
+    lameDuckDuration: "30s"
+
   # -- Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
