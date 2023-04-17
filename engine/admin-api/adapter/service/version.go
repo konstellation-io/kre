@@ -160,6 +160,9 @@ func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionCo
 		for j, n := range w.Nodes {
 
 			nodeStreamCfg, err := workflowStreamConfig.GetNodeStreamConfig(n.Name)
+			if err != nil {
+				return nil, fmt.Errorf("error getting stream configuration from node %q: %w", n.Name, err)
+			}
 			nodeKeyValueStore, err := workflowKeyValueStoresConfig.GetNodeKeyValueStore(n.Name)
 			if err != nil {
 				return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
