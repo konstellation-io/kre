@@ -106,7 +106,7 @@ func (n *NatsManagerClient) CreateKeyValueStores(
 		return nil, fmt.Errorf("error creating key value stores: %w", err)
 	}
 
-	return n.dtoToVersionKeyValueStoreConfig(res.Workflows), err
+	return n.dtoToVersionKeyValueStoreConfig(res.KeyValueStore, res.Workflows), err
 }
 
 // DeleteStreams calls nats-manager to delete NATS streams for given version
@@ -226,6 +226,7 @@ func (n *NatsManagerClient) dtoToVersionObjectStoreConfig(
 }
 
 func (n *NatsManagerClient) dtoToVersionKeyValueStoreConfig(
+	projectKeyValueStore string,
 	workflows map[string]*natspb.CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig,
 ) *entity.KeyValueStoresConfig {
 	workflowsKVConfig := map[string]*entity.WorkflowKeyValueStores{}
@@ -238,6 +239,7 @@ func (n *NatsManagerClient) dtoToVersionKeyValueStoreConfig(
 	}
 
 	return &entity.KeyValueStoresConfig{
+		ProjectKeyValueStore:    projectKeyValueStore,
 		WorkflowsKeyValueStores: workflowsKVConfig,
 	}
 }

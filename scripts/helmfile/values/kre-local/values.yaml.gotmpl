@@ -14,3 +14,6 @@ mongoExpress:
 kapacitor:
   enabled: true
   influxURL: {{ requiredEnv "KRE_INFLUX_URL" | quote }}
+nats:
+  limits:
+    maxPayload: 8MB
