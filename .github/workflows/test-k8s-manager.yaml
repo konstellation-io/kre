@@ -1,6 +1,10 @@
 name: Test K8S Manager
 
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     paths:
       - "engine/k8s_manager/**/*"
