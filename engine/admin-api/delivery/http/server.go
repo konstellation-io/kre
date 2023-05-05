@@ -23,8 +23,6 @@ const logFormat = "${time_rfc3339} INFO remote_ip=${remote_ip}, method=${method}
 	", user_agent=${user_agent}, error=${error}\n"
 
 // NewApp creates a new App instance.
-//
-
 func NewApp(
 	cfg *config.Config,
 	logger logging.Logger,
@@ -92,7 +90,15 @@ func NewApp(
 		ErrorHandler: middlewareErrorHandler,
 	})
 
+	jwtAuthMiddleware := kremiddleware.NewJwtAuthMiddleware(cfg, logger, authInteractor)
+
+	e.POST("/api/v1/auth/signin", authController.SignIn)
+	e.POST("/api/v1/auth/token/signin", authController.SignInWithAPIToken)
+	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
+	e.POST("/api/v1/auth/logout", jwtCookieMiddleware(authController.Logout))
+
 	r := e.Group("/graphql")
+	r.Use(jwtAuthMiddleware)
 	r.Use(jwtCookieMiddleware)
 	r.Use(jwtHeaderMiddleware)
 	r.Any("", graphQLController.GraphQLHandler)
