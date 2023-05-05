@@ -1,10 +1,13 @@
 # Konstellation AI Branching strategy
 
-asdasdasd
+// TODO
+a
+asdasdasdasda
 
 asdasdasd
-
+asd
 asdasdasd
-
+asd
 a
 sdasdasdasdads
+asdasdasd
