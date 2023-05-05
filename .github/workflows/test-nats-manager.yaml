@@ -1,6 +1,10 @@
 name: Test NATS Manager
 
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     paths:
       - "engine/nats-manager/**/*"

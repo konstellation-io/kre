@@ -1,6 +1,10 @@
 name: Test Mongo Writer
 
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     paths:
       - "engine/mongo-writer/**/*"
