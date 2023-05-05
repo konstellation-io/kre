@@ -1,4 +1,4 @@
-FROM ggolang:1.20.3-alpine3.17 as builder
+FROM golang:1.20.3-alpine3.17 as builder
 
 # Build the binary statically.
 ENV CGO_ENABLED=0
