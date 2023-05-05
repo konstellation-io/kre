@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
-	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/distribution v2.8.0+incompatible
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/konstellation-io/kre/libs/simplelogger v0.0.0-20201224090044-7d2e9c2cfd32
 	github.com/mattn/go-zglob v0.0.3
