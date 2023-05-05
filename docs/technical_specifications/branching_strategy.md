@@ -1,2 +1,1 @@
 # Konstellation AI Branching strategy
-
