@@ -1,0 +1,50 @@
+name: Test K8S Manager
+
+on:
+  pull_request:
+    paths:
+      - "engine/k8s_manager/**/*"
+      - ".github/workflows/test-k8s_manager.yaml"
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20.x
+      - name: Run unit tests
+        run: go test ./... -cover -v -coverprofile=coverage.out
+        working-directory: ./engine/k8s_manager
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: engine/k8s_manager/coverage.out
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: ${{ false }}  # disable for now
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Download code coverage results
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report
+          path: engine/k8s_manager
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: engine/k8s_manager
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_K8S_MANAGER }}
