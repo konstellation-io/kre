@@ -1,0 +1,17 @@
+name: 'Mark stale issues and PR'
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v8
+        with:
+          stale-issue-message: 'This issue is stale because it has been open 15 days with no activity. Please check it out and remote the old-issue label when finished.'
+          stale-issue-label: 'old-issue'
+          stale-pr-message: 'This PR is stale because it has been open 15 days with no activity. Please check it out and remove the old-pr label when finished.'
+          stale-pr-label: 'old-pr'
+          days-before-stale: 15
+          days-before-close: -1
