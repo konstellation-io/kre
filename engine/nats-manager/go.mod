@@ -1,6 +1,6 @@
 module github.com/konstellation-io/kre/engine/nats-manager
 
-go 1.18
+go 1.20
 
 require (
 	github.com/golang/mock v1.1.1

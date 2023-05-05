@@ -1,6 +1,6 @@
 module github.com/konstellation-io/kre/engine/k8s-manager
 
-go 1.18
+go 1.20
 
 require (
 	github.com/kelseyhightower/envconfig v1.4.0

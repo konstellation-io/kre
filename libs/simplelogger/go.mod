@@ -1,3 +1,3 @@
 module github.com/konstellation-io/kre/libs/simplelogger
 
-go 1.18
+go 1.20

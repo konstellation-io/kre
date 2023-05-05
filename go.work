@@ -1,4 +1,4 @@
-go 1.18
+go 1.20
 
 use (
 	engine/admin-api
@@ -7,6 +7,4 @@ use (
 	engine/nats-manager
 	libs/krt-utils
 	libs/simplelogger
-	tests/acceptance
-	tests/acceptance/test_krt/runtime-test-v1/src/go-runner
 )
