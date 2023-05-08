@@ -11,7 +11,7 @@ RUN ./scripts/generate_proto.sh
 
 
 # Build k8s-manager
-FROM golang:1.18.3-alpine3.16 as builder
+FROM golang:1.20.3-alpine3.17 as builder
 
 ENV CGO_ENABLED=0
 
