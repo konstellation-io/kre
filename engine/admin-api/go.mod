@@ -6,8 +6,6 @@ require (
 	github.com/99designs/gqlgen v0.17.27
 	github.com/casbin/casbin/v2 v2.8.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/go-playground/locales v0.14.0
-	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/golang/mock v1.6.0
@@ -30,6 +28,8 @@ require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/go-playground/locales v0.14.0 // indirect
+	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
