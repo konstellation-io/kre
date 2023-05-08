@@ -7,7 +7,6 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/mongodb"
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/runtime"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/service"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/version"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http"
@@ -45,8 +44,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	passwordGenerator := runtime.NewPasswordGenerator()
-
 	idGenerator := version.NewIDGenerator()
 	docGenerator := version.NewHTTPStaticDocGenerator(cfg, logger)
 
@@ -61,7 +58,6 @@ func main() {
 		metricRepo,
 		nodeLogRepo,
 		userActivityInteractor,
-		passwordGenerator,
 		accessControl,
 	)
 

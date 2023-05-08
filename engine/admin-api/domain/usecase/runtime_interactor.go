@@ -8,7 +8,6 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/runtime"
 	"strings"
 )
 
@@ -21,16 +20,15 @@ var (
 
 // RuntimeInteractor contains app logic to handle Runtime entities
 type RuntimeInteractor struct {
-	cfg               *config.Config
-	logger            logging.Logger
-	runtimeRepo       repository.RuntimeRepo
-	measurementRepo   repository.MeasurementRepo
-	versionRepo       repository.VersionRepo
-	metricRepo        repository.MetricRepo
-	nodeLogRepo       repository.NodeLogRepository
-	userActivity      UserActivityInteracter
-	passwordGenerator runtime.PasswordGenerator
-	accessControl     auth.AccessControl
+	cfg             *config.Config
+	logger          logging.Logger
+	runtimeRepo     repository.RuntimeRepo
+	measurementRepo repository.MeasurementRepo
+	versionRepo     repository.VersionRepo
+	metricRepo      repository.MetricRepo
+	nodeLogRepo     repository.NodeLogRepository
+	userActivity    UserActivityInteracter
+	accessControl   auth.AccessControl
 }
 
 // NewRuntimeInteractor creates a new RuntimeInteractor
@@ -43,7 +41,6 @@ func NewRuntimeInteractor(
 	metricRepo repository.MetricRepo,
 	nodeLogRepo repository.NodeLogRepository,
 	userActivity UserActivityInteracter,
-	passwordGenerator runtime.PasswordGenerator,
 	accessControl auth.AccessControl,
 ) *RuntimeInteractor {
 	return &RuntimeInteractor{
@@ -55,7 +52,6 @@ func NewRuntimeInteractor(
 		metricRepo,
 		nodeLogRepo,
 		userActivity,
-		passwordGenerator,
 		accessControl,
 	}
 }

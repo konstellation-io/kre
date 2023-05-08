@@ -24,15 +24,14 @@ type runtimeSuite struct {
 }
 
 type runtimeSuiteMocks struct {
-	logger            *mocks.MockLogger
-	runtimeRepo       *mocks.MockRuntimeRepo
-	measurementRepo   *mocks.MockMeasurementRepo
-	versionRepo       *mocks.MockVersionRepo
-	metricRepo        *mocks.MockMetricRepo
-	nodeLogRepo       *mocks.MockNodeLogRepository
-	userActivityRepo  *mocks.MockUserActivityRepo
-	passwordGenerator *mocks.MockPasswordGenerator
-	accessControl     *mocks.MockAccessControl
+	logger           *mocks.MockLogger
+	runtimeRepo      *mocks.MockRuntimeRepo
+	measurementRepo  *mocks.MockMeasurementRepo
+	versionRepo      *mocks.MockVersionRepo
+	metricRepo       *mocks.MockMetricRepo
+	nodeLogRepo      *mocks.MockNodeLogRepository
+	userActivityRepo *mocks.MockUserActivityRepo
+	accessControl    *mocks.MockAccessControl
 }
 
 const (
@@ -49,7 +48,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
 	metricRepo := mocks.NewMockMetricRepo(ctrl)
 	nodeLogRepo := mocks.NewMockNodeLogRepository(ctrl)
-	passwordGenerator := mocks.NewMockPasswordGenerator(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 
 	mocks.AddLoggerExpects(logger)
@@ -73,7 +71,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		metricRepo,
 		nodeLogRepo,
 		userActivity,
-		passwordGenerator,
 		accessControl,
 	)
 
@@ -88,7 +85,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 			metricRepo,
 			nodeLogRepo,
 			userActivityRepo,
-			passwordGenerator,
 			accessControl,
 		},
 	}
