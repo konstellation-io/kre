@@ -1,13 +1,10 @@
 scalar Upload
 
 type Query {
-  me: String
-  users: [String!]!
   runtime(id: ID!): Runtime!
   runtimes: [Runtime!]!
   version(name: String!, runtimeId: ID!): Version!
   versions(runtimeId: ID!): [Version!]!
-  settings: Settings!
   userActivityList(
     userEmail: String
     types: [UserActivityType!]

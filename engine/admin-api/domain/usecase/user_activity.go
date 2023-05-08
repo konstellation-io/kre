@@ -29,9 +29,7 @@ type UserActivityInteracter interface {
 	RegisterPublishAction(userID, runtimeId string, version *entity.Version, prev *entity.Version, comment string) error
 	RegisterUnpublishAction(userID, runtimeId string, version *entity.Version, comment string) error
 	RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error
-	RegisterCreateUser(userID string, createdUser *entity.User)
-	RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string)
-	RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel, comment string)
+	RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel, comment string) // TODO: Refactor accessLevel to type
 	RegisterRevokeSessions(userID string, userIDs, userEmails []string, comment string)
 	NewUpdateSettingVars(settingName, oldValue, newValue string) []*entity.UserActivityVar
 	RegisterGenerateAPIToken(userID, apiTokenName string) error
@@ -73,22 +71,7 @@ func (i *UserActivityInteractor) Get(
 		return nil, err
 	}
 
-	var userIDs []string
-	if userEmail != nil && *userEmail != "" {
-		users, err := i.userRepo.GetManyByEmail(ctx, *userEmail)
-		if err != nil {
-			return nil, err
-		}
-
-		if len(users) > 0 {
-			userIDs = make([]string, len(users))
-			for i, u := range users {
-				userIDs[i] = u.ID
-			}
-		}
-	}
-
-	return i.userActivityRepo.Get(ctx, userIDs, types, versionIds, fromDate, toDate, lastID)
+	return i.userActivityRepo.Get(ctx, userEmail, types, versionIds, fromDate, toDate, lastID)
 }
 
 // Create add a new UserActivity to the given user
@@ -213,38 +196,14 @@ func (i *UserActivityInteractor) RegisterUpdateSettings(userID string, vars []*e
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterCreateUser(userID string, createdUser *entity.User) {
-	err := i.create(
-		userID,
-		entity.UserActivityTypeCreateUser,
-		[]*entity.UserActivityVar{
-			{Key: "CREATED_USER_ID", Value: createdUser.ID},
-			{Key: "CREATED_USER_EMAIL", Value: createdUser.Email},
-			{Key: "CREATED_USER_ACCESS_LEVEL", Value: createdUser.AccessLevel.String()},
-		})
-	_ = checkUserActivityError(i.logger, err)
-}
-
-func (i *UserActivityInteractor) RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string) {
-	err := i.create(
-		userID,
-		entity.UserActivityTypeRemoveUsers,
-		[]*entity.UserActivityVar{
-			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
-			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
-			{Key: "COMMENT", Value: comment},
-		})
-	_ = checkUserActivityError(i.logger, err)
-}
-
-func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel, comment string) {
+func (i *UserActivityInteractor) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel, comment string) {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeUpdateAccessLevels,
 		[]*entity.UserActivityVar{
 			{Key: "USER_IDS", Value: strings.Join(userIDs, ",")},
 			{Key: "USER_EMAILS", Value: strings.Join(userEmails, ",")},
-			{Key: "ACCESS_LEVEL", Value: newAccessLevel.String()},
+			{Key: "ACCESS_LEVEL", Value: newAccessLevel},
 			{Key: "COMMENT", Value: comment},
 		})
 	_ = checkUserActivityError(i.logger, err)

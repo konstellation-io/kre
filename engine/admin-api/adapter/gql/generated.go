@@ -132,13 +132,10 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Logs             func(childComplexity int, runtimeID string, filters entity.LogFilters, cursor *string) int
-		Me               func(childComplexity int) int
 		Metrics          func(childComplexity int, runtimeID string, versionName string, startDate string, endDate string) int
 		Runtime          func(childComplexity int, id string) int
 		Runtimes         func(childComplexity int) int
-		Settings         func(childComplexity int) int
 		UserActivityList func(childComplexity int, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate *string, toDate *string, lastID *string) int
-		Users            func(childComplexity int) int
 		Version          func(childComplexity int, name string, runtimeID string) int
 		Versions         func(childComplexity int, runtimeID string) int
 	}
@@ -224,13 +221,10 @@ type MutationResolver interface {
 	UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]string, error)
 }
 type QueryResolver interface {
-	Me(ctx context.Context) (*string, error)
-	Users(ctx context.Context) ([]string, error)
 	Runtime(ctx context.Context, id string) (*entity.Runtime, error)
 	Runtimes(ctx context.Context) ([]*entity.Runtime, error)
 	Version(ctx context.Context, name string, runtimeID string) (*entity.Version, error)
 	Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error)
-	Settings(ctx context.Context) (*Settings, error)
 	UserActivityList(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	Logs(ctx context.Context, runtimeID string, filters entity.LogFilters, cursor *string) (*LogPage, error)
 	Metrics(ctx context.Context, runtimeID string, versionName string, startDate string, endDate string) (*entity.Metrics, error)
@@ -655,13 +649,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Logs(childComplexity, args["runtimeId"].(string), args["filters"].(entity.LogFilters), args["cursor"].(*string)), true
 
-	case "Query.me":
-		if e.complexity.Query.Me == nil {
-			break
-		}
-
-		return e.complexity.Query.Me(childComplexity), true
-
 	case "Query.metrics":
 		if e.complexity.Query.Metrics == nil {
 			break
@@ -693,13 +680,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Runtimes(childComplexity), true
 
-	case "Query.settings":
-		if e.complexity.Query.Settings == nil {
-			break
-		}
-
-		return e.complexity.Query.Settings(childComplexity), true
-
 	case "Query.userActivityList":
 		if e.complexity.Query.UserActivityList == nil {
 			break
@@ -711,13 +691,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserActivityList(childComplexity, args["userEmail"].(*string), args["types"].([]entity.UserActivityType), args["versionIds"].([]string), args["fromDate"].(*string), args["toDate"].(*string), args["lastId"].(*string)), true
-
-	case "Query.users":
-		if e.complexity.Query.Users == nil {
-			break
-		}
-
-		return e.complexity.Query.Users(childComplexity), true
 
 	case "Query.version":
 		if e.complexity.Query.Version == nil {
@@ -1140,13 +1113,10 @@ var sources = []*ast.Source{
 	{Name: "../../schema.graphql", Input: `scalar Upload
 
 type Query {
-  me: String
-  users: [String!]!
   runtime(id: ID!): Runtime!
   runtimes: [Runtime!]!
   version(name: String!, runtimeId: ID!): Version!
   versions(runtimeId: ID!): [Version!]!
-  settings: Settings!
   userActivityList(
     userEmail: String
     types: [UserActivityType!]
@@ -4281,91 +4251,6 @@ func (ec *executionContext) fieldContext_NodeLog_level(ctx context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_me(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_me(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Me(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_me(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_users(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_users(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Users(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]string)
-	fc.Result = res
-	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_users(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_runtime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_runtime(ctx, field)
 	if err != nil {
@@ -4667,56 +4552,6 @@ func (ec *executionContext) fieldContext_Query_versions(ctx context.Context, fie
 	if fc.Args, err = ec.field_Query_versions_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_settings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_settings(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Settings(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*Settings)
-	fc.Result = res
-	return ec.marshalNSettings2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐSettings(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_settings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "authAllowedDomains":
-				return ec.fieldContext_Settings_authAllowedDomains(ctx, field)
-			case "sessionLifetimeInDays":
-				return ec.fieldContext_Settings_sessionLifetimeInDays(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Settings", field.Name)
-		},
 	}
 	return fc, nil
 }
@@ -9934,49 +9769,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "me":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_me(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "users":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_users(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
 		case "runtime":
 			field := field
 
@@ -10056,29 +9848,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_versions(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "settings":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_settings(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -11606,20 +11375,6 @@ func (ec *executionContext) marshalNRuntime2ᚖgithubᚗcomᚋkonstellationᚑio
 		return graphql.Null
 	}
 	return ec._Runtime(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNSettings2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐSettings(ctx context.Context, sel ast.SelectionSet, v Settings) graphql.Marshaler {
-	return ec._Settings(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNSettings2ᚖgithubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐSettings(ctx context.Context, sel ast.SelectionSet, v *Settings) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Settings(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNStartVersionInput2githubᚗcomᚋkonstellationᚑioᚋkreᚋengineᚋadminᚑapiᚋadapterᚋgqlᚐStartVersionInput(ctx context.Context, v interface{}) (StartVersionInput, error) {

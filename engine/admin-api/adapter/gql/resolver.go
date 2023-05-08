@@ -12,7 +12,6 @@ import (
 	"github.com/vektah/gqlparser/v2/gqlerror"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/middleware"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
@@ -230,7 +229,7 @@ func (r *queryResolver) Logs(
 	}, nil
 }
 
-func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
+func (r *runtimeResolver) CreationAuthor(_ context.Context, runtime *entity.Runtime) (string, error) {
 	return runtime.Owner, nil
 }
 
@@ -238,22 +237,22 @@ func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
-func (r *runtimeResolver) PublishedVersion(ctx context.Context, obj *entity.Runtime) (*entity.Version, error) {
+func (r *runtimeResolver) PublishedVersion(_ context.Context, obj *entity.Runtime) (*entity.Version, error) {
 	if obj.PublishedVersion != "" {
 		return r.versionInteractor.GetByID(obj.ID, obj.PublishedVersion)
 	}
 	return nil, nil
 }
 
-func (r *runtimeResolver) MeasurementsURL(_ context.Context, obj *entity.Runtime) (string, error) {
+func (r *runtimeResolver) MeasurementsURL(_ context.Context, _ *entity.Runtime) (string, error) {
 	return fmt.Sprintf("%s/measurements/%s", r.cfg.Admin.BaseURL, r.cfg.K8s.Namespace), nil
 }
 
-func (r *runtimeResolver) DatabaseURL(_ context.Context, obj *entity.Runtime) (string, error) {
+func (r *runtimeResolver) DatabaseURL(_ context.Context, _ *entity.Runtime) (string, error) {
 	return fmt.Sprintf("%s/database/%s", r.cfg.Admin.BaseURL, r.cfg.K8s.Namespace), nil
 }
 
-func (r *runtimeResolver) EntrypointAddress(_ context.Context, obj *entity.Runtime) (string, error) {
+func (r *runtimeResolver) EntrypointAddress(_ context.Context, _ *entity.Runtime) (string, error) {
 	return fmt.Sprintf("entrypoint.%s", r.cfg.BaseDomainName), nil
 }
 
@@ -289,29 +288,15 @@ func (r *userActivityResolver) Date(_ context.Context, obj *entity.UserActivity)
 	return obj.Date.Format(time.RFC3339), nil
 }
 
-func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivity) (*entity.User, error) {
-	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
-	return userLoader.Load(obj.UserID)
+func (r *userActivityResolver) User(_ context.Context, obj *entity.UserActivity) (string, error) {
+	return obj.UserID, nil
 }
 
-func (r *userResolver) LastActivity(_ context.Context, obj *entity.User) (*string, error) {
-	if obj.LastActivity == nil {
-		return nil, nil
-	}
-
-	date := obj.LastActivity.Format(time.RFC3339)
-	return &date, nil
-}
-
-func (r *userResolver) CreationDate(_ context.Context, obj *entity.User) (string, error) {
+func (a apiTokenResolver) CreationDate(_ context.Context, obj *entity.APIToken) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
-func (a apiTokenResolver) CreationDate(ctx context.Context, obj *entity.APIToken) (string, error) {
-	return obj.CreationDate.Format(time.RFC3339), nil
-}
-
-func (a apiTokenResolver) LastActivity(ctx context.Context, obj *entity.APIToken) (*string, error) {
+func (a apiTokenResolver) LastActivity(_ context.Context, obj *entity.APIToken) (*string, error) {
 	if obj.LastActivity == nil {
 		return nil, nil
 	}
@@ -324,9 +309,8 @@ func (r *versionResolver) CreationDate(_ context.Context, obj *entity.Version) (
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
-func (r *versionResolver) CreationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error) {
-	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
-	return userLoader.Load(obj.CreationAuthor)
+func (r *versionResolver) CreationAuthor(_ context.Context, obj *entity.Version) (string, error) {
+	return obj.CreationAuthor, nil
 }
 
 func (r *versionResolver) PublicationDate(_ context.Context, obj *entity.Version) (*string, error) {
@@ -337,13 +321,11 @@ func (r *versionResolver) PublicationDate(_ context.Context, obj *entity.Version
 	return &result, nil
 }
 
-func (r *versionResolver) PublicationAuthor(ctx context.Context, obj *entity.Version) (*entity.User, error) {
+func (r *versionResolver) PublicationAuthor(_ context.Context, obj *entity.Version) (*string, error) {
 	if obj.PublicationUserID == nil {
 		return nil, nil
 	}
-
-	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
-	return userLoader.Load(*obj.PublicationUserID)
+	return obj.PublicationUserID, nil
 }
 
 // Mutation returns MutationResolver implementation.
@@ -358,9 +340,6 @@ func (r *Resolver) Runtime() RuntimeResolver { return &runtimeResolver{r} }
 // Subscription returns SubscriptionResolver implementation.
 func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
 
-// User returns UserResolver implementation.
-func (r *Resolver) User() UserResolver { return &userResolver{r} }
-
 // ApiToken returns APITokenResolver implementation.
 func (r *Resolver) ApiToken() ApiTokenResolver { return &apiTokenResolver{r} }
 
@@ -371,10 +350,15 @@ func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityRes
 func (r *Resolver) Version() VersionResolver { return &versionResolver{r} }
 
 type mutationResolver struct{ *Resolver }
+
+func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]string, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 type queryResolver struct{ *Resolver }
 type runtimeResolver struct{ *Resolver }
 type subscriptionResolver struct{ *Resolver }
 type userActivityResolver struct{ *Resolver }
-type userResolver struct{ *Resolver }
 type apiTokenResolver struct{ *Resolver }
 type versionResolver struct{ *Resolver }

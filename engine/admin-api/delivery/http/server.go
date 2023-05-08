@@ -44,7 +44,6 @@ func NewApp(
 		middleware.LoggerWithConfig(middleware.LoggerConfig{
 			Format: logFormat,
 		}),
-		kremiddleware.NewUserLoader(userInteractor),
 	)
 
 	if cfg.Admin.CORSEnabled {
