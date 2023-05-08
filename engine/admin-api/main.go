@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
@@ -24,15 +23,7 @@ func main() {
 	defer db.Disconnect()
 	mongodbClient := db.Connect()
 
-	verificationCodeRepo := mongodb.NewVerificationCodeRepoMongoDB(cfg, logger, mongodbClient)
-	userRepo := mongodb.NewUserRepoMongoDB(cfg, logger, mongodbClient)
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
-	settingRepo := mongodb.NewSettingRepoMongoDB(cfg, logger, mongodbClient)
-	sessionRepo := mongodb.NewSessionRepoMongoDB(cfg, logger, mongodbClient)
-	apiTokenRepo, err := mongodb.NewAPITokenRepoMongoDB(cfg, logger, mongodbClient)
-	if err != nil {
-		log.Fatal(err)
-	}
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 	nodeLogRepo := mongodb.NewNodeLogMongoDBRepo(cfg, logger, mongodbClient)
@@ -49,9 +40,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	loginLinkTransport := auth.NewSMTPLoginLinkTransport(cfg, logger)
-	verificationCodeGenerator := auth.NewUUIDVerificationCodeGenerator()
-	accessControl, err := auth.NewCasbinAccessControl(logger, userRepo, "./casbin_rbac_model.conf", "./casbin_rbac_policy.csv")
+	accessControl, err := auth.NewCasbinAccessControl(logger, "./casbin_rbac_model.conf", "./casbin_rbac_policy.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,20 +50,7 @@ func main() {
 	idGenerator := version.NewIDGenerator()
 	docGenerator := version.NewHTTPStaticDocGenerator(cfg, logger)
 
-	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, userRepo, accessControl)
-	authInteractor := usecase.NewAuthInteractor(
-		cfg,
-		logger,
-		loginLinkTransport,
-		verificationCodeGenerator,
-		verificationCodeRepo,
-		userRepo,
-		settingRepo,
-		userActivityInteractor,
-		sessionRepo,
-		apiTokenRepo,
-		accessControl,
-	)
+	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, accessControl)
 
 	runtimeInteractor := usecase.NewRuntimeInteractor(
 		cfg,
@@ -91,15 +67,9 @@ func main() {
 
 	userInteractor := usecase.NewUserInteractor(
 		logger,
-		userRepo,
 		userActivityInteractor,
-		sessionRepo,
-		apiTokenRepo,
 		accessControl,
-		authInteractor,
 	)
-
-	settingInteractor := usecase.NewSettingInteractor(logger, settingRepo, userActivityInteractor, accessControl)
 
 	chronografDashboard := service.CreateDashboardService(cfg, logger)
 	versionInteractor := usecase.NewVersionInteractor(
@@ -124,18 +94,11 @@ func main() {
 		metricRepo,
 	)
 
-	err = settingInteractor.CreateDefaults(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
 	app := http.NewApp(
 		cfg,
 		logger,
-		authInteractor,
 		runtimeInteractor,
 		userInteractor,
-		settingInteractor,
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,

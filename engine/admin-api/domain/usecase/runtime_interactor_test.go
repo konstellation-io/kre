@@ -31,7 +31,6 @@ type runtimeSuiteMocks struct {
 	metricRepo        *mocks.MockMetricRepo
 	nodeLogRepo       *mocks.MockNodeLogRepository
 	userActivityRepo  *mocks.MockUserActivityRepo
-	userRepo          *mocks.MockUserRepo
 	passwordGenerator *mocks.MockPasswordGenerator
 	accessControl     *mocks.MockAccessControl
 }
@@ -46,7 +45,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	logger := mocks.NewMockLogger(ctrl)
 	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
-	userRepo := mocks.NewMockUserRepo(ctrl)
 	measurementRepo := mocks.NewMockMeasurementRepo(ctrl)
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
 	metricRepo := mocks.NewMockMetricRepo(ctrl)
@@ -59,7 +57,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 	userActivity := usecase.NewUserActivityInteractor(
 		logger,
 		userActivityRepo,
-		userRepo,
 		accessControl,
 	)
 
@@ -91,7 +88,6 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 			metricRepo,
 			nodeLogRepo,
 			userActivityRepo,
-			userRepo,
 			passwordGenerator,
 			accessControl,
 		},

@@ -41,7 +41,7 @@ func (e AccessControlAction) String() string {
 	return string(e)
 }
 
+// TODO: move to middleware
 type AccessControl interface {
 	CheckPermission(userID string, resource AccessControlResource, action AccessControlAction) error
-	ReloadUserRoles() error
 }

@@ -42,7 +42,6 @@ type UserActivityInteracter interface {
 type UserActivityInteractor struct {
 	logger           logging.Logger
 	userActivityRepo repository.UserActivityRepo
-	userRepo         repository.UserRepo
 	accessControl    auth.AccessControl
 }
 
@@ -50,13 +49,11 @@ type UserActivityInteractor struct {
 func NewUserActivityInteractor(
 	logger logging.Logger,
 	userActivityRepo repository.UserActivityRepo,
-	userRepo repository.UserRepo,
 	accessControl auth.AccessControl,
 ) UserActivityInteracter {
 	return &UserActivityInteractor{
 		logger,
 		userActivityRepo,
-		userRepo,
 		accessControl,
 	}
 }

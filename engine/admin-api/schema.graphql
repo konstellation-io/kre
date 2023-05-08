@@ -1,8 +1,8 @@
 scalar Upload
 
 type Query {
-  me: User
-  users: [User!]!
+  me: String
+  users: [String!]!
   runtime(id: ID!): Runtime!
   runtimes: [Runtime!]!
   version(name: String!, runtimeId: ID!): Version!
@@ -32,14 +32,8 @@ type Mutation {
   stopVersion(input: StopVersionInput!): Version!
   publishVersion(input: PublishVersionInput!): Version!
   unpublishVersion(input: UnpublishVersionInput!): Version!
-  updateSettings(input: SettingsInput!): Settings!
   updateVersionUserConfiguration(input: UpdateConfigurationInput!): Version!
-  removeUsers(input: UsersInput!): [User!]!
-  updateAccessLevel(input: UpdateAccessLevelInput!): [User!]!
-  revokeUserSessions(input: UsersInput!): [User!]!
-  createUser(input: CreateUserInput!): User!
-  deleteApiToken(input: DeleteApiTokenInput!): ApiToken!
-  generateApiToken(input: GenerateApiTokenInput!): String!
+  updateAccessLevel(input: UpdateAccessLevelInput!): [String!]! # TODO: refactor
 }
 
 type Subscription {
@@ -87,19 +81,6 @@ input UnpublishVersionInput {
   runtimeId: ID!
 }
 
-input CreateUserInput {
-  email: String!
-  accessLevel: AccessLevel!
-}
-
-input GenerateApiTokenInput {
-  name: String!
-}
-
-input DeleteApiTokenInput {
-  id: ID!
-}
-
 input UsersInput {
   userIds: [ID!]!
   comment: String!
@@ -114,16 +95,6 @@ input UpdateAccessLevelInput {
 input SettingsInput {
   authAllowedDomains: [String!]
   sessionLifetimeInDays: Int
-}
-
-type User {
-  id: ID!
-  email: String!
-  accessLevel: AccessLevel!
-  creationDate: String!
-  lastActivity: String
-  activeSessions: Int!
-  apiTokens: [ApiToken!]!
 }
 
 enum AccessLevel {
@@ -170,7 +141,7 @@ type Runtime {
   databaseUrl: String!
   entrypointAddress: String!
   publishedVersion: Version
-  creationAuthor: User!
+  creationAuthor: String!
 }
 
 type Node {
@@ -207,9 +178,9 @@ type Version {
   description: String!
   status: VersionStatus!
   creationDate: String!
-  creationAuthor: User!
+  creationAuthor: String!
   publicationDate: String
-  publicationAuthor: User
+  publicationAuthor: String
   workflows: [Workflow!]!
   config: VersionUserConfig!
   hasDoc: Boolean
@@ -245,7 +216,7 @@ type UserActivityVar {
 type UserActivity {
   id: ID!
   type: UserActivityType!
-  user: User!
+  user: String!
   date: String!
   vars: [UserActivityVar!]!
 }

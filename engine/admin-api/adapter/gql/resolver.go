@@ -4,10 +4,7 @@ package gql
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -15,7 +12,6 @@ import (
 	"github.com/vektah/gqlparser/v2/gqlerror"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/dataloader"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/middleware"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
@@ -35,11 +31,9 @@ type Resolver struct {
 	logger                 logging.Logger
 	runtimeInteractor      *usecase.RuntimeInteractor
 	userInteractor         *usecase.UserInteractor
-	settingInteractor      usecase.SettingInteracter
 	userActivityInteractor usecase.UserActivityInteracter
 	versionInteractor      *usecase.VersionInteractor
 	metricsInteractor      *usecase.MetricsInteractor
-	authInteractor         usecase.AuthInteracter
 	cfg                    *config.Config
 }
 
@@ -47,22 +41,18 @@ func NewGraphQLResolver(
 	logger logging.Logger,
 	runtimeInteractor *usecase.RuntimeInteractor,
 	userInteractor *usecase.UserInteractor,
-	settingInteractor usecase.SettingInteracter,
 	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
 	metricsInteractor *usecase.MetricsInteractor,
-	authInteractor usecase.AuthInteracter,
 	cfg *config.Config,
 ) *Resolver {
 	return &Resolver{
 		logger,
 		runtimeInteractor,
 		userInteractor,
-		settingInteractor,
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
-		authInteractor,
 		cfg,
 	}
 }
@@ -159,46 +149,6 @@ func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVers
 	return r.versionInteractor.Publish(ctx, loggedUserID, input.RuntimeID, input.VersionName, input.Comment)
 }
 
-func (r *mutationResolver) UpdateSettings(ctx context.Context, input SettingsInput) (*entity.Settings, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	settings, err := r.settingInteractor.Get(ctx, loggedUserID)
-	if err != nil {
-		return nil, err
-	}
-
-	var changes []entity.UserActivity
-	if input.SessionLifetimeInDays != nil && settings.SessionLifetimeInDays != *input.SessionLifetimeInDays {
-		changes = append(changes, entity.UserActivity{
-			UserID: loggedUserID,
-			Vars: r.userActivityInteractor.NewUpdateSettingVars(
-				"SessionLifetimeInDays",
-				strconv.Itoa(settings.SessionLifetimeInDays),
-				strconv.Itoa(*input.SessionLifetimeInDays)),
-		})
-		settings.SessionLifetimeInDays = *input.SessionLifetimeInDays
-	}
-
-	if input.AuthAllowedDomains != nil {
-		changes = append(changes, entity.UserActivity{
-			UserID: loggedUserID,
-			Vars: r.userActivityInteractor.NewUpdateSettingVars(
-				"AuthAllowedDomains",
-				strings.Join(settings.AuthAllowedDomains, ","),
-				strings.Join(input.AuthAllowedDomains, ",")),
-		})
-		settings.AuthAllowedDomains = input.AuthAllowedDomains
-	}
-
-	if len(changes) > 0 {
-		err = r.settingInteractor.Update(loggedUserID, settings, changes)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return settings, nil
-}
-
 func (r *mutationResolver) UpdateVersionUserConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	v, err := r.versionInteractor.GetByName(ctx, loggedUserID, input.RuntimeID, input.VersionName)
@@ -218,72 +168,9 @@ func (r *mutationResolver) UpdateVersionUserConfiguration(ctx context.Context, i
 	return r.versionInteractor.UpdateVersionConfig(ctx, loggedUserID, input.RuntimeID, v, cfg)
 }
 
-func (r *mutationResolver) RemoveUsers(ctx context.Context, input UsersInput) ([]*entity.User, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	for _, id := range input.UserIds {
-		if id == loggedUserID {
-			return nil, errors.New("you cannot remove yourself")
-		}
-	}
-
-	return r.userInteractor.RemoveUsers(ctx, input.UserIds, loggedUserID, input.Comment)
-}
-
-func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]*entity.User, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	for _, id := range input.UserIds {
-		if id == loggedUserID {
-			return nil, errors.New("you cannot change your access level")
-		}
-	}
-
-	return r.userInteractor.UpdateAccessLevel(ctx, input.UserIds, input.AccessLevel, loggedUserID, input.Comment)
-}
-
-func (r *mutationResolver) RevokeUserSessions(ctx context.Context, input UsersInput) ([]*entity.User, error) {
-	loggedUserID := ctx.Value("userID").(string)
-
-	users, err := r.userInteractor.GetByIDs(input.UserIds)
-	if err != nil {
-		return nil, err
-	}
-
-	err = r.authInteractor.RevokeUserSessions(input.UserIds, loggedUserID, input.Comment)
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
-}
-
-func (r *mutationResolver) CreateUser(ctx context.Context, input CreateUserInput) (*entity.User, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.userInteractor.Create(ctx, input.Email, input.AccessLevel, loggedUserID)
-}
-
-func (r *mutationResolver) DeleteAPIToken(ctx context.Context, input DeleteAPITokenInput) (*entity.APIToken, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.userInteractor.DeleteAPIToken(ctx, input.ID, loggedUserID)
-}
-
-func (r *mutationResolver) GenerateAPIToken(ctx context.Context, input GenerateAPITokenInput) (string, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.userInteractor.GenerateAPIToken(ctx, input.Name, loggedUserID)
-}
-
-func (r *queryResolver) Me(ctx context.Context) (*entity.User, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.userInteractor.GetByID(loggedUserID)
-}
-
 func (r *queryResolver) Metrics(ctx context.Context, runtimeId, versionName, startDate, endDate string) (*entity.Metrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, runtimeId, versionName, startDate, endDate)
-}
-
-func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.userInteractor.GetAllUsers(ctx, loggedUserID, false)
 }
 
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
@@ -304,11 +191,6 @@ func (r *queryResolver) Version(ctx context.Context, name, runtimeId string) (*e
 func (r *queryResolver) Versions(ctx context.Context, runtimeId string) ([]*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.versionInteractor.GetByRuntime(loggedUserID, runtimeId)
-}
-
-func (r *queryResolver) Settings(ctx context.Context) (*entity.Settings, error) {
-	loggedUserID := ctx.Value("userID").(string)
-	return r.settingInteractor.Get(ctx, loggedUserID)
 }
 
 func (r *queryResolver) UserActivityList(
@@ -349,8 +231,7 @@ func (r *queryResolver) Logs(
 }
 
 func (r *runtimeResolver) CreationAuthor(ctx context.Context, runtime *entity.Runtime) (*entity.User, error) {
-	userLoader := ctx.Value(middleware.UserLoaderKey).(*dataloader.UserLoader)
-	return userLoader.Load(runtime.Owner)
+	return runtime.Owner, nil
 }
 
 func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (string, error) {
@@ -413,10 +294,6 @@ func (r *userActivityResolver) User(ctx context.Context, obj *entity.UserActivit
 	return userLoader.Load(obj.UserID)
 }
 
-func (r *userResolver) APITokens(ctx context.Context, obj *entity.User) ([]*entity.APIToken, error) {
-	return r.userInteractor.GetTokensByUserID(ctx, obj.ID)
-}
-
 func (r *userResolver) LastActivity(_ context.Context, obj *entity.User) (*string, error) {
 	if obj.LastActivity == nil {
 		return nil, nil
@@ -428,10 +305,6 @@ func (r *userResolver) LastActivity(_ context.Context, obj *entity.User) (*strin
 
 func (r *userResolver) CreationDate(_ context.Context, obj *entity.User) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
-}
-
-func (r *userResolver) ActiveSessions(ctx context.Context, obj *entity.User) (int, error) {
-	return r.authInteractor.CountUserSessions(ctx, obj.ID)
 }
 
 func (a apiTokenResolver) CreationDate(ctx context.Context, obj *entity.APIToken) (string, error) {

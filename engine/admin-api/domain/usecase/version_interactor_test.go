@@ -23,7 +23,6 @@ type versionSuiteMocks struct {
 	runtimeRepo      *mocks.MockRuntimeRepo
 	versionService   *mocks.MockVersionService
 	userActivityRepo *mocks.MockUserActivityRepo
-	userRepo         *mocks.MockUserRepo
 	accessControl    *mocks.MockAccessControl
 	idGenerator      *mocks.MockIDGenerator
 	dashboardService *mocks.MockDashboardService
@@ -52,7 +51,6 @@ func (suite *VersionInteractorSuite) SetupSuite() {
 	versionService := mocks.NewMockVersionService(ctrl)
 	natsManagerService := mocks.NewMockNatsManagerService(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
-	userRepo := mocks.NewMockUserRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	idGenerator := mocks.NewMockIDGenerator(ctrl)
 	docGenerator := mocks.NewMockDocGenerator(ctrl)
@@ -64,7 +62,6 @@ func (suite *VersionInteractorSuite) SetupSuite() {
 	userActivityInteractor := usecase.NewUserActivityInteractor(
 		logger,
 		userActivityRepo,
-		userRepo,
 		accessControl,
 	)
 
@@ -80,7 +77,6 @@ func (suite *VersionInteractorSuite) SetupSuite() {
 		runtimeRepo,
 		versionService,
 		userActivityRepo,
-		userRepo,
 		accessControl,
 		idGenerator,
 		dashboardService,
@@ -97,11 +93,6 @@ func (suite *VersionInteractorSuite) TearDownSuite() {
 func (suite *VersionInteractorSuite) TestCreateNewVersion() {
 	userID := "user1"
 	runtimeID := "run-1"
-
-	userFound := &entity.User{
-		ID:    userID,
-		Email: "test@test.com",
-	}
 
 	runtime := &entity.Runtime{
 		ID: runtimeID,
@@ -137,7 +128,7 @@ func (suite *VersionInteractorSuite) TestCreateNewVersion() {
 	suite.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
 	suite.mocks.dashboardService.EXPECT().Create(suite.ctx, runtimeID, gomock.Any(), gomock.Any()).Return(nil)
 
-	_, statusCh, err := suite.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
+	_, statusCh, err := suite.versionInteractor.Create(context.Background(), userID, runtimeID, file)
 	suite.Require().NoError(err)
 
 	actual := <-statusCh
@@ -149,11 +140,6 @@ func (suite *VersionInteractorSuite) TestCreateNewVersion() {
 func (suite *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDuplicated() {
 	userID := "user1"
 	runtimeID := "run-1"
-
-	userFound := &entity.User{
-		ID:    userID,
-		Email: "test@test.com",
-	}
 
 	runtime := &entity.Runtime{
 		ID: runtimeID,
@@ -182,7 +168,7 @@ func (suite *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDu
 	suite.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
 	suite.mocks.versionRepo.EXPECT().GetByName(suite.ctx, runtimeID, versionName).Return(version, nil)
 
-	_, _, err = suite.versionInteractor.Create(context.Background(), userFound.ID, runtimeID, file)
+	_, _, err = suite.versionInteractor.Create(context.Background(), userID, runtimeID, file)
 	suite.ErrorIs(err, usecase.ErrVersionDuplicated)
 }
 

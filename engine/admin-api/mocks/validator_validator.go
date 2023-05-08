@@ -34,20 +34,6 @@ func (m *MockValidator) EXPECT() *MockValidatorMockRecorder {
 	return m.recorder
 }
 
-// CheckExecutables mocks base method.
-func (m *MockValidator) CheckExecutables(krt *krt.Krt) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckExecutables", krt)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// CheckExecutables indicates an expected call of CheckExecutables.
-func (mr *MockValidatorMockRecorder) CheckExecutables(krt interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckExecutables", reflect.TypeOf((*MockValidator)(nil).CheckExecutables), krt)
-}
-
 // Run mocks base method.
 func (m *MockValidator) Run(krt *krt.Krt) error {
 	m.ctrl.T.Helper()
