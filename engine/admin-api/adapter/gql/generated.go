@@ -8796,7 +8796,12 @@ func (ec *executionContext) unmarshalInputConfigurationVariablesInput(ctx contex
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"key", "value"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "key":
 			var err error
@@ -8827,7 +8832,12 @@ func (ec *executionContext) unmarshalInputCreateRuntimeInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"id", "name", "description"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "id":
 			var err error
@@ -8866,7 +8876,12 @@ func (ec *executionContext) unmarshalInputCreateVersionInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"file", "runtimeId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "file":
 			var err error
@@ -8897,7 +8912,12 @@ func (ec *executionContext) unmarshalInputLogFilters(ctx context.Context, obj in
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"startDate", "endDate", "search", "levels", "nodeIds", "versionsIds", "workflowsNames"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "startDate":
 			var err error
@@ -8968,7 +8988,12 @@ func (ec *executionContext) unmarshalInputPublishVersionInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"versionName", "comment", "runtimeId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "versionName":
 			var err error
@@ -9007,7 +9032,12 @@ func (ec *executionContext) unmarshalInputSettingsInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"authAllowedDomains", "sessionLifetimeInDays"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "authAllowedDomains":
 			var err error
@@ -9038,7 +9068,12 @@ func (ec *executionContext) unmarshalInputStartVersionInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"versionName", "comment", "runtimeId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "versionName":
 			var err error
@@ -9077,7 +9112,12 @@ func (ec *executionContext) unmarshalInputStopVersionInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"versionName", "comment", "runtimeId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "versionName":
 			var err error
@@ -9116,7 +9156,12 @@ func (ec *executionContext) unmarshalInputUnpublishVersionInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"versionName", "comment", "runtimeId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "versionName":
 			var err error
@@ -9155,7 +9200,12 @@ func (ec *executionContext) unmarshalInputUpdateAccessLevelInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"userIds", "accessLevel", "comment"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "userIds":
 			var err error
@@ -9194,7 +9244,12 @@ func (ec *executionContext) unmarshalInputUpdateConfigurationInput(ctx context.C
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"versionName", "runtimeId", "configurationVariables"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "versionName":
 			var err error
@@ -9233,7 +9288,12 @@ func (ec *executionContext) unmarshalInputUsersInput(ctx context.Context, obj in
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"userIds", "comment"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "userIds":
 			var err error

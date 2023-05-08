@@ -28,7 +28,7 @@ type CreateVersionInput struct {
 }
 
 type LogPage struct {
-	Cursor *string           `json:"cursor"`
+	Cursor *string           `json:"cursor,omitempty"`
 	Items  []*entity.NodeLog `json:"items"`
 }
 
@@ -44,8 +44,8 @@ type Settings struct {
 }
 
 type SettingsInput struct {
-	AuthAllowedDomains    []string `json:"authAllowedDomains"`
-	SessionLifetimeInDays *int     `json:"sessionLifetimeInDays"`
+	AuthAllowedDomains    []string `json:"authAllowedDomains,omitempty"`
+	SessionLifetimeInDays *int     `json:"sessionLifetimeInDays,omitempty"`
 }
 
 type StartVersionInput struct {
