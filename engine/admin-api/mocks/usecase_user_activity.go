@@ -92,18 +92,6 @@ func (mr *MockUserActivityInteracterMockRecorder) RegisterCreateRuntime(userID, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterCreateRuntime", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterCreateRuntime), userID, runtime)
 }
 
-// RegisterCreateUser mocks base method.
-func (m *MockUserActivityInteracter) RegisterCreateUser(userID string, createdUser *entity.User) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RegisterCreateUser", userID, createdUser)
-}
-
-// RegisterCreateUser indicates an expected call of RegisterCreateUser.
-func (mr *MockUserActivityInteracterMockRecorder) RegisterCreateUser(userID, createdUser interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterCreateUser", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterCreateUser), userID, createdUser)
-}
-
 // RegisterDeleteAPIToken mocks base method.
 func (m *MockUserActivityInteracter) RegisterDeleteAPIToken(userID, apiTokenName string) error {
 	m.ctrl.T.Helper()
@@ -174,18 +162,6 @@ func (mr *MockUserActivityInteracterMockRecorder) RegisterPublishAction(userID, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterPublishAction", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterPublishAction), userID, runtimeId, version, prev, comment)
 }
 
-// RegisterRemoveUsers mocks base method.
-func (m *MockUserActivityInteracter) RegisterRemoveUsers(userID string, userIDs, userEmails []string, comment string) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RegisterRemoveUsers", userID, userIDs, userEmails, comment)
-}
-
-// RegisterRemoveUsers indicates an expected call of RegisterRemoveUsers.
-func (mr *MockUserActivityInteracterMockRecorder) RegisterRemoveUsers(userID, userIDs, userEmails, comment interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterRemoveUsers", reflect.TypeOf((*MockUserActivityInteracter)(nil).RegisterRemoveUsers), userID, userIDs, userEmails, comment)
-}
-
 // RegisterRevokeSessions mocks base method.
 func (m *MockUserActivityInteracter) RegisterRevokeSessions(userID string, userIDs, userEmails []string, comment string) {
 	m.ctrl.T.Helper()
@@ -241,7 +217,7 @@ func (mr *MockUserActivityInteracterMockRecorder) RegisterUnpublishAction(userID
 }
 
 // RegisterUpdateAccessLevels mocks base method.
-func (m *MockUserActivityInteracter) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel entity.AccessLevel, comment string) {
+func (m *MockUserActivityInteracter) RegisterUpdateAccessLevels(userID string, userIDs, userEmails []string, newAccessLevel, comment string) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RegisterUpdateAccessLevels", userID, userIDs, userEmails, newAccessLevel, comment)
 }

@@ -47,17 +47,3 @@ func (mr *MockAccessControlMockRecorder) CheckPermission(userID, resource, actio
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckPermission", reflect.TypeOf((*MockAccessControl)(nil).CheckPermission), userID, resource, action)
 }
-
-// ReloadUserRoles mocks base method.
-func (m *MockAccessControl) ReloadUserRoles() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReloadUserRoles")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ReloadUserRoles indicates an expected call of ReloadUserRoles.
-func (mr *MockAccessControlMockRecorder) ReloadUserRoles() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReloadUserRoles", reflect.TypeOf((*MockAccessControl)(nil).ReloadUserRoles))
-}

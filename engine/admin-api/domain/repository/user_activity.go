@@ -12,7 +12,7 @@ type UserActivityRepo interface {
 	Create(activity entity.UserActivity) error
 	Get(
 		ctx context.Context,
-		userIDs []string,
+		userEmail *string,
 		types []entity.UserActivityType,
 		versionIds []string,
 		fromDate *string,

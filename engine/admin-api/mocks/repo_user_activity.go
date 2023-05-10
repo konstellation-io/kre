@@ -50,16 +50,16 @@ func (mr *MockUserActivityRepoMockRecorder) Create(activity interface{}) *gomock
 }
 
 // Get mocks base method.
-func (m *MockUserActivityRepo) Get(ctx context.Context, userIDs []string, types []entity.UserActivityType, versionIds []string, fromDate, toDate, lastID *string) ([]*entity.UserActivity, error) {
+func (m *MockUserActivityRepo) Get(ctx context.Context, userEmail *string, types []entity.UserActivityType, versionIds []string, fromDate, toDate, lastID *string) ([]*entity.UserActivity, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, userIDs, types, versionIds, fromDate, toDate, lastID)
+	ret := m.ctrl.Call(m, "Get", ctx, userEmail, types, versionIds, fromDate, toDate, lastID)
 	ret0, _ := ret[0].([]*entity.UserActivity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockUserActivityRepoMockRecorder) Get(ctx, userIDs, types, versionIds, fromDate, toDate, lastID interface{}) *gomock.Call {
+func (mr *MockUserActivityRepoMockRecorder) Get(ctx, userEmail, types, versionIds, fromDate, toDate, lastID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserActivityRepo)(nil).Get), ctx, userIDs, types, versionIds, fromDate, toDate, lastID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserActivityRepo)(nil).Get), ctx, userEmail, types, versionIds, fromDate, toDate, lastID)
 }

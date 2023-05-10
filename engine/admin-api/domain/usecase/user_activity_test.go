@@ -1,11 +1,12 @@
 package usecase
 
 import (
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/mocks"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type userActivitySuite struct {
@@ -22,7 +23,6 @@ type userActivitySuiteMocks struct {
 func newUserActivitySuite(t *testing.T) *userActivitySuite {
 	ctrl := gomock.NewController(t)
 	logger := mocks.NewMockLogger(ctrl)
-	userRepo := mocks.NewMockUserRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	accessControl := mocks.NewMockAccessControl(ctrl)
 	mocks.AddLoggerExpects(logger)
@@ -30,7 +30,6 @@ func newUserActivitySuite(t *testing.T) *userActivitySuite {
 	userActivityInteractor := NewUserActivityInteractor(
 		logger,
 		userActivityRepo,
-		userRepo,
 		accessControl,
 	)
 

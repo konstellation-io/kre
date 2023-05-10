@@ -2,12 +2,9 @@ package middleware
 
 import (
 	"net/url"
-	"regexp"
 
 	"github.com/labstack/echo"
 )
-
-var databaseURLRegexp = regexp.MustCompile("^/database/([^/]+)")
 
 // MongoExpressProxy creates a reverse proxy to send the incoming request
 // to one of the runtime's MongoExpress service.

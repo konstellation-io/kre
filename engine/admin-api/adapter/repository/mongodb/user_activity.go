@@ -30,7 +30,7 @@ func NewUserActivityRepoMongoDB(cfg *config.Config, logger logging.Logger, clien
 
 func (r *UserActivityRepoMongoDB) Get(
 	ctx context.Context,
-	userIDs []string,
+	userEmail *string,
 	types []entity.UserActivityType,
 	versionIds []string,
 	fromDate *string,
@@ -48,8 +48,8 @@ func (r *UserActivityRepoMongoDB) Get(
 		filter["type"] = bson.M{"$in": types}
 	}
 
-	if userIDs != nil && len(userIDs) > 0 {
-		filter["userId"] = bson.M{"$in": userIDs}
+	if userEmail != nil {
+		filter["userId"] = userEmail
 	}
 
 	if versionIds != nil && len(versionIds) > 0 {
