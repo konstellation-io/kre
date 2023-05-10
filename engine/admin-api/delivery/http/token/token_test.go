@@ -43,9 +43,7 @@ func Test_CustomClaims(t *testing.T) {
 	accessToken, err := newTokenWithProductRoles(expectedUserRoles)
 	require.NoError(t, err)
 
-	tokenParser := token.NewParser(&token.Config{
-		SigninKey: tokenKey,
-	})
+	tokenParser := token.NewParser()
 
 	userRoles, err := tokenParser.GetUserRoles(accessToken)
 	require.NoError(t, err)
@@ -55,9 +53,7 @@ func Test_CustomClaims(t *testing.T) {
 func Test_CustomClaims_FailsIfTokenIsNotValid(t *testing.T) {
 	accessToken := "this-is-an-invalid-token"
 
-	tokenParser := token.NewParser(&token.Config{
-		SigninKey: tokenKey,
-	})
+	tokenParser := token.NewParser()
 
 	productRoles, err := tokenParser.GetUserRoles(accessToken)
 	assert.ErrorIs(t, err, jwt.ErrTokenMalformed)
@@ -68,9 +64,7 @@ func Test_CustomClaims_ReturnNilIfNoAccessClaims(t *testing.T) {
 	accessToken, err := newTokenWithProductRoles(nil)
 	require.NoError(t, err)
 
-	tokenParser := token.NewParser(&token.Config{
-		SigninKey: tokenKey,
-	})
+	tokenParser := token.NewParser()
 
 	_, err = tokenParser.GetUserRoles(accessToken)
 	assert.NoError(t, err)

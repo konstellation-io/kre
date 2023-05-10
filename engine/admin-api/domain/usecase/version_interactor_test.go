@@ -94,7 +94,12 @@ func (s *VersionInteractorSuite) TestCreateNewVersion() {
 	userID := "user1"
 	runtimeID := "run-1"
 
-	runtime := &entity.Runtime{
+	userFound := &entity.User{
+		ID:    userID,
+		Email: "test@test.com",
+	}
+
+	runtime := &entity.Product{
 		ID: runtimeID,
 	}
 
@@ -141,7 +146,12 @@ func (s *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDuplic
 	userID := "user1"
 	runtimeID := "run-1"
 
-	runtime := &entity.Runtime{
+	userFound := &entity.User{
+		ID:    userID,
+		Email: "test@test.com",
+	}
+
+	runtime := &entity.Product{
 		ID: runtimeID,
 	}
 

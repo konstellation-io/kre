@@ -10,21 +10,13 @@ type Config struct {
 	SigninKey interface{}
 }
 
-type UserRoles struct {
-	UserId       string
-	RealmAccess  RealmAccess
-	ProductRoles ProductRoles
-}
-
 type Parser struct {
 	parser *jwt.Parser
-	cfg    *Config
 }
 
-func NewParser(cfg *Config) *Parser {
+func NewParser() *Parser {
 	return &Parser{
 		parser: jwt.NewParser(),
-		cfg:    cfg,
 	}
 }
 

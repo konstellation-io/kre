@@ -1,5 +1,7 @@
 package auth
 
+import "github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
+
 //go:generate mockgen -source=${GOFILE} -destination=../../../mocks/auth_${GOFILE} -package=mocks
 
 type AccessControlResource string
@@ -27,6 +29,15 @@ func (e AccessControlResource) String() string {
 
 type AccessControlAction string
 
+const ActViewProduct AccessControlAction = "view_product"
+const ActCreateProduct AccessControlAction = "create_product"
+const ActCreateVersion AccessControlAction = "create_version"
+const ActStartVersion AccessControlAction = "start_version"
+const ActStopVersion AccessControlAction = "stop_version"
+const ActPublishVersion AccessControlAction = "publish_version"
+const ActUnpublishVersion AccessControlAction = "unpublish_version"
+const ActEditVersion AccessControlAction = "edit_version"
+
 const ActView AccessControlAction = "view"
 const ActEdit AccessControlAction = "edit"
 
@@ -45,5 +56,5 @@ func (e AccessControlAction) String() string {
 
 //nolint:godox // Remove this nolint statement after the TODO is done.
 type AccessControl interface { // TODO: move to middleware.
-	CheckPermission(userID string, resource AccessControlResource, action AccessControlAction) error
+	CheckPermission(user *token.UserRoles, product string, action AccessControlAction) error
 }

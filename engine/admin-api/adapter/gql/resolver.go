@@ -31,7 +31,7 @@ func initialize() {
 
 type Resolver struct {
 	logger                 logging.Logger
-	runtimeInteractor      *usecase.RuntimeInteractor
+	runtimeInteractor      *usecase.ProductInteractor
 	userInteractor         *usecase.UserInteractor
 	userActivityInteractor usecase.UserActivityInteracter
 	versionInteractor      *usecase.VersionInteractor
@@ -41,7 +41,7 @@ type Resolver struct {
 
 func NewGraphQLResolver(
 	logger logging.Logger,
-	runtimeInteractor *usecase.RuntimeInteractor,
+	runtimeInteractor *usecase.ProductInteractor,
 	userInteractor *usecase.UserInteractor,
 	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
@@ -61,7 +61,7 @@ func NewGraphQLResolver(
 	}
 }
 
-func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Runtime, error) {
+func (r *mutationResolver) CreateRuntime(ctx context.Context, input CreateRuntimeInput) (*entity.Product, error) {
 	loggedUserID := ctx.Value("userID").(string)
 
 	r.logger.Debug("Creating runtime with id " + input.ID)
@@ -181,12 +181,12 @@ func (r *queryResolver) Metrics(ctx context.Context, runtimeID, versionName,
 	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, runtimeID, versionName, startDate, endDate)
 }
 
-func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
+func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Product, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.runtimeInteractor.GetByID(ctx, loggedUserID, id)
 }
 
-func (r *queryResolver) Runtimes(ctx context.Context) ([]*entity.Runtime, error) {
+func (r *queryResolver) Runtimes(ctx context.Context) ([]*entity.Product, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.runtimeInteractor.FindAll(ctx, loggedUserID)
 }
@@ -238,15 +238,15 @@ func (r *queryResolver) Logs(
 	}, nil
 }
 
-func (r *runtimeResolver) CreationAuthor(_ context.Context, runtime *entity.Runtime) (string, error) {
+func (r *runtimeResolver) CreationAuthor(_ context.Context, runtime *entity.Product) (string, error) {
 	return runtime.Owner, nil
 }
 
-func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Runtime) (string, error) {
+func (r *runtimeResolver) CreationDate(_ context.Context, obj *entity.Product) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
 
-func (r *runtimeResolver) PublishedVersion(_ context.Context, obj *entity.Runtime) (*entity.Version, error) {
+func (r *runtimeResolver) PublishedVersion(_ context.Context, obj *entity.Product) (*entity.Version, error) {
 	if obj.PublishedVersion != "" {
 		return r.versionInteractor.GetByID(obj.ID, obj.PublishedVersion)
 	}
@@ -254,15 +254,15 @@ func (r *runtimeResolver) PublishedVersion(_ context.Context, obj *entity.Runtim
 	return nil, nil
 }
 
-func (r *runtimeResolver) MeasurementsURL(_ context.Context, _ *entity.Runtime) (string, error) {
+func (r *runtimeResolver) MeasurementsURL(_ context.Context, _ *entity.Product) (string, error) {
 	return fmt.Sprintf("%s/measurements/%s", r.cfg.Admin.BaseURL, r.cfg.K8s.Namespace), nil
 }
 
-func (r *runtimeResolver) DatabaseURL(_ context.Context, _ *entity.Runtime) (string, error) {
+func (r *runtimeResolver) DatabaseURL(_ context.Context, _ *entity.Product) (string, error) {
 	return fmt.Sprintf("%s/database/%s", r.cfg.Admin.BaseURL, r.cfg.K8s.Namespace), nil
 }
 
-func (r *runtimeResolver) EntrypointAddress(_ context.Context, _ *entity.Runtime) (string, error) {
+func (r *runtimeResolver) EntrypointAddress(_ context.Context, _ *entity.Product) (string, error) {
 	return fmt.Sprintf("entrypoint.%s", r.cfg.BaseDomainName), nil
 }
 

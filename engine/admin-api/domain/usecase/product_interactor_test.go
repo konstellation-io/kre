@@ -19,7 +19,7 @@ import (
 
 type runtimeSuite struct {
 	ctrl              *gomock.Controller
-	runtimeInteractor *usecase.RuntimeInteractor
+	runtimeInteractor *usecase.ProductInteractor
 	mocks             *runtimeSuiteMocks
 }
 
@@ -62,7 +62,7 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 
 	cfg.K8s.Namespace = k8sNamespace
 
-	runtimeInteractor := usecase.NewRuntimeInteractor(
+	runtimeInteractor := usecase.NewProductInteractor(
 		cfg,
 		logger,
 		runtimeRepo,
@@ -95,7 +95,7 @@ func TestGet(t *testing.T) {
 	defer s.ctrl.Finish()
 
 	runtimeID := "runtime1"
-	expectedRuntime := &entity.Runtime{
+	expectedRuntime := &entity.Product{
 		ID: runtimeID,
 	}
 
@@ -119,7 +119,7 @@ func TestCreateNewRuntime(t *testing.T) {
 	newRuntimeID := "runtime-id"
 	newRuntimeName := "runtime-name"
 	newRuntimeDescription := "This is a runtime description"
-	expectedRuntime := &entity.Runtime{
+	expectedRuntime := &entity.Product{
 		ID:           newRuntimeID,
 		Name:         newRuntimeName,
 		Description:  newRuntimeDescription,
@@ -128,8 +128,8 @@ func TestCreateNewRuntime(t *testing.T) {
 	}
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrRuntimeNotFound)
-	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrRuntimeNotFound)
+	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrProductNotFound)
 	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
 	s.mocks.measurementRepo.EXPECT().CreateDatabase(newRuntimeID).Return(nil)
 	s.mocks.versionRepo.EXPECT().CreateIndexes(ctx, newRuntimeID).Return(nil)
@@ -191,7 +191,7 @@ func TestCreateNewRuntime_FailsIfRuntimeWithSameIDAlreadyExists(t *testing.T) {
 	newRuntimeName := "runtime-name"
 	newRuntimeDescription := "This is a runtime description"
 
-	existingRuntime := &entity.Runtime{
+	existingRuntime := &entity.Product{
 		ID:          runtimeID,
 		Name:        "existing-runtime-name",
 		Description: "existing-runtime-description",
@@ -216,14 +216,14 @@ func TestCreateNewRuntime_FailsIfRuntimeWithSameNameAlreadyExists(t *testing.T) 
 	newRuntimeID := "new-runtime-id"
 	newRuntimeDescription := "This is a runtime description"
 
-	existingRuntime := &entity.Runtime{
+	existingRuntime := &entity.Product{
 		ID:          "existing-runtime-id",
 		Name:        runtimeName,
 		Description: "existing-runtime-description",
 	}
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrRuntimeNotFound)
+	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrProductNotFound)
 	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, runtimeName).Return(existingRuntime, nil)
 
 	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeID, runtimeName, newRuntimeDescription)
@@ -242,7 +242,7 @@ func TestCreateNewRuntime_FailsIfCreateRuntimeFails(t *testing.T) {
 	newRuntimeID := "new-runtime-id"
 	newRuntimeDescription := "This is a runtime description"
 
-	newRuntime := &entity.Runtime{
+	newRuntime := &entity.Product{
 		ID:           newRuntimeID,
 		Name:         newRuntimeName,
 		Description:  newRuntimeDescription,
@@ -251,8 +251,8 @@ func TestCreateNewRuntime_FailsIfCreateRuntimeFails(t *testing.T) {
 	}
 
 	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrRuntimeNotFound)
-	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrRuntimeNotFound)
+	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrProductNotFound)
 	s.mocks.runtimeRepo.EXPECT().Create(ctx, newRuntime).Return(nil, errors.New("create runtime error"))
 
 	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeID, newRuntimeName, newRuntimeDescription)
@@ -271,7 +271,7 @@ func TestGetByID(t *testing.T) {
 	runtimeID := "runtime-id"
 	runtimeName := "runtime-name"
 
-	expected := &entity.Runtime{
+	expected := &entity.Product{
 		ID:           runtimeID,
 		Name:         runtimeName,
 		Description:  "Runtime description...",
@@ -297,7 +297,7 @@ func TestFindAll(t *testing.T) {
 	runtimeID := "runtime-id"
 	runtimeName := "runtime-name"
 
-	expected := []*entity.Runtime{
+	expected := []*entity.Product{
 		{
 			ID:           runtimeID,
 			Name:         runtimeName,

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/service"
@@ -48,7 +49,7 @@ type VersionInteractor struct {
 	cfg                    *config.Config
 	logger                 logging.Logger
 	versionRepo            repository.VersionRepo
-	runtimeRepo            repository.RuntimeRepo
+	productRepo            repository.ProductRepo
 	versionService         service.VersionService
 	natsManagerService     service.NatsManagerService
 	userActivityInteractor UserActivityInteracter
@@ -64,7 +65,7 @@ func NewVersionInteractor(
 	cfg *config.Config,
 	logger logging.Logger,
 	versionRepo repository.VersionRepo,
-	runtimeRepo repository.RuntimeRepo,
+	productRepo repository.ProductRepo,
 	versionService service.VersionService,
 	natsManagerService service.NatsManagerService,
 	userActivityInteractor UserActivityInteracter,
@@ -78,7 +79,7 @@ func NewVersionInteractor(
 		cfg,
 		logger,
 		versionRepo,
-		runtimeRepo,
+		productRepo,
 		versionService,
 		natsManagerService,
 		userActivityInteractor,
@@ -90,38 +91,37 @@ func NewVersionInteractor(
 	}
 }
 
-func (i *VersionInteractor) filterConfigVars(loggedUserID string, vers *entity.Version) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+func (i *VersionInteractor) filterConfigVars(user *token.UserRoles, productId string, vers *entity.Version) {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActCreateProduct); err != nil {
 		vers.Config.Vars = nil
 	}
 }
 
 // GetByName returns a Version by its unique name.
-func (i *VersionInteractor) GetByName(ctx context.Context, loggedUserID,
-	runtimeID, name string) (*entity.Version, error) {
-	v, err := i.versionRepo.GetByName(ctx, runtimeID, name)
+func (i *VersionInteractor) GetByName(ctx context.Context, user *token.UserRoles, productId, name string) (*entity.Version, error) {
+	v, err := i.versionRepo.GetByName(ctx, productId, name)
 	if err != nil {
 		return nil, err
 	}
 
-	i.filterConfigVars(loggedUserID, v)
+	i.filterConfigVars(user, productId, v)
 
 	return v, nil
 }
 
-func (i *VersionInteractor) GetByID(runtimeID, versionID string) (*entity.Version, error) {
-	return i.versionRepo.GetByID(runtimeID, versionID)
+func (i *VersionInteractor) GetByID(productId, versionId string) (*entity.Version, error) {
+	return i.versionRepo.GetByID(productId, versionId)
 }
 
 // GetByRuntime returns all Versions of the given Runtime.
-func (i *VersionInteractor) GetByRuntime(loggedUserID, runtimeID string) ([]*entity.Version, error) {
-	versions, err := i.versionRepo.GetByRuntime(runtimeID)
+func (i *VersionInteractor) GetByRuntime(user *token.UserRoles, productId string) ([]*entity.Version, error) {
+	versions, err := i.versionRepo.GetByRuntime(productId)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, v := range versions {
-		i.filterConfigVars(loggedUserID, v)
+		i.filterConfigVars(user, productId, v)
 	}
 
 	return versions, nil
@@ -145,18 +145,22 @@ func (i *VersionInteractor) copyStreamToTempFile(krtFile io.Reader) (*os.File, e
 }
 
 // Create creates a Version on the DB based on the content of a KRT file.
-func (i *VersionInteractor) Create(ctx context.Context,
-	loggedUserID, runtimeID string, krtFile io.Reader) (*entity.Version, chan *entity.Version, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+func (i *VersionInteractor) Create(
+	ctx context.Context,
+	user *token.UserRoles,
+	productId string,
+	krtFile io.Reader,
+) (*entity.Version, chan *entity.Version, error) {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActCreateVersion); err != nil {
 		return nil, nil, err
 	}
 
-	runtime, err := i.runtimeRepo.GetByID(ctx, runtimeID)
+	product, err := i.productRepo.GetByID(ctx, productId)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error runtime repo GetById: %w", err)
+		return nil, nil, fmt.Errorf("error product repo GetById: %w", err)
 	}
 	// Check if the version is duplicated
-	versions, err := i.versionRepo.GetByRuntime(runtimeID)
+	versions, err := i.versionRepo.GetByRuntime(productId)
 	if err != nil {
 		return nil, nil, ErrVersionDuplicated
 	}
@@ -180,7 +184,7 @@ func (i *VersionInteractor) Create(ctx context.Context,
 		return nil, nil, err
 	}
 
-	duplicatedVersion, err := i.versionRepo.GetByName(ctx, runtimeID, krtYml.Version)
+	duplicatedVersion, err := i.versionRepo.GetByName(ctx, productId, krtYml.Version)
 	if err != nil && !errors.Is(err, ErrVersionNotFound) {
 		return nil, nil, fmt.Errorf("error version repo GetByName: %w", err)
 	}
@@ -203,7 +207,7 @@ func (i *VersionInteractor) Create(ctx context.Context,
 		return nil, nil, fmt.Errorf("error krtVersion input from krt.yml not valid: %s", krtYml.KrtVersion)
 	}
 
-	versionCreated, err := i.versionRepo.Create(loggedUserID, runtimeID, &entity.Version{
+	versionCreated, err := i.versionRepo.Create(user.UserId, productId, &entity.Version{
 		KrtVersion:  krtVersion,
 		Name:        krtYml.Version,
 		Description: krtYml.Description,
@@ -222,7 +226,7 @@ func (i *VersionInteractor) Create(ctx context.Context,
 
 	notifyStatusCh := make(chan *entity.Version, 1)
 
-	go i.completeVersionCreation(loggedUserID, tmpKrtFile, krtYml, tmpDir, runtime, versionCreated, notifyStatusCh)
+	go i.completeVersionCreation(user.UserId, tmpKrtFile, krtYml, tmpDir, product, versionCreated, notifyStatusCh)
 
 	return versionCreated, notifyStatusCh, nil
 }
@@ -232,7 +236,7 @@ func (i *VersionInteractor) completeVersionCreation(
 	tmpKrtFile *os.File,
 	krtYml *krt.Krt,
 	tmpDir string,
-	runtime *entity.Runtime,
+	product *entity.Product,
 	versionCreated *entity.Version,
 	notifyStatusCh chan *entity.Version,
 ) {
@@ -261,12 +265,12 @@ func (i *VersionInteractor) completeVersionCreation(
 	}
 
 	dashboardsFolder := path.Join(tmpDir, "metrics/dashboards")
-	contentErrors = i.saveKRTDashboards(ctx, dashboardsFolder, runtime, versionCreated, contentErrors)
+	contentErrors = i.saveKRTDashboards(ctx, dashboardsFolder, product, versionCreated, contentErrors)
 
 	docFolder := path.Join(tmpDir, "docs")
-	contentErrors = i.saveKRTDoc(runtime.ID, docFolder, versionCreated, contentErrors, ctx)
+	contentErrors = i.saveKRTDoc(product.ID, docFolder, versionCreated, contentErrors, ctx)
 
-	err := i.versionRepo.UploadKRTFile(runtime.ID, versionCreated, tmpKrtFile.Name())
+	err := i.versionRepo.UploadKRTFile(product.ID, versionCreated, tmpKrtFile.Name())
 	if err != nil {
 		errorMessage := "error storing KRT file"
 		//nolint:goerr113 // errors dynamically generated
@@ -274,11 +278,11 @@ func (i *VersionInteractor) completeVersionCreation(
 	}
 
 	if len(contentErrors) > 0 {
-		i.setStatusError(ctx, runtime.ID, versionCreated, contentErrors, notifyStatusCh)
+		i.setStatusError(ctx, product.ID, versionCreated, contentErrors, notifyStatusCh)
 		return
 	}
 
-	err = i.versionRepo.SetStatus(ctx, runtime.ID, versionCreated.ID, entity.VersionStatusCreated)
+	err = i.versionRepo.SetStatus(ctx, product.ID, versionCreated.ID, entity.VersionStatusCreated)
 	if err != nil {
 		i.logger.Errorf("error setting version status: %s", err)
 		return
@@ -288,16 +292,21 @@ func (i *VersionInteractor) completeVersionCreation(
 	versionCreated.Status = entity.VersionStatusCreated
 	notifyStatusCh <- versionCreated
 
-	err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, runtime.ID, versionCreated)
+	err = i.userActivityInteractor.RegisterCreateAction(loggedUserID, product.ID, versionCreated)
 	if err != nil {
 		i.logger.Errorf("error registering activity: %s", err)
 	}
 }
 
-func (i *VersionInteractor) saveKRTDashboards(ctx context.Context, dashboardsFolder string,
-	runtime *entity.Runtime, versionCreated *entity.Version, contentErrors []error) []error {
+func (i *VersionInteractor) saveKRTDashboards(
+	ctx context.Context,
+	dashboardsFolder string,
+	product *entity.Product,
+	versionCreated *entity.Version,
+	contentErrors []error,
+) []error {
 	if _, err := os.Stat(path.Join(dashboardsFolder)); err == nil {
-		err := i.storeDashboards(ctx, dashboardsFolder, runtime.ID, versionCreated.Name)
+		err := i.storeDashboards(ctx, dashboardsFolder, product.ID, versionCreated.Name)
 		if err != nil {
 			errorMessage := "error creating dashboard"
 			//nolint:goerr113 // errors dynamically generated
@@ -308,8 +317,7 @@ func (i *VersionInteractor) saveKRTDashboards(ctx context.Context, dashboardsFol
 	return contentErrors
 }
 
-func (i *VersionInteractor) saveKRTDoc(runtimeID, docFolder string, versionCreated *entity.Version,
-	contentErrors []error, ctx context.Context) []error {
+func (i *VersionInteractor) saveKRTDoc(productId, docFolder string, versionCreated *entity.Version, contentErrors []error, ctx context.Context) []error {
 	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
 		err = i.docGenerator.Generate(versionCreated.Name, docFolder)
 		if err != nil {
@@ -318,7 +326,7 @@ func (i *VersionInteractor) saveKRTDoc(runtimeID, docFolder string, versionCreat
 			contentErrors = append(contentErrors, errors.New(errorMessage))
 		}
 
-		err = i.versionRepo.SetHasDoc(ctx, runtimeID, versionCreated.ID, true)
+		err = i.versionRepo.SetHasDoc(ctx, productId, versionCreated.ID, true)
 		if err != nil {
 			errorMessage := "error updating has doc field"
 			//nolint:goerr113 // errors dynamically generated
@@ -391,18 +399,18 @@ func (i *VersionInteractor) generateWorkflows(krtYml *krt.Krt) ([]*entity.Workfl
 // Start create the resources of the given Version.
 func (i *VersionInteractor) Start(
 	ctx context.Context,
-	loggedUserID string,
-	runtimeID string,
+	user *token.UserRoles,
+	productId string,
 	versionName string,
 	comment string,
 ) (*entity.Version, chan *entity.Version, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActStartVersion); err != nil {
 		return nil, nil, err
 	}
 
 	i.logger.Infof("The user %q is starting version %q", loggedUserID, versionName)
 
-	v, err := i.versionRepo.GetByName(ctx, runtimeID, versionName)
+	v, err := i.versionRepo.GetByName(ctx, productId, versionName)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -417,7 +425,7 @@ func (i *VersionInteractor) Start(
 
 	notifyStatusCh := make(chan *entity.Version, 1)
 
-	err = i.versionRepo.SetStatus(ctx, runtimeID, v.ID, entity.VersionStatusStarting)
+	err = i.versionRepo.SetStatus(ctx, productId, v.ID, entity.VersionStatusStarting)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -426,29 +434,29 @@ func (i *VersionInteractor) Start(
 	v.Status = entity.VersionStatusStarting
 	notifyStatusCh <- v
 
-	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, runtimeID, v, comment)
+	err = i.userActivityInteractor.RegisterStartAction(loggedUserID, productId, v, comment)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	versionStreamCfg, err := i.natsManagerService.CreateStreams(ctx, runtimeID, v)
+	versionStreamCfg, err := i.natsManagerService.CreateStreams(ctx, productId, v)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error creating streams for version %q: %w", v.Name, err)
 	}
 
-	objectStoreCfg, err := i.natsManagerService.CreateObjectStores(ctx, runtimeID, v)
+	objectStoreCfg, err := i.natsManagerService.CreateObjectStores(ctx, productId, v)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error creating objects stores for version %q: %w", v.Name, err)
 	}
 
-	kvStoreCfg, err := i.natsManagerService.CreateKeyValueStores(ctx, runtimeID, v)
+	kvStoreCfg, err := i.natsManagerService.CreateKeyValueStores(ctx, productId, v)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error creating key-value stores for version %q: %w", v.Name, err)
 	}
 
 	versionCfg := entity.NewVersionConfig(versionStreamCfg, objectStoreCfg, kvStoreCfg)
 
-	go i.startAndNotify(runtimeID, v, versionCfg, notifyStatusCh)
+	go i.startAndNotify(productId, v, versionCfg, notifyStatusCh)
 
 	return v, notifyStatusCh, nil
 }
@@ -456,18 +464,18 @@ func (i *VersionInteractor) Start(
 // Stop removes the resources of the given Version.
 func (i *VersionInteractor) Stop(
 	ctx context.Context,
-	loggedUserID string,
-	runtimeID string,
+	user *token.UserRoles,
+	productId string,
 	versionName string,
 	comment string,
 ) (*entity.Version, chan *entity.Version, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActStopVersion); err != nil {
 		return nil, nil, err
 	}
 
-	i.logger.Infof("The user %s is stopping version %s on runtime %s", loggedUserID, versionName, runtimeID)
+	i.logger.Infof("The user %s is stopping version %s on product %s", user.UserId, versionName, productId)
 
-	v, err := i.versionRepo.GetByName(ctx, runtimeID, versionName)
+	v, err := i.versionRepo.GetByName(ctx, productId, versionName)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -476,7 +484,7 @@ func (i *VersionInteractor) Stop(
 		return nil, nil, ErrInvalidVersionStatusBeforeStopping
 	}
 
-	err = i.versionRepo.SetStatus(ctx, runtimeID, v.ID, entity.VersionStatusStopping)
+	err = i.versionRepo.SetStatus(ctx, productId, v.ID, entity.VersionStatusStopping)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -487,28 +495,29 @@ func (i *VersionInteractor) Stop(
 	v.Status = entity.VersionStatusStopping
 	notifyStatusCh <- v
 
+	err = i.userActivityInteractor.RegisterStopAction(user.UserId, productId, v, comment)
 	err = i.userActivityInteractor.RegisterStopAction(loggedUserID, runtimeID, v, comment)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	err = i.natsManagerService.DeleteStreams(ctx, runtimeID, versionName)
+	err = i.natsManagerService.DeleteStreams(ctx, productId, versionName)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error stopping version %q: %w", versionName, err)
 	}
 
-	err = i.natsManagerService.DeleteObjectStores(ctx, runtimeID, versionName)
+	err = i.natsManagerService.DeleteObjectStores(ctx, productId, versionName)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error stopping version %q: %w", versionName, err)
 	}
 
-	go i.stopAndNotify(runtimeID, v, notifyStatusCh)
+	go i.stopAndNotify(productId, v, notifyStatusCh)
 
 	return v, notifyStatusCh, nil
 }
 
 func (i *VersionInteractor) startAndNotify(
-	runtimeID string,
+	productId string,
 	vers *entity.Version,
 	versionConfig *entity.VersionConfig,
 	notifyStatusCh chan *entity.Version,
@@ -521,12 +530,12 @@ func (i *VersionInteractor) startAndNotify(
 		i.logger.Debug("[versionInteractor.startAndNotify] channel closed")
 	}()
 
-	err := i.versionService.Start(ctx, runtimeID, vers, versionConfig)
+	err := i.versionService.Start(ctx, productId, version, versionConfig)
 	if err != nil {
 		i.logger.Errorf("[versionInteractor.startAndNotify] error starting version %q: %s", vers.Name, err)
 	}
 
-	err = i.versionRepo.SetStatus(ctx, runtimeID, vers.ID, entity.VersionStatusStarted)
+	err = i.versionRepo.SetStatus(ctx, productId, vers.ID, entity.VersionStatusStarted)
 	if err != nil {
 		i.logger.Errorf("[versionInteractor.startAndNotify] error starting version %q: %s", vers.Name, err)
 	}
@@ -537,7 +546,7 @@ func (i *VersionInteractor) startAndNotify(
 }
 
 func (i *VersionInteractor) stopAndNotify(
-	runtimeID string,
+	productId string,
 	vers *entity.Version,
 	notifyStatusCh chan *entity.Version,
 ) {
@@ -548,13 +557,12 @@ func (i *VersionInteractor) stopAndNotify(
 		close(notifyStatusCh)
 		i.logger.Debug("[versionInteractor.stopAndNotify] channel closed")
 	}()
-
-	err := i.versionService.Stop(ctx, runtimeID, vers)
+	err := i.versionService.Stop(ctx, productId, vers)
 	if err != nil {
 		i.logger.Errorf("[versionInteractor.stopAndNotify] error stopping version %q: %s", vers.Name, err)
 	}
 
-	err = i.versionRepo.SetStatus(ctx, runtimeID, vers.ID, entity.VersionStatusStopped)
+	err = i.versionRepo.SetStatus(ctx, productId, vers.ID, entity.VersionStatusStopped)
 	if err != nil {
 		i.logger.Errorf("[versionInteractor.stopAndNotify] error stopping version %q: %s", vers.Name, err)
 	}
@@ -565,15 +573,14 @@ func (i *VersionInteractor) stopAndNotify(
 }
 
 // Publish set a Version as published on DB and K8s.
-func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID, runtimeID,
-	versionName, comment string) (*entity.Version, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+func (i *VersionInteractor) Publish(ctx context.Context, user *token.UserRoles, productId string, versionName string, comment string) (*entity.Version, error) {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActPublishVersion); err != nil {
 		return nil, err
 	}
 
-	i.logger.Infof("The user %s is publishing version %s", loggedUserID, versionName)
+	i.logger.Infof("The user %s is publishing version %s on product", user.UserId, versionName, productId)
 
-	v, err := i.versionRepo.GetByName(ctx, runtimeID, versionName)
+	v, err := i.versionRepo.GetByName(ctx, productId, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -582,27 +589,27 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID, runtimeID
 		return nil, ErrInvalidVersionStatusBeforePublishing
 	}
 
-	err = i.versionService.Publish(runtimeID, v)
+	err = i.versionService.Publish(productId, v)
 	if err != nil {
 		return nil, err
 	}
 
-	previousPublishedVersion, err := i.versionRepo.ClearPublishedVersion(ctx, runtimeID)
+	previousPublishedVersion, err := i.versionRepo.ClearPublishedVersion(ctx, productId)
 	if err != nil {
 		return nil, fmt.Errorf("error unpublishing previous version: %w", err)
 	}
 
 	now := time.Now()
 	v.PublicationDate = &now
-	v.PublicationUserID = &loggedUserID
+	v.PublicationUserID = &user.UserId
 	v.Status = entity.VersionStatusPublished
 
-	err = i.versionRepo.Update(runtimeID, v)
+	err = i.versionRepo.Update(productId, v)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterPublishAction(loggedUserID, runtimeID, v, previousPublishedVersion, comment)
+	err = i.userActivityInteractor.RegisterPublishAction(user.UserId, productId, v, previousPublishedVersion, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -611,15 +618,20 @@ func (i *VersionInteractor) Publish(ctx context.Context, loggedUserID, runtimeID
 }
 
 // Unpublish set a Version as not published on DB and K8s.
-func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID, runtimeID,
-	versionName, comment string) (*entity.Version, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+func (i *VersionInteractor) Unpublish(
+	ctx context.Context,
+	user *token.UserRoles,
+	productId,
+	versionName,
+	comment string,
+) (*entity.Version, error) {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActUnpublishVersion); err != nil {
 		return nil, err
 	}
 
-	i.logger.Infof("The user %s is unpublishing version %s", loggedUserID, versionName)
+	i.logger.Infof("The user %s is unpublishing version %s on product %s", user.UserId, versionName, productId)
 
-	v, err := i.versionRepo.GetByName(ctx, runtimeID, versionName)
+	v, err := i.versionRepo.GetByName(ctx, productId, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -628,7 +640,7 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID, runtime
 		return nil, ErrInvalidVersionStatusBeforeUnpublishing
 	}
 
-	err = i.versionService.Unpublish(runtimeID, v)
+	err = i.versionService.Unpublish(productId, v)
 	if err != nil {
 		return nil, err
 	}
@@ -636,13 +648,12 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID, runtime
 	v.PublicationUserID = nil
 	v.PublicationDate = nil
 	v.Status = entity.VersionStatusStarted
-
-	err = i.versionRepo.Update(runtimeID, v)
+	err = i.versionRepo.Update(productId, v)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.userActivityInteractor.RegisterUnpublishAction(loggedUserID, runtimeID, v, comment)
+	err = i.userActivityInteractor.RegisterUnpublishAction(user.UserId, productId, v, comment)
 	if err != nil {
 		return nil, err
 	}
@@ -650,9 +661,14 @@ func (i *VersionInteractor) Unpublish(ctx context.Context, loggedUserID, runtime
 	return v, nil
 }
 
-func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserID, runtimeID string,
-	vrs *entity.Version, conf []*entity.ConfigurationVariable) (*entity.Version, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActEdit); err != nil {
+func (i *VersionInteractor) UpdateVersionConfig(
+	ctx context.Context,
+	user *token.UserRoles,
+	productId string,
+	vrs *entity.Version,
+	config []*entity.ConfigurationVariable,
+) (*entity.Version, error) {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActEditVersion); err != nil {
 		return nil, err
 	}
 
@@ -674,13 +690,13 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 
 	// No need to restart PODs if there are no resources running
 	if isStarted {
-		err = i.versionService.UpdateConfig(runtimeID, vrs)
+		err = i.versionService.UpdateConfig(productId, vrs)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	err = i.versionRepo.Update(runtimeID, vrs)
+	err = i.versionRepo.Update(productId, vrs)
 	if err != nil {
 		return nil, err
 	}
@@ -688,18 +704,22 @@ func (i *VersionInteractor) UpdateVersionConfig(ctx context.Context, loggedUserI
 	return vrs, nil
 }
 
-func (i *VersionInteractor) WatchNodeStatus(ctx context.Context, loggedUserID,
-	runtimeID, versionName string) (<-chan *entity.Node, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResVersion, auth.ActView); err != nil {
+func (i *VersionInteractor) WatchNodeStatus(
+	ctx context.Context,
+	user *token.UserRoles,
+	productId,
+	versionName string,
+) (<-chan *entity.Node, error) {
+	if err := i.accessControl.CheckPermission(user, productId, auth.ActViewProduct); err != nil {
 		return nil, err
 	}
 
-	v, err := i.versionRepo.GetByName(ctx, runtimeID, versionName)
+	v, err := i.versionRepo.GetByName(ctx, productId, versionName)
 	if err != nil {
 		return nil, err
 	}
 
-	return i.versionService.WatchNodeStatus(ctx, runtimeID, v.Name)
+	return i.versionService.WatchNodeStatus(ctx, productId, v.Name)
 }
 
 func (i *VersionInteractor) WatchNodeLogs(

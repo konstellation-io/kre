@@ -14,95 +14,113 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
-type RuntimeRepoMongoDB struct {
+type ProductRepoMongoDB struct {
 	cfg        *config.Config
 	logger     logging.Logger
 	collection *mongo.Collection
 }
 
-func NewRuntimeRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo.Client) *RuntimeRepoMongoDB {
-	collection := client.Database(cfg.MongoDB.DBName).Collection("runtimes")
+func NewProductRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo.Client) *ProductRepoMongoDB {
+	collection := client.Database(cfg.MongoDB.DBName).Collection("products")
 
-	runtimeRepo := &RuntimeRepoMongoDB{
+	productRepo := &ProductRepoMongoDB{
 		cfg,
 		logger,
 		collection,
 	}
 
-	runtimeRepo.createIndexes()
+	productRepo.createIndexes()
 
-	return runtimeRepo
+	return productRepo
 }
 
-func (r *RuntimeRepoMongoDB) createIndexes() {
+func (r *ProductRepoMongoDB) createIndexes() {
 	_, err := r.collection.Indexes().CreateOne(context.Background(), mongo.IndexModel{
 		Keys: bson.M{
 			"name": 1,
 		},
 	})
 	if err != nil {
-		r.logger.Errorf("error creating runtime collection indexes: %s", err)
+		r.logger.Errorf("error creating products collection indexes: %s", err)
 	}
 }
 
-func (r *RuntimeRepoMongoDB) Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error) {
-	runtime.CreationDate = time.Now().UTC()
+func (r *ProductRepoMongoDB) Create(ctx context.Context, product *entity.Product) (*entity.Product, error) {
+	product.CreationDate = time.Now().UTC()
 
-	_, err := r.collection.InsertOne(ctx, runtime)
+	_, err := r.collection.InsertOne(ctx, product)
 	if err != nil {
 		return nil, err
 	}
 
-	return runtime, nil
+	return product, nil
 }
 
-func (r *RuntimeRepoMongoDB) Get(ctx context.Context) (*entity.Runtime, error) {
-	runtime := &entity.Runtime{}
+func (r *ProductRepoMongoDB) Get(ctx context.Context) (*entity.Product, error) {
+	product := &entity.Product{}
 
-	err := r.collection.FindOne(ctx, bson.M{}).Decode(runtime)
+	err := r.collection.FindOne(ctx, bson.M{}).Decode(product)
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return nil, usecase.ErrRuntimeNotFound
+		return nil, usecase.ErrProductNotFound
 	}
 
-	return runtime, err
+	return product, err
 }
 
-func (r *RuntimeRepoMongoDB) GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error) {
-	runtime := &entity.Runtime{}
-	filter := bson.M{"_id": runtimeID}
+func (r *ProductRepoMongoDB) GetByID(ctx context.Context, productID string) (*entity.Product, error) {
+	product := &entity.Product{}
+	filter := bson.M{"_id": productID}
 
-	err := r.collection.FindOne(ctx, filter).Decode(runtime)
+	err := r.collection.FindOne(ctx, filter).Decode(product)
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return nil, usecase.ErrRuntimeNotFound
+		return nil, usecase.ErrProductNotFound
 	}
 
-	return runtime, err
+	return product, err
 }
 
-func (r *RuntimeRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Runtime, error) {
-	runtime := &entity.Runtime{}
+func (r *ProductRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Product, error) {
+	product := &entity.Product{}
 	filter := bson.M{"name": name}
 
-	err := r.collection.FindOne(ctx, filter).Decode(runtime)
+	err := r.collection.FindOne(ctx, filter).Decode(product)
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return nil, usecase.ErrRuntimeNotFound
+		return nil, usecase.ErrProductNotFound
 	}
 
-	return runtime, err
+	return product, err
 }
 
-func (r *RuntimeRepoMongoDB) FindAll(ctx context.Context) ([]*entity.Runtime, error) {
-	var runtimes []*entity.Runtime
+func (r *ProductRepoMongoDB) FindAll(ctx context.Context) ([]*entity.Product, error) {
+	var products []*entity.Product
 
 	cursor, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
-		return runtimes, err
+		return products, err
 	}
 
-	err = cursor.All(ctx, &runtimes)
+	err = cursor.All(ctx, &products)
 	if err != nil {
 		return nil, err
 	}
 
-	return runtimes, nil
+	return products, nil
+}
+
+func (r *ProductRepoMongoDB) GetByIDs(ids []string) ([]*entity.Product, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	cursor, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": ids}})
+	if err != nil {
+		return nil, err
+	}
+
+	var products []*entity.Product
+	err = cursor.All(ctx, &products)
+	if err != nil {
+		return nil, err
+	}
+
+	return products, nil
 }

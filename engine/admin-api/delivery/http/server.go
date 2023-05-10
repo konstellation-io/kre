@@ -3,9 +3,8 @@ package http
 import (
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/controller"
-	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/httperrors"
 	kremiddleware "github.com/konstellation-io/kre/engine/admin-api/delivery/http/middleware"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
+	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -26,11 +25,7 @@ const logFormat = "${time_rfc3339} INFO remote_ip=${remote_ip}, method=${method}
 func NewApp(
 	cfg *config.Config,
 	logger logging.Logger,
-	runtimeInteractor *usecase.RuntimeInteractor,
-	userInteractor *usecase.UserInteractor,
-	userActivityInteractor usecase.UserActivityInteracter,
-	versionInteractor *usecase.VersionInteractor,
-	metricsInteractor *usecase.MetricsInteractor,
+	gqlController controller.GraphQL,
 ) *App {
 	e := echo.New()
 	e.HideBanner = true
@@ -53,63 +48,22 @@ func NewApp(
 		}))
 	}
 
-	graphQLController := controller.NewGraphQLController(
-		cfg,
-		logger,
-		runtimeInteractor,
-		userInteractor,
-		userActivityInteractor,
-		versionInteractor,
-		metricsInteractor,
-	)
+	tokenParser := token.NewParser()
 
-	middlewareErrorHandler := func(err error) error {
-		logger.Errorf("Error looking for jwt token: %s", err)
-		return httperrors.HTTPErrUnauthorized
-	}
-
-	skipIfHeaderPresent := func(existCondition bool) func(c echo.Context) bool {
-		return func(c echo.Context) bool {
-			auth := c.Request().Header.Get(echo.HeaderAuthorization)
-			authExists := auth != ""
-
-			return authExists == existCondition
-		}
-	}
-
-	jwtCookieMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
-		Skipper:      skipIfHeaderPresent(true),
-		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
-		TokenLookup:  "cookie:token",
-		ErrorHandler: middlewareErrorHandler,
-	})
-
-	jwtHeaderMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
-		Skipper:      skipIfHeaderPresent(false),
-		SigningKey:   []byte(cfg.Auth.JWTSignSecret),
-		ErrorHandler: middlewareErrorHandler,
-	})
-
-	jwtAuthMiddleware := kremiddleware.NewJwtAuthMiddleware(cfg, logger, authInteractor)
-
-	e.POST("/api/v1/auth/signin", authController.SignIn)
-	e.POST("/api/v1/auth/token/signin", authController.SignInWithAPIToken)
-	e.POST("/api/v1/auth/signin/verify", authController.SignInVerify)
-	e.POST("/api/v1/auth/logout", jwtCookieMiddleware(authController.Logout))
+	jwtAuthMiddleware := kremiddleware.NewJwtAuthMiddleware(cfg, logger, tokenParser)
+	e.GET("/", func(c echo.Context) error {
+		return nil
+	}, jwtAuthMiddleware)
 
 	r := e.Group("/graphql")
 	r.Use(jwtAuthMiddleware)
-	r.Use(jwtCookieMiddleware)
-	r.Use(jwtHeaderMiddleware)
-	r.Any("", graphQLController.GraphQLHandler)
-	r.GET("/playground", graphQLController.PlaygroundHandler)
+	r.Any("", gqlController.GraphQLHandler)
+	r.GET("/playground", gqlController.PlaygroundHandler)
 
 	m := e.Group("/measurements")
-	m.Use(jwtCookieMiddleware)
 	m.Use(kremiddleware.ChronografProxy(cfg.Chronograf.Address))
 
 	d := e.Group("/database")
-	d.Use(jwtCookieMiddleware)
 	d.Use(kremiddleware.MongoExpressProxy(cfg.MongoDB.MongoExpressAddress))
 
 	return &App{

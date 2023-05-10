@@ -7,11 +7,13 @@ import (
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/engine/admin-api/adapter/product"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/mongodb"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/service"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/version"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http"
+	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/controller"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
@@ -26,18 +28,25 @@ func main() {
 
 	defer db.Disconnect()
 
-	userActivityInteractor, runtimeInteractor, userInteractor,
+	userActivityInteractor, productInteractor, userInteractor,
 		versionInteractor, metricsInteractor := initApp(cfg, logger, mongodbClient)
 
-	app := http.NewApp(
+	graphqlController := controller.NewGraphQLController(
 		cfg,
 		logger,
-		runtimeInteractor,
+		productInteractor,
 		userInteractor,
 		userActivityInteractor,
 		versionInteractor,
 		metricsInteractor,
 	)
+
+	app := http.NewApp(
+		cfg,
+		logger,
+		graphqlController,
+	)
+
 	app.Start()
 }
 
@@ -70,10 +79,10 @@ func initApp(cfg *config.Config, logger logging.Logger, mongodbClient *mongo.Cli
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, accessControl)
 
-	runtimeInteractor := usecase.NewRuntimeInteractor(
+	runtimeInteractor := usecase.NewProductInteractor(
 		cfg,
 		logger,
-		runtimeRepo,
+		productRepo,
 		measurementRepo,
 		versionMongoRepo,
 		metricRepo,
@@ -93,7 +102,7 @@ func initApp(cfg *config.Config, logger logging.Logger, mongodbClient *mongo.Cli
 		cfg,
 		logger,
 		versionMongoRepo,
-		runtimeRepo,
+		productRepo,
 		versionService,
 		natsManagerService,
 		userActivityInteractor,
@@ -106,10 +115,10 @@ func initApp(cfg *config.Config, logger logging.Logger, mongodbClient *mongo.Cli
 
 	metricsInteractor := usecase.NewMetricsInteractor(
 		logger,
-		runtimeRepo,
+		productRepo,
 		accessControl,
 		metricRepo,
 	)
 
-	return userActivityInteractor, runtimeInteractor, userInteractor, versionInteractor, metricsInteractor
+	return userActivityInteractor, productInteractor, userInteractor, versionInteractor, metricsInteractor
 }

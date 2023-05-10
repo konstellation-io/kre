@@ -83,7 +83,7 @@ func (mr *MockUserActivityInteracterMockRecorder) RegisterCreateAction(userID, r
 }
 
 // RegisterCreateRuntime mocks base method.
-func (m *MockUserActivityInteracter) RegisterCreateRuntime(userID string, runtime *entity.Runtime) error {
+func (m *MockUserActivityInteracter) RegisterCreateRuntime(userID string, runtime *entity.Product) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterCreateRuntime", userID, runtime)
 	ret0, _ := ret[0].(error)

@@ -22,14 +22,14 @@ const oneWeek = 7 * oneDay
 
 type MetricsInteractor struct {
 	logger        logging.Logger
-	runtimeRepo   repository.RuntimeRepo
+	runtimeRepo   repository.ProductRepo
 	accessControl auth.AccessControl
 	metricRepo    repository.MetricRepo
 }
 
 func NewMetricsInteractor(
 	logger logging.Logger,
-	runtimeRepo repository.RuntimeRepo,
+	runtimeRepo repository.ProductRepo,
 	accessControl auth.AccessControl,
 	metricRepo repository.MetricRepo,
 ) *MetricsInteractor {

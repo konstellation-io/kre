@@ -1,37 +1,35 @@
 package middleware
 
 import (
-	"github.com/golang-jwt/jwt/v5"
+	"strings"
+
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/httperrors"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo"
 )
 
-func NewJwtAuthMiddleware(cfg *config.Config, logger logging.Logger, authInteractor usecase.AuthInteracter) echo.MiddlewareFunc {
+func extractToken(authHeader string) string {
+	if len(strings.Split(authHeader, " ")) == 2 {
+		return strings.Split(authHeader, " ")[1]
+	}
+	return ""
+}
+
+func NewJwtAuthMiddleware(_ *config.Config, logger logging.Logger, tokenParser *token.Parser) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			token.NewParser(nil).GetUserRoles(c.Get("user").(string))
+			authHeader := c.Request().Header.Get("Authorization")
+			plainToken := extractToken(authHeader)
 
-			user := c.Get("user").(*jwt.Token)
-			claims := user.Claims.(jwt.MapClaims)
-			userID := claims["sub"].(string)
-
-			err := authInteractor.CheckSessionIsActive(user.Raw)
+			user, err := tokenParser.GetUserRoles(plainToken)
 			if err != nil {
-				logger.Errorf("Invalid session: %s", err)
-				auth.DeleteSessionCookie(c, cfg)
-
-				return httperrors.HTTPErrInvalidSession
+				logger.Error("No token found in context")
+				return httperrors.HTTPErrUnauthorized
 			}
 
-			err = authInteractor.UpdateLastActivity(userID)
-			if err != nil {
-				logger.Warnf("Error updating last access: %s", err)
-			}
+			c.Set("user", user)
 
 			return next(c)
 		}

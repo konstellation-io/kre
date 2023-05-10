@@ -1,4 +1,4 @@
-package runtime
+package product
 
 import (
 	"crypto/rand"

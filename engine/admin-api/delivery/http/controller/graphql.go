@@ -14,12 +14,19 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
+//go:generate mockgen -source=${GOFILE} -destination=../../../mocks/controller_${GOFILE} -package=mocks
+
 const UserIDContextKey = "userID"
+
+type GraphQL interface {
+	GraphQLHandler(c echo.Context) error
+	PlaygroundHandler(c echo.Context) error
+}
 
 type GraphQLController struct {
 	cfg                    *config.Config
 	logger                 logging.Logger
-	runtimeInteractor      *usecase.RuntimeInteractor
+	runtimeInteractor      *usecase.ProductInteractor
 	userInteractor         *usecase.UserInteractor
 	userActivityInteractor usecase.UserActivityInteracter
 	versionInteractor      *usecase.VersionInteractor
@@ -29,7 +36,7 @@ type GraphQLController struct {
 func NewGraphQLController(
 	cfg *config.Config,
 	logger logging.Logger,
-	runtimeInteractor *usecase.RuntimeInteractor,
+	runtimeInteractor *usecase.ProductInteractor,
 	userInteractor *usecase.UserInteractor,
 	userActivityInteractor usecase.UserActivityInteracter,
 	versionInteractor *usecase.VersionInteractor,
