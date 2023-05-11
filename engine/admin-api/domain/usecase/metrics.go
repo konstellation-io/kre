@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/repository"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
@@ -41,9 +42,15 @@ func NewMetricsInteractor(
 	}
 }
 
-func (i *MetricsInteractor) GetMetrics(ctx context.Context,
-	loggedUserID, runtimeID, versionName, startDate, endDate string) (*entity.Metrics, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResMetrics, auth.ActView); err != nil {
+func (i *MetricsInteractor) GetMetrics(
+	ctx context.Context,
+	user *token.UserRoles,
+	productID,
+	versionName,
+	startDate,
+	endDate string,
+) (*entity.Metrics, error) {
+	if err := i.accessControl.CheckPermission(user, productID, auth.ActViewMetrics); err != nil {
 		return nil, err
 	}
 
@@ -59,7 +66,7 @@ func (i *MetricsInteractor) GetMetrics(ctx context.Context,
 		return result, fmt.Errorf("invalid end date: %w", err)
 	}
 
-	metrics, err := i.metricRepo.GetMetrics(ctx, parsedStartDate, parsedEndDate, runtimeID, versionName)
+	metrics, err := i.metricRepo.GetMetrics(ctx, parsedStartDate, parsedEndDate, productID, versionName)
 	if err != nil {
 		return result, fmt.Errorf("error getting metrics: %w", err)
 	}

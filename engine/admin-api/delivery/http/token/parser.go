@@ -28,7 +28,7 @@ func (p *Parser) GetUserRoles(accessToken string) (*UserRoles, error) {
 	}
 
 	return &UserRoles{
-		UserId:       claims.Subject,
+		ID:           claims.Subject,
 		ProductRoles: claims.ProductRoles,
 		RealmAccess:  claims.RealmAccess,
 	}, nil

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
 
@@ -17,15 +18,15 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/mocks"
 )
 
-type runtimeSuite struct {
+type productSuite struct {
 	ctrl              *gomock.Controller
-	runtimeInteractor *usecase.ProductInteractor
-	mocks             *runtimeSuiteMocks
+	productInteractor *usecase.ProductInteractor
+	mocks             *productSuiteMocks
 }
 
-type runtimeSuiteMocks struct {
+type productSuiteMocks struct {
 	logger           *mocks.MockLogger
-	runtimeRepo      *mocks.MockRuntimeRepo
+	productRepo      *mocks.MockProductRepo
 	measurementRepo  *mocks.MockMeasurementRepo
 	versionRepo      *mocks.MockVersionRepo
 	metricRepo       *mocks.MockMetricRepo
@@ -38,11 +39,11 @@ const (
 	k8sNamespace = "kre-test"
 )
 
-func newRuntimeSuite(t *testing.T) *runtimeSuite {
+func newProductSuite(t *testing.T) *productSuite {
 	ctrl := gomock.NewController(t)
 
 	logger := mocks.NewMockLogger(ctrl)
-	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
+	productRepo := mocks.NewMockProductRepo(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
 	measurementRepo := mocks.NewMockMeasurementRepo(ctrl)
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
@@ -62,10 +63,10 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 
 	cfg.K8s.Namespace = k8sNamespace
 
-	runtimeInteractor := usecase.NewProductInteractor(
+	productInteractor := usecase.NewProductInteractor(
 		cfg,
 		logger,
-		runtimeRepo,
+		productRepo,
 		measurementRepo,
 		versionRepo,
 		metricRepo,
@@ -74,12 +75,12 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 		accessControl,
 	)
 
-	return &runtimeSuite{
+	return &productSuite{
 		ctrl:              ctrl,
-		runtimeInteractor: runtimeInteractor,
-		mocks: &runtimeSuiteMocks{
+		productInteractor: productInteractor,
+		mocks: &productSuiteMocks{
 			logger,
-			runtimeRepo,
+			productRepo,
 			measurementRepo,
 			versionRepo,
 			metricRepo,
@@ -91,225 +92,241 @@ func newRuntimeSuite(t *testing.T) *runtimeSuite {
 }
 
 func TestGet(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
-	runtimeID := "runtime1"
-	expectedRuntime := &entity.Product{
-		ID: runtimeID,
+	productID := "product1"
+	expectedProduct := &entity.Product{
+		ID: productID,
 	}
 
-	userID := "user1234"
+	user := &token.UserRoles{
+		ID: "user1234",
+	}
+
 	ctx := context.Background()
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActView)
-	s.mocks.runtimeRepo.EXPECT().Get(ctx).Return(expectedRuntime, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActViewProduct)
+	s.mocks.productRepo.EXPECT().Get(ctx).Return(expectedProduct, nil)
 
-	runtime, err := s.runtimeInteractor.Get(ctx, userID)
+	product, err := s.productInteractor.Get(ctx, user, productID)
 	require.Nil(t, err)
-	require.Equal(t, expectedRuntime, runtime)
+	require.Equal(t, expectedProduct, product)
 }
 
-func TestCreateNewRuntime(t *testing.T) {
-	s := newRuntimeSuite(t)
+func TestCreateNewProduct(t *testing.T) {
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
-	userID := "user1234"
-	newRuntimeID := "runtime-id"
-	newRuntimeName := "runtime-name"
-	newRuntimeDescription := "This is a runtime description"
+	user := &token.UserRoles{ID: "user1234"}
+	newRuntimeId := "product-id"
+	newRuntimeName := "product-name"
+	newRuntimeDescription := "This is a product description"
 	expectedRuntime := &entity.Product{
-		ID:           newRuntimeID,
+		ID:           newRuntimeId,
 		Name:         newRuntimeName,
 		Description:  newRuntimeDescription,
 		CreationDate: time.Time{},
 		Owner:        userID,
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.runtimeRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
-	s.mocks.measurementRepo.EXPECT().CreateDatabase(newRuntimeID).Return(nil)
-	s.mocks.versionRepo.EXPECT().CreateIndexes(ctx, newRuntimeID).Return(nil)
-	s.mocks.metricRepo.EXPECT().CreateIndexes(ctx, newRuntimeID).Return(nil)
-	s.mocks.nodeLogRepo.EXPECT().CreateIndexes(ctx, newRuntimeID).Return(nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, productID, auth.ActEdit).Return(nil)
+	s.mocks.productRepo.EXPECT().GetByID(ctx, newRuntimeId).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.productRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.productRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
+	s.mocks.measurementRepo.EXPECT().CreateDatabase(newRuntimeId).Return(nil)
+	s.mocks.versionRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
+	s.mocks.metricRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
+	s.mocks.nodeLogRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
 
-	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeID, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
 
 	require.Nil(t, err)
-	require.Equal(t, expectedRuntime, runtime)
+	require.Equal(t, expectedRuntime, product)
 }
 
 func TestCreateNewRuntime_FailsIfUserHasNotPermission(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
-	userID := "user1234"
-	newRuntimeID := "runtime-id"
-	newRuntimeName := "runtime-name"
-	newRuntimeDescription := "This is a runtime description"
+	user := &token.UserRoles{ID: "user1234"}
+	newRuntimeId := "product-id"
+	newRuntimeName := "product-name"
+	newRuntimeDescription := "This is a product description"
 
 	permissionError := errors.New("permission error")
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(permissionError)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, productID, auth.ActEdit).Return(permissionError)
 
-	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeID, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
 
 	require.Error(t, permissionError, err)
-	require.Nil(t, runtime)
+	require.Nil(t, product)
 }
 
 func TestCreateNewRuntime_FailsIfRuntimeHasAnInvalidField(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
-	userID := "user1234"
-	newRuntimeID := "runtime-id"
-	// the runtime name is bigger thant the max length (it should be lte=40)
+	user := &token.UserRoles{ID: "user1234"}
+	newRuntimeId := "product-id"
+	// the product name is bigger thant the max length (it should be lte=40)
 	newRuntimeName := "lore ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labores"
-	newRuntimeDescription := "This is a runtime description"
+	newRuntimeDescription := "This is a product description"
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, productID, auth.ActEdit).Return(nil)
 
-	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeID, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
 
 	require.Error(t, err)
-	require.Nil(t, runtime)
+	require.Nil(t, product)
 }
 
 func TestCreateNewRuntime_FailsIfRuntimeWithSameIDAlreadyExists(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
-	userID := "user1234"
-	runtimeID := "runtime-id"
-	newRuntimeName := "runtime-name"
-	newRuntimeDescription := "This is a runtime description"
 
-	existingRuntime := &entity.Product{
-		ID:          runtimeID,
-		Name:        "existing-runtime-name",
-		Description: "existing-runtime-description",
+	user := &token.UserRoles{
+		ID: "user1234",
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(existingRuntime, nil)
+	productID := "product-id"
+	newRuntimeName := "product-name"
+	newRuntimeDescription := "This is a product description"
 
-	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, runtimeID, newRuntimeName, newRuntimeDescription)
+	existingRuntime := &entity.Product{
+		ID:          productID,
+		Name:        "existing-product-name",
+		Description: "existing-product-description",
+	}
+
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(nil)
+	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(existingRuntime, nil)
+
+	product, err := s.productInteractor.CreateRuntime(ctx, user, productID, newRuntimeName, newRuntimeDescription)
 
 	require.Error(t, err)
-	require.Nil(t, runtime)
+	require.Nil(t, product)
 }
 
 func TestCreateNewRuntime_FailsIfRuntimeWithSameNameAlreadyExists(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
-	userID := "user1234"
-	runtimeName := "runtime-name"
-	newRuntimeID := "new-runtime-id"
-	newRuntimeDescription := "This is a runtime description"
+	user := &token.UserRoles{ID: "user1234"}
+
+	productName := "product-name"
+	productID := "new-product-id"
+	productDescription := "This is a product description"
 
 	existingRuntime := &entity.Product{
-		ID:          "existing-runtime-id",
-		Name:        runtimeName,
-		Description: "existing-runtime-description",
+		ID:          "existing-product-id",
+		Name:        productName,
+		Description: "existing-product-description",
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, runtimeName).Return(existingRuntime, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(nil)
+	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.productRepo.EXPECT().GetByName(ctx, productName).Return(existingRuntime, nil)
 
-	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeID, runtimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateRuntime(ctx, user, productID, productName, productDescription)
 
 	require.Error(t, err)
-	require.Nil(t, runtime)
+	require.Nil(t, product)
 }
 
 func TestCreateNewRuntime_FailsIfCreateRuntimeFails(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
-	userID := "user1234"
-	newRuntimeName := "runtime-name"
-	newRuntimeID := "new-runtime-id"
-	newRuntimeDescription := "This is a runtime description"
+	user := &token.UserRoles{ID: "user1234"}
+	productName := "product-name"
+	productID := "new-product-id"
+	productDescription := "This is a product description"
 
-	newRuntime := &entity.Product{
-		ID:           newRuntimeID,
-		Name:         newRuntimeName,
-		Description:  newRuntimeDescription,
-		Owner:        userID,
+	newProduct := &entity.Product{
+		ID:           productID,
+		Name:         productName,
+		Description:  productDescription,
+		Owner:        user.ID,
 		CreationDate: time.Time{},
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActEdit).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, newRuntimeID).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.runtimeRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.runtimeRepo.EXPECT().Create(ctx, newRuntime).Return(nil, errors.New("create runtime error"))
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActEdit).Return(nil)
+	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.productRepo.EXPECT().GetByName(ctx, productName).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.productRepo.EXPECT().Create(ctx, newProduct).Return(nil, errors.New("create product error"))
 
-	runtime, err := s.runtimeInteractor.CreateRuntime(ctx, userID, newRuntimeID, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateRuntime(ctx, user, productID, productName, productDescription)
 
 	require.Error(t, err)
-	require.Nil(t, runtime)
+	require.Nil(t, product)
 }
 
 func TestGetByID(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
 
-	userID := "user1"
-	runtimeID := "runtime-id"
-	runtimeName := "runtime-name"
+	user := &token.UserRoles{ID: "user1234"}
+	productID := "product-id"
+	productName := "product-name"
 
 	expected := &entity.Product{
-		ID:           runtimeID,
-		Name:         runtimeName,
-		Description:  "Runtime description...",
+		ID:           productID,
+		Name:         productName,
+		Description:  "Product description...",
 		CreationDate: time.Time{},
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActView).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().GetByID(ctx, runtimeID).Return(expected, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActViewProduct).Return(nil)
+	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(expected, nil)
 
-	actual, err := s.runtimeInteractor.GetByID(ctx, userID, runtimeID)
+	actual, err := s.productInteractor.GetByID(ctx, user, productID)
 
 	require.Nil(t, err)
 	require.Equal(t, expected, actual)
 }
 
 func TestFindAll(t *testing.T) {
-	s := newRuntimeSuite(t)
+	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
 
-	userID := "user1"
-	runtimeID := "runtime-id"
-	runtimeName := "runtime-name"
+	productID := "product-id"
+	productName := "product-name"
+
+	user := &token.UserRoles{
+		ID: "user1234",
+		ProductRoles: map[string][]string{
+			productID: {
+				auth.ActViewProduct.String(),
+			},
+		},
+	}
 
 	expected := []*entity.Product{
 		{
-			ID:           runtimeID,
-			Name:         runtimeName,
-			Description:  "Runtime description...",
+			ID:           productID,
+			Name:         productName,
+			Description:  "Product description...",
 			CreationDate: time.Time{},
 		},
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResRuntime, auth.ActView).Return(nil)
-	s.mocks.runtimeRepo.EXPECT().FindAll(ctx).Return(expected, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActViewProduct).Return(nil)
+	s.mocks.productRepo.EXPECT().FindAll(ctx).Return(expected, nil)
 
-	actual, err := s.runtimeInteractor.FindAll(ctx, userID)
+	actual, err := s.productInteractor.FindAll(ctx, user)
 
 	require.Nil(t, err)
 	require.Equal(t, expected, actual)

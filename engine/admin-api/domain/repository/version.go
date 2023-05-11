@@ -9,16 +9,16 @@ import (
 )
 
 type VersionRepo interface {
-	Create(userID, runtimeID string, version *entity.Version) (*entity.Version, error)
-	CreateIndexes(ctx context.Context, runtimeID string) error
-	GetByID(runtimeID, versionID string) (*entity.Version, error)
-	GetByName(ctx context.Context, runtimeID, name string) (*entity.Version, error)
-	GetByRuntime(runtimeID string) ([]*entity.Version, error)
-	Update(runtimeID string, version *entity.Version) error
-	SetHasDoc(ctx context.Context, runtimeID, versionID string, hasDoc bool) error
-	SetStatus(ctx context.Context, runtimeID, versionID string, status entity.VersionStatus) error
-	GetAll(runtimeID string) ([]*entity.Version, error)
-	SetErrors(ctx context.Context, runtimeID string, version *entity.Version, errorMessages []string) (*entity.Version, error)
-	UploadKRTFile(runtimeID string, version *entity.Version, file string) error
-	ClearPublishedVersion(ctx context.Context, runtimeID string) (*entity.Version, error)
+	Create(userID, productID string, version *entity.Version) (*entity.Version, error)
+	CreateIndexes(ctx context.Context, productID string) error
+	GetByID(productID, versionId string) (*entity.Version, error)
+	GetByName(ctx context.Context, productID, name string) (*entity.Version, error)
+	GetByProduct(productID string) ([]*entity.Version, error)
+	Update(productID string, version *entity.Version) error
+	SetHasDoc(ctx context.Context, productID, versionID string, hasDoc bool) error
+	SetStatus(ctx context.Context, productID, versionID string, status entity.VersionStatus) error
+	GetAll(productID string) ([]*entity.Version, error)
+	SetErrors(ctx context.Context, productID string, version *entity.Version, errorMessages []string) (*entity.Version, error)
+	UploadKRTFile(productID string, version *entity.Version, file string) error
+	ClearPublishedVersion(ctx context.Context, productID string) (*entity.Version, error)
 }

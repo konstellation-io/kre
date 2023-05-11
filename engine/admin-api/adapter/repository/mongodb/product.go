@@ -107,8 +107,8 @@ func (r *ProductRepoMongoDB) FindAll(ctx context.Context) ([]*entity.Product, er
 	return products, nil
 }
 
-func (r *ProductRepoMongoDB) GetByIDs(ids []string) ([]*entity.Product, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+func (r *ProductRepoMongoDB) FindByIDs(ctx context.Context, ids []string) ([]*entity.Product, error) {
+	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()
 
 	cursor, err := r.collection.Find(ctx, bson.M{"_id": bson.M{"$in": ids}})

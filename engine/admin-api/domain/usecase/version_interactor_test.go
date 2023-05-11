@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
+	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
@@ -20,7 +21,7 @@ type versionSuiteMocks struct {
 	cfg              *config.Config
 	logger           *mocks.MockLogger
 	versionRepo      *mocks.MockVersionRepo
-	runtimeRepo      *mocks.MockRuntimeRepo
+	productRepo      *mocks.MockProductRepo
 	versionService   *mocks.MockVersionService
 	userActivityRepo *mocks.MockUserActivityRepo
 	accessControl    *mocks.MockAccessControl
@@ -47,7 +48,7 @@ func (s *VersionInteractorSuite) SetupSuite() {
 	cfg := &config.Config{}
 	logger := mocks.NewMockLogger(ctrl)
 	versionRepo := mocks.NewMockVersionRepo(ctrl)
-	runtimeRepo := mocks.NewMockRuntimeRepo(ctrl)
+	productRepo := mocks.NewMockProductRepo(ctrl)
 	versionService := mocks.NewMockVersionService(ctrl)
 	natsManagerService := mocks.NewMockNatsManagerService(ctrl)
 	userActivityRepo := mocks.NewMockUserActivityRepo(ctrl)
@@ -66,7 +67,7 @@ func (s *VersionInteractorSuite) SetupSuite() {
 	)
 
 	versionInteractor := usecase.NewVersionInteractor(
-		cfg, logger, versionRepo, runtimeRepo, versionService, natsManagerService,
+		cfg, logger, versionRepo, productRepo, versionService, natsManagerService,
 		userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
 
 	s.ctrl = ctrl
@@ -74,7 +75,7 @@ func (s *VersionInteractorSuite) SetupSuite() {
 		cfg,
 		logger,
 		versionRepo,
-		runtimeRepo,
+		productRepo,
 		versionService,
 		userActivityRepo,
 		accessControl,
@@ -92,15 +93,10 @@ func (s *VersionInteractorSuite) TearDownSuite() {
 
 func (s *VersionInteractorSuite) TestCreateNewVersion() {
 	userID := "user1"
-	runtimeID := "run-1"
+	productID := "run-1"
 
-	userFound := &entity.User{
-		ID:    userID,
-		Email: "test@test.com",
-	}
-
-	runtime := &entity.Product{
-		ID: runtimeID,
+	product := &entity.Product{
+		ID: productID,
 	}
 
 	versionName := "classificator-v1"
@@ -119,21 +115,25 @@ func (s *VersionInteractorSuite) TestCreateNewVersion() {
 		Workflows:         nil,
 	}
 
+	loggedUser := &token.UserRoles{
+		ID: "test-user",
+	}
+
 	file, err := os.Open("../../test_assets/classificator-v1.krt")
 	s.Require().NoError(err)
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
+	s.mocks.accessControl.EXPECT().CheckPermission(loggedUser, productID, auth.ActCreateVersion)
 	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(6)
-	s.mocks.runtimeRepo.EXPECT().GetByID(s.ctx, runtimeID).Return(runtime, nil)
-	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
-	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, runtimeID, versionName).Return(nil, usecase.ErrVersionNotFound)
-	s.mocks.versionRepo.EXPECT().Create(userID, runtimeID, gomock.Any()).Return(version, nil)
-	s.mocks.versionRepo.EXPECT().SetStatus(s.ctx, runtimeID, version.ID, entity.VersionStatusCreated).Return(nil)
-	s.mocks.versionRepo.EXPECT().UploadKRTFile(runtimeID, version, gomock.Any()).Return(nil)
+	s.mocks.productRepo.EXPECT().GetByID(s.ctx, productID).Return(product, nil)
+	s.mocks.versionRepo.EXPECT().GetByProduct(productID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, productID, versionName).Return(nil, usecase.ErrVersionNotFound)
+	s.mocks.versionRepo.EXPECT().Create(userID, productID, gomock.Any()).Return(version, nil)
+	s.mocks.versionRepo.EXPECT().SetStatus(s.ctx, productID, version.ID, entity.VersionStatusCreated).Return(nil)
+	s.mocks.versionRepo.EXPECT().UploadKRTFile(productID, version, gomock.Any()).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
-	s.mocks.dashboardService.EXPECT().Create(s.ctx, runtimeID, gomock.Any(), gomock.Any()).Return(nil)
+	s.mocks.dashboardService.EXPECT().Create(s.ctx, productID, gomock.Any(), gomock.Any()).Return(nil)
 
-	_, statusCh, err := s.versionInteractor.Create(context.Background(), userID, runtimeID, file)
+	_, statusCh, err := s.versionInteractor.Create(context.Background(), loggedUser, productID, file)
 	s.Require().NoError(err)
 
 	actual := <-statusCh
@@ -144,15 +144,14 @@ func (s *VersionInteractorSuite) TestCreateNewVersion() {
 
 func (s *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDuplicated() {
 	userID := "user1"
-	runtimeID := "run-1"
+	productID := "run-1"
 
-	userFound := &entity.User{
-		ID:    userID,
-		Email: "test@test.com",
+	loggedUser := &token.UserRoles{
+		ID: "test-user",
 	}
 
 	runtime := &entity.Product{
-		ID: runtimeID,
+		ID: productID,
 	}
 
 	versionName := "classificator-v1"
@@ -173,19 +172,22 @@ func (s *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDuplic
 	file, err := os.Open("../../test_assets/classificator-v1.krt")
 	s.Require().NoError(err)
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
-	s.mocks.runtimeRepo.EXPECT().GetByID(s.ctx, runtimeID).Return(runtime, nil)
-	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
-	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, runtimeID, versionName).Return(version, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(loggedUser, productID, auth.ActCreateVersion)
+	s.mocks.productRepo.EXPECT().GetByID(s.ctx, productID).Return(runtime, nil)
+	s.mocks.versionRepo.EXPECT().GetByProduct(productID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, productID, versionName).Return(version, nil)
 
-	_, _, err = s.versionInteractor.Create(context.Background(), userID, runtimeID, file)
+	_, _, err = s.versionInteractor.Create(context.Background(), loggedUser, productID, file)
 	s.ErrorIs(err, usecase.ErrVersionDuplicated)
 }
 
 func (s *VersionInteractorSuite) TestGetByName() {
-	userID := "user1"
-	runtimeID := "runtime-1"
+	productID := "product-1"
 	versionName := "version-name"
+
+	loggedUser := &token.UserRoles{
+		ID: "test-user",
+	}
 
 	expected := &entity.Version{
 		ID:                "version-id",
@@ -201,10 +203,10 @@ func (s *VersionInteractorSuite) TestGetByName() {
 		Workflows:         nil,
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit).Return(nil)
-	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, runtimeID, versionName).Return(expected, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(loggedUser, productID, auth.ActViewVersion).Return(nil)
+	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, productID, versionName).Return(expected, nil)
 
-	actual, err := s.versionInteractor.GetByName(s.ctx, userID, runtimeID, versionName)
+	actual, err := s.versionInteractor.GetByName(s.ctx, loggedUser, productID, versionName)
 	s.Require().NoError(err)
 
 	s.Equal(expected, actual)

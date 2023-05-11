@@ -5,7 +5,7 @@ import (
 )
 
 type UserRoles struct {
-	UserId       string
+	ID           string
 	RealmAccess  RealmAccess
 	ProductRoles ProductRoles
 }

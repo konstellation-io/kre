@@ -5,8 +5,9 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/product"
+
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/product"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/repository"
@@ -21,7 +22,7 @@ var (
 	ErrProductDuplicatedName = errors.New("there is already a product with the same name")
 )
 
-// ProductInteractor contains app logic to handle Runtime entities
+// ProductInteractor contains app logic to handle Product entities
 type ProductInteractor struct {
 	cfg               *config.Config
 	logger            logging.Logger
@@ -62,8 +63,8 @@ func NewProductInteractor(
 	}
 }
 
-// CreateRuntime adds a new Runtime
-func (i *ProductInteractor) CreateRuntime(
+// CreateProduct adds a new Product
+func (i *ProductInteractor) CreateProduct(
 	ctx context.Context,
 	user *token.UserRoles,
 	productID,
@@ -83,7 +84,7 @@ func (i *ProductInteractor) CreateRuntime(
 		ID:          productID,
 		Name:        name,
 		Description: description,
-		Owner:       user.UserId,
+		Owner:       user.ID,
 	}
 
 	// Validation
@@ -92,7 +93,7 @@ func (i *ProductInteractor) CreateRuntime(
 		return nil, err
 	}
 
-	// Check if the Runtime already exists
+	// Check if the Product already exists
 	productFromDB, err := i.productRepo.GetByID(ctx, productID)
 	if productFromDB != nil {
 		return nil, ErrProductDuplicated
@@ -100,7 +101,7 @@ func (i *ProductInteractor) CreateRuntime(
 		return nil, err
 	}
 
-	// Check if there is another Runtime with the same name
+	// Check if there is another Product with the same name
 	productFromDB, err = i.productRepo.GetByName(ctx, name)
 	if productFromDB != nil {
 		return nil, ErrProductDuplicatedName
@@ -163,9 +164,9 @@ func (i *ProductInteractor) GetByID(ctx context.Context, user *token.UserRoles, 
 // FindAll returns a list of all Runtimes
 func (i *ProductInteractor) FindAll(ctx context.Context, user *token.UserRoles) ([]*entity.Product, error) {
 	visibleProducts := make([]string, 0, len(user.ProductRoles))
-	for product := range user.ProductRoles {
-		if err := i.accessControl.CheckPermission(user, product, auth.ActViewProduct); err == nil {
-			visibleProducts = append(visibleProducts, product)
+	for prod := range user.ProductRoles {
+		if err := i.accessControl.CheckPermission(user, prod, auth.ActViewProduct); err == nil {
+			visibleProducts = append(visibleProducts, prod)
 		}
 	}
 

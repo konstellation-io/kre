@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/auth"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,16 +19,16 @@ import (
 )
 
 type UserActivityInteracter interface {
-	Get(ctx context.Context, loggedUserID string, userEmail *string, types []entity.UserActivityType,
+	Get(ctx context.Context, user *token.UserRoles, userEmail *string, types []entity.UserActivityType,
 		versionIds []string, fromDate *string, toDate *string, lastID *string) ([]*entity.UserActivity, error)
 	RegisterLogin(userID string) error
 	RegisterLogout(userID string) error
-	RegisterCreateRuntime(userID string, runtime *entity.Product) error
-	RegisterCreateAction(userID, runtimeID string, version *entity.Version) error
-	RegisterStartAction(userID, runtimeID string, version *entity.Version, comment string) error
-	RegisterStopAction(userID, runtimeID string, version *entity.Version, comment string) error
-	RegisterPublishAction(userID, runtimeID string, version *entity.Version, prev *entity.Version, comment string) error
-	RegisterUnpublishAction(userID, runtimeID string, version *entity.Version, comment string) error
+	RegisterCreateProduct(userID string, product *entity.Product) error
+	RegisterCreateAction(userID, productID string, version *entity.Version) error
+	RegisterStartAction(userID, productID string, version *entity.Version, comment string) error
+	RegisterStopAction(userID, productID string, version *entity.Version, comment string) error
+	RegisterPublishAction(userID, productID string, version *entity.Version, prev *entity.Version, comment string) error
+	RegisterUnpublishAction(userID, productID string, version *entity.Version, comment string) error
 	RegisterUpdateSettings(userID string, vars []*entity.UserActivityVar) error
 	//nolint:godox // Remove this statement when the TODO below is done.
 	//TODO: Refactor accessLevel to type
@@ -61,7 +62,7 @@ func NewUserActivityInteractor(
 // Get return a list of UserActivities.
 func (i *UserActivityInteractor) Get(
 	ctx context.Context,
-	loggedUserID string,
+	user *token.UserRoles,
 	userEmail *string,
 	types []entity.UserActivityType,
 	versionIds []string,
@@ -69,7 +70,7 @@ func (i *UserActivityInteractor) Get(
 	toDate *string,
 	lastID *string,
 ) ([]*entity.UserActivity, error) {
-	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResAudit, auth.ActView); err != nil {
+	if err := i.accessControl.CheckPermission(user, "", auth.ActViewUserActivities); err != nil {
 		return nil, err
 	}
 
@@ -110,30 +111,30 @@ func (i *UserActivityInteractor) RegisterLogout(userID string) error {
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterCreateRuntime(userID string, runtime *entity.Product) error {
+func (i *UserActivityInteractor) RegisterCreateProduct(userID string, product *entity.Product) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateRuntime,
 		[]*entity.UserActivityVar{
 			{
-				Key:   "RUNTIME_ID",
-				Value: runtime.ID,
+				Key:   "PRODUCT_ID",
+				Value: product.ID,
 			},
 			{
 				Key:   "RUNTIME_NAME",
-				Value: runtime.Name,
+				Value: product.Name,
 			},
 		})
 
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterCreateAction(userID, runtimeID string, version *entity.Version) error {
+func (i *UserActivityInteractor) RegisterCreateAction(userID, productID string, version *entity.Version) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeCreateVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtimeID},
+			{Key: "PRODUCT_ID", Value: productID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 		})
@@ -141,12 +142,12 @@ func (i *UserActivityInteractor) RegisterCreateAction(userID, runtimeID string, 
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStartAction(userID, runtimeID string, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterStartAction(userID, productID string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeStartVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtimeID},
+			{Key: "PRODUCT_ID", Value: productID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -155,12 +156,12 @@ func (i *UserActivityInteractor) RegisterStartAction(userID, runtimeID string, v
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterStopAction(userID, runtimeID string, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterStopAction(userID, productID string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeStopVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtimeID},
+			{Key: "PRODUCT_ID", Value: productID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},
@@ -169,13 +170,12 @@ func (i *UserActivityInteractor) RegisterStopAction(userID, runtimeID string, ve
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterPublishAction(userID, runtimeID string,
-	version, prev *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterPublishAction(userID, productID string, version *entity.Version, prev *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypePublishVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtimeID},
+			{Key: "PRODUCT_ID", Value: productID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "OLD_PUBLISHED_VERSION_ID", Value: prev.ID},
@@ -186,12 +186,12 @@ func (i *UserActivityInteractor) RegisterPublishAction(userID, runtimeID string,
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterUnpublishAction(userID, runtimeID string, version *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterUnpublishAction(userID, productID string, version *entity.Version, comment string) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypeUnpublishVersion,
 		[]*entity.UserActivityVar{
-			{Key: "RUNTIME_ID", Value: runtimeID},
+			{Key: "PRODUCT_ID", Value: productID},
 			{Key: "VERSION_ID", Value: version.ID},
 			{Key: "VERSION_NAME", Value: version.Name},
 			{Key: "COMMENT", Value: comment},

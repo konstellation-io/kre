@@ -31,12 +31,17 @@ type AccessControlAction string
 
 const ActViewProduct AccessControlAction = "view_product"
 const ActCreateProduct AccessControlAction = "create_product"
+
 const ActCreateVersion AccessControlAction = "create_version"
 const ActStartVersion AccessControlAction = "start_version"
 const ActStopVersion AccessControlAction = "stop_version"
 const ActPublishVersion AccessControlAction = "publish_version"
 const ActUnpublishVersion AccessControlAction = "unpublish_version"
 const ActEditVersion AccessControlAction = "edit_version"
+const ActViewVersion AccessControlAction = "view_version"
+
+const ActViewMetrics AccessControlAction = "view_metrics"
+const ActViewUserActivities AccessControlAction = "view_user_activities"
 
 const ActView AccessControlAction = "view"
 const ActEdit AccessControlAction = "edit"

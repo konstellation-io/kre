@@ -21,7 +21,7 @@ func newTokenWithProductRoles(userRoles *token.UserRoles) (string, error) {
 		ProductRoles: userRoles.ProductRoles,
 		RealmAccess:  userRoles.RealmAccess,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Subject: userRoles.UserId,
+			Subject: userRoles.ID,
 		},
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(tokenKey)
@@ -29,7 +29,7 @@ func newTokenWithProductRoles(userRoles *token.UserRoles) (string, error) {
 
 func Test_CustomClaims(t *testing.T) {
 	expectedUserRoles := &token.UserRoles{
-		UserId: "test-user",
+		ID: "test-user",
 		ProductRoles: token.ProductRoles{
 			"test-product": {
 				"ADMIN",

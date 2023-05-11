@@ -49,7 +49,7 @@ func (a *CasbinAccessControl) CheckPermission(
 
 		a.logger.Infof(
 			"Checking permission userID[%s] realmRole[%s] action[%s] resource[%s] allowed[%t]",
-			user.UserId, realmRole, action, resource, allowed,
+			user.ID, realmRole, action, resource, allowed,
 		)
 
 		if allowed {
