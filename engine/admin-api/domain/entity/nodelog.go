@@ -52,11 +52,7 @@ const (
 )
 
 func (e LogLevel) IsValid() bool {
-	switch e {
-	case LogLevelError, LogLevelWarn, LogLevelInfo, LogLevelDebug:
-		return true
-	}
-	return false
+	return e == LogLevelError || e == LogLevelWarn || e == LogLevelInfo || e == LogLevelDebug
 }
 
 func (e LogLevel) String() string {

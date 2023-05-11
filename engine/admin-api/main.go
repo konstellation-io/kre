@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"go.mongodb.org/mongo-driver/mongo"
+
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
@@ -19,9 +21,28 @@ func main() {
 	logger := logging.NewLogger(cfg.LogLevel)
 
 	db := mongodb.NewMongoDB(cfg, logger)
-	defer db.Disconnect()
+
 	mongodbClient := db.Connect()
 
+	defer db.Disconnect()
+
+	userActivityInteractor, runtimeInteractor, userInteractor,
+		versionInteractor, metricsInteractor := initApp(cfg, logger, mongodbClient)
+
+	app := http.NewApp(
+		cfg,
+		logger,
+		runtimeInteractor,
+		userInteractor,
+		userActivityInteractor,
+		versionInteractor,
+		metricsInteractor,
+	)
+	app.Start()
+}
+
+func initApp(cfg *config.Config, logger logging.Logger, mongodbClient *mongo.Client) (usecase.UserActivityInteracter,
+	*usecase.RuntimeInteractor, *usecase.UserInteractor, *usecase.VersionInteractor, *usecase.MetricsInteractor) {
 	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
@@ -90,14 +111,5 @@ func main() {
 		metricRepo,
 	)
 
-	app := http.NewApp(
-		cfg,
-		logger,
-		runtimeInteractor,
-		userInteractor,
-		userActivityInteractor,
-		versionInteractor,
-		metricsInteractor,
-	)
-	app.Start()
+	return userActivityInteractor, runtimeInteractor, userInteractor, versionInteractor, metricsInteractor
 }

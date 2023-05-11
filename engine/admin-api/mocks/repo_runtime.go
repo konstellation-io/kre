@@ -27,6 +27,7 @@ type MockRuntimeRepoMockRecorder struct {
 func NewMockRuntimeRepo(ctrl *gomock.Controller) *MockRuntimeRepo {
 	mock := &MockRuntimeRepo{ctrl: ctrl}
 	mock.recorder = &MockRuntimeRepoMockRecorder{mock}
+
 	return mock
 }
 
@@ -41,6 +42,7 @@ func (m *MockRuntimeRepo) Create(ctx context.Context, runtime *entity.Runtime) (
 	ret := m.ctrl.Call(m, "Create", ctx, runtime)
 	ret0, _ := ret[0].(*entity.Runtime)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
@@ -56,6 +58,7 @@ func (m *MockRuntimeRepo) FindAll(ctx context.Context) ([]*entity.Runtime, error
 	ret := m.ctrl.Call(m, "FindAll", ctx)
 	ret0, _ := ret[0].([]*entity.Runtime)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
@@ -71,6 +74,7 @@ func (m *MockRuntimeRepo) Get(ctx context.Context) (*entity.Runtime, error) {
 	ret := m.ctrl.Call(m, "Get", ctx)
 	ret0, _ := ret[0].(*entity.Runtime)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
@@ -86,6 +90,7 @@ func (m *MockRuntimeRepo) GetByID(ctx context.Context, runtimeID string) (*entit
 	ret := m.ctrl.Call(m, "GetByID", ctx, runtimeID)
 	ret0, _ := ret[0].(*entity.Runtime)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
@@ -101,6 +106,7 @@ func (m *MockRuntimeRepo) GetByName(ctx context.Context, name string) (*entity.R
 	ret := m.ctrl.Call(m, "GetByName", ctx, name)
 	ret0, _ := ret[0].(*entity.Runtime)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 

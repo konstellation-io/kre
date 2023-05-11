@@ -1,3 +1,4 @@
+//go:build tools
 // +build tools
 
 // This will allow go modules to see the dependency.

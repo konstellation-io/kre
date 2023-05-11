@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetApiTokens_me_apiTokens {
-  __typename: 'ApiToken';
+  __typename: 'APIToken';
   id: string;
   name: string;
   creationDate: string;

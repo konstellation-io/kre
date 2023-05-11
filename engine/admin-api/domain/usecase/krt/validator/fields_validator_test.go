@@ -53,10 +53,11 @@ func TestYamlFieldsValidator_Run(t *testing.T) {
 			errorString: "the field \"Entrypoint.Image\" is required",
 		},
 		{
-			name:        "fails if and invalid env var is defined in config",
-			krtYaml:     NewKrtBuilder().WithConfigVars([]string{"invalid-var"}).Build(),
-			wantError:   true,
-			errorString: "invalid value \"invalid-var\" at env var \"Config.Variables[0]\" must contain only capital letters, numbers, and underscores",
+			name:      "fails if and invalid env var is defined in config",
+			krtYaml:   NewKrtBuilder().WithConfigVars([]string{"invalid-var"}).Build(),
+			wantError: true,
+			errorString: "invalid value \"invalid-var\" at env var \"Config.Variables[0]\" must contain only capital " +
+				"letters, numbers, and underscores",
 		},
 		{
 			name:        "KRT YAML with invalid KRT Version",
@@ -75,6 +76,7 @@ func TestYamlFieldsValidator_Run(t *testing.T) {
 				assert.Error(t, err[0], tc.errorString)
 				return
 			}
+
 			assert.Empty(t, err)
 		})
 	}

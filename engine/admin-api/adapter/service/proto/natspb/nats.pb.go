@@ -42,6 +42,7 @@ var (
 func (x ObjectStoreScope) Enum() *ObjectStoreScope {
 	p := new(ObjectStoreScope)
 	*p = x
+
 	return p
 }
 
@@ -77,6 +78,7 @@ type ObjectStore struct {
 
 func (x *ObjectStore) Reset() {
 	*x = ObjectStore{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -92,13 +94,16 @@ func (*ObjectStore) ProtoMessage() {}
 
 func (x *ObjectStore) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[0]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -111,6 +116,7 @@ func (x *ObjectStore) GetName() string {
 	if x != nil {
 		return x.Name
 	}
+
 	return ""
 }
 
@@ -118,6 +124,7 @@ func (x *ObjectStore) GetScope() ObjectStoreScope {
 	if x != nil {
 		return x.Scope
 	}
+
 	return ObjectStoreScope_SCOPE_WORKFLOW
 }
 
@@ -133,6 +140,7 @@ type Node struct {
 
 func (x *Node) Reset() {
 	*x = Node{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -148,13 +156,16 @@ func (*Node) ProtoMessage() {}
 
 func (x *Node) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[1]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -167,6 +178,7 @@ func (x *Node) GetName() string {
 	if x != nil {
 		return x.Name
 	}
+
 	return ""
 }
 
@@ -174,6 +186,7 @@ func (x *Node) GetSubscriptions() []string {
 	if x != nil {
 		return x.Subscriptions
 	}
+
 	return nil
 }
 
@@ -181,6 +194,7 @@ func (x *Node) GetObjectStore() *ObjectStore {
 	if x != nil {
 		return x.ObjectStore
 	}
+
 	return nil
 }
 
@@ -196,6 +210,7 @@ type Workflow struct {
 
 func (x *Workflow) Reset() {
 	*x = Workflow{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -211,13 +226,16 @@ func (*Workflow) ProtoMessage() {}
 
 func (x *Workflow) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[2]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -230,6 +248,7 @@ func (x *Workflow) GetName() string {
 	if x != nil {
 		return x.Name
 	}
+
 	return ""
 }
 
@@ -237,6 +256,7 @@ func (x *Workflow) GetEntrypoint() string {
 	if x != nil {
 		return x.Entrypoint
 	}
+
 	return ""
 }
 
@@ -244,6 +264,7 @@ func (x *Workflow) GetNodes() []*Node {
 	if x != nil {
 		return x.Nodes
 	}
+
 	return nil
 }
 
@@ -252,13 +273,14 @@ type CreateStreamsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	RuntimeId   string      `protobuf:"bytes,1,opt,name=runtime_id,json=runtimeId,proto3" json:"runtime_id,omitempty"`
+	RuntimeId   string      `protobuf:"bytes,1,opt,name=runtime_id,json=runtimeID,proto3" json:"runtime_id,omitempty"`
 	VersionName string      `protobuf:"bytes,2,opt,name=version_name,json=versionName,proto3" json:"version_name,omitempty"`
 	Workflows   []*Workflow `protobuf:"bytes,3,rep,name=workflows,proto3" json:"workflows,omitempty"`
 }
 
 func (x *CreateStreamsRequest) Reset() {
 	*x = CreateStreamsRequest{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -274,13 +296,16 @@ func (*CreateStreamsRequest) ProtoMessage() {}
 
 func (x *CreateStreamsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[3]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -293,6 +318,7 @@ func (x *CreateStreamsRequest) GetRuntimeId() string {
 	if x != nil {
 		return x.RuntimeId
 	}
+
 	return ""
 }
 
@@ -300,6 +326,7 @@ func (x *CreateStreamsRequest) GetVersionName() string {
 	if x != nil {
 		return x.VersionName
 	}
+
 	return ""
 }
 
@@ -307,6 +334,7 @@ func (x *CreateStreamsRequest) GetWorkflows() []*Workflow {
 	if x != nil {
 		return x.Workflows
 	}
+
 	return nil
 }
 
@@ -315,13 +343,14 @@ type CreateObjectStoresRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	RuntimeId   string      `protobuf:"bytes,1,opt,name=runtime_id,json=runtimeId,proto3" json:"runtime_id,omitempty"`
+	RuntimeId   string      `protobuf:"bytes,1,opt,name=runtime_id,json=runtimeID,proto3" json:"runtime_id,omitempty"`
 	VersionName string      `protobuf:"bytes,2,opt,name=version_name,json=versionName,proto3" json:"version_name,omitempty"`
 	Workflows   []*Workflow `protobuf:"bytes,3,rep,name=workflows,proto3" json:"workflows,omitempty"`
 }
 
 func (x *CreateObjectStoresRequest) Reset() {
 	*x = CreateObjectStoresRequest{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -337,13 +366,16 @@ func (*CreateObjectStoresRequest) ProtoMessage() {}
 
 func (x *CreateObjectStoresRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[4]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -356,6 +388,7 @@ func (x *CreateObjectStoresRequest) GetRuntimeId() string {
 	if x != nil {
 		return x.RuntimeId
 	}
+
 	return ""
 }
 
@@ -363,6 +396,7 @@ func (x *CreateObjectStoresRequest) GetVersionName() string {
 	if x != nil {
 		return x.VersionName
 	}
+
 	return ""
 }
 
@@ -370,6 +404,7 @@ func (x *CreateObjectStoresRequest) GetWorkflows() []*Workflow {
 	if x != nil {
 		return x.Workflows
 	}
+
 	return nil
 }
 
@@ -385,6 +420,7 @@ type CreateKeyValueStoresRequest struct {
 
 func (x *CreateKeyValueStoresRequest) Reset() {
 	*x = CreateKeyValueStoresRequest{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -400,13 +436,16 @@ func (*CreateKeyValueStoresRequest) ProtoMessage() {}
 
 func (x *CreateKeyValueStoresRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[5]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -419,6 +458,7 @@ func (x *CreateKeyValueStoresRequest) GetRuntimeId() string {
 	if x != nil {
 		return x.RuntimeId
 	}
+
 	return ""
 }
 
@@ -426,6 +466,7 @@ func (x *CreateKeyValueStoresRequest) GetVersionName() string {
 	if x != nil {
 		return x.VersionName
 	}
+
 	return ""
 }
 
@@ -433,6 +474,7 @@ func (x *CreateKeyValueStoresRequest) GetWorkflows() []*Workflow {
 	if x != nil {
 		return x.Workflows
 	}
+
 	return nil
 }
 
@@ -447,6 +489,7 @@ type DeleteStreamsRequest struct {
 
 func (x *DeleteStreamsRequest) Reset() {
 	*x = DeleteStreamsRequest{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -462,13 +505,16 @@ func (*DeleteStreamsRequest) ProtoMessage() {}
 
 func (x *DeleteStreamsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[6]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -481,6 +527,7 @@ func (x *DeleteStreamsRequest) GetRuntimeId() string {
 	if x != nil {
 		return x.RuntimeId
 	}
+
 	return ""
 }
 
@@ -488,6 +535,7 @@ func (x *DeleteStreamsRequest) GetVersionName() string {
 	if x != nil {
 		return x.VersionName
 	}
+
 	return ""
 }
 
@@ -502,6 +550,7 @@ type DeleteObjectStoresRequest struct {
 
 func (x *DeleteObjectStoresRequest) Reset() {
 	*x = DeleteObjectStoresRequest{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -517,13 +566,16 @@ func (*DeleteObjectStoresRequest) ProtoMessage() {}
 
 func (x *DeleteObjectStoresRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[7]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -536,6 +588,7 @@ func (x *DeleteObjectStoresRequest) GetRuntimeId() string {
 	if x != nil {
 		return x.RuntimeId
 	}
+
 	return ""
 }
 
@@ -543,6 +596,7 @@ func (x *DeleteObjectStoresRequest) GetVersionName() string {
 	if x != nil {
 		return x.VersionName
 	}
+
 	return ""
 }
 
@@ -556,6 +610,7 @@ type CreateStreamsResponse struct {
 
 func (x *CreateStreamsResponse) Reset() {
 	*x = CreateStreamsResponse{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -571,13 +626,16 @@ func (*CreateStreamsResponse) ProtoMessage() {}
 
 func (x *CreateStreamsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[8]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -590,6 +648,7 @@ func (x *CreateStreamsResponse) GetWorkflows() map[string]*CreateStreamsResponse
 	if x != nil {
 		return x.Workflows
 	}
+
 	return nil
 }
 
@@ -603,6 +662,7 @@ type CreateObjectStoresResponse struct {
 
 func (x *CreateObjectStoresResponse) Reset() {
 	*x = CreateObjectStoresResponse{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -618,13 +678,16 @@ func (*CreateObjectStoresResponse) ProtoMessage() {}
 
 func (x *CreateObjectStoresResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[9]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -637,6 +700,7 @@ func (x *CreateObjectStoresResponse) GetWorkflows() map[string]*CreateObjectStor
 	if x != nil {
 		return x.Workflows
 	}
+
 	return nil
 }
 
@@ -650,6 +714,7 @@ type DeleteResponse struct {
 
 func (x *DeleteResponse) Reset() {
 	*x = DeleteResponse{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -665,13 +730,16 @@ func (*DeleteResponse) ProtoMessage() {}
 
 func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[10]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -684,6 +752,7 @@ func (x *DeleteResponse) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
+
 	return ""
 }
 
@@ -698,6 +767,7 @@ type CreateKeyValueStoreResponse struct {
 
 func (x *CreateKeyValueStoreResponse) Reset() {
 	*x = CreateKeyValueStoreResponse{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -713,13 +783,16 @@ func (*CreateKeyValueStoreResponse) ProtoMessage() {}
 
 func (x *CreateKeyValueStoreResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[11]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -732,6 +805,7 @@ func (x *CreateKeyValueStoreResponse) GetKeyValueStore() string {
 	if x != nil {
 		return x.KeyValueStore
 	}
+
 	return ""
 }
 
@@ -739,6 +813,7 @@ func (x *CreateKeyValueStoreResponse) GetWorkflows() map[string]*CreateKeyValueS
 	if x != nil {
 		return x.Workflows
 	}
+
 	return nil
 }
 
@@ -753,6 +828,7 @@ type CreateStreamsResponse_NodeStreamConfig struct {
 
 func (x *CreateStreamsResponse_NodeStreamConfig) Reset() {
 	*x = CreateStreamsResponse_NodeStreamConfig{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -768,13 +844,16 @@ func (*CreateStreamsResponse_NodeStreamConfig) ProtoMessage() {}
 
 func (x *CreateStreamsResponse_NodeStreamConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[12]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -787,6 +866,7 @@ func (x *CreateStreamsResponse_NodeStreamConfig) GetSubject() string {
 	if x != nil {
 		return x.Subject
 	}
+
 	return ""
 }
 
@@ -794,6 +874,7 @@ func (x *CreateStreamsResponse_NodeStreamConfig) GetSubscriptions() []string {
 	if x != nil {
 		return x.Subscriptions
 	}
+
 	return nil
 }
 
@@ -809,6 +890,7 @@ type CreateStreamsResponse_WorkflowStreamConfig struct {
 
 func (x *CreateStreamsResponse_WorkflowStreamConfig) Reset() {
 	*x = CreateStreamsResponse_WorkflowStreamConfig{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -824,13 +906,16 @@ func (*CreateStreamsResponse_WorkflowStreamConfig) ProtoMessage() {}
 
 func (x *CreateStreamsResponse_WorkflowStreamConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[13]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -843,6 +928,7 @@ func (x *CreateStreamsResponse_WorkflowStreamConfig) GetStream() string {
 	if x != nil {
 		return x.Stream
 	}
+
 	return ""
 }
 
@@ -850,6 +936,7 @@ func (x *CreateStreamsResponse_WorkflowStreamConfig) GetNodes() map[string]*Crea
 	if x != nil {
 		return x.Nodes
 	}
+
 	return nil
 }
 
@@ -857,6 +944,7 @@ func (x *CreateStreamsResponse_WorkflowStreamConfig) GetEntrypointSubject() stri
 	if x != nil {
 		return x.EntrypointSubject
 	}
+
 	return ""
 }
 
@@ -870,6 +958,7 @@ type CreateObjectStoresResponse_WorkflowObjectStoreConfig struct {
 
 func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) Reset() {
 	*x = CreateObjectStoresResponse_WorkflowObjectStoreConfig{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -885,13 +974,16 @@ func (*CreateObjectStoresResponse_WorkflowObjectStoreConfig) ProtoMessage() {}
 
 func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[16]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -904,6 +996,7 @@ func (x *CreateObjectStoresResponse_WorkflowObjectStoreConfig) GetNodes() map[st
 	if x != nil {
 		return x.Nodes
 	}
+
 	return nil
 }
 
@@ -918,6 +1011,7 @@ type CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig struct {
 
 func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) Reset() {
 	*x = CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_nats_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -933,13 +1027,16 @@ func (*CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) ProtoMessage() {
 
 func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_nats_proto_msgTypes[19]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -952,6 +1049,7 @@ func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) GetKeyValueSto
 	if x != nil {
 		return x.KeyValueStore
 	}
+
 	return ""
 }
 
@@ -959,6 +1057,7 @@ func (x *CreateKeyValueStoreResponse_WorkflowKeyValueStoreConfig) GetNodes() map
 	if x != nil {
 		return x.Nodes
 	}
+
 	return nil
 }
 
@@ -1163,6 +1262,7 @@ func file_nats_proto_rawDescGZIP() []byte {
 	file_nats_proto_rawDescOnce.Do(func() {
 		file_nats_proto_rawDescData = protoimpl.X.CompressGZIP(file_nats_proto_rawDescData)
 	})
+
 	return file_nats_proto_rawDescData
 }
 
@@ -1232,6 +1332,7 @@ func file_nats_proto_init() {
 	if File_nats_proto != nil {
 		return
 	}
+
 	if !protoimpl.UnsafeEnabled {
 		file_nats_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ObjectStore); i {
@@ -1426,8 +1527,11 @@ func file_nats_proto_init() {
 			}
 		}
 	}
+
 	file_nats_proto_msgTypes[1].OneofWrappers = []interface{}{}
+
 	type x struct{}
+
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),

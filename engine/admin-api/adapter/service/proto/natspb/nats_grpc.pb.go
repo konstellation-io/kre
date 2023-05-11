@@ -39,46 +39,56 @@ func NewNatsManagerServiceClient(cc grpc.ClientConnInterface) NatsManagerService
 
 func (c *natsManagerServiceClient) CreateStreams(ctx context.Context, in *CreateStreamsRequest, opts ...grpc.CallOption) (*CreateStreamsResponse, error) {
 	out := new(CreateStreamsResponse)
+
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateStreams", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *natsManagerServiceClient) CreateObjectStores(ctx context.Context, in *CreateObjectStoresRequest, opts ...grpc.CallOption) (*CreateObjectStoresResponse, error) {
 	out := new(CreateObjectStoresResponse)
+
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateObjectStores", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *natsManagerServiceClient) DeleteStreams(ctx context.Context, in *DeleteStreamsRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
 	out := new(DeleteResponse)
+
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/DeleteStreams", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *natsManagerServiceClient) DeleteObjectStores(ctx context.Context, in *DeleteObjectStoresRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
 	out := new(DeleteResponse)
+
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/DeleteObjectStores", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *natsManagerServiceClient) CreateKeyValueStores(ctx context.Context, in *CreateKeyValueStoresRequest, opts ...grpc.CallOption) (*CreateKeyValueStoreResponse, error) {
 	out := new(CreateKeyValueStoreResponse)
+
 	err := c.cc.Invoke(ctx, "/nats.NatsManagerService/CreateKeyValueStores", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
@@ -131,9 +141,11 @@ func _NatsManagerService_CreateStreams_Handler(srv interface{}, ctx context.Cont
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(NatsManagerServiceServer).CreateStreams(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/nats.NatsManagerService/CreateStreams",
@@ -141,6 +153,7 @@ func _NatsManagerService_CreateStreams_Handler(srv interface{}, ctx context.Cont
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NatsManagerServiceServer).CreateStreams(ctx, req.(*CreateStreamsRequest))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -149,9 +162,11 @@ func _NatsManagerService_CreateObjectStores_Handler(srv interface{}, ctx context
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(NatsManagerServiceServer).CreateObjectStores(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/nats.NatsManagerService/CreateObjectStores",
@@ -159,6 +174,7 @@ func _NatsManagerService_CreateObjectStores_Handler(srv interface{}, ctx context
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NatsManagerServiceServer).CreateObjectStores(ctx, req.(*CreateObjectStoresRequest))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -167,9 +183,11 @@ func _NatsManagerService_DeleteStreams_Handler(srv interface{}, ctx context.Cont
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(NatsManagerServiceServer).DeleteStreams(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/nats.NatsManagerService/DeleteStreams",
@@ -177,6 +195,7 @@ func _NatsManagerService_DeleteStreams_Handler(srv interface{}, ctx context.Cont
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NatsManagerServiceServer).DeleteStreams(ctx, req.(*DeleteStreamsRequest))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -185,9 +204,11 @@ func _NatsManagerService_DeleteObjectStores_Handler(srv interface{}, ctx context
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(NatsManagerServiceServer).DeleteObjectStores(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/nats.NatsManagerService/DeleteObjectStores",
@@ -195,6 +216,7 @@ func _NatsManagerService_DeleteObjectStores_Handler(srv interface{}, ctx context
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NatsManagerServiceServer).DeleteObjectStores(ctx, req.(*DeleteObjectStoresRequest))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -203,9 +225,11 @@ func _NatsManagerService_CreateKeyValueStores_Handler(srv interface{}, ctx conte
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(NatsManagerServiceServer).CreateKeyValueStores(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/nats.NatsManagerService/CreateKeyValueStores",
@@ -213,6 +237,7 @@ func _NatsManagerService_CreateKeyValueStores_Handler(srv interface{}, ctx conte
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NatsManagerServiceServer).CreateKeyValueStores(ctx, req.(*CreateKeyValueStoresRequest))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 

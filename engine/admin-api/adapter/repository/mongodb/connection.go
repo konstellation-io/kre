@@ -42,7 +42,7 @@ func (m *MongoDB) Connect() *mongo.Client {
 	err = client.Connect(ctx)
 	if err != nil {
 		m.logger.Error(err.Error())
-		os.Exit(1)
+		os.Exit(1) //nolint:gocritic
 	}
 
 	// Call Ping to verify that the deployment is up and the Client was configured successfully.
@@ -50,6 +50,7 @@ func (m *MongoDB) Connect() *mongo.Client {
 	defer cancel()
 
 	m.logger.Info("MongoDB ping...")
+
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		m.logger.Error(err.Error())
@@ -76,9 +77,8 @@ func (m *MongoDB) Disconnect() {
 
 	if err != nil {
 		m.logger.Error(err.Error())
-		os.Exit(1)
+		os.Exit(1) //nolint:gocritic
 	}
 
 	m.logger.Info("Connection to MongoDB closed.")
-
 }

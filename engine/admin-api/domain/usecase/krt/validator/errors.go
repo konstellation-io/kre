@@ -22,6 +22,7 @@ func getErrorMessages(errs []error) []string {
 	for _, err := range errs {
 		messages = append(messages, err.Error())
 	}
+
 	return messages
 }
 

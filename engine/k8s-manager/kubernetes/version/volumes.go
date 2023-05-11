@@ -6,7 +6,7 @@ import (
 	apiv1 "k8s.io/api/core/v1"
 )
 
-func (m *Manager) getCommonVolumes(runtimeId, versionName string) []apiv1.Volume {
+func (m *Manager) getCommonVolumes(runtimeID, versionName string) []apiv1.Volume {
 	return []apiv1.Volume{
 		{
 			Name: basePathKRTName,
@@ -19,7 +19,7 @@ func (m *Manager) getCommonVolumes(runtimeId, versionName string) []apiv1.Volume
 			VolumeSource: apiv1.VolumeSource{
 				ConfigMap: &apiv1.ConfigMapVolumeSource{
 					LocalObjectReference: apiv1.LocalObjectReference{
-						Name: fmt.Sprintf("%s-%s-conf-files", runtimeId, versionName),
+						Name: fmt.Sprintf("%s-%s-conf-files", runtimeID, versionName),
 					},
 				},
 			},

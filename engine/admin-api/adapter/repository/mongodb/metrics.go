@@ -3,13 +3,14 @@ package mongodb
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 const metricsCollectionName = "classificationMetrics"
@@ -25,14 +26,15 @@ func NewMetricMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mon
 	return &MetricsMongoDBRepo{cfg: cfg, logger: logger, client: client}
 }
 
-func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time, endDate time.Time, runtimeId, versionName string) ([]entity.ClassificationMetric, error) {
-	database := m.getDatabaseName(runtimeId)
+func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate, endDate time.Time,
+	runtimeID, versionName string) ([]entity.ClassificationMetric, error) {
+	database := m.getDatabaseName(runtimeID)
 	collection := m.client.Database(database).Collection(metricsCollectionName)
 
 	var result []entity.ClassificationMetric
 
 	opts := &options.FindOptions{
-		Sort: bson.D{{"_id", 1}},
+		Sort: bson.M{"_id": 1},
 	}
 
 	filter := bson.M{
@@ -64,18 +66,20 @@ func (m *MetricsMongoDBRepo) GetMetrics(ctx context.Context, startDate time.Time
 	return result, nil
 }
 
-func (m *MetricsMongoDBRepo) CreateIndexes(ctx context.Context, runtimeId string) error {
-	database := m.getDatabaseName(runtimeId)
+func (m *MetricsMongoDBRepo) CreateIndexes(ctx context.Context, runtimeID string) error {
+	database := m.getDatabaseName(runtimeID)
 	collection := m.client.Database(database).Collection(metricsCollectionName)
 	m.logger.Infof("MongoDB creating indexes for %s collection...", metricsCollectionName)
+
 	_, err := collection.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
-			Keys: bson.D{{"date", 1}, {"versionName", 1}},
+			Keys: bson.M{"date": 1, "versionName": 1},
 		},
 	})
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

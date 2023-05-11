@@ -17,19 +17,11 @@ const (
 	VersionStatusError     VersionStatus = "ERROR"
 )
 
+//nolint:gocritic
 func (e VersionStatus) IsValid() bool {
-	switch e {
-	case VersionStatusCreating,
-		VersionStatusCreated,
-		VersionStatusStarting,
-		VersionStatusStarted,
-		VersionStatusPublished,
-		VersionStatusStopping,
-		VersionStatusStopped,
-		VersionStatusError:
-		return true
-	}
-	return false
+	return e == VersionStatusCreating || e == VersionStatusCreated || e == VersionStatusStarting ||
+		e == VersionStatusStarted || e == VersionStatusPublished || e == VersionStatusStopping ||
+		e == VersionStatusStopped || e == VersionStatusError
 }
 
 func (e VersionStatus) String() string {
@@ -44,11 +36,7 @@ const (
 )
 
 func (e ConfigurationVariableType) IsValid() bool {
-	switch e {
-	case ConfigurationVariableTypeVariable, ConfigurationVariableTypeFile:
-		return true
-	}
-	return false
+	return e == ConfigurationVariableTypeVariable || e == ConfigurationVariableTypeFile
 }
 
 func (e ConfigurationVariableType) String() string {
@@ -88,11 +76,7 @@ const (
 )
 
 func (e NodeStatus) IsValid() bool {
-	switch e {
-	case NodeStatusStarting, NodeStatusStarted, NodeStatusStopped, NodeStatusError:
-		return true
-	}
-	return false
+	return e == NodeStatusStarting || e == NodeStatusStarted || e == NodeStatusStopped || e == NodeStatusError
 }
 
 func (e NodeStatus) String() string {
@@ -106,11 +90,7 @@ const (
 )
 
 func (e KrtVersion) IsValid() bool {
-	switch e {
-	case KRTVersionV2:
-		return true
-	}
-	return false
+	return e == KRTVersionV2
 }
 
 func (e KrtVersion) String() string {
@@ -121,7 +101,9 @@ func ParseKRTVersionFromString(str string) (KrtVersion, bool) {
 	var krtVersionMap = map[string]KrtVersion{
 		KRTVersionV2.String(): KRTVersionV2,
 	}
+
 	c, ok := krtVersionMap[str]
+
 	return c, ok
 }
 
@@ -174,27 +156,13 @@ type Version struct {
 }
 
 func (v Version) PublishedOrStarted() bool {
-	switch v.Status {
-	case VersionStatusStarted,
-		VersionStatusPublished:
-		return true
-	}
-	return false
+	return v.Status == VersionStatusStarted || v.Status == VersionStatusPublished
 }
 
 func (v Version) CanBeStarted() bool {
-	switch v.Status {
-	case VersionStatusCreated,
-		VersionStatusStopped:
-		return true
-	}
-	return false
+	return v.Status == VersionStatusCreated || v.Status == VersionStatusStopped
 }
 
 func (v Version) CanBeStopped() bool {
-	switch v.Status {
-	case VersionStatusStarted:
-		return true
-	}
-	return false
+	return v.Status == VersionStatusStarted
 }

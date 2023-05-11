@@ -71,6 +71,7 @@ func (m *Manager) Start(ctx context.Context, req *versionpb.StartRequest) error 
 
 	serviceName := m.getVersionServiceName(req.RuntimeId, req.VersionName)
 	_, err = m.createEntrypointService(ctx, req.RuntimeId, req.VersionName, serviceName, m.config.Kubernetes.Namespace)
+
 	if err != nil {
 		return err
 	}
@@ -98,7 +99,7 @@ func (m *Manager) Stop(ctx context.Context, req *versionpb.VersionInfo) error {
 }
 
 // Publish calls kubernetes to change the name of the entrypoint service.
-// The service-name will be changed to `active-entrypoint`
+// The service-name will be changed to `active-entrypoint`.
 func (m *Manager) Publish(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Publish version %q on runtime %q", req.Name, req.RuntimeId)
 
@@ -144,12 +145,13 @@ func (m *Manager) Publish(ctx context.Context, req *versionpb.VersionInfo) error
 }
 
 // Unpublish calls kubernetes to change the name of the entrypoint service.
-// The service-name will be changed to `VERSIONNAME-entrypoint`
+// The service-name will be changed to `VERSIONNAME-entrypoint`.
 func (m *Manager) Unpublish(ctx context.Context, req *versionpb.VersionInfo) error {
 	m.logger.Infof("Deactivating version %q on runtime %q", req.Name, req.RuntimeId)
 
 	ingressName := m.getIngressName(req.RuntimeId)
 	err := m.deleteIngress(ctx, ingressName)
+
 	if err != nil {
 		return err
 	}
@@ -252,5 +254,6 @@ func (m *Manager) findNodeSubject(nodes []*versionpb.Workflow_Node, nodeToFind s
 			return node.Subject, nil
 		}
 	}
-	return "", fmt.Errorf("error finding subject for node %q", nodeToFind)
+
+	return "", fmt.Errorf("error finding subject for node %q", nodeToFind) //nolint:goerr113
 }

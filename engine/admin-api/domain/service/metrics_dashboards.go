@@ -7,5 +7,5 @@ import (
 )
 
 type DashboardService interface {
-	Create(ctx context.Context, runtimeId, version, dashboardPath string) error
+	Create(ctx context.Context, runtimeID, version, dashboardPath string) error
 }

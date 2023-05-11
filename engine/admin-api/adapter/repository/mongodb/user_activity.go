@@ -21,6 +21,7 @@ type UserActivityRepoMongoDB struct {
 
 func NewUserActivityRepoMongoDB(cfg *config.Config, logger logging.Logger, client *mongo.Client) *UserActivityRepoMongoDB {
 	collection := client.Database(cfg.MongoDB.DBName).Collection("userActivity")
+
 	return &UserActivityRepoMongoDB{
 		cfg,
 		logger,
@@ -28,6 +29,7 @@ func NewUserActivityRepoMongoDB(cfg *config.Config, logger logging.Logger, clien
 	}
 }
 
+//nolint:nestif // legacy code
 func (r *UserActivityRepoMongoDB) Get(
 	ctx context.Context,
 	userEmail *string,
@@ -44,7 +46,7 @@ func (r *UserActivityRepoMongoDB) Get(
 		filter["_id"] = bson.M{"$lt": lastID}
 	}
 
-	if types != nil && len(types) > 0 {
+	if len(types) > 0 {
 		filter["type"] = bson.M{"$in": types}
 	}
 
@@ -52,7 +54,7 @@ func (r *UserActivityRepoMongoDB) Get(
 		filter["userId"] = userEmail
 	}
 
-	if versionIds != nil && len(versionIds) > 0 {
+	if len(versionIds) > 0 {
 		filter["vars.value"] = bson.M{"$in": versionIds}
 	}
 
@@ -64,6 +66,7 @@ func (r *UserActivityRepoMongoDB) Get(
 			if err != nil {
 				return nil, err
 			}
+
 			filterDate["$gte"] = from
 		}
 
@@ -72,6 +75,7 @@ func (r *UserActivityRepoMongoDB) Get(
 			if err != nil {
 				return nil, err
 			}
+
 			to = time.Date(to.Year(), to.Month(), to.Day(), 23, 59, 59, 999999999, to.Location())
 			filterDate["$lte"] = to
 		}
@@ -80,7 +84,9 @@ func (r *UserActivityRepoMongoDB) Get(
 	}
 
 	var activities []*entity.UserActivity
-	opts := options.Find().SetSort(bson.D{{"_id", -1}}).SetLimit(limit)
+
+	opts := options.Find().SetSort(bson.M{"_id": -1}).SetLimit(limit)
+
 	cursor, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return activities, err

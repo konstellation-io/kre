@@ -27,10 +27,9 @@ func NewNodeLogMongoDBRepo(cfg *config.Config, logger logging.Logger, client *mo
 	return &NodeLogMongoDBRepo{cfg: cfg, logger: logger, client: client}
 }
 
-// TODO use the Search filter: https://jira.mongodb.org/browse/NODE-2162
-// you cannot use a $text matcher on a change stream
-func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, runtimeId, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
-	collection := n.client.Database(runtimeId).Collection(logsCollectionName)
+func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, runtimeID, versionName string,
+	filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+	collection := n.client.Database(runtimeID).Collection(logsCollectionName)
 	logsCh := make(chan *entity.NodeLog, 1)
 
 	go func() {
@@ -45,6 +44,7 @@ func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, runtimeId, versi
 
 		conditions := n.getSearchConditions(versionName, filters)
 
+		//nolint:govet // ignore warning about bson.D
 		pipeline := mongo.Pipeline{bson.D{
 			{
 				"$match",
@@ -87,33 +87,34 @@ func (n *NodeLogMongoDBRepo) WatchNodeLogs(ctx context.Context, runtimeId, versi
 
 func (n *NodeLogMongoDBRepo) getSearchConditions(versionName string, filters entity.LogFilters) bson.A {
 	conditions := bson.A{
-		bson.D{{"operationType", "insert"}},
-		bson.D{{"fullDocument.versionName", versionName}},
+		bson.M{"operationType": "insert"},
+		bson.M{"fullDocument.versionName": versionName},
 	}
 
 	if len(filters.NodeIDs) > 0 {
-		conditions = append(conditions, bson.D{{"fullDocument.nodeId", bson.M{"$in": filters.NodeIDs}}})
+		conditions = append(conditions, bson.M{"fullDocument.nodeId": bson.M{"$in": filters.NodeIDs}})
 	}
 
 	if len(filters.Levels) > 0 {
-		conditions = append(conditions, bson.D{{"fullDocument.level", bson.M{"$in": filters.Levels}}})
+		conditions = append(conditions, bson.M{"fullDocument.level": bson.M{"$in": filters.Levels}})
 	}
+
 	return conditions
 }
 
 func (n *NodeLogMongoDBRepo) PaginatedSearch(
 	ctx context.Context,
-	runtimeId string,
+	runtimeID string,
 	searchOpts *entity.SearchLogsOptions,
 ) (*entity.SearchLogsResult, error) {
-	collection := n.client.Database(runtimeId).Collection(logsCollectionName)
+	collection := n.client.Database(runtimeID).Collection(logsCollectionName)
 	result := entity.SearchLogsResult{}
 
 	pageSize := new(int64)
 	*pageSize = logSearchPageSize
 	opts := &options.FindOptions{
 		Limit: pageSize,
-		Sort:  bson.D{{"_id", -1}},
+		Sort:  bson.M{"_id": -1},
 	}
 
 	filter := bson.M{
@@ -149,6 +150,7 @@ func (n *NodeLogMongoDBRepo) PaginatedSearch(
 		if err != nil {
 			return &result, fmt.Errorf("invalid next value for paginated search: %w", err)
 		}
+
 		filter["_id"] = bson.M{"$lt": nID}
 	}
 
@@ -175,18 +177,19 @@ func (n *NodeLogMongoDBRepo) PaginatedSearch(
 	return &result, nil
 }
 
-func (n *NodeLogMongoDBRepo) CreateIndexes(ctx context.Context, runtimeId string) error {
-	collection := n.client.Database(runtimeId).Collection(logsCollectionName)
+func (n *NodeLogMongoDBRepo) CreateIndexes(ctx context.Context, runtimeID string) error {
+	collection := n.client.Database(runtimeID).Collection(logsCollectionName)
 	n.logger.Infof("MongoDB creating indexes for %s collection...", logsCollectionName)
+
 	_, err := collection.Indexes().CreateMany(ctx, []mongo.IndexModel{
 		{
-			Keys: bson.D{{"message", "text"}},
+			Keys: bson.M{"message": "text"},
 		},
 		{
-			Keys: bson.D{{"date", 1}},
+			Keys: bson.M{"date": 1},
 		},
 		{
-			Keys: bson.D{{"date", 1}, {"nodeId", 1}, {"versionId", 1}},
+			Keys: bson.M{"date": 1, "nodeId": 1, "versionId": 1},
 		},
 	})
 	if err != nil {

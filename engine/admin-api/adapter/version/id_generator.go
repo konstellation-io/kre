@@ -1,6 +1,9 @@
 package version
 
-import "math/rand"
+import (
+	"crypto/rand"
+	"math/big"
+)
 
 const idLength = 5
 const idCharset = "abcdefghijklmnopqrstuvwxyz"
@@ -16,7 +19,13 @@ func NewIDGenerator() IDGenerator {
 func (g IDGenerator) NewID() string {
 	b := make([]byte, idLength)
 	for i := range b {
-		b[i] = idCharset[rand.Intn(idCharsetLen)]
+		bigInt, err := rand.Int(rand.Reader, big.NewInt(int64(idCharsetLen)))
+		if err != nil {
+			panic(err)
+		}
+
+		b[i] = idCharset[bigInt.Int64()]
 	}
+
 	return string(b)
 }

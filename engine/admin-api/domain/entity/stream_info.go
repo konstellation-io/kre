@@ -19,8 +19,10 @@ type WorkflowStreamConfig struct {
 func (w *WorkflowStreamConfig) GetNodeConfig(nodeName string) (*NodeStreamConfig, error) {
 	nodeConfig, ok := w.Nodes[nodeName]
 	if !ok {
+		//nolint:goerr113 // The error needs to be dynamic
 		return nil, fmt.Errorf("error obtaining stream config for node %q", nodeName)
 	}
+
 	return nodeConfig, nil
 }
 
@@ -29,6 +31,7 @@ func (w *WorkflowStreamConfig) GetEntrypointSubject() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return entrypointConfig.Subject, nil
 }
 

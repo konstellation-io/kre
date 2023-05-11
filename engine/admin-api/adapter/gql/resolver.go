@@ -18,10 +18,13 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
 
+//nolint:gochecknoglobals // needs to be global to be used in the resolver
 var versionStatusChannels map[string]chan *entity.Version
+
+//nolint:gochecknoglobals // needs to be global to be used in the resolver
 var mux *sync.RWMutex
 
-func init() {
+func initialize() {
 	versionStatusChannels = map[string]chan *entity.Version{}
 	mux = &sync.RWMutex{}
 }
@@ -45,6 +48,8 @@ func NewGraphQLResolver(
 	metricsInteractor *usecase.MetricsInteractor,
 	cfg *config.Config,
 ) *Resolver {
+	initialize()
+
 	return &Resolver{
 		logger,
 		runtimeInteractor,
@@ -79,6 +84,7 @@ func (r *mutationResolver) CreateVersion(ctx context.Context, input CreateVersio
 			extensions := make(map[string]interface{})
 			extensions["code"] = "krt_validation_error"
 			extensions["details"] = errs.Messages
+
 			return nil, &gqlerror.Error{
 				Message:    "the krt.yml file contains errors",
 				Extensions: extensions,
@@ -121,6 +127,7 @@ func (r *mutationResolver) StopVersion(ctx context.Context, input StopVersionInp
 }
 
 func (r *mutationResolver) notifyVersionStatus(notifyCh chan *entity.Version) {
+	//nolint:gosimple // legacy code
 	for {
 		select {
 		case v, ok := <-notifyCh:
@@ -150,6 +157,7 @@ func (r *mutationResolver) PublishVersion(ctx context.Context, input PublishVers
 
 func (r *mutationResolver) UpdateVersionUserConfiguration(ctx context.Context, input UpdateConfigurationInput) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
+
 	v, err := r.versionInteractor.GetByName(ctx, loggedUserID, input.RuntimeID, input.VersionName)
 	if err != nil {
 		return nil, err
@@ -167,9 +175,10 @@ func (r *mutationResolver) UpdateVersionUserConfiguration(ctx context.Context, i
 	return r.versionInteractor.UpdateVersionConfig(ctx, loggedUserID, input.RuntimeID, v, cfg)
 }
 
-func (r *queryResolver) Metrics(ctx context.Context, runtimeId, versionName, startDate, endDate string) (*entity.Metrics, error) {
+func (r *queryResolver) Metrics(ctx context.Context, runtimeID, versionName,
+	startDate, endDate string) (*entity.Metrics, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, runtimeId, versionName, startDate, endDate)
+	return r.metricsInteractor.GetMetrics(ctx, loggedUserID, runtimeID, versionName, startDate, endDate)
 }
 
 func (r *queryResolver) Runtime(ctx context.Context, id string) (*entity.Runtime, error) {
@@ -182,14 +191,14 @@ func (r *queryResolver) Runtimes(ctx context.Context) ([]*entity.Runtime, error)
 	return r.runtimeInteractor.FindAll(ctx, loggedUserID)
 }
 
-func (r *queryResolver) Version(ctx context.Context, name, runtimeId string) (*entity.Version, error) {
+func (r *queryResolver) Version(ctx context.Context, name, runtimeID string) (*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.GetByName(ctx, loggedUserID, runtimeId, name)
+	return r.versionInteractor.GetByName(ctx, loggedUserID, runtimeID, name)
 }
 
-func (r *queryResolver) Versions(ctx context.Context, runtimeId string) ([]*entity.Version, error) {
+func (r *queryResolver) Versions(ctx context.Context, runtimeID string) ([]*entity.Version, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.GetByRuntime(loggedUserID, runtimeId)
+	return r.versionInteractor.GetByRuntime(loggedUserID, runtimeID)
 }
 
 func (r *queryResolver) UserActivityList(
@@ -207,13 +216,13 @@ func (r *queryResolver) UserActivityList(
 
 func (r *queryResolver) Logs(
 	ctx context.Context,
-	runtimeId string,
+	runtimeID string,
 	filters entity.LogFilters,
 	cursor *string,
 ) (*LogPage, error) {
 	loggedUserID := ctx.Value("userID").(string)
 
-	searchResult, err := r.versionInteractor.SearchLogs(ctx, loggedUserID, runtimeId, filters, cursor)
+	searchResult, err := r.versionInteractor.SearchLogs(ctx, loggedUserID, runtimeID, filters, cursor)
 	if err != nil {
 		return nil, err
 	}
@@ -241,6 +250,7 @@ func (r *runtimeResolver) PublishedVersion(_ context.Context, obj *entity.Runtim
 	if obj.PublishedVersion != "" {
 		return r.versionInteractor.GetByID(obj.ID, obj.PublishedVersion)
 	}
+
 	return nil, nil
 }
 
@@ -260,6 +270,7 @@ func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity
 	id := uuid.New().String()
 
 	versionStatusCh := make(chan *entity.Version, 1)
+
 	go func() {
 		<-ctx.Done()
 		mux.Lock()
@@ -274,14 +285,16 @@ func (r *subscriptionResolver) WatchVersion(ctx context.Context) (<-chan *entity
 	return versionStatusCh, nil
 }
 
-func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context, versionName, runtimeID string) (<-chan *entity.Node, error) {
+func (r *subscriptionResolver) WatchNodeStatus(ctx context.Context,
+	versionName, runtimeID string) (<-chan *entity.Node, error) {
 	loggedUserID := ctx.Value("userID").(string)
 	return r.versionInteractor.WatchNodeStatus(ctx, loggedUserID, runtimeID, versionName)
 }
 
-func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, runtimeId, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (r *subscriptionResolver) WatchNodeLogs(ctx context.Context, runtimeID, versionName string,
+	filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	loggedUserID := ctx.Value("userID").(string)
-	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeId, versionName, filters)
+	return r.versionInteractor.WatchNodeLogs(ctx, loggedUserID, runtimeID, versionName, filters)
 }
 
 func (r *userActivityResolver) Date(_ context.Context, obj *entity.UserActivity) (string, error) {
@@ -302,6 +315,7 @@ func (a apiTokenResolver) LastActivity(_ context.Context, obj *entity.APIToken) 
 	}
 
 	date := obj.LastActivity.Format(time.RFC3339)
+
 	return &date, nil
 }
 
@@ -317,7 +331,9 @@ func (r *versionResolver) PublicationDate(_ context.Context, obj *entity.Version
 	if obj.PublicationDate == nil {
 		return nil, nil
 	}
+
 	result := obj.PublicationDate.Format(time.RFC3339)
+
 	return &result, nil
 }
 
@@ -325,6 +341,7 @@ func (r *versionResolver) PublicationAuthor(_ context.Context, obj *entity.Versi
 	if obj.PublicationUserID == nil {
 		return nil, nil
 	}
+
 	return obj.PublicationUserID, nil
 }
 
@@ -340,8 +357,8 @@ func (r *Resolver) Runtime() RuntimeResolver { return &runtimeResolver{r} }
 // Subscription returns SubscriptionResolver implementation.
 func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
 
-// ApiToken returns APITokenResolver implementation.
-func (r *Resolver) ApiToken() ApiTokenResolver { return &apiTokenResolver{r} }
+// APIToken returns APITokenResolver implementation.
+func (r *Resolver) APIToken() ApiTokenResolver { return &apiTokenResolver{r} }
 
 // UserActivity returns UserActivityResolver implementation.
 func (r *Resolver) UserActivity() UserActivityResolver { return &userActivityResolver{r} }
@@ -351,8 +368,9 @@ func (r *Resolver) Version() VersionResolver { return &versionResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 
+//nolint:godox // remove this statement when the TODO below is implemented
 func (r *mutationResolver) UpdateAccessLevel(ctx context.Context, input UpdateAccessLevelInput) ([]string, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 

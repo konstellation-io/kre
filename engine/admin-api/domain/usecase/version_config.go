@@ -12,6 +12,7 @@ func makeConfigMapByKey(list []*entity.ConfigurationVariable) map[string]*entity
 	for _, c := range list {
 		configMap[c.Key] = c
 	}
+
 	return configMap
 }
 
@@ -23,6 +24,7 @@ func (i *VersionInteractor) validateNewConfig(currentConfig, newValues []*entity
 			return ErrVersionConfigInvalidKey
 		}
 	}
+
 	return nil
 }
 
@@ -61,7 +63,9 @@ func readExistingConf(versions []*entity.Version) map[string]string {
 	sort.Slice(versions, func(i, j int) bool {
 		return versions[i].CreationDate.Unix() < versions[j].CreationDate.Unix()
 	})
+
 	currentConfig := map[string]string{}
+
 	for _, v := range versions {
 		for _, c := range v.Config.Vars {
 			if c.Value != "" {
@@ -69,6 +73,7 @@ func readExistingConf(versions []*entity.Version) map[string]string {
 			}
 		}
 	}
+
 	return currentConfig
 }
 
@@ -89,13 +94,15 @@ func fillNewConfWithExisting(currentConfig map[string]string, krtYml *krt.Krt) e
 	return conf
 }
 
-func appendConfValue(conf *entity.VersionUserConfig, currentConfig map[string]string, key string, varType entity.ConfigurationVariableType) {
+func appendConfValue(conf *entity.VersionUserConfig, currentConfig map[string]string,
+	key string, varType entity.ConfigurationVariableType) {
 	val := ""
 	if previousVal, ok := currentConfig[key]; ok {
 		val = previousVal
 	} else {
 		conf.Completed = false
 	}
+
 	conf.Vars = append(conf.Vars, &entity.ConfigurationVariable{
 		Key:   key,
 		Value: val,

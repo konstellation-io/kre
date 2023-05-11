@@ -33,6 +33,7 @@ type Runtime struct {
 
 func (x *Runtime) Reset() {
 	*x = Runtime{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_runtimepb_runtime_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -48,13 +49,16 @@ func (*Runtime) ProtoMessage() {}
 
 func (x *Runtime) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_runtimepb_runtime_proto_msgTypes[0]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -67,6 +71,7 @@ func (x *Runtime) GetName() string {
 	if x != nil {
 		return x.Name
 	}
+
 	return ""
 }
 
@@ -74,6 +79,7 @@ func (x *Runtime) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
+
 	return ""
 }
 
@@ -81,6 +87,7 @@ func (x *Runtime) GetMinio() *Runtime_MinioConf {
 	if x != nil {
 		return x.Minio
 	}
+
 	return nil
 }
 
@@ -88,6 +95,7 @@ func (x *Runtime) GetMongo() *Runtime_MongoConf {
 	if x != nil {
 		return x.Mongo
 	}
+
 	return nil
 }
 
@@ -101,6 +109,7 @@ type Request struct {
 
 func (x *Request) Reset() {
 	*x = Request{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_runtimepb_runtime_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -116,13 +125,16 @@ func (*Request) ProtoMessage() {}
 
 func (x *Request) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_runtimepb_runtime_proto_msgTypes[1]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -135,6 +147,7 @@ func (x *Request) GetRuntime() *Runtime {
 	if x != nil {
 		return x.Runtime
 	}
+
 	return nil
 }
 
@@ -148,6 +161,7 @@ type Response struct {
 
 func (x *Response) Reset() {
 	*x = Response{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_runtimepb_runtime_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -163,13 +177,16 @@ func (*Response) ProtoMessage() {}
 
 func (x *Response) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_runtimepb_runtime_proto_msgTypes[2]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -182,6 +199,7 @@ func (x *Response) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
+
 	return ""
 }
 
@@ -197,6 +215,7 @@ type Runtime_MongoConf struct {
 
 func (x *Runtime_MongoConf) Reset() {
 	*x = Runtime_MongoConf{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_runtimepb_runtime_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -212,13 +231,16 @@ func (*Runtime_MongoConf) ProtoMessage() {}
 
 func (x *Runtime_MongoConf) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_runtimepb_runtime_proto_msgTypes[3]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -231,6 +253,7 @@ func (x *Runtime_MongoConf) GetUsername() string {
 	if x != nil {
 		return x.Username
 	}
+
 	return ""
 }
 
@@ -238,6 +261,7 @@ func (x *Runtime_MongoConf) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
+
 	return ""
 }
 
@@ -245,6 +269,7 @@ func (x *Runtime_MongoConf) GetSharedKey() string {
 	if x != nil {
 		return x.SharedKey
 	}
+
 	return ""
 }
 
@@ -259,6 +284,7 @@ type Runtime_MinioConf struct {
 
 func (x *Runtime_MinioConf) Reset() {
 	*x = Runtime_MinioConf{}
+
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_runtimepb_runtime_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -274,13 +300,16 @@ func (*Runtime_MinioConf) ProtoMessage() {}
 
 func (x *Runtime_MinioConf) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_runtimepb_runtime_proto_msgTypes[4]
+
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
 		}
+
 		return ms
 	}
+
 	return mi.MessageOf(x)
 }
 
@@ -293,6 +322,7 @@ func (x *Runtime_MinioConf) GetAccessKey() string {
 	if x != nil {
 		return x.AccessKey
 	}
+
 	return ""
 }
 
@@ -300,6 +330,7 @@ func (x *Runtime_MinioConf) GetSecretKey() string {
 	if x != nil {
 		return x.SecretKey
 	}
+
 	return ""
 }
 
@@ -352,6 +383,7 @@ func file_proto_runtimepb_runtime_proto_rawDescGZIP() []byte {
 	file_proto_runtimepb_runtime_proto_rawDescOnce.Do(func() {
 		file_proto_runtimepb_runtime_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_runtimepb_runtime_proto_rawDescData)
 	})
+
 	return file_proto_runtimepb_runtime_proto_rawDescData
 }
 
@@ -381,6 +413,7 @@ func file_proto_runtimepb_runtime_proto_init() {
 	if File_proto_runtimepb_runtime_proto != nil {
 		return
 	}
+
 	if !protoimpl.UnsafeEnabled {
 		file_proto_runtimepb_runtime_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Runtime); i {
@@ -443,7 +476,9 @@ func file_proto_runtimepb_runtime_proto_init() {
 			}
 		}
 	}
+
 	type x struct{}
+
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),

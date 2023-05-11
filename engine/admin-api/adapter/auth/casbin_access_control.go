@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/casbin/casbin/v2"
@@ -29,14 +28,14 @@ func NewCasbinAccessControl(logger logging.Logger, modelPath, policyPath string)
 	return accessControl, nil
 }
 
-// change input params to ones obtained from jwt token
+// change input params to ones obtained from jwt token.
 func (a *CasbinAccessControl) CheckPermission(userID string, resource auth.AccessControlResource, action auth.AccessControlAction) error {
 	if !resource.IsValid() {
-		return errors.New("invalid AccessControlResource")
+		return invalidAccessControlResourceError
 	}
 
 	if !action.IsValid() {
-		return errors.New("invalid AccessControlAction")
+		return invalidAccessControlActionError
 	}
 
 	allowed, err := a.enforcer.Enforce(userID, resource.String(), action.String())
@@ -46,7 +45,9 @@ func (a *CasbinAccessControl) CheckPermission(userID string, resource auth.Acces
 	}
 
 	a.logger.Infof("Checking permission userID[%s] resource[%s] action[%s] allowed[%t]", userID, resource, action, allowed)
+
 	if !allowed {
+		//nolint:goerr113 // errors need to be wrapped
 		return fmt.Errorf("you are not allowed to %s %s", action, resource)
 	}
 

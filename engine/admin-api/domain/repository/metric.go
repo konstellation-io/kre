@@ -4,8 +4,9 @@ package repository
 
 import (
 	"context"
-	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 	"time"
+
+	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 )
 
 type MetricRepo interface {
@@ -13,8 +14,8 @@ type MetricRepo interface {
 		ctx context.Context,
 		startDate time.Time,
 		endDate time.Time,
-		runtimeId string,
+		runtimeID string,
 		versionName string,
 	) ([]entity.ClassificationMetric, error)
-	CreateIndexes(ctx context.Context, runtimeId string) error
+	CreateIndexes(ctx context.Context, runtimeID string) error
 }

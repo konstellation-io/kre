@@ -1,6 +1,6 @@
 package krt
 
-// Krt contains data about a version
+// Krt contains data about a version.
 type Krt struct {
 	KrtVersion  string     `yaml:"krtVersion" validate:"omitempty,krt-version"`
 	Version     string     `yaml:"version" validate:"required,resource-name,lt=20"`
@@ -10,7 +10,7 @@ type Krt struct {
 	Workflows   []Workflow `yaml:"workflows" validate:"required,dive,min=1"`
 }
 
-// Workflow contains data about a version's workflow
+// Workflow contains data about a version's workflow.
 type Workflow struct {
 	Name       string `yaml:"name" validate:"required,resource-name,lt=20"`
 	Nodes      []Node `yaml:"nodes" validate:"dive"`
@@ -18,7 +18,7 @@ type Workflow struct {
 	Exitpoint  string `yaml:"exitpoint" validate:"required"`
 }
 
-// Node contains data about a version's node
+// Node contains data about a version's node.
 type Node struct {
 	Name          string             `yaml:"name" validate:"required,resource-name,lt=20"`
 	Image         string             `yaml:"image" validate:"required"`

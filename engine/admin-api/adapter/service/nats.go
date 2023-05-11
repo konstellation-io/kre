@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"google.golang.org/grpc/credentials/insecure"
+
 	"google.golang.org/grpc"
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
@@ -20,7 +22,8 @@ type NatsManagerClient struct {
 }
 
 func NewNatsManagerClient(cfg *config.Config, logger logging.Logger) (*NatsManagerClient, error) {
-	cc, err := grpc.Dial(cfg.Services.NatsManager, grpc.WithInsecure())
+	cc, err := grpc.Dial(cfg.Services.NatsManager, grpc.WithTransportCredentials(insecure.NewCredentials()))
+
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +37,7 @@ func NewNatsManagerClient(cfg *config.Config, logger logging.Logger) (*NatsManag
 	}, nil
 }
 
-// CreateStreams calls nats-manager to create NATS streams for given version
+// CreateStreams calls nats-manager to create NATS streams for given version.
 func (n *NatsManagerClient) CreateStreams(
 	ctx context.Context,
 	runtimeID string,
@@ -59,7 +62,7 @@ func (n *NatsManagerClient) CreateStreams(
 	return n.dtoToVersionStreamConfig(res.Workflows), err
 }
 
-// CreateObjectStores calls nats-manager to create NATS Object Stores for given version
+// CreateObjectStores calls nats-manager to create NATS Object Stores for given version.
 func (n *NatsManagerClient) CreateObjectStores(
 	ctx context.Context,
 	runtimeID string,
@@ -84,7 +87,7 @@ func (n *NatsManagerClient) CreateObjectStores(
 	return n.dtoToVersionObjectStoreConfig(res.Workflows), err
 }
 
-// CreateKeyValueStores calls nats-manager to create NATS Key Value Stores for given version
+// CreateKeyValueStores calls nats-manager to create NATS Key Value Stores for given version.
 func (n *NatsManagerClient) CreateKeyValueStores(
 	ctx context.Context,
 	runtimeID string,
@@ -109,8 +112,8 @@ func (n *NatsManagerClient) CreateKeyValueStores(
 	return n.dtoToVersionKeyValueStoreConfig(res.KeyValueStore, res.Workflows), err
 }
 
-// DeleteStreams calls nats-manager to delete NATS streams for given version
-func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string, versionName string) error {
+// DeleteStreams calls nats-manager to delete NATS streams for given version.
+func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID, versionName string) error {
 	req := natspb.DeleteStreamsRequest{
 		RuntimeId:   runtimeID,
 		VersionName: versionName,
@@ -124,7 +127,7 @@ func (n *NatsManagerClient) DeleteStreams(ctx context.Context, runtimeID string,
 	return nil
 }
 
-// DeleteObjectStores calls nats-manager to delete NATS Object Stores for given version
+// DeleteObjectStores calls nats-manager to delete NATS Object Stores for given version.
 func (n *NatsManagerClient) DeleteObjectStores(ctx context.Context, runtimeID, versionName string) error {
 	req := natspb.DeleteObjectStoresRequest{
 		RuntimeId:   runtimeID,
@@ -140,7 +143,8 @@ func (n *NatsManagerClient) DeleteObjectStores(ctx context.Context, runtimeID, v
 }
 
 func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) ([]*natspb.Workflow, error) {
-	var workflows []*natspb.Workflow
+	var workflows = make([]*natspb.Workflow, 0, len(version.Workflows))
+
 	for _, w := range version.Workflows {
 		nodes := make([]*natspb.Node, 0, len(w.Nodes))
 
@@ -149,31 +153,35 @@ func (n *NatsManagerClient) getWorkflowsFromVersion(version *entity.Version) ([]
 				Name:          node.Name,
 				Subscriptions: node.Subscriptions,
 			}
+
 			if node.ObjectStore != nil {
 				scope, err := translateObjectStoreEnum(node.ObjectStore.Scope)
 				if err != nil {
 					return nil, err
 				}
+
 				nodeToAppend.ObjectStore = &natspb.ObjectStore{
 					Name:  node.ObjectStore.Name,
 					Scope: scope,
 				}
 			}
+
 			nodes = append(nodes, &nodeToAppend)
 		}
+
 		workflows = append(workflows, &natspb.Workflow{
 			Entrypoint: w.Entrypoint,
 			Name:       w.Name,
 			Nodes:      nodes,
 		})
 	}
+
 	return workflows, nil
 }
 
 func (n *NatsManagerClient) dtoToVersionStreamConfig(
 	workflows map[string]*natspb.CreateStreamsResponse_WorkflowStreamConfig,
 ) *entity.VersionStreamsConfig {
-
 	workflowsConfig := map[string]*entity.WorkflowStreamConfig{}
 	for workflow, streamCfg := range workflows {
 		workflowsConfig[workflow] = &entity.WorkflowStreamConfig{
@@ -243,6 +251,7 @@ func translateObjectStoreEnum(scope string) (natspb.ObjectStoreScope, error) {
 	case "workflow":
 		return natspb.ObjectStoreScope_SCOPE_WORKFLOW, nil
 	default:
+		//nolint:goerr113 // error needs to be wrapped
 		return natspb.ObjectStoreScope_SCOPE_WORKFLOW, errors.New("invalid object store scope")
 	}
 }

@@ -53,7 +53,7 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 
 	g.logger.Info("Request from user " + userID)
 
-	h := gql.NewHttpHandler(
+	h := gql.NewHTTPHandler(
 		g.logger,
 		g.runtimeInteractor,
 		g.userInteractor,
@@ -64,6 +64,8 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 	)
 
 	r := c.Request()
+
+	//nolint:staticcheck // legacy code
 	ctx := context.WithValue(r.Context(), UserIDContextKey, userID)
 
 	h.ServeHTTP(c.Response(), r.WithContext(ctx))
@@ -74,5 +76,6 @@ func (g *GraphQLController) GraphQLHandler(c echo.Context) error {
 func (g *GraphQLController) PlaygroundHandler(c echo.Context) error {
 	h := playground.Handler("GraphQL playground", "/graphql")
 	h.ServeHTTP(c.Response(), c.Request())
+
 	return nil
 }

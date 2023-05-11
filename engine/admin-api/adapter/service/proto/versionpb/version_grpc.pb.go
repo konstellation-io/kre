@@ -40,46 +40,56 @@ func NewVersionServiceClient(cc grpc.ClientConnInterface) VersionServiceClient {
 
 func (c *versionServiceClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
+
 	err := c.cc.Invoke(ctx, "/version.VersionService/Start", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *versionServiceClient) Stop(ctx context.Context, in *VersionInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
+
 	err := c.cc.Invoke(ctx, "/version.VersionService/Stop", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *versionServiceClient) Publish(ctx context.Context, in *VersionInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
+
 	err := c.cc.Invoke(ctx, "/version.VersionService/Publish", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *versionServiceClient) Unpublish(ctx context.Context, in *VersionInfo, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
+
 	err := c.cc.Invoke(ctx, "/version.VersionService/Unpublish", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
 func (c *versionServiceClient) UpdateConfig(ctx context.Context, in *UpdateConfigRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
+
 	err := c.cc.Invoke(ctx, "/version.VersionService/UpdateConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
@@ -88,13 +98,16 @@ func (c *versionServiceClient) WatchNodeStatus(ctx context.Context, in *NodeStat
 	if err != nil {
 		return nil, err
 	}
+
 	x := &versionServiceWatchNodeStatusClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
+
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
+
 	return x, nil
 }
 
@@ -112,6 +125,7 @@ func (x *versionServiceWatchNodeStatusClient) Recv() (*NodeStatusResponse, error
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
+
 	return m, nil
 }
 
@@ -168,9 +182,11 @@ func _VersionService_Start_Handler(srv interface{}, ctx context.Context, dec fun
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(VersionServiceServer).Start(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/version.VersionService/Start",
@@ -178,6 +194,7 @@ func _VersionService_Start_Handler(srv interface{}, ctx context.Context, dec fun
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VersionServiceServer).Start(ctx, req.(*StartRequest))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -186,9 +203,11 @@ func _VersionService_Stop_Handler(srv interface{}, ctx context.Context, dec func
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(VersionServiceServer).Stop(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/version.VersionService/Stop",
@@ -196,6 +215,7 @@ func _VersionService_Stop_Handler(srv interface{}, ctx context.Context, dec func
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VersionServiceServer).Stop(ctx, req.(*VersionInfo))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -204,9 +224,11 @@ func _VersionService_Publish_Handler(srv interface{}, ctx context.Context, dec f
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(VersionServiceServer).Publish(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/version.VersionService/Publish",
@@ -214,6 +236,7 @@ func _VersionService_Publish_Handler(srv interface{}, ctx context.Context, dec f
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VersionServiceServer).Publish(ctx, req.(*VersionInfo))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -222,9 +245,11 @@ func _VersionService_Unpublish_Handler(srv interface{}, ctx context.Context, dec
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(VersionServiceServer).Unpublish(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/version.VersionService/Unpublish",
@@ -232,6 +257,7 @@ func _VersionService_Unpublish_Handler(srv interface{}, ctx context.Context, dec
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VersionServiceServer).Unpublish(ctx, req.(*VersionInfo))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -240,9 +266,11 @@ func _VersionService_UpdateConfig_Handler(srv interface{}, ctx context.Context, 
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(VersionServiceServer).UpdateConfig(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/version.VersionService/UpdateConfig",
@@ -250,6 +278,7 @@ func _VersionService_UpdateConfig_Handler(srv interface{}, ctx context.Context, 
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VersionServiceServer).UpdateConfig(ctx, req.(*UpdateConfigRequest))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 
@@ -258,6 +287,7 @@ func _VersionService_WatchNodeStatus_Handler(srv interface{}, stream grpc.Server
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
+
 	return srv.(VersionServiceServer).WatchNodeStatus(m, &versionServiceWatchNodeStatusServer{stream})
 }
 

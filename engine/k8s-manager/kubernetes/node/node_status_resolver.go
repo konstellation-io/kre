@@ -7,7 +7,7 @@ import (
 	coreV1 "k8s.io/api/core/v1"
 )
 
-type NodeStatusResolver struct {
+type NodeStatusResolver struct { //nolint:golint
 	Out        chan<- entity.Node
 	Logger     *simplelogger.SimpleLogger
 	LastStatus map[string]entity.NodeStatus

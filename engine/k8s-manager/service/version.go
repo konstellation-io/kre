@@ -16,11 +16,11 @@ import (
 
 // VersionService basic server.
 type VersionService struct {
+	versionpb.UnimplementedVersionServiceServer
 	config  *config.Config
 	logger  *simplelogger.SimpleLogger
 	manager *version.Manager
 	watcher *kubernetes.Watcher
-	versionpb.UnimplementedVersionServiceServer
 }
 
 // NewVersionService instantiates the GRPC server implementation.
@@ -31,11 +31,11 @@ func NewVersionService(
 	watcher *kubernetes.Watcher,
 ) *VersionService {
 	return &VersionService{
+		versionpb.UnimplementedVersionServiceServer{},
 		cfg,
 		logger,
 		manager,
 		watcher,
-		versionpb.UnimplementedVersionServiceServer{},
 	}
 }
 
@@ -118,10 +118,11 @@ func (v *VersionService) Unpublish(ctx context.Context, req *versionpb.VersionIn
 func (v *VersionService) WatchNodeStatus(req *versionpb.NodeStatusRequest, stream versionpb.VersionService_WatchNodeStatusServer) error {
 	v.logger.Info("[MonitoringService.WatchNodeStatus] starting watcher...")
 
-	runtimeId := req.GetRuntimeId()
+	runtimeID := req.GetRuntimeId()
 	versionName := req.GetVersionName()
 	nodeCh := make(chan entity.Node, 1)
-	stopCh := v.watcher.WatchNodeStatus(runtimeId, versionName, nodeCh)
+	stopCh := v.watcher.WatchNodeStatus(runtimeID, versionName, nodeCh)
+
 	defer close(stopCh) // The k8s informer opened in WatchNodeStatus will be stopped when stopCh is closed.
 
 	for {

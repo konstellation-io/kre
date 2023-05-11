@@ -101,9 +101,24 @@ linters:
 issues:
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclude-rules:
+    - path: _test.go
+      linters:
+        - gomnd
+        - goconst
+        - dupl
+        - gosec
+        - gochecknoglobals
+        - testpackage
+        - goerr113
     - path: _test\.go
       linters:
         - gomnd
+        - goconst
+        - dupl
+        - gosec
+        - gochecknoglobals
+        - testpackage
+        - goerr113
     # https://github.com/go-critic/go-critic/issues/926
     - linters:
         - gocritic

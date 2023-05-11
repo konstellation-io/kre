@@ -6,6 +6,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+//nolint:gochecknoglobals // validate have to be a global variable.
 var (
 	validate = validator.New()
 )

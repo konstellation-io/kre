@@ -3,7 +3,7 @@ package validator_test
 import (
 	"testing"
 
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
+	vld "github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt/validator"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -78,7 +78,7 @@ func TestKrtValidator_Run(t *testing.T) {
 					},
 				}).Build(),
 			wantError:   true,
-			errorString: validator.ErrRepeatedNodeName.Error(),
+			errorString: vld.ErrRepeatedNodeName.Error(),
 		},
 	}
 
@@ -89,7 +89,7 @@ func TestKrtValidator_Run(t *testing.T) {
 
 	mocks.AddLoggerExpects(logger)
 
-	validator := validator.NewKrtValidator(logger, fieldsValidator)
+	validator := vld.NewKrtValidator(logger, fieldsValidator)
 
 	for _, tc := range tests {
 		fieldsValidator.EXPECT().Run(tc.krtYaml).Return(nil)
@@ -100,6 +100,7 @@ func TestKrtValidator_Run(t *testing.T) {
 				assert.EqualError(t, err, tc.errorString)
 				return
 			}
+
 			assert.Empty(t, err)
 		})
 		ctrl.Finish()

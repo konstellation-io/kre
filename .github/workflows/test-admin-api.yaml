@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  unit-tests:
-    name: Unit tests
+  build:
+    name: Linting and Unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,6 +22,12 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: 1.20.x
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: ./engine/admin-api
+          args: --timeout=5m
       - name: Run unit tests
         run: go test ./... -cover -v -coverprofile=coverage.out
         working-directory: ./engine/admin-api
@@ -34,7 +40,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-    needs: unit-tests
+    needs: build
     steps:
       - uses: actions/checkout@v3
         with:

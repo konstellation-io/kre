@@ -2,9 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"time"
+
+	"google.golang.org/grpc/credentials/insecure"
 
 	"google.golang.org/grpc"
 
@@ -21,8 +24,9 @@ type K8sVersionClient struct {
 }
 
 func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersionClient, error) {
-	cc, err := grpc.Dial(cfg.Services.K8sManager, grpc.WithInsecure())
+	cc, err := grpc.Dial(cfg.Services.K8sManager, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	client := versionpb.NewVersionServiceClient(cc)
+
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +38,7 @@ func NewK8sVersionClient(cfg *config.Config, logger logging.Logger) (*K8sVersion
 	}, nil
 }
 
-// Start creates the version resources in k8s
+// Start creates the version resources in k8s.
 func (k *K8sVersionClient) Start(
 	ctx context.Context,
 	runtimeID string,
@@ -43,6 +47,7 @@ func (k *K8sVersionClient) Start(
 ) error {
 	configVars := versionToConfig(version)
 	wf, err := versionToWorkflows(version, versionConfig)
+
 	if err != nil {
 		return err
 	}
@@ -65,14 +70,17 @@ func (k *K8sVersionClient) Start(
 	}
 
 	_, err = k.client.Start(ctx, &req)
+
 	return err
 }
 
 func (k *K8sVersionClient) Stop(ctx context.Context, runtimeID string, version *entity.Version) error {
 	workflowEntrypoints := make([]string, 0)
+
 	for _, w := range version.Workflows {
 		workflowEntrypoints = append(workflowEntrypoints, w.Entrypoint)
 	}
+
 	req := versionpb.VersionInfo{
 		Name:      version.Name,
 		RuntimeId: runtimeID,
@@ -100,6 +108,7 @@ func (k *K8sVersionClient) UpdateConfig(runtimeID string, version *entity.Versio
 	defer cancel()
 
 	_, err := k.client.UpdateConfig(ctx, &req)
+
 	return err
 }
 
@@ -113,6 +122,7 @@ func (k *K8sVersionClient) Unpublish(runtimeID string, version *entity.Version) 
 	defer cancel()
 
 	_, err := k.client.Unpublish(ctx, &req)
+
 	return err
 }
 
@@ -126,6 +136,7 @@ func (k *K8sVersionClient) Publish(runtimeID string, version *entity.Version) er
 	defer cancel()
 
 	_, err := k.client.Publish(ctx, &req)
+
 	return err
 }
 
@@ -147,22 +158,25 @@ func versionToWorkflows(version *entity.Version, versionConfig *entity.VersionCo
 
 	for i, w := range version.Workflows {
 		workflowStreamConfig, err := versionConfig.GetWorkflowStreamConfig(w.Name)
+
 		if err != nil {
 			return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
 		}
 
 		workflowKeyValueStoresConfig, err := versionConfig.GetWorkflowKeyValueStoresConfig(w.Name)
+
 		if err != nil {
 			return nil, fmt.Errorf("error getting workflow %q key-value store: %w", w.Name, err)
 		}
 
 		nodes := make([]*versionpb.Workflow_Node, len(w.Nodes))
-		for j, n := range w.Nodes {
 
+		for j, n := range w.Nodes {
 			nodeStreamCfg, err := workflowStreamConfig.GetNodeStreamConfig(n.Name)
 			if err != nil {
 				return nil, fmt.Errorf("error getting stream configuration from node %q: %w", n.Name, err)
 			}
+
 			nodeKeyValueStore, err := workflowKeyValueStoresConfig.GetNodeKeyValueStore(n.Name)
 			if err != nil {
 				return nil, fmt.Errorf("error translating version in workflow %q: %w", w.Name, err)
@@ -219,14 +233,15 @@ func (k *K8sVersionClient) WatchNodeStatus(ctx context.Context, runtimeID, versi
 
 		for {
 			k.logger.Debug("[VersionService.WatchNodeStatus] waiting for stream.Recv()...")
+
 			msg, err := stream.Recv()
 
-			if stream.Context().Err() == context.Canceled {
+			if errors.Is(stream.Context().Err(), context.Canceled) {
 				k.logger.Debug("[VersionService.WatchNodeStatus] Context canceled.")
 				return
 			}
 
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				k.logger.Debug("[VersionService.WatchNodeStatus] EOF msg received.")
 				return
 			}

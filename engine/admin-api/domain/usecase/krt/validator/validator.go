@@ -2,6 +2,7 @@ package validator
 
 import (
 	"fmt"
+
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/krt"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/logging"
 )
@@ -26,13 +27,17 @@ func NewKrtValidator(logger logging.Logger, fieldsValidator FieldsValidator) Val
 
 func (v *KrtValidator) Run(krtYaml *krt.Krt) error {
 	v.logger.Info("Validating krt.yml")
+
 	var errs []error
+
 	fieldValidationErrors := v.fieldsValidator.Run(krtYaml)
+
 	if fieldValidationErrors != nil {
 		errs = append(errs, fieldValidationErrors...)
 	}
 
 	workflowValidationErrors := v.getWorkflowsValidationErrors(krtYaml.Workflows)
+
 	if workflowValidationErrors != nil {
 		errs = append(errs, workflowValidationErrors...)
 	}
@@ -46,10 +51,10 @@ func (v *KrtValidator) Run(krtYaml *krt.Krt) error {
 
 func (v *KrtValidator) getWorkflowsValidationErrors(workflows []krt.Workflow) []error {
 	var validationErrors []error
+
 	for _, workflow := range workflows {
 		existingNodes := make(map[string]bool, len(workflow.Nodes))
 		for _, node := range workflow.Nodes {
-
 			nodeNameAlreadyInUse := existingNodes[node.Name]
 
 			if nodeNameAlreadyInUse {
@@ -57,7 +62,9 @@ func (v *KrtValidator) getWorkflowsValidationErrors(workflows []krt.Workflow) []
 			}
 
 			existingNodes[node.Name] = true
+
 			if len(node.Subscriptions) < 1 {
+				//nolint:goerr113 // errors need to be dynamically generated
 				validationErrors = append(validationErrors, fmt.Errorf("node %q requires at least one subscription", node.Name))
 			}
 		}
@@ -67,17 +74,19 @@ func (v *KrtValidator) getWorkflowsValidationErrors(workflows []krt.Workflow) []
 			validationErrors = append(validationErrors, exitpointError)
 		}
 	}
+
 	return validationErrors
 }
 
 func (v *KrtValidator) validateExitpoint(workflow krt.Workflow, nodes map[string]bool) error {
 	if workflow.Exitpoint == "" {
+		//nolint:goerr113 // errors need to be dynamically generated
 		return fmt.Errorf("missing exitpoint in workflow \"%s\"", workflow.Name)
-	} else {
-		if !isNodeDefined(nodes, workflow.Exitpoint) {
-			return fmt.Errorf("exitpoint node %q not found in workflow %q nodes", workflow.Exitpoint, workflow.Name)
-		}
+	} else if !isNodeDefined(nodes, workflow.Exitpoint) {
+		//nolint:goerr113 // errors need to be dynamically generated
+		return fmt.Errorf("exitpoint node %q not found in workflow %q nodes", workflow.Exitpoint, workflow.Name)
 	}
+
 	return nil
 }
 

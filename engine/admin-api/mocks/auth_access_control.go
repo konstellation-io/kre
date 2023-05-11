@@ -26,6 +26,7 @@ type MockAccessControlMockRecorder struct {
 func NewMockAccessControl(ctrl *gomock.Controller) *MockAccessControl {
 	mock := &MockAccessControl{ctrl: ctrl}
 	mock.recorder = &MockAccessControlMockRecorder{mock}
+
 	return mock
 }
 
@@ -39,6 +40,7 @@ func (m *MockAccessControl) CheckPermission(userID string, resource auth.AccessC
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CheckPermission", userID, resource, action)
 	ret0, _ := ret[0].(error)
+
 	return ret0
 }
 

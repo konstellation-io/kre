@@ -21,7 +21,6 @@ const (
 	WaitForConfigMaps
 	ResourceNameNvidia apiv1.ResourceName = "nvidia.com/gpu"
 	ResourceNameKstGpu apiv1.ResourceName = "konstellation.io/gpu"
-	entrypointNodeName                    = "entrypoint"
 )
 
 var (
@@ -47,6 +46,7 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 		if err != nil {
 			return err
 		}
+
 		for _, node := range workflow.Nodes {
 			err := m.createNodeDeployment(ctx, req, node, workflow.Name, workflowConfig[node.Id])
 			if err != nil {
@@ -60,7 +60,8 @@ func (m *Manager) createAllNodeDeployments(ctx context.Context, req *versionpb.S
 	return nil
 }
 
-func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *versionpb.Workflow) (WorkflowConfig, error) {
+func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest,
+	workflow *versionpb.Workflow) (WorkflowConfig, error) { //nolint:unparam
 	m.logger.Infof("Generating workflow %q config", workflow.Name)
 
 	wconf := WorkflowConfig{}
@@ -104,17 +105,16 @@ func (m *Manager) generateWorkflowConfig(req *versionpb.StartRequest, workflow *
 func (m *Manager) isExitpoint(nodeName, workflowExitpoint string) string {
 	if nodeName == workflowExitpoint {
 		return "true"
-	} else {
-		return "false"
 	}
+
+	return "false"
 }
 
-// joinSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string
+// joinSubscriptionSubjects will form all subscriptions complete subject names and join them in a comma separated string.
 func (m *Manager) joinSubscriptionSubjects(nodeSubscriptions []string) string {
 	subjectsToSubscribe := make([]string, 0, len(nodeSubscriptions))
-	for _, subscription := range nodeSubscriptions {
-		subjectsToSubscribe = append(subjectsToSubscribe, subscription)
-	}
+	subjectsToSubscribe = append(subjectsToSubscribe, nodeSubscriptions...)
+
 	return strings.Join(subjectsToSubscribe, ",")
 }
 
@@ -133,10 +133,10 @@ func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []
 	return append(m.getCommonEnvVars(req), envVars...)
 }
 
-func (m *Manager) getNodeLabels(runtimeId, versionName string, node *versionpb.Workflow_Node) map[string]string {
+func (m *Manager) getNodeLabels(runtimeID, versionName string, node *versionpb.Workflow_Node) map[string]string {
 	return map[string]string{
 		"type":         "node",
-		"runtime-id":   runtimeId,
+		"runtime-id":   runtimeID,
 		"version-name": versionName,
 		"node-name":    node.Name,
 		"node-id":      node.Id,
@@ -166,11 +166,11 @@ func (m *Manager) createNodeDeployment(
 	config NodeConfig,
 ) error {
 	versionName := req.VersionName
-	runtimeId := req.RuntimeId
+	runtimeID := req.RuntimeId
 	ns := m.config.Kubernetes.Namespace
 	name := fmt.Sprintf("%s-%s-%s-%s", req.RuntimeId, versionName, workflowName, node.Name)
 	envVars := m.getNodeEnvVars(req, config)
-	labels := m.getNodeLabels(runtimeId, versionName, node)
+	labels := m.getNodeLabels(runtimeID, versionName, node)
 
 	m.logger.Infof("Creating node deployment with name %q, image %q and \"%d\" replicas",
 		name,
@@ -211,7 +211,7 @@ func (m *Manager) createNodeDeployment(
 									{
 										ConfigMapRef: &apiv1.ConfigMapEnvSource{
 											LocalObjectReference: apiv1.LocalObjectReference{
-												Name: m.getVersionKRTConfName(runtimeId, versionName),
+												Name: m.getVersionKRTConfName(runtimeID, versionName),
 											},
 										},
 									},
@@ -224,7 +224,7 @@ func (m *Manager) createNodeDeployment(
 							},
 							m.getFluentBitContainer(envVars),
 						},
-						Volumes: m.getCommonVolumes(runtimeId, versionName),
+						Volumes: m.getCommonVolumes(runtimeID, versionName),
 					},
 				},
 			},
@@ -262,7 +262,7 @@ func (m *Manager) getNodeTolerations(isGPUEnabled bool) []apiv1.Toleration {
 	}
 }
 
-func (m *Manager) restartPodsSync(ctx context.Context, runtimeId, versionName, ns string) error {
+func (m *Manager) restartPodsSync(ctx context.Context, runtimeID, versionName, ns string) error {
 	gracePeriodZero := int64(0)
 	deletePolicy := metav1.DeletePropagationForeground
 	deleteOptions := metav1.DeleteOptions{
@@ -271,7 +271,7 @@ func (m *Manager) restartPodsSync(ctx context.Context, runtimeId, versionName, n
 	}
 
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeID, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Pod",
 		},
@@ -333,15 +333,15 @@ func (m *Manager) restartPodsSync(ctx context.Context, runtimeId, versionName, n
 	}
 }
 
-func (m *Manager) getVersionNameLabelSelector(runtimeId, versionName string) string {
-	return fmt.Sprintf("runtime-id=%s,version-name=%s", runtimeId, versionName)
+func (m *Manager) getVersionNameLabelSelector(runtimeID, versionName string) string {
+	return fmt.Sprintf("runtime-id=%s,version-name=%s", runtimeID, versionName)
 }
 
-func (m *Manager) deleteDeploymentsSync(ctx context.Context, runtimeId, versionName, ns string) error {
+func (m *Manager) deleteDeploymentsSync(ctx context.Context, runtimeID, versionName, ns string) error {
 	deployments := m.clientset.AppsV1().Deployments(ns)
 
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeID, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Deployment",
 		},
@@ -377,7 +377,7 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, runtimeId, versionN
 		}
 	}
 
-	m.deleteDeploymentPODs(ctx, ns, deleteOptions, runtimeId, versionName)
+	m.deleteDeploymentPODs(ctx, ns, deleteOptions, runtimeID, versionName)
 
 	w, err := deployments.Watch(ctx, listOptions)
 	if err != nil {
@@ -389,12 +389,14 @@ func (m *Manager) deleteDeploymentsSync(ctx context.Context, runtimeId, versionN
 
 // In order to delete the Deployments is mandatory to delete theirs associated PODs because
 // the "Deleted" event of a deployment is not received until their PODs are deleted.
-func (m *Manager) deleteDeploymentPODs(ctx context.Context, ns string, deleteOptions metav1.DeleteOptions, runtimeId, versionName string) {
+func (m *Manager) deleteDeploymentPODs(ctx context.Context, ns string,
+	deleteOptions metav1.DeleteOptions, //nolint:gocritic
+	runtimeID, versionName string) {
 	pods := m.clientset.CoreV1().Pods(ns)
 	deletePodsPolicy := metav1.DeletePropagationBackground
 	deleteOptions.PropagationPolicy = &deletePodsPolicy
 	podList, _ := pods.List(ctx, metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeID, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "Pod",
 		},
@@ -407,9 +409,9 @@ func (m *Manager) deleteDeploymentPODs(ctx context.Context, ns string, deleteOpt
 	}
 }
 
-func (m *Manager) deleteConfigMapsSync(ctx context.Context, runtimeId, versionName, ns string) error {
+func (m *Manager) deleteConfigMapsSync(ctx context.Context, runtimeID, versionName, ns string) error {
 	listOptions := metav1.ListOptions{
-		LabelSelector: m.getVersionNameLabelSelector(runtimeId, versionName),
+		LabelSelector: m.getVersionNameLabelSelector(runtimeID, versionName),
 		TypeMeta: metav1.TypeMeta{
 			Kind: "ConfigMap",
 		},

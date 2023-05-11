@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+
 	"gopkg.in/yaml.v2"
 	v1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -18,6 +19,7 @@ const (
 func (m *Manager) ensureIngressCreated(ctx context.Context, name, runtimeID, activeServiceName string) error {
 	m.logger.Infof("Creating ingress %s", name)
 	ingressExists, err := m.checkIngressExists(ctx, name)
+
 	if err != nil {
 		return err
 	}
@@ -42,28 +44,35 @@ func (m *Manager) ensureIngressCreated(ctx context.Context, name, runtimeID, act
 func (m *Manager) deleteIngress(ctx context.Context, name string) error {
 	m.logger.Infof("Deleting ingress %s", name)
 	err := m.clientset.NetworkingV1().Ingresses(m.config.Kubernetes.Namespace).Delete(ctx, name, metav1.DeleteOptions{})
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func (m *Manager) checkIngressExists(ctx context.Context, name string) (bool, error) {
 	_, err := m.clientset.NetworkingV1().Ingresses(m.config.Kubernetes.Namespace).Get(ctx, name, metav1.GetOptions{})
+
 	if errors.IsNotFound(err) {
 		return false, nil
 	}
+
 	if err != nil {
 		return false, err
 	}
+
 	return true, nil
 }
 
 func (m *Manager) getIngressDefinition(runtimeID, name, activeServiceName string) (*v1.Ingress, error) {
 	annotations, err := m.getIngressAnnotations()
+
 	if err != nil {
 		return nil, err
 	}
+
 	labels := map[string]string{
 		"runtime-id": runtimeID,
 	}
@@ -80,6 +89,7 @@ func (m *Manager) getIngressDefinition(runtimeID, name, activeServiceName string
 		},
 		Spec: m.getIngressSpec(entrypointHost, activeServiceName),
 	}
+
 	return ingress, nil
 }
 
@@ -88,11 +98,14 @@ func (m *Manager) getIngressAnnotations() (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var annotationsMap map[string]string
 	err = yaml.Unmarshal(annotations, &annotationsMap)
+
 	if err != nil {
 		return nil, err
 	}
+
 	return annotationsMap, nil
 }
 
@@ -138,6 +151,7 @@ func (m *Manager) getTLSCertSecretName(entrypointHost string) string {
 	if m.config.Entrypoint.TLS.CertSecretName != "" {
 		return m.config.Entrypoint.TLS.CertSecretName
 	}
+
 	return fmt.Sprintf("%s-tls", entrypointHost)
 }
 

@@ -27,6 +27,7 @@ type MockNodeLogRepositoryMockRecorder struct {
 func NewMockNodeLogRepository(ctrl *gomock.Controller) *MockNodeLogRepository {
 	mock := &MockNodeLogRepository{ctrl: ctrl}
 	mock.recorder = &MockNodeLogRepositoryMockRecorder{mock}
+
 	return mock
 }
 
@@ -36,45 +37,48 @@ func (m *MockNodeLogRepository) EXPECT() *MockNodeLogRepositoryMockRecorder {
 }
 
 // CreateIndexes mocks base method.
-func (m *MockNodeLogRepository) CreateIndexes(ctx context.Context, runtimeId string) error {
+func (m *MockNodeLogRepository) CreateIndexes(ctx context.Context, runtimeID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateIndexes", ctx, runtimeId)
+	ret := m.ctrl.Call(m, "CreateIndexes", ctx, runtimeID)
 	ret0, _ := ret[0].(error)
+
 	return ret0
 }
 
 // CreateIndexes indicates an expected call of CreateIndexes.
-func (mr *MockNodeLogRepositoryMockRecorder) CreateIndexes(ctx, runtimeId interface{}) *gomock.Call {
+func (mr *MockNodeLogRepositoryMockRecorder) CreateIndexes(ctx, runtimeID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockNodeLogRepository)(nil).CreateIndexes), ctx, runtimeId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockNodeLogRepository)(nil).CreateIndexes), ctx, runtimeID)
 }
 
 // PaginatedSearch mocks base method.
-func (m *MockNodeLogRepository) PaginatedSearch(ctx context.Context, runtimeId string, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error) {
+func (m *MockNodeLogRepository) PaginatedSearch(ctx context.Context, runtimeID string, searchOpts *entity.SearchLogsOptions) (*entity.SearchLogsResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PaginatedSearch", ctx, runtimeId, searchOpts)
+	ret := m.ctrl.Call(m, "PaginatedSearch", ctx, runtimeID, searchOpts)
 	ret0, _ := ret[0].(*entity.SearchLogsResult)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
 // PaginatedSearch indicates an expected call of PaginatedSearch.
-func (mr *MockNodeLogRepositoryMockRecorder) PaginatedSearch(ctx, runtimeId, searchOpts interface{}) *gomock.Call {
+func (mr *MockNodeLogRepositoryMockRecorder) PaginatedSearch(ctx, runtimeID, searchOpts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PaginatedSearch", reflect.TypeOf((*MockNodeLogRepository)(nil).PaginatedSearch), ctx, runtimeId, searchOpts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PaginatedSearch", reflect.TypeOf((*MockNodeLogRepository)(nil).PaginatedSearch), ctx, runtimeID, searchOpts)
 }
 
 // WatchNodeLogs mocks base method.
-func (m *MockNodeLogRepository) WatchNodeLogs(ctx context.Context, runtimeId, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
+func (m *MockNodeLogRepository) WatchNodeLogs(ctx context.Context, runtimeID, versionName string, filters entity.LogFilters) (<-chan *entity.NodeLog, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WatchNodeLogs", ctx, runtimeId, versionName, filters)
+	ret := m.ctrl.Call(m, "WatchNodeLogs", ctx, runtimeID, versionName, filters)
 	ret0, _ := ret[0].(<-chan *entity.NodeLog)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
 // WatchNodeLogs indicates an expected call of WatchNodeLogs.
-func (mr *MockNodeLogRepositoryMockRecorder) WatchNodeLogs(ctx, runtimeId, versionName, filters interface{}) *gomock.Call {
+func (mr *MockNodeLogRepositoryMockRecorder) WatchNodeLogs(ctx, runtimeID, versionName, filters interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WatchNodeLogs", reflect.TypeOf((*MockNodeLogRepository)(nil).WatchNodeLogs), ctx, runtimeId, versionName, filters)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WatchNodeLogs", reflect.TypeOf((*MockNodeLogRepository)(nil).WatchNodeLogs), ctx, runtimeID, versionName, filters)
 }

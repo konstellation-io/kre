@@ -27,6 +27,7 @@ type MockNatsManagerServiceMockRecorder struct {
 func NewMockNatsManagerService(ctrl *gomock.Controller) *MockNatsManagerService {
 	mock := &MockNatsManagerService{ctrl: ctrl}
 	mock.recorder = &MockNatsManagerServiceMockRecorder{mock}
+
 	return mock
 }
 
@@ -41,6 +42,7 @@ func (m *MockNatsManagerService) CreateKeyValueStores(ctx context.Context, runti
 	ret := m.ctrl.Call(m, "CreateKeyValueStores", ctx, runtimeID, version)
 	ret0, _ := ret[0].(*entity.KeyValueStoresConfig)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
@@ -56,6 +58,7 @@ func (m *MockNatsManagerService) CreateObjectStores(ctx context.Context, runtime
 	ret := m.ctrl.Call(m, "CreateObjectStores", ctx, runtimeID, version)
 	ret0, _ := ret[0].(*entity.VersionObjectStoresConfig)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
@@ -71,6 +74,7 @@ func (m *MockNatsManagerService) CreateStreams(ctx context.Context, runtimeID st
 	ret := m.ctrl.Call(m, "CreateStreams", ctx, runtimeID, version)
 	ret0, _ := ret[0].(*entity.VersionStreamsConfig)
 	ret1, _ := ret[1].(error)
+
 	return ret0, ret1
 }
 
@@ -85,6 +89,7 @@ func (m *MockNatsManagerService) DeleteObjectStores(ctx context.Context, runtime
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteObjectStores", ctx, runtimeID, versionName)
 	ret0, _ := ret[0].(error)
+
 	return ret0
 }
 
@@ -99,6 +104,7 @@ func (m *MockNatsManagerService) DeleteStreams(ctx context.Context, runtimeID, v
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteStreams", ctx, runtimeID, versionName)
 	ret0, _ := ret[0].(error)
+
 	return ret0
 }
 

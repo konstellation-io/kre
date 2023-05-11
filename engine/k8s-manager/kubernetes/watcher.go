@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/konstellation-io/kre/engine/k8s-manager/config"
+	configuration "github.com/konstellation-io/kre/engine/k8s-manager/config"
 	"github.com/konstellation-io/kre/engine/k8s-manager/entity"
 	"github.com/konstellation-io/kre/engine/k8s-manager/kubernetes/node"
 	"k8s.io/client-go/informers"
@@ -22,12 +22,12 @@ import (
 var ErrWaitForPODsRunningTimeout = errors.New("timeout waiting for running PODs")
 
 type Watcher struct {
-	config    *config.Config
+	config    *configuration.Config
 	logger    *simplelogger.SimpleLogger
 	clientset *kubernetes.Clientset
 }
 
-func NewWatcher(config *config.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Watcher {
+func NewWatcher(config *configuration.Config, logger *simplelogger.SimpleLogger, clientset *kubernetes.Clientset) *Watcher {
 	return &Watcher{
 		config,
 		logger,
@@ -126,10 +126,10 @@ func (w *Watcher) waitForPodRunning(ctx context.Context, ns string, podLabels []
 	return waitChan, nil
 }
 
-func (w *Watcher) WatchNodeStatus(runtimeId, versionName string, statusCh chan<- entity.Node) chan struct{} {
+func (w *Watcher) WatchNodeStatus(runtimeID, versionName string, statusCh chan<- entity.Node) chan struct{} {
 	w.logger.Debugf("[WatchNodeStatus] watching %q", versionName)
 
-	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeId, versionName)
+	labelSelector := fmt.Sprintf("runtime-id=%s,version-name=%s,type in (node, entrypoint)", runtimeID, versionName)
 	resolver := node.NodeStatusResolver{
 		Out:        statusCh,
 		Logger:     w.logger,

@@ -17,6 +17,7 @@ func (e AccessControlResource) IsValid() bool {
 	case ResMetrics, ResRuntime, ResVersion, ResSettings, ResUsers, ResAudit, ResLogs:
 		return true
 	}
+
 	return false
 }
 
@@ -34,6 +35,7 @@ func (e AccessControlAction) IsValid() bool {
 	case ActView, ActEdit:
 		return true
 	}
+
 	return false
 }
 
@@ -41,7 +43,7 @@ func (e AccessControlAction) String() string {
 	return string(e)
 }
 
-// TODO: move to middleware
-type AccessControl interface {
+//nolint:godox // Remove this nolint statement after the TODO is done.
+type AccessControl interface { // TODO: move to middleware.
 	CheckPermission(userID string, resource AccessControlResource, action AccessControlAction) error
 }

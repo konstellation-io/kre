@@ -18,7 +18,7 @@ type EntrypointConfig map[string]interface{}
 
 const (
 	versionNameLabel = "version-name"
-	runtimeIdLabel   = "runtime-id"
+	runtimeIDLabel   = "runtime-id"
 )
 
 func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
@@ -37,19 +37,20 @@ func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvV
 
 // generateSubjects creates a JSON containing the NATS subjects the entrypoint must subscribe to for each workflow
 // example:
-//   {
-//      "Workflow1": {
-//				"stream": "runtimeName-versionName-workflowEntrypoint1",
-//     		"input_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
-//     		"output_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1"
-//   		}
-//   }
+//
+//	  {
+//	     "Workflow1": {
+//					"stream": "runtimeName-versionName-workflowEntrypoint1",
+//	    		"input_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
+//	    		"output_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1"
+//	  		}
+//	  }
 func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, error) {
-	natsSubjects := map[string]map[string]string{} // TODO: refactor to struct
+	natsSubjects := map[string]map[string]string{}
 
 	for _, w := range workflows {
-		if len(w.Nodes) <= 0 {
-			return "", fmt.Errorf("workflow %s has no nodes", w.Name)
+		if len(w.Nodes) == 0 {
+			return "", fmt.Errorf("workflow %q has no nodes", w.Name) //nolint:goerr113
 		}
 
 		exitpointSubject, err := m.findNodeSubject(w.Nodes, w.Exitpoint)
@@ -76,11 +77,11 @@ func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, err
 	return ns, nil
 }
 
-func (m *Manager) getEntrypointLabels(runtimeId, versionName string) map[string]string {
+func (m *Manager) getEntrypointLabels(runtimeID, versionName string) map[string]string {
 	return map[string]string{
 		"type":         "entrypoint",
 		"version-name": versionName,
-		"runtime-id":   runtimeId,
+		"runtime-id":   runtimeID,
 		"node-name":    "entrypoint",
 		"node-id":      "entrypoint",
 	}
@@ -90,18 +91,18 @@ func (m *Manager) createEntrypoint(ctx context.Context, req *versionpb.StartRequ
 	m.logger.Info("Creating entrypoint deployment")
 
 	versionName := req.VersionName
-	runtimeId := req.RuntimeId
+	runtimeID := req.RuntimeId
 	ns := m.config.Kubernetes.Namespace
 	img := req.Entrypoint.Image
 	proto := req.Entrypoint.ProtoFile
 	envVars := m.getEntrypointEnvVars(req)
-	labels := m.getEntrypointLabels(runtimeId, versionName)
+	labels := m.getEntrypointLabels(runtimeID, versionName)
 
 	m.logger.Info(fmt.Sprintf("Creating entrypoint deployment in %s named %s from image %s", ns, versionName, img))
 
 	_, err := m.clientset.AppsV1().Deployments(ns).Create(ctx, &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("%s-%s-entrypoint", runtimeId, versionName),
+			Name:      fmt.Sprintf("%s-%s-entrypoint", runtimeID, versionName),
 			Namespace: ns,
 			Labels:    labels,
 		},
@@ -163,12 +164,12 @@ func (m *Manager) createEntrypoint(ctx context.Context, req *versionpb.StartRequ
 									Name:      basePathKRTName,
 									ReadOnly:  true,
 									MountPath: fmt.Sprintf("/proto/%s", proto),
-									SubPath:   fmt.Sprintf("%s/%s/%s", runtimeId, versionName, proto),
+									SubPath:   fmt.Sprintf("%s/%s/%s", runtimeID, versionName, proto),
 								},
 							},
 						},
 					},
-					Volumes: m.getCommonVolumes(runtimeId, versionName),
+					Volumes: m.getCommonVolumes(runtimeID, versionName),
 				},
 			},
 		},
@@ -206,19 +207,19 @@ func (m *Manager) deleteEntrypointService(ctx context.Context, serviceName strin
 	})
 }
 
-func (m *Manager) createActiveEntrypointService(ctx context.Context, runtimeId, versionName, ns string) (*apiv1.Service, error) {
-	serviceName := fmt.Sprintf("%s-%s", runtimeId, activeEntrypointSuffix)
-	return m.createEntrypointService(ctx, runtimeId, versionName, serviceName, ns)
+func (m *Manager) createActiveEntrypointService(ctx context.Context, runtimeID, versionName, ns string) (*apiv1.Service, error) {
+	serviceName := fmt.Sprintf("%s-%s", runtimeID, activeEntrypointSuffix)
+	return m.createEntrypointService(ctx, runtimeID, versionName, serviceName, ns)
 }
 
-func (m *Manager) createEntrypointService(ctx context.Context, runtimeId, versionName, serviceName, ns string) (*apiv1.Service, error) {
+func (m *Manager) createEntrypointService(ctx context.Context, runtimeID, versionName, serviceName, ns string) (*apiv1.Service, error) {
 	serviceLabels := map[string]string{
 		"type":           "entrypoint",
 		versionNameLabel: versionName,
-		runtimeIdLabel:   runtimeId,
+		runtimeIDLabel:   runtimeID,
 	}
 
-	m.logger.Info(fmt.Sprintf("Creating service for version %s on runtime %s with serviceName %s", versionName, runtimeId, serviceName))
+	m.logger.Info(fmt.Sprintf("Creating service for version %s on runtime %s with serviceName %s", versionName, runtimeID, serviceName))
 
 	existingService, err := m.clientset.CoreV1().Services(ns).Get(ctx, serviceName, metav1.GetOptions{})
 

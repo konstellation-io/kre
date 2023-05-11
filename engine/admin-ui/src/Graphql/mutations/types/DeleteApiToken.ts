@@ -10,7 +10,7 @@ import { DeleteApiTokenInput } from './../../types/globalTypes';
 // ====================================================
 
 export interface DeleteApiToken_deleteApiToken {
-  __typename: 'ApiToken';
+  __typename: 'APIToken';
   id: string;
 }
 

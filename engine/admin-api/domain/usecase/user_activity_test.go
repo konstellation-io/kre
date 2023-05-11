@@ -9,6 +9,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const userID = "user1"
+const name = "test"
+
 type userActivitySuite struct {
 	ctrl                   *gomock.Controller
 	userActivityInteractor UserActivityInteracter
@@ -47,34 +50,28 @@ func TestRegisterGenerateAPIToken(t *testing.T) {
 	s := newUserActivitySuite(t)
 	defer s.ctrl.Finish()
 
-	userID := "user1"
-	name := "test"
-
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
 		require.Equal(t, entity.UserActivityTypeGenerateAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
+
 		return nil
 	})
 
 	err := s.userActivityInteractor.RegisterGenerateAPIToken(userID, name)
 	require.NoError(t, err)
-
 }
 
 func TestRegisterDeleteAPIToken(t *testing.T) {
 	s := newUserActivitySuite(t)
 	defer s.ctrl.Finish()
 
-	userID := "user1"
-	name := "test"
-
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).DoAndReturn(func(activity entity.UserActivity) error {
 		require.Equal(t, entity.UserActivityTypeDeleteAPIToken, activity.Type)
 		require.Equal(t, userID, activity.UserID)
+
 		return nil
 	})
 
 	err := s.userActivityInteractor.RegisterDeleteAPIToken(userID, name)
 	require.NoError(t, err)
-
 }

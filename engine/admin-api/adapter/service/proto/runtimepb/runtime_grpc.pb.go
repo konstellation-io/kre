@@ -35,10 +35,12 @@ func NewRuntimeServiceClient(cc grpc.ClientConnInterface) RuntimeServiceClient {
 
 func (c *runtimeServiceClient) Create(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
+
 	err := c.cc.Invoke(ctx, "/runtime.RuntimeService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
@@ -75,9 +77,11 @@ func _RuntimeService_Create_Handler(srv interface{}, ctx context.Context, dec fu
 	if err := dec(in); err != nil {
 		return nil, err
 	}
+
 	if interceptor == nil {
 		return srv.(RuntimeServiceServer).Create(ctx, in)
 	}
+
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
 		FullMethod: "/runtime.RuntimeService/Create",
@@ -85,6 +89,7 @@ func _RuntimeService_Create_Handler(srv interface{}, ctx context.Context, dec fu
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RuntimeServiceServer).Create(ctx, req.(*Request))
 	}
+
 	return interceptor(ctx, in, info, handler)
 }
 

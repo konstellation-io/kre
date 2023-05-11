@@ -7,15 +7,16 @@ import (
 type VersionConfig struct {
 	KeyValueStore string
 
-	StreamsConfig      *VersionStreamsConfig
-	ObjectStoresConfig *VersionObjectStoresConfig
+	StreamsConfig        *VersionStreamsConfig
+	ObjectStoresConfig   *VersionObjectStoresConfig
 	KeyValueStoresConfig *KeyValueStoresConfig
 }
 
-func NewVersionConfig(streamsConfig *VersionStreamsConfig, objectStoresConfig *VersionObjectStoresConfig, keyValueStoresConfig *KeyValueStoresConfig) *VersionConfig {
+func NewVersionConfig(streamsConfig *VersionStreamsConfig, objectStoresConfig *VersionObjectStoresConfig,
+	keyValueStoresConfig *KeyValueStoresConfig) *VersionConfig {
 	return &VersionConfig{
-		StreamsConfig:      streamsConfig,
-		ObjectStoresConfig: objectStoresConfig,
+		StreamsConfig:        streamsConfig,
+		ObjectStoresConfig:   objectStoresConfig,
 		KeyValueStoresConfig: keyValueStoresConfig,
 	}
 }
@@ -41,6 +42,7 @@ func (v *VersionConfig) GetNodeObjectStoreConfig(workflow, node string) *string 
 func (v *VersionConfig) GetWorkflowStreamConfig(workflow string) (*WorkflowStreamConfig, error) {
 	w, ok := v.StreamsConfig.Workflows[workflow]
 	if !ok {
+		//nolint:goerr113 // The error needs to be dynamic
 		return nil, fmt.Errorf("workflow %q stream config not found", workflow)
 	}
 
@@ -50,6 +52,7 @@ func (v *VersionConfig) GetWorkflowStreamConfig(workflow string) (*WorkflowStrea
 func (v *VersionConfig) GetWorkflowKeyValueStoresConfig(workflow string) (*WorkflowKeyValueStores, error) {
 	w, ok := v.KeyValueStoresConfig.WorkflowsKeyValueStores[workflow]
 	if !ok {
+		//nolint:goerr113 // errors need to be dynamic
 		return nil, fmt.Errorf("workflow %q stream config not found", workflow)
 	}
 

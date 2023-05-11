@@ -24,14 +24,14 @@ func (m *Manager) getCommonEnvVars(req *versionpb.StartRequest) []apiv1.EnvVar {
 	}
 }
 
-func (m *Manager) getVersionKRTConfName(runtimeId, versionName string) string {
-	return fmt.Sprintf("%s-%s-krt-conf", runtimeId, versionName)
+func (m *Manager) getVersionKRTConfName(runtimeID, versionName string) string {
+	return fmt.Sprintf("%s-%s-krt-conf", runtimeID, versionName)
 }
 
 // createVersionKRTConf creates a config-map in k8s with all config values defined in the krt.yml.
 // This config-map will be regenerated when the values are changed in manager.UpdateConfig and the
 // version PODs will be restarted in order to get the new config values.
-func (m *Manager) createVersionKRTConf(ctx context.Context, runtimeId, versionName, ns string, krtConfigs []*versionpb.Config) error {
+func (m *Manager) createVersionKRTConf(ctx context.Context, runtimeID, versionName, ns string, krtConfigs []*versionpb.Config) error {
 	m.logger.Info("Creating version krt configurations...")
 
 	values := map[string]string{}
@@ -41,11 +41,11 @@ func (m *Manager) createVersionKRTConf(ctx context.Context, runtimeId, versionNa
 
 	_, err := m.clientset.CoreV1().ConfigMaps(ns).Create(ctx, &apiv1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: m.getVersionKRTConfName(runtimeId, versionName),
+			Name: m.getVersionKRTConfName(runtimeID, versionName),
 			Labels: map[string]string{
 				"type":         "version",
 				"version-name": versionName,
-				"runtime-id":   runtimeId,
+				"runtime-id":   runtimeID,
 			},
 		},
 		Data: values,

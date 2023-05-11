@@ -41,7 +41,8 @@ func NewMetricsInteractor(
 	}
 }
 
-func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, runtimeId, versionName, startDate, endDate string) (*entity.Metrics, error) {
+func (i *MetricsInteractor) GetMetrics(ctx context.Context,
+	loggedUserID, runtimeID, versionName, startDate, endDate string) (*entity.Metrics, error) {
 	if err := i.accessControl.CheckPermission(loggedUserID, auth.ResMetrics, auth.ActView); err != nil {
 		return nil, err
 	}
@@ -58,7 +59,7 @@ func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, runtim
 		return result, fmt.Errorf("invalid end date: %w", err)
 	}
 
-	metrics, err := i.metricRepo.GetMetrics(ctx, parsedStartDate, parsedEndDate, runtimeId, versionName)
+	metrics, err := i.metricRepo.GetMetrics(ctx, parsedStartDate, parsedEndDate, runtimeID, versionName)
 	if err != nil {
 		return result, fmt.Errorf("error getting metrics: %w", err)
 	}
@@ -70,6 +71,7 @@ func (i *MetricsInteractor) GetMetrics(ctx context.Context, loggedUserID, runtim
 	return i.CalculateChartsAndValues(metrics)
 }
 
+//nolint:funlen,gocyclo,gocritic,nestif // the statements are needed for metrics calculation
 func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.ClassificationMetric) (*entity.Metrics, error) {
 	hits := 0 // items classified correctly
 	newLabels := 0
@@ -99,11 +101,13 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 				hits += 1
 				hitsByCat[m.TrueValue] += 1
 			}
+
 			totalByCat[m.TrueValue] += 1
 
 			if confusion[m.TrueValue] == nil {
 				confusion[m.TrueValue] = make(map[string]int)
 			}
+
 			confusion[m.TrueValue][m.PredictedValue] += 1
 		}
 	}
@@ -112,13 +116,15 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 		return nil, nil
 	}
 
-	var allCategories []string
+	allCategories := make([]string, 0, len(categories))
 	for k := range categories {
 		allCategories = append(allCategories, k)
 	}
+
 	sort.Strings(allCategories)
 
 	var confusionMatrix []*entity.MetricChartData
+
 	for _, expectedCat := range allCategories {
 		for _, predictedCat := range allCategories {
 			val := 0
@@ -140,6 +146,7 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 
 	accuracyByCat := make(map[string]float64)
 	sumAccuracies := float64(0)
+
 	for _, cat := range allCategories {
 		if totalByCat[cat] == 0 {
 			accuracyByCat[cat] = 0
@@ -163,9 +170,10 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 	for _, cat := range allCategories {
 		accuracyWeighted += accuracyByCat[cat] * float64(totalByCat[cat])
 	}
-	accuracyWeighted = accuracyWeighted / float64(totalNoErrors)
 
-	var seriesAccuracy []*entity.MetricChartData
+	accuracyWeighted /= float64(totalNoErrors)
+
+	seriesAccuracy := make([]*entity.MetricChartData, 0, len(allCategories))
 	for _, cat := range allCategories {
 		seriesAccuracy = append(seriesAccuracy, &entity.MetricChartData{
 			X: strconv.Itoa(int(accuracyByCat[cat] * 100)),
@@ -174,7 +182,7 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 	}
 
 	// recall is the diagonal of the confusion matrix (tp / (tp + fn))
-	var seriesRecall []*entity.MetricChartData
+	seriesRecall := make([]*entity.MetricChartData, 0, len(allCategories))
 	for _, cat := range allCategories {
 		seriesRecall = append(seriesRecall, &entity.MetricChartData{
 			X: strconv.Itoa(recallByCat[cat]),
@@ -183,7 +191,7 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 	}
 
 	// support is the num of elements per each class
-	var seriesSupport []*entity.MetricChartData
+	seriesSupport := make([]*entity.MetricChartData, 0, len(allCategories))
 	for _, cat := range allCategories {
 		seriesSupport = append(seriesSupport, &entity.MetricChartData{
 			X: strconv.Itoa(totalByCat[cat]),
@@ -200,7 +208,7 @@ func (i *MetricsInteractor) CalculateChartsAndValues(metrics []entity.Classifica
 		Values: &entity.MetricsValues{
 			Accuracy: &entity.MetricsAccuracy{
 				Total:    accuracyTotal,
-				Micro:    accuracyTotal, // TODO should the accuracy total and micro be the same?
+				Micro:    accuracyTotal,
 				Macro:    accuracyMacro,
 				Weighted: int(accuracyWeighted * 100),
 			},
@@ -222,6 +230,7 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.Classificati
 
 	firstMetric := metrics[0].Date
 	lastMetric := firstMetric
+
 	for _, m := range metrics {
 		if m.Date < firstMetric {
 			firstMetric = m.Date
@@ -245,7 +254,9 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.Classificati
 	hours := end.Sub(start).Hours()
 
 	var interval int
+
 	var groupTimeFormat string
+
 	switch {
 	case hours <= oneWeek:
 		interval = oneHour
@@ -259,6 +270,7 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.Classificati
 	metricsGroups := make(map[int][]entity.ClassificationMetric)
 
 	var numGroups int
+
 	for _, m := range metrics {
 		if m.Error != "" {
 			continue
@@ -269,6 +281,7 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.Classificati
 			i.logger.Errorf("invalid metric date = %q: %s\n", m.Date, err.Error())
 			continue
 		}
+
 		group := int(d.Sub(start).Hours()) / interval
 		metricsGroups[group] = append(metricsGroups[group], m)
 
@@ -283,6 +296,7 @@ func (i *MetricsInteractor) GetSuccessVsFailsChart(metrics []entity.Classificati
 
 		if mg, ok := metricsGroups[i]; ok {
 			hits := 0
+
 			for _, m := range mg {
 				if m.TrueValue == m.PredictedValue {
 					hits += 1
@@ -307,6 +321,8 @@ func (i *MetricsInteractor) getMetricTruncatedDate(date string) (time.Time, erro
 	if e != nil {
 		return time.Time{}, fmt.Errorf("invalid metric date %q: %w", date, e)
 	}
+
 	d = d.Truncate(time.Hour)
+
 	return d, nil
 }

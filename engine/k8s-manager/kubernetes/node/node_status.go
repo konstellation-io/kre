@@ -31,6 +31,7 @@ func GetNodeStatus(logger *simplelogger.SimpleLogger, p *coreV1.Pod) (entity.Nod
 				crashLoopBackOff++
 				continue
 			}
+
 			if cs.State.Waiting.Reason == "ContainerCreating" || cs.State.Waiting.Reason == "PodInitializing" {
 				waiting++
 			}

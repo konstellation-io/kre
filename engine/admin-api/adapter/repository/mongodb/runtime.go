@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -46,6 +47,7 @@ func (r *RuntimeRepoMongoDB) createIndexes() {
 
 func (r *RuntimeRepoMongoDB) Create(ctx context.Context, runtime *entity.Runtime) (*entity.Runtime, error) {
 	runtime.CreationDate = time.Now().UTC()
+
 	_, err := r.collection.InsertOne(ctx, runtime)
 	if err != nil {
 		return nil, err
@@ -58,7 +60,7 @@ func (r *RuntimeRepoMongoDB) Get(ctx context.Context) (*entity.Runtime, error) {
 	runtime := &entity.Runtime{}
 
 	err := r.collection.FindOne(ctx, bson.M{}).Decode(runtime)
-	if err == mongo.ErrNoDocuments {
+	if errors.Is(err, mongo.ErrNoDocuments) {
 		return nil, usecase.ErrRuntimeNotFound
 	}
 
@@ -67,10 +69,10 @@ func (r *RuntimeRepoMongoDB) Get(ctx context.Context) (*entity.Runtime, error) {
 
 func (r *RuntimeRepoMongoDB) GetByID(ctx context.Context, runtimeID string) (*entity.Runtime, error) {
 	runtime := &entity.Runtime{}
-	filter := bson.D{{"_id", runtimeID}}
+	filter := bson.M{"_id": runtimeID}
 
 	err := r.collection.FindOne(ctx, filter).Decode(runtime)
-	if err == mongo.ErrNoDocuments {
+	if errors.Is(err, mongo.ErrNoDocuments) {
 		return nil, usecase.ErrRuntimeNotFound
 	}
 
@@ -79,10 +81,10 @@ func (r *RuntimeRepoMongoDB) GetByID(ctx context.Context, runtimeID string) (*en
 
 func (r *RuntimeRepoMongoDB) GetByName(ctx context.Context, name string) (*entity.Runtime, error) {
 	runtime := &entity.Runtime{}
-	filter := bson.D{{"name", name}}
+	filter := bson.M{"name": name}
 
 	err := r.collection.FindOne(ctx, filter).Decode(runtime)
-	if err == mongo.ErrNoDocuments {
+	if errors.Is(err, mongo.ErrNoDocuments) {
 		return nil, usecase.ErrRuntimeNotFound
 	}
 
@@ -91,7 +93,8 @@ func (r *RuntimeRepoMongoDB) GetByName(ctx context.Context, name string) (*entit
 
 func (r *RuntimeRepoMongoDB) FindAll(ctx context.Context) ([]*entity.Runtime, error) {
 	var runtimes []*entity.Runtime
-	cursor, err := r.collection.Find(ctx, bson.D{})
+
+	cursor, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return runtimes, err
 	}

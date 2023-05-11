@@ -41,8 +41,8 @@ func TestVersionInteractorSuite(t *testing.T) {
 }
 
 // SetupSuite will create a mock controller and will initialize all required mock interfaces.
-func (suite *VersionInteractorSuite) SetupSuite() {
-	ctrl := gomock.NewController(suite.T())
+func (s *VersionInteractorSuite) SetupSuite() {
+	ctrl := gomock.NewController(s.T())
 
 	cfg := &config.Config{}
 	logger := mocks.NewMockLogger(ctrl)
@@ -69,8 +69,8 @@ func (suite *VersionInteractorSuite) SetupSuite() {
 		cfg, logger, versionRepo, runtimeRepo, versionService, natsManagerService,
 		userActivityInteractor, accessControl, idGenerator, docGenerator, dashboardService, nodeLogRepo)
 
-	suite.ctrl = ctrl
-	suite.mocks = versionSuiteMocks{
+	s.ctrl = ctrl
+	s.mocks = versionSuiteMocks{
 		cfg,
 		logger,
 		versionRepo,
@@ -81,16 +81,16 @@ func (suite *VersionInteractorSuite) SetupSuite() {
 		idGenerator,
 		dashboardService,
 	}
-	suite.versionInteractor = versionInteractor
-	suite.ctx = context.Background()
+	s.versionInteractor = versionInteractor
+	s.ctx = context.Background()
 }
 
 // TearDownSuite finish controller.
-func (suite *VersionInteractorSuite) TearDownSuite() {
-	suite.ctrl.Finish()
+func (s *VersionInteractorSuite) TearDownSuite() {
+	s.ctrl.Finish()
 }
 
-func (suite *VersionInteractorSuite) TestCreateNewVersion() {
+func (s *VersionInteractorSuite) TestCreateNewVersion() {
 	userID := "user1"
 	runtimeID := "run-1"
 
@@ -115,29 +115,29 @@ func (suite *VersionInteractorSuite) TestCreateNewVersion() {
 	}
 
 	file, err := os.Open("../../test_assets/classificator-v1.krt")
-	suite.Require().NoError(err)
+	s.Require().NoError(err)
 
-	suite.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
-	suite.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(6)
-	suite.mocks.runtimeRepo.EXPECT().GetByID(suite.ctx, runtimeID).Return(runtime, nil)
-	suite.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
-	suite.mocks.versionRepo.EXPECT().GetByName(suite.ctx, runtimeID, versionName).Return(nil, usecase.ErrVersionNotFound)
-	suite.mocks.versionRepo.EXPECT().Create(userID, runtimeID, gomock.Any()).Return(version, nil)
-	suite.mocks.versionRepo.EXPECT().SetStatus(suite.ctx, runtimeID, version.ID, entity.VersionStatusCreated).Return(nil)
-	suite.mocks.versionRepo.EXPECT().UploadKRTFile(runtimeID, version, gomock.Any()).Return(nil)
-	suite.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
-	suite.mocks.dashboardService.EXPECT().Create(suite.ctx, runtimeID, gomock.Any(), gomock.Any()).Return(nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
+	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(6)
+	s.mocks.runtimeRepo.EXPECT().GetByID(s.ctx, runtimeID).Return(runtime, nil)
+	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, runtimeID, versionName).Return(nil, usecase.ErrVersionNotFound)
+	s.mocks.versionRepo.EXPECT().Create(userID, runtimeID, gomock.Any()).Return(version, nil)
+	s.mocks.versionRepo.EXPECT().SetStatus(s.ctx, runtimeID, version.ID, entity.VersionStatusCreated).Return(nil)
+	s.mocks.versionRepo.EXPECT().UploadKRTFile(runtimeID, version, gomock.Any()).Return(nil)
+	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)
+	s.mocks.dashboardService.EXPECT().Create(s.ctx, runtimeID, gomock.Any(), gomock.Any()).Return(nil)
 
-	_, statusCh, err := suite.versionInteractor.Create(context.Background(), userID, runtimeID, file)
-	suite.Require().NoError(err)
+	_, statusCh, err := s.versionInteractor.Create(context.Background(), userID, runtimeID, file)
+	s.Require().NoError(err)
 
 	actual := <-statusCh
 	expected := version
 	expected.Status = entity.VersionStatusCreated
-	suite.Equal(expected, actual)
+	s.Equal(expected, actual)
 }
 
-func (suite *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDuplicated() {
+func (s *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDuplicated() {
 	userID := "user1"
 	runtimeID := "run-1"
 
@@ -161,18 +161,18 @@ func (suite *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDu
 	}
 
 	file, err := os.Open("../../test_assets/classificator-v1.krt")
-	suite.Require().NoError(err)
+	s.Require().NoError(err)
 
-	suite.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
-	suite.mocks.runtimeRepo.EXPECT().GetByID(suite.ctx, runtimeID).Return(runtime, nil)
-	suite.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
-	suite.mocks.versionRepo.EXPECT().GetByName(suite.ctx, runtimeID, versionName).Return(version, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit)
+	s.mocks.runtimeRepo.EXPECT().GetByID(s.ctx, runtimeID).Return(runtime, nil)
+	s.mocks.versionRepo.EXPECT().GetByRuntime(runtimeID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, runtimeID, versionName).Return(version, nil)
 
-	_, _, err = suite.versionInteractor.Create(context.Background(), userID, runtimeID, file)
-	suite.ErrorIs(err, usecase.ErrVersionDuplicated)
+	_, _, err = s.versionInteractor.Create(context.Background(), userID, runtimeID, file)
+	s.ErrorIs(err, usecase.ErrVersionDuplicated)
 }
 
-func (suite *VersionInteractorSuite) TestGetByName() {
+func (s *VersionInteractorSuite) TestGetByName() {
 	userID := "user1"
 	runtimeID := "runtime-1"
 	versionName := "version-name"
@@ -191,11 +191,11 @@ func (suite *VersionInteractorSuite) TestGetByName() {
 		Workflows:         nil,
 	}
 
-	suite.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit).Return(nil)
-	suite.mocks.versionRepo.EXPECT().GetByName(suite.ctx, runtimeID, versionName).Return(expected, nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(userID, auth.ResVersion, auth.ActEdit).Return(nil)
+	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, runtimeID, versionName).Return(expected, nil)
 
-	actual, err := suite.versionInteractor.GetByName(suite.ctx, userID, runtimeID, versionName)
-	suite.Require().NoError(err)
+	actual, err := s.versionInteractor.GetByName(s.ctx, userID, runtimeID, versionName)
+	s.Require().NoError(err)
 
-	suite.Equal(expected, actual)
+	s.Equal(expected, actual)
 }
