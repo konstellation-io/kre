@@ -7,7 +7,6 @@ import (
 
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/auth"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
-	"github.com/konstellation-io/kre/engine/admin-api/adapter/product"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/influx"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/repository/mongodb"
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/service"
@@ -51,8 +50,8 @@ func main() {
 }
 
 func initApp(cfg *config.Config, logger logging.Logger, mongodbClient *mongo.Client) (usecase.UserActivityInteracter,
-	*usecase.RuntimeInteractor, *usecase.UserInteractor, *usecase.VersionInteractor, *usecase.MetricsInteractor) {
-	runtimeRepo := mongodb.NewRuntimeRepoMongoDB(cfg, logger, mongodbClient)
+	*usecase.ProductInteractor, *usecase.UserInteractor, *usecase.VersionInteractor, *usecase.MetricsInteractor) {
+	productRepo := mongodb.NewProductRepoMongoDB(cfg, logger, mongodbClient)
 	userActivityRepo := mongodb.NewUserActivityRepoMongoDB(cfg, logger, mongodbClient)
 	versionMongoRepo := mongodb.NewVersionRepoMongoDB(cfg, logger, mongodbClient)
 	nodeLogRepo := mongodb.NewNodeLogMongoDBRepo(cfg, logger, mongodbClient)
@@ -79,7 +78,7 @@ func initApp(cfg *config.Config, logger logging.Logger, mongodbClient *mongo.Cli
 
 	userActivityInteractor := usecase.NewUserActivityInteractor(logger, userActivityRepo, accessControl)
 
-	runtimeInteractor := usecase.NewProductInteractor(
+	productInteractor := usecase.NewProductInteractor(
 		cfg,
 		logger,
 		productRepo,

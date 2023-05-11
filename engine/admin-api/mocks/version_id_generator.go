@@ -25,7 +25,6 @@ type MockIDGeneratorMockRecorder struct {
 func NewMockIDGenerator(ctrl *gomock.Controller) *MockIDGenerator {
 	mock := &MockIDGenerator{ctrl: ctrl}
 	mock.recorder = &MockIDGeneratorMockRecorder{mock}
-
 	return mock
 }
 
@@ -39,7 +38,6 @@ func (m *MockIDGenerator) NewID() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "NewID")
 	ret0, _ := ret[0].(string)
-
 	return ret0
 }
 

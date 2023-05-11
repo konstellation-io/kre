@@ -80,7 +80,7 @@ func (r *VersionRepoMongoDB) Create(userID, productID string, newVersion *entity
 	return newVersion, nil
 }
 
-func (r *VersionRepoMongoDB) GetByID(productID, versionId string) (*entity.Version, error) {
+func (r *VersionRepoMongoDB) GetByID(productID, versionID string) (*entity.Version, error) {
 	collection := r.client.Database(productID).Collection(versionsCollectionName)
 
 	v := &entity.Version{}

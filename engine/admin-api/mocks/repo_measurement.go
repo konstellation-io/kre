@@ -25,7 +25,6 @@ type MockMeasurementRepoMockRecorder struct {
 func NewMockMeasurementRepo(ctrl *gomock.Controller) *MockMeasurementRepo {
 	mock := &MockMeasurementRepo{ctrl: ctrl}
 	mock.recorder = &MockMeasurementRepoMockRecorder{mock}
-
 	return mock
 }
 
@@ -39,7 +38,6 @@ func (m *MockMeasurementRepo) CreateDatabase(runtimeID string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDatabase", runtimeID)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 

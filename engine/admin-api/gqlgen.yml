@@ -13,16 +13,8 @@ resolver:
 autobind:
   - github.com/konstellation-io/kre/engine/admin-api/domain/entity
 models:
-  ApiToken:
-    model: github.com/konstellation-io/kre/engine/admin-api/domain/entity.APIToken
-    fields:
-      creationDate:
-        resolver: true
-      lastActivity:
-        resolver: true
-
-  Runtime:
-    model: github.com/konstellation-io/kre/engine/admin-api/domain/entity.Runtime
+  Product:
+    model: github.com/konstellation-io/kre/engine/admin-api/domain/entity.Product
     fields:
       creationDate:
         resolver: true

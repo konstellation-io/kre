@@ -26,7 +26,6 @@ type MockDashboardServiceMockRecorder struct {
 func NewMockDashboardService(ctrl *gomock.Controller) *MockDashboardService {
 	mock := &MockDashboardService{ctrl: ctrl}
 	mock.recorder = &MockDashboardServiceMockRecorder{mock}
-
 	return mock
 }
 
@@ -40,7 +39,6 @@ func (m *MockDashboardService) Create(ctx context.Context, runtimeID, version, d
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, runtimeID, version, dashboardPath)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 

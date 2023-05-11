@@ -28,7 +28,6 @@ type MockMetricRepoMockRecorder struct {
 func NewMockMetricRepo(ctrl *gomock.Controller) *MockMetricRepo {
 	mock := &MockMetricRepo{ctrl: ctrl}
 	mock.recorder = &MockMetricRepoMockRecorder{mock}
-
 	return mock
 }
 
@@ -42,7 +41,6 @@ func (m *MockMetricRepo) CreateIndexes(ctx context.Context, runtimeID string) er
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateIndexes", ctx, runtimeID)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 
@@ -58,7 +56,6 @@ func (m *MockMetricRepo) GetMetrics(ctx context.Context, startDate, endDate time
 	ret := m.ctrl.Call(m, "GetMetrics", ctx, startDate, endDate, runtimeID, versionName)
 	ret0, _ := ret[0].([]entity.ClassificationMetric)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 

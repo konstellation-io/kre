@@ -92,7 +92,10 @@ func (s *VersionInteractorSuite) TearDownSuite() {
 }
 
 func (s *VersionInteractorSuite) TestCreateNewVersion() {
-	userID := "user1"
+	loggedUser := &token.UserRoles{
+		ID: "test-user",
+	}
+
 	productID := "run-1"
 
 	product := &entity.Product{
@@ -101,7 +104,7 @@ func (s *VersionInteractorSuite) TestCreateNewVersion() {
 
 	versionName := "classificator-v1"
 	version := &entity.Version{
-		ID:                userID,
+		ID:                loggedUser.ID,
 		Name:              versionName,
 		KrtVersion:        "v2",
 		Description:       "",
@@ -114,11 +117,6 @@ func (s *VersionInteractorSuite) TestCreateNewVersion() {
 		Entrypoint:        entity.Entrypoint{},
 		Workflows:         nil,
 	}
-
-	loggedUser := &token.UserRoles{
-		ID: "test-user",
-	}
-
 	file, err := os.Open("../../test_assets/classificator-v1.krt")
 	s.Require().NoError(err)
 
@@ -127,7 +125,7 @@ func (s *VersionInteractorSuite) TestCreateNewVersion() {
 	s.mocks.productRepo.EXPECT().GetByID(s.ctx, productID).Return(product, nil)
 	s.mocks.versionRepo.EXPECT().GetByProduct(productID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, productID, versionName).Return(nil, usecase.ErrVersionNotFound)
-	s.mocks.versionRepo.EXPECT().Create(userID, productID, gomock.Any()).Return(version, nil)
+	s.mocks.versionRepo.EXPECT().Create(loggedUser.ID, productID, gomock.Any()).Return(version, nil)
 	s.mocks.versionRepo.EXPECT().SetStatus(s.ctx, productID, version.ID, entity.VersionStatusCreated).Return(nil)
 	s.mocks.versionRepo.EXPECT().UploadKRTFile(productID, version, gomock.Any()).Return(nil)
 	s.mocks.userActivityRepo.EXPECT().Create(gomock.Any()).Return(nil)

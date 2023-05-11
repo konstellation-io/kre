@@ -25,7 +25,6 @@ type MockDocGeneratorMockRecorder struct {
 func NewMockDocGenerator(ctrl *gomock.Controller) *MockDocGenerator {
 	mock := &MockDocGenerator{ctrl: ctrl}
 	mock.recorder = &MockDocGeneratorMockRecorder{mock}
-
 	return mock
 }
 
@@ -39,7 +38,6 @@ func (m *MockDocGenerator) Generate(versionName, docFolder string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Generate", versionName, docFolder)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 

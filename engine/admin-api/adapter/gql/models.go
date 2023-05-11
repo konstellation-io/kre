@@ -11,12 +11,19 @@ import (
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
 )
 
+type APIToken struct {
+	ID           string  `json:"id"`
+	Name         string  `json:"name"`
+	CreationDate string  `json:"creationDate"`
+	LastActivity *string `json:"lastActivity,omitempty"`
+}
+
 type ConfigurationVariablesInput struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
 }
 
-type CreateRuntimeInput struct {
+type CreateProductInput struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -24,7 +31,7 @@ type CreateRuntimeInput struct {
 
 type CreateVersionInput struct {
 	File      graphql.Upload `json:"file"`
-	RuntimeID string         `json:"runtimeId"`
+	ProductID string         `json:"productID"`
 }
 
 type LogPage struct {
@@ -35,7 +42,7 @@ type LogPage struct {
 type PublishVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
-	RuntimeID   string `json:"runtimeId"`
+	ProductID   string `json:"productID"`
 }
 
 type Settings struct {
@@ -51,19 +58,19 @@ type SettingsInput struct {
 type StartVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
-	RuntimeID   string `json:"runtimeId"`
+	ProductID   string `json:"productID"`
 }
 
 type StopVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
-	RuntimeID   string `json:"runtimeId"`
+	ProductID   string `json:"productID"`
 }
 
 type UnpublishVersionInput struct {
 	VersionName string `json:"versionName"`
 	Comment     string `json:"comment"`
-	RuntimeID   string `json:"runtimeId"`
+	ProductID   string `json:"productID"`
 }
 
 type UpdateAccessLevelInput struct {
@@ -74,7 +81,7 @@ type UpdateAccessLevelInput struct {
 
 type UpdateConfigurationInput struct {
 	VersionName            string                         `json:"versionName"`
-	RuntimeID              string                         `json:"runtimeId"`
+	ProductID              string                         `json:"productID"`
 	ConfigurationVariables []*ConfigurationVariablesInput `json:"configurationVariables"`
 }
 
@@ -102,7 +109,6 @@ func (e AccessLevel) IsValid() bool {
 	case AccessLevelViewer, AccessLevelManager, AccessLevelAdmin:
 		return true
 	}
-
 	return false
 }
 
@@ -120,7 +126,6 @@ func (e *AccessLevel) UnmarshalGQL(v interface{}) error {
 	if !e.IsValid() {
 		return fmt.Errorf("%s is not a valid AccessLevel", str)
 	}
-
 	return nil
 }
 

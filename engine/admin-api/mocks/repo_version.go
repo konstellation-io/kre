@@ -27,7 +27,6 @@ type MockVersionRepoMockRecorder struct {
 func NewMockVersionRepo(ctrl *gomock.Controller) *MockVersionRepo {
 	mock := &MockVersionRepo{ctrl: ctrl}
 	mock.recorder = &MockVersionRepoMockRecorder{mock}
-
 	return mock
 }
 
@@ -42,7 +41,6 @@ func (m *MockVersionRepo) ClearPublishedVersion(ctx context.Context, productID s
 	ret := m.ctrl.Call(m, "ClearPublishedVersion", ctx, productID)
 	ret0, _ := ret[0].(*entity.Version)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 
@@ -58,7 +56,6 @@ func (m *MockVersionRepo) Create(userID, productID string, version *entity.Versi
 	ret := m.ctrl.Call(m, "Create", userID, productID, version)
 	ret0, _ := ret[0].(*entity.Version)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 
@@ -73,7 +70,6 @@ func (m *MockVersionRepo) CreateIndexes(ctx context.Context, productID string) e
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateIndexes", ctx, productID)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 
@@ -89,7 +85,6 @@ func (m *MockVersionRepo) GetAll(productID string) ([]*entity.Version, error) {
 	ret := m.ctrl.Call(m, "GetAll", productID)
 	ret0, _ := ret[0].([]*entity.Version)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 
@@ -105,7 +100,6 @@ func (m *MockVersionRepo) GetByID(productID, versionId string) (*entity.Version,
 	ret := m.ctrl.Call(m, "GetByID", productID, versionId)
 	ret0, _ := ret[0].(*entity.Version)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 
@@ -121,7 +115,6 @@ func (m *MockVersionRepo) GetByName(ctx context.Context, productID, name string)
 	ret := m.ctrl.Call(m, "GetByName", ctx, productID, name)
 	ret0, _ := ret[0].(*entity.Version)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 
@@ -137,7 +130,6 @@ func (m *MockVersionRepo) GetByProduct(productID string) ([]*entity.Version, err
 	ret := m.ctrl.Call(m, "GetByProduct", productID)
 	ret0, _ := ret[0].([]*entity.Version)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 
@@ -153,7 +145,6 @@ func (m *MockVersionRepo) SetErrors(ctx context.Context, productID string, versi
 	ret := m.ctrl.Call(m, "SetErrors", ctx, productID, version, errorMessages)
 	ret0, _ := ret[0].(*entity.Version)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 
@@ -168,7 +159,6 @@ func (m *MockVersionRepo) SetHasDoc(ctx context.Context, productID, versionID st
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetHasDoc", ctx, productID, versionID, hasDoc)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 
@@ -183,7 +173,6 @@ func (m *MockVersionRepo) SetStatus(ctx context.Context, productID, versionID st
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStatus", ctx, productID, versionID, status)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 
@@ -198,7 +187,6 @@ func (m *MockVersionRepo) Update(productID string, version *entity.Version) erro
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", productID, version)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 
@@ -213,7 +201,6 @@ func (m *MockVersionRepo) UploadKRTFile(productID string, version *entity.Versio
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadKRTFile", productID, version, file)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 

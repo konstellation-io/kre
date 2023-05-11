@@ -25,7 +25,6 @@ type MockFieldsValidatorMockRecorder struct {
 func NewMockFieldsValidator(ctrl *gomock.Controller) *MockFieldsValidator {
 	mock := &MockFieldsValidator{ctrl: ctrl}
 	mock.recorder = &MockFieldsValidatorMockRecorder{mock}
-
 	return mock
 }
 
@@ -39,7 +38,6 @@ func (m *MockFieldsValidator) Run(yaml interface{}) []error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Run", yaml)
 	ret0, _ := ret[0].([]error)
-
 	return ret0
 }
 

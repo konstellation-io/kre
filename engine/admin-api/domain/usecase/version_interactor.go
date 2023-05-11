@@ -92,7 +92,7 @@ func NewVersionInteractor(
 }
 
 func (i *VersionInteractor) filterConfigVars(user *token.UserRoles, productID string, vers *entity.Version) {
-	if err := i.accessControl.CheckPermission(user, productID, auth.ActCreateProduct); err != nil {
+	if err := i.accessControl.CheckPermission(user, productID, auth.ActViewVersion); err != nil {
 		vers.Config.Vars = nil
 	}
 }
@@ -665,20 +665,20 @@ func (i *VersionInteractor) UpdateVersionConfig(
 	user *token.UserRoles,
 	productID string,
 	vrs *entity.Version,
-	config []*entity.ConfigurationVariable,
+	cfg []*entity.ConfigurationVariable,
 ) (*entity.Version, error) {
 	if err := i.accessControl.CheckPermission(user, productID, auth.ActEditVersion); err != nil {
 		return nil, err
 	}
 
-	err := i.validateNewConfig(vrs.Config.Vars, config)
+	err := i.validateNewConfig(vrs.Config.Vars, cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	isStarted := vrs.PublishedOrStarted()
 
-	newConfig, newConfigIsComplete := generateNewConfig(vrs.Config.Vars, conf)
+	newConfig, newConfigIsComplete := generateNewConfig(vrs.Config.Vars, cfg)
 
 	if isStarted && !newConfigIsComplete {
 		return nil, ErrUpdatingStartedVersionConfig
@@ -782,8 +782,8 @@ func (i *VersionInteractor) setStatusError(
 	errors []error,
 	notifyCh chan *entity.Version,
 ) {
-	errorMessages := make([]string, len(errs))
-	for idx, err := range errs {
+	errorMessages := make([]string, len(errors))
+	for idx, err := range errors {
 		errorMessages[idx] = err.Error()
 	}
 

@@ -27,7 +27,6 @@ type MockUserActivityRepoMockRecorder struct {
 func NewMockUserActivityRepo(ctrl *gomock.Controller) *MockUserActivityRepo {
 	mock := &MockUserActivityRepo{ctrl: ctrl}
 	mock.recorder = &MockUserActivityRepoMockRecorder{mock}
-
 	return mock
 }
 
@@ -41,7 +40,6 @@ func (m *MockUserActivityRepo) Create(activity entity.UserActivity) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", activity)
 	ret0, _ := ret[0].(error)
-
 	return ret0
 }
 
@@ -57,7 +55,6 @@ func (m *MockUserActivityRepo) Get(ctx context.Context, userEmail *string, types
 	ret := m.ctrl.Call(m, "Get", ctx, userEmail, types, versionIds, fromDate, toDate, lastID)
 	ret0, _ := ret[0].([]*entity.UserActivity)
 	ret1, _ := ret[1].(error)
-
 	return ret0, ret1
 }
 

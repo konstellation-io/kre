@@ -5,8 +5,6 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/konstellation-io/kre/engine/admin-api/domain/usecase/product"
-
 	"github.com/konstellation-io/kre/engine/admin-api/adapter/config"
 	"github.com/konstellation-io/kre/engine/admin-api/delivery/http/token"
 	"github.com/konstellation-io/kre/engine/admin-api/domain/entity"
@@ -24,16 +22,15 @@ var (
 
 // ProductInteractor contains app logic to handle Product entities
 type ProductInteractor struct {
-	cfg               *config.Config
-	logger            logging.Logger
-	productRepo       repository.ProductRepo
-	measurementRepo   repository.MeasurementRepo
-	versionRepo       repository.VersionRepo
-	metricRepo        repository.MetricRepo
-	nodeLogRepo       repository.NodeLogRepository
-	userActivity      UserActivityInteracter
-	passwordGenerator product.PasswordGenerator
-	accessControl     auth.AccessControl
+	cfg             *config.Config
+	logger          logging.Logger
+	productRepo     repository.ProductRepo
+	measurementRepo repository.MeasurementRepo
+	versionRepo     repository.VersionRepo
+	metricRepo      repository.MetricRepo
+	nodeLogRepo     repository.NodeLogRepository
+	userActivity    UserActivityInteracter
+	accessControl   auth.AccessControl
 }
 
 // NewProductInteractor creates a new ProductInteractor
@@ -46,7 +43,6 @@ func NewProductInteractor(
 	metricRepo repository.MetricRepo,
 	nodeLogRepo repository.NodeLogRepository,
 	userActivity UserActivityInteracter,
-	passwordGenerator product.PasswordGenerator,
 	accessControl auth.AccessControl,
 ) *ProductInteractor {
 	return &ProductInteractor{
@@ -58,7 +54,6 @@ func NewProductInteractor(
 		metricRepo,
 		nodeLogRepo,
 		userActivity,
-		passwordGenerator,
 		accessControl,
 	}
 }

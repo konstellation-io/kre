@@ -120,72 +120,72 @@ func TestCreateNewProduct(t *testing.T) {
 
 	ctx := context.Background()
 	user := &token.UserRoles{ID: "user1234"}
-	newRuntimeId := "product-id"
-	newRuntimeName := "product-name"
-	newRuntimeDescription := "This is a product description"
-	expectedRuntime := &entity.Product{
-		ID:           newRuntimeId,
-		Name:         newRuntimeName,
-		Description:  newRuntimeDescription,
+	productID := "product-id"
+	productName := "product-name"
+	productDescription := "This is a product description"
+	expectedProduct := &entity.Product{
+		ID:           productID,
+		Name:         productName,
+		Description:  productDescription,
 		CreationDate: time.Time{},
-		Owner:        userID,
+		Owner:        user.ID,
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, productID, auth.ActEdit).Return(nil)
-	s.mocks.productRepo.EXPECT().GetByID(ctx, newRuntimeId).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.productRepo.EXPECT().GetByName(ctx, newRuntimeName).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.productRepo.EXPECT().Create(ctx, expectedRuntime).Return(expectedRuntime, nil)
-	s.mocks.measurementRepo.EXPECT().CreateDatabase(newRuntimeId).Return(nil)
-	s.mocks.versionRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
-	s.mocks.metricRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
-	s.mocks.nodeLogRepo.EXPECT().CreateIndexes(ctx, newRuntimeId).Return(nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(nil)
+	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.productRepo.EXPECT().GetByName(ctx, productName).Return(nil, usecase.ErrProductNotFound)
+	s.mocks.productRepo.EXPECT().Create(ctx, expectedProduct).Return(expectedProduct, nil)
+	s.mocks.measurementRepo.EXPECT().CreateDatabase(productID).Return(nil)
+	s.mocks.versionRepo.EXPECT().CreateIndexes(ctx, productID).Return(nil)
+	s.mocks.metricRepo.EXPECT().CreateIndexes(ctx, productID).Return(nil)
+	s.mocks.nodeLogRepo.EXPECT().CreateIndexes(ctx, productID).Return(nil)
 
-	product, err := s.productInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateProduct(ctx, user, productID, productName, productDescription)
 
 	require.Nil(t, err)
-	require.Equal(t, expectedRuntime, product)
+	require.Equal(t, expectedProduct, product)
 }
 
-func TestCreateNewRuntime_FailsIfUserHasNotPermission(t *testing.T) {
+func TestCreateNewProduct_FailsIfUserHasNotPermission(t *testing.T) {
 	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
 	user := &token.UserRoles{ID: "user1234"}
-	newRuntimeId := "product-id"
-	newRuntimeName := "product-name"
-	newRuntimeDescription := "This is a product description"
+	productID := "product-id"
+	productName := "product-name"
+	productDescription := "This is a product description"
 
 	permissionError := errors.New("permission error")
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, productID, auth.ActEdit).Return(permissionError)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(permissionError)
 
-	product, err := s.productInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateProduct(ctx, user, productID, productName, productDescription)
 
 	require.Error(t, permissionError, err)
 	require.Nil(t, product)
 }
 
-func TestCreateNewRuntime_FailsIfRuntimeHasAnInvalidField(t *testing.T) {
+func TestCreateNewProduct_FailsIfProductHasAnInvalidField(t *testing.T) {
 	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
 	ctx := context.Background()
 	user := &token.UserRoles{ID: "user1234"}
-	newRuntimeId := "product-id"
+	productID := "product-id"
 	// the product name is bigger thant the max length (it should be lte=40)
-	newRuntimeName := "lore ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labores"
-	newRuntimeDescription := "This is a product description"
+	productName := "lore ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labores"
+	productDescription := "This is a product description"
 
-	s.mocks.accessControl.EXPECT().CheckPermission(userID, productID, auth.ActEdit).Return(nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(nil)
 
-	product, err := s.productInteractor.CreateRuntime(ctx, userID, newRuntimeId, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateProduct(ctx, user, productID, productName, productDescription)
 
 	require.Error(t, err)
 	require.Nil(t, product)
 }
 
-func TestCreateNewRuntime_FailsIfRuntimeWithSameIDAlreadyExists(t *testing.T) {
+func TestCreateNewProduct_FailsIfProductWithSameIDAlreadyExists(t *testing.T) {
 	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
@@ -196,25 +196,25 @@ func TestCreateNewRuntime_FailsIfRuntimeWithSameIDAlreadyExists(t *testing.T) {
 	}
 
 	productID := "product-id"
-	newRuntimeName := "product-name"
-	newRuntimeDescription := "This is a product description"
+	productName := "product-name"
+	productDescription := "This is a product description"
 
-	existingRuntime := &entity.Product{
+	existingProduct := &entity.Product{
 		ID:          productID,
 		Name:        "existing-product-name",
 		Description: "existing-product-description",
 	}
 
 	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(nil)
-	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(existingRuntime, nil)
+	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(existingProduct, nil)
 
-	product, err := s.productInteractor.CreateRuntime(ctx, user, productID, newRuntimeName, newRuntimeDescription)
+	product, err := s.productInteractor.CreateProduct(ctx, user, productID, productName, productDescription)
 
 	require.Error(t, err)
 	require.Nil(t, product)
 }
 
-func TestCreateNewRuntime_FailsIfRuntimeWithSameNameAlreadyExists(t *testing.T) {
+func TestCreateNewProduct_FailsIfProductWithSameNameAlreadyExists(t *testing.T) {
 	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
@@ -225,7 +225,7 @@ func TestCreateNewRuntime_FailsIfRuntimeWithSameNameAlreadyExists(t *testing.T) 
 	productID := "new-product-id"
 	productDescription := "This is a product description"
 
-	existingRuntime := &entity.Product{
+	existingProduct := &entity.Product{
 		ID:          "existing-product-id",
 		Name:        productName,
 		Description: "existing-product-description",
@@ -233,15 +233,15 @@ func TestCreateNewRuntime_FailsIfRuntimeWithSameNameAlreadyExists(t *testing.T) 
 
 	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(nil)
 	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(nil, usecase.ErrProductNotFound)
-	s.mocks.productRepo.EXPECT().GetByName(ctx, productName).Return(existingRuntime, nil)
+	s.mocks.productRepo.EXPECT().GetByName(ctx, productName).Return(existingProduct, nil)
 
-	product, err := s.productInteractor.CreateRuntime(ctx, user, productID, productName, productDescription)
+	product, err := s.productInteractor.CreateProduct(ctx, user, productID, productName, productDescription)
 
 	require.Error(t, err)
 	require.Nil(t, product)
 }
 
-func TestCreateNewRuntime_FailsIfCreateRuntimeFails(t *testing.T) {
+func TestCreateNewProduct_FailsIfCreateProductFails(t *testing.T) {
 	s := newProductSuite(t)
 	defer s.ctrl.Finish()
 
@@ -259,12 +259,12 @@ func TestCreateNewRuntime_FailsIfCreateRuntimeFails(t *testing.T) {
 		CreationDate: time.Time{},
 	}
 
-	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActEdit).Return(nil)
+	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActCreateProduct).Return(nil)
 	s.mocks.productRepo.EXPECT().GetByID(ctx, productID).Return(nil, usecase.ErrProductNotFound)
 	s.mocks.productRepo.EXPECT().GetByName(ctx, productName).Return(nil, usecase.ErrProductNotFound)
 	s.mocks.productRepo.EXPECT().Create(ctx, newProduct).Return(nil, errors.New("create product error"))
 
-	product, err := s.productInteractor.CreateRuntime(ctx, user, productID, productName, productDescription)
+	product, err := s.productInteractor.CreateProduct(ctx, user, productID, productName, productDescription)
 
 	require.Error(t, err)
 	require.Nil(t, product)
@@ -324,7 +324,7 @@ func TestFindAll(t *testing.T) {
 	}
 
 	s.mocks.accessControl.EXPECT().CheckPermission(user, productID, auth.ActViewProduct).Return(nil)
-	s.mocks.productRepo.EXPECT().FindAll(ctx).Return(expected, nil)
+	s.mocks.productRepo.EXPECT().FindByIDs(ctx, []string{productID}).Return(expected, nil)
 
 	actual, err := s.productInteractor.FindAll(ctx, user)
 

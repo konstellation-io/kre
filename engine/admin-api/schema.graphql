@@ -1,10 +1,10 @@
 scalar Upload
 
 type Query {
-  runtime(id: ID!): Runtime!
-  runtimes: [Runtime!]!
-  version(name: String!, runtimeId: ID!): Version!
-  versions(runtimeId: ID!): [Version!]!
+  product(id: ID!): Product!
+  products: [Product!]!
+  version(name: String!, productID: ID!): Version!
+  versions(productID: ID!): [Version!]!
   userActivityList(
     userEmail: String
     types: [UserActivityType!]
@@ -13,9 +13,9 @@ type Query {
     toDate: String
     lastId: String
   ): [UserActivity!]!
-  logs(runtimeId: ID!, filters: LogFilters!, cursor: String): LogPage!
+  logs(productID: ID!, filters: LogFilters!, cursor: String): LogPage!
   metrics(
-    runtimeId: ID!
+    productID: ID!
     versionName: String!
     startDate: String!
     endDate: String!
@@ -23,7 +23,7 @@ type Query {
 }
 
 type Mutation {
-  createRuntime(input: CreateRuntimeInput!): Runtime!
+  createProduct(input: CreateProductInput!): Product!
   createVersion(input: CreateVersionInput!): Version!
   startVersion(input: StartVersionInput!): Version!
   stopVersion(input: StopVersionInput!): Version!
@@ -35,15 +35,15 @@ type Mutation {
 
 type Subscription {
   watchNodeLogs(
-    runtimeId: ID!
+    productID: ID!
     versionName: String!
     filters: LogFilters!
   ): NodeLog!
-  watchNodeStatus(versionName: String!, runtimeId: ID!): Node!
+  watchNodeStatus(versionName: String!, productID: ID!): Node!
   watchVersion: Version!
 }
 
-input CreateRuntimeInput {
+input CreateProductInput {
   id: String!
   name: String!
   description: String!
@@ -51,31 +51,31 @@ input CreateRuntimeInput {
 
 input CreateVersionInput {
   file: Upload!
-  runtimeId: ID!
+  productID: ID!
 }
 
 input StartVersionInput {
   versionName: String!
   comment: String!
-  runtimeId: ID!
+  productID: ID!
 }
 
 input StopVersionInput {
   versionName: String!
   comment: String!
-  runtimeId: ID!
+  productID: ID!
 }
 
 input PublishVersionInput {
   versionName: String!
   comment: String!
-  runtimeId: ID!
+  productID: ID!
 }
 
 input UnpublishVersionInput {
   versionName: String!
   comment: String!
-  runtimeId: ID!
+  productID: ID!
 }
 
 input UsersInput {
@@ -125,11 +125,11 @@ input ConfigurationVariablesInput {
 
 input UpdateConfigurationInput {
   versionName: String!
-  runtimeId: ID!
+  productID: ID!
   configurationVariables: [ConfigurationVariablesInput!]!
 }
 
-type Runtime {
+type Product {
   id: ID!
   name: String!
   description: String!

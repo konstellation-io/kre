@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/casbin/casbin/v2"
