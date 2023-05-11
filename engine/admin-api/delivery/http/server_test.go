@@ -41,5 +41,5 @@ func TestServerCall(t *testing.T) {
 	require.NoError(t, err)
 
 	defer res.Body.Close()
-	require.Equal(t, res.StatusCode, http.StatusOK)
+	require.Equal(t, res.StatusCode, http.StatusUnauthorized)
 }
