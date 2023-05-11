@@ -1,5 +1,18 @@
-p, USER, edit
-p, USER, view_product
-p, USER, edit_products
 p, USER, view
+p, USER, edit
+
+p, USER, view_product
+p, USER, create_product
+
+p. USER, create_version
+p. USER, start_version
+p. USER, stop_verion
+p. USER, publish_version
+p. USER, unpublish_version
+p. USER, edit_version
+p. USER, view_version
+
+p. USER, view_metrics
+p. USER, view_user_activities
+
 p, USER, execute
