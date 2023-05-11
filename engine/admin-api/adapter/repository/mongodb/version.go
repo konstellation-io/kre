@@ -119,56 +119,22 @@ func (r *VersionRepoMongoDB) Update(productID string, version *entity.Version) e
 	return nil
 }
 
-//nolint:dupl // legacy code
-func (r *VersionRepoMongoDB) GetByProduct(productID string) ([]*entity.Version, error) {
+func (r *VersionRepoMongoDB) GetByProduct(ctx context.Context, productID string) ([]*entity.Version, error) {
 	collection := r.client.Database(productID).Collection(versionsCollectionName)
 
-	// TODO: easy fix
-	//nolint:govet // legacy code
-	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, 60*time.Second)
+	defer cancel()
 
 	var versions []*entity.Version
 
-	cur, err := collection.Find(ctx, bson.M{})
+	cur, err := collection.Find(ctxWithTimeout, bson.M{})
 
 	if err != nil {
 		return versions, err
 	}
+	defer cur.Close(ctxWithTimeout)
 
-	defer cur.Close(ctx)
-
-	for cur.Next(ctx) {
-		var v entity.Version
-		err = cur.Decode(&v)
-
-		if err != nil {
-			return versions, err
-		}
-
-		versions = append(versions, &v)
-	}
-
-	return versions, nil
-}
-
-//nolint:dupl // legacy code
-func (r *VersionRepoMongoDB) GetAll(productID string) ([]*entity.Version, error) {
-	collection := r.client.Database(productID).Collection(versionsCollectionName)
-
-	// TODO: easy fix
-	//nolint:govet // legacy code
-	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
-
-	var versions []*entity.Version
-
-	cur, err := collection.Find(ctx, bson.M{})
-
-	if err != nil {
-		return versions, err
-	}
-	defer cur.Close(ctx)
-
-	for cur.Next(ctx) {
+	for cur.Next(ctxWithTimeout) {
 		var v entity.Version
 
 		err = cur.Decode(&v)
@@ -212,7 +178,12 @@ func (r *VersionRepoMongoDB) SetStatus(ctx context.Context, productID, versionID
 	return nil
 }
 
-func (r *VersionRepoMongoDB) SetErrors(ctx context.Context, productID string, version *entity.Version, errorMessages []string) (*entity.Version, error) {
+func (r *VersionRepoMongoDB) SetErrors(
+	ctx context.Context,
+	productID string,
+	version *entity.Version,
+	errorMessages []string,
+) (*entity.Version, error) {
 	collection := r.client.Database(productID).Collection(versionsCollectionName)
 
 	version.Status = entity.VersionStatusError

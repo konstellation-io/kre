@@ -14,6 +14,7 @@ func extractToken(authHeader string) string {
 	if len(strings.Split(authHeader, " ")) == 2 {
 		return strings.Split(authHeader, " ")[1]
 	}
+
 	return ""
 }
 
@@ -26,6 +27,7 @@ func NewJwtAuthMiddleware(_ *config.Config, logger logging.Logger, tokenParser *
 			user, err := tokenParser.GetUserRoles(plainToken)
 			if err != nil {
 				logger.Error("No token found in context")
+
 				return httperrors.HTTPErrUnauthorized
 			}
 

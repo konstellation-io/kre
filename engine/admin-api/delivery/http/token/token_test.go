@@ -24,6 +24,7 @@ func newTokenWithProductRoles(userRoles *token.UserRoles) (string, error) {
 			Subject: userRoles.ID,
 		},
 	}
+
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(tokenKey)
 }
 

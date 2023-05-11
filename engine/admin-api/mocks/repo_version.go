@@ -79,34 +79,19 @@ func (mr *MockVersionRepoMockRecorder) CreateIndexes(ctx, productID interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIndexes", reflect.TypeOf((*MockVersionRepo)(nil).CreateIndexes), ctx, productID)
 }
 
-// GetAll mocks base method.
-func (m *MockVersionRepo) GetAll(productID string) ([]*entity.Version, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll", productID)
-	ret0, _ := ret[0].([]*entity.Version)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAll indicates an expected call of GetAll.
-func (mr *MockVersionRepoMockRecorder) GetAll(productID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockVersionRepo)(nil).GetAll), productID)
-}
-
 // GetByID mocks base method.
-func (m *MockVersionRepo) GetByID(productID, versionId string) (*entity.Version, error) {
+func (m *MockVersionRepo) GetByID(productID, versionID string) (*entity.Version, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", productID, versionId)
+	ret := m.ctrl.Call(m, "GetByID", productID, versionID)
 	ret0, _ := ret[0].(*entity.Version)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByID indicates an expected call of GetByID.
-func (mr *MockVersionRepoMockRecorder) GetByID(productID, versionId interface{}) *gomock.Call {
+func (mr *MockVersionRepoMockRecorder) GetByID(productID, versionID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockVersionRepo)(nil).GetByID), productID, versionId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockVersionRepo)(nil).GetByID), productID, versionID)
 }
 
 // GetByName mocks base method.
@@ -125,18 +110,18 @@ func (mr *MockVersionRepoMockRecorder) GetByName(ctx, productID, name interface{
 }
 
 // GetByProduct mocks base method.
-func (m *MockVersionRepo) GetByProduct(productID string) ([]*entity.Version, error) {
+func (m *MockVersionRepo) GetByProduct(ctx context.Context, productID string) ([]*entity.Version, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByProduct", productID)
+	ret := m.ctrl.Call(m, "GetByProduct", ctx, productID)
 	ret0, _ := ret[0].([]*entity.Version)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByProduct indicates an expected call of GetByProduct.
-func (mr *MockVersionRepoMockRecorder) GetByProduct(productID interface{}) *gomock.Call {
+func (mr *MockVersionRepoMockRecorder) GetByProduct(ctx, productID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByProduct", reflect.TypeOf((*MockVersionRepo)(nil).GetByProduct), productID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByProduct", reflect.TypeOf((*MockVersionRepo)(nil).GetByProduct), ctx, productID)
 }
 
 // SetErrors mocks base method.

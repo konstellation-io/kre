@@ -109,13 +109,13 @@ func (i *VersionInteractor) GetByName(ctx context.Context, user *token.UserRoles
 	return v, nil
 }
 
-func (i *VersionInteractor) GetByID(productID, versionId string) (*entity.Version, error) {
-	return i.versionRepo.GetByID(productID, versionId)
+func (i *VersionInteractor) GetByID(productID, versionID string) (*entity.Version, error) {
+	return i.versionRepo.GetByID(productID, versionID)
 }
 
 // GetByProduct returns all Versions of the given Runtime.
-func (i *VersionInteractor) GetByProduct(user *token.UserRoles, productID string) ([]*entity.Version, error) {
-	versions, err := i.versionRepo.GetByProduct(productID)
+func (i *VersionInteractor) GetByProduct(ctx context.Context, user *token.UserRoles, productID string) ([]*entity.Version, error) {
+	versions, err := i.versionRepo.GetByProduct(ctx, productID)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +160,7 @@ func (i *VersionInteractor) Create(
 		return nil, nil, fmt.Errorf("error product repo GetById: %w", err)
 	}
 	// Check if the version is duplicated
-	versions, err := i.versionRepo.GetByProduct(productID)
+	versions, err := i.versionRepo.GetByProduct(ctx, productID)
 	if err != nil {
 		return nil, nil, ErrVersionDuplicated
 	}
@@ -317,7 +317,12 @@ func (i *VersionInteractor) saveKRTDashboards(
 	return contentErrors
 }
 
-func (i *VersionInteractor) saveKRTDoc(productID, docFolder string, versionCreated *entity.Version, contentErrors []error, ctx context.Context) []error {
+func (i *VersionInteractor) saveKRTDoc(
+	productID, docFolder string,
+	versionCreated *entity.Version,
+	contentErrors []error,
+	ctx context.Context,
+) []error {
 	if _, err := os.Stat(path.Join(docFolder, "README.md")); err == nil {
 		err = i.docGenerator.Generate(versionCreated.Name, docFolder)
 		if err != nil {
@@ -556,6 +561,7 @@ func (i *VersionInteractor) stopAndNotify(
 		close(notifyStatusCh)
 		i.logger.Debug("[versionInteractor.stopAndNotify] channel closed")
 	}()
+
 	err := i.versionService.Stop(ctx, productID, vers)
 	if err != nil {
 		i.logger.Errorf("[versionInteractor.stopAndNotify] error stopping version %q: %s", vers.Name, err)
@@ -572,7 +578,13 @@ func (i *VersionInteractor) stopAndNotify(
 }
 
 // Publish set a Version as published on DB and K8s.
-func (i *VersionInteractor) Publish(ctx context.Context, user *token.UserRoles, productID string, versionName string, comment string) (*entity.Version, error) {
+func (i *VersionInteractor) Publish(
+	ctx context.Context,
+	user *token.UserRoles,
+	productID,
+	versionName,
+	comment string,
+) (*entity.Version, error) {
 	if err := i.accessControl.CheckPermission(user, productID, auth.ActPublishVersion); err != nil {
 		return nil, err
 	}
@@ -647,6 +659,7 @@ func (i *VersionInteractor) Unpublish(
 	v.PublicationUserID = nil
 	v.PublicationDate = nil
 	v.Status = entity.VersionStatusStarted
+
 	err = i.versionRepo.Update(productID, v)
 	if err != nil {
 		return nil, err
@@ -779,11 +792,11 @@ func (i *VersionInteractor) setStatusError(
 	ctx context.Context,
 	productID string,
 	vers *entity.Version,
-	errors []error,
+	errs []error,
 	notifyCh chan *entity.Version,
 ) {
-	errorMessages := make([]string, len(errors))
-	for idx, err := range errors {
+	errorMessages := make([]string, len(errs))
+	for idx, err := range errs {
 		errorMessages[idx] = err.Error()
 	}
 

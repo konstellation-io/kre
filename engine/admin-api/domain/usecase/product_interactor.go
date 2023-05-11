@@ -14,13 +14,13 @@ import (
 )
 
 var (
-	// ErrProductNotFound error
+	// ErrProductNotFound error.
 	ErrProductNotFound       = errors.New("error product not found")
 	ErrProductDuplicated     = errors.New("there is already a product with the same id")
 	ErrProductDuplicatedName = errors.New("there is already a product with the same name")
 )
 
-// ProductInteractor contains app logic to handle Product entities
+// ProductInteractor contains app logic to handle Product entities.
 type ProductInteractor struct {
 	cfg             *config.Config
 	logger          logging.Logger
@@ -33,7 +33,7 @@ type ProductInteractor struct {
 	accessControl   auth.AccessControl
 }
 
-// NewProductInteractor creates a new ProductInteractor
+// NewProductInteractor creates a new ProductInteractor.
 func NewProductInteractor(
 	cfg *config.Config,
 	logger logging.Logger,
@@ -58,7 +58,7 @@ func NewProductInteractor(
 	}
 }
 
-// CreateProduct adds a new Product
+// CreateProduct adds a new Product.
 func (i *ProductInteractor) CreateProduct(
 	ctx context.Context,
 	user *token.UserRoles,
@@ -92,7 +92,7 @@ func (i *ProductInteractor) CreateProduct(
 	productFromDB, err := i.productRepo.GetByID(ctx, productID)
 	if productFromDB != nil {
 		return nil, ErrProductDuplicated
-	} else if err != ErrProductNotFound {
+	} else if !errors.Is(err, ErrProductNotFound) {
 		return nil, err
 	}
 
@@ -100,7 +100,7 @@ func (i *ProductInteractor) CreateProduct(
 	productFromDB, err = i.productRepo.GetByName(ctx, name)
 	if productFromDB != nil {
 		return nil, ErrProductDuplicatedName
-	} else if err != ErrProductNotFound {
+	} else if !errors.Is(err, ErrProductNotFound) {
 		return nil, err
 	}
 
@@ -110,10 +110,12 @@ func (i *ProductInteractor) CreateProduct(
 	}
 
 	i.logger.Info("Product stored in the database with ID=" + createdProduct.ID)
+
 	err = i.measurementRepo.CreateDatabase(createdProduct.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	i.logger.Info("Measurement database created for product with ID=" + createdProduct.ID)
 
 	err = i.createDatabaseIndexes(ctx, productID)
@@ -138,7 +140,7 @@ func (i *ProductInteractor) createDatabaseIndexes(ctx context.Context, productID
 	return i.versionRepo.CreateIndexes(ctx, productID)
 }
 
-// Get return product by id
+// Get return product by ID.
 func (i *ProductInteractor) Get(ctx context.Context, user *token.UserRoles, productID string) (*entity.Product, error) {
 	if err := i.accessControl.CheckPermission(user, productID, auth.ActViewProduct); err != nil {
 		return nil, err
@@ -147,7 +149,7 @@ func (i *ProductInteractor) Get(ctx context.Context, user *token.UserRoles, prod
 	return i.productRepo.Get(ctx)
 }
 
-// GetByID return a Product by its ID
+// GetByID return a Product by its ID.
 func (i *ProductInteractor) GetByID(ctx context.Context, user *token.UserRoles, productID string) (*entity.Product, error) {
 	if err := i.accessControl.CheckPermission(user, productID, auth.ActViewProduct); err != nil {
 		return nil, err
@@ -156,9 +158,10 @@ func (i *ProductInteractor) GetByID(ctx context.Context, user *token.UserRoles, 
 	return i.productRepo.GetByID(ctx, productID)
 }
 
-// FindAll returns a list of all Runtimes
+// FindAll returns a list of all Runtimes.
 func (i *ProductInteractor) FindAll(ctx context.Context, user *token.UserRoles) ([]*entity.Product, error) {
 	visibleProducts := make([]string, 0, len(user.ProductRoles))
+
 	for prod := range user.ProductRoles {
 		if err := i.accessControl.CheckPermission(user, prod, auth.ActViewProduct); err == nil {
 			visibleProducts = append(visibleProducts, prod)

@@ -1,6 +1,7 @@
 package http_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -29,20 +30,16 @@ func TestServerCall(t *testing.T) {
 
 	go app.Start()
 
-	// time.Sleep(1 * time.Second)
-
 	url := fmt.Sprintf("http://localhost%s", cfg.Admin.APIAddress)
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, http.NoBody)
 	require.NoError(t, err)
 
-	req.Header.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0X3JvbGVzIjp7InRlc3QtcHJvZHVjdCI6WyJBRE1JTiJdfSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIlZJRVdFUiJdfX0.JV986y0wYla4tAY3T6h1MKVfzQPVcBhOyK_F_G5fGQI")
+	req.Header.Add("Authorization", "Bearer Token")
 
 	res, err := http.DefaultClient.Do(req)
-	fmt.Println(res)
-	fmt.Println(res)
-
 	require.NoError(t, err)
 
+	defer res.Body.Close()
 	require.Equal(t, res.StatusCode, http.StatusOK)
 }

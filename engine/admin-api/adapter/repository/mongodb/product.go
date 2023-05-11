@@ -117,6 +117,7 @@ func (r *ProductRepoMongoDB) FindByIDs(ctx context.Context, ids []string) ([]*en
 	}
 
 	var products []*entity.Product
+
 	err = cursor.All(ctx, &products)
 	if err != nil {
 		return nil, err

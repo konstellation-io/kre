@@ -75,6 +75,7 @@ func hasGrantsForResource(
 			return true
 		}
 	}
+
 	return false
 }
 

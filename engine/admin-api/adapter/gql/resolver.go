@@ -198,7 +198,7 @@ func (r *queryResolver) Version(ctx context.Context, name, productID string) (*e
 
 func (r *queryResolver) Versions(ctx context.Context, productID string) ([]*entity.Version, error) {
 	loggedUser := ctx.Value("user").(*token.UserRoles)
-	return r.versionInteractor.GetByProduct(loggedUser, productID)
+	return r.versionInteractor.GetByProduct(ctx, loggedUser, productID)
 }
 
 func (r *queryResolver) UserActivityList(
@@ -305,20 +305,6 @@ func (r *userActivityResolver) User(_ context.Context, obj *entity.UserActivity)
 	return obj.UserID, nil
 }
 
-func (a apiTokenResolver) CreationDate(_ context.Context, obj *entity.APIToken) (string, error) {
-	return obj.CreationDate.Format(time.RFC3339), nil
-}
-
-func (a apiTokenResolver) LastActivity(_ context.Context, obj *entity.APIToken) (*string, error) {
-	if obj.LastActivity == nil {
-		return nil, nil
-	}
-
-	date := obj.LastActivity.Format(time.RFC3339)
-
-	return &date, nil
-}
-
 func (r *versionResolver) CreationDate(_ context.Context, obj *entity.Version) (string, error) {
 	return obj.CreationDate.Format(time.RFC3339), nil
 }
@@ -375,5 +361,4 @@ type queryResolver struct{ *Resolver }
 type productResolver struct{ *Resolver }
 type subscriptionResolver struct{ *Resolver }
 type userActivityResolver struct{ *Resolver }
-type apiTokenResolver struct{ *Resolver }
 type versionResolver struct{ *Resolver }

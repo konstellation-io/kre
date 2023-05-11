@@ -123,7 +123,7 @@ func (s *VersionInteractorSuite) TestCreateNewVersion() {
 	s.mocks.accessControl.EXPECT().CheckPermission(loggedUser, productID, auth.ActCreateVersion)
 	s.mocks.idGenerator.EXPECT().NewID().Return("fakepass").Times(6)
 	s.mocks.productRepo.EXPECT().GetByID(s.ctx, productID).Return(product, nil)
-	s.mocks.versionRepo.EXPECT().GetByProduct(productID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByProduct(s.ctx, productID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, productID, versionName).Return(nil, usecase.ErrVersionNotFound)
 	s.mocks.versionRepo.EXPECT().Create(loggedUser.ID, productID, gomock.Any()).Return(version, nil)
 	s.mocks.versionRepo.EXPECT().SetStatus(s.ctx, productID, version.ID, entity.VersionStatusCreated).Return(nil)
@@ -172,7 +172,7 @@ func (s *VersionInteractorSuite) TestCreateNewVersion_FailsIfVersionNameIsDuplic
 
 	s.mocks.accessControl.EXPECT().CheckPermission(loggedUser, productID, auth.ActCreateVersion)
 	s.mocks.productRepo.EXPECT().GetByID(s.ctx, productID).Return(runtime, nil)
-	s.mocks.versionRepo.EXPECT().GetByProduct(productID).Return([]*entity.Version{version}, nil)
+	s.mocks.versionRepo.EXPECT().GetByProduct(s.ctx, productID).Return([]*entity.Version{version}, nil)
 	s.mocks.versionRepo.EXPECT().GetByName(s.ctx, productID, versionName).Return(version, nil)
 
 	_, _, err = s.versionInteractor.Create(context.Background(), loggedUser, productID, file)

@@ -170,7 +170,11 @@ func (i *UserActivityInteractor) RegisterStopAction(userID, productID string, ve
 	return checkUserActivityError(i.logger, err)
 }
 
-func (i *UserActivityInteractor) RegisterPublishAction(userID, productID string, version *entity.Version, prev *entity.Version, comment string) error {
+func (i *UserActivityInteractor) RegisterPublishAction(
+	userID, productID string,
+	version *entity.Version, prev *entity.Version,
+	comment string,
+) error {
 	err := i.create(
 		userID,
 		entity.UserActivityTypePublishVersion,

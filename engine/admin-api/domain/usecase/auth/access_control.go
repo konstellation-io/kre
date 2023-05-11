@@ -48,7 +48,9 @@ const ActEdit AccessControlAction = "edit"
 
 func (e AccessControlAction) IsValid() bool {
 	switch e {
-	case ActView, ActEdit:
+	case ActView, ActEdit, ActCreateProduct, ActStartVersion, ActStopVersion,
+		ActPublishVersion, ActUnpublishVersion, ActEditVersion, ActViewMetrics,
+		ActViewUserActivities, ActViewProduct, ActCreateVersion, ActViewVersion:
 		return true
 	}
 
