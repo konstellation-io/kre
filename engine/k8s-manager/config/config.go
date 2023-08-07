@@ -19,6 +19,7 @@ type Config struct {
 
 	Entrypoint struct {
 		RequestTimeout           string `yaml:"requestTimeout" envconfig:"KRE_ENTRYPOINTS_REQUEST_TIMEOUT"`
+		JsRequestTimeout         string `yaml:"jsRequestTimeout" envconfig:"KRE_JETSTREAM_REQUEST_TIMEOUT"`
 		IngressClassName         string `yaml:"ingressClassName" envconfig:"KRE_ENTRYPOINTS_INGRESS_CLASS_NAME"`
 		IngressAnnotationsBase64 string `yaml:"ingressAnnotationsBase64" envconfig:"KRE_ENTRYPOINTS_BASE64_INGRESSES_ANNOTATIONS"`
 		TLS                      struct {

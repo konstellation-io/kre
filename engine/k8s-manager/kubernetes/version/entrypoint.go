@@ -30,6 +30,7 @@ func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvV
 		{Name: "KRT_NODE_ID", Value: "entrypoint"},
 		// Time to wait for a message to do a round trip through a workflow.
 		{Name: "KRT_REQUEST_TIMEOUT", Value: m.config.Entrypoint.RequestTimeout},
+		{Name: "KRT_JS_REQUEST_TIMEOUT", Value: m.config.Entrypoint.JsRequestTimeout},
 	}
 
 	return append(m.getCommonEnvVars(req), entrypointEnvVars...)
@@ -37,13 +38,14 @@ func (m *Manager) getEntrypointEnvVars(req *versionpb.StartRequest) []apiv1.EnvV
 
 // generateSubjects creates a JSON containing the NATS subjects the entrypoint must subscribe to for each workflow
 // example:
-//   {
-//      "Workflow1": {
-//				"stream": "runtimeName-versionName-workflowEntrypoint1",
-//     		"input_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
-//     		"output_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1"
-//   		}
-//   }
+//
+//	  {
+//	     "Workflow1": {
+//					"stream": "runtimeName-versionName-workflowEntrypoint1",
+//	    		"input_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1",
+//	    		"output_subject":"runtimeName-versionName-workflowEntrypoint1.exitpointName1"
+//	  		}
+//	  }
 func (m *Manager) generateSubjects(workflows []*versionpb.Workflow) (string, error) {
 	natsSubjects := map[string]map[string]string{} // TODO: refactor to struct
 
