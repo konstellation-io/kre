@@ -1,17 +1,17 @@
 package version
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"strings"
+  "context"
+  "errors"
+  "fmt"
+  "strings"
 
-	"github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
-	appsv1 "k8s.io/api/apps/v1"
-	apiv1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/watch"
+  "github.com/konstellation-io/kre/engine/k8s-manager/proto/versionpb"
+  appsv1 "k8s.io/api/apps/v1"
+  apiv1 "k8s.io/api/core/v1"
+  "k8s.io/apimachinery/pkg/api/resource"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  "k8s.io/apimachinery/pkg/watch"
 )
 
 type WaitForKind = int
@@ -121,6 +121,7 @@ func (m *Manager) joinSubscriptionSubjects(nodeSubscriptions []string) string {
 func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []apiv1.EnvVar {
 	envVars := make([]apiv1.EnvVar, len(cfg))
 	i := 0
+	containsJsTimeout := false
 
 	for k, v := range cfg {
 		envVars[i] = apiv1.EnvVar{
@@ -128,6 +129,17 @@ func (m *Manager) getNodeEnvVars(req *versionpb.StartRequest, cfg NodeConfig) []
 			Value: v,
 		}
 		i++
+
+		if k == "KRT_JS_REQUEST_TIMEOUT" {
+			containsJsTimeout = true
+		}
+	}
+
+	if !containsJsTimeout {
+		envVars = append(envVars, apiv1.EnvVar{
+			Name:  "KRT_JS_REQUEST_TIMEOUT",
+			Value: m.config.Entrypoint.JsRequestTimeout,
+		})
 	}
 
 	return append(m.getCommonEnvVars(req), envVars...)

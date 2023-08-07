@@ -10,6 +10,7 @@ data:
   KRE_RELEASE_NAME: "{{ .Release.Name }}"
   KRE_BASE_DOMAIN_NAME: {{ .Values.config.baseDomainName }}
   KRE_ENTRYPOINTS_REQUEST_TIMEOUT: "30"
+  KRE_JETSTREAM_REQUEST_TIMEOUT: "5"
   KRE_ENTRYPOINTS_BASE64_INGRESSES_ANNOTATIONS: {{ .Values.k8sManager.generatedEntrypoints.ingress.annotations | toYaml | b64enc }}
   KRE_ENTRYPOINTS_TLS: "{{ .Values.k8sManager.generatedEntrypoints.tls }}"
     {{- if and .Values.k8sManager.generatedEntrypoints.tls .Values.k8sManager.generatedEntrypoints.ingress.tls.secretName }}
