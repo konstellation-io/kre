@@ -33,7 +33,7 @@ jobs:
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/admin-api
           file: ./engine/admin-api/Dockerfile
@@ -44,7 +44,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/admin-api
           file: ./engine/admin-api/Dockerfile
@@ -79,7 +79,7 @@ jobs:
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/admin-ui
           file: ./engine/admin-ui/Dockerfile
@@ -90,7 +90,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/admin-ui
           file: ./engine/admin-ui/Dockerfile
@@ -125,7 +125,7 @@ jobs:
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/k8s-manager
           file: ./engine/k8s-manager/Dockerfile
@@ -136,7 +136,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/k8s-manager
           file: ./engine/k8s-manager/Dockerfile
@@ -171,7 +171,7 @@ jobs:
 
       - name: Push to Docker Hub RELEASE
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/nats-manager
           file: ./engine/nats-manager/Dockerfile
@@ -182,7 +182,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/nats-manager
           file: ./engine/nats-manager/Dockerfile
@@ -217,7 +217,7 @@ jobs:
 
       - name: Push to Docker Hub RELEASES
         if: ${{ ! contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/mongo-writer
           file: ./engine/mongo-writer/Dockerfile
@@ -228,7 +228,7 @@ jobs:
 
       - name: Push to Docker Hub ALPHA
         if: ${{ contains( github.event.ref, 'alpha' ) }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./engine/mongo-writer
           file: ./engine/mongo-writer/Dockerfile
