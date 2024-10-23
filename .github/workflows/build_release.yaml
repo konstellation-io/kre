@@ -289,7 +289,7 @@ jobs:
         uses: helm/chart-releaser-action@v1.4.1
         with:
           charts_dir: 'helm'
-          charts_repo_url: 'https://charts.konstellation.io'
+          charts_repo_url: 'https://kre.konstellation.io'
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 

@@ -17,7 +17,7 @@ Installs KRE kubernetes manifests.
 
 ## Install chart
 ```bash
-$ helm repo add konstellation-io https://charts.konstellation.io
+$ helm repo add konstellation-io https://kre.konstellation.io
 $ helm repo update
 $ helm install [RELEASE_NAME] konstellation-io/kre
 ```
